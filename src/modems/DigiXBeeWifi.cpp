@@ -249,8 +249,9 @@ bool DigiXBeeWifi::updateModemMetadata(void)
 {
     bool success = true;
 
-    /* Initialize float variable */
+    // Initialize variables
     int16_t signalQual = -9999;
+    uint16_t volt = 9999;
 
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode:"));
@@ -272,9 +273,13 @@ bool DigiXBeeWifi::updateModemMetadata(void)
     MS_DBG(F("CURRENT RSSI:"), _priorRSSI);
     MS_DBG(F("CURRENT Percent signal strength:"), _priorSignalPercent);
 
-    MS_DBG(F("Getting input voltage temperature:"));
-    _priorBatteryVoltage = gsmModem.getBattVoltage();
-    MS_DBG(F("CURRENT Modem input battery voltage:"), _priorBatteryVoltage);
+    MS_DBG(F("Getting input voltage:"));
+    volt = gsmModem.getBattVoltage();
+    MS_DBG(F("CURRENT Modem input battery voltage:"), volt);
+    if (volt != 9999)
+        _priorBatteryVoltage = (float)volt;
+    else
+        _priorBatteryVoltage = (float)-9999;
 
     MS_DBG(F("Getting chip temperature:"));
     _priorModemTemp = getModemTemperature();

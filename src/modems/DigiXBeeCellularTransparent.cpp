@@ -298,7 +298,7 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
 {
     bool success = true;
 
-    // Initialize float variable
+    // Initialize variable
     int16_t signalQual = -9999;
 
     // Enter command mode only once
@@ -318,8 +318,8 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
     _priorRSSI = signalQual;
     _priorSignalPercent = getPctFromRSSI(signalQual);
 
-    MS_DBG(F("CURRENT RSSI:"), rssi);
-    MS_DBG(F("CURRENT Percent signal strength:"), percent);
+    MS_DBG(F("CURRENT RSSI:"), _priorRSSI);
+    MS_DBG(F("CURRENT Percent signal strength:"), _priorSignalPercent);
 
     MS_DBG(F("Getting chip temperature:"));
     _priorModemTemp = getModemTemperature();

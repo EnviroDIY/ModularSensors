@@ -107,7 +107,6 @@ EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin,
                           wifiId, wifiPwd,
-                          1,  // measurements to average, optional
                           espSleepRqPin, espStatusPin  // Optional arguments
                          );
 // Create an extra reference to the modem by a generic name (not necessary)

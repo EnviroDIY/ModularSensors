@@ -452,7 +452,7 @@ bool loggerModem::updateModemMetadata(void)
 {
     bool success = true;
 
-    /* Initialize float variable */
+    // Initialize variable
     int16_t rssi = -9999;
     int16_t percent = -9999;
     uint8_t state = 99;
@@ -462,39 +462,30 @@ bool loggerModem::updateModemMetadata(void)
     success &= getModemSignalQuality(rssi, percent);
     MS_DBG(F("CURRENT RSSI:"), rssi);
     MS_DBG(F("CURRENT Percent signal strength:"), percent);
+    _priorRSSI = rssi;
+    _priorSignalPercent = percent;
+
     success &= getModemBatteryStats(state, bpercent, volt);
     MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
     MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
     MS_DBG(F("CURRENT Modem Battery Voltage:"), bpercent);
-    _priorModemTemp = getModemTemperature();
-    MS_DBG(F("CURRENT Modem Chip Temperature:"), bpercent);
-
     if (state != 99)
-    {
         _priorBatteryState = (float)state;
-    }
     else
-    {
         _priorBatteryState = (float)-9999;
-    }
 
     if (bpercent != -99)
-    {
         _priorBatteryPercent = (float)bpercent;
-    }
     else
-    {
         _priorBatteryPercent = (float)-9999;
-    }
 
     if (volt != 9999)
-    {
         _priorBatteryVoltage = (float)volt;
-    }
     else
-    {
         _priorBatteryVoltage = (float)-9999;
-    }
+
+    _priorModemTemp = getModemTemperature();
+    MS_DBG(F("CURRENT Modem Chip Temperature:"), _priorModemTemp);
 
     return success;
 }
