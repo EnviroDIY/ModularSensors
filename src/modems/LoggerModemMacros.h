@@ -207,7 +207,7 @@
     if (bitRead(_sensorStatus, 3) == 0)                                             \
     {                                                                               \
         waitForWarmUp();                                                            \
-        retVal &= wake();                                                           \
+        retVal &= modemWake();                                                      \
     }                                                                               \
     /* Not yet setup */                                                             \
     if (bitRead(_sensorStatus, 0) == 0)                                             \
@@ -343,8 +343,8 @@
             return 0;                                                                                \
         }                                                                                            \
                                                                                                      \
-        /* Try up to 12 times to get a timestamp from NIST */                                         \
-        for (uint8_t i = 0; i < 12; i++)                                                              \
+        /* Try up to 12 times to get a timestamp from NIST */                                        \
+        for (uint8_t i = 0; i < 12; i++)                                                             \
         {                                                                                            \
             /* Must ensure that we do not ping the daylight server more than once every 4 seconds */ \
             /* NIST clearly specifies here that this is a requirement for all software */            \
