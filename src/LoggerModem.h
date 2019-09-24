@@ -78,7 +78,6 @@ public:
 
     virtual bool setup(void) override;
     virtual bool wake(void) override;
-    virtual bool startSingleMeasurement(void) override;
     virtual bool addSingleMeasurementResult(void) override;
 
     // Do NOT turn the modem on and off with the regular power up and down!
