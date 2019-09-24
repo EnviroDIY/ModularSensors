@@ -1647,9 +1647,6 @@ void Logger::logDataAndPublish(void)
         // and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
 
-        // Turn on the modem to let it start searching for the network
-        if (_logModem != NULL) _logModem->modemPowerUp();
-
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
         // values, and turing them back off.
