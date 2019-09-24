@@ -61,8 +61,7 @@ public:
     SIMComSIM800(Stream* modemStream,
                  int8_t powerPin, int8_t statusPin,
                  int8_t modemResetPin, int8_t modemSleepRqPin,
-                 const char *apn,
-                 uint8_t measurementsToAverage = 1);
+                 const char *apn);
     ~SIMComSIM800();
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;

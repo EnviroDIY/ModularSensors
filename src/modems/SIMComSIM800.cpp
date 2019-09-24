@@ -18,14 +18,12 @@
 SIMComSIM800::SIMComSIM800(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
+                           const char *apn)
   : loggerModem(powerPin, statusPin, HIGH,
                 modemResetPin, modemSleepRqPin, false,
                 SIM800_STATUS_TIME_MS, SIM800_DISCONNECT_TIME_MS,
                 SIM800_WARM_UP_TIME_MS, SIM800_ATRESPONSE_TIME_MS,
-                SIM800_SIGNALQUALITY_TIME_MS,
-                measurementsToAverage),
+                SIM800_SIGNALQUALITY_TIME_MS),
     #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),

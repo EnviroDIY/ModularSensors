@@ -42,8 +42,7 @@ public:
     DigiXBeeWifi(Stream* modemStream,
                  int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                  int8_t modemResetPin, int8_t modemSleepRqPin,
-                 const char *ssid, const char *pwd,
-                 uint8_t measurementsToAverage = 1);
+                 const char *ssid, const char *pwd);
     ~DigiXBeeWifi();
 
     bool startSingleMeasurement(void) override;

@@ -16,11 +16,9 @@
 DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *ssid, const char *pwd,
-                           uint8_t measurementsToAverage)
+                           const char *ssid, const char *pwd)
   : DigiXBee(powerPin, statusPin, useCTSStatus,
-             modemResetPin, modemSleepRqPin,
-             measurementsToAverage),
+             modemResetPin, modemSleepRqPin),
     #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger, modemResetPin),

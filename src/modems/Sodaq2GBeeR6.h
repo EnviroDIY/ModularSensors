@@ -65,12 +65,10 @@ public:
     // Sodaq documentation is confusing
     Sodaq2GBeeR6(Stream *modemStream,
                  int8_t powerPin, int8_t statusPin,
-                 const char *apn,
-                 uint8_t measurementsToAverage = 1);
+                 const char *apn);
     Sodaq2GBeeR6(Stream *modemStream,
                  int8_t vRefPin, int8_t statusPin, int8_t powerPin,
-                 const char *apn,
-                 uint8_t measurementsToAverage = 1);
+                 const char *apn);
     ~Sodaq2GBeeR6();
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;

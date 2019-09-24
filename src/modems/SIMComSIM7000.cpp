@@ -16,14 +16,12 @@
 SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
                              int8_t powerPin, int8_t statusPin,
                              int8_t modemResetPin, int8_t modemSleepRqPin,
-                             const char *apn,
-                             uint8_t measurementsToAverage)
+                             const char *apn)
   : loggerModem(powerPin, statusPin, HIGH,
                 modemResetPin, modemSleepRqPin, false,
                 SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
                 SIM7000_WARM_UP_TIME_MS, SIM7000_ATRESPONSE_TIME_MS,
-                SIM7000_SIGNALQUALITY_TIME_MS,
-                measurementsToAverage),
+                SIM7000_SIGNALQUALITY_TIME_MS),
     #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),

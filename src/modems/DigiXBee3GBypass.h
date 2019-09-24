@@ -42,8 +42,7 @@ public:
     DigiXBee3GBypass(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage = 1);
+                           const char *apn);
     ~DigiXBee3GBypass();
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;

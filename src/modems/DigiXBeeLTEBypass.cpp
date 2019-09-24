@@ -15,11 +15,9 @@
 DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
+                           const char *apn)
   : DigiXBee(powerPin, statusPin, useCTSStatus,
-             modemResetPin, modemSleepRqPin,
-             measurementsToAverage),
+             modemResetPin, modemSleepRqPin),
     #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),

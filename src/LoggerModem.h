@@ -70,8 +70,7 @@ public:
                 int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
                 uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                 uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
-                uint32_t max_signalQuality_time_ms,
-                uint8_t measurementsToAverage = 1);
+                uint32_t max_signalQuality_time_ms);
     virtual ~loggerModem();
 
     String getSensorName(void) override;

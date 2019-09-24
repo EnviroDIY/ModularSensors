@@ -64,7 +64,6 @@ public:
                      int8_t powerPin, int8_t statusPin,
                      int8_t modemResetPin, int8_t modemSleepRqPin,
                      const char *ssid, const char *pwd,
-                     uint8_t measurementsToAverage = 1,
                      int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
     ~EspressifESP8266();
 

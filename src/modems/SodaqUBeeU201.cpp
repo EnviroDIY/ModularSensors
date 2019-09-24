@@ -16,14 +16,12 @@
 SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
                              int8_t powerPin, int8_t statusPin,
                              int8_t modemResetPin, int8_t modemSleepRqPin,
-                             const char *apn,
-                             uint8_t measurementsToAverage)
+                             const char *apn)
   : loggerModem(powerPin, statusPin, HIGH,
                 modemResetPin, modemSleepRqPin, false,
                 U201_STATUS_TIME_MS, U201_DISCONNECT_TIME_MS,
                 U201_WARM_UP_TIME_MS, U201_ATRESPONSE_TIME_MS,
-                U201_SIGNALQUALITY_TIME_MS,
-                measurementsToAverage),
+                U201_SIGNALQUALITY_TIME_MS),
     #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),

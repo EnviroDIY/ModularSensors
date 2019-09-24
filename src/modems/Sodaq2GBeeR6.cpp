@@ -16,14 +16,12 @@
 // Constructor
 Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
                            int8_t powerPin, int8_t statusPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
+                           const char *apn)
     : loggerModem(powerPin, statusPin, HIGH,
                   -1, -1, true,
                   S2GBR6_STATUS_TIME_MS, S2GBR6_DISCONNECT_TIME_MS,
                   S2GBR6_WARM_UP_TIME_MS, S2GBR6_ATRESPONSE_TIME_MS,
-                  S2GBR6_SIGNALQUALITY_TIME_MS,
-                  measurementsToAverage),
+                  S2GBR6_SIGNALQUALITY_TIME_MS),
 #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
@@ -40,14 +38,12 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
 // Constructor
 Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
                            int8_t vRefPin, int8_t statusPin, int8_t powerPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
+                           const char *apn)
     : loggerModem(powerPin, statusPin, HIGH,
                   -1, -1, true,
                   S2GBR6_STATUS_TIME_MS, S2GBR6_DISCONNECT_TIME_MS,
                   S2GBR6_WARM_UP_TIME_MS, S2GBR6_ATRESPONSE_TIME_MS,
-                  S2GBR6_SIGNALQUALITY_TIME_MS,
-                  measurementsToAverage),
+                  S2GBR6_SIGNALQUALITY_TIME_MS),
 #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
