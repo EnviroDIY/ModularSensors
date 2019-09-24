@@ -34,9 +34,6 @@
 // Time after end pulse until serial port becomes active (>4.5sec)
 #define SIM7000_ATRESPONSE_TIME_MS 4500
 
-// How long we're willing to wait to get signal quality
-#define SIM7000_SIGNALQUALITY_TIME_MS 15000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

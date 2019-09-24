@@ -123,10 +123,10 @@
     {                                                                               \
         modemPowerUp();                                                             \
     }                                                                               \
-    /* No attempts yet to wake the modem */                                         \
-    if (bitRead(_sensorStatus, 3) == 0)                                             \
+    /* Not yet successfully woken up */                                             \
+    if (bitRead(_sensorStatus, 4) == 0)                                             \
     {                                                                               \
-        waitForWarmUp();                                                            \
+        while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}                    \
         retVal &= modemWake();                                                      \
     }                                                                               \
     /* Not yet setup */                                                             \
@@ -145,7 +145,7 @@
     /* TODO:  Check status pin? */                                                  \
     MS_START_DEBUG_TIMER;                                                           \
     MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands...")); \
-    if (!gsmModem.testAT(_stabilizationTime_ms + 500))                              \
+    if (!gsmModem.testAT(_max_atresponse_time_ms + 500))                            \
     {                                                                               \
         MS_DBG(F("No response to AT commands!"));                                   \
         MS_DBG(F("Attempting a hard reset on the modem!"));                         \

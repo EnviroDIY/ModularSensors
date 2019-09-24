@@ -39,9 +39,6 @@
 // (6 sec typical for SARA U201)
 #define U201_ATRESPONSE_TIME_MS 6000L
 
-// How long we're willing to wait to get signal quality
-#define U201_SIGNALQUALITY_TIME_MS 15000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

@@ -35,9 +35,6 @@
 // ?? Time to UART availability not documented
 #define MONARCH_ATRESPONSE_TIME_MS 5000L
 
-// How long we're willing to wait to get signal quality
-#define MONARCH_SIGNALQUALITY_TIME_MS 15000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

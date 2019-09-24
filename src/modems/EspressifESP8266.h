@@ -41,9 +41,6 @@
 // Time until system and digital pins are operational
 #define ESP8266_ATRESPONSE_TIME_MS 350
 
-// How long we're willing to wait to get signal quality
-#define ESP8266_SIGNALQUALITY_TIME_MS 15000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

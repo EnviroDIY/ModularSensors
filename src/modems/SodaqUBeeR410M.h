@@ -37,9 +37,6 @@
 // Time until system and digital pins are operational (~4.5s)
 #define R410M_ATRESPONSE_TIME_MS 4500L
 
-// How long we're willing to wait to get signal quality
-#define R410M_SIGNALQUALITY_TIME_MS 15000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

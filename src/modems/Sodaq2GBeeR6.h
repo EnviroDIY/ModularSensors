@@ -37,9 +37,6 @@
 // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
 #define S2GBR6_ATRESPONSE_TIME_MS 3000
 
-// How long we're willing to wait to get signal quality
-#define S2GBR6_SIGNALQUALITY_TIME_MS 15000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

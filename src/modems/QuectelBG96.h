@@ -35,9 +35,6 @@
 // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
 #define BG96_ATRESPONSE_TIME_MS 4200L
 
-// How long we're willing to wait to get signal quality
-#define BG96_SIGNALQUALITY_TIME_MS 15000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

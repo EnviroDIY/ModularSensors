@@ -664,7 +664,7 @@ bool VariableArray::completeUpdate(void)
             if (lastSensorVariable[i] and
                 nMeasurementsToAverage[i] > nMeasurementsCompleted[i])
             {
-                MS_DEEP_DBG(i), '-',
+                MS_DEEP_DBG(i, '-',
                             arrayOfVars[i]->getParentSensorNameAndLocation(),
                             F("- millis:"), millis(),
                             F("- status: 0b"),
@@ -676,7 +676,7 @@ bool VariableArray::completeUpdate(void)
                             bitRead(arrayOfVars[i]->parentSensor->getStatus(), 2),
                             bitRead(arrayOfVars[i]->parentSensor->getStatus(), 1),
                             bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0),
-                            F("- measurement #"), (nMeasurementsCompleted[i] + 1);
+                            F("- measurement #"), (nMeasurementsCompleted[i] + 1));
             }
             // END CHUNK FOR DEBUGGING!
             ***/

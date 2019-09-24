@@ -31,10 +31,6 @@
 // Time we'll get back an AT response.  Probably much less than this, except in bypass
 #define XBEE_ATRESPONSE_TIME_MS 5000L
 
-// How long we're willing to wait to get signal quality
-// This can be super slow for cellular modules
-#define XBEE_SIGNALQUALITY_TIME_MS 45000L
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
