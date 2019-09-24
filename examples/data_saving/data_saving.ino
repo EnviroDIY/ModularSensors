@@ -516,6 +516,7 @@ void setup()
         if (modem.connectInternet(120000L))
         {
             loggerAllVars.setRTClock(modem.getNISTTime());
+            modem.updateModemMetadata();
         }
     }
 

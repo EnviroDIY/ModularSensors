@@ -1684,6 +1684,10 @@ void Logger::logDataAndPublish(void)
                     watchDogTimer.resetWatchDog();
                 }
 
+                // Update the modem metadata
+                MS_DBG(F("Updating modem metadata..."));
+                _logModem->updateModemMetadata();
+
                 // Disconnect from the network
                 MS_DBG(F("Disconnecting from the Internet..."));
                 _logModem->disconnectInternet();

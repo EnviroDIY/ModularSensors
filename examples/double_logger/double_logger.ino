@@ -221,7 +221,7 @@ void setup()
 
     // Turn on the modem
     modem.setModemLED(modemLEDPin);
-    
+
     // Set up the sensors (do this directly on the VariableArray)
     array1min.setupSensors();
     array5min.setupSensors();
@@ -234,6 +234,7 @@ void setup()
     {
         // Synchronize the RTC
         logger1min.setRTClock(modem.getNISTTime());
+        modem.updateModemMetadata();
         // Disconnect from the network
         modem.disconnectInternet();
     }

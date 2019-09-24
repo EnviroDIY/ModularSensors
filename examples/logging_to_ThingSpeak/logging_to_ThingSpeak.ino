@@ -296,6 +296,7 @@ void setup()
         if (modem.connectInternet(120000L))
         {
             dataLogger.setRTClock(modem.getNISTTime());
+            modem.updateModemMetadata();
         }
         else
         {

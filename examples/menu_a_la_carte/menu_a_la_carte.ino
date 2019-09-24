@@ -1495,6 +1495,7 @@ void setup()
         if (modem.connectInternet(120000L))
         {
             dataLogger.setRTClock(modem.getNISTTime());
+            modem.updateModemMetadata();
         }
         else
         {
@@ -1627,6 +1628,7 @@ void loop()
                 {
                     Serial.println(F("Running a daily clock sync..."));
                     dataLogger.setRTClock(modem.getNISTTime());
+                    modem.updateModemMetadata();
                 }
 
                 // Disconnect from the network
