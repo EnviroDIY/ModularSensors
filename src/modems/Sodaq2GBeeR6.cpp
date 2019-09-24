@@ -65,12 +65,6 @@ bool Sodaq2GBeeR6::modemWakeFxn(void)
         MS_DBG(F("Enabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
         digitalWrite(_vRefPin, HIGH);
     }
-    // Re-initialize after power on to turn offf echo
-    if (_powerPin >= 0)
-    {
-        gsmModem.init();
-        gsmClient.init(&gsmModem);
-    }
     return true;
 }
 
