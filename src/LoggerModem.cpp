@@ -86,17 +86,6 @@ void loggerModem::modemHardReset(void)
         // Unset the flag for prior communication failure
         previousCommunicationFailed = false;
     }
-    else if (_powerPin >= 0)
-    {
-        MS_DBG(F("Power cycling the modem to reset it!"));
-        modemPowerDown();
-        delay(5);
-        modemPowerUp();
-        // Re-set _millisSensorActivated  - the hard reset is a new activation
-        _millisSensorActivated = millis();
-        // Unset the flag for prior communication failure
-        previousCommunicationFailed = false;
-    }
     else
     {
         MS_DBG(F("No way has been provided to reset the modem!"));
