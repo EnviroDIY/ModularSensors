@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.13
+This example sketch is written for ModularSensors library version 0.23.15
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -22,7 +22,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 512
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
@@ -40,7 +40,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.13";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = "DWRI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -81,9 +81,8 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemVccPin = 23;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
@@ -95,7 +94,6 @@ const char *apn = "hologram";  // The APN for the gprs connection
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial,
                       modemVccPin, modemStatusPin,
-                      modemSleepRqPin,
                       apn);
 // Create an extra reference to the modem by a generic name (not necessary)
 Sodaq2GBeeR6 modem = modem2GB;
@@ -255,25 +253,6 @@ void setup()
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
-
-    // Set up some of the power pins so the board boots up with them off
-    // NOTE:  This isn't necessary at all.  The logger begin() function
-    // should leave all power pins off when it finishes.
-    if (modemVccPin >= 0)
-    {
-        pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-    }
-    if (sensorPowerPin >= 0)
-    {
-        pinMode(sensorPowerPin, OUTPUT);
-        digitalWrite(sensorPowerPin, LOW);
-    }
-    if (modemSleepRqPin >= 0)
-    {
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
-    }
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone

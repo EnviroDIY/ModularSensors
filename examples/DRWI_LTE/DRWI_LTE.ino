@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.13
+This example sketch is written for ModularSensors library version 0.23.15
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -22,7 +22,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 512
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
@@ -40,7 +40,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.13";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -259,25 +259,6 @@ void setup()
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
-
-    // Set up some of the power pins so the board boots up with them off
-    // NOTE:  This isn't necessary at all.  The logger begin() function
-    // should leave all power pins off when it finishes.
-    if (modemVccPin >= 0)
-    {
-        pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-    }
-    if (sensorPowerPin >= 0)
-    {
-        pinMode(sensorPowerPin, OUTPUT);
-        digitalWrite(sensorPowerPin, LOW);
-    }
-    if (modemSleepRqPin >= 0)
-    {
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
-    }
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone

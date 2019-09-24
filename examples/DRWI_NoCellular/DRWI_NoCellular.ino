@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.13
+This example sketch is written for ModularSensors library version 0.23.15
 
 This sketch is an example of logging data to an SD card as should be used by
 groups involved with The William Penn Foundation's Delaware River Watershed
@@ -34,7 +34,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.13";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -211,15 +211,6 @@ void setup()
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
-
-    // Set up some of the power pins so the board boots up with them off
-    // NOTE:  This isn't necessary at all.  The logger begin() function
-    // should leave all power pins off when it finishes.
-    if (sensorPowerPin >= 0)
-    {
-        pinMode(sensorPowerPin, OUTPUT);
-        digitalWrite(sensorPowerPin, LOW);
-    }
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
