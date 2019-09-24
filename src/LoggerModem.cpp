@@ -460,8 +460,14 @@ bool loggerModem::updateModemMetadata(void)
     uint16_t volt = 9999;
 
     success &= getModemSignalQuality(rssi, percent);
+    MS_DBG(F("CURRENT RSSI:"), rssi);
+    MS_DBG(F("CURRENT Percent signal strength:"), percent);
     success &= getModemBatteryStats(state, bpercent, volt);
+    MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
+    MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
+    MS_DBG(F("CURRENT Modem Battery Voltage:"), bpercent);
     _priorModemTemp = getModemTemperature();
+    MS_DBG(F("CURRENT Modem Chip Temperature:"), bpercent);
 
     if (state != 99)
     {

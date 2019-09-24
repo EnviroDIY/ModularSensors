@@ -300,9 +300,6 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
 
     // Initialize float variable
     int16_t signalQual = -9999;
-    int16_t percent = -9999;
-    int16_t rssi = -9999;
-    float temp = -9999;
 
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode:"));
@@ -318,8 +315,8 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
     MS_DBG(F("Raw signal quality:"), signalQual);
 
     // Convert signal quality to RSSI
-    rssi = signalQual;
-    percent = getPctFromRSSI(signalQual);
+    _priorRSSI = signalQual;
+    _priorSignalPercent = getPctFromRSSI(signalQual);
 
     MS_DBG(F("CURRENT RSSI:"), rssi);
     MS_DBG(F("CURRENT Percent signal strength:"), percent);
