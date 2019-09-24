@@ -16,7 +16,14 @@
 #define MS_MODEM_DID_AT_RESPOND(specificModem) \
     bool specificModem::didATRespond(void)     \
     {                                          \
-        return gsmModem.testAT(10);            \
+        bool success = gsmModem.testAT(1)      \
+        /* Assume we need to urn off echo! */  \
+        if (success && _powerPin >= 0)         \
+        {                                      \
+            gsmModem.sendAT(GF("E"),0);        \
+            gsmModem.waitResponse();           \
+        }                                      \
+        return success;                        \
     }
 
 #if defined TINY_GSM_MODEM_HAS_GPRS
