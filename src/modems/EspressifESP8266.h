@@ -67,8 +67,6 @@ public:
                      int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
     ~EspressifESP8266();
 
-    bool startSingleMeasurement(void) override;
-
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 

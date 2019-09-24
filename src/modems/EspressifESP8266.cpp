@@ -241,37 +241,3 @@ bool EspressifESP8266::extraModemSetup(void)
     // #endif
     return true;
 }
-
-
-bool EspressifESP8266::startSingleMeasurement(void)
-{
-    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
-    // the timestamp and status bits.  If it returns false, there's no reason to go on.
-    if (!Sensor::startSingleMeasurement()) return false;
-
-    bool success = true;
-    MS_DBG(F("Starting measurement on"), getSensorName());
-    // Set the status bits for measurement requested (bit 5)
-    // Setting this bit even if we failed to start a measurement to show that an attempt was made.
-    _sensorStatus |= 0b00100000;
-
-    // The SSID and password need to be set before the ESP8266m can join a
-    //network and get signal strength
-    bool alreadyConnect = gsmModem.isNetworkConnected();
-    if (!alreadyConnect) success &= gsmModem.networkConnect(_ssid, _pwd);
-
-    if (success)
-    {
-        // Update the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    }
-    // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
-    else
-    {
-        MS_DBG(getSensorNameAndLocation(), F("did not successfully start a measurement."));
-        _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
-    }
-
-    return success;
-}

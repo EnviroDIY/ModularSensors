@@ -45,9 +45,6 @@ public:
                  const char *ssid, const char *pwd);
     ~DigiXBeeWifi();
 
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
-
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
@@ -55,6 +52,7 @@ public:
     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
     bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
     float getModemTemperature(void) override;
+    bool updateModemMetadata(void);
 
     uint32_t getNISTTime(void) override;
 
