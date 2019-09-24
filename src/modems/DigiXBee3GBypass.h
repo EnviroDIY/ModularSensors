@@ -21,7 +21,7 @@
 
 #define TINY_GSM_MODEM_UBLOX
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 512
+#define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Included Dependencies

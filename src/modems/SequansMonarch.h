@@ -22,7 +22,7 @@
 
 #define TINY_GSM_MODEM_SEQUANS_MONARCH
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 512
+#define TINY_GSM_RX_BUFFER 64
 #endif
 
 // ?? Undocumented

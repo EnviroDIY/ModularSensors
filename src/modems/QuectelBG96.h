@@ -22,7 +22,7 @@
 
 #define TINY_GSM_MODEM_BG96
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 512
+#define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Time after end pulse until status pin becomes active - 4.8s
