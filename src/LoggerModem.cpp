@@ -72,27 +72,6 @@ void loggerModem::modemLEDOff(void)
 }
 
 
-void loggerModem::modemHardReset(void)
-{
-    if (_modemResetPin >= 0)
-    {
-        MS_DBG(F("Doing a hard reset on the modem!"));
-        digitalWrite(_modemResetPin, LOW);
-        delay(200);
-        digitalWrite(_modemResetPin, HIGH);
-        // Re-set _millisSensorActivated  - the hard reset is a new activation
-        _millisSensorActivated = millis();
-        // Unset the flag for prior communication failure
-        previousCommunicationFailed = false;
-    }
-    else
-    {
-        MS_DBG(F("No way has been provided to reset the modem!"));
-        previousCommunicationFailed = false;
-    }
-}
-
-
 String loggerModem::getSensorName(void) { return _modemName; }
 
 

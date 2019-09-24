@@ -33,6 +33,7 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
 // Destructor
 DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent(){}
 
+MS_MODEM_HARD_RESET(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);

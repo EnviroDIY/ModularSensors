@@ -33,6 +33,7 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream,
 // Destructor
 DigiXBee3GBypass::~DigiXBee3GBypass(){}
 
+MS_MODEM_HARD_RESET(DigiXBee3GBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBee3GBypass);

@@ -33,6 +33,7 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
 // Destructor
 DigiXBeeLTEBypass::~DigiXBeeLTEBypass(){}
 
+MS_MODEM_HARD_RESET(DigiXBeeLTEBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeLTEBypass);

@@ -13,10 +13,22 @@
 #ifndef LoggerModemMacros_h
 #define LoggerModemMacros_h
 
-#define MS_MODEM_DID_AT_RESPOND(specificModem) \
-    bool specificModem::didATRespond(void)     \
-    {                                          \
-        return gsmModem.testAT(10);            \
+#define MS_MODEM_HARD_RESET(specificModem)                             \
+    bool specificModem::modemHardReset(void)                           \
+    {                                                                  \
+        if (_modemResetPin >= 0)                                       \
+        {                                                              \
+            MS_DBG(F("Doing a hard reset on the modem!"));             \
+            digitalWrite(_modemResetPin, LOW);                         \
+            delay(200);                                                \
+            digitalWrite(_modemResetPin, HIGH);                        \
+            return gsmModem.init();                                    \
+        }                                                              \
+        else                                                           \
+        {                                                              \
+            MS_DBG(F("No pin has been provided to reset the modem!")); \
+            return false;                                              \
+        }                                                              \
     }
 
 #if defined TINY_GSM_MODEM_HAS_GPRS
@@ -227,8 +239,10 @@
     MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands...")); \
     if (!gsmModem.testAT(_stabilizationTime_ms + 500))                              \
     {                                                                               \
-        MS_DBG(F("No response to AT commands! Cannot connect to the internet!"));   \
-        return false;                                                               \
+        MS_DBG(F("No response to AT commands!"));                                   \
+        MS_DBG(F("Attempting a hard reset on the modem!"));                         \
+        if (!modemHardReset())                                                      \
+            return false;                                                           \
     }                                                                               \
     else                                                                            \
     {                                                                               \

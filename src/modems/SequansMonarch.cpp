@@ -37,6 +37,7 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
 // Destructor
 SequansMonarch::~SequansMonarch(){}
 
+MS_MODEM_HARD_RESET(SequansMonarch);
 MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SequansMonarch);
 MS_MODEM_GET_MODEM_BATTERY_NA(SequansMonarch);

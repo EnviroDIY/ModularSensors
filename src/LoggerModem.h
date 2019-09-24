@@ -136,19 +136,17 @@ protected:
     // Other helper functions
     void modemLEDOn(void);
     void modemLEDOff(void);
-    virtual void modemHardReset(void);
 
     virtual bool isInternetAvailable(void) = 0;
     virtual bool modemSleepFxn(void) = 0;
     virtual bool modemWakeFxn(void) = 0;
     virtual bool extraModemSetup(void) = 0;
+    virtual bool modemHardReset(void) = 0;
 
     uint32_t parseNISTBytes(byte nistBytes[4]);
 
     // Helper to set the timing for specific cellular chipsets based on their documentation
     // void setModemTiming(void);
-
-protected:
 
     int8_t _modemSleepRqPin;
     int8_t _modemResetPin;
@@ -161,9 +159,6 @@ protected:
     bool _statusLevel;
     uint32_t _statusTime_ms;
     uint32_t _disconnetTime_ms;
-
-    // A flag noting if the last wait for AT command responses failed
-    bool previousCommunicationFailed;
 
     uint32_t _lastNISTrequest;
     uint32_t _lastATCheck;

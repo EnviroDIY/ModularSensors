@@ -81,6 +81,8 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    bool modemHardReset(void) override;
+
     void setVRefPin(int8_t vRefPin);
 
     #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP

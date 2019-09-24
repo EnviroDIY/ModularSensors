@@ -35,6 +35,7 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
 // Destructor
 DigiXBeeWifi::~DigiXBeeWifi(){}
 
+MS_MODEM_HARD_RESET(DigiXBeeWifi);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeWifi);

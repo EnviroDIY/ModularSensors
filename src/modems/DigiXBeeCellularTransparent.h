@@ -59,6 +59,8 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    bool modemHardReset(void) override;
+
     #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif

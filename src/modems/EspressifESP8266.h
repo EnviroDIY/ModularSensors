@@ -79,6 +79,8 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    bool modemHardReset(void) override;
+
     #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif

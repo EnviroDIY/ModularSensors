@@ -148,7 +148,7 @@ bool SodaqUBeeR410M::extraModemSetup(void)
 }
 
 
-void SodaqUBeeR410M::modemHardReset(void)
+bool SodaqUBeeR410M::modemHardReset(void)
 {
     if (_modemResetPin >= 0)
     {
@@ -156,10 +156,20 @@ void SodaqUBeeR410M::modemHardReset(void)
         digitalWrite(_modemResetPin, LOW);
         delay(10000L);
         digitalWrite(_modemResetPin, HIGH);
-        // Re-set _millisSensorActivated  - the hard reset is a new activation
-        _millisSensorActivated = millis();
-        // Unset the flag for prior communication failure
-        previousCommunicationFailed = false;
+#if F_CPU == 8000000L
+        MS_DBG(F("Waiting for UART to become active and requesting a slower baud rate."));
+        delay(R410M_ATRESPONSE_TIME_MS + 250); // Must wait for UART port to become active
+        _modemSerial->begin(115200);
+        gsmModem.setBaud(9600);
+        _modemSerial->end();
+        _modemSerial->begin(9600);
+#endif
+        return gsmModem.init();
+    }
+    else
+    {
+        MS_DBG(F("No pin has been provided to reset the modem!"));
+        return false;
     }
 }
 

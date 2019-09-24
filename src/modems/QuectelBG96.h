@@ -70,6 +70,8 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    bool modemHardReset(void) override;
+
     void modemPowerUp(void) override;
 
     #ifdef MS_QUECTELBG96_DEBUG_DEEP
