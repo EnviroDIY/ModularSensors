@@ -76,7 +76,6 @@ public:
     String getSensorName(void) override;
 
     virtual bool setup(void) override;
-    virtual bool wake(void) override;
     virtual bool addSingleMeasurementResult(void) override;
 
     // Do NOT turn the modem on and off with the regular power up and down!
@@ -106,6 +105,7 @@ protected:
     // close as possible to what the antenna is will see when the data publishers
     // push data.
     virtual bool isMeasurementComplete(bool debug = false) override;
+    bool wake(void) override;
 
 
 // ==========================================================================//
@@ -138,7 +138,8 @@ public:
     // whenever possible.
     virtual void modemPowerUp(void);
     virtual void modemPowerDown(void);
-    bool modemSleepPowerDown(void);
+    virtual bool modemWake(void);
+    virtual bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
