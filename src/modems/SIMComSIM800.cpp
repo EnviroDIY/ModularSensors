@@ -64,6 +64,12 @@ bool SIMComSIM800::modemWakeFxn(void)
         delay(1100);  // >1s
         digitalWrite(_modemSleepRqPin, HIGH);
     }
+    // Re-initialize after power on to turn off echo
+    if (_powerPin >= 0)
+    {
+        gsmModem.init();
+        gsmClient.init(&gsmModem);
+    }
     return true;
 }
 
