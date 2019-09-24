@@ -221,9 +221,7 @@ void setup()
 
     // Turn on the modem
     modem.setModemLED(modemLEDPin);
-    modem.modemPowerUp();
-    modem.wake();
-
+    
     // Set up the sensors (do this directly on the VariableArray)
     array1min.setupSensors();
     array5min.setupSensors();

@@ -291,9 +291,6 @@ void setup()
     // Check that the battery is OK before powering the modem
     if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
     {
-        modem.modemPowerUp();
-        modem.wake();
-
         // Synchronize the RTC with NIST
         Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
         if (modem.connectInternet(120000L))
