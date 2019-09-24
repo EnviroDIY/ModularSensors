@@ -36,10 +36,14 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _lastConnectionCheck = 0;
     _lastATCheck = 0;
 
+    _priorSignalPercent = 0;
+    _priorRSSI = 0;
+    _priorModemTemp = 0;
+    _priorBatteryState = 0;
+    _priorBatteryPercent = 0;
+    _priorBatteryVoltage = 0;
     _priorActivationDuration = 0;
     _priorPoweredDuration = 0;
-
-    previousCommunicationFailed = false;
 }
 
 
@@ -204,71 +208,21 @@ bool loggerModem::wake(void)
 
 bool loggerModem::addSingleMeasurementResult(void)
 {
-    bool success = true;
-
-    /* Initialize float variable */
-    int16_t percent = -9999;
-    int16_t rssi = -9999;
-    uint8_t state = 99;
-    int8_t bpercent = -99;
-    uint16_t volt = 9999;
-    float temp = -9999;
-    float fstate = -9999;
-    float fbpercent = -9999;
-    float fvolt = -9999;
-
-    /* Check a measurement was *successfully* started (status bit 6 set) */
-    /* Only go on to get a result if it was */
-    if (bitRead(_sensorStatus, 6))
-    {
-        /* Get signal quality */
-        /* NOTE:  We can't actually distinguish between a bad modem response, no */
-        /* modem response, and a real response from the modem of no service/signal. */
-        /* The TinyGSM getSignalQuality function returns the same "no signal" */
-        /* value (99 CSQ or 0 RSSI) in all 3 cases. */
-        MS_DBG(F("Asking modem to give signal quality:"));
-        success &= getModemSignalQuality(rssi, percent);
-        MS_DBG(F("RSSI:"), rssi);
-        MS_DBG(F("Percent signal strength:"), percent);
-
-        MS_DBG(F("Getting battery info, if possible:"));
-        success &= getModemBatteryStats(state, bpercent, volt);
-        // convert responses to floats
-        if (success)
-        {
-            if (state != 99)
-                fstate = (float)state;
-            if (bpercent != -99)
-                fbpercent = (float)bpercent;
-            if (volt != 9999)
-                fvolt = (float)volt;
-            MS_DBG(F("Modem battery charge state:"), fstate);
-            MS_DBG(F("Modem battery percentage:"), fbpercent);
-            MS_DBG(F("Modem battery voltage:"), fvolt);
-        }
-        else
-        {
-            MS_DBG(F("Battery information not returned!"));
-        }
-
-        MS_DBG(F("Getting chip temperature, if possible:"));
-        temp = getModemTemperature();
-        MS_DBG(F("Modem temperature:"), temp);
-    }
-    else
-    {
-        MS_DBG(getSensorName(), F("is not expected to return measurement results!"));
-    }
-
+    MS_DBG(F("PRIOR modem RSSI:"), _priorRSSI);
+    MS_DBG(F("PRIOR modem percent signal strength:"), _priorSignalPercent);
+    MS_DBG(F("PRIOR modem battery charge state:"), _priorBatteryState);
+    MS_DBG(F("PRIOR modem battery percentage:"), _priorBatteryPercent);
+    MS_DBG(F("PRIOR modem battery voltage:"), _priorBatteryVoltage);
+    MS_DBG(F("PRIOR modem chip temperature:"), _priorModemTemp);
     MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
     MS_DBG(F("PRIOR modem powered time:"), String(_priorPoweredDuration, 3));
 
-    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
-    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, fstate);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, fbpercent);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, fvolt);
-    verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, _priorRSSI);
+    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, _priorSignalPercent);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, _priorBatteryState);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, _priorBatteryPercent);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, _priorBatteryVoltage);
+    verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, _priorModemTemp);
     verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
     verifyAndAddMeasurementResult(MODEM_POWERED_VAR_NUM, _priorPoweredDuration);
 
@@ -277,7 +231,7 @@ bool loggerModem::addSingleMeasurementResult(void)
     /* Unset the status bits for a measurement request (bits 5 & 6) */
     _sensorStatus &= 0b10011111;
 
-    return success;
+    return true;
 }
 
 
@@ -493,6 +447,51 @@ bool loggerModem::modemSleepPowerDown(void)
     return success;
 }
 
+
+bool loggerModem::updateModemMetadata(void)
+{
+    bool success = true;
+
+    /* Initialize float variable */
+    int16_t rssi = -9999;
+    int16_t percent = -9999;
+    uint8_t state = 99;
+    int8_t bpercent = -99;
+    uint16_t volt = 9999;
+
+    success &= getModemSignalQuality(rssi, percent);
+    success &= getModemBatteryStats(state, bpercent, volt);
+    _priorModemTemp = getModemTemperature();
+
+    if (state != 99)
+    {
+        _priorBatteryState = (float)state;
+    }
+    else
+    {
+        _priorBatteryState = (float)-9999;
+    }
+
+    if (bpercent != -99)
+    {
+        _priorBatteryPercent = (float)bpercent;
+    }
+    else
+    {
+        _priorBatteryPercent = (float)-9999;
+    }
+
+    if (volt != 9999)
+    {
+        _priorBatteryVoltage = (float)volt;
+    }
+    else
+    {
+        _priorBatteryVoltage = (float)-9999;
+    }
+
+    return success;
+}
 
 
 // Helper to get approximate RSSI from CSQ (assuming no noise)

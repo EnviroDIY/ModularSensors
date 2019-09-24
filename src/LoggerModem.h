@@ -102,6 +102,7 @@ public:
     virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
     virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) = 0;
     virtual float getModemTemperature(void) = 0;
+    virtual bool updateModemMetadata(void);
 
     // This has the same functionality as Client->connect with debugging text
     // int16_t openTCP(const char *host, uint16_t port);
@@ -143,7 +144,7 @@ protected:
     virtual bool extraModemSetup(void) = 0;
     virtual bool modemHardReset(void) = 0;
 
-    uint32_t parseNISTBytes(byte nistBytes[4]);
+    static uint32_t parseNISTBytes(byte nistBytes[4]);
 
     // Helper to set the timing for specific cellular chipsets based on their documentation
     // void setModemTiming(void);
@@ -164,6 +165,12 @@ protected:
     uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;
 
+    int16_t _priorRSSI;
+    int16_t _priorSignalPercent;
+    float _priorModemTemp;
+    float _priorBatteryState;
+    float _priorBatteryPercent;
+    float _priorBatteryVoltage;
     float _priorActivationDuration;
     float _priorPoweredDuration;
 
