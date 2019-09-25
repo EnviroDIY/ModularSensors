@@ -337,49 +337,57 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
 
     gsmClient.stop();
 
-    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
-    /* NIST clearly specifies here that this is a requirement for all software */
-    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
-    while (millis() < _lastNISTrequest + 4000) {}
-
-    /* Make TCP connection */
-    MS_DBG(F("\nConnecting to NIST daytime Server"));
-    bool connectionMade = false;
-
-    /* This is the IP address of time-e-wwv.nist.gov  */
-    /* XBee's address lookup falters on time.nist.gov */
-    IPAddress ip(132, 163, 97, 6);
-    connectionMade = gsmClient.connect(ip, 37);
-    /* Wait again so NIST doesn't refuse us! */
-    delay(4000L);
-    /* Need to send something before connection is made */
-    gsmClient.println('!');
-    // delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-
-    /* Wait up to 5 seconds for a response */
-    if (connectionMade)
+    /* Try up to 12 times to get a timestamp from NIST */
+    for (uint8_t i = 0; i < 12; i++)
     {
-        uint32_t start = millis();
-        while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L){}
 
-
-        if (gsmClient.available() >= 4)
+        /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+        /* NIST clearly specifies here that this is a requirement for all software */
+        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+        while (millis() < _lastNISTrequest + 4000)
         {
-            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-            byte response[100] = {0}; //Needs to be larger enough for complete response
-            gsmClient.read(response, 4);
-            MS_DBG(F("<<< something fm gsmClient.read"));
-            return parseNISTBytes(response);
+        }
+
+        /* Make TCP connection */
+        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        bool connectionMade = false;
+
+        /* This is the IP address of time-e-wwv.nist.gov  */
+        /* XBee's address lookup falters on time.nist.gov */
+        IPAddress ip(132, 163, 97, 6);
+        connectionMade = gsmClient.connect(ip, 37);
+        /* Wait again so NIST doesn't refuse us! */
+        delay(4000L);
+        /* Need to send something before connection is made */
+        gsmClient.println('!');
+        // delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
+
+        /* Wait up to 5 seconds for a response */
+        if (connectionMade)
+        {
+            uint32_t start = millis();
+            while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)
+            {
+            }
+
+            if (gsmClient.available() >= 4)
+            {
+                MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+                byte response[4] = {0};
+                gsmClient.read(response, 4);
+                gsmClient.stop();
+                return parseNISTBytes(response);
+            }
+            else
+            {
+                MS_DBG(F("NIST Time server did not respond!"));
+                gsmClient.stop();
+            }
         }
         else
         {
-            MS_DBG(F("NIST Time server did not respond!"));
-            return 0;
+            MS_DBG(F("Unable to open TCP to NIST!"));
         }
-    }
-    else
-    {
-        MS_DBG(F("Unable to open TCP to NIST!"));
     }
     return 0;
 }
