@@ -93,17 +93,15 @@ void QuectelBG96::modemPowerUp(void)
             // The PWR_ON pin MUST be high at power up.
             digitalWrite(_modemSleepRqPin, HIGH);
         }
-        MS_DBG(F("Powering"), getSensorName(), F("with pin"), _powerPin);
+        MS_DBG(F("Powering"), getModemName(), F("with pin"), _powerPin);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     }
     else
     {
-        MS_DBG(F("Power to"), getSensorName(), F("is not controlled by this library."));
+        MS_DBG(F("Power to"), getModemName(), F("is not controlled by this library."));
         // Mark the power-on time, just in case it had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    _sensorStatus |= 0b00000110;
 }

@@ -99,7 +99,7 @@
 
 // NOTE:  Most modems don't give this
 #define MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(specificModem) \
-    float specificModem::getModemTemperature(void)              \
+    float specificModem::getModemChipTemperature(void)              \
     {                                                           \
         MS_DBG(F("Getting temperature:"));                      \
         float temp = gsmModem.getTemperature();                 \
@@ -109,52 +109,38 @@
     }
 
 #define MS_MODEM_GET_MODEM_TEMPERATURE_NA(specificModem)     \
-    float specificModem::getModemTemperature(void)           \
+    float specificModem::getModemChipTemperature(void)           \
     {                                                        \
         MS_DBG(F("This modem doesn't return temperature!")); \
         return (float)-9999;                                 \
     }
 
-#define MS_MODEM_CONNECT_INTERNET_FIRST_CHUNK                                       \
-    bool retVal = true;                                                             \
-                                                                                    \
-    /* NOT yet powered */                                                           \
-    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)           \
-    {                                                                               \
-        modemPowerUp();                                                             \
-    }                                                                               \
-    /* Not yet successfully woken up */                                             \
-    if (bitRead(_sensorStatus, 4) == 0)                                             \
-    {                                                                               \
-        while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}                    \
-        retVal &= modemWake();                                                      \
-    }                                                                               \
-    /* Not yet setup */                                                             \
-    if (bitRead(_sensorStatus, 0) == 0)                                             \
-    {                                                                               \
-        /* Set-up if necessary */                                                   \
-        retVal &= setup();                                                          \
-    }                                                                               \
-    if (!retVal)                                                                    \
-    {                                                                               \
-        MS_DBG(F("Modem did't wake up! Cannot connect to the internet!"));          \
-        return retVal;                                                              \
-    }                                                                               \
-                                                                                    \
-    /* Check that the modem is responding to AT commands.  If not, give up. */      \
-    /* TODO:  Check status pin? */                                                  \
-    MS_START_DEBUG_TIMER;                                                           \
-    MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands...")); \
-    if (!gsmModem.testAT(_max_atresponse_time_ms + 500))                            \
-    {                                                                               \
-        MS_DBG(F("No response to AT commands!"));                                   \
-        MS_DBG(F("Attempting a hard reset on the modem!"));                         \
-        if (!modemHardReset())                                                      \
-            return false;                                                           \
-    }                                                                               \
-    else                                                                            \
-    {                                                                               \
-        MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));     \
+#define MS_MODEM_CONNECT_INTERNET_FIRST_CHUNK                                      \
+    bool retVal = true;                                                            \
+                                                                                   \
+    modemPowerUp();                                                                \
+    while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}                       \
+    retVal &= modemWake();                                                         \
+    if (!retVal)                                                                   \
+    {                                                                              \
+        MS_DBG(F("Modem did't wake up! Cannot connect to the internet!"));         \
+        return retVal;                                                             \
+    }                                                                              \
+                                                                                   \
+    /* Check that the modem is responding to AT commands.  If not, give up. */     \
+    /* TODO:  Check status pin? */                                                 \
+    MS_START_DEBUG_TIMER;                                                          \
+    MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands...")); \
+    if (!gsmModem.testAT(_max_atresponse_time_ms + 500))                           \
+    {                                                                              \
+        MS_DBG(F("No response to AT commands!"));                                  \
+        MS_DBG(F("Attempting a hard reset on the modem!"));                        \
+        if (!modemHardReset())                                                     \
+            return false;                                                          \
+    }                                                                              \
+    else                                                                           \
+    {                                                                              \
+        MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));    \
     }
 
 #if defined TINY_GSM_MODEM_XBEE

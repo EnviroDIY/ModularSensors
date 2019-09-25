@@ -282,7 +282,7 @@ bool DigiXBeeWifi::updateModemMetadata(void)
         _priorBatteryVoltage = (float)-9999;
 
     MS_DBG(F("Getting chip temperature:"));
-    _priorModemTemp = getModemTemperature();
+    _priorModemTemp = getModemChipTemperature();
     MS_DBG(F("CURRENT Modem temperature:"), _priorModemTemp);
 
     // Exit command modem

@@ -322,7 +322,7 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
     MS_DBG(F("CURRENT Percent signal strength:"), _priorSignalPercent);
 
     MS_DBG(F("Getting chip temperature:"));
-    _priorModemTemp = getModemTemperature();
+    _priorModemTemp = getModemChipTemperature();
     MS_DBG(F("CURRENT Modem temperature:"), _priorModemTemp);
 
     // Exit command modem

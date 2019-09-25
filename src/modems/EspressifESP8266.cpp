@@ -80,7 +80,7 @@ bool EspressifESP8266::ESPwaitForBoot(void)
         }
         // Have to make sure echo is off or all AT commands will be confused
         MS_START_DEBUG_TIMER;
-        MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
+        MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));
         success &= gsmModem.testAT(_max_atresponse_time_ms + 500);
         if (success)
         {
@@ -132,7 +132,7 @@ bool EspressifESP8266::modemWakeFxn(void)
         // Don't have to wait for a boot if using light sleep
         // But we still need to make sure echo is off
         MS_START_DEBUG_TIMER;
-        MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
+        MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));
         success &= gsmModem.testAT(_max_atresponse_time_ms + 500);
         if (success)
         {
@@ -196,7 +196,7 @@ bool EspressifESP8266::modemSleepFxn(void)
     // attempts to sleep again, it will check the status of the <trigger_GPIO>:
     // - if it is still in the wakeup status, the EP8266 will enter Modem-sleep mode instead;
     // - if it is NOT in the wakeup status, the ESP8266 will enter Light-sleep mode.
-    else if (_modemSleepRqPin >= 0 && _dataPin >= 0)
+    else if (_modemSleepRqPin >= 0 && _statusPin >= 0)
     {
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                F("HIGH to allow ESP8266 to enter light sleep"));
@@ -211,7 +211,7 @@ bool EspressifESP8266::modemSleepFxn(void)
         return success;
     }
     // Light sleep without the status pin
-    else if (_modemSleepRqPin >= 0 && _dataPin < 0)
+    else if (_modemSleepRqPin >= 0 && _statusPin < 0)
     {
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                F("HIGH to allow ESP8266 to enter light sleep"));

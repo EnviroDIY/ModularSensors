@@ -79,12 +79,12 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
         digitalWrite(_modemSleepRqPin, LOW);
 
         // If possible, monitor the v_int pin waiting for it to become high before ending pulse
-        if (_dataPin >= 0)
+        if (_statusPin >= 0)
         {
             uint32_t startTimer = millis();
             // 0.15-3.2s pulse for wake on SARA R4/N4 (ie, max is 3.2s)
             // Wait no more than 3.2s
-            while (digitalRead(_dataPin) != _statusLevel && millis() - startTimer < 3200L) {}
+            while (digitalRead(_statusPin) != _statusLevel && millis() - startTimer < 3200L) {}
             MS_DBG(F("Status pin came on after"), millis() - startTimer, F("ms"));
             // But at least 0.15s
             while (millis() - startTimer < 150) {}
@@ -181,17 +181,15 @@ void SodaqUBeeR410M::modemPowerUp(void)
             // The PWR_ON pin MUST be high at power up.
             digitalWrite(_modemSleepRqPin, HIGH);
         }
-        MS_DBG(F("Powering"), getSensorName(), F("with pin"), _powerPin);
+        MS_DBG(F("Powering"), getModemName(), F("with pin"), _powerPin);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     }
     else
     {
-        MS_DBG(F("Power to"), getSensorName(), F("is not controlled by this library."));
+        MS_DBG(F("Power to"), getModemName(), F("is not controlled by this library."));
         // Mark the power-on time, just in case it had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
-    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-    _sensorStatus |= 0b00000110;
 }
