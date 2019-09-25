@@ -273,6 +273,9 @@ inXbee RTS
 #define autonomoModemDtrPin   PIN_A13 //Shared
 #define autonomoModemAssocPin RI_AS  //input
 
+#define STANDARD_SERIAL_OUTPUT  Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40

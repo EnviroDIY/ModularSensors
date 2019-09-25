@@ -34,6 +34,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Include the base required libraries
 // ==========================================================================
 #include "ms_cfg.h" //must be before ms_common.h & Arduino.h
+//#define MS_TU_MON_DEBUG
+#if defined MS_TU_MON_DEBUG
+#define MS_DEBUGGING_STD "tu_mon"
+#endif //MS_TU_MON_DEBUG
+#define DEBUGGING_SERIAL_OUTPUT Serial
+
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+
 #include <Arduino.h>  // The base Arduino library
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #include <EnableInterrupt.h>  // for external and pin change interrupts
@@ -49,11 +58,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #else
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
-#ifdef MS_TU_MON_DEBUG
-#define MS_DEBUGGING_STD "tu_mon"
-#endif //MS_TU_MON_DEBUG
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
+
+
+
+
 
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
@@ -1691,6 +1699,22 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modemPhy.gsmClient, thingSpeakMQTTKey, t
 
 #endif //thingSpeakMQTTKey
 
+// ==========================================================================
+//    Smtp2goJsonPublisher
+// ==========================================================================
+// Device registration and sampling feature information can be obtained after
+// registration at https://monitormywatershed.org or https://data.envirodiy.org
+#if defined(Smtp2goJsonAppKey) 
+const char *Smtp2goJsonAppKey_def = Smtp2goJsonAppKey;   // Device registration token
+
+
+// Create a data publisher for the Smtp2goJson/WikiWatershed POST endpoint
+#include <publishers/Smtp2goJsonPublisher.h>
+//Smtp2goJsonPublisher Smtp2goJsonPOST(dataLogger, Smtp2goJsonAppKey_def, samplingFeature_def);
+Smtp2goJsonPublisher Smtp2goJsonPOST(dataLogger, 15,0);
+//Smtp2goJsonPublisher Smtp2goJsonPOST(); //"error: request for member 'begin' in 'Smtp2goJsonPOST', which is of non-class type 'Smtp2goJsonPublisher()'"
+#endif //Smtp2goJsonAppKey
+
 //#endif //#if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
 //    Working Functions
@@ -1942,6 +1966,10 @@ void setup()
     // Begin the logger
     dataLogger.begin();
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+
+    #if defined Smtp2goJsonAppKey
+        Smtp2goJsonPOST.begin(dataLogger, &modemPhy.gsmClient, Smtp2goJsonAppKey_def /*ps.provider.s.registration_token*/);
+    #endif //Smtp2goJsonAppKey
     #if defined loggingMultiplier_MAX_CDEF
     dataLogFast.begin();
     #endif //loggingMultiplier_MAX_CDEF
