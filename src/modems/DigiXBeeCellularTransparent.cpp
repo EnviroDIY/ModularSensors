@@ -223,7 +223,188 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it
 // over TCP because I don't have a UDP library for all the modems.
-//#else // 2 == USE_NTP
+/*uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
+{
+    // bail if not connected to the internet
+    gsmModem.commandMode();
+    if (!gsmModem.isNetworkConnected())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        gsmModem.exitCommand();
+        return 0;
+    }
+
+    // We can get the NIST timestamp directly from the XBee
+    gsmModem.sendAT(GF("DT0"));
+    String res = gsmModem.readResponseString();
+    gsmModem.exitCommand();
+    MS_DBG(F("Raw hex response from XBee:"), res);
+    char buf[9] = {0,};
+    res.toCharArray(buf, 9);
+    uint32_t secFrom2000 = strtol(buf, 0, 16);
+    MS_DBG(F("Seconds from Jan 1, 2000 from XBee (UTC):"), secFrom2000);
+
+    // Convert from seconds since Jan 1, 2000 to 1970
+    uint32_t unixTimeStamp = secFrom2000 + 946684800 ;
+    MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
+
+    // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
+    if (unixTimeStamp < 1546300800)
+    {
+        return 0;
+    }
+    else if (unixTimeStamp > 1893456000)
+    {
+        return 0;
+    }
+    else
+    {
+        return unixTimeStamp;
+    }
+}*/
+uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
+{
+    /* bail if not connected to the internet */
+    if (!isInternetAvailable())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        return 0;
+    }
+
+    /* Try up to 12 times to get a timestamp from NIST */
+    for (uint8_t i = 0; i < 12; i++)
+    {
+
+        /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+        /* NIST clearly specifies here that this is a requirement for all software */
+        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+        while (millis() < _lastNISTrequest + 4000)
+        {
+        }
+
+        /* Make TCP connection */
+        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        bool connectionMade = false;
+
+        /* This is the IP address of time-e-wwv.nist.gov  */
+        /* XBee's address lookup falters on time.nist.gov */
+        IPAddress ip(132, 163, 97, 6);
+        connectionMade = gsmClient.connect(ip, 37, 15);
+        /* Wait again so NIST doesn't refuse us! */
+        delay(4000L);
+        /* Try sending something to ensure connection */
+        gsmClient.println('!');
+
+        /* Wait up to 5 seconds for a response */
+        if (connectionMade)
+        {
+            uint32_t start = millis();
+            while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)
+            {
+            }
+
+            if (gsmClient.available() >= 4)
+            {
+                MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+                byte response[4] = {0};
+                gsmClient.read(response, 4);
+                gsmClient.stop();
+                return parseNISTBytes(response);
+            }
+            else
+            {
+                MS_DBG(F("NIST Time server did not respond!"));
+                gsmClient.stop();
+            }
+        }
+        else
+        {
+            MS_DBG(F("Unable to open TCP to NIST!"));
+        }
+    }
+    return 0;
+}
+
+#if 0
+uint32_t DigiXBeeCellularTransparent::getTimeNIST(void) //nh getNISTTime(void)
+{
+    /* bail if not connected to the internet */
+    if (!isInternetAvailable())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        return 0;
+    }
+
+    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+    /* NIST clearly specifies here that this is a requirement for all software */
+    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+    while (millis() < _lastNISTrequest + 4000) {}
+    //_lastNISTrequest =millis();
+
+    /* Make TCP connection */
+    MS_DBG(F("\nConnecting to NIST daytime Server"));
+    bool connectionMade = false;
+
+    /* This is the IP address of time-c-g.nist.gov */
+    /* XBee's address lookup falters on time.nist.gov */
+    //FUT: There are about 30 servers, so could try lookup and caching 
+const char *timeNistHost = "time.nist.gov";
+const int timeNistPort = 37; 
+    IPAddress IP_MA1(129,  6, 15, 30);
+    IPAddress IP_CO1(132,163, 96,  3);
+    #define NIST_IP IP_CO1
+    #define NIST_CONNECTION_TIMER 15
+
+    gsmModem.sendAT(GF("TD0A")); //expect    "TD0A"
+    gsmModem.waitResponse(); 
+    connectionMade = gsmClient.connect(timeNistHost, timeNistPort,NIST_CONNECTION_TIMER);
+    if (!connectionMade) {
+        
+        connectionMade = gsmClient.connect(NIST_IP, timeNistPort, NIST_CONNECTION_TIMER);
+        MS_DBG(F("NIST.TIME.GOV lookup failed, tried "),NIST_IP,F(" and connect="),connectionMade );
+    }
+    
+    /* Wait up to 5 seconds for a response */
+    #define NIST_RSP_TIMER 10
+    if (connectionMade)
+    {
+        //poll for IP connection
+        delay(4000L);
+        /* Need to send something before connection is made */
+        //gsmClient.println("TryToRquestTime");
+        //gsmClient.println("Try2ndTime");
+        gsmClient.println('!');
+        uint32_t start = millis();
+        while (gsmClient && (gsmClient.available() <= NIST_RSP_TIMER) && ((millis() - start) < NIST_RSP_TIMER*1000L) ){}
+
+        /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+        /* NIST clearly specifies here that this is a requirement for all software */
+        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+        while (millis() < _lastNISTrequest + 4000)
+        {
+        }
+
+
+        if (gsmClient.available() >= NIST_RSP_TIMER)
+        {
+            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+            byte response[4] = {0};
+            gsmClient.read(response, 4);
+            return parseNISTBytes(response);
+        }
+        else
+        {
+            MS_DBG(F("NIST Time server did not respond in "),NIST_RSP_TIMER,F("secs"));
+            return 0;
+        }
+    }
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
+    return 0;
+}
+#endif //0
 #if 0
 // Get the time from NIST via NTP protocol. Can't be used behind a firewall.
 uint32_t DigiXBeeCellularTransparent::getTimeNTP(void)
@@ -320,7 +501,6 @@ uint32_t DigiXBeeCellularTransparent::getTimeNTP(void)
     return _currentEpoc;
 }
 #endif //0
-//#endif //USE_NTP
 
 uint32_t DigiXBeeCellularTransparent::getTimeCellTower(void)
 {
@@ -376,87 +556,9 @@ uint32_t DigiXBeeCellularTransparent::getTimeCellTower(void)
     }
     return timeTzEpoch_sec;
 }
-uint32_t DigiXBeeCellularTransparent::getTimeNIST(void)
-{
-    /* bail if not connected to the internet */
-    if (!isInternetAvailable())
-    {
-        MS_DBG(F("No internet connection, cannot connect to NIST."));
-        return 0;
-    }
-
-    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
-    /* NIST clearly specifies here that this is a requirement for all software */
-    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
-    while (millis() < _lastNISTrequest + 4000) {}
-    //_lastNISTrequest =millis();
-
-    /* Make TCP connection */
-    MS_DBG(F("\nConnecting to NIST daytime Server"));
-    bool connectionMade = false;
-
-    /* This is the IP address of time-c-g.nist.gov */
-    /* XBee's address lookup falters on time.nist.gov */
-    //FUT: There are about 30 servers, so could try lookup and caching 
-const char *timeNistHost = "time.nist.gov";
-const int timeNistPort = 37; 
-    IPAddress IP_MA1(129,  6, 15, 30);
-    IPAddress IP_CO1(132,163, 96,  3);
-    #define NIST_IP IP_CO1
-    #define NIST_CONNECTION_TIMER 15
-
-    gsmModem.sendAT(GF("TD0A")); //expect    "TD0A"
-    gsmModem.waitResponse(); 
-    connectionMade = gsmClient.connect(timeNistHost, timeNistPort,NIST_CONNECTION_TIMER);
-    if (!connectionMade) {
-        
-        connectionMade = gsmClient.connect(NIST_IP, timeNistPort, NIST_CONNECTION_TIMER);
-        MS_DBG(F("NIST.TIME.GOV lookup failed, tried "),NIST_IP,F(" and connect="),connectionMade );
-    }
-    
-    /* Wait up to 5 seconds for a response */
-    #define NIST_RSP_TIMER 10
-    if (connectionMade)
-    {
-        //poll for IP connection
-        delay(4000L);
-        /* Need to send something before connection is made */
-        //gsmClient.println("TryToRquestTime");
-        //gsmClient.println("Try2ndTime");
-        gsmClient.println('!');
-        uint32_t start = millis();
-        while (gsmClient && (gsmClient.available() <= NIST_RSP_TIMER) && ((millis() - start) < NIST_RSP_TIMER*1000L) ){}
-
-        /* Must ensure that we do not ping the daylight more than once every 4 seconds */
-        /* NIST clearly specifies here that this is a requirement for all software */
-        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
-        while (millis() < _lastNISTrequest + 4000)
-        {
-        }
-
-
-        if (gsmClient.available() >= NIST_RSP_TIMER)
-        {
-            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-            byte response[4] = {0};
-            gsmClient.read(response, 4);
-            return parseNISTBytes(response);
-        }
-        else
-        {
-            MS_DBG(F("NIST Time server did not respond in "),NIST_RSP_TIMER,F("secs"));
-            return 0;
-        }
-    }
-    else
-    {
-        MS_DBG(F("Unable to open TCP to NIST!"));
-    }
-    return 0;
-}
 uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 {
-    //getTimeNIST
+    //getNISTtimeOrig();
     return (getTimeCellTower()+(8*3600));
 
 }

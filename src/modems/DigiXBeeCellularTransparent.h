@@ -64,7 +64,7 @@ public:
     float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;
-    uint32_t getTimeNIST(void);
+    uint32_t getNISTTimeOrig(void);
     uint32_t getTimeNTP(void);
     uint32_t getTimeCellTower(void);
 
