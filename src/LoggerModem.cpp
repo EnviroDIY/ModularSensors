@@ -328,8 +328,9 @@ bool loggerModem::modemWake(void)
     }
 
     // Re-check the status pin
-    // Only works if the status pin comes on immediately - most don't
-    if (_dataPin >= 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel)
+    if ((_dataPin >= 0 && _statusTime_ms == 0 &&
+         digitalRead(_dataPin) != _statusLevel && !success) ||
+        !success)
     {
         MS_DBG(F("Status pin"), _dataPin, F("on"), getSensorName(), F("is"),
                digitalRead(_dataPin), F("indicating it is off!"));

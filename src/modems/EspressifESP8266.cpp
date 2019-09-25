@@ -79,7 +79,17 @@ bool EspressifESP8266::ESPwaitForBoot(void)
             delay(2);
         }
         // Have to make sure echo is off or all AT commands will be confused
-        success &= gsmModem.testAT();
+        MS_START_DEBUG_TIMER;
+        MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
+        success &= gsmModem.testAT(_max_atresponse_time_ms + 500);
+        if (success)
+        {
+            MS_DBG(F("No response to AT commands!"));
+        }
+        else
+        {
+            MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));
+        }
         MS_DBG(F("Confirming that ESP8266's echo is off"));
         gsmModem.sendAT(GF("E0"));
         gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
@@ -119,11 +129,22 @@ bool EspressifESP8266::modemWakeFxn(void)
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                F("LOW to wake ESP8266 from light sleep"));
         digitalWrite(_modemSleepRqPin, LOW);
-        // Have to make sure echo is off or all AT commands will be confused
-        success &= gsmModem.testAT();
+        // Don't have to wait for a boot if using light sleep
+        // But we still need to make sure echo is off
+        MS_START_DEBUG_TIMER;
+        MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
+        success &= gsmModem.testAT(_max_atresponse_time_ms + 500);
+        if (success)
+        {
+            MS_DBG(F("No response to AT commands!"));
+        }
+        else
+        {
+            MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));
+        }
+        MS_DBG(F("Confirming that ESP8266's echo is off"));
         gsmModem.sendAT(GF("E0"));
         gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
-        // Don't have to wait for a boot if using light sleep
         return success;
     }
     else
