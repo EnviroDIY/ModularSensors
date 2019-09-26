@@ -365,20 +365,37 @@ bool Logger::syncRTC()
     bool success = false;
     if (_logModem != NULL)
     {
-        // Synchronize the RTC with NIST
-        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
-        PRINTOUT(F("This may take up to two minutes!"));
-        // Connect to the network
-        // The connectInternet function will also power the modem up and run
-        // its setup function if necessary.
-        if (_logModem->connectInternet(120000L))
         {
-            success = setRTClock(_logModem->getNISTTime());
-            // Disconnect from the network
-            _logModem->disconnectInternet();
+            // Synchronize the RTC with NIST
+            PRINTOUT(F("Attempting to connect to the internet and synchronize RTC with NIST"));
+            PRINTOUT(F("This may take up to two minutes!"));
+            if (_logModem->modemWake())
+            {
+                if (_logModem->connectInternet(120000L))
+                {
+                    setRTClock(_logModem->getNISTTime());
+                    success = true;
+                    _logModem->updateModemMetadata();
+                }
+                else
+                {
+                    PRINTOUT(F("Could not connect to internet for clock sync."));
+                }
+            }
+            else
+            {
+                PRINTOUT(F("Could not wake modem for clock sync."));
+            }
         }
-        // Turn off the modem
-        _logModem->modemSleepPowerDown();
+
+        // Power down the modem - but only if there will be more than 15 seconds before
+        // the NEXT logging interval - it can take the modem that long to shut down
+        if (Logger::getNowEpoch() % (_loggingIntervalMinutes * 60) > 15)
+        {
+            Serial.println(F("Putting modem to sleep"));
+            _logModem->disconnectInternet();
+            _logModem->modemSleepPowerDown();
+        }
     }
     return success;
 }
@@ -1662,37 +1679,42 @@ void Logger::logDataAndPublish(void)
 
         if (_logModem != NULL)
         {
-            // Connect to the network
-            MS_DBG(F("Connecting to the Internet..."));
-            if (_logModem->connectInternet())
+            MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+            if (_logModem->modemWake())
             {
-                // Publish data to remotes
+                // Connect to the network
                 watchDogTimer.resetWatchDog();
-                publishDataToRemotes();
-                watchDogTimer.resetWatchDog();
-
-                if ((Logger::markedEpochTime != 0 &&
-                     Logger::markedEpochTime % 86400 == 43200) ||
-                    !isRTCSane(Logger::markedEpochTime))
-                // Sync the clock at noon
+                MS_DBG(F("Connecting to the Internet..."));
+                if (_logModem->connectInternet())
                 {
-                    MS_DBG(F("Running a daily clock sync..."));
-                    setRTClock(_logModem->getNISTTime());
+                    // Publish data to remotes
+                    watchDogTimer.resetWatchDog();
+                    publishDataToRemotes();
+                    watchDogTimer.resetWatchDog();
+
+                    if ((Logger::markedEpochTime != 0 &&
+                         Logger::markedEpochTime % 86400 == 43200) ||
+                        !isRTCSane(Logger::markedEpochTime))
+                    // Sync the clock at noon
+                    {
+                        MS_DBG(F("Running a daily clock sync..."));
+                        setRTClock(_logModem->getNISTTime());
+                        watchDogTimer.resetWatchDog();
+                    }
+
+                    // Update the modem metadata
+                    MS_DBG(F("Updating modem metadata..."));
+                    _logModem->updateModemMetadata();
+
+                    // Disconnect from the network
+                    MS_DBG(F("Disconnecting from the Internet..."));
+                    _logModem->disconnectInternet();
+                }
+                else
+                {
+                    MS_DBG(F("Could not connect to the internet!"));
                     watchDogTimer.resetWatchDog();
                 }
-
-                // Update the modem metadata
-                MS_DBG(F("Updating modem metadata..."));
-                _logModem->updateModemMetadata();
-
-                // Disconnect from the network
-                MS_DBG(F("Disconnecting from the Internet..."));
-                _logModem->disconnectInternet();
-            }
-            else
-            {
-                MS_DBG(F("Could not connect to the internet!"));
-                watchDogTimer.resetWatchDog();
             }
             // Turn the modem off
             _logModem->modemSleepPowerDown();

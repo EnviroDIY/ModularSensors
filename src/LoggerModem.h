@@ -89,14 +89,14 @@ public:
     virtual float getModemChipTemperature(void) = 0;
     virtual bool updateModemMetadata(void);
     // These functions simply return the stored values
-    float getModemRSSI();
-    float getModemSignalPercent();
-    float getModemBatteryChargeState();
-    float getModemBatteryChargePercent();
-    float getModemBatteryVoltage();
-    float getModemTemperature();
-    // float getModemActivationDuration();
-    // float getModemPoweredDuration();
+    static float getModemRSSI();
+    static float getModemSignalPercent();
+    static float getModemBatteryChargeState();
+    static float getModemBatteryChargePercent();
+    static float getModemBatteryVoltage();
+    static float getModemTemperature();
+    // static float getModemActivationDuration();
+    // static float getModemPoweredDuration();
 
 protected:
     // Helper to get approximate RSSI from CSQ (assuming no noise)
@@ -141,14 +141,14 @@ protected:
     uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;
 
-    int16_t _priorRSSI;
-    int16_t _priorSignalPercent;
-    float _priorModemTemp;
-    float _priorBatteryState;
-    float _priorBatteryPercent;
-    float _priorBatteryVoltage;
-    // float _priorActivationDuration;
-    // float _priorPoweredDuration;
+    static int16_t _priorRSSI;
+    static int16_t _priorSignalPercent;
+    static float _priorModemTemp;
+    static float _priorBatteryState;
+    static float _priorBatteryPercent;
+    static float _priorBatteryVoltage;
+    // static float _priorActivationDuration;
+    // static float _priorPoweredDuration;
 
     String _modemName;
 
@@ -156,7 +156,7 @@ protected:
     // modemClientType gsmClient;
 };
 
-
+// typedef float (loggerModem::*loggerGetValueFxn)(void);
 
 // Classes for the modem variables
 // Defines the received signal strength indication
@@ -166,7 +166,7 @@ public:
     Modem_RSSI(loggerModem *parentModem,
                const char *uuid = "",
                const char *varCode = "RSSI")
-        : Variable(parentModem->getModemRSSI,
+        : Variable(&parentModem->getModemRSSI,
                    (uint8_t)MODEM_RSSI_RESOLUTION,
                    &*"RSSI", &*"decibelMiliWatt",
                    varCode, uuid)
@@ -182,7 +182,7 @@ public:
     Modem_SignalPercent(loggerModem *parentModem,
                         const char *uuid = "",
                         const char *varCode = "signalPercent")
-        : Variable(parentModem->getModemSignalPercent,
+        : Variable(&parentModem->getModemSignalPercent,
                    (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
                    &*"signalPercent", &*"percent",
                    varCode, uuid)
@@ -198,7 +198,7 @@ public:
     Modem_BatteryState(loggerModem *parentModem,
                        const char *uuid = "",
                        const char *varCode = "modemBatteryCS")
-        : Variable(parentModem->getModemBatteryChargeState,
+        : Variable(&parentModem->getModemBatteryChargeState,
                    (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
                    &*"batteryChargeState", &*"number",
                    varCode, uuid)
@@ -214,7 +214,7 @@ public:
     Modem_BatteryPercent(loggerModem *parentModem,
                          const char *uuid = "",
                          const char *varCode = "modemBatteryPct")
-        : Variable(parentModem->getModemBatteryChargePercent,
+        : Variable(&parentModem->getModemBatteryChargePercent,
                    (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
                    &*"batteryVoltage", &*"percent",
                    varCode, uuid)
@@ -230,7 +230,7 @@ public:
     Modem_BatteryVoltage(loggerModem *parentModem,
                          const char *uuid = "",
                          const char *varCode = "modemBatterymV")
-        : Variable(parentModem->getModemBatteryVoltage,
+        : Variable(&parentModem->getModemBatteryVoltage,
                    (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
                    &*"batteryVoltage", &*"millivolt",
                    varCode, uuid)
@@ -246,7 +246,7 @@ public:
     Modem_Temp(loggerModem *parentModem,
                const char *uuid = "",
                const char *varCode = "modemTemp")
-        : Variable(parentModem->getModemTemperature,
+        : Variable(&parentModem->getModemTemperature,
                    (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
                    &*"temperature", &*"degreeCelsius",
                    varCode, uuid)
@@ -262,7 +262,7 @@ public:
 //     Modem_ActivationDuration(loggerModem *parentModem,
 //                              const char *uuid = "",
 //                              const char *varCode = "modemActiveSec")
-//         : Variable(parentModem->getModemActivationDuration,
+//         : Variable(&parentModem->getModemActivationDuration,
 //                    (uint8_t)MODEM_ACTIVATION_RESOLUTION,
 //                    &*"timeElapsed", &*"second",
 //                    varCode, uuid)
@@ -278,7 +278,7 @@ public:
 //     Modem_PoweredDuration(loggerModem *parentModem,
 //                           const char *uuid = "",
 //                           const char *varCode = "modemPoweredSec")
-//         : Variable(parentModem->getModemPoweredDuration,
+//         : Variable(&parentModem->getModemPoweredDuration,
 //                    (uint8_t)MODEM_POWERED_RESOLUTION,
 //                    &*"timeElapsed", &*"second",
 //                    varCode, uuid)

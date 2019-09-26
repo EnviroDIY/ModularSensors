@@ -10,6 +10,16 @@
 
 #include "LoggerModem.h"
 
+// Initialize the static members
+int16_t loggerModem::_priorRSSI = -9999;
+int16_t loggerModem::_priorSignalPercent = -9999;
+float loggerModem::_priorModemTemp = -9999;
+float loggerModem::_priorBatteryState = -9999;
+float loggerModem::_priorBatteryPercent = -9999;
+float loggerModem::_priorBatteryVoltage = -9999;
+// float loggerModem::_priorActivationDuration = -9999;
+// float loggerModem::_priorPoweredDuration = -9999;
+
 // Sensor(const char *sensorName = "Unknown", const uint8_t numReturnedVars = 1,
 //        uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
 //        int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);

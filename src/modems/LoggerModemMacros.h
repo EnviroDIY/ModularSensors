@@ -108,7 +108,6 @@
 #define MS_MODEM_WAKE(specificModem)                                                             \
     bool specificModem::modemWake(void)                                                          \
     {                                                                                            \
-        bool success = false;                                                                    \
                                                                                                  \
         /* Power up */                                                                           \
         if (_millisPowerOn == 0)                                                                 \
@@ -131,16 +130,20 @@
         {                                                                                        \
             /* Run the input wake function */                                                    \
             MS_DBG(F("Running wake function for"), getModemName());                              \
-            success &= modemWakeFxn();                                                           \
+            if (!modemWakeFxn())                                                                 \
+            {                                                                                    \
+                MS_DBG(F("Wake function for"), getModemName(), F("did not run as expected!"));   \
+            }                                                                                    \
         }                                                                                        \
                                                                                                  \
         uint8_t resets = 0;                                                                      \
+        bool success = false;                                                                    \
         while (!success && resets < 2)                                                           \
         {                                                                                        \
             /* Check that the modem is responding to AT commands */                              \
             MS_START_DEBUG_TIMER;                                                                \
             MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));       \
-            success &= gsmModem.testAT(_max_atresponse_time_ms + 500);                           \
+            success = gsmModem.testAT(_max_atresponse_time_ms + 500);                            \
             if (success)                                                                         \
             {                                                                                    \
                 MS_DBG(F("No response to AT commands!"));                                        \
@@ -151,8 +154,7 @@
             }                                                                                    \
                                                                                                  \
             /* Re-check the status pin */                                                        \
-            if ((_statusPin >= 0 && _statusTime_ms == 0 &&                                       \
-                 digitalRead(_statusPin) != _statusLevel && !success) ||                         \
+            if ((_statusPin >= 0 && digitalRead(_statusPin) != _statusLevel && !success) ||      \
                 !success)                                                                        \
             {                                                                                    \
                 MS_DBG(getModemName(), F("doesn't appear to be responsive!"));                   \

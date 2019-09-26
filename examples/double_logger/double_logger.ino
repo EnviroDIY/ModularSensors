@@ -190,7 +190,7 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+    if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
@@ -291,23 +291,29 @@ void loop()
         // Send power to all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Powering sensors...\n"));
         array1min.sensorsPowerUp();
+        logger1min.watchDogTimer.resetWatchDog();
         // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
         array1min.sensorsWake();
+        logger1min.watchDogTimer.resetWatchDog();
         // Update the values from all attached sensors (do this directly on the VariableArray)
         Serial.print(F("Updating sensor values...\n"));
         array1min.updateAllSensors();
+        logger1min.watchDogTimer.resetWatchDog();
         // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
         array1min.sensorsSleep();
+        logger1min.watchDogTimer.resetWatchDog();
         // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
         array1min.sensorsPowerDown();
+        logger1min.watchDogTimer.resetWatchDog();
 
         // Stream the csv data to the SD card
         logger1min.turnOnSDcard(true);
         logger1min.logToSD();
         logger1min.turnOffSDcard(true);
+        logger1min.watchDogTimer.resetWatchDog();
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -325,24 +331,30 @@ void loop()
 
         // Send power to all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Powering sensors...\n"));
-        array1min.sensorsPowerUp();
+        array5min.sensorsPowerUp();
+        logger1min.watchDogTimer.resetWatchDog();
         // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
-        array1min.sensorsWake();
+        array5min.sensorsWake();
+        logger1min.watchDogTimer.resetWatchDog();
         // Update the values from all attached sensors (do this directly on the VariableArray)
         Serial.print(F("Updating sensor values...\n"));
-        array1min.updateAllSensors();
+        array5min.updateAllSensors();
+        logger1min.watchDogTimer.resetWatchDog();
         // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
-        array1min.sensorsSleep();
+        array5min.sensorsSleep();
+        logger1min.watchDogTimer.resetWatchDog();
         // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
-        array1min.sensorsPowerDown();
+        array5min.sensorsPowerDown();
+        logger1min.watchDogTimer.resetWatchDog();
 
         // Stream the csv data to the SD card
         logger5min.turnOnSDcard(true);
         logger5min.logToSD();
         logger5min.turnOffSDcard(true);
+        logger1min.watchDogTimer.resetWatchDog();
 
         // Turn off the LED
         digitalWrite(redLED, LOW);
@@ -353,7 +365,7 @@ void loop()
     if (Logger::markedEpochTime % 86400 == 0)
     {
         // Turn on the modem
-        modem.modemPowerUp();
+        modem.modemWake();
         // Connect to the network
         if (modem.connectInternet())
         {

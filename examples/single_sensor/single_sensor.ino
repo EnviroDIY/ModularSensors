@@ -110,7 +110,7 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+    if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 

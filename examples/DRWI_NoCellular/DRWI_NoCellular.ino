@@ -200,7 +200,7 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+    if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
@@ -225,6 +225,7 @@ void setup()
     // Begin the logger
     dataLogger.begin();
 
+    // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)
     {
@@ -239,9 +240,10 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
+        Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+        dataLogger.createLogFile(true); // true = write a new header
+        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep
