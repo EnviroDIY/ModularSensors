@@ -9,7 +9,7 @@
 
 // Included Dependencies
 #include "SodaqUBeeU201.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor
 SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
@@ -31,9 +31,21 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
     _apn = apn;
 }
 
-
 // Destructor
-SodaqUBeeU201::~SodaqUBeeU201(){}
+SodaqUBeeU201::~SodaqUBeeU201() {}
+
+MS_MODEM_SETUP(SodaqUBeeU201);
+MS_MODEM_WAKE(SodaqUBeeU201);
+
+MS_MODEM_CONNECT_INTERNET(SodaqUBeeU201);
+MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeU201);
+MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeU201);
+
+MS_MODEM_GET_NIST_TIME(SodaqUBeeU201);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeU201);
+MS_MODEM_GET_MODEM_BATTERY_DATA(SodaqUBeeU201);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeU201);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -43,7 +55,6 @@ bool SodaqUBeeU201::modemWakeFxn(void)
     // No pulsing required in this case
     if (_powerPin >= 0)
     {
-        digitalWrite(_modemSleepRqPin, HIGH);  // to make sure it's set to something
         return true;
     }
     if (_modemSleepRqPin >= 0)

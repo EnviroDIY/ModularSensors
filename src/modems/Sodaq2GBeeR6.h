@@ -20,34 +20,20 @@
 #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
 
-#define TINY_GSM_MODEM_SIM800
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-
-// Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
-#define S2GBR6_STATUS_TIME_MS 3000
-// power down (gracefully) takes >3sec
-// (Giving 15sec for shutdown in case it is not monitored.)
-#define S2GBR6_DISCONNECT_TIME_MS 15000L
-
 // NOTE:  The GPRSBee R6+ has the PWR_KEY tied to the input voltage, so there is
 // no warm-up time needed
 #define S2GBR6_WARM_UP_TIME_MS 0
-// Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-#define S2GBR6_ATRESPONSE_TIME_MS 3000
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
-#include "LoggerModem.h"
+#include "SIMComSIM800.h"
 
 #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-class Sodaq2GBeeR6 : public loggerModem
+class Sodaq2GBeeR6 : public SIMComSIM800
 {
 
 public:
@@ -68,31 +54,13 @@ public:
                  const char *apn);
     ~Sodaq2GBeeR6();
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    float getModemChipTemperature(void) override;
-
-    bool modemHardReset(void) override;
-
     void setVRefPin(int8_t vRefPin);
 
-    #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-    #endif
-
-    TinyGsm gsmModem;
-    TinyGsmClient gsmClient;
-
 protected:
-    bool isInternetAvailable(void) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
-    bool extraModemSetup(void)override;
 
 private:
-    const char *_apn;
     int8_t _vRefPin;
 
 };

@@ -11,7 +11,7 @@
 
 // Included Dependencies
 #include "EspressifESP8266.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor
 EspressifESP8266::EspressifESP8266(Stream* modemStream,
@@ -40,27 +40,21 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
     _modemStream = modemStream;
 }
 
-
 // Destructor
-EspressifESP8266::~EspressifESP8266(){}
+EspressifESP8266::~EspressifESP8266() {}
 
-MS_MODEM_HARD_RESET(EspressifESP8266);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP8266);
+MS_MODEM_SETUP(EspressifESP8266);
+MS_MODEM_WAKE(EspressifESP8266);
+
 MS_MODEM_CONNECT_INTERNET(EspressifESP8266);
+MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
+MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
 
-bool EspressifESP8266::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts)
-{
-    MS_DBG(F("This modem doesn't return battery information!"));
-    chargeState = 99;
-    percent = -99;
-    milliVolts = 9999;
-    return false;
-}
+MS_MODEM_GET_NIST_TIME(EspressifESP8266);
 
-bool EspressifESP8266::isInternetAvailable(void)
-{
-    return gsmModem.isNetworkConnected();
-}
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP8266);
+MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP8266);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP8266);
 
 // A helper function to wait for the esp to boot and immediately change some settings
 // We'll use this in the wake function
@@ -85,13 +79,6 @@ bool EspressifESP8266::ESPwaitForBoot(void)
             _modemStream->read();
             delay(2);
         }
-        MS_DBG(F("Confirming that ESP8266's echo is off"));
-        gsmModem.sendAT(GF("E0"));
-        gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
-        // re-run init to set mux and station mode
-        MS_DBG(F("Re-Initializing ESP826"));
-        success &= gsmModem.init();
-        gsmClient.init(&gsmModem);
     }
     return success;
 }
@@ -124,22 +111,6 @@ bool EspressifESP8266::modemWakeFxn(void)
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                F("LOW to wake ESP8266 from light sleep"));
         digitalWrite(_modemSleepRqPin, LOW);
-        // Don't have to wait for a boot if using light sleep
-        // But we still need to make sure echo is off
-        MS_START_DEBUG_TIMER;
-        MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));
-        success &= gsmModem.testAT(_max_atresponse_time_ms + 500);
-        if (success)
-        {
-            MS_DBG(F("No response to AT commands!"));
-        }
-        else
-        {
-            MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));
-        }
-        MS_DBG(F("Confirming that ESP8266's echo is off"));
-        gsmModem.sendAT(GF("E0"));
-        gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
         return success;
     }
     else
@@ -242,6 +213,13 @@ bool EspressifESP8266::extraModemSetup(void)
     // Make sure that, at minimum, modem-sleep is on
     gsmModem.sendAT(GF("+SLEEP=2"));
     gsmModem.waitResponse();
+    // Set the wifi settings as default
+    // This will speed up connecting after resets
+    gsmModem.sendAT(GF("+CWJAP_CUR=\""), _ssid, GF("\",\""), _pwd, GF("\""));
+    if (gsmModem.waitResponse(30000L, GFP(GSM_OK), GF(GSM_NL "FAIL" GSM_NL)) != 1)
+    {
+        return false;
+    }
     // Slow down the baud rate for slow processors - and save the change to
     // the ESP's non-volatile memory so we don't have to do it every time
     // #if F_CPU == 8000000L

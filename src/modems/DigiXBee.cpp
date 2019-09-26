@@ -20,7 +20,6 @@ DigiXBee::DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                 XBEE_WARM_UP_TIME_MS, XBEE_ATRESPONSE_TIME_MS)
 {}
 
-
 // Destructor
 DigiXBee::~DigiXBee(){}
 

@@ -9,6 +9,7 @@
 
 // Included Dependencies
 #include "DigiXBeeLTEBypass.h"
+#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
@@ -28,15 +29,21 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
     _apn = apn;
 }
 
-
 // Destructor
-DigiXBeeLTEBypass::~DigiXBeeLTEBypass(){}
+DigiXBeeLTEBypass::~DigiXBeeLTEBypass() {}
 
-MS_MODEM_HARD_RESET(DigiXBeeLTEBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
+MS_MODEM_SETUP(DigiXBeeLTEBypass);
+MS_MODEM_WAKE(DigiXBeeLTEBypass);
+
 MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBeeLTEBypass);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
 
+MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
+MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeLTEBypass);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeLTEBypass);
 
 bool DigiXBeeLTEBypass::extraModemSetup(void)
 {

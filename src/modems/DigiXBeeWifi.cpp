@@ -9,7 +9,7 @@
 
 // Included DependenciesV
 #include "DigiXBeeWifi.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
@@ -30,19 +30,17 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
     _pwd = pwd;
 }
 
-
 // Destructor
-DigiXBeeWifi::~DigiXBeeWifi(){}
+DigiXBeeWifi::~DigiXBeeWifi() {}
 
-MS_MODEM_HARD_RESET(DigiXBeeWifi);
+MS_MODEM_SETUP(DigiXBeeWifi);
+MS_MODEM_WAKE(DigiXBeeWifi);
+
 MS_MODEM_CONNECT_INTERNET(DigiXBeeWifi);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 
-
-bool DigiXBeeWifi::isInternetAvailable(void)
-{
-    return gsmModem.isNetworkConnected();
-}
-
+MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeWifi);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeWifi);
 
 bool DigiXBeeWifi::extraModemSetup(void)
 {

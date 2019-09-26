@@ -9,7 +9,7 @@
 
 // Included Dependencies
 #include "QuectelBG96.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor
 QuectelBG96::QuectelBG96(Stream* modemStream,
@@ -31,21 +31,21 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
     _apn = apn;
 }
 
-
 // Destructor
-QuectelBG96::~QuectelBG96(){}
+QuectelBG96::~QuectelBG96() {}
 
-MS_MODEM_HARD_RESET(QuectelBG96);
-MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(QuectelBG96);
+MS_MODEM_SETUP(QuectelBG96);
+MS_MODEM_WAKE(QuectelBG96);
+
 MS_MODEM_CONNECT_INTERNET(QuectelBG96);
+MS_MODEM_DISCONNECT_INTERNET(QuectelBG96);
+MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
 
-// NOTE:  Could actually get temperature from the Digi chip by entering command mode
-float QuectelBG96::getModemChipTemperature(void)
-{
-    MS_DBG(F("This modem doesn't return temperature!"));
-    return (float)-9999;
-}
+MS_MODEM_GET_NIST_TIME(QuectelBG96);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(QuectelBG96);
+MS_MODEM_GET_MODEM_BATTERY_DATA(QuectelBG96);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(QuectelBG96);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -72,31 +72,5 @@ bool QuectelBG96::modemSleepFxn(void)
     else  // DON'T go to sleep if we can't wake up!
     {
         return true;
-    }
-}
-
-
-bool QuectelBG96::extraModemSetup(void){}
-
-
-void QuectelBG96::modemPowerUp(void)
-{
-    if (_powerPin >= 0)
-    {
-        if (_modemSleepRqPin >= 0)
-        {
-            // The PWR_ON pin MUST be high at power up.
-            digitalWrite(_modemSleepRqPin, HIGH);
-        }
-        MS_DBG(F("Powering"), getModemName(), F("with pin"), _powerPin);
-        digitalWrite(_powerPin, HIGH);
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    else
-    {
-        MS_DBG(F("Power to"), getModemName(), F("is not controlled by this library."));
-        // Mark the power-on time, just in case it had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
 }

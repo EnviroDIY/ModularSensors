@@ -20,6 +20,8 @@
 #endif
 
 #define TINY_GSM_MODEM_XBEE
+#define MS_MODEM_HAS_BATTERY_DATA
+#define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
@@ -27,8 +29,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "DigiXBee.h"
 #include "TinyGsmClient.h"
+#include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -45,16 +47,19 @@ public:
                  const char *ssid, const char *pwd);
     ~DigiXBeeWifi();
 
+    bool modemSetup(void) override;
+    bool modemWake(void) override;
+
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool updateModemMetadata(void);
-
     uint32_t getNISTTime(void) override;
 
-    bool modemHardReset(void) override;
+    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    float getModemChipTemperature(void) override;
+
+    bool updateModemMetadata(void);
 
     #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;

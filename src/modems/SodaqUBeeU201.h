@@ -20,6 +20,7 @@
 #endif
 
 #define TINY_GSM_MODEM_UBLOX
+#define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
@@ -51,7 +52,7 @@
 #include <StreamDebugger.h>
 #endif
 
-class SodaqUBeeU201 : public loggerModem<SodaqUBeeU201, TinyGsm, TinyGsmClient>
+class SodaqUBeeU201 : public loggerModem
 {
 
 public:
@@ -62,16 +63,29 @@ public:
                   const char *apn);
     ~SodaqUBeeU201();
 
-    #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
+    virtual bool modemSetup(void) override;
+    virtual bool modemWake(void) override;
+
+    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    virtual void disconnectInternet(void) override;
+
+    virtual uint32_t getNISTTime(void) override;
+
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    virtual float getModemChipTemperature(void) override;
+
+#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
 protected:
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
 
 private:
     const char *_apn;

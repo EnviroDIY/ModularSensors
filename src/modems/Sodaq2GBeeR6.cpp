@@ -16,19 +16,10 @@
 Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
                            int8_t powerPin, int8_t statusPin,
                            const char *apn)
-    : loggerModem(powerPin, statusPin, HIGH,
-                  -1, -1, true,
-                  S2GBR6_STATUS_TIME_MS, S2GBR6_DISCONNECT_TIME_MS,
-                  S2GBR6_WARM_UP_TIME_MS, S2GBR6_ATRESPONSE_TIME_MS),
-#ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      gsmClient(gsmModem)
+    : SIMComSIM800(modemStream,
+                   powerPin, statusPin, -1, -1,
+                   apn)
 {
-    _apn = apn;
     setVRefPin(-1);
 }
 
@@ -37,42 +28,15 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
 Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
                            int8_t vRefPin, int8_t statusPin, int8_t powerPin,
                            const char *apn)
-    : loggerModem(powerPin, statusPin, HIGH,
-                  -1, -1, true,
-                  S2GBR6_STATUS_TIME_MS, S2GBR6_DISCONNECT_TIME_MS,
-                  S2GBR6_WARM_UP_TIME_MS, S2GBR6_ATRESPONSE_TIME_MS),
-#ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      gsmClient(gsmModem)
+    : SIMComSIM800(modemStream,
+                   powerPin, statusPin, -1, -1,
+                   apn)
 {
-    _apn = apn;
     setVRefPin(vRefPin);
 }
 
-
 // Destructor
 Sodaq2GBeeR6::~Sodaq2GBeeR6(){}
-
-MS_MODEM_HARD_RESET(Sodaq2GBeeR6);
-MS_MODEM_IS_INTERNET_AVAILABLE(Sodaq2GBeeR6);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(Sodaq2GBeeR6);
-MS_MODEM_CONNECT_INTERNET(Sodaq2GBeeR6);
-
-// NOTE:  Could actually get temperature from the Digi chip by entering command mode
-float Sodaq2GBeeR6::getModemChipTemperature(void)
-{
-    MS_DBG(F("This modem doesn't return temperature!"));
-    return (float)-9999;
-}
-
-void Sodaq2GBeeR6::setVRefPin(int8_t vRefPin)
-{
-    _vRefPin = vRefPin;
-}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -99,6 +63,3 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
     }
     return success;
 }
-
-
-bool Sodaq2GBeeR6::extraModemSetup(void){}

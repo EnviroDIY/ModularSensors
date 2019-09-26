@@ -9,7 +9,7 @@
 
 // Included Dependencies
 #include "SIMComSIM7000.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor
 SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
@@ -31,21 +31,21 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
     _apn = apn;
 }
 
-
 // Destructor
-SIMComSIM7000::~SIMComSIM7000(){}
+SIMComSIM7000::~SIMComSIM7000() {}
 
-MS_MODEM_HARD_RESET(SIMComSIM7000);
-MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7000);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SIMComSIM7000);
+MS_MODEM_SETUP(SIMComSIM7000);
+MS_MODEM_WAKE(SIMComSIM7000);
+
 MS_MODEM_CONNECT_INTERNET(SIMComSIM7000);
+MS_MODEM_DISCONNECT_INTERNET(SIMComSIM7000);
+MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7000);
 
-// NOTE:  Could actually get temperature from the Digi chip by entering command mode
-float SIMComSIM7000::getModemChipTemperature(void)
-{
-    MS_DBG(F("This modem doesn't return temperature!"));
-    return (float)-9999;
-}
+MS_MODEM_GET_NIST_TIME(SIMComSIM7000);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SIMComSIM7000);
+MS_MODEM_GET_MODEM_BATTERY_DATA(SIMComSIM7000);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SIMComSIM7000);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -74,31 +74,5 @@ bool SIMComSIM7000::modemSleepFxn(void)
     else  // DON'T go to sleep if we can't wake up!
     {
         return true;
-    }
-}
-
-
-bool SIMComSIM7000::extraModemSetup(void){}
-
-
-void SIMComSIM7000::modemPowerUp(void)
-{
-    if (_powerPin >= 0)
-    {
-        if (_modemSleepRqPin >= 0)
-        {
-            // The PWR_ON pin MUST be high at power up.
-            digitalWrite(_modemSleepRqPin, HIGH);
-        }
-        MS_DBG(F("Powering"), getModemName(), F("with pin"), _powerPin);
-        digitalWrite(_powerPin, HIGH);
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    else
-    {
-        MS_DBG(F("Power to"), getModemName(), F("is not controlled by this library."));
-        // Mark the power-on time, just in case it had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
 }

@@ -9,7 +9,7 @@
 
 // Included Dependencies
 #include "SequansMonarch.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor
 SequansMonarch::SequansMonarch(Stream* modemStream,
@@ -31,23 +31,21 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
     _apn = apn;
 }
 
-
 // Destructor
-SequansMonarch::~SequansMonarch(){}
+SequansMonarch::~SequansMonarch() {}
 
-MS_MODEM_HARD_RESET(SequansMonarch);
-MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SequansMonarch);
+MS_MODEM_SETUP(SequansMonarch);
+MS_MODEM_WAKE(SequansMonarch);
+
 MS_MODEM_CONNECT_INTERNET(SequansMonarch);
+MS_MODEM_DISCONNECT_INTERNET(SequansMonarch);
+MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
 
-bool SequansMonarch::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts)
-{
-    MS_DBG(F("This modem doesn't return battery information!"));
-    chargeState = 99;
-    percent = -99;
-    milliVolts = 9999;
-    return false;
-}
+MS_MODEM_GET_NIST_TIME(SequansMonarch);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SequansMonarch);
+MS_MODEM_GET_MODEM_BATTERY_DATA(SequansMonarch);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SequansMonarch);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -57,7 +55,6 @@ bool SequansMonarch::modemWakeFxn(void)
     // No pulsing required in this case
     if (_powerPin >= 0)
     {
-        digitalWrite(_modemSleepRqPin, HIGH);  // to make sure it's set to something
         return true;
     }
     if (_modemSleepRqPin >= 0)
@@ -88,6 +85,3 @@ bool SequansMonarch::modemSleepFxn(void)
         return true;
     }
 }
-
-
-bool SequansMonarch::extraModemSetup(void){}

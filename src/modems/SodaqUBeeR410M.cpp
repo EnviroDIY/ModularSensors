@@ -9,7 +9,7 @@
 
 // Included Dependencies
 #include "SodaqUBeeR410M.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor
 #if F_CPU == 8000000L
@@ -54,13 +54,21 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
 }
 #endif
 
-
 // Destructor
-SodaqUBeeR410M::~SodaqUBeeR410M(){}
+SodaqUBeeR410M::~SodaqUBeeR410M() {}
 
-MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeR410M);
+MS_MODEM_SETUP(SodaqUBeeR410M);
+MS_MODEM_WAKE(SodaqUBeeR410M);
+
 MS_MODEM_CONNECT_INTERNET(SodaqUBeeR410M);
+MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeR410M);
+MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
+
+MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeR410M);
+MS_MODEM_GET_MODEM_BATTERY_DATA(SodaqUBeeR410M);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeR410M);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -128,18 +136,6 @@ bool SodaqUBeeR410M::modemSleepFxn(void)
 }
 
 
-bool SodaqUBeeR410M::extraModemSetup(void)
-{
-    gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
-    // Set to only use LTE-M, which should cause connection more quickly
-    gsmModem.sendAT(GF("+URAT=7"));
-    gsmModem.waitResponse();
-    return true;
-}
-
-
 bool SodaqUBeeR410M::modemHardReset(void)
 {
     if (_modemResetPin >= 0)
@@ -162,28 +158,5 @@ bool SodaqUBeeR410M::modemHardReset(void)
     {
         MS_DBG(F("No pin has been provided to reset the modem!"));
         return false;
-    }
-}
-
-
-void SodaqUBeeR410M::modemPowerUp(void)
-{
-    if (_powerPin >= 0)
-    {
-        if (_modemSleepRqPin >= 0)
-        {
-            // The PWR_ON pin MUST be high at power up.
-            digitalWrite(_modemSleepRqPin, HIGH);
-        }
-        MS_DBG(F("Powering"), getModemName(), F("with pin"), _powerPin);
-        digitalWrite(_powerPin, HIGH);
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    else
-    {
-        MS_DBG(F("Power to"), getModemName(), F("is not controlled by this library."));
-        // Mark the power-on time, just in case it had not been marked
-        if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
 }

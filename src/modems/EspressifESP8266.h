@@ -64,17 +64,19 @@ public:
                      int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
     ~EspressifESP8266();
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    virtual bool modemSetup(void) override;
+    virtual bool modemWake(void) override;
 
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemChipTemperature(void) override;
+    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    virtual void disconnectInternet(void) override;
 
-    bool modemHardReset(void) override;
+    virtual uint32_t getNISTTime(void) override;
 
-    #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    virtual float getModemChipTemperature(void) override;
+
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif
 
@@ -85,10 +87,10 @@ public:
     Stream *_modemStream;
 
 protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void)override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void) override;
 
 private:
     bool ESPwaitForBoot(void);

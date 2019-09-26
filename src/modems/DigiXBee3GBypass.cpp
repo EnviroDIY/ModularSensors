@@ -9,6 +9,7 @@
 
 // Included Dependencies
 #include "DigiXBee3GBypass.h"
+#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream,
@@ -28,21 +29,22 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream,
     _apn = apn;
 }
 
-
 // Destructor
 DigiXBee3GBypass::~DigiXBee3GBypass(){}
 
-MS_MODEM_HARD_RESET(DigiXBee3GBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
-MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
+MS_MODEM_SETUP(DigiXBee3GBypass);
+MS_MODEM_WAKE(DigiXBee3GBypass);
 
+MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBee3GBypass);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
+
+MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
+MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBee3GBypass);
 // NOTE:  Could actually get temperature from the Digi chip by entering command mode
-float DigiXBee3GBypass::getModemChipTemperature(void)
-{
-    MS_DBG(F("This modem doesn't return temperature!"));
-    return (float)-9999;
-}
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBee3GBypass);
 
 bool DigiXBee3GBypass::extraModemSetup(void)
 {
