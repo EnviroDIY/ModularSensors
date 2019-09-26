@@ -35,6 +35,7 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
 SequansMonarch::~SequansMonarch() {}
 
 MS_MODEM_SETUP(SequansMonarch);
+MS_MODEM_EXTRA_SETUP(SequansMonarch);
 MS_MODEM_WAKE(SequansMonarch);
 
 MS_MODEM_CONNECT_INTERNET(SequansMonarch);

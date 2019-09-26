@@ -95,9 +95,10 @@ public:
 #endif
 
 protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void) override;
 
 private:
     const char *_apn;

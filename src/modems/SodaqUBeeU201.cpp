@@ -85,3 +85,15 @@ bool SodaqUBeeU201::modemSleepFxn(void)
         return true;
     }
 }
+
+bool SodaqUBeeU201::extraModemSetup(void)
+{
+    bool success = gsmModem.init();
+    gsmClient.init(&gsmModem);
+    _modemName = gsmModem.getModemName();
+    // Turn on network indicator light
+    // Pin 16 = GPIO1, function 2 = network status indication
+    gsmModem.sendAT(GF("+UGPIOC=16,2"));
+    gsmModem.waitResponse();
+    return success;
+}

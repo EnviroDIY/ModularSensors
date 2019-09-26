@@ -63,3 +63,13 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
     }
     return success;
 }
+
+bool Sodaq2GBeeR6::extraModemSetup(void)
+{
+    bool success = gsmModem.init();
+    gsmClient.init(&gsmModem);
+    _modemName = gsmModem.getModemName();
+    if (_vRefPin >= 0)
+        pinMode(_vRefPin, OUTPUT);
+    return success;
+}

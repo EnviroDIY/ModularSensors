@@ -35,6 +35,7 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
 QuectelBG96::~QuectelBG96() {}
 
 MS_MODEM_SETUP(QuectelBG96);
+MS_MODEM_EXTRA_SETUP(QuectelBG96);
 MS_MODEM_WAKE(QuectelBG96);
 
 MS_MODEM_CONNECT_INTERNET(QuectelBG96);

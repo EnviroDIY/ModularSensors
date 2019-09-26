@@ -113,7 +113,7 @@ protected:
     virtual bool isInternetAvailable(void) = 0;
     virtual bool modemSleepFxn(void) = 0;
     virtual bool modemWakeFxn(void) = 0;
-    virtual bool extraModemSetup(void);
+    virtual bool extraModemSetup(void) = 0;
 
     static uint32_t parseNISTBytes(byte nistBytes[4]);
 

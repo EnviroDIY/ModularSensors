@@ -59,6 +59,7 @@ public:
 protected:
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
+    bool extraModemSetup(void) override;
 
 private:
     int8_t _vRefPin;

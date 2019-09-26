@@ -160,3 +160,15 @@ bool SodaqUBeeR410M::modemHardReset(void)
         return false;
     }
 }
+
+bool SodaqUBeeR410M::extraModemSetup(void)
+{
+    bool success = gsmModem.init();
+    gsmClient.init(&gsmModem);
+    _modemName = gsmModem.getModemName();
+    // Turn on network indicator light
+    // Pin 16 = GPIO1, function 2 = network status indication
+    gsmModem.sendAT(GF("+UGPIOC=16,2"));
+    gsmModem.waitResponse();
+    return success;
+}

@@ -80,6 +80,7 @@ protected:
     virtual bool isInternetAvailable(void) override;
     virtual bool modemSleepFxn(void) override;
     virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void) override;
 
 private:
     const char *_apn;

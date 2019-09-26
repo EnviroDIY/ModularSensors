@@ -135,11 +135,6 @@ void loggerModem::modemPowerDown(void)
     }
 }
 
-bool loggerModem::extraModemSetup(void)
-{
-    return true;
-}
-
 // Nicely put the modem to sleep and power down
 bool loggerModem::modemSleepPowerDown(void)
 {

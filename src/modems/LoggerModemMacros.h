@@ -62,8 +62,6 @@
             MS_DBG(F("Modem was already awake and should be ready for setup."));              \
         }                                                                                     \
                                                                                               \
-        _modemName = gsmModem.getModemName();                                                 \
-                                                                                              \
         if (success)                                                                          \
         {                                                                                     \
             MS_DBG(F("Running modem's extra setup function ..."));                            \
@@ -103,6 +101,15 @@
         }                                                                                     \
                                                                                               \
         return success;                                                                       \
+    }
+
+#define MS_MODEM_EXTRA_SETUP(specificModem)   \
+    bool specificModem::extraModemSetup(void) \
+    {                                         \
+        bool success = gsmModem.init();       \
+        gsmClient.init(&gsmModem);            \
+        _modemName = gsmModem.getModemName(); \
+        return success;                       \
     }
 
 // The function to wake up the modem
@@ -179,7 +186,7 @@
         /* This also checks the SIM card state */                                                \
         if (!_hasBeenSetup)                                                                      \
         {                                                                                        \
-            success &= gsmModem.modemSetup();                                                    \
+            success &= modemSetup();                                                             \
         }                                                                                        \
         else                                                                                     \
         {                                                                                        \
