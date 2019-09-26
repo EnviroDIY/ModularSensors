@@ -47,8 +47,8 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _millisPowerOn = 0;
 
     _lastNISTrequest = 0;
-    _lastConnectionCheck = 0;
-    _lastATCheck = 0;
+
+    _hasBeenSetup = false;
 
     _priorSignalPercent = 0;
     _priorRSSI = 0;

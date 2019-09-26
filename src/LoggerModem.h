@@ -138,8 +138,7 @@ protected:
 
     uint32_t _millisPowerOn;
     uint32_t _lastNISTrequest;
-    uint32_t _lastATCheck;
-    uint32_t _lastConnectionCheck;
+    bool _hasBeenSetup;
 
     static int16_t _priorRSSI;
     static int16_t _priorSignalPercent;
