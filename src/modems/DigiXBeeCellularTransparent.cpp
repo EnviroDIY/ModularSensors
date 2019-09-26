@@ -195,8 +195,9 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
             PRINTOUT(F("Cell scan '"),ui_scan,"'");
         } else {success = false;}
  
-        uint32_t cell_time_epoch_sec=getTimeCellTower();
-        PRINTOUT(F("Celltower Time "),cell_time_epoch_sec,"sec" ); /**/
+        //uint32_t time_epoch_sec=getNISTTime();//getTimeCellTower();
+        //Logger::setRTClock(time_epoch_sec); ////#include "LoggerBase.h"
+        //PRINTOUT(F("Startup Time & thrownaway "),time_epoch_sec,"sec" ); /**/
 
         }
  
@@ -272,7 +273,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
     }
 
     /* Try up to 12 times to get a timestamp from NIST */
-    for (uint8_t i = 0; i < 12; i++)
+    for (uint8_t i = 0; i < 3; i++)
     {
 
         /* Must ensure that we do not ping the daylight more than once every 4 seconds */
@@ -291,7 +292,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
         IPAddress ip(132, 163, 97, 6);
         connectionMade = gsmClient.connect(ip, 37, 15);
         /* Wait again so NIST doesn't refuse us! */
-        delay(4000L);
+        delay(1000L);
         /* Try sending something to ensure connection */
         gsmClient.println('!');
 
@@ -513,54 +514,85 @@ uint32_t DigiXBeeCellularTransparent::getTimeCellTower(void)
         gsmModem.exitCommand();
         return timeTzEpoch_sec;
     }/**/
-    // We can get the NIST timestamp directly from the XBee
+    // We can get a timestamp directly from the XB3 - ATT gives local time
     String res; 
-    bool rxCellTime=false;
+    uint8_t rxCellTime=0;  //0 no Time, 1 ASCII ISO8601 time, 2 32bit Time since 2000-01-01 00:00:00
     uint16_t rxCell_cnt=10;
+    #if 0 
+    // Check for ISO8601 time - ATT returned ' 2019-09-25T17:06:32 '
     do {
-        MS_DBG(F("CellTowerPollReq"),rxCell_cnt);
-        gsmModem.sendAT(GF("DT0"));
+        MS_DBG(F("CellTowerTAReq"),rxCell_cnt);
+        gsmModem.sendAT(GF("DT1"));
         res = gsmModem.readResponseString(10000);
         if (res == "" || res == " OK ") 
         {
             res = gsmModem.readResponseString(10000);
             if (!(res == "" || res == " OK ")) {
-                rxCellTime=true;
-                 MS_DBG(F("CellReqRsp2 '"),res,"'");
+                rxCellTime=1;
+                 MS_DBG(F("CellTARsp2 '"),res,"'");
             } 
         } else {
-            rxCellTime=true;
-            MS_DBG(F("CellReqRsp1 '"),res,"'");
+            rxCellTime=1;
+            MS_DBG(F("CellTARsp1 '"),res,"'");
         }
-    } while ((false==rxCellTime) && --rxCell_cnt);
+    } while ((0==rxCellTime) && --rxCell_cnt);
+    #endif //0
 
-    //MS_DBG(F("wait 10secs '"),res,"'");
-    //delay(10000); //Debug in case missed it 
-    //gsmModem.exitCommand();
-    //MS_DBG(F("Raw hex response from XBee:"), res);
+    if (0==rxCellTime) 
+    {
+        //Check for U32int time ATT returns res=' 24FD8365 '
+        rxCell_cnt=10;
+        do {
+            MS_DBG(F("CellTowerTElReq"),rxCell_cnt);
+            gsmModem.sendAT(GF("DT0"));
+            res = gsmModem.readResponseString(10000);
+            if (res == "" || res == " OK ") 
+            {
+                res = gsmModem.readResponseString(10000);
+                if (!(res == "" || res == " OK ")) {
+                    rxCellTime=2;
+                    MS_DBG(F("CellTERsp2 '"),res,"'");
+                } 
+            } else {
+                rxCellTime=2;
+                MS_DBG(F("CellTERsp1 '"),res,"'");
+            }
+        } while ((2!=rxCellTime) && --rxCell_cnt);
+    }
+
     char buf[10] = {0,};
-    //res ' 24FD8365 '
-    res.toCharArray(buf, 9);
-    uint32_t secFrom2000 = strtol(buf, 0, 16);
-    MS_DBG(F("Seconds from Jan 1, 2000 from XBee (UTC):"), secFrom2000);
-
-    // Convert from seconds since Jan 1, 2000 to 1970
+    uint32_t secFrom2000=0;
+    switch(rxCellTime) {
+        case 1: 
+            MS_DBG(F("CellTower Time:"), res);
+        break;
+        
+        case 2:
+            res.toCharArray(buf, 9);
+            secFrom2000 = strtol(buf, 0, 16);
+            MS_DBG(F("Seconds from Jan 1, 2000 from CellTower (PST):"), secFrom2000);
+            timeTzEpoch_sec = secFrom2000 + 946684800 ;
+            MS_DBG(F("Epoch Timestamp returned UTC:"),timeTzEpoch_sec);
+            break;
+        default: break;
+    }
+    // Check sanity of time
     if (0 != secFrom2000) 
     {
-       timeTzEpoch_sec = secFrom2000 + 946684800 ;
-        MS_DBG(F("Epoch Timestamp returned by NIST (UTC):"),timeTzEpoch_sec);
-
         // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-        if (timeTzEpoch_sec < 1546300800) return 0;
-        else if (timeTzEpoch_sec > 1893456000) return 0;
+        if (timeTzEpoch_sec < 1546300800) {timeTzEpoch_sec= 0;}
+        else if (timeTzEpoch_sec > 1893456000) {timeTzEpoch_sec=0;}
     }
     return timeTzEpoch_sec;
 }
 uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 {
-    //getNISTtimeOrig();
-    return (getTimeCellTower()+(8*3600));
-
+    uint32_t time_epochTz0;
+    time_epochTz0 = getNISTTimeOrig();
+    if (0 == time_epochTz0) {
+        time_epochTz0= (getTimeCellTower()+(8*3600));
+    }
+    return time_epochTz0;
 }
 
 bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)

@@ -296,9 +296,10 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define modemSleepRqPin_DEF PIN_A13 //PB1=A13. Xbee Pin 9 DTR (DTS Shared with JP1-A13)
 #define modemAssocPin_DEF   RI_AS   //PB17=ASSOC output XbeePin15_Assoc
 
-#define STANDARD_SERIAL_OUTPUT Serial
-#define DEBUGGING_SERIAL_OUTPUT Serial
-#define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
+// Serial3 shares with LED  -DENABLE_SERIAL3
+//#define STANDARD_SERIAL_OUTPUT Serial
+//#define DEBUGGING_SERIAL_OUTPUT Serial
+//#define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
@@ -323,10 +324,10 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define  loggingInterval_MAX_CDEF_MIN 6*60
 
 //define one Radio  _Module
-#define DigiXBeeWifi_Module 1
-#warning infoAutonomoWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
-//#warning infoAutonomoWithDigiXBeeCellTransparent
+//#define DigiXBeeWifi_Module 1
+//#warning infoAutonomoWithDigiXBeeWiFi
+#define DigiXBeeCellularTransparent_Module 1
+#warning infoAutonomoWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 
 //end of _Module
