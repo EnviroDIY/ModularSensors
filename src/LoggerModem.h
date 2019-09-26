@@ -40,6 +40,7 @@
 * This is basically a wrapper for TinyGsm
 * ========================================================================= */
 
+template <class Derived, typename modemType, typename modemClientType>
 class loggerModem
 {
 // ==========================================================================//
@@ -53,7 +54,14 @@ public:
                 uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms);
     virtual ~loggerModem();
 
+    // Sets an LED to turn on when the modem is on
+    void setModemLED(int8_t modemLEDPin);
+
+    // Merely returns the modem name
     String getModemName(void);
+
+    // Sets up the modem before first use
+    virtual bool modemSetup(void);
 
     // Note:  modemPowerDown() simply kills power, while modemSleepPowerDown()
     // allows for graceful shut down.  You should use modemSleepPowerDown()
@@ -62,21 +70,25 @@ public:
     virtual void modemPowerDown(void);
     virtual bool modemWake(void);
     virtual bool modemSleepPowerDown(void);
-
-    virtual bool modemSetup(void);
-
-    // Sets an LED to turn on when the modem is on
-    void setModemLED(int8_t modemLEDPin);
+    virtual bool modemHardReset(void);
 
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
-    virtual void disconnectInternet(void) = 0;
+    virtual void disconnectInternet(void);
 
-    // Get values by other names
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) = 0;
-    virtual float getModemChipTemperature(void) = 0;
+    // Get the time from NIST via TIME protocol (rfc868)
+    // This would be much more efficient if done over UDP, but I'm doing it
+    // over TCP because I don't have a UDP library for all the modems.
+    // NOTE:  The return is the number of seconds since Jan 1, 1970 IN UTC
+    virtual uint32_t getNISTTime(void);
+
+    // Get modem metadata values
+    // These four functions will query the modem to get new values
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent);
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts);
+    virtual float getModemChipTemperature(void);
     virtual bool updateModemMetadata(void);
+    // These functions simply return the stored values
     float getModemRSSI();
     float getModemSignalPercent();
     float getModemBatteryChargeState();
@@ -85,12 +97,6 @@ public:
     float getModemTemperature();
     // float getModemActivationDuration();
     // float getModemPoweredDuration();
-
-    // Get the time from NIST via TIME protocol (rfc868)
-    // This would be much more efficient if done over UDP, but I'm doing it
-    // over TCP because I don't have a UDP library for all the modems.
-    // NOTE:  The return is the number of seconds since Jan 1, 1970 IN UTC
-    virtual uint32_t getNISTTime(void) = 0;
 
 protected:
     // Helper to get approximate RSSI from CSQ (assuming no noise)
@@ -104,11 +110,10 @@ protected:
     void modemLEDOn(void);
     void modemLEDOff(void);
 
-    virtual bool isInternetAvailable(void) = 0;
+    virtual bool isInternetAvailable(void);
     virtual bool modemSleepFxn(void) = 0;
     virtual bool modemWakeFxn(void) = 0;
-    virtual bool extraModemSetup(void) = 0;
-    virtual bool modemHardReset(void) = 0;
+    virtual bool extraModemSetup(void);
 
     static uint32_t parseNISTBytes(byte nistBytes[4]);
 
@@ -146,6 +151,9 @@ protected:
     // float _priorPoweredDuration;
 
     String _modemName;
+
+    modemType gsmModem;
+    modemClientType gsmClient;
 };
 
 
@@ -278,4 +286,5 @@ public:
 //     ~Modem_PoweredDuration(){}
 // };
 
+#include <LoggerModem.tpp>
 #endif  // Header Guard

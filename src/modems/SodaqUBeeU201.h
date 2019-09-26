@@ -39,18 +39,19 @@
 // (6 sec typical for SARA U201)
 #define U201_ATRESPONSE_TIME_MS 6000L
 
+#define MS_MODEM_HAS_BATTERY_DATA
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "LoggerModem.h"
 #include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-
-class SodaqUBeeU201 : public loggerModem
+class SodaqUBeeU201 : public loggerModem<SodaqUBeeU201, TinyGsm, TinyGsmClient>
 {
 
 public:
@@ -61,18 +62,6 @@ public:
                   const char *apn);
     ~SodaqUBeeU201();
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
-
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemChipTemperature(void) override;
-
-    uint32_t getNISTTime(void) override;
-
-    bool modemHardReset(void) override;
-
     #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif
@@ -81,10 +70,8 @@ public:
     TinyGsmClient gsmClient;
 
 protected:
-    bool isInternetAvailable(void) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
-    bool extraModemSetup(void)override;
 
 private:
     const char *_apn;

@@ -9,7 +9,6 @@
 
 // Included Dependencies
 #include "SIMComSIM7000.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
@@ -39,11 +38,14 @@ SIMComSIM7000::~SIMComSIM7000(){}
 MS_MODEM_HARD_RESET(SIMComSIM7000);
 MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7000);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SIMComSIM7000);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(SIMComSIM7000);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(SIMComSIM7000);
 MS_MODEM_CONNECT_INTERNET(SIMComSIM7000);
-MS_MODEM_DISCONNECT_INTERNET(SIMComSIM7000);
-MS_MODEM_GET_NIST_TIME(SIMComSIM7000);
+
+// NOTE:  Could actually get temperature from the Digi chip by entering command mode
+float SIMComSIM7000::getModemChipTemperature(void)
+{
+    MS_DBG(F("This modem doesn't return temperature!"));
+    return (float)-9999;
+}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -76,13 +78,7 @@ bool SIMComSIM7000::modemSleepFxn(void)
 }
 
 
-bool SIMComSIM7000::extraModemSetup(void)
-{
-    gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
-    return true;
-}
+bool SIMComSIM7000::extraModemSetup(void){}
 
 
 void SIMComSIM7000::modemPowerUp(void)

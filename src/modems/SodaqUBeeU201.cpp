@@ -9,7 +9,6 @@
 
 // Included Dependencies
 #include "SodaqUBeeU201.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
@@ -35,16 +34,6 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
 
 // Destructor
 SodaqUBeeU201::~SodaqUBeeU201(){}
-
-MS_MODEM_HARD_RESET(SodaqUBeeU201);
-MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeU201);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeU201);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(SodaqUBeeU201);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(SodaqUBeeU201);
-MS_MODEM_CONNECT_INTERNET(SodaqUBeeU201);
-MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeU201);
-MS_MODEM_GET_NIST_TIME(SodaqUBeeU201);
-
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -84,13 +73,4 @@ bool SodaqUBeeU201::modemSleepFxn(void)
     {
         return true;
     }
-}
-
-
-bool SodaqUBeeU201::extraModemSetup(void)
-{
-    gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
-    return true;
 }

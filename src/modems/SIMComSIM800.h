@@ -42,8 +42,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "LoggerModem.h"
 #include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -62,14 +62,10 @@ public:
     ~SIMComSIM800();
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
 
     // Get values by other names
     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
     float getModemChipTemperature(void) override;
-
-    uint32_t getNISTTime(void) override;
 
     bool modemHardReset(void) override;
 

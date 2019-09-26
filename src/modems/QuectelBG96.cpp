@@ -9,7 +9,6 @@
 
 // Included Dependencies
 #include "QuectelBG96.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
@@ -39,12 +38,14 @@ QuectelBG96::~QuectelBG96(){}
 MS_MODEM_HARD_RESET(QuectelBG96);
 MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(QuectelBG96);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(QuectelBG96);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(QuectelBG96);
 MS_MODEM_CONNECT_INTERNET(QuectelBG96);
-MS_MODEM_DISCONNECT_INTERNET(QuectelBG96);
-MS_MODEM_GET_NIST_TIME(QuectelBG96);
 
+// NOTE:  Could actually get temperature from the Digi chip by entering command mode
+float QuectelBG96::getModemChipTemperature(void)
+{
+    MS_DBG(F("This modem doesn't return temperature!"));
+    return (float)-9999;
+}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -75,13 +76,7 @@ bool QuectelBG96::modemSleepFxn(void)
 }
 
 
-bool QuectelBG96::extraModemSetup(void)
-{
-    gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
-    return true;
-}
+bool QuectelBG96::extraModemSetup(void){}
 
 
 void QuectelBG96::modemPowerUp(void)

@@ -9,7 +9,6 @@
 
 // Included Dependencies
 #include "SodaqUBeeR410M.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
@@ -61,12 +60,7 @@ SodaqUBeeR410M::~SodaqUBeeR410M(){}
 
 MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeR410M);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(SodaqUBeeR410M);
-MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(SodaqUBeeR410M);
 MS_MODEM_CONNECT_INTERNET(SodaqUBeeR410M);
-MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeR410M);
-MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M);
-
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean

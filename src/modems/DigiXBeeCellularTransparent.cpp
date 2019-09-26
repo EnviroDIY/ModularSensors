@@ -9,7 +9,6 @@
 
 // Included Dependencies
 #include "DigiXBeeCellularTransparent.h"
-#include "modems/LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
@@ -36,11 +35,18 @@ DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent(){}
 MS_MODEM_HARD_RESET(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
-MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);
-MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 
+
+bool DigiXBeeCellularTransparent::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts)
+{
+    MS_DBG(F("This modem doesn't return battery information!"));
+    chargeState = 99;
+    percent = -99;
+    milliVolts = 9999;
+    return false;
+}
 
 // We turn off airplane mode in the wake.
 bool DigiXBeeCellularTransparent::modemWakeFxn(void)

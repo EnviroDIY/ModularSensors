@@ -11,7 +11,6 @@
 
 // Included Dependencies
 #include "EspressifESP8266.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
@@ -46,14 +45,22 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
 EspressifESP8266::~EspressifESP8266(){}
 
 MS_MODEM_HARD_RESET(EspressifESP8266);
-MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP8266);
-MS_MODEM_GET_MODEM_BATTERY_NA(EspressifESP8266);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(EspressifESP8266);
 MS_MODEM_CONNECT_INTERNET(EspressifESP8266);
-MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
-MS_MODEM_GET_NIST_TIME(EspressifESP8266);
 
+bool EspressifESP8266::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts)
+{
+    MS_DBG(F("This modem doesn't return battery information!"));
+    chargeState = 99;
+    percent = -99;
+    milliVolts = 9999;
+    return false;
+}
+
+bool EspressifESP8266::isInternetAvailable(void)
+{
+    return gsmModem.isNetworkConnected();
+}
 
 // A helper function to wait for the esp to boot and immediately change some settings
 // We'll use this in the wake function
@@ -77,18 +84,6 @@ bool EspressifESP8266::ESPwaitForBoot(void)
         {
             _modemStream->read();
             delay(2);
-        }
-        // Have to make sure echo is off or all AT commands will be confused
-        MS_START_DEBUG_TIMER;
-        MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));
-        success &= gsmModem.testAT(_max_atresponse_time_ms + 500);
-        if (success)
-        {
-            MS_DBG(F("No response to AT commands!"));
-        }
-        else
-        {
-            MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));
         }
         MS_DBG(F("Confirming that ESP8266's echo is off"));
         gsmModem.sendAT(GF("E0"));

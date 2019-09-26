@@ -9,7 +9,6 @@
 
 // Included Dependencies
 #include "SequansMonarch.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
@@ -39,11 +38,16 @@ SequansMonarch::~SequansMonarch(){}
 MS_MODEM_HARD_RESET(SequansMonarch);
 MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SequansMonarch);
-MS_MODEM_GET_MODEM_BATTERY_NA(SequansMonarch);
-MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(SequansMonarch);
 MS_MODEM_CONNECT_INTERNET(SequansMonarch);
-MS_MODEM_DISCONNECT_INTERNET(SequansMonarch);
-MS_MODEM_GET_NIST_TIME(SequansMonarch);
+
+bool SequansMonarch::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts)
+{
+    MS_DBG(F("This modem doesn't return battery information!"));
+    chargeState = 99;
+    percent = -99;
+    milliVolts = 9999;
+    return false;
+}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -86,10 +90,4 @@ bool SequansMonarch::modemSleepFxn(void)
 }
 
 
-bool SequansMonarch::extraModemSetup(void)
-{
-    gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
-    return true;
-}
+bool SequansMonarch::extraModemSetup(void){}

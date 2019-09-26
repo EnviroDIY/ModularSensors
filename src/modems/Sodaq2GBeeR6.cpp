@@ -10,7 +10,6 @@
 
 // Included Dependencies
 #include "Sodaq2GBeeR6.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
@@ -61,11 +60,14 @@ Sodaq2GBeeR6::~Sodaq2GBeeR6(){}
 MS_MODEM_HARD_RESET(Sodaq2GBeeR6);
 MS_MODEM_IS_INTERNET_AVAILABLE(Sodaq2GBeeR6);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(Sodaq2GBeeR6);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(Sodaq2GBeeR6);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(Sodaq2GBeeR6);
 MS_MODEM_CONNECT_INTERNET(Sodaq2GBeeR6);
-MS_MODEM_DISCONNECT_INTERNET(Sodaq2GBeeR6);
-MS_MODEM_GET_NIST_TIME(Sodaq2GBeeR6);
+
+// NOTE:  Could actually get temperature from the Digi chip by entering command mode
+float Sodaq2GBeeR6::getModemChipTemperature(void)
+{
+    MS_DBG(F("This modem doesn't return temperature!"));
+    return (float)-9999;
+}
 
 void Sodaq2GBeeR6::setVRefPin(int8_t vRefPin)
 {
@@ -99,10 +101,4 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
 }
 
 
-bool Sodaq2GBeeR6::extraModemSetup(void)
-{
-    gsmModem.init();
-    gsmClient.init(&gsmModem);
-    _modemName = gsmModem.getModemName();
-    return true;
-}
+bool Sodaq2GBeeR6::extraModemSetup(void){}

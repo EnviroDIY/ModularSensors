@@ -14,10 +14,11 @@
 //        uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
 //        int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
 // Constructors
-loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                         int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
-                         uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
-                         uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms)
+template <class Derived, typename modemType, typename modemClientType>
+loggerModem<Derived, modemType, modemClientType>::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                                                     int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
+                                                     uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
+                                                     uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms)
 {
     _modemName = "unspecified modem";
 
@@ -52,10 +53,12 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
 
 
 // Destructor
-loggerModem::~loggerModem() {}
+template <class Derived, typename modemType, typename modemClientType>
+loggerModem<Derived, modemType, modemClientType>::~loggerModem() {}
 
 
-void loggerModem::setModemLED(int8_t modemLEDPin)
+template <class Derived, typename modemType, typename modemClientType>
+void loggerModem<Derived, modemType, modemClientType>::setModemLED(int8_t modemLEDPin)
 {
     _modemLEDPin = modemLEDPin;
     if (_modemLEDPin >= 0)
@@ -64,14 +67,16 @@ void loggerModem::setModemLED(int8_t modemLEDPin)
         digitalWrite(_modemLEDPin, LOW);
     }
 };
-void loggerModem::modemLEDOn(void)
+template <class Derived, typename modemType, typename modemClientType>
+void loggerModem<Derived, modemType, modemClientType>::modemLEDOn(void)
 {
     if (_modemLEDPin >= 0)
     {
         digitalWrite(_modemLEDPin, HIGH);
     }
 }
-void loggerModem::modemLEDOff(void)
+template <class Derived, typename modemType, typename modemClientType>
+void loggerModem<Derived, modemType, modemClientType>::modemLEDOff(void)
 {
     if (_modemLEDPin >= 0)
     {
@@ -79,14 +84,19 @@ void loggerModem::modemLEDOff(void)
     }
 }
 
-
-String loggerModem::getModemName(void) { return _modemName; }
-
+template <class Derived, typename modemType, typename modemClientType>
+String loggerModem<Derived, modemType, modemClientType>::getModemName(void) { return _modemName; }
 
 // NOTE: Unlike other setup functions, this will NOT turn the power to the modem
 // on and off, it will simply check if the power has already been turned on and
 // return quickly if not.  If the power had been on, it is left ON after set-up.
-bool loggerModem::modemSetup(void)
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::extraModemSetup(void)
+{
+    return true;
+}
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::modemSetup(void)
 {
     bool success = true;
 
@@ -111,11 +121,14 @@ bool loggerModem::modemSetup(void)
     MS_DBG(F("Setting up the modem ..."));
 
     // Power up
-    modemPowerUp();
+    bool wasPowered = true;
+    if (_millisPowerOn == 0)
+    {
+        modemPowerUp();
+        wasPowered = false;
+    }
 
     // Check if the modem was awake, wake it if not
-    // NOTE:  We ar NOT powering up the modem!  Set up will NOT be successful
-    // unless the modem is already powered external to this function.
     bool wasAwake = (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel);
     if (!wasAwake)
     {
@@ -127,6 +140,8 @@ bool loggerModem::modemSetup(void)
     {
         MS_DBG(F("Modem was already awake and should be ready for setup."));
     }
+
+    _modemName = gsmModem.getModemName();
 
     if (success)
     {
@@ -154,7 +169,7 @@ bool loggerModem::modemSetup(void)
     // Put the modem to sleep after finishing setup
     // Only go to sleep if it had been asleep and is now awake
     bool isAwake = (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel);
-    if (!wasAwake && isAwake)
+    if ((!wasAwake && isAwake) || !wasPowered)
     {
         // Run the sleep function
         MS_DBG(F("Running given modem sleep function ..."));
@@ -168,63 +183,8 @@ bool loggerModem::modemSetup(void)
     return success;
 }
 
-
-float loggerModem::getModemRSSI()
-{
-    float retVal = _priorRSSI;
-    _priorRSSI = -9999;
-    return retVal;
-}
-float loggerModem::getModemSignalPercent()
-{
-    float retVal = _priorSignalPercent;
-    _priorSignalPercent = -9999;
-    return retVal;
-}
-float loggerModem::getModemBatteryChargeState()
-{
-    float retVal = _priorBatteryState;
-    _priorBatteryState = -9999;
-    return retVal;
-}
-float loggerModem::getModemBatteryChargePercent()
-{
-    float retVal = _priorBatteryPercent;
-    _priorBatteryPercent = -9999;
-    return retVal;
-}
-float loggerModem::getModemBatteryVoltage()
-{
-    float retVal = _priorBatteryPercent;
-    _priorBatteryPercent = -9999;
-    return retVal;
-}
-float loggerModem::getModemTemperature()
-{
-    float retVal = _priorModemTemp;
-    _priorModemTemp = -9999;
-    return retVal;
-}
-// float loggerModem::getModemActivationDuration()
-// {
-//     float retVal = _priorActivationDuration;
-//     _priorActivationDuration = -9999;
-//     return retVal;
-// }
-// float loggerModem::getModemPoweredDuration()
-// {
-//     float retVal = _priorPoweredDuration;
-//     _priorPoweredDuration = -9999;
-//     return retVal;
-// }
-
-
-// ==========================================================================//
-// These are the unique functions for the modem as an internet connected device
-// ==========================================================================//
-
-
-void loggerModem::modemPowerUp(void)
+template <class Derived, typename modemType, typename modemClientType>
+void loggerModem<Derived, modemType, modemClientType>::modemPowerUp(void)
 {
     if (_powerPin >= 0)
     {
@@ -242,7 +202,8 @@ void loggerModem::modemPowerUp(void)
     }
 }
 
-void loggerModem::modemPowerDown(void)
+template <class Derived, typename modemType, typename modemClientType>
+void loggerModem<Derived, modemType, modemClientType>::modemPowerDown(void)
 {
     if (_powerPin >= 0)
     {
@@ -258,18 +219,23 @@ void loggerModem::modemPowerDown(void)
     {
         MS_DBG(F("Power to"), getModemName(), F("is not controlled by this library."));
         // Unset the power-on time
-        _millisPowerOn = 0;
+        // _millisPowerOn = 0;
     }
 }
 
-
 // The function to wake up the modem
-// There are so many ways to wake a modem that we're requiring an input function
-bool loggerModem::modemWake(void)
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::modemWake(void)
 {
-    bool success = true;
+    bool success = false;
 
-    while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}
+    // Power up
+    if (_millisPowerOn == 0)
+        modemPowerUp();
+
+    while (millis() - _millisPowerOn < _wakeDelayTime_ms)
+    {
+    }
 
     // Check the status pin and wake bits before running wake function
     // Don't want to accidently pulse an already on modem to off
@@ -287,23 +253,53 @@ bool loggerModem::modemWake(void)
         success &= modemWakeFxn();
     }
 
-    // Re-check the status pin
-    if ((_statusPin >= 0 && _statusTime_ms == 0 &&
-         digitalRead(_statusPin) != _statusLevel && !success) ||
-        !success)
+    uint8_t resets = 0;
+    while (!success && resets < 2)
     {
-        MS_DBG(F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),
-               digitalRead(_statusPin), F("indicating it is off!"));
-        MS_DBG(F("Attempting a hard reset on the modem!"));
-        success = false;
-        modemHardReset();
-        success = digitalRead(_statusPin) == _statusLevel;
+        // Check that the modem is responding to AT commands
+        MS_START_DEBUG_TIMER;
+        MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));
+        success &= gsmModem.testAT(_max_atresponse_time_ms + 500);
+        if (success)
+        {
+            MS_DBG(F("No response to AT commands!"));
+        }
+        else
+        {
+            MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));
+        }
+
+        // Re-check the status pin
+        if ((_statusPin >= 0 && _statusTime_ms == 0 &&
+             digitalRead(_statusPin) != _statusLevel && !success) ||
+            !success)
+        {
+            MS_DBG(getModemName(), F("doesn't appear to be responsive!"));
+            if (_statusPin >= 0)
+            {
+                MS_DBG(F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),
+                       digitalRead(_statusPin), F("indicating it is off!"));
+            }
+
+            MS_DBG(F("Attempting a hard reset on the modem!"));
+            if (!modemHardReset())
+            {
+                // Exit if we can't hard reset
+                break;
+            }
+        }
     }
+
+    // Re-run the modem init
+    // This will turn off echo, which often turns itself back on after a reset/power loss
+    // This also checks the SIM card state
+    success &= gsmModem.init();
+    gsmClient.init(&gsmModem);
 
     if (success)
     {
         modemLEDOn();
-        MS_DBG(getModemName(), F("should be awake."));
+        MS_DBG(getModemName(), F("should be awake and ready to go."));
     }
     else
     {
@@ -313,8 +309,9 @@ bool loggerModem::modemWake(void)
     return success;
 }
 
-
-bool loggerModem::modemSleepPowerDown(void)
+// Nicely put the modem to sleep and power down
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::modemSleepPowerDown(void)
 {
     bool success = true;
     uint32_t start = millis();
@@ -353,9 +350,11 @@ bool loggerModem::modemSleepPowerDown(void)
         if (_statusPin >= 0)
         {
             MS_DBG(F("Waiting up to"), _disconnetTime_ms,
-            F("milliseconds for graceful shutdown as indicated by pin"),
+                   F("milliseconds for graceful shutdown as indicated by pin"),
                    _statusPin, F("going"), !_statusLevel, F("..."));
-            while (millis() - start < _disconnetTime_ms && digitalRead(_statusPin) == _statusLevel){}
+            while (millis() - start < _disconnetTime_ms && digitalRead(_statusPin) == _statusLevel)
+            {
+            }
             if (digitalRead(_statusPin) == _statusLevel)
             {
                 MS_DBG(F("... "), getModemName(), F("did not successfully shut down!"));
@@ -368,7 +367,9 @@ bool loggerModem::modemSleepPowerDown(void)
         else if (_disconnetTime_ms > 0)
         {
             MS_DBG(F("Waiting"), _disconnetTime_ms, F("ms for graceful shutdown."));
-            while (millis() - start < _disconnetTime_ms){}
+            while (millis() - start < _disconnetTime_ms)
+            {
+            }
         }
 
         // _priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
@@ -384,18 +385,252 @@ bool loggerModem::modemSleepPowerDown(void)
         // _priorPoweredDuration = (float)-9999;
 
         // If we're not going to power the modem down, there's no reason to hold
-        // up the  main processor while waiting for the modem to shut down.
+        // up the main processor while waiting for the modem to shut down.
         // It can just do its thing unwatched while the main processor sleeps.
         MS_DBG(F("Power to"), getModemName(), F("is not controlled by this library."));
         // Unset the power-on time
-        _millisPowerOn = 0;
+        // _millisPowerOn = 0;
     }
 
     return success;
 }
 
+// Perform a hard/panic reset for when the modem is completely unresponsive
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::modemHardReset(void)
+{
+    if (_modemResetPin >= 0)
+    {
+        MS_DBG(F("Doing a hard reset on the modem!"));
+        digitalWrite(_modemResetPin, LOW);
+        delay(200);
+        digitalWrite(_modemResetPin, HIGH);
+        return true;
+    }
+    else
+    {
+        MS_DBG(F("No pin has been provided to reset the modem!"));
+        return false;
+    }
+}
 
-bool loggerModem::updateModemMetadata(void)
+
+#if defined TINY_GSM_MODEM_HAS_GPRS
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::isInternetAvailable(void)
+{
+    return gsmModem.isGprsConnected();
+}
+
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::connectInternet(uint32_t maxConnectionTime)
+{
+    MS_START_DEBUG_TIMER
+    MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,
+           F("seconds for cellular network registration..."));
+    if (gsmModem.waitForNetwork(maxConnectionTime))
+    {
+        MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER,
+               F("milliseconds.  Connecting to GPRS..."));
+
+#ifndef TINY_GSM_MODEM_XBEE
+        gsmModem.gprsConnect(_apn, "", "");
+#endif
+        MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,
+               F("milliseconds."));
+        return true;
+    }
+    else
+    {
+        MS_DBG(F("...GPRS connection failed."));
+        return false;
+    }
+}
+
+template <class Derived, typename modemType, typename modemClientType>
+void loggerModem<Derived, modemType, modemClientType>::disconnectInternet(void)
+{
+    MS_START_DEBUG_TIMER;
+    gsmModem.gprsDisconnect();
+    MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER,
+           F("milliseconds."));
+}
+
+
+#else
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::isInternetAvailable(void)
+{
+    return gsmModem.isNetworkConnected();
+}
+
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::connectInternet(uint32_t maxConnectionTime)
+{
+    MS_START_DEBUG_TIMER
+    MS_DBG(F("\nAttempting to connect to WiFi network..."));
+    if (!(gsmModem.isNetworkConnected()))
+    {
+        MS_DBG(F("Sending credentials..."));
+        while (!gsmModem.networkConnect(_ssid, _pwd))
+        {
+        };
+        MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,
+               F("seconds for connection"));
+        if (!gsmModem.waitForNetwork(maxConnectionTime))
+        {
+            MS_DBG(F("... WiFi connection failed"));
+            return false;
+        }
+    }
+    MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,
+           F("milliseconds!"));
+    return true;
+}
+
+template <class Derived, typename modemType, typename modemClientType>
+void loggerModem<Derived, modemType, modemClientType>::disconnectInternet(void)
+{
+    MS_START_DEBUG_TIMER;
+    gsmModem.networkDisconnect();
+    MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER,
+           F("milliseconds."));
+}
+#endif
+
+// Get the time from NIST via TIME protocol (rfc868)
+// This would be much more efficient if done over UDP, but I'm doing it
+// over TCP because I don't have a UDP library for all the modems.
+template <class Derived, typename modemType, typename modemClientType>
+uint32_t loggerModem<Derived, modemType, modemClientType>::getNISTTime(void)
+{
+    // bail if not connected to the internet
+    if (!isInternetAvailable())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        return 0;
+    }
+
+    // Try up to 12 times to get a timestamp from NIST
+    for (uint8_t i = 0; i < 12; i++)
+    {
+        // Must ensure that we do not ping the daylight server more than once every 4 seconds
+        // NIST clearly specifies here that this is a requirement for all software
+        // that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
+        while (millis() < _lastNISTrequest + 4000)
+        {
+        }
+
+        // Make TCP connection
+        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15);
+
+        // Wait up to 5 seconds for a response
+        if (connectionMade)
+        {
+            uint32_t start = millis();
+            while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)
+            {
+            }
+
+            if (gsmClient.available() >= 4)
+            {
+                MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+                byte response[4] = {0};
+                gsmClient.read(response, 4);
+                if (gsmClient.connected())
+                    gsmClient.stop();
+                return parseNISTBytes(response);
+            }
+            else
+            {
+                MS_DBG(F("NIST Time server did not respond!"));
+                if (gsmClient.connected())
+                    gsmClient.stop();
+            }
+        }
+        else
+        {
+            MS_DBG(F("Unable to open TCP to NIST!"));
+        }
+    }
+    return 0;
+}
+
+
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::getModemSignalQuality(int16_t &rssi, int16_t &percent)
+{
+    // Get signal quality
+    // NOTE:  We can't actually distinguish between a bad modem response, no
+    // modem response, and a real response from the modem of no service/signal.
+    // The TinyGSM getSignalQuality function returns the same "no signal"
+    // value (99 CSQ or 0 RSSI) in all 3 cases.
+    MS_DBG(F("Getting signal quality:"));
+    int16_t signalQual = gsmModem.getSignalQuality();
+    MS_DBG(F("Raw signal quality:"), signalQual);
+
+    // Convert signal quality to RSSI, if necessary
+#if defined TINY_GSM_MODEM_XBEE || defined TINY_GSM_MODEM_ESP8266
+    rssi = signalQual;
+    MS_DBG(F("Raw signal is already in units of RSSI:"), rssi);
+    percent = getPctFromRSSI(signalQual);
+    MS_DBG(F("Signal percent calcuated from RSSI:"), percent);
+#else
+    rssi = getRSSIFromCSQ(signalQual);
+    MS_DBG(F("RSSI Estimated from CSQ:"), rssi);
+    percent = getPctFromCSQ(signalQual);
+    MS_DBG(F("Signal percent calcuated from CSQ:"), percent);
+#endif
+
+    return true;
+}
+
+#ifdef MS_MODEM_HAS_BATTERY_DATA
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts)
+{
+    MS_DBG(F("Getting modem battery data:"));
+    return gsmModem.getBattStats(chargeState, percent, milliVolts);
+}
+
+#else
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts)
+{
+    MS_DBG(F("This modem doesn't return battery information!"));
+    chargeState = 99;
+    percent = -99;
+    milliVolts = 9999;
+    return false;
+}
+#endif
+
+#ifdef MS_MODEM_HAS_BATTERY_DATA
+// NOTE:  Most modems don't give this
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemChipTemperature(void)
+{
+    MS_DBG(F("Getting temperature:"));
+    float temp = gsmModem.getTemperature();
+    MS_DBG(F("Temperature:"), temp);
+
+    return temp;
+}
+
+#else
+
+// NOTE:  Could actually get temperature from the Digi chip by entering command mode
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemChipTemperature(void)
+{
+    MS_DBG(F("This modem doesn't return temperature!"));
+    return (float)-9999;
+}
+#endif
+
+template <class Derived, typename modemType, typename modemClientType>
+bool loggerModem<Derived, modemType, modemClientType>::updateModemMetadata(void)
 {
     bool success = true;
 
@@ -437,9 +672,66 @@ bool loggerModem::updateModemMetadata(void)
     return success;
 }
 
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemRSSI()
+{
+    float retVal = _priorRSSI;
+    _priorRSSI = -9999;
+    return retVal;
+}
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemSignalPercent()
+{
+    float retVal = _priorSignalPercent;
+    _priorSignalPercent = -9999;
+    return retVal;
+}
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemBatteryChargeState()
+{
+    float retVal = _priorBatteryState;
+    _priorBatteryState = -9999;
+    return retVal;
+}
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemBatteryChargePercent()
+{
+    float retVal = _priorBatteryPercent;
+    _priorBatteryPercent = -9999;
+    return retVal;
+}
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemBatteryVoltage()
+{
+    float retVal = _priorBatteryPercent;
+    _priorBatteryPercent = -9999;
+    return retVal;
+}
+template <class Derived, typename modemType, typename modemClientType>
+float loggerModem<Derived, modemType, modemClientType>::getModemTemperature()
+{
+    float retVal = _priorModemTemp;
+    _priorModemTemp = -9999;
+    return retVal;
+}
+// template <class Derived, typename modemType, typename modemClientType>
+// float loggerModem<Derived, modemType, modemClientType>::getModemActivationDuration()
+// {
+//     float retVal = _priorActivationDuration;
+//     _priorActivationDuration = -9999;
+//     return retVal;
+// }
+// template <class Derived, typename modemType, typename modemClientType>
+// float loggerModem<Derived, modemType, modemClientType>::getModemPoweredDuration()
+// {
+//     float retVal = _priorPoweredDuration;
+//     _priorPoweredDuration = -9999;
+//     return retVal;
+// }
 
 // Helper to get approximate RSSI from CSQ (assuming no noise)
-int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
+template <class Derived, typename modemType, typename modemClientType>
+int16_t loggerModem<Derived, modemType, modemClientType>::getRSSIFromCSQ(int16_t csq)
 {
     int16_t CSQs[33]  = {   0,    1,    2,    3,    4,    5,    6,   7,   8,   9,
                            10,   11,   12,   13,   14,   15,   16,  17,  18,  19,
@@ -457,7 +749,8 @@ int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
 }
 
 // Helper to get signal percent from CSQ
-int16_t loggerModem::getPctFromCSQ(int16_t csq)
+template <class Derived, typename modemType, typename modemClientType>
+int16_t loggerModem<Derived, modemType, modemClientType>::getPctFromCSQ(int16_t csq)
 {
     int16_t CSQs[33]  = {   0,    1,    2,    3,    4,    5,    6,   7,   8,   9,
                            10,   11,   12,   13,   14,   15,   16,  17,  18,  19,
@@ -475,7 +768,8 @@ int16_t loggerModem::getPctFromCSQ(int16_t csq)
 }
 
 // Helper to get signal percent from RSSI
-int16_t loggerModem::getPctFromRSSI(int16_t rssi)
+template <class Derived, typename modemType, typename modemClientType>
+int16_t loggerModem<Derived, modemType, modemClientType>::getPctFromRSSI(int16_t rssi)
 {
     int16_t pct = 1.6163 * rssi + 182.61;
     if (rssi == 0)
@@ -487,17 +781,18 @@ int16_t loggerModem::getPctFromRSSI(int16_t rssi)
 
 
 
-uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
+template <class Derived, typename modemType, typename modemClientType>
+uint32_t loggerModem<Derived, modemType, modemClientType>::parseNISTBytes(byte nistBytes[4])
 {
-    /* Response is returned as 32-bit number as soon as connection is made */
-    /* Connection is then immediately closed, so there is no need to close it */
+    // Response is returned as 32-bit number as soon as connection is made
+    // Connection is then immediately closed, so there is no need to close it
     uint32_t secFrom1900 = 0;
     for (uint8_t i = 0; i < 4; i++)
     {
         MS_DBG(F("Response Byte"), i, ':', (char)nistBytes[i],
                    '=', nistBytes[i], '=', String(nistBytes[i], BIN));
         secFrom1900 += 0x000000FF & nistBytes[i];
-        /* MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN)); */
+        // MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN));
         if (i + 1 < 4)
         {
             secFrom1900 = secFrom1900 << 8;
@@ -506,14 +801,10 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
     MS_DBG(F("Seconds from Jan 1, 1900 returned by NIST (UTC):"),
                secFrom1900, '=', String(secFrom1900, BIN));
 
-    /* Close the TCP connection, just in case */
-    /* Don't close connection! It takes too long and then the time stamp is out of date! */
-    /*gsmClient.stop(15000L);*/
-
-    /* Return the timestamp */
+    // Return the timestamp
     uint32_t unixTimeStamp = secFrom1900 - 2208988800;
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
-    /* If before Jan 1, 2019 or after Jan 1, 2030, most likely an error */
+    // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
     if (unixTimeStamp < 1546300800)
     {
         return 0;
