@@ -1583,10 +1583,10 @@ void Logger::begin()
 
     if (_samplingFeatureUUID != NULL)
     {
-        MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
+        PRINTOUT(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
-    PRINTOUT(F("Logger portion of setup finished."));
+    PRINTOUT(F("Logger portion of setup finished.\n"));
 }
 
 
