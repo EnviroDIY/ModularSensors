@@ -21,6 +21,9 @@
 #endif
 
 #define TINY_GSM_MODEM_SIM800
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 64
+#endif
 
 // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
 #define S2GBR6_STATUS_TIME_MS 3000
@@ -53,9 +56,19 @@ class Sodaq2GBeeR6 : public loggerModem
 public:
     // Constructor/Destructor
     // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-    Sodaq2GBeeR6(Stream* modemStream,
+    // NOTE:  The power pin of the SIM800 is wired to the XBee's DTR
+    // pin, the actualy PWR_KEY is not exposed, there is no way to
+    // request sleep.  The normal Vin pin of the Bee socket (pin 1)
+    // is used for voltage reference only.
+    // The order of the pins in the constructor is different from
+    // other modems for backwards compatibility and because the
+    // Sodaq documentation is confusing
+    Sodaq2GBeeR6(Stream *modemStream,
                  int8_t powerPin, int8_t statusPin,
-                 int8_t modemSleepRqPin,
+                 const char *apn,
+                 uint8_t measurementsToAverage = 1);
+    Sodaq2GBeeR6(Stream *modemStream,
+                 int8_t vRefPin, int8_t statusPin, int8_t powerPin,
                  const char *apn,
                  uint8_t measurementsToAverage = 1);
     ~Sodaq2GBeeR6();
@@ -69,6 +82,8 @@ public:
     float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;
+
+    void setVRefPin(int8_t vRefPin);
 
     #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -87,6 +102,7 @@ protected:
 
 private:
     const char *_apn;
+    int8_t _vRefPin;
 
 };
 

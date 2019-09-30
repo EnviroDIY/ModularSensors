@@ -18,10 +18,27 @@ VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
 }
+VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[], const char *uuids[])
+  : arrayOfVars(variableList), _variableCount(variableCount)
+{
+    _maxSamplestoAverage = countMaxToAverage();
+    _sensorCount = getSensorCount();
+    matchUUIDs(uuids);
+}
+
 // Destructor
 VariableArray::~VariableArray(){}
 
+void VariableArray::VariableArray::begin(uint8_t variableCount, Variable *variableList[], const char *uuids[])
+{
+    _variableCount = variableCount;
+    arrayOfVars = variableList;
 
+    _maxSamplestoAverage = countMaxToAverage();
+    _sensorCount = getSensorCount();
+    matchUUIDs(uuids);
+    checkVariableUUIDs();
+}
 void VariableArray::begin(uint8_t variableCount, Variable *variableList[])
 {
     _variableCount = variableCount;
@@ -65,6 +82,15 @@ uint8_t VariableArray::getSensorCount(void)
     return numSensors;
 }
 
+// This matches UUID's from an array of pointers to the variable array
+void VariableArray::matchUUIDs(const char *uuids[])
+{
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        arrayOfVars[i]->setVarUUID(uuids[i]);
+        // MS_DBG(F("Assigned UUID"), uuids[i], F("to variable"), arrayOfVars[i]->getVarCode());
+    }
+}
 
 // Public functions for interfacing with a list of sensors
 // This sets up all of the sensors in the list
@@ -948,6 +974,13 @@ bool VariableArray::checkVariableUUIDs(void)
             }
         }
     }
-    if (success) PRINTOUT(F("All variable UUID's appear to be correctly formed."));
+    if (success)
+        PRINTOUT(F("All variable UUID's appear to be correctly formed.\n"));
+    // Print out all UUID's to check
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        PRINTOUT(arrayOfVars[i]->getVarUUID(), F("->"), arrayOfVars[i]->getVarCode());
+    }
+    PRINTOUT(' ');
     return success;
 }
