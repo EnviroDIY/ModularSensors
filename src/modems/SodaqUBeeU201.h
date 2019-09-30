@@ -20,6 +20,9 @@
 #endif
 
 #define TINY_GSM_MODEM_UBLOX
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 64
+#endif
 
 // Time after end pulse until V_INT becomes active
 // Unspecified in documentation! Taking value from Lisa U2

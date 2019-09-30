@@ -91,7 +91,7 @@ protected:
     // We override these because the modem can tell us if it's ready or not
 
     // The modem is "stable" when it responds to AT commands.
-    virtual bool isStable(bool debug=false) override;
+    virtual bool isStable(bool debug = false) override;
 
     // This checks to see if enough time has passed for measurement completion
     // In the case of the modem, we consider a measurement to be "complete" when
@@ -132,8 +132,13 @@ public:
     // int16_t openTCP(IPAddress ip, uint16_t port);
     // This has the same functionality as Client->close with debugging text
     // void closeTCP(void);
+
     // Special sleep and power function for the modem
+    // Note:  modemPowerDown() simply kills power, while modemSleepPowerDown()
+    // allows for graceful shut down.  You should use modemSleepPowerDown()
+    // whenever possible.
     virtual void modemPowerUp(void);
+    virtual void modemPowerDown(void);
     bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)
