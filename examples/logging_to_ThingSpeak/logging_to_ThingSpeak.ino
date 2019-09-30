@@ -349,7 +349,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (getBatteryVoltage() < 3.55)
     {
         dataLogger.logData();
     }
