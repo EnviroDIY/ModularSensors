@@ -333,7 +333,7 @@ void setup()
     }
 
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep"));
+    Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
 
@@ -353,7 +353,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (getBatteryVoltage() < 3.55)
     {
         dataLogger.logData();
     }

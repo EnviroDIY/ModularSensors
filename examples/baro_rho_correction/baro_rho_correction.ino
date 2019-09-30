@@ -449,7 +449,7 @@ void setup()
     modem.modemSleepPowerDown();
 
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep"));
+    Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
 

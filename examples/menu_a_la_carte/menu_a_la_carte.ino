@@ -1305,6 +1305,16 @@ Variable *variableList[] = {
     calculatedVar,
 };
 
+// If you would prefer, you can enter all the UUID's separately in one array and
+// then give that array as input to the variable array constructor or run
+// the variable array "matchUUIDs(UUIDs)" function.  Be cautious when doing this
+// though beccause order is CRUCIAL!
+// const char *UUIDs[] = {
+//     "12345678-abcd-1234-ef00-1234567890ab",
+//     ...
+//     "12345678-abcd-1234-ef00-1234567890ab",
+// };
+
 /*
 // FORM2: Fill array with already created and named variable pointers
 // NOTE:  Forms one and two can be mixed
@@ -1325,6 +1335,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+// VariableArray varArray(variableCount, variableList, UUIDs);
 
 
 // ==========================================================================
@@ -1542,7 +1553,7 @@ void setup()
     }
 
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep"));
+    Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
 
@@ -1562,7 +1573,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.65)
+    else if (getBatteryVoltage() < 3.55)
     {
         dataLogger.logData();
     }
