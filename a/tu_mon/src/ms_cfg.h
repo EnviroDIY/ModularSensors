@@ -291,8 +291,8 @@ BEE TX Serial PB30/SCOM5PAD0 To Bee from Proc
 BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 */
 #define modemVccPin_DEF     BEE_VCC //PA28 to XC6220 
-#define autonomoModemRtsPin BEERTS  //PB22=RTS same as MCU_CTS output XbeePin16_RTS
-#define modemStatusPin_DEF  BEECTS  //PB23=CTSoutput XbeePin12_CTS
+#define autonomoModemRtsPin 38u//BEERTS  //PB22=RTS same as MCU_CTS output XbeePin16_RTS
+#define modemStatusPin_DEF  39u//BEECTS  //PB23=CTSoutput XbeePin12_CTS
 #define modemSleepRqPin_DEF PIN_A13 //PB1=A13. Xbee Pin 9 DTR (DTS Shared with JP1-A13)
 #define modemAssocPin_DEF   RI_AS   //PB17=ASSOC output XbeePin15_Assoc
 

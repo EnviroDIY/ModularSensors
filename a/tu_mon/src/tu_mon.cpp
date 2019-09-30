@@ -2003,6 +2003,7 @@ void setup()
     if (modemPhy.connectInternet())
     {
         modemSetup=true;
+        MS_DBG(F("  Attempting Timesync"));
         if (true == dataLogger.syncRTC()) {
             nistSyncRtc = false; //Sucess
             MS_DBG(F("  Timesync success"));
