@@ -4,10 +4,10 @@ Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
 Hardware Platform Supported: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
+  Copyright (c) 2017, Neil Hancock & Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-Use with  ModularSensors library version 0.23.2
+Use with  ModularSensors library
 
 This sends readings to EnviroDIY data portal, and logs to an SD card.
 
@@ -16,13 +16,35 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+#ifndef MQTT_MAX_PACKET_SIZE
+#define MQTT_MAX_PACKET_SIZE 240
+#endif
+
+
+// ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
 #include "ms_cfg.h" //must be before ms_common.h & Arduino.h
+#ifdef MS_KN_DEPTH_DEBUG
+#define MS_DEBUGGING_STD "kn_depth"
+#endif //MS_KN_DEPTH_DEBUG
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+
 #include <Arduino.h>  // The base Arduino library
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #endif
+#include <LoggerBase.h>  // The modular sensors library
 #include <Time.h>
 #include <errno.h>
 #include "ms_common.h"
@@ -33,11 +55,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #else
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
-#ifdef MS_KN_DEPTH_DEBUG
-#define MS_DEBUGGING_STD "kn_depth"
-#endif //MS_KN_DEPTH_DEBUG
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
+
 
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
@@ -47,7 +65,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.2";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = __FILE__; //"xxx.cpp";
 const char build_date[] = __DATE__ " " __TIME__;
@@ -69,7 +87,7 @@ const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 uint32_t sysStartTime_epochTzSec=1;
-bool nistSyncRtc = false; //Set when a NIST sync RTC is required
+bool nistSyncRtc = false; //Have ext RTC.  NIST sync RTC when convenient
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -197,7 +215,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
+#if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -327,12 +345,6 @@ void SERCOM2_Handler()
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
-const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-//#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
-//#define RS485PHY_RX 6  // AltSoftSerial Rx pin
 
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //requires special variant.cpp/h update
@@ -353,10 +365,10 @@ HardwareSerial &modemSerial = Serial1;  // Bee Socket
 
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = modemVccPin_DEF;      // -2 MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemStatusPin = modemStatusPin_DEF;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemResetPin = modemResetPin_DEF;    // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;  // 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemVccPin = modemVccPin_DEF;         // -2 MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = modemStatusPin_DEF;   //RTS 19 MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = modemResetPin_DEF;     // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;//DTR 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLEDPin;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 bool modemSetup=false;
@@ -372,176 +384,202 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 //    Note:  Don't use more than one!
 // ==========================================================================
 
-// build_flags= -DTINY_GSM_DEBUG=Serial  // If you want debugging on the main debug port
-// // For any Digi Cellular XBee's
-// // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
-// // are more stable used in bypass mode (below)
-// // The Telit based Digi XBees (LTE Cat1) can only use this mode.
-// #include <modems/DigiXBeeCellularTransparent.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-// DigiXBeeCellularTransparent modemXBCT(&modemSerial,
-//                                       modemVccPin, modemStatusPin, useCTSforStatus,
-//                                       modemResetPin, modemSleepRqPin,
-//                                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBeeCellularTransparent modem = modemXBCT;
+#ifdef DigiXBeeCellularTransparent_Module 
+// For any Digi Cellular XBee's
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
+// in either bypass or transparent mode, each with pros and cons
+// The Telit based Digi XBees (LTE Cat1) can only use this mode.
+#include <modems/DigiXBeeCellularTransparent.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBeeCellularTransparent modemXBCT(&modemSerial,
+                                      modemVccPin, modemStatusPin, useCTSforStatus,
+                                      modemResetPin, modemSleepRqPin,
+                                      apn_def);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBeeCellularTransparent modemPhy = modemXBCT;
+#endif // DigiXBeeCellularTransparent_Module 
 // // ==========================================================================
 
+#if 0 //def DigiXBeeLTE_Module 
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
-#ifdef DigiXBeeLTE_Module 
 #include <modems/DigiXBeeLTEBypass.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
 DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
                               modemVccPin, modemStatusPin, useCTSforStatus,
                               modemResetPin, modemSleepRqPin,
                               apn_def);
 // Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeLTEBypass modem = modemXBLTEB;
+DigiXBeeLTEBypass modemPhy = modemXBLTEB;
 #endif //DigiXBeeLTE_Module 
 // ==========================================================================
 
-// // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
-// // NOTE:  According to the manual, this should be less stable than transparent
-// // mode, but my experience is the complete reverse.
-// #include <modems/DigiXBee3GBypass.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// DigiXBeeLTEBypass modemXB3GB(&modemSerial,
-//                              modemVccPin, modemStatusPin, useCTSforStatus,
-//                              modemResetPin, modemSleepRqPin,
-//                              apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBee3GBypass modem = modemXB3GB;
-// // ==========================================================================
-
-// // For the Digi Wifi XBee (S6B)
+#if 0 //Don't use -kept for compare simplicity
+// For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
+// NOTE:  According to the manual, this should be less stable than transparent
+// mode, but my experience is the complete reverse.
+#include <modems/DigiXBee3GBypass.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBee3GBypass modemXB3GB(&modemSerial,
+                             modemVccPin, modemStatusPin, useCTSforStatus,
+                             modemResetPin, modemSleepRqPin,
+                             apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBee3GBypass modem = modemXB3GB;
+// ==========================================================================
+#endif //0
 #ifdef DigiXBeeWifi_Module 
+// For the Digi Wifi XBee (S6B)
+
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
+const bool useCTSforStatus = true;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
 DigiXBeeWifi modemXBWF(&modemSerial,
-                        modemVccPin, modemStatusPin, useCTSforStatus,
-                        modemResetPin, modemSleepRqPin,
-                        wifiId_def, wifiPwd_def);
-// // Create an extra reference to the modem by a generic name (not necessary)
+                       modemVccPin, modemStatusPin, useCTSforStatus,
+                       modemResetPin, modemSleepRqPin,
+                       wifiId_def, wifiPwd_def);
+// Create an extra reference to the modem by a generic name (not necessary)
 DigiXBeeWifi modemPhy = modemXBWF;
 #endif //DigiXBeeWifi_Module 
-// // ==========================================================================
+// ==========================================================================
 
-// // For almost anything based on the Espressif ESP8266 using the AT command firmware
-// #include <modems/EspressifESP8266.h>
-// const long modemBaud = 115200;  // Communication speed of the modem
-// // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
-// // should be programmed to a slower baud rate or set to auto-baud using the
-// // AT+UART_CUR or AT+UART_DEF command *before* attempting conrrol with this library.
-// // Pins for light sleep on the ESP8266.
-// // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-// const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
-// const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
-// EspressifESP8266 modemESP(&modemSerial,
-//                           modemVccPin, modemStatusPin,
-//                           modemResetPin, modemSleepRqPin,
-//                           wifiId_def, wifiPwd_def,
-//                           1,  // measurements to average, optional
-//                           espSleepRqPin, espStatusPin  // Optional arguments
-//                          );
-// // Create an extra reference to the modem by a generic name (not necessary)
-// EspressifESP8266 modem = modemESP;
-// // ==========================================================================
+#if 1
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_ESP8266
+// For almost anything based on the Espressif ESP8266 using the AT command firmware
+#include <modems/EspressifESP8266.h>
+const long modemBaud = 115200;  // Communication speed of the modem
+// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
+// should be programmed to a slower baud rate or set to auto-baud using the
+// AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
+// Pins for light sleep on the ESP8266.
+// For power savings, I recommend NOT using these if it's possible to use deep sleep.
+const int8_t espSleepRqPin = 13;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espStatusPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
+EspressifESP8266 modemESP(&modemSerial,
+                          modemVccPin, modemStatusPin,
+                          modemResetPin, modemSleepRqPin,
+                          wifiId, wifiPwd,
+                          1,  // measurements to average, optional
+                          espSleepRqPin, espStatusPin  // Optional arguments
+                         );
+// Create an extra reference to the modem by a generic name (not necessary)
+EspressifESP8266 modem = modemESP;
+// ==========================================================================
 
-// // For the Dragino, Nimbelink or other boards based on the Quectel BG96
-// #include <modems/QuectelBG96.h>
-// const long modemBaud = 115200;  // Communication speed of the modem
-// QuectelBG96 modemBG96(&modemSerial,
-//                       modemVccPin, modemStatusPin,
-//                       modemResetPin, modemSleepRqPin,
-//                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// QuectelBG96 modem = modemBG96;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_BG96
+// For the Dragino, Nimbelink or other boards based on the Quectel BG96
+#include <modems/QuectelBG96.h>
+const long modemBaud = 115200;  // Communication speed of the modem
+QuectelBG96 modemBG96(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      modemResetPin, modemSleepRqPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+QuectelBG96 modem = modemBG96;
+// ==========================================================================
 
-// // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series
-// #include <modems/SequansMonarch.h>
-// const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
-// // NOTE:  This baud rate is much too fast for many Arduinos!  The module should
-// // be programmed to a slower baud rate or set to auto-baud using the AT+IPR command.
-// SequansMonarch modemSVZM(&modemSerial,
-//                          modemVccPin, modemStatusPin,
-//                          modemResetPin, modemSleepRqPin,
-//                          apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SequansMonarch modem = modemSVZM;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_MONARCH
+// For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series
+#include <modems/SequansMonarch.h>
+const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
+// NOTE:  This baud rate is much too fast for many Arduinos!  The module should
+// be programmed to a slower baud rate or set to auto-baud using the AT+IPR command.
+SequansMonarch modemSVZM(&modemSerial,
+                         modemVccPin, modemStatusPin,
+                         modemResetPin, modemSleepRqPin,
+                         apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SequansMonarch modem = modemSVZM;
+// ==========================================================================
 
-// // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and higher
-// #include <modems/SIMComSIM800.h>
-// const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
-// SIMComSIM800 modemS800(&modemSerial,
-//                        modemVccPin, modemStatusPin,
-//                        modemResetPin, modemSleepRqPin,
-//                        apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SIMComSIM800 modem = modemS800;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM800
+// For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and higher
+#include <modems/SIMComSIM800.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+SIMComSIM800 modemS800(&modemSerial,
+                       modemVccPin, modemStatusPin,
+                       modemResetPin, modemSleepRqPin,
+                       apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SIMComSIM800 modem = modemS800;
+// ==========================================================================
 
-// // For almost anything based on the SIMCom SIM7000
-// #include <modems/SIMComSIM7000.h>
-// const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
-// SIMComSIM7000 modem7000(&modemSerial,
-//                         modemVccPin, modemStatusPin,
-//                         modemResetPin, modemSleepRqPin,
-//                         apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SIMComSIM7000 modem = modem7000;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM7000
+// For almost anything based on the SIMCom SIM7000
+#include <modems/SIMComSIM7000.h>
+const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
+SIMComSIM7000 modem7000(&modemSerial,
+                        modemVccPin, modemStatusPin,
+                        modemResetPin, modemSleepRqPin,
+                        apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SIMComSIM7000 modem = modem7000;
+// ==========================================================================
 
-// // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
-// // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-// #include <modems/Sodaq2GBeeR6.h>
-// const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
-// Sodaq2GBeeR6 modem2GB(&modemSerial,
-//                       modemVccPin, modemStatusPin,
-//                       modemSleepRqPin,
-//                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// Sodaq2GBeeR6 modem = modem2GB;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_S2GB
+// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+Sodaq2GBeeR6 modem2GB(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+Sodaq2GBeeR6 modem = modem2GB;
+// ==========================================================================
 
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_R410M
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
-// #include <modems/SodaqUBeeR410M.h>
-// const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
-// // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
-// // every power loss, the module will return to the default baud rate of 115200.
-// // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
-// // compensate by sending a baud rate change command in the wake function.
-// // Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
-// // instance as modemSerial.
-// SodaqUBeeR410M modemR410(&modemSerial,
-//                          modemVccPin, modemStatusPin,
-//                          modemResetPin, modemSleepRqPin,
-//                          apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SodaqUBeeR410M modem = modemR410;
-// // ==========================================================================
+#include <modems/SodaqUBeeR410M.h>
+const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
+// NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
+// every power loss, the module will return to the default baud rate of 115200.
+// NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
+// compensate by sending a baud rate change command in the wake function.
+// Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
+// instance as modemSerial.
+SodaqUBeeR410M modemR410(&modemSerial,
+                         modemVccPin, modemStatusPin,
+                         modemResetPin, modemSleepRqPin,
+                         apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SodaqUBeeR410M modem = modemR410;
+// ==========================================================================
 
-// // For the Sodaq UBee based on the 3G u-blox SARA U201
-// #include <modems/SodaqUBeeU201.h>
-// const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
-// SodaqUBeeU201 modemU201(&modemSerial,
-//                         modemVccPin, modemStatusPin,
-//                         modemResetPin, modemSleepRqPin,
-//                         apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SodaqUBeeU201 modem = modemU201;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_U201
+// For the Sodaq UBee based on the 3G u-blox SARA U201
+#include <modems/SodaqUBeeU201.h>
+const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
+SodaqUBeeU201 modemU201(&modemSerial,
+                        modemVccPin, modemStatusPin,
+                        modemResetPin, modemSleepRqPin,
+                        apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SodaqUBeeU201 modem = modemU201;
+// ==========================================================================
+#endif
 
 
 // Create RSSI and signal strength variable pointers for the modem
 // Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryState(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 #if 0
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 //#define STREAMDEBUGGER_DBG
@@ -569,12 +607,6 @@ DigiXBeeWifi modemPhy = modemXBWF;
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 #endif //0
-
-
-// Create RSSI and signal strength variable pointers for the modem
-// Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-
 
 #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 // ==========================================================================
@@ -922,7 +954,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
 // A Maxbotix sonar using the trigger may be able to share but YMMV
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined Serial3 && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
@@ -931,10 +963,11 @@ NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
 #endif
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
+MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
 
 // Create an ultrasonic range variable pointer
 // Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
@@ -1026,7 +1059,10 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 /*TI INA219M High Side Current/Voltage Sensor (Current mA, Voltage, Power)*/
 #include <sensors/TIINA219M.h>
-
+const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t INA219i2c_addr = 0x40;  // 1000000 (Board A0+A1=GND)
+// The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
+const uint8_t INA219ReadingsToAvg = 1;
 // Create an INA219 sensor object
 TIINA219M ina219m_phy(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 //was TIINA219M ina219_phy(I2CPower);
@@ -1036,15 +1072,21 @@ TIINA219M ina219m_phy(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 // Variable *inaCurrent = new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // NO Power
+void ina219m_voltLowThresholdAlertFn(bool exceed,float value_V) {
+    //Place holder for processing a measured low alert.
+    //Expect to orginate a Cell TXT msg the first time receive this.
+    MS_DBG(F("ina219m_voltLowThresholdAlert "),exceed,F(":"),value_V);
+}
 #endif //INA219M_PHY_ACT
 
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#include <sensors/KellerAcculevel.h>
-
 #if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT)
+#define KellerXxxLevel_ACT 1
+//#include <sensors/KellerAcculevel.h>
+
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 #if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
@@ -1053,9 +1095,16 @@ HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
 AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
 #endif
+
+byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
 const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
+
+const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
+const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+
 #endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
 
 #if defined KellerAcculevel_ACT
@@ -1398,7 +1447,7 @@ Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,ProcessorStats_SampleNumber_UUID),
 #endif
 #if defined(ProcessorStats_Batt_UUID)
-    new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),//was mayflyPhy
+    new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),
 #endif
 #if defined(ExternalVoltage_Volt0_UUID)
     new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
@@ -1451,6 +1500,9 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
     new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -1548,7 +1600,6 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
@@ -1620,7 +1671,6 @@ float getBatteryVoltage()
 }
 
 
-
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -1628,6 +1678,13 @@ void setup()
 {
     bool LiBattPower_Unseable;
     uint16_t lp_wait=1;
+
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // could prevent the script from starting
+    //#if defined SERIAL_PORT_USBVIRTUAL
+    //  while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
+    //#endif
 
     //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
     //MCUSR = 0; //reset for unique read
@@ -1794,13 +1851,15 @@ void setup()
         pinMode(modemVccPin, OUTPUT);
         digitalWrite(modemVccPin, LOW);
         MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
-    }
+        //digitalWrite(modemVccPin, HIGH);
+        //MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
+    } else {MS_DBG(F("ModemVccPin not used "),modemVccPin);}
     if (sensorPowerPin >= 0)
     {
         pinMode(sensorPowerPin, OUTPUT);
         digitalWrite(sensorPowerPin, LOW);
         MS_DBG(F("Set sensorPowerPin "),sensorPowerPin);
-    }
+    } else {MS_DBG(F("sensorPowerPin not used "),sensorPowerPin);}
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
 
@@ -1808,14 +1867,14 @@ void setup()
     {
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, HIGH); //Def sleep
-        MS_DBG(F("Set Sleep on modemSleepRqPin "),modemSleepRqPin);
-    }
+        MS_DBG(F("Set Sleep on High modemSleepRqPin "),modemSleepRqPin);
+    } else {MS_DBG(F("modemSleepRqPin not used "),modemSleepRqPin);}
     if (modemResetPin >= 0)
     {
         pinMode(modemResetPin, OUTPUT);
         digitalWrite(modemResetPin, HIGH);  //Def noReset
         MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
-    }
+    } else {MS_DBG(F("modemResetPin not used "),modemResetPin);}
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
