@@ -187,7 +187,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
                     multNum= loggingMultiplier_MAX_CDEF;
                 } else {
                     PRINTOUT(F("COMMON LOGGING_MULTIPLIER set to: "),multNum,
-                        F("(min) from default "),loggingMultiplier_MAX_CDEF);
+                        F("(mult) from default "),loggingMultiplier_MAX_CDEF);
                 }
                 loggingMultiplierTop= multNum; //In the main program
             } else {

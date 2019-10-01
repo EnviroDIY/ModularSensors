@@ -127,8 +127,10 @@ bool processorAdc::addSingleMeasurementResult(void)
     if (bitRead(_sensorStatus, 6))
     {
         MS_DBG(getSensorNameAndLocation(), F(" is reporting:"));
-
+        #if !defined ARDUINO_ARCH_AVR
+        //Only for processors where ADC Resolution can be varied: not AVR
         analogReadResolution(ProcAdcDef_Resolution);
+        #endif //ARDUINO_ARCH_AVR
         // Create an Auxillary ADD object
         // We create and set up the ADC object here so that each sensor using
         // the ADC may set the gain appropriately without effecting others.
