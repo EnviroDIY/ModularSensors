@@ -171,10 +171,13 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
         {
-        String ui_vers = gsmModem.sendATGetString(GF("VR"));
+        String ui_vers = gsmModem.sendATGetString(GF("IM"));
+        PRINTOUT(F("IM "), ui_vers);
+        #if defined MS_DEBUGGING_STD
+        ui_vers = gsmModem.sendATGetString(GF("VR"));
         //ui_vers += " "+gsmModem.sendATGetString(F("VL"));
         MS_DBG(F("Version "), ui_vers);
-  
+        #endif
         uint16_t loops=0;
         int16_t ui_db;
         int8_t status;

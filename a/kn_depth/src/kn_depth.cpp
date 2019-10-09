@@ -1778,14 +1778,11 @@ void setup()
     modemSerial.begin(modemBaud);
 
 
-#if defined(CONFIG_SENSOR_RS485_PHY) && defined(SerialModbus) && defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+//#if defined(CONFIG_SENSOR_RS485_PHY) && defined(SerialModbus) && defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+#if defined(CONFIG_SENSOR_RS485_PHY) 
  //nh version SerialModbus Serial2
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
-#else
-    //Move to LoggerBase setup??
-    //digitalWrite(RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
-    //digitalWrite(RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
@@ -1969,6 +1966,8 @@ void processSensors()
         modbusSerial.end();
         // Reset AltSoftSerial pins to LOW, to reduce power bleed on sleep, 
         // because Modbus Stop bit leaves these pins HIGH
+        pinMode(RS485PHY_TX_PIN, OUTPUT);  // AltSoftSerial Tx pin
+        pinMode(RS485PHY_RX_PIN, OUTPUT);  // AltSoftSerial Rx pin
         digitalWrite( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
         digitalWrite( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif //CONFIG_SENSOR_RS485_PHY

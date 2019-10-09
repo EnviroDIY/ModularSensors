@@ -111,8 +111,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #ifdef KellerNanolevel_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
-  #define CONFIG_HW_RS485PHY_TX_PIN 5  //FUT: mv to ms_cfg.h AltSoftSerial Tx pin 
-  #define CONFIG_HW_RS485PHY_RX_PIN 6  // AltSoftSerial Rx pin
+  #define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
+  #define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
 #endif // KellerNanolevel_ACT
