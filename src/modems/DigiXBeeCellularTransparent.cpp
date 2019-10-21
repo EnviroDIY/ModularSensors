@@ -159,7 +159,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.sendAT(GF("CP"),0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Cellular network technology - LTE-M/NB IoT
-        gsmModem.sendAT(GF("N#"),0);
+        gsmModem.sendAT(GF("N#"),2);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
@@ -170,27 +170,55 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Write changes to flash and apply them
         MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
-        {
-        String ui_vers = gsmModem.sendATGetString(GF("IM"));
-        PRINTOUT(F("IM "), ui_vers);
-        #if defined MS_DEBUGGING_STD
+
+        String ui_vers = gsmModem.getIMEI();
+        PRINTOUT(F("IMa "), ui_vers);
+        //ui_vers = gsmModem.getIMEI();
+        //PRINTOUT(F("IMb "), ui_vers);
+        //ui_vers = gsmModem.getRegistrationStatus();
+        //gsmModem.sendAT(GF("+CREG"));
+        //ui_vers=gsmModem.readResponseInt(10000L);
+        //PRINTOUT(F("Registration '"), ui_vers,"'");
+        #if defined MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
         ui_vers = gsmModem.sendATGetString(GF("VR"));
         //ui_vers += " "+gsmModem.sendATGetString(F("VL"));
         MS_DBG(F("Version "), ui_vers);
         #endif
         uint16_t loops=0;
         int16_t ui_db;
-        int8_t status;
+        uint8_t status;
         String ui_op;
         bool cellRegistered=false;
         PRINTOUT(F("Loop=Sec] rx db : Status ' Operator ' #Polled Cell Status every 1sec"));
+        uint8_t reg_count =0;
         for ( unsigned long start = millis(); millis() - start < 300000; loops++) {
             ui_db = 0;// gsmModem.getSignalQuality();
             gsmModem.sendAT(GF("AI"));
             status=gsmModem.readResponseInt(10000L);
             ui_op = String(loops)+"="+String((float)millis()/1000)+"] "+String(ui_db)+":0x"+String(status,HEX)+" '"+ gsmModem.getOperator()+"'";
-            PRINTOUT(ui_op);
-            if ((0==status) ||(0x23 ==status)) {cellRegistered=true;break;}
+            if ((0==status) ||(0x23 ==status)) {
+                ui_op += " Cnt="+String(reg_count);
+                PRINTOUT(ui_op);
+                if (++reg_count > 2) {
+                    cellRegistered=true;
+                    break;
+                }
+            } else {
+                reg_count=1;
+                //String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
+                //ui_op += " Cell Scan "+ui_scan;
+                PRINTOUT(ui_op);
+                if (100 == loops) {
+                    /*Not clear why this may force a registration
+                    Early experience with Hologram SIMs was they aren't registering,
+                    However throwing this in, might do something or maybe just coincedence that it started working after this
+                    */ 
+                    gsmModem.sendAT(GF("+CREG"));
+                    //String ui_creg=gsmModem.readResponseInt(10000L);
+                    //PRINTOUT(F("UseRandom +CREG '"), ui_creg,"'");
+                    PRINTOUT(F("UseRandom +CREG '"));
+                }
+            }
             delay(1000);
         }
         if (cellRegistered) {
@@ -201,8 +229,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         //uint32_t time_epoch_sec=getNISTTime();//getTimeCellTower();
         //Logger::setRTClock(time_epoch_sec); ////#include "LoggerBase.h"
         //PRINTOUT(F("Startup Time & thrownaway "),time_epoch_sec,"sec" ); /**/
-
-        }
  
         // Exit command mode
         gsmModem.exitCommand();
