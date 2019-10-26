@@ -2,9 +2,9 @@
 kn_depth.cpp   (Keller Nanolevel Depth)
 Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
-Hardware Platform Supported: EnviroDIY Mayfly Arduino Datalogger
+Hardware Platform Supported: EnviroDIY Feather M4 Express with custom wing
 Software License: BSD-3.
-  Copyright (c) 2017, Neil Hancock & Stroud Water Research Center (SWRC)
+  Copyright (c) 2019, Neil Hancock & Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
 Use with  ModularSensors library
@@ -1019,6 +1019,26 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
+//    METER TEROS 11 Soil Moisture Sensor
+// ==========================================================================
+#include <sensors/MeterTeros11.h>
+
+const char *teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
+// const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t SDI12Data = 7;  // The SDI12 data pin
+const uint8_t teros11NumberReadings = 3;  // The number of readings to average
+
+// Create a METER TEROS 11 sensor object
+MeterTeros11 teros11(*teros11SDI12address, SDI12Power, SDI12Data, teros11NumberReadings);
+
+// Create the matric potential, volumetric water content, and temperature
+// variable pointers for the Teros 11
+// Variable *teros11Ea = new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *teros11Temp = new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *teros11VWC = new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+
+
+// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <sensors/RainCounterI2C.h>
@@ -1619,7 +1639,7 @@ const char *samplingFeature_def = samplingFeature_UUID;     // Sampling feature 
 #include <publishers/EnviroDIYPublisher.h>
 //EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken_def, samplingFeature_def);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
-//EnviroDIYPublisher EnviroDIYPOST();
+//EnviroDIYPublisher EnviroDIYPOST(); //"error: request for member 'begin' in 'EnviroDIYPOST', which is of non-class type 'EnviroDIYPublisher()'"
 #endif //registrationToken_UUID
 
 // ==========================================================================
@@ -1909,6 +1929,27 @@ void setup()
     // Call the processor sleep
     greenredflash(4,1000);
     //delay(1000);
+
+#if defined ARDUINO_ARCH_SAMD
+    //ARCH_SAMD doesn't have persistent clock - get time
+    MS_DBG(F("  Modem setup & Timesync at init"));
+    modemPhy.modemPowerUp();
+    modemPhy.wake();
+    if (modemPhy.connectInternet())
+    {
+        modemSetup=true;
+        MS_DBG(F("  Attempting Timesync"));
+        if (true == dataLogger.syncRTC()) {
+            nistSyncRtc = false; //Sucess
+            MS_DBG(F("  Timesync success"));
+        } else {MS_DBG(F("  Timesync fails"));}
+        // Disconnect from the network
+        modemPhy.disconnectInternet();
+    } else {MS_DBG(F("  No internet connection..."));}
+    // Turn the modem off
+    modemPhy.modemSleepPowerDown();        
+#endif //ARDUINO_ARCH_SAMD
+
     Logger::markTime(); //Init so never zero
 
     //dataLogger.systemSleep();
@@ -1950,6 +1991,7 @@ void processSensors()
         //digitalWrite(greenLED, HIGH);
         // Turn on the LED to show we're taking a reading
         //dataLogger.alertOn();
+
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins

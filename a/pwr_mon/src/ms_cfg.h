@@ -55,7 +55,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
 #define PROFILE_NAME PROFILE03_SODAQ_AUTONOMO_M0
-
 #else
 #error undefinded
 #endif
@@ -65,7 +64,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
-//This configuration expects a standard Mayfly0.bb  with a Adafruit-904 INA219 on I2C 
+//This configuration is for a standard Mayfly0.bb
+// with a Adafruit-904 INA219 on I2C 
 //Standard - target TU power Mon using INA219 0-10A, 0-16V
 // Wireless XbeeS6 wiFi and Xbee LTE 
 //This is hardcoded to mean things in ProcessorStats !!!!

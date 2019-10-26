@@ -8,13 +8,33 @@ To use the internet viewing capability you need a data portal account - sites su
   (http://data.envirodiy.org/).  After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.  
   You will need to apply all of those UUID values into your Mayfly.ini .  
   thingSpeak - tbd.
-Modems supported Xbee WiFi S6, and (tbd Xbee LTE) 
+Modems supported Xbee WiFi S6, and Xbee LTE (and tbd LoRa) 
+
+_______
+
+## TO create New Site
+locally on disk create new directory eg firmware\xxx
+create (or copy configured) ms_cfg.ini
+edit ms_cfg.ini (eg notepad)
+go to https://data.envirodiy.org/sites
+
+(possibly dup - see https://github.com/neilh10/ModularSensors/wiki/Setting-up-data.enviroDIY-for-TU-RC)
+create new site - and copy REGISTRATION_TOKEN/SAMPLING_FEATURE  
+On web click on "Manage Sensors"
+Click on + to create new sensor  - the order the sensors are created in as the order of the preview graphs.
+
+Select
+
+tbd
+Press "View Token UUID list", highlight and copy "UUIDs[]" to ,cfg
+
 
 _______
 
 ## To Use this Example: - the following still tbd
-From Platformio File->Open Folfer  "a/kn_depth" 
+From Platformio File->Open Folfer  "ModularSensors/a/kn_depth" 
 On the bottom bar - press the Tick mark - "build" 
+ms_cfg customizations located in "firmware/xxx" 
 
 Press build icon 
 #### Prepare and set up PlatformIO
@@ -25,27 +45,18 @@ Press build icon
 - Download logging_to_EnviroDIY.ino and put it into the src directory of your project.  Delete main.cpp in that folder.
 
 #### Modify the Example
-- Modify logging_to_EnviroDIY.ino to have the modem, sensor, and variable objects that you are interested in.
-    - This example is written for a _Digi XBee S6B (wifi)_ modem.  Change this to whatever modem you are using.  Pastable chunks of code for each modem are available in the [wiki](https://github.com/EnviroDIY/ModularSensors/wiki/Home).
-    - Don't forget to put in your wifi username/password or cellular APN!
-    - The only "sensor" included in this example is the temperature sensor on the clock.  Add code for all of your sensors.  See the pages for the individual sensors in the [wiki](https://github.com/EnviroDIY/ModularSensors/wiki/Home) for code snippets/examples.
-- **Make sure the pin numbers and serial ports selected in your code match with how things are physically attached to your board!**
-- Add all of your variables to your variable array.
-- Paste all of your variable UUID's for your site into your variable array, replacing all of the ```"12345678-abcd-1234-efgh-1234567890ab"``` values.
-- Replace the registration token and sampling feature values in the example with those for your site:
 
-```cpp
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
-```
+Per Site/board configuration goes in ms_cfg.ini that is copied to the SD drive. 
+    - site specific wifi username/password or cellular APN!
+    - registration token/ sampling feature 
+    - UUID's for sensors .
+
+
+- Modify ms_cfg.h for the connfiguration of processors needed. supports Feather M4 express with custom Wing, with _Digi XBee LTE & S6B (wifi)_ modem including 
+- **The configuration of pin numbers and serial ports can be routed from ms_cfg.h !**
+
+Modify xxx.ino as necessary for custom processing.
 
 #### Upload!
 - Stage the deployment in an easy to test location (eg the office) **before** deploying out in the wild!
 
-#### Developing new code and changing libarys 
-use the atlMayfly.ino and include files in this directory. platformio.ini:src_dir = .
-This appears to use .\lib as a search path before .piolibdeps
-
-(toBeChecked:) For mature release builds, depending on instrument setup, create a directory beneath this one eg
-kellernano\atlMayfly.ino
-platformio.ini:src_dir = kellernano

@@ -64,8 +64,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
-
-//Standard 
+//This configuration is for a standard Mayfly0.bb
+// Not expected to be used as softserial stopped working
+//Standard - target TU power Mon using INA219 0-10A, 0-16V
+// Wireless XbeeS6 wiFi and Xbee LTE 
 //This is hardcoded to mean things in ProcessorStats !!!!
 //This defines rev 0.5ba changes for Mayfly. 
 // Rev0.5ba is an enhancement on 0.5b
@@ -82,7 +84,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define sensorPowerPin_DEF 22
 #define modemSleepRqPin_DEF 23
 #define modemStatusPin_DEF  19  // MCU pin used to read modem status (-1 if not applicable)
-#define modemResetPin_DEF A4    // MCU pin connected to modem reset pin (-1 if unconnected)
+#define modemResetPin_DEF   20  // MCU pin connected to modem reset pin (-1 if unconnected)
 
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
@@ -90,15 +92,29 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define configIniID_DEF_STR "ms_cfg.ini"  
 #define CONFIG_TIME_ZONE_DEF -8
 
+// ** How frequently (in minutes) to log data **
+//For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
+#define  loggingInterval_Fast_MIN (1)
+#define  logger2Mult 5 //Not working for mayfly
 // How frequently (in minutes) to log data
-//#define loggingInterval_CDEF_MIN 15
+#if defined logger2Mult
+#define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*logger2Mult) 
+#else
+#define  loggingInterval_CDEF_MIN 15
+#endif //logger2Mult
+// Maximum logging setting allowed
+#define  loggingInterval_MAX_CDEF_MIN 6*60
+
 //define one  _Module
-//#define DigiXBeeLTE_Module 
-#define DigiXBeeWifi_Module
+#define DigiXBeeWifi_Module 1
+#warning infoMayflyWithDigiXBeeWiFi
+//#define DigiXBeeCellularTransparent_Module 1
+//#warning infoMayflyWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable
 
 //end of _Module
 
-#define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
+#define APN_CDEF  "def_apn" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
@@ -107,7 +123,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //Defaults for data.envirodiy.org
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
-#define KellerNanolevel_ACT 1
+//#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
@@ -116,10 +132,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
 #endif // KellerNanolevel_ACT
-//#define INA219M_PHY_ACT 
+//#define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
-  #define INA219M_MA_UUID              "INA219_MA_UUID"
-  #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
+  #define INA219M_MA_UUID      "INA219_MA_UUID"
+  #define INA219M_VOLT_UUID    "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
@@ -133,8 +149,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
 
 #define ExternalVoltage_ACT 1
-#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
-#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+#ifdef ExternalVoltage_ACT
+  #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+  //#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+#endif //ExternalVoltage_ACT
 
 #elif PROFILE_NAME == PROFILE04_ADAFRUIT_FEATHER_M4
   //**************************************************************************
@@ -249,8 +267,8 @@ variant.h: has pin definitions
 
 #elif PROFILE_NAME == PROFILE03_SODAQ_AUTONOMO_M0
 //**************************************************************************
-//#define SENSOR_RS485_PHY 1
-//Standard 
+//This configuration expects a standard AUTONOMO with a Adafruit-3650 INA219(FeatherWing) connected on I2C 
+//Standard  .platformio\packages\framework-arduinosam\variants\sodaq_autonomo
 //This is hardcode to mean things in ProcessorStats !!!!
 //For Autonomo
 #define AutonomoRev_DEF "r5"
@@ -259,23 +277,29 @@ variant.h: has pin definitions
 #define HwName_DEF AutonomoName_DEF
 
 #define USE_SD_MAYFLY_INI 1
-/*Autonom has built in BEE, on sleep1 with 5 control pins
+/*nh debug cable to Autonomo Serial
+  FTDI/Yellow ProcTx/JP2-3/D0/PA9/SCOM2PAD1 & 
+  FTDI/Orange ProcRx/JP2-4/D1/PA10/SCOM2PAD2 
+
+Autonom has built in BEE, on sleep1 with 5 control pins
 BEE_VCC PowerEn=H -seperate regulator 
 input DTR shared ArduinoA8
 inputXbee CTS
 Out  Xbee autonomoModemAssocPin
 inXbee RTS
-
+BEE TX Serial PB30/SCOM5PAD0 To Bee from Proc
+BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 */
-#define modemVccPin_DEF BEE_VCC
-#define autonomoModemRtsPin   BEERTS //PB22 same as MCU_CTS output
-#define autonomoModemCtsPin   BEECTS //PB23 output
-#define autonomoModemDtrPin   PIN_A13 //Shared
-#define autonomoModemAssocPin RI_AS  //input
+#define modemVccPin_DEF     BEE_VCC //PA28 to XC6220 
+#define autonomoModemRtsPin 38u//BEERTS  //PB22=RTS same as MCU_CTS output XbeePin16_RTS
+#define modemStatusPin_DEF  39u//BEECTS  //PB23=CTSoutput XbeePin12_CTS
+#define modemSleepRqPin_DEF PIN_A13 //PB1=A13. Xbee Pin 9 DTR (DTS Shared with JP1-A13)
+#define modemAssocPin_DEF   RI_AS   //PB17=ASSOC output XbeePin15_Assoc
 
-#define STANDARD_SERIAL_OUTPUT  Serial
-#define DEBUGGING_SERIAL_OUTPUT Serial
-#define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
+// Serial3 shares with LED  -DENABLE_SERIAL3
+//#define STANDARD_SERIAL_OUTPUT Serial
+//#define DEBUGGING_SERIAL_OUTPUT Serial
+//#define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
@@ -283,16 +307,32 @@ inXbee RTS
 #define configIniID_DEF_STR "ms_cfg.ini"  
 #define CONFIG_TIME_ZONE_DEF -8
 
-// How frequently (in minutes) to log data
-#define  loggingInterval_CDEF_MIN 5
+// ** How frequently (in minutes) to log data **
+//For two Loggers - define loggingMultiplier_MAX_CDEF
+// The loggingInterval_CDEF_MIN becomes sampling rate 
+#define loggingMultiplier_MAX_CDEF 5
+// How frequently (in minutes) to sample data 
+#ifdef loggingMultiplier_MAX_CDEF
+//logging to SD/Publishing happens as loggingMultiplier_MAX_CDEF*loggingInterval_CDEF_MIN
+#define  loggingInterval_CDEF_MIN 2
+#else
+//logging to SD/Publishing and sampling are same
+#define  loggingInterval_CDEF_MIN 15
+#endif //loggingMultiplier_MAX_CDEF
 
-//define one  _Module
-//#define DigiXBeeLTE_Module 1
-#define DigiXBeeWifi_Module 1
-//#warning DigiXBeeLTE
+// Maximum logging setting allowed
+#define  loggingInterval_MAX_CDEF_MIN 6*60
+
+//define one Radio  _Module
+//#define DigiXBeeWifi_Module 1
+//#warning infoAutonomoWithDigiXBeeWiFi
+#define DigiXBeeCellularTransparent_Module 1
+#warning infoAutonomoWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable
+
 //end of _Module
 
-#define  loggingInterval_MAX_CDEF_MIN 120
+
 #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
@@ -302,6 +342,8 @@ inXbee RTS
 //Defaults for data.envirodiy.org
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
+//#define Smtp2goJsonAppKey "Smtp2goJson_AppKey"
+//#define Smtp2goJsonAppKey "api-76228BACDD7511E99F26F23C91C88F4E"
 //#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define SENSOR_RS485_PHY 1
@@ -310,8 +352,10 @@ inXbee RTS
 #endif //KellerNanolevel_ACT
 //#define INA219M_PHY_ACT 
 #ifdef INA219M_PHY_ACT
-  #define INA219M_MA_UUID              "INA219_MA_UUID"
-  #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
+  #define INA219M_MA_UUID       "INA219_MA_UUID"
+  #define INA219M_A_MAX_UUID    "INA219_A_MAX_UUID"
+  #define INA219M_A_MIN_UUID    "INA219_A_MIN_UUID"
+  #define INA219M_VOLT_UUID     "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
 //#define Modem_RSSI_UUID ""
@@ -321,11 +365,16 @@ inXbee RTS
 #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
 
+//To Use internal ADC (Only SAMD21 tested)
+#define ProcVolt_ACT 1
+#define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
+
 //#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
 #endif //ExternalVoltage_ACT
+
 #elif PROFILE_NAME == PROFILE02_ADAFRUIT_FEATHER_M0
 //**************************************************************************
 //#define SENSOR_RS485_PHY 1
@@ -444,12 +493,22 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #endif
 
 #if !defined loggingInterval_CDEF_MIN
-#define      loggingInterval_CDEF_MIN 15   
+#define      loggingInterval_CDEF_MIN (15)   
+#endif
+#if !defined loggingMultiplier_MAX_CDEF
+//Maximium Logging Multiplier  
+//This is default for testing - platforms should set own MAX
+// don't define #define  loggingMultiplier_MAX_CDEF 0
 #endif
 #if !defined loggingInterval_MAX_CDEF_MIN
+//Maximium Logging Interfaval Default - 
+// issue for ARCH_SAMD may be impacted by WatchDog? 
 //This is default for testing - platforms should set own MAX
-#define  loggingInterval_MAX_CDEF_MIN 15
-#endif 
+#define  loggingInterval_MAX_CDEF_MIN 24+60
+#endif
+#if !defined loggingInterval_Fast_MIN  
+#define  loggingInterval_Fast_MIN  1
+#endif //loggingInterval_Fast_MIN  
 #if !defined NEW_LOGGERID_MAX_SIZE
 #define NEW_LOGGERID_MAX_SIZE 40
 #endif 
