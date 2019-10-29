@@ -36,6 +36,10 @@ volatile bool Logger::startTesting = false;
     RTCZero Logger::zero_sleep_rtc;
 #endif
 
+#if defined USE_RTCLIB_PCF2127
+RTC_PCF2127 rtcExtPhy;
+#endif //USE_RTC_EXT_PHY
+
 
 // Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,

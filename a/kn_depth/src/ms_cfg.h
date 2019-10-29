@@ -188,6 +188,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
   //The FEATHERWING_RTC_SD has RTC PCF8523 + uSD/SPI with CS/GPI10
   #define ADAFRUIT_FEATHERWING_RTC_SD
+  //The RTClib.h has a number of PHY which work together and replaced Sodaq_DS3231
+  #define USE_RTCLIB_PCF2127 1
   #define USE_SD_MAYFLY_INI 1
   #define SD_SPI_CARD_PIN_DEF 10
 
@@ -310,7 +312,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 // ** How frequently (in minutes) to log data **
 //For two Loggers - define loggingMultiplier_MAX_CDEF
 // The loggingInterval_CDEF_MIN becomes sampling rate 
-#define loggingMultiplier_MAX_CDEF 5
+//#define loggingMultiplier_MAX_CDEF 5
 // How frequently (in minutes) to sample data 
 #ifdef loggingMultiplier_MAX_CDEF
 //logging to SD/Publishing happens as loggingMultiplier_MAX_CDEF*loggingInterval_CDEF_MIN

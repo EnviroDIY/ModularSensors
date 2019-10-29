@@ -16,7 +16,10 @@
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
 */
 
-#include <Sodaq_DS3231.h>
+//#include <Sodaq_DS3231.h>
+#include <RTClib.h>
+extern RTC_DS3231 rtc;
+
 #include "MaximDS3231.h"
 
 // Only input is the number of readings to average
@@ -50,7 +53,7 @@ bool MaximDS3231::startSingleMeasurement(void)
     // this function already has a forced wait for the conversion to complete
     // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
     MS_DBG(F("Forcing new temperature reading by DS3231"));
-    rtc.convertTemperature(false);
+    //rtc.convertTemperature(false); //Starts but getTemperature gets it
 
     return true;
 }
