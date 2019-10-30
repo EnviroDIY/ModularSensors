@@ -47,7 +47,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define PROFILE_NAME PROFILE01_MAYFLY_AVR
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-//"ARDUINO_SAMD_FEATHER_M4"  ADAFRUIT_FEATHER_M4_EXPRESS
+//"ARDUINO_SAMD_FEATHER_M4" or  ADAFRUIT_FEATHER_M4_EXPRESS
 #define PROFILE_NAME PROFILE04_ADAFRUIT_FEATHER_M4
 //#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
@@ -186,13 +186,26 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   //FEATHER_M4_EXPRESS has QSPI 2M FLASH
   #define SD_QSPI_2MFLASH
 
-  //The FEATHERWING_RTC_SD has RTC PCF8523 + uSD/SPI with CS/GPI10
-  #define ADAFRUIT_FEATHERWING_RTC_SD
+
+//The FEATHERWING_eInk 1.5" has RTC PCF8523 + uSD/SPI with CS/GPI10
+ //#define ADAFRUIT_FEATHERWING_RTC_SD
   //The RTClib.h has a number of PHY which work together and replaced Sodaq_DS3231
   #define USE_RTCLIB_PCF2127 1
   #define USE_SD_MAYFLY_INI 1
-  #define SD_SPI_CARD_PIN_DEF 10
 
+  //The FEATHERWING_RTC_SD has RTC PCF8523 + uSD/SPI with CS/GPI10
+ #define ADAFRUIT_FEATHERWING_eInk1_5in_SD 1
+ #if defined ADAFRUIT_FEATHERWING_eInk1_5in_SD
+//Shared SPI with microSD CS and 
+#define SD_SPI_CS_PIN_DEF 10
+#define EPD_CS      9  //10 B031 SPI_ECS
+#define EPD_DC      6  //9? B031 eInkDC
+#define SRAM_CS     -1 //no6 used
+#define EPD_RESET   -1 //Actually 5 // can set to -1 and share with microcontroller Reset!
+#define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
+
+
+ #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 
   #define LOGGERID_DEF_STR "msLog01"
   #define NEW_LOGGERID_MAX_SIZE 40
@@ -270,7 +283,7 @@ variant.h: has pin definitions
 #elif PROFILE_NAME == PROFILE03_SODAQ_AUTONOMO_M0
 //**************************************************************************
 //This configuration expects a standard AUTONOMO with a Adafruit-3650 INA219(FeatherWing) connected on I2C 
-//Standard  .platformio\packages\framework-arduinosam\variants\sodaq_autonomo
+// .platformio\packages\framework-arduinosam\variants\sodaq_autonomo
 //This is hardcode to mean things in ProcessorStats !!!!
 //For Autonomo
 #define AutonomoRev_DEF "r5"
@@ -379,6 +392,10 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 
 #elif PROFILE_NAME == PROFILE02_ADAFRUIT_FEATHER_M0
 //**************************************************************************
+//This configuration expects a standard FEATHER_M0 Adalogger
+// connected to a B031r1 with RTC PCF2127, 
+// MCP23017 port expander 16bits
+// Requires updated C:\Users\neilh77\.platformio\packages\framework-arduinosam\variants\feather_m0
 //#define SENSOR_RS485_PHY 1
 //Standard 
 //This is hardcode to mean things in ProcessorStats !!!!
@@ -387,7 +404,20 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define HwName_DEF "FeatherM0"
 
 #define USE_SD_MAYFLY_INI 1
+/*nh debug cable to B031r1 Serial?
+  FTDI/Yellow ???tbdProcTx/JP2-3/D0/PA9/SCOM2PAD1 & 
+  FTDI/Orange ???tbdProcRx/JP2-4/D1/PA10/SCOM2PAD2 
+Feather M0 has built in LED and microSD
+B0311r1 has XBEE
+  */
 
+/* Needs specifying for Feather M0
+#define modemVccPin_DEF     BEE_VCC // 
+#define autonomoModemRtsPin 38u//PB22=RTS same as MCU_CTS output XbeePin16_RTS
+#define modemStatusPin_DEF  39u//BEECTS  //PB23=CTSoutput XbeePin12_CTS
+#define modemSleepRqPin_DEF PIN_A13 //PB1=A13. Xbee Pin 9 DTR (DTS Shared with JP1-A13)
+#define modemAssocPin_DEF   RI_AS   //PB17=ASSOC output XbeePin15_Assoc
+*/
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
 //#define NEW_LOGGERID_MAX_SIZE  3 ///Test
@@ -397,7 +427,16 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 // How frequently (in minutes) to log data
 //#define  loggingInterval_CDEF_MIN 5
 #define  loggingInterval_MAX_CDEF_MIN 120
-#define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
+
+//define one Radio  _Module
+#define DigiXBeeWifi_Module 1
+#warning infoAutonomoWithDigiXBeeWiFi
+//#define DigiXBeeCellularTransparent_Module 1
+//#warning infoAutonomoWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable
+
+//end of _Module
+#define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
@@ -424,6 +463,10 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define ProcessorStats_ACT 1
 #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
+
+//To Use internal ADC (Only SAMD21 tested)
+#define ProcVolt_ACT 1
+#define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
 
 //#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT

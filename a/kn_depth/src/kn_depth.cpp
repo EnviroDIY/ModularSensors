@@ -100,6 +100,8 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //#define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
 //ms_cfg.h:#define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
+#define greenLEDPin LED_BUILTIN       //Built in LED is RED. MCU pin for the green LED (-1 if not applicable)
+#define redLEDPin -1                  //Doesn't exist 
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
@@ -149,7 +151,10 @@ const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
 //FEATHER_M4_EXPRESS has internal flash on QSPI P
 //QSPI const int8_t sdCardSSPin = 10;  // PA08 MCU SD card chip select/slave select pin (must be given!)
 //and has FEATHER_RTC_SD_CARD
-    #if defined(ADAFRUIT_FEATHERWING_RTC_SD) 
+    #if defined ADAFRUIT_FEATHERWING_eInk1_5in_SD
+    const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+    const int8_t sdCardSSPin = SD_SPI_CS_PIN_DEF; 
+    #elif defined ADAFRUIT_FEATHERWING_RTC_SD 
     //SD on std port with SD_CS JP3-D10 PA18  RTC PCF8522+ SD
     const int8_t sdCardSSPin = SD_SPI_CARD_PIN_DEF;  //JP3-D10 PA18
     #else 
@@ -354,7 +359,7 @@ HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
 //ms_cfg.h:SerialTty Serial4 Available Pins
 
 #elif defined ARDUINO_SAMD_FEATHER_M0
-HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
+HardwareSerial &modemSerial = Serial1;  //TODO B031r1 ?(was for SAMD51):  
 
 #elif defined ARDUINO_SODAQ_AUTONOMO
 HardwareSerial &modemSerial = Serial1;  // Bee Socket 
