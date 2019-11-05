@@ -21,8 +21,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // These are either pre .ini read or per board defintions
 #define MFsn_def  F("unknown")
 
-// Boards functions are modified based on name
-//#define USE_SD_MAYFLY_INI0 0
+// Boards functions are modified based on name 1 or 2
+//#define USE_MS_SD_INI 1
 
 
 
@@ -76,7 +76,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define USE_SD_MAYFLY_INI 1
+#define USE_MS_SD_INI 1
 
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
 #define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
@@ -91,6 +91,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define NEW_LOGGERID_MAX_SIZE  3 ///Test
 #define configIniID_DEF_STR "ms_cfg.ini"  
 #define CONFIG_TIME_ZONE_DEF -8
+
+//??#define USE_RTCLIB RTC_DS3231  //needs checking
 
 // ** How frequently (in minutes) to log data **
 //For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
@@ -175,10 +177,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   //#define SENSOR_RS485_PHY 1
   //Standard 
   //This is hardcode to mean things in ProcessorStats !!!!
-  //For Adafruit Feather M0 (not Feather M0 Express?)
   #define HwVersion_DEF "r1"
-  #define HwName_DEF "FeatherM4"
-
+  #define HwName_DEF "FeatherM4express"
+#define HwFeatherWing_B031ALL 1
   //The FEATHER_M4_EXPRESS has 1 neoPixel + RedLED
   #define NUM_NEOPIXELS 1
   #define NEOPIXEL_PIN 8
@@ -187,24 +188,28 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define SD_QSPI_2MFLASH
 
 
-//The FEATHERWING_eInk 1.5" has RTC PCF8523 + uSD/SPI with CS/GPI10
- //#define ADAFRUIT_FEATHERWING_RTC_SD
-  //The RTClib.h has a number of PHY which work together and replaced Sodaq_DS3231
-  #define USE_RTCLIB_PCF2127 1
-  #define USE_SD_MAYFLY_INI 1
 
-  //The FEATHERWING_RTC_SD has RTC PCF8523 + uSD/SPI with CS/GPI10
- #define ADAFRUIT_FEATHERWING_eInk1_5in_SD 1
- #if defined ADAFRUIT_FEATHERWING_eInk1_5in_SD
-//Shared SPI with microSD CS and 
-#define SD_SPI_CS_PIN_DEF 10
-#define EPD_CS      9  //10 B031 SPI_ECS
-#define EPD_DC      6  //9? B031 eInkDC
-#define SRAM_CS     -1 //no6 used
-#define EPD_RESET   -1 //Actually 5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
+//The RTClib.h has a number of PHY which work together and replaced Sodaq_DS3231
+  #define USE_RTCLIB RTC_PCF2127
+  //#define ADAFRUIT_FEATHERWING_RTC_SD
+  //#define USE_RTCLIBRTC PCF8523
 
+  //The FEATHERWING_eInk 1.5" has uSD/SPI with CS/GPI10
+  //The Feather_m4 has an board SD0(flashSPI) which is the source of where to look for the ini
+  //Fut: USE_MS_SD_INI 1 would be onboard
+  //Fut: USE_MS_SD_INI 2 eg feather_wing eInk1_5in_SD  microSD - SD1
+  #define USE_MS_SD_INI 1
+  //Fut: the USB maps to the SD0flashSPI 
 
+  #define ADAFRUIT_FEATHERWING_eInk1_5in_SD 1
+  #if defined ADAFRUIT_FEATHERWING_eInk1_5in_SD
+    //Shared SPI with microSD CS and 
+    #define SD_SPI_CS_PIN_DEF 10
+    #define EPD_CS      9  //10 B031 SPI_ECS
+    #define EPD_DC      6  //9? B031 eInkDC
+    #define SRAM_CS     -1 //no6 used
+    #define EPD_RESET   -1 //Actually 5 // can set to -1 and share with microcontroller Reset!
+    #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 
   #define LOGGERID_DEF_STR "msLog01"
@@ -221,8 +226,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define DigiXBeeWifi_Module
 
 //end of _Module
-  #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
-  #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
+  #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
+  #define WIFIID_CDEF  "AzondeNetSsid"  // The WiFi access point, unnecessary for gprs
   #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
   //#define SENSOR_CONFIG_GENERAL 1
@@ -291,7 +296,7 @@ variant.h: has pin definitions
 #define HwVersion_DEF AutonomoRev_DEF
 #define HwName_DEF AutonomoName_DEF
 
-#define USE_SD_MAYFLY_INI 1
+#define USE_MS_SD_INI 1
 /*nh debug cable to Autonomo Serial
   FTDI/Yellow ProcTx/JP2-3/D0/PA9/SCOM2PAD1 & 
   FTDI/Orange ProcRx/JP2-4/D1/PA10/SCOM2PAD2 
@@ -403,7 +408,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define HwVersion_DEF "r1"
 #define HwName_DEF "FeatherM0"
 
-#define USE_SD_MAYFLY_INI 1
+#define USE_MS_SD_INI 1
 /*nh debug cable to B031r1 Serial?
   FTDI/Yellow ???tbdProcTx/JP2-3/D0/PA9/SCOM2PAD1 & 
   FTDI/Orange ???tbdProcRx/JP2-4/D1/PA10/SCOM2PAD2 

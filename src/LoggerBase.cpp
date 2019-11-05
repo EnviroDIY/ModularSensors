@@ -1,5 +1,5 @@
 /*
- *LoggerBase.h
+ *LoggerBase.cpp
 
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
@@ -36,8 +36,8 @@ volatile bool Logger::startTesting = false;
     RTCZero Logger::zero_sleep_rtc;
 #endif
 
-#if defined USE_RTCLIB_PCF2127
-RTC_PCF2127 rtcExtPhy;
+#if defined USE_RTCLIB
+USE_RTCLIB rtcExtPhy;
 #endif //USE_RTC_EXT_PHY
 
 
@@ -662,16 +662,18 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
         //return false;
         retVal= true;  //RTC valid
     }
-    #if defined ADAFRUIT_FEATHERWING_RTC_SD
+    #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
     //Check the current ExtRtc time - 
     DateTime nowExt = rtcExtPhy.now(); //T0 UST/
-    uint32_t nowExtEpoch_sec =nowExt.getEpoch();
+    //uint32_t nowExtEpoch_sec =nowExt.getEpoch(); //sodaq_DS3231 extension
+    uint32_t nowExtEpoch_sec =nowExt.unixtime();
     MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec, \
         "->(T=", getTimeZone(),")", \
         formatDateTime_ISO8601(nowExtEpoch_sec));
     if (abs(nowExtEpoch_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC)
     {
-        rtcExtPhy.setTimeEpochT0(UTCEpochSeconds);
+        //rtcExtPhy.setTimeEpochT0(UTCEpochSeconds);//sodaq_DS3231 extension
+        rtcExtPhy.adjust(UTCEpochSeconds);//const DateTime& dt);
         MS_DBG("         rtcExt updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
         retVal= true;
     }
@@ -1210,7 +1212,7 @@ bool Logger::initializeSDCard(void)
         return false;
     }
     // Initialise the SD card
-    if (!sd.begin(_SDCardSSPin, SPI_FULL_SPEED))
+    if (!sd1_card.begin(_SDCardSSPin, SPI_FULL_SPEED))
     {
         PRINTOUT(F("Error: SD card failed to initialize or is missing."));
         PRINTOUT(F("Data will not be saved!"));
@@ -1626,7 +1628,7 @@ void Logger::begin()
     #if defined ARDUINO_ARCH_SAMD
         /* Work in progress
          * Int RTCZero     class Time relative to 2000 TZ
-         * Ext RTC_PCF8523 class Time relative to 2000 UTS/GMT/TZ0
+         * Ext RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
          */
 
         //eg Apr 22 2019 16:46:09 in this TZ
@@ -1634,8 +1636,9 @@ void Logger::begin()
         //MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
         MS_DBG("Sw Build Time  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
 
-        #if defined ADAFRUIT_FEATHERWING_RTC_SD
-        DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
+        #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
+        //DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
+        DateTime ccTime2k=ccTimeTZ.secondstime()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
         rtcExtPhy.begin();
         if (! rtcExtPhy.initialized())
         {
@@ -1643,18 +1646,20 @@ void Logger::begin()
             rtcExtPhy.adjust(ccTime2k);
         } else {
             DateTime now = rtcExtPhy.now();
-            if (now.getY2k_secs() < ccTime2k.getY2k_secs()) {
-                MS_DBG("ExtRTC invalid   ",ccTime2k.month(),"-",ccTime2k.date(),"-",ccTime2k.year2k(),"/",ccTime2k.year(), " ",ccTime2k.hour(),":",ccTime2k.minute(),":",ccTime2k.second(), ". Set to compile time ",__DATE__," ",__TIME__);
+            //if (now.getY2k_secs() < ccTime2k.getY2k_secs()) {
+            if (now.secondstime() < ccTime2k.secondstime()) {
+                MS_DBG("ExtRTC invalid   ",ccTime2k.month(),"-",ccTime2k.date(),"-",ccTime2k.year(), " ",ccTime2k.hour(),":",ccTime2k.minute(),":",ccTime2k.second(), ". Set to compile time ",__DATE__," ",__TIME__);
                 rtcExtPhy.adjust(ccTime2k);
             }
         }
         
-    watchDogTimer.resetWatchDog();
+        watchDogTimer.resetWatchDog();
 
         DateTime now = rtcExtPhy.now();
         MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
         zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
-        zero_sleep_rtc.setDate(now.date(), now.month(), now.year2k());
+        //zero_sleep_rtc.setDate(now.date(), now.month(), now.year2k());
+        zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
         #define zr zero_sleep_rtc
         MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
         #else // no ADAFRUIT_FEATHERWING_RTC_SD

@@ -1618,9 +1618,9 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     Local storage - evolving
 // ==========================================================================
-#ifdef USE_SD_MAYFLY_INI
+#ifdef USE_MS_SD_INI
  persistent_store_t ps;
-#endif //#define USE_SD_MAYFLY_INI
+#endif //#define USE_MS_SD_INI
 
 // ==========================================================================
 //     The Logger Object[s]
@@ -1788,7 +1788,7 @@ void setup()
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
         SerialStd.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+            "WARNING: THIS WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -1826,10 +1826,10 @@ void setup()
     #endif
     #endif
 
-#ifdef USE_SD_MAYFLY_INI
+#ifdef USE_MS_SD_INI
     Serial.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
-#endif //USE_SD_MAYFLY_INI
+#endif //USE_MS_SD_INI
 
 #if 0
     SerialStd.print(F(" .ini-Logger:"));
@@ -1931,12 +1931,9 @@ void setup()
         //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
 
-    // Call the processor sleep
-    greenredflash(4,1000);
-    //delay(1000);
-
-#if defined ARDUINO_ARCH_SAMD
+#if defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
+    //USE_RTCLIB implies extRtcPhy
     MS_DBG(F("  Modem setup & Timesync at init"));
     modemPhy.modemPowerUp();
     modemPhy.wake();
@@ -1952,13 +1949,17 @@ void setup()
         modemPhy.disconnectInternet();
     } else {MS_DBG(F("  No internet connection..."));}
     // Turn the modem off
-    modemPhy.modemSleepPowerDown();        
+    modemPhy.modemSleepPowerDown(); 
+//   #endif //HwFeatherWing_B031ALL       
 #endif //ARDUINO_ARCH_SAMD
 
     Logger::markTime(); //Init so never zero
 
     //dataLogger.systemSleep();
-
+    while (1) { // Call the processor sleep
+        greenredflash(4,500);
+        delay(2000);
+    }
 }
 
 

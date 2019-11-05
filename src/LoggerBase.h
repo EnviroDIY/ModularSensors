@@ -49,7 +49,7 @@
 // timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
 // epoch beginning 1970-jan-01 00:00:00.
 
-#include <SdFat.h>  // To communicate with the SD card
+#include "SdFat.h"  // To communicate with the SD card
 
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_SENDERS 4
@@ -341,7 +341,7 @@ public:
 protected:
 
     // The SD card and file
-    SdFat sd;
+    SdFat sd1_card;
     File logFile;
     String _fileName;
 
