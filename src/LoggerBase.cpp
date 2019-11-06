@@ -610,12 +610,12 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
 
 
 // This converts an epoch time (unix time) into a ISO8601 formatted string
-// It assumes the supplied date/time is in the LOGGER's timezone and adds
-// the LOGGER's offset as the time zone offset in the string.
+// It assumes the supplied date/time is in the LOGGER's timezone
 String Logger::formatDateTime_ISO8601(uint32_t epochTimeTz)
 {
     // Create a DateTime object from the epochTime
-    DateTime dtTz = dtFromEpoch(epochTimeTz);
+    DateTime dtTz(epochTimeTz);
+    //MS_DBG("dtTz ",dtTz.year(),"/",dtTz.month(),"/",dtTz.date()," ",dtTz.hour(),":",dtTz.minute(),":",dtTz.second());
     return formatDateTime_ISO8601(dtTz);
 }
 
@@ -664,15 +664,14 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     }
     #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
     //Check the current ExtRtc time - 
-    DateTime nowExt = rtcExtPhy.now(); //T0 UST/
-    //uint32_t nowExtEpoch_sec =nowExt.getEpoch(); //sodaq_DS3231 extension
+    DateTime nowExt = rtcExtPhy.now(); //T0 UST
     uint32_t nowExtEpoch_sec =nowExt.unixtime();
     MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec, \
         "->(T=", getTimeZone(),")", \
         formatDateTime_ISO8601(nowExtEpoch_sec));
     if (abs(nowExtEpoch_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC)
     {
-        //rtcExtPhy.setTimeEpochT0(UTCEpochSeconds);//sodaq_DS3231 extension
+
         rtcExtPhy.adjust(UTCEpochSeconds);//const DateTime& dt);
         MS_DBG("         rtcExt updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
         retVal= true;
@@ -1626,53 +1625,61 @@ void Logger::begin()
         rtc.begin();
     #endif
     #if defined ARDUINO_ARCH_SAMD
-        /* Work in progress
-         * Int RTCZero     class Time relative to 2000 TZ
-         * Ext RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
+        /* Internal RTCZero Mode3       class Time relative to 2000 T0
+         * External RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
+         * Seconds, Minutes 0-59,  Hours 0-23,  Days 1-31, Months 1-12, Years 0-99
          */
 
         //eg Apr 22 2019 16:46:09 in this TZ
         DateTime ccTimeTZ(__DATE__, __TIME__);
-        //MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
-        MS_DBG("Sw Build Time  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
+        DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime())-(getTimeZone()*3600)); //set to secs from UST/GMT Year 2000
+        #define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime())
+        #define TIME_FUT_UPPER_UT0 (COMPILE_TIME_UT0+50*365*24*60*60)
+        //MS_DBG("Sw Build Time Tz: ",ccTimeTZ.year(),"/",ccTimeTZ.month(),"/",ccTimeTZ.date()," ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second(), " secs2kTz ",ccTimeTZ.unixtime());
+        //MS_DBG("Sw Build Time T0: ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date()," ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second()," secs2kT0 ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
 
         #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
-        //DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
-        DateTime ccTime2k=ccTimeTZ.secondstime()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
-        rtcExtPhy.begin();
-        if (! rtcExtPhy.initialized())
-        {
-            MS_DBG("ExtRTC !init set to compile time ",__DATE__," ",__TIME__);
-            rtcExtPhy.adjust(ccTime2k);
-        } else {
-            DateTime now = rtcExtPhy.now();
-            //if (now.getY2k_secs() < ccTime2k.getY2k_secs()) {
-            if (now.secondstime() < ccTime2k.secondstime()) {
-                MS_DBG("ExtRTC invalid   ",ccTime2k.month(),"-",ccTime2k.date(),"-",ccTime2k.year(), " ",ccTime2k.hour(),":",ccTime2k.minute(),":",ccTime2k.second(), ". Set to compile time ",__DATE__," ",__TIME__);
-                rtcExtPhy.adjust(ccTime2k);
-            }
-        }
-        
-        watchDogTimer.resetWatchDog();
+            rtcExtPhy.begin();
 
-        DateTime now = rtcExtPhy.now();
-        MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
-        zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
-        //zero_sleep_rtc.setDate(now.date(), now.month(), now.year2k());
-        zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
-        #define zr zero_sleep_rtc
-        MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
-        #else // no ADAFRUIT_FEATHERWING_RTC_SD
-        // If Power-on Reset Rcause.Bit0 have specific processing
-        #define zr zero_sleep_rtc
-        if ( (0== zr.getYear()) && (1==zr.getMonth()) && (1==zr.getDay()) ) {
-            MS_DBG("RTC.setDay to 2 for Power-On Reset case ");
-            zr.setDay(2); // Allow for calcs for -11hrs
-        }
+            USE_RTCLIB::ErrorNum errRtc = rtcExtPhy.initialized();
+
+            if (USE_RTCLIB::NO_ERROR != errRtc)
+            {
+                MS_DBG("ExtRTC !init. err=",errRtc," set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                rtcExtPhy.adjust(ccTimeT0);
+
+            } else {
+                DateTime rNow_dt = rtcExtPhy.now();
+                uint32_t rnow_usecs = rNow_dt.unixtime();
+
+                MS_DBG("ExtRTC t0 ",rNow_dt.year(),"/",rNow_dt.month(),"/",rNow_dt.date()," ",rNow_dt.hour(),":",rNow_dt.minute(),":",rNow_dt.second()," or epoch ",rnow_usecs);
+                MS_DBG("Good if between ",COMPILE_TIME_UT0,"<",rnow_usecs ,"<",TIME_FUT_UPPER_UT0);
+                if ((rnow_usecs < COMPILE_TIME_UT0) || (rnow_usecs  > TIME_FUT_UPPER_UT0) ) {
+                    rtcExtPhy.adjust(ccTimeT0);
+                    MS_DBG("ExtRTC t0 set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                }
+            }
+            
+            watchDogTimer.resetWatchDog();
+
+            DateTime now = rtcExtPhy.now();
+        
+            MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
+            zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
+            zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
+            #define zr zero_sleep_rtc
+            MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+        #else // no external _RTC
+            // If Power-on Reset Rcause.Bit0 have specific processing
+            #define zr zero_sleep_rtc
+            if ( (0== zr.getYear()) && (1==zr.getMonth()) && (1==zr.getDay()) ) {
+                MS_DBG("RTC.setDay to 2 for Power-On Reset case ");
+                zr.setDay(2); // Allow for calcs for -11hrs
+            }
         #endif // ADAFRUIT_FEATHERWING_RTC_SD
     #endif //ARDUINO_ARCH_SAMD
 
-    MS_DBG(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
+    MS_DBG(F("RTC Time:"), formatDateTime_ISO8601(getNowEpochTz()) );
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
