@@ -211,7 +211,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #define EPD_RESET   -1 //Actually 5 // can set to -1 and share with microcontroller Reset!
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
-
+/* Needs specifying for Feather M4 B031rX */
+#define modemVccPin_DEF     -1 // B031r1:V3Sw mcpExp:PA0
+//#define autonomoModemRtsPin 38u//B031r1:XbeeResetN PA7
+#define modemStatusPin_DEF  -1//B031r1: not supported
+#define modemSleepRqPin_DEF -1 //B031r1:XbeeSleepRq Exp:PA6
+                                    //B031r1:XbeeOnSleepN Exp:PA5
+#define modemAssocPin_DEF   -1   //B031r1: not supported
+//#define modemRssi??_DEF   -1   //B031r1:RssiSt ?
+/**/
   #define LOGGERID_DEF_STR "msLog01"
   #define NEW_LOGGERID_MAX_SIZE 40
   //#define NEW_LOGGERID_MAX_SIZE  3 ///Test
@@ -231,7 +239,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
   //#define SENSOR_CONFIG_GENERAL 1
-  //#define KellerAcculevel_ACT 1
+ 
   //Defaults for data.envirodiy.org
   #define registrationToken_UUID "registrationToken_UUID"
   #define samplingFeature_UUID   "samplingFeature_UUID"
@@ -260,6 +268,7 @@ variant.h: has pin definitions
 #define STANDARD_SERIAL_OUTPUT Serial4
 #endif // SERIAL4_EN
 
+  //#define KellerAcculevel_ACT 1
   //#define KellerNanolevel_ACT 1
   #ifdef KellerNanolevel_ACT
     #define SENSOR_RS485_PHY 1

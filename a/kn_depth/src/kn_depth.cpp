@@ -34,11 +34,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Include the base required libraries
 // ==========================================================================
 #include "ms_cfg.h" //must be before ms_common.h & Arduino.h
-#ifdef MS_KN_DEPTH_DEBUG
-#define MS_DEBUGGING_STD "kn_depth"
-#endif //MS_KN_DEPTH_DEBUG
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
 
 #include <Arduino.h>  // The base Arduino library
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
@@ -48,6 +43,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Time.h>
 #include <errno.h>
 #include "ms_common.h"
+//#include "Adafruit_NeoPixel.h"
+
+#include "PortExpanderB031.h"
 
 #define KCONFIG_SHOW_NETWORK_INFO 1
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -56,7 +54,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
 
-
+//After other includes that redifine MS_DEBUGGING_STD
+#ifdef MS_KN_DEPTH_DEBUG
+#undef MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "kn_depth"
+#endif //MS_KN_DEPTH_DEBUG
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
@@ -100,8 +104,10 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //#define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
 //ms_cfg.h:#define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
+#if !defined greenLEDPin 
 #define greenLEDPin LED_BUILTIN       //Built in LED is RED. MCU pin for the green LED (-1 if not applicable)
-#define redLEDPin -1                  //Doesn't exist 
+#endif //greenLEDPin 
+// #define redLEDPin -1                  //Doesn't exist 
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
@@ -389,6 +395,17 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 //    Note:  Don't use more than one!
 // ==========================================================================
 
+// Use this to create a modem if you want to monitor modem communication through
+// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
+// https://github.com/vshymanskyy/StreamDebugger
+#if 1 //defined STREAMDEBUGGER_DBG
+ #include <StreamDebugger.h>
+ StreamDebugger modemDebugger(modemSerial, STANDARD_SERIAL_OUTPUT);
+ #define modemSerHw modemDebugger
+#else
+ #define modemSerHw modemSerial
+#endif //STREAMDEBUGGER_DBG
+
 #ifdef DigiXBeeCellularTransparent_Module 
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
@@ -451,7 +468,7 @@ const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
-DigiXBeeWifi modemXBWF(&modemSerial,
+DigiXBeeWifi modemXBWF(&modemSerHw,
                        modemVccPin, modemStatusPin, useCTSforStatus,
                        modemResetPin, modemSleepRqPin,
                        wifiId_def, wifiPwd_def);
@@ -585,33 +602,7 @@ SodaqUBeeU201 modem = modemU201;
 // Variable *modemSignalPct = new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *modemSignalPct = new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *modemSignalPct = new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-#if 0
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-//#define STREAMDEBUGGER_DBG
-#if !defined(STREAMDEBUGGER_DBG)
- #if defined(TINY_GSM_MODEM_XBEE)
- TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
- #else
- TinyGsm *tinyModem = new TinyGsm(modemSerial);
- #endif
-#endif //STREAMDEBUGGER_DBG
 
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-#ifdef STREAMDEBUGGER_DBG
- #include <StreamDebugger.h>
- StreamDebugger modemDebugger(modemSerial, STANDARD_SERIAL_OUTPUT);
- //TinyGsm *tinyModem = new TinyGsm(modemDebugger);
- #if defined(TINY_GSM_MODEM_XBEE)
- TinyGsm *tinyModem = new TinyGsm(modemDebugger, modemResetPin);
- #else
- TinyGsm *tinyModem = new TinyGsm(modemDebugger);
- #endif
-#endif //STREAMDEBUGGER_DBG
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-#endif //0
 
 #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 // ==========================================================================
@@ -1614,7 +1605,13 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-
+// ==========================================================================
+//     Port Expansion - evolving
+// ==========================================================================
+#if defined HwFeatherWing_B031ALL
+#define MCP23017_ADDR 0x20
+PortExpanderB031 mcpExp = PortExpanderB031(MCP23017_ADDR);
+#endif //HwFeatherWing_B031ALL
 // ==========================================================================
 //     Local storage - evolving
 // ==========================================================================
@@ -1790,6 +1787,14 @@ void setup()
         SerialStd.println(F(
             "WARNING: THIS WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
+    Wire.begin();
+
+    #if defined HwFeatherWing_B031ALL  
+    mcpExp.init();
+    mcpExp.toggleBit(peB031_bit::eMcp_XbeeResetNout_bit,100);
+    #endif //defined HwFeatherWing_B031ALL
+    //extern const PinDescription g_APinDescription[];
+    //MS_DBG(F("Sizeoff "),sizeof(g_APinDescription),"/",sizeof(PinDescription));
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
         enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
@@ -1931,7 +1936,7 @@ void setup()
         //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
 
-#if defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
+#if 1// defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
     //USE_RTCLIB implies extRtcPhy
     MS_DBG(F("  Modem setup & Timesync at init"));
@@ -1956,10 +1961,7 @@ void setup()
     Logger::markTime(); //Init so never zero
 
     //dataLogger.systemSleep();
-    while (1) { // Call the processor sleep
-        greenredflash(4,500);
-        delay(2000);
-    }
+    //while (1) { greenredflash(4,500); delay(2000); }
 }
 
 

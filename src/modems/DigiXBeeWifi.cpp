@@ -67,49 +67,77 @@ bool DigiXBeeWifi::extraModemSetup(void)
         PRINTOUT(F("XbeeWiFi Initializing Internet comms with modem '"),_modemName,F("'"));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        gsmModem.sendAT(GF("D8"),1);
-        success &= gsmModem.waitResponse() == 1;
+        //gsmModem.sendAT(GF("D8"),1);
+        //success &= gsmModem.waitResponse() == 1;
         // Turn on status indication pin - it will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
         gsmModem.sendAT(GF("D9"),1);
         success &= gsmModem.waitResponse() == 1;
+        if (!success) {MS_DBG(F("Fail D9 "),success);}
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
         gsmModem.sendAT(GF("D7"),1);
         success &= gsmModem.waitResponse() == 1;
+        if (!success) {MS_DBG(F("Fail D7 "),success);}
         // Turn on the associate LED (if you're using a board with one)
         // NOTE:  Only pin 15/DIO5 can be used for this function
-        gsmModem.sendAT(GF("D5"),1);
-        success &= gsmModem.waitResponse() == 1;
+        //gsmModem.sendAT(GF("D5"),1);
+        //success &= gsmModem.waitResponse() == 1;
         // Turn on the RSSI indicator LED (if you're using a board with one)
         // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
-        gsmModem.sendAT(GF("P0"),1);
-        success &= gsmModem.waitResponse() == 1;
+        //gsmModem.sendAT(GF("P0"),1);
+        //success &= gsmModem.waitResponse() == 1;
         //Set to TCP mode
         gsmModem.sendAT(GF("IP"),1);
         success &= gsmModem.waitResponse() == 1;
+        if (!success) {MS_DBG(F("Fail IP "),success);}
         // Put the XBee in pin sleep mode in conjuction with D8=1
-        MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(GF("SM"),1);
-        success &= gsmModem.waitResponse() == 1;
+        //MS_DBG(F("Setting Sleep Options..."));
+        //gsmModem.sendAT(GF("SM"),1);
+        //success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
         // 40 - Aay associated with AP during sleep - draws more current (+10mA?)
         //100 -Cyclic sleep ST specifies time before reutnring to sleep
         //200 - SRGD magic number
-        gsmModem.sendAT(GF("SO"),200);
-        success &= gsmModem.waitResponse() == 1;
+        //gsmModem.sendAT(GF("SO"),200);
+        //success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
         success &= gsmModem.networkConnect(_ssid, _pwd);
         // Set the socket timeout to 10s (this is default)
-        gsmModem.sendAT(GF("TM"),64);
-        success &= gsmModem.waitResponse() == 1;
+        //if (!success) {MS_DBG(F("Fail Connect "),success);success=true;}
+        //gsmModem.sendAT(GF("TM"),64);
+        //success &= gsmModem.waitResponse() == 1;
         if (success) {MS_DBG(F("Setup Wifi Network "),_ssid);} 
         else  {MS_DBG(F("Failed Setting WiFi"),_ssid);}
         // Write changes to flash and apply them
         gsmModem.writeChanges();
 
+        //Scan for AI  last node join request
+        uint16_t loops=0;
+        int16_t ui_db;
+        uint8_t status;
+        String ui_op;
+        bool apRegistered=false;
+        PRINTOUT(F("Loop=Sec] rx db : Status #Polled Status every 1sec/30sec"));
+        uint8_t reg_count =0;
+        for ( unsigned long start = millis(); millis() - start < 300000; loops++) {
+            ui_db = 0;// gsmModem.getSignalQuality();
+            gsmModem.sendAT(GF("AI"));
+            status=gsmModem.readResponseInt(10000L);
+            ui_op = String(loops)+"="+String((float)millis()/1000)+"] "+String(ui_db)+":0x"+String(status,HEX);
+            if (0==status) {
+                ui_op += " Cnt="+String(reg_count);
+                PRINTOUT(ui_op);
+                if (++reg_count > 2) {
+                    apRegistered=true;
+                    break;
+                }
+            }
+            PRINTOUT(ui_op); 
+            delay(1000);
+        }         
         //Fut: Could Scan for access points here AS commnd
 
         MS_DBG(F("Get IP number"));
@@ -117,13 +145,13 @@ bool DigiXBeeWifi::extraModemSetup(void)
         uint8_t index=0;
         bool AllocatedIpSuccess = false;
         //Display IP allocation
-        #define MDM_LP_MAX 21
+        #define MDM_LP_MAX 50
         for (int mdm_lp=1;mdm_lp<MDM_LP_MAX;mdm_lp++) {
             delay(mdm_lp*500);
             gsmModem.sendAT(F("MY"));  // Request IP #
             index = gsmModem.waitResponse(1000,xbeeRsp);
-            MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_MAX,F("]"),xbeeRsp);
-            if (0!=xbeeRsp.compareTo("0.0.0.0")) {
+            MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_MAX,F("] '"),xbeeRsp,"'");
+            if (0!=xbeeRsp.compareTo("0.0.0.0") && (xbeeRsp.length()>7)) {
                 AllocatedIpSuccess = true;
                 break;
             }

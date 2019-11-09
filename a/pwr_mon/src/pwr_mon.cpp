@@ -2,7 +2,7 @@
 pwr_mon.cpp  Power Monitor dataLogger
 Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
-Hardware Platform Supported: Sodaq Autonomo & EnviroDIY Mayfly
+Hardware Patform Supported: Sodaq Autonomo & EnviroDIY Mayfly
 Software License: BSD-3.
   Copyright (c) 2019, Neil Hancock & Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
