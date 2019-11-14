@@ -406,7 +406,7 @@ public:
     static volatile bool isTestingNow;
     static volatile bool startTesting;
 
-#include "LoggerBaseExtH.h"
+    #include "LoggerBaseHextClass.h"
 
 };
 

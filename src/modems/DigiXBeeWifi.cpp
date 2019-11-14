@@ -65,21 +65,45 @@ bool DigiXBeeWifi::extraModemSetup(void)
         gsmModem.getSeries();
         _modemName = gsmModem.getModemName();
         PRINTOUT(F("XbeeWiFi Initializing Internet comms with modem '"),_modemName,F("'"));
+        // Leave all unused pins disconnected. Use the PR command to pull all of the inputs on the device high
+        // using 40 k internal pull-up resistors. You do not need a specific treatment for unused outputs.
+        //   Mask Bit Description
+        // 1 0001  0 TH11 DIO4
+        // 1 0002  1 TH17 DIO3
+        // 1 0004  2 TH18 DIO2
+        // 1 0008  3 TH19 DIO1
+        // 1 0010  4 TH20 DIO0
+        // 1 0020  5 TH16 DIO6/RTS
+        // 0 0040  6 TH09 DIO8/DTR/Sleep Request
+        // 0 0080  7 TH03 DIN
+        // 1 0100  8 TH15 DIO5/Associate
+        // 0 0200  9 TH13 DIO9/- OnSLEEP
+        // 1 0400 10 TH04 DIO12
+        // 1 0800 11 TH06 DIO10/PWM RSSI
+        // 1 1000 12 TH07 DIO11/PWM1
+        // 1 2000 13 TH12 DIO7/-CTR
+        // 0 4000 14 TH02 DIO13/DOUT 
+        gsmModem.sendAT(GF("PR"),"3D3F");
+        success &= gsmModem.waitResponse() == 1;
+        if (!success) {MS_DBG(F("Fail PR "),success);}
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        //gsmModem.sendAT(GF("D8"),1);
-        //success &= gsmModem.waitResponse() == 1;
+        //#define XBEE_USE_SLEEP_PINS
+        #if defined XBEE_USE_SLEEP_PINS
+        gsmModem.sendAT(GF("D8"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Turn on status indication pin - it will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
         gsmModem.sendAT(GF("D9"),1);
         success &= gsmModem.waitResponse() == 1;
-        if (!success) {MS_DBG(F("Fail D9 "),success);}
+        if (!success) {MS_DBG(F("Fail D9 "),success);}/**/
+        #endif //XBEE_USE_SLEEP_PINS
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-        gsmModem.sendAT(GF("D7"),1);
+        /*gsmModem.sendAT(GF("D7"),1);
         success &= gsmModem.waitResponse() == 1;
-        if (!success) {MS_DBG(F("Fail D7 "),success);}
+        if (!success) {MS_DBG(F("Fail D7 "),success);}*/
         // Turn on the associate LED (if you're using a board with one)
         // NOTE:  Only pin 15/DIO5 can be used for this function
         //gsmModem.sendAT(GF("D5"),1);
@@ -92,27 +116,29 @@ bool DigiXBeeWifi::extraModemSetup(void)
         gsmModem.sendAT(GF("IP"),1);
         success &= gsmModem.waitResponse() == 1;
         if (!success) {MS_DBG(F("Fail IP "),success);}
+        #if defined XBEE_USE_SLEEP_PINS
         // Put the XBee in pin sleep mode in conjuction with D8=1
-        //MS_DBG(F("Setting Sleep Options..."));
-        //gsmModem.sendAT(GF("SM"),1);
-        //success &= gsmModem.waitResponse() == 1;
+        MS_DBG(F("Setting Sleep Options..."));
+        gsmModem.sendAT(GF("SM"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
         // 40 - Aay associated with AP during sleep - draws more current (+10mA?)
         //100 -Cyclic sleep ST specifies time before reutnring to sleep
         //200 - SRGD magic number
-        //gsmModem.sendAT(GF("SO"),200);
-        //success &= gsmModem.waitResponse() == 1;
+        gsmModem.sendAT(GF("SO"),200);
+        success &= gsmModem.waitResponse() == 1;
+        #endif //XBEE_USE_SLEEP_PINS
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
         success &= gsmModem.networkConnect(_ssid, _pwd);
         // Set the socket timeout to 10s (this is default)
-        //if (!success) {MS_DBG(F("Fail Connect "),success);success=true;}
-        //gsmModem.sendAT(GF("TM"),64);
-        //success &= gsmModem.waitResponse() == 1;
+        if (!success) {MS_DBG(F("Fail Connect "),success);success=true;}
+        gsmModem.sendAT(GF("TM"),64);
+        success &= gsmModem.waitResponse() == 1;
         if (success) {MS_DBG(F("Setup Wifi Network "),_ssid);} 
         else  {MS_DBG(F("Failed Setting WiFi"),_ssid);}
         // Write changes to flash and apply them
-        gsmModem.writeChanges();
+        gsmModem.writeChanges();/**/
 
         //Scan for AI  last node join request
         uint16_t loops=0;
@@ -130,7 +156,8 @@ bool DigiXBeeWifi::extraModemSetup(void)
             if (0==status) {
                 ui_op += " Cnt="+String(reg_count);
                 PRINTOUT(ui_op);
-                if (++reg_count > 2) {
+                #define XBEE_SUCCESS_CNTS 3
+                if (++reg_count > XBEE_SUCCESS_CNTS) {
                     apRegistered=true;
                     break;
                 }
@@ -144,18 +171,26 @@ bool DigiXBeeWifi::extraModemSetup(void)
         String xbeeRsp;
         uint8_t index=0;
         bool AllocatedIpSuccess = false;
-        //Display IP allocation
-        #define MDM_LP_MAX 50
+        //Checkfor IP allocation
+        //#define MDM_LP_MAX 30
+        #define MDM_LP_MAX 16        
         for (int mdm_lp=1;mdm_lp<MDM_LP_MAX;mdm_lp++) {
             delay(mdm_lp*500);
             gsmModem.sendAT(F("MY"));  // Request IP #
             index = gsmModem.waitResponse(1000,xbeeRsp);
-            MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_MAX,F("] '"),xbeeRsp,"'");
+            MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_MAX,F("] '"),xbeeRsp,"'=",xbeeRsp.length());
             if (0!=xbeeRsp.compareTo("0.0.0.0") && (xbeeRsp.length()>7)) {
                 AllocatedIpSuccess = true;
                 break;
             }
             xbeeRsp="";
+        }
+        if (!AllocatedIpSuccess) {
+            while (1) {
+                PRINTOUT(F("XbeeWiFi not received IP# -reset"));
+                delay(1000);
+                NVIC_SystemReset();
+            }
         }
         //success &= AllocatedIpSuccess;
         PRINTOUT(F("XbeeWiFi IP# ["),xbeeRsp,F("]"));

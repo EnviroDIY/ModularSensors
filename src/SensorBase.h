@@ -28,8 +28,8 @@
 
 
 class Variable;  // Forward declaration
-#include "PortExpanderB031.h"
-class PortExpanderB031;
+//#include "PortExpanderB031.h"
+//class PortExpanderB031;
 
 // Defines the "Sensor" Class
 class Sensor

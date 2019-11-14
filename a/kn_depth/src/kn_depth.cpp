@@ -1791,7 +1791,10 @@ void setup()
 
     #if defined HwFeatherWing_B031ALL  
     mcpExp.init();
-    mcpExp.toggleBit(peB031_bit::eMcp_XbeeResetNout_bit,100);
+    //Force a XBEE reset long enough for WiFi point to disconnect
+    //and then allow enought time to comeout of reset.
+    mcpExp.toggleBit(peB031_bit::eMcp_XbeeResetNout_bit,1000);
+    delay(1000);
     #endif //defined HwFeatherWing_B031ALL
     //extern const PinDescription g_APinDescription[];
     //MS_DBG(F("Sizeoff "),sizeof(g_APinDescription),"/",sizeof(PinDescription));

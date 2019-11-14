@@ -196,7 +196,7 @@ protected:
     float _priorPoweredDuration;
 
     String _modemName;
-
+    #include "LoggerModemHextClass.h"
 };
 
 
