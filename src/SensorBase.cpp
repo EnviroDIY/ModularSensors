@@ -9,6 +9,7 @@
 
 #include "SensorBase.h"
 #include "VariableBase.h"
+#include "wiring_digtalext.h"
 
 // ============================================================================
 //  The class and functions for interfacing with a sensor

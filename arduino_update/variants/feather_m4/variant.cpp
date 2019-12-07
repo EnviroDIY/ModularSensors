@@ -277,3 +277,5 @@ void SERCOM4_3_Handler()
   Serial4.IrqHandler();
 }
 #endif //SERIAL4_EN
+
+const uint32_t g_APinDescription_size=sizeof(g_APinDescription) ;

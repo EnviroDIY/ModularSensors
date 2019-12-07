@@ -16,6 +16,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 #ifndef ms_cfg_h
 #define ms_cfg_h
+#include <Arduino.h>  // The base Arduino library
 // Local default defitions here
 // FUT: Some board level would be in a per board level persistent storage - eg FLASH
 // These are either pre .ini read or per board defintions
@@ -61,7 +62,29 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //Still a WIP
 //#define PROFILE02 02
 //#define  PROFILE_NAME PROFILE02
-
+#define eMcp_B031_begin 40
+//shhould be same as thisVariantNumPins
+typedef enum {
+eMcpA_SwV3Out_pinnum       = eMcp_B031_begin,
+eMcpA_SwVbatOut_pinnum     ,
+eMcpA_SwVrs485Out_pinnum   ,
+eMcpA_swV1wOut_pinnum      ,
+eMcpA_SwVsdiOut_pinnum     ,
+eMcpA_XbeeOnSleepNin_pinnum,
+eMcpA_XbeeSleeRqOut_pinnum ,
+eMcpA_XbeeResetNOut_pinnum ,
+eMcpA_CustOut1Out_pinnum   ,
+eMcpB_CustOut2Out_pinnum   ,
+eMcpB_MuxAdcAOut_pinnum    ,
+eMcpB_MuxAdcBOut_pinnum    ,
+eMcpB_MuxAdcCOut_pinnum    ,
+eMcpB_MuxAdcEnOut_pinnum   ,
+eMcpB_SwVextOut_pinnum     ,
+eMcpB_eInk_RSTOut_pinnum   ,
+eMcpB_last =eMcpB_eInk_RSTOut_pinnum,
+eMcpB_end 
+} eMcp_B031;
+#define totalNumPins (thisVariantNumPins+16)
 #if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
 //This configuration is for a standard Mayfly0.bb
@@ -212,7 +235,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 /* Needs specifying for Feather M4 B031rX */
-#define modemVccPin_DEF     -1 // B031r1:V3Sw mcpExp:PA0
+#define modemVccPin_DEF eMcpA_SwV3Out_pinnum;//-1 // B031r1:V3Sw mcpExp:PA0
 //#define autonomoModemRtsPin 38u//B031r1:XbeeResetN PA7
 #define modemStatusPin_DEF  -1//B031r1: not supported
 #define modemSleepRqPin_DEF -1 //B031r1:XbeeSleepRq Exp:PA6

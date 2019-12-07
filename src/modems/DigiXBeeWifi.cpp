@@ -166,7 +166,7 @@ bool DigiXBeeWifi::extraModemSetup(void)
             delay(1000);
         }         
         //Fut: Could Scan for access points here AS commnd
-
+        //if (false ==apRegistered) {reset;}
         MS_DBG(F("Get IP number"));
         String xbeeRsp;
         uint8_t index=0;

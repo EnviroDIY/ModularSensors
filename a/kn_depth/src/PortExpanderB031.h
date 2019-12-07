@@ -73,6 +73,7 @@ public:
 	~PortExpanderB031();
     void init();
     void configure(uint32_t ulPinMax);
+    void setBit(peB031_bit portNum, bool value);
     void setBit(peB031_bit portNum); 
     void clrBit(peB031_bit portNum); 
     void toggleBit(peB031_bit portNum,uint16_t delay_ms=2);
@@ -83,4 +84,8 @@ public:
     //void writeRegister(MCP23017_REGISTER reg, uint8_t value);
 };
 
+/*extern "C" void eMcp_setBit(uint8_t portNum) //wrapper
+{
+    
+}*/
 //end PortPortExpanderB031

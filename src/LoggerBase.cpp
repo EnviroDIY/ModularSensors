@@ -10,6 +10,7 @@
 
 #include "LoggerBase.h"
 #include "dataPublisherBase.h"
+#include "wiring_digtalext.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT

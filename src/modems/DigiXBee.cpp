@@ -9,6 +9,7 @@
 
 // Included Dependencies
 #include "DigiXBee.h"
+#include "wiring_digtalext.h"
 
 
 // Constructor

@@ -19,6 +19,13 @@ void PortExpanderB031::init() {
     MCP23017::clearInterrupts();
 }
 
+void PortExpanderB031::setBit(peB031_bit portNum, bool value) {
+    if (value) {
+        setBit(portNum);
+    } else {
+        clrBit(portNum);
+    }
+}
 void PortExpanderB031::setBit(peB031_bit portNum) {
     uint8_t mcpBit=(uint8_t)portNum;
 

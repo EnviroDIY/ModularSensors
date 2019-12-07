@@ -33,9 +33,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-#include "ms_cfg.h" //must be before ms_common.h & Arduino.h
 
-#include <Arduino.h>  // The base Arduino library
+#include "ms_cfg.h" //must be before ms_common.h & Arduino.h
+//#include <Arduino.h>  // The base Arduino library
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #endif
@@ -65,6 +65,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
 
+#define WIRING_DIGITALEXT_ACT
+#include "wiring_digtalext.h"
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -96,6 +98,7 @@ bool nistSyncRtc = false; //Have ext RTC.  NIST sync RTC when convenient
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
+//const uint8_t thisVariantNumPins= (g_APinDescription_size/sizeof(PinDescription));
 
 const long SerialStdBaud = 115200;   // Baud rate for the primary serial port for debugging
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -124,7 +127,7 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 
 #if defined redLEDPin && (redLEDPin != -1)
 #define redLEDphy redLEDPin
-#define setRedLED(state) digitalWrite(redLEDphy, state);
+#define setRedLED(state) digitalWrExt(redLEDphy, state);
 #else
 #define redLEDphy -1
 #define setRedLED(state)
@@ -132,9 +135,9 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 
 #if defined greenLEDPin && (greenLEDPin != -1)
 #define greenLEDphy greenLEDPin
-#define setGreenLED(state) digitalWrite(greenLEDphy, state);
-#define setGreenLEDon()  digitalWrite(greenLEDphy, HIGH);
-#define setGreenLEDoff() digitalWrite(greenLEDphy, LOW);
+#define setGreenLED(state) digitalWrExt(greenLEDphy, state);
+#define setGreenLEDon()  digitalWrExt(greenLEDphy, HIGH);
+#define setGreenLEDoff() digitalWrExt(greenLEDphy, LOW);
 #else
 #define greenLEDphy -1
 #define setGreenLED(state)
@@ -1747,10 +1750,16 @@ void setup()
     SerialStd.print(" ");
     SerialStd.print(mcuBoardVersion);
 
+    SerialStd.print(" variantPins=");
+    SerialStd.print(thisVariantNumPins);
+    SerialStd.print("/");
+    SerialStd.print(totalNumPins); 
+    //SerialStd.print("\n");
     //ledflash();//works
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
+
 
     // A vital check on power availability
     do {
@@ -1879,15 +1888,15 @@ void setup()
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
+        digitalWrExt(modemVccPin, LOW);
         MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
-        //digitalWrite(modemVccPin, HIGH);
+        //digitalWrExt(modemVccPin, HIGH);
         //MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
     } else {MS_DBG(F("ModemVccPin not used "),modemVccPin);}
     if (sensorPowerPin >= 0)
     {
         pinMode(sensorPowerPin, OUTPUT);
-        digitalWrite(sensorPowerPin, LOW);
+        digitalWrExt(sensorPowerPin, LOW);
         MS_DBG(F("Set sensorPowerPin "),sensorPowerPin);
     } else {MS_DBG(F("sensorPowerPin not used "),sensorPowerPin);}
 
@@ -1896,13 +1905,13 @@ void setup()
     if (modemSleepRqPin >= 0)
     {
         pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH); //Def sleep
+        digitalWrExt(modemSleepRqPin, HIGH); //Def sleep
         MS_DBG(F("Set Sleep on High modemSleepRqPin "),modemSleepRqPin);
     } else {MS_DBG(F("modemSleepRqPin not used "),modemSleepRqPin);}
     if (modemResetPin >= 0)
     {
         pinMode(modemResetPin, OUTPUT);
-        digitalWrite(modemResetPin, HIGH);  //Def noReset
+        digitalWrExt(modemResetPin, HIGH);  //Def noReset
         MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
     } else {MS_DBG(F("modemResetPin not used "),modemResetPin);}
 
@@ -1999,7 +2008,7 @@ void processSensors()
         //PRINTOUT(F("----------------------------\n"));
         #if !defined(CHECK_SLEEP_POWER)
         // Turn on the LED to show we're taking a reading
-        //digitalWrite(greenLED, HIGH);
+        //digitalWrExt(greenLED, HIGH);
         // Turn on the LED to show we're taking a reading
         //dataLogger.alertOn();
 
@@ -2021,8 +2030,8 @@ void processSensors()
         // because Modbus Stop bit leaves these pins HIGH
         pinMode(RS485PHY_TX_PIN, OUTPUT);  // AltSoftSerial Tx pin
         pinMode(RS485PHY_RX_PIN, OUTPUT);  // AltSoftSerial Rx pin
-        digitalWrite( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
-        digitalWrite( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
+        digitalWrExt( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
+        digitalWrExt( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif //CONFIG_SENSOR_RS485_PHY
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
@@ -2080,7 +2089,7 @@ void processSensors()
             PRINTOUT(F("---Complete "));
         }
         // Turn off the LED
-        //digitalWrite(greenLED, LOW);
+        //digitalWrExt(greenLED, LOW);
         dataLogger.alertOff();
         // Print a line to show reading ended
 
@@ -2118,4 +2127,42 @@ void loop()
     PRINTOUT(F("A"));
 #endif //(CHECK_SLEEP_POWER)
 
+}
+//The following is a holding place for WIRING_DIGITAL_DEBUG
+void dbg_str(char *);
+void dbg_uint8(uint8_t ulPin);
+void dbg_str(char *dbgStr)
+{PRINTOUT(dbgStr);}
+void dbg_uint8(uint8_t ulPin){PRINTOUT(ulPin);}
+
+
+//void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
+void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
+    if (ulPin < thisVariantNumPins) {
+        digitalWrite(ulPin,ulVal);
+    } else {
+        uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        PRINTOUT("***WrExt",ulPin,"/",mcpPin,"=",ulVal);
+        //Check range
+        mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
+
+    }
+}
+
+void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
+    
+    if (ulPin < thisVariantNumPins) {
+        pinMode( ulPin,  ulMode );
+    } else {
+        PRINTOUT("**Unhandled pinModExt",ulPin,"=",ulMode);
+    }    
+}
+int digitalRdExt( uint32_t ulPin ) {
+    
+    if (ulPin < thisVariantNumPins) {
+        return digitalRead(  ulPin );
+    } else {
+        PRINTOUT("**Unhandled RdExt",ulPin);
+    }    
+    return 0;
 }

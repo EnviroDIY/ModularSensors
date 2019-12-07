@@ -9,8 +9,8 @@
 */
 
 #include "LoggerModem.h"
+#include "wiring_digtalext.h"
 
-//#define digitalWrite(x,y) mcpExp.digitalWrite();
 // Constructors
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
