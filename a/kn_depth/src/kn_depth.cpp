@@ -2142,17 +2142,30 @@ void dbg_uint8(uint8_t ulPin){PRINTOUT(ulPin);}
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* ************************************************************
+ * Catch the extended MCP processing
+ * This assumes the B031r2+ expansion
+ */
 #if 1
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
     if (ulPin < thisVariantNumPins) {
-        PRINTOUT("***digitalWrExt Err ",ulPin,"=",ulVal);
+        //PRINTOUT("***digitalWrExt Err ",ulPin,"=",ulVal);
+        SerialStd.print("***digitalWrExt Err ");
+        SerialStd.print(ulPin);
+        SerialStd.print("=");
+        SerialStd.println(ulVal);
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        PRINTOUT("***digitalWrExt ",ulPin,"/",mcpPin,"=",ulVal);
-        //Check range
+        //Check upper range
+        //print("***digitalWrExt ",ulPin,"/",mcpPin,"=",ulVal);  
+        SerialStd.print("***digitalWrExt ");
+        SerialStd.print(ulPin);
+        SerialStd.print("/");
+        SerialStd.print(mcpPin);
+        SerialStd.print("=");
+        SerialStd.println(ulVal);        
         mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
-
     }
 }
 #endif //0
@@ -2160,17 +2173,27 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
 #if 1
 void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
-        PRINTOUT("***pinModExt Err ",ulPin,"=",ulMode);
+        //PRINTOUT("***pinModExt Err ",ulPin,"=",ulMode);
+        SerialStd.print("***pinModExt Err ");
+        SerialStd.print(ulPin);
+        SerialStd.print("=");
+        SerialStd.println(ulMode);
     } else {
-        PRINTOUT("***pinModExt Unhandled ",ulPin,"=",ulMode);
+//        PRINTOUT("***pinModExt Unhandled ",ulPin,"=",ulMode);
+        SerialStd.print("***pinModExt Unhandled ");
+        SerialStd.print(ulPin);
+        SerialStd.print("=");
+        SerialStd.println(ulMode);        
     }
 }
 int digitalRdExt( uint32_t ulPin ) {
     
     if (ulPin < thisVariantNumPins) {
-        PRINTOUT("***digitalRdExt Err ",ulPin);;
+        SerialStd.print("***digitalRdExt Err ");
+        SerialStd.println(ulPin);
     } else {
-        PRINTOUT("***digitalRdExt Unhandled ",ulPin);
+        SerialStd.print("***digitalRdExt Unhandled ");
+        SerialStd.println(ulPin);
     }    
     return 0;
 }
