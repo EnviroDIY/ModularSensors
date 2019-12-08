@@ -25,13 +25,32 @@
 /* Error processing */
 
 static uint8_t errorNum=0;
+static uint8_t errorId=0xff;
 unsigned int wiring_digital_errorNum() {return (unsigned int)errorNum;}
-#define errorNow() ({ if (0xff != errorNum) {errorNum++; }})
+
 #if defined WIRING_DIGITAL_DEBUG
 void dbg_str(char *dbgStr);
 void dbg_uint8(uint8_t ulPin);
 #endif 
 
+void __errorNow(char id)
+{
+  if (0xff != errorNum)
+  {
+    errorNum++;
+    errorId=id;
+  } 
+}
+void errorNow(char id) __attribute__((weak, alias ("__errorNow")));
+
+void __pinModExt( uint32_t ulPin, uint32_t ulMode ) {errorNow(0);}
+void pinModExt(uint32_t ulPin, uint32_t ulMode) __attribute__((weak, alias ("__pinModExt")));
+
+void __digitalWrExt( uint32_t ulPin, uint32_t ulMode ) {errorNow(1);}
+void digitalWrExt(uint32_t ulPin, uint32_t ulMode) __attribute__((weak, alias ("__digitalWrExt")));
+
+int __digitalRdExt( uint32_t ulPin ) {errorNow(2);return 0;}
+int digitalRdExt( uint32_t ulPin )  __attribute__((weak, alias ("__digitalRdExt")));
 
 void pinMode( uint32_t ulPin, uint32_t ulMode )
 {
@@ -42,11 +61,12 @@ void pinMode( uint32_t ulPin, uint32_t ulMode )
   }
   if ( ulPin >= thisVariantNumPins)
   {
-    errorNow();
+    pinModExt( ulPin, ulMode );
     #if defined WIRING_DIGITAL_DEBUG
     dbg_str(" pinMode err=");
     dbg_uint8(ulPin);
     #endif
+
     return ;
   }
   EPortType port = g_APinDescription[ulPin].ulPort;
@@ -103,7 +123,7 @@ void digitalWrite( uint32_t ulPin, uint32_t ulVal )
   }
   if ( ulPin >= thisVariantNumPins)
   {
-    errorNow();
+    digitalWrExt( ulPin, ulVal );
     #if defined WIRING_DIGITAL_DEBUG
     dbg_str(" digitalWrite err=");
     dbg_uint8(ulPin);
@@ -142,7 +162,7 @@ int digitalRead( uint32_t ulPin )
   }
   if ( ulPin >= thisVariantNumPins)
   {
-    errorNow();
+    digitalRdExt( ulPin );
     #if defined WIRING_DIGITAL_DEBUG
     dbg_str(" digitalRead err=");
     dbg_uint8(ulPin);

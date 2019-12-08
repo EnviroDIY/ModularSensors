@@ -9,7 +9,7 @@
 */
 
 #include "LoggerModem.h"
-#include "wiring_digtalext.h"
+
 
 // Constructors
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,

@@ -65,8 +65,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
 
-#define WIRING_DIGITALEXT_ACT
-#include "wiring_digtalext.h"
+//#define WIRING_DIGITALEXT_ACT
+//#include "wiring_digtalext.h"
+
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -127,7 +128,7 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 
 #if defined redLEDPin && (redLEDPin != -1)
 #define redLEDphy redLEDPin
-#define setRedLED(state) digitalWrExt(redLEDphy, state);
+#define setRedLED(state) digitalWrite(redLEDphy, state);
 #else
 #define redLEDphy -1
 #define setRedLED(state)
@@ -135,9 +136,9 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 
 #if defined greenLEDPin && (greenLEDPin != -1)
 #define greenLEDphy greenLEDPin
-#define setGreenLED(state) digitalWrExt(greenLEDphy, state);
-#define setGreenLEDon()  digitalWrExt(greenLEDphy, HIGH);
-#define setGreenLEDoff() digitalWrExt(greenLEDphy, LOW);
+#define setGreenLED(state) digitalWrite(greenLEDphy, state);
+#define setGreenLEDon()  digitalWrite(greenLEDphy, HIGH);
+#define setGreenLEDoff() digitalWrite(greenLEDphy, LOW);
 #else
 #define greenLEDphy -1
 #define setGreenLED(state)
@@ -1846,6 +1847,7 @@ void setup()
 #ifdef USE_MS_SD_INI
     Serial.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
+    Serial.println(F("\n\n---parseIni complete "));
 #endif //USE_MS_SD_INI
 
 #if 0
@@ -1888,15 +1890,15 @@ void setup()
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
-        digitalWrExt(modemVccPin, LOW);
+        digitalWrite(modemVccPin, LOW);
         MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
-        //digitalWrExt(modemVccPin, HIGH);
+        //digitalWrite(modemVccPin, HIGH);
         //MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
     } else {MS_DBG(F("ModemVccPin not used "),modemVccPin);}
     if (sensorPowerPin >= 0)
     {
         pinMode(sensorPowerPin, OUTPUT);
-        digitalWrExt(sensorPowerPin, LOW);
+        digitalWrite(sensorPowerPin, LOW);
         MS_DBG(F("Set sensorPowerPin "),sensorPowerPin);
     } else {MS_DBG(F("sensorPowerPin not used "),sensorPowerPin);}
 
@@ -1905,13 +1907,13 @@ void setup()
     if (modemSleepRqPin >= 0)
     {
         pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrExt(modemSleepRqPin, HIGH); //Def sleep
+        digitalWrite(modemSleepRqPin, HIGH); //Def sleep
         MS_DBG(F("Set Sleep on High modemSleepRqPin "),modemSleepRqPin);
     } else {MS_DBG(F("modemSleepRqPin not used "),modemSleepRqPin);}
     if (modemResetPin >= 0)
     {
         pinMode(modemResetPin, OUTPUT);
-        digitalWrExt(modemResetPin, HIGH);  //Def noReset
+        digitalWrite(modemResetPin, HIGH);  //Def noReset
         MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
     } else {MS_DBG(F("modemResetPin not used "),modemResetPin);}
 
@@ -2008,7 +2010,7 @@ void processSensors()
         //PRINTOUT(F("----------------------------\n"));
         #if !defined(CHECK_SLEEP_POWER)
         // Turn on the LED to show we're taking a reading
-        //digitalWrExt(greenLED, HIGH);
+        //digitalWrite(greenLED, HIGH);
         // Turn on the LED to show we're taking a reading
         //dataLogger.alertOn();
 
@@ -2030,8 +2032,8 @@ void processSensors()
         // because Modbus Stop bit leaves these pins HIGH
         pinMode(RS485PHY_TX_PIN, OUTPUT);  // AltSoftSerial Tx pin
         pinMode(RS485PHY_RX_PIN, OUTPUT);  // AltSoftSerial Rx pin
-        digitalWrExt( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
-        digitalWrExt( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
+        digitalWrite( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
+        digitalWrite( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif //CONFIG_SENSOR_RS485_PHY
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
@@ -2089,7 +2091,7 @@ void processSensors()
             PRINTOUT(F("---Complete "));
         }
         // Turn off the LED
-        //digitalWrExt(greenLED, LOW);
+        //digitalWrite(greenLED, LOW);
         dataLogger.alertOff();
         // Print a line to show reading ended
 
@@ -2129,40 +2131,50 @@ void loop()
 
 }
 //The following is a holding place for WIRING_DIGITAL_DEBUG
+#if 0
 void dbg_str(char *);
 void dbg_uint8(uint8_t ulPin);
 void dbg_str(char *dbgStr)
 {PRINTOUT(dbgStr);}
 void dbg_uint8(uint8_t ulPin){PRINTOUT(ulPin);}
+#endif //0
 
-
-//void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
+#ifdef __cplusplus
+extern "C" {
+#endif
+#if 1
+void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
     if (ulPin < thisVariantNumPins) {
-        digitalWrite(ulPin,ulVal);
+        PRINTOUT("***digitalWrExt Err ",ulPin,"=",ulVal);
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        PRINTOUT("***WrExt",ulPin,"/",mcpPin,"=",ulVal);
+        PRINTOUT("***digitalWrExt ",ulPin,"/",mcpPin,"=",ulVal);
         //Check range
         mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
 
     }
 }
+#endif //0
 
+#if 1
 void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
-    
     if (ulPin < thisVariantNumPins) {
-        pinMode( ulPin,  ulMode );
+        PRINTOUT("***pinModExt Err ",ulPin,"=",ulMode);
     } else {
-        PRINTOUT("**Unhandled pinModExt",ulPin,"=",ulMode);
-    }    
+        PRINTOUT("***pinModExt Unhandled ",ulPin,"=",ulMode);
+    }
 }
 int digitalRdExt( uint32_t ulPin ) {
     
     if (ulPin < thisVariantNumPins) {
-        return digitalRead(  ulPin );
+        PRINTOUT("***digitalRdExt Err ",ulPin);;
     } else {
-        PRINTOUT("**Unhandled RdExt",ulPin);
+        PRINTOUT("***digitalRdExt Unhandled ",ulPin);
     }    
     return 0;
 }
+#endif //0
+#ifdef __cplusplus
+}
+#endif

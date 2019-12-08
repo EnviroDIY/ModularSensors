@@ -10,7 +10,6 @@
 // Included Dependencies
 #include "DigiXBeeCellularTransparent.h"
 #include "modems/LoggerModemMacros.h"
-#include "wiring_digtalext.h"
 
 // Constructor/Destructor
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
