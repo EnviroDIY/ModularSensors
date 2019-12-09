@@ -88,3 +88,17 @@ void PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
         //pinDigitalWrite()
     }
 }
+
+String PortExpanderB031::getPortStr(uint8_t mcpBit) 
+{
+    if (mcpBit > 7) {
+        mcpBit -= 8;
+        if (mcpBit <8) {
+            return mcpBdesc[mcpBit];
+        } else {
+            return "Err";
+        }
+    } else {
+        return mcpAdesc[mcpBit];
+    }
+}

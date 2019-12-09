@@ -35,6 +35,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 
 #include "ms_cfg.h" //must be before ms_common.h & Arduino.h
+
+//After other includes that redifine MS_DEBUGGING_STD
+#ifdef MS_KN_DEPTH_DEBUG
+#undef MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "kn_depth"
+#endif //MS_KN_DEPTH_DEBUG
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 //#include <Arduino.h>  // The base Arduino library
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #include <EnableInterrupt.h>  // for external and pin change interrupts
@@ -54,13 +62,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
 
-//After other includes that redifine MS_DEBUGGING_STD
-#ifdef MS_KN_DEPTH_DEBUG
-#undef MS_DEBUGGING_STD
-#define MS_DEBUGGING_STD "kn_depth"
-#endif //MS_KN_DEPTH_DEBUG
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
+
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
@@ -402,7 +404,7 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 // Use this to create a modem if you want to monitor modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
-#if 1 //defined STREAMDEBUGGER_DBG
+#if defined STREAMDEBUGGER_DBG
  #include <StreamDebugger.h>
  StreamDebugger modemDebugger(modemSerial, STANDARD_SERIAL_OUTPUT);
  #define modemSerHw modemDebugger
@@ -1803,8 +1805,8 @@ void setup()
     mcpExp.init();
     //Force a XBEE reset long enough for WiFi point to disconnect
     //and then allow enought time to comeout of reset.
-    mcpExp.pulseToggleBit(peB031_bit::eMcp_XbeeResetNout_bit,1000);
-    delay(1000);
+    //mcpExp.pulseToggleBit(peB031_bit::eMcp_XbeeResetNout_bit,1000);
+    //delay(1000);
     #endif //defined HwFeatherWing_B031ALL
     //extern const PinDescription g_APinDescription[];
     //MS_DBG(F("Sizeoff "),sizeof(g_APinDescription),"/",sizeof(PinDescription));
@@ -2150,20 +2152,21 @@ extern "C" {
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
     if (ulPin < thisVariantNumPins) {
-        SerialStd.print("***digitalWrExt Err ");
-        SerialStd.print(ulPin);
-        SerialStd.print("=");
-        SerialStd.println(ulVal);
+        MS_DBG("***digitalWrExt Err ",ulPin,"=",ulVal);  
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        //Check upper range
-        //print("***digitalWrExt ",ulPin,"/",mcpPin,"=",ulVal);  
+#if 1
+        MS_DBG("***digitalWrExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",ulVal);  
+#else
         SerialStd.print("***digitalWrExt ");
         SerialStd.print(ulPin);
         SerialStd.print("/");
         SerialStd.print(mcpPin);
+        SerialStd.print(" ");
+        SerialStd.print(mcpExp.getPortStr(mcpPin));
         SerialStd.print("=");
-        SerialStd.println(ulVal);        
+        SerialStd.println(ulVal);
+#endif        
         mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
     }
 }
@@ -2173,27 +2176,22 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
 void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
         SerialStd.print("***pinModExt Err ");
-        SerialStd.print(ulPin);
+        SerialStd.print(ulPin);        
         SerialStd.print("=");
         SerialStd.println(ulMode);
     } else {
-        SerialStd.print("***pinModExt Unhandled ");
-        SerialStd.print(ulPin);
-        SerialStd.print("=");
-        SerialStd.println(ulMode);        
+        uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        MS_DBG("***pinModExt Unhandled ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",ulMode);      
     }
 }
 uint8_t digitalRdExt( uint32_t ulPin ) {
     uint8_t pinState=0;
     if (ulPin < thisVariantNumPins) {
-        SerialStd.print("***digitalRdExt Err ");
-        SerialStd.println(ulPin);
+        MS_DBG("***digitalRdExt Err",ulPin);  
     } else {
-        pinState=mcpExp.digitalRead(ulPin);
-        SerialStd.print("***digitalRdExt ");
-        SerialStd.print(ulPin);
-        SerialStd.print("=");  
-        SerialStd.println(pinState);
+        uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        pinState=mcpExp.digitalRead(mcpPin);
+        MS_DBG("***digitalRdExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",pinState);  
     }    
     return pinState;
 }

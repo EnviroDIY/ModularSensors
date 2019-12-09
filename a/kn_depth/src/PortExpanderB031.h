@@ -48,6 +48,8 @@ enum class eMcpA_bm :uint8_t  //bit mask
     eMcpA_default =(eMcpA_SwV3_bmout                          ),   
 
 };//eMcpA_bm
+// mcpAdesc {"SwV3","SwVbat","SwVrs485","SwV1w","SwVsdi","mdmOnSleepin","mdmSleeRq","mdmResetN"}
+
 enum class eMcpB_bm :uint8_t  
 {
     eMcpB_CustOut1_bmout = 0x01,
@@ -56,13 +58,14 @@ enum class eMcpB_bm :uint8_t
     eMcpB_MuxAdcB_bmout  = 0x08,
     eMcpB_MuxAdcC_bmout  = 0x10,
     eMcpB_MuxAdcEn_bmout = 0x20,
-    eMcpB_PB06         = 0x40,
+    eMcpB_SwVext_Bmout   = 0x40,
     eMcpB_eInk_RST_bmout = 0x80,
 
     eMcpB_direction = 0x00,
  
     eMcpB_default = (eMcpB_eInk_RST_bmout),
 };//eMcpB_bm
+//  mcpBdesc {"Cust1","Cust2","MuxAdcA","MuxAdcB","MuxAdcC","MuxAdcD","SwVext","eInk_RST"}
 //class portFriend;  forward ref
 
 class PortExpanderB031 : public MCP23017
@@ -79,10 +82,14 @@ public:
     void clrBit(peB031_bit portNum); 
     void pulseToggleBit(peB031_bit portNum,uint16_t delay_ms=2);
     void digitalWrite( uint32_t ulPin, uint32_t ulVal ); //mimic wiring_digital
+    String getPortStr(uint8_t portNum);
     uint8_t _portA=(uint8_t)eMcpA_bm::eMcpA_default;
     uint8_t _portB=(uint8_t)eMcpB_bm::eMcpB_default;
     uint8_t _ulPinMax=0;
     //void writeRegister(MCP23017_REGISTER reg, uint8_t value);
+private:
+    String mcpAdesc[8] = {"SwV3","SwVbat","SwVrs485","SwV1w","SwVsdi","mdmOnSleepin","mdmSleeRq","mdmResetN"};
+    String mcpBdesc[8] = {"Cust1","Cust2","MuxAdcA","MuxAdcB","MuxAdcC","MuxAdcD","SwVext","eInk_RST"};
 };
 
 /*extern "C" void eMcp_setBit(uint8_t portNum) //wrapper
