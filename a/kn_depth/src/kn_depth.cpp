@@ -1803,7 +1803,7 @@ void setup()
     mcpExp.init();
     //Force a XBEE reset long enough for WiFi point to disconnect
     //and then allow enought time to comeout of reset.
-    mcpExp.toggleBit(peB031_bit::eMcp_XbeeResetNout_bit,1000);
+    mcpExp.pulseToggleBit(peB031_bit::eMcp_XbeeResetNout_bit,1000);
     delay(1000);
     #endif //defined HwFeatherWing_B031ALL
     //extern const PinDescription g_APinDescription[];
@@ -2150,7 +2150,6 @@ extern "C" {
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
     if (ulPin < thisVariantNumPins) {
-        //PRINTOUT("***digitalWrExt Err ",ulPin,"=",ulVal);
         SerialStd.print("***digitalWrExt Err ");
         SerialStd.print(ulPin);
         SerialStd.print("=");
@@ -2173,29 +2172,30 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
 #if 1
 void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
-        //PRINTOUT("***pinModExt Err ",ulPin,"=",ulMode);
         SerialStd.print("***pinModExt Err ");
         SerialStd.print(ulPin);
         SerialStd.print("=");
         SerialStd.println(ulMode);
     } else {
-//        PRINTOUT("***pinModExt Unhandled ",ulPin,"=",ulMode);
         SerialStd.print("***pinModExt Unhandled ");
         SerialStd.print(ulPin);
         SerialStd.print("=");
         SerialStd.println(ulMode);        
     }
 }
-int digitalRdExt( uint32_t ulPin ) {
-    
+uint8_t digitalRdExt( uint32_t ulPin ) {
+    uint8_t pinState=0;
     if (ulPin < thisVariantNumPins) {
         SerialStd.print("***digitalRdExt Err ");
         SerialStd.println(ulPin);
     } else {
-        SerialStd.print("***digitalRdExt Unhandled ");
-        SerialStd.println(ulPin);
+        pinState=mcpExp.digitalRead(ulPin);
+        SerialStd.print("***digitalRdExt ");
+        SerialStd.print(ulPin);
+        SerialStd.print("=");  
+        SerialStd.println(pinState);
     }    
-    return 0;
+    return pinState;
 }
 #endif //0
 #ifdef __cplusplus

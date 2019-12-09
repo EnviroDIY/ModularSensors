@@ -64,7 +64,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define  PROFILE_NAME PROFILE02
 #define eMcp_B031_begin 40
 //shhould be same as thisVariantNumPins
-typedef enum {
+typedef enum { //Maps to hardware extensions
 eMcpA_SwV3Out_pinnum       = eMcp_B031_begin,
 eMcpA_SwVbatOut_pinnum     ,
 eMcpA_SwVrs485Out_pinnum   ,
@@ -235,10 +235,10 @@ eMcpB_end
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 /* Needs specifying for Feather M4 B031rX */
-#define modemVccPin_DEF eMcpA_SwV3Out_pinnum;//-1 // B031r1:V3Sw mcpExp:PA0
-//#define autonomoModemRtsPin 38u//B031r1:XbeeResetN PA7
-#define modemStatusPin_DEF  -1//B031r1: not supported
-#define modemSleepRqPin_DEF -1 //B031r1:XbeeSleepRq Exp:PA6
+#define modemVccPin_DEF -1 //eMcpA_SwV3Out_pinnum//-1 // B031r1:V3Sw mcpExp:PA0  for pwr off, other pins must be 0V
+#define modemResetPin_DEF eMcpA_XbeeResetNOut_pinnum //B031r1:XbeeResetN PA7
+#define modemStatusPin_DEF  eMcpA_XbeeOnSleepNin_pinnum //B031r1: XbeeOnSleep
+#define modemSleepRqPin_DEF eMcpA_XbeeSleeRqOut_pinnum  //B031r1:XbeeSleepRq Exp:PA6
                                     //B031r1:XbeeOnSleepN Exp:PA5
 #define modemAssocPin_DEF   -1   //B031r1: not supported
 //#define modemRssi??_DEF   -1   //B031r1:RssiSt ?

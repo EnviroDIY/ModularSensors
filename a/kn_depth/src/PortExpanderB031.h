@@ -44,7 +44,8 @@ enum class eMcpA_bm :uint8_t  //bit mask
     eMcpA_XbeeResetN_bmout = 0x80,
 
     eMcpA_direction = 0b00100000,
-    eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_XbeeSleeRq_bmout|eMcpA_XbeeResetN_bmout),
+    //eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_XbeeSleeRq_bmout|eMcpA_XbeeResetN_bmout),
+    eMcpA_default =(eMcpA_SwV3_bmout                          ),   
 
 };//eMcpA_bm
 enum class eMcpB_bm :uint8_t  
@@ -76,7 +77,7 @@ public:
     void setBit(peB031_bit portNum, bool value);
     void setBit(peB031_bit portNum); 
     void clrBit(peB031_bit portNum); 
-    void toggleBit(peB031_bit portNum,uint16_t delay_ms=2);
+    void pulseToggleBit(peB031_bit portNum,uint16_t delay_ms=2);
     void digitalWrite( uint32_t ulPin, uint32_t ulVal ); //mimic wiring_digital
     uint8_t _portA=(uint8_t)eMcpA_bm::eMcpA_default;
     uint8_t _portB=(uint8_t)eMcpB_bm::eMcpB_default;

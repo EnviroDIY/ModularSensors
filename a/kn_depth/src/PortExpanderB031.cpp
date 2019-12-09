@@ -55,7 +55,7 @@ void PortExpanderB031::clrBit(peB031_bit portNum) {
     }
 }
 
-void PortExpanderB031::toggleBit(peB031_bit portNum,uint16_t delay_ms) {
+void PortExpanderB031::pulseToggleBit(peB031_bit portNum,uint16_t delay_ms) {
     uint8_t mcpBit=(uint8_t)portNum;
     uint8_t mcpMask=0;
     if (mcpBit > 7) {
