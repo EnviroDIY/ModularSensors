@@ -172,63 +172,70 @@ bool DigiXBeeWifi::extraModemSetup(void)
             PRINTOUT(ui_op); 
             delay(1000);
         }         
-        //Fut: Could Scan for access points here AS commnd
-        //if (false ==apRegistered) {reset;}
-        MS_DBG(F("Get IP number"));
-        String xbeeRsp;
-        uint8_t index=0;
-        bool AllocatedIpSuccess = false;
-        //Checkfor IP allocation
-        //#define MDM_LP_MAX 30
-        #define MDM_LP_MAX 16        
-        for (int mdm_lp=1;mdm_lp<MDM_LP_MAX;mdm_lp++) {
-            delay(mdm_lp*500);
-            gsmModem.sendAT(F("MY"));  // Request IP #
-            index = gsmModem.waitResponse(1000,xbeeRsp);
-            MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_MAX,F("] '"),xbeeRsp,"'=",xbeeRsp.length());
-            if (0!=xbeeRsp.compareTo("0.0.0.0") && (xbeeRsp.length()>7)) {
-                AllocatedIpSuccess = true;
-                break;
-            }
-            xbeeRsp="";
-        }
-        if (!AllocatedIpSuccess) {
-            while (1) {
-                PRINTOUT(F("XbeeWiFi not received IP# -reset"));
-                delay(1000);
-                NVIC_SystemReset();
-            }
-        }
-        //success &= AllocatedIpSuccess;
-        PRINTOUT(F("XbeeWiFi IP# ["),xbeeRsp,F("]"));
-
-        //#ifdef MS_DIGIXBEEWIFI_DEBUG 
-            //Display DNS allocation
-            bool DnsIpSuccess = false;
-            for (int mdm_lp=1;mdm_lp<11;mdm_lp++) 
-            {
+        if (!apRegistered) {
+           //Fut: Could Scan for access points here AS commnd to indicate what is available
+            PRINTOUT(F("XbeeWiFi not AP Registered - aborting attempt, hope it works next time"));
+            delay(100);
+            //NVIC_SystemReset();
+            success = false;
+        } else {       
+            MS_DBG(F("Get IP number"));
+            String xbeeRsp;
+            uint8_t index=0;
+            bool AllocatedIpSuccess = false;
+            //Checkfor IP allocation
+            #define MDM_IP_STR_MIN_LEN 7
+            #define MDM_LP_IPMAX 16        
+            for (int mdm_lp=1;mdm_lp<=MDM_LP_IPMAX;mdm_lp++) {
                 delay(mdm_lp*500);
-                gsmModem.sendAT(F("NS"));  // Request DNS #
-                index &= gsmModem.waitResponse(1000,xbeeRsp);
-                MS_DBG(F("mdmDNS["),toAscii(index),F("]"),xbeeRsp);
-                if (0!=xbeeRsp.compareTo("0.0.0.0")) 
-                {
-                    DnsIpSuccess = true;
+                gsmModem.sendAT(F("MY"));  // Request IP #
+                index = gsmModem.waitResponse(1000,xbeeRsp);
+                MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_IPMAX,F("] '"),xbeeRsp,"'=",xbeeRsp.length());
+                if (0!=xbeeRsp.compareTo("0.0.0.0") && (xbeeRsp.length()>MDM_IP_STR_MIN_LEN)) {
+                    AllocatedIpSuccess = true;
                     break;
-
                 }
                 xbeeRsp="";
             }
-        if ( true != (AllocatedIpSuccess || DnsIpSuccess))
-        {
+            if (!AllocatedIpSuccess) {
+                PRINTOUT(F("XbeeWiFi not received IP# -hope it works next time"));
+                //delay(1000);
+                //NVIC_SystemReset();
                 success = false;
-        }        
-        #if 0 //defined MS_DIGIXBEEWIFI_DEBUG 
-            int16_t rssi, percent;
-            getModemSignalQuality(rssi, percent);
-            MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
-        #endif //MS_DIGIXBEEWIFI_DEBUG
+            } else 
+            {
+                //success &= AllocatedIpSuccess;
+                PRINTOUT(F("XbeeWiFi IP# ["),xbeeRsp,F("]"));
+                xbeeRsp="";
+                //Display DNS allocation
+                bool DnsIpSuccess = false;
+                #define MDM_LP_DNSMAX 11   
+                for (int mdm_lp=1;mdm_lp<=MDM_LP_DNSMAX;mdm_lp++) 
+                {
+                    delay(mdm_lp*500);
+                    gsmModem.sendAT(F("NS"));  // Request DNS #
+                    index &= gsmModem.waitResponse(1000,xbeeRsp);
+                    MS_DBG(F("mdmDNS["),mdm_lp,"/",MDM_LP_DNSMAX,F("] '"),xbeeRsp,"'");
+                    if (0!=xbeeRsp.compareTo("0.0.0.0")&& (xbeeRsp.length()>MDM_IP_STR_MIN_LEN)) 
+                    {
+                        DnsIpSuccess = true;
+                        break;
+                    }
+                    xbeeRsp="";
+                }
 
+                if ( false == DnsIpSuccess)
+                {
+                    success = false;
+                }        
+            }
+            #if 0 //defined MS_DIGIXBEEWIFI_DEBUG 
+            //as of 0.23.15 the modem as sensor has problems
+                int16_t rssi, percent;
+                getModemSignalQuality(rssi, percent);
+                MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
+            #endif //MS_DIGIXBEEWIFI_DEBUG
+        }
         gsmModem.exitCommand();
     }
     
@@ -408,7 +415,10 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
     gsmClient.stop();
 
     /* Try up to 12 times to get a timestamp from NIST */
-    for (uint8_t i = 0; i < 12; i++)
+    #if !defined NIST_SERVER_RETRYS
+    #define NIST_SERVER_RETRYS 4
+    #endif //NIST_SERVER_RETRYS
+    for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++)
     {
 
         /* Must ensure that we do not ping the daylight more than once every 4 seconds */
