@@ -83,21 +83,28 @@ bool DigiXBeeWifi::extraModemSetup(void)
         // 1 1000 12 TH07 DIO11/PWM1
         // 1 2000 13 TH12 DIO7/-CTR
         // 0 4000 14 TH02 DIO13/DOUT 
+        //   3D3F
         gsmModem.sendAT(GF("PR"),"3D3F");
         success &= gsmModem.waitResponse() == 1;
         if (!success) {MS_DBG(F("Fail PR "),success);}
+        #if !defined MODEMPHY_ALWAYS_ON
+            #define XBEE_SLEEP_SETTING 1
+            #define XBEE_SLEEP_ASSOCIATE 200
+        #else
+            #define XBEE_SLEEP_SETTING 0
+            #define XBEE_SLEEP_ASSOCIATE 40
+        #endif 
+        // To use sleep pins they physically need to be enabled.
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        //#define XBEE_USE_SLEEP_PINS
-        #if defined XBEE_USE_SLEEP_PINS
-        gsmModem.sendAT(GF("D8"),1);
+        gsmModem.sendAT(GF("D8"),XBEE_SLEEP_SETTING);
         success &= gsmModem.waitResponse() == 1;
         // Turn on status indication pin - it will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
-        gsmModem.sendAT(GF("D9"),1);
+        gsmModem.sendAT(GF("D9"),XBEE_SLEEP_SETTING);
         success &= gsmModem.waitResponse() == 1;
         if (!success) {MS_DBG(F("Fail D9 "),success);}/**/
-        #endif //XBEE_USE_SLEEP_PINS
+        // /#endif //MODEMPHY_USE_SLEEP_PINS_SETTING
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
@@ -116,18 +123,18 @@ bool DigiXBeeWifi::extraModemSetup(void)
         gsmModem.sendAT(GF("IP"),1);
         success &= gsmModem.waitResponse() == 1;
         if (!success) {MS_DBG(F("Fail IP "),success);}
-        #if defined XBEE_USE_SLEEP_PINS
+     
         // Put the XBee in pin sleep mode in conjuction with D8=1
         MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(GF("SM"),1);
+        gsmModem.sendAT(GF("SM"),XBEE_SLEEP_SETTING);
         success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
         // 40 - Aay associated with AP during sleep - draws more current (+10mA?)
         //100 -Cyclic sleep ST specifies time before reutnring to sleep
         //200 - SRGD magic number
-        gsmModem.sendAT(GF("SO"),200);
+        gsmModem.sendAT(GF("SO"),XBEE_SLEEP_ASSOCIATE);
         success &= gsmModem.waitResponse() == 1;
-        #endif //XBEE_USE_SLEEP_PINS
+       
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
         success &= gsmModem.networkConnect(_ssid, _pwd);
@@ -138,7 +145,7 @@ bool DigiXBeeWifi::extraModemSetup(void)
         if (success) {MS_DBG(F("Setup Wifi Network "),_ssid);} 
         else  {MS_DBG(F("Failed Setting WiFi"),_ssid);}
         // Write changes to flash and apply them
-        gsmModem.writeChanges();/**/
+        gsmModem.writeChanges();
 
         //Scan for AI  last node join request
         uint16_t loops=0;
