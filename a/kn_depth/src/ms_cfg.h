@@ -197,7 +197,7 @@ eMcpB_end
   SERCOM5 Serial1/Bee (DO/D1)                      
   QSPI    2Mbytes SD Flash drive 
   */
-  //#define SENSOR_RS485_PHY 1
+  //#define CONFIG_SENSOR_RS485_PHY 1
   //Standard 
   //This is hardcode to mean things in ProcessorStats !!!!
   #define HwVersion_DEF "r1"
@@ -284,8 +284,8 @@ variant.h: has pin definitions
 #define SerialModem Serial1
 
 #if defined SERIAL2_EN
-#define SerialModbus Serial2
 //to be used by modbusSerial 
+#define SerialModbus Serial2
 #endif // SERIAL2_EN
 #if defined SERIAL3_EN
 //For M4express the RedLed is also on Serial3RX
@@ -300,9 +300,15 @@ variant.h: has pin definitions
 #endif // SERIAL4_EN
 
   //#define KellerAcculevel_ACT 1
-  //#define KellerNanolevel_ACT 1
+  #define KellerNanolevel_ACT 1
   #ifdef KellerNanolevel_ACT
-    #define SENSOR_RS485_PHY 1
+  /*  SwVbat=1 for Vbst@12V and opt Sw12V
+      SwVrs485 for Vbat-->Vrs to IC 
+      Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1  
+  */
+    #define CONFIG_SENSOR_RS485_PHY 1
+    #define CONFIG_HW_RS485PHY_TX_PIN A1  //Feather_M4 Serial2 Tx pin 
+    #define CONFIG_HW_RS485PHY_RX_PIN A4  //Feather_M4 Serial2 Rx pin
     #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
     #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #endif //KellerNanolevel_ACT
@@ -406,7 +412,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 //#define Smtp2goJsonAppKey "api-76228BACDD7511E99F26F23C91C88F4E"
 //#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
-  #define SENSOR_RS485_PHY 1
+  #define CONFIG_SENSOR_RS485_PHY 1
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
 #endif //KellerNanolevel_ACT
@@ -441,7 +447,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 // connected to a B031r1 with RTC PCF2127, 
 // MCP23017 port expander 16bits
 // Requires updated C:\Users\neilh77\.platformio\packages\framework-arduinosam\variants\feather_m0
-//#define SENSOR_RS485_PHY 1
+//#define CONFIG_SENSOR_RS485_PHY 1
 //Standard 
 //This is hardcode to mean things in ProcessorStats !!!!
 //For Adafruit Feather M0 (not Feather M0 Express?)
@@ -492,7 +498,7 @@ B0311r1 has XBEE
 #define samplingFeature_UUID   "samplingFeature_UUID"
 //#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
-  #define SENSOR_RS485_PHY 1
+  #define CONFIG_SENSOR_RS485_PHY 1
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
 #endif //KellerNanolevel_ACT
@@ -522,7 +528,7 @@ B0311r1 has XBEE
 #elif 0 //PROFILE_NAME == PROFILE03
 //**************************************************************************
 //Keller Nanolevel with XBP-u.fl 
-#define SENSOR_RS485_PHY 1
+#define CONFIG_SENSOR_RS485_PHY 1
 #define MFVersion_DEF "v0.5ba"
 
 // How frequently (in minutes) to log data

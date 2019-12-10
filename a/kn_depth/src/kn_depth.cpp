@@ -1822,10 +1822,7 @@ void setup()
     modemSetup=false;
     modemSerial.begin(modemBaud);
 
-
-//#if defined(CONFIG_SENSOR_RS485_PHY) && defined(SerialModbus) && defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #if defined(CONFIG_SENSOR_RS485_PHY) 
- //nh version SerialModbus Serial2
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 #endif
