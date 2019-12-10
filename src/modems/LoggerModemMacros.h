@@ -18,6 +18,8 @@
     bool specificModem::modemSetup(void)                                                      \
     {                                                                                         \
         bool success = true;                                                                  \
+        /* NOTE:  Set flag first to stop infinite loop between modemSetup() and modemWake()*/ \
+        _hasBeenSetup = true;                                                                 \
                                                                                               \
         /* Set-up pin modes */                                                                \
         if (_modemSleepRqPin >= 0)                                                            \
@@ -69,11 +71,11 @@
             if (success)                                                                      \
             {                                                                                 \
                 MS_DBG(F("... Complete!  It's a"), getModemName());                           \
-                _hasBeenSetup = true;                                                         \
             }                                                                                 \
             else                                                                              \
             {                                                                                 \
                 MS_DBG(F("... Failed!  It's a"), getModemName());                             \
+                _hasBeenSetup = false;                                                        \
             }                                                                                 \
         }                                                                                     \
         else                                                                                  \
@@ -154,11 +156,11 @@
             success = gsmModem.testAT(_max_atresponse_time_ms + 500);                            \
             if (success)                                                                         \
             {                                                                                    \
-                MS_DBG(F("No response to AT commands!"));                                        \
+                MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));          \
             }                                                                                    \
             else                                                                                 \
             {                                                                                    \
-                MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));          \
+                MS_DBG(F("No response to AT commands!"));                                        \
             }                                                                                    \
                                                                                                  \
             /* Re-check the status pin */                                                        \
