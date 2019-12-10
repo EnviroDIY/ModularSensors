@@ -13,6 +13,7 @@
 #undef MS_PortExpanderB031_STD
 
 #include "MCP23017.h" //Port 16bit Expander
+
 enum class peB031_bit :uint8_t 
 {
     eMcp_SwV3out_bit, //00
@@ -32,6 +33,7 @@ enum class peB031_bit :uint8_t
     eMcp_PB06_bit       ,//14
     eMcp_eInk_RSTout_bit , //15
 };
+#if 1
 enum class eMcpA_bm :uint8_t  //bit mask
 {
     eMcpA_SwV3_bmout       = 0x01,//(1<<(uint8_t)peB031_bit::eMcp_SwV3out_bit),
@@ -66,6 +68,7 @@ enum class eMcpB_bm :uint8_t
     eMcpB_default = (eMcpB_eInk_RST_bmout),
 };//eMcpB_bm
 //  mcpBdesc {"Cust1","Cust2","MuxAdcA","MuxAdcB","MuxAdcC","MuxAdcD","SwVext","eInk_RST"}
+#endif
 //class portFriend;  forward ref
 
 class PortExpanderB031 : public MCP23017

@@ -307,8 +307,11 @@ variant.h: has pin definitions
       Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1  
   */
     #define CONFIG_SENSOR_RS485_PHY 1
-    #define CONFIG_HW_RS485PHY_TX_PIN A1  //Feather_M4 Serial2 Tx pin 
-    #define CONFIG_HW_RS485PHY_RX_PIN A4  //Feather_M4 Serial2 Rx pin
+    #define CONFIG_HW_RS485PHY_TX_PIN PIN_A1  //Feather_M4 Serial2 Tx pin 
+    #define CONFIG_HW_RS485PHY_RX_PIN PIN_A4  //Feather_M4 Serial2 Rx pin
+    #define max485EnablePin_DEF -1 //Hw Opt PIN_A5
+    #define rs485AdapterPower_DEF eMcpA_SwVbatOut_pinnum //Boost Sensor Power
+    #define modbusSensorPower_DEF eMcpA_SwVrs485Out_pinnum //Secondary RS485 Transciever
     #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
     #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #endif //KellerNanolevel_ACT

@@ -1119,9 +1119,9 @@ AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 #endif
 
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 
 const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
