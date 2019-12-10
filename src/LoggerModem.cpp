@@ -374,7 +374,7 @@ int16_t loggerModem::getPctFromRSSI(int16_t rssi)
     if (rssi == 0)
         pct = 0;
     if (rssi == (255 - 93))
-        pct = 0; // This is a no-data-yet value from XBee
+        pct = 0;  // This is a no-data-yet value from XBee
     return pct;
 }
 

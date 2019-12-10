@@ -43,18 +43,18 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
     NVIC_EnableIRQ(WDT_IRQn);
 
     #if defined(__SAMD51__)
-        WDT->CTRLA.reg = 0; // Disable watchdog for config
+        WDT->CTRLA.reg = 0;  // Disable watchdog for config
         while(WDT->SYNCBUSY.reg);
     #else
-        WDT->CTRL.reg = 0; // Disable watchdog for config
+        WDT->CTRL.reg = 0;  // Disable watchdog for config
         while(WDT->STATUS.bit.SYNCBUSY);
     #endif
 
 #if defined(__SAMD51__)
     // SAMD51 WDT uses OSCULP32k as input clock now
     // section: 20.5.3
-    OSC32KCTRL->OSCULP32K.bit.EN1K  = 1; // Enable out 1K (for WDT)
-    OSC32KCTRL->OSCULP32K.bit.EN32K = 0; // Disable out 32K
+    OSC32KCTRL->OSCULP32K.bit.EN1K  = 1;  // Enable out 1K (for WDT)
+    OSC32KCTRL->OSCULP32K.bit.EN32K = 0;  // Disable out 32K
 
     while(WDT->SYNCBUSY.reg);
 

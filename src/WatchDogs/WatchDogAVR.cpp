@@ -45,20 +45,20 @@ void extendedWatchDogAVR::enableWatchDog()
 {
     MS_DBG(F("Enabling watch dog..."));
 
-    cli();                              // disable interrupts
+    cli();                            // disable interrupts
 
-    MCUSR = 0;                          // reset status register flags
+    MCUSR = 0;                        // reset status register flags
 
-                                     // Put timer in interrupt-only mode:
-    WDTCSR |= 0b00011000;            // Set WDCE (5th from left) and WDE (4th from left) to enter config mode,
-                                     // using bitwise OR assignment (leaves other bits unchanged).
-    WDTCSR =  0b01000000 | 0b100001; // set WDIE (interrupt enable...7th from left, on left side of bar)
-                                     // clr WDE (reset enable...4th from left)
-                                     // and set delay interval (right side of bar) to 8 seconds,
-                                     // using bitwise OR operator.
+                                      // Put timer in interrupt-only mode:
+    WDTCSR |= 0b00011000;             // Set WDCE (5th from left) and WDE (4th from left) to enter config mode,
+                                      // using bitwise OR assignment (leaves other bits unchanged).
+    WDTCSR =  0b01000000 | 0b100001;  // set WDIE (interrupt enable...7th from left, on left side of bar)
+                                      // clr WDE (reset enable...4th from left)
+                                      // and set delay interval (right side of bar) to 8 seconds,
+                                      // using bitwise OR operator.
 
-    sei();                              // re-enable interrupts
-    //wdt_reset();                      // this is not needed...timer starts without it
+    sei();                            // re-enable interrupts
+    //wdt_reset();                    // this is not needed...timer starts without it
 
     // delay interval patterns:
     //  16 ms:     0b000000
@@ -98,16 +98,16 @@ ISR(WDT_vect)  // ISR for watchdog early warning
     if (extendedWatchDogAVR::_barksUntilReset<=0)
     {
 
-      MCUSR = 0;                          // reset flags
+        MCUSR = 0;                          // reset flags
 
-                                          // Put timer in reset-only mode:
-      WDTCSR |= 0b00011000;               // Enter config mode.
-      WDTCSR =  0b00001000 | 0b000000;    // clr WDIE (interrupt enable...7th from left)
-                                          // set WDE (reset enable...4th from left), and set delay interval
-                                          // reset system in 16 ms...
-                                          // unless wdt_disable() in loop() is reached first
+                                            // Put timer in reset-only mode:
+        WDTCSR |= 0b00011000;               // Enter config mode.
+        WDTCSR =  0b00001000 | 0b000000;    // clr WDIE (interrupt enable...7th from left)
+                                            // set WDE (reset enable...4th from left), and set delay interval
+                                            // reset system in 16 ms...
+                                            // unless wdt_disable() in loop() is reached first
 
-      //wdt_reset(); // not needed
+      // wdt_reset();  // not needed
     }
     else
     {
