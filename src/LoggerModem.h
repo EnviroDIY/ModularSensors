@@ -37,15 +37,12 @@
 
 /* ===========================================================================
 * Functions for the modem class
-* This is basically a wrapper for TinyGsm
+* This is basically a wrapper for TinyGsm with power control added
 * ========================================================================= */
 
 // template <class Derived, typename modemType, typename modemClientType>
 class loggerModem
 {
-// ==========================================================================//
-//          These are the functions that set the modem up as a sensor
-// ==========================================================================//
 public:
     // Constructor/Destructor
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
@@ -83,12 +80,20 @@ public:
     virtual uint32_t getNISTTime(void) = 0;
 
     // Get modem metadata values
-    // These four functions will query the modem to get new values
+    // NOTE:  In order to use the modem variables called below, these functions
+    // must be called when the modem is connected to the internet.  Normally
+    // this is done by the "logDataAndPublish()" function of the logger, but
+    // if "handwriting" a logging function, remember to call this.
+    // These three functions will query the modem to get new values
     virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
     virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) = 0;
     virtual float getModemChipTemperature(void) = 0;
+    // This gets all of the above at once
     virtual bool updateModemMetadata(void);
+
     // These functions simply return the stored values
+    // NOTE:  These must be static so that the modem variables can call them.
+    // (Non-static member functions cannot be called without an object.)
     static float getModemRSSI();
     static float getModemSignalPercent();
     static float getModemBatteryChargeState();
@@ -140,6 +145,9 @@ protected:
     uint32_t _lastNISTrequest;
     bool _hasBeenSetup;
 
+    // NOTE:  These must be static so that the modem variables can call the
+    // member functions that return them.  (Non-static member functions cannot
+    // be called without an object.)
     static int16_t _priorRSSI;
     static int16_t _priorSignalPercent;
     static float _priorModemTemp;
@@ -158,6 +166,11 @@ protected:
 // typedef float (loggerModem::*loggerGetValueFxn)(void);
 
 // Classes for the modem variables
+// NOTE:  The modem is NOT set up as a sensor.  ALl of these variables for
+// the modem object are actually being called as calculated variables where the
+// calculation function is to ask the modem object for the values from the
+// last time it connected to the internet.
+
 // Defines the received signal strength indication
 class Modem_RSSI : public Variable
 {

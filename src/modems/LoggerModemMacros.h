@@ -219,9 +219,9 @@
     MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
            F("milliseconds.  Connecting to GPRS..."));      \
     gsmModem.gprsConnect(_apn, "", "");
-    #else
+#else  // #ifndef TINY_GSM_MODEM_XBEE
 #define MS_MODEM_SET_APN
-#endif
+#endif  // #ifndef TINY_GSM_MODEM_XBEE
 
 #define MS_MODEM_CONNECT_INTERNET(specificModem)                    \
     bool specificModem::connectInternet(uint32_t maxConnectionTime) \
@@ -252,7 +252,7 @@
                F("milliseconds."));                                                 \
     }
 
-#else
+#else  // #if defined TINY_GSM_MODEM_HAS_GPRS
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
     bool specificModem::isInternetAvailable(void)     \
     {                                                 \
@@ -291,7 +291,7 @@
         MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER, \
                F("milliseconds."));                                             \
     }
-#endif
+#endif  // #if defined TINY_GSM_MODEM_HAS_GPRS
 
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it

@@ -20,10 +20,7 @@ float loggerModem::_priorBatteryVoltage = -9999;
 // float loggerModem::_priorActivationDuration = -9999;
 // float loggerModem::_priorPoweredDuration = -9999;
 
-// Sensor(const char *sensorName = "Unknown", const uint8_t numReturnedVars = 1,
-//        uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
-//        int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
-// Constructors
+// Constructor
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
                          uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
