@@ -41,6 +41,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #undef MS_DEBUGGING_STD
 #define MS_DEBUGGING_STD "kn_depth"
 #endif //MS_KN_DEPTH_DEBUG
+
 #ifdef MS_KN_DEPTH_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "kn_depthD"
 #endif

@@ -68,6 +68,8 @@ bool KellerParent::setup(void)
 
     #ifdef MS_KELLERPARENT_DEBUG_DEEP
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+//    #else
+//        sensor.stopDebugging();
     #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power required
@@ -156,7 +158,7 @@ bool KellerParent::addSingleMeasurementResult(void)
 
         // Get Values
         success = sensor.getValues(waterPressureBar, waterTempertureC);
-        MS_DEEP_DBG(success ? F("OK ") :F("FAIL "),F("waterPressureBar="),waterPressureBar,F("waterTemperatureC"),waterTempertureC);
+        //MS_DEEP_DBG(success ? F("OK ") :F("FAIL "),F("waterPressureBar="),waterPressureBar,F("waterTemperatureC"),waterTempertureC);
         waterDepthM = sensor.calcWaterDepthM(waterPressureBar, waterTempertureC);  // float calcWaterDepthM(float waterPressureBar, float waterTempertureC)
 
         // Fix not-a-number values
