@@ -156,6 +156,7 @@ bool KellerParent::addSingleMeasurementResult(void)
 
         // Get Values
         success = sensor.getValues(waterPressureBar, waterTempertureC);
+        MS_DEEP_DBG(success ? F("OK ") :F("FAIL "),F("waterPressureBar="),waterPressureBar,F("waterTemperatureC"),waterTempertureC);
         waterDepthM = sensor.calcWaterDepthM(waterPressureBar, waterTempertureC);  // float calcWaterDepthM(float waterPressureBar, float waterTempertureC)
 
         // Fix not-a-number values

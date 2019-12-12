@@ -7,10 +7,13 @@
 #ifdef MS_PortExpanderB031E_DEBUG
 #define MS_DEBUGGING_STD "PortExpanderB031"
 #endif
-
+#ifdef MS_PortExpanderB031E_DEEP_DEBUG
+#define MS_DEBUGGING_DEEP "PortExpanderB031D"
+#endif
 // Dependencies
 #include "ModSensorDebugger.h"
-#undef MS_PortExpanderB031_STD
+#undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 
 #include "MCP23017.h" //Port 16bit Expander
 
@@ -33,7 +36,7 @@ enum class peB031_bit :uint8_t
     eMcp_PB06_bit       ,//14
     eMcp_eInk_RSTout_bit , //15
 };
-#if 1
+
 enum class eMcpA_bm :uint8_t  //bit mask
 {
     eMcpA_SwV3_bmout       = 0x01,//(1<<(uint8_t)peB031_bit::eMcp_SwV3out_bit),
@@ -47,7 +50,7 @@ enum class eMcpA_bm :uint8_t  //bit mask
 
     eMcpA_direction = 0b00100000,
     //eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_XbeeSleeRq_bmout|eMcpA_XbeeResetN_bmout),
-    eMcpA_default =(eMcpA_SwV3_bmout                          ),   
+    eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_SwVbat_bmout|eMcpA_SwVrs485_bmout       ),   
 
 };//eMcpA_bm
 // mcpAdesc {"SwV3","SwVbat","SwVrs485","SwV1w","SwVsdi","mdmOnSleepin","mdmSleeRq","mdmResetN"}
@@ -68,7 +71,7 @@ enum class eMcpB_bm :uint8_t
     eMcpB_default = (eMcpB_eInk_RST_bmout),
 };//eMcpB_bm
 //  mcpBdesc {"Cust1","Cust2","MuxAdcA","MuxAdcB","MuxAdcC","MuxAdcD","SwVext","eInk_RST"}
-#endif
+
 //class portFriend;  forward ref
 
 class PortExpanderB031 : public MCP23017

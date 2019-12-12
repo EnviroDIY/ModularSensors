@@ -227,7 +227,10 @@ bool DigiXBeeWifi::extraModemSetup(void)
                 if ( false == DnsIpSuccess)
                 {
                     success = false;
-                }        
+                    PRINTOUT(F("XbeeWifi init test FAILED - hope it works next time"));
+                } else {
+                    PRINTOUT(F("XbeeWifi init test PASSED"));
+                }     
             }
             #if 0 //defined MS_DIGIXBEEWIFI_DEBUG 
             //as of 0.23.15 the modem as sensor has problems

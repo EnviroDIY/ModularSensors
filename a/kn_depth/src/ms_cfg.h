@@ -292,20 +292,20 @@ variant.h: has pin definitions
 //#define SerialExt3 Serial3
 #endif //SERIAL3_EN
 #if defined SERIAL4_EN
-//#define SerialExt4 Serial4
-//add -DSTANDARD_SERIAL_OUTPUT=Serial4
 #define SerialTty Serial4
-//#define SerialStd Serial4
-#define STANDARD_SERIAL_OUTPUT Serial4
+//needs to be or all outputs so put on platformio.ini build_flags = 
+//#define STANDARD_SERIAL_OUTPUT Serial4
+//    -DSTANDARD_SERIAL_OUTPUT=Serial4
+//    -DDEBUGGING_SERIAL_OUTPUT=Serial4
+//    -DDEEP_DEBUGGING_SERIAL_OUTPUT=Serial4
 #endif // SERIAL4_EN
 
   //#define KellerAcculevel_ACT 1
   #define KellerNanolevel_ACT 1
   #ifdef KellerNanolevel_ACT
-  /*  SwVbat=1 for Vbst@12V and opt Sw12V
-      SwVrs485 for Vbat-->Vrs to IC 
-      Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1  
-  */
+  //  SwVbat=1 for Vbst@12V and opt Sw12V
+  //  SwVrs485 for Vbat-->Vrs to IC 
+  //  Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1  
     #define CONFIG_SENSOR_RS485_PHY 1
     #define CONFIG_HW_RS485PHY_TX_PIN PIN_A1  //Feather_M4 Serial2 Tx pin 
     #define CONFIG_HW_RS485PHY_RX_PIN PIN_A4  //Feather_M4 Serial2 Rx pin
@@ -325,8 +325,10 @@ variant.h: has pin definitions
   // Seems to cause XBEE WiFi S6 to crash
   //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
   #define ProcessorStats_ACT 1
-  #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
-  #define ProcessorStats_Batt_UUID          "Batt_UUID"
+  #ifdef ProcessorStats_ACT
+    #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
+    #define ProcessorStats_Batt_UUID          "Batt_UUID"
+  #endif //ProcessorStats_ACT
 
   //#define ExternalVoltage_ACT 1
   #ifdef ExternalVoltage_ACT

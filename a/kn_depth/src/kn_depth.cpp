@@ -41,8 +41,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #undef MS_DEBUGGING_STD
 #define MS_DEBUGGING_STD "kn_depth"
 #endif //MS_KN_DEPTH_DEBUG
+#ifdef MS_KN_DEPTH_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "kn_depthD"
+#endif
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 //#include <Arduino.h>  // The base Arduino library
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #include <EnableInterrupt.h>  // for external and pin change interrupts
@@ -212,7 +216,7 @@ const int8_t sensorPowerPin = sensorPowerPin_DEF; // MCU pin controlling main se
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardName    = HwName_DEF;
 const char *mcuBoardVersion = HwVersion_DEF;
-#if defined(ProcessorStats_ACT)
+#if 1 //defined(ProcessorStats_ACT)
 ProcessorStats mcuBoard(mcuBoardVersion);
 #endif //ProcessorStats_ACT
 
@@ -1158,7 +1162,7 @@ byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 
 // Create a Keller Nanolevel sensor object
-KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 
 // Create pressure, temperature, and height variable pointers for the Nanolevel
 // Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
@@ -1429,7 +1433,8 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create the function to give your calculated result.
 // The function should take no input (void) and return a float.
 // You can use any named variable pointers to access values by way of variable->getValue()
-
+//#define USE_CALC_VAR 1
+#if defined USE_CALC_VAR
 float calculateVariableValue(void)
 {
     float calculatedResult = -9999;  // Always safest to start with a bad value
@@ -1453,7 +1458,7 @@ const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The 
 Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
                                        calculatedVarName, calculatedVarUnit,
                                        calculatedVarCode, calculatedVarUUID);
-
+#endif //USE_CALC_VAR
 
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
@@ -1541,9 +1546,9 @@ Variable *variableList[] = {
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // KellerAcculevel_ACT
 #ifdef KellerNanolevel_ACT
-//   new KellerNanolevel_Pressure(&nanolevelfn, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevelfn,   KellerNanolevel_Temp_UUID),
-    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
+//   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #ifdef SENSOR_CONFIG_GENERAL
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -1587,7 +1592,9 @@ Variable *variableList[] = {
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-    calculatedVar
+#if defined USE_CALC_VAR
+    calculatedVar  //sample
+#endif //USE_CALC_VAR
 };
 
 /*
@@ -1692,6 +1699,7 @@ void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned 
 
 // Read's the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
+
 float getBatteryVoltage()
 {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
@@ -1808,8 +1816,7 @@ void setup()
     //mcpExp.pulseToggleBit(peB031_bit::eMcp_XbeeResetNout_bit,1000);
     //delay(1000);
     #endif //defined HwFeatherWing_B031ALL
-    //extern const PinDescription g_APinDescription[];
-    //MS_DBG(F("Sizeoff "),sizeof(g_APinDescription),"/",sizeof(PinDescription));
+
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
         enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
@@ -1829,19 +1836,6 @@ void setup()
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
     //sonarSerial.begin(9600);
-
-    // Assign pins SERCOM functionality for SAMD boards
-    // NOTE:  This must happen *after* the various serial.begin statements
-    #if defined ARDUINO_ARCH_SAMD
-    #ifndef ENABLE_SERIAL2
-    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
-    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-    #endif
-    #if 0 //ndef ENABLE_SERIAL3
-    pinPeripheral(2, PIO_SERCOM);  // Serial3 Tx/Dout = SERCOM2 Pad #2
-    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
-    #endif
-    #endif
 
 #ifdef USE_MS_SD_INI
     Serial.println(F("---parseIni "));
@@ -1972,7 +1966,8 @@ void setup()
 #endif //ARDUINO_ARCH_SAMD
 
     Logger::markTime(); //Init so never zero
-
+    //del &DEEP_DEBUGGING_SERIAL_OUTPUT nanolevel_snsr.setDebugStream(&SerialTty);
+    //modbusSerial.setDebugStream(&SerialTty);
     //dataLogger.systemSleep();
     //while (1) { greenredflash(4,500); delay(2000); }
 }
@@ -2152,18 +2147,7 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
         MS_DBG("***digitalWrExt Err ",ulPin,"=",ulVal);  
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-#if 1
-        MS_DBG("***digitalWrExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",ulVal);  
-#else
-        SerialStd.print("***digitalWrExt ");
-        SerialStd.print(ulPin);
-        SerialStd.print("/");
-        SerialStd.print(mcpPin);
-        SerialStd.print(" ");
-        SerialStd.print(mcpExp.getPortStr(mcpPin));
-        SerialStd.print("=");
-        SerialStd.println(ulVal);
-#endif        
+        MS_DEEP_DBG("***digitalWrExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",ulVal); 
         mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
     }
 }
@@ -2172,10 +2156,7 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
 #if 1
 void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
-        SerialStd.print("***pinModExt Err ");
-        SerialStd.print(ulPin);        
-        SerialStd.print("=");
-        SerialStd.println(ulMode);
+        MS_DBG("***pinModeExt Err ",ulPin,"=",ulMode);  
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
         MS_DBG("***pinModExt Unhandled ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",ulMode);      
@@ -2188,7 +2169,7 @@ uint8_t digitalRdExt( uint32_t ulPin ) {
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
         pinState=mcpExp.digitalRead(mcpPin);
-        MS_DBG("***digitalRdExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",pinState);  
+        MS_DEEP_DBG("***digitalRdExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",pinState);  
     }    
     return pinState;
 }

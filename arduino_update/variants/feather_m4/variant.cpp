@@ -191,7 +191,7 @@ void SERCOM5_3_Handler()
    Tx   A4 [18] cpuPin13/PA04 SERCOM0 Pad#0
    Te   A5 [19] cpupin15/PA06 SERCOM0 Pad#2
 */
-Uart Serial2(&sercom0, PIN_SERIAL2_RX, PIN_SERIAL2_TX, SERCOM_RX_PAD_1, UART_TX_PAD_0); //Full duplex
+Uart Serial2( &sercom0, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, PAD_SERIAL2_TX); //Full duplex
 //Uart Serial2(&sercom0, 40, 41, SERCOM_RX_PAD_1, UART_TX_TE_PAD_0_2); //RS485 Half Duplex 3pin ??
 //Uart Serial2(&sercom0, 40, 41, SERCOM_RX_PAD_1, UART_TX_TE_PAD_0_2); //RS485 Half Duplex 2pin ??
 
