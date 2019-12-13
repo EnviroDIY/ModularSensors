@@ -1,4 +1,10 @@
-/* PortExanderB031 - custom interace to a board */
+/* PortExanderB031 - custom interace to a board 
+   This should be folded into MCP23017 as really just relative to MCP23017?
+    - some added value 
+    
+    Software License: BSD-3.
+    Copyright (c) 2019, Neil Hancock     
+  */
 #include "PortExpanderB031.h"
 
 PortExpanderB031::PortExpanderB031(uint8_t address, TwoWire& bus) : MCP23017( address, bus){}
@@ -33,11 +39,11 @@ void PortExpanderB031::setBit(peB031_bit portNum) {
         mcpBit -= 8;
         _portB |= (1<<mcpBit) ;
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
-        MS_DBG(F("SPB "),_portB);
+        MS_DBG(F("setPortB"),mcpBit,F("="),_portB);
     } else {
         _portA |= (1<<mcpBit);
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
-        MS_DBG(F("SPA "),_portA);
+        MS_DBG(F("setPortA"),mcpBit,F("="),_portA);
     }
 }
 void PortExpanderB031::clrBit(peB031_bit portNum) {
@@ -47,11 +53,11 @@ void PortExpanderB031::clrBit(peB031_bit portNum) {
         mcpBit -= 8;
         _portB &= ~(1<<mcpBit) ;
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
-        MS_DBG(F("CPB "),_portB);
+        MS_DBG(F("clrPortB "),mcpBit,F("="),_portB);
     } else {
         _portA &= ~(1<<mcpBit);
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
-        MS_DBG(F("CPA "),_portA);
+        MS_DBG(F("clrPortA"),mcpBit,F("="),_portA);
     }
 }
 
@@ -63,23 +69,23 @@ void PortExpanderB031::pulseToggleBit(peB031_bit portNum,uint16_t delay_ms) {
         mcpMask = (1<<mcpBit) ;
         _portB ^= mcpMask;
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
-        MS_DBG(F("XPB "),_portB," mS=",delay_ms);
+        MS_DBG(F("pulsePortB"),mcpBit,F("="),_portB," mS=",delay_ms);
         delay(delay_ms);
         _portB ^= mcpMask;
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
-        MS_DBG(F("XPB "),_portB);        
+        MS_DBG(F("wrPortB "),_portB);        
     } else {
         mcpMask = (1<<mcpBit) ;
         _portA ^= mcpMask;
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
-        MS_DBG(F("XPA "),_portA," mS=",delay_ms," bit ",mcpMask);
+        MS_DBG(F("pulesPortA "),mcpBit,F("="),_portA," mS=",delay_ms," bit ",mcpMask);
         delay(delay_ms);
         _portA ^= mcpMask;
         MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
-        MS_DBG(F("XPA "),_portA);
+        MS_DBG(F("wrPortA "),_portA);
     }
 }
-
+#if 0
 void PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
 {
     if (ulPin >= _ulPinMax) {
@@ -88,7 +94,7 @@ void PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
         //pinDigitalWrite()
     }
 }
-
+#endif
 String PortExpanderB031::getPortStr(uint8_t mcpBit) 
 {
     if (mcpBit > 7) {

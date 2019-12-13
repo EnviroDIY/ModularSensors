@@ -2,6 +2,10 @@
  *PortExpanderB031.h
  *This file is for the B031 Port Expander access functions.
  * see peB031_bit for definitions
+ * All Pin references are local to MCP23017 registers
+
+Software License: BSD-3.
+  Copyright (c) 2019, Neil Hancock 
 */
 #pragma once
 #ifdef MS_PortExpanderB031E_DEBUG

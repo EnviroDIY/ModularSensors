@@ -237,7 +237,7 @@ eMcpB_end
 /* Needs specifying for Feather M4 B031rX */
 // For no sleep/Always ON add to gcc cmn_build_flags (platformio.ini)
 #if !defined MODEMPHY_ALWAYS_ON
-#define modemVccPin_DEF -1 //eMcpA_SwV3Out_pinnum//-1 // B031r1:V3Sw mcpExp:PA0  for pwr off, other pins must be 0V
+#define modemVccPin_DEF   eMcpA_SwV3Out_pinnum //-1 // B031r1:V3Sw mcpExp:PA0  for pwr off, other pins must be 0V
 #define modemResetPin_DEF eMcpA_XbeeResetNOut_pinnum //B031r1:XbeeResetN PA7
 #define modemStatusPin_DEF  eMcpA_XbeeOnSleepNin_pinnum //B031r1:XbeeOnSleepN Exp:PA5
 #define modemSleepRqPin_DEF eMcpA_XbeeSleeRqOut_pinnum  //B031r1:XbeeSleepRq Exp:PA6
