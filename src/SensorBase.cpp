@@ -476,15 +476,15 @@ bool Sensor::checkPowerOn(bool debug)
             // Unset the status bits for sensor power (bits 1 & 2),
             // activation (bits 3 & 4), and measurement request (bits 5 & 6)
             _sensorStatus &= 0b10000001;
-            return false;                
+            return false;
         }
-        else 
+        else
         {
             if (debug) {MS_DBG((" was on."));}
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-                _sensorStatus |= 0b00000110;
+            _sensorStatus |= 0b00000110;
             return true;
         }
     }

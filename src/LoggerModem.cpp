@@ -545,7 +545,6 @@ void loggerModem::modemPowerDown(void)
         digitalWrite( MODEMPHY_RX_PIN, LOW);
         #endif //POWERPIN_ALLPINS_OFF
         digitalWrite(_powerPin, LOW);
-
         // Unset the power-on time
         _millisPowerOn = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
