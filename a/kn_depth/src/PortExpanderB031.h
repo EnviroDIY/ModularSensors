@@ -93,6 +93,7 @@ public:
     void pulseToggleBit(peB031_bit portNum,uint16_t delay_ms=2);
     void digitalWrite( uint32_t ulPin, uint32_t ulVal ); //mimic wiring_digital
     String getPortStr(uint8_t portNum);
+    uint8_t rdMir(peB031_bit portNum);     
     uint8_t _portA=(uint8_t)eMcpA_bm::eMcpA_default;
     uint8_t _portB=(uint8_t)eMcpB_bm::eMcpB_default;
     uint8_t _ulPinMax=0;

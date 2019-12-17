@@ -43,6 +43,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif //MS_KN_DEPTH_DEBUG
 
 #ifdef MS_KN_DEPTH_DEBUG_DEEP
+#undef MS_DEBUGGING_DEEP
 #define MS_DEBUGGING_DEEP "kn_depthD"
 #endif
 #include "ModSensorDebugger.h"
@@ -476,9 +477,10 @@ DigiXBee3GBypass modem = modemXB3GB;
 
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the XBee CTS pin for status
+const bool useCTSforStatus = true;   //true? Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
+// useCTSforStatus is overload with  useCTSforStatus!-> loggerModem.statusLevel for detecting Xbee SleepReqAct==1
 DigiXBeeWifi modemXBWF(&modemSerHw,
                        modemVccPin, modemStatusPin, useCTSforStatus,
                        modemResetPin, modemSleepRqPin,
@@ -1620,7 +1622,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // ==========================================================================
-//     Port Expansion - evolving
+//     Port Expansion
 // ==========================================================================
 #if defined HwFeatherWing_B031ALL
 #define MCP23017_ADDR 0x20
@@ -1884,10 +1886,10 @@ void setup()
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-        MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
-        //digitalWrite(modemVccPin, HIGH);
-        //MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
+        //digitalWrite(modemVccPin, LOW);
+        //MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
+        digitalWrite(modemVccPin, HIGH);
+        MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
     } else {MS_DBG(F("ModemVccPin not used "),modemVccPin);}
     if (sensorPowerPin >= 0)
     {
@@ -1936,9 +1938,9 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
-    dataLogger.attachModem(modemPhy);
+    //dataLogger.attachModem(modemPhy);
     //dataLogger.setAlertPin(-1);//greenLEDPin
-    dataLogger.setTestingModePin(buttonPin);
+    //dataLogger.setTestingModePin(buttonPin);
 
 
         //modemPhy.modemPowerUp();
@@ -2148,7 +2150,7 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
         MS_DBG("***digitalWrExt Err ",ulPin,"=",ulVal);  
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        MS_DEEP_DBG("***digitalWrExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",ulVal); 
+        MS_DEEP_DBG("***digitalWrExt ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulVal); 
         mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
     }
 }
@@ -2160,7 +2162,7 @@ void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
         MS_DBG("***pinModeExt Err ",ulPin,"=",ulMode);  
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        MS_DBG("***pinModExt Unhandled ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",ulMode);      
+        MS_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);      
     }
 }
 uint8_t digitalRdExt( uint32_t ulPin ) {
@@ -2170,9 +2172,20 @@ uint8_t digitalRdExt( uint32_t ulPin ) {
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
         pinState=mcpExp.digitalRead(mcpPin);
-        MS_DEEP_DBG("***digitalRdExt ",ulPin,"/",mcpPin,mcpExp.getPortStr(mcpPin),"=",pinState);  
+        MS_DEEP_DBG("***digitalRdExt ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",pinState);  
     }    
     return pinState;
+}
+int digitalRdMir( uint32_t ulPin ) {
+    bool pinState=0;
+    if (ulPin < thisVariantNumPins) {
+        MS_DBG("***digitalRdMir Err",ulPin);  
+    } else {
+        uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        pinState=mcpExp.rdMir((peB031_bit)mcpPin);
+        MS_DEEP_DBG("***digitalRdMir ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",pinState);  
+    }    
+    return (int)pinState;
 }
 #endif //0
 #ifdef __cplusplus

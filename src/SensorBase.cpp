@@ -444,15 +444,31 @@ bool Sensor::update(void)
 }
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+int digitalRdMir( uint32_t ulPin );
+#ifdef __cplusplus
+}
+#endif
 // This is a helper function to check if the power needs to be turned on
 bool Sensor::checkPowerOn(bool debug)
 {
+    bool retVal=false;
     if (debug) {MS_DBG(F("Checking power status:  Power to"), getSensorNameAndLocation());}
     if (_powerPin >= 0)
     {
-        int8_t powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-
-        if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
+        bool powerPinOff=true;
+        if ( _powerPin >= thisVariantNumPins)
+        {
+           powerPinOff = (0 == digitalRdMir(_powerPin)); 
+        } 
+        else //Read Port hardware - no API
+        { 
+            int8_t powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
+            powerPinOff =(bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW);
+        }
+        if (powerPinOff) 
         {
             if (debug) {MS_DBG(F("was off."));}
             // Reset time of power on, in-case it was set to a value
@@ -460,15 +476,15 @@ bool Sensor::checkPowerOn(bool debug)
             // Unset the status bits for sensor power (bits 1 & 2),
             // activation (bits 3 & 4), and measurement request (bits 5 & 6)
             _sensorStatus &= 0b10000001;
-            return false;
+            return false;                
         }
-        else
+        else 
         {
             if (debug) {MS_DBG((" was on."));}
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
-            _sensorStatus |= 0b00000110;
+                _sensorStatus |= 0b00000110;
             return true;
         }
     }
@@ -481,6 +497,7 @@ bool Sensor::checkPowerOn(bool debug)
         _sensorStatus |= 0b00000110;
         return true;
     }
+    return retVal;
 }
 
 

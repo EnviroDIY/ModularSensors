@@ -87,13 +87,13 @@ bool DigiXBeeWifi::extraModemSetup(void)
         gsmModem.sendAT(GF("PR"),"3D3F");
         success &= gsmModem.waitResponse() == 1;
         if (!success) {MS_DBG(F("Fail PR "),success);}
-        #if !defined MODEMPHY_ALWAYS_ON
+        #if !defined MODEMPHY_NEVER_SLEEPS
             #define XBEE_SLEEP_SETTING 1
             #define XBEE_SLEEP_ASSOCIATE 200
         #else
             #define XBEE_SLEEP_SETTING 0
             #define XBEE_SLEEP_ASSOCIATE 40
-        #endif 
+        #endif //MODEMPHY_NEVER_SLEEPS
         // To use sleep pins they physically need to be enabled.
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function

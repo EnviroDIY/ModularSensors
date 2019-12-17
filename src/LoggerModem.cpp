@@ -492,13 +492,24 @@ bool loggerModem::addSingleMeasurementResult(void)
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
 
-
+#define POWERPIN_ALLPINS_OFF
+#if defined POWERPIN_ALLPINS_OFF
+#include "wiring_private.h"
+#endif
 void loggerModem::modemPowerUp(void)
 {
     if (_powerPin >= 0)
     {
         MS_DBG(F("Powering"), getSensorName(), F("with pin"), _powerPin);
         digitalWrite(_powerPin, HIGH);
+
+        #if defined POWERPIN_ALLPINS_OFF
+        #define MODEMPHY_TX_PIN PIN_SERIAL1_TX
+        #define MODEMPHY_RX_PIN PIN_SERIAL1_RX        
+        pinPeripheral(MODEMPHY_TX_PIN, PIO_SERCOM);  
+        pinPeripheral(MODEMPHY_RX_PIN, PIO_SERCOM);  
+        //Run modem begin?  extraModemSetup(); too complicated
+        #endif // POWERPIN_ALLPINS_OFF        
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     }
@@ -520,8 +531,21 @@ void loggerModem::modemPowerDown(void)
         _priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
         MS_DBG(F("Total modem power-on time (s):"), String(_priorPoweredDuration, 3));
 
-        MS_DBG(F("Turning off power to"), getSensorName(), F("with pin"), _powerPin);
+        MS_DBG(F("Turning2 off power to"), getSensorName(), F("with pin"), _powerPin,_modemSleepRqPin,_modemResetPin);
+        //Turn off pins connected to modem  - confirmed this works
+        #if defined POWERPIN_ALLPINS_OFF
+        if (_modemSleepRqPin >= 0){digitalWrite(_modemSleepRqPin,LOW);}
+        if (_modemResetPin >= 0)  {digitalWrite(_modemResetPin,LOW);}
+        //need uart.end() ..modemSerial.end();  //need a modemSerial.begin(9600);
+        // Uart is via HardwareSerial/Uart.cpp in  DigiXbeeWiFi.gsmModem.stream
+        // We are DIgiXbeeWiFi.DigiXbee.loggerModem
+        pinMode(MODEMPHY_TX_PIN, OUTPUT);  
+        pinMode(MODEMPHY_RX_PIN, OUTPUT);  
+        digitalWrite( MODEMPHY_TX_PIN, LOW);
+        digitalWrite( MODEMPHY_RX_PIN, LOW);
+        #endif //POWERPIN_ALLPINS_OFF
         digitalWrite(_powerPin, LOW);
+
         // Unset the power-on time
         _millisPowerOn = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
@@ -593,10 +617,18 @@ bool loggerModem::modemSleepPowerDown(void)
             MS_DBG(F("Waiting up to"), _disconnetTime_ms,
             F("milliseconds for graceful shutdown as indicated by pin"),
                    _dataPin, F("going"), !_statusLevel, F("..."));
-            while (millis() - start < _disconnetTime_ms && digitalRead(_dataPin) == _statusLevel){}
-            if (digitalRead(_dataPin) == _statusLevel)
+            bool pinVal = digitalRead(_dataPin); //Local value, read once for multiple decisions
+            while (((millis() - start) < _disconnetTime_ms) )
             {
-                MS_DBG(F("... "), getSensorName(), F("did not successfully shut down!"));
+                delay(1000); 
+                pinVal = (bool) digitalRead(_dataPin);
+                MS_DBG(F("Read"),pinVal,F("Expected"),_statusLevel);
+ 
+                if (pinVal == _statusLevel) break;
+            }
+            if (pinVal == _statusLevel)
+            {
+                MS_DBG(F("... "), getSensorName(), F("did not successfully shut down! Read"),pinVal,F("Expected"),_statusLevel);
             }
             else
             {
@@ -612,13 +644,15 @@ bool loggerModem::modemSleepPowerDown(void)
         _priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
         MS_DBG(F("Total modem power-on time (s):"), String(_priorPoweredDuration, 3));
 
+        modemPowerDown();
+        /*
         MS_DBG(F("Turning off power to"), getSensorName(), F("with pin"), _powerPin);
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        _sensorStatus &= 0b10000001;
+        _sensorStatus &= 0b10000001;*/
     }
     else
     {

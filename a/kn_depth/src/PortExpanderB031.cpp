@@ -1,7 +1,7 @@
 /* PortExanderB031 - custom interace to a board 
    This should be folded into MCP23017 as really just relative to MCP23017?
     - some added value 
-    
+
     Software License: BSD-3.
     Copyright (c) 2019, Neil Hancock     
   */
@@ -85,7 +85,7 @@ void PortExpanderB031::pulseToggleBit(peB031_bit portNum,uint16_t delay_ms) {
         MS_DBG(F("wrPortA "),_portA);
     }
 }
-#if 0
+
 void PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
 {
     if (ulPin >= _ulPinMax) {
@@ -94,7 +94,7 @@ void PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
         //pinDigitalWrite()
     }
 }
-#endif
+
 String PortExpanderB031::getPortStr(uint8_t mcpBit) 
 {
     if (mcpBit > 7) {
@@ -108,3 +108,17 @@ String PortExpanderB031::getPortStr(uint8_t mcpBit)
         return mcpAdesc[mcpBit];
     }
 }
+
+uint8_t PortExpanderB031::rdMir(peB031_bit portNum) {
+    uint8_t mcpBit=(uint8_t)portNum;
+    uint8_t retVal=0;
+    if (mcpBit > 7) {
+        mcpBit -= 8;
+        retVal = _portB & ~(1<<mcpBit) ;
+        MS_DBG(F("mirPortB"),mcpBit,F("="),retVal);
+    } else {
+        retVal = _portA & ~(1<<mcpBit) ;
+        MS_DBG(F("mirPortA"),mcpBit,F("="),retVal);
+    }
+    return retVal;
+}    

@@ -236,17 +236,18 @@ eMcpB_end
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 /* Needs specifying for Feather M4 B031rX */
 // For no sleep/Always ON add to gcc cmn_build_flags (platformio.ini)
-#if !defined MODEMPHY_ALWAYS_ON
-#define modemVccPin_DEF   eMcpA_SwV3Out_pinnum //-1 // B031r1:V3Sw mcpExp:PA0  for pwr off, other pins must be 0V
-#define modemResetPin_DEF eMcpA_XbeeResetNOut_pinnum //B031r1:XbeeResetN PA7
-#define modemStatusPin_DEF  eMcpA_XbeeOnSleepNin_pinnum //B031r1:XbeeOnSleepN Exp:PA5
-#define modemSleepRqPin_DEF eMcpA_XbeeSleeRqOut_pinnum  //B031r1:XbeeSleepRq Exp:PA6
-#else
-#define modemVccPin_DEF -1 
+// For modemVccPIN_DEF no need for modemSleepRqPin
+#define modemVccPin_DEF  eMcpA_SwV3Out_pinnum //-1 // B031r1:V3Sw mcpExp:PA0  for pwr off, other pins must be 0V
+//#define MODEMPHY_NEVER_SLEEPS 1
+#if 0 //defined MODEMPHY_NEVER_SLEEPS || (-1!=modemVccPin_DEF)
 #define modemResetPin_DEF -1
 #define modemStatusPin_DEF  -1
 #define modemSleepRqPin_DEF -1
-#endif //MODEMPHY_ALWAYS_ON
+#else
+#define modemResetPin_DEF eMcpA_XbeeResetNOut_pinnum //B031r1:XbeeResetN PA7
+#define modemStatusPin_DEF  eMcpA_XbeeOnSleepNin_pinnum //B031r1:XbeeOnSleepN Exp:PA5
+#define modemSleepRqPin_DEF eMcpA_XbeeSleeRqOut_pinnum  //B031r1:XbeeSleepRq Exp:PA6
+#endif //MODEMPHY_NEVER_SLEEPS
 
 #define modemAssocPin_DEF   -1   //B031r1: not supported
 //#define modemRssi??_DEF   -1   //B031r1:RssiSt ?
