@@ -17,17 +17,17 @@
 
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy in memory
-const char *HologramPublisher::postEndpoint = "/api/data-stream/";
-const char *HologramPublisher::enviroDIYHost = "data.envirodiy.org";
-const int HologramPublisher::enviroDIYPort = 80;
-const char *HologramPublisher::tokenHeader = "\r\nTOKEN: ";
+const char *HologramPublisher::postEndpoint = "/api/1/csr/data/";
+const char *HologramPublisher::hologramHost = "cloudsocket.hologram.io";
+const int HologramPublisher::hologramPort = 9999;
+const char *HologramPublisher::authHeader = "\r\nAuthorization: Basic ";
 // const unsigned char *HologramPublisher::cacheHeader = "\r\nCache-Control: no-cache";
 // const unsigned char *HologramPublisher::connectionHeader = "\r\nConnection: close";
 const char *HologramPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char *HologramPublisher::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
 
-const char *HologramPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char *HologramPublisher::timestampTag = "\",\"timestamp\":\"";
+const char *HologramPublisher::deviceIdTag = "{\"deviceid\":";
+const char *HologramPublisher::bodyTag = ",\"body\":\"";
 
 
 // Constructors
@@ -82,9 +82,9 @@ void HologramPublisher::setToken(const char *registrationToken)
 // Calculates how long the JSON will be
 uint16_t HologramPublisher::calculateJsonSize()
 {
-    uint16_t jsonLength = 21;  // {"sampling_feature":"
-    jsonLength += 36;  // sampling feature UUID
-    jsonLength += 15;  // ","timestamp":"
+    uint16_t jsonLength = 12;  // {"deviceid":
+    jsonLength += 6;  // six-digit device ID
+    jsonLength += 10;  // ","body":"
     jsonLength += 25;  // markedISO8601Time
     jsonLength += 2;  //  ",
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++)
@@ -126,9 +126,10 @@ uint16_t HologramPublisher::calculatePostSize()
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
 void HologramPublisher::printSensorDataJSON(Stream *stream)
 {
-    stream->print(samplingFeatureTag);
-    stream->print(_baseLogger->getSamplingFeatureUUID());
-    stream->print(timestampTag);
+    stream->print(deviceIdTag);
+    // stream->print(_baseLogger->getSamplingFeatureUUID());
+    stream->print(deviceId);
+    stream->print(bodyTag);
     stream->print(_baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime));
     stream->print(F("\","));
 
@@ -157,8 +158,8 @@ void HologramPublisher::printEnviroDIYRequest(Stream *stream)
     stream->print(postEndpoint);
     stream->print(HTTPtag);
     stream->print(hostHeader);
-    stream->print(enviroDIYHost);
-    stream->print(tokenHeader);
+    stream->print(hologramHost);
+    stream->print(authHeader);
     stream->print(_registrationToken);
     // stream->print(cacheHeader);
     // stream->print(connectionHeader);
@@ -201,30 +202,41 @@ int16_t HologramPublisher::publishData(Client *_outClient)
     char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
+    MS_DBG(F("RUNNING IN HOLOGRAM"));
+
     MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
-    if (_outClient->connect(enviroDIYHost, enviroDIYPort))
+    if (_outClient->connect(hologramHost, hologramPort))
     {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
-        // copy the initial post header into the tx buffer
-        strcpy(txBuffer, postHeader);
-        strcat(txBuffer, postEndpoint);
-        strcat(txBuffer, HTTPtag);
-
-        // add the rest of the HTTP POST headers to the outgoing buffer
-        // before adding each line/chunk to the outgoing buffer, we make sure
-        // there is space for that line, sending out buffer if not
-        if (bufferFree() < 28) printTxBuffer(_outClient);
-        strcat(txBuffer, hostHeader);
-        strcat(txBuffer, enviroDIYHost);
-
-        if (bufferFree() < 47) printTxBuffer(_outClient);
-        strcat(txBuffer, tokenHeader);
+        strcpy(txBuffer, "{\"k\":\"");
         strcat(txBuffer, _registrationToken);
+        strcat(txBuffer, "\",\"d\":\"");
+        strcat(txBuffer, "time,");
+        _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime).toCharArray(tempBuffer, 37);
+        strcat(txBuffer, tempBuffer);
+        strcat(txBuffer, ",");
+        
+        // copy the initial post header into the tx buffer
+        // strcpy(txBuffer, postHeader);
+        // strcat(txBuffer, postEndpoint);
+        // strcat(txBuffer, HTTPtag);
+
+        // // add the rest of the HTTP POST headers to the outgoing buffer
+        // // before adding each line/chunk to the outgoing buffer, we make sure
+        // // there is space for that line, sending out buffer if not
+        // if (bufferFree() < 28) printTxBuffer(_outClient);
+        // strcat(txBuffer, hostHeader);
+        // strcat(txBuffer, hologramHost);
+
+        // if (bufferFree() < 25) printTxBuffer(_outClient);
+        // strcat(txBuffer, authHeader);
+        // if (bufferFree() < 52) printTxBuffer(_outClient);
+        // strcat(txBuffer, _registrationToken);
 
         // if (bufferFree() < 27) printTxBuffer(_outClient);
         // strcat(txBuffer, cacheHeader);
@@ -232,49 +244,45 @@ int16_t HologramPublisher::publishData(Client *_outClient)
         // if (bufferFree() < 21) printTxBuffer(_outClient);
         // strcat(txBuffer, connectionHeader);
 
-        if (bufferFree() < 26) printTxBuffer(_outClient);
-        strcat(txBuffer, contentLengthHeader);
-        itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
-        strcat(txBuffer, tempBuffer);
+        // if (bufferFree() < 26) printTxBuffer(_outClient);
+        // strcat(txBuffer, contentLengthHeader);
+        // itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
+        // strcat(txBuffer, tempBuffer);
 
-        if (bufferFree() < 42) printTxBuffer(_outClient);
-        strcat(txBuffer, contentTypeHeader);
+        // if (bufferFree() < 42) printTxBuffer(_outClient);
+        // strcat(txBuffer, contentTypeHeader);
 
-        // put the start of the JSON into the outgoing response_buffer
-        if (bufferFree() < 21) printTxBuffer(_outClient);
-        strcat(txBuffer, samplingFeatureTag);
+        // // put the start of the JSON into the outgoing response_buffer
+        // if (bufferFree() < 21) printTxBuffer(_outClient);
+        // strcat(txBuffer, deviceIdTag);
 
-        if (bufferFree() < 36) printTxBuffer(_outClient);
-        strcat(txBuffer, _baseLogger->getSamplingFeatureUUID());
+        // if (bufferFree() < 36) printTxBuffer(_outClient);
+        // strcat(txBuffer, deviceId);
 
-        if (bufferFree() < 42) printTxBuffer(_outClient);
-        strcat(txBuffer, timestampTag);
-        _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime).toCharArray(tempBuffer, 37);
-        strcat(txBuffer, tempBuffer);
-        txBuffer[strlen(txBuffer)] = '"';
-        txBuffer[strlen(txBuffer)] = ',';
+        // if (bufferFree() < 42) printTxBuffer(_outClient);
+        // strcat(txBuffer, bodyTag);
+        // _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime).toCharArray(tempBuffer, 37);
+        // strcat(txBuffer, tempBuffer);
+        // txBuffer[strlen(txBuffer)] = '"';
+        // txBuffer[strlen(txBuffer)] = '}';
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++)
         {
             // Once the buffer fills, send it out
             if (bufferFree() < 47) printTxBuffer(_outClient);
 
-            txBuffer[strlen(txBuffer)] = '"';
             _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
             strcat(txBuffer, tempBuffer);
-            txBuffer[strlen(txBuffer)] = '"';
-            txBuffer[strlen(txBuffer)] = ':';
+            strcat(txBuffer, ",");
             _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
             strcat(txBuffer, tempBuffer);
             if (i + 1 != _baseLogger->getArrayVarCount())
             {
                 txBuffer[strlen(txBuffer)] = ',';
             }
-            else
-            {
-                txBuffer[strlen(txBuffer)] = '}';
-            }
         }
+
+        strcat(txBuffer, "\"}");
 
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(_outClient, true);
@@ -310,6 +318,8 @@ int16_t HologramPublisher::publishData(Client *_outClient)
             responseCode_char[i] = tempBuffer[i+9];
         }
         responseCode = atoi(responseCode_char);
+        PRINTOUT(F("RESPONSECHAR"));
+        PRINTOUT(responseCode_char);
     }
     else
     {
@@ -317,6 +327,7 @@ int16_t HologramPublisher::publishData(Client *_outClient)
     }
 
     PRINTOUT(F("-- Response Code --"));
+  
     PRINTOUT(responseCode);
 
     return responseCode;

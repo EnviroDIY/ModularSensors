@@ -49,7 +49,7 @@ public:
     virtual ~HologramPublisher();
 
     // Returns the data destination
-    virtual String getEndpoint(void){return String(enviroDIYHost);}
+    virtual String getEndpoint(void){return String(hologramHost);}
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
@@ -85,17 +85,18 @@ protected:
 
     // portions of the POST request
     static const char *postEndpoint;
-    static const char *enviroDIYHost;
-    static const int enviroDIYPort;
-    static const char *tokenHeader;
+    static const char *hologramHost;
+    static const int hologramPort;
+    static const char *authHeader;
     // static const char *cacheHeader;
     // static const char *connectionHeader;
     static const char *contentLengthHeader;
     static const char *contentTypeHeader;
 
     // portions of the JSON
-    static const char *samplingFeatureTag;
-    static const char *timestampTag;
+    static const char *deviceIdTag;
+    static const char *bodyTag;
+    static const char *deviceId;
 
 private:
     // Tokens and UUID's for EnviroDIY
