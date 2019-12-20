@@ -1227,7 +1227,9 @@ bool retVal = true;
         PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
         PRINTOUT(F("Data will not be saved!"));
         retVal= false;
-    } else {
+    }
+    else
+    {
         // Initialise the SD card
         if (!sd1_card_phy.begin(_SDCardSSPin, SPI_FULL_SPEED))
         {

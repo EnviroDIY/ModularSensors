@@ -2,7 +2,7 @@
 // Private function extensions
 //
 bool Logger::SDextendedInit(bool sd1Success) {
-    bool retVal = true;
+    bool retVal = sd1Success;
 #if defined BOARD_SDQ_QSPI_FLASH
   //------------- Lun 0 for external flash -------------//
     sdq_flashspi_phy.begin();// should have assigned &sdq_flashspi_transport_QSPI);
