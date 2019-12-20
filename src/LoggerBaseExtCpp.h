@@ -1,4 +1,66 @@
+// 
+// Private function extensions
+//
+bool Logger::SDextendedInit(bool sd1Success) {
+    bool retVal = true;
+#if defined BOARD_SDQ_QSPI_FLASH
+  //------------- Lun 0 for external flash -------------//
+    sdq_flashspi_phy.begin();// should have assigned &sdq_flashspi_transport_QSPI);
+    sd0_card_fatfs.begin(&sdq_flashspi_phy);
 
+#if defined USE_USB_MSC
+    usb_msc.setCapacity(0, sdq_flashspi_phy.pageSize()*sdq_flashspi_phy.numPages()/512, 512);
+    usb_msc.setReadWriteCallback(0, sdq_flashspi_read_cb, sdq_flashspi_write_cb, sdq_flashspi_flush_cb);
+    usb_msc.setUnitReady(0, true);
+
+    sdq_flashspi_changed = true; // to print contents initially
+
+    //------------- Lun 1 for SD card -------------//
+    if ( sdSuccess )
+    {
+        uint32_t block_count = sd1_card_fs.card()->cardSize();
+        usb_msc.setCapacity(1, block_count, 512);
+        usb_msc.setReadWriteCallback(1, sd1_card_read_cb, sd1_card_write_cb, sd1_card_flush_cb);
+        usb_msc.setUnitReady(1, true);
+
+        sd1_card_changed = true; // to print contents initially
+        SerialTty.println("SD1 Card suppored on USB");
+    }
+#endif //defined USE_USB_MSC_SDQ
+#endif //BOARD_SDQ_QSPI_FLASH
+    return retVal;
+}
+
+void Logger::SDusbPoll(uint8_t sdActions) {
+#if defined USE_USB_MSC 
+  if ( sd0_card_changed )
+  {
+    File root_fs;
+    root_fs = sd0_card_fatfs.open("/");
+
+    SerialTty.println("Flash contents:");
+    print_rootdir(&root_fs);
+    SerialTty.println();
+
+    root_fs.close();
+
+    sd0_card_changed = false;
+  }
+  if ( sd1_card_changed )
+  {
+    File root_fs;
+    root_fs = sd1_card_fs.open("/");
+
+    SerialTty.println("SD contents:");
+    print_rootdir(&root_fs);
+    SerialTty.println();
+
+    root_fs.close();
+
+    sd1_card_changed = false;
+  }  
+  #endif // USE_USB_MSC 
+}
 // ===================================================================== //
 // Public functions extensions
 // ===================================================================== //

@@ -18,6 +18,23 @@
 // For all i2c communication, including with the real time clock
 #include <Wire.h>
 
+#if defined BOARD_SDQ_QSPI_FLASH
+//This works as a static instance and allows initializer for 
+Adafruit_FlashTransport_QSPI sdq_flashspi_transport_QSPI_phy; //Uses default pin for SQSP
+Adafruit_SPIFlash sdq_flashspi_phy(&sdq_flashspi_transport_QSPI_phy);
+
+// File system object on external flash from SdFat
+FatFileSystem sd0_card_fatfs; 
+
+// Set to true when PC write to flash
+bool sd1_card_changed = false;
+bool sd0_card_changed = false;
+
+#if defined USE_TINYUSB
+// USB Mass Storage object
+Adafruit_USBD_MSC usb_msc;
+#endif //USE_TINYUSB
+#endif //BOARD_SDQ_QSPI_FLASH
 
 //Time Zone support in hours from UTC/GMT −10 to +14 https://en.wikipedia.org/wiki/Coordinated_Universal_Time
 // Initialize the static timezone
@@ -1203,26 +1220,28 @@ void Logger::printSensorDataCSV(Stream *stream)
 // Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void)
 {
+bool retVal = true;
     // If we don't know the slave select of the sd card, we can't use it
     if (_SDCardSSPin < 0)
     {
         PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
         PRINTOUT(F("Data will not be saved!"));
-        return false;
+        retVal= false;
+    } else {
+        // Initialise the SD card
+        if (!sd1_card_phy.begin(_SDCardSSPin, SPI_FULL_SPEED))
+        {
+            PRINTOUT(F("Error: SD card failed to initialize or is missing."));
+            PRINTOUT(F("Data will not be saved!"));
+            retVal= false;
+        }
+        else  // skip everything else if there's no SD card, otherwise it might hang
+        {
+            MS_DBG(F("Successfully connected to SD Card with card/slave select on pin"),
+                    _SDCardSSPin);
+        }
     }
-    // Initialise the SD card
-    if (!sd1_card.begin(_SDCardSSPin, SPI_FULL_SPEED))
-    {
-        PRINTOUT(F("Error: SD card failed to initialize or is missing."));
-        PRINTOUT(F("Data will not be saved!"));
-        return false;
-    }
-    else  // skip everything else if there's no SD card, otherwise it might hang
-    {
-        MS_DBG(F("Successfully connected to SD Card with card/slave select on pin"),
-                 _SDCardSSPin);
-        return true;
-    }
+    return SDextendedInit(retVal);
 }
 
 

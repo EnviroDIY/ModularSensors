@@ -222,7 +222,12 @@ eMcpB_end
   //Fut: USE_MS_SD_INI 1 would be onboard
   //Fut: USE_MS_SD_INI 2 eg feather_wing eInk1_5in_SD  microSD - SD1
   #define USE_MS_SD_INI 1
-  //Fut: the USB maps to the SD0flashSPI 
+  //An internal FS, and the USB maps to the SD0flashSPI 
+  //#define BOARD_SDQ_QSPI_FLASH 1
+  //-DUSE_TINYUSB on cmd line 
+  #if (defined USE_TINYUSB)  && (defined BOARD_SDQ_QSPI_FLASH) 
+  #define USE_USB_MSC 1
+  #endif //BOARD_SDQ_QSPI_FLASH 
 
   #define ADAFRUIT_FEATHERWING_eInk1_5in_SD 1
   #if defined ADAFRUIT_FEATHERWING_eInk1_5in_SD

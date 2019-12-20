@@ -50,7 +50,12 @@
 // epoch beginning 1970-jan-01 00:00:00.
 
 #include "SdFat.h"  // To communicate with the SD card
-
+#if defined BOARD_SDQ_QSPI_FLASH
+#include "Adafruit_SPIFlash.h"  //This can be on the Adafruit Express options
+#endif //
+#if defined USE_TINYUSB
+#include "Adafruit_TinyUSB.h"
+#endif //USE_TINYUSB
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_SENDERS 4
 
@@ -340,8 +345,8 @@ public:
 
 protected:
 
-    // The SD card and file
-    SdFat sd1_card;
+    // The External SD card and file
+    SdFat sd1_card_phy;
     File logFile;
     String _fileName;
 
