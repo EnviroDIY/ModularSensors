@@ -136,7 +136,7 @@
             "name": "Adafruit BME280 Library",
             "library id": "166",
             "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
-            "version": "=1.1.0",
+            "version": "=2.0.0",
             "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
@@ -183,7 +183,7 @@
             "name": "Adafruit Unified Sensor",
             "library id": "31",
             "url": "https://github.com/adafruit/Adafruit_Sensor.git",
-            "version": "=1.0.3",
+            "version": "=1.1.1",
             "note": "Adafruit Unified Sensor Library",
             "authors": [
                 "Adafruit"
@@ -293,7 +293,7 @@
             "name": "SensorModbusMaster",
             "library id": "1824",
             "url": "https://github.com/EnviroDIY/SensorModbusMaster.git",
-            "version": "=0.6.6",
+            "version": "=0.6.7",
             "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
             "authors": [
                 "Sara Damiano"
