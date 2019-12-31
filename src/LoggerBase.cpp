@@ -29,6 +29,7 @@ FatFileSystem sd0_card_fatfs;
 // Set to true when PC write to flash
 bool sd1_card_changed = false;
 bool sd0_card_changed = false;
+bool usbDriveStatus = false;
 
 #endif //BOARD_SDQ_QSPI_FLASH
 #if defined USE_TINYUSB

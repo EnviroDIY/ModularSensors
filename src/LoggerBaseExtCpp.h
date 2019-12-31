@@ -73,8 +73,22 @@ void Logger::sdq_flashspi_flush_cb (void)
 
   sd0_card_changed = true;
 
-  digitalWrite(LED_BUILTIN, LOW);
+  //digitalWrite(LED_BUILTIN, LOW);
 }
+
+// Callback invoked when USB system checking if available
+bool Logger::sdq_ready (void)
+{
+    PRINTOUT("USB check for sdq");
+    usbDriveStatus = true;
+    return true; //unless sleeping in which case false
+}
+bool Logger::usbDriveActive(void){
+    bool retVal = usbDriveStatus;
+    usbDriveStatus = false;
+    return retVal;
+}
+
 
 void print_rootdir(File* rdir);
 void print_rootdir(File* rdir)
@@ -87,14 +101,17 @@ void print_rootdir(File* rdir)
   while ( file.openNext(rdir, O_RDONLY) )
   {
     file.printFileSize(&STANDARD_SERIAL_OUTPUT);
-    PRINTOUT(" ");
+    //PRINTOUT(" ");
+    STANDARD_SERIAL_OUTPUT.print(' ');
     file.printName(&STANDARD_SERIAL_OUTPUT);
     if ( file.isDir() )
     {
       // Indicate a directory.
-      PRINTOUT('/');
+      //PRINTOUT('/');
+      STANDARD_SERIAL_OUTPUT.print('/');
     }
-    PRINTOUT('\n');
+    //PRINTOUT('\n');
+    STANDARD_SERIAL_OUTPUT.print('\n');
     file.close();
   }
 }//print_rootdir()
@@ -106,6 +123,7 @@ bool Logger::SDextendedInit(bool sd1Success) {
     #if !defined USE_TINYUSB
     #error need -DUSE_TINYUSB
     #endif//
+    usbDriveStatus = false;
     //If defined need to initiliaze else turns off ints
     usb_msc.setMaxLun(2);
 
@@ -125,6 +143,7 @@ bool Logger::SDextendedInit(bool sd1Success) {
 #if defined USE_USB_MSC_SD0
     usb_msc.setCapacity(0, sdq_flashspi_phy.pageSize()*sdq_flashspi_phy.numPages()/512, 512);
     usb_msc.setReadWriteCallback(0, sdq_flashspi_read_cb, sdq_flashspi_write_cb, sdq_flashspi_flush_cb);
+    usb_msc.setReadyCallback(0,sdq_ready);
     usb_msc.setUnitReady(0, true);
 
     sd0_card_changed = true; // to print contents initially

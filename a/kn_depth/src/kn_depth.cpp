@@ -1973,12 +1973,6 @@ void setup()
     //modbusSerial.setDebugStream(&SerialTty);
     //dataLogger.systemSleep();
     //while (1) { greenredflash(4,500); delay(2000); }
-    #if defined USE_USB_MSC_SD0 
-    while (1) {
-        dataLogger.SDusbPoll(0);
-        delay(500);
-    };
-    #endif //USE_USB_MSC_SD0
 }
 
 
@@ -2126,6 +2120,14 @@ void loop()
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
+    #if defined USE_USB_MSC_SD0 
+    while (dataLogger.usbDriveActive()) {
+        // USB is plugged in, uP can't sleep until USB is removed.
+        MS_DBG(F(" USB is active, Poll for SD change, Wait 2Sec."));
+        dataLogger.SDusbPoll(0);
+        delay(2000);
+    };
+    #endif //USE_USB_MSC_SD0
     dataLogger.systemSleep();
     #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
