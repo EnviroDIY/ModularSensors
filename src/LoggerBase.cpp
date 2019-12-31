@@ -18,6 +18,7 @@
 // For all i2c communication, including with the real time clock
 #include <Wire.h>
 
+
 #if defined BOARD_SDQ_QSPI_FLASH
 //This works as a static instance and allows initializer for 
 Adafruit_FlashTransport_QSPI sdq_flashspi_transport_QSPI_phy; //Uses default pin for SQSP
@@ -37,7 +38,6 @@ bool usbDriveStatus = false;
 Adafruit_USBD_MSC usb_msc;
 #endif //USE_TINYUSB
 
-
 //Time Zone support in hours from UTC/GMT −10 to +14 https://en.wikipedia.org/wiki/Coordinated_Universal_Time
 // Initialize the static timezone
 int8_t Logger::_loggerTimeZone = 0;
@@ -55,10 +55,10 @@ volatile bool Logger::startTesting = false;
     RTCZero Logger::zero_sleep_rtc;
 #endif
 
+
 #if defined USE_RTCLIB
 USE_RTCLIB rtcExtPhy;
 #endif //USE_RTC_EXT_PHY
-
 
 // Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
@@ -540,6 +540,13 @@ int8_t Logger::getTZOffset(void)
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+
+uint32_t Logger::getNowEpoch(void)
+{
+    //Depreciated in 0.23.4, left in for compatiblity 
+    return getNowEpochTz();
+}
+
 uint32_t Logger::getNowEpochT0(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
@@ -552,12 +559,16 @@ uint32_t Logger::getNowEpochTz(void)
   currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
-uint32_t Logger::getNowEpoch(void) {return getNowEpochTz();} //Depreciated in 0.23.4, left in for compatiblity 
-
-void Logger::setNowEpochT0(uint32_t ts){rtc.setEpoch(ts);}
 void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
+void Logger::setNowEpochT0(uint32_t ts){rtc.setEpoch(ts);}
 
 #elif defined ARDUINO_ARCH_SAMD
+
+uint32_t Logger::getNowEpoch(void)
+{
+  //Depreciated in 0.23.4, left in for compatiblity 
+  return getNowEpochTz();
+}
 
 uint32_t Logger::getNowEpochT0(void)
 {
@@ -570,15 +581,17 @@ uint32_t Logger::getNowEpochTz(void)
   currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
-uint32_t Logger::getNowEpoch(void) {return getNowEpochTz();} //Depreciated in 0.23.4, left in for compatiblity 
-
-void Logger::setNowEpochT0(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
-
+void Logger::setNowEpochT0(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) 
+DateTime Logger::dtFromEpoch(uint32_t epochTime)
+{
+    //Depreciated
+    return dtFromEpochTz(epochTime);
+}
 DateTime Logger::dtFromEpochT0(uint32_t epochTime)
 {
     DateTime dt(epochTime);
@@ -591,7 +604,7 @@ DateTime Logger::dtFromEpochTz(uint32_t epochTime)
     DateTime dt(epochTime - EPOCH_TIME_OFF);
     return dt;
 }
-DateTime Logger::dtFromEpoch(uint32_t epochTime) {return dtFromEpochTz(epochTime);} //Depreciated
+
 // This converts a date-time object into a ISO8601 formatted string
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
@@ -757,7 +770,6 @@ bool Logger::checkInterval(void)
         MS_DBG(F("Not time yet."));
         retval = false;
     }
-
     if (!isRTCSane(checkTime))
     {
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
@@ -1647,6 +1659,14 @@ void Logger::begin()
         MS_DBG(F("Beginning DS3231 real time clock"));
         rtc.begin();
     #endif
+    watchDogTimer.resetWatchDog();
+
+    // Print out the current time
+    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
+
+    // Reset the watchdog
+    watchDogTimer.resetWatchDog();
+
     #if defined ARDUINO_ARCH_SAMD
         /* Internal RTCZero Mode3       class Time relative to 2000 T0
          * External RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
@@ -1716,10 +1736,10 @@ void Logger::begin()
 
     if (_samplingFeatureUUID != NULL)
     {
-        MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
+        PRINTOUT(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
-    PRINTOUT(F("Logger portion of setup finished."));
+    PRINTOUT(F("Logger portion of setup finished.\n"));
 }
 
 

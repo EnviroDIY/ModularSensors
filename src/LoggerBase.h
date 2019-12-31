@@ -41,8 +41,7 @@
 
 // Bring in the library to communicate with an external high-precision real time clock
 // This also implements a needed date/time class
-#include <RTClib.h>
-//#include <Sodaq_DS3231.h>
+#include <RTClib.h>    //was <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800
 // This is 2000-jan-01 00:00:00 in "epoch" time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
@@ -56,12 +55,11 @@
 #if defined USE_TINYUSB
 #include "Adafruit_TinyUSB.h"
 #endif //USE_TINYUSB
-
+typedef int (*ini_handler_atl485)( const char* section,
+                           const char* name, const char* value);
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_SENDERS 4
 
-typedef int (*ini_handler_atl485)( const char* section,
-                           const char* name, const char* value);
 
 class dataPublisher;  // Forward declaration
 
