@@ -16,10 +16,18 @@
 public:
     bool parseIniSd(const char *ini_fn,ini_handler_atl485 handler_fn);
     //virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
+    void SDusbPoll(uint8_t sdActions);
 
 private:
+static int32_t sd1_card_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
+static int32_t sd1_card_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
+static void    sd1_card_flush_cb (void);
+static int32_t sdq_flashspi_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
+static int32_t sdq_flashspi_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
+static void    sdq_flashspi_flush_cb (void);
+
+//void print_rootdir(File* rdir);
     bool SDextendedInit(bool sdSuccess) ;
-    void SDusbPoll(uint8_t sdActions);
     //int inihandlerFn( const char* section, const char* name, const char* value);
     // Parse the supplied File for ModularSensors [Section] name=value pairs
     // return !0 for error with line number

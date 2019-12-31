@@ -30,11 +30,12 @@ FatFileSystem sd0_card_fatfs;
 bool sd1_card_changed = false;
 bool sd0_card_changed = false;
 
+#endif //BOARD_SDQ_QSPI_FLASH
 #if defined USE_TINYUSB
-// USB Mass Storage object
+// USB Mass Storage object - indepedent of other objects
 Adafruit_USBD_MSC usb_msc;
 #endif //USE_TINYUSB
-#endif //BOARD_SDQ_QSPI_FLASH
+
 
 //Time Zone support in hours from UTC/GMT −10 to +14 https://en.wikipedia.org/wiki/Coordinated_Universal_Time
 // Initialize the static timezone

@@ -1973,6 +1973,12 @@ void setup()
     //modbusSerial.setDebugStream(&SerialTty);
     //dataLogger.systemSleep();
     //while (1) { greenredflash(4,500); delay(2000); }
+    #if defined USE_USB_MSC_SD0 
+    while (1) {
+        dataLogger.SDusbPoll(0);
+        delay(500);
+    };
+    #endif //USE_USB_MSC_SD0
 }
 
 

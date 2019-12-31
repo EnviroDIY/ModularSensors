@@ -223,10 +223,12 @@ eMcpB_end
   //Fut: USE_MS_SD_INI 2 eg feather_wing eInk1_5in_SD  microSD - SD1
   #define USE_MS_SD_INI 1
   //An internal FS, and the USB maps to the SD0flashSPI 
-  //#define BOARD_SDQ_QSPI_FLASH 1
-  //-DUSE_TINYUSB on cmd line 
+  #define BOARD_SDQ_QSPI_FLASH 1
+  //-DUSE_TINYUSB on cmd line , which then turns off ints somewhere, and then doesn't sleep.
   #if (defined USE_TINYUSB)  && (defined BOARD_SDQ_QSPI_FLASH) 
-  #define USE_USB_MSC 1
+  // 1st USE_USB_MSC_SD0  2nd USE_USB_MSC_SD1 (not compiling)
+  #define USE_USB_MSC_SD0 1
+  //#define USE_USB_MSC_SD1 1
   #endif //BOARD_SDQ_QSPI_FLASH 
 
   #define ADAFRUIT_FEATHERWING_eInk1_5in_SD 1
