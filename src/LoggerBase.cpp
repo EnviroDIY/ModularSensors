@@ -1245,7 +1245,7 @@ bool retVal = true;
     else
     {
         // Initialise the SD card
-        if (!sd1_card_phy.begin(_SDCardSSPin, SPI_FULL_SPEED))
+        if (!sd1_card_fatfs.begin(_SDCardSSPin, SPI_FULL_SPEED))
         {
             PRINTOUT(F("Error: SD card failed to initialize or is missing."));
             PRINTOUT(F("Data will not be saved!"));

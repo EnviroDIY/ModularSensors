@@ -345,7 +345,7 @@ public:
 protected:
 
     // The External SD card and file
-    SdFat sd1_card_phy;
+    SdFat sd1_card_fatfs;
     File logFile;
     String _fileName;
 

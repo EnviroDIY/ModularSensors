@@ -1946,7 +1946,9 @@ void setup()
         //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
 
-#if 1// defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
+#if 0
+    //Enable this in debugging or where there is no valid RTC
+    // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
     //USE_RTCLIB implies extRtcPhy
     MS_DBG(F("  Modem setup & Timesync at init"));
@@ -2136,22 +2138,14 @@ void loop()
 
 }
 //The following is a holding place for WIRING_DIGITAL_DEBUG
-#if 0
-void dbg_str(char *);
-void dbg_uint8(uint8_t ulPin);
-void dbg_str(char *dbgStr)
-{PRINTOUT(dbgStr);}
-void dbg_uint8(uint8_t ulPin){PRINTOUT(ulPin);}
-#endif //0
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif //__cplusplus
 /* ************************************************************
  * Catch the extended MCP processing
  * This assumes the B031r2+ expansion
  */
-#if 1
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
 void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
     if (ulPin < thisVariantNumPins) {
@@ -2162,15 +2156,13 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
         mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
     }
 }
-#endif //0
 
-#if 1
 void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
         MS_DBG("***pinModeExt Err ",ulPin,"=",ulMode);  
     } else {
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        MS_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);      
+        MS_DEEP_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);      
     }
 }
 uint8_t digitalRdExt( uint32_t ulPin ) {
@@ -2195,7 +2187,7 @@ int digitalRdMir( uint32_t ulPin ) {
     }    
     return (int)pinState;
 }
-#endif //0
+
 #ifdef __cplusplus
 }
-#endif
+#endif //__cplusplus
