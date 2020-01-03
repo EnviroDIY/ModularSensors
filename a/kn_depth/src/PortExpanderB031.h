@@ -85,7 +85,7 @@ class PortExpanderB031 : public MCP23017
 public:
 	PortExpanderB031(uint8_t address, TwoWire& bus = Wire);
 	~PortExpanderB031();
-    void init();
+    size_t init();
     void configure(uint32_t ulPinMax);
     void setBit(peB031_bit portNum, bool value);
     void setBit(peB031_bit portNum); 

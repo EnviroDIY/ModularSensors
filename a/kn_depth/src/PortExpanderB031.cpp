@@ -10,10 +10,12 @@
 PortExpanderB031::PortExpanderB031(uint8_t address, TwoWire& bus) : MCP23017( address, bus){}
 PortExpanderB031::~PortExpanderB031() {}
 
-void PortExpanderB031::init() {
-    MCP23017::init();
-    MS_DBG(F("-PortExpanderB031 init"));
-    MCP23017::init();
+size_t PortExpanderB031::init() {
+    //MCP23017::init();
+    size_t retVal;
+    MS_DBG(F("-PortExpanderB031::init "));
+    retVal = MCP23017::init();
+    MS_DEEP_DBG(F("-PeInit init "), retVal);
     MCP23017::portMode(MCP23017_PORT::A, (uint8_t)eMcpA_bm::eMcpA_direction);
     MCP23017::portMode(MCP23017_PORT::B, (uint8_t)eMcpB_bm::eMcpB_direction);
 
@@ -23,6 +25,7 @@ void PortExpanderB031::init() {
     MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, (uint8_t)eMcpA_bm::eMcpA_default);
     MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, (uint8_t)eMcpB_bm::eMcpB_default );
     MCP23017::clearInterrupts();
+    return retVal;
 }
 
 void PortExpanderB031::setBit(peB031_bit portNum, bool value) {

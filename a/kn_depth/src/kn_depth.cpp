@@ -102,12 +102,16 @@ const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 uint32_t sysStartTime_epochTzSec=1;
-bool nistSyncRtc = false; //Have ext RTC.  NIST sync RTC when convenient
+bool nistSyncRtc = true; //true no battery. NIST sync RTC is required
+static int loggingMultiplierCnt=0;
+#if defined loggingMultiplier_MAX_CDEF
+static int loggingMultiplierTop=loggingMultiplier_MAX_CDEF; //Working TOP threshold
+#endif //loggingMultiplier_MAX_CDEF
+static bool varArrayPub=false;
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
-//const uint8_t thisVariantNumPins= (g_APinDescription_size/sizeof(PinDescription));
 
 const long SerialStdBaud = 115200;   // Baud rate for the primary serial port for debugging
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -935,6 +939,28 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 // Create a voltage variable pointer
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ExternalVoltage_ACT
+#ifdef ProcVolt_ACT
+// ==========================================================================
+//    External Voltage  ProcessorAdc
+// ==========================================================================
+#include <sensors/processorAdc.h>
+
+
+const int8_t procVoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+//B031 has expanded channels - Assume PCB default. Opts for 8more ADC Pins.
+//J5 B031rev2  - which is ArduinioFramework PIN_A5 (Feather M4E pin 10). No Mux
+const int8_t procVoltChan0 = PIN_A5;  // Autonomo A8 The AdcProc channel of interest
+//const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
+//const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
+//const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
+const float procVoltDividerGain = 30.3; //  pwr_mon 1M/33K* measuredAdc(V) or 30.3 15.15
+const uint8_t procVoltReadsToAvg = 1; // Only read one sample
+
+// Create an External Voltage sensor object
+processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain, procVoltReadsToAvg);
+//processorAdc procVolt1(procVoltPower, procVoltChan1, procVoltDividerGain, procVoltReadsToAvg);
+
+#endif //ExternalVoltage_ACT
 #ifdef SENSOR_CONFIG_GENERAL
 
 
@@ -1433,35 +1459,23 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 //    Calculated Variables
 // ==========================================================================
 
-// Create the function to give your calculated result.
-// The function should take no input (void) and return a float.
-// You can use any named variable pointers to access values by way of variable->getValue()
-//#define USE_CALC_VAR 1
-#if defined USE_CALC_VAR
-float calculateVariableValue(void)
+static float ina219M_A_LowReading=+9999; 
+float ina219M_A_LowFn(void)
 {
-    float calculatedResult = -9999;  // Always safest to start with a bad value
-    // float inputVar1 = variable1->getValue();
-    // float inputVar2 = variable2->getValue();
-    // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
-    // {
-    //     calculatedResult = inputVar1 + inputVar2;
-    // }
-    return calculatedResult;
+    //MS_DBG(F("ina219M_A_LowFn "),ina219M_A_LowReading);
+    return ina219M_A_LowReading;
 }
-
-// Properties of the calculated variable
-const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
-const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
-const char *calculatedVarCode = "calcVar";  // A short code for the variable
-const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
-
-// Finally, Create a calculated variable pointer and return a variable pointer to it
-Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
-                                       calculatedVarName, calculatedVarUnit,
-                                       calculatedVarCode, calculatedVarUUID);
-#endif //USE_CALC_VAR
+static float ina219M_A_HighReading=-9999; 
+float ina219M_A_HighFn(void)
+{
+    //MS_DBG(F("ina219M_A_HighFn "),ina219M_A_HighReading);
+    return ina219M_A_HighReading;
+}
+void ina219M_A_init()
+{
+    ina219M_A_LowReading=+9999; 
+    ina219M_A_HighReading=-9999; 
+}
 
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
@@ -1485,8 +1499,14 @@ Variable *variableList[] = {
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
+#if defined(ProcVolt_Volt0_UUID)
+    new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
+#endif
+#if defined(AdcProc_Volt1_UUID)
+    new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),
+#endif
 #if defined(INA219M_MA_UUID)
-    new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
+    //new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
 #endif
 #if defined(INA219M_VOLT_UUID)
     new TIINA219M_Volt(&ina219m_phy, INA219M_VOLT_UUID),
@@ -1595,11 +1615,24 @@ Variable *variableList[] = {
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-#if defined USE_CALC_VAR
-    calculatedVar  //sample
-#endif //USE_CALC_VAR
+#if defined INA219M_A_MIN_UUID
+    new Variable(&ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
+#endif
+#if defined INA219M_A_MAX_UUID
+    new Variable(&ina219M_A_HighFn,2,"Max_A","A","Max_A_Var",INA219M_A_MAX_UUID),
+#endif
 };
-
+#if defined loggingMultiplier_MAX_CDEF
+Variable *variableLstFast[] = {
+    #if defined(INA219M_MA_UUID)
+    new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
+    #endif
+    //Debug
+    #if  0 //defined(ProcVolt_Volt0_UUID)
+    new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
+    #endif
+};
+#endif //loggingMultiplier_MAX_CDEF
 /*
 // FORM2: Fill array with already created and named variable pointers
 // NOTE:  Forms one and two can be mixed
@@ -1610,7 +1643,7 @@ Variable *variableList[] = {
     modemRSSI,
     modemSignalPct,
     // etc, etc, etc,
-    calculatedVar
+    ina219M_A_Low
 }
 */
 
@@ -1620,6 +1653,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+#if defined loggingMultiplier_MAX_CDEF
+int variableCntFast = sizeof(variableLstFast) / sizeof(variableLstFast[0]);
+VariableArray varArrFast(variableCntFast, variableLstFast);
+#endif //loggingMultiplier_MAX_CDEF
 
 // ==========================================================================
 //     Port Expansion
@@ -1641,7 +1678,11 @@ PortExpanderB031 mcpExp = PortExpanderB031(MCP23017_ADDR);
 
 // Create a new logger instance
 Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
-
+#if defined loggingMultiplier_MAX_CDEF
+//A 2 logger runs faster and raises the Nyquist sampling rate for the true dataLogger
+Logger dataLogFast(LoggerID_def, loggingInterval_def_min,&varArrFast);
+//Logger dataLogFast(LoggerID_def, loggingInterval_Fast_def_min,&varArrFast);
+#endif //loggingMultiplier_MAX_CDEF
 
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
@@ -1813,6 +1854,8 @@ void setup()
     Wire.begin();
 
     #if defined HwFeatherWing_B031ALL  
+    MS_DEEP_DBG("***mcpExp.init"); 
+    delay(100);
     mcpExp.init();
     //Force a XBEE reset long enough for WiFi point to disconnect
     //and then allow enought time to comeout of reset.
@@ -1829,11 +1872,15 @@ void setup()
     #endif
 
     // Start the serial connection with the modem
+    MS_DEEP_DBG("***modemSerial.begin"); 
+    delay(100);
     modemSetup=false;
     modemSerial.begin(modemBaud);
 
 #if defined(CONFIG_SENSOR_RS485_PHY) 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
+    MS_DEEP_DBG("***modbusSerial.begin"); 
+    delay(100);
     modbusSerial.begin(9600);
 #endif
 
@@ -1927,6 +1974,10 @@ void setup()
     // Begin the logger
     dataLogger.begin();
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    #if defined loggingMultiplier_MAX_CDEF
+    dataLogFast.begin();
+    #endif //loggingMultiplier_MAX_CDEF
+
     SerialStd.print(F("Start Time: "));
 
     sysStartTime_epochTzSec = dataLogger.getNowEpochTz();
@@ -1945,6 +1996,9 @@ void setup()
 
         //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
+    #if defined loggingMultiplier_MAX_CDEF
+    varArrFast.setupSensors(); //Assumption pwr is available
+    #endif //loggingMultiplier_MAX_CDEF
 
 #if 0
     //Enable this in debugging or where there is no valid RTC
@@ -2019,8 +2073,35 @@ void processSensors()
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.begin(9600);
 #endif // CONFIG_SENSOR_RS485_PHY
+        #ifdef loggingMultiplier_MAX_CDEF
         // Do a complete sensor update
-        varArray.completeUpdate();
+        varArrFast.completeUpdate();
+        //uint16 dataLogFast.getValueStringAtI(0)
+        float lastReading=variableLstFast[0]->getValue();
+        bool readingUpdated =false;
+        if (lastReading < ina219M_A_LowReading) {
+            MS_DBG(F("ina219 reading="),lastReading,F("lower than"),ina219M_A_LowReading);
+            ina219M_A_LowReading =lastReading;
+            readingUpdated =true;
+        } 
+        if  (lastReading >ina219M_A_HighReading){
+            MS_DBG(F("ina219 reading="),lastReading,F("higher than"),ina219M_A_HighReading);
+            ina219M_A_HighReading =lastReading;
+            readingUpdated =true;
+        }
+        if (false==readingUpdated) {
+             MS_DBG(F("ina219 reading="),lastReading,F("within"),ina219M_A_LowReading,F("~"),ina219M_A_HighReading);
+        }
+        if (loggingMultiplierTop<= ++loggingMultiplierCnt)
+        #endif //loggingMultiplier_MAX_CDEF 
+        {
+            #if defined loggingMultiplier_MAX_CDEF
+            varArrFast.completeUpdate();
+            #endif //loggingMultiplier_MAX_CDEF
+            varArray.completeUpdate();
+            loggingMultiplierCnt=0;
+            varArrayPub=true;
+        }
 
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // End the stream for the modbus sensors
@@ -2034,65 +2115,83 @@ void processSensors()
         digitalWrite( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
         digitalWrite( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif //CONFIG_SENSOR_RS485_PHY
-        // Create a csv data record and save it to the log file
-        dataLogger.logToSD();
-         // Turn on the modem to let it start searching for the network
 
-        //if Modem  is Cellular then PS_PWR_HEAVY_REQ
-        if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
-        {          
-            MS_DBG(F("---NewCloud Update CANCELLED"));
-        } else 
-        {
-            //if (dataLogger._logModem != NULL)
+        if (varArrayPub) {
+            varArrayPub = false;
+            // Create a csv data record and save it to the log file
+            dataLogger.logToSD();
+
+            // Turn on the modem to let it start searching for the network
+
+            //if Modem  is Cellular then PS_PWR_HEAVY_REQ
+            if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
+            {          
+                MS_DBG(F("---NewCloud Update CANCELLED"));
+            } else 
             {
-                modemPhy.modemPowerUp();
-                if (!modemSetup) {
-                    modemSetup = true;
-                    MS_DBG(F("  Modem setup up 1st pass"));
-                    // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                    modemPhy.wake();  // Turn it on to talk
-                    //protected ?? modemPhy.extraModemSetup();//setupXBee();
-                    nistSyncRtc = true;
-                }
-                // Connect to the network
-                MS_DBG(F("  Connecting to the Internet... "));
-                if (modemPhy.connectInternet())
+                //if (dataLogger._logModem != NULL)
                 {
-                    MS_DBG(F("  sending... "));
-                    // Post the data to the WebSDL
-                    dataLogger.sendDataToRemotes();
-
-                #define DAY_SECS 86400
-                #define HOUR_SECS 3600
-                #define CONFIG_NIST_CHECK_SECS HOUR_SECS
-                #define CONFIG_NIST_ERR_MASK (~0x3F) 
-                uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
-                    MS_DBG(F("SyncTimeCheck "),Logger::markedEpochTime
-                    ,"remainder ",nistCheckRemainder
-                    ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
-                    if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0) )
-                    {
-                        MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
-                        nistSyncRtc = true; //Needs to run every access until sucess
-                        if (true == dataLogger.syncRTC()) {
-                            nistSyncRtc = false; //Sucess
-                        } 
+                    modemPhy.modemPowerUp();
+                    if (!modemSetup) {
+                        modemSetup = true;
+                        MS_DBG(F("  Modem setup up 1st pass"));
+                        // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
+                        modemPhy.wake();  // Turn it on to talk
+                        //protected ?? modemPhy.extraModemSetup();//setupXBee();
+                        nistSyncRtc = true;
                     }
+                    // Connect to the network
+                    MS_DBG(F("  Connecting to the Internet... "));
+                    if (modemPhy.connectInternet())
+                    {
 
-                    // Disconnect from the network
-                    MS_DBG(F("  Disconnecting from the Internet..."));
-                    modemPhy.disconnectInternet();
-                } else {MS_DBG(F("  No internet connection..."));}
-                // Turn the modem off
-                modemPhy.modemSleepPowerDown();
-            } //else MS_DBG(F("  No Modem configured.\n"));
-            PRINTOUT(F("---Complete "));
+                        MS_DBG(F("  publishing... "));
+                        // Post the data to the WebSDL
+                        dataLogger.publishDataToRemotes();
+                        
+                        #define DAY_SECS 86400
+                        #define HOUR_SECS 3600
+                        #if defined MS_PWR_MON_DEBUG
+                        #define CONFIG_NIST_CHECK_SECS HOUR_SECS
+                        #else
+                        #define CONFIG_NIST_CHECK_SECS DAY_SECS
+                        #endif
+                        #define CONFIG_NIST_ERR_MASK (~0x3F) 
+                        uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
+                        bool nistSyncNow=false;
+                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) nistSyncNow=true;
+                        PRINTOUT(F("SyncTimeCheck "),Logger::markedEpochTime
+                        ,"remainder ",nistCheckRemainder
+                        ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
+
+                        if (nistSyncNow )
+                        {
+                            MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
+                            nistSyncRtc = true; //Needs to run every access until sucess
+                            if (true == dataLogger.syncRTC()) {
+                                nistSyncRtc = false; //Sucess
+                            } 
+                            //If time very different should ensure publish is accurate - possibly cancel
+                        }
+
+
+                        // Disconnect from the network
+                        MS_DBG(F("  Disconnecting from the Internet..."));
+                        modemPhy.disconnectInternet();
+                    } else {MS_DBG(F("  No internet connection..."));}
+                    // Turn the modem off
+                    modemPhy.modemSleepPowerDown();
+                } //else MS_DBG(F("  No Modem configured.\n"));
+                PRINTOUT(F("---Complete "));
+            }
+            ina219M_A_init();
+            // Cut power from the SD card - without additional housekeeping wait
+            dataLogger.turnOffSDcard(false);        
+            // Turn off the LED
+            //digitalWrite(greenLED, LOW);
+            dataLogger.alertOff();
+            // Print a line to show reading ended
         }
-        // Turn off the LED
-        //digitalWrite(greenLED, LOW);
-        dataLogger.alertOff();
-        // Print a line to show reading ended
 
         #endif //(CHECK_SLEEP_POWER)
         // Unset flag
@@ -2122,15 +2221,13 @@ void loop()
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
-    #if defined USE_USB_MSC_SD0 
-    while (dataLogger.usbDriveActive()) {
-        // USB is plugged in, uP can't sleep until USB is removed.
-        MS_DBG(F(" USB is active, Poll for SD change, Wait 2Sec."));
-        dataLogger.SDusbPoll(0);
-        delay(2000);
-    };
-    #endif //USE_USB_MSC_SD0
-    dataLogger.systemSleep();
+    #if defined loggingMultiplier_MAX_CDEF
+        MS_DBG(F("dataLogFast Sleep "));
+        dataLogFast.systemSleep();
+    #else 
+        MS_DBG(F("dataLogger Sleep "));
+        dataLogger.systemSleep();
+    #endif //loggingMultiplier_MAX_CDEF
     #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));
@@ -2161,7 +2258,9 @@ void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
         MS_DBG("***pinModeExt Err ",ulPin,"=",ulMode);  
     } else {
+        #if defined MS_DEBUGGING_DEEP
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        #endif //MS_DEBUGGING_DEEP
         MS_DEEP_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);      
     }
 }

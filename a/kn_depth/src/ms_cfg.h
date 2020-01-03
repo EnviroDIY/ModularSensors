@@ -180,7 +180,15 @@ eMcpB_end
 #endif //ExternalVoltage_ACT
 
 #elif PROFILE_NAME == PROFILE04_ADAFRUIT_FEATHER_M4
-  //**************************************************************************
+//**************************************************************************
+//This configuration expects a standard ADAFRUIT_FEATHER_M4 
+// plugged into a B031r2 with upgraded Arduino Wiring files for
+// with a INA219(FeatherWing) connected on I2C 
+// with a RTC_PCF2127 on I2C
+// with a MCP on I2C
+// Optional ADC Mux driven off MCP
+//
+//This is hardcode to mean things in ProcessorStats !!!!
   /*cmd line -D ARDUINO_ARCH_SAMD  ARDUINO_FEATHER_M4 ADAFRUIT_FEATHER_M4_EXPRESS
     __SAMD51J19A__ __SAMD51__ __FPU_PRESENT ARM_MATH_CM4 
     Add to cmd line
@@ -209,8 +217,6 @@ eMcpB_end
   #define redLEDPin    13 
   //FEATHER_M4_EXPRESS has QSPI 2M FLASH
   #define SD_QSPI_2MFLASH
-
-
 
 //The RTClib.h has a number of PHY which work together and replaced Sodaq_DS3231
   #define USE_RTCLIB RTC_PCF2127
@@ -265,12 +271,28 @@ eMcpB_end
   #define configIniID_DEF_STR "ms_cfg.ini"  
   #define CONFIG_TIME_ZONE_DEF -8
 
-  // How frequently (in minutes) to log data
-  //#define  loggingInterval_CDEF_MIN 5
-  #define  loggingInterval_MAX_CDEF_MIN 120
-//define one  _Module
-//#define DigiXBeeLTE_Module 
-#define DigiXBeeWifi_Module
+// ** How frequently (in minutes) to log data **
+//For two Loggers - define loggingMultiplier_MAX_CDEF
+// The loggingInterval_CDEF_MIN becomes sampling rate 
+//#define loggingMultiplier_MAX_CDEF 5
+// How frequently (in minutes) to sample data 
+#ifdef loggingMultiplier_MAX_CDEF
+//logging to SD/Publishing happens as loggingMultiplier_MAX_CDEF*loggingInterval_CDEF_MIN
+#define  loggingInterval_CDEF_MIN 2
+#else
+//logging to SD/Publishing and sampling are same
+#define  loggingInterval_CDEF_MIN 15
+#endif //loggingMultiplier_MAX_CDEF
+
+// Maximum logging setting allowed
+#define  loggingInterval_MAX_CDEF_MIN 6*60
+
+//define one Radio  _Module
+#define DigiXBeeWifi_Module 1
+#warning infoAutonomoWithDigiXBeeWiFi
+//#define DigiXBeeCellularTransparent_Module 1
+//#warning infoAutonomoWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
 
 //end of _Module
   #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
@@ -323,10 +345,13 @@ variant.h: has pin definitions
     #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
     #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #endif //KellerNanolevel_ACT
-  //#define INA219M_PHY_ACT 
+
+  #define INA219M_PHY_ACT 
   #ifdef INA219M_PHY_ACT
-    #define INA219M_MA_UUID              "INA219_MA_UUID"
-    #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
+    #define INA219M_MA_UUID       "INA219_MA_UUID"
+    #define INA219M_A_MAX_UUID    "INA219_A_MAX_UUID"
+    #define INA219M_A_MIN_UUID    "INA219_A_MIN_UUID"
+    #define INA219M_VOLT_UUID     "INA219_VOLT_UUID"
   #endif //INA219_PHY_ACT
 
   //#define Modem_RSSI_UUID ""
@@ -338,7 +363,15 @@ variant.h: has pin definitions
     #define ProcessorStats_Batt_UUID          "Batt_UUID"
   #endif //ProcessorStats_ACT
 
+  //To Use internal ADC (Needs  SAMD51 testing)
+  // Needs testing for B031r1 range.
+  //#define ProcVolt_ACT 1
+  #if defined ProcVolt_ACT
+    #define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
+  #endif //ProcVolt_ACT
+
   //#define ExternalVoltage_ACT 1
+  // As of 2020Jan03: These are not uniquie on data.enviroDIY.org
   #ifdef ExternalVoltage_ACT
   #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
   #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
