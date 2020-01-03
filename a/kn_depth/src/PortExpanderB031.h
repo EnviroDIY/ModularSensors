@@ -86,12 +86,12 @@ public:
 	PortExpanderB031(uint8_t address, TwoWire& bus = Wire);
 	~PortExpanderB031();
     size_t init();
-    void configure(uint32_t ulPinMax);
-    void setBit(peB031_bit portNum, bool value);
-    void setBit(peB031_bit portNum); 
-    void clrBit(peB031_bit portNum); 
-    void pulseToggleBit(peB031_bit portNum,uint16_t delay_ms=2);
-    void digitalWrite( uint32_t ulPin, uint32_t ulVal ); //mimic wiring_digital
+    //void configure(uint32_t ulPinMax);
+    size_t setBit(peB031_bit portNum, bool value);
+    size_t setBit(peB031_bit portNum); 
+    size_t clrBit(peB031_bit portNum); 
+    size_t pulseToggleBit(peB031_bit portNum,uint16_t delay_ms=2);
+    size_t digitalWrite( uint32_t ulPin, uint32_t ulVal ); //mimic wiring_digital
     String getPortStr(uint8_t portNum);
     uint8_t rdMir(peB031_bit portNum);     
     uint8_t _portA=(uint8_t)eMcpA_bm::eMcpA_default;

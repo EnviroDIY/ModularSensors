@@ -16,86 +16,97 @@ size_t PortExpanderB031::init() {
     MS_DBG(F("-PortExpanderB031::init "));
     retVal = MCP23017::init();
     MS_DEEP_DBG(F("-PeInit init "), retVal);
-    MCP23017::portMode(MCP23017_PORT::A, (uint8_t)eMcpA_bm::eMcpA_direction);
-    MCP23017::portMode(MCP23017_PORT::B, (uint8_t)eMcpB_bm::eMcpB_direction);
+    retVal |= MCP23017::portMode(MCP23017_PORT::A, (uint8_t)eMcpA_bm::eMcpA_direction);
+    retVal |= MCP23017::portMode(MCP23017_PORT::B, (uint8_t)eMcpB_bm::eMcpB_direction);
 
     //MCP23017::interruptMode(MCP23017_INTMODE::SEPARATED); B031r1 together     
     //MCP23017::interrupt(MCP23017_PORT::B, FALLING);
 
-    MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, (uint8_t)eMcpA_bm::eMcpA_default);
-    MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, (uint8_t)eMcpB_bm::eMcpB_default );
+    retVal |= MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, (uint8_t)eMcpA_bm::eMcpA_default);
+    retVal |= MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, (uint8_t)eMcpB_bm::eMcpB_default );
     MCP23017::clearInterrupts();
     return retVal;
 }
 
-void PortExpanderB031::setBit(peB031_bit portNum, bool value) {
+size_t PortExpanderB031::setBit(peB031_bit portNum, bool value) {
+    size_t retVal;
     if (value) {
-        setBit(portNum);
+        retVal = setBit(portNum);
     } else {
-        clrBit(portNum);
+        retVal = clrBit(portNum);
     }
+    return retVal;
 }
-void PortExpanderB031::setBit(peB031_bit portNum) {
+size_t PortExpanderB031::setBit(peB031_bit portNum) {
     uint8_t mcpBit=(uint8_t)portNum;
+    size_t retVal;
 
     if (mcpBit > 7) {
         mcpBit -= 8;
         _portB |= (1<<mcpBit) ;
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
+        retVal = MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
         MS_DBG(F("setPortB"),mcpBit,F("="),_portB);
     } else {
         _portA |= (1<<mcpBit);
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
+        retVal = MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
         MS_DBG(F("setPortA"),mcpBit,F("="),_portA);
     }
+    return retVal;
 }
-void PortExpanderB031::clrBit(peB031_bit portNum) {
+size_t PortExpanderB031::clrBit(peB031_bit portNum) {
     uint8_t mcpBit=(uint8_t)portNum;
+    size_t retVal;
 
     if (mcpBit > 7) {
         mcpBit -= 8;
         _portB &= ~(1<<mcpBit) ;
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
+        retVal = MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
         MS_DBG(F("clrPortB "),mcpBit,F("="),_portB);
     } else {
         _portA &= ~(1<<mcpBit);
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
+        retVal = MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
         MS_DBG(F("clrPortA"),mcpBit,F("="),_portA);
     }
+    return retVal;
 }
 
-void PortExpanderB031::pulseToggleBit(peB031_bit portNum,uint16_t delay_ms) {
+size_t PortExpanderB031::pulseToggleBit(peB031_bit portNum,uint16_t delay_ms) {
     uint8_t mcpBit=(uint8_t)portNum;
     uint8_t mcpMask=0;
+    size_t retVal;
+
     if (mcpBit > 7) {
         mcpBit -= 8;
         mcpMask = (1<<mcpBit) ;
         _portB ^= mcpMask;
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
+        retVal = MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
         MS_DBG(F("pulsePortB"),mcpBit,F("="),_portB," mS=",delay_ms);
         delay(delay_ms);
         _portB ^= mcpMask;
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
+        retVal |= MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
         MS_DBG(F("wrPortB "),_portB);        
     } else {
         mcpMask = (1<<mcpBit) ;
         _portA ^= mcpMask;
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
+        retVal = MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
         MS_DBG(F("pulesPortA "),mcpBit,F("="),_portA," mS=",delay_ms," bit ",mcpMask);
         delay(delay_ms);
         _portA ^= mcpMask;
-        MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
+        retVal |= MCP23017::writeRegister(MCP23017_REGISTER::GPIOA, _portA);
         MS_DBG(F("wrPortA "),_portA);
     }
+    return retVal;
 }
 
-void PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
+size_t PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
 {
+    size_t retVal;
     if (ulPin >= _ulPinMax) {
-        digitalWrite(ulPin, ulVal); //Arduino wiring_digital.c
+        retVal = digitalWrite(ulPin, ulVal); //Arduino wiring_digital.c
     } else {
         //pinDigitalWrite()
     }
+    return retVal;
 }
 
 String PortExpanderB031::getPortStr(uint8_t mcpBit) 
