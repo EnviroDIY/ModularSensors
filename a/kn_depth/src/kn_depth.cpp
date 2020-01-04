@@ -1888,6 +1888,7 @@ void setup()
     //sonarSerial.begin(9600);
 
 #ifdef USE_MS_SD_INI
+    //Set up SD card access, and also USB
     Serial.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
     Serial.println(F("\n\n---parseIni complete "));
@@ -1992,7 +1993,7 @@ void setup()
     //dataLogger.attachModem(modemPhy);
     //dataLogger.setAlertPin(-1);//greenLEDPin
     //dataLogger.setTestingModePin(buttonPin);
-
+    //dataLogger.initializeSDCard(); //How to setup USB
 
         //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
@@ -2000,7 +2001,7 @@ void setup()
     varArrFast.setupSensors(); //Assumption pwr is available
     #endif //loggingMultiplier_MAX_CDEF
 
-#if 0
+#if 1
     //Enable this in debugging or where there is no valid RTC
     // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
@@ -2022,6 +2023,8 @@ void setup()
     // Turn the modem off
     modemPhy.modemSleepPowerDown(); 
 //   #endif //HwFeatherWing_B031ALL       
+#else 
+
 #endif //ARDUINO_ARCH_SAMD
 
     Logger::markTime(); //Init so never zero
@@ -2221,13 +2224,23 @@ void loop()
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
+    #if defined USE_USB_MSC_SD0 
+    while (dataLogger.usbDriveActive()) {
+        // USB is plugged in, uP can't sleep until USB is removed.
+        MS_DBG(F(" USB is active, Poll for SD change, Wait 2Sec."));
+        dataLogger.SDusbPoll(0);
+        delay(2000);
+    };
+    #endif //USE_USB_MSC_SD0
+    #define timeNow() dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch())
     #if defined loggingMultiplier_MAX_CDEF
-        MS_DBG(F("dataLogFast Sleep "));
+        MS_DBG(F("dataLogFast Sleep "),timeNow());
         dataLogFast.systemSleep();
     #else 
-        MS_DBG(F("dataLogger Sleep "));
+        MS_DBG(F("dataLogger Sleep "),timeNow());
         dataLogger.systemSleep();
     #endif //loggingMultiplier_MAX_CDEF
+        MS_DBG(F("dataLogger Wake "),timeNow());
     #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));

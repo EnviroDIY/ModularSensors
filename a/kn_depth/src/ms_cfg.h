@@ -274,7 +274,7 @@ eMcpB_end
 // ** How frequently (in minutes) to log data **
 //For two Loggers - define loggingMultiplier_MAX_CDEF
 // The loggingInterval_CDEF_MIN becomes sampling rate 
-//#define loggingMultiplier_MAX_CDEF 5
+#define loggingMultiplier_MAX_CDEF 5
 // How frequently (in minutes) to sample data 
 #ifdef loggingMultiplier_MAX_CDEF
 //logging to SD/Publishing happens as loggingMultiplier_MAX_CDEF*loggingInterval_CDEF_MIN

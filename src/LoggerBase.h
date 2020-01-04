@@ -341,7 +341,11 @@ public:
     bool logToSD(String& filename, String& rec);
     bool logToSD(String& rec);
     bool logToSD(void);
-
+    // This checks if the SD card is available and ready
+    // We run this check before every communication with the SD card to prevent
+    // hanging.
+    bool initializeSDCard(void);
+    
 protected:
 
     // The External SD card and file
@@ -349,10 +353,7 @@ protected:
     File logFile;
     String _fileName;
 
-    // This checks if the SD card is available and ready
-    // We run this check before every communication with the SD card to prevent
-    // hanging.
-    bool initializeSDCard(void);
+
 
     // This generates a file name from the logger id and the current date
     // NOTE:  This cannot be called until *after* the RTC is started

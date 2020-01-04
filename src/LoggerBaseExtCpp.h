@@ -139,6 +139,7 @@ bool Logger::SDextendedInit(bool sd1Success) {
   //------------- Lun 0 for external flash -------------//
     sdq_flashspi_phy.begin();// should have assigned &sdq_flashspi_transport_QSPI);
     sd0_card_fatfs.begin(&sdq_flashspi_phy);
+    MS_DBG(F("Successfully setup SD0"));
 
 #if defined USE_USB_MSC_SD0
     usb_msc.setCapacity(0, sdq_flashspi_phy.pageSize()*sdq_flashspi_phy.numPages()/512, 512);
@@ -147,7 +148,7 @@ bool Logger::SDextendedInit(bool sd1Success) {
     usb_msc.setUnitReady(0, true);
 
     sd0_card_changed = true; // to print contents initially
-
+    MS_DBG(F("SD0 Supported on USB"));
 #if defined USE_USB_MSC_SD1 
     //------------- Lun 1 for SD card -------------//
     if ( sd1Success )
