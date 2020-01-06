@@ -531,19 +531,21 @@ void loggerModem::modemPowerDown(void)
         _priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
         MS_DBG(F("Total modem power-on time (s):"), String(_priorPoweredDuration, 3));
 
-        MS_DBG(F("Turning2 off power to"), getSensorName(), F("with pin"), _powerPin,_modemSleepRqPin,_modemResetPin);
-        //Turn off pins connected to modem  - confirmed this works
+        MS_DBG(F("Turning off power to"), getSensorName(), F("with pin"), _powerPin,_modemSleepRqPin,_modemResetPin);
+
+        //Turn off pins connected to modem
         #if defined POWERPIN_ALLPINS_OFF
         if (_modemSleepRqPin >= 0){digitalWrite(_modemSleepRqPin,LOW);}
         if (_modemResetPin >= 0)  {digitalWrite(_modemResetPin,LOW);}
         //need uart.end() ..modemSerial.end();  //need a modemSerial.begin(9600);
         // Uart is via HardwareSerial/Uart.cpp in  DigiXbeeWiFi.gsmModem.stream
-        // We are DIgiXbeeWiFi.DigiXbee.loggerModem
+        // This assumes Modem Pins ie DIgiXbeeWiFi.DigiXbee.loggerModem
         pinMode(MODEMPHY_TX_PIN, OUTPUT);  
         pinMode(MODEMPHY_RX_PIN, OUTPUT);  
         digitalWrite( MODEMPHY_TX_PIN, LOW);
         digitalWrite( MODEMPHY_RX_PIN, LOW);
         #endif //POWERPIN_ALLPINS_OFF
+
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
@@ -616,16 +618,14 @@ bool loggerModem::modemSleepPowerDown(void)
             MS_DBG(F("Waiting up to"), _disconnetTime_ms,
             F("milliseconds for graceful shutdown as indicated by pin"),
                    _dataPin, F("going"), !_statusLevel, F("..."));
-            bool pinVal = digitalRead(_dataPin); //Local value, read once for multiple decisions
+            bool pinVal; //Local value, read once for multiple decisions
             while (((millis() - start) < _disconnetTime_ms) )
             {
                 delay(1000); 
                 pinVal = (bool) digitalRead(_dataPin);
-                MS_DBG(F("Read"),pinVal,F("Expected"),_statusLevel);
- 
                 if (pinVal == _statusLevel) break;
             }
-            if (pinVal == _statusLevel)
+            if (pinVal != _statusLevel)
             {
                 MS_DBG(F("... "), getSensorName(), F("did not successfully shut down! Read"),pinVal,F("Expected"),_statusLevel);
             }
@@ -644,14 +644,6 @@ bool loggerModem::modemSleepPowerDown(void)
         MS_DBG(F("Total modem power-on time (s):"), String(_priorPoweredDuration, 3));
 
         modemPowerDown();
-        /*
-        MS_DBG(F("Turning off power to"), getSensorName(), F("with pin"), _powerPin);
-        digitalWrite(_powerPin, LOW);
-        // Unset the power-on time
-        _millisPowerOn = 0;
-        // Unset the status bits for sensor power (bits 1 & 2),
-        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-        _sensorStatus &= 0b10000001;*/
     }
     else
     {

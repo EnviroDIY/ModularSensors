@@ -108,6 +108,8 @@ static int loggingMultiplierCnt=0;
 static int loggingMultiplierTop=loggingMultiplier_MAX_CDEF; //Working TOP threshold
 #endif //loggingMultiplier_MAX_CDEF
 static bool varArrayPub=false;
+
+const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -754,22 +756,25 @@ AtlasScientificRTD atlasRTD(I2CPower);
 // Create a temperature variable pointer for the RTD
 // Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab");
 
-
+#endif // SENSOR_CONFIG_GENERAL
+#if defined(ASONG_AM23XX_UUID)
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
 
-// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t I2CPower = 1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Create an AOSong AM2315 sensor object
-AOSongAM2315 am2315(I2CPower);
+// Data sheets says AM2315 and AM2320 have same address 0xB8 (8bit addr) of 1011 1000 or 7bit 0x5c=0101 1100 
+// AM2320 AM2315 address 0x5C
+AOSongAM2315 am23xx(I2CPower);
 
 // Create humidity and temperature variable pointers for the AM2315
-// Variable *am2315Humid = new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable *am2315Temp = new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
-
-
+// Variable *am2315Humid = new AOSongAM2315_Humidity(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *am2315Temp = new AOSongAM2315_Temp(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
+#endif //ASONG_AM23XX_UUID
+#ifdef SENSOR_CONFIG_GENERAL
 // ==========================================================================
 //    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
@@ -786,7 +791,6 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 // Variable *dhtHumid = new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dhtTemp = new AOSongDHT_Temp(&dht, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dhtHI = new AOSongDHT_HI(&dht, "12345678-abcd-1234-ef00-1234567890ab");
-
 
 // ==========================================================================
 //    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
@@ -1114,7 +1118,7 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 /*TI INA219M High Side Current/Voltage Sensor (Current mA, Voltage, Power)*/
 #include <sensors/TIINA219M.h>
-const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+//const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 uint8_t INA219i2c_addr = 0x40;  // 1000000 (Board A0+A1=GND)
 // The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
 const uint8_t INA219ReadingsToAvg = 1;
@@ -1523,8 +1527,12 @@ Variable *variableList[] = {
     new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-ef00-1234567890ab"),
     new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-ef00-1234567890ab"),
     new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab"),
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab"),
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab"),
+    #endif //SENSOR_CONFIG_GENERAL
+    #if defined(ASONG_AM23XX_UUID)
+    new AOSongAM2315_Humidity(&am23xx, ASONG_AM23_Air_Temperature_UUID),
+    new AOSongAM2315_Temp    (&am23xx, ASONG_AM23_Air_Humidity_UUID),
+    #endif // ASONG_AM23XX_UUID
+    #ifdef SENSOR_CONFIG_GENERAL
     new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
     new AOSongDHT_Temp(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
     new AOSongDHT_HI(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -2083,12 +2091,12 @@ void processSensors()
         float lastReading=variableLstFast[0]->getValue();
         bool readingUpdated =false;
         if (lastReading < ina219M_A_LowReading) {
-            MS_DBG(F("ina219 reading="),lastReading,F("lower than"),ina219M_A_LowReading);
+            MS_DBG(F("ina219Alow reading="),lastReading,F("lower than"),ina219M_A_LowReading);
             ina219M_A_LowReading =lastReading;
             readingUpdated =true;
         } 
         if  (lastReading >ina219M_A_HighReading){
-            MS_DBG(F("ina219 reading="),lastReading,F("higher than"),ina219M_A_HighReading);
+            MS_DBG(F("ina219Ahigh reading="),lastReading,F("higher than"),ina219M_A_HighReading);
             ina219M_A_HighReading =lastReading;
             readingUpdated =true;
         }

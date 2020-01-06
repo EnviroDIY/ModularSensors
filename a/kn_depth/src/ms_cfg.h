@@ -365,11 +365,18 @@ variant.h: has pin definitions
 
   //To Use internal ADC (Needs  SAMD51 testing)
   // Needs testing for B031r1 range.
-  //#define ProcVolt_ACT 1
+  #define ProcVolt_ACT 1
   #if defined ProcVolt_ACT
     #define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
   #endif //ProcVolt_ACT
 
+  //Use sensor eg Adafruit_AM2314 or AM2320
+  #define ASONG_AM23XX_UUID 1
+  #if defined(ASONG_AM23XX_UUID)
+  #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
+  #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
+  #endif // ASONG_AM23XX_UUID
+  
   //#define ExternalVoltage_ACT 1
   // As of 2020Jan03: These are not uniquie on data.enviroDIY.org
   #ifdef ExternalVoltage_ACT
