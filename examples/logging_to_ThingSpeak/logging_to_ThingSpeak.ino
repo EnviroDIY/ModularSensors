@@ -293,6 +293,7 @@ void setup()
     if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
     {
         modem.modemPowerUp();
+        modem.waitForWarmup();
         modem.wake();
 
         // Synchronize the RTC with NIST

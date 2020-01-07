@@ -411,6 +411,7 @@ void setup()
     if (getBatteryVoltage() > 3.65)
     {
         modem.modemPowerUp();
+        modem.waitForWarmup();
         modem.wake();
 
         #if F_CPU == 8000000L
