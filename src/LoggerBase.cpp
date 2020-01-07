@@ -365,37 +365,35 @@ bool Logger::syncRTC()
     bool success = false;
     if (_logModem != NULL)
     {
+        // Synchronize the RTC with NIST
+        PRINTOUT(F("Attempting to connect to the internet and synchronize RTC with NIST"));
+        PRINTOUT(F("This may take up to two minutes!"));
+        if (_logModem->modemWake())
         {
-            // Synchronize the RTC with NIST
-            PRINTOUT(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-            PRINTOUT(F("This may take up to two minutes!"));
-            if (_logModem->modemWake())
+            if (_logModem->connectInternet(120000L))
             {
-                if (_logModem->connectInternet(120000L))
-                {
-                    setRTClock(_logModem->getNISTTime());
-                    success = true;
-                    _logModem->updateModemMetadata();
-                }
-                else
-                {
-                    PRINTOUT(F("Could not connect to internet for clock sync."));
-                }
+                setRTClock(_logModem->getNISTTime());
+                success = true;
+                _logModem->updateModemMetadata();
             }
             else
             {
-                PRINTOUT(F("Could not wake modem for clock sync."));
+                PRINTOUT(F("Could not connect to internet for clock sync."));
             }
         }
-
-        // Power down the modem - but only if there will be more than 15 seconds before
-        // the NEXT logging interval - it can take the modem that long to shut down
-        if (Logger::getNowEpoch() % (_loggingIntervalMinutes * 60) > 15)
+        else
         {
-            Serial.println(F("Putting modem to sleep"));
-            _logModem->disconnectInternet();
-            _logModem->modemSleepPowerDown();
+            PRINTOUT(F("Could not wake modem for clock sync."));
         }
+    }
+
+    // Power down the modem - but only if there will be more than 15 seconds before
+    // the NEXT logging interval - it can take the modem that long to shut down
+    if (Logger::getNowEpoch() % (_loggingIntervalMinutes * 60) > 15)
+    {
+        Serial.println(F("Putting modem to sleep"));
+        _logModem->disconnectInternet();
+        _logModem->modemSleepPowerDown();
     }
     return success;
 }
@@ -656,7 +654,7 @@ bool Logger::isRTCSane(void)
 }
 bool Logger::isRTCSane(uint32_t epochTime)
 {
-    if (epochTime < 1546300800 ||  /*Before September 01, 2019*/
+    if (epochTime < 1577836800 ||  /*Before January 1, 2020*/
         epochTime > 1735689600)  /*After January 1, 2025*/
     {
         return false;

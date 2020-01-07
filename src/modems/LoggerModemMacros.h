@@ -18,7 +18,7 @@
     bool specificModem::modemSetup(void)                                                      \
     {                                                                                         \
         bool success = true;                                                                  \
-        /* NOTE:  Set flag first to stop infinite loop between modemSetup() and modemWake()*/ \
+        /* NOTE:  Set flag FIRST to stop infinite loop between modemSetup() and modemWake()*/ \
         _hasBeenSetup = true;                                                                 \
                                                                                               \
         /* Set-up pin modes */                                                                \
@@ -254,7 +254,7 @@
                F("milliseconds."));                                                 \
     }
 
-#else  // #if defined TINY_GSM_MODEM_HAS_GPRS
+#else  // from #if defined TINY_GSM_MODEM_HAS_GPRS (ie, this is wifi)
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
     bool specificModem::isInternetAvailable(void)     \
     {                                                 \

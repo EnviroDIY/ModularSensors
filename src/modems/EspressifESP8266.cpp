@@ -215,7 +215,7 @@ bool EspressifESP8266::extraModemSetup(void)
     gsmModem.waitResponse();
     // Set the wifi settings as default
     // This will speed up connecting after resets
-    gsmModem.sendAT(GF("+CWJAP_CUR=\""), _ssid, GF("\",\""), _pwd, GF("\""));
+    gsmModem.sendAT(GF("+CWJAP_DEF=\""), _ssid, GF("\",\""), _pwd, GF("\""));
     if (gsmModem.waitResponse(30000L, GFP(GSM_OK), GF(GSM_NL "FAIL" GSM_NL)) != 1)
     {
         return false;
