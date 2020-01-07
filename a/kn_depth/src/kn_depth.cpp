@@ -1529,8 +1529,8 @@ Variable *variableList[] = {
     new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab"),
     #endif //SENSOR_CONFIG_GENERAL
     #if defined(ASONG_AM23XX_UUID)
-    new AOSongAM2315_Humidity(&am23xx, ASONG_AM23_Air_Temperature_UUID),
-    new AOSongAM2315_Temp    (&am23xx, ASONG_AM23_Air_Humidity_UUID),
+    new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
     #endif // ASONG_AM23XX_UUID
     #ifdef SENSOR_CONFIG_GENERAL
     new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
