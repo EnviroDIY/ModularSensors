@@ -73,3 +73,8 @@ bool Sodaq2GBeeR6::extraModemSetup(void)
         pinMode(_vRefPin, OUTPUT);
     return success;
 }
+
+void Sodaq2GBeeR6::setVRefPin(int8_t vRefPin)
+{
+    _vRefPin = vRefPin;
+}
