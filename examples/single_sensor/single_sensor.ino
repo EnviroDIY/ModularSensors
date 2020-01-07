@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.16
+This example sketch is written for ModularSensors library version 0.23.17
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
@@ -29,7 +29,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <VariableBase.h>
 
 // The library version this example was written for
-const char *libraryVersion = "0.23.16";
+const char *libraryVersion = "0.23.17";
 // The name of this file
 const char *sketchName = "single_sensor.ino";
 
