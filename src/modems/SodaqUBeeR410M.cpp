@@ -87,10 +87,22 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
             // 0.15-3.2s pulse for wake on SARA R4/N4 (ie, max is 3.2s)
             // Wait no more than 3.2s
             while (digitalRead(_statusPin) != _statusLevel && millis() - startTimer < 3200L) {}
-            MS_DBG(F("Status pin came on after"), millis() - startTimer, F("ms"));
+            if (digitalRead(_statusPin) == _statusLevel)
+            {
+                // Print when the pin lit up, if it lights up before end of 3.2s
+                MS_DBG(F("Status pin came on after"), millis() - startTimer, F("ms"));
+            }
+
             // But at least 0.15s
             while (millis() - startTimer < 150) {}
+            // Say how long we pulsed for
             MS_DBG(F("Pulsed for"), millis() - startTimer, F("ms"));
+
+            if (digitalRead(_statusPin) != _statusLevel)
+            {
+                // make note if the pin never lit up!
+                MS_DBG(F("Status pin never turned on!"));
+            }
         }
         else
         {
