@@ -65,11 +65,15 @@ bool TIINA219M::wake(void)
 {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp 
     // and status bits.  If it returns false, there's no reason to go on.
-    if (!Sensor::wake()) return false;
+    if (!Sensor::wake()) {
+        MS_DBG(F("Sensor Err"));
+        return false;
+    }
 
     // Begin/Init needs to be rerun after every power-up to set the calibration
     // coefficient for the INA219 (see p21 of datasheet)
-    ina219_phy.begin();
+    MS_DBG(F("Wake"));
+    ina219_phy.begin(&Wire, INA219_RANGE_32V_1A);
 
     return true;
 }

@@ -100,7 +100,7 @@ size_t PortExpanderB031::pulseToggleBit(peB031_bit portNum,uint16_t delay_ms) {
 
 size_t PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
 {
-    size_t retVal;
+    size_t retVal=0;
     if (ulPin >= _ulPinMax) {
         retVal = digitalWrite(ulPin, ulVal); //Arduino wiring_digital.c
     } else {
