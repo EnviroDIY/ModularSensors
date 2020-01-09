@@ -950,10 +950,10 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 #include <sensors/processorAdc.h>
 
 
-const int8_t procVoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t procVoltPower = -1;//eMcpA_SwVbatOut_pinnum;  //Requires VbtSw Pin to switch power on and off (-1 if unconnected)
 //B031 has expanded channels - Assume PCB default. Opts for 8more ADC Pins.
 //J5 B031rev2  - which is ArduinioFramework PIN_A5 (Feather M4E pin 10). No Mux
-const int8_t procVoltChan0 = PIN_A5;  // Autonomo A8 The AdcProc channel of interest
+const int8_t procVoltChan0 = PIN_A5;//PIN_EXT_ANALOG(01);  // B031r2 J2Pin2 MC74VHC4051PinX1 MUX to PIN_A5
 //const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
 //const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
 //const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
@@ -1155,7 +1155,7 @@ AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
 #endif
 
-byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
+//byte acculevelModbusAddress = KellerAcculevelModbusAddress;  // The modbus address of KellerAcculevel
 const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
@@ -1169,7 +1169,7 @@ const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
 #if defined KellerAcculevel_ACT
 #include <sensors/KellerAcculevel.h>
 
-byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
+byte acculevelModbusAddress = KellerAcculevelModbusAddress_DEF;  // The modbus address of KellerAcculevel
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 
 // Create a Keller Acculevel sensor object
@@ -1188,7 +1188,7 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 #ifdef KellerNanolevel_ACT
 #include <sensors/KellerNanolevel.h>
 
-byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+byte nanolevelModbusAddress = KellerNanolevelModbusAddress_DEF;  // The modbus address of KellerNanolevel
 // const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
@@ -2269,9 +2269,25 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
     if (ulPin < thisVariantNumPins) {
         MS_DBG("***digitalWrExt Err ",ulPin,"=",ulVal);  
     } else {
-        uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        MS_DEEP_DBG("***digitalWrExt ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulVal); 
-        mcpExp.setBit((peB031_bit)(mcpPin),ulVal);
+        uint32_t vextPin =  ulPin - thisVariantNumPins;
+        /* This extends the virtual "Arduino Pins" as follows
+           virtualExtPins 
+             0..15 Literal Digital Pins on MCP port extender
+            16..23 Analog pins MC74VHC4051- 8pins
+            Practically the 8 Analog Pins are encoded in 4pins (MSD)PB4,PB3,PB2(LSD)
+            and a write here means write to hardware mux.
+            16   000
+            17   001
+            ........
+            23   111
+        */
+        if (ARD_DIGITAL_EXTENSION_PINS > vextPin) {
+            MS_DEEP_DBG("***digitalWrExt ",mcpExp.getPortStr(vextPin),ulPin,"(",vextPin,")=",ulVal); 
+            mcpExp.setBit((peB031_bit)(vextPin),ulVal);
+        } else {
+            MS_DEEP_DBG("***digitalWrExtV ",ulPin,"(",vextPin,")=",ulVal); 
+            mcpExp.setupAnalogPin(vextPin-ARD_DIGITAL_EXTENSION_PINS,ulVal);
+        }
     }
 }
 
@@ -2279,9 +2295,9 @@ void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
         MS_DBG("***pinModeExt Err ",ulPin,"=",ulMode);  
     } else {
-        #if defined MS_DEBUGGING_DEEP
+        //#if defined MS_DEBUGGING_DEEP
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        #endif //MS_DEBUGGING_DEEP
+        //#endif //MS_DEBUGGING_DEEP
         MS_DEEP_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);      
     }
 }

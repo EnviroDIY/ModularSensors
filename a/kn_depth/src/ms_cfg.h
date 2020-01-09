@@ -287,6 +287,12 @@ eMcpB_end
 // Maximum logging setting allowed
 #define  loggingInterval_MAX_CDEF_MIN 6*60
 
+//The following are used as a routing for per board extensions
+//From an Arduino Virtual Pin Numbering .. First Digital Extension then Analog Extension 
+#define ARD_DIGITAL_EXTENSION_PINS 16
+#define ARD_ANALOLG_EXTENSION_PINS 8
+#define ARD_ANLAOG__MULTIPLEX_PIN PIN_A5
+#define PIN_EXT_ANALOG(extPin) (thisVariantNumPins+ARD_DIGITAL_EXTENSION_PINS+extPin)
 //define one Radio  _Module
 #define DigiXBeeWifi_Module 1
 #warning infoAutonomoWithDigiXBeeWiFi
@@ -332,7 +338,7 @@ variant.h: has pin definitions
 
   //#define KellerAcculevel_ACT 1
   #define KellerNanolevel_ACT 1
-  #ifdef KellerNanolevel_ACT
+  #if (defined KellerNanolevel_ACT) || (defined KellerAcculevel_ACT) 
   //  SwVbat=1 for Vbst@12V and opt Sw12V
   //  SwVrs485 for Vbat-->Vrs to IC 
   //  Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1  
@@ -342,9 +348,17 @@ variant.h: has pin definitions
     #define max485EnablePin_DEF -1 //Hw Opt PIN_A5
     #define rs485AdapterPower_DEF eMcpA_SwVbatOut_pinnum //Boost Sensor Power
     #define modbusSensorPower_DEF eMcpA_SwVrs485Out_pinnum //Secondary RS485 Transciever
+  #endif //  #ifdef KellerNanolevel_ACT 
+  #ifdef KellerNanolevel_ACT 
+    #define KellerNanolevelModbusAddress_DEF 0x01
     #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
     #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #endif //KellerNanolevel_ACT
+  #ifdef KellerAcculevel_ACT 
+    #define KellerAcculevelModbusAddress_DEF 0x01
+    #define KellerAcculevel_Height_UUID "KellerNanolevel_Height_UUID"
+    #define KellerAcculevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+  #endif//KellerAcculevel_ACT 
 
   #define INA219M_PHY_ACT 
   #ifdef INA219M_PHY_ACT
@@ -373,8 +387,8 @@ variant.h: has pin definitions
   //Use sensor eg Adafruit_AM2314 or AM2320
   #define ASONG_AM23XX_UUID 1
   #if defined(ASONG_AM23XX_UUID)
-  #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
-  #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
+    #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
+    #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
   #endif // ASONG_AM23XX_UUID
   
   //#define ExternalVoltage_ACT 1

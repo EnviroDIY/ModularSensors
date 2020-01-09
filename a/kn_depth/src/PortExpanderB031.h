@@ -54,8 +54,8 @@ enum class eMcpA_bm :uint8_t  //bit mask
 
     eMcpA_direction = 0b00100000,
     //eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_XbeeSleeRq_bmout|eMcpA_XbeeResetN_bmout),
-    eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_SwVbat_bmout|eMcpA_SwVrs485_bmout       ),   
-
+    //eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_SwVbat_bmout|eMcpA_SwVrs485_bmout       ),//Problem Vrs485   
+    eMcpA_default =0,  
 };//eMcpA_bm
 // mcpAdesc {"SwV3","SwVbat","SwVrs485","SwV1w","SwVsdi","mdmOnSleepin","mdmSleeRq","mdmResetN"}
 
@@ -92,6 +92,7 @@ public:
     size_t clrBit(peB031_bit portNum); 
     size_t pulseToggleBit(peB031_bit portNum,uint16_t delay_ms=2);
     size_t digitalWrite( uint32_t ulPin, uint32_t ulVal ); //mimic wiring_digital
+    size_t setupAnalogPin(uint32_t ulPin,uint32_t ulVal ); //
     String getPortStr(uint8_t portNum);
     uint8_t rdMir(peB031_bit portNum);     
     uint8_t _portA=(uint8_t)eMcpA_bm::eMcpA_default;
