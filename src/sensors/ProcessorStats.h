@@ -69,9 +69,9 @@ private:
 class ProcessorStats_Battery : public Variable
 {
 public:
-    ProcessorStats_Battery(Sensor *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "Battery")
+    explicit ProcessorStats_Battery(ProcessorStats *parentSense,
+                                    const char *uuid = "",
+                                    const char *varCode = "Battery")
         : Variable(parentSense,
                    (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
@@ -91,9 +91,9 @@ public:
 class ProcessorStats_FreeRam : public Variable
 {
 public:
-    ProcessorStats_FreeRam(Sensor *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "FreeRam")
+    explicit ProcessorStats_FreeRam(ProcessorStats *parentSense,
+                                    const char *uuid = "",
+                                    const char *varCode = "FreeRam")
         : Variable(parentSense,
                    (const uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION,
@@ -113,9 +113,9 @@ public:
 class ProcessorStats_SampleNumber : public Variable
 {
 public:
-    ProcessorStats_SampleNumber(Sensor *parentSense,
-                                const char *uuid = "",
-                                const char *varCode = "SampNum")
+    explicit ProcessorStats_SampleNumber(ProcessorStats *parentSense,
+                                         const char *uuid = "",
+                                         const char *varCode = "SampNum")
         : Variable(parentSense,
                    (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,

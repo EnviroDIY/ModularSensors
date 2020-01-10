@@ -72,9 +72,9 @@ public:
 class YosemitechY520_Cond : public Variable
 {
 public:
-    YosemitechY520_Cond(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y520Cond")
+    explicit YosemitechY520_Cond(YosemitechY520 *parentSense,
+                                 const char *uuid = "",
+                                 const char *varCode = "Y520Cond")
         : Variable(parentSense,
                    (const uint8_t)Y520_COND_VAR_NUM,
                    (uint8_t)Y520_COND_RESOLUTION,
@@ -94,9 +94,9 @@ public:
 class YosemitechY520_Temp : public Variable
 {
 public:
-    YosemitechY520_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y520Temp")
+    explicit YosemitechY520_Temp(YosemitechY520 *parentSense,
+                                 const char *uuid = "",
+                                 const char *varCode = "Y520Temp")
         : Variable(parentSense,
                    (const uint8_t)Y520_TEMP_VAR_NUM,
                    (uint8_t)Y520_TEMP_RESOLUTION,

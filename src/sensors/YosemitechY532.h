@@ -75,9 +75,9 @@ public:
 class YosemitechY532_pH : public Variable
 {
 public:
-    YosemitechY532_pH(Sensor *parentSense,
-                      const char *uuid = "",
-                      const char *varCode = "Y532pH")
+    explicit YosemitechY532_pH(YosemitechY532 *parentSense,
+                               const char *uuid = "",
+                               const char *varCode = "Y532pH")
         : Variable(parentSense,
                    (const uint8_t)Y532_PH_VAR_NUM,
                    (uint8_t)Y532_PH_RESOLUTION,
@@ -97,9 +97,9 @@ public:
 class YosemitechY532_Temp : public Variable
 {
 public:
-    YosemitechY532_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y532Temp")
+    explicit YosemitechY532_Temp(YosemitechY532 *parentSense,
+                                 const char *uuid = "",
+                                 const char *varCode = "Y532Temp")
         : Variable(parentSense,
                    (const uint8_t)Y532_TEMP_VAR_NUM,
                    (uint8_t)Y532_TEMP_RESOLUTION,
@@ -119,9 +119,9 @@ public:
 class YosemitechY532_Voltage : public Variable
 {
 public:
-    YosemitechY532_Voltage(Sensor *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "Y532Potential")
+    explicit YosemitechY532_Voltage(YosemitechY532 *parentSense,
+                                    const char *uuid = "",
+                                    const char *varCode = "Y532Potential")
         : Variable(parentSense,
                    (const uint8_t)Y532_VOLT_VAR_NUM,
                    (uint8_t)Y532_VOLT_RESOLUTION,

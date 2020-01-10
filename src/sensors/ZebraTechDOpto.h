@@ -82,9 +82,9 @@ public:
 class ZebraTechDOpto_Temp : public Variable
 {
 public:
-    ZebraTechDOpto_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "DOtempC")
+    explicit ZebraTechDOpto_Temp(ZebraTechDOpto *parentSense,
+                                 const char *uuid = "",
+                                 const char *varCode = "DOtempC")
         : Variable(parentSense,
                    (const uint8_t)DOPTO_TEMP_VAR_NUM,
                    (uint8_t)DOPTO_TEMP_RESOLUTION,
@@ -104,9 +104,9 @@ public:
 class ZebraTechDOpto_DOpct : public Variable
 {
 public:
-    ZebraTechDOpto_DOpct(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "DOpercent")
+    explicit ZebraTechDOpto_DOpct(ZebraTechDOpto *parentSense,
+                                  const char *uuid = "",
+                                  const char *varCode = "DOpercent")
         : Variable(parentSense,
                    (const uint8_t)DOPTO_DOPCT_VAR_NUM,
                    (uint8_t)DOPTO_DOPCT_RESOLUTION,
@@ -126,9 +126,9 @@ public:
 class ZebraTechDOpto_DOmgL : public Variable
 {
 public:
-    ZebraTechDOpto_DOmgL(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "DOppm")
+    explicit ZebraTechDOpto_DOmgL(ZebraTechDOpto *parentSense,
+                                  const char *uuid = "",
+                                  const char *varCode = "DOppm")
         : Variable(parentSense,
                    (const uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION,

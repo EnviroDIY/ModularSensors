@@ -80,9 +80,9 @@ private:
 class MaximDS18_Temp : public Variable
 {
 public:
-    MaximDS18_Temp(Sensor *parentSense,
-                   const char *uuid = "",
-                   const char *varCode = "DS18Temp")
+    explicit MaximDS18_Temp(MaximDS18 *parentSense,
+                            const char *uuid = "",
+                            const char *varCode = "DS18Temp")
         : Variable(parentSense,
                    (const uint8_t)DS18_TEMP_VAR_NUM,
                    (uint8_t)DS18_TEMP_RESOLUTION,

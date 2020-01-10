@@ -74,9 +74,9 @@ public:
 class YosemitechY504_DOpct : public Variable
 {
 public:
-    YosemitechY504_DOpct(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "Y504DOpct")
+    explicit YosemitechY504_DOpct(YosemitechY504 *parentSense,
+                                  const char *uuid = "",
+                                  const char *varCode = "Y504DOpct")
         : Variable(parentSense,
                    (const uint8_t)Y504_DOPCT_VAR_NUM,
                    (uint8_t)Y504_DOPCT_RESOLUTION,
@@ -96,9 +96,9 @@ public:
 class YosemitechY504_Temp : public Variable
 {
 public:
-    YosemitechY504_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y504Temp")
+    explicit YosemitechY504_Temp(YosemitechY504 *parentSense,
+                                 const char *uuid = "",
+                                 const char *varCode = "Y504Temp")
         : Variable(parentSense,
                    (const uint8_t)Y504_TEMP_VAR_NUM,
                    (uint8_t)Y504_TEMP_RESOLUTION,
@@ -118,9 +118,9 @@ public:
 class YosemitechY504_DOmgL : public Variable
 {
 public:
-    YosemitechY504_DOmgL(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "Y504DOmgL")
+    explicit YosemitechY504_DOmgL(YosemitechY504 *parentSense,
+                                  const char *uuid = "",
+                                  const char *varCode = "Y504DOmgL")
         : Variable(parentSense,
                    (const uint8_t)Y504_DOMGL_VAR_NUM,
                    (uint8_t)Y504_DOMGL_RESOLUTION,

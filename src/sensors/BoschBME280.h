@@ -93,9 +93,9 @@ protected:
 class BoschBME280_Temp : public Variable
 {
 public:
-    BoschBME280_Temp(Sensor *parentSense,
-                     const char *uuid = "",
-                     const char *varCode = "BoschBME280Temp")
+    explicit BoschBME280_Temp(BoschBME280 *parentSense,
+                              const char *uuid = "",
+                              const char *varCode = "BoschBME280Temp")
         : Variable(parentSense,
                    (const uint8_t)BME280_TEMP_VAR_NUM,
                    (uint8_t)BME280_TEMP_RESOLUTION,
@@ -115,9 +115,9 @@ public:
 class BoschBME280_Humidity : public Variable
 {
 public:
-    BoschBME280_Humidity(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "BoschBME280Humidity")
+    explicit BoschBME280_Humidity(BoschBME280 *parentSense,
+                                  const char *uuid = "",
+                                  const char *varCode = "BoschBME280Humidity")
         : Variable(parentSense,
                    (const uint8_t)BME280_HUMIDITY_VAR_NUM,
                    (uint8_t)BME280_HUMIDITY_RESOLUTION,
@@ -137,9 +137,9 @@ public:
 class BoschBME280_Pressure : public Variable
 {
 public:
-    BoschBME280_Pressure(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "BoschBME280Pressure")
+    explicit BoschBME280_Pressure(BoschBME280 *parentSense,
+                                  const char *uuid = "",
+                                  const char *varCode = "BoschBME280Pressure")
         : Variable(parentSense,
                    (const uint8_t)BME280_PRESSURE_VAR_NUM,
                    (uint8_t)BME280_PRESSURE_RESOLUTION,
@@ -158,9 +158,9 @@ public:
 class BoschBME280_Altitude : public Variable
 {
 public:
-    BoschBME280_Altitude(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "BoschBME280Altitude")
+    explicit BoschBME280_Altitude(BoschBME280 *parentSense,
+                                  const char *uuid = "",
+                                  const char *varCode = "BoschBME280Altitude")
         : Variable(parentSense,
                    (const uint8_t)BME280_ALTITUDE_VAR_NUM,
                    (uint8_t)BME280_ALTITUDE_RESOLUTION,

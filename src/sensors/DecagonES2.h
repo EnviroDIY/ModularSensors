@@ -75,9 +75,9 @@ public:
 class DecagonES2_Cond : public Variable
 {
 public:
-    DecagonES2_Cond(Sensor *parentSense,
-                    const char *uuid = "",
-                    const char *varCode = "ES2Cond")
+    explicit DecagonES2_Cond(DecagonES2 *parentSense,
+                             const char *uuid = "",
+                             const char *varCode = "ES2Cond")
         : Variable(parentSense,
                    (const uint8_t)ES2_COND_VAR_NUM,
                    (uint8_t)ES2_COND_RESOLUTION,
@@ -96,9 +96,9 @@ public:
 class DecagonES2_Temp : public Variable
 {
 public:
-    DecagonES2_Temp(Sensor *parentSense,
-                    const char *uuid = "",
-                    const char *varCode = "ES2Temp")
+    explicit DecagonES2_Temp(DecagonES2 *parentSense,
+                             const char *uuid = "",
+                             const char *varCode = "ES2Temp")
         : Variable(parentSense,
                    (const uint8_t)ES2_TEMP_VAR_NUM,
                    (uint8_t)ES2_TEMP_RESOLUTION,

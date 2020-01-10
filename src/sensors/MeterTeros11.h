@@ -97,9 +97,9 @@ public:
 class MeterTeros11_Ea : public Variable
 {
 public:
-    MeterTeros11_Ea(Sensor *parentSense,
-                    const char *uuid = "",
-                    const char *varCode = "SoilEa")
+    explicit MeterTeros11_Ea(MeterTeros11 *parentSense,
+                             const char *uuid = "",
+                             const char *varCode = "SoilEa")
         : Variable(parentSense,
                    (const uint8_t)TEROS11_EA_VAR_NUM,
                    (uint8_t)TEROS11_EA_RESOLUTION,
@@ -119,9 +119,9 @@ public:
 class MeterTeros11_Temp : public Variable
 {
 public:
-    MeterTeros11_Temp(Sensor *parentSense,
-                      const char *uuid = "",
-                      const char *varCode = "SoilTemp")
+    explicit MeterTeros11_Temp(MeterTeros11 *parentSense,
+                               const char *uuid = "",
+                               const char *varCode = "SoilTemp")
         : Variable(parentSense,
                    (const uint8_t)TEROS11_TEMP_VAR_NUM,
                    (uint8_t)TEROS11_TEMP_RESOLUTION,
@@ -141,9 +141,9 @@ public:
 class MeterTeros11_VWC : public Variable
 {
 public:
-    MeterTeros11_VWC(Sensor *parentSense,
-                     const char *uuid = "",
-                     const char *varCode = "SoilVWC")
+    explicit MeterTeros11_VWC(MeterTeros11 *parentSense,
+                              const char *uuid = "",
+                              const char *varCode = "SoilVWC")
         : Variable(parentSense,
                    (const uint8_t)TEROS11_VWC_VAR_NUM,
                    (uint8_t)TEROS11_VWC_RESOLUTION,
