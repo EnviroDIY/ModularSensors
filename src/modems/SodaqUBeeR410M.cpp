@@ -122,6 +122,8 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
             gsmModem.setBaud(9600);
             _modemSerial->end();
             _modemSerial->begin(9600);
+            gsmModem.sendAT(GF("E0"));
+            gsmModem.waitResponse();
         }
 #endif
         return true;
@@ -163,6 +165,8 @@ bool SodaqUBeeR410M::modemHardReset(void)
         gsmModem.setBaud(9600);
         _modemSerial->end();
         _modemSerial->begin(9600);
+        gsmModem.sendAT(GF("E0"));
+        gsmModem.waitResponse();
 #endif
         return gsmModem.init();
     }
