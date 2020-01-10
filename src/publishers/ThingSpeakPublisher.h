@@ -41,8 +41,8 @@ class ThingSpeakPublisher : public dataPublisher
 public:
     // Constructors
     ThingSpeakPublisher();
-    ThingSpeakPublisher(Logger &baseLogger,
-                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    explicit ThingSpeakPublisher(Logger &baseLogger,
+                                 uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     ThingSpeakPublisher(Logger &baseLogger, Client *inClient,
                         uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     ThingSpeakPublisher(Logger &baseLogger,
@@ -59,7 +59,7 @@ public:
     virtual ~ThingSpeakPublisher();
 
     // Returns the data destination
-    virtual String getEndpoint(void) { return String(mqttServer); }
+    String getEndpoint(void) override { return String(mqttServer); }
 
     // Adds the MQTT API Key from Account > MyProfile
     void setMQTTKey(const char *thingSpeakMQTTKey);
@@ -86,7 +86,7 @@ public:
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);
-    virtual int16_t publishData(Client *_outClient);
+    int16_t publishData(Client *_outClient) override;
 
 protected:
     static const char *mqttServer;

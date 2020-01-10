@@ -448,14 +448,20 @@ bool Sensor::update(void)
 // This is a helper function to check if the power needs to be turned on
 bool Sensor::checkPowerOn(bool debug)
 {
-    if (debug) MS_DBG(F("Checking power status:  Power to"), getSensorNameAndLocation());
+    if (debug)
+    {
+        MS_DBG(F("Checking power status:  Power to"), getSensorNameAndLocation());
+    }
     if (_powerPin >= 0)
     {
         int8_t powerBitNumber = log(digitalPinToBitMask(_powerPin)) / log(2);
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
         {
-            if (debug) MS_DBG(F("was off."));
+            if (debug)
+            {
+                MS_DBG(F("was off."));
+            }
             // Reset time of power on, in-case it was set to a value
             if (_millisPowerOn != 0) _millisPowerOn = 0;
             // Unset the status bits for sensor power (bits 1 & 2),
@@ -465,7 +471,10 @@ bool Sensor::checkPowerOn(bool debug)
         }
         else
         {
-            if (debug) MS_DBG((" was on."));
+            if (debug)
+            {
+                MS_DBG((" was on."));
+            }
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
@@ -475,7 +484,10 @@ bool Sensor::checkPowerOn(bool debug)
     }
     else
     {
-        if (debug) MS_DBG(F("is not controlled by this library."));
+        if (debug)
+        {
+            MS_DBG(F("is not controlled by this library."));
+        }
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
@@ -492,7 +504,10 @@ bool Sensor::isWarmedUp(bool debug)
     // so the warm up time is essentially already passed.
     if (!bitRead(_sensorStatus, 2))
     {
-        if (debug) MS_DBG(getSensorNameAndLocation(), F("does not have power and cannot warm up!"));
+        if (debug)
+        {
+            MS_DBG(getSensorNameAndLocation(), F("does not have power and cannot warm up!"));
+        }
         return true;
     }
 

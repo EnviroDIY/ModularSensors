@@ -49,11 +49,11 @@
 class AtlasScientificCO2 : public AtlasParent
 {
 public:
-    AtlasScientificCO2(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_CO2_I2C_ADDR,
-                       uint8_t measurementsToAverage = 1);
+    explicit AtlasScientificCO2(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_CO2_I2C_ADDR,
+                                uint8_t measurementsToAverage = 1);
     ~AtlasScientificCO2();
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 };
 
 // The class for the CO2 Concentration Variable

@@ -56,7 +56,7 @@
 class MPL115A2 : public Sensor
 {
 public:
-    MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
+    explicit MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
     ~MPL115A2();
 
     bool setup(void) override;

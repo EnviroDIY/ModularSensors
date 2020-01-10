@@ -40,8 +40,8 @@ class dataPublisher
 public:
     // Constructors
     dataPublisher();
-    dataPublisher(Logger &baseLogger,
-                  uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    explicit dataPublisher(Logger &baseLogger,
+                           uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     dataPublisher(Logger &baseLogger, Client *inClient,
                   uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor

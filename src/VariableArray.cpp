@@ -190,7 +190,10 @@ bool VariableArray::setupSensors(void)
     // Power down all sensor;
     // sensorsPowerDown();
 
-    if (success) MS_DBG(F("... Success!"));
+    if (success)
+    {
+        MS_DBG(F("... Success!"));
+    }
 
     return success;
 }

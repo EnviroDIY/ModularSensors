@@ -56,10 +56,10 @@ public:
     String getSensorSerialNumber(void);
     String getSensorLocation(void) override;
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 
-    virtual bool startSingleMeasurement(void);
-    virtual bool addSingleMeasurementResult(void);
+    bool startSingleMeasurement(void) override;
+    bool addSingleMeasurementResult(void) override;
 
 protected:
     bool requestSensorAcknowledgement(void);

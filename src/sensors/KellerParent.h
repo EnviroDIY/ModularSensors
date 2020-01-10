@@ -61,13 +61,13 @@ public:
 
     String getSensorLocation(void) override;
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 
     // Override these to use two power pins
-    virtual void powerUp(void) override;
-    virtual void powerDown(void) override;
+    void powerUp(void) override;
+    void powerDown(void) override;
 
-    virtual bool addSingleMeasurementResult(void);
+    bool addSingleMeasurementResult(void) override;
 
 private:
     keller sensor;

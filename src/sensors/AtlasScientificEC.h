@@ -56,11 +56,11 @@
 class AtlasScientificEC : public AtlasParent
 {
 public:
-    AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
-                      uint8_t measurementsToAverage = 1);
+    explicit AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
+                               uint8_t measurementsToAverage = 1);
     ~AtlasScientificEC();
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 };
 
 // The class for the Conductivity Variable

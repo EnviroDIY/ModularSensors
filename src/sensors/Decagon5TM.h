@@ -84,7 +84,7 @@ public:
     // Destructor
     ~Decagon5TM() {}
 
-    virtual bool addSingleMeasurementResult(void) override;
+     bool addSingleMeasurementResult(void) override;
 };
 
 

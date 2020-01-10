@@ -51,7 +51,7 @@ class ProcessorStats : public Sensor
 {
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
-    ProcessorStats(const char *version);
+    explicit ProcessorStats(const char *version);
     ~ProcessorStats();
 
     String getSensorLocation(void) override;

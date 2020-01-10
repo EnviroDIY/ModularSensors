@@ -65,7 +65,8 @@
 class TIINA219 : public Sensor
 {
 public:
-    TIINA219(int8_t powerPin, uint8_t i2cAddressHex = INA219_ADDRESS_BASE, uint8_t measurementsToAverage = 1);
+    explicit TIINA219(int8_t powerPin, uint8_t i2cAddressHex = INA219_ADDRESS_BASE,
+                      uint8_t measurementsToAverage = 1);
     ~TIINA219();
 
     bool wake(void) override;

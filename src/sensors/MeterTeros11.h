@@ -89,7 +89,7 @@ public:
     // Destructor
     ~MeterTeros11() {}
 
-    virtual bool addSingleMeasurementResult(void) override;
+     bool addSingleMeasurementResult(void) override;
 };
 
 

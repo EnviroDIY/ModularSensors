@@ -175,9 +175,9 @@ protected:
 class Modem_RSSI : public Variable
 {
 public:
-    Modem_RSSI(loggerModem *parentModem,
-               const char *uuid = "",
-               const char *varCode = "RSSI")
+    explicit Modem_RSSI(loggerModem *parentModem,
+                        const char *uuid = "",
+                        const char *varCode = "RSSI")
         : Variable(&parentModem->getModemRSSI,
                    (uint8_t)MODEM_RSSI_RESOLUTION,
                    &*"RSSI", &*"decibelMiliWatt",
@@ -191,9 +191,9 @@ public:
 class Modem_SignalPercent : public Variable
 {
 public:
-    Modem_SignalPercent(loggerModem *parentModem,
-                        const char *uuid = "",
-                        const char *varCode = "signalPercent")
+    explicit Modem_SignalPercent(loggerModem *parentModem,
+                                 const char *uuid = "",
+                                 const char *varCode = "signalPercent")
         : Variable(&parentModem->getModemSignalPercent,
                    (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
                    &*"signalPercent", &*"percent",
@@ -207,9 +207,9 @@ public:
 class Modem_BatteryState : public Variable
 {
 public:
-    Modem_BatteryState(loggerModem *parentModem,
-                       const char *uuid = "",
-                       const char *varCode = "modemBatteryCS")
+    explicit Modem_BatteryState(loggerModem *parentModem,
+                                const char *uuid = "",
+                                const char *varCode = "modemBatteryCS")
         : Variable(&parentModem->getModemBatteryChargeState,
                    (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
                    &*"batteryChargeState", &*"number",
@@ -223,9 +223,9 @@ public:
 class Modem_BatteryPercent : public Variable
 {
 public:
-    Modem_BatteryPercent(loggerModem *parentModem,
-                         const char *uuid = "",
-                         const char *varCode = "modemBatteryPct")
+    explicit Modem_BatteryPercent(loggerModem *parentModem,
+                                  const char *uuid = "",
+                                  const char *varCode = "modemBatteryPct")
         : Variable(&parentModem->getModemBatteryChargePercent,
                    (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
                    &*"batteryVoltage", &*"percent",
@@ -239,9 +239,9 @@ public:
 class Modem_BatteryVoltage : public Variable
 {
 public:
-    Modem_BatteryVoltage(loggerModem *parentModem,
-                         const char *uuid = "",
-                         const char *varCode = "modemBatterymV")
+    explicit Modem_BatteryVoltage(loggerModem *parentModem,
+                                  const char *uuid = "",
+                                  const char *varCode = "modemBatterymV")
         : Variable(&parentModem->getModemBatteryVoltage,
                    (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
                    &*"batteryVoltage", &*"millivolt",
@@ -255,9 +255,9 @@ public:
 class Modem_Temp : public Variable
 {
 public:
-    Modem_Temp(loggerModem *parentModem,
-               const char *uuid = "",
-               const char *varCode = "modemTemp")
+    explicit Modem_Temp(loggerModem *parentModem,
+                        const char *uuid = "",
+                        const char *varCode = "modemTemp")
         : Variable(&parentModem->getModemTemperature,
                    (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
                    &*"temperature", &*"degreeCelsius",
@@ -271,15 +271,15 @@ public:
 // class Modem_ActivationDuration : public Variable
 // {
 // public:
-//     Modem_ActivationDuration(loggerModem *parentModem,
-//                              const char *uuid = "",
-//                              const char *varCode = "modemActiveSec")
+//     explicit Modem_ActivationDuration(loggerModem *parentModem,
+//                                       const char *uuid = "",
+//                                       const char *varCode = "modemActiveSec")
 //         : Variable(&parentModem->getModemActivationDuration,
 //                    (uint8_t)MODEM_ACTIVATION_RESOLUTION,
 //                    &*"timeElapsed", &*"second",
 //                    varCode, uuid)
 //     {}
-//     ~Modem_ActivationDuration(){}
+//     ~Modem_ActivationDuration() {}
 // };
 
 
@@ -287,15 +287,15 @@ public:
 // class Modem_PoweredDuration : public Variable
 // {
 // public:
-//     Modem_PoweredDuration(loggerModem *parentModem,
-//                           const char *uuid = "",
-//                           const char *varCode = "modemPoweredSec")
+//     explicit Modem_PoweredDuration(loggerModem *parentModem,
+//                                    const char *uuid = "",
+//                                    const char *varCode = "modemPoweredSec")
 //         : Variable(&parentModem->getModemPoweredDuration,
 //                    (uint8_t)MODEM_POWERED_RESOLUTION,
 //                    &*"timeElapsed", &*"second",
 //                    varCode, uuid)
 //     {}
-//     ~Modem_PoweredDuration(){}
+//     ~Modem_PoweredDuration() {}
 // };
 
 // #include <LoggerModem.tpp>
