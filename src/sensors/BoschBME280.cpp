@@ -33,11 +33,11 @@
 
 // The constructor - because this is I2C, only need the power pin
 BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
-     : Sensor("BoschBME280", BME280_NUM_VARIABLES,
-              BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
-              powerPin, -1, measurementsToAverage)
+    : Sensor("BoschBME280", BME280_NUM_VARIABLES,
+             BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
 {
-    _i2cAddressHex  = i2cAddressHex;
+    _i2cAddressHex = i2cAddressHex;
 }
 // Destructor
 BoschBME280::~BoschBME280(){};
@@ -58,7 +58,7 @@ bool BoschBME280::setup(void)
     // This sensor needs power for setup!
     // The bme280's begin() reads required calibration data from the sensor.
     bool wasOn = checkPowerOn();
-    if (!wasOn) {powerUp();}
+    if (!wasOn) powerUp();
     waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
@@ -80,7 +80,7 @@ bool BoschBME280::setup(void)
     retVal &= success;
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) powerDown();
 
     return retVal;
 }
@@ -110,14 +110,14 @@ bool BoschBME280::wake(void)
 
     // When the Adafruit library is updated to remove the built-in delay after
     // forcing a sample, it would be better to operate in forced mode.
-    bme_internal.setSampling(Adafruit_BME280::MODE_NORMAL,  // sensor mode
-    // bme_internal.setSampling(Adafruit_BME280::MODE_FORCED,  // sensor mode
-                             Adafruit_BME280::SAMPLING_X16,  // temperature oversampling
-                             Adafruit_BME280::SAMPLING_X16,  //  pressure oversampling
-                             Adafruit_BME280::SAMPLING_X16,  //  humidity oversampling
-                             Adafruit_BME280::FILTER_OFF, // built-in IIR filter
+    bme_internal.setSampling(Adafruit_BME280::MODE_NORMAL,       // sensor mode
+                                                                 // bme_internal.setSampling(Adafruit_BME280::MODE_FORCED,  // sensor mode
+                             Adafruit_BME280::SAMPLING_X16,      // temperature oversampling
+                             Adafruit_BME280::SAMPLING_X16,      //  pressure oversampling
+                             Adafruit_BME280::SAMPLING_X16,      //  humidity oversampling
+                             Adafruit_BME280::FILTER_OFF,        // built-in IIR filter
                              Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
-    delay(100);  // Need this delay after changing sampling mode
+    delay(100);                                                  // Need this delay after changing sampling mode
 
     return true;
 }
@@ -154,7 +154,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
         if ((temp == 0 && press == 0 && humid == 0) || temp < -40)
         {
             MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
-            temp =  -9999;
+            temp = -9999;
             press = -9999;
             humid = -9999;
             alt = -9999;

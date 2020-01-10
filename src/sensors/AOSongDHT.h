@@ -32,7 +32,7 @@
 // #define MS_AOSONGDHT_DEBUG
 
 #ifdef MS_AOSONGDHT_DEBUG
-#define MS_DEBUGGING_STD "AOSongDHT"
+    #define MS_DEBUGGING_STD "AOSongDHT"
 #endif
 
 // Included Dependencies
@@ -67,11 +67,11 @@
 // For the various communication devices"
 typedef enum DHTtype
 {
-  DHT11 = 11,
-  DHT21 = 21,
-  AM2301 = 21,
-  DHT22 = 22,
-  AM2302 = 22
+    DHT11 = 11,
+    DHT21 = 21,
+    AM2301 = 21,
+    DHT22 = 22,
+    AM2302 = 22
 } DHTtype;
 
 // The main class for the AOSong DHT
@@ -101,16 +101,16 @@ public:
     AOSongDHT_Humidity(Sensor *parentSense,
                        const char *uuid = "",
                        const char *varCode = "DHTHumidity")
-      : Variable(parentSense,
-                 (const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                 (uint8_t)DHT_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)DHT_HUMIDITY_VAR_NUM,
+                   (uint8_t)DHT_HUMIDITY_RESOLUTION,
+                   "relativeHumidity", "percent",
+                   varCode, uuid)
     {}
     AOSongDHT_Humidity()
-      : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                 (uint8_t)DHT_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent", "DHTHumidity")
+        : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
+                   (uint8_t)DHT_HUMIDITY_RESOLUTION,
+                   "relativeHumidity", "percent", "DHTHumidity")
     {}
     ~AOSongDHT_Humidity(){};
 };
@@ -123,16 +123,16 @@ public:
     AOSongDHT_Temp(Sensor *parentSense,
                    const char *uuid = "",
                    const char *varCode = "DHTTemp")
-      : Variable(parentSense,
-                 (const uint8_t)DHT_TEMP_VAR_NUM,
-                 (uint8_t)DHT_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)DHT_TEMP_VAR_NUM,
+                   (uint8_t)DHT_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     AOSongDHT_Temp()
-      : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
-                 (uint8_t)DHT_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "DHTTemp")
+        : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
+                   (uint8_t)DHT_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "DHTTemp")
     {}
     ~AOSongDHT_Temp(){};
 };
@@ -145,16 +145,16 @@ public:
     AOSongDHT_HI(Sensor *parentSense,
                  const char *uuid = "",
                  const char *varCode = "DHTHI")
-      : Variable(parentSense,
-                 (const uint8_t)DHT_HI_VAR_NUM,
-                 (uint8_t)DHT_HI_RESOLUTION,
-                 "heatIndex", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)DHT_HI_VAR_NUM,
+                   (uint8_t)DHT_HI_RESOLUTION,
+                   "heatIndex", "degreeCelsius",
+                   varCode, uuid)
     {}
     AOSongDHT_HI()
-      : Variable((const uint8_t)DHT_HI_VAR_NUM,
-                 (uint8_t)DHT_HI_RESOLUTION,
-                 "heatIndex", "degreeCelsius", "DHTHI")
+        : Variable((const uint8_t)DHT_HI_VAR_NUM,
+                   (uint8_t)DHT_HI_RESOLUTION,
+                   "heatIndex", "degreeCelsius", "DHTHI")
     {}
     ~AOSongDHT_HI(){};
 };

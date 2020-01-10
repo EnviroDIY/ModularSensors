@@ -18,7 +18,7 @@
 // #define MS_WATCHDOGAVR_DEBUG
 
 #ifdef MS_WATCHDOGAVR_DEBUG
-#define MS_DEBUGGING_STD "WatchDogAVR"
+    #define MS_DEBUGGING_STD "WatchDogAVR"
 #endif
 
 // Included Dependencies
@@ -41,6 +41,7 @@ public:
     void resetWatchDog();
 
     static volatile uint32_t _barksUntilReset;
+
 private:
     uint32_t _resetTime_s;
 };

@@ -22,40 +22,40 @@ const char *DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
 // Constructors
 DreamHostPublisher::DreamHostPublisher()
-  : dataPublisher()
+    : dataPublisher()
 {
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+DreamHostPublisher::DreamHostPublisher(Logger &baseLogger,
+                                       uint8_t sendEveryX, uint8_t sendOffset)
+    : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+DreamHostPublisher::DreamHostPublisher(Logger &baseLogger, Client *inClient,
+                                       uint8_t sendEveryX, uint8_t sendOffset)
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
-                                 const char *dhUrl, uint8_t sendEveryX,
-                                 uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+DreamHostPublisher::DreamHostPublisher(Logger &baseLogger,
+                                       const char *dhUrl, uint8_t sendEveryX,
+                                       uint8_t sendOffset)
+    : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(dhUrl);
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
-                                 const char *dhUrl, uint8_t sendEveryX,
-                                 uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+DreamHostPublisher::DreamHostPublisher(Logger &baseLogger, Client *inClient,
+                                       const char *dhUrl, uint8_t sendEveryX,
+                                       uint8_t sendOffset)
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(dhUrl);
     // MS_DBG(F("DreamHostPublisher object created"));
 }
 // Destructor
-DreamHostPublisher::~DreamHostPublisher(){}
+DreamHostPublisher::~DreamHostPublisher() {}
 
 
 // Functions for private SWRC server
@@ -104,13 +104,13 @@ void DreamHostPublisher::printDreamHostRequest(Stream *stream)
 
 
 // A way to begin with everything already set
-void DreamHostPublisher::begin(Logger& baseLogger, Client *inClient,
+void DreamHostPublisher::begin(Logger &baseLogger, Client *inClient,
                                const char *dhUrl)
 {
     setDreamHostPortalRX(dhUrl);
     dataPublisher::begin(baseLogger, inClient);
 }
-void DreamHostPublisher::begin(Logger& baseLogger,
+void DreamHostPublisher::begin(Logger &baseLogger,
                                const char *dhUrl)
 {
     setDreamHostPortalRX(dhUrl);
@@ -128,7 +128,7 @@ int16_t DreamHostPublisher::publishData(Client *_outClient)
 
     // Open a TCP/IP connection to DreamHost
     MS_DBG(F("Connecting client"));
-    MS_START_DEBUG_TIMER ;
+    MS_START_DEBUG_TIMER;
     if (_outClient->connect(dreamhostHost, dreamhostPort))
     {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
@@ -178,7 +178,7 @@ int16_t DreamHostPublisher::publishData(Client *_outClient)
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
         while ((millis() - start) < 10000L && _outClient->available() < 12)
-        {delay(10);}
+        { delay(10); }
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
@@ -203,13 +203,13 @@ int16_t DreamHostPublisher::publishData(Client *_outClient)
         char responseCode_char[4];
         for (uint8_t i = 0; i < 3; i++)
         {
-            responseCode_char[i] = tempBuffer[i+9];
+            responseCode_char[i] = tempBuffer[i + 9];
         }
         responseCode = atoi(responseCode_char);
     }
     else
     {
-        responseCode=504;
+        responseCode = 504;
     }
 
     PRINTOUT(F("-- Response Code --"));

@@ -47,7 +47,7 @@
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
     #define BOARD "Mega Adk"
-#elif defined(ARDUINO_AVR_BT)    // Bluetooth
+#elif defined(ARDUINO_AVR_BT)  // Bluetooth
     #define BOARD "Bt"
 #elif defined(ARDUINO_AVR_DUEMILANOVE)
     #define BOARD "Duemilanove"
@@ -91,7 +91,7 @@
     #define BOARD "Zero"
 
 #else
-   #define BOARD "Unknown"
+    #define BOARD "Unknown"
 #endif
 
 
@@ -104,33 +104,40 @@ ProcessorStats::ProcessorStats(const char *version)
     _version = version;
     sampNum = 0;
 
-    #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
-        _batteryPin = A6;
-    #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
-        _batteryPin = 9;
-    #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || defined(ARDUINO_AVR_SODAQ_NDOGO)
-        _batteryPin = 10;
-    #elif defined(ARDUINO_SODAQ_AUTONOMO)
-        if (strcmp(_version, "v0.1") == 0) _batteryPin = 48;
-        else _batteryPin = 33;
-    #else
-        _batteryPin = -1;
-    #endif
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
+    _batteryPin = A6;
+#elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
+    _batteryPin = 9;
+#elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || defined(ARDUINO_AVR_SODAQ_NDOGO)
+    _batteryPin = 10;
+#elif defined(ARDUINO_SODAQ_AUTONOMO)
+    if (strcmp(_version, "v0.1") == 0)
+    {
+        _batteryPin = 48;
+    }
+    else
+    {
+        _batteryPin = 33;
+    }
+#else
+    _batteryPin = -1;
+#endif
 }
 // Destructor
-ProcessorStats::~ProcessorStats(){}
+ProcessorStats::~ProcessorStats() {}
 
 
-String ProcessorStats::getSensorLocation(void) {return BOARD;}
+String ProcessorStats::getSensorLocation(void) { return BOARD; }
 
 
 #if defined(ARDUINO_ARCH_SAMD)
-    extern "C" char *sbrk(int i);
+extern "C" char *sbrk(int i);
 
-    int16_t FreeRam () {
-      char stack_dummy = 0;
-      return &stack_dummy - sbrk(0);
-    }
+int16_t FreeRam()
+{
+    char stack_dummy = 0;
+    return &stack_dummy - sbrk(0);
+}
 #endif
 
 
@@ -141,67 +148,67 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     float sensorValue_battery = -9999;
 
-    #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-        if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
-        {
-            // Get the battery voltage
-            float rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-        }
-        if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
-        {
-            // Get the battery voltage
-            float rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
-        }
-
-    #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
-        float measuredvbat = analogRead(_batteryPin);
-        measuredvbat *= 2;    // we divided by 2, so multiply back
-        measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
-        measuredvbat /= 1024;  // convert to voltage
-        sensorValue_battery = measuredvbat;
-
-    #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
-        if (strcmp(_version, "v0.1") == 0)
-        {
-            // Get the battery voltage
-            float rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 2 * rawBattery;
-        }
-        if (strcmp(_version, "v0.2") == 0)
-        {
-            // Get the battery voltage
-            float rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-        }
-
-    #elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_AVR_SODAQ_MBILI)
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
+    if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
+    {
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
         sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+    if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(_batteryPin);
+        sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+    }
 
-    #else
-        sensorValue_battery = -9999;
+#elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
+    float measuredvbat = analogRead(_batteryPin);
+    measuredvbat *= 2;     // we divided by 2, so multiply back
+    measuredvbat *= 3.3;   // Multiply by 3.3V, our reference voltage
+    measuredvbat /= 1024;  // convert to voltage
+    sensorValue_battery = measuredvbat;
 
-    #endif
+#elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
+    if (strcmp(_version, "v0.1") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(_batteryPin);
+        sensorValue_battery = (3.3 / 1023.) * 2 * rawBattery;
+    }
+    if (strcmp(_version, "v0.2") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(_batteryPin);
+        sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+
+#elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_AVR_SODAQ_MBILI)
+    // Get the battery voltage
+    float rawBattery = analogRead(_batteryPin);
+    sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+
+#else
+    sensorValue_battery = -9999;
+
+#endif
 
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
 
     // Used only for debugging - can be removed
     MS_DBG(F("Getting Free RAM"));
 
-    #if defined __AVR__ || defined ARDUINO_ARCH_AVR
+#if defined __AVR__ || defined ARDUINO_ARCH_AVR
     extern int16_t __heap_start, *__brkval;
     int16_t v;
-    float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+    float sensorValue_freeRam = (int)&v - (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
 
-    #elif defined(ARDUINO_ARCH_SAMD)
+#elif defined(ARDUINO_ARCH_SAMD)
     float sensorValue_freeRam = FreeRam();
 
-    #else
+#else
     float sensorValue_freeRam = -9999;
-    #endif
+#endif
 
     verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
 

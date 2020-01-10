@@ -21,33 +21,33 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
+    #define TINY_GSM_YIELD_MS 2
 #endif
 #ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
+    #define MQTT_MAX_PACKET_SIZE 240
 #endif
 
 
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
+#include <Arduino.h>          // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>  // The modular sensors library
+#include <LoggerBase.h>       // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.17";
+const char* libraryVersion = "0.23.17";
 // The name of this file
-const char *sketchName = "baro_rho_correction.ino";
+const char* sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 1;
 // Your logger's timezone.
@@ -60,11 +60,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
-const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;       // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;         // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;     // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;       // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
@@ -72,7 +72,7 @@ const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char* mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the processor
@@ -86,7 +86,7 @@ Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-
 // ==========================================================================
 
 // Create a reference to the serial port for the modem
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 const int8_t modemVccPin = 23;      // MCU pin controlling modem power (-1 if not applicable)
@@ -94,7 +94,7 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection
+const char* apn = "xxxxx";  // The APN for the gprs connection
 
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
@@ -149,7 +149,7 @@ Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00
 #include <sensors/MaximDS18.h>
 
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
+const int8_t OneWireBus = 4;                 // Pin attached to the OneWire Bus (-1 if unconnected)
 
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
@@ -164,7 +164,7 @@ Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-12345678
 #include <sensors/MeaSpecMS5803.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
+const uint8_t MS5803i2c_addr = 0x76;   // The MS5803 can be addressed either as 0x76 (default) or 0x77
 const int16_t MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
 
@@ -198,11 +198,11 @@ float calculateWaterPressure(void)
     return waterPressure;
 }
 // Properties of the calculated water pressure variable
-const char *waterPressureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *waterPressureVarUnit = "millibar";  // This must be a value from http://vocabulary.odm2.org/units/
+const char* waterPressureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char* waterPressureVarUnit = "millibar";       // This must be a value from http://vocabulary.odm2.org/units/
 int waterPressureVarResolution = 3;
-const char *waterPressureUUID = "12345678-abcd-1234-ef00-1234567890ab";
-const char *waterPressureVarCode = "CorrectedPressure";
+const char* waterPressureUUID = "12345678-abcd-1234-ef00-1234567890ab";
+const char* waterPressureVarCode = "CorrectedPressure";
 // Create the calculated water pressure variable objects and return a variable pointer to it
 Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPressureVarResolution,
                                         waterPressureVarName, waterPressureVarUnit,
@@ -213,18 +213,18 @@ Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPressureVar
 // This calculation gives a final result in mm of water
 float calculateWaterDepthRaw(void)
 {
-    float waterDepth = calculateWaterPressure()*10.1972;
+    float waterDepth = calculateWaterPressure() * 10.1972;
     if (calculateWaterPressure() == -9999) waterDepth = -9999;
     // Serial.print(F("'Raw' water depth is "));  // for debugging
     // Serial.println(waterDepth);  // for debugging
     return waterDepth;
 }
 // Properties of the calculated water depth variable
-const char *waterDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *waterDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
+const char* waterDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char* waterDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int waterDepthVarResolution = 3;
-const char *waterDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
-const char *waterDepthVarCode = "CalcDepth";
+const char* waterDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
+const char* waterDepthVarCode = "CalcDepth";
 // Create the calculated raw water depth variable objects and return a variable pointer to it
 Variable *calcRawDepth = new Variable(calculateWaterDepthRaw,
                                       waterDepthVarResolution,
@@ -243,15 +243,10 @@ float calculateWaterDepthTempCorrected(void)
     float waterTempertureC = ms5803Temp->getValue();
     // Converting water depth for the changes of pressure with depth
     // Water density (kg/m3) from equation 6 from JonesHarris1992-NIST-DensityWater.pdf
-    float waterDensity =  + 999.84847
-                          + 6.337563e-2 * waterTempertureC
-                          - 8.523829e-3 * pow(waterTempertureC,2)
-                          + 6.943248e-5 * pow(waterTempertureC,3)
-                          - 3.821216e-7 * pow(waterTempertureC,4)
-                          ;
+    float waterDensity = +999.84847 + 6.337563e-2 * waterTempertureC - 8.523829e-3 * pow(waterTempertureC, 2) + 6.943248e-5 * pow(waterTempertureC, 3) - 3.821216e-7 * pow(waterTempertureC, 4);
     // This calculation gives a final result in mm of water
     // from P = rho * g * h
-    float rhoDepth = 1000 * waterPressurePa/(waterDensity * gravitationalConstant);
+    float rhoDepth = 1000 * waterPressurePa / (waterDensity * gravitationalConstant);
     if (calculateWaterPressure() == -9999 || waterTempertureC == -9999)
     {
         rhoDepth = -9999;
@@ -261,11 +256,11 @@ float calculateWaterDepthTempCorrected(void)
     return rhoDepth;
 }
 // Properties of the calculated temperature corrected water depth variable
-const char *rhoDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *rhoDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
+const char* rhoDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char* rhoDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int rhoDepthVarResolution = 3;
-const char *rhoDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
-const char *rhoDepthVarCode = "DensityDepth";
+const char* rhoDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
+const char* rhoDepthVarCode = "DensityDepth";
 // Create the temperature corrected water depth variable objects and return a variable pointer to it
 Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected,
                                        rhoDepthVarResolution,
@@ -296,8 +291,7 @@ Variable *variableList[] = {
     calcRawDepth,
     calcCorrDepth,
     modemRSSI,
-    modemSignalPct
-};
+    modemSignalPct};
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -318,8 +312,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
-const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";    // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
@@ -333,7 +327,8 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-    for (uint8_t i = 0; i < numFlash; i++) {
+    for (uint8_t i = 0; i < numFlash; i++)
+    {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
         delay(rate);
@@ -426,9 +421,9 @@ void setup()
     if (getBatteryVoltage() > 3.4)
     {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true); // true = write a new header
-        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
+        dataLogger.turnOnSDcard(true);   // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
+        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

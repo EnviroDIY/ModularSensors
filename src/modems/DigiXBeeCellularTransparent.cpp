@@ -12,19 +12,22 @@
 #include "LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
-                           int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-                           int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn)
-  : DigiXBee(powerPin, statusPin, useCTSStatus,
-             modemResetPin, modemSleepRqPin),
-    #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-    gsmModem(_modemATDebugger, modemResetPin),
-    #else
-    gsmModem(*modemStream, modemResetPin),
-    #endif
-    gsmClient(gsmModem)
+DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream *modemStream,
+                                                         int8_t powerPin,
+                                                         int8_t statusPin,
+                                                         bool useCTSStatus,
+                                                         int8_t modemResetPin,
+                                                         int8_t modemSleepRqPin,
+                                                         const char *apn)
+    : DigiXBee(powerPin, statusPin, useCTSStatus,
+               modemResetPin, modemSleepRqPin),
+#ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
+      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      gsmModem(_modemATDebugger, modemResetPin),
+#else
+      gsmModem(*modemStream, modemResetPin),
+#endif
+      gsmClient(gsmModem)
 {
     _apn = apn;
 }
@@ -53,7 +56,7 @@ bool DigiXBeeCellularTransparent::modemWakeFxn(void)
         MS_DBG(F("Turning off airplane mode..."));
         if (gsmModem.commandMode())
         {
-            gsmModem.sendAT(GF("AM"),0);
+            gsmModem.sendAT(GF("AM"), 0);
             gsmModem.waitResponse();
             // Write changes to flash and apply them
             gsmModem.writeChanges();
@@ -77,7 +80,7 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void)
         MS_DBG(F("Turning on airplane mode..."));
         if (gsmModem.commandMode())
         {
-            gsmModem.sendAT(GF("AM"),0);
+            gsmModem.sendAT(GF("AM"), 0);
             gsmModem.waitResponse();
             // Write changes to flash and apply them
             gsmModem.writeChanges();
@@ -108,54 +111,54 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        gsmModem.sendAT(GF("D8"),1);
+        gsmModem.sendAT(GF("D8"), 1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on status indication pin - it will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
-        gsmModem.sendAT(GF("D9"),1);
+        gsmModem.sendAT(GF("D9"), 1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-        gsmModem.sendAT(GF("D7"),1);
+        gsmModem.sendAT(GF("D7"), 1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on the associate LED (if you're using a board with one)
         // NOTE:  Only pin 15/DIO5 can be used for this function
-        gsmModem.sendAT(GF("D5"),1);
+        gsmModem.sendAT(GF("D5"), 1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on the RSSI indicator LED (if you're using a board with one)
         // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
-        gsmModem.sendAT(GF("P0"),1);
+        gsmModem.sendAT(GF("P0"), 1);
         success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(GF("SM"),1);
+        gsmModem.sendAT(GF("SM"), 1);
         success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
-        gsmModem.sendAT(GF("SO"),0);
+        gsmModem.sendAT(GF("SO"), 0);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Other Options..."));
         // Disable remote manager, USB Direct, and LTE PSM
         // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
-        gsmModem.sendAT(GF("DO"),0);
+        gsmModem.sendAT(GF("DO"), 0);
         success &= gsmModem.waitResponse() == 1;
         // Ask data to be "packetized" and sent out with every new line (0x0A
         gsmModem.sendAT(GF("TD0A"));
         success &= gsmModem.waitResponse() == 1;
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
-        gsmModem.sendAT(GF("P1"),0);
+        gsmModem.sendAT(GF("P1"), 0);
         success &= gsmModem.waitResponse() == 1;
         // Set the socket timeout to 10s
-        gsmModem.sendAT(GF("TM"),64);
+        gsmModem.sendAT(GF("TM"), 64);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Cellular Carrier Options..."));
         // Carrier Profile - Automatic
-        gsmModem.sendAT(GF("CP"),0);
+        gsmModem.sendAT(GF("CP"), 0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Cellular network technology - LTE-M/NB IoT
-        gsmModem.sendAT(GF("N#"),0);
+        gsmModem.sendAT(GF("N#"), 0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);

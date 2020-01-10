@@ -22,11 +22,11 @@
 // #define MS_YOSEMITECHPARENT_DEBUG_DEEP
 
 #ifdef MS_YOSEMITECHPARENT_DEBUG
-#define MS_DEBUGGING_STD "YosemitechParent"
+    #define MS_DEBUGGING_STD "YosemitechParent"
 #endif
 
 #ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP "YosemitechParent"
+    #define MS_DEBUGGING_DEEP "YosemitechParent"
 #endif
 
 // Included Dependencies
@@ -41,11 +41,11 @@
 class YosemitechParent : public Sensor
 {
 public:
-    YosemitechParent(byte modbusAddress, Stream* stream,
+    YosemitechParent(byte modbusAddress, Stream *stream,
                      int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, const char *sensName = "Yosemitech-Sensor", uint8_t numVariables = 2,
                      uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
-    YosemitechParent(byte modbusAddress, Stream& stream,
+    YosemitechParent(byte modbusAddress, Stream &stream,
                      int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, const char *sensName = "Yosemitech-Sensor", uint8_t numVariables = 2,
                      uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
@@ -67,7 +67,7 @@ private:
     yosemitech sensor;
     yosemitechModel _model;
     byte _modbusAddress;
-    Stream* _stream;
+    Stream *_stream;
     int8_t _RS485EnablePin;
     int8_t _powerPin2;
 };

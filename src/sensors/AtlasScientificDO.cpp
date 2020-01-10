@@ -17,13 +17,13 @@
 // Constructor
 AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
-                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                ATLAS_DO_MEASUREMENT_TIME_MS)
+    : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                  "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                  ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
+                  ATLAS_DO_MEASUREMENT_TIME_MS)
 {}
 // Destructor
-AtlasScientificDO::~AtlasScientificDO(){}
+AtlasScientificDO::~AtlasScientificDO() {}
 
 
 // Setup
@@ -34,7 +34,7 @@ bool AtlasScientificDO::setup()
     // This sensor needs power for setup!
     // We want to turn on all possible measurement parameters
     bool wasOn = checkPowerOn();
-    if (!wasOn) {powerUp();}
+    if (!wasOn) powerUp();
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 concentration"));
@@ -58,7 +58,7 @@ bool AtlasScientificDO::setup()
     }
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) powerDown();
 
     return success;
 }

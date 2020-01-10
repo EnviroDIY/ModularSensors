@@ -16,7 +16,7 @@
 // #define MS_ENVIRODIYPUBLISHER_DEBUG
 
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG
-#define MS_DEBUGGING_STD "EnviroDIYPublisher"
+    #define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
 // Included Dependencies
@@ -33,23 +33,23 @@ class EnviroDIYPublisher : public dataPublisher
 public:
     // Constructors
     EnviroDIYPublisher();
-    EnviroDIYPublisher(Logger& baseLogger,
-                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
-                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    EnviroDIYPublisher(Logger& baseLogger,
-                    const char *registrationToken,
-                    const char *samplingFeatureUUID,
-                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
-                    const char *registrationToken,
-                    const char *samplingFeatureUUID,
-                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger &baseLogger,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger &baseLogger, Client *inClient,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger &baseLogger,
+                       const char *registrationToken,
+                       const char *samplingFeatureUUID,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger &baseLogger, Client *inClient,
+                       const char *registrationToken,
+                       const char *samplingFeatureUUID,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     virtual ~EnviroDIYPublisher();
 
     // Returns the data destination
-    virtual String getEndpoint(void){return String(enviroDIYHost);}
+    virtual String getEndpoint(void) { return String(enviroDIYHost); }
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
@@ -67,12 +67,12 @@ public:
     void printEnviroDIYRequest(Stream *stream);
 
     // A way to begin with everything already set
-    void begin(Logger& baseLogger, Client *inClient,
+    void begin(Logger &baseLogger, Client *inClient,
                const char *registrationToken,
                const char *samplingFeatureUUID);
-    void begin(Logger& baseLogger,
-              const char *registrationToken,
-              const char *samplingFeatureUUID);
+    void begin(Logger &baseLogger,
+               const char *registrationToken,
+               const char *samplingFeatureUUID);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
@@ -82,7 +82,6 @@ public:
     virtual int16_t publishData(Client *_outClient);
 
 protected:
-
     // portions of the POST request
     static const char *postEndpoint;
     static const char *enviroDIYHost;

@@ -11,15 +11,14 @@ bool firstE3 = true;
 bool firstE4 = true;
 
 int i2cStatus = 4;
-const char commands[4]  = "iri";
+const char commands[4] = "iri";
 uint8_t index = 0;
 
 void printTime()
 {
     Serial.print("I2C device replied at address 0x");
-    if (address<16)
-    Serial.print("0");
-    Serial.print(address,HEX);
+    if (address < 16) Serial.print("0");
+    Serial.print(address, HEX);
     Serial.print(" after ");
     Serial.print(millis() - start);
     Serial.print(" ms, code: ");
@@ -32,7 +31,8 @@ void setup()
     Wire.begin();
 
     Serial.begin(115200);
-    while (!Serial);
+    while (!Serial)
+        ;
     Serial.println("I2C Warm Up Timing Test");
 }
 
@@ -74,7 +74,7 @@ void loop()
                 while (true)
                 {
                     Wire.requestFrom(address, 40, true);
-                    uint8_t code=Wire.read();
+                    uint8_t code = Wire.read();
                     if (code == 1)
                     {
                         Serial.print("Result available after ");
@@ -124,6 +124,6 @@ void loop()
     }
 
     Serial.print("Moving to next character - ");
-    index++;  // go to next character
+    index++;                    // go to next character
     if (index == 3) index = 0;  // reset
 }

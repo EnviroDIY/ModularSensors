@@ -33,7 +33,7 @@
 // #define MS_TIINA219_DEBUG
 
 #ifdef MS_TIINA219_DEBUG
-#define MS_DEBUGGING_STD "TIINA219"
+    #define MS_DEBUGGING_STD "TIINA219"
 #endif
 
 // Included Dependencies
@@ -48,8 +48,8 @@
 #define INA219_NUM_VARIABLES 3
 
 #define INA219_WARM_UP_TIME_MS 100
-#define INA219_STABILIZATION_TIME_MS 4000   // 0.5 s for good numbers, but optimal at 4 s based on tests using INA219timingTest.ino
-#define INA219_MEASUREMENT_TIME_MS 1100     // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
+#define INA219_STABILIZATION_TIME_MS 4000  // 0.5 s for good numbers, but optimal at 4 s based on tests using INA219timingTest.ino
+#define INA219_MEASUREMENT_TIME_MS 1100    // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
 
 #define INA219_CURRENT_MA_RESOLUTION 4
 #define INA219_CURRENT_MA_VAR_NUM 0
@@ -73,6 +73,7 @@ public:
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
+
 protected:
     Adafruit_INA219 ina219_phy;
     uint8_t _i2cAddressHex;
@@ -86,16 +87,16 @@ public:
     TIINA219_Current(Sensor *parentSense,
                      const char *uuid = "",
                      const char *varCode = "TIINA219Amp")
-      : Variable(parentSense,
-                 (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                 (uint8_t)INA219_CURRENT_MA_RESOLUTION,
-                 "amp", "mA",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+                   "amp", "mA",
+                   varCode, uuid)
     {}
     TIINA219_Current()
-      : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                 (uint8_t)INA219_CURRENT_MA_RESOLUTION,
-                 "amp", "mA", "TIINA219Amp")
+        : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+                   "amp", "mA", "TIINA219Amp")
     {}
     ~TIINA219_Current(){};
 };
@@ -108,16 +109,16 @@ public:
     TIINA219_Volt(Sensor *parentSense,
                   const char *uuid = "",
                   const char *varCode = "TIINA219Volt")
-      : Variable(parentSense,
-                 (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                 (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
-                 "Volt", "V",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+                   "Volt", "V",
+                   varCode, uuid)
     {}
     TIINA219_Volt()
-      : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                 (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
-                 "Volt", "V", "TIINA219Volt")
+        : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+                   "Volt", "V", "TIINA219Volt")
     {}
     ~TIINA219_Volt(){};
 };
@@ -130,16 +131,16 @@ public:
     TIINA219_Power(Sensor *parentSense,
                    const char *uuid = "",
                    const char *varCode = "TIINA219Power")
-      : Variable(parentSense,
-                 (const uint8_t)INA219_POWER_MW_VAR_NUM,
-                 (uint8_t)INA219_POWER_MW_RESOLUTION,
-                 "milliwatt", "mW",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)INA219_POWER_MW_VAR_NUM,
+                   (uint8_t)INA219_POWER_MW_RESOLUTION,
+                   "milliwatt", "mW",
+                   varCode, uuid)
     {}
     TIINA219_Power()
-      : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,
-                 (uint8_t)INA219_POWER_MW_RESOLUTION,
-                 "milliwatt", "mW", "TIINA219Power")
+        : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,
+                   (uint8_t)INA219_POWER_MW_RESOLUTION,
+                   "milliwatt", "mW", "TIINA219Power")
     {}
 };
 

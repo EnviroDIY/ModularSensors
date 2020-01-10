@@ -17,7 +17,7 @@
 // #define MS_LOGGERMODEM_DEBUG_DEEP
 
 #ifdef MS_LOGGERMODEM_DEBUG
-#define MS_DEBUGGING_STD "LoggerModem"
+    #define MS_DEBUGGING_STD "LoggerModem"
 #endif
 
 // Included Dependencies
@@ -183,7 +183,7 @@ public:
                    &*"RSSI", &*"decibelMiliWatt",
                    varCode, uuid)
     {}
-    ~Modem_RSSI(){}
+    ~Modem_RSSI() {}
 };
 
 
@@ -199,7 +199,7 @@ public:
                    &*"signalPercent", &*"percent",
                    varCode, uuid)
     {}
-    ~Modem_SignalPercent(){}
+    ~Modem_SignalPercent() {}
 };
 
 
@@ -215,7 +215,7 @@ public:
                    &*"batteryChargeState", &*"number",
                    varCode, uuid)
     {}
-    ~Modem_BatteryState(){}
+    ~Modem_BatteryState() {}
 };
 
 
@@ -231,7 +231,7 @@ public:
                    &*"batteryVoltage", &*"percent",
                    varCode, uuid)
     {}
-    ~Modem_BatteryPercent(){}
+    ~Modem_BatteryPercent() {}
 };
 
 
@@ -247,7 +247,7 @@ public:
                    &*"batteryVoltage", &*"millivolt",
                    varCode, uuid)
     {}
-    ~Modem_BatteryVoltage(){}
+    ~Modem_BatteryVoltage() {}
 };
 
 
@@ -263,7 +263,7 @@ public:
                    &*"temperature", &*"degreeCelsius",
                    varCode, uuid)
     {}
-    ~Modem_Temp(){}
+    ~Modem_Temp() {}
 };
 
 

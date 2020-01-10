@@ -33,7 +33,7 @@
 // #define MS_CAMPBELLOBS3_DEBUG
 
 #ifdef MS_CAMPBELLOBS3_DEBUG
-#define MS_DEBUGGING_STD "CampbellOBS3"
+    #define MS_DEBUGGING_STD "CampbellOBS3"
 #endif
 
 // Included Dependencies
@@ -57,16 +57,16 @@
 
 #define OBS3_TURB_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-#define OBS3_RESOLUTION 1
+    #define OBS3_RESOLUTION 1
 #else
-#define OBS3_RESOLUTION 5
+    #define OBS3_RESOLUTION 5
 #endif
 
 #define OBS3_VOLTAGE_VAR_NUM 1
 #ifdef MS_USE_ADS1015
-#define OBS3_VOLT_RESOLUTION 1
+    #define OBS3_VOLT_RESOLUTION 1
 #else
-#define OBS3_VOLT_RESOLUTION 4
+    #define OBS3_VOLT_RESOLUTION 4
 #endif
 
 // The main class for the Campbell OBS3
@@ -101,18 +101,18 @@ public:
     CampbellOBS3_Turbidity(Sensor *parentSense,
                            const char *uuid = "",
                            const char *varCode = "OBS3Turbidity")
-      : Variable(parentSense,
-                 (const uint8_t)OBS3_TURB_VAR_NUM,
-                 (uint8_t)OBS3_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)OBS3_TURB_VAR_NUM,
+                   (uint8_t)OBS3_RESOLUTION,
+                   "turbidity", "nephelometricTurbidityUnit",
+                   varCode, uuid)
     {}
     CampbellOBS3_Turbidity()
-      : Variable((const uint8_t)OBS3_TURB_VAR_NUM,
-                 (uint8_t)OBS3_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity")
+        : Variable((const uint8_t)OBS3_TURB_VAR_NUM,
+                   (uint8_t)OBS3_RESOLUTION,
+                   "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity")
     {}
-    ~CampbellOBS3_Turbidity(){}
+    ~CampbellOBS3_Turbidity() {}
 };
 
 
@@ -124,18 +124,18 @@ public:
     CampbellOBS3_Voltage(Sensor *parentSense,
                          const char *uuid = "",
                          const char *varCode = "OBS3Voltage")
-      : Variable(parentSense,
-                 (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
-                 (uint8_t)OBS3_VOLT_RESOLUTION,
-                 "voltage", "volt",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                   (uint8_t)OBS3_VOLT_RESOLUTION,
+                   "voltage", "volt",
+                   varCode, uuid)
     {}
     CampbellOBS3_Voltage()
-      : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
-                 (uint8_t)OBS3_VOLT_RESOLUTION,
-                 "voltage", "volt", "OBS3Voltage")
+        : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                   (uint8_t)OBS3_VOLT_RESOLUTION,
+                   "voltage", "volt", "OBS3Voltage")
     {}
-    ~CampbellOBS3_Voltage(){}
+    ~CampbellOBS3_Voltage() {}
 };
 
 #endif  // Header Guard

@@ -58,25 +58,23 @@
 class ZebraTechDOpto : public SDI12Sensors
 {
 public:
-
     // Constructors with overloads
     ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
-                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
     {}
     ZebraTechDOpto(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
-                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
     {}
     ZebraTechDOpto(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
-                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
     {}
-    ~ZebraTechDOpto(){}
-
+    ~ZebraTechDOpto() {}
 };
 
 
@@ -87,18 +85,18 @@ public:
     ZebraTechDOpto_Temp(Sensor *parentSense,
                         const char *uuid = "",
                         const char *varCode = "DOtempC")
-      : Variable(parentSense,
-                 (const uint8_t)DOPTO_TEMP_VAR_NUM,
-                 (uint8_t)DOPTO_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)DOPTO_TEMP_VAR_NUM,
+                   (uint8_t)DOPTO_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     ZebraTechDOpto_Temp()
-      : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
-                 (uint8_t)DOPTO_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "DOtempC")
+        : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
+                   (uint8_t)DOPTO_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "DOtempC")
     {}
-    ~ZebraTechDOpto_Temp(){}
+    ~ZebraTechDOpto_Temp() {}
 };
 
 
@@ -109,18 +107,18 @@ public:
     ZebraTechDOpto_DOpct(Sensor *parentSense,
                          const char *uuid = "",
                          const char *varCode = "DOpercent")
-      : Variable(parentSense,
-                 (const uint8_t)DOPTO_DOPCT_VAR_NUM,
-                 (uint8_t)DOPTO_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)DOPTO_DOPCT_VAR_NUM,
+                   (uint8_t)DOPTO_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent",
+                   varCode, uuid)
     {}
     ZebraTechDOpto_DOpct()
-      : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
-                 (uint8_t)DOPTO_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent", "DOpercent")
+        : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
+                   (uint8_t)DOPTO_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent", "DOpercent")
     {}
-    ~ZebraTechDOpto_DOpct(){}
+    ~ZebraTechDOpto_DOpct() {}
 };
 
 
@@ -131,18 +129,18 @@ public:
     ZebraTechDOpto_DOmgL(Sensor *parentSense,
                          const char *uuid = "",
                          const char *varCode = "DOppm")
-      : Variable(parentSense,
-                 (const uint8_t)DOPTO_DOMGL_VAR_NUM,
-                 (uint8_t)DOPTO_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)DOPTO_DOMGL_VAR_NUM,
+                   (uint8_t)DOPTO_DOMGL_RESOLUTION,
+                   "oxygenDissolved", "milligramPerLiter",
+                   varCode, uuid)
     {}
     ZebraTechDOpto_DOmgL()
-      : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
-                 (uint8_t)DOPTO_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter", "DOppm")
+        : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
+                   (uint8_t)DOPTO_DOMGL_RESOLUTION,
+                   "oxygenDissolved", "milligramPerLiter", "DOppm")
     {}
-    ~ZebraTechDOpto_DOmgL(){}
+    ~ZebraTechDOpto_DOmgL() {}
 };
 
 #endif  // Header Guard

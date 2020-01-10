@@ -13,42 +13,42 @@
 
 // Constructor
 #if F_CPU == 8000000L
-SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
+SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial *modemStream,
                                int8_t powerPin, int8_t statusPin,
                                int8_t modemResetPin, int8_t modemSleepRqPin,
                                const char *apn)
-  : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin, false,
-                R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
-                R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS),
+    : loggerModem(powerPin, statusPin, HIGH,
+                  modemResetPin, modemSleepRqPin, false,
+                  R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
+                  R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS),
     #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-    gsmModem(_modemATDebugger),
+      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      gsmModem(_modemATDebugger),
     #else
-    gsmModem(*modemStream),
+      gsmModem(*modemStream),
     #endif
-    gsmClient(gsmModem)
+      gsmClient(gsmModem)
 {
     _apn = apn;
 
     _modemSerial = modemStream;
 }
 #else
-SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
+SodaqUBeeR410M::SodaqUBeeR410M(Stream *modemStream,
                                int8_t powerPin, int8_t statusPin,
                                int8_t modemResetPin, int8_t modemSleepRqPin,
                                const char *apn)
-  : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin, false,
-                R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
-                R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS),
+    : loggerModem(powerPin, statusPin, HIGH,
+                  modemResetPin, modemSleepRqPin, false,
+                  R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
+                  R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS),
     #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-    gsmModem(_modemATDebugger),
+      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      gsmModem(_modemATDebugger),
     #else
-    gsmModem(*modemStream),
+      gsmModem(*modemStream),
     #endif
-    gsmClient(gsmModem)
+      gsmClient(gsmModem)
 {
     _apn = apn;
 }
@@ -110,10 +110,10 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
         }
 
         digitalWrite(_modemSleepRqPin, HIGH);
-        // Need to slow down R4/N4's default 115200 baud rate for slow processors
-        // The baud rate setting is NOT saved to non-volatile memory, so it must
-        // be changed every time after loosing power.
-        #if F_CPU == 8000000L
+// Need to slow down R4/N4's default 115200 baud rate for slow processors
+// The baud rate setting is NOT saved to non-volatile memory, so it must
+// be changed every time after loosing power.
+#if F_CPU == 8000000L
         if (_powerPin >= 0)
         {
             MS_DBG(F("Waiting for UART to become active and requesting a slower baud rate."));
@@ -123,7 +123,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
             _modemSerial->end();
             _modemSerial->begin(9600);
         }
-        #endif
+#endif
         return true;
     }
     else
@@ -135,7 +135,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
 
 bool SodaqUBeeR410M::modemSleepFxn(void)
 {
-    if (_modemSleepRqPin >= 0) // R410 must have access to PWR_ON pin to sleep
+    if (_modemSleepRqPin >= 0)  // R410 must have access to PWR_ON pin to sleep
     {
         // Easiest to just go to sleep with the AT command rather than using pins
         MS_DBG(F("Asking u-blox R410M to power down"));
@@ -158,7 +158,7 @@ bool SodaqUBeeR410M::modemHardReset(void)
         digitalWrite(_modemResetPin, HIGH);
 #if F_CPU == 8000000L
         MS_DBG(F("Waiting for UART to become active and requesting a slower baud rate."));
-        delay(R410M_ATRESPONSE_TIME_MS + 250); // Must wait for UART port to become active
+        delay(R410M_ATRESPONSE_TIME_MS + 250);  // Must wait for UART port to become active
         _modemSerial->begin(115200);
         gsmModem.setBaud(9600);
         _modemSerial->end();

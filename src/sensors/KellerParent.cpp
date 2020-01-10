@@ -18,10 +18,10 @@
 #include "KellerParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
-KellerParent::KellerParent(byte modbusAddress, Stream* stream,
-               int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-               kellerModel model, const char *sensName, uint8_t numVariables,
-               uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
+KellerParent::KellerParent(byte modbusAddress, Stream *stream,
+                           int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
+                           kellerModel model, const char *sensName, uint8_t numVariables,
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
@@ -32,10 +32,10 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream,
     _RS485EnablePin = enablePin;
     _powerPin2 = powerPin2;
 }
-KellerParent::KellerParent(byte modbusAddress, Stream& stream,
-               int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-               kellerModel model, const char *sensName, uint8_t numVariables,
-               uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
+KellerParent::KellerParent(byte modbusAddress, Stream &stream,
+                           int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
+                           kellerModel model, const char *sensName, uint8_t numVariables,
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
@@ -47,14 +47,14 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream,
     _powerPin2 = powerPin2;
 }
 // Destructor
-KellerParent::~KellerParent(){}
+KellerParent::~KellerParent() {}
 
 
 // The sensor installation location on the Mayfly
 String KellerParent::getSensorLocation(void)
 {
     String sensorLocation = F("modbus_0x");
-    if (_modbusAddress< 16) sensorLocation += "0";
+    if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
     return sensorLocation;
 }
@@ -66,9 +66,9 @@ bool KellerParent::setup(void)
     if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
-    #ifdef MS_KELLERPARENT_DEBUG_DEEP
-        sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
-    #endif
+#ifdef MS_KELLERPARENT_DEBUG_DEEP
+    sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+#endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power required
     // This realy can't fail so adding the return value is just for show
@@ -164,7 +164,10 @@ bool KellerParent::addSingleMeasurementResult(void)
         if (!success or isnan(waterDepthM)) waterDepthM = -9999;
 
         // For waterPressureBar, convert bar to millibar
-        if (waterPressureBar != -9999) waterPressure_mBar = 1000*waterPressureBar;
+        if (waterPressureBar != -9999)
+        {
+            waterPressure_mBar = 1000 * waterPressureBar;
+        }
 
         MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
         MS_DBG(F("  Temp_C:"), waterTempertureC);

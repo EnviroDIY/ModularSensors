@@ -21,12 +21,12 @@
 AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage,
                          const char *sensorName, const uint8_t numReturnedVars,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
-  : Sensor(sensorName, numReturnedVars,
-           warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-           powerPin, -1, measurementsToAverage),
-    _i2cAddressHex(i2cAddressHex)
+    : Sensor(sensorName, numReturnedVars,
+             warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
+             powerPin, -1, measurementsToAverage),
+      _i2cAddressHex(i2cAddressHex)
 {}
-AtlasParent::~AtlasParent(){}
+AtlasParent::~AtlasParent() {}
 
 
 String AtlasParent::getSensorLocation(void)
@@ -56,7 +56,7 @@ bool AtlasParent::setup(void)
 // The Atlas sensors must be told to sleep
 bool AtlasParent::sleep(void)
 {
-    if (!checkPowerOn()) {return true;}
+    if (!checkPowerOn()) return true;
     if (_millisSensorActivated == 0)
     {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
@@ -138,7 +138,7 @@ bool AtlasParent::addSingleMeasurementResult(void)
         // call the circuit and request 40 bytes (this may be more than we need)
         Wire.requestFrom(_i2cAddressHex, 40, 1);
         // the first byte is the response code, we read this separately.
-        uint8_t code=Wire.read();
+        uint8_t code = Wire.read();
 
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         // Parse the response code
@@ -147,19 +147,19 @@ bool AtlasParent::addSingleMeasurementResult(void)
             case 1:  // the command was successful.
                 MS_DBG(F("  Measurement successful"));
                 success = true;
-            break;
+                break;
 
-            case 2:   // the command has failed.
+            case 2:  // the command has failed.
                 MS_DBG(F("  Measurement Failed"));
-            break;
+                break;
 
             case 254:  // the command has not yet been finished calculating.
                 MS_DBG(F("  Measurement Pending"));
-            break;
+                break;
 
             case 255:  // there is no further data to send.
                 MS_DBG(F("  No Data"));
-            break;
+                break;
         }
         // If the response code is successful, parse the remaining results
         if (success)
@@ -179,10 +179,10 @@ bool AtlasParent::addSingleMeasurementResult(void)
         // If there's no measurement, need to make sure we send over all
         // of the "failed" result values
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-       for (uint8_t i = 0; i < _numReturnedVars; i++)
-       {
-           verifyAndAddMeasurementResult(i, (float)-9999);
-       }
+        for (uint8_t i = 0; i < _numReturnedVars; i++)
+        {
+            verifyAndAddMeasurementResult(i, (float)-9999);
+        }
     }
 
     // Unset the time stamp for the beginning of this measurement
@@ -206,7 +206,7 @@ bool AtlasParent::waitForProcessing(uint32_t timeout)
     while (!processed && millis() - start < timeout)
     {
         Wire.requestFrom(_i2cAddressHex, 1, 1);
-        uint8_t code=Wire.read();
+        uint8_t code = Wire.read();
         if (code == 1) processed = true;
     }
     return processed;

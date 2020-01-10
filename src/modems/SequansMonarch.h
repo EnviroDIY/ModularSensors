@@ -17,13 +17,13 @@
 // #define MS_SEQUANSMONARCH_DEBUG_DEEP
 
 #ifdef MS_SEQUANSMONARCH_DEBUG
-#define MS_DEBUGGING_STD "SequansMonarch"
+    #define MS_DEBUGGING_STD "SequansMonarch"
 #endif
 
 #define TINY_GSM_MODEM_SEQUANS_MONARCH
 #define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 
 // ?? Undocumented
@@ -43,7 +43,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 
@@ -52,7 +52,7 @@ class SequansMonarch : public loggerModem
 
 public:
     // Constructor/Destructor
-    SequansMonarch(Stream* modemStream,
+    SequansMonarch(Stream *modemStream,
                    int8_t powerPin, int8_t statusPin,
                    int8_t modemResetPin, int8_t modemSleepRqPin,
                    const char *apn);
@@ -85,7 +85,6 @@ protected:
 
 private:
     const char *_apn;
-
 };
 
 #endif  // Header Guard

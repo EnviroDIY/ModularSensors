@@ -21,32 +21,32 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
+    #define TINY_GSM_YIELD_MS 2
 #endif
 #ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
+    #define MQTT_MAX_PACKET_SIZE 240
 #endif
 
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
+#include <Arduino.h>          // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>  // The modular sensors library
+#include <LoggerBase.h>       // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.17";
+const char* libraryVersion = "0.23.17";
 // The name of this file
-const char *sketchName = "logging_to_ThingSpeak.ino";
+const char* sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -59,19 +59,19 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
-const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;       // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;         // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;     // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;       // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char* mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 
@@ -80,7 +80,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // ==========================================================================
 
 // Create a reference to the serial port for the modem
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
@@ -90,8 +90,8 @@ const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *wifiId = "xxxxx";  // The WiFi access point
-const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi
+const char* wifiId = "xxxxx";   // The WiFi access point
+const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
 
 // For almost anything based on the Espressif ESP8266 using the AT command firmware
 #include <modems/EspressifESP8266.h>
@@ -102,13 +102,13 @@ const long modemBaud = 115200;  // Communication speed of the modem
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
 const int8_t espSleepRqPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
-const int8_t espStatusPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
+const int8_t espStatusPin = -1;   // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
 EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin,
                           wifiId, wifiPwd,
                           espSleepRqPin, espStatusPin  // Optional arguments
-                         );
+);
 // Create an extra reference to the modem by a generic name (not necessary)
 EspressifESP8266 modem = modemESP;
 
@@ -132,9 +132,9 @@ const uint8_t OBS3NumberReadings = 10;
 const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
 const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
-const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+const float OBSLow_A = 0.000E+00;   // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 1.000E+00;   // The "B" value (X) from the low range calibration
+const float OBSLow_C = 0.000E+00;   // The "C" value from the low range calibration
 
 // Create a Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3NumberReadings);
@@ -142,9 +142,9 @@ CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, 
 
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range output
-const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+const float OBSHigh_A = 0.000E+00;   // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 1.000E+00;   // The "B" value (X) from the high range calibration
+const float OBSHigh_C = 0.000E+00;   // The "C" value from the high range calibration
 
 // Create a Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
@@ -155,10 +155,10 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHig
 // ==========================================================================
 #include <sensors/DecagonCTD.h>
 
-const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;  // The number of readings to average
+const char* CTDSDI12address = "1";         // The SDI-12 Address of the CTD
+const uint8_t CTDNumberReadings = 6;       // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SDI12Data = 7;  // The SDI12 data pin
+const int8_t SDI12Data = 7;                // The SDI12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
@@ -176,8 +176,7 @@ Variable *variableList[] = {
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh"),
     new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab")
-};
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab")};
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -201,9 +200,9 @@ Logger dataLogger;
 // Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond the
 // eighth in the array will be ignored.
-const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
-const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
-const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+const char* thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";     // Your MQTT API Key from Account > MyProfile.
+const char* thingSpeakChannelID = "######";             // The numeric channel id for your channel
+const char* thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
@@ -217,7 +216,8 @@ ThingSpeakPublisher TsMqtt;
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-    for (uint8_t i = 0; i < numFlash; i++) {
+    for (uint8_t i = 0; i < numFlash; i++)
+    {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
         delay(rate);
@@ -312,9 +312,9 @@ void setup()
     if (getBatteryVoltage() > 3.4)
     {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true); // true = write a new header
-        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
+        dataLogger.turnOnSDcard(true);   // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
+        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

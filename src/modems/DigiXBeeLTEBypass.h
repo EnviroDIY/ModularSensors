@@ -16,14 +16,14 @@
 // #define MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG
-#define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
+    #define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
 
 #define TINY_GSM_MODEM_SARAR4
 #define MS_MODEM_HAS_BATTERY_DATA
 #define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Included Dependencies
@@ -33,7 +33,7 @@
 #include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 class DigiXBeeLTEBypass : public DigiXBee
@@ -41,10 +41,10 @@ class DigiXBeeLTEBypass : public DigiXBee
 
 public:
     // Constructor/Destructor
-    DigiXBeeLTEBypass(Stream* modemStream,
-                           int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-                           int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn);
+    DigiXBeeLTEBypass(Stream *modemStream,
+                      int8_t powerPin, int8_t statusPin, bool useCTSStatus,
+                      int8_t modemResetPin, int8_t modemSleepRqPin,
+                      const char *apn);
     ~DigiXBeeLTEBypass();
 
     bool modemSetup(void) override;
@@ -72,7 +72,6 @@ protected:
 
 private:
     const char *_apn;
-
 };
 
 #endif  // Header Guard

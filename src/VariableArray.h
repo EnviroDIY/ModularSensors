@@ -16,11 +16,11 @@
 // #define MS_VARIABLEARRAY_DEBUG_DEEP
 
 #ifdef MS_VARIABLEARRAY_DEBUG
-#define MS_DEBUGGING_STD "VariableArray"
+    #define MS_DEBUGGING_STD "VariableArray"
 #endif
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP "VariableArray"
+    #define MS_DEBUGGING_DEEP "VariableArray"
 #endif
 
 // Included Dependencies
@@ -57,7 +57,7 @@ public:
     // Functions to return information about the list
 
     // This just returns the number of variables (as input in the constructor)
-    uint8_t getVariableCount(void){return _variableCount;}
+    uint8_t getVariableCount(void) { return _variableCount; }
 
     // This counts and returns the number of calculated variables
     uint8_t getCalculatedVariableCount(void);
@@ -104,7 +104,7 @@ private:
     bool checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    template<typename T>
+    template <typename T>
     void prettyPrintArray(T arrayToPrint[])
     {
         DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
@@ -118,7 +118,6 @@ private:
 #else
     #define prettyPrintArray(...)
 #endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
-
 };
 
 #endif  // Header Guard

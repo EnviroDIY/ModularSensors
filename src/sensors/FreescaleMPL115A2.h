@@ -29,7 +29,7 @@
 // #define MS_FREESCALEMPL115A2_DEBUG
 
 #ifdef MS_FREESCALEMPL115A2_DEBUG
-#define MS_DEBUGGING_STD "FreescaleMPL115A2"
+    #define MS_DEBUGGING_STD "FreescaleMPL115A2"
 #endif
 
 // Included Dependencies
@@ -63,6 +63,7 @@ public:
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
+
 protected:
     Adafruit_MPL115A2 mpl115a2_internal;
     uint8_t _i2cAddressHex;
@@ -76,18 +77,18 @@ public:
     MPL115A2_Temp(Sensor *parentSense,
                   const char *uuid = "",
                   const char *varCode = "MPL115A2_Temp")
-      : Variable(parentSense,
-                 (const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                 (uint8_t)MPL115A2_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)MPL115A2_TEMP_VAR_NUM,
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     MPL115A2_Temp()
-      : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                 (uint8_t)MPL115A2_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "MPL115A2_Temp")
+        : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "MPL115A2_Temp")
     {}
-    ~MPL115A2_Temp(){}
+    ~MPL115A2_Temp() {}
 };
 
 
@@ -98,18 +99,18 @@ public:
     MPL115A2_Pressure(Sensor *parentSense,
                       const char *uuid = "",
                       const char *varCode = "MPL115A2_Pressure")
-      : Variable(parentSense,
-                 (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                 (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
-                 "atmosphericPressure", "kilopascal",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                   "atmosphericPressure", "kilopascal",
+                   varCode, uuid)
     {}
     MPL115A2_Pressure()
-      : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                 (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
-                 "atmosphericPressure", "kilopascal", "MPL115A2_Pressure")
+        : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                   "atmosphericPressure", "kilopascal", "MPL115A2_Pressure")
     {}
-    ~MPL115A2_Pressure(){}
+    ~MPL115A2_Pressure() {}
 };
 
 

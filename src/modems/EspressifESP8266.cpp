@@ -14,22 +14,22 @@
 #include "LoggerModemMacros.h"
 
 // Constructor
-EspressifESP8266::EspressifESP8266(Stream* modemStream,
+EspressifESP8266::EspressifESP8266(Stream *modemStream,
                                    int8_t powerPin, int8_t statusPin,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char *ssid, const char *pwd,
                                    int8_t espSleepRqPin, int8_t espStatusPin)
-  : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin, true,
-                ESP8266_STATUS_TIME_MS, ESP8266_DISCONNECT_TIME_MS,
-                ESP8266_WARM_UP_TIME_MS, ESP8266_ATRESPONSE_TIME_MS),
-    #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-    gsmModem(_modemATDebugger),
-    #else
-    gsmModem(*modemStream),
-    #endif
-    gsmClient(gsmModem)
+    : loggerModem(powerPin, statusPin, HIGH,
+                  modemResetPin, modemSleepRqPin, true,
+                  ESP8266_STATUS_TIME_MS, ESP8266_DISCONNECT_TIME_MS,
+                  ESP8266_WARM_UP_TIME_MS, ESP8266_ATRESPONSE_TIME_MS),
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      gsmModem(_modemATDebugger),
+#else
+      gsmModem(*modemStream),
+#endif
+      gsmClient(gsmModem)
 {
     _ssid = ssid;
     _pwd = pwd;
@@ -169,7 +169,7 @@ bool EspressifESP8266::modemSleepFxn(void)
         digitalWrite(_modemSleepRqPin, HIGH);
         MS_DBG(F("Requesting light sleep for ESP8266 with status indication"));
         gsmModem.sendAT(GF("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
-                          String(_espStatusPin), ',', _statusLevel);
+                        String(_espStatusPin), ',', _statusLevel);
         bool success = gsmModem.waitResponse() == 1;
         gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;

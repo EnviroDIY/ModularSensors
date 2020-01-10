@@ -16,14 +16,14 @@
 // #define MS_DIGIXBEEWIFI_DEBUG_DEEP
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG
-#define MS_DEBUGGING_STD "DigiXBeeWifi"
+    #define MS_DEBUGGING_STD "DigiXBeeWifi"
 #endif
 
 #define TINY_GSM_MODEM_XBEE
 #define MS_MODEM_HAS_BATTERY_DATA
 #define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Included Dependencies
@@ -33,7 +33,7 @@
 #include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 class DigiXBeeWifi : public DigiXBee
@@ -41,7 +41,7 @@ class DigiXBeeWifi : public DigiXBee
 
 public:
     // Constructor/Destructor
-    DigiXBeeWifi(Stream* modemStream,
+    DigiXBeeWifi(Stream *modemStream,
                  int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                  int8_t modemResetPin, int8_t modemSleepRqPin,
                  const char *ssid, const char *pwd);
@@ -61,9 +61,9 @@ public:
 
     bool updateModemMetadata(void);
 
-    #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
+#ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
@@ -75,7 +75,6 @@ protected:
 private:
     const char *_ssid;
     const char *_pwd;
-
 };
 
 #endif  // Header Guard

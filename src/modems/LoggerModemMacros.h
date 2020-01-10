@@ -210,89 +210,89 @@
     }
 
 #if defined TINY_GSM_MODEM_HAS_GPRS
-#define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
-    bool specificModem::isInternetAvailable(void)     \
-    {                                                 \
-        return gsmModem.isGprsConnected();            \
-    }
+    #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
+        bool specificModem::isInternetAvailable(void)     \
+        {                                                 \
+            return gsmModem.isGprsConnected();            \
+        }
 
-#ifndef TINY_GSM_MODEM_XBEE
-#define MS_MODEM_SET_APN                                    \
-    MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
-           F("milliseconds.  Connecting to GPRS..."));      \
-    gsmModem.gprsConnect(_apn, "", "");
-#else  // #ifndef TINY_GSM_MODEM_XBEE
-#define MS_MODEM_SET_APN
-#endif  // #ifndef TINY_GSM_MODEM_XBEE
+    #ifndef TINY_GSM_MODEM_XBEE
+        #define MS_MODEM_SET_APN                                    \
+            MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
+                   F("milliseconds.  Connecting to GPRS..."));      \
+            gsmModem.gprsConnect(_apn, "", "");
+    #else  // #ifndef TINY_GSM_MODEM_XBEE
+        #define MS_MODEM_SET_APN
+    #endif  // #ifndef TINY_GSM_MODEM_XBEE
 
-#define MS_MODEM_CONNECT_INTERNET(specificModem)                    \
-    bool specificModem::connectInternet(uint32_t maxConnectionTime) \
-    {                                                               \
-        MS_START_DEBUG_TIMER                                        \
-        MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,      \
-               F("seconds for cellular network registration..."));  \
-        if (gsmModem.waitForNetwork(maxConnectionTime))             \
-        {                                                           \
-            MS_MODEM_SET_APN                                        \
-            MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,  \
-                   F("milliseconds."));                             \
-            return true;                                            \
-        }                                                           \
-        else                                                        \
-        {                                                           \
-            MS_DBG(F("...GPRS connection failed."));                \
-            return false;                                           \
-        }                                                           \
-    }
+    #define MS_MODEM_CONNECT_INTERNET(specificModem)                    \
+        bool specificModem::connectInternet(uint32_t maxConnectionTime) \
+        {                                                               \
+            MS_START_DEBUG_TIMER                                        \
+            MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,      \
+                   F("seconds for cellular network registration..."));  \
+            if (gsmModem.waitForNetwork(maxConnectionTime))             \
+            {                                                           \
+                MS_MODEM_SET_APN                                        \
+                MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,  \
+                       F("milliseconds."));                             \
+                return true;                                            \
+            }                                                           \
+            else                                                        \
+            {                                                           \
+                MS_DBG(F("...GPRS connection failed."));                \
+                return false;                                           \
+            }                                                           \
+        }
 
-#define MS_MODEM_DISCONNECT_INTERNET(specificModem)                                 \
-    void specificModem::disconnectInternet(void)                                    \
-    {                                                                               \
-        MS_START_DEBUG_TIMER;                                                       \
-        gsmModem.gprsDisconnect();                                                  \
-        MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER, \
-               F("milliseconds."));                                                 \
-    }
+    #define MS_MODEM_DISCONNECT_INTERNET(specificModem)                                 \
+        void specificModem::disconnectInternet(void)                                    \
+        {                                                                               \
+            MS_START_DEBUG_TIMER;                                                       \
+            gsmModem.gprsDisconnect();                                                  \
+            MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER, \
+                   F("milliseconds."));                                                 \
+        }
 
 #else  // from #if defined TINY_GSM_MODEM_HAS_GPRS (ie, this is wifi)
-#define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
-    bool specificModem::isInternetAvailable(void)     \
-    {                                                 \
-        return gsmModem.isNetworkConnected();         \
-    }
+    #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
+        bool specificModem::isInternetAvailable(void)     \
+        {                                                 \
+            return gsmModem.isNetworkConnected();         \
+        }
 
-#define MS_MODEM_CONNECT_INTERNET(specificModem)                    \
-    bool specificModem::connectInternet(uint32_t maxConnectionTime) \
-    {                                                               \
-        MS_START_DEBUG_TIMER                                        \
-        MS_DBG(F("\nAttempting to connect to WiFi network..."));    \
-        if (!(gsmModem.isNetworkConnected()))                       \
-        {                                                           \
-            MS_DBG(F("Sending credentials..."));                    \
-            while (!gsmModem.networkConnect(_ssid, _pwd))           \
-            {                                                       \
-            };                                                      \
-            MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,    \
-                   F("seconds for connection"));                    \
-            if (!gsmModem.waitForNetwork(maxConnectionTime))        \
-            {                                                       \
-                MS_DBG(F("... WiFi connection failed"));            \
-                return false;                                       \
-            }                                                       \
-        }                                                           \
-        MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER, \
-               F("milliseconds!"));                                 \
-        return true;                                                \
-    }
+    #define MS_MODEM_CONNECT_INTERNET(specificModem)                    \
+        bool specificModem::connectInternet(uint32_t maxConnectionTime) \
+        {                                                               \
+            MS_START_DEBUG_TIMER                                        \
+            MS_DBG(F("\nAttempting to connect to WiFi network..."));    \
+            if (!(gsmModem.isNetworkConnected()))                       \
+            {                                                           \
+                MS_DBG(F("Sending credentials..."));                    \
+                while (!gsmModem.networkConnect(_ssid, _pwd))           \
+                {                                                       \
+                };                                                      \
+                MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,    \
+                       F("seconds for connection"));                    \
+                if (!gsmModem.waitForNetwork(maxConnectionTime))        \
+                {                                                       \
+                    MS_DBG(F("... WiFi connection failed"));            \
+                    return false;                                       \
+                }                                                       \
+            }                                                           \
+            MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER, \
+                   F("milliseconds!"));                                 \
+            return true;                                                \
+        }
 
-#define MS_MODEM_DISCONNECT_INTERNET(specificModem)                             \
-    void specificModem::disconnectInternet(void)                                \
-    {                                                                           \
-        MS_START_DEBUG_TIMER;                                                   \
-        gsmModem.networkDisconnect();                                           \
-        MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER, \
-               F("milliseconds."));                                             \
-    }
+    #define MS_MODEM_DISCONNECT_INTERNET(specificModem)                             \
+        void specificModem::disconnectInternet(void)                                \
+        {                                                                           \
+            MS_START_DEBUG_TIMER;                                                   \
+            gsmModem.networkDisconnect();                                           \
+            MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER, \
+                   F("milliseconds."));                                             \
+        }
 #endif  // #if defined TINY_GSM_MODEM_HAS_GPRS
 
 // Get the time from NIST via TIME protocol (rfc868)
@@ -355,17 +355,17 @@
     }
 
 #if defined TINY_GSM_MODEM_XBEE || defined TINY_GSM_MODEM_ESP8266
-#define MS_MODEM_CALC_SIGNAL_QUALITY                            \
-    rssi = signalQual;                                          \
-    MS_DBG(F("Raw signal is already in units of RSSI:"), rssi); \
-    percent = getPctFromRSSI(signalQual);                       \
-    MS_DBG(F("Signal percent calcuated from RSSI:"), percent);
+    #define MS_MODEM_CALC_SIGNAL_QUALITY                            \
+        rssi = signalQual;                                          \
+        MS_DBG(F("Raw signal is already in units of RSSI:"), rssi); \
+        percent = getPctFromRSSI(signalQual);                       \
+        MS_DBG(F("Signal percent calcuated from RSSI:"), percent);
 #else
-#define MS_MODEM_CALC_SIGNAL_QUALITY                          \
-    rssi = getRSSIFromCSQ(signalQual);                        \
-    MS_DBG(F("RSSI Estimated from CSQ:"), rssi);              \
-    percent = getPctFromCSQ(signalQual);                      \
-    MS_DBG(F("Signal percent calcuated from CSQ:"), percent);
+    #define MS_MODEM_CALC_SIGNAL_QUALITY             \
+        rssi = getRSSIFromCSQ(signalQual);           \
+        MS_DBG(F("RSSI Estimated from CSQ:"), rssi); \
+        percent = getPctFromCSQ(signalQual);         \
+        MS_DBG(F("Signal percent calcuated from CSQ:"), percent);
 #endif
 
 #define MS_MODEM_GET_MODEM_SIGNAL_QUALITY(specificModem)                               \
@@ -387,43 +387,43 @@
     }
 
 #ifdef MS_MODEM_HAS_BATTERY_DATA
-#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                                                    \
-    bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
-    {                                                                                                     \
-        MS_DBG(F("Getting modem battery data:"));                                                         \
-        return gsmModem.getBattStats(chargeState, percent, milliVolts);                                   \
-    }
+    #define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                                                    \
+        bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
+        {                                                                                                     \
+            MS_DBG(F("Getting modem battery data:"));                                                         \
+            return gsmModem.getBattStats(chargeState, percent, milliVolts);                                   \
+        }
 
 #else
-#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                                                    \
-    bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
-    {                                                                                                     \
-        MS_DBG(F("This modem doesn't return battery information!"));                                      \
-        chargeState = 99;                                                                                 \
-        percent = -99;                                                                                    \
-        milliVolts = 9999;                                                                                \
-        return false;                                                                                     \
-    }
+    #define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                                                    \
+        bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
+        {                                                                                                     \
+            MS_DBG(F("This modem doesn't return battery information!"));                                      \
+            chargeState = 99;                                                                                 \
+            percent = -99;                                                                                    \
+            milliVolts = 9999;                                                                                \
+            return false;                                                                                     \
+        }
 #endif
 
 #ifdef MS_MODEM_HAS_TEMPERATURE_DATA
-#define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem) \
-    float specificModem::getModemChipTemperature(void)     \
-    {                                                      \
-        MS_DBG(F("Getting temperature:"));                 \
-        float temp = gsmModem.getTemperature();            \
-        MS_DBG(F("Temperature:"), temp);                   \
-                                                           \
-        return temp;                                       \
-    }
+    #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem) \
+        float specificModem::getModemChipTemperature(void)     \
+        {                                                      \
+            MS_DBG(F("Getting temperature:"));                 \
+            float temp = gsmModem.getTemperature();            \
+            MS_DBG(F("Temperature:"), temp);                   \
+                                                               \
+            return temp;                                       \
+        }
 
 #else
-#define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem)   \
-    float specificModem::getModemChipTemperature(void)       \
-    {                                                        \
-        MS_DBG(F("This modem doesn't return temperature!")); \
-        return (float)-9999;                                 \
-    }
+    #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem)   \
+        float specificModem::getModemChipTemperature(void)       \
+        {                                                        \
+            MS_DBG(F("This modem doesn't return temperature!")); \
+            return (float)-9999;                                 \
+        }
 #endif
 
 #endif

@@ -49,7 +49,7 @@
 // #define MS_MEASSPECMS5803_DEBUG
 
 #ifdef MS_MEASSPECMS5803_DEBUG
-#define MS_DEBUGGING_STD "MeaSpecMS5803"
+    #define MS_DEBUGGING_STD "MeaSpecMS5803"
 #endif
 
 // Included Dependencies
@@ -84,6 +84,7 @@ public:
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
+
 protected:
     MS5803 MS5803_internal;
     uint8_t _i2cAddressHex;
@@ -98,18 +99,18 @@ public:
     MeaSpecMS5803_Temp(Sensor *parentSense,
                        const char *uuid = "",
                        const char *varCode = "MeaSpecMS5803Temp")
-      : Variable(parentSense,
-                 (const uint8_t)MS5803_TEMP_VAR_NUM,
-                 (uint8_t)MS5803_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)MS5803_TEMP_VAR_NUM,
+                   (uint8_t)MS5803_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     MeaSpecMS5803_Temp()
-      : Variable((const uint8_t)MS5803_TEMP_VAR_NUM,
-                 (uint8_t)MS5803_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "MeaSpecMS5803Temp")
+        : Variable((const uint8_t)MS5803_TEMP_VAR_NUM,
+                   (uint8_t)MS5803_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "MeaSpecMS5803Temp")
     {}
-    ~MeaSpecMS5803_Temp(){}
+    ~MeaSpecMS5803_Temp() {}
 };
 
 
@@ -120,18 +121,18 @@ public:
     MeaSpecMS5803_Pressure(Sensor *parentSense,
                            const char *uuid = "",
                            const char *varCode = "MeaSpecMS5803Pressure")
-      : Variable(parentSense,
-                 (const uint8_t)MS5803_PRESSURE_VAR_NUM,
-                 (uint8_t)MS5803_PRESSURE_RESOLUTION,
-                 "barometricPressure", "millibar",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)MS5803_PRESSURE_VAR_NUM,
+                   (uint8_t)MS5803_PRESSURE_RESOLUTION,
+                   "barometricPressure", "millibar",
+                   varCode, uuid)
     {}
     MeaSpecMS5803_Pressure()
-      : Variable((const uint8_t)MS5803_PRESSURE_VAR_NUM,
-                 (uint8_t)MS5803_PRESSURE_RESOLUTION,
-                 "barometricPressure", "millibar", "MeaSpecMS5803Pressure")
+        : Variable((const uint8_t)MS5803_PRESSURE_VAR_NUM,
+                   (uint8_t)MS5803_PRESSURE_RESOLUTION,
+                   "barometricPressure", "millibar", "MeaSpecMS5803Pressure")
     {}
-    ~MeaSpecMS5803_Pressure(){}
+    ~MeaSpecMS5803_Pressure() {}
 };
 
 

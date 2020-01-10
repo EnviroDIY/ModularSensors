@@ -19,7 +19,7 @@
 // #define MS_ATLASSCIENTIFICDO_DEBUG
 
 #ifdef MS_ATLASSCIENTIFICDO_DEBUG
-#define MS_DEBUGGING_STD "AtlasScientificDO"
+    #define MS_DEBUGGING_STD "AtlasScientificDO"
 #endif
 
 // Included Dependencies
@@ -63,18 +63,18 @@ public:
     AtlasScientificDO_DOmgL(Sensor *parentSense,
                             const char *uuid = "",
                             const char *varCode = "AtlasDOmgL")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_DOMGL_VAR_NUM,
-                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                   (uint8_t)ATLAS_DOMGL_RESOLUTION,
+                   "oxygenDissolved", "milligramPerLiter",
+                   varCode, uuid)
     {}
     AtlasScientificDO_DOmgL()
-      : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
-                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter", "AtlasDOmgL")
+        : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                   (uint8_t)ATLAS_DOMGL_RESOLUTION,
+                   "oxygenDissolved", "milligramPerLiter", "AtlasDOmgL")
     {}
-    ~AtlasScientificDO_DOmgL(){}
+    ~AtlasScientificDO_DOmgL() {}
 };
 
 // The class for the DO Percent of Saturation Variable
@@ -84,18 +84,18 @@ public:
     AtlasScientificDO_DOpct(Sensor *parentSense,
                             const char *uuid = "",
                             const char *varCode = "AtlasDOpct")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_DOPCT_VAR_NUM,
-                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                   (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent",
+                   varCode, uuid)
     {}
     AtlasScientificDO_DOpct()
-      : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
-                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent", "AtlasDOpct")
+        : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                   (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent", "AtlasDOpct")
     {}
-    ~AtlasScientificDO_DOpct(){}
+    ~AtlasScientificDO_DOpct() {}
 };
 
 #endif  // Header Guard

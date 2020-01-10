@@ -15,7 +15,7 @@
 // #define MS_VARIABLEBASE_DEBUG
 
 #ifdef MS_VARIABLEBASE_DEBUG
-#define MS_DEBUGGING_STD "VariableBase"
+    #define MS_DEBUGGING_STD "VariableBase"
 #endif
 
 // Forward Declared Dependences
@@ -43,8 +43,8 @@ public:
              const char *varUnit,
              const char *varCode);
 
-     // The constructors for a calculated variable - that is, one whose value is
-     // calculated by the calcFxn which returns a float.
+    // The constructors for a calculated variable - that is, one whose value is
+    // calculated by the calcFxn which returns a float.
     Variable(float (*calcFxn)(),
              uint8_t decimalResolution,
              const char *varName,

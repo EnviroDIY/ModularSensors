@@ -18,20 +18,20 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
+#include <Arduino.h>          // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>  // The modular sensors library
+#include <LoggerBase.h>       // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.17";
+const char* libraryVersion = "0.23.17";
 // The name of this file
-const char *sketchName = "simple_logging.ino";
+const char* sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -44,19 +44,19 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
-const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;       // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;         // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;     // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;       // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char* mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 
@@ -103,7 +103,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 // If only using a single sensor on the OneWire bus, you may omit the address
 // DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
+const int8_t OneWireBus = 6;                 // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
 
 // Create a Maxim DS18 sensor objects (use this form for a known address)
 // MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
@@ -152,15 +152,16 @@ Logger dataLogger;
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++)
+    {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
@@ -183,8 +184,10 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
+    {
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    }
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

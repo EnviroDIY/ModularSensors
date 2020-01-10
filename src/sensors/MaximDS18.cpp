@@ -1,4 +1,4 @@
- /*
+/*
  * MaximDS18.cpp
  * This file is part of the EnviroDIY modular sensors library for Arduino
  *
@@ -22,10 +22,10 @@
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
 MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
-  : Sensor("MaximDS18", DS18_NUM_VARIABLES,
-           DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
-           powerPin, dataPin, measurementsToAverage),
-    _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire)
+    : Sensor("MaximDS18", DS18_NUM_VARIABLES,
+             DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
+             powerPin, dataPin, measurementsToAverage),
+      _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire)
 {
     for (uint8_t i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
     // _OneWireAddress = OneWireAddress;
@@ -34,15 +34,15 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataP
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
 MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
-  : Sensor("MaximDS18", DS18_NUM_VARIABLES,
-           DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
-           powerPin, dataPin, measurementsToAverage),
-    _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire)
+    : Sensor("MaximDS18", DS18_NUM_VARIABLES,
+             DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
+             powerPin, dataPin, measurementsToAverage),
+      _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire)
 {
     _addressKnown = false;
 }
 // Destructor
-MaximDS18::~MaximDS18(){}
+MaximDS18::~MaximDS18() {}
 
 
 // Turns the address into a printable string
@@ -81,7 +81,7 @@ bool MaximDS18::setup(void)
 
     // Need to power up for setup
     bool wasOn = checkPowerOn();
-    if (!wasOn) {powerUp();}
+    if (!wasOn) powerUp();
     waitForWarmUp();
 
     _internalDallasTemp.begin();
@@ -95,7 +95,7 @@ bool MaximDS18::setup(void)
         ntries = 0;
         bool gotAddress = false;
         // Try 5 times to get an address
-        while (!gotAddress and ntries <5)
+        while (!gotAddress and ntries < 5)
         {
             gotAddress = _internalOneWire.search(address);
             ntries++;
@@ -125,7 +125,7 @@ bool MaximDS18::setup(void)
         // And then make 5 attempts to connect to the sensor
         ntries = 0;
         bool madeConnection = false;
-        while (retVal && !madeConnection && ntries <5)
+        while (retVal && !madeConnection && ntries < 5)
         {
             madeConnection = _internalDallasTemp.isConnected(_OneWireAddress);
             ntries++;
@@ -153,7 +153,7 @@ bool MaximDS18::setup(void)
     _internalDallasTemp.setWaitForConversion(false);
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) powerDown();
 
     if (!retVal)  // if set-up failed
     {

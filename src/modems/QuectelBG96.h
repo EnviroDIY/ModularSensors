@@ -17,13 +17,13 @@
 // #define MS_QUECTELBG96_DEBUG_DEEP
 
 #ifdef MS_QUECTELBG96_DEBUG
-#define MS_DEBUGGING_STD "QuectelBG96"
+    #define MS_DEBUGGING_STD "QuectelBG96"
 #endif
 
 #define TINY_GSM_MODEM_BG96
 #define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Time after end pulse until status pin becomes active - 4.8s
@@ -43,7 +43,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 
@@ -52,7 +52,7 @@ class QuectelBG96 : public loggerModem
 
 public:
     // Constructor/Destructor
-    QuectelBG96(Stream* modemStream,
+    QuectelBG96(Stream *modemStream,
                 int8_t powerPin, int8_t statusPin,
                 int8_t modemResetPin, int8_t modemSleepRqPin,
                 const char *apn);
@@ -85,7 +85,6 @@ protected:
 
 private:
     const char *_apn;
-
 };
 
 #endif  // Header Guard

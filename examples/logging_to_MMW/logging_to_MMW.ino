@@ -20,32 +20,32 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
+    #define TINY_GSM_YIELD_MS 2
 #endif
 #ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
+    #define MQTT_MAX_PACKET_SIZE 240
 #endif
 
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
+#include <Arduino.h>          // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>  // The modular sensors library
+#include <LoggerBase.h>       // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.17";
+const char* libraryVersion = "0.23.17";
 // The name of this file
-const char *sketchName = "logging_to MMW.ino";
+const char* sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -58,19 +58,19 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
-const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;       // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;         // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;     // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;       // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char* mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 
@@ -80,7 +80,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 // AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
@@ -92,15 +92,15 @@ const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection
+const char* apn = "xxxxx";  // The APN for the gprs connection
 
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
 // in either bypass or transparent mode, each with pros and cons
 // The Telit based Digi XBees (LTE Cat1) can only use this mode.
 #include <modems/DigiXBeeCellularTransparent.h>
-const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+const long modemBaud = 9600;         // All XBee's use 9600 by default
+const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
 DigiXBeeCellularTransparent modemXBCT(&modemSerial,
@@ -143,7 +143,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 // If only using a single sensor on the OneWire bus, you may omit the address
 // DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
+const int8_t OneWireBus = 6;                 // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
 
 // Create a Maxim DS18 sensor objects (use this form for a known address)
 // MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
@@ -190,8 +190,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
-const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";    // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
@@ -205,7 +205,8 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-    for (uint8_t i = 0; i < numFlash; i++) {
+    for (uint8_t i = 0; i < numFlash; i++)
+    {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
         delay(rate);
@@ -231,12 +232,14 @@ float getBatteryVoltage()
 // ==========================================================================
 void setup()
 {
-    // Wait for USB connection to be established by PC
-    // NOTE:  Only use this when debugging - if not connected to a PC, this
-    // could prevent the script from starting
-    #if defined SERIAL_PORT_USBVIRTUAL
-      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
-    #endif
+// Wait for USB connection to be established by PC
+// NOTE:  Only use this when debugging - if not connected to a PC, this
+// could prevent the script from starting
+#if defined SERIAL_PORT_USBVIRTUAL
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000))
+    {
+    }
+#endif
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
@@ -252,16 +255,18 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
+    {
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    }
 
-    // Allow interrupts for software serial
-    #if defined SoftwareSerial_ExtInts_h
-        enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-    #endif
-    #if defined NeoSWSerial_h
-        enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
-    #endif
+// Allow interrupts for software serial
+#if defined SoftwareSerial_ExtInts_h
+    enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+#endif
+#if defined NeoSWSerial_h
+    enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
+#endif
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
@@ -311,9 +316,9 @@ void setup()
     if (getBatteryVoltage() > 3.4)
     {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true); // true = write a new header
-        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
+        dataLogger.turnOnSDcard(true);   // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
+        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

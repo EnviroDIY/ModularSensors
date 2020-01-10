@@ -14,7 +14,7 @@
 #include "MaxBotixSonar.h"
 
 
-MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
+MaxBotixSonar::MaxBotixSonar(Stream *stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
@@ -22,7 +22,7 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
     _triggerPin = triggerPin;
     _stream = stream;
 }
-MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
+MaxBotixSonar::MaxBotixSonar(Stream &stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
@@ -31,7 +31,7 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
     _stream = &stream;
 }
 // Destructor
-MaxBotixSonar::~MaxBotixSonar(){}
+MaxBotixSonar::~MaxBotixSonar() {}
 
 
 // unfortunately, we really cannot know where the stream is attached.
@@ -83,7 +83,7 @@ bool MaxBotixSonar::wake(void)
     // NOTE ALSO:  Depending on what type of serial stream you are using, there
     // may also be a bunch of junk in the buffer that this will clear out.
     MS_DBG(F("Dumping Header Lines from MaxBotix on"), getSensorLocation());
-    for(int i = 0; i < 6; i++)
+    for (int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
         MS_DBG(i, '-', headerLine);
@@ -95,15 +95,15 @@ bool MaxBotixSonar::wake(void)
         MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer"));
         for (uint8_t i = 0; i < junkChars; i++)
         {
-            #ifdef MS_MAXBOTIXSONAR_DEBUG
+#ifdef MS_MAXBOTIXSONAR_DEBUG
             DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
-            #else
+#else
             _stream->read();
-            #endif
+#endif
         }
-        #ifdef MS_MAXBOTIXSONAR_DEBUG
+#ifdef MS_MAXBOTIXSONAR_DEBUG
         DEBUGGING_SERIAL_OUTPUT.println();
-        #endif
+#endif
     }
 
     return true;
@@ -124,15 +124,15 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
         MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer:"));
         for (uint8_t i = 0; i < junkChars; i++)
         {
-            #ifdef MS_MAXBOTIXSONAR_DEBUG
+#ifdef MS_MAXBOTIXSONAR_DEBUG
             DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
-            #else
+#else
             _stream->read();
-            #endif
+#endif
         }
-        #ifdef MS_MAXBOTIXSONAR_DEBUG
+#ifdef MS_MAXBOTIXSONAR_DEBUG
         DEBUGGING_SERIAL_OUTPUT.println();
-        #endif
+#endif
     }
 
     // Check a measurement was *successfully* started (status bit 6 set)
@@ -143,12 +143,12 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 
         while (success == false && rangeAttempts < 25)
         {
-             // If the sonar is running on a trigger, activating the trigger
-             // should in theory happen within the startSingleMeasurement
-             // function.  Because we're really taking up to 25 measurements
-             // for each "single measurement" until a valid value is returned
-             // and the measurement time is <166ms, we'll actually activate
-             // the trigger here.
+            // If the sonar is running on a trigger, activating the trigger
+            // should in theory happen within the startSingleMeasurement
+            // function.  Because we're really taking up to 25 measurements
+            // for each "single measurement" until a valid value is returned
+            // and the measurement time is <166ms, we'll actually activate
+            // the trigger here.
             if (_triggerPin >= 0)
             {
                 MS_DBG(F("  Triggering Sonar with"), _triggerPin);

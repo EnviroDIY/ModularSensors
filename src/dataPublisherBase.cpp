@@ -25,7 +25,7 @@ dataPublisher::dataPublisher()
     _sendOffset = 0;
     // MS_DBG(F("dataPublisher object created"));
 }
-dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
+dataPublisher::dataPublisher(Logger &baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
 {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
@@ -34,7 +34,7 @@ dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sen
     _inClient = NULL;
     // MS_DBG(F("dataPublisher object created"));
 }
-dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendEveryX, uint8_t sendOffset)
+dataPublisher::dataPublisher(Logger &baseLogger, Client *inClient, uint8_t sendEveryX, uint8_t sendOffset)
 {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
@@ -44,15 +44,15 @@ dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendE
     // MS_DBG(F("dataPublisher object created"));
 }
 // Destructor
-dataPublisher::~dataPublisher(){}
+dataPublisher::~dataPublisher() {}
 
 
 // Sets the client
-void dataPublisher::setClient(Client *inClient){_inClient = inClient;}
+void dataPublisher::setClient(Client *inClient) { _inClient = inClient; }
 
 
 // Attaches to a logger
-void dataPublisher::attachToLogger(Logger& baseLogger)
+void dataPublisher::attachToLogger(Logger &baseLogger)
 {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
@@ -69,12 +69,12 @@ void dataPublisher::setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset)
 
 
 // "Begins" the publisher - attaches client and logger
-void dataPublisher::begin(Logger& baseLogger, Client *inClient)
+void dataPublisher::begin(Logger &baseLogger, Client *inClient)
 {
     setClient(inClient);
     begin(baseLogger);
 }
-void dataPublisher::begin(Logger& baseLogger)
+void dataPublisher::begin(Logger &baseLogger)
 {
     attachToLogger(baseLogger);
 }
@@ -102,17 +102,17 @@ int dataPublisher::bufferFree(void)
 // Sends the tx buffer to a stream and then clears it
 void dataPublisher::printTxBuffer(Stream *stream, bool addNewLine)
 {
-    // Send the out buffer so far to the serial for debugging
-    #if defined(STANDARD_SERIAL_OUTPUT)
-        STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
-        if (addNewLine)
-        {
-            PRINTOUT('\n');
-        }
-        STANDARD_SERIAL_OUTPUT.flush();
-    #endif
+// Send the out buffer so far to the serial for debugging
+#if defined(STANDARD_SERIAL_OUTPUT)
+    STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
+    if (addNewLine)
+    {
+        PRINTOUT('\n');
+    }
+    STANDARD_SERIAL_OUTPUT.flush();
+#endif
     stream->write(txBuffer, strlen(txBuffer));
-    if (addNewLine) \
+    if (addNewLine)
     {
         stream->print("\r\n");
     }

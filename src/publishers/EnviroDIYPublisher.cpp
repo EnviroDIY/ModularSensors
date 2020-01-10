@@ -32,44 +32,44 @@ const char *EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
 
 // Constructors
 EnviroDIYPublisher::EnviroDIYPublisher()
-  : dataPublisher()
+    : dataPublisher()
 {
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger,
+                                       uint8_t sendEveryX, uint8_t sendOffset)
+    : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger, Client *inClient,
+                                       uint8_t sendEveryX, uint8_t sendOffset)
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
-                                 const char *registrationToken,
-                                 const char *samplingFeatureUUID,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger,
+                                       const char *registrationToken,
+                                       const char *samplingFeatureUUID,
+                                       uint8_t sendEveryX, uint8_t sendOffset)
+    : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
-                                 const char *registrationToken,
-                                 const char *samplingFeatureUUID,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger, Client *inClient,
+                                       const char *registrationToken,
+                                       const char *samplingFeatureUUID,
+                                       uint8_t sendEveryX, uint8_t sendOffset)
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     // MS_DBG(F("dataPublisher object created"));
 }
 // Destructor
-EnviroDIYPublisher::~EnviroDIYPublisher(){}
+EnviroDIYPublisher::~EnviroDIYPublisher() {}
 
 
 void EnviroDIYPublisher::setToken(const char *registrationToken)
@@ -83,15 +83,15 @@ void EnviroDIYPublisher::setToken(const char *registrationToken)
 uint16_t EnviroDIYPublisher::calculateJsonSize()
 {
     uint16_t jsonLength = 21;  // {"sampling_feature":"
-    jsonLength += 36;  // sampling feature UUID
-    jsonLength += 15;  // ","timestamp":"
-    jsonLength += 25;  // markedISO8601Time
-    jsonLength += 2;  //  ",
+    jsonLength += 36;          // sampling feature UUID
+    jsonLength += 15;          // ","timestamp":"
+    jsonLength += 25;          // markedISO8601Time
+    jsonLength += 2;           //  ",
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++)
     {
-        jsonLength += 1;  //  "
+        jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
-        jsonLength += 2;  //  ":
+        jsonLength += 2;   //  ":
         jsonLength += _baseLogger->getValueStringAtI(i).length();
         if (i + 1 != _baseLogger->getArrayVarCount())
         {
@@ -172,7 +172,7 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
 
 
 // A way to begin with everything already set
-void EnviroDIYPublisher::begin(Logger& baseLogger, Client *inClient,
+void EnviroDIYPublisher::begin(Logger &baseLogger, Client *inClient,
                                const char *registrationToken,
                                const char *samplingFeatureUUID)
 {
@@ -180,7 +180,7 @@ void EnviroDIYPublisher::begin(Logger& baseLogger, Client *inClient,
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
-void EnviroDIYPublisher::begin(Logger& baseLogger,
+void EnviroDIYPublisher::begin(Logger &baseLogger,
                                const char *registrationToken,
                                const char *samplingFeatureUUID)
 {
@@ -282,7 +282,7 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
         while ((millis() - start) < 10000L && _outClient->available() < 12)
-        {delay(10);}
+        { delay(10); }
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
@@ -307,13 +307,13 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
         char responseCode_char[4];
         for (uint8_t i = 0; i < 3; i++)
         {
-            responseCode_char[i] = tempBuffer[i+9];
+            responseCode_char[i] = tempBuffer[i + 9];
         }
         responseCode = atoi(responseCode_char);
     }
     else
     {
-        responseCode=504;
+        responseCode = 504;
     }
 
     PRINTOUT(F("-- Response Code --"));

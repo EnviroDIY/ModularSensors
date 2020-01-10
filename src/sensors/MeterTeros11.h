@@ -39,7 +39,7 @@
 // #define MS_MeterTeros11_DEBUG
 
 #ifdef MS_MeterTeros11_DEBUG
-#define MS_DEBUGGING_STD "MeterTeros11"
+    #define MS_DEBUGGING_STD "MeterTeros11"
 #endif
 
 // Included Dependencies
@@ -72,22 +72,22 @@ class MeterTeros11 : public SDI12Sensors
 public:
     // Constructors with overloads
     MeterTeros11(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "MeterTeros11", TEROS11_NUM_VARIABLES,
-                    TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "MeterTeros11", TEROS11_NUM_VARIABLES,
+                       TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
     {}
     MeterTeros11(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "MeterTeros11", TEROS11_NUM_VARIABLES,
-                    TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "MeterTeros11", TEROS11_NUM_VARIABLES,
+                       TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
     {}
     MeterTeros11(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "MeterTeros11", TEROS11_NUM_VARIABLES,
-                    TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "MeterTeros11", TEROS11_NUM_VARIABLES,
+                       TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
     {}
     // Destructor
-    ~MeterTeros11(){}
+    ~MeterTeros11() {}
 
     virtual bool addSingleMeasurementResult(void) override;
 };
@@ -98,20 +98,20 @@ class MeterTeros11_Ea : public Variable
 {
 public:
     MeterTeros11_Ea(Sensor *parentSense,
-                  const char *uuid = "",
-                  const char *varCode = "SoilEa")
-      : Variable(parentSense,
-                 (const uint8_t)TEROS11_EA_VAR_NUM,
-                 (uint8_t)TEROS11_EA_RESOLUTION,
-                 "permittivity", "faradPerMeter",
-                 varCode, uuid)
+                    const char *uuid = "",
+                    const char *varCode = "SoilEa")
+        : Variable(parentSense,
+                   (const uint8_t)TEROS11_EA_VAR_NUM,
+                   (uint8_t)TEROS11_EA_RESOLUTION,
+                   "permittivity", "faradPerMeter",
+                   varCode, uuid)
     {}
     MeterTeros11_Ea()
-      : Variable((const uint8_t)TEROS11_EA_VAR_NUM,
-                 (uint8_t)TEROS11_EA_RESOLUTION,
-                 "permittivity", "faradPerMeter", "SoilEa")
+        : Variable((const uint8_t)TEROS11_EA_VAR_NUM,
+                   (uint8_t)TEROS11_EA_RESOLUTION,
+                   "permittivity", "faradPerMeter", "SoilEa")
     {}
-    ~MeterTeros11_Ea(){}
+    ~MeterTeros11_Ea() {}
 };
 
 
@@ -120,20 +120,20 @@ class MeterTeros11_Temp : public Variable
 {
 public:
     MeterTeros11_Temp(Sensor *parentSense,
-                    const char *uuid = "",
-                    const char *varCode = "SoilTemp")
-      : Variable(parentSense,
-                 (const uint8_t)TEROS11_TEMP_VAR_NUM,
-                 (uint8_t)TEROS11_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+                      const char *uuid = "",
+                      const char *varCode = "SoilTemp")
+        : Variable(parentSense,
+                   (const uint8_t)TEROS11_TEMP_VAR_NUM,
+                   (uint8_t)TEROS11_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     MeterTeros11_Temp()
-      : Variable((const uint8_t)TEROS11_TEMP_VAR_NUM,
-                 (uint8_t)TEROS11_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "SoilTemp")
+        : Variable((const uint8_t)TEROS11_TEMP_VAR_NUM,
+                   (uint8_t)TEROS11_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "SoilTemp")
     {}
-    ~MeterTeros11_Temp(){}
+    ~MeterTeros11_Temp() {}
 };
 
 
@@ -142,20 +142,20 @@ class MeterTeros11_VWC : public Variable
 {
 public:
     MeterTeros11_VWC(Sensor *parentSense,
-                   const char *uuid = "",
-                   const char *varCode = "SoilVWC")
-      : Variable(parentSense,
-                 (const uint8_t)TEROS11_VWC_VAR_NUM,
-                 (uint8_t)TEROS11_VWC_RESOLUTION,
-                 "volumetricWaterContent", "percent",
-                 varCode, uuid)
+                     const char *uuid = "",
+                     const char *varCode = "SoilVWC")
+        : Variable(parentSense,
+                   (const uint8_t)TEROS11_VWC_VAR_NUM,
+                   (uint8_t)TEROS11_VWC_RESOLUTION,
+                   "volumetricWaterContent", "percent",
+                   varCode, uuid)
     {}
     MeterTeros11_VWC()
-      : Variable((const uint8_t)TEROS11_VWC_VAR_NUM,
-                 (uint8_t)TEROS11_VWC_RESOLUTION,
-                 "volumetricWaterContent", "percent", "SoilVWC")
+        : Variable((const uint8_t)TEROS11_VWC_VAR_NUM,
+                   (uint8_t)TEROS11_VWC_RESOLUTION,
+                   "volumetricWaterContent", "percent", "SoilVWC")
     {}
-    ~MeterTeros11_VWC(){}
+    ~MeterTeros11_VWC() {}
 };
 
 #endif  // Header Guard

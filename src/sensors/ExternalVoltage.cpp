@@ -67,16 +67,16 @@ ExternalVoltage::ExternalVoltage(int8_t powerPin, uint8_t adsChannel, float gain
     _i2cAddress = i2cAddress;
 }
 // Destructor
-ExternalVoltage::~ExternalVoltage(){}
+ExternalVoltage::~ExternalVoltage() {}
 
 
 String ExternalVoltage::getSensorLocation(void)
 {
-    #ifndef MS_USE_ADS1015
+#ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
-    #else
+#else
     String sensorLocation = F("ADS1015_0x");
-    #endif
+#endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Channel");
     sensorLocation += String(_adsChannel);
@@ -96,14 +96,14 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
     {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Create an Auxillary ADD object
-        // We create and set up the ADC object here so that each sensor using
-        // the ADC may set the gain appropriately without effecting others.
-        #ifndef MS_USE_ADS1015
+// Create an Auxillary ADD object
+// We create and set up the ADC object here so that each sensor using
+// the ADC may set the gain appropriately without effecting others.
+#ifndef MS_USE_ADS1015
         Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
-        #else
+#else
         Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
-        #endif
+#endif
         // ADS Library default settings:
         //  - TI1115 (16 bit)
         //    - single-shot mode (powers down between conversions)
@@ -128,7 +128,7 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {
             // Apply the gain calculation, with a defualt gain of 10 V/V Gain
-            calibResult = adcVoltage * _gain ;
+            calibResult = adcVoltage * _gain;
             MS_DBG(F("  calibResult:"), calibResult);
         }
         else  // set invalid voltages back to -9999

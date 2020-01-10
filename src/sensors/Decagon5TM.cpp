@@ -44,11 +44,17 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         // MS_DBG(F("   Activating SDI-12 instance for"), getSensorNameAndLocation());
         // Check if this the currently active SDI-12 Object
         bool wasActive = _SDI12Internal.isActive();
-        // if (wasActive) {MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-        //                       F("was already active!"));}
+        // if (wasActive)
+        // {
+        //     MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
+        //            F("was already active!"));
+        // }
         // If it wasn't active, activate it now.
         // Use begin() instead of just setActive() to ensure timer is set correctly.
-        if (!wasActive) _SDI12Internal.begin();
+        if (!wasActive)
+        {
+            _SDI12Internal.begin();
+        }
         // Empty the buffer
         _SDI12Internal.clearBuffer();
 
@@ -66,17 +72,21 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         // First variable returned is the Dialectric E
         ea = _SDI12Internal.parseFloat();
-        if (ea < 0 || ea > 350) ea = -9999;
+        if (ea < 0 || ea > 350)
+        {
+            ea = -9999;
+        }
         // Second variable returned is the temperature in °C
         temp = _SDI12Internal.parseFloat();
-        if (temp < -50 || temp > 60) temp = -9999;  // Range is - 40°C to + 50°C
+        // Range is - 40°C to + 50°C
+        if (temp < -50 || temp > 60)
+        {
+            temp = -9999;
+        }
         // the "third" variable of VWC is actually calculated, not returned by the sensor!
         if (ea != -9999)
         {
-            VWC = (4.3e-6*(ea*ea*ea))
-                        - (5.5e-4*(ea*ea))
-                        + (2.92e-2 * ea)
-                        - 5.3e-2 ;
+            VWC = (4.3e-6 * (ea * ea * ea)) - (5.5e-4 * (ea * ea)) + (2.92e-2 * ea) - 5.3e-2;
             VWC *= 100;  // Convert to actual percent
         }
 

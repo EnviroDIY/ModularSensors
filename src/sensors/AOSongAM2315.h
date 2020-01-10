@@ -30,7 +30,7 @@
 // #define MS_AOSONGAM2315_DEBUG
 
 #ifdef MS_AOSONGAM2315_DEBUG
-#define MS_DEBUGGING_STD "AOSongAM2315"
+    #define MS_DEBUGGING_STD "AOSongAM2315"
 #endif
 
 // Included Dependencies
@@ -76,16 +76,16 @@ public:
     AOSongAM2315_Humidity(Sensor *parentSense,
                           const char *uuid = "",
                           const char *varCode = "AM2315Humidity")
-      : Variable(parentSense,
-                 (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                 (uint8_t)AM2315_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                   "relativeHumidity", "percent",
+                   varCode, uuid)
     {}
     AOSongAM2315_Humidity()
-      : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                 (uint8_t)AM2315_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent", "AM2315Humidity")
+        : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                   "relativeHumidity", "percent", "AM2315Humidity")
     {}
     ~AOSongAM2315_Humidity(){};
 };
@@ -98,16 +98,16 @@ public:
     AOSongAM2315_Temp(Sensor *parentSense,
                       const char *uuid = "",
                       const char *varCode = "AM2315Temp")
-      : Variable(parentSense,
-                 (const uint8_t)AM2315_TEMP_VAR_NUM,
-                 (uint8_t)AM2315_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)AM2315_TEMP_VAR_NUM,
+                   (uint8_t)AM2315_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     AOSongAM2315_Temp()
-      : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
-                 (uint8_t)AM2315_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "AM2315Temp")
+        : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
+                   (uint8_t)AM2315_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "AM2315Temp")
     {}
     ~AOSongAM2315_Temp(){};
 };

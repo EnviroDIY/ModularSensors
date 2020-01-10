@@ -31,17 +31,17 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t meas
     : Sensor("AOSongDHT", DHT_NUM_VARIABLES,
              DHT_WARM_UP_TIME_MS, DHT_STABILIZATION_TIME_MS, DHT_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage),
-    dht_internal(dataPin, type)
+      dht_internal(dataPin, type)
 {
     _dhtType = type;
 }
 // Destructor - does nothing.
-AOSongDHT::~AOSongDHT(){}
+AOSongDHT::~AOSongDHT() {}
 
 
 bool AOSongDHT::setup(void)
 {
-    dht_internal.begin();  // Start up the sensor (only sets pin modes, sensor power not required)
+    dht_internal.begin();    // Start up the sensor (only sets pin modes, sensor power not required)
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
@@ -50,10 +50,13 @@ String AOSongDHT::getSensorName(void)
 {
     switch (_dhtType)
     {
-        case 11: return "AOSongDHT11";
-        case 21: return "AOSongDHT21";
-        default: return "AOSongDHT22";
-     }
+        case 11:
+            return "AOSongDHT11";
+        case 21:
+            return "AOSongDHT21";
+        default:
+            return "AOSongDHT22";
+    }
 }
 
 

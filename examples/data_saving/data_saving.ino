@@ -21,32 +21,32 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
+    #define TINY_GSM_YIELD_MS 2
 #endif
 #ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
+    #define MQTT_MAX_PACKET_SIZE 240
 #endif
 
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
+#include <Arduino.h>          // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>  // The modular sensors library
+#include <LoggerBase.h>       // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.17";
+const char* libraryVersion = "0.23.17";
 // The name of this file
-const char *sketchName = "data_saving.ino";
+const char* sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -59,11 +59,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
-const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;       // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;         // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;     // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;       // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
@@ -71,7 +71,7 @@ const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char* mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the processor
@@ -91,24 +91,24 @@ Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-
 // the same serial port.
 
 #if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
-// Unfortunately, most AVR boards have only one or two hardware serial ports,
-// so we'll set up three types of extra software serial ports to use
+    // Unfortunately, most AVR boards have only one or two hardware serial ports,
+    // so we'll set up three types of extra software serial ports to use
 
-// AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
-// is the most accurate software serial port for AVR boards.
-// AltSoftSerial can only be used on one set of pins on each board so only one
-// AltSoftSerial port can be used.
-// Not all AVR boards are supported by AltSoftSerial.
-#include <AltSoftSerial.h>
+    // AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
+    // is the most accurate software serial port for AVR boards.
+    // AltSoftSerial can only be used on one set of pins on each board so only one
+    // AltSoftSerial port can be used.
+    // Not all AVR boards are supported by AltSoftSerial.
+    #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
 
-// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
-// serial that can be used on any pin supporting interrupts.
-// You can use as many instances of NeoSWSerial as you want.
-// Not all AVR boards are supported by NeoSWSerial.
-#include <NeoSWSerial.h>  // for the stream communication
-const int8_t neoSSerial1Rx = 11;     // data in pin
-const int8_t neoSSerial1Tx = -1;     // data out pin
+    // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
+    // serial that can be used on any pin supporting interrupts.
+    // You can use as many instances of NeoSWSerial as you want.
+    // Not all AVR boards are supported by NeoSWSerial.
+    #include <NeoSWSerial.h>      // for the stream communication
+const int8_t neoSSerial1Rx = 11;  // data in pin
+const int8_t neoSSerial1Tx = -1;  // data out pin
 NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
 // To use NeoSWSerial in this library, we define a function to receive data
 // This is just a short-cut for later
@@ -121,10 +121,10 @@ void neoSSerial1ISR()
 // with several other libraries used within this program, we must use a
 // version of software serial that has been stripped of interrupts.
 // NOTE:  Only use if necessary.  This is not a very accurate serial port!
-const int8_t softSerialRx = A3;     // data in pin
-const int8_t softSerialTx = A4;     // data out pin
+const int8_t softSerialRx = A3;  // data in pin
+const int8_t softSerialTx = A4;  // data out pin
 
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+    #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
 
@@ -149,9 +149,9 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
 
 #if defined ARDUINO_ARCH_SAMD
-  #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
+    #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
-#ifndef ENABLE_SERIAL2
+    #ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
@@ -164,9 +164,9 @@ void SERCOM1_Handler()
 {
     Serial2.IrqHandler();
 }
-#endif
+    #endif
 
-#ifndef ENABLE_SERIAL3
+    #ifndef ENABLE_SERIAL3
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
@@ -179,7 +179,7 @@ void SERCOM2_Handler()
 {
     Serial3.IrqHandler();
 }
-#endif
+    #endif
 
 #endif  // End hardware serial on SAMD21 boards
 
@@ -189,7 +189,7 @@ void SERCOM2_Handler()
 // ==========================================================================
 
 // Create a reference to the serial port for the modem
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 const int8_t modemVccPin = 23;      // MCU pin controlling modem power (-1 if not applicable)
@@ -197,7 +197,7 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection
+const char* apn = "xxxxx";  // The APN for the gprs connection
 
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
@@ -234,17 +234,17 @@ Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-12
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
+HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial if needed
+                                              // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
 #endif
 
-byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
+byte y504ModbusAddress = 0x04;                    // The modbus address of the Y504
 const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+const int8_t modbusSensorPower = A3;              // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = -1;                // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t y504NumberReadings = 5;             // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
 // Create a Yosemitech Y504 dissolved oxygen sensor object
 YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y504NumberReadings);
@@ -361,8 +361,7 @@ Variable *variableList_complete[] = {
     y520Cond,
     y520Temp,
     modemRSSI,
-    modemSignalPct
-};
+    modemSignalPct};
 // Count up the number of pointers in the array
 int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList_complete[0]);
 // Create the VariableArray object
@@ -377,8 +376,7 @@ Variable *variableList_toGo[] = {
     y511Turb,
     y514Chloro,
     y520Cond,
-    modemRSSI
-};
+    modemRSSI};
 // Count up the number of pointers in the array
 int variableCount_toGo = sizeof(variableList_toGo) / sizeof(variableList_toGo[0]);
 // Create the VariableArray object
@@ -400,8 +398,8 @@ Logger loggerToGo(LoggerID, loggingInterval, &arrayToGo);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
-const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";    // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 // This is only attached to the logger with the shorter variable array
@@ -416,7 +414,8 @@ EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient, registrationToken
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-    for (uint8_t i = 0; i < numFlash; i++) {
+    for (uint8_t i = 0; i < numFlash; i++)
+    {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
         delay(rate);
@@ -442,12 +441,14 @@ float getBatteryVoltage()
 // ==========================================================================
 void setup()
 {
-    // Wait for USB connection to be established by PC
-    // NOTE:  Only use this when debugging - if not connected to a PC, this
-    // could prevent the script from starting
-    #if defined SERIAL_PORT_USBVIRTUAL
-      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
-    #endif
+// Wait for USB connection to be established by PC
+// NOTE:  Only use this when debugging - if not connected to a PC, this
+// could prevent the script from starting
+#if defined SERIAL_PORT_USBVIRTUAL
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000))
+    {
+    }
+#endif
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
@@ -463,8 +464,10 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
+    {
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    }
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
@@ -472,14 +475,14 @@ void setup()
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 
-    // Assign pins SERCOM functionality for SAMD boards
-    // NOTE:  This must happen *after* the various serial.begin statements
-    #if defined ARDUINO_ARCH_SAMD
+// Assign pins SERCOM functionality for SAMD boards
+// NOTE:  This must happen *after* the various serial.begin statements
+#if defined ARDUINO_ARCH_SAMD
     #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
     #endif
-    #endif
+#endif
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
@@ -532,9 +535,9 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
-        loggerAllVars.turnOnSDcard(true);  // true = wait for card to settle after power up
-        loggerAllVars.createLogFile(true); // true = write a new header
-        loggerAllVars.turnOffSDcard(true); // true = wait for internal housekeeping after write
+        loggerAllVars.turnOnSDcard(true);   // true = wait for card to settle after power up
+        loggerAllVars.createLogFile(true);  // true = write a new header
+        loggerAllVars.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep
@@ -594,18 +597,18 @@ void loop()
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.end();
 
-        #if defined AltSoftSerial_h
+#if defined AltSoftSerial_h
         // Explicitly set the pin modes for the AltSoftSerial pins to make sure they're low
         pinMode(5, OUTPUT);  // On a Mayfly, pin D5 is the AltSoftSerial Tx pin
         pinMode(6, OUTPUT);  // On a Mayfly, pin D6 is the AltSoftSerial Rx pin
         digitalWrite(5, LOW);
         digitalWrite(6, LOW);
-        #endif
+#endif
 
-        #if defined ARDUINO_SAMD_ZERO
+#if defined ARDUINO_SAMD_ZERO
         digitalWrite(10, LOW);
         digitalWrite(11, LOW);
-        #endif
+#endif
 
         // Create a csv data record and save it to the log file
         loggerAllVars.logToSD();

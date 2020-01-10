@@ -17,13 +17,13 @@
 // Constructor
 AtlasScientificCO2::AtlasScientificCO2(int8_t powerPin, uint8_t i2cAddressHex,
                                        uint8_t measurementsToAverage)
-  : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                "AtlasScientificCO2", ATLAS_CO2_NUM_VARIABLES,
-                ATLAS_CO2_WARM_UP_TIME_MS, ATLAS_CO2_STABILIZATION_TIME_MS,
-                ATLAS_CO2_MEASUREMENT_TIME_MS)
+    : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                  "AtlasScientificCO2", ATLAS_CO2_NUM_VARIABLES,
+                  ATLAS_CO2_WARM_UP_TIME_MS, ATLAS_CO2_STABILIZATION_TIME_MS,
+                  ATLAS_CO2_MEASUREMENT_TIME_MS)
 {}
 // Destructor
-AtlasScientificCO2::~AtlasScientificCO2(){}
+AtlasScientificCO2::~AtlasScientificCO2() {}
 
 
 // Setup
@@ -34,7 +34,7 @@ bool AtlasScientificCO2::setup()
     // This sensor needs power for setup!
     // We want to turn on all possible measurement parameters
     bool wasOn = checkPowerOn();
-    if (!wasOn) {powerUp();}
+    if (!wasOn) powerUp();
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report temperature with CO2"));
@@ -53,7 +53,7 @@ bool AtlasScientificCO2::setup()
     }
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) powerDown();
 
     return success;
 }

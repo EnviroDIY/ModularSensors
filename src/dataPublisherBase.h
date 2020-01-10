@@ -15,7 +15,7 @@
 // #define MS_DATAPUBLISHERBASE_DEBUG
 
 #ifdef MS_DATAPUBLISHERBASE_DEBUG
-#define MS_DEBUGGING_STD "dataPublisherBase"
+    #define MS_DEBUGGING_STD "dataPublisherBase"
 #endif
 
 // Send Buffer
@@ -25,7 +25,7 @@
 // variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
 // Maximum Transmission Unit).
 #ifndef MS_SEND_BUFFER_SIZE
-#define MS_SEND_BUFFER_SIZE 750
+    #define MS_SEND_BUFFER_SIZE 750
 #endif
 
 // Included Dependencies
@@ -38,12 +38,11 @@ class dataPublisher
 {
 
 public:
-
     // Constructors
     dataPublisher();
-    dataPublisher(Logger& baseLogger,
+    dataPublisher(Logger &baseLogger,
                   uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    dataPublisher(Logger& baseLogger, Client *inClient,
+    dataPublisher(Logger &baseLogger, Client *inClient,
                   uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     virtual ~dataPublisher();
@@ -52,7 +51,7 @@ public:
     void setClient(Client *inClient);
 
     // Attaches to a logger
-    void attachToLogger(Logger& baseLogger);
+    void attachToLogger(Logger &baseLogger);
 
     // Sets the parameters for frequency of sending and any offset, if needed
     // NOTE:  These parameters are not currently used!!
@@ -65,8 +64,8 @@ public:
     // guarantee that the logger will actually be created before the publisher
     // that wants to attach to it unless we wait to attach the publisher until
     // in the setup or loop function of the main program.
-    void begin(Logger& baseLogger, Client *inClient);
-    void begin(Logger& baseLogger);
+    void begin(Logger &baseLogger, Client *inClient);
+    void begin(Logger &baseLogger);
 
     // Returns the data destination
     virtual String getEndpoint(void) = 0;
@@ -106,7 +105,6 @@ protected:
     static const char *postHeader;
     static const char *HTTPtag;
     static const char *hostHeader;
-
 };
 
 #endif  // Header Guard

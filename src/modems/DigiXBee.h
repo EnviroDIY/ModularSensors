@@ -15,7 +15,7 @@
 // #define MS_DIGIXBEE_DEBUG
 
 #ifdef MS_DIGIXBEE_DEBUG
-#define MS_DEBUGGING_STD "DigiXBee"
+    #define MS_DEBUGGING_STD "DigiXBee"
 #endif
 
 // Time after turn on until the status pin is active - total WAG

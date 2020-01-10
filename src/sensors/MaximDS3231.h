@@ -25,7 +25,7 @@
 // #define MS_MAXIMDS3231_DEBUG
 
 #ifdef MS_MAXIMDS3231_DEBUG
-#define MS_DEBUGGING_STD "MaximDS3231"
+    #define MS_DEBUGGING_STD "MaximDS3231"
 #endif
 
 // Included Dependencies
@@ -69,18 +69,18 @@ public:
     MaximDS3231_Temp(Sensor *parentSense,
                      const char *uuid = "",
                      const char *varCode = "BoardTemp")
-      : Variable(parentSense,
-                 (const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)DS3231_TEMP_VAR_NUM,
+                   (uint8_t)DS3231_TEMP_RESOLUTION,
+                   "temperatureDatalogger", "degreeCelsius",
+                   varCode, uuid)
     {}
     MaximDS3231_Temp()
-      : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius", "BoardTemp")
+        : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
+                   (uint8_t)DS3231_TEMP_RESOLUTION,
+                   "temperatureDatalogger", "degreeCelsius", "BoardTemp")
     {}
-    ~MaximDS3231_Temp(){}
+    ~MaximDS3231_Temp() {}
 };
 
 #endif  // Header Guard

@@ -15,7 +15,7 @@
 // #define MS_SENSORBASE_DEBUG
 
 #ifdef MS_SENSORBASE_DEBUG
-#define MS_DEBUGGING_STD "SensorBase"
+    #define MS_DEBUGGING_STD "SensorBase"
 #endif
 
 // Included Dependencies
@@ -33,7 +33,6 @@ class Variable;  // Forward declaration
 class Sensor
 {
 public:
-
     Sensor(const char *sensorName = "Unknown", const uint8_t numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
@@ -132,7 +131,7 @@ public:
     void averageMeasurements(void);
 
     // These tie the variables to their parent sensor
-    void registerVariable(int sensorVarNum, Variable* var);
+    void registerVariable(int sensorVarNum, Variable *var);
     // Notifies attached variables of new values
     void notifyVariables(void);
 
@@ -140,27 +139,26 @@ public:
     // between the sensor receiving power and being ready to respond to logger
     // commands.  The "waitForWarmUp()" function delays until the time passes.
     // "checkPowerOn()" checks if the power pin is currently high
-    bool checkPowerOn(bool debug=false);
-    virtual bool isWarmedUp(bool debug=false);
+    bool checkPowerOn(bool debug = false);
+    virtual bool isWarmedUp(bool debug = false);
     void waitForWarmUp(void);
 
     // The "isStable()" function checks whether or not enough time has passed
     // between the sensor being awoken/activated and being ready to output stable
     // values.  The "waitForStability()" function delays until the time passes.
-    virtual bool isStable(bool debug=false);
+    virtual bool isStable(bool debug = false);
     void waitForStability(void);
 
     // The "isMeasurementComplete()" function checks whether or not enough time
     // has passed between when the sensor was asked to take a single measurement
     // and when that measurement should be complete.  The
     // "waitForMeasurementCompletion()" function delays until the time passes.
-    virtual bool isMeasurementComplete(bool debug=false);
+    virtual bool isMeasurementComplete(bool debug = false);
     void waitForMeasurementCompletion(void);
 
 
 protected:
-
-    int8_t _dataPin;  // SIGNED int, to allow negative numbers for unused pins
+    int8_t _dataPin;   // SIGNED int, to allow negative numbers for unused pins
     int8_t _powerPin;  // SIGNED int, to allow negative numbers for unused pins
     const char *_sensorName;
     const uint8_t _numReturnedVars;

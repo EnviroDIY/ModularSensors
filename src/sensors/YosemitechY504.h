@@ -54,19 +54,19 @@ class YosemitechY504 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY504(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y504, "YosemitechY504", Y504_NUM_VARIABLES,
-                        Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                           Y504, "YosemitechY504", Y504_NUM_VARIABLES,
+                           Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY504(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y504, "YosemitechY504", Y504_NUM_VARIABLES,
-                        Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                           Y504, "YosemitechY504", Y504_NUM_VARIABLES,
+                           Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
-    ~YosemitechY504(){}
+    ~YosemitechY504() {}
 };
 
 
@@ -77,18 +77,18 @@ public:
     YosemitechY504_DOpct(Sensor *parentSense,
                          const char *uuid = "",
                          const char *varCode = "Y504DOpct")
-      : Variable(parentSense,
-                 (const uint8_t)Y504_DOPCT_VAR_NUM,
-                 (uint8_t)Y504_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y504_DOPCT_VAR_NUM,
+                   (uint8_t)Y504_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent",
+                   varCode, uuid)
     {}
     YosemitechY504_DOpct()
-      : Variable((const uint8_t)Y504_DOPCT_VAR_NUM,
-                 (uint8_t)Y504_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct")
+        : Variable((const uint8_t)Y504_DOPCT_VAR_NUM,
+                   (uint8_t)Y504_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct")
     {}
-    ~YosemitechY504_DOpct(){}
+    ~YosemitechY504_DOpct() {}
 };
 
 
@@ -99,18 +99,18 @@ public:
     YosemitechY504_Temp(Sensor *parentSense,
                         const char *uuid = "",
                         const char *varCode = "Y504Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y504_TEMP_VAR_NUM,
-                 (uint8_t)Y504_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y504_TEMP_VAR_NUM,
+                   (uint8_t)Y504_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     YosemitechY504_Temp()
-      : Variable((const uint8_t)Y504_TEMP_VAR_NUM,
-                 (uint8_t)Y504_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y504Temp")
+        : Variable((const uint8_t)Y504_TEMP_VAR_NUM,
+                   (uint8_t)Y504_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "Y504Temp")
     {}
-    ~YosemitechY504_Temp(){}
+    ~YosemitechY504_Temp() {}
 };
 
 
@@ -121,18 +121,18 @@ public:
     YosemitechY504_DOmgL(Sensor *parentSense,
                          const char *uuid = "",
                          const char *varCode = "Y504DOmgL")
-      : Variable(parentSense,
-                 (const uint8_t)Y504_DOMGL_VAR_NUM,
-                 (uint8_t)Y504_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y504_DOMGL_VAR_NUM,
+                   (uint8_t)Y504_DOMGL_RESOLUTION,
+                   "oxygenDissolved", "milligramPerLiter",
+                   varCode, uuid)
     {}
     YosemitechY504_DOmgL()
-      : Variable((const uint8_t)Y504_DOMGL_VAR_NUM,
-                 (uint8_t)Y504_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter", "Y504DOmgL")
+        : Variable((const uint8_t)Y504_DOMGL_VAR_NUM,
+                   (uint8_t)Y504_DOMGL_RESOLUTION,
+                   "oxygenDissolved", "milligramPerLiter", "Y504DOmgL")
     {}
-    ~YosemitechY504_DOmgL(){}
+    ~YosemitechY504_DOmgL() {}
 };
 
 #endif  // Header Guard

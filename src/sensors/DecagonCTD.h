@@ -61,22 +61,22 @@ class DecagonCTD : public SDI12Sensors
 public:
     // Constructors with overloads
     DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "DecagonCTD", CTD_NUM_VARIABLES,
-                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "DecagonCTD", CTD_NUM_VARIABLES,
+                       CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
     DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "DecagonCTD", CTD_NUM_VARIABLES,
-                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "DecagonCTD", CTD_NUM_VARIABLES,
+                       CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
     DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "DecagonCTD", CTD_NUM_VARIABLES,
-                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "DecagonCTD", CTD_NUM_VARIABLES,
+                       CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
     // Destructor
-    ~DecagonCTD(){}
+    ~DecagonCTD() {}
 };
 
 
@@ -87,18 +87,18 @@ public:
     DecagonCTD_Cond(Sensor *parentSense,
                     const char *uuid = "",
                     const char *varCode = "CTDcond")
-      : Variable(parentSense,
-                 (const uint8_t)CTD_COND_VAR_NUM,
-                 (uint8_t)CTD_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)CTD_COND_VAR_NUM,
+                   (uint8_t)CTD_COND_RESOLUTION,
+                   "specificConductance", "microsiemenPerCentimeter",
+                   varCode, uuid)
     {}
     DecagonCTD_Cond()
-      : Variable((const uint8_t)CTD_COND_VAR_NUM,
-                 (uint8_t)CTD_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter", "CTDcond")
+        : Variable((const uint8_t)CTD_COND_VAR_NUM,
+                   (uint8_t)CTD_COND_RESOLUTION,
+                   "specificConductance", "microsiemenPerCentimeter", "CTDcond")
     {}
-    ~DecagonCTD_Cond(){}
+    ~DecagonCTD_Cond() {}
 };
 
 
@@ -109,18 +109,18 @@ public:
     DecagonCTD_Temp(Sensor *parentSense,
                     const char *uuid = "",
                     const char *varCode = "CTDtemp")
-      : Variable(parentSense,
-                 (const uint8_t)CTD_TEMP_VAR_NUM,
-                 (uint8_t)CTD_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)CTD_TEMP_VAR_NUM,
+                   (uint8_t)CTD_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     DecagonCTD_Temp()
-      : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
-                 (uint8_t)CTD_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "CTDtemp")
+        : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
+                   (uint8_t)CTD_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "CTDtemp")
     {}
-    ~DecagonCTD_Temp(){}
+    ~DecagonCTD_Temp() {}
 };
 
 
@@ -131,18 +131,18 @@ public:
     DecagonCTD_Depth(Sensor *parentSense,
                      const char *uuid = "",
                      const char *varCode = "CTDdepth")
-      : Variable(parentSense,
-                 (const uint8_t)CTD_DEPTH_VAR_NUM,
-                 (uint8_t)CTD_DEPTH_RESOLUTION,
-                 "waterDepth", "millimeter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)CTD_DEPTH_VAR_NUM,
+                   (uint8_t)CTD_DEPTH_RESOLUTION,
+                   "waterDepth", "millimeter",
+                   varCode, uuid)
     {}
     DecagonCTD_Depth()
-      : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,
-                 (uint8_t)CTD_DEPTH_RESOLUTION,
-                 "waterDepth", "millimeter", "CTDdepth")
+        : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,
+                   (uint8_t)CTD_DEPTH_RESOLUTION,
+                   "waterDepth", "millimeter", "CTDdepth")
     {}
-    ~DecagonCTD_Depth(){}
+    ~DecagonCTD_Depth() {}
 };
 
 #endif  // Header Guard

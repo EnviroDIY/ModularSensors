@@ -17,7 +17,7 @@
 // #define MS_SODAQ2GBEER6_DEBUG_DEEP
 
 #ifdef MS_SODAQ2GBEER6_DEBUG
-#define MS_DEBUGGING_STD "Sodaq2GBeeR6"
+    #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
 
 // NOTE:  The GPRSBee R6+ has the PWR_KEY tied to the input voltage, so there is
@@ -30,7 +30,7 @@
 #include "SIMComSIM800.h"
 
 #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 class Sodaq2GBeeR6 : public SIMComSIM800
@@ -63,7 +63,6 @@ protected:
 
 private:
     int8_t _vRefPin;
-
 };
 
 #endif  // Header Guard

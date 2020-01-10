@@ -18,12 +18,12 @@
 // #define MS_ESPRESSIFESP8266_DEBUG_DEEP
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG
-#define MS_DEBUGGING_STD "EspressifESP8266"
+    #define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
 
 #define TINY_GSM_MODEM_ESP8266
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 
 // It is not possible to get status from the ESP8266 in deep sleep mode.
@@ -48,7 +48,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 
@@ -57,7 +57,7 @@ class EspressifESP8266 : public loggerModem
 
 public:
     // Constructor/Destructor
-    EspressifESP8266(Stream* modemStream,
+    EspressifESP8266(Stream *modemStream,
                      int8_t powerPin, int8_t statusPin,
                      int8_t modemResetPin, int8_t modemSleepRqPin,
                      const char *ssid, const char *pwd,
@@ -78,7 +78,7 @@ public:
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
@@ -99,7 +99,6 @@ private:
 
     int8_t _espSleepRqPin;
     int8_t _espStatusPin;
-
 };
 
 #endif  // Header Guard

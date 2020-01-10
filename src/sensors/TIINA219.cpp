@@ -8,11 +8,11 @@
 
 // The constructor - because this is I2C, only need the power pin
 TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
-     : Sensor("TIINA219", INA219_NUM_VARIABLES,
-              INA219_WARM_UP_TIME_MS, INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS,
-              powerPin, -1, measurementsToAverage)
+    : Sensor("TIINA219", INA219_NUM_VARIABLES,
+             INA219_WARM_UP_TIME_MS, INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
 {
-    _i2cAddressHex  = i2cAddressHex;
+    _i2cAddressHex = i2cAddressHex;
 }
 // Destructor
 TIINA219::~TIINA219(){};
@@ -42,7 +42,7 @@ bool TIINA219::setup(void)
     ina219_phy.begin();
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) powerDown();
 
     return true;
 }

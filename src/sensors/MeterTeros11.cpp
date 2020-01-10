@@ -50,8 +50,11 @@ bool MeterTeros11::addSingleMeasurementResult(void)
         // MS_DBG(F("   Activating SDI-12 instance for"), getSensorNameAndLocation());
         // Check if this the currently active SDI-12 Object
         bool wasActive = _SDI12Internal.isActive();
-        // if (wasActive) {MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-        //                       F("was already active!"));}
+        // if (wasActive)
+        // {
+        //     MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
+        //            F("was already active!"));
+        // }
         // If it wasn't active, activate it now.
         // Use begin() instead of just setActive() to ensure timer is set correctly.
         if (!wasActive) _SDI12Internal.begin();
@@ -75,7 +78,7 @@ bool MeterTeros11::addSingleMeasurementResult(void)
         if (raw < 0 || raw > 5000) raw = -9999;
         if (raw != -9999)
         {
-            ea = ((2.887e-9*(raw*raw*raw))-(2.08e-5*(raw*raw))+(5.276e-2 *raw)-43.39)*((2.887e-9*(raw*raw*raw))-(2.08e-5*(raw*raw))+(5.276e-2 *raw)-43.39);
+            ea = ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) + (5.276e-2 * raw) - 43.39) * ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) + (5.276e-2 * raw) - 43.39);
         }
         // Second variable returned is the temperature in °C
         temp = _SDI12Internal.parseFloat();
@@ -83,17 +86,14 @@ bool MeterTeros11::addSingleMeasurementResult(void)
         // the "third" variable of VWC is actually calculated (Topp equation for mineral soils), not returned by the sensor!
         if (ea != -9999)
         {
-            VWC = (4.3e-6*(ea*ea*ea))
-                        - (5.5e-4*(ea*ea))
-                        + (2.92e-2 * ea)
-                        - 5.3e-2 ;
+            VWC = (4.3e-6 * (ea * ea * ea)) - (5.5e-4 * (ea * ea)) + (2.92e-2 * ea) - 5.3e-2;
             VWC *= 100;  // Convert to actual percent
         }
 
         // VWC = 3.879e-4*raw-0.6956;  // equation for mineral soils
 
         if (VWC < 0) VWC = 0;
-        if (VWC > 100)  VWC = 100;
+        if (VWC > 100) VWC = 100;
 
         // String sdiResponse = _SDI12Internal.readStringUntil('\n');
         // sdiResponse.trim();

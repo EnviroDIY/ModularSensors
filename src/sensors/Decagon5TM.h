@@ -34,7 +34,7 @@
 // #define MS_DECAGON5TM_DEBUG
 
 #ifdef MS_DECAGON5TM_DEBUG
-#define MS_DEBUGGING_STD "Decagon5TM"
+    #define MS_DEBUGGING_STD "Decagon5TM"
 #endif
 
 // Included Dependencies
@@ -67,22 +67,22 @@ class Decagon5TM : public SDI12Sensors
 public:
     // Constructors with overloads
     Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "Decagon5TM", TM_NUM_VARIABLES,
-                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "Decagon5TM", TM_NUM_VARIABLES,
+                       TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
     Decagon5TM(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "Decagon5TM", TM_NUM_VARIABLES,
-                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "Decagon5TM", TM_NUM_VARIABLES,
+                       TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
     Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "Decagon5TM", TM_NUM_VARIABLES,
-                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "Decagon5TM", TM_NUM_VARIABLES,
+                       TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
     // Destructor
-    ~Decagon5TM(){}
+    ~Decagon5TM() {}
 
     virtual bool addSingleMeasurementResult(void) override;
 };
@@ -95,18 +95,18 @@ public:
     Decagon5TM_Ea(Sensor *parentSense,
                   const char *uuid = "",
                   const char *varCode = "SoilEa")
-      : Variable(parentSense,
-                 (const uint8_t)TM_EA_VAR_NUM,
-                 (uint8_t)TM_EA_RESOLUTION,
-                 "permittivity", "faradPerMeter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)TM_EA_VAR_NUM,
+                   (uint8_t)TM_EA_RESOLUTION,
+                   "permittivity", "faradPerMeter",
+                   varCode, uuid)
     {}
     Decagon5TM_Ea()
-      : Variable((const uint8_t)TM_EA_VAR_NUM,
-                 (uint8_t)TM_EA_RESOLUTION,
-                 "permittivity", "faradPerMeter", "SoilEa")
+        : Variable((const uint8_t)TM_EA_VAR_NUM,
+                   (uint8_t)TM_EA_RESOLUTION,
+                   "permittivity", "faradPerMeter", "SoilEa")
     {}
-    ~Decagon5TM_Ea(){}
+    ~Decagon5TM_Ea() {}
 };
 
 
@@ -117,18 +117,18 @@ public:
     Decagon5TM_Temp(Sensor *parentSense,
                     const char *uuid = "",
                     const char *varCode = "SoilTemp")
-      : Variable(parentSense,
-                 (const uint8_t)TM_TEMP_VAR_NUM,
-                 (uint8_t)TM_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)TM_TEMP_VAR_NUM,
+                   (uint8_t)TM_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     Decagon5TM_Temp()
-      : Variable((const uint8_t)TM_TEMP_VAR_NUM,
-                 (uint8_t)TM_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "SoilTemp")
+        : Variable((const uint8_t)TM_TEMP_VAR_NUM,
+                   (uint8_t)TM_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "SoilTemp")
     {}
-    ~Decagon5TM_Temp(){}
+    ~Decagon5TM_Temp() {}
 };
 
 
@@ -139,18 +139,18 @@ public:
     Decagon5TM_VWC(Sensor *parentSense,
                    const char *uuid = "",
                    const char *varCode = "SoilVWC")
-      : Variable(parentSense,
-                 (const uint8_t)TM_VWC_VAR_NUM,
-                 (uint8_t)TM_VWC_RESOLUTION,
-                 "volumetricWaterContent", "percent",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)TM_VWC_VAR_NUM,
+                   (uint8_t)TM_VWC_RESOLUTION,
+                   "volumetricWaterContent", "percent",
+                   varCode, uuid)
     {}
     Decagon5TM_VWC()
-      : Variable((const uint8_t)TM_VWC_VAR_NUM,
-                 (uint8_t)TM_VWC_RESOLUTION,
-                 "volumetricWaterContent", "percent", "SoilVWC")
+        : Variable((const uint8_t)TM_VWC_VAR_NUM,
+                   (uint8_t)TM_VWC_RESOLUTION,
+                   "volumetricWaterContent", "percent", "SoilVWC")
     {}
-    ~Decagon5TM_VWC(){}
+    ~Decagon5TM_VWC() {}
 };
 
 #endif  // Header Guard

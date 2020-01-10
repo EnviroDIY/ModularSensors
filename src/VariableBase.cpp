@@ -23,7 +23,7 @@ Variable::Variable(Sensor *parentSense,
                    const char *varUnit,
                    const char *varCode,
                    const char *uuid)
-  : _sensorVarNum(sensorVarNum)
+    : _sensorVarNum(sensorVarNum)
 {
     setVarUUID(uuid);
     setVarCode(varCode);
@@ -46,7 +46,7 @@ Variable::Variable(const uint8_t sensorVarNum,
                    const char *varName,
                    const char *varUnit,
                    const char *varCode)
-  : _sensorVarNum(sensorVarNum)
+    : _sensorVarNum(sensorVarNum)
 {
     _uuid = NULL;
     setVarCode(varCode);
@@ -74,7 +74,7 @@ Variable::Variable(float (*calcFxn)(),
                    const char *varUnit,
                    const char *varCode,
                    const char *uuid)
-  : _sensorVarNum(0)
+    : _sensorVarNum(0)
 {
     setVarUUID(uuid);
     setVarCode(varCode);
@@ -97,7 +97,7 @@ Variable::Variable(float (*calcFxn)(),
                    const char *varName,
                    const char *varUnit,
                    const char *varCode)
-  : _sensorVarNum(0)
+    : _sensorVarNum(0)
 {
     _uuid = NULL;
     setVarCode(varCode);
@@ -116,8 +116,8 @@ Variable::Variable(float (*calcFxn)(),
     // MS_DBG(F("Calculated Variable object created"));
 }
 Variable::Variable()
-  : _sensorVarNum(0),
-    _decimalResolution(0)
+    : _sensorVarNum(0),
+      _decimalResolution(0)
 {
     _varName = NULL;
     _varUnit = NULL;
@@ -137,7 +137,7 @@ Variable::Variable()
 
 
 // Destructor
-Variable::~Variable(){}
+Variable::~Variable() {}
 
 
 // This does all of the setup that can't happen in the constructors
@@ -283,7 +283,7 @@ void Variable::setCalculation(float (*calcFxn)())
 
 
 // This gets/sets the variable's resolution for value strings
-uint8_t Variable::getResolution(void){return _decimalResolution;}
+uint8_t Variable::getResolution(void) { return _decimalResolution; }
 void Variable::setResolution(uint8_t decimalResolution)
 {
     _decimalResolution = decimalResolution;
@@ -291,7 +291,7 @@ void Variable::setResolution(uint8_t decimalResolution)
 }
 
 // This gets/sets the variable's name using http://vocabulary.odm2.org/variablename/
-String Variable::getVarName(void){return _varName;}
+String Variable::getVarName(void) { return _varName; }
 void Variable::setVarName(const char *varName)
 {
     _varName = varName;
@@ -299,7 +299,7 @@ void Variable::setVarName(const char *varName)
 }
 
 // This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
-String Variable::getVarUnit(void){return _varUnit;}
+String Variable::getVarUnit(void) { return _varUnit; }
 void Variable::setVarUnit(const char *varUnit)
 {
     _varUnit = varUnit;
@@ -307,7 +307,7 @@ void Variable::setVarUnit(const char *varUnit)
 }
 
 // This returns a customized code for the variable
-String Variable::getVarCode(void){return _varCode;}
+String Variable::getVarCode(void) { return _varCode; }
 // This sets the variable code to a new custom value
 void Variable::setVarCode(const char *varCode)
 {
@@ -316,7 +316,7 @@ void Variable::setVarCode(const char *varCode)
 }
 
 // This returns the variable UUID, if one has been assigned
-String Variable::getVarUUID(void){return _uuid;}
+String Variable::getVarUUID(void) { return _uuid; }
 // This sets the UUID
 void Variable::setVarUUID(const char *uuid)
 {
@@ -350,7 +350,7 @@ bool Variable::checkUUIDFormat(void)
     }
 
     // "12345678-abcd-1234-ef00-1234567890ab"
-    const char * acceptableChars = "0123456789abcdefABCDEF-";
+    const char *acceptableChars = "0123456789abcdefABCDEF-";
     if (_uuid[8] != '-' || _uuid[13] != '-' || _uuid[18] != '-' || _uuid[23] != '-')
     {
         MS_DBG(F("UUID format for"), getVarCode(), '(', _uuid, ')',
@@ -371,7 +371,7 @@ bool Variable::checkUUIDFormat(void)
         if (!isAcceptable)
         {
             MS_DBG(F("UUID for"), getVarCode(), '(', _uuid, ')',
-                   F("has a bad character"), _uuid[i], F("at"), i+1);
+                   F("has a bad character"), _uuid[i], F("at"), i + 1);
             return false;
         }
     }
@@ -409,5 +409,7 @@ String Variable::getValueString(bool updateValue)
         return String(val);
     }
     else
-    {return String(getValue(updateValue), _decimalResolution);}
+    {
+        return String(getValue(updateValue), _decimalResolution);
+    }
 }

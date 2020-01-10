@@ -22,15 +22,15 @@
 
 // The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
 RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
-              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              -1, -1, 1)
+    : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
+             BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
+             -1, -1, 1)
 {
-    _i2cAddressHex  = i2cAddressHex;
+    _i2cAddressHex = i2cAddressHex;
     _rainPerTip = rainPerTip;
 }
 // Destructor
-RainCounterI2C::~RainCounterI2C(){}
+RainCounterI2C::~RainCounterI2C() {}
 
 
 String RainCounterI2C::getSensorLocation(void)
@@ -62,7 +62,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
     uint8_t Byte1 = 0;  // Low byte of data
     uint8_t Byte2 = 0;  // High byte of data
 
-    float rain = -9999;  // Number of mm of rain
+    float rain = -9999;    // Number of mm of rain
     int16_t tips = -9999;  // Number of tip events
 
     // Get data from external tip counter
@@ -74,7 +74,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
         Byte1 = Wire.read();
         Byte2 = Wire.read();
 
-        tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
+        tips = (Byte2 << 8) | (Byte1);     // Concatenate tip values
         rain = float(tips) * _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 
         if (tips < 0) tips = -9999;  // If negetive value results, return failure

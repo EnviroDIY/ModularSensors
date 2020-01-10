@@ -37,7 +37,7 @@
 // #define MS_APOGEESQ212_DEBUG
 
 #ifdef MS_APOGEESQ212_DEBUG
-#define MS_DEBUGGING_STD "ApogeeSQ212"
+    #define MS_DEBUGGING_STD "ApogeeSQ212"
 #endif
 
 // Included Dependencies
@@ -59,16 +59,16 @@
 
 #define SQ212_PAR_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-#define SQ212_PAR_RESOLUTION 0
+    #define SQ212_PAR_RESOLUTION 0
 #else
-#define SQ212_PAR_RESOLUTION 4
+    #define SQ212_PAR_RESOLUTION 4
 #endif
 
 #define SQ212_VOLTAGE_VAR_NUM 1
 #ifdef MS_USE_ADS1015
-#define SQ212_VOLT_RESOLUTION 1
+    #define SQ212_VOLT_RESOLUTION 1
 #else
-#define SQ212_VOLT_RESOLUTION 4
+    #define SQ212_VOLT_RESOLUTION 4
 #endif
 
 // The main class for the Apogee SQ-212 sensor
@@ -89,7 +89,6 @@ public:
 protected:
     uint8_t _adsChannel;
     uint8_t _i2cAddress;
-
 };
 
 
@@ -100,17 +99,17 @@ public:
     ApogeeSQ212_PAR(Sensor *parentSense,
                     const char *uuid = "",
                     const char *varCode = "photosyntheticallyActiveRadiation")
-      : Variable(parentSense,
-                 (const uint8_t)SQ212_PAR_VAR_NUM,
-                 (uint8_t)SQ212_PAR_RESOLUTION,
-                 "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)SQ212_PAR_VAR_NUM,
+                   (uint8_t)SQ212_PAR_RESOLUTION,
+                   "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
+                   varCode, uuid)
     {}
     ApogeeSQ212_PAR()
-      : Variable((const uint8_t)SQ212_PAR_VAR_NUM,
-                 (uint8_t)SQ212_PAR_RESOLUTION,
-                 "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
-                 "photosyntheticallyActiveRadiation")
+        : Variable((const uint8_t)SQ212_PAR_VAR_NUM,
+                   (uint8_t)SQ212_PAR_RESOLUTION,
+                   "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
+                   "photosyntheticallyActiveRadiation")
     {}
     ~ApogeeSQ212_PAR(){};
 };
@@ -123,16 +122,16 @@ public:
     ApogeeSQ212_Voltage(Sensor *parentSense,
                         const char *uuid = "",
                         const char *varCode = "SQ212Voltage")
-      : Variable(parentSense,
-                 (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                 (uint8_t)SQ212_VOLT_RESOLUTION,
-                 "voltage", "volt",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
+                   (uint8_t)SQ212_VOLT_RESOLUTION,
+                   "voltage", "volt",
+                   varCode, uuid)
     {}
     ApogeeSQ212_Voltage()
-      : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                 (uint8_t)SQ212_VOLT_RESOLUTION,
-                 "voltage", "volt", "SQ212Voltage")
+        : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
+                   (uint8_t)SQ212_VOLT_RESOLUTION,
+                   "voltage", "volt", "SQ212Voltage")
     {}
     ~ApogeeSQ212_Voltage(){};
 };

@@ -32,7 +32,7 @@ volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards
 #if defined(ARDUINO_ARCH_SAMD)
-    RTCZero Logger::zero_sleep_rtc;
+RTCZero Logger::zero_sleep_rtc;
 #endif
 
 
@@ -135,8 +135,7 @@ Logger::Logger()
     // MS_DBG(F("Logger object created"));
 }
 // Destructor
-Logger::~Logger(){}
-
+Logger::~Logger() {}
 
 
 // ===================================================================== //
@@ -236,7 +235,7 @@ void Logger::setRTCWakePin(int8_t mcuWakePin)
 void Logger::setAlertPin(int8_t ledPin)
 {
     _ledPin = ledPin;
-    if (_ledPin >= 0 )
+    if (_ledPin >= 0)
     {
         pinMode(_ledPin, OUTPUT);
     }
@@ -286,7 +285,6 @@ void Logger::setLoggerPins(int8_t mcuWakePin,
     setTestingModePin(buttonPin);
     setAlertPin(ledPin);
 }
-
 
 
 // ===================================================================== //
@@ -345,7 +343,6 @@ String Logger::getValueStringAtI(uint8_t position_i)
 }
 
 
-
 // ===================================================================== //
 // Public functions for internet and dataPublishers
 // ===================================================================== //
@@ -353,7 +350,7 @@ String Logger::getValueStringAtI(uint8_t position_i)
 // Set up communications
 // Adds a loggerModem objct to the logger
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-void Logger::attachModem(loggerModem& modem)
+void Logger::attachModem(loggerModem &modem)
 {
     _logModem = &modem;
 }
@@ -399,7 +396,7 @@ bool Logger::syncRTC()
 }
 
 
-void Logger::registerDataPublisher(dataPublisher* publisher)
+void Logger::registerDataPublisher(dataPublisher *publisher)
 {
     // find the next empty spot in the publisher array
     uint8_t i = 0;
@@ -426,7 +423,7 @@ void Logger::publishDataToRemotes(void)
     {
         if (dataPublishers[i] != NULL)
         {
-            PRINTOUT(F("\nSending data to ["),i,F("]"), dataPublishers[i]->getEndpoint());
+            PRINTOUT(F("\nSending data to ["), i, F("]"), dataPublishers[i]->getEndpoint());
             // dataPublishers[i]->publishData(_logModem->getClient());
             dataPublishers[i]->publishData();
             watchDogTimer.resetWatchDog();
@@ -434,7 +431,6 @@ void Logger::publishDataToRemotes(void)
     }
 }
 void Logger::sendDataToRemotes(void) { publishDataToRemotes(); }
-
 
 
 // ===================================================================== //
@@ -445,22 +441,22 @@ void Logger::sendDataToRemotes(void) { publishDataToRemotes(); }
 void Logger::setLoggerTimeZone(int8_t timeZone)
 {
     _loggerTimeZone = timeZone;
-    // Some helpful prints for debugging
-    #ifdef STANDARD_SERIAL_OUTPUT
-        const char* prtout1 = "Logger timezone is set to UTC";
-        if (_loggerTimeZone == 0)
-        {
-            PRINTOUT(prtout1);
-        }
-        else if (_loggerTimeZone > 0)
-        {
-            PRINTOUT(prtout1, '+', _loggerTimeZone);
-        }
-        else
-        {
-            PRINTOUT(prtout1, _loggerTimeZone);
-        }
-    #endif
+// Some helpful prints for debugging
+#ifdef STANDARD_SERIAL_OUTPUT
+    const char *prtout1 = "Logger timezone is set to UTC";
+    if (_loggerTimeZone == 0)
+    {
+        PRINTOUT(prtout1);
+    }
+    else if (_loggerTimeZone > 0)
+    {
+        PRINTOUT(prtout1, '+', _loggerTimeZone);
+    }
+    else
+    {
+        PRINTOUT(prtout1, _loggerTimeZone);
+    }
+#endif
 }
 int8_t Logger::getLoggerTimeZone(void)
 {
@@ -477,22 +473,22 @@ int8_t Logger::getTimeZone(void) { return getLoggerTimeZone(); }
 void Logger::setRTCTimeZone(int8_t timeZone)
 {
     _loggerRTCOffset = _loggerTimeZone - timeZone;
-    // Some helpful prints for debugging
-    #ifdef STANDARD_SERIAL_OUTPUT
-        const char* prtout1 = "RTC timezone is set to UTC";
-        if ((_loggerTimeZone - _loggerRTCOffset) == 0)
-        {
-            PRINTOUT(prtout1);
-        }
-        else if ((_loggerTimeZone - _loggerRTCOffset) > 0)
-        {
-            PRINTOUT(prtout1, '+', (_loggerTimeZone - _loggerRTCOffset));
-        }
-        else
-        {
-            PRINTOUT(prtout1, (_loggerTimeZone - _loggerRTCOffset));
-        }
-    #endif
+// Some helpful prints for debugging
+#ifdef STANDARD_SERIAL_OUTPUT
+    const char *prtout1 = "RTC timezone is set to UTC";
+    if ((_loggerTimeZone - _loggerRTCOffset) == 0)
+    {
+        PRINTOUT(prtout1);
+    }
+    else if ((_loggerTimeZone - _loggerRTCOffset) > 0)
+    {
+        PRINTOUT(prtout1, '+', (_loggerTimeZone - _loggerRTCOffset));
+    }
+    else
+    {
+        PRINTOUT(prtout1, (_loggerTimeZone - _loggerRTCOffset));
+    }
+#endif
 }
 int8_t Logger::getRTCTimeZone(void)
 {
@@ -516,7 +512,7 @@ void Logger::setTZOffset(int8_t offset)
     }
     else if (_loggerRTCOffset < 0)
     {
-        PRINTOUT(F("RTC is set"), -1*_loggerRTCOffset, F("hours ahead of logging timezone"));
+        PRINTOUT(F("RTC is set"), -1 * _loggerRTCOffset, F("hours ahead of logging timezone"));
     }
     else
     {
@@ -534,21 +530,21 @@ int8_t Logger::getTZOffset(void)
 
 uint32_t Logger::getNowEpoch(void)
 {
-  uint32_t currentEpochTime = rtc.now().getEpoch();
-  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
-  return currentEpochTime;
+    uint32_t currentEpochTime = rtc.now().getEpoch();
+    currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
+    return currentEpochTime;
 }
-void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
+void Logger::setNowEpoch(uint32_t ts) { rtc.setEpoch(ts); }
 
 #elif defined ARDUINO_ARCH_SAMD
 
 uint32_t Logger::getNowEpoch(void)
 {
-  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
-  return currentEpochTime;
+    uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+    currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
+    return currentEpochTime;
 }
-void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+void Logger::setNowEpoch(uint32_t ts) { zero_sleep_rtc.setEpoch(ts); }
 
 #endif
 
@@ -563,7 +559,7 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 // This converts a date-time object into a ISO8601 formatted string
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
-String Logger::formatDateTime_ISO8601(DateTime& dt)
+String Logger::formatDateTime_ISO8601(DateTime &dt)
 {
     // Set up an inital string
     String dateTimeStr;
@@ -577,7 +573,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
     }
     else if (-10 < _loggerTimeZone && _loggerTimeZone < 0)
     {
-        tzString = tzString.substring(0,1) + '0' + tzString.substring(1,2) + F(":00");
+        tzString = tzString.substring(0, 1) + '0' + tzString.substring(1, 2) + F(":00");
     }
     else if (_loggerTimeZone == 0)
     {
@@ -611,7 +607,7 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 bool Logger::setRTClock(uint32_t UTCEpochSeconds)
 {
     // If the timestamp is zero, just exit
-    if  (UTCEpochSeconds == 0)
+    if (UTCEpochSeconds == 0)
     {
         PRINTOUT(F("Bad timestamp, not setting clock."));
         return false;
@@ -621,15 +617,15 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // We're interested in the setTime in the logger's and RTC's timezone
     // The RTC's timezone is equal to the logger's timezone minus the offset
     // between the logger and the RTC.
-    uint32_t set_logTZ = UTCEpochSeconds + ((uint32_t)getLoggerTimeZone())*3600;
-    uint32_t set_rtcTZ = set_logTZ - ((uint32_t)getTZOffset())*3600;
-    MS_DBG(F("    Time for Logger supplied by NIST:"), set_logTZ, \
-        F("->"), formatDateTime_ISO8601(set_logTZ));
+    uint32_t set_logTZ = UTCEpochSeconds + ((uint32_t)getLoggerTimeZone()) * 3600;
+    uint32_t set_rtcTZ = set_logTZ - ((uint32_t)getTZOffset()) * 3600;
+    MS_DBG(F("    Time for Logger supplied by NIST:"), set_logTZ,
+           F("->"), formatDateTime_ISO8601(set_logTZ));
 
     // Check the current RTC time
     uint32_t cur_logTZ = getNowEpoch();
-    MS_DBG(F("    Current Time on RTC:"), cur_logTZ, F("->"), \
-        formatDateTime_ISO8601(cur_logTZ));
+    MS_DBG(F("    Current Time on RTC:"), cur_logTZ, F("->"),
+           formatDateTime_ISO8601(cur_logTZ));
     MS_DBG(F("    Offset between NIST and RTC:"), abs(set_logTZ - cur_logTZ));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
@@ -654,8 +650,8 @@ bool Logger::isRTCSane(void)
 }
 bool Logger::isRTCSane(uint32_t epochTime)
 {
-    if (epochTime < 1577836800 ||  /*Before January 1, 2020*/
-        epochTime > 1735689600)  /*After January 1, 2025*/
+    if (epochTime < 1577836800 || /*Before January 1, 2020*/
+        epochTime > 1735689600)   /*After January 1, 2025*/
     {
         return false;
     }
@@ -684,12 +680,12 @@ bool Logger::checkInterval(void)
 {
     bool retval;
     uint32_t checkTime = getNowEpoch();
-    MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"), \
-        formatDateTime_ISO8601(checkTime));
-    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes*60));
-    MS_DBG(F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
+    MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
+           formatDateTime_ISO8601(checkTime));
+    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
+    MS_DBG(F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes * 60));
 
-    if (checkTime % (_loggingIntervalMinutes*60) == 0)
+    if (checkTime % (_loggingIntervalMinutes * 60) == 0)
     {
         // Update the time variables with the current time
         markTime();
@@ -759,11 +755,11 @@ bool Logger::checkMarkedInterval(void)
 {
     bool retval;
     MS_DBG(F("Marked Time:"), Logger::markedEpochTime,
-           F("Logging interval in seconds:"), (_loggingIntervalMinutes*60),
-           F("Mod of Logging Interval:"), Logger::markedEpochTime % (_loggingIntervalMinutes*60));
+           F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60),
+           F("Mod of Logging Interval:"), Logger::markedEpochTime % (_loggingIntervalMinutes * 60));
 
     if (Logger::markedEpochTime != 0 &&
-        (Logger::markedEpochTime % (_loggingIntervalMinutes*60) == 0))
+        (Logger::markedEpochTime % (_loggingIntervalMinutes * 60) == 0))
     {
         MS_DBG(F("Time to log!"));
         retval = true;
@@ -801,7 +797,7 @@ void Logger::systemSleep(void)
         return;
     }
 
-    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
     // cannot interrupt on any frequencies other than every second, minute,
@@ -820,10 +816,10 @@ void Logger::systemSleep(void)
     pinMode(_mcuWakePin, INPUT_PULLUP);
     enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
-    #elif defined ARDUINO_ARCH_SAMD
+#elif defined ARDUINO_ARCH_SAMD
 
     // Make sure interrupts are enabled for the clock
-    NVIC_EnableIRQ(RTC_IRQn);  // enable RTC interrupt
+    NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
     NVIC_SetPriority(RTC_IRQn, 0);  // highest priority
 
     // Alarms on the RTC built into the SAMD21 appear to be identical to those
@@ -836,63 +832,63 @@ void Logger::systemSleep(void)
     zero_sleep_rtc.setAlarmSeconds(59);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
-    #endif
+#endif
 
     // Send one last message before shutting down serial ports
     MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
 
-    // Wait until the serial ports have finished transmitting
-    // This does not clear their buffers, it just waits until they are finished
-    // TODO:  Make sure can find all serial ports
-    #if defined(STANDARD_SERIAL_OUTPUT)
-        STANDARD_SERIAL_OUTPUT.flush();  // for debugging
-    #endif
-    #if defined DEBUGGING_SERIAL_OUTPUT
-        DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
-    #endif
+// Wait until the serial ports have finished transmitting
+// This does not clear their buffers, it just waits until they are finished
+// TODO:  Make sure can find all serial ports
+#if defined(STANDARD_SERIAL_OUTPUT)
+    STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+#endif
+#if defined DEBUGGING_SERIAL_OUTPUT
+    DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
+#endif
 
     // Stop any I2C connections
     // This function actually disables the two-wire pin functionality and
     // turns off the internal pull-up resistors.
     Wire.end();
-    // Now force the I2C pins to LOW
-    // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
-    // This will only work for the "main" I2C/TWI interface
-    #ifdef SDA
+// Now force the I2C pins to LOW
+// I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
+// This will only work for the "main" I2C/TWI interface
+#ifdef SDA
     pinMode(SDA, OUTPUT);
     digitalWrite(SDA, LOW);
-    #endif
-    #ifdef SCL
+#endif
+#ifdef SCL
     pinMode(SCL, OUTPUT);
     digitalWrite(SCL, LOW);
-    #endif
+#endif
 
-    #if defined ARDUINO_ARCH_SAMD
+#if defined ARDUINO_ARCH_SAMD
 
     // Disable the watch-dog timer
     watchDogTimer.disableWatchDog();
 
     // Sleep code from ArduinoLowPowerClass::sleep()
     bool restoreUSBDevice = false;
-	// if (SERIAL_PORT_USBVIRTUAL)
+    // if (SERIAL_PORT_USBVIRTUAL)
     // {
-	// 	USBDevice.standby();
-	// }
+    // 	USBDevice.standby();
+    // }
     // else
     // {
-        #ifndef USE_TINYUSB
-		USBDevice.detach();
-        #endif
-		restoreUSBDevice = true;
-	// }
-	// Disable systick interrupt:  See https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
-	SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+    #ifndef USE_TINYUSB
+    USBDevice.detach();
+    #endif
+    restoreUSBDevice = true;
+    // }
+    // Disable systick interrupt:  See https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
+    SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
     // Now go to sleep
-	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-	__DSB();
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    __DSB();
     __WFI();
 
-    #elif defined ARDUINO_ARCH_AVR
+#elif defined ARDUINO_ARCH_AVR
 
     // Set the sleep mode
     // In the avr/sleep.h file, the call names of these 5 sleep modes are:
@@ -919,7 +915,7 @@ void Logger::systemSleep(void)
     // BODS = brown-out detector sleep
     // BODSE = brown-out detector sleep enable
     #if defined(BODS) && defined(BODSE)
-        sleep_bod_disable();
+    sleep_bod_disable();
     #endif
 
     // disable all power-reduction modules (ie, the processor module clocks)
@@ -940,28 +936,28 @@ void Logger::systemSleep(void)
     // This must happen after the SE bit is set.
     sleep_cpu();
 
-    #endif
+#endif
     // ---------------------------------------------------------------------
 
 
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
 
-    #if defined ARDUINO_ARCH_SAMD
+#if defined ARDUINO_ARCH_SAMD
     // Reattach the USB after waking
-	// Enable systick interrupt
-	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
-	if (restoreUSBDevice)
+    // Enable systick interrupt
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+    if (restoreUSBDevice)
     {
-        #ifndef USE_TINYUSB
-		USBDevice.attach();
-        #endif
-        uint32_t startTimer = millis();
-        while (!SERIAL_PORT_USBVIRTUAL && ((millis()- startTimer) < 1000L)){}
-    }
+    #ifndef USE_TINYUSB
+        USBDevice.attach();
     #endif
+        uint32_t startTimer = millis();
+        while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {}
+    }
+#endif
 
-    #if defined ARDUINO_ARCH_AVR
+#if defined ARDUINO_ARCH_AVR
 
     // Temporarily disables interrupts, so no mistakes are made when writing
     // to the processor registers
@@ -981,18 +977,18 @@ void Logger::systemSleep(void)
     // Re-enables interrupts
     interrupts();
 
-    #endif
+#endif
 
     // Re-enable the watch-dog timer
     watchDogTimer.enableWatchDog();
 
-    // Re-start the I2C interface
-    #ifdef SDA
+// Re-start the I2C interface
+#ifdef SDA
     pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
-    #endif
-    #ifdef SCL
+#endif
+#ifdef SCL
     pinMode(SCL, INPUT_PULLUP);
-    #endif
+#endif
     Wire.begin();
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -1003,7 +999,7 @@ void Logger::systemSleep(void)
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste thought on the clock interrupt if it
     // happens while the processor is awake and doing other things.
@@ -1011,9 +1007,9 @@ void Logger::systemSleep(void)
     // Detach the from the pin
     disableInterrupt(_mcuWakePin);
 
-    #elif defined ARDUINO_ARCH_SAMD
+#elif defined ARDUINO_ARCH_SAMD
     zero_sleep_rtc.disableAlarm();
-    #endif
+#endif
 
     // Wake-up message
     MS_DBG(F("\n\n\n... zzzZZ Processor is now awake!"));
@@ -1028,7 +1024,7 @@ void Logger::systemSleep(void)
 // ===================================================================== //
 
 // This sets a file name, if you want to decide on it in advance
-void Logger::setFileName(String& fileName)
+void Logger::setFileName(String &fileName)
 {
     _fileName = fileName;
 }
@@ -1046,10 +1042,10 @@ void Logger::setFileName(const char *fileName)
 void Logger::generateAutoFileName(void)
 {
     // Generate the file name from logger ID and date
-    String fileName =  String(_loggerID);
-    fileName +=  "_";
-    fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
-    fileName +=  ".csv";
+    String fileName = String(_loggerID);
+    fileName += "_";
+    fileName += formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+    fileName += ".csv";
     setFileName(fileName);
     _fileName = fileName;
 }
@@ -1057,20 +1053,20 @@ void Logger::generateAutoFileName(void)
 
 // This is a PRE-PROCESSOR MACRO to speed up generating header rows
 // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-#define STREAM_CSV_ROW(firstCol, function) \
-    stream->print("\""); \
-    stream->print(firstCol); \
-    stream->print("\","); \
+#define STREAM_CSV_ROW(firstCol, function)           \
+    stream->print("\"");                             \
+    stream->print(firstCol);                         \
+    stream->print("\",");                            \
     for (uint8_t i = 0; i < getArrayVarCount(); i++) \
-    { \
-        stream->print("\""); \
-        stream->print(function); \
-        stream->print("\""); \
-        if (i + 1 != getArrayVarCount()) \
-        { \
-            stream->print(","); \
-        } \
-    } \
+    {                                                \
+        stream->print("\"");                         \
+        stream->print(function);                     \
+        stream->print("\"");                         \
+        if (i + 1 != getArrayVarCount())             \
+        {                                            \
+            stream->print(",");                      \
+        }                                            \
+    }                                                \
     stream->println();
 
 // This sends a file header out over an Arduino stream
@@ -1159,7 +1155,7 @@ bool Logger::initializeSDCard(void)
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         MS_DBG(F("Successfully connected to SD Card with card/slave select on pin"),
-                 _SDCardSSPin);
+               _SDCardSSPin);
         return true;
     }
 }
@@ -1169,21 +1165,24 @@ bool Logger::initializeSDCard(void)
 void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
-                                     dtFromEpoch(getNowEpoch()).month(),
-                                     dtFromEpoch(getNowEpoch()).date(),
-                                     dtFromEpoch(getNowEpoch()).hour(),
-                                     dtFromEpoch(getNowEpoch()).minute(),
-                                     dtFromEpoch(getNowEpoch()).second());
+                          dtFromEpoch(getNowEpoch()).month(),
+                          dtFromEpoch(getNowEpoch()).date(),
+                          dtFromEpoch(getNowEpoch()).hour(),
+                          dtFromEpoch(getNowEpoch()).minute(),
+                          dtFromEpoch(getNowEpoch()).second());
 }
 
 
 // Protected helper function - This opens or creates a file, converting a string
 // file name to a character file name
-bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader)
+bool Logger::openFile(String &filename, bool createFile, bool writeDefaultHeader)
 {
     // Initialise the SD card
     // skip everything else if there's no SD card, otherwise it might hang
-    if (!initializeSDCard()) return false;
+    if (!initializeSDCard())
+    {
+        return false;
+    }
 
     // Convert the string filename to a character file name for SdFat
     uint8_t fileNameLength = filename.length() + 1;
@@ -1214,12 +1213,12 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
             {
                 // Add header information
                 printFileHeader(&logFile);
-                // Print out the header for debugging
-                #if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_STD
-                    MS_DBG(F("\n \\/---- File Header ----\\/"));
-                    printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
-                    MS_DBG('\n');
-                #endif
+// Print out the header for debugging
+#if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_STD
+                MS_DBG(F("\n \\/---- File Header ----\\/"));
+                printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
+                MS_DBG('\n');
+#endif
                 // Set write/modification date time
                 setFileTimestamp(logFile, T_WRITE);
             }
@@ -1250,7 +1249,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
 // If specified, it will also write a header to the file based on
 // the sensors in the group.
 // This can be used to force a logger to create a file with a secondary file name.
-bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
+bool Logger::createLogFile(String &filename, bool writeDefaultHeader)
 {
     // Attempt to create and open a file
     if (openFile(filename, true, writeDefaultHeader))
@@ -1269,7 +1268,10 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
 }
 bool Logger::createLogFile(bool writeDefaultHeader)
 {
-    if (_fileName == "") generateAutoFileName();
+    if (_fileName == "")
+    {
+        generateAutoFileName();
+    }
     return createLogFile(_fileName, writeDefaultHeader);
 }
 
@@ -1280,7 +1282,7 @@ bool Logger::createLogFile(bool writeDefaultHeader)
 // or can be specified in the function.
 // If the file does not already exist, the file will be created.
 // This can be used to force a logger to write to a file with a secondary file name.
-bool Logger::logToSD(String& filename, String& rec)
+bool Logger::logToSD(String &filename, String &rec)
 {
     // First attempt to open the file without creating a new one
     if (!openFile(filename, false, false))
@@ -1309,10 +1311,13 @@ bool Logger::logToSD(String& filename, String& rec)
     logFile.close();
     return true;
 }
-bool Logger::logToSD(String& rec)
+bool Logger::logToSD(String &rec)
 {
     // Get a new file name if the name is blank
-    if (_fileName == "") generateAutoFileName();
+    if (_fileName == "")
+    {
+        generateAutoFileName();
+    }
     return logToSD(_fileName, rec);
 }
 // NOTE:  This is structured differently than the version with a string input
@@ -1334,17 +1339,16 @@ bool Logger::logToSD(void)
             PRINTOUT(F("Unable to write to SD card!"));
             return false;
         }
-
     }
 
     // Write the data
     printSensorDataCSV(&logFile);
-    // Echo the line to the serial port
-    #if defined(STANDARD_SERIAL_OUTPUT)
-        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
-        printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
-        PRINTOUT('\n');
-    #endif
+// Echo the line to the serial port
+#if defined(STANDARD_SERIAL_OUTPUT)
+    PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
+    printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
+    PRINTOUT('\n');
+#endif
 
     // Set write/modification date time
     setFileTimestamp(logFile, T_WRITE);
@@ -1435,10 +1439,10 @@ void Logger::testingMode()
         // Print out the current logger time
         PRINTOUT(F("Current logger time is"), formatDateTime_ISO8601(getNowEpoch()));
         PRINTOUT(F("-----------------------"));
-        // Print out the sensor data
-        #if defined(STANDARD_SERIAL_OUTPUT)
-            _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
-        #endif
+// Print out the sensor data
+#if defined(STANDARD_SERIAL_OUTPUT)
+        _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
+#endif
         PRINTOUT(F("-----------------------"));
         watchDogTimer.resetWatchDog();
 
@@ -1492,7 +1496,7 @@ void Logger::begin()
 
     MS_DBG(F("Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
     // watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
-    watchDogTimer.setupWatchDog((uint32_t)(5*60*3));
+    watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
@@ -1510,7 +1514,7 @@ void Logger::begin()
         MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
     }
     // Set pin mode for LED pin
-    if (_ledPin >= 0 )
+    if (_ledPin >= 0)
     {
         pinMode(_ledPin, OUTPUT);
         MS_DBG(F("Pin"), _ledPin, F("set as LED alert pin"));
@@ -1523,20 +1527,20 @@ void Logger::begin()
                F("can be used to enter sensor testing mode."));
     }
 
-    #if defined ARDUINO_ARCH_SAMD
-        MS_DBG(F("Beginning internal real time clock"));
-        zero_sleep_rtc.begin();
-    #endif
+#if defined ARDUINO_ARCH_SAMD
+    MS_DBG(F("Beginning internal real time clock"));
+    zero_sleep_rtc.begin();
+#endif
     watchDogTimer.resetWatchDog();
 
     // Set the pins for I2C
     MS_DBG(F("Setting I2C Pins to INPUT_PULLUP"));
-    #ifdef SDA
+#ifdef SDA
     pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
-    #endif
-    #ifdef SCL
+#endif
+#ifdef SCL
     pinMode(SCL, INPUT_PULLUP);
-    #endif
+#endif
     MS_DBG(F("Beginning wire (I2C)"));
     Wire.begin();
     watchDogTimer.resetWatchDog();
@@ -1550,19 +1554,19 @@ void Logger::begin()
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
-        if (_mcuWakePin < 0)
-        {
-            MS_DBG(F("Logger mcu will not sleep between readings!"));
-        }
-        else
-        {
-            pinMode(_mcuWakePin, INPUT_PULLUP);
-            MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
-        }
-        MS_DBG(F("Beginning DS3231 real time clock"));
-        rtc.begin();
-    #endif
+#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    if (_mcuWakePin < 0)
+    {
+        MS_DBG(F("Logger mcu will not sleep between readings!"));
+    }
+    else
+    {
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+        MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
+    }
+    MS_DBG(F("Beginning DS3231 real time clock"));
+    rtc.begin();
+#endif
     watchDogTimer.resetWatchDog();
 
     // Print out the current time
@@ -1574,10 +1578,10 @@ void Logger::begin()
     // Begin the internal array
     _internalArray->begin();
     PRINTOUT(F("This logger has a variable array with"),
-         getArrayVarCount(), F("variables, of which"),
-         getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
-         F("come from"), _internalArray->getSensorCount(), F("sensors and"),
-         _internalArray->getCalculatedVariableCount(), F("are calculated."));
+             getArrayVarCount(), F("variables, of which"),
+             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
+             F("come from"), _internalArray->getSensorCount(), F("sensors and"),
+             _internalArray->getCalculatedVariableCount(), F("are calculated."));
 
     if (_samplingFeatureUUID != NULL)
     {
@@ -1633,7 +1637,10 @@ void Logger::logData(void)
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
+    if (Logger::startTesting)
+    {
+        testingMode();
+    }
 
     // Sleep
     systemSleep();

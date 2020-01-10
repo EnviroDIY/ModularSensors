@@ -17,14 +17,14 @@
 
 // Constructor
 AtlasScientificEC::AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex,
-                  uint8_t measurementsToAverage)
- : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
-                ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
-                ATLAS_COND_MEASUREMENT_TIME_MS)
+                                     uint8_t measurementsToAverage)
+    : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                  "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
+                  ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
+                  ATLAS_COND_MEASUREMENT_TIME_MS)
 {}
 // Destructor
-AtlasScientificEC::~AtlasScientificEC(){}
+AtlasScientificEC::~AtlasScientificEC() {}
 
 
 // Setup
@@ -35,7 +35,7 @@ bool AtlasScientificEC::setup()
     // This sensor needs power for setup!
     // We want to turn on all possible measurement parameters
     bool wasOn = checkPowerOn();
-    if (!wasOn) {powerUp();}
+    if (!wasOn) powerUp();
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report conductivity"));
@@ -71,7 +71,7 @@ bool AtlasScientificEC::setup()
     }
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) powerDown();
 
     return success;
 }

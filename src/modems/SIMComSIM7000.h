@@ -16,13 +16,13 @@
 // #define MS_SIMCOMSIM7000_DEBUG_DEEP
 
 #ifdef MS_SIMCOMSIM7000_DEBUG
-#define MS_DEBUGGING_STD "SIMComSIM7000"
+    #define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
 
 #define TINY_GSM_MODEM_SIM7000
 #define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Time after end pulse until status pin becomes active (>4.5sec)
@@ -42,7 +42,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 
@@ -51,7 +51,7 @@ class SIMComSIM7000 : public loggerModem
 
 public:
     // Constructor/Destructor
-    SIMComSIM7000(Stream* modemStream,
+    SIMComSIM7000(Stream *modemStream,
                   int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
                   const char *apn);
@@ -84,7 +84,6 @@ protected:
 
 private:
     const char *_apn;
-
 };
 
 #endif  // Header Guard

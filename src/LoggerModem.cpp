@@ -174,9 +174,7 @@ bool loggerModem::modemSleepPowerDown(void)
             MS_DBG(F("Waiting up to"), _disconnetTime_ms,
                    F("milliseconds for graceful shutdown as indicated by pin"),
                    _statusPin, F("going"), !_statusLevel, F("..."));
-            while (millis() - start < _disconnetTime_ms && digitalRead(_statusPin) == _statusLevel)
-            {
-            }
+            while (millis() - start < _disconnetTime_ms && digitalRead(_statusPin) == _statusLevel) {}
             if (digitalRead(_statusPin) == _statusLevel)
             {
                 MS_DBG(F("... "), getModemName(), F("did not successfully shut down!"));
@@ -189,9 +187,7 @@ bool loggerModem::modemSleepPowerDown(void)
         else if (_disconnetTime_ms > 0)
         {
             MS_DBG(F("Waiting"), _disconnetTime_ms, F("ms for graceful shutdown."));
-            while (millis() - start < _disconnetTime_ms)
-            {
-            }
+            while (millis() - start < _disconnetTime_ms) {}
         }
 
         // _priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
@@ -257,19 +253,31 @@ bool loggerModem::updateModemMetadata(void)
     MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
     MS_DBG(F("CURRENT Modem Battery Voltage:"), bpercent);
     if (state != 99)
+    {
         _priorBatteryState = (float)state;
+    }
     else
+    {
         _priorBatteryState = (float)-9999;
+    }
 
     if (bpercent != -99)
+    {
         _priorBatteryPercent = (float)bpercent;
+    }
     else
+    {
         _priorBatteryPercent = (float)-9999;
+    }
 
     if (volt != 9999)
+    {
         _priorBatteryVoltage = (float)volt;
+    }
     else
+    {
         _priorBatteryVoltage = (float)-9999;
+    }
 
     _priorModemTemp = getModemChipTemperature();
     MS_DBG(F("CURRENT Modem Chip Temperature:"), _priorModemTemp);
@@ -331,14 +339,14 @@ float loggerModem::getModemTemperature()
 // Helper to get approximate RSSI from CSQ (assuming no noise)
 int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
 {
-    int16_t CSQs[33]  = {   0,    1,    2,    3,    4,    5,    6,   7,   8,   9,
-                           10,   11,   12,   13,   14,   15,   16,  17,  18,  19,
-                           20,   21,   22,   23,   24,   25,   26,  27,  28,  29,
-                           30,   31,   99};
+    int16_t CSQs[33] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                        10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+                        20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+                        30, 31, 99};
     int16_t RSSIs[33] = {-113, -111, -109, -107, -105, -103, -101, -99, -97, -95,
-                          -93,  -91,  -89,  -87,  -85,  -83,  -81, -79, -77, -75,
-                          -73,  -71,  -69,  -67,  -65,  -63,  -61, -59, -57, -55,
-                          -53,  -51,    0};
+                         -93, -91, -89, -87, -85, -83, -81, -79, -77, -75,
+                         -73, -71, -69, -67, -65, -63, -61, -59, -57, -55,
+                         -53, -51, 0};
     for (uint8_t i = 0; i < 33; i++)
     {
         if (CSQs[i] == csq) return RSSIs[i];
@@ -349,14 +357,14 @@ int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
 // Helper to get signal percent from CSQ
 int16_t loggerModem::getPctFromCSQ(int16_t csq)
 {
-    int16_t CSQs[33]  = {   0,    1,    2,    3,    4,    5,    6,   7,   8,   9,
-                           10,   11,   12,   13,   14,   15,   16,  17,  18,  19,
-                           20,   21,   22,   23,   24,   25,   26,  27,  28,  29,
-                           30,   31,   99};
-    int16_t PCTs[33] = {    0,    3,    6,   10,   13,   16,   19,  23,  26,  29,
-                           32,   36,   39,   42,   45,   48,   52,  55,  58,  61,
-                           65,   68,   71,   74,   78,   81,   84,  87,  90,  94,
-                           97,  100,    0};
+    int16_t CSQs[33] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                        10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+                        20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+                        30, 31, 99};
+    int16_t PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29,
+                        32, 36, 39, 42, 45, 48, 52, 55, 58, 61,
+                        65, 68, 71, 74, 78, 81, 84, 87, 90, 94,
+                        97, 100, 0};
     for (uint8_t i = 0; i < 33; i++)
     {
         if (CSQs[i] == csq) return PCTs[i];
@@ -368,13 +376,10 @@ int16_t loggerModem::getPctFromCSQ(int16_t csq)
 int16_t loggerModem::getPctFromRSSI(int16_t rssi)
 {
     int16_t pct = 1.6163 * rssi + 182.61;
-    if (rssi == 0)
-        pct = 0;
-    if (rssi == (255 - 93))
-        pct = 0;  // This is a no-data-yet value from XBee
+    if (rssi == 0) pct = 0;
+    if (rssi == (255 - 93)) pct = 0;  // This is a no-data-yet value from XBee
     return pct;
 }
-
 
 
 uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
@@ -385,7 +390,7 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
     for (uint8_t i = 0; i < 4; i++)
     {
         MS_DBG(F("Response Byte"), i, ':', (char)nistBytes[i],
-                   '=', nistBytes[i], '=', String(nistBytes[i], BIN));
+               '=', nistBytes[i], '=', String(nistBytes[i], BIN));
         secFrom1900 += 0x000000FF & nistBytes[i];
         // MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN));
         if (i + 1 < 4)
@@ -394,7 +399,7 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
         }
     }
     MS_DBG(F("Seconds from Jan 1, 1900 returned by NIST (UTC):"),
-               secFrom1900, '=', String(secFrom1900, BIN));
+           secFrom1900, '=', String(secFrom1900, BIN));
 
     // Return the timestamp
     uint32_t unixTimeStamp = secFrom1900 - 2208988800;

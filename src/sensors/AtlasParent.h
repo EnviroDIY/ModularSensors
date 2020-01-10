@@ -20,7 +20,7 @@
 // #define MS_ATLASPARENT_DEBUG
 
 #ifdef MS_ATLASPARENT_DEBUG
-#define MS_DEBUGGING_STD "AtlasParent"
+    #define MS_DEBUGGING_STD "AtlasParent"
 #endif
 
 // Included Dependencies

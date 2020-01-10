@@ -20,7 +20,7 @@
 // #define MS_ATLASSCIENTIFICEC_DEBUG
 
 #ifdef MS_ATLASSCIENTIFICEC_DEBUG
-#define MS_DEBUGGING_STD "AtlasScientificEC"
+    #define MS_DEBUGGING_STD "AtlasScientificEC"
 #endif
 
 // Included Dependencies
@@ -70,18 +70,18 @@ public:
     AtlasScientificEC_Cond(Sensor *parentSense,
                            const char *uuid = "",
                            const char *varCode = "AtlasCond")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_COND_VAR_NUM,
-                 (uint8_t)ATLAS_COND_RESOLUTION,
-                 "electricalConductivity", "microsiemenPerCentimeter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)ATLAS_COND_VAR_NUM,
+                   (uint8_t)ATLAS_COND_RESOLUTION,
+                   "electricalConductivity", "microsiemenPerCentimeter",
+                   varCode, uuid)
     {}
     AtlasScientificEC_Cond()
-      : Variable((const uint8_t)ATLAS_COND_VAR_NUM,
-                 (uint8_t)ATLAS_COND_RESOLUTION,
-                 "electricalConductivity", "microsiemenPerCentimeter", "AtlasCond")
+        : Variable((const uint8_t)ATLAS_COND_VAR_NUM,
+                   (uint8_t)ATLAS_COND_RESOLUTION,
+                   "electricalConductivity", "microsiemenPerCentimeter", "AtlasCond")
     {}
-    ~AtlasScientificEC_Cond(){}
+    ~AtlasScientificEC_Cond() {}
 };
 
 // The class for the Total Dissolved Solids Variable
@@ -91,18 +91,18 @@ public:
     AtlasScientificEC_TDS(Sensor *parentSense,
                           const char *uuid = "",
                           const char *varCode = "AtlasTDS")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_TDS_VAR_NUM,
-                 (uint8_t)ATLAS_TDS_RESOLUTION,
-                 "solidsTotalDissolved", "partPerMillion",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)ATLAS_TDS_VAR_NUM,
+                   (uint8_t)ATLAS_TDS_RESOLUTION,
+                   "solidsTotalDissolved", "partPerMillion",
+                   varCode, uuid)
     {}
     AtlasScientificEC_TDS()
-      : Variable((const uint8_t)ATLAS_TDS_VAR_NUM,
-                 (uint8_t)ATLAS_TDS_RESOLUTION,
-                 "solidsTotalDissolved", "partPerMillion", "AtlasTDS")
+        : Variable((const uint8_t)ATLAS_TDS_VAR_NUM,
+                   (uint8_t)ATLAS_TDS_RESOLUTION,
+                   "solidsTotalDissolved", "partPerMillion", "AtlasTDS")
     {}
-    ~AtlasScientificEC_TDS(){}
+    ~AtlasScientificEC_TDS() {}
 };
 
 // The class for the Salinity Variable
@@ -112,18 +112,18 @@ public:
     AtlasScientificEC_Salinity(Sensor *parentSense,
                                const char *uuid = "",
                                const char *varCode = "AtlasSalinity")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_SALINITY_VAR_NUM,
-                 (uint8_t)ATLAS_SALINITY_RESOLUTION,
-                 "salinity", "practicalSalinityUnit",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)ATLAS_SALINITY_VAR_NUM,
+                   (uint8_t)ATLAS_SALINITY_RESOLUTION,
+                   "salinity", "practicalSalinityUnit",
+                   varCode, uuid)
     {}
     AtlasScientificEC_Salinity()
-      : Variable((const uint8_t)ATLAS_SALINITY_VAR_NUM,
-                 (uint8_t)ATLAS_SALINITY_RESOLUTION,
-                 "salinity", "practicalSalinityUnit", "AtlasSalinity")
+        : Variable((const uint8_t)ATLAS_SALINITY_VAR_NUM,
+                   (uint8_t)ATLAS_SALINITY_RESOLUTION,
+                   "salinity", "practicalSalinityUnit", "AtlasSalinity")
     {}
-    ~AtlasScientificEC_Salinity(){}
+    ~AtlasScientificEC_Salinity() {}
 };
 
 // The class for the Specific Gravity Variable
@@ -133,18 +133,18 @@ public:
     AtlasScientificEC_SpecificGravity(Sensor *parentSense,
                                       const char *uuid = "",
                                       const char *varCode = "AtlasSpecGravity")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_SG_VAR_NUM,
-                 (uint8_t)ATLAS_SG_RESOLUTION,
-                 "specificGravity", "dimensionless",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)ATLAS_SG_VAR_NUM,
+                   (uint8_t)ATLAS_SG_RESOLUTION,
+                   "specificGravity", "dimensionless",
+                   varCode, uuid)
     {}
     AtlasScientificEC_SpecificGravity()
-      : Variable((const uint8_t)ATLAS_SG_VAR_NUM,
-                 (uint8_t)ATLAS_SG_RESOLUTION,
-                 "specificGravity", "dimensionless", "AtlasSpecGravity")
+        : Variable((const uint8_t)ATLAS_SG_VAR_NUM,
+                   (uint8_t)ATLAS_SG_RESOLUTION,
+                   "specificGravity", "dimensionless", "AtlasSpecGravity")
     {}
-    ~AtlasScientificEC_SpecificGravity(){}
+    ~AtlasScientificEC_SpecificGravity() {}
 };
 
 #endif  // Header Guard

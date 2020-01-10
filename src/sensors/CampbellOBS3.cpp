@@ -34,9 +34,9 @@
 CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
                            float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
                            uint8_t i2cAddress, uint8_t measurementsToAverage)
-  : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES,
-           OBS3_WARM_UP_TIME_MS, OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS,
-           powerPin, -1, measurementsToAverage)
+    : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES,
+             OBS3_WARM_UP_TIME_MS, OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
 {
     _adsChannel = adsChannel;
     _x2_coeff_A = x2_coeff_A;
@@ -45,16 +45,16 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
     _i2cAddress = i2cAddress;
 }
 // Destructor
-CampbellOBS3::~CampbellOBS3(){}
+CampbellOBS3::~CampbellOBS3() {}
 
 
 String CampbellOBS3::getSensorLocation(void)
 {
-    #ifndef MS_USE_ADS1015
+#ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
-    #else
+#else
     String sensorLocation = F("ADS1015_0x");
-    #endif
+#endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Channel");
     sensorLocation += String(_adsChannel);
@@ -74,14 +74,14 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
     {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Create an Auxillary ADD object
-        // We create and set up the ADC object here so that each sensor using
-        // the ADC may set the gain appropriately without effecting others.
-        #ifndef MS_USE_ADS1015
+// Create an Auxillary ADD object
+// We create and set up the ADC object here so that each sensor using
+// the ADC may set the gain appropriately without effecting others.
+#ifndef MS_USE_ADS1015
         Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
-        #else
+#else
         Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
-        #endif
+#endif
         // ADS Library default settings:
         //  - TI1115 (16 bit)
         //    - single-shot mode (powers down between conversions)

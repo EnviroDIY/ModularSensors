@@ -55,19 +55,19 @@ class YosemitechY532 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY532(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY532(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y532, "YosemitechY532", Y532_NUM_VARIABLES,
-                        Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                           Y532, "YosemitechY532", Y532_NUM_VARIABLES,
+                           Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY532(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY532(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y532, "YosemitechY532", Y532_NUM_VARIABLES,
-                        Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                           Y532, "YosemitechY532", Y532_NUM_VARIABLES,
+                           Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
-    ~YosemitechY532(){}
+    ~YosemitechY532() {}
 };
 
 
@@ -78,18 +78,18 @@ public:
     YosemitechY532_pH(Sensor *parentSense,
                       const char *uuid = "",
                       const char *varCode = "Y532pH")
-      : Variable(parentSense,
-                 (const uint8_t)Y532_PH_VAR_NUM,
-                 (uint8_t)Y532_PH_RESOLUTION,
-                 "pH", "pH",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y532_PH_VAR_NUM,
+                   (uint8_t)Y532_PH_RESOLUTION,
+                   "pH", "pH",
+                   varCode, uuid)
     {}
     YosemitechY532_pH()
-      : Variable((const uint8_t)Y532_PH_VAR_NUM,
-                 (uint8_t)Y532_PH_RESOLUTION,
-                 "pH", "pH", "Y532pH")
+        : Variable((const uint8_t)Y532_PH_VAR_NUM,
+                   (uint8_t)Y532_PH_RESOLUTION,
+                   "pH", "pH", "Y532pH")
     {}
-    ~YosemitechY532_pH(){}
+    ~YosemitechY532_pH() {}
 };
 
 
@@ -100,18 +100,18 @@ public:
     YosemitechY532_Temp(Sensor *parentSense,
                         const char *uuid = "",
                         const char *varCode = "Y532Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y532_TEMP_VAR_NUM,
-                 (uint8_t)Y532_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y532_TEMP_VAR_NUM,
+                   (uint8_t)Y532_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     YosemitechY532_Temp()
-      : Variable((const uint8_t)Y532_TEMP_VAR_NUM,
-                 (uint8_t)Y532_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y532Temp")
+        : Variable((const uint8_t)Y532_TEMP_VAR_NUM,
+                   (uint8_t)Y532_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "Y532Temp")
     {}
-    ~YosemitechY532_Temp(){}
+    ~YosemitechY532_Temp() {}
 };
 
 
@@ -122,18 +122,18 @@ public:
     YosemitechY532_Voltage(Sensor *parentSense,
                            const char *uuid = "",
                            const char *varCode = "Y532Potential")
-      : Variable(parentSense,
-                 (const uint8_t)Y532_VOLT_VAR_NUM,
-                 (uint8_t)Y532_VOLT_RESOLUTION,
-                 "voltage", "millivolt",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y532_VOLT_VAR_NUM,
+                   (uint8_t)Y532_VOLT_RESOLUTION,
+                   "voltage", "millivolt",
+                   varCode, uuid)
     {}
     YosemitechY532_Voltage()
-      : Variable((const uint8_t)Y532_VOLT_VAR_NUM,
-                 (uint8_t)Y532_VOLT_RESOLUTION,
-                 "voltage", "millivolt", "Y532Potential")
+        : Variable((const uint8_t)Y532_VOLT_VAR_NUM,
+                   (uint8_t)Y532_VOLT_RESOLUTION,
+                   "voltage", "millivolt", "Y532Potential")
     {}
-    ~YosemitechY532_Voltage(){}
+    ~YosemitechY532_Voltage() {}
 };
 
 #endif  // Header Guard

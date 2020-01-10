@@ -52,19 +52,19 @@ class YosemitechY520 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY520(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y520, "YosemitechY520", Y520_NUM_VARIABLES,
-                        Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                           Y520, "YosemitechY520", Y520_NUM_VARIABLES,
+                           Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY520(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y520, "YosemitechY520", Y520_NUM_VARIABLES,
-                        Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                           Y520, "YosemitechY520", Y520_NUM_VARIABLES,
+                           Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
     {}
-    ~YosemitechY520(){}
+    ~YosemitechY520() {}
 };
 
 
@@ -75,18 +75,18 @@ public:
     YosemitechY520_Cond(Sensor *parentSense,
                         const char *uuid = "",
                         const char *varCode = "Y520Cond")
-      : Variable(parentSense,
-                 (const uint8_t)Y520_COND_VAR_NUM,
-                 (uint8_t)Y520_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y520_COND_VAR_NUM,
+                   (uint8_t)Y520_COND_RESOLUTION,
+                   "specificConductance", "microsiemenPerCentimeter",
+                   varCode, uuid)
     {}
     YosemitechY520_Cond()
-      : Variable((const uint8_t)Y520_COND_VAR_NUM,
-                 (uint8_t)Y520_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter", "Y520Cond")
+        : Variable((const uint8_t)Y520_COND_VAR_NUM,
+                   (uint8_t)Y520_COND_RESOLUTION,
+                   "specificConductance", "microsiemenPerCentimeter", "Y520Cond")
     {}
-    ~YosemitechY520_Cond(){}
+    ~YosemitechY520_Cond() {}
 };
 
 
@@ -97,18 +97,18 @@ public:
     YosemitechY520_Temp(Sensor *parentSense,
                         const char *uuid = "",
                         const char *varCode = "Y520Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y520_TEMP_VAR_NUM,
-                 (uint8_t)Y520_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
+        : Variable(parentSense,
+                   (const uint8_t)Y520_TEMP_VAR_NUM,
+                   (uint8_t)Y520_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius",
+                   varCode, uuid)
     {}
     YosemitechY520_Temp()
-      : Variable((const uint8_t)Y520_TEMP_VAR_NUM,
-                 (uint8_t)Y520_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y520Temp")
+        : Variable((const uint8_t)Y520_TEMP_VAR_NUM,
+                   (uint8_t)Y520_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "Y520Temp")
     {}
-    ~YosemitechY520_Temp(){}
+    ~YosemitechY520_Temp() {}
 };
 
 #endif  // Header Guard

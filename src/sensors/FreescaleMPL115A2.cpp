@@ -27,15 +27,15 @@
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0x60.
 MPL115A2::MPL115A2(int8_t powerPin, uint8_t measurementsToAverage)
-     : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES,
-              MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
-              powerPin, -1, measurementsToAverage)
+    : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES,
+             MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
 {}
 // Destructor
-MPL115A2::~MPL115A2(){}
+MPL115A2::~MPL115A2() {}
 
 
-String MPL115A2::getSensorLocation(void){return F("I2C_0x60");}
+String MPL115A2::getSensorLocation(void) { return F("I2C_0x60"); }
 
 
 bool MPL115A2::setup(void)
@@ -45,7 +45,7 @@ bool MPL115A2::setup(void)
     // This sensor needs power for setup!
     // The MPL115A2's begin() reads required coefficients from the sensor.
     bool wasOn = checkPowerOn();
-    if (!wasOn) {powerUp();}
+    if (!wasOn) powerUp();
     waitForWarmUp();
 
     // Run the sensor begin()
@@ -53,7 +53,7 @@ bool MPL115A2::setup(void)
     mpl115a2_internal.begin();
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) powerDown();
 
     return retVal;
 }
@@ -72,7 +72,7 @@ bool MPL115A2::addSingleMeasurementResult(void)
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Read values
-        mpl115a2_internal.getPT(&press,&temp);
+        mpl115a2_internal.getPT(&press, &temp);
 
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;

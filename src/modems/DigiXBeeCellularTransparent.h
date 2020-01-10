@@ -16,13 +16,13 @@
 // #define MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
-#define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
+    #define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
 #endif
 
 #define TINY_GSM_MODEM_XBEE
 #define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
+    #define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Included Dependencies
@@ -32,7 +32,7 @@
 #include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-#include <StreamDebugger.h>
+    #include <StreamDebugger.h>
 #endif
 
 class DigiXBeeCellularTransparent : public DigiXBee
@@ -40,7 +40,7 @@ class DigiXBeeCellularTransparent : public DigiXBee
 
 public:
     // Constructor/Destructor
-    DigiXBeeCellularTransparent(Stream* modemStream,
+    DigiXBeeCellularTransparent(Stream *modemStream,
                                 int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                                 int8_t modemResetPin, int8_t modemSleepRqPin,
                                 const char *apn);
@@ -75,7 +75,6 @@ protected:
 
 private:
     const char *_apn;
-
 };
 
 #endif  // Header Guard

@@ -36,7 +36,7 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
 }
 
 // Destructor
-Sodaq2GBeeR6::~Sodaq2GBeeR6(){}
+Sodaq2GBeeR6::~Sodaq2GBeeR6() {}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -55,7 +55,7 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
 {
     // Ask the SIM800 to shut down nicely
     MS_DBG(F("Asking SIM800 on GPRSBeeR6 to power down"));
-    bool success =  gsmModem.poweroff();
+    bool success = gsmModem.poweroff();
     if (_vRefPin >= 0)
     {
         MS_DBG(F("Disabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
@@ -69,8 +69,7 @@ bool Sodaq2GBeeR6::extraModemSetup(void)
     bool success = gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
-    if (_vRefPin >= 0)
-        pinMode(_vRefPin, OUTPUT);
+    if (_vRefPin >= 0) pinMode(_vRefPin, OUTPUT);
     return success;
 }
 

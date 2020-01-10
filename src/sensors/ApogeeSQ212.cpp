@@ -49,11 +49,11 @@ ApogeeSQ212::~ApogeeSQ212(){};
 
 String ApogeeSQ212::getSensorLocation(void)
 {
-    #ifndef MS_USE_ADS1015
+#ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
-    #else
+#else
     String sensorLocation = F("ADS1015_0x");
-    #endif
+#endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Channel");
     sensorLocation += String(_adsChannel);
@@ -73,14 +73,14 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Create an Auxillary ADD object
-        // We create and set up the ADC object here so that each sensor using
-        // the ADC may set the gain appropriately without effecting others.
-        #ifndef MS_USE_ADS1015
+// Create an Auxillary ADD object
+// We create and set up the ADC object here so that each sensor using
+// the ADC may set the gain appropriately without effecting others.
+#ifndef MS_USE_ADS1015
         Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
-        #else
+#else
         Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
-        #endif
+#endif
         // ADS Library default settings:
         //  - TI1115 (16 bit)
         //    - single-shot mode (powers down between conversions)
@@ -107,7 +107,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {
             // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
-            calibResult = 1 * adcVoltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
+            calibResult = 1 * adcVoltage * 1000;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
             MS_DBG(F("  calibResult:"), calibResult);
         }
         else  // set invalid voltages back to -9999

@@ -16,7 +16,7 @@
 #include "YosemitechParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
-YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
+YosemitechParent::YosemitechParent(byte modbusAddress, Stream *stream,
                                    int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, const char *sensName, uint8_t numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
@@ -30,7 +30,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
     _RS485EnablePin = enablePin;
     _powerPin2 = powerPin2;
 }
-YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
+YosemitechParent::YosemitechParent(byte modbusAddress, Stream &stream,
                                    int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, const char *sensName, uint8_t numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
@@ -45,14 +45,14 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
     _powerPin2 = powerPin2;
 }
 // Destructor
-YosemitechParent::~YosemitechParent(){}
+YosemitechParent::~YosemitechParent() {}
 
 
 // The sensor installation location on the Mayfly
 String YosemitechParent::getSensorLocation(void)
 {
     String sensorLocation = F("modbus_0x");
-    if (_modbusAddress< 16) sensorLocation += "0";
+    if (_modbusAddress < 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
     return sensorLocation;
 }
@@ -64,9 +64,9 @@ bool YosemitechParent::setup(void)
     if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
-    #ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
-        sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
-    #endif
+#ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
+    sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+#endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power required
     // This realy can't fail so adding the return value is just for show
@@ -90,7 +90,7 @@ bool YosemitechParent::wake(void)
     MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
     while (!success && ntries < 5)
     {
-        MS_DBG('(', ntries+1, F("):"));
+        MS_DBG('(', ntries + 1, F("):"));
         success = sensor.startMeasurement();
         ntries++;
     }
@@ -111,7 +111,7 @@ bool YosemitechParent::wake(void)
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
-    if ( _model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
+    if (_model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
     {
         MS_DBG(F("Activate Brush on"), getSensorNameAndLocation());
         if (sensor.activateBrush())
@@ -132,7 +132,7 @@ bool YosemitechParent::wake(void)
 // Different from the standard in that it stops measurements
 bool YosemitechParent::sleep(void)
 {
-    if (!checkPowerOn()) {return true;}
+    if (!checkPowerOn()) return true;
     if (_millisSensorActivated == 0)
     {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
@@ -145,7 +145,7 @@ bool YosemitechParent::sleep(void)
     MS_DBG(F("Stop Measurement on"), getSensorNameAndLocation());
     while (!success && ntries < 5)
     {
-        MS_DBG('(', ntries+1, F("):"));
+        MS_DBG('(', ntries + 1, F("):"));
         success = sensor.stopMeasurement();
         ntries++;
     }
@@ -270,8 +270,8 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 
                 MS_DBG(F("    "), sensor.getParameter());
                 MS_DBG(F("    "), DOmgL, ',', Turbidity, ',', Cond, ',',
-                                  pH, ',', Temp, ',', ORP, ',',
-                                  Chlorophyll, ',', BGA);
+                       pH, ',', Temp, ',', ORP, ',',
+                       Chlorophyll, ',', BGA);
 
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, DOmgL);

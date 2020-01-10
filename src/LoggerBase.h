@@ -16,7 +16,7 @@
 // #define MS_LOGGERBASE_DEBUG
 
 #ifdef MS_LOGGERBASE_DEBUG
-#define MS_DEBUGGING_STD "LoggerBase"
+    #define MS_DEBUGGING_STD "LoggerBase"
 #endif
 
 // Included Dependencies
@@ -28,12 +28,12 @@
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD)
-  #include <RTCZero.h>
-  #include "WatchDogs/WatchDogSAMD.h"
+    #include <RTCZero.h>
+    #include "WatchDogs/WatchDogSAMD.h"
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
-  #include <avr/sleep.h>
-  #include <avr/power.h>
-  #include "WatchDogs/WatchDogAVR.h"
+    #include <avr/sleep.h>
+    #include <avr/power.h>
+    #include "WatchDogs/WatchDogAVR.h"
 #endif
 
 // Bring in the library to communicate with an external high-precision real time clock
@@ -76,21 +76,21 @@ public:
 
     // Sets/Gets the logger ID
     void setLoggerID(const char *loggerID);
-    const char * getLoggerID(){return _loggerID;}
+    const char *getLoggerID() { return _loggerID; }
 
     // Sets/Gets the logging interval
     void setLoggingInterval(uint16_t loggingIntervalMinutes);
-    uint16_t getLoggingInterval(){return _loggingIntervalMinutes;}
+    uint16_t getLoggingInterval() { return _loggingIntervalMinutes; }
 
     // Sets/Gets the sampling feature UUID
     void setSamplingFeatureUUID(const char *samplingFeatureUUID);
-    const char * getSamplingFeatureUUID(){return _samplingFeatureUUID;}
+    const char *getSamplingFeatureUUID() { return _samplingFeatureUUID; }
 
     // Sets up a pin controlling the power to the SD card
     // NOTE:  This is not yet functional!
     void setSDCardPwr(int8_t SDCardPowerPin);
-    void turnOnSDcard(bool waitToSettle=true);
-    void turnOffSDcard(bool waitForHousekeeping=true);
+    void turnOnSDcard(bool waitToSettle = true);
+    void turnOffSDcard(bool waitForHousekeeping = true);
 
     // Sets up a pin for the slave select (chip select) of the SD card
     void setSDCardSS(int8_t SDCardSSPin);
@@ -166,13 +166,13 @@ protected:
 public:
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-    void attachModem(loggerModem& modem);
+    void attachModem(loggerModem &modem);
 
     // Takes advantage of the modem to synchronize the clock
     bool syncRTC();
 
     // These tie the variables to their parent sensor
-    void registerDataPublisher(dataPublisher* publisher);
+    void registerDataPublisher(dataPublisher *publisher);
     // Notifies attached variables of new values
     void publishDataToRemotes(void);
     // These are duplicates of the above functions for backwards compatibility
@@ -212,11 +212,11 @@ public:
     static void setTZOffset(int8_t offset);
     static int8_t getTZOffset(void);
 
-    // This gets the current epoch time (unix time, ie, the number of seconds
-    // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
-    #if defined(ARDUINO_ARCH_SAMD)
-        static RTCZero zero_sleep_rtc;  // create the rtc object
-    #endif
+// This gets the current epoch time (unix time, ie, the number of seconds
+// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
+#if defined(ARDUINO_ARCH_SAMD)
+    static RTCZero zero_sleep_rtc;  // create the rtc object
+#endif
 
     static uint32_t getNowEpoch(void);
     static void setNowEpoch(uint32_t ts);
@@ -226,7 +226,7 @@ public:
     // This converts a date-time object into a ISO8601 formatted string
     // It assumes the supplied date/time is in the LOGGER's timezone and adds
     // the LOGGER's offset as the time zone offset in the string.
-    static String formatDateTime_ISO8601(DateTime& dt);
+    static String formatDateTime_ISO8601(DateTime &dt);
 
     // This converts an epoch time (unix time) into a ISO8601 formatted string
     // It assumes the supplied date/time is in the LOGGER's timezone and adds
@@ -274,12 +274,12 @@ public:
     // This DOES NOT sleep or wake the sensors!!
     void systemSleep(void);
 
-    // A watch-dog to check for lock-ups
-    #if defined(ARDUINO_ARCH_SAMD)
+// A watch-dog to check for lock-ups
+#if defined(ARDUINO_ARCH_SAMD)
     extendedWatchDogSAMD watchDogTimer;
-    #else
+#else
     extendedWatchDogAVR watchDogTimer;
-    #endif
+#endif
 
     // ===================================================================== //
     // Public functions for logging data to an SD card
@@ -289,10 +289,10 @@ public:
     // This sets a file name, if you want to decide on it in advance
     void setFileName(const char *fileName);
     // Same as above, with a string (overload function)
-    void setFileName(String& fileName);
+    void setFileName(String &fileName);
 
     // This returns the current filename.  Must be run after setFileName.
-    String getFileName(void){return _fileName;}
+    String getFileName(void) { return _fileName; }
 
     // This prints a header onto a stream - this removes need to pass around
     // very long string objects which can crash the logger
@@ -310,7 +310,7 @@ public:
     // If asked to, these functions will also write a header to the file based
     // on the variable information from the variable array.
     // This can be used to force a logger to create a file with a secondary file name.
-    bool createLogFile(String& filename, bool writeDefaultHeader = false);
+    bool createLogFile(String &filename, bool writeDefaultHeader = false);
     bool createLogFile(bool writeDefaultHeader = false);
 
     // These functions create a file on an SD card and set the modified/accessed
@@ -322,12 +322,11 @@ public:
     // The line to be written to the file can either be specified or will be
     // a comma separated list of the current values of all variables in the
     // variable array.
-    bool logToSD(String& filename, String& rec);
-    bool logToSD(String& rec);
+    bool logToSD(String &filename, String &rec);
+    bool logToSD(String &rec);
     bool logToSD(void);
 
 protected:
-
     // The SD card and file
     SdFat sd;
     File logFile;
@@ -347,7 +346,7 @@ protected:
 
     // This opens or creates a file, converting a string file name to a
     // character file name
-    bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
+    bool openFile(String &filename, bool createFile, bool writeDefaultHeader);
 
 
     // ===================================================================== //
@@ -393,7 +392,6 @@ public:
     static volatile bool isLoggingNow;
     static volatile bool isTestingNow;
     static volatile bool startTesting;
-
 };
 
 #endif  // Header Guard
