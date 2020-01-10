@@ -42,15 +42,13 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
     NVIC_SetPriority(WDT_IRQn, 1);  // Priority behind RTC!
     NVIC_EnableIRQ(WDT_IRQn);
 
+    // Disable watchdog for config
     #if defined(__SAMD51__)
-    WDT->CTRLA.reg = 0;  // Disable watchdog for config
-    while (WDT->SYNCBUSY.reg)
-        ;
+    WDT->CTRLA.reg = 0;
     #else
-    WDT->CTRL.reg = 0;  // Disable watchdog for config
-    while (WDT->STATUS.bit.SYNCBUSY)
-        ;
+    WDT->CTRL.reg = 0;
     #endif
+    waitForWDTBitSync();
 
     #if defined(__SAMD51__)
     // SAMD51 WDT uses OSCULP32k as input clock now
@@ -58,8 +56,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
     OSC32KCTRL->OSCULP32K.bit.EN1K = 1;   // Enable out 1K (for WDT)
     OSC32KCTRL->OSCULP32K.bit.EN32K = 0;  // Disable out 32K
 
-    while (WDT->SYNCBUSY.reg)
-        ;
+    waitForWDTBitSync();
 
     USB->DEVICE.CTRLA.bit.ENABLE = 0;  // Disable the USB peripheral
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
@@ -134,13 +131,10 @@ void extendedWatchDogSAMD::enableWatchDog()
     // Set the enable bit
     #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 1;
-    while (WDT->SYNCBUSY.reg)
-        ;
     #else
     WDT->CTRL.bit.ENABLE = 1;
-    while (WDT->STATUS.bit.SYNCBUSY)
-        ;
     #endif
+    waitForWDTBitSync();
 }
 
 
@@ -148,13 +142,10 @@ void extendedWatchDogSAMD::disableWatchDog()
 {
     #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
-    while (WDT->SYNCBUSY.reg)
-        ;
     #else
     WDT->CTRL.bit.ENABLE = 0;
-    while (WDT->STATUS.bit.SYNCBUSY)
-        ;
     #endif
+    waitForWDTBitSync();
     MS_DBG(F("Watch dog disabled."));
 }
 
@@ -199,13 +190,7 @@ void WDT_Handler(void)  // ISR for watchdog early warning
     {
         // Write the clear key
         WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
-    #if defined(__SAMD51__)
-        while (WDT->SYNCBUSY.reg)
-            ;
-    #else
-        while (WDT->STATUS.bit.SYNCBUSY)
-            ;
-    #endif
+        waitForWDTBitSync();
         // Clear Early Warning (EW) Interrupt Flag
         WDT->INTFLAG.bit.EW = 1;
     }
