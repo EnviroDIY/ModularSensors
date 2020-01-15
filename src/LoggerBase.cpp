@@ -525,13 +525,15 @@ int8_t Logger::getTZOffset(void)
 }
 
 // This gets the current epoch time (unix time, ie, the number of seconds
-// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
+// from January 1, 1970 00:00:00 UTC) and corrects it to the specified time zone
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
 uint32_t Logger::getNowEpoch(void)
 {
     uint32_t currentEpochTime = rtc.now().getEpoch();
-    currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
+    // Do NOT apply an offset if the timestamp is obviously bad
+    if (isRTCSane(currentEpochTime))
+        currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
     return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts) { rtc.setEpoch(ts); }
@@ -541,15 +543,19 @@ void Logger::setNowEpoch(uint32_t ts) { rtc.setEpoch(ts); }
 uint32_t Logger::getNowEpoch(void)
 {
     uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-    currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
+    // Do NOT apply an offset if the timestamp is obviously bad
+    if (isRTCSane(currentEpochTime))
+        currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
     return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts) { zero_sleep_rtc.setEpoch(ts); }
 
 #endif
 
-// This gets the current epoch time (unix time, ie, the number of seconds
-// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
+// This converts the current UNIX timestamp (ie, the number of seconds
+// from January 1, 1970 00:00:00 UTC) into a DateTime object
+// The DateTime object constructor requires the number of seconds from
+// January 1, 2000 (NOT 1970) as input, so we need to subtract.
 DateTime Logger::dtFromEpoch(uint32_t epochTime)
 {
     DateTime dt(epochTime - EPOCH_TIME_OFF);
