@@ -40,11 +40,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #ifdef MS_KN_DEPTH_DEBUG
 #undef MS_DEBUGGING_STD
 #define MS_DEBUGGING_STD "kn_depth"
+#define MS_DEBUG_THIS_MODULE 1
 #endif //MS_KN_DEPTH_DEBUG
 
 #ifdef MS_KN_DEPTH_DEBUG_DEEP
 #undef MS_DEBUGGING_DEEP
 #define MS_DEBUGGING_DEEP "kn_depthD"
+#undef MS_DEBUG_THIS_MODULE
+#define MS_DEBUG_THIS_MODULE 2
 #endif
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
@@ -1159,7 +1162,6 @@ AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 
 const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
 const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
@@ -1170,10 +1172,10 @@ const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
 #include <sensors/KellerAcculevel.h>
 
 byte acculevelModbusAddress = KellerAcculevelModbusAddress_DEF;  // The modbus address of KellerAcculevel
-const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
+const uint8_t acculevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 
 // Create a Keller Acculevel sensor object
-KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
+KellerAcculevel acculevel_snsr(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
 
 // Create pressure, temperature, and height variable pointers for the Acculevel
 // Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
@@ -1572,9 +1574,9 @@ Variable *variableList[] = {
 
 
 #ifdef KellerAcculevel_ACT
-    new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
-    new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
-    new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
+    new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
 #endif // KellerAcculevel_ACT
 #ifdef KellerNanolevel_ACT
 //   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -2009,7 +2011,7 @@ void setup()
     varArrFast.setupSensors(); //Assumption pwr is available
     #endif //loggingMultiplier_MAX_CDEF
 
-#if 1
+#if 0 //MS_DEBUG_THIS_MODULE
     //Enable this in debugging or where there is no valid RTC
     // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
@@ -2025,12 +2027,10 @@ void setup()
             nistSyncRtc = false; //Sucess
             MS_DBG(F("  Timesync success"));
         } else {MS_DBG(F("  Timesync fails"));}
-        // Disconnect from the network
         modemPhy.disconnectInternet();
     } else {MS_DBG(F("  No internet connection..."));}
-    // Turn the modem off
-    modemPhy.modemSleepPowerDown(); 
-//   #endif //HwFeatherWing_B031ALL       
+
+    modemPhy.modemSleepPowerDown();    
 #else 
 
 #endif //ARDUINO_ARCH_SAMD
@@ -2160,9 +2160,10 @@ void processSensors()
                         // Post the data to the WebSDL
                         dataLogger.publishDataToRemotes();
                         
+                        //Sync the RTC once a day, or if debug once an hour.
                         #define DAY_SECS 86400
                         #define HOUR_SECS 3600
-                        #if defined MS_PWR_MON_DEBUG
+                        #if defined MS_DEBUG_THIS_MODULE
                         #define CONFIG_NIST_CHECK_SECS HOUR_SECS
                         #else
                         #define CONFIG_NIST_CHECK_SECS DAY_SECS
@@ -2170,11 +2171,17 @@ void processSensors()
                         #define CONFIG_NIST_ERR_MASK (~0x3F) 
                         uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
                         bool nistSyncNow=false;
-                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) nistSyncNow=true;
-                        PRINTOUT(F("SyncTimeCheck "),Logger::markedEpochTime
-                        ,"remainder ",nistCheckRemainder
-                        ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
-
+                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) 
+                        {
+                            nistSyncNow=true;
+                            PRINTOUT(F("SyncTimeCheck Atmpt "),nistSyncRtc,Logger::markedEpochTime
+                            ,"remainder ",nistCheckRemainder
+                            ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
+                        } else {
+                              PRINTOUT(F("SyncTimeCheck NotNeeded "),Logger::markedEpochTime
+                            ,"remainder ",nistCheckRemainder
+                            ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );                          
+                        }
                         if (nistSyncNow )
                         {
                             MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
@@ -2184,7 +2191,6 @@ void processSensors()
                             } 
                             //If time very different should ensure publish is accurate - possibly cancel
                         }
-
 
                         // Disconnect from the network
                         MS_DBG(F("  Disconnecting from the Internet..."));
@@ -2295,10 +2301,10 @@ void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
     if (ulPin < thisVariantNumPins) {
         MS_DBG("***pinModeExt Err ",ulPin,"=",ulMode);  
     } else {
-        //#if defined MS_DEBUGGING_DEEP
+        #if MS_DEBUG_THIS_MODULE > 1
         uint32_t mcpPin =  ulPin - thisVariantNumPins;
-        //#endif //MS_DEBUGGING_DEEP
-        MS_DEEP_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);      
+        MS_DEEP_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);  
+        #endif //MS_DEBUG_THIS_MODULE  
     }
 }
 uint8_t digitalRdExt( uint32_t ulPin ) {

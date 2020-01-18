@@ -226,10 +226,10 @@ eMcpB_end
   //The FEATHERWING_eInk 1.5" has uSD/SPI with CS/GPI10
   //The Feather_m4 has an board SD0(flashSPI) which is the source of where to look for the ini
   //Fut: USE_MS_SD_INI 1 would be onboard
-  //Fut: USE_MS_SD_INI 2 eg feather_wing eInk1_5in_SD  microSD - SD1
+  //Fut: USE_MS_SD_INI 2 eg  microSD - SD1
   #define USE_MS_SD_INI 1
   //An internal FS, and the USB maps to the SD0flashSPI 
-  #define BOARD_SDQ_QSPI_FLASH 1
+  //#define BOARD_SDQ_QSPI_FLASH 1
   //-DUSE_TINYUSB on cmd line , which then turns off ints somewhere, and then doesn't sleep.
   #if (defined USE_TINYUSB)  && (defined BOARD_SDQ_QSPI_FLASH) 
   // 1st USE_USB_MSC_SD0  2nd USE_USB_MSC_SD1 (not compiling)
@@ -274,11 +274,11 @@ eMcpB_end
 // ** How frequently (in minutes) to log data **
 //For two Loggers - define loggingMultiplier_MAX_CDEF
 // The loggingInterval_CDEF_MIN becomes sampling rate 
-#define loggingMultiplier_MAX_CDEF 5
+#define loggingMultiplier_MAX_CDEF 48
 // How frequently (in minutes) to sample data 
 #ifdef loggingMultiplier_MAX_CDEF
 //logging to SD/Publishing happens as loggingMultiplier_MAX_CDEF*loggingInterval_CDEF_MIN
-#define  loggingInterval_CDEF_MIN 2
+#define  loggingInterval_CDEF_MIN 5
 #else
 //logging to SD/Publishing and sampling are same
 #define  loggingInterval_CDEF_MIN 15
@@ -311,33 +311,8 @@ eMcpB_end
   #define registrationToken_UUID "registrationToken_UUID"
   #define samplingFeature_UUID   "samplingFeature_UUID"
 
-  /* variant.cpp std defines  Serial1 
-  variant.cpp enhanced for  Serial2 3 4
-variant.h: has pin definitions
-#define PIN_SERIALx_RX       (0ul)  FTDI Pin4
-#define PIN_SERIALx_TX       (1ul)  FTDI Pin5
-*/
-#define SerialModem Serial1
-
-#if defined SERIAL2_EN
-//to be used by modbusSerial 
-#define SerialModbus Serial2
-#endif // SERIAL2_EN
-#if defined SERIAL3_EN
-//For M4express the RedLed is also on Serial3RX
-//#define SerialExt3 Serial3
-#endif //SERIAL3_EN
-#if defined SERIAL4_EN
-#define SerialTty Serial4
-//needs to be or all outputs so put on platformio.ini build_flags = 
-//#define STANDARD_SERIAL_OUTPUT Serial4
-//    -DSTANDARD_SERIAL_OUTPUT=Serial4
-//    -DDEBUGGING_SERIAL_OUTPUT=Serial4
-//    -DDEEP_DEBUGGING_SERIAL_OUTPUT=Serial4
-#endif // SERIAL4_EN
-
-  //#define KellerAcculevel_ACT 1
-  #define KellerNanolevel_ACT 1
+  #define KellerAcculevel_ACT 1
+  //#define KellerNanolevel_ACT 1
   #if (defined KellerNanolevel_ACT) || (defined KellerAcculevel_ACT) 
   //  SwVbat=1 for Vbst@12V and opt Sw12V
   //  SwVrs485 for Vbat-->Vrs to IC 
@@ -397,6 +372,31 @@ variant.h: has pin definitions
   #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
   #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
   #endif //ExternalVoltage_ACT
+
+  /* variant.cpp std defines  Serial1 
+  variant.cpp enhanced for  Serial2 3 4
+variant.h: has pin definitions
+#define PIN_SERIALx_RX       (0ul)  FTDI Pin4
+#define PIN_SERIALx_TX       (1ul)  FTDI Pin5
+*/
+#define SerialModem Serial1
+
+#if defined SERIAL2_EN
+//to be used by modbusSerial 
+#define SerialModbus Serial2
+#endif // SERIAL2_EN
+#if defined SERIAL3_EN
+//For M4express the RedLed is also on Serial3RX
+//#define SerialExt3 Serial3
+#endif //SERIAL3_EN
+#if defined SERIAL4_EN
+#define SerialTty Serial4
+//needs to be or all outputs so put on platformio.ini build_flags = 
+//#define STANDARD_SERIAL_OUTPUT Serial4
+//    -DSTANDARD_SERIAL_OUTPUT=Serial4
+//    -DDEBUGGING_SERIAL_OUTPUT=Serial4
+//    -DDEEP_DEBUGGING_SERIAL_OUTPUT=Serial4
+#endif // SERIAL4_EN
 
 #elif PROFILE_NAME == PROFILE03_SODAQ_AUTONOMO_M0
 //**************************************************************************
