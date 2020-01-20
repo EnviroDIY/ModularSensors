@@ -46,6 +46,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _lastNISTrequest = 0;
 
     _hasBeenSetup = false;
+    _pinModesSet = false;
 
     _priorSignalPercent = 0;
     _priorRSSI = 0;
@@ -100,6 +101,7 @@ void loggerModem::modemPowerUp(void)
             digitalWrite(_modemSleepRqPin, HIGH);
         }
         MS_DBG(F("Powering"), getModemName(), F("with pin"), _powerPin);
+        pinMode(_powerPin, OUTPUT);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -150,11 +152,6 @@ bool loggerModem::modemSleepPowerDown(void)
                digitalRead(_statusPin),
                F("indicating it is already off!  Will not run sleep function."));
         // _priorActivationDuration = 0;
-    }
-    // If there's no status pin, check against the status bits
-    else if (!_alwaysRunWake)
-    {
-        MS_DBG(getModemName(), F("was never sucessfully turned on.  Will not run sleep function."));
     }
     else
     {
@@ -234,6 +231,41 @@ bool loggerModem::modemHardReset(void)
         return false;
     }
 }
+
+
+void loggerModem::setModemPinModes(void)
+{
+    // Set-up pin modes
+    if (!_pinModesSet)
+    {
+        // NOTE:  We're going to set the power pin mode every time in power up, just to be safe
+        // if (_powerPin >= 0)
+        // {
+        //     MS_DBG(F("Initializing pin"), _powerPin, F("for modem power without setting initial value..."));
+        //     pinMode(_powerPin, OUTPUT);
+        // }
+        if (_modemSleepRqPin >= 0)
+        {
+            MS_DBG(F("Initializing pin"), _modemSleepRqPin, F("for modem sleep with starting value HIGH ..."));
+            pinMode(_modemSleepRqPin, OUTPUT);
+            digitalWrite(_modemSleepRqPin, HIGH);
+        }
+        if (_modemResetPin >= 0)
+        {
+            MS_DBG(F("Initializing pin"), _modemResetPin, F("for modem reset with starting value HIGH ..."));
+            pinMode(_modemResetPin, OUTPUT);
+            digitalWrite(_modemResetPin, HIGH);
+        }
+        if (_modemLEDPin >= 0)
+        {
+            MS_DBG(F("Initializing pin"), _modemLEDPin, F("for modem reset with starting value HIGH ..."));
+            pinMode(_modemLEDPin, OUTPUT);
+            digitalWrite(_modemLEDPin, LOW);
+        }
+        _pinModesSet = true;
+    }
+}
+
 
 bool loggerModem::updateModemMetadata(void)
 {

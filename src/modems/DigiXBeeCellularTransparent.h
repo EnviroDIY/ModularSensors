@@ -43,7 +43,7 @@ public:
     DigiXBeeCellularTransparent(Stream* modemStream,
                                 int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                                const char *apn);
+                                const char* apn);
     ~DigiXBeeCellularTransparent();
 
     bool modemSetup(void) override;
@@ -54,8 +54,8 @@ public:
 
     uint32_t getNISTTime(void) override;
 
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool updateModemMetadata(void);

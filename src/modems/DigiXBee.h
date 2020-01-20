@@ -27,9 +27,9 @@
 #define XBEE_DISCONNECT_TIME_MS 15000L
 
 // Time after power-up before we can wake the model
-#define XBEE_WARM_UP_TIME_MS 0
+#define XBEE_WARM_UP_TIME_MS 100
 // Time we'll get back an AT response.  Probably much less than this, except in bypass
-#define XBEE_ATRESPONSE_TIME_MS 5000L
+#define XBEE_ATRESPONSE_TIME_MS 10000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
