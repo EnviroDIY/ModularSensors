@@ -17,7 +17,7 @@
 // #define MS_LOGGERMODEM_DEBUG_DEEP
 
 #ifdef MS_LOGGERMODEM_DEBUG
-    #define MS_DEBUGGING_STD "LoggerModem"
+#define MS_DEBUGGING_STD "LoggerModem"
 #endif
 
 // Included Dependencies
@@ -114,6 +114,7 @@ protected:
     // Other helper functions
     void modemLEDOn(void);
     void modemLEDOff(void);
+    virtual void setModemPinModes(void);
 
     virtual bool isInternetAvailable(void) = 0;
     virtual bool modemSleepFxn(void) = 0;
@@ -144,6 +145,7 @@ protected:
     uint32_t _millisPowerOn;
     uint32_t _lastNISTrequest;
     bool _hasBeenSetup;
+    bool _pinModesSet;
 
     // NOTE:  These must be static so that the modem variables can call the
     // member functions that return them.  (Non-static member functions cannot

@@ -32,7 +32,6 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
 // Destructor
 DigiXBeeLTEBypass::~DigiXBeeLTEBypass() {}
 
-MS_MODEM_SETUP(DigiXBeeLTEBypass);
 MS_MODEM_WAKE(DigiXBeeLTEBypass);
 
 MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
@@ -44,6 +43,86 @@ MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeLTEBypass);
+
+bool DigiXBeeLTEBypass::modemSetup(void)
+{
+    bool success = true;  // NOTE:  Set flag FIRST to stop infinite loop between modemSetup() and modemWake()
+    _hasBeenSetup = true;
+
+    MS_DBG(F("Setting up the modem ..."));
+
+    // Power up
+    bool wasPowered = true;
+    if (_millisPowerOn == 0)
+    {
+        modemPowerUp();
+        wasPowered = false;
+    }
+
+    // Check if the modem was awake, wake it if not
+    // Specially for this, we're going to check the state of the wake pin instead of checking the state of the status pin
+    int8_t sleepRqBitNumber = log(digitalPinToBitMask(_modemSleepRqPin)) / log(2);
+    int8_t currentRqPinState = bitRead(*portInputRegister(digitalPinToPort(_modemSleepRqPin)), sleepRqBitNumber);
+    MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin, '=', currentRqPinState);
+    bool wasAwake = (currentRqPinState == LOW);
+    if (!wasAwake)
+    {
+        while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}
+        MS_DBG(F("Waking up the modem for setup ..."));
+        {
+            // Run the input wake function
+            MS_DBG(F("Running wake function for"), getModemName());
+            if (!modemWakeFxn())
+            {
+                MS_DBG(F("Wake function for"), getModemName(), F("did not run as expected!"));
+            }
+        }
+    }
+    else
+    {
+        MS_DBG(F("Modem was already awake and should be ready for setup."));
+    }
+
+    if (success)
+    {
+        MS_DBG(F("Running modem's extra setup function ..."));
+        success &= extraModemSetup();
+        if (success)
+        {
+            MS_DBG(F("... Complete!  It's a"), getModemName());
+        }
+        else
+        {
+            MS_DBG(F("... Failed!  It's a"), getModemName());
+            _hasBeenSetup = false;
+        }
+    }
+    else
+    {
+        MS_DBG(F("... "), getModemName(), F("did not wake up and cannot be set up!"));
+    }
+
+    MS_DBG(_modemName, F("warms up in"), _wakeDelayTime_ms, F("ms, indicates status in"),
+           _statusTime_ms, F("ms, is responsive to AT commands in less than"),
+           _max_atresponse_time_ms, F("ms, and takes up to"), _disconnetTime_ms,
+           F("ms to close connections and shut down."));
+
+    // Put the modem to sleep after finishing setup
+    // Only go to sleep if it had been asleep and is now awake
+    bool isAwake = (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel);
+    if ((!wasAwake && isAwake) || !wasPowered)
+    {  // Run the sleep function
+        MS_DBG(F("Running given modem sleep function ..."));
+        success &= modemSleepPowerDown();
+    }
+    else
+    {
+        MS_DBG(F("Leaving modem on after setup ..."));
+    }
+
+    return success;
+}
+
 
 bool DigiXBeeLTEBypass::extraModemSetup(void)
 {
