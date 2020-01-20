@@ -16,87 +16,87 @@
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    #define BOARD "EnviroDIY Mayfly"
+#define BOARD "EnviroDIY Mayfly"
 
 // Sodaq boards
 #elif defined(ARDUINO_SODAQ_EXPLORER)
-    #define BOARD "SODAQ ExpLoRer"
+#define BOARD "SODAQ ExpLoRer"
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
-    #define BOARD "SODAQ Autonomo"
+#define BOARD "SODAQ Autonomo"
 #elif defined(ARDUINO_SODAQ_ONE_BETA)
-    #define BOARD "SODAQ ONE Beta"
+#define BOARD "SODAQ ONE Beta"
 #elif defined(ARDUINO_SODAQ_ONE)
-    #define BOARD "SODAQ ONE"
+#define BOARD "SODAQ ONE"
 #elif defined(ARDUINO_AVR_SODAQ_MBILI)
-    #define BOARD "SODAQ Mbili"
+#define BOARD "SODAQ Mbili"
 #elif defined(ARDUINO_AVR_SODAQ_NDOGO)
-    #define BOARD "SODAQ Ndogo"
+#define BOARD "SODAQ Ndogo"
 #elif defined(ARDUINO_AVR_SODAQ_TATU)
-    #define BOARD "SODAQ Tatu"
+#define BOARD "SODAQ Tatu"
 #elif defined(ARDUINO_AVR_SODAQ_MOJA)
-    #define BOARD "SODAQ Moja"
+#define BOARD "SODAQ Moja"
 
 // Adafruit boards
 #elif defined(ARDUINO_AVR_FEATHER32U4)
-    #define BOARD "Feather 32u4"
+#define BOARD "Feather 32u4"
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
-    #define BOARD "Feather M0"
+#define BOARD "Feather M0"
 #elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
-    #define BOARD "Feather M0 Express"
+#define BOARD "Feather M0 Express"
 
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
-    #define BOARD "Mega Adk"
+#define BOARD "Mega Adk"
 #elif defined(ARDUINO_AVR_BT)  // Bluetooth
-    #define BOARD "Bt"
+#define BOARD "Bt"
 #elif defined(ARDUINO_AVR_DUEMILANOVE)
-    #define BOARD "Duemilanove"
+#define BOARD "Duemilanove"
 #elif defined(ARDUINO_AVR_ESPLORA)
-    #define BOARD "Esplora"
+#define BOARD "Esplora"
 #elif defined(ARDUINO_AVR_ETHERNET)
-    #define BOARD "Ethernet"
+#define BOARD "Ethernet"
 #elif defined(ARDUINO_AVR_FIO)
-    #define BOARD "Fio"
+#define BOARD "Fio"
 #elif defined(ARDUINO_AVR_GEMMA)
-    #define BOARD "Gemma"
+#define BOARD "Gemma"
 #elif defined(ARDUINO_AVR_LEONARDO)
-    #define BOARD "Leonardo"
+#define BOARD "Leonardo"
 #elif defined(ARDUINO_AVR_LILYPAD)
-    #define BOARD "Lilypad"
+#define BOARD "Lilypad"
 #elif defined(ARDUINO_AVR_LILYPAD_USB)
-    #define BOARD "Lilypad Usb"
+#define BOARD "Lilypad Usb"
 #elif defined(ARDUINO_AVR_MEGA)
-    #define BOARD "Mega"
+#define BOARD "Mega"
 #elif defined(ARDUINO_AVR_MEGA2560)
-    #define BOARD "Mega 2560"
+#define BOARD "Mega 2560"
 #elif defined(ARDUINO_AVR_MICRO)
-    #define BOARD "Micro"
+#define BOARD "Micro"
 #elif defined(ARDUINO_AVR_MINI)
-    #define BOARD "Mini"
+#define BOARD "Mini"
 #elif defined(ARDUINO_AVR_NANO)
-    #define BOARD "Nano"
+#define BOARD "Nano"
 #elif defined(ARDUINO_AVR_NG)
-    #define BOARD "NG"
+#define BOARD "NG"
 #elif defined(ARDUINO_AVR_PRO)
-    #define BOARD "Pro"
+#define BOARD "Pro"
 #elif defined(ARDUINO_AVR_ROBOT_CONTROL)
-    #define BOARD "Robot Ctrl"
+#define BOARD "Robot Ctrl"
 #elif defined(ARDUINO_AVR_ROBOT_MOTOR)
-    #define BOARD "Robot Motor"
+#define BOARD "Robot Motor"
 #elif defined(ARDUINO_AVR_UNO)
-    #define BOARD "Uno"
+#define BOARD "Uno"
 #elif defined(ARDUINO_AVR_YUN)
-    #define BOARD "Yun"
+#define BOARD "Yun"
 #elif defined(ARDUINO_SAMD_ZERO)
-    #define BOARD "Zero"
+#define BOARD "Zero"
 
 #else
-    #define BOARD "Unknown"
+#define BOARD "Unknown"
 #endif
 
 
 // Need to know the Mayfly version because the battery resistor depends on it
-ProcessorStats::ProcessorStats(const char *version)
+ProcessorStats::ProcessorStats(const char* version)
     : Sensor(BOARD, PROCESSOR_NUM_VARIABLES,
              PROCESSOR_WARM_UP_TIME_MS, PROCESSOR_STABILIZATION_TIME_MS, PROCESSOR_MEASUREMENT_TIME_MS,
              -1, -1, 1)
@@ -131,7 +131,7 @@ String ProcessorStats::getSensorLocation(void) { return BOARD; }
 
 
 #if defined(ARDUINO_ARCH_SAMD)
-extern "C" char *sbrk(int i);
+extern "C" char* sbrk(int i);
 
 int16_t FreeRam()
 {

@@ -22,10 +22,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-    #define TINY_GSM_YIELD_MS 2
+#define TINY_GSM_YIELD_MS 2
 #endif
 
 // ==========================================================================
@@ -154,7 +154,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 
-Variable *variableList[] = {
+Variable* variableList[] = {
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),

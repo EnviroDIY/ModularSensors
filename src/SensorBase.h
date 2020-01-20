@@ -15,7 +15,7 @@
 // #define MS_SENSORBASE_DEBUG
 
 #ifdef MS_SENSORBASE_DEBUG
-    #define MS_DEBUGGING_STD "SensorBase"
+#define MS_DEBUGGING_STD "SensorBase"
 #endif
 
 // Included Dependencies
@@ -33,7 +33,7 @@ class Variable;  // Forward declaration
 class Sensor
 {
 public:
-    Sensor(const char *sensorName = "Unknown", const uint8_t numReturnedVars = 1,
+    Sensor(const char* sensorName = "Unknown", const uint8_t numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
     virtual ~Sensor();
@@ -131,7 +131,7 @@ public:
     void averageMeasurements(void);
 
     // These tie the variables to their parent sensor
-    void registerVariable(int sensorVarNum, Variable *var);
+    void registerVariable(int sensorVarNum, Variable* var);
     // Notifies attached variables of new values
     void notifyVariables(void);
 
@@ -160,7 +160,7 @@ public:
 protected:
     int8_t _dataPin;   // SIGNED int, to allow negative numbers for unused pins
     int8_t _powerPin;  // SIGNED int, to allow negative numbers for unused pins
-    const char *_sensorName;
+    const char* _sensorName;
     const uint8_t _numReturnedVars;
     uint8_t _measurementsToAverage;
     uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
@@ -192,7 +192,7 @@ protected:
     // to that sensor.  The MAX_NUMBER_VARS cannot be determined on a per-sensor
     // basis, because of the way memory is used on an Arduino.  It must be
     // defined once for the whole class.
-    Variable *variables[MAX_NUMBER_VARS];
+    Variable* variables[MAX_NUMBER_VARS];
 };
 
 #endif  // Header Guard

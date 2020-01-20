@@ -16,14 +16,14 @@
 // #define MS_SODAQUBEER410M_DEBUG_DEEP
 
 #ifdef MS_SODAQUBEER410M_DEBUG
-    #define MS_DEBUGGING_STD "SodaqUBeeR410M"
+#define MS_DEBUGGING_STD "SodaqUBeeR410M"
 #endif
 
 #define TINY_GSM_MODEM_SARAR4
 #define MS_MODEM_HAS_BATTERY_DATA
 #define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 
 // V_INT becomes active mid-way through on-pulse
@@ -46,7 +46,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    #include <StreamDebugger.h>
+#include <StreamDebugger.h>
 #endif
 
 class SodaqUBeeR410M : public loggerModem
@@ -57,29 +57,29 @@ public:
 #if F_CPU == 8000000L
     // At this slow baud rate, we need to begin and end serial communication,
     // so we need a Serial instance rather than a stream
-    SodaqUBeeR410M(HardwareSerial *modemStream,
+    SodaqUBeeR410M(HardwareSerial* modemStream,
                    int8_t powerPin, int8_t statusPin,
                    int8_t modemResetPin, int8_t modemSleepRqPin,
-                   const char *apn);
+                   const char* apn);
 #else
-    SodaqUBeeR410M(Stream *modemStream,
+    SodaqUBeeR410M(Stream* modemStream,
                    int8_t powerPin, int8_t statusPin,
                    int8_t modemResetPin, int8_t modemSleepRqPin,
-                   const char *apn);
+                   const char* apn);
 #endif
     ~SodaqUBeeR410M();
 
-     bool modemSetup(void) override;
-     bool modemWake(void) override;
+    bool modemSetup(void) override;
+    bool modemWake(void) override;
 
-     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-     void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-     uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-     bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-     float getModemChipTemperature(void) override;
+    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
     bool modemHardReset(void) override;
 
@@ -91,17 +91,17 @@ public:
     TinyGsmClient gsmClient;
 
 #if F_CPU == 8000000L
-    HardwareSerial *_modemSerial;
+    HardwareSerial* _modemSerial;
 #endif
 
 protected:
-     bool isInternetAvailable(void) override;
-     bool modemSleepFxn(void) override;
-     bool modemWakeFxn(void) override;
-     bool extraModemSetup(void) override;
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void) override;
 
 private:
-    const char *_apn;
+    const char* _apn;
 };
 
 #endif  // Header Guard

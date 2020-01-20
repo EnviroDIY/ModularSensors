@@ -15,8 +15,8 @@
 // link all .cpp files regardless of platform.
 #if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
 
-    #include <avr/interrupt.h>
-    #include <avr/wdt.h>
+#include <avr/interrupt.h>
+#include <avr/wdt.h>
 
 volatile uint32_t extendedWatchDogAVR::_barksUntilReset = 0;
 

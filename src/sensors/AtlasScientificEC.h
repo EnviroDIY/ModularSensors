@@ -20,7 +20,7 @@
 // #define MS_ATLASSCIENTIFICEC_DEBUG
 
 #ifdef MS_ATLASSCIENTIFICEC_DEBUG
-    #define MS_DEBUGGING_STD "AtlasScientificEC"
+#define MS_DEBUGGING_STD "AtlasScientificEC"
 #endif
 
 // Included Dependencies
@@ -67,9 +67,9 @@ public:
 class AtlasScientificEC_Cond : public Variable
 {
 public:
-    explicit AtlasScientificEC_Cond(AtlasScientificEC *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "AtlasCond")
+    explicit AtlasScientificEC_Cond(AtlasScientificEC* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "AtlasCond")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_COND_VAR_NUM,
                    (uint8_t)ATLAS_COND_RESOLUTION,
@@ -88,9 +88,9 @@ public:
 class AtlasScientificEC_TDS : public Variable
 {
 public:
-    explicit AtlasScientificEC_TDS(AtlasScientificEC *parentSense,
-                                   const char *uuid = "",
-                                   const char *varCode = "AtlasTDS")
+    explicit AtlasScientificEC_TDS(AtlasScientificEC* parentSense,
+                                   const char* uuid = "",
+                                   const char* varCode = "AtlasTDS")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_TDS_VAR_NUM,
                    (uint8_t)ATLAS_TDS_RESOLUTION,
@@ -109,9 +109,9 @@ public:
 class AtlasScientificEC_Salinity : public Variable
 {
 public:
-    explicit AtlasScientificEC_Salinity(AtlasScientificEC *parentSense,
-                                        const char *uuid = "",
-                                        const char *varCode = "AtlasSalinity")
+    explicit AtlasScientificEC_Salinity(AtlasScientificEC* parentSense,
+                                        const char* uuid = "",
+                                        const char* varCode = "AtlasSalinity")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION,
@@ -130,9 +130,9 @@ public:
 class AtlasScientificEC_SpecificGravity : public Variable
 {
 public:
-    explicit AtlasScientificEC_SpecificGravity(AtlasScientificEC *parentSense,
-                                               const char *uuid = "",
-                                               const char *varCode = "AtlasSpecGravity")
+    explicit AtlasScientificEC_SpecificGravity(AtlasScientificEC* parentSense,
+                                               const char* uuid = "",
+                                               const char* varCode = "AtlasSpecGravity")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_SG_VAR_NUM,
                    (uint8_t)ATLAS_SG_RESOLUTION,

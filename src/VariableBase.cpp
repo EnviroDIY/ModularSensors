@@ -16,13 +16,13 @@
 
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
-Variable::Variable(Sensor *parentSense,
+Variable::Variable(Sensor* parentSense,
                    const uint8_t sensorVarNum,
                    uint8_t decimalResolution,
-                   const char *varName,
-                   const char *varUnit,
-                   const char *varCode,
-                   const char *uuid)
+                   const char* varName,
+                   const char* varUnit,
+                   const char* varCode,
+                   const char* uuid)
     : _sensorVarNum(sensorVarNum)
 {
     setVarUUID(uuid);
@@ -43,9 +43,9 @@ Variable::Variable(Sensor *parentSense,
 }
 Variable::Variable(const uint8_t sensorVarNum,
                    uint8_t decimalResolution,
-                   const char *varName,
-                   const char *varUnit,
-                   const char *varCode)
+                   const char* varName,
+                   const char* varUnit,
+                   const char* varCode)
     : _sensorVarNum(sensorVarNum)
 {
     _uuid = NULL;
@@ -70,10 +70,10 @@ Variable::Variable(const uint8_t sensorVarNum,
 // calculated by the calcFxn which returns a float.
 Variable::Variable(float (*calcFxn)(),
                    uint8_t decimalResolution,
-                   const char *varName,
-                   const char *varUnit,
-                   const char *varCode,
-                   const char *uuid)
+                   const char* varName,
+                   const char* varUnit,
+                   const char* varCode,
+                   const char* uuid)
     : _sensorVarNum(0)
 {
     setVarUUID(uuid);
@@ -94,9 +94,9 @@ Variable::Variable(float (*calcFxn)(),
 }
 Variable::Variable(float (*calcFxn)(),
                    uint8_t decimalResolution,
-                   const char *varName,
-                   const char *varUnit,
-                   const char *varCode)
+                   const char* varName,
+                   const char* varUnit,
+                   const char* varCode)
     : _sensorVarNum(0)
 {
     _uuid = NULL;
@@ -143,18 +143,18 @@ Variable::~Variable() {}
 // This does all of the setup that can't happen in the constructors
 // That is, anything that is dependent on another object having been created
 // first or anything that requires the actual processor/MCU to do something.
-Variable *Variable::begin(Sensor *parentSense, const char *uuid,
-                          const char *customVarCode)
+Variable* Variable::begin(Sensor* parentSense, const char* uuid,
+                          const char* customVarCode)
 {
     setVarCode(customVarCode);
     return begin(parentSense, uuid);
 }
-Variable *Variable::begin(Sensor *parentSense, const char *uuid)
+Variable* Variable::begin(Sensor* parentSense, const char* uuid)
 {
     setVarUUID(uuid);
     return begin(parentSense);
 }
-Variable *Variable::begin(Sensor *parentSense)
+Variable* Variable::begin(Sensor* parentSense)
 {
     attachSensor(parentSense);
     return this;
@@ -162,21 +162,21 @@ Variable *Variable::begin(Sensor *parentSense)
 
 
 // Begin functions for calculated variables
-Variable *Variable::begin(float (*calcFxn)(),
+Variable* Variable::begin(float (*calcFxn)(),
                           uint8_t decimalResolution,
-                          const char *varName,
-                          const char *varUnit,
-                          const char *varCode,
-                          const char *uuid)
+                          const char* varName,
+                          const char* varUnit,
+                          const char* varCode,
+                          const char* uuid)
 {
     setVarUUID(uuid);
     return begin(calcFxn, decimalResolution, varName, varUnit, varCode);
 }
-Variable *Variable::begin(float (*calcFxn)(),
+Variable* Variable::begin(float (*calcFxn)(),
                           uint8_t decimalResolution,
-                          const char *varName,
-                          const char *varUnit,
-                          const char *varCode)
+                          const char* varName,
+                          const char* varUnit,
+                          const char* varCode)
 {
     setVarCode(varCode);
     setVarUnit(varUnit);
@@ -189,7 +189,7 @@ Variable *Variable::begin(float (*calcFxn)(),
 
 // This notifies the parent sensor that it has an observing variable
 // This function should never be called for a calculated variable
-void Variable::attachSensor(Sensor *parentSense)
+void Variable::attachSensor(Sensor* parentSense)
 {
     if (!isCalculated)
     {
@@ -209,7 +209,7 @@ void Variable::attachSensor(Sensor *parentSense)
 
 // This is the function called by the parent sensor's notifyVariables() function
 // This function should never be called for a calculated variable
-void Variable::onSensorUpdate(Sensor *parentSense)
+void Variable::onSensorUpdate(Sensor* parentSense)
 {
     if (!isCalculated)
     {
@@ -292,7 +292,7 @@ void Variable::setResolution(uint8_t decimalResolution)
 
 // This gets/sets the variable's name using http://vocabulary.odm2.org/variablename/
 String Variable::getVarName(void) { return _varName; }
-void Variable::setVarName(const char *varName)
+void Variable::setVarName(const char* varName)
 {
     _varName = varName;
     // MS_DBG(F("Variable name is"), _varName);
@@ -300,7 +300,7 @@ void Variable::setVarName(const char *varName)
 
 // This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
 String Variable::getVarUnit(void) { return _varUnit; }
-void Variable::setVarUnit(const char *varUnit)
+void Variable::setVarUnit(const char* varUnit)
 {
     _varUnit = varUnit;
     // MS_DBG(F("Variable unit is"), _varUnit);
@@ -309,7 +309,7 @@ void Variable::setVarUnit(const char *varUnit)
 // This returns a customized code for the variable
 String Variable::getVarCode(void) { return _varCode; }
 // This sets the variable code to a new custom value
-void Variable::setVarCode(const char *varCode)
+void Variable::setVarCode(const char* varCode)
 {
     _varCode = varCode;
     // MS_DBG(F("Variable code is"), _varCode);
@@ -318,7 +318,7 @@ void Variable::setVarCode(const char *varCode)
 // This returns the variable UUID, if one has been assigned
 String Variable::getVarUUID(void) { return _uuid; }
 // This sets the UUID
-void Variable::setVarUUID(const char *uuid)
+void Variable::setVarUUID(const char* uuid)
 {
     _uuid = uuid;
     // if (strlen(_uuid) == 0)
@@ -350,7 +350,7 @@ bool Variable::checkUUIDFormat(void)
     }
 
     // "12345678-abcd-1234-ef00-1234567890ab"
-    const char *acceptableChars = "0123456789abcdefABCDEF-";
+    const char* acceptableChars = "0123456789abcdefABCDEF-";
     if (_uuid[8] != '-' || _uuid[13] != '-' || _uuid[18] != '-' || _uuid[23] != '-')
     {
         MS_DBG(F("UUID format for"), getVarCode(), '(', _uuid, ')',

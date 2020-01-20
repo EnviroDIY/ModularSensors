@@ -85,8 +85,8 @@ public:
     // this is done by the "logDataAndPublish()" function of the logger, but
     // if "handwriting" a logging function, remember to call this.
     // These three functions will query the modem to get new values
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) = 0;
+    virtual bool getModemSignalQuality(int16_t& rssi, int16_t& percent) = 0;
+    virtual bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) = 0;
     virtual float getModemChipTemperature(void) = 0;
     // This gets all of the above at once
     virtual bool updateModemMetadata(void);
@@ -175,9 +175,9 @@ protected:
 class Modem_RSSI : public Variable
 {
 public:
-    explicit Modem_RSSI(loggerModem *parentModem,
-                        const char *uuid = "",
-                        const char *varCode = "RSSI")
+    explicit Modem_RSSI(loggerModem* parentModem,
+                        const char* uuid = "",
+                        const char* varCode = "RSSI")
         : Variable(&parentModem->getModemRSSI,
                    (uint8_t)MODEM_RSSI_RESOLUTION,
                    &*"RSSI", &*"decibelMiliWatt",
@@ -191,9 +191,9 @@ public:
 class Modem_SignalPercent : public Variable
 {
 public:
-    explicit Modem_SignalPercent(loggerModem *parentModem,
-                                 const char *uuid = "",
-                                 const char *varCode = "signalPercent")
+    explicit Modem_SignalPercent(loggerModem* parentModem,
+                                 const char* uuid = "",
+                                 const char* varCode = "signalPercent")
         : Variable(&parentModem->getModemSignalPercent,
                    (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
                    &*"signalPercent", &*"percent",
@@ -207,9 +207,9 @@ public:
 class Modem_BatteryState : public Variable
 {
 public:
-    explicit Modem_BatteryState(loggerModem *parentModem,
-                                const char *uuid = "",
-                                const char *varCode = "modemBatteryCS")
+    explicit Modem_BatteryState(loggerModem* parentModem,
+                                const char* uuid = "",
+                                const char* varCode = "modemBatteryCS")
         : Variable(&parentModem->getModemBatteryChargeState,
                    (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
                    &*"batteryChargeState", &*"number",
@@ -223,9 +223,9 @@ public:
 class Modem_BatteryPercent : public Variable
 {
 public:
-    explicit Modem_BatteryPercent(loggerModem *parentModem,
-                                  const char *uuid = "",
-                                  const char *varCode = "modemBatteryPct")
+    explicit Modem_BatteryPercent(loggerModem* parentModem,
+                                  const char* uuid = "",
+                                  const char* varCode = "modemBatteryPct")
         : Variable(&parentModem->getModemBatteryChargePercent,
                    (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
                    &*"batteryVoltage", &*"percent",
@@ -239,9 +239,9 @@ public:
 class Modem_BatteryVoltage : public Variable
 {
 public:
-    explicit Modem_BatteryVoltage(loggerModem *parentModem,
-                                  const char *uuid = "",
-                                  const char *varCode = "modemBatterymV")
+    explicit Modem_BatteryVoltage(loggerModem* parentModem,
+                                  const char* uuid = "",
+                                  const char* varCode = "modemBatterymV")
         : Variable(&parentModem->getModemBatteryVoltage,
                    (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
                    &*"batteryVoltage", &*"millivolt",
@@ -255,9 +255,9 @@ public:
 class Modem_Temp : public Variable
 {
 public:
-    explicit Modem_Temp(loggerModem *parentModem,
-                        const char *uuid = "",
-                        const char *varCode = "modemTemp")
+    explicit Modem_Temp(loggerModem* parentModem,
+                        const char* uuid = "",
+                        const char* varCode = "modemTemp")
         : Variable(&parentModem->getModemTemperature,
                    (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
                    &*"temperature", &*"degreeCelsius",

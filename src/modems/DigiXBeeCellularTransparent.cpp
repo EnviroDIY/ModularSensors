@@ -12,13 +12,13 @@
 #include "LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream *modemStream,
+DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
                                                          int8_t powerPin,
                                                          int8_t statusPin,
                                                          bool useCTSStatus,
                                                          int8_t modemResetPin,
                                                          int8_t modemSleepRqPin,
-                                                         const char *apn)
+                                                         const char* apn)
     : DigiXBee(powerPin, statusPin, useCTSStatus,
                modemResetPin, modemSleepRqPin),
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP

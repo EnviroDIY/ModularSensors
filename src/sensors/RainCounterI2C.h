@@ -25,7 +25,7 @@
 // #define MS_RAINCOUNTERI2C_DEBUG
 
 #ifdef MS_RAINCOUNTERI2C_DEBUG
-    #define MS_DEBUGGING_STD "RainCounterI2C"
+#define MS_DEBUGGING_STD "RainCounterI2C"
 #endif
 
 // Included Dependencies
@@ -72,9 +72,9 @@ protected:
 class RainCounterI2C_Tips : public Variable
 {
 public:
-    explicit RainCounterI2C_Tips(RainCounterI2C *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "RainCounterI2CTips")
+    explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "RainCounterI2CTips")
         : Variable(parentSense,
                    (const uint8_t)BUCKET_TIPS_VAR_NUM,
                    (uint8_t)BUCKET_TIPS_RESOLUTION,
@@ -93,9 +93,9 @@ public:
 class RainCounterI2C_Depth : public Variable
 {
 public:
-    explicit RainCounterI2C_Depth(RainCounterI2C *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "RainCounterI2CVol")
+    explicit RainCounterI2C_Depth(RainCounterI2C* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "RainCounterI2CVol")
         : Variable(parentSense,
                    (const uint8_t)BUCKET_RAIN_VAR_NUM,
                    (uint8_t)BUCKET_RAIN_RESOLUTION,

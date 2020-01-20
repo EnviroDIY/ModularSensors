@@ -29,7 +29,7 @@
 // #define MS_FREESCALEMPL115A2_DEBUG
 
 #ifdef MS_FREESCALEMPL115A2_DEBUG
-    #define MS_DEBUGGING_STD "FreescaleMPL115A2"
+#define MS_DEBUGGING_STD "FreescaleMPL115A2"
 #endif
 
 // Included Dependencies
@@ -74,9 +74,9 @@ protected:
 class MPL115A2_Temp : public Variable
 {
 public:
-    explicit MPL115A2_Temp(MPL115A2 *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "MPL115A2_Temp")
+    explicit MPL115A2_Temp(MPL115A2* parentSense,
+                           const char* uuid = "",
+                           const char* varCode = "MPL115A2_Temp")
         : Variable(parentSense,
                    (const uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION,
@@ -96,9 +96,9 @@ public:
 class MPL115A2_Pressure : public Variable
 {
 public:
-    explicit MPL115A2_Pressure(MPL115A2 *parentSense,
-                               const char *uuid = "",
-                               const char *varCode = "MPL115A2_Pressure")
+    explicit MPL115A2_Pressure(MPL115A2* parentSense,
+                               const char* uuid = "",
+                               const char* varCode = "MPL115A2_Pressure")
         : Variable(parentSense,
                    (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,

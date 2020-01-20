@@ -65,7 +65,7 @@ public:
                        "DecagonCTD", CTD_NUM_VARIABLES,
                        CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
-    DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+    DecagonCTD(char* SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES,
                        CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
@@ -84,9 +84,9 @@ public:
 class DecagonCTD_Cond : public Variable
 {
 public:
-    explicit DecagonCTD_Cond(DecagonCTD *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "CTDcond")
+    explicit DecagonCTD_Cond(DecagonCTD* parentSense,
+                             const char* uuid = "",
+                             const char* varCode = "CTDcond")
         : Variable(parentSense,
                    (const uint8_t)CTD_COND_VAR_NUM,
                    (uint8_t)CTD_COND_RESOLUTION,
@@ -106,9 +106,9 @@ public:
 class DecagonCTD_Temp : public Variable
 {
 public:
-    explicit DecagonCTD_Temp(DecagonCTD *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "CTDtemp")
+    explicit DecagonCTD_Temp(DecagonCTD* parentSense,
+                             const char* uuid = "",
+                             const char* varCode = "CTDtemp")
         : Variable(parentSense,
                    (const uint8_t)CTD_TEMP_VAR_NUM,
                    (uint8_t)CTD_TEMP_RESOLUTION,
@@ -128,9 +128,9 @@ public:
 class DecagonCTD_Depth : public Variable
 {
 public:
-    explicit DecagonCTD_Depth(DecagonCTD *parentSense,
-                              const char *uuid = "",
-                              const char *varCode = "CTDdepth")
+    explicit DecagonCTD_Depth(DecagonCTD* parentSense,
+                              const char* uuid = "",
+                              const char* varCode = "CTDdepth")
         : Variable(parentSense,
                    (const uint8_t)CTD_DEPTH_VAR_NUM,
                    (uint8_t)CTD_DEPTH_RESOLUTION,

@@ -17,17 +17,17 @@
 
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy in memory
-const char *EnviroDIYPublisher::postEndpoint = "/api/data-stream/";
-const char *EnviroDIYPublisher::enviroDIYHost = "data.envirodiy.org";
+const char* EnviroDIYPublisher::postEndpoint = "/api/data-stream/";
+const char* EnviroDIYPublisher::enviroDIYHost = "data.envirodiy.org";
 const int EnviroDIYPublisher::enviroDIYPort = 80;
-const char *EnviroDIYPublisher::tokenHeader = "\r\nTOKEN: ";
+const char* EnviroDIYPublisher::tokenHeader = "\r\nTOKEN: ";
 // const unsigned char *EnviroDIYPublisher::cacheHeader = "\r\nCache-Control: no-cache";
 // const unsigned char *EnviroDIYPublisher::connectionHeader = "\r\nConnection: close";
-const char *EnviroDIYPublisher::contentLengthHeader = "\r\nContent-Length: ";
-const char *EnviroDIYPublisher::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
+const char* EnviroDIYPublisher::contentLengthHeader = "\r\nContent-Length: ";
+const char* EnviroDIYPublisher::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
 
-const char *EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char *EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
+const char* EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
+const char* EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
 
 
 // Constructors
@@ -36,21 +36,21 @@ EnviroDIYPublisher::EnviroDIYPublisher()
 {
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger,
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger, Client *inClient,
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger,
-                                       const char *registrationToken,
-                                       const char *samplingFeatureUUID,
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
+                                       const char* registrationToken,
+                                       const char* samplingFeatureUUID,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
@@ -58,9 +58,9 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     // MS_DBG(F("dataPublisher object created"));
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger, Client *inClient,
-                                       const char *registrationToken,
-                                       const char *samplingFeatureUUID,
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
+                                       const char* registrationToken,
+                                       const char* samplingFeatureUUID,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
@@ -72,7 +72,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger &baseLogger, Client *inClient,
 EnviroDIYPublisher::~EnviroDIYPublisher() {}
 
 
-void EnviroDIYPublisher::setToken(const char *registrationToken)
+void EnviroDIYPublisher::setToken(const char* registrationToken)
 {
     _registrationToken = registrationToken;
     // MS_DBG(F("Registration token set!"));
@@ -124,7 +124,7 @@ uint16_t EnviroDIYPublisher::calculatePostSize()
 
 
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
-void EnviroDIYPublisher::printSensorDataJSON(Stream *stream)
+void EnviroDIYPublisher::printSensorDataJSON(Stream* stream)
 {
     stream->print(samplingFeatureTag);
     stream->print(_baseLogger->getSamplingFeatureUUID());
@@ -150,7 +150,7 @@ void EnviroDIYPublisher::printSensorDataJSON(Stream *stream)
 
 // This prints a fully structured post request for EnviroDIY to the
 // specified stream.
-void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
+void EnviroDIYPublisher::printEnviroDIYRequest(Stream* stream)
 {
     // Stream the HTTP headers for the post request
     stream->print(postHeader);
@@ -172,17 +172,17 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
 
 
 // A way to begin with everything already set
-void EnviroDIYPublisher::begin(Logger &baseLogger, Client *inClient,
-                               const char *registrationToken,
-                               const char *samplingFeatureUUID)
+void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
+                               const char* registrationToken,
+                               const char* samplingFeatureUUID)
 {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
-void EnviroDIYPublisher::begin(Logger &baseLogger,
-                               const char *registrationToken,
-                               const char *samplingFeatureUUID)
+void EnviroDIYPublisher::begin(Logger& baseLogger,
+                               const char* registrationToken,
+                               const char* samplingFeatureUUID)
 {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger);
@@ -195,7 +195,7 @@ void EnviroDIYPublisher::begin(Logger &baseLogger,
 // over that connection.
 // The return is the http status code of the response.
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
-int16_t EnviroDIYPublisher::publishData(Client *_outClient)
+int16_t EnviroDIYPublisher::publishData(Client* _outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";

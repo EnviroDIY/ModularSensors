@@ -51,9 +51,9 @@ public:
 class AtlasScientificRTD_Temp : public Variable
 {
 public:
-    explicit AtlasScientificRTD_Temp(AtlasScientificRTD *parentSense,
-                                     const char *uuid = "",
-                                     const char *varCode = "AtlasTemp")
+    explicit AtlasScientificRTD_Temp(AtlasScientificRTD* parentSense,
+                                     const char* uuid = "",
+                                     const char* varCode = "AtlasTemp")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_RTD_VAR_NUM,
                    (uint8_t)ATLAS_RTD_RESOLUTION,

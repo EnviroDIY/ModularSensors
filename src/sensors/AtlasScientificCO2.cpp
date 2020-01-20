@@ -39,7 +39,7 @@ bool AtlasScientificCO2::setup()
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report temperature with CO2"));
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write((const uint8_t *)"O,t,1", 5);  // Enable temperature
+    success &= Wire.write((const uint8_t*)"O,t,1", 5);  // Enable temperature
     success &= !Wire.endTransmission();
     // NOTE: The return of 0 from endTransmission indicates success
     success &= waitForProcessing();

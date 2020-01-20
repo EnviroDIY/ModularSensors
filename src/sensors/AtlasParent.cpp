@@ -19,7 +19,7 @@
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0X64, or 100
 AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage,
-                         const char *sensorName, const uint8_t numReturnedVars,
+                         const char* sensorName, const uint8_t numReturnedVars,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -67,7 +67,7 @@ bool AtlasParent::sleep(void)
     MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
 
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write((const uint8_t *)"Sleep", 5);  // Write "Sleep" to put it in low power mode
+    success &= Wire.write((const uint8_t*)"Sleep", 5);  // Write "Sleep" to put it in low power mode
     success &= !Wire.endTransmission();
     // NOTE: The return of 0 from endTransmission indicates success
 

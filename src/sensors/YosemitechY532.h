@@ -55,13 +55,13 @@ class YosemitechY532 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY532(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY532(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y532, "YosemitechY532", Y532_NUM_VARIABLES,
                            Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY532(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY532(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y532, "YosemitechY532", Y532_NUM_VARIABLES,
@@ -75,9 +75,9 @@ public:
 class YosemitechY532_pH : public Variable
 {
 public:
-    explicit YosemitechY532_pH(YosemitechY532 *parentSense,
-                               const char *uuid = "",
-                               const char *varCode = "Y532pH")
+    explicit YosemitechY532_pH(YosemitechY532* parentSense,
+                               const char* uuid = "",
+                               const char* varCode = "Y532pH")
         : Variable(parentSense,
                    (const uint8_t)Y532_PH_VAR_NUM,
                    (uint8_t)Y532_PH_RESOLUTION,
@@ -97,9 +97,9 @@ public:
 class YosemitechY532_Temp : public Variable
 {
 public:
-    explicit YosemitechY532_Temp(YosemitechY532 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "Y532Temp")
+    explicit YosemitechY532_Temp(YosemitechY532* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "Y532Temp")
         : Variable(parentSense,
                    (const uint8_t)Y532_TEMP_VAR_NUM,
                    (uint8_t)Y532_TEMP_RESOLUTION,
@@ -119,9 +119,9 @@ public:
 class YosemitechY532_Voltage : public Variable
 {
 public:
-    explicit YosemitechY532_Voltage(YosemitechY532 *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "Y532Potential")
+    explicit YosemitechY532_Voltage(YosemitechY532* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "Y532Potential")
         : Variable(parentSense,
                    (const uint8_t)Y532_VOLT_VAR_NUM,
                    (uint8_t)Y532_VOLT_RESOLUTION,

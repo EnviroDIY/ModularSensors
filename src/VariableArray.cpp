@@ -12,13 +12,13 @@
 
 // Constructors
 VariableArray::VariableArray() {}
-VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
+VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList), _variableCount(variableCount)
 {
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
 }
-VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[], const char *uuids[])
+VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[], const char* uuids[])
     : arrayOfVars(variableList), _variableCount(variableCount)
 {
     _maxSamplestoAverage = countMaxToAverage();
@@ -29,7 +29,7 @@ VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[], co
 // Destructor
 VariableArray::~VariableArray() {}
 
-void VariableArray::VariableArray::begin(uint8_t variableCount, Variable *variableList[], const char *uuids[])
+void VariableArray::VariableArray::begin(uint8_t variableCount, Variable* variableList[], const char* uuids[])
 {
     _variableCount = variableCount;
     arrayOfVars = variableList;
@@ -39,7 +39,7 @@ void VariableArray::VariableArray::begin(uint8_t variableCount, Variable *variab
     matchUUIDs(uuids);
     checkVariableUUIDs();
 }
-void VariableArray::begin(uint8_t variableCount, Variable *variableList[])
+void VariableArray::begin(uint8_t variableCount, Variable* variableList[])
 {
     _variableCount = variableCount;
     arrayOfVars = variableList;
@@ -83,7 +83,7 @@ uint8_t VariableArray::getSensorCount(void)
 }
 
 // This matches UUID's from an array of pointers to the variable array
-void VariableArray::matchUUIDs(const char *uuids[])
+void VariableArray::matchUUIDs(const char* uuids[])
 {
     for (uint8_t i = 0; i < _variableCount; i++)
     {
@@ -902,7 +902,7 @@ bool VariableArray::completeUpdate(void)
 
 // This function prints out the results for any connected sensors to a stream
 // Calculated variable results will be included
-void VariableArray::printSensorData(Stream *stream)
+void VariableArray::printSensorData(Stream* stream)
 {
     for (uint8_t i = 0; i < _variableCount; i++)
     {

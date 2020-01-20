@@ -52,13 +52,13 @@ class YosemitechY520 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY520(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y520, "YosemitechY520", Y520_NUM_VARIABLES,
                            Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY520(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y520, "YosemitechY520", Y520_NUM_VARIABLES,
@@ -72,9 +72,9 @@ public:
 class YosemitechY520_Cond : public Variable
 {
 public:
-    explicit YosemitechY520_Cond(YosemitechY520 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "Y520Cond")
+    explicit YosemitechY520_Cond(YosemitechY520* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "Y520Cond")
         : Variable(parentSense,
                    (const uint8_t)Y520_COND_VAR_NUM,
                    (uint8_t)Y520_COND_RESOLUTION,
@@ -94,9 +94,9 @@ public:
 class YosemitechY520_Temp : public Variable
 {
 public:
-    explicit YosemitechY520_Temp(YosemitechY520 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "Y520Temp")
+    explicit YosemitechY520_Temp(YosemitechY520* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "Y520Temp")
         : Variable(parentSense,
                    (const uint8_t)Y520_TEMP_VAR_NUM,
                    (uint8_t)Y520_TEMP_RESOLUTION,

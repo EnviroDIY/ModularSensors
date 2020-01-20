@@ -15,7 +15,7 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(const char *sensorName, const uint8_t numReturnedVars,
+Sensor::Sensor(const char* sensorName, const uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
                int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
     : _sensorName(sensorName), _numReturnedVars(numReturnedVars)
@@ -120,6 +120,8 @@ void Sensor::powerUp(void)
     {
         MS_DBG(F("Powering"), getSensorNameAndLocation(),
                F("with pin"), _powerPin);
+        // Set the pin mode, just in case
+        pinMode(_powerPin, OUTPUT);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -276,7 +278,7 @@ bool Sensor::startSingleMeasurement(void)
 }
 
 
-void Sensor::registerVariable(int sensorVarNum, Variable *var)
+void Sensor::registerVariable(int sensorVarNum, Variable* var)
 {
     variables[sensorVarNum] = var;
     /*MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),

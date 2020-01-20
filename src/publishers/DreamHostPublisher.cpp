@@ -15,10 +15,10 @@
 // ============================================================================
 
 // Constant portions of the requests
-const char *DreamHostPublisher::dreamhostHost = "swrcsensors.dreamhosters.com";
+const char* DreamHostPublisher::dreamhostHost = "swrcsensors.dreamhosters.com";
 const int DreamHostPublisher::dreamhostPort = 80;
-const char *DreamHostPublisher::loggerTag = "?LoggerID=";
-const char *DreamHostPublisher::timestampTagDH = "&Loggertime=";
+const char* DreamHostPublisher::loggerTag = "?LoggerID=";
+const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
 // Constructors
 DreamHostPublisher::DreamHostPublisher()
@@ -26,28 +26,28 @@ DreamHostPublisher::DreamHostPublisher()
 {
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger &baseLogger,
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger &baseLogger, Client *inClient,
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger &baseLogger,
-                                       const char *dhUrl, uint8_t sendEveryX,
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
+                                       const char* dhUrl, uint8_t sendEveryX,
                                        uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(dhUrl);
     // MS_DBG(F("DreamHostPublisher object created"));
 }
-DreamHostPublisher::DreamHostPublisher(Logger &baseLogger, Client *inClient,
-                                       const char *dhUrl, uint8_t sendEveryX,
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
+                                       const char* dhUrl, uint8_t sendEveryX,
                                        uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
@@ -59,7 +59,7 @@ DreamHostPublisher::~DreamHostPublisher() {}
 
 
 // Functions for private SWRC server
-void DreamHostPublisher::setDreamHostPortalRX(const char *dhUrl)
+void DreamHostPublisher::setDreamHostPortalRX(const char* dhUrl)
 {
     _DreamHostPortalRX = dhUrl;
     // MS_DBG(F("Dreamhost portal URL set!"));
@@ -67,7 +67,7 @@ void DreamHostPublisher::setDreamHostPortalRX(const char *dhUrl)
 
 
 // This prints the URL out to an Arduino stream
-void DreamHostPublisher::printSensorDataDreamHost(Stream *stream)
+void DreamHostPublisher::printSensorDataDreamHost(Stream* stream)
 {
     stream->print(_DreamHostPortalRX);
     stream->print(loggerTag);
@@ -87,7 +87,7 @@ void DreamHostPublisher::printSensorDataDreamHost(Stream *stream)
 
 // This prints a fully structured GET request for DreamHost to the
 // specified stream
-void DreamHostPublisher::printDreamHostRequest(Stream *stream)
+void DreamHostPublisher::printDreamHostRequest(Stream* stream)
 {
     // Start the request
     stream->print(getHeader);
@@ -104,14 +104,14 @@ void DreamHostPublisher::printDreamHostRequest(Stream *stream)
 
 
 // A way to begin with everything already set
-void DreamHostPublisher::begin(Logger &baseLogger, Client *inClient,
-                               const char *dhUrl)
+void DreamHostPublisher::begin(Logger& baseLogger, Client* inClient,
+                               const char* dhUrl)
 {
     setDreamHostPortalRX(dhUrl);
     dataPublisher::begin(baseLogger, inClient);
 }
-void DreamHostPublisher::begin(Logger &baseLogger,
-                               const char *dhUrl)
+void DreamHostPublisher::begin(Logger& baseLogger,
+                               const char* dhUrl)
 {
     setDreamHostPortalRX(dhUrl);
     dataPublisher::begin(baseLogger);
@@ -120,7 +120,7 @@ void DreamHostPublisher::begin(Logger &baseLogger,
 
 // Post the data to dream host.
 // int16_t DreamHostPublisher::postDataDreamHost(void)
-int16_t DreamHostPublisher::publishData(Client *_outClient)
+int16_t DreamHostPublisher::publishData(Client* _outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";

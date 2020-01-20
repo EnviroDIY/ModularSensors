@@ -58,7 +58,7 @@
 // #define MS_EXTERNALVOLTAGE_DEBUG
 
 #ifdef MS_EXTERNALVOLTAGE_DEBUG
-    #define MS_DEBUGGING_STD "ExternalVoltage"
+#define MS_DEBUGGING_STD "ExternalVoltage"
 #endif
 
 // Included Dependencies
@@ -80,9 +80,9 @@
 
 #define EXT_VOLT_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-    #define EXT_VOLT_RESOLUTION 1
+#define EXT_VOLT_RESOLUTION 1
 #else
-    #define EXT_VOLT_RESOLUTION 4
+#define EXT_VOLT_RESOLUTION 4
 #endif
 
 // The main class for the external votlage monitor
@@ -113,9 +113,9 @@ protected:
 class ExternalVoltage_Volt : public Variable
 {
 public:
-    explicit ExternalVoltage_Volt(ExternalVoltage *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "extVoltage")
+    explicit ExternalVoltage_Volt(ExternalVoltage* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "extVoltage")
         : Variable(parentSense,
                    (const uint8_t)EXT_VOLT_VAR_NUM,
                    (uint8_t)EXT_VOLT_RESOLUTION,

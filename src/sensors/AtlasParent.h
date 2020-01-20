@@ -20,7 +20,7 @@
 // #define MS_ATLASPARENT_DEBUG
 
 #ifdef MS_ATLASPARENT_DEBUG
-    #define MS_DEBUGGING_STD "AtlasParent"
+#define MS_DEBUGGING_STD "AtlasParent"
 #endif
 
 // Included Dependencies
@@ -35,22 +35,22 @@ class AtlasParent : public Sensor
 {
 public:
     AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
-                const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
+                const char* sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms = 0);
     virtual ~AtlasParent();
 
     String getSensorLocation(void) override;
 
-     bool setup(void) override;
+    bool setup(void) override;
     // NOTE:  The sensor should wake as soon as any command is sent.
     // I assume that means we can use the command to take a reading to both
     // wake it and ask for a reading.
     //  bool wake(void) override;
-     bool sleep(void) override;
+    bool sleep(void) override;
 
-     bool startSingleMeasurement(void) override;
-     bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement(void) override;
+    bool addSingleMeasurementResult(void) override;
 
 protected:
     int8_t _i2cAddressHex;

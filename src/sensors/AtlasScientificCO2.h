@@ -19,7 +19,7 @@
 // #define MS_ATLASSCIENTIFICCO2_DEBUG
 
 #ifdef MS_ATLASSCIENTIFICCO2_DEBUG
-    #define MS_DEBUGGING_STD "AtlasScientificCO2"
+#define MS_DEBUGGING_STD "AtlasScientificCO2"
 #endif
 
 // Included Dependencies
@@ -60,9 +60,9 @@ public:
 class AtlasScientificCO2_CO2 : public Variable
 {
 public:
-    explicit AtlasScientificCO2_CO2(AtlasScientificCO2 *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "AtlasCO2ppm")
+    explicit AtlasScientificCO2_CO2(AtlasScientificCO2* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "AtlasCO2ppm")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_CO2_VAR_NUM,
                    (uint8_t)ATLAS_CO2_RESOLUTION,
@@ -81,9 +81,9 @@ public:
 class AtlasScientificCO2_Temp : public Variable
 {
 public:
-    explicit AtlasScientificCO2_Temp(AtlasScientificCO2 *parentSense,
-                                     const char *uuid = "",
-                                     const char *varCode = "AtlasCO2Temp")
+    explicit AtlasScientificCO2_Temp(AtlasScientificCO2* parentSense,
+                                     const char* uuid = "",
+                                     const char* varCode = "AtlasCO2Temp")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
                    (uint8_t)ATLAS_CO2TEMP_RESOLUTION,

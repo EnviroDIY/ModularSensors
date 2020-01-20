@@ -20,13 +20,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-    #define TINY_GSM_YIELD_MS 2
+#define TINY_GSM_YIELD_MS 2
 #endif
 #ifndef MQTT_MAX_PACKET_SIZE
-    #define MQTT_MAX_PACKET_SIZE 240
+#define MQTT_MAX_PACKET_SIZE 240
 #endif
 
 
@@ -91,22 +91,22 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // the same serial port.
 
 #if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)  // For AVR boards
-    // Unfortunately, most AVR boards have only one or two hardware serial ports,
-    // so we'll set up three types of extra software serial ports to use
+// Unfortunately, most AVR boards have only one or two hardware serial ports,
+// so we'll set up three types of extra software serial ports to use
 
-    // AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
-    // is the most accurate software serial port for AVR boards.
-    // AltSoftSerial can only be used on one set of pins on each board so only one
-    // AltSoftSerial port can be used.
-    // Not all AVR boards are supported by AltSoftSerial.
-    #include <AltSoftSerial.h>
+// AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
+// is the most accurate software serial port for AVR boards.
+// AltSoftSerial can only be used on one set of pins on each board so only one
+// AltSoftSerial port can be used.
+// Not all AVR boards are supported by AltSoftSerial.
+#include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
 
-    // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
-    // serial that can be used on any pin supporting interrupts.
-    // You can use as many instances of NeoSWSerial as you want.
-    // Not all AVR boards are supported by NeoSWSerial.
-    #include <NeoSWSerial.h>      // for the stream communication
+// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
+// serial that can be used on any pin supporting interrupts.
+// You can use as many instances of NeoSWSerial as you want.
+// Not all AVR boards are supported by NeoSWSerial.
+#include <NeoSWSerial.h>          // for the stream communication
 const int8_t neoSSerial1Rx = 11;  // data in pin
 const int8_t neoSSerial1Tx = -1;  // data out pin
 NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
@@ -124,7 +124,7 @@ void neoSSerial1ISR()
 const int8_t softSerialRx = A3;  // data in pin
 const int8_t softSerialTx = A4;  // data out pin
 
-    #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
 
@@ -149,9 +149,9 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
 
 #if defined ARDUINO_ARCH_SAMD
-    #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
+#include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
-    #ifndef ENABLE_SERIAL2
+#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
@@ -164,9 +164,9 @@ void SERCOM1_Handler()
 {
     Serial2.IrqHandler();
 }
-    #endif
+#endif
 
-    #ifndef ENABLE_SERIAL3
+#ifndef ENABLE_SERIAL3
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
@@ -179,7 +179,7 @@ void SERCOM2_Handler()
 {
     Serial3.IrqHandler();
 }
-    #endif
+#endif
 
 #endif  // End hardware serial on SAMD21 boards
 
@@ -215,10 +215,10 @@ const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 #if not defined MS_BUILD_TESTING || defined MS_BUILD_TEST_XBEE_CELLULAR
     // For any Digi Cellular XBee's
-    // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
-    // in either bypass or transparent mode, each with pros and cons
-    // The Telit based Digi XBees (LTE Cat1) can only use this mode.
-    #include <modems/DigiXBeeCellularTransparent.h>
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
+// in either bypass or transparent mode, each with pros and cons
+// The Telit based Digi XBees (LTE Cat1) can only use this mode.
+#include <modems/DigiXBeeCellularTransparent.h>
 const long modemBaud = 9600;         // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
@@ -233,9 +233,9 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_LTE_B
     // For the u-blox SARA R410M based Digi LTE-M XBee3
-    // NOTE:  According to the manual, this should be less stable than transparent
-    // mode, but my experience is the complete reverse.
-    #include <modems/DigiXBeeLTEBypass.h>
+// NOTE:  According to the manual, this should be less stable than transparent
+// mode, but my experience is the complete reverse.
+#include <modems/DigiXBeeLTEBypass.h>
 const long modemBaud = 9600;         // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
@@ -250,9 +250,9 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_3G_B
     // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
-    // NOTE:  According to the manual, this should be less stable than transparent
-    // mode, but my experience is the complete reverse.
-    #include <modems/DigiXBee3GBypass.h>
+// NOTE:  According to the manual, this should be less stable than transparent
+// mode, but my experience is the complete reverse.
+#include <modems/DigiXBee3GBypass.h>
 const long modemBaud = 9600;         // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
@@ -267,7 +267,7 @@ DigiXBee3GBypass modem = modemXB3GB;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_WIFI
     // For the Digi Wifi XBee (S6B)
-    #include <modems/DigiXBeeWifi.h>
+#include <modems/DigiXBeeWifi.h>
 const long modemBaud = 9600;        // All XBee's use 9600 by default
 const bool useCTSforStatus = true;  // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
@@ -282,7 +282,7 @@ DigiXBeeWifi modem = modemXBWF;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_ESP8266
     // For almost anything based on the Espressif ESP8266 using the AT command firmware
-    #include <modems/EspressifESP8266.h>
+#include <modems/EspressifESP8266.h>
 const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
 // should be programmed to a slower baud rate or set to auto-baud using the
@@ -303,7 +303,7 @@ EspressifESP8266 modem = modemESP;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_BG96
     // For the Dragino, Nimbelink or other boards based on the Quectel BG96
-    #include <modems/QuectelBG96.h>
+#include <modems/QuectelBG96.h>
 const long modemBaud = 115200;  // Communication speed of the modem
 QuectelBG96 modemBG96(&modemSerial,
                       modemVccPin, modemStatusPin,
@@ -315,7 +315,7 @@ QuectelBG96 modem = modemBG96;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_MONARCH
     // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series
-    #include <modems/SequansMonarch.h>
+#include <modems/SequansMonarch.h>
 const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
 // NOTE:  This baud rate is much too fast for many Arduinos!  The module should
 // be programmed to a slower baud rate or set to auto-baud using the AT+IPR command.
@@ -329,7 +329,7 @@ SequansMonarch modem = modemSVZM;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM800
     // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and higher
-    #include <modems/SIMComSIM800.h>
+#include <modems/SIMComSIM800.h>
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 SIMComSIM800 modemS800(&modemSerial,
                        modemVccPin, modemStatusPin,
@@ -341,7 +341,7 @@ SIMComSIM800 modem = modemS800;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM7000
     // For almost anything based on the SIMCom SIM7000
-    #include <modems/SIMComSIM7000.h>
+#include <modems/SIMComSIM7000.h>
 const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
 SIMComSIM7000 modem7000(&modemSerial,
                         modemVccPin, modemStatusPin,
@@ -353,8 +353,8 @@ SIMComSIM7000 modem = modem7000;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_S2GB
     // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
-    // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-    #include <modems/Sodaq2GBeeR6.h>
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial,
                       modemVccPin, modemStatusPin,
@@ -365,7 +365,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_R410M
     // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
-    #include <modems/SodaqUBeeR410M.h>
+#include <modems/SodaqUBeeR410M.h>
 const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
 // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
 // every power loss, the module will return to the default baud rate of 115200.
@@ -383,7 +383,7 @@ SodaqUBeeR410M modem = modemR410;
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_U201
     // For the Sodaq UBee based on the 3G u-blox SARA U201
-    #include <modems/SodaqUBeeU201.h>
+#include <modems/SodaqUBeeU201.h>
 const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
 SodaqUBeeU201 modemU201(&modemSerial,
                         modemVccPin, modemStatusPin,
@@ -1198,7 +1198,7 @@ const char* calculatedVarCode = "calcVar";                               // A sh
 const char* calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
 
 // Finally, Create a calculated variable pointer and return a variable pointer to it
-Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
+Variable* calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
                                        calculatedVarName, calculatedVarUnit,
                                        calculatedVarCode, calculatedVarUUID);
 
@@ -1210,7 +1210,7 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarReso
 // FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
 // NOTE:  Forms one and two can be mixed
-Variable *variableList[] = {
+Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-ef00-1234567890ab"),
     new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -1469,14 +1469,14 @@ void setup()
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
 #if defined ARDUINO_ARCH_SAMD
-    #ifndef ENABLE_SERIAL2
+#ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-    #endif
-    #ifndef ENABLE_SERIAL3
+#endif
+#ifndef ENABLE_SERIAL3
     pinPeripheral(2, PIO_SERCOM);  // Serial3 Tx/Dout = SERCOM2 Pad #2
     pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
-    #endif
+#endif
 #endif
 
     // Set up pins for the LED's

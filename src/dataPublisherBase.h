@@ -15,7 +15,7 @@
 // #define MS_DATAPUBLISHERBASE_DEBUG
 
 #ifdef MS_DATAPUBLISHERBASE_DEBUG
-    #define MS_DEBUGGING_STD "dataPublisherBase"
+#define MS_DEBUGGING_STD "dataPublisherBase"
 #endif
 
 // Send Buffer
@@ -25,7 +25,7 @@
 // variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
 // Maximum Transmission Unit).
 #ifndef MS_SEND_BUFFER_SIZE
-    #define MS_SEND_BUFFER_SIZE 750
+#define MS_SEND_BUFFER_SIZE 750
 #endif
 
 // Included Dependencies
@@ -40,18 +40,18 @@ class dataPublisher
 public:
     // Constructors
     dataPublisher();
-    explicit dataPublisher(Logger &baseLogger,
+    explicit dataPublisher(Logger& baseLogger,
                            uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    dataPublisher(Logger &baseLogger, Client *inClient,
+    dataPublisher(Logger& baseLogger, Client* inClient,
                   uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     virtual ~dataPublisher();
 
     // Sets the client
-    void setClient(Client *inClient);
+    void setClient(Client* inClient);
 
     // Attaches to a logger
-    void attachToLogger(Logger &baseLogger);
+    void attachToLogger(Logger& baseLogger);
 
     // Sets the parameters for frequency of sending and any offset, if needed
     // NOTE:  These parameters are not currently used!!
@@ -64,8 +64,8 @@ public:
     // guarantee that the logger will actually be created before the publisher
     // that wants to attach to it unless we wait to attach the publisher until
     // in the setup or loop function of the main program.
-    void begin(Logger &baseLogger, Client *inClient);
-    void begin(Logger &baseLogger);
+    void begin(Logger& baseLogger, Client* inClient);
+    void begin(Logger& baseLogger);
 
     // Returns the data destination
     virtual String getEndpoint(void) = 0;
@@ -73,10 +73,10 @@ public:
     // This opens a socket to the correct receiver and sends out the formatted data
     // This depends on an internet connection already being made and a client
     // being available
-    virtual int16_t publishData(Client *_outClient) = 0;
+    virtual int16_t publishData(Client* _outClient) = 0;
     virtual int16_t publishData();
     // These are duplicates of the above functions for backwards compatibility
-    virtual int16_t sendData(Client *_outClient);
+    virtual int16_t sendData(Client* _outClient);
     virtual int16_t sendData();
 
     // This spits out a string description of the PubSubClient codes
@@ -85,9 +85,9 @@ public:
 
 protected:
     // The internal logger instance
-    Logger *_baseLogger;
+    Logger* _baseLogger;
     // The internal client
-    Client *_inClient;
+    Client* _inClient;
 
     static char txBuffer[MS_SEND_BUFFER_SIZE];
     // This returns the number of empty spots in the buffer
@@ -95,16 +95,16 @@ protected:
     // This fills the TX buffer with nulls ('\0')
     static void emptyTxBuffer(void);
     // This writes the TX buffer to a stream and also to the debugging port
-    static void printTxBuffer(Stream *stream, bool addNewLine = false);
+    static void printTxBuffer(Stream* stream, bool addNewLine = false);
 
     uint8_t _sendEveryX;
     uint8_t _sendOffset;
 
     // Basic chunks of HTTP
-    static const char *getHeader;
-    static const char *postHeader;
-    static const char *HTTPtag;
-    static const char *hostHeader;
+    static const char* getHeader;
+    static const char* postHeader;
+    static const char* HTTPtag;
+    static const char* hostHeader;
 };
 
 #endif  // Header Guard

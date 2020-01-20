@@ -19,7 +19,7 @@
 // #define MS_SDI12SENSORS_DEBUG
 
 #ifdef MS_SDI12SENSORS_DEBUG
-    #define MS_DEBUGGING_STD "SDI12Sensors"
+#define MS_DEBUGGING_STD "SDI12Sensors"
 #endif
 
 // Included Dependencies
@@ -28,9 +28,9 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 #ifdef SDI12_EXTERNAL_PCINT
-    #include <SDI12.h>
+#include <SDI12.h>
 #else
-    #include <SDI12_ExtInts.h>
+#include <SDI12_ExtInts.h>
 #endif
 // NOTE:  Can use the "regular" sdi-12 library with build flag -D SDI12_EXTERNAL_PCINT
 // Unfortunately, that is not compatible with the Arduino IDE
@@ -40,13 +40,13 @@ class SDI12Sensors : public Sensor
 {
 public:
     SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
-                 const char *sensorName = "SDI12-Sensor", const uint8_t numReturnedVars = 1,
+                 const char* sensorName = "SDI12-Sensor", const uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
-    SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
-                 const char *sensorName = "SDI12-Sensor", const uint8_t numReturnedVars = 1,
+    SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
+                 const char* sensorName = "SDI12-Sensor", const uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
     SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
-                 const char *sensorName = "SDI12-Sensor", const uint8_t numReturnedVars = 1,
+                 const char* sensorName = "SDI12-Sensor", const uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
     virtual ~SDI12Sensors();
 

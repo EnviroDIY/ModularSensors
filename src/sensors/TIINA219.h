@@ -33,7 +33,7 @@
 // #define MS_TIINA219_DEBUG
 
 #ifdef MS_TIINA219_DEBUG
-    #define MS_DEBUGGING_STD "TIINA219"
+#define MS_DEBUGGING_STD "TIINA219"
 #endif
 
 // Included Dependencies
@@ -85,9 +85,9 @@ protected:
 class TIINA219_Current : public Variable
 {
 public:
-    explicit TIINA219_Current(TIINA219 *parentSense,
-                              const char *uuid = "",
-                              const char *varCode = "TIINA219Amp")
+    explicit TIINA219_Current(TIINA219* parentSense,
+                              const char* uuid = "",
+                              const char* varCode = "TIINA219Amp")
         : Variable(parentSense,
                    (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
                    (uint8_t)INA219_CURRENT_MA_RESOLUTION,
@@ -107,9 +107,9 @@ public:
 class TIINA219_Volt : public Variable
 {
 public:
-    explicit TIINA219_Volt(TIINA219 *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "TIINA219Volt")
+    explicit TIINA219_Volt(TIINA219* parentSense,
+                           const char* uuid = "",
+                           const char* varCode = "TIINA219Volt")
         : Variable(parentSense,
                    (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
                    (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
@@ -129,9 +129,9 @@ public:
 class TIINA219_Power : public Variable
 {
 public:
-    explicit TIINA219_Power(TIINA219 *parentSense,
-                            const char *uuid = "",
-                            const char *varCode = "TIINA219Power")
+    explicit TIINA219_Power(TIINA219* parentSense,
+                            const char* uuid = "",
+                            const char* varCode = "TIINA219Power")
         : Variable(parentSense,
                    (const uint8_t)INA219_POWER_MW_VAR_NUM,
                    (uint8_t)INA219_POWER_MW_RESOLUTION,

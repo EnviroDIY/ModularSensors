@@ -17,7 +17,7 @@
 // #define MS_SODAQ2GBEER6_DEBUG_DEEP
 
 #ifdef MS_SODAQ2GBEER6_DEBUG
-    #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
+#define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
 
 // NOTE:  The GPRSBee R6+ has the PWR_KEY tied to the input voltage, so there is
@@ -30,7 +30,7 @@
 #include "SIMComSIM800.h"
 
 #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-    #include <StreamDebugger.h>
+#include <StreamDebugger.h>
 #endif
 
 class Sodaq2GBeeR6 : public SIMComSIM800
@@ -46,12 +46,12 @@ public:
     // The order of the pins in the constructor is different from
     // other modems for backwards compatibility and because the
     // Sodaq documentation is confusing
-    Sodaq2GBeeR6(Stream *modemStream,
+    Sodaq2GBeeR6(Stream* modemStream,
                  int8_t powerPin, int8_t statusPin,
-                 const char *apn);
-    Sodaq2GBeeR6(Stream *modemStream,
+                 const char* apn);
+    Sodaq2GBeeR6(Stream* modemStream,
                  int8_t vRefPin, int8_t statusPin, int8_t powerPin,
-                 const char *apn);
+                 const char* apn);
     ~Sodaq2GBeeR6();
 
     void setVRefPin(int8_t vRefPin);

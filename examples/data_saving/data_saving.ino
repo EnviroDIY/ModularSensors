@@ -21,13 +21,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-    #define TINY_GSM_YIELD_MS 2
+#define TINY_GSM_YIELD_MS 2
 #endif
 #ifndef MQTT_MAX_PACKET_SIZE
-    #define MQTT_MAX_PACKET_SIZE 240
+#define MQTT_MAX_PACKET_SIZE 240
 #endif
 
 // ==========================================================================
@@ -75,9 +75,9 @@ const char* mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the processor
-Variable *mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -91,22 +91,22 @@ Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-
 // the same serial port.
 
 #if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
-    // Unfortunately, most AVR boards have only one or two hardware serial ports,
-    // so we'll set up three types of extra software serial ports to use
+// Unfortunately, most AVR boards have only one or two hardware serial ports,
+// so we'll set up three types of extra software serial ports to use
 
-    // AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
-    // is the most accurate software serial port for AVR boards.
-    // AltSoftSerial can only be used on one set of pins on each board so only one
-    // AltSoftSerial port can be used.
-    // Not all AVR boards are supported by AltSoftSerial.
-    #include <AltSoftSerial.h>
+// AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
+// is the most accurate software serial port for AVR boards.
+// AltSoftSerial can only be used on one set of pins on each board so only one
+// AltSoftSerial port can be used.
+// Not all AVR boards are supported by AltSoftSerial.
+#include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
 
-    // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
-    // serial that can be used on any pin supporting interrupts.
-    // You can use as many instances of NeoSWSerial as you want.
-    // Not all AVR boards are supported by NeoSWSerial.
-    #include <NeoSWSerial.h>      // for the stream communication
+// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
+// serial that can be used on any pin supporting interrupts.
+// You can use as many instances of NeoSWSerial as you want.
+// Not all AVR boards are supported by NeoSWSerial.
+#include <NeoSWSerial.h>          // for the stream communication
 const int8_t neoSSerial1Rx = 11;  // data in pin
 const int8_t neoSSerial1Tx = -1;  // data out pin
 NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
@@ -124,7 +124,7 @@ void neoSSerial1ISR()
 const int8_t softSerialRx = A3;  // data in pin
 const int8_t softSerialTx = A4;  // data out pin
 
-    #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
 
@@ -149,9 +149,9 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
 
 #if defined ARDUINO_ARCH_SAMD
-    #include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
+#include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
 
-    #ifndef ENABLE_SERIAL2
+#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
@@ -164,9 +164,9 @@ void SERCOM1_Handler()
 {
     Serial2.IrqHandler();
 }
-    #endif
+#endif
 
-    #ifndef ENABLE_SERIAL3
+#ifndef ENABLE_SERIAL3
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
@@ -179,7 +179,7 @@ void SERCOM2_Handler()
 {
     Serial3.IrqHandler();
 }
-    #endif
+#endif
 
 #endif  // End hardware serial on SAMD21 boards
 
@@ -210,8 +210,8 @@ Sodaq2GBeeR6 modem2GB(&modemSerial,
 Sodaq2GBeeR6 modem = modem2GB;
 
 // Create RSSI and signal strength variable pointers for the modem
-Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -223,7 +223,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 MaximDS3231 ds3231(1);
 
 // Create a temperature variable pointer for the DS3231
-Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -251,9 +251,9 @@ YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable pointers for the Y504
-Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -280,8 +280,8 @@ const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
 // Create turbidity and temperature variable pointers for the Y511
-Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -308,8 +308,8 @@ const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 
 // Create chlorophyll concentration and temperature variable pointers for the Y514
-Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -336,8 +336,8 @@ const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
 // Create specific conductance and temperature variable pointers for the Y520
-Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -346,7 +346,7 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-123
 
 // FORM2: Fill array with already created and named variable pointers
 // We put ALL of the variable pointers into the first array
-Variable *variableList_complete[] = {
+Variable* variableList_complete[] = {
     mcuBoardSampNo,
     mcuBoardBatt,
     mcuBoardAvailableRAM,
@@ -370,7 +370,7 @@ VariableArray arrayComplete(variableCount_complete, variableList_complete);
 
 // Put only the particularly interesting variables into a second array
 // NOTE:  We can the same variables into multiple arrays
-Variable *variableList_toGo[] = {
+Variable* variableList_toGo[] = {
     y504DOmgL,
     y504Temp,
     y511Turb,
@@ -478,10 +478,10 @@ void setup()
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
 #if defined ARDUINO_ARCH_SAMD
-    #ifndef ENABLE_SERIAL2
+#ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-    #endif
+#endif
 #endif
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

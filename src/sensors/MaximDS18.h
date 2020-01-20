@@ -29,7 +29,7 @@
 // #define MS_MAXIMDS18_DEBUG
 
 #ifdef MS_MAXIMDS18_DEBUG
-    #define MS_DEBUGGING_STD "MaximDS18"
+#define MS_DEBUGGING_STD "MaximDS18"
 #endif
 
 // Included Dependencies
@@ -80,9 +80,9 @@ private:
 class MaximDS18_Temp : public Variable
 {
 public:
-    explicit MaximDS18_Temp(MaximDS18 *parentSense,
-                            const char *uuid = "",
-                            const char *varCode = "DS18Temp")
+    explicit MaximDS18_Temp(MaximDS18* parentSense,
+                            const char* uuid = "",
+                            const char* varCode = "DS18Temp")
         : Variable(parentSense,
                    (const uint8_t)DS18_TEMP_VAR_NUM,
                    (uint8_t)DS18_TEMP_RESOLUTION,

@@ -122,7 +122,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 
-Variable *variableList[] = {
+Variable* variableList[] = {
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),

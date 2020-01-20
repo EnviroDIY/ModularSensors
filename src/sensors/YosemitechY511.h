@@ -51,13 +51,13 @@ class YosemitechY511 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY511(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY511(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y511, "YosemitechY511", Y511_NUM_VARIABLES,
                            Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS, Y511_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY511(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY511(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y511, "YosemitechY511", Y511_NUM_VARIABLES,
@@ -71,9 +71,9 @@ public:
 class YosemitechY511_Turbidity : public Variable
 {
 public:
-    explicit YosemitechY511_Turbidity(YosemitechY511 *parentSense,
-                                      const char *uuid = "",
-                                      const char *varCode = "Y511Turbidity")
+    explicit YosemitechY511_Turbidity(YosemitechY511* parentSense,
+                                      const char* uuid = "",
+                                      const char* varCode = "Y511Turbidity")
         : Variable(parentSense,
                    (const uint8_t)Y511_TURB_VAR_NUM,
                    (uint8_t)Y511_TURB_RESOLUTION,
@@ -93,9 +93,9 @@ public:
 class YosemitechY511_Temp : public Variable
 {
 public:
-    explicit YosemitechY511_Temp(YosemitechY511 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "Y511Temp")
+    explicit YosemitechY511_Temp(YosemitechY511* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "Y511Temp")
         : Variable(parentSense,
                    (const uint8_t)Y511_TEMP_VAR_NUM,
                    (uint8_t)Y511_TEMP_RESOLUTION,

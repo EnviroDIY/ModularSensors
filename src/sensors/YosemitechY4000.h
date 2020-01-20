@@ -105,13 +105,13 @@ class YosemitechY4000 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY4000(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                     int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                            Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY4000(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                     int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
@@ -125,9 +125,9 @@ public:
 class YosemitechY4000_DOmgL : public Variable
 {
 public:
-    explicit YosemitechY4000_DOmgL(YosemitechY4000 *parentSense,
-                                   const char *uuid = "",
-                                   const char *varCode = "Y4000DOmgL")
+    explicit YosemitechY4000_DOmgL(YosemitechY4000* parentSense,
+                                   const char* uuid = "",
+                                   const char* varCode = "Y4000DOmgL")
         : Variable(parentSense,
                    (const uint8_t)Y4000_DOMGL_VAR_NUM,
                    (uint8_t)Y4000_DOMGL_RESOLUTION,
@@ -146,9 +146,9 @@ public:
 class YosemitechY4000_Turbidity : public Variable
 {
 public:
-    explicit YosemitechY4000_Turbidity(YosemitechY4000 *parentSense,
-                                       const char *uuid = "",
-                                       const char *varCode = "Y4000Turbidity")
+    explicit YosemitechY4000_Turbidity(YosemitechY4000* parentSense,
+                                       const char* uuid = "",
+                                       const char* varCode = "Y4000Turbidity")
         : Variable(parentSense,
                    (const uint8_t)Y4000_TURB_VAR_NUM,
                    (uint8_t)Y4000_TURB_RESOLUTION,
@@ -167,9 +167,9 @@ public:
 class YosemitechY4000_Cond : public Variable
 {
 public:
-    explicit YosemitechY4000_Cond(YosemitechY4000 *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "Y4000Cond")
+    explicit YosemitechY4000_Cond(YosemitechY4000* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "Y4000Cond")
         : Variable(parentSense,
                    (const uint8_t)Y4000_COND_VAR_NUM,
                    (uint8_t)Y4000_COND_RESOLUTION,
@@ -188,9 +188,9 @@ public:
 class YosemitechY4000_pH : public Variable
 {
 public:
-    explicit YosemitechY4000_pH(YosemitechY4000 *parentSense,
-                                const char *uuid = "",
-                                const char *varCode = "Y4000pH")
+    explicit YosemitechY4000_pH(YosemitechY4000* parentSense,
+                                const char* uuid = "",
+                                const char* varCode = "Y4000pH")
         : Variable(parentSense,
                    (const uint8_t)Y4000_PH_VAR_NUM,
                    (uint8_t)Y4000_PH_RESOLUTION,
@@ -209,9 +209,9 @@ public:
 class YosemitechY4000_Temp : public Variable
 {
 public:
-    explicit YosemitechY4000_Temp(YosemitechY4000 *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "Y4000Temp")
+    explicit YosemitechY4000_Temp(YosemitechY4000* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "Y4000Temp")
         : Variable(parentSense,
                    (const uint8_t)Y4000_TEMP_VAR_NUM,
                    (uint8_t)Y4000_TEMP_RESOLUTION,
@@ -230,9 +230,9 @@ public:
 class YosemitechY4000_ORP : public Variable
 {
 public:
-    explicit YosemitechY4000_ORP(YosemitechY4000 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "Y4000Potential")
+    explicit YosemitechY4000_ORP(YosemitechY4000* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "Y4000Potential")
         : Variable(parentSense,
                    (const uint8_t)Y4000_ORP_VAR_NUM,
                    (uint8_t)Y4000_ORP_RESOLUTION,
@@ -251,9 +251,9 @@ public:
 class YosemitechY4000_Chlorophyll : public Variable
 {
 public:
-    explicit YosemitechY4000_Chlorophyll(YosemitechY4000 *parentSense,
-                                         const char *uuid = "",
-                                         const char *varCode = "Y4000Chloro")
+    explicit YosemitechY4000_Chlorophyll(YosemitechY4000* parentSense,
+                                         const char* uuid = "",
+                                         const char* varCode = "Y4000Chloro")
         : Variable(parentSense,
                    (const uint8_t)Y4000_CHLORO_VAR_NUM,
                    (uint8_t)Y4000_CHLORO_RESOLUTION,
@@ -272,9 +272,9 @@ public:
 class YosemitechY4000_BGA : public Variable
 {
 public:
-    explicit YosemitechY4000_BGA(YosemitechY4000 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "Y4000BGA")
+    explicit YosemitechY4000_BGA(YosemitechY4000* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "Y4000BGA")
         : Variable(parentSense,
                    (const uint8_t)Y4000_BGA_VAR_NUM,
                    (uint8_t)Y4000_BGA_RESOLUTION,

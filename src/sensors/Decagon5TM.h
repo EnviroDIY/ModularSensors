@@ -34,7 +34,7 @@
 // #define MS_DECAGON5TM_DEBUG
 
 #ifdef MS_DECAGON5TM_DEBUG
-    #define MS_DEBUGGING_STD "Decagon5TM"
+#define MS_DEBUGGING_STD "Decagon5TM"
 #endif
 
 // Included Dependencies
@@ -71,7 +71,7 @@ public:
                        "Decagon5TM", TM_NUM_VARIABLES,
                        TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
-    Decagon5TM(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+    Decagon5TM(char* SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES,
                        TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
@@ -84,7 +84,7 @@ public:
     // Destructor
     ~Decagon5TM() {}
 
-     bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 };
 
 
@@ -92,9 +92,9 @@ public:
 class Decagon5TM_Ea : public Variable
 {
 public:
-    explicit Decagon5TM_Ea(Decagon5TM *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "SoilEa")
+    explicit Decagon5TM_Ea(Decagon5TM* parentSense,
+                           const char* uuid = "",
+                           const char* varCode = "SoilEa")
         : Variable(parentSense,
                    (const uint8_t)TM_EA_VAR_NUM,
                    (uint8_t)TM_EA_RESOLUTION,
@@ -114,9 +114,9 @@ public:
 class Decagon5TM_Temp : public Variable
 {
 public:
-    explicit Decagon5TM_Temp(Decagon5TM *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "SoilTemp")
+    explicit Decagon5TM_Temp(Decagon5TM* parentSense,
+                             const char* uuid = "",
+                             const char* varCode = "SoilTemp")
         : Variable(parentSense,
                    (const uint8_t)TM_TEMP_VAR_NUM,
                    (uint8_t)TM_TEMP_RESOLUTION,
@@ -136,9 +136,9 @@ public:
 class Decagon5TM_VWC : public Variable
 {
 public:
-    explicit Decagon5TM_VWC(Decagon5TM *parentSense,
-                            const char *uuid = "",
-                            const char *varCode = "SoilVWC")
+    explicit Decagon5TM_VWC(Decagon5TM* parentSense,
+                            const char* uuid = "",
+                            const char* varCode = "SoilVWC")
         : Variable(parentSense,
                    (const uint8_t)TM_VWC_VAR_NUM,
                    (uint8_t)TM_VWC_RESOLUTION,

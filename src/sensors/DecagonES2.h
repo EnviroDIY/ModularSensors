@@ -56,7 +56,7 @@ public:
                        "DecagonES2", ES2_NUM_VARIABLES,
                        ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
-    DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+    DecagonES2(char* SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES,
                        ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
@@ -75,9 +75,9 @@ public:
 class DecagonES2_Cond : public Variable
 {
 public:
-    explicit DecagonES2_Cond(DecagonES2 *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "ES2Cond")
+    explicit DecagonES2_Cond(DecagonES2* parentSense,
+                             const char* uuid = "",
+                             const char* varCode = "ES2Cond")
         : Variable(parentSense,
                    (const uint8_t)ES2_COND_VAR_NUM,
                    (uint8_t)ES2_COND_RESOLUTION,
@@ -96,9 +96,9 @@ public:
 class DecagonES2_Temp : public Variable
 {
 public:
-    explicit DecagonES2_Temp(DecagonES2 *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "ES2Temp")
+    explicit DecagonES2_Temp(DecagonES2* parentSense,
+                             const char* uuid = "",
+                             const char* varCode = "ES2Temp")
         : Variable(parentSense,
                    (const uint8_t)ES2_TEMP_VAR_NUM,
                    (uint8_t)ES2_TEMP_RESOLUTION,

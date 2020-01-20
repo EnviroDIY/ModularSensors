@@ -12,10 +12,10 @@
 #include "LoggerModemMacros.h"
 
 // Constructor
-SIMComSIM7000::SIMComSIM7000(Stream *modemStream,
+SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
                              int8_t powerPin, int8_t statusPin,
                              int8_t modemResetPin, int8_t modemSleepRqPin,
-                             const char *apn)
+                             const char* apn)
     : loggerModem(powerPin, statusPin, HIGH,
                   modemResetPin, modemSleepRqPin, false,
                   SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,

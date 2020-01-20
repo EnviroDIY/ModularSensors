@@ -19,7 +19,7 @@
 // #define MS_WATCHDOGSAMD_DEBUG
 
 #ifdef MS_WATCHDOGSAMD_DEBUG
-    #define MS_DEBUGGING_STD "WatchDogSAMD"
+#define MS_DEBUGGING_STD "WatchDogSAMD"
 #endif
 
 // Included Dependencies

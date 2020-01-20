@@ -14,10 +14,10 @@
 #include "LoggerModemMacros.h"
 
 // Constructor
-EspressifESP8266::EspressifESP8266(Stream *modemStream,
+EspressifESP8266::EspressifESP8266(Stream* modemStream,
                                    int8_t powerPin, int8_t statusPin,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
-                                   const char *ssid, const char *pwd,
+                                   const char* ssid, const char* pwd,
                                    int8_t espSleepRqPin, int8_t espStatusPin)
     : loggerModem(powerPin, statusPin, HIGH,
                   modemResetPin, modemSleepRqPin, true,

@@ -38,13 +38,13 @@ class KellerAcculevel : public KellerParent
 {
 public:
     // Constructors with overloads
-    KellerAcculevel(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
+    KellerAcculevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                     int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                        Acculevel_kellerModel, "KellerAcculevel", KELLER_NUM_VARIABLES,
                        ACCULEVEL_WARM_UP_TIME_MS, ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS)
     {}
-    KellerAcculevel(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
+    KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                     int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                        Acculevel_kellerModel, "KellerAcculevel", KELLER_NUM_VARIABLES,
@@ -59,9 +59,9 @@ public:
 class KellerAcculevel_Pressure : public Variable
 {
 public:
-    explicit KellerAcculevel_Pressure(KellerAcculevel *parentSense,
-                                      const char *uuid = "",
-                                      const char *varCode = "kellerAccuPress")
+    explicit KellerAcculevel_Pressure(KellerAcculevel* parentSense,
+                                      const char* uuid = "",
+                                      const char* varCode = "kellerAccuPress")
         : Variable(parentSense,
                    (const uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
@@ -81,9 +81,9 @@ public:
 class KellerAcculevel_Temp : public Variable
 {
 public:
-    explicit KellerAcculevel_Temp(KellerAcculevel *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "kellerAccuTemp")
+    explicit KellerAcculevel_Temp(KellerAcculevel* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "kellerAccuTemp")
         : Variable(parentSense,
                    (const uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)ACCULEVEL_TEMP_RESOLUTION,
@@ -102,9 +102,9 @@ public:
 class KellerAcculevel_Height : public Variable
 {
 public:
-    explicit KellerAcculevel_Height(KellerAcculevel *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "kellerAccuHeight")
+    explicit KellerAcculevel_Height(KellerAcculevel* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "kellerAccuHeight")
         : Variable(parentSense,
                    (const uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION,

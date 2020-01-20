@@ -21,13 +21,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
-    #define TINY_GSM_YIELD_MS 2
+#define TINY_GSM_YIELD_MS 2
 #endif
 #ifndef MQTT_MAX_PACKET_SIZE
-    #define MQTT_MAX_PACKET_SIZE 240
+#define MQTT_MAX_PACKET_SIZE 240
 #endif
 
 
@@ -76,9 +76,9 @@ const char* mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the processor
-Variable *mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -107,8 +107,8 @@ Sodaq2GBeeR6 modem2GB(&modemSerial,
 Sodaq2GBeeR6 modem = modem2GB;
 
 // Create RSSI and signal strength variable pointers for the modem
-Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -120,7 +120,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 MaximDS3231 ds3231(1);
 
 // Create a temperature variable pointer for the DS3231
-Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -137,10 +137,10 @@ uint8_t BMEi2c_addr = 0x77;
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 // Create four variable pointers for the BME280
-Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -155,7 +155,7 @@ const int8_t OneWireBus = 4;                 // Pin attached to the OneWire Bus 
 MaximDS18 ds18(OneWirePower, OneWireBus);
 
 // Create a temperature variable pointer for the DS18
-Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -172,8 +172,8 @@ const uint8_t MS5803ReadingsToAvg = 1;
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
 // Create pressure and temperature variable pointers for the MS5803
-Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
-Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -204,7 +204,7 @@ int waterPressureVarResolution = 3;
 const char* waterPressureUUID = "12345678-abcd-1234-ef00-1234567890ab";
 const char* waterPressureVarCode = "CorrectedPressure";
 // Create the calculated water pressure variable objects and return a variable pointer to it
-Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPressureVarResolution,
+Variable* calcWaterPress = new Variable(calculateWaterPressure, waterPressureVarResolution,
                                         waterPressureVarName, waterPressureVarUnit,
                                         waterPressureVarCode, waterPressureUUID);
 
@@ -226,7 +226,7 @@ int waterDepthVarResolution = 3;
 const char* waterDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
 const char* waterDepthVarCode = "CalcDepth";
 // Create the calculated raw water depth variable objects and return a variable pointer to it
-Variable *calcRawDepth = new Variable(calculateWaterDepthRaw,
+Variable* calcRawDepth = new Variable(calculateWaterDepthRaw,
                                       waterDepthVarResolution,
                                       waterDepthVarName,
                                       waterDepthVarUnit,
@@ -262,7 +262,7 @@ int rhoDepthVarResolution = 3;
 const char* rhoDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
 const char* rhoDepthVarCode = "DensityDepth";
 // Create the temperature corrected water depth variable objects and return a variable pointer to it
-Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected,
+Variable* calcCorrDepth = new Variable(calculateWaterDepthTempCorrected,
                                        rhoDepthVarResolution,
                                        rhoDepthVarName,
                                        rhoDepthVarUnit,
@@ -275,7 +275,7 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected,
 // ==========================================================================
 
 // FORM2: Fill array with already created and named variable pointers
-Variable *variableList[] = {
+Variable* variableList[] = {
     mcuBoardSampNo,
     mcuBoardBatt,
     mcuBoardAvailableRAM,

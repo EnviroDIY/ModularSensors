@@ -13,20 +13,20 @@
 
 // Constructor
 #if F_CPU == 8000000L
-SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial *modemStream,
+SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
                                int8_t powerPin, int8_t statusPin,
                                int8_t modemResetPin, int8_t modemSleepRqPin,
-                               const char *apn)
+                               const char* apn)
     : loggerModem(powerPin, statusPin, HIGH,
                   modemResetPin, modemSleepRqPin, false,
                   R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                   R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS),
-    #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
+#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
-    #else
+#else
       gsmModem(*modemStream),
-    #endif
+#endif
       gsmClient(gsmModem)
 {
     _apn = apn;
@@ -34,20 +34,20 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial *modemStream,
     _modemSerial = modemStream;
 }
 #else
-SodaqUBeeR410M::SodaqUBeeR410M(Stream *modemStream,
+SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
                                int8_t powerPin, int8_t statusPin,
                                int8_t modemResetPin, int8_t modemSleepRqPin,
-                               const char *apn)
+                               const char* apn)
     : loggerModem(powerPin, statusPin, HIGH,
                   modemResetPin, modemSleepRqPin, false,
                   R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                   R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS),
-    #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
+#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
-    #else
+#else
       gsmModem(*modemStream),
-    #endif
+#endif
       gsmClient(gsmModem)
 {
     _apn = apn;

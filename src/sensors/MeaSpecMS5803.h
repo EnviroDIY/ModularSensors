@@ -49,7 +49,7 @@
 // #define MS_MEASSPECMS5803_DEBUG
 
 #ifdef MS_MEASSPECMS5803_DEBUG
-    #define MS_DEBUGGING_STD "MeaSpecMS5803"
+#define MS_DEBUGGING_STD "MeaSpecMS5803"
 #endif
 
 // Included Dependencies
@@ -96,9 +96,9 @@ protected:
 class MeaSpecMS5803_Temp : public Variable
 {
 public:
-    explicit MeaSpecMS5803_Temp(MeaSpecMS5803 *parentSense,
-                                const char *uuid = "",
-                                const char *varCode = "MeaSpecMS5803Temp")
+    explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
+                                const char* uuid = "",
+                                const char* varCode = "MeaSpecMS5803Temp")
         : Variable(parentSense,
                    (const uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION,
@@ -118,9 +118,9 @@ public:
 class MeaSpecMS5803_Pressure : public Variable
 {
 public:
-    explicit MeaSpecMS5803_Pressure(MeaSpecMS5803 *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "MeaSpecMS5803Pressure")
+    explicit MeaSpecMS5803_Pressure(MeaSpecMS5803* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "MeaSpecMS5803Pressure")
         : Variable(parentSense,
                    (const uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION,

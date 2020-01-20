@@ -42,15 +42,15 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
     NVIC_SetPriority(WDT_IRQn, 1);  // Priority behind RTC!
     NVIC_EnableIRQ(WDT_IRQn);
 
-    // Disable watchdog for config
-    #if defined(__SAMD51__)
+// Disable watchdog for config
+#if defined(__SAMD51__)
     WDT->CTRLA.reg = 0;
-    #else
+#else
     WDT->CTRL.reg = 0;
-    #endif
+#endif
     waitForWDTBitSync();
 
-    #if defined(__SAMD51__)
+#if defined(__SAMD51__)
     // SAMD51 WDT uses OSCULP32k as input clock now
     // section: 20.5.3
     OSC32KCTRL->OSCULP32K.bit.EN1K = 1;   // Enable out 1K (for WDT)
@@ -66,7 +66,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
     while (USB->DEVICE.SYNCBUSY.bit.ENABLE)
         ;  // Wait for synchronization
 
-    #else  // SAMD21
+#else  // SAMD21
 
     // We're going to use generic clock generator *5*
     // Many watch-dog examples use 2, but this conflicts with RTC-zero
@@ -93,7 +93,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
     while (GCLK->STATUS.bit.SYNCBUSY)
         ;
 
-    #endif
+#endif
 
     // Set up the watch dog control parameters
     WDT->CTRL.bit.WEN = 0;       // Disable window mode
@@ -128,23 +128,23 @@ void extendedWatchDogSAMD::enableWatchDog()
     MS_DBG(F("Enabling watch dog..."));
     resetWatchDog();
 
-    // Set the enable bit
-    #if defined(__SAMD51__)
+// Set the enable bit
+#if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 1;
-    #else
+#else
     WDT->CTRL.bit.ENABLE = 1;
-    #endif
+#endif
     waitForWDTBitSync();
 }
 
 
 void extendedWatchDogSAMD::disableWatchDog()
 {
-    #if defined(__SAMD51__)
+#if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
-    #else
+#else
     WDT->CTRL.bit.ENABLE = 0;
-    #endif
+#endif
     waitForWDTBitSync();
     MS_DBG(F("Watch dog disabled."));
 }
@@ -163,13 +163,13 @@ void extendedWatchDogSAMD::resetWatchDog()
 
 void extendedWatchDogSAMD::waitForWDTBitSync()
 {
-    #if defined(__SAMD51__)
+#if defined(__SAMD51__)
     while (WDT->SYNCBUSY.reg)
         ;
-    #else
+#else
     while (WDT->STATUS.bit.SYNCBUSY)
         ;
-    #endif
+#endif
 }
 
 

@@ -81,7 +81,7 @@ IncludeCategories:
     Priority: 1
 IncludeIsMainRegex: "(Test)?$"
 IndentCaseLabels: true
-IndentPPDirectives: BeforeHash
+IndentPPDirectives: None
 IndentWidth: 4
 IndentWrappedFunctionNames: false
 JavaScriptQuotes: Leave
@@ -103,7 +103,7 @@ PenaltyBreakString: 1000
 # PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 60
-PointerAlignment: Right
+PointerAlignment: Left
 PointerBindsToType: true
 ReflowComments: true
 SortIncludes: false

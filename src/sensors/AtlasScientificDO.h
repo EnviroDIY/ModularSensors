@@ -19,7 +19,7 @@
 // #define MS_ATLASSCIENTIFICDO_DEBUG
 
 #ifdef MS_ATLASSCIENTIFICDO_DEBUG
-    #define MS_DEBUGGING_STD "AtlasScientificDO"
+#define MS_DEBUGGING_STD "AtlasScientificDO"
 #endif
 
 // Included Dependencies
@@ -60,9 +60,9 @@ public:
 class AtlasScientificDO_DOmgL : public Variable
 {
 public:
-    explicit AtlasScientificDO_DOmgL(AtlasScientificDO *parentSense,
-                                     const char *uuid = "",
-                                     const char *varCode = "AtlasDOmgL")
+    explicit AtlasScientificDO_DOmgL(AtlasScientificDO* parentSense,
+                                     const char* uuid = "",
+                                     const char* varCode = "AtlasDOmgL")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION,
@@ -81,9 +81,9 @@ public:
 class AtlasScientificDO_DOpct : public Variable
 {
 public:
-    explicit AtlasScientificDO_DOpct(AtlasScientificDO *parentSense,
-                                     const char *uuid = "",
-                                     const char *varCode = "AtlasDOpct")
+    explicit AtlasScientificDO_DOpct(AtlasScientificDO* parentSense,
+                                     const char* uuid = "",
+                                     const char* varCode = "AtlasDOpct")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION,

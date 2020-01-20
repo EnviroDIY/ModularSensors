@@ -37,7 +37,7 @@
 // #define MS_APOGEESQ212_DEBUG
 
 #ifdef MS_APOGEESQ212_DEBUG
-    #define MS_DEBUGGING_STD "ApogeeSQ212"
+#define MS_DEBUGGING_STD "ApogeeSQ212"
 #endif
 
 // Included Dependencies
@@ -59,16 +59,16 @@
 
 #define SQ212_PAR_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-    #define SQ212_PAR_RESOLUTION 0
+#define SQ212_PAR_RESOLUTION 0
 #else
-    #define SQ212_PAR_RESOLUTION 4
+#define SQ212_PAR_RESOLUTION 4
 #endif
 
 #define SQ212_VOLTAGE_VAR_NUM 1
 #ifdef MS_USE_ADS1015
-    #define SQ212_VOLT_RESOLUTION 1
+#define SQ212_VOLT_RESOLUTION 1
 #else
-    #define SQ212_VOLT_RESOLUTION 4
+#define SQ212_VOLT_RESOLUTION 4
 #endif
 
 // The main class for the Apogee SQ-212 sensor
@@ -96,9 +96,9 @@ protected:
 class ApogeeSQ212_PAR : public Variable
 {
 public:
-    explicit ApogeeSQ212_PAR(ApogeeSQ212 *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "photosyntheticallyActiveRadiation")
+    explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense,
+                             const char* uuid = "",
+                             const char* varCode = "photosyntheticallyActiveRadiation")
         : Variable(parentSense,
                    (const uint8_t)SQ212_PAR_VAR_NUM,
                    (uint8_t)SQ212_PAR_RESOLUTION,
@@ -119,9 +119,9 @@ public:
 class ApogeeSQ212_Voltage : public Variable
 {
 public:
-    explicit ApogeeSQ212_Voltage(ApogeeSQ212 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "SQ212Voltage")
+    explicit ApogeeSQ212_Voltage(ApogeeSQ212* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "SQ212Voltage")
         : Variable(parentSense,
                    (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
                    (uint8_t)SQ212_VOLT_RESOLUTION,

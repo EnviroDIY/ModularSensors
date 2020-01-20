@@ -21,7 +21,7 @@
 // #define MS_MAXBOTIXSONAR_DEBUG
 
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-    #define MS_DEBUGGING_STD "MaxBotixSonar"
+#define MS_DEBUGGING_STD "MaxBotixSonar"
 #endif
 
 // Included Dependencies
@@ -42,8 +42,8 @@
 class MaxBotixSonar : public Sensor
 {
 public:
-    MaxBotixSonar(Stream *stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
-    MaxBotixSonar(Stream &stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
+    MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
+    MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
     ~MaxBotixSonar();
 
     String getSensorLocation(void) override;
@@ -55,7 +55,7 @@ public:
 
 private:
     int8_t _triggerPin;
-    Stream *_stream;
+    Stream* _stream;
 };
 
 
@@ -63,8 +63,8 @@ private:
 class MaxBotixSonar_Range : public Variable
 {
 public:
-    explicit MaxBotixSonar_Range(MaxBotixSonar *parentSense, const char *uuid = "",
-                                 const char *varCode = "SonarRange")
+    explicit MaxBotixSonar_Range(MaxBotixSonar* parentSense, const char* uuid = "",
+                                 const char* varCode = "SonarRange")
         : Variable(parentSense,
                    (const uint8_t)HRXL_VAR_NUM,
                    (uint8_t)HRXL_RESOLUTION,

@@ -20,7 +20,7 @@
 // #define MS_PROCESSORSTATS_DEBUG
 
 #ifdef MS_PROCESSORSTATS_DEBUG
-    #define MS_DEBUGGING_STD "ProcessorStats"
+#define MS_DEBUGGING_STD "ProcessorStats"
 #endif
 
 // Included Dependencies
@@ -51,7 +51,7 @@ class ProcessorStats : public Sensor
 {
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
-    explicit ProcessorStats(const char *version);
+    explicit ProcessorStats(const char* version);
     ~ProcessorStats();
 
     String getSensorLocation(void) override;
@@ -59,7 +59,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 private:
-    const char *_version;
+    const char* _version;
     int8_t _batteryPin;
     int16_t sampNum;
 };
@@ -69,9 +69,9 @@ private:
 class ProcessorStats_Battery : public Variable
 {
 public:
-    explicit ProcessorStats_Battery(ProcessorStats *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "Battery")
+    explicit ProcessorStats_Battery(ProcessorStats* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "Battery")
         : Variable(parentSense,
                    (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
@@ -91,9 +91,9 @@ public:
 class ProcessorStats_FreeRam : public Variable
 {
 public:
-    explicit ProcessorStats_FreeRam(ProcessorStats *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "FreeRam")
+    explicit ProcessorStats_FreeRam(ProcessorStats* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "FreeRam")
         : Variable(parentSense,
                    (const uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION,
@@ -113,9 +113,9 @@ public:
 class ProcessorStats_SampleNumber : public Variable
 {
 public:
-    explicit ProcessorStats_SampleNumber(ProcessorStats *parentSense,
-                                         const char *uuid = "",
-                                         const char *varCode = "SampNum")
+    explicit ProcessorStats_SampleNumber(ProcessorStats* parentSense,
+                                         const char* uuid = "",
+                                         const char* varCode = "SampNum")
         : Variable(parentSense,
                    (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,

@@ -16,13 +16,13 @@
 // #define MS_SODAQUBEEU201_DEBUG_DEEP
 
 #ifdef MS_SODAQUBEEU201_DEBUG
-    #define MS_DEBUGGING_STD "SodaqUBeeU201"
+#define MS_DEBUGGING_STD "SodaqUBeeU201"
 #endif
 
 #define TINY_GSM_MODEM_UBLOX
 #define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Time after end pulse until V_INT becomes active
@@ -49,7 +49,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
-    #include <StreamDebugger.h>
+#include <StreamDebugger.h>
 #endif
 
 class SodaqUBeeU201 : public loggerModem
@@ -57,23 +57,23 @@ class SodaqUBeeU201 : public loggerModem
 
 public:
     // Constructor/Destructor
-    SodaqUBeeU201(Stream *modemStream,
+    SodaqUBeeU201(Stream* modemStream,
                   int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char *apn);
+                  const char* apn);
     ~SodaqUBeeU201();
 
-     bool modemSetup(void) override;
-     bool modemWake(void) override;
+    bool modemSetup(void) override;
+    bool modemWake(void) override;
 
-     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-     void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-     uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-     bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-     float getModemChipTemperature(void) override;
+    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -83,13 +83,13 @@ public:
     TinyGsmClient gsmClient;
 
 protected:
-     bool isInternetAvailable(void) override;
-     bool modemSleepFxn(void) override;
-     bool modemWakeFxn(void) override;
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
     bool extraModemSetup(void) override;
 
 private:
-    const char *_apn;
+    const char* _apn;
 };
 
 #endif  // Header Guard

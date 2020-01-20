@@ -16,11 +16,11 @@
 // #define MS_VARIABLEARRAY_DEBUG_DEEP
 
 #ifdef MS_VARIABLEARRAY_DEBUG
-    #define MS_DEBUGGING_STD "VariableArray"
+#define MS_DEBUGGING_STD "VariableArray"
 #endif
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    #define MS_DEBUGGING_DEEP "VariableArray"
+#define MS_DEBUGGING_DEEP "VariableArray"
 #endif
 
 // Included Dependencies
@@ -36,8 +36,8 @@ class VariableArray
 public:
     // Constructors
     VariableArray();
-    VariableArray(uint8_t variableCount, Variable *variableList[]);
-    VariableArray(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
+    VariableArray(uint8_t variableCount, Variable* variableList[]);
+    VariableArray(uint8_t variableCount, Variable* variableList[], const char* uuids[]);
     ~VariableArray();
 
     // "Begins" the VariableArray - attaches the number and array of variables
@@ -47,12 +47,12 @@ public:
     // guarantee that the variables and their pointers in the array will
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
-    void begin(uint8_t variableCount, Variable *variableList[]);
-    void begin(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
+    void begin(uint8_t variableCount, Variable* variableList[]);
+    void begin(uint8_t variableCount, Variable* variableList[], const char* uuids[]);
     void begin();
 
     // Leave the internal variable list public
-    Variable **arrayOfVars;
+    Variable** arrayOfVars;
 
     // Functions to return information about the list
 
@@ -66,7 +66,7 @@ public:
     uint8_t getSensorCount(void);
 
     // This matches UUID's from an array of pointers to the variable array
-    void matchUUIDs(const char *uuids[]);
+    void matchUUIDs(const char* uuids[]);
 
     // Public functions for interfacing with a list of sensors
     // This sets up all of the sensors in the list
@@ -91,7 +91,7 @@ public:
     bool completeUpdate(void);
 
     // This function prints out the results for any connected sensors to a stream
-    void printSensorData(Stream *stream = &Serial);
+    void printSensorData(Stream* stream = &Serial);
 
 protected:
     uint8_t _variableCount;
@@ -116,7 +116,7 @@ private:
         DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
-    #define prettyPrintArray(...)
+#define prettyPrintArray(...)
 #endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
 };
 

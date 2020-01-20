@@ -121,7 +121,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 
 // The variables to record at 1 minute intervals
-Variable *variableList_at1min[] = {
+Variable* variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315)};
 // Count up the number of pointers in the 1-minute array
@@ -130,7 +130,7 @@ int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min
 VariableArray array1min;
 
 // The variables to record at 5 minute intervals
-Variable *variableList_at5min[] = {
+Variable* variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
     new ProcessorStats_Battery(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard)};

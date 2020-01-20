@@ -39,7 +39,7 @@
 // #define MS_MeterTeros11_DEBUG
 
 #ifdef MS_MeterTeros11_DEBUG
-    #define MS_DEBUGGING_STD "MeterTeros11"
+#define MS_DEBUGGING_STD "MeterTeros11"
 #endif
 
 // Included Dependencies
@@ -76,7 +76,7 @@ public:
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
     {}
-    MeterTeros11(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+    MeterTeros11(char* SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS, TEROS11_MEASUREMENT_TIME_MS)
@@ -89,7 +89,7 @@ public:
     // Destructor
     ~MeterTeros11() {}
 
-     bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 };
 
 
@@ -97,9 +97,9 @@ public:
 class MeterTeros11_Ea : public Variable
 {
 public:
-    explicit MeterTeros11_Ea(MeterTeros11 *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "SoilEa")
+    explicit MeterTeros11_Ea(MeterTeros11* parentSense,
+                             const char* uuid = "",
+                             const char* varCode = "SoilEa")
         : Variable(parentSense,
                    (const uint8_t)TEROS11_EA_VAR_NUM,
                    (uint8_t)TEROS11_EA_RESOLUTION,
@@ -119,9 +119,9 @@ public:
 class MeterTeros11_Temp : public Variable
 {
 public:
-    explicit MeterTeros11_Temp(MeterTeros11 *parentSense,
-                               const char *uuid = "",
-                               const char *varCode = "SoilTemp")
+    explicit MeterTeros11_Temp(MeterTeros11* parentSense,
+                               const char* uuid = "",
+                               const char* varCode = "SoilTemp")
         : Variable(parentSense,
                    (const uint8_t)TEROS11_TEMP_VAR_NUM,
                    (uint8_t)TEROS11_TEMP_RESOLUTION,
@@ -141,9 +141,9 @@ public:
 class MeterTeros11_VWC : public Variable
 {
 public:
-    explicit MeterTeros11_VWC(MeterTeros11 *parentSense,
-                              const char *uuid = "",
-                              const char *varCode = "SoilVWC")
+    explicit MeterTeros11_VWC(MeterTeros11* parentSense,
+                              const char* uuid = "",
+                              const char* varCode = "SoilVWC")
         : Variable(parentSense,
                    (const uint8_t)TEROS11_VWC_VAR_NUM,
                    (uint8_t)TEROS11_VWC_RESOLUTION,

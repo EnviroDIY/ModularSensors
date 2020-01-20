@@ -18,7 +18,7 @@
 // #define MS_WATCHDOGAVR_DEBUG
 
 #ifdef MS_WATCHDOGAVR_DEBUG
-    #define MS_DEBUGGING_STD "WatchDogAVR"
+#define MS_DEBUGGING_STD "WatchDogAVR"
 #endif
 
 // Included Dependencies

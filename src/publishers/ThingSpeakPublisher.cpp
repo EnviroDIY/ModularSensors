@@ -17,10 +17,10 @@
 
 // Constant values for MQTT publish
 // I want to refer to these more than once while ensuring there is only one copy in memory
-const char *ThingSpeakPublisher::mqttServer = "mqtt.thingspeak.com";
+const char* ThingSpeakPublisher::mqttServer = "mqtt.thingspeak.com";
 const int ThingSpeakPublisher::mqttPort = 1883;
-const char *ThingSpeakPublisher::mqttClient = THING_SPEAK_CLIENT_NAME;
-const char *ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
+const char* ThingSpeakPublisher::mqttClient = THING_SPEAK_CLIENT_NAME;
+const char* ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
 
 
 // Constructors
@@ -29,22 +29,22 @@ ThingSpeakPublisher::ThingSpeakPublisher()
 {
     // MS_DBG(F("ThingSpeakPublisher object created"));
 }
-ThingSpeakPublisher::ThingSpeakPublisher(Logger &baseLogger,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                          uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     // MS_DBG(F("ThingSpeakPublisher object created"));
 }
-ThingSpeakPublisher::ThingSpeakPublisher(Logger &baseLogger, Client *inClient,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     // MS_DBG(F("ThingSpeakPublisher object created"));
 }
-ThingSpeakPublisher::ThingSpeakPublisher(Logger &baseLogger,
-                                         const char *thingSpeakMQTTKey,
-                                         const char *thingSpeakChannelID,
-                                         const char *thingSpeakChannelKey,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
+                                         const char* thingSpeakMQTTKey,
+                                         const char* thingSpeakChannelID,
+                                         const char* thingSpeakChannelKey,
                                          uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
@@ -53,10 +53,10 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger &baseLogger,
     setChannelKey(thingSpeakChannelKey);
     // MS_DBG(F("ThingSpeakPublisher object created"));
 }
-ThingSpeakPublisher::ThingSpeakPublisher(Logger &baseLogger, Client *inClient,
-                                         const char *thingSpeakMQTTKey,
-                                         const char *thingSpeakChannelID,
-                                         const char *thingSpeakChannelKey,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+                                         const char* thingSpeakMQTTKey,
+                                         const char* thingSpeakChannelID,
+                                         const char* thingSpeakChannelKey,
                                          uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
@@ -69,30 +69,30 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger &baseLogger, Client *inClient,
 ThingSpeakPublisher::~ThingSpeakPublisher() {}
 
 
-void ThingSpeakPublisher::setMQTTKey(const char *thingSpeakMQTTKey)
+void ThingSpeakPublisher::setMQTTKey(const char* thingSpeakMQTTKey)
 {
     _thingSpeakMQTTKey = thingSpeakMQTTKey;
     // MS_DBG(F("MQTT Key set!"));
 }
 
 
-void ThingSpeakPublisher::setChannelID(const char *thingSpeakChannelID)
+void ThingSpeakPublisher::setChannelID(const char* thingSpeakChannelID)
 {
     _thingSpeakChannelID = thingSpeakChannelID;
     // MS_DBG(F("Channel ID set!"));
 }
 
 
-void ThingSpeakPublisher::setChannelKey(const char *thingSpeakChannelKey)
+void ThingSpeakPublisher::setChannelKey(const char* thingSpeakChannelKey)
 {
     _thingSpeakChannelKey = thingSpeakChannelKey;
     // MS_DBG(F("Channel Key set!"));
 }
 
 // Sets all 3 ThingSpeak parameters
-void ThingSpeakPublisher::setThingSpeakParams(const char *MQTTKey,
-                                              const char *channelID,
-                                              const char *channelKey)
+void ThingSpeakPublisher::setThingSpeakParams(const char* MQTTKey,
+                                              const char* channelID,
+                                              const char* channelKey)
 {
     setMQTTKey(MQTTKey);
     setChannelID(channelID);
@@ -101,20 +101,20 @@ void ThingSpeakPublisher::setThingSpeakParams(const char *MQTTKey,
 
 
 // A way to begin with everything already set
-void ThingSpeakPublisher::begin(Logger &baseLogger, Client *inClient,
-                                const char *thingSpeakMQTTKey,
-                                const char *thingSpeakChannelID,
-                                const char *thingSpeakChannelKey)
+void ThingSpeakPublisher::begin(Logger& baseLogger, Client* inClient,
+                                const char* thingSpeakMQTTKey,
+                                const char* thingSpeakChannelID,
+                                const char* thingSpeakChannelKey)
 {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
     setChannelKey(thingSpeakChannelKey);
     dataPublisher::begin(baseLogger, inClient);
 }
-void ThingSpeakPublisher::begin(Logger &baseLogger,
-                                const char *thingSpeakMQTTKey,
-                                const char *thingSpeakChannelID,
-                                const char *thingSpeakChannelKey)
+void ThingSpeakPublisher::begin(Logger& baseLogger,
+                                const char* thingSpeakMQTTKey,
+                                const char* thingSpeakChannelID,
+                                const char* thingSpeakChannelKey)
 {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
@@ -125,7 +125,7 @@ void ThingSpeakPublisher::begin(Logger &baseLogger,
 
 // This sends the data to ThingSpeak
 // bool ThingSpeakPublisher::mqttThingSpeak(void)
-int16_t ThingSpeakPublisher::publishData(Client *_outClient)
+int16_t ThingSpeakPublisher::publishData(Client* _outClient)
 {
     bool retVal = false;
 

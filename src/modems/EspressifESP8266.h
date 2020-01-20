@@ -18,12 +18,12 @@
 // #define MS_ESPRESSIFESP8266_DEBUG_DEEP
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG
-    #define MS_DEBUGGING_STD "EspressifESP8266"
+#define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
 
 #define TINY_GSM_MODEM_ESP8266
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 
 // It is not possible to get status from the ESP8266 in deep sleep mode.
@@ -48,7 +48,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-    #include <StreamDebugger.h>
+#include <StreamDebugger.h>
 #endif
 
 
@@ -57,10 +57,10 @@ class EspressifESP8266 : public loggerModem
 
 public:
     // Constructor/Destructor
-    EspressifESP8266(Stream *modemStream,
+    EspressifESP8266(Stream* modemStream,
                      int8_t powerPin, int8_t statusPin,
                      int8_t modemResetPin, int8_t modemSleepRqPin,
-                     const char *ssid, const char *pwd,
+                     const char* ssid, const char* pwd,
                      int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
     ~EspressifESP8266();
 
@@ -72,8 +72,8 @@ public:
 
     uint32_t getNISTTime(void) override;
 
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
@@ -84,7 +84,7 @@ public:
     TinyGsmClient gsmClient;
 
     // Need the stream for tossing junk on boot
-    Stream *_modemStream;
+    Stream* _modemStream;
 
 protected:
     bool isInternetAvailable(void) override;
@@ -94,8 +94,8 @@ protected:
 
 private:
     bool ESPwaitForBoot(void);
-    const char *_ssid;
-    const char *_pwd;
+    const char* _ssid;
+    const char* _pwd;
 
     int8_t _espSleepRqPin;
     int8_t _espStatusPin;

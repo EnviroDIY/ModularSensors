@@ -18,9 +18,9 @@
 #include "KellerParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
-KellerParent::KellerParent(byte modbusAddress, Stream *stream,
+KellerParent::KellerParent(byte modbusAddress, Stream* stream,
                            int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-                           kellerModel model, const char *sensName, uint8_t numVariables,
+                           kellerModel model, const char* sensName, uint8_t numVariables,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -32,9 +32,9 @@ KellerParent::KellerParent(byte modbusAddress, Stream *stream,
     _RS485EnablePin = enablePin;
     _powerPin2 = powerPin2;
 }
-KellerParent::KellerParent(byte modbusAddress, Stream &stream,
+KellerParent::KellerParent(byte modbusAddress, Stream& stream,
                            int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-                           kellerModel model, const char *sensName, uint8_t numVariables,
+                           kellerModel model, const char* sensName, uint8_t numVariables,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,

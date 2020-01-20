@@ -13,9 +13,9 @@
 
 
 // Constructor
-Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
+Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin,
-                           const char *apn)
+                           const char* apn)
     : SIMComSIM800(modemStream,
                    powerPin, statusPin, -1, -1,
                    apn)
@@ -25,9 +25,9 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
 
 
 // Constructor
-Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
+Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
                            int8_t vRefPin, int8_t statusPin, int8_t powerPin,
-                           const char *apn)
+                           const char* apn)
     : SIMComSIM800(modemStream,
                    powerPin, statusPin, -1, -1,
                    apn)

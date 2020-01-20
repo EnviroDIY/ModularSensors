@@ -12,10 +12,10 @@
 #include "LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBeeWifi::DigiXBeeWifi(Stream *modemStream,
+DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *ssid, const char *pwd)
+                           const char* ssid, const char* pwd)
     : DigiXBee(powerPin, statusPin, useCTSStatus,
                modemResetPin, modemSleepRqPin),
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
@@ -185,7 +185,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
 }
 
 
-bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
+bool DigiXBeeWifi::getModemSignalQuality(int16_t& rssi, int16_t& percent)
 {
     bool success = true;
 

@@ -16,9 +16,9 @@
 #include "YosemitechParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
-YosemitechParent::YosemitechParent(byte modbusAddress, Stream *stream,
+YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
                                    int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-                                   yosemitechModel model, const char *sensName, uint8_t numVariables,
+                                   yosemitechModel model, const char* sensName, uint8_t numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -30,9 +30,9 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream *stream,
     _RS485EnablePin = enablePin;
     _powerPin2 = powerPin2;
 }
-YosemitechParent::YosemitechParent(byte modbusAddress, Stream &stream,
+YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
                                    int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-                                   yosemitechModel model, const char *sensName, uint8_t numVariables,
+                                   yosemitechModel model, const char* sensName, uint8_t numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,

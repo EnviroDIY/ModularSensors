@@ -89,7 +89,7 @@ MaximDS3231 ds3231(1);
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 
-Variable *variableList[] = {
+Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard),

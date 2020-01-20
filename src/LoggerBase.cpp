@@ -37,9 +37,9 @@ RTCZero Logger::zero_sleep_rtc;
 
 
 // Constructors
-Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
                int8_t SDCardSSPin, int8_t mcuWakePin,
-               VariableArray *inputArray)
+               VariableArray* inputArray)
 {
     // Set parameters from constructor
     setLoggerID(loggerID);
@@ -72,8 +72,8 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
 
     // MS_DBG(F("Logger object created"));
 }
-Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-               VariableArray *inputArray)
+Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
+               VariableArray* inputArray)
 {
     // Set parameters from constructor
     setLoggerID(loggerID);
@@ -143,7 +143,7 @@ Logger::~Logger() {}
 // ===================================================================== //
 
 // Sets the logger ID
-void Logger::setLoggerID(const char *loggerID)
+void Logger::setLoggerID(const char* loggerID)
 {
     _loggerID = loggerID;
 }
@@ -156,7 +156,7 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
 
 
 // Adds the sampling feature UUID
-void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
+void Logger::setSamplingFeatureUUID(const char* samplingFeatureUUID)
 {
     _samplingFeatureUUID = samplingFeatureUUID;
 }
@@ -292,7 +292,7 @@ void Logger::setLoggerPins(int8_t mcuWakePin,
 // ===================================================================== //
 
 // Assigns the variable array object
-void Logger::setVariableArray(VariableArray *inputArray)
+void Logger::setVariableArray(VariableArray* inputArray)
 {
     _internalArray = inputArray;
 }
@@ -350,7 +350,7 @@ String Logger::getValueStringAtI(uint8_t position_i)
 // Set up communications
 // Adds a loggerModem objct to the logger
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-void Logger::attachModem(loggerModem &modem)
+void Logger::attachModem(loggerModem& modem)
 {
     _logModem = &modem;
 }
@@ -396,7 +396,7 @@ bool Logger::syncRTC()
 }
 
 
-void Logger::registerDataPublisher(dataPublisher *publisher)
+void Logger::registerDataPublisher(dataPublisher* publisher)
 {
     // find the next empty spot in the publisher array
     uint8_t i = 0;
@@ -443,7 +443,7 @@ void Logger::setLoggerTimeZone(int8_t timeZone)
     _loggerTimeZone = timeZone;
 // Some helpful prints for debugging
 #ifdef STANDARD_SERIAL_OUTPUT
-    const char *prtout1 = "Logger timezone is set to UTC";
+    const char* prtout1 = "Logger timezone is set to UTC";
     if (_loggerTimeZone == 0)
     {
         PRINTOUT(prtout1);
@@ -475,7 +475,7 @@ void Logger::setRTCTimeZone(int8_t timeZone)
     _loggerRTCOffset = _loggerTimeZone - timeZone;
 // Some helpful prints for debugging
 #ifdef STANDARD_SERIAL_OUTPUT
-    const char *prtout1 = "RTC timezone is set to UTC";
+    const char* prtout1 = "RTC timezone is set to UTC";
     if ((_loggerTimeZone - _loggerRTCOffset) == 0)
     {
         PRINTOUT(prtout1);
@@ -565,7 +565,7 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 // This converts a date-time object into a ISO8601 formatted string
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
-String Logger::formatDateTime_ISO8601(DateTime &dt)
+String Logger::formatDateTime_ISO8601(DateTime& dt)
 {
     // Set up an inital string
     String dateTimeStr;
@@ -876,15 +876,15 @@ void Logger::systemSleep(void)
 
     // Sleep code from ArduinoLowPowerClass::sleep()
     bool restoreUSBDevice = false;
-    // if (SERIAL_PORT_USBVIRTUAL)
-    // {
-    // 	USBDevice.standby();
-    // }
-    // else
-    // {
-    #ifndef USE_TINYUSB
+// if (SERIAL_PORT_USBVIRTUAL)
+// {
+// 	USBDevice.standby();
+// }
+// else
+// {
+#ifndef USE_TINYUSB
     USBDevice.detach();
-    #endif
+#endif
     restoreUSBDevice = true;
     // }
     // Disable systick interrupt:  See https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
@@ -917,12 +917,12 @@ void Logger::systemSleep(void)
     // ADEN = ADC Enable
     ADCSRA &= ~_BV(ADEN);
 
-    // turn off the brown-out detector, if possible
-    // BODS = brown-out detector sleep
-    // BODSE = brown-out detector sleep enable
-    #if defined(BODS) && defined(BODSE)
+// turn off the brown-out detector, if possible
+// BODS = brown-out detector sleep
+// BODSE = brown-out detector sleep enable
+#if defined(BODS) && defined(BODSE)
     sleep_bod_disable();
-    #endif
+#endif
 
     // disable all power-reduction modules (ie, the processor module clocks)
     // NOTE:  This only shuts down the various clocks on the processor via
@@ -955,9 +955,9 @@ void Logger::systemSleep(void)
     SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
     if (restoreUSBDevice)
     {
-    #ifndef USE_TINYUSB
+#ifndef USE_TINYUSB
         USBDevice.attach();
-    #endif
+#endif
         uint32_t startTimer = millis();
         while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {}
     }
@@ -1030,12 +1030,12 @@ void Logger::systemSleep(void)
 // ===================================================================== //
 
 // This sets a file name, if you want to decide on it in advance
-void Logger::setFileName(String &fileName)
+void Logger::setFileName(String& fileName)
 {
     _fileName = fileName;
 }
 // Same as above, with a character array (overload function)
-void Logger::setFileName(const char *fileName)
+void Logger::setFileName(const char* fileName)
 {
     String StrName = String(fileName);
     setFileName(StrName);
@@ -1076,7 +1076,7 @@ void Logger::generateAutoFileName(void)
     stream->println();
 
 // This sends a file header out over an Arduino stream
-void Logger::printFileHeader(Stream *stream)
+void Logger::printFileHeader(Stream* stream)
 {
     // Very first line of the header is the logger ID
     stream->print(F("Data Logger: "));
@@ -1124,7 +1124,7 @@ void Logger::printFileHeader(Stream *stream)
 
 // This prints a comma separated list of volues of sensor data - including the
 // time -  out over an Arduino stream
-void Logger::printSensorDataCSV(Stream *stream)
+void Logger::printSensorDataCSV(Stream* stream)
 {
     String csvString = "";
     dtFromEpoch(Logger::markedEpochTime).addToString(csvString);
@@ -1181,7 +1181,7 @@ void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 
 // Protected helper function - This opens or creates a file, converting a string
 // file name to a character file name
-bool Logger::openFile(String &filename, bool createFile, bool writeDefaultHeader)
+bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader)
 {
     // Initialise the SD card
     // skip everything else if there's no SD card, otherwise it might hang
@@ -1255,7 +1255,7 @@ bool Logger::openFile(String &filename, bool createFile, bool writeDefaultHeader
 // If specified, it will also write a header to the file based on
 // the sensors in the group.
 // This can be used to force a logger to create a file with a secondary file name.
-bool Logger::createLogFile(String &filename, bool writeDefaultHeader)
+bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
 {
     // Attempt to create and open a file
     if (openFile(filename, true, writeDefaultHeader))
@@ -1288,7 +1288,7 @@ bool Logger::createLogFile(bool writeDefaultHeader)
 // or can be specified in the function.
 // If the file does not already exist, the file will be created.
 // This can be used to force a logger to write to a file with a secondary file name.
-bool Logger::logToSD(String &filename, String &rec)
+bool Logger::logToSD(String& filename, String& rec)
 {
     // First attempt to open the file without creating a new one
     if (!openFile(filename, false, false))
@@ -1317,7 +1317,7 @@ bool Logger::logToSD(String &filename, String &rec)
     logFile.close();
     return true;
 }
-bool Logger::logToSD(String &rec)
+bool Logger::logToSD(String& rec)
 {
     // Get a new file name if the name is blank
     if (_fileName == "")
@@ -1482,14 +1482,14 @@ void Logger::testingMode()
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
-void Logger::begin(const char *loggerID, uint16_t loggingIntervalMinutes,
-                   VariableArray *inputArray)
+void Logger::begin(const char* loggerID, uint16_t loggingIntervalMinutes,
+                   VariableArray* inputArray)
 {
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);
     begin(inputArray);
 }
-void Logger::begin(VariableArray *inputArray)
+void Logger::begin(VariableArray* inputArray)
 {
     setVariableArray(inputArray);
     begin();

@@ -25,7 +25,7 @@
 // #define MS_MAXIMDS3231_DEBUG
 
 #ifdef MS_MAXIMDS3231_DEBUG
-    #define MS_DEBUGGING_STD "MaximDS3231"
+#define MS_DEBUGGING_STD "MaximDS3231"
 #endif
 
 // Included Dependencies
@@ -66,9 +66,9 @@ public:
 class MaximDS3231_Temp : public Variable
 {
 public:
-    explicit MaximDS3231_Temp(MaximDS3231 *parentSense,
-                              const char *uuid = "",
-                              const char *varCode = "BoardTemp")
+    explicit MaximDS3231_Temp(MaximDS3231* parentSense,
+                              const char* uuid = "",
+                              const char* varCode = "BoardTemp")
         : Variable(parentSense,
                    (const uint8_t)DS3231_TEMP_VAR_NUM,
                    (uint8_t)DS3231_TEMP_RESOLUTION,

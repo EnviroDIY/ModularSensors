@@ -16,7 +16,7 @@
 // #define MS_LOGGERBASE_DEBUG
 
 #ifdef MS_LOGGERBASE_DEBUG
-    #define MS_DEBUGGING_STD "LoggerBase"
+#define MS_DEBUGGING_STD "LoggerBase"
 #endif
 
 // Included Dependencies
@@ -28,12 +28,12 @@
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD)
-    #include <RTCZero.h>
-    #include "WatchDogs/WatchDogSAMD.h"
+#include <RTCZero.h>
+#include "WatchDogs/WatchDogSAMD.h"
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
-    #include <avr/sleep.h>
-    #include <avr/power.h>
-    #include "WatchDogs/WatchDogAVR.h"
+#include <avr/sleep.h>
+#include <avr/power.h>
+#include "WatchDogs/WatchDogAVR.h"
 #endif
 
 // Bring in the library to communicate with an external high-precision real time clock
@@ -61,11 +61,11 @@ class Logger
 
 public:
     // Constructors
-    Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+    Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardSSPin, int8_t mcuWakePin,
-           VariableArray *inputArray);
-    Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-           VariableArray *inputArray);
+           VariableArray* inputArray);
+    Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
+           VariableArray* inputArray);
     Logger();
     // Destructor
     virtual ~Logger();
@@ -75,16 +75,16 @@ public:
     // ===================================================================== //
 
     // Sets/Gets the logger ID
-    void setLoggerID(const char *loggerID);
-    const char *getLoggerID() { return _loggerID; }
+    void setLoggerID(const char* loggerID);
+    const char* getLoggerID() { return _loggerID; }
 
     // Sets/Gets the logging interval
     void setLoggingInterval(uint16_t loggingIntervalMinutes);
     uint16_t getLoggingInterval() { return _loggingIntervalMinutes; }
 
     // Sets/Gets the sampling feature UUID
-    void setSamplingFeatureUUID(const char *samplingFeatureUUID);
-    const char *getSamplingFeatureUUID() { return _samplingFeatureUUID; }
+    void setSamplingFeatureUUID(const char* samplingFeatureUUID);
+    const char* getSamplingFeatureUUID() { return _samplingFeatureUUID; }
 
     // Sets up a pin controlling the power to the SD card
     // NOTE:  This is not yet functional!
@@ -118,14 +118,14 @@ public:
 
 protected:
     // Initialization variables
-    const char *_loggerID;
+    const char* _loggerID;
     uint16_t _loggingIntervalMinutes;
     int8_t _SDCardSSPin;
     int8_t _SDCardPowerPin;
     int8_t _mcuWakePin;
     int8_t _ledPin;
     int8_t _buttonPin;
-    const char *_samplingFeatureUUID;
+    const char* _samplingFeatureUUID;
 
     // ===================================================================== //
     // Public functions to get information about the attached variable array
@@ -133,7 +133,7 @@ protected:
 
 public:
     // Assigns the variable array object
-    void setVariableArray(VariableArray *inputArray);
+    void setVariableArray(VariableArray* inputArray);
 
     // Returns the number of variables in the internal array
     uint8_t getArrayVarCount();
@@ -157,7 +157,7 @@ public:
 
 protected:
     // A pointer to the internal variable array instance
-    VariableArray *_internalArray;
+    VariableArray* _internalArray;
 
     // ===================================================================== //
     // Public functions for internet and dataPublishers
@@ -166,13 +166,13 @@ protected:
 public:
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-    void attachModem(loggerModem &modem);
+    void attachModem(loggerModem& modem);
 
     // Takes advantage of the modem to synchronize the clock
     bool syncRTC();
 
     // These tie the variables to their parent sensor
-    void registerDataPublisher(dataPublisher *publisher);
+    void registerDataPublisher(dataPublisher* publisher);
     // Notifies attached variables of new values
     void publishDataToRemotes(void);
     // These are duplicates of the above functions for backwards compatibility
@@ -180,13 +180,13 @@ public:
 
 protected:
     // The internal modem instance
-    loggerModem *_logModem;
+    loggerModem* _logModem;
     // NOTE:  The internal _logModem must be a POINTER not a reference because
     // it is possible for no modem to be attached (and thus the pointer could
     // be null).  It is not possible to have a null reference.
 
     // An array of all of the attached data publishers
-    dataPublisher *dataPublishers[MAX_NUMBER_SENDERS];
+    dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
 
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
@@ -226,7 +226,7 @@ public:
     // This converts a date-time object into a ISO8601 formatted string
     // It assumes the supplied date/time is in the LOGGER's timezone and adds
     // the LOGGER's offset as the time zone offset in the string.
-    static String formatDateTime_ISO8601(DateTime &dt);
+    static String formatDateTime_ISO8601(DateTime& dt);
 
     // This converts an epoch time (unix time) into a ISO8601 formatted string
     // It assumes the supplied date/time is in the LOGGER's timezone and adds
@@ -287,20 +287,20 @@ public:
 
 public:
     // This sets a file name, if you want to decide on it in advance
-    void setFileName(const char *fileName);
+    void setFileName(const char* fileName);
     // Same as above, with a string (overload function)
-    void setFileName(String &fileName);
+    void setFileName(String& fileName);
 
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void) { return _fileName; }
 
     // This prints a header onto a stream - this removes need to pass around
     // very long string objects which can crash the logger
-    virtual void printFileHeader(Stream *stream);
+    virtual void printFileHeader(Stream* stream);
 
     // This prints a comma separated list of volues of sensor data - including the
     // time -  out over an Arduino stream
-    void printSensorDataCSV(Stream *stream);
+    void printSensorDataCSV(Stream* stream);
 
     // These functions create a file on an SD card and set the created/modified/
     // accessed timestamps in that file.
@@ -310,7 +310,7 @@ public:
     // If asked to, these functions will also write a header to the file based
     // on the variable information from the variable array.
     // This can be used to force a logger to create a file with a secondary file name.
-    bool createLogFile(String &filename, bool writeDefaultHeader = false);
+    bool createLogFile(String& filename, bool writeDefaultHeader = false);
     bool createLogFile(bool writeDefaultHeader = false);
 
     // These functions create a file on an SD card and set the modified/accessed
@@ -322,8 +322,8 @@ public:
     // The line to be written to the file can either be specified or will be
     // a comma separated list of the current values of all variables in the
     // variable array.
-    bool logToSD(String &filename, String &rec);
-    bool logToSD(String &rec);
+    bool logToSD(String& filename, String& rec);
+    bool logToSD(String& rec);
     bool logToSD(void);
 
 protected:
@@ -346,7 +346,7 @@ protected:
 
     // This opens or creates a file, converting a string file name to a
     // character file name
-    bool openFile(String &filename, bool createFile, bool writeDefaultHeader);
+    bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
 
 
     // ===================================================================== //
@@ -372,9 +372,9 @@ public:
     // This does all of the setup that can't happen in the constructors
     // That is, anything that is dependent on another object having been created
     // first or anything that requires the actual processor/MCU to do something.
-    virtual void begin(const char *loggerID, uint16_t loggingIntervalMinutes,
-                       VariableArray *inputArray);
-    virtual void begin(VariableArray *inputArray);
+    virtual void begin(const char* loggerID, uint16_t loggingIntervalMinutes,
+                       VariableArray* inputArray);
+    virtual void begin(VariableArray* inputArray);
     virtual void begin();
 
     // This is a one-and-done to log data

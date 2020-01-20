@@ -12,10 +12,10 @@
 #include "LoggerModemMacros.h"
 
 // Constructor
-QuectelBG96::QuectelBG96(Stream *modemStream,
+QuectelBG96::QuectelBG96(Stream* modemStream,
                          int8_t powerPin, int8_t statusPin,
                          int8_t modemResetPin, int8_t modemSleepRqPin,
-                         const char *apn)
+                         const char* apn)
     : loggerModem(powerPin, statusPin, HIGH,
                   modemResetPin, modemSleepRqPin, false,
                   BG96_STATUS_TIME_MS, BG96_DISCONNECT_TIME_MS,
@@ -55,6 +55,7 @@ bool QuectelBG96::modemWakeFxn(void)
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0)
     {
+        MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for BG96"));
         digitalWrite(_modemSleepRqPin, LOW);
         delay(160);  // ≥100ms
         digitalWrite(_modemSleepRqPin, HIGH);

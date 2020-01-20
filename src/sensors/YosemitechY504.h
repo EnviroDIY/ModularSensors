@@ -54,13 +54,13 @@ class YosemitechY504 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY504(byte modbusAddress, Stream *stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y504, "YosemitechY504", Y504_NUM_VARIABLES,
                            Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY504(byte modbusAddress, Stream &stream, int8_t powerPin, int8_t powerPin2 = -1,
+    YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
         : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                            Y504, "YosemitechY504", Y504_NUM_VARIABLES,
@@ -74,9 +74,9 @@ public:
 class YosemitechY504_DOpct : public Variable
 {
 public:
-    explicit YosemitechY504_DOpct(YosemitechY504 *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "Y504DOpct")
+    explicit YosemitechY504_DOpct(YosemitechY504* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "Y504DOpct")
         : Variable(parentSense,
                    (const uint8_t)Y504_DOPCT_VAR_NUM,
                    (uint8_t)Y504_DOPCT_RESOLUTION,
@@ -96,9 +96,9 @@ public:
 class YosemitechY504_Temp : public Variable
 {
 public:
-    explicit YosemitechY504_Temp(YosemitechY504 *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "Y504Temp")
+    explicit YosemitechY504_Temp(YosemitechY504* parentSense,
+                                 const char* uuid = "",
+                                 const char* varCode = "Y504Temp")
         : Variable(parentSense,
                    (const uint8_t)Y504_TEMP_VAR_NUM,
                    (uint8_t)Y504_TEMP_RESOLUTION,
@@ -118,9 +118,9 @@ public:
 class YosemitechY504_DOmgL : public Variable
 {
 public:
-    explicit YosemitechY504_DOmgL(YosemitechY504 *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "Y504DOmgL")
+    explicit YosemitechY504_DOmgL(YosemitechY504* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "Y504DOmgL")
         : Variable(parentSense,
                    (const uint8_t)Y504_DOMGL_VAR_NUM,
                    (uint8_t)Y504_DOMGL_RESOLUTION,

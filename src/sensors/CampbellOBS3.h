@@ -33,7 +33,7 @@
 // #define MS_CAMPBELLOBS3_DEBUG
 
 #ifdef MS_CAMPBELLOBS3_DEBUG
-    #define MS_DEBUGGING_STD "CampbellOBS3"
+#define MS_DEBUGGING_STD "CampbellOBS3"
 #endif
 
 // Included Dependencies
@@ -57,16 +57,16 @@
 
 #define OBS3_TURB_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-    #define OBS3_RESOLUTION 1
+#define OBS3_RESOLUTION 1
 #else
-    #define OBS3_RESOLUTION 5
+#define OBS3_RESOLUTION 5
 #endif
 
 #define OBS3_VOLTAGE_VAR_NUM 1
 #ifdef MS_USE_ADS1015
-    #define OBS3_VOLT_RESOLUTION 1
+#define OBS3_VOLT_RESOLUTION 1
 #else
-    #define OBS3_VOLT_RESOLUTION 4
+#define OBS3_VOLT_RESOLUTION 4
 #endif
 
 // The main class for the Campbell OBS3
@@ -98,9 +98,9 @@ protected:
 class CampbellOBS3_Turbidity : public Variable
 {
 public:
-    explicit CampbellOBS3_Turbidity(CampbellOBS3 *parentSense,
-                                    const char *uuid = "",
-                                    const char *varCode = "OBS3Turbidity")
+    explicit CampbellOBS3_Turbidity(CampbellOBS3* parentSense,
+                                    const char* uuid = "",
+                                    const char* varCode = "OBS3Turbidity")
         : Variable(parentSense,
                    (const uint8_t)OBS3_TURB_VAR_NUM,
                    (uint8_t)OBS3_RESOLUTION,
@@ -121,9 +121,9 @@ public:
 class CampbellOBS3_Voltage : public Variable
 {
 public:
-    explicit CampbellOBS3_Voltage(CampbellOBS3 *parentSense,
-                                  const char *uuid = "",
-                                  const char *varCode = "OBS3Voltage")
+    explicit CampbellOBS3_Voltage(CampbellOBS3* parentSense,
+                                  const char* uuid = "",
+                                  const char* varCode = "OBS3Voltage")
         : Variable(parentSense,
                    (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLT_RESOLUTION,

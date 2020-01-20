@@ -15,7 +15,7 @@
 // #define MS_DREAMHOSTPUBLISHER_DEBUG
 
 #ifdef MS_DREAMHOSTPUBLISHER_DEBUG
-    #define MS_DEBUGGING_STD "DreamHostPublisher"
+#define MS_DEBUGGING_STD "DreamHostPublisher"
 #endif
 
 // Included Dependencies
@@ -34,15 +34,15 @@ class DreamHostPublisher : public dataPublisher
 public:
     // Constructors
     DreamHostPublisher();
-    DreamHostPublisher(Logger &baseLogger,
+    DreamHostPublisher(Logger& baseLogger,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostPublisher(Logger &baseLogger, Client *inClient,
+    DreamHostPublisher(Logger& baseLogger, Client* inClient,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostPublisher(Logger &baseLogger,
-                       const char *dhUrl,
+    DreamHostPublisher(Logger& baseLogger,
+                       const char* dhUrl,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostPublisher(Logger &baseLogger, Client *inClient,
-                       const char *dhUrl,
+    DreamHostPublisher(Logger& baseLogger, Client* inClient,
+                       const char* dhUrl,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     virtual ~DreamHostPublisher();
@@ -51,38 +51,38 @@ public:
     virtual String getEndpoint(void) { return String(dreamhostHost); }
 
     // Functions for private SWRC server
-    void setDreamHostPortalRX(const char *dhUrl);
+    void setDreamHostPortalRX(const char* dhUrl);
 
     // This creates all of the URL parameters
-    void printSensorDataDreamHost(Stream *stream);
+    void printSensorDataDreamHost(Stream* stream);
 
     // This prints a fully structured GET request for DreamHost to the
     // specified stream.
-    void printDreamHostRequest(Stream *stream);
+    void printDreamHostRequest(Stream* stream);
 
     // A way to begin with everything already set
-    void begin(Logger &baseLogger, Client *inClient,
-               const char *dhUrl);
-    void begin(Logger &baseLogger,
-               const char *dhUrl);
+    void begin(Logger& baseLogger, Client* inClient,
+               const char* dhUrl);
+    void begin(Logger& baseLogger,
+               const char* dhUrl);
 
     // This utilizes an attached modem to make a TCP connection to the
     // DreamHost URL and then streams out a get request
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataDreamHost(void);
-    int16_t publishData(Client *_outClient);
+    int16_t publishData(Client* _outClient);
 
 protected:
     // portions of the GET request
-    static const char *dreamhostHost;
+    static const char* dreamhostHost;
     static const int dreamhostPort;
-    static const char *loggerTag;
-    static const char *timestampTagDH;
+    static const char* loggerTag;
+    static const char* timestampTagDH;
 
 
 private:
-    const char *_DreamHostPortalRX;
+    const char* _DreamHostPortalRX;
     bool _dualPost = true;
 };
 

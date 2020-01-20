@@ -12,10 +12,10 @@
 #include "LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream *modemStream,
+DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
                                      int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                                      int8_t modemResetPin, int8_t modemSleepRqPin,
-                                     const char *apn)
+                                     const char* apn)
     : DigiXBee(powerPin, statusPin, useCTSStatus,
                modemResetPin, modemSleepRqPin),
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP

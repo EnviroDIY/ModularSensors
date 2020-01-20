@@ -12,10 +12,10 @@
 #include "LoggerModemMacros.h"
 
 // Constructor
-SequansMonarch::SequansMonarch(Stream *modemStream,
+SequansMonarch::SequansMonarch(Stream* modemStream,
                                int8_t powerPin, int8_t statusPin,
                                int8_t modemResetPin, int8_t modemSleepRqPin,
-                               const char *apn)
+                               const char* apn)
     : loggerModem(powerPin, statusPin, HIGH,
                   modemResetPin, modemSleepRqPin, true,
                   MONARCH_STATUS_TIME_MS, MONARCH_DISCONNECT_TIME_MS,

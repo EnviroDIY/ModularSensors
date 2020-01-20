@@ -51,9 +51,9 @@ public:
 class AtlasScientificORP_Potential : public Variable
 {
 public:
-    explicit AtlasScientificORP_Potential(AtlasScientificORP *parentSense,
-                                          const char *uuid = "",
-                                          const char *varCode = "AtlasORP")
+    explicit AtlasScientificORP_Potential(AtlasScientificORP* parentSense,
+                                          const char* uuid = "",
+                                          const char* varCode = "AtlasORP")
         : Variable(parentSense,
                    (const uint8_t)ATLAS_ORP_VAR_NUM,
                    (uint8_t)ATLAS_ORP_RESOLUTION,

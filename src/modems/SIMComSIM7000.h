@@ -16,13 +16,13 @@
 // #define MS_SIMCOMSIM7000_DEBUG_DEEP
 
 #ifdef MS_SIMCOMSIM7000_DEBUG
-    #define MS_DEBUGGING_STD "SIMComSIM7000"
+#define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
 
 #define TINY_GSM_MODEM_SIM7000
 #define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
-    #define TINY_GSM_RX_BUFFER 64
+#define TINY_GSM_RX_BUFFER 64
 #endif
 
 // Time after end pulse until status pin becomes active (>4.5sec)
@@ -42,7 +42,7 @@
 #include "LoggerModem.h"
 
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
-    #include <StreamDebugger.h>
+#include <StreamDebugger.h>
 #endif
 
 
@@ -51,23 +51,23 @@ class SIMComSIM7000 : public loggerModem
 
 public:
     // Constructor/Destructor
-    SIMComSIM7000(Stream *modemStream,
+    SIMComSIM7000(Stream* modemStream,
                   int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char *apn);
+                  const char* apn);
     ~SIMComSIM7000();
 
-     bool modemSetup(void) override;
-     bool modemWake(void) override;
+    bool modemSetup(void) override;
+    bool modemWake(void) override;
 
-     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-     void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-     uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-     bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-     float getModemChipTemperature(void) override;
+    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -77,13 +77,13 @@ public:
     TinyGsmClient gsmClient;
 
 protected:
-     bool isInternetAvailable(void) override;
-     bool modemSleepFxn(void) override;
-     bool modemWakeFxn(void) override;
-     bool extraModemSetup(void) override;
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void) override;
 
 private:
-    const char *_apn;
+    const char* _apn;
 };
 
 #endif  // Header Guard
