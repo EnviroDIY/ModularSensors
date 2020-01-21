@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.17
+This example sketch is written for ModularSensors library version 0.24.0
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -42,7 +42,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char* libraryVersion = "0.23.17";
+const char* libraryVersion = "0.24.0";
 // The name of this file
 const char* sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -525,6 +525,7 @@ void setup()
     if (getBatteryVoltage() > 3.55 || !loggerAllVars.isRTCSane())
     {
         // Synchronize the RTC with NIST
+        // This will also set up the modem
         loggerAllVars.syncRTC();
     }
 
