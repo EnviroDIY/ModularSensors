@@ -223,7 +223,8 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         }
         if (cellRegistered) {
             String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
-            PRINTOUT(F("Cell scan '"),ui_scan,"'");
+            PRINTOUT(F("Cell scan '"),ui_scan,"' success",success);
+            success = true; //Not sure why need to force this
         } else {success = false;}
  
         //uint32_t time_epoch_sec=getNISTTime();//getTimeCellTower();

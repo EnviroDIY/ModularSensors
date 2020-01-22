@@ -60,7 +60,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Time.h>
 #include <errno.h>
 #include "ms_common.h"
-//#include "Adafruit_NeoPixel.h"
+#include "Adafruit_NeoPixel.h"
 
 #include "PortExpanderB031.h"
 
@@ -129,6 +129,10 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #define greenLEDPin LED_BUILTIN       //Built in LED is RED. MCU pin for the green LED (-1 if not applicable)
 #endif //greenLEDPin 
 // #define redLEDPin -1                  //Doesn't exist 
+//NeoPixel WS2812 on FeatherM4express
+#define NUM_NEOPIXELS 1
+#define NEOPIXEL_PIN 8
+Adafruit_NeoPixel neoPixelPhy(NUM_NEOPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
@@ -1749,6 +1753,54 @@ void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned 
     }
     setRedLED( LOW);
 }
+
+/* Status for User
+ Consits of 
+    Operational(1col) LED
+        Status (3col) Led
+        eInk  XbyY Display
+*/
+void UiStatus(uint8_t status_req, String ui_out = "");
+void UiStatus(uint8_t status_req, String ui_out) {
+  switch(status_req) {
+    case 0:
+        #ifndef SERIAL3_EN
+        digitalWrite(LED_BUILTIN, LOW);
+        #endif //SERIAL3_EN 
+        neoPixelPhy.clear();
+        neoPixelPhy.show();
+       break;
+    default:
+        #ifndef SERIAL3_EN    
+        digitalWrite(LED_BUILTIN, HIGH);
+        #endif // SERIAL3_EN
+        neoPixelPhy.setPixelColor(0, neoPixelPhy.Color(0, 0, 150));
+        neoPixelPhy.show();
+        break;
+  }
+#if 0
+  //Output on eInk Display - slow updates
+  if (0 != ui_out.length()){
+    long timeNow_2ksec = uis_lastCall_now();
+
+    SerialTty.println(ui_out);
+    #ifdef SerialUSB
+    SerialUSB.println(ui_out);
+    #endif
+
+    //Only update display if >= 180sec since last update
+    if (eInkUpdateMin_sec <= (timeNow_2ksec - uis_lastCall_2ksec) ) {  
+        uis_lastCall_2ksec = timeNow_2ksec;
+        #if defined USE_EXT_DISPLAY
+        extDisplay.print("\n\r");
+        extDisplay.print(ui_out);
+        extDisplay.display();
+        #endif // USE_EXT_DISPLAY
+    }
+  }
+  #endif
+}//UiStatus
+
 #include "iniHandler.h"
 
 // Read's the battery voltage
@@ -1791,9 +1843,11 @@ void setup()
 
     //#ifdef SerialUSB // SerialStd == SerialUSB
     //#error Serial Err
+    UiStatus(1);
     while (!SerialStd && (millis() < 10000)){
         ledflash(100,1);
     }
+    UiStatus(0);
     //#else
     //SerialStd.begin(SerialStdBaud);
     //#endif

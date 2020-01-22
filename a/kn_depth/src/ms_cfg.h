@@ -247,10 +247,27 @@ eMcpB_end
     #define EPD_RESET   -1 //Actually 5 // can set to -1 and share with microcontroller Reset!
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
+//define one Radio  _Module
+//#define DigiXBeeWifi_Module 1
+//#warning infoAutonomoWithDigiXBeeWiFi
+#define DigiXBeeCellularTransparent_Module 1
+#warning infoAutonomoWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
+
+//end of _Module
+  #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
+  #define WIFIID_CDEF  "AzondeNetSsid"  // The WiFi access point, unnecessary for gprs
+  #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+
 /* Needs specifying for Feather M4 B031rX */
 // For no sleep/Always ON add to gcc cmn_build_flags (platformio.ini)
 // For modemVccPIN_DEF no need for modemSleepRqPin
+#if defined DigiXBeeWifi_Module
 #define modemVccPin_DEF  eMcpA_SwV3Out_pinnum //-1 // B031r1:V3Sw mcpExp:PA0  for pwr off, other pins must be 0V
+#else
+//Expect S33 be cut and strapped Vbat - no control
+#define modemVccPin_DEF -1
+#endif //DigiXBeeWifi_Module
 //#define MODEMPHY_NEVER_SLEEPS 1
 #if 0 //defined MODEMPHY_NEVER_SLEEPS || (-1!=modemVccPin_DEF)
 #define modemResetPin_DEF -1
@@ -293,17 +310,6 @@ eMcpB_end
 #define ARD_ANALOLG_EXTENSION_PINS 8
 #define ARD_ANLAOG__MULTIPLEX_PIN PIN_A5
 #define PIN_EXT_ANALOG(extPin) (thisVariantNumPins+ARD_DIGITAL_EXTENSION_PINS+extPin)
-//define one Radio  _Module
-#define DigiXBeeWifi_Module 1
-#warning infoAutonomoWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
-//#warning infoAutonomoWithDigiXBeeCellTransparent
-// #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
-
-//end of _Module
-  #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
-  #define WIFIID_CDEF  "AzondeNetSsid"  // The WiFi access point, unnecessary for gprs
-  #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
   //#define SENSOR_CONFIG_GENERAL 1
  
