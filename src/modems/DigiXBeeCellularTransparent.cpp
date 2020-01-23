@@ -35,7 +35,6 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
 // Destructor
 DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent() {}
 
-MS_MODEM_SETUP(DigiXBeeCellularTransparent);
 MS_MODEM_WAKE(DigiXBeeCellularTransparent);
 
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
@@ -52,7 +51,7 @@ bool DigiXBeeCellularTransparent::modemWakeFxn(void)
     if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
         MS_DBG(F("Setting pin"), _modemSleepRqPin, F("LOW to wake XBee"));
-        digitalWrite(_modemSleepRqPin, LOW);
+        digitalWrite(_modemSleepRqPin, _wakeLevel);
         MS_DBG(F("Turning off airplane mode..."));
         if (gsmModem.commandMode())
         {
@@ -88,7 +87,7 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void)
             gsmModem.exitCommand();
         }
         MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
-        digitalWrite(_modemSleepRqPin, HIGH);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
     }
     else

@@ -16,8 +16,9 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
                              int8_t powerPin, int8_t statusPin,
                              int8_t modemResetPin, int8_t modemSleepRqPin,
                              const char* apn)
-    : loggerModem(powerPin, statusPin, HIGH,
-                  modemResetPin, modemSleepRqPin, false,
+    : loggerModem(powerPin, statusPin, SIM7000_STATUS_LEVEL,
+                  modemResetPin, SIM7000_RESET_LEVEL, SIM7000_RESET_PULSE_MS,
+                  modemSleepRqPin, SIM7000_WAKE_LEVEL, SIM7000_WAKE_PULSE_MS,
                   SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
                   SIM7000_WARM_UP_TIME_MS, SIM7000_ATRESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
@@ -34,7 +35,6 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
 // Destructor
 SIMComSIM7000::~SIMComSIM7000() {}
 
-MS_MODEM_SETUP(SIMComSIM7000);
 MS_MODEM_EXTRA_SETUP(SIMComSIM7000);
 MS_MODEM_WAKE(SIMComSIM7000);
 
@@ -55,10 +55,10 @@ bool SIMComSIM7000::modemWakeFxn(void)
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for SIM7000"));
-        digitalWrite(_modemSleepRqPin, LOW);
-        delay(1100);  // >1s
-        digitalWrite(_modemSleepRqPin, HIGH);
+        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel, F("wake-up pulse on pin"), _modemSleepRqPin, F("for"), _modemName);
+        digitalWrite(_modemSleepRqPin, _wakeLevel);
+        delay(_wakePulse_ms);  // >1s
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
     }
     return true;
 }

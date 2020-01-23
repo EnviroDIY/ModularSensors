@@ -26,15 +26,28 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Status can be monitored on the STATUS(D0) pin
 // Time after end pulse until status pin becomes active - 4.8s
+#define BG96_STATUS_LEVEL HIGH
 #define BG96_STATUS_TIME_MS 5000L
-// > 2 sec
-#define BG96_DISCONNECT_TIME_MS 5000L
 
-// Time after VBAT is stable before PWRKEY can be used
-#define BG96_WARM_UP_TIME_MS 30
+// Reset with a 150-460ms low pulse on the RESET_N pin
+#define BG96_RESET_LEVEL LOW
+#define BG96_RESET_PULSE_MS 10000L
+
+// Module is switched on by a >100 millisecond LOW pulse on the PWRKEY pin
+// Module is switched on by a >650 millisecond LOW pulse on the PWRKEY pin
+// Using something between those times for wake and using AT commands for sleep,
+// we should keep in the proper state.
+#define BG96_WAKE_LEVEL LOW
+#define BG96_WAKE_PULSE_MS 200
+// Time after VBAT is stable before PWRKEY can be used is >30ms
+#define BG96_WARM_UP_TIME_MS 100
 // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
 #define BG96_ATRESPONSE_TIME_MS 4200L
+
+// > 2 sec
+#define BG96_DISCONNECT_TIME_MS 5000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -58,7 +71,6 @@ public:
                 const char* apn);
     ~QuectelBG96();
 
-    bool modemSetup(void) override;
     bool modemWake(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;

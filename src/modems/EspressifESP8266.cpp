@@ -19,8 +19,9 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char* ssid, const char* pwd,
                                    int8_t espSleepRqPin, int8_t espStatusPin)
-    : loggerModem(powerPin, statusPin, HIGH,
-                  modemResetPin, modemSleepRqPin, true,
+    : loggerModem(powerPin, statusPin, ESP8266_STATUS_LEVEL,
+                  modemResetPin, ESP8266_RESET_LEVEL, ESP8266_RESET_PULSE_MS,
+                  modemSleepRqPin, ESP8266_WAKE_LEVEL, ESP8266_WAKE_PULSE_MS,
                   ESP8266_STATUS_TIME_MS, ESP8266_DISCONNECT_TIME_MS,
                   ESP8266_WARM_UP_TIME_MS, ESP8266_ATRESPONSE_TIME_MS),
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
@@ -43,7 +44,6 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
 // Destructor
 EspressifESP8266::~EspressifESP8266() {}
 
-MS_MODEM_SETUP(EspressifESP8266);
 MS_MODEM_WAKE(EspressifESP8266);
 
 MS_MODEM_CONNECT_INTERNET(EspressifESP8266);
@@ -91,7 +91,7 @@ bool EspressifESP8266::modemWakeFxn(void)
     bool success = true;
     if (_powerPin >= 0)  // Turns on when power is applied
     {
-        digitalWrite(_modemSleepRqPin, HIGH);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         success &= ESPwaitForBoot();
         return success;
     }
@@ -100,17 +100,17 @@ bool EspressifESP8266::modemWakeFxn(void)
         MS_DBG(F("Sending a reset pulse to pin"), _modemResetPin,
                F("to wake ESP8266 from deep sleep"));
         digitalWrite(_modemResetPin, LOW);
-        delay(1);
+        delay(_resetPulse_ms);
         digitalWrite(_modemResetPin, HIGH);
-        digitalWrite(_modemSleepRqPin, HIGH);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         success &= ESPwaitForBoot();
         return success;
     }
     else if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Setting pin"), _modemSleepRqPin,
-               F("LOW to wake ESP8266 from light sleep"));
-        digitalWrite(_modemSleepRqPin, LOW);
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, _wakeLevel,
+               F("to wake ESP8266 from light sleep"));
+        digitalWrite(_modemSleepRqPin, _wakeLevel);
         return success;
     }
     else
@@ -166,7 +166,7 @@ bool EspressifESP8266::modemSleepFxn(void)
     {
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                F("HIGH to allow ESP8266 to enter light sleep"));
-        digitalWrite(_modemSleepRqPin, HIGH);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         MS_DBG(F("Requesting light sleep for ESP8266 with status indication"));
         gsmModem.sendAT(GF("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
                         String(_espStatusPin), ',', _statusLevel);
@@ -179,15 +179,16 @@ bool EspressifESP8266::modemSleepFxn(void)
     // Light sleep without the status pin
     else if (_modemSleepRqPin >= 0 && _statusPin < 0)
     {
-        MS_DBG(F("Setting pin"), _modemSleepRqPin,
-               F("HIGH to allow ESP8266 to enter light sleep"));
-        digitalWrite(_modemSleepRqPin, HIGH);
-        MS_DBG(F("Requesting light sleep for ESP8266"));
+        MS_DBG(F("Configuring light sleep for ESP8266"));
         gsmModem.sendAT(GF("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
         bool success = gsmModem.waitResponse() == 1;
         gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;
         delay(5);
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, !_wakeLevel,
+               F("to allow ESP8266 to enter light sleep"));
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        MS_DBG(F("Module MIGHT enter light sleep mode if it has been idle for sufficient time."));
         return success;
     }
     else  // DON'T go to sleep if we can't wake up!
@@ -202,7 +203,7 @@ bool EspressifESP8266::extraModemSetup(void)
 {
     if (_modemSleepRqPin >= 0)
     {
-        digitalWrite(_modemSleepRqPin, HIGH);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
     }
     gsmModem.init();
     gsmClient.init(&gsmModem);

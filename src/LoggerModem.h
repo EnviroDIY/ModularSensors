@@ -46,7 +46,8 @@ class loggerModem
 public:
     // Constructor/Destructor
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
+                int8_t modemResetPin, bool resetLevel, uint32_t resetPulse_ms,
+                int8_t modemSleepRqPin, bool wakeLevel, uint32_t wakePulse_ms,
                 uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                 uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms);
     virtual ~loggerModem();
@@ -58,7 +59,7 @@ public:
     String getModemName(void);
 
     // Sets up the modem before first use
-    virtual bool modemSetup(void) = 0;
+    virtual bool modemSetup(void);
     virtual bool modemWake(void) = 0;
 
     // Note:  modemPowerDown() simply kills power, while modemSleepPowerDown()
@@ -66,8 +67,13 @@ public:
     // whenever possible.
     virtual void modemPowerUp(void);
     virtual void modemPowerDown(void);
+    virtual bool modemSleep(void);
     virtual bool modemSleepPowerDown(void);
     virtual bool modemHardReset(void);
+    // Options to change pin levels from the "standard" for the modem
+    void setModemStatusLevel(bool level);
+    void setModemWakeLevel(bool level);
+    void setModemResetLevel(bool level);
 
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
@@ -128,19 +134,19 @@ protected:
 
     int8_t _powerPin;
     int8_t _statusPin;
-    int8_t _modemSleepRqPin;
+    bool _statusLevel;
     int8_t _modemResetPin;
+    bool _resetLevel;
+    uint32_t _resetPulse_ms;
+    int8_t _modemSleepRqPin;
+    bool _wakeLevel;
+    uint32_t _wakePulse_ms;
     int8_t _modemLEDPin;
 
-    // This denotes whether we should run the wake/sleep functions regardless
-    // of the state of the status pins or if we should check the status pin first.
-    bool _alwaysRunWake;
-
-    uint32_t _wakeDelayTime_ms;
-    bool _statusLevel;
     uint32_t _statusTime_ms;
-    uint32_t _max_atresponse_time_ms;
     uint32_t _disconnetTime_ms;
+    uint32_t _wakeDelayTime_ms;
+    uint32_t _max_atresponse_time_ms;
 
     uint32_t _millisPowerOn;
     uint32_t _lastNISTrequest;
