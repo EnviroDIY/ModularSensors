@@ -46,7 +46,6 @@ public:
                            const char *apn);
     ~DigiXBee3GBypass();
 
-    bool modemSetup(void) override;
     bool modemWake(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;

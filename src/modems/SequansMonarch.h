@@ -9,8 +9,8 @@
 */
 
 // Header Guards
-#ifndef SequansMonarch_h
-#define SequansMonarch_h
+#ifndef SEQUANSMONARCH_h
+#define SEQUANSMONARCH_h
 
 // Debugging Statement
 // #define MS_SEQUANSMONARCH_DEBUG
@@ -26,15 +26,33 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// ?? Undocumented
-#define MONARCH_STATUS_TIME_MS 500
-// ?? Undocumented (Giving 15sec here in case it is not monitored.)
-#define MONARCH_DISCONNECT_TIME_MS 15000L
+// Depending on firmware, you MIGHT be able to monitor the status on either GPIO2/POWER_MON or GPIO3/STATUS_LED
+// The module integration guide says:
+// GPIO3: Optional STATUS_LED.  Note that the LED function is currently not available.
+// GPIO2:  GPIO or Power monitor (Output) in option.  POWER_MON is high right after POWER_ON,
+// then remains high until shutdown procedure is completed.  Module can be safely electrically power off
+// as soon as POWER_MON goes low.  Note that this feature is currently not available.
+// Very useful, right?
+// The Nimbelink manual for their breakout lists a status pin, but doesn't disclose which of these it is and
+// the time for reporting isn't mentioned either.
+#define VZM20Q_STATUS_LEVEL HIGH
+#define VZM20Q_STATUS_TIME_MS 5000
+
+// Minimum 1µs LOW pulse on RESETN for reset - fast.  Max time not documented.
+#define VZM20Q_RESET_LEVEL LOW
+#define VZM20Q_RESET_PULSE_MS 1
 
 // Module automatically boots when power is applied
-#define MONARCH_WARM_UP_TIME_MS 0
+// Nimbelink's documentation says of the wake pin: "Default configuration forwakeup is a low to high transition
+// on this line."  There is no further documentation on timing or anything else.
+#define VZM20Q_WARM_UP_TIME_MS 0
+#define VZM20Q_WAKE_LEVEL HIGH
+#define VZM20Q_WAKE_PULSE_MS 200
 // ?? Time to UART availability not documented
-#define MONARCH_ATRESPONSE_TIME_MS 5000L
+#define VZM20Q_ATRESPONSE_TIME_MS 15000L
+
+// ?? Undocumented (Giving 15sec here in case it is not monitored.)
+#define VZM20Q_DISCONNECT_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -58,8 +76,7 @@ public:
                    const char *apn);
     ~SequansMonarch();
 
-    virtual bool modemSetup(void) override;
-    virtual bool modemWake(void) override;
+    bool modemWake(void) override;
 
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     virtual void disconnectInternet(void) override;

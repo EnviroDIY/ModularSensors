@@ -27,18 +27,30 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
+// Status can be monitored on the STATUS pin which is active HIGH
 // Time after end pulse until status pin becomes active
 // SIM800 - >3sec from start of 1s pulse
 // SIM900 - >2.2sec from end of pulse
+#define SIM800_STATUS_LEVEL HIGH
 #define SIM800_STATUS_TIME_MS 3000
-// power down (gracefully) takes >3sec
-// (Giving 15sec for shutdown in case it is not monitored.)
-#define SIM800_DISCONNECT_TIME_MS 15000L
 
+// Reset with a >105ms low pulse on the RESET_N pin
+#define SIM800_RESET_LEVEL LOW
+#define SIM800_RESET_PULSE_MS 105
+
+// Module is switched on by a > 1 second LOW pulse on the PWR_ON pin
+// Module is switched on by a 1-3 second LOW pulse on the PWR_ON pin
+// Please monitor the status so on and off are correct!
+#define SIM800_WAKE_LEVEL LOW
+#define SIM800_WAKE_PULSE_MS 1100
 // Time after power on before "PWRKEY" can be used - >0.4sec
 #define SIM800_WARM_UP_TIME_MS 450
 // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
 #define SIM800_ATRESPONSE_TIME_MS 3000
+
+// power down (gracefully) takes >3sec
+// (Giving 15sec for shutdown in case it is not monitored.)
+#define SIM800_DISCONNECT_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -62,8 +74,7 @@ public:
                  const char *apn);
     ~SIMComSIM800();
 
-    virtual bool modemSetup(void) override;
-    virtual bool modemWake(void) override;
+    bool modemWake(void) override;
 
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     virtual void disconnectInternet(void) override;

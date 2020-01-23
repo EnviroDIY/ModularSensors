@@ -22,27 +22,20 @@ float loggerModem::_priorBatteryVoltage = -9999;
 
 // Constructor
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                         int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
+                         int8_t modemResetPin, bool resetLevel, uint32_t resetPulse_ms,
+                         int8_t modemSleepRqPin, bool wakeLevel, uint32_t wakePulse_ms,
                          uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                          uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms)
+    : _powerPin(powerPin), _statusPin(statusPin), _statusLevel(statusLevel),
+      _modemResetPin(modemResetPin), _resetLevel(resetLevel), _resetPulse_ms(resetPulse_ms),
+      _modemSleepRqPin(modemSleepRqPin), _wakeLevel(wakeLevel), _wakePulse_ms(wakePulse_ms),
+      _statusTime_ms(max_status_time_ms), _disconnetTime_ms(max_disconnetTime_ms),
+      _wakeDelayTime_ms(wakeDelayTime_ms), _max_atresponse_time_ms(max_atresponse_time_ms)
 {
     _modemName = "unspecified modem";
-
-    _powerPin = powerPin;
-    _statusPin = statusPin;
-    _modemResetPin = modemResetPin;
-    _modemSleepRqPin = modemSleepRqPin;
     _modemLEDPin = -1;
-    _alwaysRunWake = alwaysRunWake;
-
-    _statusLevel = statusLevel;
-    _statusTime_ms = max_status_time_ms,
-    _disconnetTime_ms = max_disconnetTime_ms;
-    _wakeDelayTime_ms = wakeDelayTime_ms;
-    _max_atresponse_time_ms = max_atresponse_time_ms;
 
     _millisPowerOn = 0;
-
     _lastNISTrequest = 0;
 
     _hasBeenSetup = false;
@@ -98,7 +91,7 @@ void loggerModem::modemPowerUp(void)
             // For most modules, the sleep pin should be held high during power up.
             // After some warm-up time, that pin is usually pulsed low to wake
             // the module.
-            digitalWrite(_modemSleepRqPin, HIGH);
+            digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
         MS_DBG(F("Powering"), getModemName(), F("with pin"), _powerPin);
         pinMode(_powerPin, OUTPUT);
@@ -134,19 +127,114 @@ void loggerModem::modemPowerDown(void)
     }
 }
 
+bool loggerModem::modemSetup(void)
+{
+    // NOTE:  Set flag FIRST to stop infinite loop between modemSetup() and modemWake()
+    bool success = true;
+    _hasBeenSetup = true;
+
+    MS_DBG(F("Setting up the modem ..."));
+
+    // Power up
+    bool wasPowered = true;
+    if (_millisPowerOn == 0)
+    {
+        modemPowerUp();
+        wasPowered = false;
+    }
+
+    // Check if the modem was awake, wake it if not
+    bool wasAwake = true;
+    if (_wakePulse_ms > 0 && _statusPin >= 0)
+    {
+        // If there's a pulse wake up (ie, non-zero wake time) and there's a status pin,
+        // use that to determine if the modem was awake before setup began.
+        wasAwake = digitalRead(_statusPin) == _statusLevel;
+    }
+    else if (_wakePulse_ms == 0)
+    {
+        // If the wake up is one where a pin is held (0 wake time) then we're going to check
+        // the level of the held pin as the indication of whether attempts were made to wake
+        // the modem before entering the setup function
+        int8_t sleepRqBitNumber = log(digitalPinToBitMask(_modemSleepRqPin)) / log(2);
+        int8_t currentRqPinState =
+            bitRead(*portInputRegister(digitalPinToPort(_modemSleepRqPin)), sleepRqBitNumber);
+        MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin, '=', currentRqPinState);
+        wasAwake = (currentRqPinState == _wakeLevel);
+    }
+    if (!wasAwake)
+    {
+        while (millis() - _millisPowerOn < _wakeDelayTime_ms)
+        {
+        }
+        MS_DBG(F("Waking up the modem for setup ..."));
+        success &= modemWake();
+    }
+    else
+    {
+        MS_DBG(F("Modem was already awake and should be ready for setup."));
+    }
+
+    if (success)
+    {
+        MS_DBG(F("Running modem's extra setup function ..."));
+        success &= extraModemSetup();
+        if (success)
+        {
+            MS_DBG(F("... Complete!  It's a"), getModemName());
+        }
+        else
+        {
+            MS_DBG(F("... Failed!  It's a"), getModemName());
+            _hasBeenSetup = false;
+        }
+    }
+    else
+    {
+        MS_DBG(F("... "), getModemName(), F("did not wake up and cannot be set up!"));
+    }
+
+    MS_DBG(_modemName, F("warms up in"), _wakeDelayTime_ms, F("ms, indicates status in"),
+           _statusTime_ms, F("ms, is responsive to AT commands in less than"),
+           _max_atresponse_time_ms, F("ms, and takes up to"), _disconnetTime_ms,
+           F("ms to close connections and shut down."));
+
+    // Put the modem back to sleep if it was woken up just for setup
+    // Only go to sleep if it had been asleep and is now awake
+    if (!wasPowered)
+    {  // Run the sleep and power down functions
+        MS_DBG(F("Putting the modem to sleep and powering it down ..."));
+        success &= modemSleepPowerDown();
+    }
+    else if (!wasAwake)
+    {  // Run only the sleep function
+        MS_DBG(F("Putting the modem to sleep ..."));
+        success &= modemSleep();
+    }
+    else
+    {
+        MS_DBG(F("Leaving modem on after setup ..."));
+    }
+
+    return success;
+}
+
 // Nicely put the modem to sleep and power down
-bool loggerModem::modemSleepPowerDown(void)
+bool loggerModem::modemSleep(void)
 {
     bool success = true;
-    uint32_t start = millis();
-    MS_DBG(F("Turning"), getModemName(), F("off."));
+    MS_DBG(F("Putting"), getModemName(), F("to sleep."));
 
     // If there's a status pin available, check before running the sleep function
     // NOTE:  It's possible that the modem could still be in the process of turning
     // on and thus status pin isn't valid yet.  In that case, we wouldn't yet
     // know it's coming on and so we'd mistakenly assume it's already off and
     // not turn it back off.
-    if (_statusPin >= 0 && digitalRead(_statusPin) != _statusLevel && !_alwaysRunWake)
+    // This only applies to modules with a pulse wake (ie, non-zero wake time).
+    // For all modules that do pulse on, where possible I've selected a pulse time that is
+    // sufficient to wake but not quite long enough to put it to sleep and am using AT
+    // commands to sleep.  This *should* keep everything lined up.
+    if (_statusPin >= 0 && digitalRead(_statusPin) != _statusLevel && _wakePulse_ms > 0)
     {
         MS_DBG(F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),
                digitalRead(_statusPin),
@@ -160,6 +248,17 @@ bool loggerModem::modemSleepPowerDown(void)
         success &= modemSleepFxn();
         modemLEDOff();
     }
+    return success;
+}
+
+// Nicely put the modem to sleep and power down
+bool loggerModem::modemSleepPowerDown(void)
+{
+    bool success = true;
+    uint32_t start = millis();
+    MS_DBG(F("Turning"), getModemName(), F("off."));
+
+    modemSleep();
 
     // Now power down
     if (_powerPin >= 0)
@@ -220,9 +319,9 @@ bool loggerModem::modemHardReset(void)
     if (_modemResetPin >= 0)
     {
         MS_DBG(F("Doing a hard reset on the modem!"));
-        digitalWrite(_modemResetPin, LOW);
-        delay(200);
-        digitalWrite(_modemResetPin, HIGH);
+        digitalWrite(_modemResetPin, _resetLevel);
+        delay(_resetPulse_ms);
+        digitalWrite(_modemResetPin, !_resetLevel);
         return true;
     }
     else
@@ -231,6 +330,9 @@ bool loggerModem::modemHardReset(void)
         return false;
     }
 }
+void loggerModem::setModemStatusLevel(bool level) { _statusLevel = level; }
+void loggerModem::setModemWakeLevel(bool level) { _wakeLevel = level; }
+void loggerModem::setModemResetLevel(bool level) { _resetLevel = level; }
 
 
 void loggerModem::setModemPinModes(void)
@@ -239,26 +341,26 @@ void loggerModem::setModemPinModes(void)
     if (!_pinModesSet)
     {
         // NOTE:  We're going to set the power pin mode every time in power up, just to be safe
-        // if (_powerPin >= 0)
-        // {
-        //     MS_DBG(F("Initializing pin"), _powerPin, F("for modem power without setting initial value..."));
-        //     pinMode(_powerPin, OUTPUT);
-        // }
+        if (_statusPin >= 0)
+        {
+            MS_DBG(F("Initializing pin"), _statusPin, F("for modem status with on level expected to be"), _statusLevel);
+            pinMode(_modemResetPin, INPUT);
+        }
         if (_modemSleepRqPin >= 0)
         {
-            MS_DBG(F("Initializing pin"), _modemSleepRqPin, F("for modem sleep with starting value HIGH ..."));
+            MS_DBG(F("Initializing pin"), _modemSleepRqPin, F("for modem sleep with starting value"), !_wakeLevel);
             pinMode(_modemSleepRqPin, OUTPUT);
-            digitalWrite(_modemSleepRqPin, HIGH);
+            digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
         if (_modemResetPin >= 0)
         {
-            MS_DBG(F("Initializing pin"), _modemResetPin, F("for modem reset with starting value HIGH ..."));
+            MS_DBG(F("Initializing pin"), _modemResetPin, F("for modem reset with starting value"), !_resetLevel);
             pinMode(_modemResetPin, OUTPUT);
-            digitalWrite(_modemResetPin, HIGH);
+            digitalWrite(_modemResetPin, !_resetLevel);
         }
         if (_modemLEDPin >= 0)
         {
-            MS_DBG(F("Initializing pin"), _modemLEDPin, F("for modem reset with starting value HIGH ..."));
+            MS_DBG(F("Initializing pin"), _modemLEDPin, F("for modem status LED with starting value 0"));
             pinMode(_modemLEDPin, OUTPUT);
             digitalWrite(_modemLEDPin, LOW);
         }

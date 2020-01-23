@@ -16,10 +16,11 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
                          int8_t powerPin, int8_t statusPin,
                          int8_t modemResetPin, int8_t modemSleepRqPin,
                          const char *apn)
-  : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin, false,
-                BG96_STATUS_TIME_MS, BG96_DISCONNECT_TIME_MS,
-                BG96_WARM_UP_TIME_MS, BG96_ATRESPONSE_TIME_MS),
+    : loggerModem(powerPin, statusPin, BG96_STATUS_LEVEL,
+                  modemResetPin, BG96_RESET_LEVEL, BG96_RESET_PULSE_MS,
+                  modemSleepRqPin, BG96_WAKE_LEVEL, BG96_WAKE_PULSE_MS,
+                  BG96_STATUS_TIME_MS, BG96_DISCONNECT_TIME_MS,
+                  BG96_WARM_UP_TIME_MS, BG96_ATRESPONSE_TIME_MS),
     #ifdef MS_QUECTELBG96_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
@@ -34,7 +35,6 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
 // Destructor
 QuectelBG96::~QuectelBG96() {}
 
-MS_MODEM_SETUP(QuectelBG96);
 MS_MODEM_EXTRA_SETUP(QuectelBG96);
 MS_MODEM_WAKE(QuectelBG96);
 
@@ -55,9 +55,10 @@ bool QuectelBG96::modemWakeFxn(void)
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0)
     {
-        digitalWrite(_modemSleepRqPin, LOW);
-        delay(160);  // ≥100ms
-        digitalWrite(_modemSleepRqPin, HIGH);
+        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel, F("wake-up pulse on pin"), _modemSleepRqPin, F("for"), _modemName);
+        digitalWrite(_modemSleepRqPin, _wakeLevel);
+        delay(_wakePulse_ms);  // ≥100ms
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
     }
     return true;
 }

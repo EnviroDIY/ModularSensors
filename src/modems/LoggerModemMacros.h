@@ -14,96 +14,6 @@
 #define LoggerModemMacros_h
 
 // Set up the modem
-#define MS_MODEM_SETUP(specificModem)                                                         \
-    bool specificModem::modemSetup(void)                                                      \
-    {                                                                                         \
-        bool success = true;                                                                  \
-        /* NOTE:  Set flag FIRST to stop infinite loop between modemSetup() and modemWake()*/ \
-        _hasBeenSetup = true;                                                                 \
-                                                                                              \
-        /* Set-up pin modes */                                                                \
-        if (_modemSleepRqPin >= 0)                                                            \
-        {                                                                                     \
-            pinMode(_modemSleepRqPin, OUTPUT);                                                \
-            /* NOTE:  Not setting level of sleep request pin */                               \
-            /* extraModemSetup() should set the sleep request pin level if necessary */       \
-        }                                                                                     \
-        if (_modemResetPin >= 0)                                                              \
-        {                                                                                     \
-            pinMode(_modemResetPin, OUTPUT);                                                  \
-            digitalWrite(_modemResetPin, HIGH);                                               \
-        }                                                                                     \
-        if (_modemLEDPin >= 0)                                                                \
-        {                                                                                     \
-            pinMode(_modemLEDPin, OUTPUT);                                                    \
-            digitalWrite(_modemLEDPin, LOW);                                                  \
-        }                                                                                     \
-                                                                                              \
-        MS_DBG(F("Setting up the modem ..."));                                                \
-                                                                                              \
-        /* Power up */                                                                        \
-        bool wasPowered = true;                                                               \
-        if (_millisPowerOn == 0)                                                              \
-        {                                                                                     \
-            modemPowerUp();                                                                   \
-            wasPowered = false;                                                               \
-        }                                                                                     \
-                                                                                              \
-        /* Check if the modem was awake, wake it if not */                                    \
-        bool wasAwake = (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel);         \
-        if (!wasAwake)                                                                        \
-        {                                                                                     \
-            while (millis() - _millisPowerOn < _wakeDelayTime_ms)                             \
-            {                                                                                 \
-            }                                                                                 \
-            MS_DBG(F("Waking up the modem for setup ..."));                                   \
-            success &= modemWake();                                                           \
-        }                                                                                     \
-        else                                                                                  \
-        {                                                                                     \
-            MS_DBG(F("Modem was already awake and should be ready for setup."));              \
-        }                                                                                     \
-                                                                                              \
-        if (success)                                                                          \
-        {                                                                                     \
-            MS_DBG(F("Running modem's extra setup function ..."));                            \
-            success &= extraModemSetup();                                                     \
-            if (success)                                                                      \
-            {                                                                                 \
-                MS_DBG(F("... Complete!  It's a"), getModemName());                           \
-            }                                                                                 \
-            else                                                                              \
-            {                                                                                 \
-                MS_DBG(F("... Failed!  It's a"), getModemName());                             \
-                _hasBeenSetup = false;                                                        \
-            }                                                                                 \
-        }                                                                                     \
-        else                                                                                  \
-        {                                                                                     \
-            MS_DBG(F("... "), getModemName(), F("did not wake up and cannot be set up!"));    \
-        }                                                                                     \
-                                                                                              \
-        MS_DBG(_modemName, F("warms up in"), _wakeDelayTime_ms, F("ms, indicates status in"), \
-               _statusTime_ms, F("ms, is responsive to AT commands in less than"),            \
-               _max_atresponse_time_ms, F("ms, and takes up to"), _disconnetTime_ms,          \
-               F("ms to close connections and shut down."));                                  \
-                                                                                              \
-        /* Put the modem to sleep after finishing setup */                                    \
-        /* Only go to sleep if it had been asleep and is now awake */                         \
-        bool isAwake = (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel);          \
-        if ((!wasAwake && isAwake) || !wasPowered)                                            \
-        {                                                                                     \
-            /* Run the sleep function */                                                      \
-            MS_DBG(F("Running given modem sleep function ..."));                              \
-            success &= modemSleepPowerDown();                                                 \
-        }                                                                                     \
-        else                                                                                  \
-        {                                                                                     \
-            MS_DBG(F("Leaving modem on after setup ..."));                                    \
-        }                                                                                     \
-                                                                                              \
-        return success;                                                                       \
-    }
 
 #define MS_MODEM_EXTRA_SETUP(specificModem)   \
     bool specificModem::extraModemSetup(void) \
@@ -115,98 +25,111 @@
     }
 
 // The function to wake up the modem
-#define MS_MODEM_WAKE(specificModem)                                                             \
-    bool specificModem::modemWake(void)                                                          \
-    {                                                                                            \
-                                                                                                 \
-        /* Power up */                                                                           \
-        if (_millisPowerOn == 0)                                                                 \
-            modemPowerUp();                                                                      \
-                                                                                                 \
-        while (millis() - _millisPowerOn < _wakeDelayTime_ms)                                    \
-        {                                                                                        \
-        }                                                                                        \
-                                                                                                 \
-        /* Check the status pin and wake bits before running wake function */                    \
-        /* Don't want to accidently pulse an already on modem to off */                          \
-        /* NOTE:  It's possible that the status pin is on, but the modem is actually */          \
-        /* mid-shutdown.  In that case, we'll mistakenly skip re-waking it. */                   \
-        if (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel && !_alwaysRunWake)       \
-        {                                                                                        \
-            MS_DBG(getModemName(), F("was already on!  (status pin"), _statusPin,                \
-                   F("level = "), _statusLevel, F(") Will not run wake function."));             \
-        }                                                                                        \
-        else                                                                                     \
-        {                                                                                        \
-            /* Run the input wake function */                                                    \
-            MS_DBG(F("Running wake function for"), getModemName());                              \
-            if (!modemWakeFxn())                                                                 \
-            {                                                                                    \
-                MS_DBG(F("Wake function for"), getModemName(), F("did not run as expected!"));   \
-            }                                                                                    \
-        }                                                                                        \
-                                                                                                 \
-        uint8_t resets = 0;                                                                      \
-        bool success = false;                                                                    \
-        while (!success && resets < 2)                                                           \
-        {                                                                                        \
-            /* Check that the modem is responding to AT commands */                              \
-            MS_START_DEBUG_TIMER;                                                                \
-            MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));       \
-            success = gsmModem.testAT(_max_atresponse_time_ms + 500);                            \
-            if (success)                                                                         \
-            {                                                                                    \
-                MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));          \
-            }                                                                                    \
-            else                                                                                 \
-            {                                                                                    \
-                MS_DBG(F("No response to AT commands!"));                                        \
-            }                                                                                    \
-                                                                                                 \
-            /* Re-check the status pin */                                                        \
-            if ((_statusPin >= 0 && digitalRead(_statusPin) != _statusLevel && !success) ||      \
-                !success)                                                                        \
-            {                                                                                    \
-                MS_DBG(getModemName(), F("doesn't appear to be responsive!"));                   \
-                if (_statusPin >= 0)                                                             \
-                {                                                                                \
-                    MS_DBG(F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),        \
-                           digitalRead(_statusPin), F("indicating it is off!"));                 \
-                }                                                                                \
-                                                                                                 \
-                MS_DBG(F("Attempting a hard reset on the modem!"));                              \
-                if (!modemHardReset())                                                           \
-                {                                                                                \
-                    /* Exit if we can't hard reset */                                            \
-                    break;                                                                       \
-                }                                                                                \
-            }                                                                                    \
-        }                                                                                        \
-                                                                                                 \
-        /* Re-run the modem init, or setup if necessary */                                       \
-        /* This will turn off echo, which often turns itself back on after a reset/power loss */ \
-        /* This also checks the SIM card state */                                                \
-        if (!_hasBeenSetup)                                                                      \
-        {                                                                                        \
-            success &= modemSetup();                                                             \
-        }                                                                                        \
-        else                                                                                     \
-        {                                                                                        \
-            success &= gsmModem.init();                                                          \
-        }                                                                                        \
-        gsmClient.init(&gsmModem);                                                               \
-                                                                                                 \
-        if (success)                                                                             \
-        {                                                                                        \
-            modemLEDOn();                                                                        \
-            MS_DBG(getModemName(), F("should be awake and ready to go."));                       \
-        }                                                                                        \
-        else                                                                                     \
-        {                                                                                        \
-            MS_DBG(getModemName(), F("failed to wake!"));                                        \
-        }                                                                                        \
-                                                                                                 \
-        return success;                                                                          \
+#define MS_MODEM_WAKE(specificModem)                                                              \
+    bool specificModem::modemWake(void)                                                           \
+    {                                                                                             \
+                                                                                                  \
+        /* Power up */                                                                            \
+        if (_millisPowerOn == 0)                                                                  \
+            modemPowerUp();                                                                       \
+                                                                                                  \
+        /* Set-up pin modes */                                                                    \
+        /* Because the modem calls wake BEFORE the first setup, we must set the pin modes here */ \
+        setModemPinModes();                                                                       \
+                                                                                                  \
+        while (millis() - _millisPowerOn < _wakeDelayTime_ms)                                     \
+        {                                                                                         \
+        }                                                                                         \
+                                                                                                  \
+        /* Check the status pin and wake bits before running wake function */                     \
+        /* Don't want to accidently pulse an already on modem to off */                           \
+        /* NOTE:  It's possible that the status pin is on, but the modem is actually */           \
+        /* mid-shutdown.  In that case, we'll mistakenly skip re-waking it. */                    \
+        /* This only applies to modules with a pulse wake (ie, non-zero wake time). */            \
+        /* For all modules that do pulse on, where possible I've selected a pulse time that is */ \
+        /* sufficient to wake but not quite long enough to put it to sleep and am using AT*/      \
+        /* commands to sleep.  This *should* keep everything lined up.*/                          \
+        if (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel && _wakePulse_ms > 0)      \
+        {                                                                                         \
+            MS_DBG(getModemName(), F("was already on!  (status pin"), _statusPin,                 \
+                   F("level = "), _statusLevel, F(") Will not run wake function."));              \
+        }                                                                                         \
+        else                                                                                      \
+        {                                                                                         \
+            /* Run the input wake function */                                                     \
+            MS_DBG(F("Running wake function for"), getModemName());                               \
+            if (!modemWakeFxn())                                                                  \
+            {                                                                                     \
+                MS_DBG(F("Wake function for"), getModemName(), F("did not run as expected!"));    \
+            }                                                                                     \
+        }                                                                                         \
+                                                                                                  \
+        uint8_t resets = 0;                                                                       \
+        bool success = false;                                                                     \
+        while (!success && resets < 2)                                                            \
+        {                                                                                         \
+            /* Check that the modem is responding to AT commands */                               \
+            MS_START_DEBUG_TIMER;                                                                 \
+            MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));        \
+            success = gsmModem.testAT(_max_atresponse_time_ms + 500);                             \
+            if (success)                                                                          \
+            {                                                                                     \
+                MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));           \
+            }                                                                                     \
+            else                                                                                  \
+            {                                                                                     \
+                MS_DBG(F("No response to AT commands!"));                                         \
+            }                                                                                     \
+                                                                                                  \
+            /* Re-check the status pin */                                                         \
+            if ((_statusPin >= 0 && digitalRead(_statusPin) != _statusLevel && !success) ||       \
+                !success)                                                                         \
+            {                                                                                     \
+                MS_DBG(getModemName(), F("doesn't appear to be responsive!"));                    \
+                if (_statusPin >= 0)                                                              \
+                {                                                                                 \
+                    MS_DBG(F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),         \
+                           digitalRead(_statusPin), F("indicating it is off!"));                  \
+                }                                                                                 \
+                                                                                                  \
+                MS_DBG(F("Attempting a hard reset on the modem! "), resets + 1);                  \
+                if (!modemHardReset())                                                            \
+                {                                                                                 \
+                    /* Exit if we can't hard reset */                                             \
+                    break;                                                                        \
+                }                                                                                 \
+                else                                                                              \
+                {                                                                                 \
+                    resets++;                                                                     \
+                }                                                                                 \
+            }                                                                                     \
+        }                                                                                         \
+                                                                                                  \
+        /* Re-run the modem init, or setup if necessary */                                        \
+        /* This will turn off echo, which often turns itself back on after a reset/power loss */  \
+        /* This also checks the SIM card state */                                                 \
+        if (!_hasBeenSetup)                                                                       \
+        {                                                                                         \
+            /* If we run setup, take success value entirely from that*/                           \
+            success = modemSetup();                                                               \
+        }                                                                                         \
+        else                                                                                      \
+        {                                                                                         \
+            success &= gsmModem.init();                                                           \
+        }                                                                                         \
+        gsmClient.init(&gsmModem);                                                                \
+                                                                                                  \
+        if (success)                                                                              \
+        {                                                                                         \
+            modemLEDOn();                                                                         \
+            MS_DBG(getModemName(), F("should be awake and ready to go."));                        \
+        }                                                                                         \
+        else                                                                                      \
+        {                                                                                         \
+            MS_DBG(getModemName(), F("failed to wake!"));                                         \
+        }                                                                                         \
+                                                                                                  \
+        return success;                                                                           \
     }
 
 #if defined TINY_GSM_MODEM_HAS_GPRS

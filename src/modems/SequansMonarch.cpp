@@ -16,10 +16,11 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
                                int8_t powerPin, int8_t statusPin,
                                int8_t modemResetPin, int8_t modemSleepRqPin,
                                const char *apn)
-  : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin, true,
-                MONARCH_STATUS_TIME_MS, MONARCH_DISCONNECT_TIME_MS,
-                MONARCH_WARM_UP_TIME_MS, MONARCH_ATRESPONSE_TIME_MS),
+    : loggerModem(powerPin, statusPin, VZM20Q_STATUS_LEVEL,
+                  modemResetPin, VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS,
+                  modemSleepRqPin, VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS,
+                  VZM20Q_STATUS_TIME_MS, VZM20Q_DISCONNECT_TIME_MS,
+                  VZM20Q_WARM_UP_TIME_MS, VZM20Q_ATRESPONSE_TIME_MS),
     #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
@@ -34,7 +35,6 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
 // Destructor
 SequansMonarch::~SequansMonarch() {}
 
-MS_MODEM_SETUP(SequansMonarch);
 MS_MODEM_EXTRA_SETUP(SequansMonarch);
 MS_MODEM_WAKE(SequansMonarch);
 
@@ -60,10 +60,10 @@ bool SequansMonarch::modemWakeFxn(void)
     }
     if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for Sequans Monarch"));
-        digitalWrite(_modemSleepRqPin, LOW);
-        delayMicroseconds(50);  // ?? Time isn't documented
-        digitalWrite(_modemSleepRqPin, HIGH);
+        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel, F("wake-up pulse on pin"), _modemSleepRqPin, F("for"), _modemName);
+        digitalWrite(_modemSleepRqPin, _wakeLevel);
+        delayMicroseconds(_wakePulse_ms);  // ?? Time isn't documented
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
     }
     else
