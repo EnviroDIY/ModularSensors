@@ -190,7 +190,13 @@ void WDT_Handler(void)  // ISR for watchdog early warning
     {
         // Write the clear key
         WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
-        waitForWDTBitSync();
+#if defined(__SAMD51__)
+        while (WDT->SYNCBUSY.reg)
+            ;
+#else
+        while (WDT->STATUS.bit.SYNCBUSY)
+            ;
+#endif
         // Clear Early Warning (EW) Interrupt Flag
         WDT->INTFLAG.bit.EW = 1;
     }
