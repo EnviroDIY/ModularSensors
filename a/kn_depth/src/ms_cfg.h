@@ -366,7 +366,7 @@ eMcpB_end
   #endif //ProcVolt_ACT
 
   //Use sensor eg Adafruit_AM2314 or AM2320
-  #define ASONG_AM23XX_UUID 1
+  //#define ASONG_AM23XX_UUID 1
   #if defined(ASONG_AM23XX_UUID)
     #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
     #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
