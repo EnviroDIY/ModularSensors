@@ -43,11 +43,15 @@
 #define VZM20Q_RESET_PULSE_MS 1
 
 // Module automatically boots when power is applied
-// Nimbelink's documentation says of the wake pin: "Default configuration forwakeup is a low to high transition
-// on this line."  There is no further documentation on timing or anything else.
+// To enter PSM, you need to do the following :
+// 1.Request timers from the network
+// 2.Register on the network
+// 3.Pull the RTS pin logic - level HIGH - device will enter PSM a minimum of 100s later
+// To exit PSM, you need to do the following :
+// 1.Pull the RTS pin logic - level LOW
 #define VZM20Q_WARM_UP_TIME_MS 0
-#define VZM20Q_WAKE_LEVEL HIGH
-#define VZM20Q_WAKE_PULSE_MS 200
+#define VZM20Q_WAKE_LEVEL LOW
+#define VZM20Q_WAKE_PULSE_MS 0
 // ?? Time to UART availability not documented
 #define VZM20Q_ATRESPONSE_TIME_MS 15000L
 
