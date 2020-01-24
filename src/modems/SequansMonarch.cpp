@@ -55,11 +55,14 @@ bool SequansMonarch::modemWakeFxn(void)
     // No pulsing required in this case
     if (_powerPin >= 0)
     {
-        return true;
+        MS_DBG(F("Waiting for modem start-up message"));
+        return gsmModem.waitResponse(5000L, GF("+SYSSTART")) == 1;
     }
     else if (_modemResetPin >= 0)
     {
-        return modemHardReset();
+        modemHardReset();
+        MS_DBG(F("Waiting for modem start-up message"));
+        return gsmModem.waitResponse(5000L, GF("+SYSSTART")) == 1;
     }
     if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
