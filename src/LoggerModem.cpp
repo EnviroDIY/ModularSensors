@@ -159,7 +159,8 @@ bool loggerModem::modemSetup(void)
         int8_t sleepRqBitNumber = log(digitalPinToBitMask(_modemSleepRqPin)) / log(2);
         int8_t currentRqPinState =
             bitRead(*portInputRegister(digitalPinToPort(_modemSleepRqPin)), sleepRqBitNumber);
-        MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin, '=', currentRqPinState);
+        MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin, '=',
+               currentRqPinState ? F("HIGH") : F("LOW"));
         wasAwake = (currentRqPinState == _wakeLevel);
     }
     if (!wasAwake)
@@ -269,7 +270,7 @@ bool loggerModem::modemSleepPowerDown(void)
         {
             MS_DBG(F("Waiting up to"), _disconnetTime_ms,
                    F("milliseconds for graceful shutdown as indicated by pin"),
-                   _statusPin, F("going"), !_statusLevel, F("..."));
+                   _statusPin, F("going"), !_statusLevel ? F("HIGH") : F("LOW"), F("..."));
             while (millis() - start < _disconnetTime_ms && digitalRead(_statusPin) == _statusLevel) {}
             if (digitalRead(_statusPin) == _statusLevel)
             {
@@ -314,7 +315,8 @@ bool loggerModem::modemHardReset(void)
 {
     if (_modemResetPin >= 0)
     {
-        MS_DBG(F("Doing a hard reset on the modem!"));
+        MS_DBG(F("Doing a hard reset on the modem by setting pin"), _modemResetPin,
+               _resetLevel ? F("HIGH") : F("LOW"), F("for"), _resetPulse_ms, F("ms"));
         digitalWrite(_modemResetPin, _resetLevel);
         delay(_resetPulse_ms);
         digitalWrite(_modemResetPin, !_resetLevel);
@@ -339,18 +341,21 @@ void loggerModem::setModemPinModes(void)
         // NOTE:  We're going to set the power pin mode every time in power up, just to be safe
         if (_statusPin >= 0)
         {
-            MS_DBG(F("Initializing pin"), _statusPin, F("for modem status with on level expected to be"), _statusLevel);
+            MS_DBG(F("Initializing pin"), _statusPin, F("for modem status with on level expected to be"),
+                   _statusLevel ? F("HIGH") : F("LOW"));
             pinMode(_modemResetPin, INPUT);
         }
         if (_modemSleepRqPin >= 0)
         {
-            MS_DBG(F("Initializing pin"), _modemSleepRqPin, F("for modem sleep with starting value"), !_wakeLevel);
+            MS_DBG(F("Initializing pin"), _modemSleepRqPin, F("for modem sleep with starting value"),
+                   !_wakeLevel ? F("HIGH") : F("LOW"));
             pinMode(_modemSleepRqPin, OUTPUT);
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
         if (_modemResetPin >= 0)
         {
-            MS_DBG(F("Initializing pin"), _modemResetPin, F("for modem reset with starting value"), !_resetLevel);
+            MS_DBG(F("Initializing pin"), _modemResetPin, F("for modem reset with starting value"),
+                   !_resetLevel ? F("HIGH") : F("LOW"));
             pinMode(_modemResetPin, OUTPUT);
             digitalWrite(_modemResetPin, !_resetLevel);
         }

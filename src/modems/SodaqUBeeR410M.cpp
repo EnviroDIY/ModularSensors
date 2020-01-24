@@ -77,7 +77,8 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
     // SARA R4/N4 series must power on and then pulse on
     if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel, F("wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee R410M"));
+        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel ? F("HIGH") : F("LOW"),
+               F("wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee R410M"));
         digitalWrite(_modemSleepRqPin, _wakeLevel);
 
         // If possible, monitor the v_int pin waiting for it to become high before ending pulse
@@ -154,7 +155,9 @@ bool SodaqUBeeR410M::modemHardReset(void)
 {
     if (_modemResetPin >= 0)
     {
-        MS_DBG(F("Doing a hard reset.  This takes 10s, be patient."));
+        MS_DBG(F("Doing a hard reset on the modem by setting pin"), _modemResetPin,
+               _resetLevel ? F("HIGH") : F("LOW"), F("for"), _resetPulse_ms, F("ms"));
+        MS_DBG(F("Please be patient"));
         digitalWrite(_modemResetPin, _resetLevel);
         delay(_resetPulse_ms);
         digitalWrite(_modemResetPin, !_resetLevel);
