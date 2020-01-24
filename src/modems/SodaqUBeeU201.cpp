@@ -59,7 +59,8 @@ bool SodaqUBeeU201::modemWakeFxn(void)
     }
     if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel, F("wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee U201"));
+        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel ? F("HIGH") : F("LOW"),
+               F("wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee U201"));
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         delayMicroseconds(_wakePulse_ms);  // 50-80µs pulse for wake on SARA/LISA U2/G2
         digitalWrite(_modemSleepRqPin, !_wakeLevel);

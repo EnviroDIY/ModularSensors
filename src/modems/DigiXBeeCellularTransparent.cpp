@@ -47,7 +47,8 @@ bool DigiXBeeCellularTransparent::modemWakeFxn(void)
 {
     if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
-        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("LOW to wake XBee"));
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, _wakeLevel ? F("HIGH") : F("LOW"),
+               F("to wake"), _modemName);
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         MS_DBG(F("Turning off airplane mode..."));
         if (gsmModem.commandMode())
@@ -83,7 +84,8 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void)
             // Exit command mode
             gsmModem.exitCommand();
         }
-        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, !_wakeLevel ? F("HIGH") : F("LOW"),
+               F("to put"), _modemName, F("to sleep"));
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
     }

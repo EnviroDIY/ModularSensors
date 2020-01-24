@@ -33,7 +33,8 @@ bool DigiXBee::modemWakeFxn(void)
 {
     if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
-        MS_DBG(F("Setting pin"), _modemSleepRqPin, _wakeLevel, F("to wake"), _modemName);
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, _wakeLevel ? F("HIGH") : F("LOW"),
+               F("to wake"), _modemName);
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         return true;
     }
@@ -48,7 +49,8 @@ bool DigiXBee::modemSleepFxn(void)
 {
     if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Setting pin"), _modemSleepRqPin, !_wakeLevel, F("to put"), _modemName, F("to sleep"));
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, !_wakeLevel ? F("HIGH") : F("LOW"),
+               F("to put"), _modemName, F("to sleep"));
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
     }

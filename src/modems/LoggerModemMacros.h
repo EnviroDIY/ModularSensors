@@ -52,7 +52,8 @@
         if (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel && _wakePulse_ms > 0)      \
         {                                                                                         \
             MS_DBG(getModemName(), F("was already on!  (status pin"), _statusPin,                 \
-                   F("level = "), _statusLevel, F(") Will not run wake function."));              \
+                   F("level = "), _statusLevel ? F("HIGH") : F("LOW"),                            \
+                   F("Will not run wake function."));                                             \
         }                                                                                         \
         else                                                                                      \
         {                                                                                         \
@@ -89,7 +90,8 @@
                 if (_statusPin >= 0)                                                              \
                 {                                                                                 \
                     MS_DBG(F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),         \
-                           digitalRead(_statusPin), F("indicating it is off!"));                  \
+                           digitalRead(_statusPin) ? F("HIGH") : F("LOW"),                        \
+                           F("indicating it is off!"));                                           \
                 }                                                                                 \
                                                                                                   \
                 MS_DBG(F("Attempting a hard reset on the modem! "), resets + 1);                  \

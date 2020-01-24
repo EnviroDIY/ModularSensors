@@ -55,7 +55,8 @@ bool QuectelBG96::modemWakeFxn(void)
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel, F("wake-up pulse on pin"), _modemSleepRqPin, F("for"), _modemName);
+        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel ? F("HIGH") : F("LOW"),
+               F("wake-up pulse on pin"), _modemSleepRqPin, F("for"), _modemName);
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         delay(_wakePulse_ms);  // ≥100ms
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
