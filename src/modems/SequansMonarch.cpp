@@ -35,7 +35,6 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
 // Destructor
 SequansMonarch::~SequansMonarch() {}
 
-MS_MODEM_EXTRA_SETUP(SequansMonarch);
 MS_MODEM_WAKE(SequansMonarch);
 
 MS_MODEM_CONNECT_INTERNET(SequansMonarch);
@@ -58,12 +57,15 @@ bool SequansMonarch::modemWakeFxn(void)
     {
         return true;
     }
-    if (_modemSleepRqPin >= 0)
+    else if (_modemResetPin >= 0)
     {
-        MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"), _wakeLevel, F("wake-up pulse on pin"), _modemSleepRqPin, F("for"), _modemName);
+        return modemHardReset();
+    }
+    if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
+    {
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, _wakeLevel ? F("HIGH") : F("LOW"),
+               F("to bring"), _modemName, F("out of power save mode"));
         digitalWrite(_modemSleepRqPin, _wakeLevel);
-        delayMicroseconds(_wakePulse_ms);  // ?? Time isn't documented
-        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
     }
     else
@@ -75,14 +77,40 @@ bool SequansMonarch::modemWakeFxn(void)
 
 bool SequansMonarch::modemSleepFxn(void)
 {
-    if (_powerPin >= 0 || _modemSleepRqPin >= 0)  // will go on with power on
+    if (_powerPin >= 0 || _modemResetPin >= 0)  // will go on with power on
     {
         // Easiest to just go to sleep with the AT command rather than using pins
+        // The only way to wake from this is via a hard reset
         MS_DBG(F("Asking Sequans Monarch to power down"));
         return gsmModem.poweroff();
+    }
+    else if (_modemSleepRqPin >= 0)  // RTS for power save mode
+    {
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, !_wakeLevel ? F("HIGH") : F("LOW"),
+               F("to enable"), _modemName, F("to enter power save mode"));
+        digitalWrite(_modemSleepRqPin, _wakeLevel);
+        return true;
     }
     else  // DON'T go to sleep if we can't wake up!
     {
         return true;
     }
+}
+
+
+bool SequansMonarch::extraModemSetup(void)
+{
+    bool success = gsmModem.init();
+    gsmClient.init(&gsmModem);
+    _modemName = gsmModem.getModemName();
+    // Enable power save mode if we're not going to cut power or use reset
+    if (!_powerPin >= 0 && !_modemResetPin >= 0 && _modemSleepRqPin >= 0)
+    {
+        MS_DBG("Enabling power save mode tracking area update [PSM TAU] timers");
+        // Requested Periodic TAU (Time in between Tracking Area Updates) = 101 00001 = 5min increments * 1
+        // Requested Active Time (Time connected before entering Power Save Mode) = 000 00101 = 2s increments * 5
+        gsmModem.sendAT("+CPSMS=1,,,\"10100001\",\"00000101\"");
+        success &= gsmModem.waitResponse();
+    }
+    return success;
 }
