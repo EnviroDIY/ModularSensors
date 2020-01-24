@@ -60,7 +60,9 @@ public:
 
     // Sets up the modem before first use
     virtual bool modemSetup(void);
+    bool setup(void) { return modemSetup(); }
     virtual bool modemWake(void) = 0;
+    bool wake(void) { return modemWake(); }
 
     // Note:  modemPowerDown() simply kills power, while modemSleepPowerDown()
     // allows for graceful shut down.  You should use modemSleepPowerDown()

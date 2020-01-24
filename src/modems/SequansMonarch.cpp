@@ -112,8 +112,23 @@ bool SequansMonarch::extraModemSetup(void)
         MS_DBG("Enabling power save mode tracking area update [PSM TAU] timers");
         // Requested Periodic TAU (Time in between Tracking Area Updates) = 101 00001 = 5min increments * 1
         // Requested Active Time (Time connected before entering Power Save Mode) = 000 00101 = 2s increments * 5
-        gsmModem.sendAT("+CPSMS=1,,,\"10100001\",\"00000101\"");
+        gsmModem.sendAT(GF("+CPSMS=1,,,\"10100001\",\"00000101\""));
         success &= gsmModem.waitResponse();
     }
+    // If we are going to turn power it on and off or use the reset, turn on auto-connect and auto-internet so
+    // the module will immediately start trying to connect on wake.  Unlike most others, the VZN20Q turns on
+    // with the cellular radio disabled by default and will not turn on or search for the network without
+    // enabling the radio.
+    if (_powerPin >= 0 || _modemResetPin >= 0)
+    {
+        // Enable and force auto-connect - boot with CFUN=1 and attempt to register on network
+        gsmModem.sendAT(GF("+SQNAUTOCONNECT=1,1"));
+        success &= gsmModem.waitResponse();
+        // Enable auto internet -automatically try to connect internet PDN provisioned into /etc/config/sqnmm
+        // after each attach to the network
+        gsmModem.sendAT(GF("+SQNAUTOINTERNET=1"));
+        success &= gsmModem.waitResponse();
+    }
+
     return success;
 }
