@@ -71,7 +71,7 @@ const PinDescription g_APinDescription[]=
     16 Analog SERIAL4_TX/SERCOM4
     17 Analog SERIAL4_RX/SERCOM4
     18 Analog SERIAL2_TX/SERCOM0
-    19 
+    19 A5 Analog SERIAL2_TE/SERCOM0
   */
   // --------------------
 /*14*/{ PORTA,  2, PIO_ANALOG, PIN_ATTR_ANALOG, ADC_Channel0, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_2 },
@@ -96,8 +96,11 @@ const PinDescription g_APinDescription[]=
 #else
   { PORTA,  4, PIO_ANALOG, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel4, TC0_CH0, TC0_CH0, EXTERNAL_INT_6 },
 #endif //SERIAL2_EN
+#if defined SERIAL2_EN && defined SERIAL2_TE_CNTL
+/*19*/{ PORTA,  06, PIO_SERCOM_ALT, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel6, TC1_CH0, TC1_CH0, EXTERNAL_INT_10 },
+#else
 /*19*/{ PORTA,  6, PIO_ANALOG, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel6, TC1_CH0, TC1_CH0, EXTERNAL_INT_10 },
- 
+#endif SERIAL2_TE_CNTL
   // A6, D20 - VDiv!
   { PORTB,  1, PIO_ANALOG, PIN_ATTR_ANALOG, ADC_Channel13, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_1 },
 
