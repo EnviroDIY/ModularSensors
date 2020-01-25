@@ -2,7 +2,7 @@
 // inihUnhandled 
 // For any Unhandled sections this is called
 // ==========================================================================
-#ifdef USE_SD_MAYFLY_INI
+#ifdef USE_MS_SD_INI
 //expect to be in near space
   //#define EDIY_PROGMEM PROGMEM
 #define mCONST_UNI(p1) const char p1##_pm[] PROGMEM = #p1
@@ -187,7 +187,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
                     multNum= loggingMultiplier_MAX_CDEF;
                 } else {
                     PRINTOUT(F("COMMON LOGGING_MULTIPLIER set to: "),multNum,
-                        F("(min) from default "),loggingMultiplier_MAX_CDEF);
+                        F("(mult) from default "),loggingMultiplier_MAX_CDEF);
                 }
                 loggingMultiplierTop= multNum; //In the main program
             } else {
@@ -351,7 +351,7 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
     #endif //RAM_REPORT_LEVEL
     return 1;
 }
-#endif //USE_SD_MAYFLY_INI
+#endif //USE_MS_SD_INI
 
 //void ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,unsigned long offTime_ms = 150)
 void ledflash(uint8_t numFlash, unsigned long onTime_ms,unsigned long offTime_ms)

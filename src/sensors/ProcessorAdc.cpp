@@ -10,6 +10,7 @@
 
 
 #include "processorAdc.h"
+#include "ms_cfg.h"
 //#include <Adafruit_ADS1015.h>
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     #define BOARD "EnviroDIY Mayfly"
@@ -127,14 +128,29 @@ bool processorAdc::addSingleMeasurementResult(void)
     if (bitRead(_sensorStatus, 6))
     {
         MS_DBG(getSensorNameAndLocation(), F(" is reporting:"));
-
+        #if !defined ARDUINO_ARCH_AVR
+        //Only for processors where ADC Resolution can be varied: not AVR
         analogReadResolution(ProcAdcDef_Resolution);
+        #endif //ARDUINO_ARCH_AVR
+        uint8_t useAdcChannel = _adcChannel; 
+        #if defined ARD_ANALOLG_EXTENSION_PINS
+        if ((thisVariantNumPins+ARD_DIGITAL_EXTENSION_PINS)< _adcChannel) {
+            
+            //Setup mutliplexer
+            //digitalWrite(_adcChannel,1);
+            //useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
+            MS_DBG("  adc_Single Setup Multiplexer not supported ", _adcChannel,"-->",ARD_ANLAOG__MULTIPLEX_PIN); 
+
+        } 
+
+        #endif //ARD_ANALOLG_EXTENSION_PINS
         // Create an Auxillary ADD object
         // We create and set up the ADC object here so that each sensor using
         // the ADC may set the gain appropriately without effecting others.
-        float rawAdc = analogRead(_adcChannel);
-        adcVoltage = (3.3 /ProcAdc_Max) * rawAdc;
-        MS_DBG(F("  adc_SingleEnded_V("), _adcChannel, F("/"),ProcAdcDef_Resolution,F("):"), adcVoltage);
+        uint32_t  rawAdc = analogRead(useAdcChannel);
+        adcVoltage = (3.3 /ProcAdc_Max) * (float) rawAdc;
+        MS_DBG(F("  adc_SingleEnded_V("), _adcChannel, F("/"),ProcAdcDef_Resolution,F("):"), adcVoltage,F(" rawAdc:"),rawAdc, 
+               F(" gain="),_gain);
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {

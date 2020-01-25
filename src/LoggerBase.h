@@ -41,20 +41,25 @@
 
 // Bring in the library to communicate with an external high-precision real time clock
 // This also implements a needed date/time class
-#include <Sodaq_DS3231.h>
+#include <RTClib.h>    //was <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800
 // This is 2000-jan-01 00:00:00 in "epoch" time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
 // timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
 // epoch beginning 1970-jan-01 00:00:00.
 
-#include <SdFat.h>  // To communicate with the SD card
-
+#include "SdFat.h"  // To communicate with the SD card
+#if defined BOARD_SDQ_QSPI_FLASH
+#include "Adafruit_SPIFlash.h"  //This can be on the Adafruit Express options
+#endif //BOARD_SDQ_QSPI_FLASH
+#if defined USE_TINYUSB
+#include "Adafruit_TinyUSB.h"
+#endif //USE_TINYUSB
+typedef int (*ini_handler_atl485)( const char* section,
+                           const char* name, const char* value);
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_SENDERS 4
 
-typedef int (*ini_handler_atl485)( const char* section,
-                           const char* name, const char* value);
 
 class dataPublisher;  // Forward declaration
 
@@ -247,6 +252,10 @@ public:
     // This sets the real time clock to the given time
     bool setRTClock(uint32_t UTCEpochSeconds);
 
+    // This checks that the logger time is within a "sane" range
+    bool isRTCSane(void);
+    bool isRTCSane(uint32_t epochTime);
+
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
     // for updating the sensors - even though the routines to update the sensors
@@ -332,18 +341,19 @@ public:
     bool logToSD(String& filename, String& rec);
     bool logToSD(String& rec);
     bool logToSD(void);
-
-protected:
-
-    // The SD card and file
-    SdFat sd;
-    File logFile;
-    String _fileName;
-
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent
     // hanging.
     bool initializeSDCard(void);
+    
+protected:
+
+    // The External SD card and file
+    SdFat sd1_card_fatfs;
+    File logFile;
+    String _fileName;
+
+
 
     // This generates a file name from the logger id and the current date
     // NOTE:  This cannot be called until *after* the RTC is started
@@ -401,7 +411,7 @@ public:
     static volatile bool isTestingNow;
     static volatile bool startTesting;
 
-#include "LoggerBaseExtH.h"
+    #include "LoggerBaseHextClass.h"
 
 };
 

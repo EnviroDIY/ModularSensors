@@ -55,9 +55,9 @@ Press "View Token UUID list", highlight and copy "UUIDs[]" to ,cfg
 _______
 
 ## To Use this Example: - the following still tbd
-From PIO File->Open Folfer  "ModularSensors/tu_rc_01" 
+From Platformio  File->Open Folfer  "ModularSensors/a/pwr_mon" 
 On the bottom bar - press the Tick mark - "build" 
-ms_cfg "firmware/tu_rc_01.cfg" 
+ms_cfg customizations located in "firmware/tu_rc_xx" 
 
 
 Press build icon 

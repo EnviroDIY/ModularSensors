@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.11
+This example sketch is written for ModularSensors library version 0.23.15
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -21,7 +21,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 512
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
@@ -42,7 +42,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.11";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -192,9 +192,8 @@ void SERCOM2_Handler()
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemVccPin = 23;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
@@ -206,7 +205,6 @@ const char *apn = "xxxxx";  // The APN for the gprs connection
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial,
                       modemVccPin, modemStatusPin,
-                      modemSleepRqPin,
                       apn);
 // Create an extra reference to the modem by a generic name (not necessary)
 Sodaq2GBeeR6 modem = modem2GB;
@@ -511,24 +509,17 @@ void setup()
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.7)
+    if (getBatteryVoltage() > 3.55 || !loggerAllVars.isRTCSane())
     {
         modem.modemPowerUp();
         modem.wake();
         modem.setup();
 
-        // At very good battery voltage, or with suspicious time stamp, sync the clock
-        // Note:  Please change these battery voltages to match your battery
-        if (getBatteryVoltage() > 3.8 ||
-            loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-            loggerAllVars.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
+        // Synchronize the RTC with NIST
+        Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
+        if (modem.connectInternet(120000L))
         {
-            // Synchronize the RTC with NIST
-            Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-            if (modem.connectInternet(120000L))
-            {
-                loggerAllVars.setRTClock(modem.getNISTTime());
-            }
+            loggerAllVars.setRTClock(modem.getNISTTime());
         }
     }
 
@@ -595,7 +586,7 @@ void loop()
         // NOTE:  if the modemPowerUp function is not run before the completeUpdate
         // function is run, the modem will not be powered and will not return
         // a signal strength readign.
-        if (getBatteryVoltage() > 3.7)
+        if (getBatteryVoltage() > 3.55)
             modem.modemPowerUp();
 
         // Start the stream for the modbus sensors
@@ -633,7 +624,7 @@ void loop()
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
-        if (getBatteryVoltage() > 3.7)
+        if (getBatteryVoltage() > 3.55)
         {
             if (modem.connectInternet())
             {

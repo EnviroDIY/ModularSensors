@@ -19,7 +19,10 @@
 #define MS_DEBUGGING_STD "DigiXBeeWifi"
 #endif
 
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+#define TINY_GSM_MODEM_XBEE
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 64
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

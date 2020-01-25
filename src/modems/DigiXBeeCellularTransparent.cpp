@@ -46,6 +46,58 @@ MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 
 
+// We turn off airplane mode in the wake.
+bool DigiXBeeCellularTransparent::modemWakeFxn(void)
+{
+    if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
+    {
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("LOW to wake XBee"));
+        digitalWrite(_modemSleepRqPin, LOW);
+        MS_DBG(F("Turning off airplane mode..."));
+        if (gsmModem.commandMode())
+        {
+            gsmModem.sendAT(GF("AM"),0);
+            gsmModem.waitResponse();
+            // Write changes to flash and apply them
+            gsmModem.writeChanges();
+            // Exit command mode
+            gsmModem.exitCommand();
+        }
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+// We turn on airplane mode in before sleep
+bool DigiXBeeCellularTransparent::modemSleepFxn(void)
+{
+    if (_modemSleepRqPin >= 0)
+    {
+        MS_DBG(F("Turning on airplane mode..."));
+        if (gsmModem.commandMode())
+        {
+            gsmModem.sendAT(GF("AM"),0);
+            gsmModem.waitResponse();
+            // Write changes to flash and apply them
+            gsmModem.writeChanges();
+            // Exit command mode
+            gsmModem.exitCommand();
+        }
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
+        digitalWrite(_modemSleepRqPin, HIGH);
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
 {
     bool success = true;
@@ -68,7 +120,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         success &= gsmModem.waitResponse() == 1;
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
-        // NOTE:  Only pin 12/DIO5/CTS can be used for this function
+        // NOTE:  Only pin 12/DIO7/CTS can be used for this function
         gsmModem.sendAT(GF("D7"),1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on the associate LED (if you're using a board with one)
@@ -103,20 +155,14 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.sendAT(GF("TM"),64);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Cellular carrier profile - AT&T
-        // Hologram says they can use any network, but I've never succeeded with anything but AT&T
-        gsmModem.sendAT(GF("CP"),2);
+        // Carrier Profile - Automatic
+        gsmModem.sendAT(GF("CP"),0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
-        // Cellular network technology - LTE-M Only
-        // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
+        // Cellular network technology - LTE-M/NB IoT
         gsmModem.sendAT(GF("N#"),2);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
-        // Make sure airplane mode is off
-        MS_DBG(F("Making sure airplane mode is off..."));
-        gsmModem.sendAT(GF("AM"),0);
-        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode
         gsmModem.sendAT(GF("AP0"));
@@ -124,35 +170,66 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Write changes to flash and apply them
         MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
-        {
-        String ui_vers = gsmModem.sendATGetString(GF("VR"));
+
+        String ui_vers = gsmModem.getIMEI();
+        PRINTOUT(F("IMa "), ui_vers);
+        //ui_vers = gsmModem.getIMEI();
+        //PRINTOUT(F("IMb "), ui_vers);
+        //ui_vers = gsmModem.getRegistrationStatus();
+        //gsmModem.sendAT(GF("+CREG"));
+        //ui_vers=gsmModem.readResponseInt(10000L);
+        //PRINTOUT(F("Registration '"), ui_vers,"'");
+        #if defined MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
+        ui_vers = gsmModem.sendATGetString(GF("VR"));
         //ui_vers += " "+gsmModem.sendATGetString(F("VL"));
         MS_DBG(F("Version "), ui_vers);
-  
+        #endif
         uint16_t loops=0;
         int16_t ui_db;
-        int8_t status;
+        uint8_t status;
         String ui_op;
         bool cellRegistered=false;
         PRINTOUT(F("Loop=Sec] rx db : Status ' Operator ' #Polled Cell Status every 1sec"));
+        uint8_t reg_count =0;
         for ( unsigned long start = millis(); millis() - start < 300000; loops++) {
             ui_db = 0;// gsmModem.getSignalQuality();
             gsmModem.sendAT(GF("AI"));
             status=gsmModem.readResponseInt(10000L);
             ui_op = String(loops)+"="+String((float)millis()/1000)+"] "+String(ui_db)+":0x"+String(status,HEX)+" '"+ gsmModem.getOperator()+"'";
-            PRINTOUT(ui_op);
-            if ((0==status) ||(0x23 ==status)) {cellRegistered=true;break;}
+            if ((0==status) ||(0x23 ==status)) {
+                ui_op += " Cnt="+String(reg_count);
+                PRINTOUT(ui_op);
+                if (++reg_count > 2) {
+                    cellRegistered=true;
+                    break;
+                }
+            } else {
+                reg_count=1;
+                //String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
+                //ui_op += " Cell Scan "+ui_scan;
+                PRINTOUT(ui_op);
+                if (100 == loops) {
+                    /*Not clear why this may force a registration
+                    Early experience with Hologram SIMs was they aren't registering,
+                    However throwing this in, might do something or maybe just coincedence that it started working after this
+                    */ 
+                    gsmModem.sendAT(GF("+CREG"));
+                    //String ui_creg=gsmModem.readResponseInt(10000L);
+                    //PRINTOUT(F("UseRandom +CREG '"), ui_creg,"'");
+                    PRINTOUT(F("UseRandom +CREG '"));
+                }
+            }
             delay(1000);
         }
         if (cellRegistered) {
             String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
-            PRINTOUT(F("Cell scan '"),ui_scan,"'");
+            PRINTOUT(F("Cell scan '"),ui_scan,"' success",success);
+            success = true; //Not sure why need to force this
         } else {success = false;}
  
-        uint32_t cell_time_epoch_sec=getTimeCellTower();
-        PRINTOUT(F("Celltower Time "),cell_time_epoch_sec,"sec" ); /**/
-
-        }
+        //uint32_t time_epoch_sec=getNISTTime();//getTimeCellTower();
+        //Logger::setRTClock(time_epoch_sec); ////#include "LoggerBase.h"
+        //PRINTOUT(F("Startup Time & thrownaway "),time_epoch_sec,"sec" ); /**/
  
         // Exit command mode
         gsmModem.exitCommand();
@@ -177,7 +254,188 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it
 // over TCP because I don't have a UDP library for all the modems.
-//#else // 2 == USE_NTP
+/*uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
+{
+    // bail if not connected to the internet
+    gsmModem.commandMode();
+    if (!gsmModem.isNetworkConnected())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        gsmModem.exitCommand();
+        return 0;
+    }
+
+    // We can get the NIST timestamp directly from the XBee
+    gsmModem.sendAT(GF("DT0"));
+    String res = gsmModem.readResponseString();
+    gsmModem.exitCommand();
+    MS_DBG(F("Raw hex response from XBee:"), res);
+    char buf[9] = {0,};
+    res.toCharArray(buf, 9);
+    uint32_t secFrom2000 = strtol(buf, 0, 16);
+    MS_DBG(F("Seconds from Jan 1, 2000 from XBee (UTC):"), secFrom2000);
+
+    // Convert from seconds since Jan 1, 2000 to 1970
+    uint32_t unixTimeStamp = secFrom2000 + 946684800 ;
+    MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
+
+    // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
+    if (unixTimeStamp < 1546300800)
+    {
+        return 0;
+    }
+    else if (unixTimeStamp > 1893456000)
+    {
+        return 0;
+    }
+    else
+    {
+        return unixTimeStamp;
+    }
+}*/
+uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
+{
+    /* bail if not connected to the internet */
+    if (!isInternetAvailable())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        return 0;
+    }
+
+    /* Try up to 12 times to get a timestamp from NIST */
+    for (uint8_t i = 0; i < 3; i++)
+    {
+
+        /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+        /* NIST clearly specifies here that this is a requirement for all software */
+        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+        while (millis() < _lastNISTrequest + 4000)
+        {
+        }
+
+        /* Make TCP connection */
+        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        bool connectionMade = false;
+
+        /* This is the IP address of time-e-wwv.nist.gov  */
+        /* XBee's address lookup falters on time.nist.gov */
+        IPAddress ip(132, 163, 97, 6);
+        connectionMade = gsmClient.connect(ip, 37, 15);
+        /* Wait again so NIST doesn't refuse us! */
+        delay(1000L);
+        /* Try sending something to ensure connection */
+        gsmClient.println('!');
+
+        /* Wait up to 5 seconds for a response */
+        if (connectionMade)
+        {
+            uint32_t start = millis();
+            while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)
+            {
+            }
+
+            if (gsmClient.available() >= 4)
+            {
+                MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+                byte response[4] = {0};
+                gsmClient.read(response, 4);
+                gsmClient.stop();
+                return parseNISTBytes(response);
+            }
+            else
+            {
+                MS_DBG(F("NIST Time server did not respond!"));
+                gsmClient.stop();
+            }
+        }
+        else
+        {
+            MS_DBG(F("Unable to open TCP to NIST!"));
+        }
+    }
+    return 0;
+}
+
+#if 0
+uint32_t DigiXBeeCellularTransparent::getTimeNIST(void) //nh getNISTTime(void)
+{
+    /* bail if not connected to the internet */
+    if (!isInternetAvailable())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        return 0;
+    }
+
+    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+    /* NIST clearly specifies here that this is a requirement for all software */
+    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+    while (millis() < _lastNISTrequest + 4000) {}
+    //_lastNISTrequest =millis();
+
+    /* Make TCP connection */
+    MS_DBG(F("\nConnecting to NIST daytime Server"));
+    bool connectionMade = false;
+
+    /* This is the IP address of time-c-g.nist.gov */
+    /* XBee's address lookup falters on time.nist.gov */
+    //FUT: There are about 30 servers, so could try lookup and caching 
+const char *timeNistHost = "time.nist.gov";
+const int timeNistPort = 37; 
+    IPAddress IP_MA1(129,  6, 15, 30);
+    IPAddress IP_CO1(132,163, 96,  3);
+    #define NIST_IP IP_CO1
+    #define NIST_CONNECTION_TIMER 15
+
+    gsmModem.sendAT(GF("TD0A")); //expect    "TD0A"
+    gsmModem.waitResponse(); 
+    connectionMade = gsmClient.connect(timeNistHost, timeNistPort,NIST_CONNECTION_TIMER);
+    if (!connectionMade) {
+        
+        connectionMade = gsmClient.connect(NIST_IP, timeNistPort, NIST_CONNECTION_TIMER);
+        MS_DBG(F("NIST.TIME.GOV lookup failed, tried "),NIST_IP,F(" and connect="),connectionMade );
+    }
+    
+    /* Wait up to 5 seconds for a response */
+    #define NIST_RSP_TIMER 10
+    if (connectionMade)
+    {
+        //poll for IP connection
+        delay(4000L);
+        /* Need to send something before connection is made */
+        //gsmClient.println("TryToRquestTime");
+        //gsmClient.println("Try2ndTime");
+        gsmClient.println('!');
+        uint32_t start = millis();
+        while (gsmClient && (gsmClient.available() <= NIST_RSP_TIMER) && ((millis() - start) < NIST_RSP_TIMER*1000L) ){}
+
+        /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+        /* NIST clearly specifies here that this is a requirement for all software */
+        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+        while (millis() < _lastNISTrequest + 4000)
+        {
+        }
+
+
+        if (gsmClient.available() >= NIST_RSP_TIMER)
+        {
+            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+            byte response[4] = {0};
+            gsmClient.read(response, 4);
+            return parseNISTBytes(response);
+        }
+        else
+        {
+            MS_DBG(F("NIST Time server did not respond in "),NIST_RSP_TIMER,F("secs"));
+            return 0;
+        }
+    }
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
+    return 0;
+}
+#endif //0
 #if 0
 // Get the time from NIST via NTP protocol. Can't be used behind a firewall.
 uint32_t DigiXBeeCellularTransparent::getTimeNTP(void)
@@ -274,7 +532,6 @@ uint32_t DigiXBeeCellularTransparent::getTimeNTP(void)
     return _currentEpoc;
 }
 #endif //0
-//#endif //USE_NTP
 
 uint32_t DigiXBeeCellularTransparent::getTimeCellTower(void)
 {
@@ -287,125 +544,85 @@ uint32_t DigiXBeeCellularTransparent::getTimeCellTower(void)
         gsmModem.exitCommand();
         return timeTzEpoch_sec;
     }/**/
-    // We can get the NIST timestamp directly from the XBee
+    // We can get a timestamp directly from the XB3 - ATT gives local time
     String res; 
-    bool rxCellTime=false;
+    uint8_t rxCellTime=0;  //0 no Time, 1 ASCII ISO8601 time, 2 32bit Time since 2000-01-01 00:00:00
     uint16_t rxCell_cnt=10;
+    #if 0 
+    // Check for ISO8601 time - ATT returned ' 2019-09-25T17:06:32 '
     do {
-        MS_DBG(F("CellTowerPollReq"),rxCell_cnt);
-        gsmModem.sendAT(GF("DT0"));
+        MS_DBG(F("CellTowerTAReq"),rxCell_cnt);
+        gsmModem.sendAT(GF("DT1"));
         res = gsmModem.readResponseString(10000);
         if (res == "" || res == " OK ") 
         {
             res = gsmModem.readResponseString(10000);
             if (!(res == "" || res == " OK ")) {
-                rxCellTime=true;
-                 MS_DBG(F("CellReqRsp2 '"),res,"'");
+                rxCellTime=1;
+                 MS_DBG(F("CellTARsp2 '"),res,"'");
             } 
         } else {
-            rxCellTime=true;
-            MS_DBG(F("CellReqRsp1 '"),res,"'");
+            rxCellTime=1;
+            MS_DBG(F("CellTARsp1 '"),res,"'");
         }
-    } while ((false==rxCellTime) && --rxCell_cnt);
+    } while ((0==rxCellTime) && --rxCell_cnt);
+    #endif //0
 
-    //MS_DBG(F("wait 10secs '"),res,"'");
-    //delay(10000); //Debug in case missed it 
-    //gsmModem.exitCommand();
-    //MS_DBG(F("Raw hex response from XBee:"), res);
+    if (0==rxCellTime) 
+    {
+        //Check for U32int time ATT returns res=' 24FD8365 '
+        rxCell_cnt=10;
+        do {
+            MS_DBG(F("CellTowerTElReq"),rxCell_cnt);
+            gsmModem.sendAT(GF("DT0"));
+            res = gsmModem.readResponseString(10000);
+            if (res == "" || res == " OK ") 
+            {
+                res = gsmModem.readResponseString(10000);
+                if (!(res == "" || res == " OK ")) {
+                    rxCellTime=2;
+                    MS_DBG(F("CellTERsp2 '"),res,"'");
+                } 
+            } else {
+                rxCellTime=2;
+                MS_DBG(F("CellTERsp1 '"),res,"'");
+            }
+        } while ((2!=rxCellTime) && --rxCell_cnt);
+    }
+
     char buf[10] = {0,};
-    //res ' 24FD8365 '
-    res.toCharArray(buf, 9);
-    uint32_t secFrom2000 = strtol(buf, 0, 16);
-    MS_DBG(F("Seconds from Jan 1, 2000 from XBee (UTC):"), secFrom2000);
-
-    // Convert from seconds since Jan 1, 2000 to 1970
+    uint32_t secFrom2000=0;
+    switch(rxCellTime) {
+        case 1: 
+            MS_DBG(F("CellTower Time:"), res);
+        break;
+        
+        case 2:
+            res.toCharArray(buf, 9);
+            secFrom2000 = strtol(buf, 0, 16);
+            MS_DBG(F("Seconds from Jan 1, 2000 from CellTower (PST):"), secFrom2000);
+            timeTzEpoch_sec = secFrom2000 + 946684800 ;
+            MS_DBG(F("Epoch Timestamp returned UTC:"),timeTzEpoch_sec);
+            break;
+        default: break;
+    }
+    // Check sanity of time
     if (0 != secFrom2000) 
     {
-       timeTzEpoch_sec = secFrom2000 + 946684800 ;
-        MS_DBG(F("Epoch Timestamp returned by NIST (UTC):"),timeTzEpoch_sec);
-
         // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-        if (timeTzEpoch_sec < 1546300800) return 0;
-        else if (timeTzEpoch_sec > 1893456000) return 0;
+        if (timeTzEpoch_sec < 1546300800) {timeTzEpoch_sec= 0;}
+        else if (timeTzEpoch_sec > 1893456000) {timeTzEpoch_sec=0;}
     }
     return timeTzEpoch_sec;
 }
-uint32_t DigiXBeeCellularTransparent::getTimeNIST(void)
-{
-    /* bail if not connected to the internet */
-    if (!isInternetAvailable())
-    {
-        MS_DBG(F("No internet connection, cannot connect to NIST."));
-        return 0;
-    }
-
-    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
-    /* NIST clearly specifies here that this is a requirement for all software */
-    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
-    while (millis() < _lastNISTrequest + 4000) {}
-    //_lastNISTrequest =millis();
-
-    /* Make TCP connection */
-    MS_DBG(F("\nConnecting to NIST daytime Server"));
-    bool connectionMade = false;
-
-    /* This is the IP address of time-c-g.nist.gov */
-    /* XBee's address lookup falters on time.nist.gov */
-    //FUT: There are about 30 servers, so could try lookup and caching 
-const char *timeNistHost = "time.nist.gov";
-const int timeNistPort = 37; 
-    IPAddress IP_MA1(129,  6, 15, 30);
-    IPAddress IP_CO1(132,163, 96,  3);
-    #define NIST_IP IP_CO1
-    #define NIST_CONNECTION_TIMER 15
-
-    gsmModem.sendAT(GF("TD0A")); //expect    "TD0A"
-    gsmModem.waitResponse(); 
-    connectionMade = gsmClient.connect(timeNistHost, timeNistPort,NIST_CONNECTION_TIMER);
-    if (!connectionMade) {
-        
-        connectionMade = gsmClient.connect(NIST_IP, timeNistPort, NIST_CONNECTION_TIMER);
-        MS_DBG(F("NIST.TIME.GOV lookup failed, tried "),NIST_IP,F(" and connect="),connectionMade );
-    }
-    
-    /* Wait up to 5 seconds for a response */
-    #define NIST_RSP_TIMER 10
-    if (connectionMade)
-    {
-        //poll for IP connection
-        delay(4000L);
-        /* Need to send something before connection is made */
-        //gsmClient.println("TryToRquestTime");
-        //gsmClient.println("Try2ndTime");
-        gsmClient.println('!');
-        uint32_t start = millis();
-        while (gsmClient && (gsmClient.available() <= NIST_RSP_TIMER) && ((millis() - start) < NIST_RSP_TIMER*1000L) ){}
-
-
-        if (gsmClient.available() >= NIST_RSP_TIMER)
-        {
-            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-            byte response[4] = {0};
-            gsmClient.read(response, 4);
-            return parseNISTBytes(response);
-        }
-        else
-        {
-            MS_DBG(F("NIST Time server did not respond in "),NIST_RSP_TIMER,F("secs"));
-            return 0;
-        }
-    }
-    else
-    {
-        MS_DBG(F("Unable to open TCP to NIST!"));
-    }
-    return 0;
-}
 uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 {
-    //getTimeNIST
-    return (getTimeCellTower()+(8*3600));
-
+    uint32_t time_epochTz0;
+    time_epochTz0 = getNISTTimeOrig();
+    if (0 == time_epochTz0) {
+        time_epochTz0= (getTimeCellTower()+(8*3600));
+    }
+    return time_epochTz0;
 }
 
 bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)

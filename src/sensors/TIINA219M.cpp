@@ -65,12 +65,16 @@ bool TIINA219M::wake(void)
 {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp 
     // and status bits.  If it returns false, there's no reason to go on.
-    if (!Sensor::wake()) return false;
+    if (!Sensor::wake()) {
+        MS_DBG(F("Sensor Err"));
+        return false;
+    }
 
     // Begin/Init needs to be rerun after every power-up to set the calibration
     // coefficient for the INA219 (see p21 of datasheet)
-    ina219_phy.begin();
-
+    MS_DBG(F("Wake"));
+    ina219_phy.begin(&Wire, INA219_RANGE_32V_1A); 
+    
     return true;
 }
 
@@ -92,21 +96,34 @@ bool TIINA219M::addSingleMeasurementResult(void)
 
         // Read values - turn on internal ADC
         ina219_phy.powerSave(false);
+
+        // Collect data - starting with BusVolatage as it has a check for Conversion Ready.
+        if ( INA219_POLLMASK_V & _ina219_pollmask) {
+            uint8_t cnvrStatus;
+            uint16_t cnvrCnt =1; //Breakout counter
+            do {
+                busV_V = ina219_phy.getBusVoltage_V();
+                cnvrStatus=ina219_phy.getLastCnvrStatus();
+                if (cnvrStatus) break;
+                MS_DBG(F("CNVR Status check "), cnvrCnt);
+                delay(10);                       
+              }  while (500 < ++cnvrCnt);
+            if (isnan(busV_V)) busV_V = -9999;
+            MS_DBG(F("  V, BusV: "), busV_V);
+            verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);
+        }
         if ( INA219_POLLMASK_A & _ina219_pollmask) {
             current_mA = (ina219_phy.getCurrent_mA() * _ampMult);
             //current_mA = (ina219_phy.getCurrent_mA());
             if (isnan(current_mA)) current_mA = -9999;
             MS_DBG(F("  mA, current: "), current_mA);
-        }
-        if ( INA219_POLLMASK_V & _ina219_pollmask) {
-            busV_V = ina219_phy.getBusVoltage_V();
-            if (isnan(busV_V)) busV_V = -9999;
-            MS_DBG(F("  V, BusV: "), busV_V);
+            verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
         }
         if ( INA219_POLLMASK_W & _ina219_pollmask) {
             power_mW = ina219_phy.getPower_mW();
             if (isnan(power_mW)) power_mW = -9999;
             MS_DBG(F("  mW, Power: "), power_mW);
+            verifyAndAddMeasurementResult(INA219_POWER_MW_VAR_NUM, power_mW);
         }
         ina219_phy.powerSave(true); //Turn off continuous conversion
         success = true;
@@ -116,10 +133,6 @@ bool TIINA219M::addSingleMeasurementResult(void)
         //MS_DBG(F("  Power [mW]:"), power_mW);
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-
-    verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
-    verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);
-    verifyAndAddMeasurementResult(INA219_POWER_MW_VAR_NUM, power_mW);
 
 
     // Unset the time stamp for the beginning of this measurement

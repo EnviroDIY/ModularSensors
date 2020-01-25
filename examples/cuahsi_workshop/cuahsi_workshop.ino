@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.11
+This example sketch is written for ModularSensors library version 0.23.15
 
 This shows most of the standard functions of the library at once.
 
@@ -23,7 +23,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define SDI12_EXTERNAL_PCINT
 // #endif
 #ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 512
+#define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
@@ -42,7 +42,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.11";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = "cuahsi_workshop.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -429,8 +429,8 @@ void setup()
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery
         if (getBatteryVoltage() > 3.8 ||
-            dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-            dataLogger.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
+            dataLogger.getNowEpoch() < 1546300800 ||  /*Before September 01, 2019*/
+            dataLogger.getNowEpoch() > 1735689600)  /*After January 1, 2025*/
         {
             // Synchronize the RTC with NIST
             Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));

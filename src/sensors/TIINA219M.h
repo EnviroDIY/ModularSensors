@@ -110,13 +110,13 @@ public:
       : Variable(parentSense,
                  (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
                  (uint8_t)INA219_CURRENT_MA_RESOLUTION,
-                 "amp", "mA",
+                 "milliamps", "mA",
                  varCode, uuid)
     {}
     TIINA219M_Current()
       : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
                  (uint8_t)INA219_CURRENT_MA_RESOLUTION,
-                 "amp", "mA", "TIINA219Amp")
+                 "milliamps", "mA", "TIINA219Amp")
     {}
     ~TIINA219M_Current(){};
 };

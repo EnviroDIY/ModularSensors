@@ -2,12 +2,12 @@
 kn_depth.cpp   (Keller Nanolevel Depth)
 Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
-Hardware Platform Supported: EnviroDIY Mayfly Arduino Datalogger
+Hardware Platform Supported: EnviroDIY Feather M4 Express with custom wing
 Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
+  Copyright (c) 2019, Neil Hancock & Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-Use with  ModularSensors library version 0.23.2
+Use with  ModularSensors library
 
 This sends readings to EnviroDIY data portal, and logs to an SD card.
 
@@ -16,16 +16,53 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+#ifndef MQTT_MAX_PACKET_SIZE
+#define MQTT_MAX_PACKET_SIZE 240
+#endif
+
+
+// ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
+
 #include "ms_cfg.h" //must be before ms_common.h & Arduino.h
-#include <Arduino.h>  // The base Arduino library
+
+//After other includes that redifine MS_DEBUGGING_STD
+#ifdef MS_KN_DEPTH_DEBUG
+#undef MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "kn_depth"
+#define MS_DEBUG_THIS_MODULE 1
+#endif //MS_KN_DEPTH_DEBUG
+
+#ifdef MS_KN_DEPTH_DEBUG_DEEP
+#undef MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "kn_depthD"
+#undef MS_DEBUG_THIS_MODULE
+#define MS_DEBUG_THIS_MODULE 2
+#endif
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+//#include <Arduino.h>  // The base Arduino library
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #endif
+#include <LoggerBase.h>  // The modular sensors library
 #include <Time.h>
 #include <errno.h>
 #include "ms_common.h"
+#include "Adafruit_NeoPixel.h"
+
+#include "PortExpanderB031.h"
 
 #define KCONFIG_SHOW_NETWORK_INFO 1
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -33,21 +70,20 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #else
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
-#ifdef MS_KN_DEPTH_DEBUG
-#define MS_DEBUGGING_STD "kn_depth"
-#endif //MS_KN_DEPTH_DEBUG
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
+
 
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
 
+//#define WIRING_DIGITALEXT_ACT
+//#include "wiring_digtalext.h"
+
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.2";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = __FILE__; //"xxx.cpp";
 const char build_date[] = __DATE__ " " __TIME__;
@@ -69,7 +105,14 @@ const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 uint32_t sysStartTime_epochTzSec=1;
-bool nistSyncRtc = false; //Set when a NIST sync RTC is required
+bool nistSyncRtc = true; //true no battery. NIST sync RTC is required
+static int loggingMultiplierCnt=0;
+#if defined loggingMultiplier_MAX_CDEF
+static int loggingMultiplierTop=loggingMultiplier_MAX_CDEF; //Working TOP threshold
+#endif //loggingMultiplier_MAX_CDEF
+static bool varArrayPub=false;
+
+const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -82,6 +125,14 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //#define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
 //ms_cfg.h:#define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
+#if !defined greenLEDPin 
+#define greenLEDPin LED_BUILTIN       //Built in LED is RED. MCU pin for the green LED (-1 if not applicable)
+#endif //greenLEDPin 
+// #define redLEDPin -1                  //Doesn't exist 
+//NeoPixel WS2812 on FeatherM4express
+#define NUM_NEOPIXELS 1
+#define NEOPIXEL_PIN 8
+Adafruit_NeoPixel neoPixelPhy(NUM_NEOPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
@@ -131,7 +182,10 @@ const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
 //FEATHER_M4_EXPRESS has internal flash on QSPI P
 //QSPI const int8_t sdCardSSPin = 10;  // PA08 MCU SD card chip select/slave select pin (must be given!)
 //and has FEATHER_RTC_SD_CARD
-    #if defined(ADAFRUIT_FEATHERWING_RTC_SD) 
+    #if defined ADAFRUIT_FEATHERWING_eInk1_5in_SD
+    const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+    const int8_t sdCardSSPin = SD_SPI_CS_PIN_DEF; 
+    #elif defined ADAFRUIT_FEATHERWING_RTC_SD 
     //SD on std port with SD_CS JP3-D10 PA18  RTC PCF8522+ SD
     const int8_t sdCardSSPin = SD_SPI_CARD_PIN_DEF;  //JP3-D10 PA18
     #else 
@@ -177,7 +231,7 @@ const int8_t sensorPowerPin = sensorPowerPin_DEF; // MCU pin controlling main se
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardName    = HwName_DEF;
 const char *mcuBoardVersion = HwVersion_DEF;
-#if defined(ProcessorStats_ACT)
+#if 1 //defined(ProcessorStats_ACT)
 ProcessorStats mcuBoard(mcuBoardVersion);
 #endif //ProcessorStats_ACT
 
@@ -197,7 +251,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
+#if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -327,12 +381,6 @@ void SERCOM2_Handler()
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
-const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-//#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
-//#define RS485PHY_RX 6  // AltSoftSerial Rx pin
 
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //requires special variant.cpp/h update
@@ -342,7 +390,7 @@ HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
 //ms_cfg.h:SerialTty Serial4 Available Pins
 
 #elif defined ARDUINO_SAMD_FEATHER_M0
-HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
+HardwareSerial &modemSerial = Serial1;  //TODO B031r1 ?(was for SAMD51):  
 
 #elif defined ARDUINO_SODAQ_AUTONOMO
 HardwareSerial &modemSerial = Serial1;  // Bee Socket 
@@ -353,10 +401,10 @@ HardwareSerial &modemSerial = Serial1;  // Bee Socket
 
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = modemVccPin_DEF;      // -2 MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemStatusPin = modemStatusPin_DEF;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemResetPin = modemResetPin_DEF;    // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;  // 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemVccPin = modemVccPin_DEF;         // -2 MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = modemStatusPin_DEF;   //RTS 19 MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = modemResetPin_DEF;     // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;//DTR 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLEDPin;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 bool modemSetup=false;
@@ -372,208 +420,214 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 //    Note:  Don't use more than one!
 // ==========================================================================
 
-// build_flags= -DTINY_GSM_DEBUG=Serial  // If you want debugging on the main debug port
-// // For any Digi Cellular XBee's
-// // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
-// // are more stable used in bypass mode (below)
-// // The Telit based Digi XBees (LTE Cat1) can only use this mode.
-// #include <modems/DigiXBeeCellularTransparent.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-// DigiXBeeCellularTransparent modemXBCT(&modemSerial,
-//                                       modemVccPin, modemStatusPin, useCTSforStatus,
-//                                       modemResetPin, modemSleepRqPin,
-//                                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBeeCellularTransparent modem = modemXBCT;
+// Use this to create a modem if you want to monitor modem communication through
+// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
+// https://github.com/vshymanskyy/StreamDebugger
+#if defined STREAMDEBUGGER_DBG
+ #include <StreamDebugger.h>
+ StreamDebugger modemDebugger(modemSerial, STANDARD_SERIAL_OUTPUT);
+ #define modemSerHw modemDebugger
+#else
+ #define modemSerHw modemSerial
+#endif //STREAMDEBUGGER_DBG
+
+#ifdef DigiXBeeCellularTransparent_Module 
+// For any Digi Cellular XBee's
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
+// in either bypass or transparent mode, each with pros and cons
+// The Telit based Digi XBees (LTE Cat1) can only use this mode.
+#include <modems/DigiXBeeCellularTransparent.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBeeCellularTransparent modemXBCT(&modemSerial,
+                                      modemVccPin, modemStatusPin, useCTSforStatus,
+                                      modemResetPin, modemSleepRqPin,
+                                      apn_def);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBeeCellularTransparent modemPhy = modemXBCT;
+#endif // DigiXBeeCellularTransparent_Module 
 // // ==========================================================================
 
+#if 0 //def DigiXBeeLTE_Module 
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
-#ifdef DigiXBeeLTE_Module 
 #include <modems/DigiXBeeLTEBypass.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
 DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
                               modemVccPin, modemStatusPin, useCTSforStatus,
                               modemResetPin, modemSleepRqPin,
                               apn_def);
 // Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeLTEBypass modem = modemXBLTEB;
+DigiXBeeLTEBypass modemPhy = modemXBLTEB;
 #endif //DigiXBeeLTE_Module 
 // ==========================================================================
 
-// // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
-// // NOTE:  According to the manual, this should be less stable than transparent
-// // mode, but my experience is the complete reverse.
-// #include <modems/DigiXBee3GBypass.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// DigiXBeeLTEBypass modemXB3GB(&modemSerial,
-//                              modemVccPin, modemStatusPin, useCTSforStatus,
-//                              modemResetPin, modemSleepRqPin,
-//                              apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBee3GBypass modem = modemXB3GB;
-// // ==========================================================================
-
-// // For the Digi Wifi XBee (S6B)
+#if 0 //Don't use -kept for compare simplicity
+// For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
+// NOTE:  According to the manual, this should be less stable than transparent
+// mode, but my experience is the complete reverse.
+#include <modems/DigiXBee3GBypass.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBee3GBypass modemXB3GB(&modemSerial,
+                             modemVccPin, modemStatusPin, useCTSforStatus,
+                             modemResetPin, modemSleepRqPin,
+                             apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBee3GBypass modem = modemXB3GB;
+// ==========================================================================
+#endif //0
 #ifdef DigiXBeeWifi_Module 
+// For the Digi Wifi XBee (S6B)
+
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-DigiXBeeWifi modemXBWF(&modemSerial,
-                        modemVccPin, modemStatusPin, useCTSforStatus,
-                        modemResetPin, modemSleepRqPin,
-                        wifiId_def, wifiPwd_def);
-// // Create an extra reference to the modem by a generic name (not necessary)
+const bool useCTSforStatus = true;   //true? Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+// useCTSforStatus is overload with  useCTSforStatus!-> loggerModem.statusLevel for detecting Xbee SleepReqAct==1
+DigiXBeeWifi modemXBWF(&modemSerHw,
+                       modemVccPin, modemStatusPin, useCTSforStatus,
+                       modemResetPin, modemSleepRqPin,
+                       wifiId_def, wifiPwd_def);
+// Create an extra reference to the modem by a generic name (not necessary)
 DigiXBeeWifi modemPhy = modemXBWF;
 #endif //DigiXBeeWifi_Module 
-// // ==========================================================================
+// ==========================================================================
 
-// // For almost anything based on the Espressif ESP8266 using the AT command firmware
-// #include <modems/EspressifESP8266.h>
-// const long modemBaud = 115200;  // Communication speed of the modem
-// // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
-// // should be programmed to a slower baud rate or set to auto-baud using the
-// // AT+UART_CUR or AT+UART_DEF command *before* attempting conrrol with this library.
-// // Pins for light sleep on the ESP8266.
-// // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-// const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
-// const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
-// EspressifESP8266 modemESP(&modemSerial,
-//                           modemVccPin, modemStatusPin,
-//                           modemResetPin, modemSleepRqPin,
-//                           wifiId_def, wifiPwd_def,
-//                           1,  // measurements to average, optional
-//                           espSleepRqPin, espStatusPin  // Optional arguments
-//                          );
-// // Create an extra reference to the modem by a generic name (not necessary)
-// EspressifESP8266 modem = modemESP;
-// // ==========================================================================
+#if 1
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_ESP8266
+// For almost anything based on the Espressif ESP8266 using the AT command firmware
+#include <modems/EspressifESP8266.h>
+const long modemBaud = 115200;  // Communication speed of the modem
+// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
+// should be programmed to a slower baud rate or set to auto-baud using the
+// AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
+// Pins for light sleep on the ESP8266.
+// For power savings, I recommend NOT using these if it's possible to use deep sleep.
+const int8_t espSleepRqPin = 13;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espStatusPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
+EspressifESP8266 modemESP(&modemSerial,
+                          modemVccPin, modemStatusPin,
+                          modemResetPin, modemSleepRqPin,
+                          wifiId, wifiPwd,
+                          1,  // measurements to average, optional
+                          espSleepRqPin, espStatusPin  // Optional arguments
+                         );
+// Create an extra reference to the modem by a generic name (not necessary)
+EspressifESP8266 modem = modemESP;
+// ==========================================================================
 
-// // For the Dragino, Nimbelink or other boards based on the Quectel BG96
-// #include <modems/QuectelBG96.h>
-// const long modemBaud = 115200;  // Communication speed of the modem
-// QuectelBG96 modemBG96(&modemSerial,
-//                       modemVccPin, modemStatusPin,
-//                       modemResetPin, modemSleepRqPin,
-//                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// QuectelBG96 modem = modemBG96;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_BG96
+// For the Dragino, Nimbelink or other boards based on the Quectel BG96
+#include <modems/QuectelBG96.h>
+const long modemBaud = 115200;  // Communication speed of the modem
+QuectelBG96 modemBG96(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      modemResetPin, modemSleepRqPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+QuectelBG96 modem = modemBG96;
+// ==========================================================================
 
-// // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series
-// #include <modems/SequansMonarch.h>
-// const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
-// // NOTE:  This baud rate is much too fast for many Arduinos!  The module should
-// // be programmed to a slower baud rate or set to auto-baud using the AT+IPR command.
-// SequansMonarch modemSVZM(&modemSerial,
-//                          modemVccPin, modemStatusPin,
-//                          modemResetPin, modemSleepRqPin,
-//                          apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SequansMonarch modem = modemSVZM;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_MONARCH
+// For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series
+#include <modems/SequansMonarch.h>
+const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
+// NOTE:  This baud rate is much too fast for many Arduinos!  The module should
+// be programmed to a slower baud rate or set to auto-baud using the AT+IPR command.
+SequansMonarch modemSVZM(&modemSerial,
+                         modemVccPin, modemStatusPin,
+                         modemResetPin, modemSleepRqPin,
+                         apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SequansMonarch modem = modemSVZM;
+// ==========================================================================
 
-// // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and higher
-// #include <modems/SIMComSIM800.h>
-// const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
-// SIMComSIM800 modemS800(&modemSerial,
-//                        modemVccPin, modemStatusPin,
-//                        modemResetPin, modemSleepRqPin,
-//                        apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SIMComSIM800 modem = modemS800;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM800
+// For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and higher
+#include <modems/SIMComSIM800.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+SIMComSIM800 modemS800(&modemSerial,
+                       modemVccPin, modemStatusPin,
+                       modemResetPin, modemSleepRqPin,
+                       apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SIMComSIM800 modem = modemS800;
+// ==========================================================================
 
-// // For almost anything based on the SIMCom SIM7000
-// #include <modems/SIMComSIM7000.h>
-// const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
-// SIMComSIM7000 modem7000(&modemSerial,
-//                         modemVccPin, modemStatusPin,
-//                         modemResetPin, modemSleepRqPin,
-//                         apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SIMComSIM7000 modem = modem7000;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM7000
+// For almost anything based on the SIMCom SIM7000
+#include <modems/SIMComSIM7000.h>
+const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
+SIMComSIM7000 modem7000(&modemSerial,
+                        modemVccPin, modemStatusPin,
+                        modemResetPin, modemSleepRqPin,
+                        apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SIMComSIM7000 modem = modem7000;
+// ==========================================================================
 
-// // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
-// // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-// #include <modems/Sodaq2GBeeR6.h>
-// const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
-// Sodaq2GBeeR6 modem2GB(&modemSerial,
-//                       modemVccPin, modemStatusPin,
-//                       modemSleepRqPin,
-//                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// Sodaq2GBeeR6 modem = modem2GB;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_S2GB
+// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+Sodaq2GBeeR6 modem2GB(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+Sodaq2GBeeR6 modem = modem2GB;
+// ==========================================================================
 
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_R410M
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
-// #include <modems/SodaqUBeeR410M.h>
-// const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
-// // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
-// // every power loss, the module will return to the default baud rate of 115200.
-// // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
-// // compensate by sending a baud rate change command in the wake function.
-// // Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
-// // instance as modemSerial.
-// SodaqUBeeR410M modemR410(&modemSerial,
-//                          modemVccPin, modemStatusPin,
-//                          modemResetPin, modemSleepRqPin,
-//                          apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SodaqUBeeR410M modem = modemR410;
-// // ==========================================================================
+#include <modems/SodaqUBeeR410M.h>
+const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
+// NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
+// every power loss, the module will return to the default baud rate of 115200.
+// NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
+// compensate by sending a baud rate change command in the wake function.
+// Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
+// instance as modemSerial.
+SodaqUBeeR410M modemR410(&modemSerial,
+                         modemVccPin, modemStatusPin,
+                         modemResetPin, modemSleepRqPin,
+                         apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SodaqUBeeR410M modem = modemR410;
+// ==========================================================================
 
-// // For the Sodaq UBee based on the 3G u-blox SARA U201
-// #include <modems/SodaqUBeeU201.h>
-// const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
-// SodaqUBeeU201 modemU201(&modemSerial,
-//                         modemVccPin, modemStatusPin,
-//                         modemResetPin, modemSleepRqPin,
-//                         apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SodaqUBeeU201 modem = modemU201;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_U201
+// For the Sodaq UBee based on the 3G u-blox SARA U201
+#include <modems/SodaqUBeeU201.h>
+const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
+SodaqUBeeU201 modemU201(&modemSerial,
+                        modemVccPin, modemStatusPin,
+                        modemResetPin, modemSleepRqPin,
+                        apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SodaqUBeeU201 modem = modemU201;
+// ==========================================================================
+#endif
 
 
 // Create RSSI and signal strength variable pointers for the modem
 // Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-#if 0
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-//#define STREAMDEBUGGER_DBG
-#if !defined(STREAMDEBUGGER_DBG)
- #if defined(TINY_GSM_MODEM_XBEE)
- TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
- #else
- TinyGsm *tinyModem = new TinyGsm(modemSerial);
- #endif
-#endif //STREAMDEBUGGER_DBG
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-#ifdef STREAMDEBUGGER_DBG
- #include <StreamDebugger.h>
- StreamDebugger modemDebugger(modemSerial, STANDARD_SERIAL_OUTPUT);
- //TinyGsm *tinyModem = new TinyGsm(modemDebugger);
- #if defined(TINY_GSM_MODEM_XBEE)
- TinyGsm *tinyModem = new TinyGsm(modemDebugger, modemResetPin);
- #else
- TinyGsm *tinyModem = new TinyGsm(modemDebugger);
- #endif
-#endif //STREAMDEBUGGER_DBG
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-#endif //0
-
-
-// Create RSSI and signal strength variable pointers for the modem
-// Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryState(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
@@ -709,22 +763,25 @@ AtlasScientificRTD atlasRTD(I2CPower);
 // Create a temperature variable pointer for the RTD
 // Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab");
 
-
+#endif // SENSOR_CONFIG_GENERAL
+#if defined(ASONG_AM23XX_UUID)
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
 
-// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t I2CPower = 1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Create an AOSong AM2315 sensor object
-AOSongAM2315 am2315(I2CPower);
+// Data sheets says AM2315 and AM2320 have same address 0xB8 (8bit addr) of 1011 1000 or 7bit 0x5c=0101 1100 
+// AM2320 AM2315 address 0x5C
+AOSongAM2315 am23xx(I2CPower);
 
 // Create humidity and temperature variable pointers for the AM2315
-// Variable *am2315Humid = new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable *am2315Temp = new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
-
-
+// Variable *am2315Humid = new AOSongAM2315_Humidity(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *am2315Temp = new AOSongAM2315_Temp(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
+#endif //ASONG_AM23XX_UUID
+#ifdef SENSOR_CONFIG_GENERAL
 // ==========================================================================
 //    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
@@ -741,7 +798,6 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 // Variable *dhtHumid = new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dhtTemp = new AOSongDHT_Temp(&dht, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dhtHI = new AOSongDHT_HI(&dht, "12345678-abcd-1234-ef00-1234567890ab");
-
 
 // ==========================================================================
 //    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
@@ -894,6 +950,28 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 // Create a voltage variable pointer
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ExternalVoltage_ACT
+#ifdef ProcVolt_ACT
+// ==========================================================================
+//    External Voltage  ProcessorAdc
+// ==========================================================================
+#include <sensors/processorAdc.h>
+
+
+const int8_t procVoltPower = -1;//eMcpA_SwVbatOut_pinnum;  //Requires VbtSw Pin to switch power on and off (-1 if unconnected)
+//B031 has expanded channels - Assume PCB default. Opts for 8more ADC Pins.
+//J5 B031rev2  - which is ArduinioFramework PIN_A5 (Feather M4E pin 10). No Mux
+const int8_t procVoltChan0 = PIN_A5;//PIN_EXT_ANALOG(01);  // B031r2 J2Pin2 MC74VHC4051PinX1 MUX to PIN_A5
+//const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
+//const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
+//const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
+const float procVoltDividerGain = 30.3; //  pwr_mon 1M/33K* measuredAdc(V) or 30.3 15.15
+const uint8_t procVoltReadsToAvg = 1; // Only read one sample
+
+// Create an External Voltage sensor object
+processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain, procVoltReadsToAvg);
+//processorAdc procVolt1(procVoltPower, procVoltChan1, procVoltDividerGain, procVoltReadsToAvg);
+
+#endif //ExternalVoltage_ACT
 #ifdef SENSOR_CONFIG_GENERAL
 
 
@@ -922,7 +1000,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
 // A Maxbotix sonar using the trigger may be able to share but YMMV
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined Serial3 && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
@@ -931,10 +1009,11 @@ NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
 #endif
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
+MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
 
 // Create an ultrasonic range variable pointer
 // Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
@@ -986,6 +1065,26 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
+//    METER TEROS 11 Soil Moisture Sensor
+// ==========================================================================
+#include <sensors/MeterTeros11.h>
+
+const char *teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
+// const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t SDI12Data = 7;  // The SDI12 data pin
+const uint8_t teros11NumberReadings = 3;  // The number of readings to average
+
+// Create a METER TEROS 11 sensor object
+MeterTeros11 teros11(*teros11SDI12address, SDI12Power, SDI12Data, teros11NumberReadings);
+
+// Create the matric potential, volumetric water content, and temperature
+// variable pointers for the Teros 11
+// Variable *teros11Ea = new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *teros11Temp = new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *teros11VWC = new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+
+
+// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <sensors/RainCounterI2C.h>
@@ -1026,7 +1125,10 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 /*TI INA219M High Side Current/Voltage Sensor (Current mA, Voltage, Power)*/
 #include <sensors/TIINA219M.h>
-
+//const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t INA219i2c_addr = 0x40;  // 1000000 (Board A0+A1=GND)
+// The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
+const uint8_t INA219ReadingsToAvg = 1;
 // Create an INA219 sensor object
 TIINA219M ina219m_phy(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 //was TIINA219M ina219_phy(I2CPower);
@@ -1036,15 +1138,21 @@ TIINA219M ina219m_phy(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 // Variable *inaCurrent = new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // NO Power
+void ina219m_voltLowThresholdAlertFn(bool exceed,float value_V) {
+    //Place holder for processing a measured low alert.
+    //Expect to orginate a Cell TXT msg the first time receive this.
+    MS_DBG(F("ina219m_voltLowThresholdAlert "),exceed,F(":"),value_V);
+}
 #endif //INA219M_PHY_ACT
 
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#include <sensors/KellerAcculevel.h>
-
 #if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT)
+#define KellerXxxLevel_ACT 1
+//#include <sensors/KellerAcculevel.h>
+
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 #if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
@@ -1053,19 +1161,25 @@ HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
 AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
 #endif
-const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+
+//byte acculevelModbusAddress = KellerAcculevelModbusAddress;  // The modbus address of KellerAcculevel
+const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+
+const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
+const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+
 #endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
 
 #if defined KellerAcculevel_ACT
 #include <sensors/KellerAcculevel.h>
 
-byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
+byte acculevelModbusAddress = KellerAcculevelModbusAddress_DEF;  // The modbus address of KellerAcculevel
+const uint8_t acculevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 
 // Create a Keller Acculevel sensor object
-KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
+KellerAcculevel acculevel_snsr(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
 
 // Create pressure, temperature, and height variable pointers for the Acculevel
 // Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
@@ -1080,14 +1194,14 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 #ifdef KellerNanolevel_ACT
 #include <sensors/KellerNanolevel.h>
 
-byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+byte nanolevelModbusAddress = KellerNanolevelModbusAddress_DEF;  // The modbus address of KellerNanolevel
 // const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 
 // Create a Keller Nanolevel sensor object
-KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 
 // Create pressure, temperature, and height variable pointers for the Nanolevel
 // Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
@@ -1355,34 +1469,23 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 //    Calculated Variables
 // ==========================================================================
 
-// Create the function to give your calculated result.
-// The function should take no input (void) and return a float.
-// You can use any named variable pointers to access values by way of variable->getValue()
-
-float calculateVariableValue(void)
+static float ina219M_A_LowReading=+9999; 
+float ina219M_A_LowFn(void)
 {
-    float calculatedResult = -9999;  // Always safest to start with a bad value
-    // float inputVar1 = variable1->getValue();
-    // float inputVar2 = variable2->getValue();
-    // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
-    // {
-    //     calculatedResult = inputVar1 + inputVar2;
-    // }
-    return calculatedResult;
+    //MS_DBG(F("ina219M_A_LowFn "),ina219M_A_LowReading);
+    return ina219M_A_LowReading;
 }
-
-// Properties of the calculated variable
-const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
-const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
-const char *calculatedVarCode = "calcVar";  // A short code for the variable
-const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
-
-// Finally, Create a calculated variable pointer and return a variable pointer to it
-Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
-                                       calculatedVarName, calculatedVarUnit,
-                                       calculatedVarCode, calculatedVarUUID);
-
+static float ina219M_A_HighReading=-9999; 
+float ina219M_A_HighFn(void)
+{
+    //MS_DBG(F("ina219M_A_HighFn "),ina219M_A_HighReading);
+    return ina219M_A_HighReading;
+}
+void ina219M_A_init()
+{
+    ina219M_A_LowReading=+9999; 
+    ina219M_A_HighReading=-9999; 
+}
 
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
@@ -1398,7 +1501,7 @@ Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,ProcessorStats_SampleNumber_UUID),
 #endif
 #if defined(ProcessorStats_Batt_UUID)
-    new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),//was mayflyPhy
+    new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),
 #endif
 #if defined(ExternalVoltage_Volt0_UUID)
     new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
@@ -1406,8 +1509,14 @@ Variable *variableList[] = {
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
+#if defined(ProcVolt_Volt0_UUID)
+    new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
+#endif
+#if defined(AdcProc_Volt1_UUID)
+    new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),
+#endif
 #if defined(INA219M_MA_UUID)
-    new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
+    //new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
 #endif
 #if defined(INA219M_VOLT_UUID)
     new TIINA219M_Volt(&ina219m_phy, INA219M_VOLT_UUID),
@@ -1424,8 +1533,12 @@ Variable *variableList[] = {
     new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-ef00-1234567890ab"),
     new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-ef00-1234567890ab"),
     new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab"),
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab"),
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab"),
+    #endif //SENSOR_CONFIG_GENERAL
+    #if defined(ASONG_AM23XX_UUID)
+    new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
+    #endif // ASONG_AM23XX_UUID
+    #ifdef SENSOR_CONFIG_GENERAL
     new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
     new AOSongDHT_Temp(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
     new AOSongDHT_HI(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -1451,6 +1564,9 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
     new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -1462,14 +1578,14 @@ Variable *variableList[] = {
 
 
 #ifdef KellerAcculevel_ACT
-    new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
-    new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
-    new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
+    new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
 #endif // KellerAcculevel_ACT
 #ifdef KellerNanolevel_ACT
-//   new KellerNanolevel_Pressure(&nanolevelfn, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevelfn,   KellerNanolevel_Temp_UUID),
-    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
+//   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #ifdef SENSOR_CONFIG_GENERAL
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -1513,9 +1629,24 @@ Variable *variableList[] = {
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-    calculatedVar
+#if defined INA219M_A_MIN_UUID
+    new Variable(&ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
+#endif
+#if defined INA219M_A_MAX_UUID
+    new Variable(&ina219M_A_HighFn,2,"Max_A","A","Max_A_Var",INA219M_A_MAX_UUID),
+#endif
 };
-
+#if defined loggingMultiplier_MAX_CDEF
+Variable *variableLstFast[] = {
+    #if defined(INA219M_MA_UUID)
+    new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
+    #endif
+    //Debug
+    #if  0 //defined(ProcVolt_Volt0_UUID)
+    new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
+    #endif
+};
+#endif //loggingMultiplier_MAX_CDEF
 /*
 // FORM2: Fill array with already created and named variable pointers
 // NOTE:  Forms one and two can be mixed
@@ -1526,7 +1657,7 @@ Variable *variableList[] = {
     modemRSSI,
     modemSignalPct,
     // etc, etc, etc,
-    calculatedVar
+    ina219M_A_Low
 }
 */
 
@@ -1536,23 +1667,36 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+#if defined loggingMultiplier_MAX_CDEF
+int variableCntFast = sizeof(variableLstFast) / sizeof(variableLstFast[0]);
+VariableArray varArrFast(variableCntFast, variableLstFast);
+#endif //loggingMultiplier_MAX_CDEF
 
-
+// ==========================================================================
+//     Port Expansion
+// ==========================================================================
+#if defined HwFeatherWing_B031ALL
+#define MCP23017_ADDR 0x20
+PortExpanderB031 mcpExp = PortExpanderB031(MCP23017_ADDR);
+#endif //HwFeatherWing_B031ALL
 // ==========================================================================
 //     Local storage - evolving
 // ==========================================================================
-#ifdef USE_SD_MAYFLY_INI
+#ifdef USE_MS_SD_INI
  persistent_store_t ps;
-#endif //#define USE_SD_MAYFLY_INI
+#endif //#define USE_MS_SD_INI
 
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
-
+#if defined loggingMultiplier_MAX_CDEF
+//A 2 logger runs faster and raises the Nyquist sampling rate for the true dataLogger
+Logger dataLogFast(LoggerID_def, loggingInterval_def_min,&varArrFast);
+//Logger dataLogFast(LoggerID_def, loggingInterval_Fast_def_min,&varArrFast);
+#endif //loggingMultiplier_MAX_CDEF
 
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
@@ -1568,7 +1712,7 @@ const char *samplingFeature_def = samplingFeature_UUID;     // Sampling feature 
 #include <publishers/EnviroDIYPublisher.h>
 //EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken_def, samplingFeature_def);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
-//EnviroDIYPublisher EnviroDIYPOST();
+//EnviroDIYPublisher EnviroDIYPOST(); //"error: request for member 'begin' in 'EnviroDIYPOST', which is of non-class type 'EnviroDIYPublisher()'"
 #endif //registrationToken_UUID
 
 // ==========================================================================
@@ -1609,16 +1753,64 @@ void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned 
     }
     setRedLED( LOW);
 }
+
+/* Status for User
+ Consits of 
+    Operational(1col) LED
+        Status (3col) Led
+        eInk  XbyY Display
+*/
+void UiStatus(uint8_t status_req, String ui_out = "");
+void UiStatus(uint8_t status_req, String ui_out) {
+  switch(status_req) {
+    case 0:
+        #ifndef SERIAL3_EN
+        digitalWrite(LED_BUILTIN, LOW);
+        #endif //SERIAL3_EN 
+        neoPixelPhy.clear();
+        neoPixelPhy.show();
+       break;
+    default:
+        #ifndef SERIAL3_EN    
+        digitalWrite(LED_BUILTIN, HIGH);
+        #endif // SERIAL3_EN
+        neoPixelPhy.setPixelColor(0, neoPixelPhy.Color(0, 0, 150));
+        neoPixelPhy.show();
+        break;
+  }
+#if 0
+  //Output on eInk Display - slow updates
+  if (0 != ui_out.length()){
+    long timeNow_2ksec = uis_lastCall_now();
+
+    SerialTty.println(ui_out);
+    #ifdef SerialUSB
+    SerialUSB.println(ui_out);
+    #endif
+
+    //Only update display if >= 180sec since last update
+    if (eInkUpdateMin_sec <= (timeNow_2ksec - uis_lastCall_2ksec) ) {  
+        uis_lastCall_2ksec = timeNow_2ksec;
+        #if defined USE_EXT_DISPLAY
+        extDisplay.print("\n\r");
+        extDisplay.print(ui_out);
+        extDisplay.display();
+        #endif // USE_EXT_DISPLAY
+    }
+  }
+  #endif
+}//UiStatus
+
 #include "iniHandler.h"
 
 // Read's the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
+
 float getBatteryVoltage()
 {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-
 
 
 // ==========================================================================
@@ -1628,6 +1820,13 @@ void setup()
 {
     bool LiBattPower_Unseable;
     uint16_t lp_wait=1;
+
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // could prevent the script from starting
+    //#if defined SERIAL_PORT_USBVIRTUAL
+    //  while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
+    //#endif
 
     //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
     //MCUSR = 0; //reset for unique read
@@ -1644,9 +1843,11 @@ void setup()
 
     //#ifdef SerialUSB // SerialStd == SerialUSB
     //#error Serial Err
+    UiStatus(1);
     while (!SerialStd && (millis() < 10000)){
         ledflash(100,1);
     }
+    UiStatus(0);
     //#else
     //SerialStd.begin(SerialStdBaud);
     //#endif
@@ -1668,10 +1869,16 @@ void setup()
     SerialStd.print(" ");
     SerialStd.print(mcuBoardVersion);
 
+    SerialStd.print(" variantPins=");
+    SerialStd.print(thisVariantNumPins);
+    SerialStd.print("/");
+    SerialStd.print(totalNumPins); 
+    //SerialStd.print("\n");
     //ledflash();//works
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
+
 
     // A vital check on power availability
     do {
@@ -1706,7 +1913,19 @@ void setup()
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
         SerialStd.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+            "WARNING: THIS WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+
+    Wire.begin();
+
+    #if defined HwFeatherWing_B031ALL  
+    MS_DEEP_DBG("***mcpExp.init"); 
+    delay(100);
+    mcpExp.init();
+    //Force a XBEE reset long enough for WiFi point to disconnect
+    //and then allow enought time to comeout of reset.
+    //mcpExp.pulseToggleBit(peB031_bit::eMcp_XbeeResetNout_bit,1000);
+    //delay(1000);
+    #endif //defined HwFeatherWing_B031ALL
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -1717,40 +1936,27 @@ void setup()
     #endif
 
     // Start the serial connection with the modem
+    MS_DEEP_DBG("***modemSerial.begin"); 
+    delay(100);
     modemSetup=false;
     modemSerial.begin(modemBaud);
 
-
-#if defined(CONFIG_SENSOR_RS485_PHY) && defined(SerialModbus) && defined(ADAFRUIT_FEATHER_M4_EXPRESS)
- //nh version SerialModbus Serial2
+#if defined(CONFIG_SENSOR_RS485_PHY) 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
+    MS_DEEP_DBG("***modbusSerial.begin"); 
+    delay(100);
     modbusSerial.begin(9600);
-#else
-    //Move to LoggerBase setup??
-    //digitalWrite(RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
-    //digitalWrite(RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
     //sonarSerial.begin(9600);
 
-    // Assign pins SERCOM functionality for SAMD boards
-    // NOTE:  This must happen *after* the various serial.begin statements
-    #if defined ARDUINO_ARCH_SAMD
-    #ifndef ENABLE_SERIAL2
-    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
-    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-    #endif
-    #if 0 //ndef ENABLE_SERIAL3
-    pinPeripheral(2, PIO_SERCOM);  // Serial3 Tx/Dout = SERCOM2 Pad #2
-    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
-    #endif
-    #endif
-
-#ifdef USE_SD_MAYFLY_INI
+#ifdef USE_MS_SD_INI
+    //Set up SD card access, and also USB
     Serial.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
-#endif //USE_SD_MAYFLY_INI
+    Serial.println(F("\n\n---parseIni complete "));
+#endif //USE_MS_SD_INI
 
 #if 0
     SerialStd.print(F(" .ini-Logger:"));
@@ -1792,15 +1998,17 @@ void setup()
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-        MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
-    }
+        //digitalWrite(modemVccPin, LOW);
+        //MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
+        digitalWrite(modemVccPin, HIGH);
+        MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
+    } else {MS_DBG(F("ModemVccPin not used "),modemVccPin);}
     if (sensorPowerPin >= 0)
     {
         pinMode(sensorPowerPin, OUTPUT);
         digitalWrite(sensorPowerPin, LOW);
         MS_DBG(F("Set sensorPowerPin "),sensorPowerPin);
-    }
+    } else {MS_DBG(F("sensorPowerPin not used "),sensorPowerPin);}
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
 
@@ -1808,14 +2016,14 @@ void setup()
     {
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, HIGH); //Def sleep
-        MS_DBG(F("Set Sleep on modemSleepRqPin "),modemSleepRqPin);
-    }
+        MS_DBG(F("Set Sleep on High modemSleepRqPin "),modemSleepRqPin);
+    } else {MS_DBG(F("modemSleepRqPin not used "),modemSleepRqPin);}
     if (modemResetPin >= 0)
     {
         pinMode(modemResetPin, OUTPUT);
         digitalWrite(modemResetPin, HIGH);  //Def noReset
         MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
-    }
+    } else {MS_DBG(F("modemResetPin not used "),modemResetPin);}
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -1831,6 +2039,10 @@ void setup()
     // Begin the logger
     dataLogger.begin();
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    #if defined loggingMultiplier_MAX_CDEF
+    dataLogFast.begin();
+    #endif //loggingMultiplier_MAX_CDEF
+
     SerialStd.print(F("Start Time: "));
 
     sysStartTime_epochTzSec = dataLogger.getNowEpochTz();
@@ -1842,21 +2054,46 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
-    dataLogger.attachModem(modemPhy);
+    //dataLogger.attachModem(modemPhy);
     //dataLogger.setAlertPin(-1);//greenLEDPin
-    dataLogger.setTestingModePin(buttonPin);
-
+    //dataLogger.setTestingModePin(buttonPin);
+    //dataLogger.initializeSDCard(); //How to setup USB
 
         //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
+    #if defined loggingMultiplier_MAX_CDEF
+    varArrFast.setupSensors(); //Assumption pwr is available
+    #endif //loggingMultiplier_MAX_CDEF
 
-    // Call the processor sleep
-    greenredflash(4,1000);
-    //delay(1000);
+#if 0 //MS_DEBUG_THIS_MODULE
+    //Enable this in debugging or where there is no valid RTC
+    // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
+    //ARCH_SAMD doesn't have persistent clock - get time
+    //USE_RTCLIB implies extRtcPhy
+    MS_DBG(F("  Modem setup & Timesync at init"));
+    modemPhy.modemPowerUp();
+    modemPhy.wake();
+    if (modemPhy.connectInternet())
+    {
+        modemSetup=true;
+        MS_DBG(F("  Attempting Timesync"));
+        if (true == dataLogger.syncRTC()) {
+            nistSyncRtc = false; //Sucess
+            MS_DBG(F("  Timesync success"));
+        } else {MS_DBG(F("  Timesync fails"));}
+        modemPhy.disconnectInternet();
+    } else {MS_DBG(F("  No internet connection..."));}
+
+    modemPhy.modemSleepPowerDown();    
+#else 
+
+#endif //ARDUINO_ARCH_SAMD
+
     Logger::markTime(); //Init so never zero
-
+    //del &DEEP_DEBUGGING_SERIAL_OUTPUT nanolevel_snsr.setDebugStream(&SerialTty);
+    //modbusSerial.setDebugStream(&SerialTty);
     //dataLogger.systemSleep();
-
+    //while (1) { greenredflash(4,500); delay(2000); }
 }
 
 
@@ -1894,14 +2131,42 @@ void processSensors()
         //digitalWrite(greenLED, HIGH);
         // Turn on the LED to show we're taking a reading
         //dataLogger.alertOn();
+
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.begin(9600);
 #endif // CONFIG_SENSOR_RS485_PHY
+        #ifdef loggingMultiplier_MAX_CDEF
         // Do a complete sensor update
-        varArray.completeUpdate();
+        varArrFast.completeUpdate();
+        //uint16 dataLogFast.getValueStringAtI(0)
+        float lastReading=variableLstFast[0]->getValue();
+        bool readingUpdated =false;
+        if (lastReading < ina219M_A_LowReading) {
+            MS_DBG(F("ina219Alow reading="),lastReading,F("lower than"),ina219M_A_LowReading);
+            ina219M_A_LowReading =lastReading;
+            readingUpdated =true;
+        } 
+        if  (lastReading >ina219M_A_HighReading){
+            MS_DBG(F("ina219Ahigh reading="),lastReading,F("higher than"),ina219M_A_HighReading);
+            ina219M_A_HighReading =lastReading;
+            readingUpdated =true;
+        }
+        if (false==readingUpdated) {
+             MS_DBG(F("ina219 reading="),lastReading,F("within"),ina219M_A_LowReading,F("~"),ina219M_A_HighReading);
+        }
+        if (loggingMultiplierTop<= ++loggingMultiplierCnt)
+        #endif //loggingMultiplier_MAX_CDEF 
+        {
+            #if defined loggingMultiplier_MAX_CDEF
+            varArrFast.completeUpdate();
+            #endif //loggingMultiplier_MAX_CDEF
+            varArray.completeUpdate();
+            loggingMultiplierCnt=0;
+            varArrayPub=true;
+        }
 
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // End the stream for the modbus sensors
@@ -1910,68 +2175,94 @@ void processSensors()
         modbusSerial.end();
         // Reset AltSoftSerial pins to LOW, to reduce power bleed on sleep, 
         // because Modbus Stop bit leaves these pins HIGH
+        pinMode(RS485PHY_TX_PIN, OUTPUT);  // AltSoftSerial Tx pin
+        pinMode(RS485PHY_RX_PIN, OUTPUT);  // AltSoftSerial Rx pin
         digitalWrite( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
         digitalWrite( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif //CONFIG_SENSOR_RS485_PHY
-        // Create a csv data record and save it to the log file
-        dataLogger.logToSD();
-         // Turn on the modem to let it start searching for the network
 
-        //if Modem  is Cellular then PS_PWR_HEAVY_REQ
-        if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
-        {          
-            MS_DBG(F("---NewCloud Update CANCELLED"));
-        } else 
-        {
-            //if (dataLogger._logModem != NULL)
+        if (varArrayPub) {
+            varArrayPub = false;
+            // Create a csv data record and save it to the log file
+            dataLogger.logToSD();
+
+            // Turn on the modem to let it start searching for the network
+
+            //if Modem  is Cellular then PS_PWR_HEAVY_REQ
+            if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
+            {          
+                MS_DBG(F("---NewCloud Update CANCELLED"));
+            } else 
             {
-                modemPhy.modemPowerUp();
-                if (!modemSetup) {
-                    modemSetup = true;
-                    MS_DBG(F("  Modem setup up 1st pass"));
-                    // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                    modemPhy.wake();  // Turn it on to talk
-                    //protected ?? modemPhy.extraModemSetup();//setupXBee();
-                    nistSyncRtc = true;
-                }
-                // Connect to the network
-                MS_DBG(F("  Connecting to the Internet... "));
-                if (modemPhy.connectInternet())
+                //if (dataLogger._logModem != NULL)
                 {
-                    MS_DBG(F("  sending... "));
-                    // Post the data to the WebSDL
-                    dataLogger.sendDataToRemotes();
-
-                #define DAY_SECS 86400
-                #define HOUR_SECS 3600
-                #define CONFIG_NIST_CHECK_SECS HOUR_SECS
-                #define CONFIG_NIST_ERR_MASK (~0x3F) 
-                uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
-                    MS_DBG(F("SyncTimeCheck "),Logger::markedEpochTime
-                    ,"remainder ",nistCheckRemainder
-                    ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
-                    if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0) )
-                    {
-                        MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
-                        nistSyncRtc = true; //Needs to run every access until sucess
-                        if (true == dataLogger.syncRTC()) {
-                            nistSyncRtc = false; //Sucess
-                        } 
+                    modemPhy.modemPowerUp();
+                    if (!modemSetup) {
+                        modemSetup = true;
+                        MS_DBG(F("  Modem setup up 1st pass"));
+                        // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
+                        modemPhy.wake();  // Turn it on to talk
+                        //protected ?? modemPhy.extraModemSetup();//setupXBee();
+                        nistSyncRtc = true;
                     }
+                    // Connect to the network
+                    MS_DBG(F("  Connecting to the Internet... "));
+                    if (modemPhy.connectInternet())
+                    {
 
-                    // Disconnect from the network
-                    MS_DBG(F("  Disconnecting from the Internet..."));
-                    modemPhy.disconnectInternet();
-                } else {MS_DBG(F("  No internet connection..."));}
-                // Turn the modem off
-                modemPhy.modemSleepPowerDown();
-            } //else MS_DBG(F("  No Modem configured.\n"));
-            PRINTOUT(F("---Complete "));
+                        MS_DBG(F("  publishing... "));
+                        // Post the data to the WebSDL
+                        dataLogger.publishDataToRemotes();
+                        
+                        //Sync the RTC once a day, or if debug once an hour.
+                        #define DAY_SECS 86400
+                        #define HOUR_SECS 3600
+                        #if defined MS_DEBUG_THIS_MODULE
+                        #define CONFIG_NIST_CHECK_SECS HOUR_SECS
+                        #else
+                        #define CONFIG_NIST_CHECK_SECS DAY_SECS
+                        #endif
+                        #define CONFIG_NIST_ERR_MASK (~0x3F) 
+                        uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
+                        bool nistSyncNow=false;
+                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) 
+                        {
+                            nistSyncNow=true;
+                            PRINTOUT(F("SyncTimeCheck Atmpt "),nistSyncRtc,Logger::markedEpochTime
+                            ,"remainder ",nistCheckRemainder
+                            ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
+                        } else {
+                              PRINTOUT(F("SyncTimeCheck NotNeeded "),Logger::markedEpochTime
+                            ,"remainder ",nistCheckRemainder
+                            ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );                          
+                        }
+                        if (nistSyncNow )
+                        {
+                            MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
+                            nistSyncRtc = true; //Needs to run every access until sucess
+                            if (true == dataLogger.syncRTC()) {
+                                nistSyncRtc = false; //Sucess
+                            } 
+                            //If time very different should ensure publish is accurate - possibly cancel
+                        }
+
+                        // Disconnect from the network
+                        MS_DBG(F("  Disconnecting from the Internet..."));
+                        modemPhy.disconnectInternet();
+                    } else {MS_DBG(F("  No internet connection..."));}
+                    // Turn the modem off
+                    modemPhy.modemSleepPowerDown();
+                } //else MS_DBG(F("  No Modem configured.\n"));
+                PRINTOUT(F("---Complete "));
+            }
+            ina219M_A_init();
+            // Cut power from the SD card - without additional housekeeping wait
+            dataLogger.turnOffSDcard(false);        
+            // Turn off the LED
+            //digitalWrite(greenLED, LOW);
+            dataLogger.alertOff();
+            // Print a line to show reading ended
         }
-        // Turn off the LED
-        //digitalWrite(greenLED, LOW);
-        dataLogger.alertOff();
-        // Print a line to show reading ended
 
         #endif //(CHECK_SLEEP_POWER)
         // Unset flag
@@ -2001,10 +2292,98 @@ void loop()
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
-    dataLogger.systemSleep();
+    #if defined USE_USB_MSC_SD0 
+    while (dataLogger.usbDriveActive()) {
+        // USB is plugged in, uP can't sleep until USB is removed.
+        MS_DBG(F(" USB is active, Poll for SD change, Wait 2Sec."));
+        dataLogger.SDusbPoll(0);
+        delay(2000);
+    };
+    #endif //USE_USB_MSC_SD0
+    #define timeNow() dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch())
+    #if defined loggingMultiplier_MAX_CDEF
+        MS_DBG(F("dataLogFast Sleep "),timeNow());
+        dataLogFast.systemSleep();
+    #else 
+        MS_DBG(F("dataLogger Sleep "),timeNow());
+        dataLogger.systemSleep();
+    #endif //loggingMultiplier_MAX_CDEF
+        MS_DBG(F("dataLogger Wake "),timeNow());
     #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));
 #endif //(CHECK_SLEEP_POWER)
 
 }
+//The following is a holding place for WIRING_DIGITAL_DEBUG
+
+#ifdef __cplusplus
+extern "C" {
+#endif //__cplusplus
+/* ************************************************************
+ * Catch the extended MCP processing
+ * This assumes the B031r2+ expansion
+ */
+void digitalWrExt( uint32_t ulPin, uint32_t ulVal );
+void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
+    if (ulPin < thisVariantNumPins) {
+        MS_DBG("***digitalWrExt Err ",ulPin,"=",ulVal);  
+    } else {
+        uint32_t vextPin =  ulPin - thisVariantNumPins;
+        /* This extends the virtual "Arduino Pins" as follows
+           virtualExtPins 
+             0..15 Literal Digital Pins on MCP port extender
+            16..23 Analog pins MC74VHC4051- 8pins
+            Practically the 8 Analog Pins are encoded in 4pins (MSD)PB4,PB3,PB2(LSD)
+            and a write here means write to hardware mux.
+            16   000
+            17   001
+            ........
+            23   111
+        */
+        if (ARD_DIGITAL_EXTENSION_PINS > vextPin) {
+            MS_DEEP_DBG("***digitalWrExt ",mcpExp.getPortStr(vextPin),ulPin,"(",vextPin,")=",ulVal); 
+            mcpExp.setBit((peB031_bit)(vextPin),ulVal);
+        } else {
+            MS_DEEP_DBG("***digitalWrExtV ",ulPin,"(",vextPin,")=",ulVal); 
+            mcpExp.setupAnalogPin(vextPin-ARD_DIGITAL_EXTENSION_PINS,ulVal);
+        }
+    }
+}
+
+void pinModExt( uint32_t ulPin, uint32_t ulMode ) {
+    if (ulPin < thisVariantNumPins) {
+        MS_DBG("***pinModeExt Err ",ulPin,"=",ulMode);  
+    } else {
+        #if MS_DEBUG_THIS_MODULE > 1
+        uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        MS_DEEP_DBG("***pinModExt Unhandled ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",ulMode);  
+        #endif //MS_DEBUG_THIS_MODULE  
+    }
+}
+uint8_t digitalRdExt( uint32_t ulPin ) {
+    uint8_t pinState=0;
+    if (ulPin < thisVariantNumPins) {
+        MS_DBG("***digitalRdExt Err",ulPin);  
+    } else {
+        uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        pinState=mcpExp.digitalRead(mcpPin);
+        MS_DEEP_DBG("***digitalRdExt ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",pinState);  
+    }    
+    return pinState;
+}
+int digitalRdMir( uint32_t ulPin ) {
+    bool pinState=0;
+    if (ulPin < thisVariantNumPins) {
+        MS_DBG("***digitalRdMir Err",ulPin);  
+    } else {
+        uint32_t mcpPin =  ulPin - thisVariantNumPins;
+        pinState=mcpExp.rdMir((peB031_bit)mcpPin);
+        MS_DEEP_DBG("***digitalRdMir ",mcpExp.getPortStr(mcpPin),ulPin,"(",mcpPin,")=",pinState);  
+    }    
+    return (int)pinState;
+}
+
+#ifdef __cplusplus
+}
+#endif //__cplusplus

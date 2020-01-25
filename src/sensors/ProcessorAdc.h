@@ -63,8 +63,12 @@
 #define PROC_ADC_RESOLUTION 4
 #endif
 
+#if !defined ProcAdcDef_Resolution
 #define ProcAdcDef_Resolution 10
+#endif //ProcAdcDef_Resolution
+#if !defined ProcAdc_Max
 #define ProcAdc_Max ((1<<ProcAdcDef_Resolution)-1)
+#endif //ProcAdc_Max
 
 
 // The main class for the external votlage monitor

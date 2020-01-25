@@ -18,10 +18,14 @@
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
 #define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
 #endif
+
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "DigiXBeeCellularTransparentD"
 #endif
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+#define TINY_GSM_MODEM_XBEE
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 64
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -47,6 +51,8 @@ public:
                                 uint8_t measurementsToAverage = 1);
     ~DigiXBeeCellularTransparent();
 
+    bool modemWakeFxn(void) override;
+    bool modemSleepFxn(void) override;
     bool addSingleMeasurementResult(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
@@ -58,7 +64,7 @@ public:
     float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;
-    uint32_t getTimeNIST(void);
+    uint32_t getNISTTimeOrig(void);
     uint32_t getTimeNTP(void);
     uint32_t getTimeCellTower(void);
 

@@ -55,7 +55,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
 #define PROFILE_NAME PROFILE03_SODAQ_AUTONOMO_M0
-
 #else
 #error undefinded
 #endif
@@ -65,7 +64,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
-//This configuration expects a standard Mayfly0.bb  with a Adafruit-904 INA219 on I2C 
+//This configuration is for a standard Mayfly0.bb
+// with a Adafruit-904 INA219 on I2C 
 //Standard - target TU power Mon using INA219 0-10A, 0-16V
 // Wireless XbeeS6 wiFi and Xbee LTE 
 //This is hardcoded to mean things in ProcessorStats !!!!
@@ -291,11 +291,15 @@ BEE TX Serial PB30/SCOM5PAD0 To Bee from Proc
 BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 */
 #define modemVccPin_DEF     BEE_VCC //PA28 to XC6220 
-#define autonomoModemRtsPin BEERTS  //PB22=RTS same as MCU_CTS output XbeePin16_RTS
-#define modemStatusPin_DEF  BEECTS  //PB23=CTSoutput XbeePin12_CTS
+#define autonomoModemRtsPin 38u//BEERTS  //PB22=RTS same as MCU_CTS output XbeePin16_RTS
+#define modemStatusPin_DEF  39u//BEECTS  //PB23=CTSoutput XbeePin12_CTS
 #define modemSleepRqPin_DEF PIN_A13 //PB1=A13. Xbee Pin 9 DTR (DTS Shared with JP1-A13)
 #define modemAssocPin_DEF   RI_AS   //PB17=ASSOC output XbeePin15_Assoc
 
+// Serial3 shares with LED  -DENABLE_SERIAL3
+//#define STANDARD_SERIAL_OUTPUT Serial
+//#define DEBUGGING_SERIAL_OUTPUT Serial
+//#define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
@@ -320,10 +324,10 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define  loggingInterval_MAX_CDEF_MIN 6*60
 
 //define one Radio  _Module
-#define DigiXBeeWifi_Module 1
-#warning infoAutonomoWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
-//#warning infoAutonomoWithDigiXBeeCellTransparent
+//#define DigiXBeeWifi_Module 1
+//#warning infoAutonomoWithDigiXBeeWiFi
+#define DigiXBeeCellularTransparent_Module 1
+#warning infoAutonomoWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 
 //end of _Module
@@ -338,6 +342,8 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 //Defaults for data.envirodiy.org
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
+//#define Smtp2goJsonAppKey "Smtp2goJson_AppKey"
+//#define Smtp2goJsonAppKey "api-76228BACDD7511E99F26F23C91C88F4E"
 //#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define SENSOR_RS485_PHY 1
@@ -368,6 +374,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
 #endif //ExternalVoltage_ACT
+
 #elif PROFILE_NAME == PROFILE02_ADAFRUIT_FEATHER_M0
 //**************************************************************************
 //#define SENSOR_RS485_PHY 1

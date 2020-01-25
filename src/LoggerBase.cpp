@@ -1,5 +1,5 @@
 /*
- *LoggerBase.h
+ *LoggerBase.cpp
 
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
@@ -19,6 +19,25 @@
 #include <Wire.h>
 
 
+#if defined BOARD_SDQ_QSPI_FLASH
+//This works as a static instance and allows initializer for 
+Adafruit_FlashTransport_QSPI sdq_flashspi_transport_QSPI_phy; //Uses default pin for SQSP
+Adafruit_SPIFlash sdq_flashspi_phy(&sdq_flashspi_transport_QSPI_phy);
+
+// File system object on external flash from SdFat
+FatFileSystem sd0_card_fatfs; 
+
+// Set to true when PC write to flash
+bool sd1_card_changed = false;
+bool sd0_card_changed = false;
+bool usbDriveStatus = false;
+
+#endif //BOARD_SDQ_QSPI_FLASH
+#if defined USE_TINYUSB
+// USB Mass Storage object - indepedent of other objects
+Adafruit_USBD_MSC usb_msc;
+#endif //USE_TINYUSB
+
 //Time Zone support in hours from UTC/GMT −10 to +14 https://en.wikipedia.org/wiki/Coordinated_Universal_Time
 // Initialize the static timezone
 int8_t Logger::_loggerTimeZone = 0;
@@ -36,6 +55,10 @@ volatile bool Logger::startTesting = false;
     RTCZero Logger::zero_sleep_rtc;
 #endif
 
+
+#if defined USE_RTCLIB
+USE_RTCLIB rtcExtPhy;
+#endif //USE_RTC_EXT_PHY
 
 // Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
@@ -391,7 +414,7 @@ void Logger::registerDataPublisher(dataPublisher* publisher)
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++)
     {
-        if (dataPublishers[i] == publisher) 
+        if (dataPublishers[i] == publisher)
         {
             MS_DBG(F("dataPublisher already registered."));
             return;
@@ -517,6 +540,13 @@ int8_t Logger::getTZOffset(void)
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+
+uint32_t Logger::getNowEpoch(void)
+{
+    //Depreciated in 0.23.4, left in for compatiblity 
+    return getNowEpochTz();
+}
+
 uint32_t Logger::getNowEpochT0(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
@@ -529,12 +559,16 @@ uint32_t Logger::getNowEpochTz(void)
   currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
-uint32_t Logger::getNowEpoch(void) {return getNowEpochTz();} //Depreciated in 0.23.4, left in for compatiblity 
-
-void Logger::setNowEpochT0(uint32_t ts){rtc.setEpoch(ts);}
 void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
+void Logger::setNowEpochT0(uint32_t ts){rtc.setEpoch(ts);}
 
 #elif defined ARDUINO_ARCH_SAMD
+
+uint32_t Logger::getNowEpoch(void)
+{
+  //Depreciated in 0.23.4, left in for compatiblity 
+  return getNowEpochTz();
+}
 
 uint32_t Logger::getNowEpochT0(void)
 {
@@ -547,15 +581,17 @@ uint32_t Logger::getNowEpochTz(void)
   currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
-uint32_t Logger::getNowEpoch(void) {return getNowEpochTz();} //Depreciated in 0.23.4, left in for compatiblity 
-
-void Logger::setNowEpochT0(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
-
+void Logger::setNowEpochT0(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) 
+DateTime Logger::dtFromEpoch(uint32_t epochTime)
+{
+    //Depreciated
+    return dtFromEpochTz(epochTime);
+}
 DateTime Logger::dtFromEpochT0(uint32_t epochTime)
 {
     DateTime dt(epochTime);
@@ -568,7 +604,7 @@ DateTime Logger::dtFromEpochTz(uint32_t epochTime)
     DateTime dt(epochTime - EPOCH_TIME_OFF);
     return dt;
 }
-DateTime Logger::dtFromEpoch(uint32_t epochTime) {return dtFromEpochTz(epochTime);} //Depreciated
+
 // This converts a date-time object into a ISO8601 formatted string
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
@@ -606,12 +642,12 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
 
 
 // This converts an epoch time (unix time) into a ISO8601 formatted string
-// It assumes the supplied date/time is in the LOGGER's timezone and adds
-// the LOGGER's offset as the time zone offset in the string.
+// It assumes the supplied date/time is in the LOGGER's timezone
 String Logger::formatDateTime_ISO8601(uint32_t epochTimeTz)
 {
     // Create a DateTime object from the epochTime
-    DateTime dtTz = dtFromEpoch(epochTimeTz);
+    DateTime dtTz(epochTimeTz);
+    //MS_DBG("dtTz ",dtTz.year(),"/",dtTz.month(),"/",dtTz.date()," ",dtTz.hour(),":",dtTz.minute(),":",dtTz.second());
     return formatDateTime_ISO8601(dtTz);
 }
 
@@ -658,22 +694,42 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
         //return false;
         retVal= true;  //RTC valid
     }
-    #if defined ADAFRUIT_FEATHERWING_RTC_SD
+    #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
     //Check the current ExtRtc time - 
-    DateTime nowExt = rtcExtPhy.now(); //T0 UST/
-    uint32_t nowExtEpoch_sec =nowExt.getEpoch();
+    DateTime nowExt = rtcExtPhy.now(); //T0 UST
+    uint32_t nowExtEpoch_sec =nowExt.unixtime();
     MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec, \
         "->(T=", getTimeZone(),")", \
         formatDateTime_ISO8601(nowExtEpoch_sec));
     if (abs(nowExtEpoch_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC)
     {
-        rtcExtPhy.setTimeEpochT0(UTCEpochSeconds);
+
+        rtcExtPhy.adjust(UTCEpochSeconds);//const DateTime& dt);
         MS_DBG("         rtcExt updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
         retVal= true;
     }
 
     #endif //ADAFRUIT_FEATHERWING_RTC_SD
     return retVal;
+}
+
+// This checks that the logger time is within a "sane" range
+bool Logger::isRTCSane(void)
+{
+    uint32_t curRTC = getNowEpoch();
+    return isRTCSane(curRTC);
+}
+bool Logger::isRTCSane(uint32_t epochTime)
+{
+    if (epochTime < 1546300800 ||  /*Before September 01, 2019*/
+        epochTime > 1735689600)  /*After January 1, 2025*/
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 
@@ -691,7 +747,6 @@ void Logger::markTime(void)
 
 
 // This checks to see if the CURRENT time is an even interval of the logging rate
-// or we're in the first 15 minutes of logging
 bool Logger::checkInterval(void)
 {
     bool retval;
@@ -715,6 +770,54 @@ bool Logger::checkInterval(void)
         MS_DBG(F("Not time yet."));
         retval = false;
     }
+    if (!isRTCSane(checkTime))
+    {
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(' ');
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("The current clock timestamp is not valid!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(' ');
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+    }
     #else  // ARDUINO_ARCH_SAMD
     //Assume that have slept for the right amount of time
     markTime();
@@ -726,7 +829,6 @@ bool Logger::checkInterval(void)
 
 
 // This checks to see if the MARKED time is an even interval of the logging rate
-// or we're in the first 15 minutes of logging
 bool Logger::checkMarkedInterval(void)
 {
     bool retval;
@@ -1132,26 +1234,30 @@ void Logger::printSensorDataCSV(Stream *stream)
 // Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void)
 {
+bool retVal = true;
     // If we don't know the slave select of the sd card, we can't use it
     if (_SDCardSSPin < 0)
     {
         PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
         PRINTOUT(F("Data will not be saved!"));
-        return false;
+        retVal= false;
     }
-    // Initialise the SD card
-    if (!sd.begin(_SDCardSSPin, SPI_FULL_SPEED))
+    else
     {
-        PRINTOUT(F("Error: SD card failed to initialize or is missing."));
-        PRINTOUT(F("Data will not be saved!"));
-        return false;
+        // Initialise the SD card
+        if (!sd1_card_fatfs.begin(_SDCardSSPin, SPI_FULL_SPEED))
+        {
+            PRINTOUT(F("Error: SD card failed to initialize or is missing."));
+            PRINTOUT(F("Data will not be saved!"));
+            retVal= false;
+        }
+        else  // skip everything else if there's no SD card, otherwise it might hang
+        {
+            MS_DBG(F("Successfully connected to SD Card with card/slave select on pin"),
+                    _SDCardSSPin);
+        }
     }
-    else  // skip everything else if there's no SD card, otherwise it might hang
-    {
-        MS_DBG(F("Successfully connected to SD Card with card/slave select on pin"),
-                 _SDCardSSPin);
-        return true;
-    }
+    return SDextendedInit(retVal);
 }
 
 
@@ -1553,51 +1659,70 @@ void Logger::begin()
         MS_DBG(F("Beginning DS3231 real time clock"));
         rtc.begin();
     #endif
+    watchDogTimer.resetWatchDog();
+
+    // Print out the current time
+    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
+
+    // Reset the watchdog
+    watchDogTimer.resetWatchDog();
+
     #if defined ARDUINO_ARCH_SAMD
-        /* Work in progress
-         * Int RTCZero     class Time relative to 2000 TZ
-         * Ext RTC_PCF8523 class Time relative to 2000 UTS/GMT/TZ0
+        /* Internal RTCZero Mode3       class Time relative to 2000 T0
+         * External RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
+         * Seconds, Minutes 0-59,  Hours 0-23,  Days 1-31, Months 1-12, Years 0-99
          */
 
         //eg Apr 22 2019 16:46:09 in this TZ
         DateTime ccTimeTZ(__DATE__, __TIME__);
-        //MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
-        MS_DBG("Sw Build Time  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
+        DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime())-(getTimeZone()*3600)); //set to secs from UST/GMT Year 2000
+        #define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime())
+        #define TIME_FUT_UPPER_UT0 (COMPILE_TIME_UT0+50*365*24*60*60)
+        //MS_DBG("Sw Build Time Tz: ",ccTimeTZ.year(),"/",ccTimeTZ.month(),"/",ccTimeTZ.date()," ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second(), " secs2kTz ",ccTimeTZ.unixtime());
+        //MS_DBG("Sw Build Time T0: ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date()," ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second()," secs2kT0 ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
 
-        #if defined ADAFRUIT_FEATHERWING_RTC_SD
-        DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
-        rtcExtPhy.begin();
-        if (! rtcExtPhy.initialized())
-        {
-            MS_DBG("ExtRTC !init set to compile time ",__DATE__," ",__TIME__);
-            rtcExtPhy.adjust(ccTime2k);
-        } else {
-            DateTime now = rtcExtPhy.now();
-            if (now.getY2k_secs() < ccTime2k.getY2k_secs()) {
-                MS_DBG("ExtRTC invalid   ",ccTime2k.month(),"-",ccTime2k.date(),"-",ccTime2k.year2k(),"/",ccTime2k.year(), " ",ccTime2k.hour(),":",ccTime2k.minute(),":",ccTime2k.second(), ". Set to compile time ",__DATE__," ",__TIME__);
-                rtcExtPhy.adjust(ccTime2k);
+        #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
+            rtcExtPhy.begin();
+
+            USE_RTCLIB::ErrorNum errRtc = rtcExtPhy.initialized();
+
+            if (USE_RTCLIB::NO_ERROR != errRtc)
+            {
+                MS_DBG("ExtRTC !init. err=",errRtc," set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                rtcExtPhy.adjust(ccTimeT0);
+
+            } else {
+                DateTime rNow_dt = rtcExtPhy.now();
+                uint32_t rnow_usecs = rNow_dt.unixtime();
+
+                MS_DBG("ExtRTC t0 ",rNow_dt.year(),"/",rNow_dt.month(),"/",rNow_dt.date()," ",rNow_dt.hour(),":",rNow_dt.minute(),":",rNow_dt.second()," or epoch ",rnow_usecs);
+                MS_DBG("Good if between ",COMPILE_TIME_UT0,"<",rnow_usecs ,"<",TIME_FUT_UPPER_UT0);
+                if ((rnow_usecs < COMPILE_TIME_UT0) || (rnow_usecs  > TIME_FUT_UPPER_UT0) ) {
+                    rtcExtPhy.adjust(ccTimeT0);
+                    MS_DBG("ExtRTC t0 set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                }
             }
-        }
-        
-    watchDogTimer.resetWatchDog();
+            
+            watchDogTimer.resetWatchDog();
 
-        DateTime now = rtcExtPhy.now();
-        MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
-        zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
-        zero_sleep_rtc.setDate(now.date(), now.month(), now.year2k());
-        #define zr zero_sleep_rtc
-        MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
-        #else // no ADAFRUIT_FEATHERWING_RTC_SD
-        // If Power-on Reset Rcause.Bit0 have specific processing
-        #define zr zero_sleep_rtc
-        if ( (0== zr.getYear()) && (1==zr.getMonth()) && (1==zr.getDay()) ) {
-            MS_DBG("RTC.setDay to 2 for Power-On Reset case ");
-            zr.setDay(2); // Allow for calcs for -11hrs
-        }
+            DateTime now = rtcExtPhy.now();
+        
+            MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
+            zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
+            zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
+            #define zr zero_sleep_rtc
+            MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+        #else // no external _RTC
+            // If Power-on Reset Rcause.Bit0 have specific processing
+            #define zr zero_sleep_rtc
+            if ( (0== zr.getYear()) && (1==zr.getMonth()) && (1==zr.getDay()) ) {
+                MS_DBG("RTC.setDay to 2 for Power-On Reset case ");
+                zr.setDay(2); // Allow for calcs for -11hrs
+            }
         #endif // ADAFRUIT_FEATHERWING_RTC_SD
     #endif //ARDUINO_ARCH_SAMD
 
-    MS_DBG(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
+    MS_DBG(F("RTC Time:"), formatDateTime_ISO8601(getNowEpochTz()) );
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -1611,10 +1736,10 @@ void Logger::begin()
 
     if (_samplingFeatureUUID != NULL)
     {
-        MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
+        PRINTOUT(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
-    PRINTOUT(F("Logger portion of setup finished."));
+    PRINTOUT(F("Logger portion of setup finished.\n"));
 }
 
 
@@ -1731,7 +1856,9 @@ void Logger::logDataAndPublish(void)
 #endif
                 //if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
 
-                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 43200)
+                if ((Logger::markedEpochTime != 0 &&
+                     Logger::markedEpochTime % 86400 == 43200) ||
+                    !isRTCSane(Logger::markedEpochTime))
                 // Sync the clock at noon
                 {
                     MS_DBG(F("Running a daily clock sync..."));

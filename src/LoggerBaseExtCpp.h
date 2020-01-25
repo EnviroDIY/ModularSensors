@@ -1,4 +1,204 @@
+// 
+// Private function extensions
+//
+#if defined USE_USB_MSC_SD1 
+//--------------------------------------------------------------------+
+// SD Card callbacks
+//--------------------------------------------------------------------+
 
+int32_t Logger::sd1_card_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
+{
+  return Logger::sd1_card_phy.card()->readBlocks(lba, (uint8_t*) buffer, bufsize/512) ? bufsize : -1;
+}
+
+// Callback invoked when received WRITE10 command.
+// Process data in buffer to disk's storage and 
+// return number of written bytes (must be multiple of block size)
+int32_t Logger::sd1_card_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
+{
+  //digitalWrite(LED_BUILTIN, HIGH);
+
+  return sd1_card_phy.card()->writeBlocks(lba, buffer, bufsize/512) ? bufsize : -1;
+}
+
+// Callback invoked when WRITE10 command is completed (status received and accepted by host).
+// used to flush any pending cache.
+void Logger::sd1_card_flush_cb (void)
+{
+  sd1_card_phy.card()->syncBlocks();
+
+  // clear file system's cache to force refresh
+  sd1_card_phy.cacheClear();
+
+  sd1_card_changed = true;
+
+  //digitalWrite(LED_BUILTIN, LOW);
+}
+#endif // USE_USB_MSC_SD1 
+#if defined USE_USB_MSC_SD0 
+//--------------------------------------------------------------------+
+// External Flash callbacks
+//--------------------------------------------------------------------+
+
+// Callback invoked when received READ10 command.
+// Copy disk's data to buffer (up to bufsize) and
+// return number of copied bytes (must be multiple of block size)
+int32_t Logger::sdq_flashspi_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
+{
+  // Note: SPIFLash Bock API: readBlocks/writeBlocks/syncBlocks
+  // already include 4K sector caching internally. We don't need to cache it, yahhhh!!
+  return sdq_flashspi_phy.readBlocks(lba, (uint8_t*) buffer, bufsize/512) ? bufsize : -1;
+}
+
+// Callback invoked when received WRITE10 command.
+// Process data in buffer to disk's storage and
+// return number of written bytes (must be multiple of block size)
+int32_t Logger::sdq_flashspi_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
+{
+  //digitalWrite(LED_BUILTIN, HIGH);
+
+  // Note: SPIFLash Bock API: readBlocks/writeBlocks/syncBlocks
+  // already include 4K sector caching internally. We don't need to cache it, yahhhh!!
+  return sdq_flashspi_phy.writeBlocks(lba, buffer, bufsize/512) ? bufsize : -1;
+}
+
+// Callback invoked when WRITE10 command is completed (status received and accepted by host).
+// used to flush any pending cache.
+void Logger::sdq_flashspi_flush_cb (void)
+{
+  sdq_flashspi_phy.syncBlocks();
+
+  // clear file system's cache to force refresh
+  sd0_card_fatfs.cacheClear();
+
+  sd0_card_changed = true;
+
+  //digitalWrite(LED_BUILTIN, LOW);
+}
+
+// Callback invoked when USB system checking if available
+bool Logger::sdq_ready (void)
+{
+    PRINTOUT("USB check for sdq");
+    usbDriveStatus = true;
+    return true; //unless sleeping in which case false
+}
+bool Logger::usbDriveActive(void){
+    bool retVal = usbDriveStatus;
+    usbDriveStatus = false;
+    return retVal;
+}
+
+
+void print_rootdir(File* rdir);
+void print_rootdir(File* rdir)
+{
+  File file;
+
+  // Open next file in root.
+  // Warning, openNext starts at the current directory position
+  // so a rewind of the directory may be required.
+  while ( file.openNext(rdir, O_RDONLY) )
+  {
+    file.printFileSize(&STANDARD_SERIAL_OUTPUT);
+    //PRINTOUT(" ");
+    STANDARD_SERIAL_OUTPUT.print(' ');
+    file.printName(&STANDARD_SERIAL_OUTPUT);
+    if ( file.isDir() )
+    {
+      // Indicate a directory.
+      //PRINTOUT('/');
+      STANDARD_SERIAL_OUTPUT.print('/');
+    }
+    //PRINTOUT('\n');
+    STANDARD_SERIAL_OUTPUT.print('\n');
+    file.close();
+  }
+}//print_rootdir()
+#endif // USE_USB_MSC 
+bool Logger::SDextendedInit(bool sd1Success) {
+    bool retVal = sd1Success;
+
+#if defined BOARD_SDQ_QSPI_FLASH
+    #if !defined USE_TINYUSB
+    #error need -DUSE_TINYUSB
+    #endif//
+    usbDriveStatus = false;
+    //If defined need to initiliaze else turns off ints
+    usb_msc.setMaxLun(2);
+
+    usb_msc.setID(0, "Adafruit", "External Flash", "1.0");
+    usb_msc.setID(1, "Adafruit", "SD Card", "1.0");
+
+    // Since initialize both external flash and SD card can take time.
+    // If it takes too long, our board could be enumerated as CDC device only
+    // i.e without Mass Storage. To prevent this, we call Mass Storage begin first
+    // LUN readiness will always be set later on
+    usb_msc.begin();
+
+  //------------- Lun 0 for external flash -------------//
+    sdq_flashspi_phy.begin();// should have assigned &sdq_flashspi_transport_QSPI);
+    sd0_card_fatfs.begin(&sdq_flashspi_phy);
+    MS_DBG(F("Successfully setup SD0"));
+
+#if defined USE_USB_MSC_SD0
+    usb_msc.setCapacity(0, sdq_flashspi_phy.pageSize()*sdq_flashspi_phy.numPages()/512, 512);
+    usb_msc.setReadWriteCallback(0, sdq_flashspi_read_cb, sdq_flashspi_write_cb, sdq_flashspi_flush_cb);
+    usb_msc.setReadyCallback(0,sdq_ready);
+    usb_msc.setUnitReady(0, true);
+
+    sd0_card_changed = true; // to print contents initially
+    MS_DBG(F("SD0 Supported on USB"));
+#if defined USE_USB_MSC_SD1 
+    //------------- Lun 1 for SD card -------------//
+    if ( sd1Success )
+    {
+        uint32_t block_count = sd1_card_phy.card()->cardSize();
+        usb_msc.setCapacity(1, block_count, 512);
+        usb_msc.setReadWriteCallback(1, sd1_card_read_cb, sd1_card_write_cb, sd1_card_flush_cb);
+        usb_msc.setUnitReady(1, true);
+
+        sd1_card_changed = true; // to print contents initially
+        SerialTty.println("SD1 Card suppored on USB");
+    }
+#endif //USE_USB_MSC_SD1 
+#endif //USE_USB_MSC_SD0
+#endif //BOARD_SDQ_QSPI_FLASH
+    return retVal;
+}
+
+void Logger::SDusbPoll(uint8_t sdActions) {
+#if defined USE_USB_MSC_SD0 
+  if ( sd0_card_changed )
+  {
+    File root_fs;
+    root_fs = sd0_card_fatfs.open("/");
+
+    PRINTOUT("Flash contents:");
+    print_rootdir(&root_fs);
+    PRINTOUT("\n");
+
+    root_fs.close();
+
+    sd0_card_changed = false;
+  }
+#if defined USE_USB_MSC_SD1 
+  if ( sd1_card_changed )
+  {
+    File root_fs;
+    root_fs = sd1_card_phy.open("/");
+
+    PRINTOUT("SD contents:\n");
+    print_rootdir(&root_fs);
+    PRINTOUT("\n");
+
+    root_fs.close();
+
+    sd1_card_changed = false;
+  }  
+#endif // USE_USB_MSC_SD1 
+#endif // USE_USB_MSC_SD0 
+}
 // ===================================================================== //
 // Public functions extensions
 // ===================================================================== //
