@@ -248,10 +248,10 @@ eMcpB_end
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 //define one Radio  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
-#warning infoAutonomoWithDigiXBeeCellTransparent
+//#define DigiXBeeCellularTransparent_Module 1
+//#warning infoAutonomoWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
 
 //end of _Module
@@ -291,14 +291,14 @@ eMcpB_end
 // ** How frequently (in minutes) to log data **
 //For two Loggers - define loggingMultiplier_MAX_CDEF
 // The loggingInterval_CDEF_MIN becomes sampling rate 
-#define loggingMultiplier_MAX_CDEF 48
+//#define loggingMultiplier_MAX_CDEF 48
 // How frequently (in minutes) to sample data 
 #ifdef loggingMultiplier_MAX_CDEF
 //logging to SD/Publishing happens as loggingMultiplier_MAX_CDEF*loggingInterval_CDEF_MIN
 #define  loggingInterval_CDEF_MIN 5
 #else
 //logging to SD/Publishing and sampling are same
-#define  loggingInterval_CDEF_MIN 15
+#define  loggingInterval_CDEF_MIN 2
 #endif //loggingMultiplier_MAX_CDEF
 
 // Maximum logging setting allowed
@@ -317,8 +317,8 @@ eMcpB_end
   #define registrationToken_UUID "registrationToken_UUID"
   #define samplingFeature_UUID   "samplingFeature_UUID"
 
-  #define KellerAcculevel_ACT 1
-  //#define KellerNanolevel_ACT 1
+  //#define KellerAcculevel_ACT 1
+  #define KellerNanolevel_ACT 1
   #if (defined KellerNanolevel_ACT) || (defined KellerAcculevel_ACT) 
   //  SwVbat=1 for Vbst@12V and opt Sw12V
   //  SwVrs485 for Vbat-->Vrs to IC 
@@ -341,7 +341,7 @@ eMcpB_end
     #define KellerAcculevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #endif//KellerAcculevel_ACT 
 
-  #define INA219M_PHY_ACT 
+  //#define INA219M_PHY_ACT 
   #ifdef INA219M_PHY_ACT
     #define INA219M_MA_UUID       "INA219_MA_UUID"
     #define INA219M_A_MAX_UUID    "INA219_A_MAX_UUID"
@@ -360,14 +360,14 @@ eMcpB_end
 
   //To Use internal ADC (Needs  SAMD51 testing)
   // Needs testing for B031r1 range.
-  #define ProcVolt_ACT 1
+  //#define ProcVolt_ACT 1
   #if defined ProcVolt_ACT
     #define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
   #endif //ProcVolt_ACT
 
   //Use sensor eg Adafruit_AM2314 or AM2320
-  //#define ASONG_AM23XX_UUID 1
-  #if defined(ASONG_AM23XX_UUID)
+  #define ASONG_AM23XX_UUID 1
+  #if defined ASONG_AM23XX_UUID
     #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
     #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
   #endif // ASONG_AM23XX_UUID
