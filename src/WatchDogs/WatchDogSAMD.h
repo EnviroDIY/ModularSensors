@@ -27,7 +27,7 @@
 #undef MS_DEBUGGING_STD
 
 
-void WDT_Handler(void); // ISR HANDLER FOR WDT EW INTERRUPT
+void WDT_Handler(void);  // ISR HANDLER FOR WDT EW INTERRUPT
 
 class extendedWatchDogSAMD
 {

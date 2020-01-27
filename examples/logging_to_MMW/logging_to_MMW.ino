@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.15
+This example sketch is written for ModularSensors library version 0.23.16
 
 This shows most of the standard functions of the library at once.
 
@@ -41,7 +41,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.15";
+const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -333,7 +333,7 @@ void setup()
     }
 
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep"));
+    Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
 
@@ -353,7 +353,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (getBatteryVoltage() < 3.55)
     {
         dataLogger.logData();
     }

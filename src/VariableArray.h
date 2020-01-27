@@ -37,6 +37,7 @@ public:
     // Constructors
     VariableArray();
     VariableArray(uint8_t variableCount, Variable *variableList[]);
+    VariableArray(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
     ~VariableArray();
 
     // "Begins" the VariableArray - attaches the number and array of variables
@@ -47,6 +48,7 @@ public:
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
     void begin(uint8_t variableCount, Variable *variableList[]);
+    void begin(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
     void begin();
 
     // Leave the internal variable list public
@@ -62,6 +64,9 @@ public:
 
     // This counts and returns the number of sensors
     uint8_t getSensorCount(void);
+
+    // This matches UUID's from an array of pointers to the variable array
+    void matchUUIDs(const char *uuids[]);
 
     // Public functions for interfacing with a list of sensors
     // This sets up all of the sensors in the list

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.15
+This example sketch is written for ModularSensors library version 0.23.16
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -40,7 +40,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.15";
+const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "DWRI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -155,21 +155,40 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // ==========================================================================
 
 Variable *variableList[] = {
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-ef00-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh"),
-    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Depth(&ctd),
+    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
+    new ProcessorStats_Battery(&mcuBoard),
+    new MaximDS3231_Temp(&ds3231),
+    new Modem_RSSI(&modem),
+    new Modem_SignalPercent(&modem),
 };
+// *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+// Check the order of your variables in the variable list!!!
+// Be VERY certain that they match the order of your UUID's!
+// Rearrange the variables in the variable list if necessary to match!
+// *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+const char *REGISTRATION_TOKEN = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char *SAMPLING_FEATURE = "12345678-abcd-1234-ef00-1234567890ab";    // Sampling feature UUID
+const char *UUIDs[] = {
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+};
+
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray(variableCount, variableList, UUIDs);
 
 
 // ==========================================================================
@@ -185,8 +204,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at http://data.WikiWatershed.org
-const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
+const char *registrationToken = REGISTRATION_TOKEN;  // Device registration token
+const char *samplingFeature = SAMPLING_FEATURE;      // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
@@ -311,7 +330,7 @@ void setup()
     }
 
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep"));
+    Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
 
@@ -330,7 +349,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (getBatteryVoltage() < 3.55)
     {
         dataLogger.logData();
     }

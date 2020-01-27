@@ -159,7 +159,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.sendAT(GF("CP"),0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Cellular network technology - LTE-M/NB IoT
-        gsmModem.sendAT(GF("N#"),2);
+        gsmModem.sendAT(GF("N#"),0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);

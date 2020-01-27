@@ -90,7 +90,7 @@ bool MeterTeros11::addSingleMeasurementResult(void)
             VWC *= 100;  // Convert to actual percent
         }
 
-        //VWC = 3.879e-4*raw-0.6956; // equation for mineral soils
+        // VWC = 3.879e-4*raw-0.6956;  // equation for mineral soils
 
         if (VWC < 0) VWC = 0;
         if (VWC > 100)  VWC = 100;
