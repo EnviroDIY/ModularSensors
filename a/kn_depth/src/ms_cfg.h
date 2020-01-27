@@ -248,9 +248,9 @@ eMcpB_end
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 //define one Radio  _Module
-#define DigiXBeeWifi_Module 1
+//#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
+#define DigiXBeeCellularTransparent_Module 1
 //#warning infoAutonomoWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
 
