@@ -160,14 +160,12 @@ bool loggerModem::modemSetup(void)
         int8_t currentRqPinState =
             bitRead(*portInputRegister(digitalPinToPort(_modemSleepRqPin)), sleepRqBitNumber);
         MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin, '=',
-               currentRqPinState ? F("HIGH") : F("LOW"));
+               currentRqPinState ? F("HIGH") : F("LOW"), F("meaning it should be"), currentRqPinState == _wakeLevel ? F("on") : F("off"));
         wasAwake = (currentRqPinState == _wakeLevel);
     }
     if (!wasAwake)
     {
-        while (millis() - _millisPowerOn < _wakeDelayTime_ms)
-        {
-        }
+        while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}
         MS_DBG(F("Waking up the modem for setup ..."));
         success &= modemWake();
     }
@@ -204,12 +202,13 @@ bool loggerModem::modemSetup(void)
     // Only go to sleep if it had been asleep and is now awake
     if (!wasPowered)
     {  // Run the sleep and power down functions
-        MS_DBG(F("Putting the modem to sleep and powering it down ..."));
+        MS_DBG(F("Because the modem was not powered prior to setup, putting it"
+                 "back to sleep and powering it down now."));
         success &= modemSleepPowerDown();
     }
     else if (!wasAwake)
     {  // Run only the sleep function
-        MS_DBG(F("Putting the modem to sleep ..."));
+        MS_DBG(F("Because the modem was asleep prior to setup, putting it back to sleep now."));
         success &= modemSleep();
     }
     else

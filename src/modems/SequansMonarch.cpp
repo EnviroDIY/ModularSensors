@@ -55,12 +55,21 @@ bool SequansMonarch::modemWakeFxn(void)
     // No pulsing required in this case
     if (_powerPin >= 0)
     {
+        // Drop the RTS if it's connected - this won't wake the board,
+        // but the library will be confused if the pin is the wrong level
+        if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, _wakeLevel); }
+        // Wait for system start
         MS_DBG(F("Waiting for modem start-up message"));
         return gsmModem.waitResponse(5000L, GF("+SYSSTART")) == 1;
     }
     else if (_modemResetPin >= 0)
     {
+        // Drop the RTS if it's connected - this won't wake the board,
+        // but the library will be confused if the pin is the wrong level
+        if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, _wakeLevel); }
+        // Hard reset is only way to wake from shut-down
         modemHardReset();
+        // Wait for system start
         MS_DBG(F("Waiting for modem start-up message"));
         return gsmModem.waitResponse(5000L, GF("+SYSSTART")) == 1;
     }
@@ -85,13 +94,19 @@ bool SequansMonarch::modemSleepFxn(void)
         // Easiest to just go to sleep with the AT command rather than using pins
         // The only way to wake from this is via a hard reset
         MS_DBG(F("Asking Sequans Monarch to power down"));
-        return gsmModem.poweroff();
+        bool retVal = gsmModem.poweroff();
+        // Also going to pull the RTS high if it's connected
+        // Only doing this so as not to get the library confused because it will check
+        // this pin as an indication of whether the board is awake even if it's not
+        // being used as the main wake source
+        if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
+        return retVal;
     }
     else if (_modemSleepRqPin >= 0)  // RTS for power save mode
     {
         MS_DBG(F("Setting pin"), _modemSleepRqPin, !_wakeLevel ? F("HIGH") : F("LOW"),
                F("to enable"), _modemName, F("to enter power save mode"));
-        digitalWrite(_modemSleepRqPin, _wakeLevel);
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
     }
     else  // DON'T go to sleep if we can't wake up!
@@ -106,6 +121,9 @@ bool SequansMonarch::extraModemSetup(void)
     bool success = gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
+    // Turn on the LED
+    gsmModem.sendAT(GF("+SQNLED=1"));
+    success &= gsmModem.waitResponse();
     // Enable power save mode if we're not going to cut power or use reset
     if (!(_powerPin >= 0) && !(_modemResetPin >= 0) && _modemSleepRqPin >= 0)
     {

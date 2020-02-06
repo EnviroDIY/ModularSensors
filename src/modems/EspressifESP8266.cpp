@@ -93,6 +93,7 @@ bool EspressifESP8266::modemWakeFxn(void)
     {
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
         success &= ESPwaitForBoot();
+        if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, _wakeLevel); }
         return success;
     }
     else if (_modemResetPin >= 0)
@@ -104,6 +105,7 @@ bool EspressifESP8266::modemWakeFxn(void)
         digitalWrite(_modemResetPin, HIGH);
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
         success &= ESPwaitForBoot();
+        if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, _wakeLevel); }
         return success;
     }
     else if (_modemSleepRqPin >= 0)
@@ -139,7 +141,9 @@ bool EspressifESP8266::modemSleepFxn(void)
     if (_modemResetPin >= 0 || _powerPin >= 0)
     {
         MS_DBG(F("Requesting deep sleep for ESP8266"));
-        return gsmModem.poweroff();
+        bool retVal = gsmModem.poweroff();
+        if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
+        return retVal;
     }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another

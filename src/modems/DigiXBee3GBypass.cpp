@@ -47,11 +47,16 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBee3GBypass);
 
 bool DigiXBee3GBypass::extraModemSetup(void)
 {
-    bool success = true;
-    delay(1010);  // Wait the required guard time before entering command mode
-    MS_DBG(F("Putting XBee into command mode..."));
-    gsmModem.streamWrite(GF("+++"));  // enter command mode
-    if (success &= gsmModem.waitResponse(2000, GF("OK\r")) == 1)
+    bool success = false;
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        delay(1010);  // Wait the required guard time before entering command mode
+        MS_DBG(F("Putting XBee into command mode..."));
+        gsmModem.streamWrite(GF("+++"));  // enter command mode
+        success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
+        if (success) break;
+    }
+    if (success)
     {
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
