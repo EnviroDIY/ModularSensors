@@ -408,7 +408,7 @@ void setup()
     if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
     {
         modem.modemPowerUp();
-        modem.waitForWarmup();
+        modem.waitForWarmUp();
         modem.wake();
         modem.setup();
 
