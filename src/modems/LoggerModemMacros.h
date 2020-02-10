@@ -71,7 +71,8 @@
         {                                                                                         \
             /* Check that the modem is responding to AT commands */                               \
             MS_START_DEBUG_TIMER;                                                                 \
-            MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));        \
+            MS_DBG(F("\nWaiting up to"), _max_atresponse_time_ms, F("ms for"), getModemName(),    \
+                   F("to respond to AT commands..."));                                            \
             success = gsmModem.testAT(_max_atresponse_time_ms + 500);                             \
             if (success)                                                                          \
             {                                                                                     \
@@ -170,13 +171,13 @@
         }                                                           \
     }
 
-#define MS_MODEM_DISCONNECT_INTERNET(specificModem)                                 \
-    void specificModem::disconnectInternet(void)                                    \
-    {                                                                               \
-        MS_START_DEBUG_TIMER;                                                       \
-        gsmModem.gprsDisconnect();                                                  \
-        MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER, \
-               F("milliseconds."));                                                 \
+#define MS_MODEM_DISCONNECT_INTERNET(specificModem)           \
+    void specificModem::disconnectInternet(void)              \
+    {                                                         \
+        MS_START_DEBUG_TIMER;                                 \
+        gsmModem.gprsDisconnect();                            \
+        MS_DBG(F("Disconnected from cellular network after"), \
+               MS_PRINT_DEBUG_TIMER, F("milliseconds."));     \
     }
 
 #else  // from #if defined TINY_GSM_MODEM_HAS_GPRS (ie, this is wifi)
@@ -210,13 +211,13 @@
         return true;                                                \
     }
 
-#define MS_MODEM_DISCONNECT_INTERNET(specificModem)                             \
-    void specificModem::disconnectInternet(void)                                \
-    {                                                                           \
-        MS_START_DEBUG_TIMER;                                                   \
-        gsmModem.networkDisconnect();                                           \
-        MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER, \
-               F("milliseconds."));                                             \
+#define MS_MODEM_DISCONNECT_INTERNET(specificModem)       \
+    void specificModem::disconnectInternet(void)          \
+    {                                                     \
+        MS_START_DEBUG_TIMER;                             \
+        gsmModem.networkDisconnect();                     \
+        MS_DBG(F("Disconnected from WiFi network after"), \
+               MS_PRINT_DEBUG_TIMER, F("milliseconds.")); \
     }
 #endif  // #if defined TINY_GSM_MODEM_HAS_GPRS
 
