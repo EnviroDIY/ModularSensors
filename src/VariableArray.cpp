@@ -175,11 +175,11 @@ bool VariableArray::setupSensors(void)
 
                     if (!sensorSuccess)
                     {
-                        MS_DBG(F("        ... failed!"));
+                        MS_DBG(F("        ... setup failed!"));
                     }
                     else
                     {
-                        MS_DBG(F("        ... succeeded."));
+                        MS_DBG(F("        ... setup succeeded."));
                     }
                     // }
                 }
@@ -276,11 +276,11 @@ bool VariableArray::sensorsWake(void)
 
                         if (sensorSuccess)
                         {
-                            MS_DBG(F("        ... succeeded."));
+                            MS_DBG(F("        ... wake up succeeded."));
                         }
                         else
                         {
-                            MS_DBG(F("        ... failed!"));
+                            MS_DBG(F("        ... wake up failed!"));
                         }
                     }
                 }
@@ -473,11 +473,11 @@ bool VariableArray::updateAllSensors(void)
 
                         if (sensorSuccess_start)
                         {
-                            MS_DBG(F("   ... Success. <<---"), i, '.', nMeasurementsCompleted[i] + 1);
+                            MS_DBG(F("   ... reading started! <<---"), i, '.', nMeasurementsCompleted[i] + 1);
                         }
                         else
                         {
-                            MS_DBG(F("   ... Failed! <<---"), i, '.', nMeasurementsCompleted[i] + 1);
+                            MS_DBG(F("   ... failed to start reading! <<---"), i, '.', nMeasurementsCompleted[i] + 1);
                         }
                     }
 
@@ -502,11 +502,11 @@ bool VariableArray::updateAllSensors(void)
 
                         if (sensorSuccess_result)
                         {
-                            MS_DBG(F("   ... Success. <<---"), i, '.', nMeasurementsCompleted[i]);
+                            MS_DBG(F("   ... got measurement result. <<---"), i, '.', nMeasurementsCompleted[i]);
                         }
                         else
                         {
-                            MS_DBG(F("   ... Failed! <<---"), i, '.', nMeasurementsCompleted[i]);
+                            MS_DBG(F("   ... failed to get measurement result! <<---"), i, '.', nMeasurementsCompleted[i]);
                         }
                     }
                 }
@@ -758,11 +758,11 @@ bool VariableArray::completeUpdate(void)
 
                         if (sensorSuccess_wake)
                         {
-                            MS_DBG(F("   ... Success. <<---"), i);
+                            MS_DBG(F("   ... wake up uccess. <<---"), i);
                         }
                         else
                         {
-                            MS_DBG(F("   ... Failed! <<---"), i);
+                            MS_DBG(F("   ... wake up failed! <<---"), i);
                         }
                     }
                 }
@@ -800,11 +800,11 @@ bool VariableArray::completeUpdate(void)
 
                         if (sensorSuccess_start)
                         {
-                            MS_DBG(F("   ... Success. <<---"), i, '.', nMeasurementsCompleted[i] + 1);
+                            MS_DBG(F("   ... set up succeeded. <<---"), i, '.', nMeasurementsCompleted[i] + 1);
                         }
                         else
                         {
-                            MS_DBG(F("   ... Failed! <<---"), i, '.', nMeasurementsCompleted[i] + 1);
+                            MS_DBG(F("   ... set up failed! <<---"), i, '.', nMeasurementsCompleted[i] + 1);
                         }
                     }
 
@@ -829,11 +829,11 @@ bool VariableArray::completeUpdate(void)
 
                         if (sensorSuccess_result)
                         {
-                            MS_DBG(F("   ... Success. <<---"), i, '.', nMeasurementsCompleted[i]);
+                            MS_DBG(F("   ... got measurement result. <<---"), i, '.', nMeasurementsCompleted[i]);
                         }
                         else
                         {
-                            MS_DBG(F("   ... Failed! <<---"), i, '.', nMeasurementsCompleted[i]);
+                            MS_DBG(F("   ... failed to get measurement result! <<---"), i, '.', nMeasurementsCompleted[i]);
                         }
                     }
                 }
@@ -851,11 +851,11 @@ bool VariableArray::completeUpdate(void)
 
                     if (sensorSuccess_sleep)
                     {
-                        MS_DBG(F("   ... Success. <<---"), i);
+                        MS_DBG(F("   ... succeeded in putting sensor to sleep. <<---"), i);
                     }
                     else
                     {
-                        MS_DBG(F("   ... Failed! <<---"), i);
+                        MS_DBG(F("   ... sleep failed! <<---"), i);
                     }
 
                     // Now cut the power, if ready, to this sensors and all that share the pin

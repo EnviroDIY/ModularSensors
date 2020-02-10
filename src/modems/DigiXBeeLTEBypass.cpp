@@ -47,10 +47,10 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeLTEBypass);
 bool DigiXBeeLTEBypass::extraModemSetup(void)
 {
     bool success = false;
+    MS_DBG(F("Putting XBee into command mode..."));
     for (uint8_t i = 0; i < 5; i++)
     {
-        delay(1010);  // Wait the required guard time before entering command mode
-        MS_DBG(F("Putting XBee into command mode..."));
+        delay(1010);                      // Wait the required guard time before entering command mode
         gsmModem.streamWrite(GF("+++"));  // enter command mode
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
@@ -120,7 +120,7 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
         delay(500);  // Allow the unit to reset
         // re-initialize
-        MS_DBG(F("Attempting to reconnect to the u-blox module..."));
+        MS_DBG(F("Attempting to reconnect to the u-blox SARA R410M module..."));
         success &= gsmModem.init();
         gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
@@ -136,7 +136,7 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
     }
     else
     {
-        MS_DBG(F("... failed!"));
+        MS_DBG(F("... setup failed!"));
     }
     return success;
 }

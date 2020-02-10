@@ -183,11 +183,11 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 
     if (success)
     {
-        MS_DBG(F("... Setup successful!"));
+        MS_DBG(F("... setup successful!"));
     }
     else
     {
-        MS_DBG(F("... failed!"));
+        MS_DBG(F("... setup failed!"));
     }
     return success;
 }

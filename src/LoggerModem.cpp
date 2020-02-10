@@ -180,11 +180,11 @@ bool loggerModem::modemSetup(void)
         success &= extraModemSetup();
         if (success)
         {
-            MS_DBG(F("... Complete!  It's a"), getModemName());
+            MS_DBG(F("... setup complete!  It's a"), getModemName());
         }
         else
         {
-            MS_DBG(F("... Failed!  It's a"), getModemName());
+            MS_DBG(F("... setup failed!  It's a"), getModemName());
             _hasBeenSetup = false;
         }
     }

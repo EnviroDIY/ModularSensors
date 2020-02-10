@@ -38,7 +38,7 @@
 // Time after power-up before we can wake the model
 #define XBEE_WARM_UP_TIME_MS 100
 // Time we'll get back an AT response.  Probably much less than this, except in bypass
-#define XBEE_ATRESPONSE_TIME_MS 10000L
+#define XBEE_ATRESPONSE_TIME_MS 15000L
 
 // Power down time "can largely vary depending
 // on the application / network settings and the concurrent module

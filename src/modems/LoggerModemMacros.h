@@ -71,7 +71,8 @@
         {                                                                                         \
             /* Check that the modem is responding to AT commands */                               \
             MS_START_DEBUG_TIMER;                                                                 \
-            MS_DBG(F("\nWaiting for"), getModemName(), F("to respond to AT commands..."));        \
+            MS_DBG(F("\nWaiting up to"), _max_atresponse_time_ms, F("ms for"), getModemName(),    \
+                   F("to respond to AT commands..."));                                            \
             success = gsmModem.testAT(_max_atresponse_time_ms + 500);                             \
             if (success)                                                                          \
             {                                                                                     \
@@ -170,13 +171,13 @@
         }                                                           \
     }
 
-#define MS_MODEM_DISCONNECT_INTERNET(specificModem)                                 \
-    void specificModem::disconnectInternet(void)                                    \
-    {                                                                               \
-        MS_START_DEBUG_TIMER;                                                       \
-        gsmModem.gprsDisconnect();                                                  \
-        MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER, \
-               F("milliseconds."));                                                 \
+#define MS_MODEM_DISCONNECT_INTERNET(specificModem)           \
+    void specificModem::disconnectInternet(void)              \
+    {                                                         \
+        MS_START_DEBUG_TIMER;                                 \
+        gsmModem.gprsDisconnect();                            \
+        MS_DBG(F("Disconnected from cellular network after"), \
+               MS_PRINT_DEBUG_TIMER, F("milliseconds."));     \
     }
 
 #else  // from #if defined TINY_GSM_MODEM_HAS_GPRS (ie, this is wifi)
@@ -210,13 +211,13 @@
         return true;                                                \
     }
 
-#define MS_MODEM_DISCONNECT_INTERNET(specificModem)                             \
-    void specificModem::disconnectInternet(void)                                \
-    {                                                                           \
-        MS_START_DEBUG_TIMER;                                                   \
-        gsmModem.networkDisconnect();                                           \
-        MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER, \
-               F("milliseconds."));                                             \
+#define MS_MODEM_DISCONNECT_INTERNET(specificModem)       \
+    void specificModem::disconnectInternet(void)          \
+    {                                                     \
+        MS_START_DEBUG_TIMER;                             \
+        gsmModem.networkDisconnect();                     \
+        MS_DBG(F("Disconnected from WiFi network after"), \
+               MS_PRINT_DEBUG_TIMER, F("milliseconds.")); \
     }
 #endif  // #if defined TINY_GSM_MODEM_HAS_GPRS
 
@@ -312,22 +313,26 @@
     }
 
 #ifdef MS_MODEM_HAS_BATTERY_DATA
-#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                                                    \
-    bool specificModem::getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) \
-    {                                                                                                     \
-        MS_DBG(F("Getting modem battery data:"));                                                         \
-        return gsmModem.getBattStats(chargeState, percent, milliVolts);                                   \
+#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                  \
+    bool specificModem::getModemBatteryStats(uint8_t& chargeState,      \
+                                             int8_t& percent,           \
+                                             uint16_t& milliVolts)      \
+    {                                                                   \
+        MS_DBG(F("Getting modem battery data:"));                       \
+        return gsmModem.getBattStats(chargeState, percent, milliVolts); \
     }
 
 #else
-#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                                                    \
-    bool specificModem::getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) \
-    {                                                                                                     \
-        MS_DBG(F("This modem doesn't return battery information!"));                                      \
-        chargeState = 99;                                                                                 \
-        percent = -99;                                                                                    \
-        milliVolts = 9999;                                                                                \
-        return false;                                                                                     \
+#define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)               \
+    bool specificModem::getModemBatteryStats(uint8_t& chargeState,   \
+                                             int8_t& percent,        \
+                                             uint16_t& milliVolts)   \
+    {                                                                \
+        MS_DBG(F("This modem doesn't return battery information!")); \
+        chargeState = 99;                                            \
+        percent = -99;                                               \
+        milliVolts = 9999;                                           \
+        return false;                                                \
     }
 #endif
 
