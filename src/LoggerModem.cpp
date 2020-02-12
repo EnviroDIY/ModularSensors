@@ -40,15 +40,6 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
 
     _hasBeenSetup = false;
     _pinModesSet = false;
-
-    _priorSignalPercent = 0;
-    _priorRSSI = 0;
-    _priorModemTemp = 0;
-    _priorBatteryState = 0;
-    _priorBatteryPercent = 0;
-    _priorBatteryVoltage = 0;
-    // _priorActivationDuration = 0;
-    // _priorPoweredDuration = 0;
 }
 
 
@@ -111,8 +102,8 @@ void loggerModem::modemPowerDown(void)
 {
     if (_powerPin >= 0)
     {
-        // _priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
-        // MS_DBG(F("Total modem power-on time (s):"), String(_priorPoweredDuration, 3));
+        // loggerModem::_priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
+        // MS_DBG(F("Total modem power-on time (s):"), String(loggerModem::_priorPoweredDuration, 3));
 
         MS_DBG(F("Turning off power to"), getModemName(), F("with pin"), _powerPin);
         digitalWrite(_powerPin, LOW);
@@ -239,7 +230,7 @@ bool loggerModem::modemSleep(void)
         MS_DBG(F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),
                digitalRead(_statusPin),
                F("indicating it is already off!  Will not run sleep function."));
-        // _priorActivationDuration = 0;
+        // loggerModem::_priorActivationDuration = 0;
     }
     else
     {
@@ -288,8 +279,8 @@ bool loggerModem::modemSleepPowerDown(void)
             }
         }
 
-        // _priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
-        // MS_DBG(F("Total modem power-on time (s):"), String(_priorPoweredDuration, 3));
+        // loggerModem::_priorPoweredDuration = ((float)(millis() - _millisPowerOn)) / 1000;
+        // MS_DBG(F("Total modem power-on time (s):"), String(loggerModem::_priorPoweredDuration, 3));
 
         MS_DBG(F("Turning off power to"), getModemName(), F("with pin"), _powerPin);
         digitalWrite(_powerPin, LOW);
@@ -298,7 +289,7 @@ bool loggerModem::modemSleepPowerDown(void)
     }
     else
     {
-        // _priorPoweredDuration = (float)-9999;
+        // loggerModem::_priorPoweredDuration = (float)-9999;
 
         // If we're not going to power the modem down, there's no reason to hold
         // up the main processor while waiting for the modem to shut down.
@@ -375,6 +366,16 @@ bool loggerModem::updateModemMetadata(void)
 {
     bool success = true;
 
+    // Unset whatever we had previously
+    loggerModem::_priorRSSI = -9999;
+    loggerModem::_priorSignalPercent = -9999;
+    loggerModem::_priorBatteryState = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp = -9999;
+    // loggerModem::_priorActivationDuration = -9999;
+    // loggerModem::_priorPoweredDuration = -9999;
+
     // Initialize variable
     int16_t rssi = -9999;
     int16_t percent = -9999;
@@ -385,82 +386,80 @@ bool loggerModem::updateModemMetadata(void)
     success &= getModemSignalQuality(rssi, percent);
     MS_DBG(F("CURRENT RSSI:"), rssi);
     MS_DBG(F("CURRENT Percent signal strength:"), percent);
-    _priorRSSI = rssi;
-    _priorSignalPercent = percent;
+    loggerModem::_priorRSSI = rssi;
+    loggerModem::_priorSignalPercent = percent;
 
     success &= getModemBatteryStats(state, bpercent, volt);
     MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
     MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
     MS_DBG(F("CURRENT Modem Battery Voltage:"), bpercent);
     if (state != 99)
-        _priorBatteryState = (float)state;
+        loggerModem::_priorBatteryState = (float)state;
     else
-        _priorBatteryState = (float)-9999;
+        loggerModem::_priorBatteryState = (float)-9999;
 
     if (bpercent != -99)
-        _priorBatteryPercent = (float)bpercent;
+        loggerModem::_priorBatteryPercent = (float)bpercent;
     else
-        _priorBatteryPercent = (float)-9999;
+        loggerModem::_priorBatteryPercent = (float)-9999;
 
     if (volt != 9999)
-        _priorBatteryVoltage = (float)volt;
+        loggerModem::_priorBatteryVoltage = (float)volt;
     else
-        _priorBatteryVoltage = (float)-9999;
+        loggerModem::_priorBatteryVoltage = (float)-9999;
 
-    _priorModemTemp = getModemChipTemperature();
-    MS_DBG(F("CURRENT Modem Chip Temperature:"), _priorModemTemp);
+    loggerModem::_priorModemTemp = getModemChipTemperature();
+    MS_DBG(F("CURRENT Modem Chip Temperature:"), loggerModem::_priorModemTemp);
 
     return success;
 }
 
 float loggerModem::getModemRSSI()
 {
-    float retVal = _priorRSSI;
-    _priorRSSI = -9999;
+    float retVal = loggerModem::_priorRSSI;
+    // MS_DBG(F("PRIOR RSSI:"), retVal);
     return retVal;
 }
 float loggerModem::getModemSignalPercent()
 {
-    float retVal = _priorSignalPercent;
-    _priorSignalPercent = -9999;
+    float retVal = loggerModem::_priorSignalPercent;
+    // MS_DBG(F("PRIOR Percent signal strength:"), retVal);
     return retVal;
 }
 float loggerModem::getModemBatteryChargeState()
 {
-    float retVal = _priorBatteryState;
-    _priorBatteryState = -9999;
+    float retVal = loggerModem::_priorBatteryState;
+    // MS_DBG(F("PRIOR Modem Battery Charge State:"), retVal);
     return retVal;
 }
 float loggerModem::getModemBatteryChargePercent()
 {
-    float retVal = _priorBatteryPercent;
-    _priorBatteryPercent = -9999;
+    float retVal = loggerModem::_priorBatteryPercent;
+    // MS_DBG(F("PRIOR Modem Battery Charge Percentage:"), retVal);
     return retVal;
 }
 float loggerModem::getModemBatteryVoltage()
 {
-    float retVal = _priorBatteryPercent;
-    _priorBatteryPercent = -9999;
+    float retVal = loggerModem::_priorBatteryPercent;
+    // MS_DBG(F("PRIOR Modem Battery Voltage:"), retVal);
     return retVal;
 }
 float loggerModem::getModemTemperature()
 {
-    float retVal = _priorModemTemp;
-    _priorModemTemp = -9999;
+    float retVal = loggerModem::_priorModemTemp;
+    // MS_DBG(F("PRIOR Modem Chip Temperature:"), retVal);
     return retVal;
 }
 // template <class Derived, typename modemType, typename modemClientType>
 // float loggerModem::getModemActivationDuration()
 // {
-//     float retVal = _priorActivationDuration;
-//     _priorActivationDuration = -9999;
+//     float retVal = loggerModem::_priorActivationDuration;
 //     return retVal;
 // }
 // template <class Derived, typename modemType, typename modemClientType>
 // float loggerModem::getModemPoweredDuration()
 // {
-//     float retVal = _priorPoweredDuration;
-//     _priorPoweredDuration = -9999;
+//     float retVal = loggerModem::_priorPoweredDuration;
 //     return retVal;
 // }
 
