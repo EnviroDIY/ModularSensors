@@ -33,8 +33,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char* libraryVersion = "0.24.1";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -215,10 +213,6 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-
-    if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

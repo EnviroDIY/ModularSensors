@@ -28,8 +28,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <SensorBase.h>
 #include <VariableBase.h>
 
-// The library version this example was written for
-const char* libraryVersion = "0.24.1";
 // The name of this file
 const char *sketchName = "single_sensor.ino";
 
@@ -109,10 +107,6 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-
-    if (String(MODULAR_SENSORS_VERSION) != String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the stream for the sonar
     sonarSerial.begin(9600);
