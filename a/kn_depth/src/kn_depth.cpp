@@ -1169,6 +1169,7 @@ const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/
 
 const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
 const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+const int8_t RS485PHY_DIR_PIN = CONFIG_HW_RS485PHY_DIR_PIN;
 
 #endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
 
@@ -1762,6 +1763,7 @@ void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned 
 */
 void UiStatus(uint8_t status_req, String ui_out = "");
 void UiStatus(uint8_t status_req, String ui_out) {
+   MS_DBG(F("UiStatus "),status_req);
   switch(status_req) {
     case 0:
         #ifndef SERIAL3_EN
@@ -1843,17 +1845,18 @@ void setup()
 
     //#ifdef SerialUSB // SerialStd == SerialUSB
     //#error Serial Err
-    UiStatus(1);
+
     while (!SerialStd && (millis() < 10000)){
         ledflash(100,1);
     }
-    UiStatus(0);
+
     //#else
     //SerialStd.begin(SerialStdBaud);
     //#endif
     SerialStd.begin(SerialStdBaud);
     SerialStd.print(F("\n---Boot. Build date: ")); 
     SerialStd.print(build_date);
+
     //SerialStd.write('/');
     //SerialStd.print(build_epochTime,HEX);
     //SerialStd.print(__TIMESTAMP__); //still a ASC string Tue Dec 04 19:47:20 2018
@@ -1878,7 +1881,7 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
-
+    UiStatus(0);
 
     // A vital check on power availability
     do {
@@ -1907,7 +1910,7 @@ void setup()
     SerialStd.print(F("Good BatV="));
     SerialStd.print(mcuBoard.getBatteryVm1(false));        
     /////// Measured LiIon voltage is good enough to start up
-
+    //UiStatus(1);
     SerialStd.print(F("\nUsing ModularSensors Library version "));
     SerialStd.println(MODULAR_SENSORS_VERSION);
 
@@ -1936,15 +1939,21 @@ void setup()
     #endif
 
     // Start the serial connection with the modem
+    #if defined modemSerial
     MS_DEEP_DBG("***modemSerial.begin"); 
     delay(100);
     modemSetup=false;
     modemSerial.begin(modemBaud);
+    #endif //modemSerial
 
 #if defined(CONFIG_SENSOR_RS485_PHY) 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     MS_DEEP_DBG("***modbusSerial.begin"); 
-    delay(100);
+    #if defined CONFIG_HW_RS485PHY_DIR_PIN 
+    pinPeripheral(CONFIG_HW_RS485PHY_DIR_PIN, PIO_SERCOM_ALT/* PIO_SERCOM*/);   //Assign DIR function to pin A5
+    //Serial2.setPins();
+    #endif //CONFIG_HW_RS485PHY_DIR_PIN 
+    delay(10);
     modbusSerial.begin(9600);
 #endif
 
@@ -2031,14 +2040,18 @@ void setup()
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     Logger::setRTCTimeZone(0);
 
+    #if defined momdemPhy
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     modemPhy.setModemLED(modemLEDPin);
+    #endif //momdemPhy
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLEDPin);
 
     // Begin the logger
     dataLogger.begin();
+    #if defined momdemPhy
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    #endif //    #if defined momdemPhy
     #if defined loggingMultiplier_MAX_CDEF
     dataLogFast.begin();
     #endif //loggingMultiplier_MAX_CDEF
@@ -2177,8 +2190,10 @@ void processSensors()
         // because Modbus Stop bit leaves these pins HIGH
         pinMode(RS485PHY_TX_PIN, OUTPUT);  // AltSoftSerial Tx pin
         pinMode(RS485PHY_RX_PIN, OUTPUT);  // AltSoftSerial Rx pin
+        pinMode(RS485PHY_DIR_PIN, OUTPUT);
         digitalWrite( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
         digitalWrite( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
+        digitalWrite( RS485PHY_DIR_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif //CONFIG_SENSOR_RS485_PHY
 
         if (varArrayPub) {
@@ -2196,6 +2211,7 @@ void processSensors()
             {
                 //if (dataLogger._logModem != NULL)
                 {
+                    #if defined momdemPhy
                     modemPhy.modemPowerUp();
                     if (!modemSetup) {
                         modemSetup = true;
@@ -2252,6 +2268,7 @@ void processSensors()
                     } else {MS_DBG(F("  No internet connection..."));}
                     // Turn the modem off
                     modemPhy.modemSleepPowerDown();
+                    #endif //momdemPhy
                 } //else MS_DBG(F("  No Modem configured.\n"));
                 PRINTOUT(F("---Complete "));
             }

@@ -205,7 +205,7 @@ eMcpB_end
   SERCOM5 Serial1/Bee (DO/D1)                      
   QSPI    2Mbytes SD Flash drive 
   */
-  //#define CONFIG_SENSOR_RS485_PHY 1
+
   //Standard 
   //This is hardcode to mean things in ProcessorStats !!!!
   #define HwVersion_DEF "r1"
@@ -250,7 +250,7 @@ eMcpB_end
 //define one Radio  _Module
 //#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
+//#define DigiXBeeCellularTransparent_Module 1
 //#warning infoAutonomoWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
 
@@ -322,10 +322,12 @@ eMcpB_end
   #if (defined KellerNanolevel_ACT) || (defined KellerAcculevel_ACT) 
   //  SwVbat=1 for Vbst@12V and opt Sw12V
   //  SwVrs485 for Vbat-->Vrs to IC 
-  //  Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1  
+  //  Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1
     #define CONFIG_SENSOR_RS485_PHY 1
+    //Full Duplex
     #define CONFIG_HW_RS485PHY_TX_PIN PIN_A1  //Feather_M4 Serial2 Tx pin 
     #define CONFIG_HW_RS485PHY_RX_PIN PIN_A4  //Feather_M4 Serial2 Rx pin
+    #define CONFIG_HW_RS485PHY_DIR_PIN PIN_A5 //Also needs -DSERIAL2_TE_CNTL or -DSERIAL2_TE_HALF_DUPLEX for for variant.cpp 
     #define max485EnablePin_DEF -1 //Hw Opt PIN_A5
     #define rs485AdapterPower_DEF eMcpA_SwVbatOut_pinnum //Boost Sensor Power
     #define modbusSensorPower_DEF eMcpA_SwVrs485Out_pinnum //Secondary RS485 Transciever
@@ -341,12 +343,18 @@ eMcpB_end
     #define KellerAcculevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #endif//KellerAcculevel_ACT 
 
+  //Needs enabling to put in to powerdown reduces sleep by 1mA
   //#define INA219M_PHY_ACT 
   #ifdef INA219M_PHY_ACT
+  #if 0
     #define INA219M_MA_UUID       "INA219_MA_UUID"
     #define INA219M_A_MAX_UUID    "INA219_A_MAX_UUID"
     #define INA219M_A_MIN_UUID    "INA219_A_MIN_UUID"
     #define INA219M_VOLT_UUID     "INA219_VOLT_UUID"
+    #else
+      #define INA219M_MA_UUID       "OFF"
+      #define INA219M_VOLT_UUID     "OFF"
+    #endif 
   #endif //INA219_PHY_ACT
 
   //#define Modem_RSSI_UUID ""
@@ -366,7 +374,7 @@ eMcpB_end
   #endif //ProcVolt_ACT
 
   //Use sensor eg Adafruit_AM2314 or AM2320
-  #define ASONG_AM23XX_UUID 1
+  //#define ASONG_AM23XX_UUID 1
   #if defined ASONG_AM23XX_UUID
     #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
     #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
@@ -387,7 +395,7 @@ variant.h: has pin definitions
 */
 #define SerialModem Serial1
 
-#if defined SERIAL2_EN
+#if defined(SERIAL2_EN) || defined(SERIAL2_TE_CNTL) || defined(SERIAL2_TE_HALF_DUPLEX)
 //to be used by modbusSerial 
 #define SerialModbus Serial2
 #endif // SERIAL2_EN

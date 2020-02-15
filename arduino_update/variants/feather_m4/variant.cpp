@@ -71,11 +71,12 @@ const PinDescription g_APinDescription[]=
     16 Analog SERIAL4_TX/SERCOM4
     17 Analog SERIAL4_RX/SERCOM4
     18 Analog SERIAL2_TX/SERCOM0
-    19 A5 Analog SERIAL2_TE/SERCOM0
+    19 A5 Analog SERIAL2_TE/SERCOM0  SERIAL2_RTS
+       Where is SERIAL2_CTS
   */
   // --------------------
 /*14*/{ PORTA,  2, PIO_ANALOG, PIN_ATTR_ANALOG, ADC_Channel0, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_2 },
-#ifdef SERIAL2_EN
+#if ((defined(SERIAL2_EN) || defined(SERIAL2_TE_CNTL)) && !defined(SERIAL2_TE_HALF_DUPLEX)) || defined(SERIAL2_RTS_CTS)
 /*15*/{ PORTA, 05, PIO_SERCOM_ALT, PIN_ATTR_ANALOG, ADC_Channel5, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE }, // RX: SERCOM0/PAD[1]
 #else
 /*15*/{ PORTA,  5, PIO_ANALOG, PIN_ATTR_ANALOG, ADC_Channel5, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_5 },
@@ -91,16 +92,16 @@ const PinDescription g_APinDescription[]=
 #else
 /*17*/{ PORTB,  9, PIO_ANALOG, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel3, TC4_CH1, TC4_CH1, EXTERNAL_INT_9 },
 #endif //SERIAL4_EN
-#ifdef SERIAL2_EN
+#if defined(SERIAL2_EN) || defined(SERIAL2_TE_CNTL) || defined(SERIAL2_TE_HALF_DUPLEX) || defined(SERIAL2_RTS_CTS)
 /*18*/{ PORTA, 04, PIO_SERCOM_ALT, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E),  ADC_Channel4, TC0_CH0, TC0_CH0, EXTERNAL_INT_NONE }, // TX: SERCOM0/PAD[2]
 #else
   { PORTA,  4, PIO_ANALOG, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel4, TC0_CH0, TC0_CH0, EXTERNAL_INT_6 },
 #endif //SERIAL2_EN
-#if defined SERIAL2_EN && defined SERIAL2_TE_CNTL
+#if  defined(SERIAL2_TE_CNTL) || defined(SERIAL2_TE_HALF_DUPLEX) || defined(SERIAL2_RTS_CTS)
 /*19*/{ PORTA,  06, PIO_SERCOM_ALT, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel6, TC1_CH0, TC1_CH0, EXTERNAL_INT_10 },
 #else
 /*19*/{ PORTA,  6, PIO_ANALOG, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel6, TC1_CH0, TC1_CH0, EXTERNAL_INT_10 },
-#endif SERIAL2_TE_CNTL
+#endif //SERIAL2_TE_CNTL
   // A6, D20 - VDiv!
   { PORTB,  1, PIO_ANALOG, PIN_ATTR_ANALOG, ADC_Channel13, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_1 },
 
@@ -185,17 +186,32 @@ void SERCOM5_3_Handler()
   Serial1.IrqHandler();
 }
 
-#ifdef SERIAL2_EN
-/* TESTED for half duplex
+#if defined(SERIAL2_EN) || defined(SERIAL2_TE_CNTL) || defined(SERIAL2_TE_HALF_DUPLEX) || defined(SERIAL2_RTS_CTS)
+/* TESTED for full duplex using Rx/A1 Tx/A4 Te/A5
+   Not Tested for half duplex Tx/A4 Te/A5
   FeatherM4express Serial2 allocated SERCOM0 with custom variant.cpp
   SERCOM0 is undefinied in std variant.cpp on Feather M4 express
   Function FeatherM4Pin [PinDescriptionindex] cpuPin Port Sercom#
    Rx   A1 [15] cpuPin14/PA05 SERCOM0 Pad#1
    Tx   A4 [18] cpuPin13/PA04 SERCOM0 Pad#0
    Te   A5 [19] cpupin15/PA06 SERCOM0 Pad#2
+  Half duplex set by specifying the same PAD for Rx as Tx - needs checking. 
 */
+#if defined(SERIAL2_TE_HALF_DUPLEX)
+#undef PIN_SERIAL2_RX
+#undef PAD_SERIAL2_RX
+#define PIN_SERIAL_2_RX PIN_SERIAL_2_TX 
+#define PAD_SERIAL2_RX (SercomUartTXPad) UART_TX_TE_PAD_0_2
+#endif 
+#if defined(SERIAL2_TE_CNTL) || defined(SERIAL2_TE_HALF_DUPLEX)
+//  Ext function dedicated TE defined by TXPO/UART_TX_TE_PAD_0_2  pin TE operation defined above
+Uart Serial2( &sercom0, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, (SercomUartTXPad) UART_TX_TE_PAD_0_2); //Full duplex
+#elif defined(SERIAL2_RTS_CTS)
+//  Ext function dedicated RTS & CTS defined by TXPO/UART_TX_RTS_CTS_PAD_0_2_3.  pin RTS and CTS operation defined above
+Uart Serial2( &sercom0, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX,UART_TX_RTS_CTS_PAD_0_2_3); //Full duplex
+#else 
 Uart Serial2( &sercom0, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, PAD_SERIAL2_TX); //Full duplex
-//Uart Serial2(&sercom0, 40, 41, SERCOM_RX_PAD_1, UART_TX_TE_PAD_0_2); //RS485 Half Duplex 3pin ??
+#endif //SERIAL2_TE_CNTL
 //Uart Serial2(&sercom0, 40, 41, SERCOM_RX_PAD_1, UART_TX_TE_PAD_0_2); //RS485 Half Duplex 2pin ??
 
 // Hand over the interrupts of the sercom port

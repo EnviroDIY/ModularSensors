@@ -44,7 +44,8 @@ int8_t Logger::_loggerTimeZone = 0;
 // Initialize the static time adjustment
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
-uint32_t Logger::markedEpochTime = 0;
+#define markedEpochTimeTz markedEpochTime
+uint32_t Logger::markedEpochTimeTz = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -592,17 +593,17 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
     //Depreciated
     return dtFromEpochTz(epochTime);
 }
-DateTime Logger::dtFromEpochT0(uint32_t epochTime)
+DateTime Logger::dtFromEpochT0(uint32_t epochTimeT0)
 {
-    DateTime dt(epochTime);
+    DateTime dt(epochTimeT0);
     return dt;
 }
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
-DateTime Logger::dtFromEpochTz(uint32_t epochTime)
+DateTime Logger::dtFromEpochTz(uint32_t epochTimeTz)
 {
-    DateTime dt(epochTime - EPOCH_TIME_OFF);
-    return dt;
+    DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF); //I think this is This is wrong 
+    return dtTz;
 }
 
 // This converts a date-time object into a ISO8601 formatted string
@@ -742,7 +743,7 @@ bool Logger::isRTCSane(uint32_t epochTime)
 // called before updating the sensors, not after.
 void Logger::markTime(void)
 {
-    Logger::markedEpochTime = getNowEpoch();
+    Logger::markedEpochTimeTz = getNowEpochTz();
 }
 
 
@@ -761,7 +762,7 @@ bool Logger::checkInterval(void)
     {
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Time marked at (unix):"), Logger::markedEpochTime);
+        MS_DBG(F("Time marked at (unix):"), Logger::markedEpochTimeTz);
         MS_DBG(F("Time to log!"));
         retval = true;
     }
@@ -821,7 +822,7 @@ bool Logger::checkInterval(void)
     #else  // ARDUINO_ARCH_SAMD
     //Assume that have slept for the right amount of time
     markTime();
-    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTime," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTime));
+    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz));
     retval = true;
     #endif 
     return retval;
@@ -832,12 +833,12 @@ bool Logger::checkInterval(void)
 bool Logger::checkMarkedInterval(void)
 {
     bool retval;
-    MS_DBG(F("Marked Time:"), Logger::markedEpochTime,
+    MS_DBG(F("Marked Time:"), Logger::markedEpochTimeTz,
            F("Logging interval in seconds:"), (_loggingIntervalMinutes*60),
-           F("Mod of Logging Interval:"), Logger::markedEpochTime % (_loggingIntervalMinutes*60));
+           F("Mod of Logging Interval:"), Logger::markedEpochTimeTz % (_loggingIntervalMinutes*60));
 
-    if (Logger::markedEpochTime != 0 &&
-        (Logger::markedEpochTime % (_loggingIntervalMinutes*60) == 0))
+    if (Logger::markedEpochTimeTz != 0 &&
+        (Logger::markedEpochTimeTz % (_loggingIntervalMinutes*60) == 0))
     {
         MS_DBG(F("Time to log!"));
         retval = true;
@@ -1217,7 +1218,8 @@ void Logger::printFileHeader(Stream *stream)
 void Logger::printSensorDataCSV(Stream *stream)
 {
     String csvString = "";
-    dtFromEpoch(Logger::markedEpochTime).addToString(csvString);
+    //Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz))
+    dtFromEpochT0(Logger::markedEpochTimeTz).addToString(csvString);
     csvString += ',';
     stream->print(csvString);
     for (uint8_t i = 0; i < getArrayVarCount(); i++)
@@ -1856,9 +1858,9 @@ void Logger::logDataAndPublish(void)
 #endif
                 //if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
 
-                if ((Logger::markedEpochTime != 0 &&
-                     Logger::markedEpochTime % 86400 == 43200) ||
-                    !isRTCSane(Logger::markedEpochTime))
+                if ((Logger::markedEpochTimeTz != 0 &&
+                     Logger::markedEpochTimeTz % 86400 == 43200) ||
+                    !isRTCSane(Logger::markedEpochTimeTz))
                 // Sync the clock at noon
                 {
                     MS_DBG(F("Running a daily clock sync..."));
