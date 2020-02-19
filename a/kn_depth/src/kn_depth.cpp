@@ -1950,8 +1950,7 @@ void setup()
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     MS_DEEP_DBG("***modbusSerial.begin"); 
     #if defined CONFIG_HW_RS485PHY_DIR_PIN 
-    pinPeripheral(CONFIG_HW_RS485PHY_DIR_PIN, PIO_SERCOM_ALT/* PIO_SERCOM*/);   //Assign DIR function to pin A5
-    //Serial2.setPins();
+    pinPeripheral(CONFIG_HW_RS485PHY_DIR_PIN, PIO_SERCOM_ALT);
     #endif //CONFIG_HW_RS485PHY_DIR_PIN 
     delay(10);
     modbusSerial.begin(9600);
@@ -2149,6 +2148,9 @@ void processSensors()
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
         // we will explicitly start and end the serial connection in the loop.
+        #if defined CONFIG_HW_RS485PHY_DIR_PIN 
+        pinPeripheral(CONFIG_HW_RS485PHY_DIR_PIN, PIO_SERCOM_ALT);
+        #endif //CONFIG_HW_RS485PHY_DIR_PIN 
         modbusSerial.begin(9600);
 #endif // CONFIG_SENSOR_RS485_PHY
         #ifdef loggingMultiplier_MAX_CDEF
