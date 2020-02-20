@@ -980,7 +980,25 @@ void Logger::systemSleep(uint8_t sleep_min)
 	// Disable systick interrupt:  See https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
 	SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
     // Now go to sleep
+    #if defined(MS_LOGGERBASE_DEBUG) || defined(MS_LOGGERBASE_SLEEP_DEBUG)
+    //Maintens MS_DEBUGGING_STD output, but current is 13mA/SAMD51
 	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    #else
+    //This drops the current to 3.3mA/SAMD51, however Debug output doesn't recover.
+    uint8_t rd_delay=10;
+    /* Sleep Posibilities
+    PM_SLEEPCFG_SLEEPMODE_STANDBY 3.3mA Can wake and run
+    PM_SLEEPCFG_SLEEPMODE_HIBERNATE 3.1mA reset on int.watchdig 
+    PM_SLEEPCFG_SLEEPMODE_BACKUP 3.1mA requires recovery
+    PM_SLEEPCFG_SLEEPMODE_OFF  2.9mA requires reset from ? watchdog*/   
+    uint8_t sleepMode_req  = PM_SLEEPCFG_SLEEPMODE_STANDBY;
+    //uint8_t sleepMode_req  = PM_SLEEPCFG_SLEEPMODE_HIBERNATE;
+    //PM->STDBYCFG.FASTWKUP =0; default
+    PM->SLEEPCFG.bit.SLEEPMODE = sleepMode_req;
+    do {
+        if (PM->SLEEPCFG.bit.SLEEPMODE != sleepMode_req) break;
+    } while(--rd_delay); // Wait for it to take
+    #endif 
 	__DSB();
     __WFI();
 
