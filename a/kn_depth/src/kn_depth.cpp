@@ -385,6 +385,8 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //requires special variant.cpp/h update
 HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
+#define MODEMPHY_RX_PIN 0 
+#define MODEMPHY_TX_PIN 1
 //SerialModbus Serial2 RS485
 //RS485 pins
 //ms_cfg.h:SerialTty Serial4 Available Pins
@@ -1536,7 +1538,7 @@ Variable *variableList[] = {
     new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab"),
     #endif //SENSOR_CONFIG_GENERAL
     #if defined(ASONG_AM23XX_UUID)
-    new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    //new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
     new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
     #endif // ASONG_AM23XX_UUID
     #ifdef SENSOR_CONFIG_GENERAL
@@ -1939,12 +1941,12 @@ void setup()
     #endif
 
     // Start the serial connection with the modem
-    #if defined modemSerial
+    #if defined UseModem_Module
     MS_DEEP_DBG("***modemSerial.begin"); 
     delay(100);
     modemSetup=false;
     modemSerial.begin(modemBaud);
-    #endif //modemSerial
+    #endif // UseModem_Module
 
 #if defined(CONFIG_SENSOR_RS485_PHY) 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
@@ -2023,13 +2025,15 @@ void setup()
     if (modemSleepRqPin >= 0)
     {
         pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH); //Def sleep
+        #define modemSleepRqState_DEF HIGH
+        digitalWrite(modemSleepRqPin, modemSleepRqState_DEF); //Def sleep
         MS_DBG(F("Set Sleep on High modemSleepRqPin "),modemSleepRqPin);
     } else {MS_DBG(F("modemSleepRqPin not used "),modemSleepRqPin);}
     if (modemResetPin >= 0)
     {
+        #define modemResetState_DEF HIGH
         pinMode(modemResetPin, OUTPUT);
-        digitalWrite(modemResetPin, HIGH);  //Def noReset
+        digitalWrite(modemResetPin, modemResetState_DEF);  //Def noReset
         MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
     } else {MS_DBG(F("modemResetPin not used "),modemResetPin);}
 
@@ -2039,18 +2043,18 @@ void setup()
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     Logger::setRTCTimeZone(0);
 
-    #if defined momdemPhy
+    #if defined UseModem_Module
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     modemPhy.setModemLED(modemLEDPin);
-    #endif //momdemPhy
+    #endif // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLEDPin);
 
     // Begin the logger
     dataLogger.begin();
-    #if defined momdemPhy
+    #if defined UseModem_Module
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
-    #endif //    #if defined momdemPhy
+    #endif // UseModem_Module
     #if defined loggingMultiplier_MAX_CDEF
     dataLogFast.begin();
     #endif //loggingMultiplier_MAX_CDEF
@@ -2213,8 +2217,20 @@ void processSensors()
             {
                 //if (dataLogger._logModem != NULL)
                 {
-                    #if defined momdemPhy
+                    #if defined UseModem_Module
+                    //Power up and enable pins
+                    modemSerial.begin(modemBaud);
                     modemPhy.modemPowerUp();
+                    if (modemResetPin >= 0)
+                    {
+                        pinMode(modemResetPin, OUTPUT);
+                        digitalWrite(modemResetPin, modemResetState_DEF);
+                    }
+                    if (modemSleepRqPin >= 0)
+                    {
+                        pinMode(modemSleepRqPin, OUTPUT);
+                        digitalWrite(modemSleepRqPin, modemSleepRqState_DEF);
+                    }                    
                     if (!modemSetup) {
                         modemSetup = true;
                         MS_DBG(F("  Modem setup up 1st pass"));
@@ -2268,9 +2284,24 @@ void processSensors()
                         MS_DBG(F("  Disconnecting from the Internet..."));
                         modemPhy.disconnectInternet();
                     } else {MS_DBG(F("  No internet connection..."));}
+                    // Ensure no leakage on pins
+                    if (modemResetPin >= 0)
+                    {
+                        pinMode(modemResetPin, OUTPUT);
+                        digitalWrite(modemResetPin, LOW);
+                    }
+                    if (modemSleepRqPin >= 0)
+                    {
+                        pinMode(modemSleepRqPin, OUTPUT);
+                        digitalWrite(modemSleepRqPin, LOW);
+                    }
+                    pinMode(MODEMPHY_TX_PIN, OUTPUT);
+                    pinMode(MODEMPHY_RX_PIN, OUTPUT);
+                    digitalWrite(MODEMPHY_TX_PIN, LOW);
+                    digitalWrite(MODEMPHY_RX_PIN, LOW);
                     // Turn the modem off
                     modemPhy.modemSleepPowerDown();
-                    #endif //momdemPhy
+                    #endif //UseModem_Module
                 } //else MS_DBG(F("  No Modem configured.\n"));
                 PRINTOUT(F("---Complete "));
             }

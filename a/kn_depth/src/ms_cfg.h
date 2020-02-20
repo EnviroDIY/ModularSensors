@@ -248,13 +248,14 @@ eMcpB_end
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 //define one Radio  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoAutonomoWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
-
+#define UseModem_Module 1
 //end of _Module
+
   #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
   #define WIFIID_CDEF  "AzondeNetSsid"  // The WiFi access point, unnecessary for gprs
   #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
@@ -374,7 +375,7 @@ eMcpB_end
   #endif //ProcVolt_ACT
 
   //Use sensor eg Adafruit_AM2314 or AM2320
-  //#define ASONG_AM23XX_UUID 1
+  #define ASONG_AM23XX_UUID 1
   #if defined ASONG_AM23XX_UUID
     #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
     #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
