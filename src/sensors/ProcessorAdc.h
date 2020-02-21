@@ -69,7 +69,10 @@
 #if !defined ProcAdc_Max
 #define ProcAdc_Max ((1<<ProcAdcDef_Resolution)-1)
 #endif //ProcAdc_Max
-
+#if !defined ProcAdcDef_Reference
+// one of eAnalogReference 
+#define ProcAdcDef_Reference AR_DEFAULT 
+#endif //ProcAdcDef_Reference
 
 // The main class for the external votlage monitor
 class processorAdc : public Sensor

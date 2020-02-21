@@ -962,11 +962,12 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 const int8_t procVoltPower = -1;//eMcpA_SwVbatOut_pinnum;  //Requires VbtSw Pin to switch power on and off (-1 if unconnected)
 //B031 has expanded channels - Assume PCB default. Opts for 8more ADC Pins.
 //J5 B031rev2  - which is ArduinioFramework PIN_A5 (Feather M4E pin 10). No Mux
-const int8_t procVoltChan0 = PIN_A5;//PIN_EXT_ANALOG(01);  // B031r2 J2Pin2 MC74VHC4051PinX1 MUX to PIN_A5
+const int8_t procVoltChan0 = PIN_A0;//PIN_EXT_ANALOG(01);  // B031r2 J2Pin2 MC74VHC4051PinX1 MUX to PIN_A5
 //const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
 //const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
 //const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
-const float procVoltDividerGain = 30.3; //  pwr_mon 1M/33K* measuredAdc(V) or 30.3 15.15
+//const float procVoltDividerGain = 30.3; //  pwr_mon 1M/33K* measuredAdc(V) or 30.3 15.15
+const float procVoltDividerGain = 6.0; //  for ext 1M/200k = 66 measuredAdc(V wrt 3.3V) 
 const uint8_t procVoltReadsToAvg = 1; // Only read one sample
 
 // Create an External Voltage sensor object

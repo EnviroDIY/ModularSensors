@@ -131,6 +131,7 @@ bool processorAdc::addSingleMeasurementResult(void)
         #if !defined ARDUINO_ARCH_AVR
         //Only for processors where ADC Resolution can be varied: not AVR
         analogReadResolution(ProcAdcDef_Resolution);
+        analogReference(ProcAdcDef_Reference); //VDDANA = 3V3
         #endif //ARDUINO_ARCH_AVR
         uint8_t useAdcChannel = _adcChannel; 
         #if defined ARD_ANALOLG_EXTENSION_PINS
@@ -148,11 +149,13 @@ bool processorAdc::addSingleMeasurementResult(void)
         // We create and set up the ADC object here so that each sensor using
         // the ADC may set the gain appropriately without effecting others.
         uint32_t  rawAdc = analogRead(useAdcChannel);
-        adcVoltage = (3.3 /ProcAdc_Max) * (float) rawAdc;
+        #define PROCADC_REF_V 3.3
+        #define PROCADC_RANGE_MIN_V -0.3
+        adcVoltage = (PROCADC_REF_V/ProcAdc_Max) * (float) rawAdc;
         MS_DBG(F("  adc_SingleEnded_V("), _adcChannel, F("/"),ProcAdcDef_Resolution,F("):"), adcVoltage,F(" rawAdc:"),rawAdc, 
                F(" gain="),_gain);
 
-        if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
+        if (adcVoltage <= PROCADC_REF_V and adcVoltage > PROCADC_RANGE_MIN_V)  // Skip results out of range
         {
             // Apply the gain calculation, with a defualt gain of 10 V/V Gain
             calibResult = adcVoltage * _gain ;
@@ -172,6 +175,6 @@ bool processorAdc::addSingleMeasurementResult(void)
     // Unset the status bits for a measurement request (bits 5 & 6)
     _sensorStatus &= 0b10011111;
 
-    if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
+    if (adcVoltage <= PROCADC_REF_V and adcVoltage > PROCADC_RANGE_MIN_V) return true;
     else return false;
 }

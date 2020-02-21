@@ -359,7 +359,7 @@ eMcpB_end
   #endif //INA219_PHY_ACT
 
   //#define Modem_RSSI_UUID ""
-  // Seems to cause XBEE WiFi S6 to crash
+  // Seems to cause XBEE WiFi S6 to crash  nneds ModemLast branch
   //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
   #define ProcessorStats_ACT 1
   #ifdef ProcessorStats_ACT
@@ -369,7 +369,7 @@ eMcpB_end
 
   //To Use internal ADC (Needs  SAMD51 testing)
   // Needs testing for B031r1 range.
-  //#define ProcVolt_ACT 1
+  #define ProcVolt_ACT 1
   #if defined ProcVolt_ACT
     #define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
   #endif //ProcVolt_ACT
