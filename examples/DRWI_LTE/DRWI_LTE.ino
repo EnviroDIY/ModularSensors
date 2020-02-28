@@ -345,8 +345,6 @@ void setup()
         dataLogger.syncRTC();
     }
 
-    modem.modemSleepPowerDown();
-
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
     // all sensor names correct
