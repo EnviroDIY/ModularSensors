@@ -394,30 +394,19 @@ void setup()
     dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
-    // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
-    {
-        modem.modemPowerUp();
-        modem.wake();
-        modem.setup();
-
-        // Synchronize the RTC with NIST
-        Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-        if (modem.connectInternet(120000L))
-        {
-            dataLogger.setRTClock(modem.getNISTTime());
-        }
-        else
-        {
-            Serial.println(F("Could not connect to internet for clock sync."));
-        }
-    }
-
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)
     {
         Serial.println(F("Setting up sensors..."));
         varArray.setupSensors();
+    }
+
+    // Sync the clock if it isn't valid or we have battery to spare
+    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
+    {
+        // Synchronize the RTC with NIST
+        // This will also set up the modem
+        dataLogger.syncRTC();
     }
 
     // Create the log file, adding the default header to it
@@ -429,14 +418,9 @@ void setup()
     {
         Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+        dataLogger.createLogFile(true); // true = write a new header
+        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
     }
-
-    // Power down the modem
-    Serial.println(F("Putting modem to sleep"));
-    modem.disconnectInternet();
-    modem.modemSleepPowerDown();
 
     // Call the processor sleep
     Serial.println(F("Putting processor to sleep\n"));
@@ -458,7 +442,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (getBatteryVoltage() < 3.55)
     {
         dataLogger.logData();
     }

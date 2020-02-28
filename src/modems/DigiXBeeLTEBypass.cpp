@@ -9,17 +9,15 @@
 
 // Included Dependencies
 #include "DigiXBeeLTEBypass.h"
-#include "modems/LoggerModemMacros.h"
+#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
+                           const char *apn)
   : DigiXBee(powerPin, statusPin, useCTSStatus,
-             modemResetPin, modemSleepRqPin,
-             measurementsToAverage),
+             modemResetPin, modemSleepRqPin),
     #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
@@ -31,29 +29,33 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
     _apn = apn;
 }
 
-
 // Destructor
-DigiXBeeLTEBypass::~DigiXBeeLTEBypass(){}
+DigiXBeeLTEBypass::~DigiXBeeLTEBypass() {}
 
+MS_MODEM_WAKE(DigiXBeeLTEBypass);
 
-MS_MODEM_DID_AT_RESPOND(DigiXBeeLTEBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
-MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeLTEBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
-MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeLTEBypass);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
 
+MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass);
+
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
+MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeLTEBypass);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeLTEBypass);
 
 bool DigiXBeeLTEBypass::extraModemSetup(void)
 {
-    bool success = true;
-    delay(1010);  // Wait the required guard time before entering command mode
+    bool success = false;
     MS_DBG(F("Putting XBee into command mode..."));
-    gsmModem.streamWrite(GF("+++"));  // enter command mode
-    if (success &= gsmModem.waitResponse(2000, GF("OK\r")) == 1)
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        delay(1010);                      // Wait the required guard time before entering command mode
+        gsmModem.streamWrite(GF("+++"));  // enter command mode
+        success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
+        if (success) break;
+    }
+    if (success)
     {
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
@@ -91,13 +93,13 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
         gsmModem.sendAT(GF("P1"),0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Carrier Profile - Automatic
-        gsmModem.sendAT(GF("CP"),0);
-        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Cellular network technology - LTE-M/NB IoT
-        gsmModem.sendAT(GF("N#"),0);
-        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // MS_DBG(F("Setting Cellular Carrier Options..."));
+        // // Carrier Profile - 1 = No profile/SIM ICCID selected
+        // gsmModem.sendAT(GF("CP"),1);
+        // success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // // Cellular network technology - LTE-M/NB IoT
+        // gsmModem.sendAT(GF("N#"),0);
+        // success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Make sure airplane mode is off - bypass and airplane mode are incompatible
         MS_DBG(F("Making sure airplane mode is off..."));
         gsmModem.sendAT(GF("AM"),0);
@@ -118,7 +120,7 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
         delay(500);  // Allow the unit to reset
         // re-initialize
-        MS_DBG(F("Attempting to reconnect to the u-blox module..."));
+        MS_DBG(F("Attempting to reconnect to the u-blox SARA R410M module..."));
         success &= gsmModem.init();
         gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
@@ -134,7 +136,39 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
     }
     else
     {
-        MS_DBG(F("... failed!"));
+        MS_DBG(F("... setup failed!"));
+    }
+    return success;
+}
+
+bool DigiXBeeLTEBypass::modemHardReset(void)
+{
+    bool success = false;
+    // If the u-blox cellular component isn't responding but the Digi processor
+    // is, use the Digi API to reset the cellular component
+    MS_DBG(F("Returning XBee to command mode..."));
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        delay(1010);  // Wait the required guard time before entering command mode
+        gsmModem.streamWrite(GF("+++")); // enter command mode
+        success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
+        if (success)
+            break;
+    }
+    if (success)
+    {
+        MS_DBG(F("... and forcing a reset of the cellular component."));
+        // Force a reset of the undelying cellular component
+        gsmModem.sendAT(GF("!R"));
+        success &= gsmModem.waitResponse(30000L, GF("OK\r")) == 1;
+        // Exit command mode
+        gsmModem.sendAT(GF("CN"));
+        success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
+    }
+    else
+    {
+        MS_DBG(F("... failed!  Using a pin reset on the XBee."));
+        success = loggerModem::modemHardReset();
     }
     return success;
 }

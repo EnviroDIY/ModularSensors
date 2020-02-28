@@ -29,26 +29,38 @@
 // It is not possible to get status from the ESP8266 in deep sleep mode.
 // During deep sleep the pin state is undefined
 // For cases where a pin is defined for light sleep mode, the Espressif
-// documentation states:  ince the system needs some time to wake up from
+// documentation states:  since the system needs some time to wake up from
 // light sleep, it is suggested that wait at least 5ms before sending next AT
 // command.  They don't say anything about the pin state though.
+// The status level during light sleep is user selectable, but we set it low
+// for wake and high for sleep.  Of course, despite being able to configure
+// light sleep mode for the module, it's not actually possible to purposefully
+// enter light sleep via AT commands, so we are dependent on the module deciding
+// it's been idle long enough and entering sleep on its own.  That is a terrible
+// system.  Use a deep-sleep with reset if possible.
+#define ESP8266_STATUS_LEVEL HIGH
 #define ESP8266_STATUS_TIME_MS 350
-// power down ???
-#define ESP8266_DISCONNECT_TIME_MS 500
 
+// Reset is very fast
+#define ESP8266_RESET_LEVEL LOW
+#define ESP8266_RESET_PULSE_MS 1
+
+// See notes above.. this is user configurable, but useless
+#define ESP8266_WAKE_LEVEL LOW
+#define ESP8266_WAKE_PULSE_MS 0
 // Module turns on when power is applied regardless of pin states
-#define ESP8266_WARM_UP_TIME_MS 350
+#define ESP8266_WARM_UP_TIME_MS 0
 // Time until system and digital pins are operational
 #define ESP8266_ATRESPONSE_TIME_MS 350
 
-// How long we're willing to wait to get signal quality
-#define ESP8266_SIGNALQUALITY_TIME_MS 15000L
+// power down ???
+#define ESP8266_DISCONNECT_TIME_MS 500
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "LoggerModem.h"
 #include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -64,23 +76,21 @@ public:
                      int8_t powerPin, int8_t statusPin,
                      int8_t modemResetPin, int8_t modemSleepRqPin,
                      const char *ssid, const char *pwd,
-                     uint8_t measurementsToAverage = 1,
                      int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
     ~EspressifESP8266();
 
-    bool startSingleMeasurement(void) override;
+    bool modemWake(void) override;
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    virtual void disconnectInternet(void) override;
 
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemTemperature(void) override;
+    virtual uint32_t getNISTTime(void) override;
 
-    uint32_t getNISTTime(void) override;
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    virtual float getModemChipTemperature(void) override;
 
-    #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif
 
@@ -91,12 +101,10 @@ public:
     Stream *_modemStream;
 
 protected:
-    bool didATRespond(void) override;
-    bool isInternetAvailable(void) override;
-    bool verifyMeasurementComplete(bool debug=false) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void)override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void) override;
 
 private:
     bool ESPwaitForBoot(void);
