@@ -313,13 +313,13 @@ void setup()
     //                 - 2 = AT&T
     //                 - 3 = Verizon
     // NOTE:  To select T-Mobile, you must enter bypass mode!
-    modem.gsmModem.sendAT(GF("CP"), 1);
+    modem.gsmModem.sendAT(GF("CP"), 2);
     modem.gsmModem.waitResponse(GF("OK\r"));
     // Cellular network technology - 0 = LTE-M with NB-IoT fallback
     //                             - 1 = NB-IoT with LTE-M fallback
     //                             - 2 = LTE-M only
     //                             - 3 = NB-IoT only
-    modem.gsmModem.sendAT(GF("N#"), 0);
+    modem.gsmModem.sendAT(GF("N#"), 2);
     modem.gsmModem.waitResponse();
     // Write changes to flash and apply them
     Serial.println(F("Wait while applying changes..."));
