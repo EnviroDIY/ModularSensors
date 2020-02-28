@@ -19,7 +19,7 @@
 // I want to refer to these more than once while ensuring there is only one copy in memory
 const char *ThingSpeakPublisher::mqttServer = "mqtt.thingspeak.com";
 const int ThingSpeakPublisher::mqttPort = 1883;
-const char *ThingSpeakPublisher::mqttClient = THING_SPEAK_CLIENT_NAME;
+const char *ThingSpeakPublisher::mqttClientName = THING_SPEAK_CLIENT_NAME;
 const char *ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
 
 
@@ -189,7 +189,7 @@ int16_t ThingSpeakPublisher::publishData(Client *_outClient)
     // Note:  the client id and the user name do not mean anything for ThingSpeak
     MS_DBG(F("Opening MQTT Connection"));
     MS_START_DEBUG_TIMER;
-    if (_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
+    if (_mqttClient.connect(mqttClientName, mqttUser, _thingSpeakMQTTKey))
     {
         MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
