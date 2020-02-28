@@ -330,7 +330,7 @@ void setup()
     modem.gsmModem.sendAT(GF("AC"));
     modem.gsmModem.waitResponse(GF("OK\r"));
     // Reset the cellular component to ensure network settings are changed
-    modem.gsmModem.sendAT(GF("!R)"));
+    modem.gsmModem.sendAT(GF("!R"));
     modem.gsmModem.waitResponse(30000L);
     // Force reset of the Digi component as well
     // This effectively exits command mode
