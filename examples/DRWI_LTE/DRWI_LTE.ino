@@ -293,6 +293,50 @@ void setup()
         varArray.setupSensors();
     }
 
+    // Extra modem set-up - selecting AT&T as the carrier and LTE-M only
+    // NOTE:  The code for this could be shortened using the "commandMode" and
+    // other XBee specific commands in TinyGSM.  I've written it this way in this
+    // example to show how the settings could be changed in either bypass OR
+    // transparent mode.
+    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    modem.modemWake(); // NOTE:  This will also set up the modem
+    // Go back to command mode to set carrier options
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        delay(1010);                     // Wait the required guard time before entering command mode
+        modem.gsmModem.streamWrite(GF("+++")); // enter command mode
+        if (modem.gsmModem.waitResponse(2000, GF("OK\r")) == 1)
+            break;
+    }
+    // Carrier Profile - 0 = Automatic selection
+    //                 - 1 = No profile/SIM ICCID selected
+    //                 - 2 = AT&T
+    //                 - 3 = Verizon
+    // NOTE:  To select T-Mobile, you must enter bypass mode!
+    modem.gsmModem.sendAT(GF("CP"), 1);
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Cellular network technology - 0 = LTE-M with NB-IoT fallback
+    //                             - 1 = NB-IoT with LTE-M fallback
+    //                             - 2 = LTE-M only
+    //                             - 3 = NB-IoT only
+    modem.gsmModem.sendAT(GF("N#"), 0);
+    modem.gsmModem.waitResponse();
+    // Write changes to flash and apply them
+    Serial.println(F("Wait while applying changes..."));
+    // Write changes to flash
+    modem.gsmModem.sendAT(GF("WR"));
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Apply changes
+    modem.gsmModem.sendAT(GF("AC"));
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Reset the cellular component to ensure network settings are changed
+    modem.gsmModem.sendAT(GF("!R)"));
+    modem.gsmModem.waitResponse(30000L);
+    // Force reset of the Digi component as well
+    // This effectively exits command mode
+    modem.gsmModem.sendAT(GF("FR"));
+    modem.gsmModem.waitResponse(5000L, GF("OK\r"));
+
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
     {
@@ -300,6 +344,8 @@ void setup()
         // This will also set up the modem
         dataLogger.syncRTC();
     }
+
+    modem.modemSleepPowerDown();
 
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
