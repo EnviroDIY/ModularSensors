@@ -108,6 +108,9 @@
             }                                                                                     \
         }                                                                                         \
                                                                                                   \
+        /* Clean any junk out of the modem buffer */                                              \
+        gsmModem.streamClear();                                                                   \
+                                                                                                  \
         /* Re-run the modem init, or setup if necessary */                                        \
         /* This will turn off echo, which often turns itself back on after a reset/power loss */  \
         /* This also checks the SIM card state */                                                 \

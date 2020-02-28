@@ -130,3 +130,35 @@ bool DigiXBee3GBypass::extraModemSetup(void)
     }
     return success;
 }
+
+bool DigiXBee3GBypass::modemHardReset(void)
+{
+    bool success = false;
+    // If the u-blox cellular component isn't responding but the Digi processor
+    // is, use the Digi API to reset the cellular component
+    MS_DBG(F("Returning XBee to command mode..."));
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        delay(1010);  // Wait the required guard time before entering command mode
+        gsmModem.streamWrite(GF("+++")); // enter command mode
+        success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
+        if (success)
+            break;
+    }
+    if (success)
+    {
+        MS_DBG(F("... and forcing a reset of the cellular component."));
+        // Force a reset of the undelying cellular component
+        gsmModem.sendAT(GF("!R"));
+        success &= gsmModem.waitResponse(30000L, GF("OK\r")) == 1;
+        // Exit command mode
+        gsmModem.sendAT(GF("CN"));
+        success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
+    }
+    else
+    {
+        MS_DBG(F("... failed!  Using a pin reset on the XBee."));
+        success = loggerModem::modemHardReset();
+    }
+    return success;
+}

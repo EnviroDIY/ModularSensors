@@ -93,13 +93,13 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
         gsmModem.sendAT(GF("P1"),0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Carrier Profile - Automatic
-        gsmModem.sendAT(GF("CP"),0);
-        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Cellular network technology - LTE-M/NB IoT
-        gsmModem.sendAT(GF("N#"),0);
-        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // MS_DBG(F("Setting Cellular Carrier Options..."));
+        // // Carrier Profile - 1 = No profile/SIM ICCID selected
+        // gsmModem.sendAT(GF("CP"),1);
+        // success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // // Cellular network technology - LTE-M/NB IoT
+        // gsmModem.sendAT(GF("N#"),0);
+        // success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Make sure airplane mode is off - bypass and airplane mode are incompatible
         MS_DBG(F("Making sure airplane mode is off..."));
         gsmModem.sendAT(GF("AM"),0);
@@ -137,6 +137,38 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
     else
     {
         MS_DBG(F("... setup failed!"));
+    }
+    return success;
+}
+
+bool DigiXBeeLTEBypass::modemHardReset(void)
+{
+    bool success = false;
+    // If the u-blox cellular component isn't responding but the Digi processor
+    // is, use the Digi API to reset the cellular component
+    MS_DBG(F("Returning XBee to command mode..."));
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        delay(1010);  // Wait the required guard time before entering command mode
+        gsmModem.streamWrite(GF("+++")); // enter command mode
+        success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
+        if (success)
+            break;
+    }
+    if (success)
+    {
+        MS_DBG(F("... and forcing a reset of the cellular component."));
+        // Force a reset of the undelying cellular component
+        gsmModem.sendAT(GF("!R"));
+        success &= gsmModem.waitResponse(30000L, GF("OK\r")) == 1;
+        // Exit command mode
+        gsmModem.sendAT(GF("CN"));
+        success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
+    }
+    else
+    {
+        MS_DBG(F("... failed!  Using a pin reset on the XBee."));
+        success = loggerModem::modemHardReset();
     }
     return success;
 }

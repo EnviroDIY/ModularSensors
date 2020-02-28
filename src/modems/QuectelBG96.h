@@ -33,7 +33,7 @@
 
 // Reset with a 150-460ms low pulse on the RESET_N pin
 #define BG96_RESET_LEVEL LOW
-#define BG96_RESET_PULSE_MS 10000L
+#define BG96_RESET_PULSE_MS 300
 
 // Module is switched on by a >100 millisecond LOW pulse on the PWRKEY pin
 // Module is switched on by a >650 millisecond LOW pulse on the PWRKEY pin
@@ -44,7 +44,7 @@
 // Time after VBAT is stable before PWRKEY can be used is >30ms
 #define BG96_WARM_UP_TIME_MS 100
 // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
-#define BG96_ATRESPONSE_TIME_MS 4200L
+#define BG96_ATRESPONSE_TIME_MS 10000L
 
 // > 2 sec
 #define BG96_DISCONNECT_TIME_MS 5000L
@@ -81,6 +81,8 @@ public:
     virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
     virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
     virtual float getModemChipTemperature(void) override;
+
+    bool modemHardReset(void) override;
 
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
     StreamDebugger _modemATDebugger;

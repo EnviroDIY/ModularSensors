@@ -151,13 +151,13 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Set the socket timeout to 10s
         gsmModem.sendAT(GF("TM"),64);
         success &= gsmModem.waitResponse() == 1;
-        MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Carrier Profile - Automatic
-        gsmModem.sendAT(GF("CP"),0);
-        gsmModem.waitResponse();  // Don't check for success - only works on LTE
-        // Cellular network technology - LTE-M/NB IoT
-        gsmModem.sendAT(GF("N#"),0);
-        gsmModem.waitResponse();  // Don't check for success - only works on LTE
+        // MS_DBG(F("Setting Cellular Carrier Options..."));
+        // // Carrier Profile - 1 = No profile/SIM ICCID selected
+        // gsmModem.sendAT(GF("CP"),0);
+        // gsmModem.waitResponse();  // Don't check for success - only works on LTE
+        // // Cellular network technology - LTE-M/NB IoT
+        // gsmModem.sendAT(GF("N#"),0);
+        // gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
@@ -169,7 +169,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.writeChanges();
         // Exit command mode
         gsmModem.exitCommand();
-        // Force restart the modem, just for good measure
+        // Force restart the modem to make sure all settings take
         MS_DBG(F("Restarting XBee..."));
         success &= gsmModem.restart();
     }

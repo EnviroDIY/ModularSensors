@@ -72,8 +72,16 @@ bool QuectelBG96::modemSleepFxn(void)
         // Easiest to just go to sleep with the AT command rather than using pins
         return gsmModem.poweroff();
     }
-    else  // DON'T go to sleep if we can't wake up!
+    return true; // DON'T go to sleep if we can't wake up!
+}
+
+bool QuectelBG96::modemHardReset(void)
+{
+    digitalWrite(_modemSleepRqPin, !_wakeLevel);  // set the wake pin high
+    bool success = loggerModem::modemHardReset();
+    if (success)
     {
-        return true;
+        return gsmModem.waitResponse(10000L, GF("RDY")) == 1;
     }
+    return false;
 }

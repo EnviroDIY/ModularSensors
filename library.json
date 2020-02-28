@@ -92,7 +92,7 @@
             "name": "SdFat",
             "library id": "322",
             "url": "https://github.com/greiman/SdFat.git",
-            "version": "=1.1.0",
+            "version": "=1.1.2",
             "note": "SdFat - FAT16/FAT32 file system for SD cards.",
             "authors": [
                 "Bill Greiman"
@@ -175,7 +175,7 @@
             "name": "Adafruit Unified Sensor",
             "library id": "31",
             "url": "https://github.com/adafruit/Adafruit_Sensor.git",
-            "version": "=1.1.1",
+            "version": "=1.1.2",
             "note": "Adafruit Unified Sensor Library",
             "authors": [
                 "Adafruit"
@@ -187,7 +187,7 @@
             "name": "DallasTemperature",
             "library id": "54",
             "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library.git",
-            "version": "=3.8.0",
+            "version": "=3.8.1",
             "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
             "authors": [
                 "Guil Barros",
