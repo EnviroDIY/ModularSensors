@@ -166,8 +166,8 @@ Variable *variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-ef00-1234567890ab";    // Sampling feature UUID
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
 const char *UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
@@ -200,8 +200,6 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at http://data.WikiWatershed.org
-const char *registrationToken = REGISTRATION_TOKEN;  // Device registration token
-const char *samplingFeature = SAMPLING_FEATURE;      // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
