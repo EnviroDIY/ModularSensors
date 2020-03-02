@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.16
-
 This shows most of the standard functions of the library at once.
 
 DISCLAIMER:
@@ -41,8 +39,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "cuahsi_workshop.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -362,10 +358,6 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
