@@ -366,18 +366,33 @@ bool Logger::syncRTC()
     if (_logModem != NULL)
     {
         // Synchronize the RTC with NIST
-        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
+        PRINTOUT(F("Attempting to connect to the internet and synchronize RTC with NIST"));
         PRINTOUT(F("This may take up to two minutes!"));
-        // Connect to the network
-        // The connectInternet function will also power the modem up and run
-        // its setup function if necessary.
-        if (_logModem->connectInternet(120000L))
+        if (_logModem->modemWake())
         {
-            success = setRTClock(_logModem->getNISTTime());
-            // Disconnect from the network
-            _logModem->disconnectInternet();
+            if (_logModem->connectInternet(120000L))
+            {
+                setRTClock(_logModem->getNISTTime());
+                success = true;
+                _logModem->updateModemMetadata();
+            }
+            else
+            {
+                PRINTOUT(F("Could not connect to internet for clock sync."));
+            }
         }
-        // Turn off the modem
+        else
+        {
+            PRINTOUT(F("Could not wake modem for clock sync."));
+        }
+    }
+
+    // Power down the modem - but only if there will be more than 15 seconds before
+    // the NEXT logging interval - it can take the modem that long to shut down
+    if (Logger::getNowEpoch() % (_loggingIntervalMinutes * 60) > 15)
+    {
+        Serial.println(F("Putting modem to sleep"));
+        _logModem->disconnectInternet();
         _logModem->modemSleepPowerDown();
     }
     return success;
@@ -514,14 +529,16 @@ int8_t Logger::getTZOffset(void)
 }
 
 // This gets the current epoch time (unix time, ie, the number of seconds
-// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
+// from January 1, 1970 00:00:00 UTC) and corrects it to the specified time zone
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
 uint32_t Logger::getNowEpoch(void)
 {
-  uint32_t currentEpochTime = rtc.now().getEpoch();
-  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
-  return currentEpochTime;
+    uint32_t currentEpochTime = rtc.now().getEpoch();
+    // Do NOT apply an offset if the timestamp is obviously bad
+    if (isRTCSane(currentEpochTime))
+        currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
+    return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
 
@@ -529,16 +546,20 @@ void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
 
 uint32_t Logger::getNowEpoch(void)
 {
-  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
-  return currentEpochTime;
+    uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+    // Do NOT apply an offset if the timestamp is obviously bad
+    if (isRTCSane(currentEpochTime))
+        currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
+    return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
 
 #endif
 
-// This gets the current epoch time (unix time, ie, the number of seconds
-// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
+// This converts the current UNIX timestamp (ie, the number of seconds
+// from January 1, 1970 00:00:00 UTC) into a DateTime object
+// The DateTime object constructor requires the number of seconds from
+// January 1, 2000 (NOT 1970) as input, so we need to subtract.
 DateTime Logger::dtFromEpoch(uint32_t epochTime)
 {
     DateTime dt(epochTime - EPOCH_TIME_OFF);
@@ -639,7 +660,7 @@ bool Logger::isRTCSane(void)
 }
 bool Logger::isRTCSane(uint32_t epochTime)
 {
-    if (epochTime < 1546300800 ||  /*Before September 01, 2019*/
+    if (epochTime < 1577836800 ||  /*Before January 1, 2020*/
         epochTime > 1735689600)  /*After January 1, 2025*/
     {
         return false;
@@ -1647,9 +1668,6 @@ void Logger::logDataAndPublish(void)
         // and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
 
-        // Turn on the modem to let it start searching for the network
-        if (_logModem != NULL) _logModem->modemPowerUp();
-
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
         // values, and turing them back off.
@@ -1665,33 +1683,42 @@ void Logger::logDataAndPublish(void)
 
         if (_logModem != NULL)
         {
-            // Connect to the network
-            MS_DBG(F("Connecting to the Internet..."));
-            if (_logModem->connectInternet())
+            MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+            if (_logModem->modemWake())
             {
-                // Publish data to remotes
+                // Connect to the network
                 watchDogTimer.resetWatchDog();
-                publishDataToRemotes();
-                watchDogTimer.resetWatchDog();
-
-                if ((Logger::markedEpochTime != 0 &&
-                     Logger::markedEpochTime % 86400 == 43200) ||
-                    !isRTCSane(Logger::markedEpochTime))
-                // Sync the clock at noon
+                MS_DBG(F("Connecting to the Internet..."));
+                if (_logModem->connectInternet())
                 {
-                    MS_DBG(F("Running a daily clock sync..."));
-                    setRTClock(_logModem->getNISTTime());
+                    // Publish data to remotes
+                    watchDogTimer.resetWatchDog();
+                    publishDataToRemotes();
+                    watchDogTimer.resetWatchDog();
+
+                    if ((Logger::markedEpochTime != 0 &&
+                         Logger::markedEpochTime % 86400 == 43200) ||
+                        !isRTCSane(Logger::markedEpochTime))
+                    // Sync the clock at noon
+                    {
+                        MS_DBG(F("Running a daily clock sync..."));
+                        setRTClock(_logModem->getNISTTime());
+                        watchDogTimer.resetWatchDog();
+                    }
+
+                    // Update the modem metadata
+                    MS_DBG(F("Updating modem metadata..."));
+                    _logModem->updateModemMetadata();
+
+                    // Disconnect from the network
+                    MS_DBG(F("Disconnecting from the Internet..."));
+                    _logModem->disconnectInternet();
+                }
+                else
+                {
+                    MS_DBG(F("Could not connect to the internet!"));
                     watchDogTimer.resetWatchDog();
                 }
-
-                // Disconnect from the network
-                MS_DBG(F("Disconnecting from the Internet..."));
-                _logModem->disconnectInternet();
-            }
-            else
-            {
-                MS_DBG(F("Could not connect to the internet!"));
-                watchDogTimer.resetWatchDog();
             }
             // Turn the modem off
             _logModem->modemSleepPowerDown();

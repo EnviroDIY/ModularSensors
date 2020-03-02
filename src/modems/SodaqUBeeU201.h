@@ -20,38 +20,48 @@
 #endif
 
 #define TINY_GSM_MODEM_UBLOX
+#define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// Time after end pulse until V_INT becomes active
-// Unspecified in documentation! Taking value from Lisa U2
+// Status should be monitored on the V_INT pin
+// The time after end of wake pulse until V_INT becomes active is
+// unspecified in documentation; Taking value from Lisa U2
+#define U201_STATUS_LEVEL HIGH
 #define U201_STATUS_TIME_MS 100
-// Power down time "can largely vary depending
-// on the application / network settings and the concurrent module
-// activities."  Vint/status pin should be monitored and power not withdrawn
-// until that pin reads low.  Giving 15sec here in case it is not monitored.
-#define U201_DISCONNECT_TIME_MS 15000L
 
+// U201 is reset with a >50ms low pulse on the RESET_N pin
+#define U201_RESET_LEVEL LOW
+#define U201_RESET_PULSE_MS 75
+
+// Module is switched on by a 50-80 MICRO second LOW pulse on the PWR_ON pin
+#define U201_WAKE_LEVEL LOW
+#define U201_WAKE_PULSE_MS 1
+#define U201_WAKE_TIME_US 65
 // Module turns on when power is applied - level of PWR_ON then irrelevant
 #define U201_WARM_UP_TIME_MS 0
 // Time until system and digital pins are operational
 // (6 sec typical for SARA U201)
 #define U201_ATRESPONSE_TIME_MS 6000L
 
-// How long we're willing to wait to get signal quality
-#define U201_SIGNALQUALITY_TIME_MS 15000L
+// Power down time "can largely vary depending
+// on the application / network settings and the concurrent module
+// activities."  Vint/status pin should be monitored and power not withdrawn
+// until that pin reads low.  Giving 15sec here in case it is not monitored.
+#define U201_DISCONNECT_TIME_MS 15000L
+
+#define MS_MODEM_HAS_BATTERY_DATA
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "LoggerModem.h"
 #include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
-
 
 class SodaqUBeeU201 : public loggerModem
 {
@@ -61,34 +71,32 @@ public:
     SodaqUBeeU201(Stream* modemStream,
                   int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char *apn,
-                  uint8_t measurementsToAverage = 1);
+                  const char *apn);
     ~SodaqUBeeU201();
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    bool modemWake(void) override;
 
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemTemperature(void) override;
+    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    virtual void disconnectInternet(void) override;
 
-    uint32_t getNISTTime(void) override;
+    virtual uint32_t getNISTTime(void) override;
 
-    #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    virtual float getModemChipTemperature(void) override;
+
+#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
 protected:
-    bool didATRespond(void) override;
-    bool isInternetAvailable(void) override;
-    bool verifyMeasurementComplete(bool debug=false) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void)override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
+    bool extraModemSetup(void) override;
 
 private:
     const char *_apn;

@@ -9,8 +9,8 @@
 */
 
 // Header Guards
-#ifndef SequansMonarch_h
-#define SequansMonarch_h
+#ifndef SEQUANSMONARCH_h
+#define SEQUANSMONARCH_h
 
 // Debugging Statement
 // #define MS_SEQUANSMONARCH_DEBUG
@@ -21,28 +21,48 @@
 #endif
 
 #define TINY_GSM_MODEM_SEQUANS_MONARCH
+#define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// ?? Undocumented
-#define MONARCH_STATUS_TIME_MS 500
-// ?? Undocumented (Giving 15sec here in case it is not monitored.)
-#define MONARCH_DISCONNECT_TIME_MS 15000L
+// Depending on firmware, you MIGHT be able to monitor the status on either GPIO2/POWER_MON or GPIO3/STATUS_LED
+// The module integration guide says:
+// GPIO3: Optional STATUS_LED.  Note that the LED function is currently not available.
+// GPIO2:  GPIO or Power monitor (Output) in option.  POWER_MON is high right after POWER_ON,
+// then remains high until shutdown procedure is completed.  Module can be safely electrically power off
+// as soon as POWER_MON goes low.  Note that this feature is currently not available.
+// Very useful, right?
+// The Nimbelink manual for their breakout lists a status pin, but doesn't disclose which of these it is and
+// the time for reporting isn't mentioned either.
+#define VZM20Q_STATUS_LEVEL HIGH
+#define VZM20Q_STATUS_TIME_MS 5000
+
+// Minimum 1µs LOW pulse on RESETN for reset - fast.  Max time not documented.
+#define VZM20Q_RESET_LEVEL LOW
+#define VZM20Q_RESET_PULSE_MS 1
 
 // Module automatically boots when power is applied
-#define MONARCH_WARM_UP_TIME_MS 0
+// To enter PSM, you need to do the following :
+// 1.Request timers from the network
+// 2.Register on the network
+// 3.Pull the RTS pin logic - level HIGH - device will enter PSM a minimum of 100s later
+// To exit PSM, you need to do the following :
+// 1.Pull the RTS pin logic - level LOW
+#define VZM20Q_WARM_UP_TIME_MS 0
+#define VZM20Q_WAKE_LEVEL LOW
+#define VZM20Q_WAKE_PULSE_MS 0
 // ?? Time to UART availability not documented
-#define MONARCH_ATRESPONSE_TIME_MS 5000L
+#define VZM20Q_ATRESPONSE_TIME_MS 15000L
 
-// How long we're willing to wait to get signal quality
-#define MONARCH_SIGNALQUALITY_TIME_MS 15000L
+// ?? Undocumented (Giving 15sec here in case it is not monitored.)
+#define VZM20Q_DISCONNECT_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "LoggerModem.h"
 #include "TinyGsmClient.h"
+#include "LoggerModem.h"
 
 #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -57,34 +77,32 @@ public:
     SequansMonarch(Stream* modemStream,
                    int8_t powerPin, int8_t statusPin,
                    int8_t modemResetPin, int8_t modemSleepRqPin,
-                   const char *apn,
-                   uint8_t measurementsToAverage = 1);
+                   const char *apn);
     ~SequansMonarch();
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    bool modemWake(void) override;
 
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemTemperature(void) override;
+    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    virtual void disconnectInternet(void) override;
 
-    uint32_t getNISTTime(void) override;
+    virtual uint32_t getNISTTime(void) override;
 
-    #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    virtual float getModemChipTemperature(void) override;
+
+#ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
 protected:
-    bool didATRespond(void) override;
-    bool isInternetAvailable(void) override;
-    bool verifyMeasurementComplete(bool debug=false) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void)override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void) override;
 
 private:
     const char *_apn;

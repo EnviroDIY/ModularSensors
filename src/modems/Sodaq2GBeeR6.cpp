@@ -10,29 +10,16 @@
 
 // Included Dependencies
 #include "Sodaq2GBeeR6.h"
-#include "modems/LoggerModemMacros.h"
 
 
 // Constructor
 Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
                            int8_t powerPin, int8_t statusPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
-    : loggerModem(powerPin, statusPin, HIGH,
-                  -1, -1, true,
-                  S2GBR6_STATUS_TIME_MS, S2GBR6_DISCONNECT_TIME_MS,
-                  S2GBR6_WARM_UP_TIME_MS, S2GBR6_ATRESPONSE_TIME_MS,
-                  S2GBR6_SIGNALQUALITY_TIME_MS,
-                  measurementsToAverage),
-#ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      gsmClient(gsmModem)
+                           const char *apn)
+    : SIMComSIM800(modemStream,
+                   powerPin, statusPin, -1, -1,
+                   apn)
 {
-    _apn = apn;
     setVRefPin(-1);
 }
 
@@ -40,45 +27,16 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
 // Constructor
 Sodaq2GBeeR6::Sodaq2GBeeR6(Stream *modemStream,
                            int8_t vRefPin, int8_t statusPin, int8_t powerPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
-    : loggerModem(powerPin, statusPin, HIGH,
-                  -1, -1, true,
-                  S2GBR6_STATUS_TIME_MS, S2GBR6_DISCONNECT_TIME_MS,
-                  S2GBR6_WARM_UP_TIME_MS, S2GBR6_ATRESPONSE_TIME_MS,
-                  S2GBR6_SIGNALQUALITY_TIME_MS,
-                  measurementsToAverage),
-#ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      gsmClient(gsmModem)
+                           const char *apn)
+    : SIMComSIM800(modemStream,
+                   powerPin, statusPin, -1, -1,
+                   apn)
 {
-    _apn = apn;
     setVRefPin(vRefPin);
 }
 
-
 // Destructor
 Sodaq2GBeeR6::~Sodaq2GBeeR6(){}
-
-
-MS_MODEM_DID_AT_RESPOND(Sodaq2GBeeR6);
-MS_MODEM_IS_INTERNET_AVAILABLE(Sodaq2GBeeR6);
-MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(Sodaq2GBeeR6);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(Sodaq2GBeeR6);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(Sodaq2GBeeR6);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(Sodaq2GBeeR6);
-MS_MODEM_CONNECT_INTERNET(Sodaq2GBeeR6);
-MS_MODEM_DISCONNECT_INTERNET(Sodaq2GBeeR6);
-MS_MODEM_GET_NIST_TIME(Sodaq2GBeeR6);
-
-void Sodaq2GBeeR6::setVRefPin(int8_t vRefPin)
-{
-    _vRefPin = vRefPin;
-}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -106,11 +64,17 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
     return success;
 }
 
-
 bool Sodaq2GBeeR6::extraModemSetup(void)
 {
-    gsmModem.init();
+    bool success = gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
-    return true;
+    if (_vRefPin >= 0)
+        pinMode(_vRefPin, OUTPUT);
+    return success;
+}
+
+void Sodaq2GBeeR6::setVRefPin(int8_t vRefPin)
+{
+    _vRefPin = vRefPin;
 }
