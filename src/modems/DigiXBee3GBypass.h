@@ -20,7 +20,6 @@
 #endif
 
 #define TINY_GSM_MODEM_UBLOX
-#define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif

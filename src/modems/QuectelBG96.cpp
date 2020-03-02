@@ -60,6 +60,7 @@ bool QuectelBG96::modemWakeFxn(void)
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         delay(_wakePulse_ms);  // ≥100ms
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        return gsmModem.waitResponse(10000L, GF("RDY")) == 1;
     }
     return true;
 }

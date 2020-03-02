@@ -20,7 +20,6 @@
 #endif
 
 #define TINY_GSM_MODEM_XBEE
-#define MS_MODEM_HAS_TEMPERATURE_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
