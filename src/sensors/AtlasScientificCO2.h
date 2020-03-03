@@ -53,7 +53,7 @@ class AtlasScientificCO2 : public AtlasParent {
                        uint8_t measurementsToAverage = 1);
     ~AtlasScientificCO2();
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 };
 
 // The class for the CO2 Concentration Variable

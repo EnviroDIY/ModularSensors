@@ -61,13 +61,13 @@ class YosemitechParent : public Sensor {
 
     String getSensorLocation(void) override;
 
-    virtual bool setup(void) override;
-    virtual bool wake(void) override;
-    virtual bool sleep(void) override;
+    bool setup(void) override;
+    bool wake(void) override;
+    bool sleep(void) override;
 
     // Override these to use two power pins
-    virtual void powerUp(void) override;
-    virtual void powerDown(void) override;
+    void powerUp(void) override;
+    void powerDown(void) override;
 
     virtual bool addSingleMeasurementResult(void);
 

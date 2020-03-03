@@ -85,7 +85,7 @@ class Decagon5TM : public SDI12Sensors {
     // Destructor
     ~Decagon5TM() {}
 
-    virtual bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 };
 
 

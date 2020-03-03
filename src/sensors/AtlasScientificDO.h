@@ -53,7 +53,7 @@ class AtlasScientificDO : public AtlasParent {
                       uint8_t measurementsToAverage = 1);
     ~AtlasScientificDO();
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 };
 
 // The class for the DO Concentration Variable

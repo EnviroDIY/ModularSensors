@@ -60,7 +60,7 @@ class AtlasScientificEC : public AtlasParent {
                                uint8_t measurementsToAverage = 1);
     ~AtlasScientificEC();
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 };
 
 // The class for the Conductivity Variable

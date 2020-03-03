@@ -48,7 +48,7 @@ class EnviroDIYPublisher : public dataPublisher {
     virtual ~EnviroDIYPublisher();
 
     // Returns the data destination
-    virtual String getEndpoint(void) {
+    String getEndpoint(void) override {
         return String(enviroDIYHost);
     }
 

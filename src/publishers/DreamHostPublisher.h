@@ -46,7 +46,7 @@ class DreamHostPublisher : public dataPublisher {
     virtual ~DreamHostPublisher();
 
     // Returns the data destination
-    virtual String getEndpoint(void) {
+    String getEndpoint(void) override {
         return String(dreamhostHost);
     }
 

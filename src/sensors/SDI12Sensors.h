@@ -66,9 +66,9 @@ class SDI12Sensors : public Sensor {
     String getSensorSerialNumber(void);
     String getSensorLocation(void) override;
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 
-    virtual bool startSingleMeasurement(void);
+    bool         startSingleMeasurement(void) override;
     virtual bool addSingleMeasurementResult(void);
 
  protected:

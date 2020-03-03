@@ -43,15 +43,15 @@ class AtlasParent : public Sensor {
 
     String getSensorLocation(void) override;
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
     // NOTE:  The sensor should wake as soon as any command is sent.
     // I assume that means we can use the command to take a reading to both
     // wake it and ask for a reading.
-    // virtual bool wake(void) override;
-    virtual bool sleep(void) override;
+    // bool wake(void) override;
+    bool sleep(void) override;
 
-    virtual bool startSingleMeasurement(void) override;
-    virtual bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement(void) override;
+    bool addSingleMeasurementResult(void) override;
 
  protected:
     int8_t _i2cAddressHex;

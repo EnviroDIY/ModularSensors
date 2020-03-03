@@ -93,7 +93,7 @@ class MeterTeros11 : public SDI12Sensors {
     // Destructor
     ~MeterTeros11() {}
 
-    virtual bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 };
 
 
