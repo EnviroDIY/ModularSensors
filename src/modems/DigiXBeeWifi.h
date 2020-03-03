@@ -58,9 +58,9 @@ public:
     bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
     float getModemChipTemperature(void) override;
 
-    bool updateModemMetadata(void);
+    bool updateModemMetadata(void) override;
 
-    #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
+#ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif
 

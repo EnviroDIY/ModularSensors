@@ -300,6 +300,14 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
 {
     bool success = true;
 
+    // Unset whatever we had previously
+    loggerModem::_priorRSSI = -9999;
+    loggerModem::_priorSignalPercent = -9999;
+    loggerModem::_priorBatteryState = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp = -9999;
+
     // Initialize variable
     int16_t signalQual = -9999;
 
@@ -317,15 +325,14 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
     MS_DBG(F("Raw signal quality:"), signalQual);
 
     // Convert signal quality to RSSI
-    _priorRSSI = signalQual;
-    _priorSignalPercent = getPctFromRSSI(signalQual);
-
-    MS_DBG(F("CURRENT RSSI:"), _priorRSSI);
-    MS_DBG(F("CURRENT Percent signal strength:"), _priorSignalPercent);
+    loggerModem::_priorRSSI = signalQual;
+    MS_DBG(F("CURRENT RSSI:"), signalQual);
+    loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
+    MS_DBG(F("CURRENT Percent signal strength:"), getPctFromRSSI(signalQual));
 
     MS_DBG(F("Getting chip temperature:"));
-    _priorModemTemp = getModemChipTemperature();
-    MS_DBG(F("CURRENT Modem temperature:"), _priorModemTemp);
+    loggerModem::_priorModemTemp = getModemChipTemperature();
+    MS_DBG(F("CURRENT Modem temperature:"), loggerModem::_priorModemTemp);
 
     // Exit command modem
     MS_DBG(F("Leaving Command Mode:"));

@@ -373,8 +373,6 @@ bool loggerModem::updateModemMetadata(void)
     loggerModem::_priorBatteryPercent = -9999;
     loggerModem::_priorBatteryPercent = -9999;
     loggerModem::_priorModemTemp = -9999;
-    // loggerModem::_priorActivationDuration = -9999;
-    // loggerModem::_priorPoweredDuration = -9999;
 
     // Initialize variable
     int16_t rssi = -9999;
