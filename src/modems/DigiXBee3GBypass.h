@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for Digi Cellular XBee's BASED ON UBLOX CHIPS in bypass mode
-*/
+ */
 
 // Header Guards
 #ifndef DigiXBee3GBypass_h
@@ -34,15 +34,12 @@
 #include <StreamDebugger.h>
 #endif
 
-class DigiXBee3GBypass : public DigiXBee
-{
-
-public:
+class DigiXBee3GBypass : public DigiXBee {
+ public:
     // Constructor/Destructor
-    DigiXBee3GBypass(Stream* modemStream,
-                           int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-                           int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn);
+    DigiXBee3GBypass(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+                     bool useCTSStatus, int8_t modemResetPin,
+                     int8_t modemSleepRqPin, const char* apn);
     ~DigiXBee3GBypass();
 
     bool modemWake(void) override;
@@ -52,8 +49,9 @@ public:
 
     uint32_t getNISTTime(void) override;
 
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                               uint16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool modemHardReset(void) override;
@@ -62,16 +60,15 @@ public:
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
+    TinyGsm       gsmModem;
     TinyGsmClient gsmClient;
 
-protected:
+ protected:
     bool isInternetAvailable(void) override;
     bool extraModemSetup(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
 #endif  // Header Guard

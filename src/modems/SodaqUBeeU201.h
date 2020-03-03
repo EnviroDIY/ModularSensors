@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is the Sodaq UBee based on the u-blox SARA U201 3G Cellular Module
-*/
+ */
 
 // Header Guards
 #ifndef SodaqUBeeU201_h
@@ -61,15 +61,12 @@
 #include <StreamDebugger.h>
 #endif
 
-class SodaqUBeeU201 : public loggerModem
-{
-
-public:
+class SodaqUBeeU201 : public loggerModem {
+ public:
     // Constructor/Destructor
-    SodaqUBeeU201(Stream* modemStream,
-                  int8_t powerPin, int8_t statusPin,
+    SodaqUBeeU201(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char *apn);
+                  const char* apn);
     ~SodaqUBeeU201();
 
     bool modemWake(void) override;
@@ -79,26 +76,27 @@ public:
 
     virtual uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    virtual bool  getModemSignalQuality(int16_t& rssi,
+                                        int16_t& percent) override;
+    virtual bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                                       uint16_t& milliVolts) override;
     virtual float getModemChipTemperature(void) override;
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
+    TinyGsm       gsmModem;
     TinyGsmClient gsmClient;
 
-protected:
+ protected:
     virtual bool isInternetAvailable(void) override;
     virtual bool modemSleepFxn(void) override;
     virtual bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
+    bool         extraModemSetup(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
 #endif  // Header Guard

@@ -7,7 +7,7 @@
  *This file SHOULD work for essentially any breakout of the Espressif ESP8266
  *wifi chip as long as the chip has been flashed with Espressif's AT command
  *firmware.
-*/
+ */
 
 // Header Guards
 #ifndef EspressifESP8266_h
@@ -67,15 +67,12 @@
 #endif
 
 
-class EspressifESP8266 : public loggerModem
-{
-
-public:
+class EspressifESP8266 : public loggerModem {
+ public:
     // Constructor/Destructor
-    EspressifESP8266(Stream* modemStream,
-                     int8_t powerPin, int8_t statusPin,
+    EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                      int8_t modemResetPin, int8_t modemSleepRqPin,
-                     const char *ssid, const char *pwd,
+                     const char* ssid, const char* pwd,
                      int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
     ~EspressifESP8266();
 
@@ -86,34 +83,35 @@ public:
 
     virtual uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    virtual bool  getModemSignalQuality(int16_t& rssi,
+                                        int16_t& percent) override;
+    virtual bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                                       uint16_t& milliVolts) override;
     virtual float getModemChipTemperature(void) override;
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
-    TinyGsm gsmModem;
+    TinyGsm       gsmModem;
     TinyGsmClient gsmClient;
 
     // Need the stream for tossing junk on boot
-    Stream *_modemStream;
+    Stream* _modemStream;
 
-protected:
+ protected:
     virtual bool isInternetAvailable(void) override;
     virtual bool modemSleepFxn(void) override;
     virtual bool modemWakeFxn(void) override;
     virtual bool extraModemSetup(void) override;
 
-private:
-    bool ESPwaitForBoot(void);
-    const char *_ssid;
-    const char *_pwd;
+ private:
+    bool        ESPwaitForBoot(void);
+    const char* _ssid;
+    const char* _pwd;
 
     int8_t _espSleepRqPin;
     int8_t _espStatusPin;
-
 };
 
 #endif  // Header Guard

@@ -5,27 +5,26 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for Digi Cellular XBee's BASED ON UBLOX CHIPS in bypass mode
-*/
+ */
 
 // Included Dependencies
 #include "DigiXBeeLTEBypass.h"
 #include "LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
-                           int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-                           int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn)
-  : DigiXBee(powerPin, statusPin, useCTSStatus,
-             modemResetPin, modemSleepRqPin),
-    #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-    gsmModem(_modemATDebugger),
-    #else
-    gsmModem(*modemStream),
-    #endif
-    gsmClient(gsmModem)
-{
+DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
+                                     int8_t statusPin, bool useCTSStatus,
+                                     int8_t modemResetPin,
+                                     int8_t modemSleepRqPin, const char* apn)
+    : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
+               modemSleepRqPin),
+#ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
+      _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
+      gsmModem(_modemATDebugger),
+#else
+      gsmModem(*modemStream),
+#endif
+      gsmClient(gsmModem) {
     _apn = apn;
 }
 
@@ -44,54 +43,53 @@ MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeLTEBypass);
 
-bool DigiXBeeLTEBypass::extraModemSetup(void)
-{
+bool DigiXBeeLTEBypass::extraModemSetup(void) {
     bool success = false;
     MS_DBG(F("Putting XBee into command mode..."));
-    for (uint8_t i = 0; i < 5; i++)
-    {
-        delay(1010);                      // Wait the required guard time before entering command mode
+    for (uint8_t i = 0; i < 5; i++) {
+        // Wait the required guard time before entering command mode
+        delay(1010);
         gsmModem.streamWrite(GF("+++"));  // enter command mode
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
-    if (success)
-    {
+    if (success) {
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        gsmModem.sendAT(GF("D8"),1);
+        gsmModem.sendAT(GF("D8"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Turn on status indication pin - it will be HIGH when the XBee is awake
+        // Turn on status indication pin - will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
-        gsmModem.sendAT(GF("D9"),1);
+        gsmModem.sendAT(GF("D9"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
-        // This can be used as proxy for status indication if the true status pin is not accessible
+        // Turn on CTS pin - it will be LOW when the XBee is ready to receive
+        // commands This can be used as proxy for status indication if the true
+        // status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-        gsmModem.sendAT(GF("D7"),1);
+        gsmModem.sendAT(GF("D7"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Turn on the associate LED (if you're using a board with one)
         // NOTE:  Only pin 15/DIO5 can be used for this function
-        gsmModem.sendAT(GF("D5"),1);
+        gsmModem.sendAT(GF("D5"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Turn on the RSSI indicator LED (if you're using a board with one)
         // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
-        gsmModem.sendAT(GF("P0"),1);
+        gsmModem.sendAT(GF("P0"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(GF("SM"),1);
+        gsmModem.sendAT(GF("SM"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Setting Other Options..."));
         // Disable remote manager, USB Direct, and LTE PSM
         // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
-        gsmModem.sendAT(GF("DO"),0);
+        gsmModem.sendAT(GF("DO"), 0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
-        gsmModem.sendAT(GF("P1"),0);
+        gsmModem.sendAT(GF("P1"), 0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // MS_DBG(F("Setting Cellular Carrier Options..."));
         // // Carrier Profile - 1 = No profile/SIM ICCID selected
@@ -100,9 +98,10 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         // // Cellular network technology - LTE-M/NB IoT
         // gsmModem.sendAT(GF("N#"),0);
         // success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Make sure airplane mode is off - bypass and airplane mode are incompatible
+        // Make sure airplane mode is off - bypass and airplane mode are
+        // incompatible
         MS_DBG(F("Making sure airplane mode is off..."));
-        gsmModem.sendAT(GF("AM"),0);
+        gsmModem.sendAT(GF("AM"), 0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Turning on Bypass Mode..."));
         // Turn on bypass mode
@@ -114,7 +113,8 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         // Apply changes
         gsmModem.sendAT(GF("AC"));
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Force reset to actually enter bypass mode - this effectively exits command mode
+        // Force reset to actually enter bypass mode - this effectively exits
+        // command mode
         MS_DBG(F("Resetting the module to reboot in bypass mode..."));
         gsmModem.sendAT(GF("FR"));
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
@@ -124,39 +124,31 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         success &= gsmModem.init();
         gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
-    }
-    else
-    {
+    } else {
         success = false;
     }
 
-    if (success)
-    {
+    if (success) {
         MS_DBG(F("... Setup successful!"));
-    }
-    else
-    {
+    } else {
         MS_DBG(F("... setup failed!"));
     }
     return success;
 }
 
-bool DigiXBeeLTEBypass::modemHardReset(void)
-{
+bool DigiXBeeLTEBypass::modemHardReset(void) {
     bool success = false;
     // If the u-blox cellular component isn't responding but the Digi processor
     // is, use the Digi API to reset the cellular component
     MS_DBG(F("Returning XBee to command mode..."));
-    for (uint8_t i = 0; i < 5; i++)
-    {
-        delay(1010);  // Wait the required guard time before entering command mode
-        gsmModem.streamWrite(GF("+++")); // enter command mode
+    for (uint8_t i = 0; i < 5; i++) {
+        // Wait the required guard time before entering command mode
+        delay(1010);
+        gsmModem.streamWrite(GF("+++"));  // enter command mode
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
-        if (success)
-            break;
+        if (success) break;
     }
-    if (success)
-    {
+    if (success) {
         MS_DBG(F("... and forcing a reset of the cellular component."));
         // Force a reset of the undelying cellular component
         gsmModem.sendAT(GF("!R"));
@@ -164,9 +156,7 @@ bool DigiXBeeLTEBypass::modemHardReset(void)
         // Exit command mode
         gsmModem.sendAT(GF("CN"));
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
-    }
-    else
-    {
+    } else {
         MS_DBG(F("... failed!  Using a pin reset on the XBee."));
         success = loggerModem::modemHardReset();
     }
