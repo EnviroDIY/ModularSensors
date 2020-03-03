@@ -9,8 +9,8 @@
  */
 
 // Header Guards
-#ifndef SEQUANSMONARCH_h
-#define SEQUANSMONARCH_h
+#ifndef SRC_MODEMS_SEQUANSMONARCH_H_
+#define SRC_MODEMS_SEQUANSMONARCH_H_
 
 // Debugging Statement
 // #define MS_SEQUANSMONARCH_DEBUG
@@ -111,4 +111,4 @@ class SequansMonarch : public loggerModem {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SEQUANSMONARCH_H_

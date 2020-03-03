@@ -17,8 +17,8 @@
  */
 
 // Header Guards
-#ifndef KellerParent_h
-#define KellerParent_h
+#ifndef SRC_SENSORS_KELLERPARENT_H_
+#define SRC_SENSORS_KELLERPARENT_H_
 
 // Debugging Statement
 // #define MS_KELLERPARENT_DEBUG
@@ -83,4 +83,4 @@ class KellerParent : public Sensor {
     int8_t      _powerPin2;
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_KELLERPARENT_H_

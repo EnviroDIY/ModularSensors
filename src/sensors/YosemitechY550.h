@@ -32,8 +32,8 @@
  */
 
 // Header Guards
-#ifndef YosemitechY550_h
-#define YosemitechY550_h
+#ifndef SRC_SENSORS_YOSEMITECHY550_H_
+#define SRC_SENSORS_YOSEMITECHY550_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -124,4 +124,4 @@ class YosemitechY550_Turbidity : public Variable {
     ~YosemitechY550_Turbidity() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY550_H_

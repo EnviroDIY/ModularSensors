@@ -18,8 +18,8 @@
  */
 
 // Header Guards
-#ifndef MaximDS3231_h
-#define MaximDS3231_h
+#ifndef SRC_SENSORS_MAXIMDS3231_H_
+#define SRC_SENSORS_MAXIMDS3231_H_
 
 // Debugging Statement
 // #define MS_MAXIMDS3231_DEBUG
@@ -77,4 +77,4 @@ class MaximDS3231_Temp : public Variable {
     ~MaximDS3231_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_MAXIMDS3231_H_

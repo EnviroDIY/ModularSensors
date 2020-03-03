@@ -9,8 +9,8 @@
  */
 
 // Header Guards
-#ifndef Sodaq2GBeeR6_h
-#define Sodaq2GBeeR6_h
+#ifndef SRC_MODEMS_SODAQ2GBEER6_H_
+#define SRC_MODEMS_SODAQ2GBEER6_H_
 
 // Debugging Statement
 // #define MS_SODAQ2GBEER6_DEBUG
@@ -61,4 +61,4 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     int8_t _vRefPin;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SODAQ2GBEER6_H_

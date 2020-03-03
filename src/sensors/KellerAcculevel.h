@@ -16,8 +16,8 @@
  */
 
 // Header Guards
-#ifndef KellerAcculevel_h
-#define KellerAcculevel_h
+#ifndef SRC_SENSORS_KELLERACCULEVEL_H_
+#define SRC_SENSORS_KELLERACCULEVEL_H_
 
 // Included Dependencies
 #include "sensors/KellerParent.h"
@@ -106,4 +106,4 @@ class KellerAcculevel_Height : public Variable {
     ~KellerAcculevel_Height() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_KELLERACCULEVEL_H_

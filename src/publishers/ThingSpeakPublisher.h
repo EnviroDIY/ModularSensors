@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef ThingSpeakPublisher_h
-#define ThingSpeakPublisher_h
+#ifndef SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_
+#define SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_
 
 // Debugging Statement
 // #define MS_THINGSPEAKPUBLISHER_DEBUG
@@ -100,4 +100,4 @@ class ThingSpeakPublisher : public dataPublisher {
     PubSubClient _mqttClient;
 };
 
-#endif  // Header Guard
+#endif  // SRC_PUBLISHERS_THINGSPEAKPUBLISHER_H_

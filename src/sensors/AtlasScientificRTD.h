@@ -12,8 +12,8 @@
  */
 
 // Header Guards
-#ifndef AtlasScientificRTD_h
-#define AtlasScientificRTD_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICRTD_H_
+#define SRC_SENSORS_ATLASSCIENTIFICRTD_H_
 
 // Included Dependencies
 #include "sensors/AtlasParent.h"
@@ -62,4 +62,4 @@ class AtlasScientificRTD_Temp : public Variable {
     ~AtlasScientificRTD_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICRTD_H_

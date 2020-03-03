@@ -13,8 +13,8 @@
  */
 
 // Header Guards
-#ifndef AtlasParent_h
-#define AtlasParent_h
+#ifndef SRC_SENSORS_ATLASPARENT_H_
+#define SRC_SENSORS_ATLASPARENT_H_
 
 // Debugging Statement
 // #define MS_ATLASPARENT_DEBUG
@@ -62,4 +62,4 @@ class AtlasParent : public Sensor {
     bool waitForProcessing(uint32_t timeout = 1000L);
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASPARENT_H_

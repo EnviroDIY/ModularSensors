@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef VariableArray_h
-#define VariableArray_h
+#ifndef SRC_VARIABLEARRAY_H_
+#define SRC_VARIABLEARRAY_H_
 
 // Debugging Statement
 // #define MS_VARIABLEARRAY_DEBUG
@@ -123,4 +123,4 @@ class VariableArray {
 #endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
 };
 
-#endif  // Header Guard
+#endif  // SRC_VARIABLEARRAY_H_

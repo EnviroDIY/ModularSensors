@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef SensorBase_h
-#define SensorBase_h
+#ifndef SRC_SENSORBASE_H_
+#define SRC_SENSORBASE_H_
 
 // Debugging Statement
 // #define MS_SENSORBASE_DEBUG
@@ -208,4 +208,4 @@ class Sensor {
     Variable* variables[MAX_NUMBER_VARS];
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORBASE_H_

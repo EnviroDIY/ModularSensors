@@ -9,8 +9,8 @@
  */
 
 // Header Guards
-#ifndef SodaqUBeeR410M_h
-#define SodaqUBeeR410M_h
+#ifndef SRC_MODEMS_SODAQUBEER410M_H_
+#define SRC_MODEMS_SODAQUBEER410M_H_
 
 // Debugging Statement
 // #define MS_SODAQUBEER410M_DEBUG
@@ -111,4 +111,4 @@ class SodaqUBeeR410M : public loggerModem {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SODAQUBEER410M_H_

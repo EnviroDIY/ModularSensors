@@ -51,8 +51,8 @@
  */
 
 // Header Guards
-#ifndef ExternalVoltage_h
-#define ExternalVoltage_h
+#ifndef SRC_SENSORS_EXTERNALVOLTAGE_H_
+#define SRC_SENSORS_EXTERNALVOLTAGE_H_
 
 // Debugging Statement
 // #define MS_EXTERNALVOLTAGE_DEBUG
@@ -123,4 +123,4 @@ class ExternalVoltage_Volt : public Variable {
     ~ExternalVoltage_Volt() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_EXTERNALVOLTAGE_H_

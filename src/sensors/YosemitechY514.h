@@ -29,8 +29,8 @@
  */
 
 // Header Guards
-#ifndef YosemitechY514_h
-#define YosemitechY514_h
+#ifndef SRC_SENSORS_YOSEMITECHY514_H_
+#define SRC_SENSORS_YOSEMITECHY514_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -101,4 +101,4 @@ class YosemitechY514_Temp : public Variable {
                    "degreeCelsius", "Y514Temp") {}
     ~YosemitechY514_Temp() {}
 };
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY514_H_

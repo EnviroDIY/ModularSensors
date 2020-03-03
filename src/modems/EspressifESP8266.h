@@ -10,8 +10,8 @@
  */
 
 // Header Guards
-#ifndef EspressifESP8266_h
-#define EspressifESP8266_h
+#ifndef SRC_MODEMS_ESPRESSIFESP8266_H_
+#define SRC_MODEMS_ESPRESSIFESP8266_H_
 
 // Debugging Statement
 // #define MS_ESPRESSIFESP8266_DEBUG
@@ -114,4 +114,4 @@ class EspressifESP8266 : public loggerModem {
     int8_t _espStatusPin;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

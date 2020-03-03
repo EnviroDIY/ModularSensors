@@ -26,8 +26,8 @@
  */
 
 // Header Guards
-#ifndef AOSongDHT_h
-#define AOSongDHT_h
+#ifndef SRC_SENSORS_AOSONGDHT_H_
+#define SRC_SENSORS_AOSONGDHT_H_
 
 // Debugging Statement
 // #define MS_AOSONGDHT_DEBUG
@@ -140,4 +140,4 @@ class AOSongDHT_HI : public Variable {
     ~AOSongDHT_HI() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_AOSONGDHT_H_

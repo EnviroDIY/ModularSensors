@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef VariableBase_h
-#define VariableBase_h
+#ifndef SRC_VARIABLEBASE_H_
+#define SRC_VARIABLEBASE_H_
 
 // Debugging Statement
 // #define MS_VARIABLEBASE_DEBUG
@@ -124,4 +124,4 @@ class Variable {
     const char* _uuid;
 };
 
-#endif  // Header Guard
+#endif  // SRC_VARIABLEBASE_H_

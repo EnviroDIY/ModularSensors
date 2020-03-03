@@ -9,8 +9,8 @@
  */
 
 // Header Guards
-#ifndef EnviroDIYPublisher_h
-#define EnviroDIYPublisher_h
+#ifndef SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_
+#define SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_
 
 // Debugging Statement
 // #define MS_ENVIRODIYPUBLISHER_DEBUG
@@ -99,4 +99,4 @@ class EnviroDIYPublisher : public dataPublisher {
     const char* _registrationToken;
 };
 
-#endif  // Header Guard
+#endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

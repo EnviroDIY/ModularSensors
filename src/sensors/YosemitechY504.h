@@ -28,8 +28,8 @@
  */
 
 // Header Guards
-#ifndef YosemitechY504_h
-#define YosemitechY504_h
+#ifndef SRC_SENSORS_YOSEMITECHY504_H_
+#define SRC_SENSORS_YOSEMITECHY504_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -121,4 +121,4 @@ class YosemitechY504_DOmgL : public Variable {
     ~YosemitechY504_DOmgL() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY504_H_

@@ -33,13 +33,13 @@
  */
 
 // Header Guards
-#ifndef MeterTeros11_h
-#define MeterTeros11_h
+#ifndef SRC_SENSORS_METERTEROS11_H_
+#define SRC_SENSORS_METERTEROS11_H_
 
 // Debugging Statement
 // #define MS_MeterTeros11_DEBUG
 
-#ifdef MS_MeterTeros11_DEBUG
+#ifdef MS_METERTEROS11_DEBUG
 #define MS_DEBUGGING_STD "MeterTeros11"
 #endif
 
@@ -143,4 +143,4 @@ class MeterTeros11_VWC : public Variable {
     ~MeterTeros11_VWC() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_METERTEROS11_H_

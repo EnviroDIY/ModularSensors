@@ -27,8 +27,8 @@
  */
 
 // Header Guards
-#ifndef DecagonES2_h
-#define DecagonES2_h
+#ifndef SRC_SENSORS_DECAGONES2_H_
+#define SRC_SENSORS_DECAGONES2_H_
 
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
@@ -101,4 +101,4 @@ class DecagonES2_Temp : public Variable {
     ~DecagonES2_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_DECAGONES2_H_

@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef SodaqUBeeU201_h
-#define SodaqUBeeU201_h
+#ifndef SRC_MODEMS_SODAQUBEEU201_H_
+#define SRC_MODEMS_SODAQUBEEU201_H_
 
 // Debugging Statement
 // #define MS_SODAQUBEEU201_DEBUG
@@ -99,4 +99,4 @@ class SodaqUBeeU201 : public loggerModem {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SODAQUBEEU201_H_

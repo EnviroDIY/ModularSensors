@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef DigiXBee_h
-#define DigiXBee_h
+#ifndef SRC_MODEMS_DIGIXBEE_H_
+#define SRC_MODEMS_DIGIXBEE_H_
 
 // Debugging Statement
 // #define MS_DIGIXBEE_DEBUG
@@ -66,4 +66,4 @@ class DigiXBee : public loggerModem {
     bool modemWakeFxn(void) override;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_DIGIXBEE_H_

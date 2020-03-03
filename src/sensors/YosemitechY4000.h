@@ -62,8 +62,8 @@
 */
 
 // Header Guards
-#ifndef YosemitechY4000_h
-#define YosemitechY4000_h
+#ifndef SRC_SENSORS_YOSEMITECHY4000_H_
+#define SRC_SENSORS_YOSEMITECHY4000_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -246,4 +246,4 @@ class YosemitechY4000_BGA : public Variable {
 };
 
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY4000_H_

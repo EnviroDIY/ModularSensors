@@ -24,8 +24,8 @@
  */
 
 // Header Guards
-#ifndef AOSongAM2315_h
-#define AOSongAM2315_h
+#ifndef SRC_SENSORS_AOSONGAM2315_H_
+#define SRC_SENSORS_AOSONGAM2315_H_
 
 // Debugging Statement
 // #define MS_AOSONGAM2315_DEBUG
@@ -81,7 +81,7 @@ class AOSongAM2315_Humidity : public Variable {
         : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
                    (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
                    "percent", "AM2315Humidity") {}
-    ~AOSongAM2315_Humidity(){}
+    ~AOSongAM2315_Humidity() {}
 };
 
 
@@ -97,7 +97,7 @@ class AOSongAM2315_Temp : public Variable {
         : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
                    (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "AM2315Temp") {}
-    ~AOSongAM2315_Temp(){}
+    ~AOSongAM2315_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_AOSONGAM2315_H_

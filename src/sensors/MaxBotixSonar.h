@@ -14,8 +14,8 @@
  */
 
 // Header Guards
-#ifndef MaxBotixSonar_h
-#define MaxBotixSonar_h
+#ifndef SRC_SENSORS_MAXBOTIXSONAR_H_
+#define SRC_SENSORS_MAXBOTIXSONAR_H_
 
 // Debugging Statement
 // #define MS_MAXBOTIXSONAR_DEBUG
@@ -74,4 +74,4 @@ class MaxBotixSonar_Range : public Variable {
     ~MaxBotixSonar_Range() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_MAXBOTIXSONAR_H_

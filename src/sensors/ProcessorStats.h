@@ -13,8 +13,8 @@
  */
 
 // Header Guards
-#ifndef ProcessorStats_h
-#define ProcessorStats_h
+#ifndef SRC_SENSORS_PROCESSORSTATS_H_
+#define SRC_SENSORS_PROCESSORSTATS_H_
 
 // Debugging Statement
 // #define MS_PROCESSORSTATS_DEBUG
@@ -113,4 +113,4 @@ class ProcessorStats_SampleNumber : public Variable {
     ~ProcessorStats_SampleNumber() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_PROCESSORSTATS_H_

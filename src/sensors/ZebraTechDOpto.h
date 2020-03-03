@@ -33,8 +33,8 @@
  */
 
 // Header Guards
-#ifndef ZebraTechDOpto_h
-#define ZebraTechDOpto_h
+#ifndef SRC_SENSORS_ZEBRATECHDOPTO_H_
+#define SRC_SENSORS_ZEBRATECHDOPTO_H_
 
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
@@ -129,4 +129,4 @@ class ZebraTechDOpto_DOmgL : public Variable {
     ~ZebraTechDOpto_DOmgL() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ZEBRATECHDOPTO_H_

@@ -12,8 +12,8 @@
  */
 
 // Header Guards
-#ifndef AtlasScientificpH_h
-#define AtlasScientificpH_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICPH_H_
+#define SRC_SENSORS_ATLASSCIENTIFICPH_H_
 
 // Included Dependencies
 #include "sensors/AtlasParent.h"
@@ -59,4 +59,4 @@ class AtlasScientificpH_pH : public Variable {
     ~AtlasScientificpH_pH() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICPH_H_

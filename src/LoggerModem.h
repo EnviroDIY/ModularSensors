@@ -9,8 +9,8 @@
  */
 
 // Header Guards
-#ifndef LoggerModem_h
-#define LoggerModem_h
+#ifndef SRC_LOGGERMODEM_H_
+#define SRC_LOGGERMODEM_H_
 
 // FOR DEBUGGING
 // #define MS_LOGGERMODEM_DEBUG
@@ -288,4 +288,4 @@ class Modem_Temp : public Variable {
 // };
 
 // #include <LoggerModem.tpp>
-#endif  // Header Guard
+#endif  // SRC_LOGGERMODEM_H_

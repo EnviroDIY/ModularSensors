@@ -12,8 +12,8 @@
  */
 
 // Header Guards
-#ifndef AtlasScientificDO_h
-#define AtlasScientificDO_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICDO_H_
+#define SRC_SENSORS_ATLASSCIENTIFICDO_H_
 
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICDO_DEBUG
@@ -88,4 +88,4 @@ class AtlasScientificDO_DOpct : public Variable {
     ~AtlasScientificDO_DOpct() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICDO_H_

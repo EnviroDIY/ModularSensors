@@ -26,8 +26,8 @@
  */
 
 // Header Guards
-#ifndef CampbellOBS3_h
-#define CampbellOBS3_h
+#ifndef SRC_SENSORS_CAMPBELLOBS3_H_
+#define SRC_SENSORS_CAMPBELLOBS3_H_
 
 // Debugging Statement
 // #define MS_CAMPBELLOBS3_DEBUG
@@ -127,4 +127,4 @@ class CampbellOBS3_Voltage : public Variable {
     ~CampbellOBS3_Voltage() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_CAMPBELLOBS3_H_

@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef DigiXBeeWifi_h
-#define DigiXBeeWifi_h
+#ifndef SRC_MODEMS_DIGIXBEEWIFI_H_
+#define SRC_MODEMS_DIGIXBEEWIFI_H_
 
 // Debugging Statement
 // #define MS_DIGIXBEEWIFI_DEBUG
@@ -72,4 +72,4 @@ class DigiXBeeWifi : public DigiXBee {
     const char* _pwd;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_DIGIXBEEWIFI_H_

@@ -9,8 +9,8 @@
 */
 
 // Header Guards
-#ifndef LoggerBase_h
-#define LoggerBase_h
+#ifndef SRC_LOGGERBASE_H_
+#define SRC_LOGGERBASE_H_
 
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
@@ -406,4 +406,4 @@ class Logger {
     static volatile bool startTesting;
 };
 
-#endif  // Header Guard
+#endif  // SRC_LOGGERBASE_H_

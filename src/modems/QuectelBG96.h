@@ -9,8 +9,8 @@
  */
 
 // Header Guards
-#ifndef QuectelBG96_h
-#define QuectelBG96_h
+#ifndef SRC_MODEMS_QUECTELBG96_H_
+#define SRC_MODEMS_QUECTELBG96_H_
 
 // Debugging Statement
 // #define MS_QUECTELBG96_DEBUG
@@ -98,4 +98,4 @@ class QuectelBG96 : public loggerModem {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_QUECTELBG96_H_

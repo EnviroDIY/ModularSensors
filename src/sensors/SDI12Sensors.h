@@ -12,8 +12,8 @@
  */
 
 // Header Guards
-#ifndef SDI12Sensors_h
-#define SDI12Sensors_h
+#ifndef SRC_SENSORS_SDI12SENSORS_H_
+#define SRC_SENSORS_SDI12SENSORS_H_
 
 // Debugging Statement
 // #define MS_SDI12SENSORS_DEBUG
@@ -83,4 +83,4 @@ class SDI12Sensors : public Sensor {
     String _sensorSerialNumber;
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_SDI12SENSORS_H_

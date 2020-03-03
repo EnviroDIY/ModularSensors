@@ -23,8 +23,8 @@
  */
 
 // Header Guards
-#ifndef MaximDS18_h
-#define MaximDS18_h
+#ifndef SRC_SENSORS_MAXIMDS18_H_
+#define SRC_SENSORS_MAXIMDS18_H_
 
 // Debugging Statement
 // #define MS_MAXIMDS18_DEBUG
@@ -93,4 +93,4 @@ class MaximDS18_Temp : public Variable {
     ~MaximDS18_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_MAXIMDS18_H_

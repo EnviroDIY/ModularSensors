@@ -32,8 +32,8 @@
  */
 
 // Header Guards
-#ifndef DecagonCTD_h
-#define DecagonCTD_h
+#ifndef SRC_SENSORS_DECAGONCTD_H_
+#define SRC_SENSORS_DECAGONCTD_H_
 
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
@@ -127,4 +127,4 @@ class DecagonCTD_Depth : public Variable {
     ~DecagonCTD_Depth() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_DECAGONCTD_H_

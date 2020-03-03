@@ -28,8 +28,8 @@
  */
 
 // Header Guards
-#ifndef Decagon5TM_h
-#define Decagon5TM_h
+#ifndef SRC_SENSORS_DECAGON5TM_H_
+#define SRC_SENSORS_DECAGON5TM_H_
 
 // Debugging Statement
 // #define MS_DECAGON5TM_DEBUG
@@ -132,4 +132,4 @@ class Decagon5TM_VWC : public Variable {
     ~Decagon5TM_VWC() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_DECAGON5TM_H_

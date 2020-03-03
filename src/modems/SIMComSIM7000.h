@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef SIMComSIM7000_h
-#define SIMComSIM7000_h
+#ifndef SRC_MODEMS_SIMCOMSIM7000_H_
+#define SRC_MODEMS_SIMCOMSIM7000_H_
 
 // Debugging Statement
 // #define MS_SIMCOMSIM7000_DEBUG
@@ -97,4 +97,4 @@ class SIMComSIM7000 : public loggerModem {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SIMCOMSIM7000_H_

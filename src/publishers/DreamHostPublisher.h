@@ -9,8 +9,8 @@
  */
 
 // Header Guards
-#ifndef DreamHostPublisher_h
-#define DreamHostPublisher_h
+#ifndef SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_
+#define SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_
 
 // Debugging Statement
 // #define MS_DREAMHOSTPUBLISHER_DEBUG
@@ -83,4 +83,4 @@ class DreamHostPublisher : public dataPublisher {
     bool        _dualPost = true;
 };
 
-#endif  // Header Guard
+#endif  // SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_

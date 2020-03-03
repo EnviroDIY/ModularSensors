@@ -10,8 +10,8 @@
  */
 
 // Header Guards
-#ifndef SIMComSIM800_h
-#define SIMComSIM800_h
+#ifndef SRC_MODEMS_SIMCOMSIM800_H_
+#define SRC_MODEMS_SIMCOMSIM800_H_
 
 // Debugging Statement
 // #define MS_SIMCOMSIM800_DEBUG
@@ -100,4 +100,4 @@ class SIMComSIM800 : public loggerModem {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SIMCOMSIM800_H_

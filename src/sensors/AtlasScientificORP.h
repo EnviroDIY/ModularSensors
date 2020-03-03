@@ -12,8 +12,8 @@
  */
 
 // Header Guards
-#ifndef AtlasScientificORP_h
-#define AtlasScientificORP_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICORP_H_
+#define SRC_SENSORS_ATLASSCIENTIFICORP_H_
 
 // Included Dependencies
 #include "sensors/AtlasParent.h"
@@ -62,4 +62,4 @@ class AtlasScientificORP_Potential : public Variable {
     ~AtlasScientificORP_Potential() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICORP_H_

@@ -31,8 +31,8 @@
 */
 
 // Header Guards
-#ifndef ApogeeSQ212_h
-#define ApogeeSQ212_h
+#ifndef SRC_SENSORS_APOGEESQ212_H_
+#define SRC_SENSORS_APOGEESQ212_H_
 
 // Debugging Statement
 // #define MS_APOGEESQ212_DEBUG
@@ -105,7 +105,7 @@ class ApogeeSQ212_PAR : public Variable {
                    (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
                    "microeinsteinPerSquareMeterPerSecond",
                    "photosyntheticallyActiveRadiation") {}
-    ~ApogeeSQ212_PAR(){}
+    ~ApogeeSQ212_PAR() {}
 };
 
 
@@ -121,7 +121,7 @@ class ApogeeSQ212_Voltage : public Variable {
         : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
                    (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt",
                    "SQ212Voltage") {}
-    ~ApogeeSQ212_Voltage(){}
+    ~ApogeeSQ212_Voltage() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_APOGEESQ212_H_

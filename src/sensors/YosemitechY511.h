@@ -28,8 +28,8 @@
  */
 
 // Header Guards
-#ifndef YosemitechY511_h
-#define YosemitechY511_h
+#ifndef SRC_SENSORS_YOSEMITECHY511_H_
+#define SRC_SENSORS_YOSEMITECHY511_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -107,4 +107,4 @@ class YosemitechY511_Temp : public Variable {
     ~YosemitechY511_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY511_H_

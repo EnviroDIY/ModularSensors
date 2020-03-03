@@ -19,8 +19,8 @@
  */
 
 // Header Guards
-#ifndef RainCounterI2C_h
-#define RainCounterI2C_h
+#ifndef SRC_SENSORS_RAINCOUNTERI2C_H_
+#define SRC_SENSORS_RAINCOUNTERI2C_H_
 
 // Debugging Statement
 // #define MS_RAINCOUNTERI2C_DEBUG
@@ -100,4 +100,4 @@ class RainCounterI2C_Depth : public Variable {
 };
 
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_RAINCOUNTERI2C_H_

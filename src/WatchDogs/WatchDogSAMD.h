@@ -12,8 +12,8 @@
 */
 
 // Header Guards
-#ifndef WatchDogSAMD_h
-#define WatchDogSAMD_h
+#ifndef SRC_WATCHDOGS_WATCHDOGSAMD_H_
+#define SRC_WATCHDOGS_WATCHDOGSAMD_H_
 
 // Debugging Statement
 // #define MS_WATCHDOGSAMD_DEBUG
@@ -49,4 +49,4 @@ class extendedWatchDogSAMD {
     uint32_t _resetTime_s;
 };
 
-#endif
+#endif  // SRC_WATCHDOGS_WATCHDOGSAMD_H_

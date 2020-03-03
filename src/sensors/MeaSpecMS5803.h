@@ -43,8 +43,8 @@
 */
 
 // Header Guards
-#ifndef MeaSpecMS5803_h
-#define MeaSpecMS5803_h
+#ifndef SRC_SENSORS_MEASSPECMS5803_H_
+#define SRC_SENSORS_MEASSPECMS5803_H_
 
 // Debugging Statement
 // #define MS_MEASSPECMS5803_DEBUG
@@ -124,4 +124,4 @@ class MeaSpecMS5803_Pressure : public Variable {
 };
 
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_MEASSPECMS5803_H_

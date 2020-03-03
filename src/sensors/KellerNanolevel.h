@@ -16,8 +16,8 @@
  */
 
 // Header Guards
-#ifndef KellerNanolevel_h
-#define KellerNanolevel_h
+#ifndef SRC_SENSORS_KELLERNANOLEVEL_H_
+#define SRC_SENSORS_KELLERNANOLEVEL_H_
 
 // Included Dependencies
 #include "sensors/KellerParent.h"
@@ -106,4 +106,4 @@ class KellerNanolevel_Height : public Variable {
     ~KellerNanolevel_Height() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_KELLERNANOLEVEL_H_

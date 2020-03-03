@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef DigiXBee3GBypass_h
-#define DigiXBee3GBypass_h
+#ifndef SRC_MODEMS_DIGIXBEE3GBYPASS_H_
+#define SRC_MODEMS_DIGIXBEE3GBYPASS_H_
 
 // Debugging Statement
 // #define MS_DIGIXBEE3GBYPASS_DEBUG
@@ -71,4 +71,4 @@ class DigiXBee3GBypass : public DigiXBee {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_DIGIXBEE3GBYPASS_H_

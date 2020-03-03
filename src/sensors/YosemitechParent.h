@@ -14,8 +14,8 @@
  */
 
 // Header Guards
-#ifndef YosemitechParent_h
-#define YosemitechParent_h
+#ifndef SRC_SENSORS_YOSEMITECHPARENT_H_
+#define SRC_SENSORS_YOSEMITECHPARENT_H_
 
 // Debugging Statement
 // #define MS_YOSEMITECHPARENT_DEBUG
@@ -79,4 +79,4 @@ class YosemitechParent : public Sensor {
     int8_t          _powerPin2;
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHPARENT_H_

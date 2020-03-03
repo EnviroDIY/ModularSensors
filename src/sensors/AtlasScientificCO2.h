@@ -12,8 +12,8 @@
  */
 
 // Header Guards
-#ifndef AtlasScientificCO2_h
-#define AtlasScientificCO2_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICCO2_H_
+#define SRC_SENSORS_ATLASSCIENTIFICCO2_H_
 
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICCO2_DEBUG
@@ -86,4 +86,4 @@ class AtlasScientificCO2_Temp : public Variable {
     ~AtlasScientificCO2_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICCO2_H_

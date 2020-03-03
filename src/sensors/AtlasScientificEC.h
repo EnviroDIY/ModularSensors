@@ -13,8 +13,8 @@
  */
 
 // Header Guards
-#ifndef AtlasScientificEC_h
-#define AtlasScientificEC_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICEC_H_
+#define SRC_SENSORS_ATLASSCIENTIFICEC_H_
 
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICEC_DEBUG
@@ -124,4 +124,4 @@ class AtlasScientificEC_SpecificGravity : public Variable {
     ~AtlasScientificEC_SpecificGravity() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICEC_H_

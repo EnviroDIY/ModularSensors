@@ -26,8 +26,8 @@
  */
 
 // Header Guards
-#ifndef TIINA219_h
-#define TIINA219_h
+#ifndef SRC_SENSORS_TIINA219_H_
+#define SRC_SENSORS_TIINA219_H_
 
 // Debugging Statement
 // #define MS_TIINA219_DEBUG
@@ -129,4 +129,4 @@ class TIINA219_Power : public Variable {
                    "TIINA219Power") {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_TIINA219_H_

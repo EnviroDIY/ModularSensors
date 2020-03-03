@@ -29,8 +29,8 @@
  */
 
 // Header Guards
-#ifndef YosemitechY532_h
-#define YosemitechY532_h
+#ifndef SRC_SENSORS_YOSEMITECHY532_H_
+#define SRC_SENSORS_YOSEMITECHY532_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -119,4 +119,4 @@ class YosemitechY532_Voltage : public Variable {
     ~YosemitechY532_Voltage() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY532_H_

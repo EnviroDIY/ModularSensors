@@ -29,8 +29,8 @@
  */
 
 // Header Guards
-#ifndef YosemitechY520_h
-#define YosemitechY520_h
+#ifndef SRC_SENSORS_YOSEMITECHY520_H_
+#define SRC_SENSORS_YOSEMITECHY520_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -102,4 +102,4 @@ class YosemitechY520_Temp : public Variable {
     ~YosemitechY520_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY520_H_

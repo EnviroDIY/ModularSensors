@@ -31,8 +31,8 @@
  */
 
 // Header Guards
-#ifndef BoschBME280_h
-#define BoschBME280_h
+#ifndef SRC_SENSORS_BOSCHBME280_H_
+#define SRC_SENSORS_BOSCHBME280_H_
 
 // Debugging Statement
 // #define MS_BOSCHBME280_DEBUG
@@ -155,4 +155,4 @@ class BoschBME280_Altitude : public Variable {
 };
 
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_BOSCHBME280_H_

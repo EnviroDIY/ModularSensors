@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef DigiXBeeCellularTransparent_h
-#define DigiXBeeCellularTransparent_h
+#ifndef SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_
+#define SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_
 
 // Debugging Statement
 // #define MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
@@ -74,4 +74,4 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_

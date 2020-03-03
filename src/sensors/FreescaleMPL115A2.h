@@ -22,8 +22,8 @@
  */
 
 // Header Guards
-#ifndef FreescaleMPL115A2_h
-#define FreescaleMPL115A2_h
+#ifndef SRC_SENSORS_FREESCALEMPL115A2_H_
+#define SRC_SENSORS_FREESCALEMPL115A2_H_
 
 // Debugging Statement
 // #define MS_FREESCALEMPL115A2_DEBUG
@@ -101,4 +101,4 @@ class MPL115A2_Pressure : public Variable {
 };
 
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_FREESCALEMPL115A2_H_

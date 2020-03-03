@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef dataPublisherBase_h
-#define dataPublisherBase_h
+#ifndef SRC_DATAPUBLISHERBASE_H_
+#define SRC_DATAPUBLISHERBASE_H_
 
 // Debugging Statement
 // #define MS_DATAPUBLISHERBASE_DEBUG
@@ -105,4 +105,4 @@ class dataPublisher {
     static const char* hostHeader;
 };
 
-#endif  // Header Guard
+#endif  // SRC_DATAPUBLISHERBASE_H_
