@@ -315,7 +315,7 @@
         return true;                                                                   \
     }
 
-#ifdef MS_MODEM_HAS_BATTERY_DATA
+#ifdef TINY_GSM_MODEM_HAS_BATTERY
 #define MS_MODEM_GET_MODEM_BATTERY_DATA(specificModem)                                                    \
     bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
     {                                                                                                     \
@@ -335,7 +335,7 @@
     }
 #endif
 
-#ifdef MS_MODEM_HAS_TEMPERATURE_DATA
+#ifdef TINY_GSM_MODEM_HAS_TEMPERATURE
 #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem) \
     float specificModem::getModemChipTemperature(void)     \
     {                                                      \

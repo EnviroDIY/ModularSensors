@@ -20,7 +20,6 @@
 #endif
 
 #define TINY_GSM_MODEM_UBLOX
-#define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
@@ -51,7 +50,6 @@
 // until that pin reads low.  Giving 15sec here in case it is not monitored.
 #define U201_DISCONNECT_TIME_MS 15000L
 
-#define MS_MODEM_HAS_BATTERY_DATA
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

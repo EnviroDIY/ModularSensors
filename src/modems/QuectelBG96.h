@@ -21,7 +21,6 @@
 #endif
 
 #define TINY_GSM_MODEM_BG96
-#define MS_MODEM_HAS_BATTERY_DATA
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
@@ -40,7 +39,7 @@
 // Using something between those times for wake and using AT commands for sleep,
 // we should keep in the proper state.
 #define BG96_WAKE_LEVEL LOW
-#define BG96_WAKE_PULSE_MS 200
+#define BG96_WAKE_PULSE_MS 110
 // Time after VBAT is stable before PWRKEY can be used is >30ms
 #define BG96_WARM_UP_TIME_MS 100
 // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9

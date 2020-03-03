@@ -399,7 +399,7 @@ bool loggerModem::updateModemMetadata(void)
     success &= getModemBatteryStats(state, bpercent, volt);
     MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
     MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
-    MS_DBG(F("CURRENT Modem Battery Voltage:"), bpercent);
+    MS_DBG(F("CURRENT Modem Battery Voltage:"), volt);
     if (state != 99)
         loggerModem::_priorBatteryState = (float)state;
     else
