@@ -15,7 +15,7 @@
  * The clock should have a separate power supply and never be turned off.
  * We assume it's always warmed up and stable.
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
-*/
+ */
 
 // Header Guards
 #ifndef MaximDS3231_h
@@ -45,10 +45,10 @@
 
 
 // The "Main" class for the DS3231
-// Only need a sleep and wake since these DON'T use the default of powering up and down
-class MaximDS3231 : public Sensor
-{
-public:
+// Only need a sleep and wake since these DON'T use the default of powering up
+// and down
+class MaximDS3231 : public Sensor {
+ public:
     // Only input is the number of readings to average
     MaximDS3231(uint8_t measurementsToAverage = 1);
     // Destructor
@@ -63,24 +63,18 @@ public:
 };
 
 
-class MaximDS3231_Temp : public Variable
-{
-public:
-    MaximDS3231_Temp(Sensor *parentSense,
-                     const char *uuid = "",
-                     const char *varCode = "BoardTemp")
-      : Variable(parentSense,
-                 (const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class MaximDS3231_Temp : public Variable {
+ public:
+    MaximDS3231_Temp(Sensor* parentSense, const char* uuid = "",
+                     const char* varCode = "BoardTemp")
+        : Variable(parentSense, (const uint8_t)DS3231_TEMP_VAR_NUM,
+                   (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
+                   "degreeCelsius", varCode, uuid) {}
     MaximDS3231_Temp()
-      : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius", "BoardTemp")
-    {}
-    ~MaximDS3231_Temp(){}
+        : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
+                   (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
+                   "degreeCelsius", "BoardTemp") {}
+    ~MaximDS3231_Temp() {}
 };
 
 #endif  // Header Guard

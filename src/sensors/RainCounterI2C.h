@@ -4,18 +4,19 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for an external tip counter, used to measure rainfall via a tipping bucket
- *rain gauge
+ *This file is for an external tip counter, used to measure rainfall via a
+ *tipping bucket rain gauge
  *
  *Documentation for the sensor can be found at:
  *https://github.com/EnviroDIY/TippingBucketRainCounter
  *
  * For Rainfall:
  *  Accuracy and resolution are dependent on the sensor used
- *  Standard resolution is 0.01" or 0.2mm of rainfall (depending on if sensor is set to english or metric)
+ *  Standard resolution is 0.01" or 0.2mm of rainfall (depending on if sensor is
+ *set to english or metric)
  *
  * Assume sensor is immediately stable
-*/
+ */
 
 // Header Guards
 #ifndef RainCounterI2C_h
@@ -48,9 +49,8 @@
 #define BUCKET_TIPS_VAR_NUM 1
 
 // The main class for the external tipping bucket counter
-class RainCounterI2C : public Sensor
-{
-public:
+class RainCounterI2C : public Sensor {
+ public:
     // The constructor - all arguments are optional
     // Address of I2C device is 0x08 by default
     // Depth of rain per tip event in mm is 0.2mm by default
@@ -58,55 +58,45 @@ public:
     // Destructor
     ~RainCounterI2C();
 
-    bool setup(void) override;
+    bool   setup(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
-protected:
-    float _rainPerTip;
+
+ protected:
+    float   _rainPerTip;
     uint8_t _i2cAddressHex;
 };
 
 // Defines the tip varible, shows the number of tips since last read
-class RainCounterI2C_Tips : public Variable
-{
-public:
-    RainCounterI2C_Tips(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "RainCounterI2CTips")
-      : Variable(parentSense,
-                 (const uint8_t)BUCKET_TIPS_VAR_NUM,
-                 (uint8_t)BUCKET_TIPS_RESOLUTION,
-                 "precipitation", "event",
-                 varCode, uuid)
-    {}
+class RainCounterI2C_Tips : public Variable {
+ public:
+    RainCounterI2C_Tips(Sensor* parentSense, const char* uuid = "",
+                        const char* varCode = "RainCounterI2CTips")
+        : Variable(parentSense, (const uint8_t)BUCKET_TIPS_VAR_NUM,
+                   (uint8_t)BUCKET_TIPS_RESOLUTION, "precipitation", "event",
+                   varCode, uuid) {}
     RainCounterI2C_Tips()
-      : Variable((const uint8_t)BUCKET_TIPS_VAR_NUM,
-                 (uint8_t)BUCKET_TIPS_RESOLUTION,
-                 "precipitation", "event", "RainCounterI2CTips")
-    {}
-    ~RainCounterI2C_Tips(){}
+        : Variable((const uint8_t)BUCKET_TIPS_VAR_NUM,
+                   (uint8_t)BUCKET_TIPS_RESOLUTION, "precipitation", "event",
+                   "RainCounterI2CTips") {}
+    ~RainCounterI2C_Tips() {}
 };
 
-// Defines the depth of rain variable, shows the number of mm since the last read
-class RainCounterI2C_Depth : public Variable
-{
-public:
-    RainCounterI2C_Depth(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "RainCounterI2CVol")
-      : Variable(parentSense,
-                 (const uint8_t)BUCKET_RAIN_VAR_NUM,
-                 (uint8_t)BUCKET_RAIN_RESOLUTION,
-                 "precipitation", "millimeter",
-                 varCode, uuid)
-    {}
+// Defines the depth of rain variable, shows the number of mm since the last
+// read
+class RainCounterI2C_Depth : public Variable {
+ public:
+    RainCounterI2C_Depth(Sensor* parentSense, const char* uuid = "",
+                         const char* varCode = "RainCounterI2CVol")
+        : Variable(parentSense, (const uint8_t)BUCKET_RAIN_VAR_NUM,
+                   (uint8_t)BUCKET_RAIN_RESOLUTION, "precipitation",
+                   "millimeter", varCode, uuid) {}
     RainCounterI2C_Depth()
-      : Variable((const uint8_t)BUCKET_RAIN_VAR_NUM,
-                 (uint8_t)BUCKET_RAIN_RESOLUTION,
-                 "precipitation", "millimeter", "RainCounterI2CVol")
-    {}
-    ~RainCounterI2C_Depth(){}
+        : Variable((const uint8_t)BUCKET_RAIN_VAR_NUM,
+                   (uint8_t)BUCKET_RAIN_RESOLUTION, "precipitation",
+                   "millimeter", "RainCounterI2CVol") {}
+    ~RainCounterI2C_Depth() {}
 };
 
 

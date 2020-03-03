@@ -19,7 +19,7 @@
  *
  * Sensor takes about 1.6 ms to respond
  * Assume sensor is immediately stable
-*/
+ */
 
 // Header Guards
 #ifndef FreescaleMPL115A2_h
@@ -53,63 +53,51 @@
 
 
 // The main class for the MPL115A2
-class MPL115A2 : public Sensor
-{
-public:
+class MPL115A2 : public Sensor {
+ public:
     MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
     ~MPL115A2();
 
-    bool setup(void) override;
+    bool   setup(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
-protected:
+
+ protected:
     Adafruit_MPL115A2 mpl115a2_internal;
-    uint8_t _i2cAddressHex;
+    uint8_t           _i2cAddressHex;
 };
 
 
 // Defines the Temperature Variable
-class MPL115A2_Temp : public Variable
-{
-public:
-    MPL115A2_Temp(Sensor *parentSense,
-                  const char *uuid = "",
-                  const char *varCode = "MPL115A2_Temp")
-      : Variable(parentSense,
-                 (const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                 (uint8_t)MPL115A2_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class MPL115A2_Temp : public Variable {
+ public:
+    MPL115A2_Temp(Sensor* parentSense, const char* uuid = "",
+                  const char* varCode = "MPL115A2_Temp")
+        : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     MPL115A2_Temp()
-      : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                 (uint8_t)MPL115A2_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "MPL115A2_Temp")
-    {}
-    ~MPL115A2_Temp(){}
+        : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "MPL115A2_Temp") {}
+    ~MPL115A2_Temp() {}
 };
 
 
 // Defines the Pressure Variable
-class MPL115A2_Pressure : public Variable
-{
-public:
-    MPL115A2_Pressure(Sensor *parentSense,
-                      const char *uuid = "",
-                      const char *varCode = "MPL115A2_Pressure")
-      : Variable(parentSense,
-                 (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                 (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
-                 "atmosphericPressure", "kilopascal",
-                 varCode, uuid)
-    {}
+class MPL115A2_Pressure : public Variable {
+ public:
+    MPL115A2_Pressure(Sensor* parentSense, const char* uuid = "",
+                      const char* varCode = "MPL115A2_Pressure")
+        : Variable(parentSense, (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION, "atmosphericPressure",
+                   "kilopascal", varCode, uuid) {}
     MPL115A2_Pressure()
-      : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                 (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
-                 "atmosphericPressure", "kilopascal", "MPL115A2_Pressure")
-    {}
-    ~MPL115A2_Pressure(){}
+        : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION, "atmosphericPressure",
+                   "kilopascal", "MPL115A2_Pressure") {}
+    ~MPL115A2_Pressure() {}
 };
 
 

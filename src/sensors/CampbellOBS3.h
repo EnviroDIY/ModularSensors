@@ -23,7 +23,7 @@
  *
  * Minimum stabilization time: 2s
  * Maximum data rate = 10Hz (100ms/sample)
-*/
+ */
 
 // Header Guards
 #ifndef CampbellOBS3_h
@@ -46,8 +46,8 @@
 #define ADS1115_ADDRESS 0x48
 // 1001 000 (ADDR = GND)
 
-// low and high range are treated as completely independent, so only 2 "variables"
-// One for the raw voltage and another for the calibrated turbidity.
+// low and high range are treated as completely independent, so only 2
+// "variables" One for the raw voltage and another for the calibrated turbidity.
 // To get both high and low range values, create two sensor objects!
 #define OBS3_NUM_VARIABLES 2
 // Using the warm-up time of the ADS1115
@@ -70,13 +70,14 @@
 #endif
 
 // The main class for the Campbell OBS3
-class CampbellOBS3 : public Sensor
-{
-public:
-    // The constructor - need the power pin, the ADS1X15 data channel, and the calibration info
-    CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
-                 float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
-                 uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
+class CampbellOBS3 : public Sensor {
+ public:
+    // The constructor - need the power pin, the ADS1X15 data channel, and the
+    // calibration info
+    CampbellOBS3(int8_t powerPin, uint8_t adsChannel, float x2_coeff_A,
+                 float x1_coeff_B, float x0_coeff_C,
+                 uint8_t i2cAddress            = ADS1115_ADDRESS,
+                 uint8_t measurementsToAverage = 1);
     // Destructor
     ~CampbellOBS3();
 
@@ -84,9 +85,9 @@ public:
 
     bool addSingleMeasurementResult(void) override;
 
-protected:
+ protected:
     uint8_t _adsChannel;
-    float _x2_coeff_A, _x1_coeff_B, _x0_coeff_C;
+    float   _x2_coeff_A, _x1_coeff_B, _x0_coeff_C;
     uint8_t _i2cAddress;
 };
 
@@ -95,47 +96,35 @@ protected:
 // To utilize both high and low gain turbidity, you must create *two* sensor
 // objects on two different data pins and then create two variable objects, one
 // tied to each sensor.
-class CampbellOBS3_Turbidity : public Variable
-{
-public:
-    CampbellOBS3_Turbidity(Sensor *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "OBS3Turbidity")
-      : Variable(parentSense,
-                 (const uint8_t)OBS3_TURB_VAR_NUM,
-                 (uint8_t)OBS3_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit",
-                 varCode, uuid)
-    {}
+class CampbellOBS3_Turbidity : public Variable {
+ public:
+    CampbellOBS3_Turbidity(Sensor* parentSense, const char* uuid = "",
+                           const char* varCode = "OBS3Turbidity")
+        : Variable(parentSense, (const uint8_t)OBS3_TURB_VAR_NUM,
+                   (uint8_t)OBS3_RESOLUTION, "turbidity",
+                   "nephelometricTurbidityUnit", varCode, uuid) {}
     CampbellOBS3_Turbidity()
-      : Variable((const uint8_t)OBS3_TURB_VAR_NUM,
-                 (uint8_t)OBS3_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity")
-    {}
-    ~CampbellOBS3_Turbidity(){}
+        : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
+                   "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity") {
+    }
+    ~CampbellOBS3_Turbidity() {}
 };
 
 
 // Also returning raw voltage
 // This could be helpful if the calibration equation was typed incorrectly
-class CampbellOBS3_Voltage : public Variable
-{
-public:
-    CampbellOBS3_Voltage(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "OBS3Voltage")
-      : Variable(parentSense,
-                 (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
-                 (uint8_t)OBS3_VOLT_RESOLUTION,
-                 "voltage", "volt",
-                 varCode, uuid)
-    {}
+class CampbellOBS3_Voltage : public Variable {
+ public:
+    CampbellOBS3_Voltage(Sensor* parentSense, const char* uuid = "",
+                         const char* varCode = "OBS3Voltage")
+        : Variable(parentSense, (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                   (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt", varCode,
+                   uuid) {}
     CampbellOBS3_Voltage()
-      : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
-                 (uint8_t)OBS3_VOLT_RESOLUTION,
-                 "voltage", "volt", "OBS3Voltage")
-    {}
-    ~CampbellOBS3_Voltage(){}
+        : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                   (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt",
+                   "OBS3Voltage") {}
+    ~CampbellOBS3_Voltage() {}
 };
 
 #endif  // Header Guard

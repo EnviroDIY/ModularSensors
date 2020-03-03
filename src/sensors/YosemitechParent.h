@@ -11,7 +11,7 @@
  *information about the various variables, can be found
  *in the EnviroDIY Yosemitech library at:
  * https://github.com/EnviroDIY/YosemitechModbus
-*/
+ */
 
 // Header Guards
 #ifndef YosemitechParent_h
@@ -38,17 +38,24 @@
 #include <YosemitechModbus.h>
 
 // The main class for the Yosemitech Sensors
-class YosemitechParent : public Sensor
-{
-public:
-    YosemitechParent(byte modbusAddress, Stream* stream,
-                     int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-                     yosemitechModel model = UNKNOWN, const char *sensName = "Yosemitech-Sensor", uint8_t numVariables = 2,
-                     uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
-    YosemitechParent(byte modbusAddress, Stream& stream,
-                     int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-                     yosemitechModel model = UNKNOWN, const char *sensName = "Yosemitech-Sensor", uint8_t numVariables = 2,
-                     uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
+class YosemitechParent : public Sensor {
+ public:
+    YosemitechParent(byte modbusAddress, Stream* stream, int8_t powerPin,
+                     int8_t powerPin2, int8_t enablePin = -1,
+                     uint8_t         measurementsToAverage = 1,
+                     yosemitechModel model                 = UNKNOWN,
+                     const char*     sensName = "Yosemitech-Sensor",
+                     uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
+                     uint32_t stabilizationTime_ms = 20000,
+                     uint32_t measurementTime_ms   = 2000);
+    YosemitechParent(byte modbusAddress, Stream& stream, int8_t powerPin,
+                     int8_t powerPin2, int8_t enablePin = -1,
+                     uint8_t         measurementsToAverage = 1,
+                     yosemitechModel model                 = UNKNOWN,
+                     const char*     sensName = "Yosemitech-Sensor",
+                     uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
+                     uint32_t stabilizationTime_ms = 20000,
+                     uint32_t measurementTime_ms   = 2000);
     virtual ~YosemitechParent();
 
     String getSensorLocation(void) override;
@@ -63,13 +70,13 @@ public:
 
     virtual bool addSingleMeasurementResult(void);
 
-private:
-    yosemitech sensor;
+ private:
+    yosemitech      sensor;
     yosemitechModel _model;
-    byte _modbusAddress;
-    Stream* _stream;
-    int8_t _RS485EnablePin;
-    int8_t _powerPin2;
+    byte            _modbusAddress;
+    Stream*         _stream;
+    int8_t          _RS485EnablePin;
+    int8_t          _powerPin2;
 };
 
 #endif  // Header Guard

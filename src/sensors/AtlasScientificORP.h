@@ -34,38 +34,32 @@
 #define ATLAS_ORP_VAR_NUM 0
 
 // The main class for the Atlas Scientific ORP temperature sensor
-class AtlasScientificORP : public AtlasParent
-{
-public:
-    AtlasScientificORP(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+class AtlasScientificORP : public AtlasParent {
+ public:
+    AtlasScientificORP(int8_t  powerPin,
+                       uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
-                   ATLAS_ORP_MEASUREMENT_TIME_MS)
-    {}
-    ~AtlasScientificORP(){}
+        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                      ATLAS_ORP_WARM_UP_TIME_MS,
+                      ATLAS_ORP_STABILIZATION_TIME_MS,
+                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+    ~AtlasScientificORP() {}
 };
 
 // The class for the oxidation/reduction potential Variable
-class AtlasScientificORP_Potential : public Variable
-{
-public:
-    AtlasScientificORP_Potential(Sensor *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "AtlasORP")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_ORP_VAR_NUM,
-                 (uint8_t)ATLAS_ORP_RESOLUTION,
-                 "reductionPotential", "millivolt",
-                 varCode, uuid)
-    {}
+class AtlasScientificORP_Potential : public Variable {
+ public:
+    AtlasScientificORP_Potential(Sensor* parentSense, const char* uuid = "",
+                                 const char* varCode = "AtlasORP")
+        : Variable(parentSense, (const uint8_t)ATLAS_ORP_VAR_NUM,
+                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
+                   "millivolt", varCode, uuid) {}
     AtlasScientificORP_Potential()
-      : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
-                 (uint8_t)ATLAS_ORP_RESOLUTION,
-                 "reductionPotential", "millivolt", "AtlasORP")
-    {}
-    ~AtlasScientificORP_Potential(){}
+        : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
+                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
+                   "millivolt", "AtlasORP") {}
+    ~AtlasScientificORP_Potential() {}
 };
 
 #endif  // Header Guard

@@ -34,38 +34,29 @@
 #define ATLAS_PH_VAR_NUM 0
 
 // The main class for the Atlas Scientific pH temperature sensor
-class AtlasScientificpH : public AtlasParent
-{
-public:
-    AtlasScientificpH(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+class AtlasScientificpH : public AtlasParent {
+ public:
+    AtlasScientificpH(int8_t  powerPin,
+                      uint8_t i2cAddressHex         = ATLAS_PH_I2C_ADDR,
                       uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                   "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
-                   ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
-                   ATLAS_PH_MEASUREMENT_TIME_MS)
-    {}
-    ~AtlasScientificpH(){}
+        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                      "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
+                      ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
+                      ATLAS_PH_MEASUREMENT_TIME_MS) {}
+    ~AtlasScientificpH() {}
 };
 
 // The class for the pH variable
-class AtlasScientificpH_pH : public Variable
-{
-public:
-    AtlasScientificpH_pH(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "AtlaspH")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_PH_VAR_NUM,
-                 (uint8_t)ATLAS_PH_RESOLUTION,
-                 "pH", "pH",
-                 varCode, uuid)
-    {}
+class AtlasScientificpH_pH : public Variable {
+ public:
+    AtlasScientificpH_pH(Sensor* parentSense, const char* uuid = "",
+                         const char* varCode = "AtlaspH")
+        : Variable(parentSense, (const uint8_t)ATLAS_PH_VAR_NUM,
+                   (uint8_t)ATLAS_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     AtlasScientificpH_pH()
-      : Variable((const uint8_t)ATLAS_PH_VAR_NUM,
-                 (uint8_t)ATLAS_PH_RESOLUTION,
-                 "pH", "pH", "AtlaspH")
-    {}
-    ~AtlasScientificpH_pH(){}
+        : Variable((const uint8_t)ATLAS_PH_VAR_NUM,
+                   (uint8_t)ATLAS_PH_RESOLUTION, "pH", "pH", "AtlaspH") {}
+    ~AtlasScientificpH_pH() {}
 };
 
 #endif  // Header Guard

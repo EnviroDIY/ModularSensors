@@ -5,7 +5,8 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super class.
+ *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ *class.
  *
  *Documentation for the SDI-12 Protocol commands and responses
  *for the Decagon 5TM can be found at:
@@ -24,7 +25,7 @@
  *
  * Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
  * Maximum measurement duration: 200ms
-*/
+ */
 
 // Header Guards
 #ifndef Decagon5TM_h
@@ -62,95 +63,73 @@
 #define TM_VWC_VAR_NUM 2
 
 // The main class for the Decagon 5TM
-class Decagon5TM : public SDI12Sensors
-{
-public:
+class Decagon5TM : public SDI12Sensors {
+ public:
     // Constructors with overloads
-    Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "Decagon5TM", TM_NUM_VARIABLES,
-                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
-    {}
-    Decagon5TM(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "Decagon5TM", TM_NUM_VARIABLES,
-                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
-    {}
-    Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "Decagon5TM", TM_NUM_VARIABLES,
-                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
-    {}
+    Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin,
+               uint8_t measurementsToAverage = 1)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
+                       TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS) {}
+    Decagon5TM(char* SDI12address, int8_t powerPin, int8_t dataPin,
+               uint8_t measurementsToAverage = 1)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
+                       TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS) {}
+    Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin,
+               uint8_t measurementsToAverage = 1)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
+                       TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS) {}
     // Destructor
-    ~Decagon5TM(){}
+    ~Decagon5TM() {}
 
     virtual bool addSingleMeasurementResult(void) override;
 };
 
 
 // Defines the Ea/Matric Potential Variable
-class Decagon5TM_Ea : public Variable
-{
-public:
-    Decagon5TM_Ea(Sensor *parentSense,
-                  const char *uuid = "",
-                  const char *varCode = "SoilEa")
-      : Variable(parentSense,
-                 (const uint8_t)TM_EA_VAR_NUM,
-                 (uint8_t)TM_EA_RESOLUTION,
-                 "permittivity", "faradPerMeter",
-                 varCode, uuid)
-    {}
+class Decagon5TM_Ea : public Variable {
+ public:
+    Decagon5TM_Ea(Sensor* parentSense, const char* uuid = "",
+                  const char* varCode = "SoilEa")
+        : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM,
+                   (uint8_t)TM_EA_RESOLUTION, "permittivity", "faradPerMeter",
+                   varCode, uuid) {}
     Decagon5TM_Ea()
-      : Variable((const uint8_t)TM_EA_VAR_NUM,
-                 (uint8_t)TM_EA_RESOLUTION,
-                 "permittivity", "faradPerMeter", "SoilEa")
-    {}
-    ~Decagon5TM_Ea(){}
+        : Variable((const uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
+                   "permittivity", "faradPerMeter", "SoilEa") {}
+    ~Decagon5TM_Ea() {}
 };
 
 
 // Defines the Temperature Variable
-class Decagon5TM_Temp : public Variable
-{
-public:
-    Decagon5TM_Temp(Sensor *parentSense,
-                    const char *uuid = "",
-                    const char *varCode = "SoilTemp")
-      : Variable(parentSense,
-                 (const uint8_t)TM_TEMP_VAR_NUM,
-                 (uint8_t)TM_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class Decagon5TM_Temp : public Variable {
+ public:
+    Decagon5TM_Temp(Sensor* parentSense, const char* uuid = "",
+                    const char* varCode = "SoilTemp")
+        : Variable(parentSense, (const uint8_t)TM_TEMP_VAR_NUM,
+                   (uint8_t)TM_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                   varCode, uuid) {}
     Decagon5TM_Temp()
-      : Variable((const uint8_t)TM_TEMP_VAR_NUM,
-                 (uint8_t)TM_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "SoilTemp")
-    {}
-    ~Decagon5TM_Temp(){}
+        : Variable((const uint8_t)TM_TEMP_VAR_NUM, (uint8_t)TM_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "SoilTemp") {}
+    ~Decagon5TM_Temp() {}
 };
 
 
 // Defines the Volumetric Water Content Variable
-class Decagon5TM_VWC : public Variable
-{
-public:
-    Decagon5TM_VWC(Sensor *parentSense,
-                   const char *uuid = "",
-                   const char *varCode = "SoilVWC")
-      : Variable(parentSense,
-                 (const uint8_t)TM_VWC_VAR_NUM,
-                 (uint8_t)TM_VWC_RESOLUTION,
-                 "volumetricWaterContent", "percent",
-                 varCode, uuid)
-    {}
+class Decagon5TM_VWC : public Variable {
+ public:
+    Decagon5TM_VWC(Sensor* parentSense, const char* uuid = "",
+                   const char* varCode = "SoilVWC")
+        : Variable(parentSense, (const uint8_t)TM_VWC_VAR_NUM,
+                   (uint8_t)TM_VWC_RESOLUTION, "volumetricWaterContent",
+                   "percent", varCode, uuid) {}
     Decagon5TM_VWC()
-      : Variable((const uint8_t)TM_VWC_VAR_NUM,
-                 (uint8_t)TM_VWC_RESOLUTION,
-                 "volumetricWaterContent", "percent", "SoilVWC")
-    {}
-    ~Decagon5TM_VWC(){}
+        : Variable((const uint8_t)TM_VWC_VAR_NUM, (uint8_t)TM_VWC_RESOLUTION,
+                   "volumetricWaterContent", "percent", "SoilVWC") {}
+    ~Decagon5TM_VWC() {}
 };
 
 #endif  // Header Guard

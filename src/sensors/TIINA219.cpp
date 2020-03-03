@@ -7,34 +7,31 @@
 #include "TIINA219.h"
 
 // The constructor - because this is I2C, only need the power pin
-TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
-     : Sensor("TIINA219", INA219_NUM_VARIABLES,
-              INA219_WARM_UP_TIME_MS, INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS,
-              powerPin, -1, measurementsToAverage)
-{
-    _i2cAddressHex  = i2cAddressHex;
+TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex,
+                   uint8_t measurementsToAverage)
+    : Sensor("TIINA219", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
+             INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
+             -1, measurementsToAverage) {
+    _i2cAddressHex = i2cAddressHex;
 }
 // Destructor
-TIINA219::~TIINA219(){};
+TIINA219::~TIINA219(){}
 
 
-String TIINA219::getSensorLocation(void)
-{
+String TIINA219::getSensorLocation(void) {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool TIINA219::setup(void)
-{
+bool TIINA219::setup(void) {
     bool wasOn;
     Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
     wasOn = checkPowerOn();
-    if (!wasOn)
-    {
+    if (!wasOn) {
         powerUp();
         waitForWarmUp();
     }
@@ -42,14 +39,13 @@ bool TIINA219::setup(void)
     ina219_phy.begin();
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) { powerDown(); }
 
     return true;
 }
 
 
-bool TIINA219::wake(void)
-{
+bool TIINA219::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -62,19 +58,17 @@ bool TIINA219::wake(void)
 }
 
 
-bool TIINA219::addSingleMeasurementResult(void)
-{
+bool TIINA219::addSingleMeasurementResult(void) {
     bool success = false;
 
     // Initialize float variables
     float current_mA = -9999;
-    float busV_V = -9999;
-    float power_mW = -9999;
+    float busV_V     = -9999;
+    float power_mW   = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6))
-    {
+    if (bitRead(_sensorStatus, 6)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Read values
@@ -90,9 +84,7 @@ bool TIINA219::addSingleMeasurementResult(void)
         MS_DBG(F("  Current [mA]:"), current_mA);
         MS_DBG(F("  Bus Voltage [V]:"), busV_V);
         MS_DBG(F("  Power [mW]:"), power_mW);
-    }
-    else
-    {
+    } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 

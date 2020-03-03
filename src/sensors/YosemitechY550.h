@@ -24,12 +24,12 @@
  *
  * For COD:
  *     Accuracy is ± ???
- *     Range is 0.75 to 370 mg/L COD (equiv. KHP) 0.2 - 150 mg/L TOC (equiv. KHP)
- *     Resolution is 0.01 mg/L COD
+ *     Range is 0.75 to 370 mg/L COD (equiv. KHP) 0.2 - 150 mg/L TOC (equiv.
+ *KHP) Resolution is 0.01 mg/L COD
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 22sec
-*/
+ */
 
 // Header Guards
 #ifndef YosemitechY550_h
@@ -54,89 +54,74 @@
 #define Y550_TURB_VAR_NUM 2
 
 // The main class for the Decagon Y550
-class YosemitechY550 : public YosemitechParent
-{
-public:
+class YosemitechY550 : public YosemitechParent {
+ public:
     // Constructors with overloads
-    YosemitechY550(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y550, "YosemitechY550", Y550_NUM_VARIABLES,
-                        Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS)
-    {}
-    YosemitechY550(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y550, "YosemitechY550", Y550_NUM_VARIABLES,
-                        Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS)
-    {}
-    ~YosemitechY550(){}
+    YosemitechY550(byte modbusAddress, Stream* stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y550,
+                           "YosemitechY550", Y550_NUM_VARIABLES,
+                           Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS,
+                           Y550_MEASUREMENT_TIME_MS) {}
+    YosemitechY550(byte modbusAddress, Stream& stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y550,
+                           "YosemitechY550", Y550_NUM_VARIABLES,
+                           Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS,
+                           Y550_MEASUREMENT_TIME_MS) {}
+    ~YosemitechY550() {}
 };
 
 
 // Defines the Carbon Oxygen Demand
-class YosemitechY550_COD : public Variable
-{
-public:
-    YosemitechY550_COD(Sensor *parentSense,
-                       const char *uuid = "",
-                       const char *varCode = "Y550COD")
-      : Variable(parentSense,
-                 (const uint8_t)Y550_COD_VAR_NUM,
-                 (uint8_t)Y550_COD_RESOLUTION,
-                 "COD", "milligramPerLiter",
-                 varCode, uuid)
-    {}
+class YosemitechY550_COD : public Variable {
+ public:
+    YosemitechY550_COD(Sensor* parentSense, const char* uuid = "",
+                       const char* varCode = "Y550COD")
+        : Variable(parentSense, (const uint8_t)Y550_COD_VAR_NUM,
+                   (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter",
+                   varCode, uuid) {}
     YosemitechY550_COD()
-      : Variable((const uint8_t)Y550_COD_VAR_NUM,
-                 (uint8_t)Y550_COD_RESOLUTION,
-                 "COD", "milligramPerLiter", "Y550COD")
-    {}
-    ~YosemitechY550_COD(){}
+        : Variable((const uint8_t)Y550_COD_VAR_NUM,
+                   (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter",
+                   "Y550COD") {}
+    ~YosemitechY550_COD() {}
 };
 
 
 // Defines the Temperature Variable
-class YosemitechY550_Temp : public Variable
-{
-public:
-    YosemitechY550_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y550Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y550_TEMP_VAR_NUM,
-                 (uint8_t)Y550_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class YosemitechY550_Temp : public Variable {
+ public:
+    YosemitechY550_Temp(Sensor* parentSense, const char* uuid = "",
+                        const char* varCode = "Y550Temp")
+        : Variable(parentSense, (const uint8_t)Y550_TEMP_VAR_NUM,
+                   (uint8_t)Y550_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     YosemitechY550_Temp()
-      : Variable((const uint8_t)Y550_TEMP_VAR_NUM,
-                 (uint8_t)Y550_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y550Temp")
-    {}
-    ~YosemitechY550_Temp(){}
+        : Variable((const uint8_t)Y550_TEMP_VAR_NUM,
+                   (uint8_t)Y550_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y550Temp") {}
+    ~YosemitechY550_Temp() {}
 };
 
 
 // Defines the Turbidity
-class YosemitechY550_Turbidity : public Variable
-{
-public:
-    YosemitechY550_Turbidity(Sensor *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "Y550Turbidity")
-      : Variable(parentSense,
-                 (const uint8_t)Y550_TURB_VAR_NUM,
-                 (uint8_t)Y550_TURB_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit",
-                 varCode, uuid)
-    {}
+class YosemitechY550_Turbidity : public Variable {
+ public:
+    YosemitechY550_Turbidity(Sensor* parentSense, const char* uuid = "",
+                             const char* varCode = "Y550Turbidity")
+        : Variable(parentSense, (const uint8_t)Y550_TURB_VAR_NUM,
+                   (uint8_t)Y550_TURB_RESOLUTION, "turbidity",
+                   "nephelometricTurbidityUnit", varCode, uuid) {}
     YosemitechY550_Turbidity()
-      : Variable((const uint8_t)Y550_TURB_VAR_NUM,
-                 (uint8_t)Y550_TURB_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit", "Y550Turbidity")
-    {}
-    ~YosemitechY550_Turbidity(){}
+        : Variable((const uint8_t)Y550_TURB_VAR_NUM,
+                   (uint8_t)Y550_TURB_RESOLUTION, "turbidity",
+                   "nephelometricTurbidityUnit", "Y550Turbidity") {}
+    ~YosemitechY550_Turbidity() {}
 };
 
 #endif  // Header Guard

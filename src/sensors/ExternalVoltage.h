@@ -48,7 +48,7 @@
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
-*/
+ */
 
 // Header Guards
 #ifndef ExternalVoltage_h
@@ -86,15 +86,14 @@
 #endif
 
 // The main class for the external votlage monitor
-class ExternalVoltage : public Sensor
-{
-
-public:
+class ExternalVoltage : public Sensor {
+ public:
     // The constructor - need the power pin and the data channel on the ADS1x15
-    // The gain value, I2C address, and number of measurements to average are optional
-    // If nothing is given a 1x gain is used.
+    // The gain value, I2C address, and number of measurements to average are
+    // optional If nothing is given a 1x gain is used.
     ExternalVoltage(int8_t powerPin, uint8_t adsChannel, float gain = 1,
-                    uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
+                    uint8_t i2cAddress            = ADS1115_ADDRESS,
+                    uint8_t measurementsToAverage = 1);
     // Destructor
     ~ExternalVoltage();
 
@@ -102,32 +101,26 @@ public:
 
     bool addSingleMeasurementResult(void) override;
 
-protected:
+ protected:
     uint8_t _adsChannel;
-    float _gain;
+    float   _gain;
     uint8_t _i2cAddress;
 };
 
 
 // The single available variable is voltage
-class ExternalVoltage_Volt : public Variable
-{
-public:
-    ExternalVoltage_Volt(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "extVoltage")
-      : Variable(parentSense,
-                 (const uint8_t)EXT_VOLT_VAR_NUM,
-                 (uint8_t)EXT_VOLT_RESOLUTION,
-                 "voltage", "volt",
-                 varCode, uuid)
-    {}
+class ExternalVoltage_Volt : public Variable {
+ public:
+    ExternalVoltage_Volt(Sensor* parentSense, const char* uuid = "",
+                         const char* varCode = "extVoltage")
+        : Variable(parentSense, (const uint8_t)EXT_VOLT_VAR_NUM,
+                   (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt", varCode,
+                   uuid) {}
     ExternalVoltage_Volt()
-      : Variable((const uint8_t)EXT_VOLT_VAR_NUM,
-                 (uint8_t)EXT_VOLT_RESOLUTION,
-                 "voltage", "volt", "extVoltage")
-    {}
-    ~ExternalVoltage_Volt(){}
+        : Variable((const uint8_t)EXT_VOLT_VAR_NUM,
+                   (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt",
+                   "extVoltage") {}
+    ~ExternalVoltage_Volt() {}
 };
 
 #endif  // Header Guard

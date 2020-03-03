@@ -46,10 +46,10 @@
 #define ATLAS_CO2TEMP_VAR_NUM 1
 
 // The main class for the Atlas Scientific CO2 temperature sensor
-class AtlasScientificCO2 : public AtlasParent
-{
-public:
-    AtlasScientificCO2(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_CO2_I2C_ADDR,
+class AtlasScientificCO2 : public AtlasParent {
+ public:
+    AtlasScientificCO2(int8_t  powerPin,
+                       uint8_t i2cAddressHex         = ATLAS_CO2_I2C_ADDR,
                        uint8_t measurementsToAverage = 1);
     ~AtlasScientificCO2();
 
@@ -57,45 +57,33 @@ public:
 };
 
 // The class for the CO2 Concentration Variable
-class AtlasScientificCO2_CO2 : public Variable
-{
-public:
-    AtlasScientificCO2_CO2(Sensor *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "AtlasCO2ppm")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_CO2_VAR_NUM,
-                 (uint8_t)ATLAS_CO2_RESOLUTION,
-                 "carbonDioxide", "partPerMillion",
-                 varCode, uuid)
-    {}
+class AtlasScientificCO2_CO2 : public Variable {
+ public:
+    AtlasScientificCO2_CO2(Sensor* parentSense, const char* uuid = "",
+                           const char* varCode = "AtlasCO2ppm")
+        : Variable(parentSense, (const uint8_t)ATLAS_CO2_VAR_NUM,
+                   (uint8_t)ATLAS_CO2_RESOLUTION, "carbonDioxide",
+                   "partPerMillion", varCode, uuid) {}
     AtlasScientificCO2_CO2()
-      : Variable((const uint8_t)ATLAS_CO2_VAR_NUM,
-                 (uint8_t)ATLAS_CO2_RESOLUTION,
-                 "carbonDioxide", "partPerMillion", "AtlasCO2ppm")
-    {}
-    ~AtlasScientificCO2_CO2(){}
+        : Variable((const uint8_t)ATLAS_CO2_VAR_NUM,
+                   (uint8_t)ATLAS_CO2_RESOLUTION, "carbonDioxide",
+                   "partPerMillion", "AtlasCO2ppm") {}
+    ~AtlasScientificCO2_CO2() {}
 };
 
 // The class for the Temp Variable
-class AtlasScientificCO2_Temp : public Variable
-{
-public:
-    AtlasScientificCO2_Temp(Sensor *parentSense,
-                            const char *uuid = "",
-                            const char *varCode = "AtlasCO2Temp")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                 (uint8_t)ATLAS_CO2TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class AtlasScientificCO2_Temp : public Variable {
+ public:
+    AtlasScientificCO2_Temp(Sensor* parentSense, const char* uuid = "",
+                            const char* varCode = "AtlasCO2Temp")
+        : Variable(parentSense, (const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
+                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     AtlasScientificCO2_Temp()
-      : Variable((const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                 (uint8_t)ATLAS_CO2TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "AtlasCO2Temp")
-    {}
-    ~AtlasScientificCO2_Temp(){}
+        : Variable((const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
+                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "AtlasCO2Temp") {}
+    ~AtlasScientificCO2_Temp() {}
 };
 
 #endif  // Header Guard
