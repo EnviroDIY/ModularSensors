@@ -270,12 +270,16 @@ bool DigiXBeeWifi::updateModemMetadata(void)
     // The TinyGSM getSignalQuality function returns the same "no signal"
     // value (99 CSQ or 0 RSSI) in all 3 cases.
     uint32_t startMillis = millis();
-    while (signalQual == 0 && millis() - startMillis < 15000L && success)
+    do
     {
         MS_DBG(F("Getting signal quality:"));
         signalQual = gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
-    }
+        if (signalQual != 0 && signalQual != -9999)
+            break;
+        delay(250);
+    } while ((signalQual == 0 || signalQual == -9999) &&
+             millis() - startMillis < 15000L && success);
 
     // Convert signal quality to RSSI
     loggerModem::_priorRSSI = signalQual;
