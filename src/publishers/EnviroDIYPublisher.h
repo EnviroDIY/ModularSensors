@@ -32,8 +32,8 @@ class EnviroDIYPublisher : public dataPublisher {
  public:
     // Constructors
     EnviroDIYPublisher();
-    EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+    explicit EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
+                                uint8_t sendOffset = 0);
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,

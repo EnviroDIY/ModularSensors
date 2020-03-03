@@ -43,13 +43,13 @@
 */
 
 // Header Guards
-#ifndef SRC_SENSORS_MEASSPECMS5803_H_
-#define SRC_SENSORS_MEASSPECMS5803_H_
+#ifndef SRC_SENSORS_MEASPECMS5803_H_
+#define SRC_SENSORS_MEASPECMS5803_H_
 
 // Debugging Statement
-// #define MS_MEASSPECMS5803_DEBUG
+// #define MS_MEASPECMS5803_DEBUG
 
-#ifdef MS_MEASSPECMS5803_DEBUG
+#ifdef MS_MEASPECMS5803_DEBUG
 #define MS_DEBUGGING_STD "MeaSpecMS5803"
 #endif
 
@@ -95,8 +95,9 @@ class MeaSpecMS5803 : public Sensor {
 // Defines the Temperature Variable
 class MeaSpecMS5803_Temp : public Variable {
  public:
-    MeaSpecMS5803_Temp(Sensor* parentSense, const char* uuid = "",
-                       const char* varCode = "MeaSpecMS5803Temp")
+    explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
+                                const char*    uuid    = "",
+                                const char*    varCode = "MeaSpecMS5803Temp")
         : Variable(parentSense, (const uint8_t)MS5803_TEMP_VAR_NUM,
                    (uint8_t)MS5803_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
@@ -111,8 +112,9 @@ class MeaSpecMS5803_Temp : public Variable {
 // Defines the Pressure Variable
 class MeaSpecMS5803_Pressure : public Variable {
  public:
-    MeaSpecMS5803_Pressure(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "MeaSpecMS5803Pressure")
+    explicit MeaSpecMS5803_Pressure(
+        MeaSpecMS5803* parentSense, const char* uuid = "",
+        const char* varCode = "MeaSpecMS5803Pressure")
         : Variable(parentSense, (const uint8_t)MS5803_PRESSURE_VAR_NUM,
                    (uint8_t)MS5803_PRESSURE_RESOLUTION, "barometricPressure",
                    "millibar", varCode, uuid) {}
@@ -124,4 +126,4 @@ class MeaSpecMS5803_Pressure : public Variable {
 };
 
 
-#endif  // SRC_SENSORS_MEASSPECMS5803_H_
+#endif  // SRC_SENSORS_MEASPECMS5803_H_

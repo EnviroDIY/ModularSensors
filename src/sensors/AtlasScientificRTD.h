@@ -50,8 +50,9 @@ class AtlasScientificRTD : public AtlasParent {
 // The class for the Temp Variable
 class AtlasScientificRTD_Temp : public Variable {
  public:
-    AtlasScientificRTD_Temp(Sensor* parentSense, const char* uuid = "",
-                            const char* varCode = "AtlasTemp")
+    explicit AtlasScientificRTD_Temp(AtlasScientificRTD* parentSense,
+                                     const char*         uuid    = "",
+                                     const char*         varCode = "AtlasTemp")
         : Variable(parentSense, (const uint8_t)ATLAS_RTD_VAR_NUM,
                    (uint8_t)ATLAS_RTD_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}

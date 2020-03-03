@@ -62,8 +62,9 @@ class KellerAcculevel : public KellerParent {
 // Defines the PressureGauge (vented & barometricPressure corrected) variable
 class KellerAcculevel_Pressure : public Variable {
  public:
-    KellerAcculevel_Pressure(Sensor* parentSense, const char* uuid = "",
-                             const char* varCode = "kellerAccuPress")
+    explicit KellerAcculevel_Pressure(KellerAcculevel* parentSense,
+                                      const char*      uuid = "",
+                                      const char* varCode   = "kellerAccuPress")
         : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION, "pressureGauge",
                    "millibar", varCode, uuid) {}
@@ -78,8 +79,9 @@ class KellerAcculevel_Pressure : public Variable {
 // Defines the Temperature Variable
 class KellerAcculevel_Temp : public Variable {
  public:
-    KellerAcculevel_Temp(Sensor* parentSense, const char* uuid = "",
-                         const char* varCode = "kellerAccuTemp")
+    explicit KellerAcculevel_Temp(KellerAcculevel* parentSense,
+                                  const char*      uuid    = "",
+                                  const char*      varCode = "kellerAccuTemp")
         : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)ACCULEVEL_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
@@ -94,8 +96,9 @@ class KellerAcculevel_Temp : public Variable {
 // Variable
 class KellerAcculevel_Height : public Variable {
  public:
-    KellerAcculevel_Height(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "kellerAccuHeight")
+    explicit KellerAcculevel_Height(KellerAcculevel* parentSense,
+                                    const char*      uuid = "",
+                                    const char* varCode   = "kellerAccuHeight")
         : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
                    varCode, uuid) {}

@@ -83,8 +83,8 @@ class DecagonCTD : public SDI12Sensors {
 // Defines the Conductivity Variable
 class DecagonCTD_Cond : public Variable {
  public:
-    DecagonCTD_Cond(Sensor* parentSense, const char* uuid = "",
-                    const char* varCode = "CTDcond")
+    explicit DecagonCTD_Cond(DecagonCTD* parentSense, const char* uuid = "",
+                             const char* varCode = "CTDcond")
         : Variable(parentSense, (const uint8_t)CTD_COND_VAR_NUM,
                    (uint8_t)CTD_COND_RESOLUTION, "specificConductance",
                    "microsiemenPerCentimeter", varCode, uuid) {}
@@ -99,8 +99,8 @@ class DecagonCTD_Cond : public Variable {
 // Defines the Temperature Variable
 class DecagonCTD_Temp : public Variable {
  public:
-    DecagonCTD_Temp(Sensor* parentSense, const char* uuid = "",
-                    const char* varCode = "CTDtemp")
+    explicit DecagonCTD_Temp(DecagonCTD* parentSense, const char* uuid = "",
+                             const char* varCode = "CTDtemp")
         : Variable(parentSense, (const uint8_t)CTD_TEMP_VAR_NUM,
                    (uint8_t)CTD_TEMP_RESOLUTION, "temperature", "degreeCelsius",
                    varCode, uuid) {}
@@ -115,8 +115,8 @@ class DecagonCTD_Temp : public Variable {
 // Defines the Depth Variable
 class DecagonCTD_Depth : public Variable {
  public:
-    DecagonCTD_Depth(Sensor* parentSense, const char* uuid = "",
-                     const char* varCode = "CTDdepth")
+    explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
+                              const char* varCode = "CTDdepth")
         : Variable(parentSense, (const uint8_t)CTD_DEPTH_VAR_NUM,
                    (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter",
                    varCode, uuid) {}

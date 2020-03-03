@@ -98,8 +98,9 @@ class CampbellOBS3 : public Sensor {
 // tied to each sensor.
 class CampbellOBS3_Turbidity : public Variable {
  public:
-    CampbellOBS3_Turbidity(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "OBS3Turbidity")
+    explicit CampbellOBS3_Turbidity(CampbellOBS3* parentSense,
+                                    const char*   uuid    = "",
+                                    const char*   varCode = "OBS3Turbidity")
         : Variable(parentSense, (const uint8_t)OBS3_TURB_VAR_NUM,
                    (uint8_t)OBS3_RESOLUTION, "turbidity",
                    "nephelometricTurbidityUnit", varCode, uuid) {}
@@ -115,8 +116,9 @@ class CampbellOBS3_Turbidity : public Variable {
 // This could be helpful if the calibration equation was typed incorrectly
 class CampbellOBS3_Voltage : public Variable {
  public:
-    CampbellOBS3_Voltage(Sensor* parentSense, const char* uuid = "",
-                         const char* varCode = "OBS3Voltage")
+    explicit CampbellOBS3_Voltage(CampbellOBS3* parentSense,
+                                  const char*   uuid    = "",
+                                  const char*   varCode = "OBS3Voltage")
         : Variable(parentSense, (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt", varCode,
                    uuid) {}

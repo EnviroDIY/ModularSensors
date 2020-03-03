@@ -74,8 +74,9 @@ class YosemitechY514 : public YosemitechParent {
 // Defines the Chlorophyll Concentration
 class YosemitechY514_Chlorophyll : public Variable {
  public:
-    YosemitechY514_Chlorophyll(Sensor* parentSense, const char* uuid = "",
-                               const char* varCode = "Y514Chloro")
+    explicit YosemitechY514_Chlorophyll(YosemitechY514* parentSense,
+                                        const char*     uuid    = "",
+                                        const char*     varCode = "Y514Chloro")
         : Variable(parentSense, (const uint8_t)Y514_CHLORO_VAR_NUM,
                    (uint8_t)Y514_CHLORO_RESOLUTION, "chlorophyllFluorescence",
                    "microgramPerLiter", varCode, uuid) {}
@@ -90,8 +91,9 @@ class YosemitechY514_Chlorophyll : public Variable {
 // Defines the Temperature Variable
 class YosemitechY514_Temp : public Variable {
  public:
-    YosemitechY514_Temp(Sensor* parentSense, const char* uuid = "",
-                        const char* varCode = "Y514Temp")
+    explicit YosemitechY514_Temp(YosemitechY514* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y514Temp")
         : Variable(parentSense, (const uint8_t)Y514_TEMP_VAR_NUM,
                    (uint8_t)Y514_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}

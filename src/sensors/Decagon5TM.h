@@ -91,8 +91,8 @@ class Decagon5TM : public SDI12Sensors {
 // Defines the Ea/Matric Potential Variable
 class Decagon5TM_Ea : public Variable {
  public:
-    Decagon5TM_Ea(Sensor* parentSense, const char* uuid = "",
-                  const char* varCode = "SoilEa")
+    explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
+                           const char* varCode = "SoilEa")
         : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM,
                    (uint8_t)TM_EA_RESOLUTION, "permittivity", "faradPerMeter",
                    varCode, uuid) {}
@@ -106,8 +106,8 @@ class Decagon5TM_Ea : public Variable {
 // Defines the Temperature Variable
 class Decagon5TM_Temp : public Variable {
  public:
-    Decagon5TM_Temp(Sensor* parentSense, const char* uuid = "",
-                    const char* varCode = "SoilTemp")
+    explicit Decagon5TM_Temp(Decagon5TM* parentSense, const char* uuid = "",
+                             const char* varCode = "SoilTemp")
         : Variable(parentSense, (const uint8_t)TM_TEMP_VAR_NUM,
                    (uint8_t)TM_TEMP_RESOLUTION, "temperature", "degreeCelsius",
                    varCode, uuid) {}
@@ -121,8 +121,8 @@ class Decagon5TM_Temp : public Variable {
 // Defines the Volumetric Water Content Variable
 class Decagon5TM_VWC : public Variable {
  public:
-    Decagon5TM_VWC(Sensor* parentSense, const char* uuid = "",
-                   const char* varCode = "SoilVWC")
+    explicit Decagon5TM_VWC(Decagon5TM* parentSense, const char* uuid = "",
+                            const char* varCode = "SoilVWC")
         : Variable(parentSense, (const uint8_t)TM_VWC_VAR_NUM,
                    (uint8_t)TM_VWC_RESOLUTION, "volumetricWaterContent",
                    "percent", varCode, uuid) {}

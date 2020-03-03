@@ -59,8 +59,9 @@ class AtlasScientificDO : public AtlasParent {
 // The class for the DO Concentration Variable
 class AtlasScientificDO_DOmgL : public Variable {
  public:
-    AtlasScientificDO_DOmgL(Sensor* parentSense, const char* uuid = "",
-                            const char* varCode = "AtlasDOmgL")
+    explicit AtlasScientificDO_DOmgL(AtlasScientificDO* parentSense,
+                                     const char*        uuid    = "",
+                                     const char*        varCode = "AtlasDOmgL")
         : Variable(parentSense, (const uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", varCode, uuid) {}
@@ -74,8 +75,9 @@ class AtlasScientificDO_DOmgL : public Variable {
 // The class for the DO Percent of Saturation Variable
 class AtlasScientificDO_DOpct : public Variable {
  public:
-    AtlasScientificDO_DOpct(Sensor* parentSense, const char* uuid = "",
-                            const char* varCode = "AtlasDOpct")
+    explicit AtlasScientificDO_DOpct(AtlasScientificDO* parentSense,
+                                     const char*        uuid    = "",
+                                     const char*        varCode = "AtlasDOpct")
         : Variable(parentSense, (const uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION,
                    "oxygenDissolvedPercentOfSaturation", "percent", varCode,

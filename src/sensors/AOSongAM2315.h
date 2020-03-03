@@ -72,8 +72,9 @@ class AOSongAM2315 : public Sensor {
 // Defines the Humidity Variable
 class AOSongAM2315_Humidity : public Variable {
  public:
-    AOSongAM2315_Humidity(Sensor* parentSense, const char* uuid = "",
-                          const char* varCode = "AM2315Humidity")
+    explicit AOSongAM2315_Humidity(AOSongAM2315* parentSense,
+                                   const char*   uuid    = "",
+                                   const char*   varCode = "AM2315Humidity")
         : Variable(parentSense, (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
                    (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
                    "percent", varCode, uuid) {}
@@ -88,8 +89,8 @@ class AOSongAM2315_Humidity : public Variable {
 // Defines the Temperature Variable
 class AOSongAM2315_Temp : public Variable {
  public:
-    AOSongAM2315_Temp(Sensor* parentSense, const char* uuid = "",
-                      const char* varCode = "AM2315Temp")
+    explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
+                               const char* varCode = "AM2315Temp")
         : Variable(parentSense, (const uint8_t)AM2315_TEMP_VAR_NUM,
                    (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}

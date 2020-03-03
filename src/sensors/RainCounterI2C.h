@@ -54,7 +54,8 @@ class RainCounterI2C : public Sensor {
     // The constructor - all arguments are optional
     // Address of I2C device is 0x08 by default
     // Depth of rain per tip event in mm is 0.2mm by default
-    RainCounterI2C(uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
+    explicit RainCounterI2C(uint8_t i2cAddressHex = 0x08,
+                            float   rainPerTip    = 0.2);
     // Destructor
     ~RainCounterI2C();
 
@@ -71,8 +72,9 @@ class RainCounterI2C : public Sensor {
 // Defines the tip varible, shows the number of tips since last read
 class RainCounterI2C_Tips : public Variable {
  public:
-    RainCounterI2C_Tips(Sensor* parentSense, const char* uuid = "",
-                        const char* varCode = "RainCounterI2CTips")
+    explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "RainCounterI2CTips")
         : Variable(parentSense, (const uint8_t)BUCKET_TIPS_VAR_NUM,
                    (uint8_t)BUCKET_TIPS_RESOLUTION, "precipitation", "event",
                    varCode, uuid) {}
@@ -87,8 +89,9 @@ class RainCounterI2C_Tips : public Variable {
 // read
 class RainCounterI2C_Depth : public Variable {
  public:
-    RainCounterI2C_Depth(Sensor* parentSense, const char* uuid = "",
-                         const char* varCode = "RainCounterI2CVol")
+    explicit RainCounterI2C_Depth(RainCounterI2C* parentSense,
+                                  const char*     uuid    = "",
+                                  const char*     varCode = "RainCounterI2CVol")
         : Variable(parentSense, (const uint8_t)BUCKET_RAIN_VAR_NUM,
                    (uint8_t)BUCKET_RAIN_RESOLUTION, "precipitation",
                    "millimeter", varCode, uuid) {}

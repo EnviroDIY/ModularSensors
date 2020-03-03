@@ -50,7 +50,7 @@
 class MaximDS3231 : public Sensor {
  public:
     // Only input is the number of readings to average
-    MaximDS3231(uint8_t measurementsToAverage = 1);
+    explicit MaximDS3231(uint8_t measurementsToAverage = 1);
     // Destructor
     ~MaximDS3231();
 
@@ -65,8 +65,8 @@ class MaximDS3231 : public Sensor {
 
 class MaximDS3231_Temp : public Variable {
  public:
-    MaximDS3231_Temp(Sensor* parentSense, const char* uuid = "",
-                     const char* varCode = "BoardTemp")
+    explicit MaximDS3231_Temp(MaximDS3231* parentSense, const char* uuid = "",
+                              const char* varCode = "BoardTemp")
         : Variable(parentSense, (const uint8_t)DS3231_TEMP_VAR_NUM,
                    (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
                    "degreeCelsius", varCode, uuid) {}

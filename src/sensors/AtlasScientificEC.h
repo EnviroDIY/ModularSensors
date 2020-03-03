@@ -55,9 +55,9 @@
 // The main class for the Atlas Scientific Conductivity sensor
 class AtlasScientificEC : public AtlasParent {
  public:
-    AtlasScientificEC(int8_t  powerPin,
-                      uint8_t i2cAddressHex         = ATLAS_COND_I2C_ADDR,
-                      uint8_t measurementsToAverage = 1);
+    explicit AtlasScientificEC(int8_t  powerPin,
+                               uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
+                               uint8_t measurementsToAverage = 1);
     ~AtlasScientificEC();
 
     virtual bool setup(void) override;
@@ -66,8 +66,9 @@ class AtlasScientificEC : public AtlasParent {
 // The class for the Conductivity Variable
 class AtlasScientificEC_Cond : public Variable {
  public:
-    AtlasScientificEC_Cond(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "AtlasCond")
+    explicit AtlasScientificEC_Cond(AtlasScientificEC* parentSense,
+                                    const char*        uuid    = "",
+                                    const char*        varCode = "AtlasCond")
         : Variable(parentSense, (const uint8_t)ATLAS_COND_VAR_NUM,
                    (uint8_t)ATLAS_COND_RESOLUTION, "electricalConductivity",
                    "microsiemenPerCentimeter", varCode, uuid) {}
@@ -81,8 +82,9 @@ class AtlasScientificEC_Cond : public Variable {
 // The class for the Total Dissolved Solids Variable
 class AtlasScientificEC_TDS : public Variable {
  public:
-    AtlasScientificEC_TDS(Sensor* parentSense, const char* uuid = "",
-                          const char* varCode = "AtlasTDS")
+    explicit AtlasScientificEC_TDS(AtlasScientificEC* parentSense,
+                                   const char*        uuid    = "",
+                                   const char*        varCode = "AtlasTDS")
         : Variable(parentSense, (const uint8_t)ATLAS_TDS_VAR_NUM,
                    (uint8_t)ATLAS_TDS_RESOLUTION, "solidsTotalDissolved",
                    "partPerMillion", varCode, uuid) {}
@@ -96,8 +98,9 @@ class AtlasScientificEC_TDS : public Variable {
 // The class for the Salinity Variable
 class AtlasScientificEC_Salinity : public Variable {
  public:
-    AtlasScientificEC_Salinity(Sensor* parentSense, const char* uuid = "",
-                               const char* varCode = "AtlasSalinity")
+    explicit AtlasScientificEC_Salinity(AtlasScientificEC* parentSense,
+                                        const char*        uuid = "",
+                                        const char* varCode = "AtlasSalinity")
         : Variable(parentSense, (const uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, "salinity",
                    "practicalSalinityUnit", varCode, uuid) {}

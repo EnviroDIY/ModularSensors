@@ -40,8 +40,8 @@ class ThingSpeakPublisher : public dataPublisher {
  public:
     // Constructors
     ThingSpeakPublisher();
-    ThingSpeakPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                        uint8_t sendOffset = 0);
+    explicit ThingSpeakPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
+                                 uint8_t sendOffset = 0);
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                         uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     ThingSpeakPublisher(Logger& baseLogger, const char* thingSpeakMQTTKey,

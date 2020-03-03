@@ -86,8 +86,8 @@ class TIINA219 : public Sensor {
 // Defines the Temperature Variable
 class TIINA219_Current : public Variable {
  public:
-    TIINA219_Current(Sensor* parentSense, const char* uuid = "",
-                     const char* varCode = "TIINA219Amp")
+    explicit TIINA219_Current(TIINA219* parentSense, const char* uuid = "",
+                              const char* varCode = "TIINA219Amp")
         : Variable(parentSense, (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
                    (uint8_t)INA219_CURRENT_MA_RESOLUTION, "amp", "mA", varCode,
                    uuid) {}
@@ -102,8 +102,8 @@ class TIINA219_Current : public Variable {
 // Defines the Volt Variable
 class TIINA219_Volt : public Variable {
  public:
-    TIINA219_Volt(Sensor* parentSense, const char* uuid = "",
-                  const char* varCode = "TIINA219Volt")
+    explicit TIINA219_Volt(TIINA219* parentSense, const char* uuid = "",
+                           const char* varCode = "TIINA219Volt")
         : Variable(parentSense, (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
                    (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION, "Volt", "V", varCode,
                    uuid) {}
@@ -118,8 +118,8 @@ class TIINA219_Volt : public Variable {
 // Defines the Power Variable
 class TIINA219_Power : public Variable {
  public:
-    TIINA219_Power(Sensor* parentSense, const char* uuid = "",
-                   const char* varCode = "TIINA219Power")
+    explicit TIINA219_Power(TIINA219* parentSense, const char* uuid = "",
+                            const char* varCode = "TIINA219Power")
         : Variable(parentSense, (const uint8_t)INA219_POWER_MW_VAR_NUM,
                    (uint8_t)INA219_POWER_MW_RESOLUTION, "milliwatt", "mW",
                    varCode, uuid) {}

@@ -52,7 +52,7 @@ class ProcessorStats : public Sensor {
  public:
     // Need to know the Mayfly version because the battery resistor depends on
     // it
-    ProcessorStats(const char* version);
+    explicit ProcessorStats(const char* version);
     ~ProcessorStats();
 
     String getSensorLocation(void) override;
@@ -69,8 +69,9 @@ class ProcessorStats : public Sensor {
 // For the battery supplying power to the processor
 class ProcessorStats_Battery : public Variable {
  public:
-    ProcessorStats_Battery(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "Battery")
+    explicit ProcessorStats_Battery(ProcessorStats* parentSense,
+                                    const char*     uuid    = "",
+                                    const char*     varCode = "Battery")
         : Variable(parentSense, (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
                    "volt", varCode, uuid) {}
@@ -85,8 +86,9 @@ class ProcessorStats_Battery : public Variable {
 // Defines the "Free Ram" This is a board diagnostic
 class ProcessorStats_FreeRam : public Variable {
  public:
-    ProcessorStats_FreeRam(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "FreeRam")
+    explicit ProcessorStats_FreeRam(ProcessorStats* parentSense,
+                                    const char*     uuid    = "",
+                                    const char*     varCode = "FreeRam")
         : Variable(parentSense, (const uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
                    varCode, uuid) {}
@@ -101,8 +103,9 @@ class ProcessorStats_FreeRam : public Variable {
 // Defines the "Sample Number" This is a board diagnostic
 class ProcessorStats_SampleNumber : public Variable {
  public:
-    ProcessorStats_SampleNumber(Sensor* parentSense, const char* uuid = "",
-                                const char* varCode = "SampNum")
+    explicit ProcessorStats_SampleNumber(ProcessorStats* parentSense,
+                                         const char*     uuid    = "",
+                                         const char*     varCode = "SampNum")
         : Variable(parentSense, (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
                    "Dimensionless", varCode, uuid) {}

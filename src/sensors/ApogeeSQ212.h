@@ -95,8 +95,9 @@ class ApogeeSQ212 : public Sensor {
 // Defines the PAR variable output from the Apogee SQ-212 sensor
 class ApogeeSQ212_PAR : public Variable {
  public:
-    ApogeeSQ212_PAR(Sensor* parentSense, const char* uuid = "",
-                    const char* varCode = "photosyntheticallyActiveRadiation")
+    explicit ApogeeSQ212_PAR(
+        ApogeeSQ212* parentSense, const char* uuid = "",
+        const char* varCode = "photosyntheticallyActiveRadiation")
         : Variable(parentSense, (const uint8_t)SQ212_PAR_VAR_NUM,
                    (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
                    "microeinsteinPerSquareMeterPerSecond", varCode, uuid) {}
@@ -112,8 +113,9 @@ class ApogeeSQ212_PAR : public Variable {
 // Defines the PAR variable output from the Apogee SQ-212 sensor
 class ApogeeSQ212_Voltage : public Variable {
  public:
-    ApogeeSQ212_Voltage(Sensor* parentSense, const char* uuid = "",
-                        const char* varCode = "SQ212Voltage")
+    explicit ApogeeSQ212_Voltage(ApogeeSQ212* parentSense,
+                                 const char*  uuid    = "",
+                                 const char*  varCode = "SQ212Voltage")
         : Variable(parentSense, (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
                    (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt", varCode,
                    uuid) {}

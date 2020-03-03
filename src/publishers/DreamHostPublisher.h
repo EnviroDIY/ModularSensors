@@ -33,8 +33,8 @@ class DreamHostPublisher : public dataPublisher {
  public:
     // Constructors
     DreamHostPublisher();
-    DreamHostPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+    explicit DreamHostPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
+                                uint8_t sendOffset = 0);
     DreamHostPublisher(Logger& baseLogger, Client* inClient,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     DreamHostPublisher(Logger& baseLogger, const char* dhUrl,

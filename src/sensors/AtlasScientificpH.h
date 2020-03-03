@@ -49,8 +49,9 @@ class AtlasScientificpH : public AtlasParent {
 // The class for the pH variable
 class AtlasScientificpH_pH : public Variable {
  public:
-    AtlasScientificpH_pH(Sensor* parentSense, const char* uuid = "",
-                         const char* varCode = "AtlaspH")
+    explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
+                                  const char*        uuid    = "",
+                                  const char*        varCode = "AtlaspH")
         : Variable(parentSense, (const uint8_t)ATLAS_PH_VAR_NUM,
                    (uint8_t)ATLAS_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     AtlasScientificpH_pH()

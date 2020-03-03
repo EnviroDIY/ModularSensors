@@ -82,8 +82,9 @@ class YosemitechY533 : public YosemitechParent {
 // Defines the pH Variable
 class YosemitechY533_pH : public Variable {
  public:
-    YosemitechY533_pH(Sensor* parentSense, const char* uuid = "",
-                      const char* varCode = "Y533pH")
+    explicit YosemitechY533_pH(YosemitechY533* parentSense,
+                               const char*     uuid    = "",
+                               const char*     varCode = "Y533pH")
         : Variable(parentSense, (const uint8_t)Y533_PH_VAR_NUM,
                    (uint8_t)Y533_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     YosemitechY533_pH()
@@ -96,8 +97,9 @@ class YosemitechY533_pH : public Variable {
 // Defines the Temperature Variable
 class YosemitechY533_Temp : public Variable {
  public:
-    YosemitechY533_Temp(Sensor* parentSense, const char* uuid = "",
-                        const char* varCode = "Y533Temp")
+    explicit YosemitechY533_Temp(YosemitechY533* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y533Temp")
         : Variable(parentSense, (const uint8_t)Y533_TEMP_VAR_NUM,
                    (uint8_t)Y533_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
@@ -112,8 +114,9 @@ class YosemitechY533_Temp : public Variable {
 // Defines the Electrode Electrical Potential
 class YosemitechY533_Voltage : public Variable {
  public:
-    YosemitechY533_Voltage(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "Y533Potential")
+    explicit YosemitechY533_Voltage(YosemitechY533* parentSense,
+                                    const char*     uuid    = "",
+                                    const char*     varCode = "Y533Potential")
         : Variable(parentSense, (const uint8_t)Y533_VOLT_VAR_NUM,
                    (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt",
                    varCode, uuid) {}

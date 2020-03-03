@@ -80,8 +80,9 @@ class YosemitechY550 : public YosemitechParent {
 // Defines the Carbon Oxygen Demand
 class YosemitechY550_COD : public Variable {
  public:
-    YosemitechY550_COD(Sensor* parentSense, const char* uuid = "",
-                       const char* varCode = "Y550COD")
+    explicit YosemitechY550_COD(YosemitechY550* parentSense,
+                                const char*     uuid    = "",
+                                const char*     varCode = "Y550COD")
         : Variable(parentSense, (const uint8_t)Y550_COD_VAR_NUM,
                    (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter",
                    varCode, uuid) {}
@@ -96,8 +97,9 @@ class YosemitechY550_COD : public Variable {
 // Defines the Temperature Variable
 class YosemitechY550_Temp : public Variable {
  public:
-    YosemitechY550_Temp(Sensor* parentSense, const char* uuid = "",
-                        const char* varCode = "Y550Temp")
+    explicit YosemitechY550_Temp(YosemitechY550* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y550Temp")
         : Variable(parentSense, (const uint8_t)Y550_TEMP_VAR_NUM,
                    (uint8_t)Y550_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
@@ -112,8 +114,9 @@ class YosemitechY550_Temp : public Variable {
 // Defines the Turbidity
 class YosemitechY550_Turbidity : public Variable {
  public:
-    YosemitechY550_Turbidity(Sensor* parentSense, const char* uuid = "",
-                             const char* varCode = "Y550Turbidity")
+    explicit YosemitechY550_Turbidity(YosemitechY550* parentSense,
+                                      const char*     uuid    = "",
+                                      const char*     varCode = "Y550Turbidity")
         : Variable(parentSense, (const uint8_t)Y550_TURB_VAR_NUM,
                    (uint8_t)Y550_TURB_RESOLUTION, "turbidity",
                    "nephelometricTurbidityUnit", varCode, uuid) {}

@@ -111,8 +111,9 @@ class ExternalVoltage : public Sensor {
 // The single available variable is voltage
 class ExternalVoltage_Volt : public Variable {
  public:
-    ExternalVoltage_Volt(Sensor* parentSense, const char* uuid = "",
-                         const char* varCode = "extVoltage")
+    explicit ExternalVoltage_Volt(ExternalVoltage* parentSense,
+                                  const char*      uuid    = "",
+                                  const char*      varCode = "extVoltage")
         : Variable(parentSense, (const uint8_t)EXT_VOLT_VAR_NUM,
                    (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt", varCode,
                    uuid) {}

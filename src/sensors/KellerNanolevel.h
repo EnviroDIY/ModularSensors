@@ -62,8 +62,9 @@ class KellerNanolevel : public KellerParent {
 // Defines the PressureGauge (vented & barometricPressure corrected) variable
 class KellerNanolevel_Pressure : public Variable {
  public:
-    KellerNanolevel_Pressure(Sensor* parentSense, const char* uuid = "",
-                             const char* varCode = "kellerNanoPress")
+    explicit KellerNanolevel_Pressure(KellerNanolevel* parentSense,
+                                      const char*      uuid = "",
+                                      const char* varCode   = "kellerNanoPress")
         : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION, "pressureGauge",
                    "millibar", varCode, uuid) {}
@@ -78,8 +79,9 @@ class KellerNanolevel_Pressure : public Variable {
 // Defines the Temperature Variable
 class KellerNanolevel_Temp : public Variable {
  public:
-    KellerNanolevel_Temp(Sensor* parentSense, const char* uuid = "",
-                         const char* varCode = "kellerNanoTemp")
+    explicit KellerNanolevel_Temp(KellerNanolevel* parentSense,
+                                  const char*      uuid    = "",
+                                  const char*      varCode = "kellerNanoTemp")
         : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)NANOLEVEL_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
@@ -94,8 +96,9 @@ class KellerNanolevel_Temp : public Variable {
 // Variable
 class KellerNanolevel_Height : public Variable {
  public:
-    KellerNanolevel_Height(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = "kellerNanoHeight")
+    explicit KellerNanolevel_Height(KellerNanolevel* parentSense,
+                                    const char*      uuid = "",
+                                    const char* varCode   = "kellerNanoHeight")
         : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
                    varCode, uuid) {}
