@@ -10,8 +10,8 @@
  */
 
 /* Header Guards */
-#ifndef LoggerModemMacros_h
-#define LoggerModemMacros_h
+#ifndef SRC_MODEMS_LOGGERMODEMMACROS_H_
+#define SRC_MODEMS_LOGGERMODEMMACROS_H_
 
 // Set up the modem
 
@@ -313,4 +313,4 @@
     }
 #endif
 
-#endif
+#endif  // SRC_MODEMS_LOGGERMODEMMACROS_H_
