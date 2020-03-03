@@ -29,10 +29,8 @@
 
 void WDT_Handler(void);  // ISR HANDLER FOR WDT EW INTERRUPT
 
-class extendedWatchDogSAMD
-{
-
-public:
+class extendedWatchDogSAMD {
+ public:
     // Constructor
     extendedWatchDogSAMD();
     ~extendedWatchDogSAMD();
@@ -46,7 +44,7 @@ public:
 
     static volatile uint32_t _barksUntilReset;
 
-private:
+ private:
     void inline waitForWDTBitSync();
     uint32_t _resetTime_s;
 };

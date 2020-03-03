@@ -25,10 +25,8 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
-class extendedWatchDogAVR
-{
-
-public:
+class extendedWatchDogAVR {
+ public:
     // Constructor
     extendedWatchDogAVR();
     ~extendedWatchDogAVR();
@@ -41,7 +39,8 @@ public:
     void resetWatchDog();
 
     static volatile uint32_t _barksUntilReset;
-private:
+
+ private:
     uint32_t _resetTime_s;
 };
 
