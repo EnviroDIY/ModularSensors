@@ -315,14 +315,18 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
     MS_DBG(F("Entering Command Mode:"));
     gsmModem.commandMode();
 
-    // Get signal quality
+    // Try for up to 15 seconds to get a valid signal quality
     // NOTE:  We can't actually distinguish between a bad modem response, no
     // modem response, and a real response from the modem of no service/signal.
     // The TinyGSM getSignalQuality function returns the same "no signal"
     // value (99 CSQ or 0 RSSI) in all 3 cases.
-    MS_DBG(F("Getting signal quality:"));
-    signalQual = gsmModem.getSignalQuality();
-    MS_DBG(F("Raw signal quality:"), signalQual);
+    uint32_t startMillis = millis();
+    while (signalQual == 0 && millis() - startMillis < 15000L && success)
+    {
+        MS_DBG(F("Getting signal quality:"));
+        signalQual = gsmModem.getSignalQuality();
+        MS_DBG(F("Raw signal quality:"), signalQual);
+    }
 
     // Convert signal quality to RSSI
     loggerModem::_priorRSSI = signalQual;

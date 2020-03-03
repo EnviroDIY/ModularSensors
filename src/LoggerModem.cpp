@@ -381,11 +381,16 @@ bool loggerModem::updateModemMetadata(void)
     int8_t bpercent = -99;
     uint16_t volt = 9999;
 
-    success &= getModemSignalQuality(rssi, percent);
-    MS_DBG(F("CURRENT RSSI:"), rssi);
-    MS_DBG(F("CURRENT Percent signal strength:"), percent);
-    loggerModem::_priorRSSI = rssi;
-    loggerModem::_priorSignalPercent = percent;
+    // Try for up to 15 seconds to get a valid signal quality
+    uint32_t startMillis = millis();
+    while (rssi == 0 && millis() - startMillis < 15000L && success)
+    {
+        success &= getModemSignalQuality(rssi, percent);
+        MS_DBG(F("CURRENT RSSI:"), rssi);
+        MS_DBG(F("CURRENT Percent signal strength:"), percent);
+        loggerModem::_priorRSSI = rssi;
+        loggerModem::_priorSignalPercent = percent;
+    }
 
     success &= getModemBatteryStats(state, bpercent, volt);
     MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
