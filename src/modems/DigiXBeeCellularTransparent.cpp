@@ -273,6 +273,14 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
 bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
     bool success = true;
 
+    // Unset whatever we had previously
+    loggerModem::_priorRSSI = -9999;
+    loggerModem::_priorSignalPercent = -9999;
+    loggerModem::_priorBatteryState = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp = -9999;
+
     // Initialize variable
     int16_t signalQual = -9999;
 
@@ -280,25 +288,32 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
     MS_DBG(F("Entering Command Mode:"));
     gsmModem.commandMode();
 
-    // Get signal quality
+    // Try for up to 15 seconds to get a valid signal quality
     // NOTE:  We can't actually distinguish between a bad modem response, no
     // modem response, and a real response from the modem of no service/signal.
     // The TinyGSM getSignalQuality function returns the same "no signal"
     // value (99 CSQ or 0 RSSI) in all 3 cases.
-    MS_DBG(F("Getting signal quality:"));
-    signalQual = gsmModem.getSignalQuality();
-    MS_DBG(F("Raw signal quality:"), signalQual);
+    uint32_t startMillis = millis();
+    do
+    {
+        MS_DBG(F("Getting signal quality:"));
+        signalQual = gsmModem.getSignalQuality();
+        MS_DBG(F("Raw signal quality:"), signalQual);
+        if (signalQual != 0 && signalQual != -9999)
+            break;
+        delay(250);
+    } while ((signalQual == 0 || signalQual == -9999) &&
+             millis() - startMillis < 15000L && success);
 
     // Convert signal quality to RSSI
-    _priorRSSI          = signalQual;
-    _priorSignalPercent = getPctFromRSSI(signalQual);
-
-    MS_DBG(F("CURRENT RSSI:"), _priorRSSI);
-    MS_DBG(F("CURRENT Percent signal strength:"), _priorSignalPercent);
+    loggerModem::_priorRSSI = signalQual;
+    MS_DBG(F("CURRENT RSSI:"), signalQual);
+    loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
+    MS_DBG(F("CURRENT Percent signal strength:"), getPctFromRSSI(signalQual));
 
     MS_DBG(F("Getting chip temperature:"));
-    _priorModemTemp = getModemChipTemperature();
-    MS_DBG(F("CURRENT Modem temperature:"), _priorModemTemp);
+    loggerModem::_priorModemTemp = getModemChipTemperature();
+    MS_DBG(F("CURRENT Modem temperature:"), loggerModem::_priorModemTemp);
 
     // Exit command modem
     MS_DBG(F("Leaving Command Mode:"));

@@ -172,8 +172,6 @@ Variable *variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab"; // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";   // Sampling feature UUID
 const char *UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
@@ -185,6 +183,8 @@ const char *UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
 };
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab"; // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";   // Sampling feature UUID
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -257,6 +257,9 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
+    Serial.println();
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);

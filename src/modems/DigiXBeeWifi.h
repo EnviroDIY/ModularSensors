@@ -54,7 +54,7 @@ class DigiXBeeWifi : public DigiXBee {
                                uint16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
-    bool updateModemMetadata(void);
+    bool updateModemMetadata(void) override;
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     StreamDebugger _modemATDebugger;

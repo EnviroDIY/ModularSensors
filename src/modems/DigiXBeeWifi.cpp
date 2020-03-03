@@ -226,42 +226,56 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t& rssi, int16_t& percent) {
 bool DigiXBeeWifi::updateModemMetadata(void) {
     bool success = true;
 
-    // Initialize variables
-    int16_t  signalQual = -9999;
-    uint16_t volt       = 9999;
+    // Unset whatever we had previously
+    loggerModem::_priorRSSI = -9999;
+    loggerModem::_priorSignalPercent = -9999;
+    loggerModem::_priorBatteryState = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp = -9999;
+
+    // Initialize variable
+    int16_t signalQual = -9999;
+    uint16_t volt = 9999;
 
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode:"));
     success &= gsmModem.commandMode();
 
-    // Get signal quality
+    // Try for up to 15 seconds to get a valid signal quality
     // NOTE:  We can't actually distinguish between a bad modem response, no
     // modem response, and a real response from the modem of no service/signal.
     // The TinyGSM getSignalQuality function returns the same "no signal"
     // value (99 CSQ or 0 RSSI) in all 3 cases.
-    MS_DBG(F("Getting signal quality:"));
-    signalQual = gsmModem.getSignalQuality();
-    MS_DBG(F("Raw signal quality:"), signalQual);
+    uint32_t startMillis = millis();
+    do
+    {
+        MS_DBG(F("Getting signal quality:"));
+        signalQual = gsmModem.getSignalQuality();
+        MS_DBG(F("Raw signal quality:"), signalQual);
+        if (signalQual != 0 && signalQual != -9999)
+            break;
+        delay(250);
+    } while ((signalQual == 0 || signalQual == -9999) &&
+             millis() - startMillis < 15000L && success);
 
     // Convert signal quality to RSSI
-    _priorRSSI          = signalQual;
-    _priorSignalPercent = getPctFromRSSI(signalQual);
-
-    MS_DBG(F("CURRENT RSSI:"), _priorRSSI);
-    MS_DBG(F("CURRENT Percent signal strength:"), _priorSignalPercent);
+    loggerModem::_priorRSSI = signalQual;
+    MS_DBG(F("CURRENT RSSI:"), signalQual);
+    loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
+    MS_DBG(F("CURRENT Percent signal strength:"), getPctFromRSSI(signalQual));
 
     MS_DBG(F("Getting input voltage:"));
     volt = gsmModem.getBattVoltage();
     MS_DBG(F("CURRENT Modem input battery voltage:"), volt);
-    if (volt != 9999) {
-        _priorBatteryVoltage = (float)volt;
-    } else {
-        _priorBatteryVoltage = (float)-9999;
-    }
+    if (volt != 9999)
+        loggerModem::_priorBatteryVoltage = (float)volt;
+    else
+        loggerModem::_priorBatteryVoltage = (float)-9999;
 
     MS_DBG(F("Getting chip temperature:"));
-    _priorModemTemp = getModemChipTemperature();
-    MS_DBG(F("CURRENT Modem temperature:"), _priorModemTemp);
+    loggerModem::_priorModemTemp = getModemChipTemperature();
+    MS_DBG(F("CURRENT Modem temperature:"), loggerModem::_priorModemTemp);
 
     // Exit command modem
     MS_DBG(F("Leaving Command Mode:"));

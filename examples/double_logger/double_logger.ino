@@ -185,6 +185,9 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
+    Serial.println();
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);

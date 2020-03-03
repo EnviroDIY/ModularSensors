@@ -55,7 +55,7 @@ class DigiXBeeCellularTransparent : public DigiXBee {
                                uint16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
-    bool updateModemMetadata(void);
+    bool updateModemMetadata(void) override;
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
