@@ -350,7 +350,7 @@ bool loggerModem::updateModemMetadata(void) {
     loggerModem::_priorBatteryState   = -9999;
     loggerModem::_priorBatteryPercent = -9999;
     loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp = -9999;
+    loggerModem::_priorModemTemp      = -9999;
 
     // Initialize variable
     int16_t  rssi     = -9999;
@@ -361,18 +361,16 @@ bool loggerModem::updateModemMetadata(void) {
 
     // Try for up to 15 seconds to get a valid signal quality
     uint32_t startMillis = millis();
-    do
-    {
+    do {
         success &= getModemSignalQuality(rssi, percent);
         MS_DBG(F("CURRENT RSSI:"), rssi);
         MS_DBG(F("CURRENT Percent signal strength:"), percent);
-        loggerModem::_priorRSSI = rssi;
+        loggerModem::_priorRSSI          = rssi;
         loggerModem::_priorSignalPercent = percent;
-        if (rssi != 0 && rssi != -9999)
-            break;
+        if (rssi != 0 && rssi != -9999) break;
         delay(250);
-    } while ((rssi == 0 || rssi == -9999) &&
-             millis() - startMillis < 15000L && success);
+    } while ((rssi == 0 || rssi == -9999) && millis() - startMillis < 15000L &&
+             success);
 
     success &= getModemBatteryStats(state, bpercent, volt);
     MS_DBG(F("CURRENT Modem Battery Charge State:"), state);

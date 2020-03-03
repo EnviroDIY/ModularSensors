@@ -274,12 +274,12 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI = -9999;
-    loggerModem::_priorSignalPercent = -9999;
-    loggerModem::_priorBatteryState = -9999;
+    loggerModem::_priorRSSI           = -9999;
+    loggerModem::_priorSignalPercent  = -9999;
+    loggerModem::_priorBatteryState   = -9999;
     loggerModem::_priorBatteryPercent = -9999;
     loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp = -9999;
+    loggerModem::_priorModemTemp      = -9999;
 
     // Initialize variable
     int16_t signalQual = -9999;
@@ -294,13 +294,11 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void) {
     // The TinyGSM getSignalQuality function returns the same "no signal"
     // value (99 CSQ or 0 RSSI) in all 3 cases.
     uint32_t startMillis = millis();
-    do
-    {
+    do {
         MS_DBG(F("Getting signal quality:"));
         signalQual = gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
-        if (signalQual != 0 && signalQual != -9999)
-            break;
+        if (signalQual != 0 && signalQual != -9999) break;
         delay(250);
     } while ((signalQual == 0 || signalQual == -9999) &&
              millis() - startMillis < 15000L && success);
