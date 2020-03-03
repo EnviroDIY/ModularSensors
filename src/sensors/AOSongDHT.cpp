@@ -1,6 +1,7 @@
 /*
  *AOSongDHT.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *

@@ -1,6 +1,7 @@
 /*
  *FreescaleMPL115A2.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Bobby Schulz <schu3119@umn.edu>.
  *

@@ -1,6 +1,7 @@
 /*
  *YosemitechY4000.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Anthony Audfdenkampe
  <aaufdenkampe@limno.com>, based on other YosemiTech libs by Sara Damiano

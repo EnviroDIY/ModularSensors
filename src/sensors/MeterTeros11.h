@@ -1,6 +1,7 @@
 /*
  *MeterTeros11.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Written by Anthony Aufdenkampe <aaufdenkampe@limno.com>, based on
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).

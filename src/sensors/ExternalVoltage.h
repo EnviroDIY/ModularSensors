@@ -1,6 +1,7 @@
 /*
  *ExternalVoltage.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  * Written By:  Bobby Schulz <schu3119@umn.edu>
  * Adapted from ApogeeSQ212.h by Sara Damiano (sdamiano@stroudcenter.org)

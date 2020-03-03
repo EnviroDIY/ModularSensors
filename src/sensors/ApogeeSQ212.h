@@ -1,6 +1,7 @@
 /*
  *ApogeeSQ212.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  * Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Adapted from CampbellOBS3.h by Sara Damiano (sdamiano@stroudcenter.org)
