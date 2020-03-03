@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the variable array class.
-*/
+ */
 
 // Header Guards
 #ifndef VariableArray_h
@@ -30,14 +30,15 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Defines another class for interfacing with a list of pointers to sensor instances
-class VariableArray
-{
-public:
+// Defines another class for interfacing with a list of pointers to sensor
+// instances
+class VariableArray {
+ public:
     // Constructors
     VariableArray();
-    VariableArray(uint8_t variableCount, Variable *variableList[]);
-    VariableArray(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
+    VariableArray(uint8_t variableCount, Variable* variableList[]);
+    VariableArray(uint8_t variableCount, Variable* variableList[],
+                  const char* uuids[]);
     ~VariableArray();
 
     // "Begins" the VariableArray - attaches the number and array of variables
@@ -47,17 +48,20 @@ public:
     // guarantee that the variables and their pointers in the array will
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
-    void begin(uint8_t variableCount, Variable *variableList[]);
-    void begin(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
+    void begin(uint8_t variableCount, Variable* variableList[]);
+    void begin(uint8_t variableCount, Variable* variableList[],
+               const char* uuids[]);
     void begin();
 
     // Leave the internal variable list public
-    Variable **arrayOfVars;
+    Variable** arrayOfVars;
 
     // Functions to return information about the list
 
     // This just returns the number of variables (as input in the constructor)
-    uint8_t getVariableCount(void){return _variableCount;}
+    uint8_t getVariableCount(void) {
+        return _variableCount;
+    }
 
     // This counts and returns the number of calculated variables
     uint8_t getCalculatedVariableCount(void);
@@ -66,7 +70,7 @@ public:
     uint8_t getSensorCount(void);
 
     // This matches UUID's from an array of pointers to the variable array
-    void matchUUIDs(const char *uuids[]);
+    void matchUUIDs(const char* uuids[]);
 
     // Public functions for interfacing with a list of sensors
     // This sets up all of the sensors in the list
@@ -90,35 +94,33 @@ public:
     // This function powers, wakes, updates values, sleeps and powers down.
     bool completeUpdate(void);
 
-    // This function prints out the results for any connected sensors to a stream
-    void printSensorData(Stream *stream = &Serial);
+    // This function prints out the results for any connected sensors to a
+    // stream
+    void printSensorData(Stream* stream = &Serial);
 
-protected:
+ protected:
     uint8_t _variableCount;
     uint8_t _sensorCount;
     uint8_t _maxSamplestoAverage;
 
-private:
-    bool isLastVarFromSensor(int arrayIndex);
+ private:
+    bool    isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
-    bool checkVariableUUIDs(void);
+    bool    checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    template<typename T>
-    void prettyPrintArray(T arrayToPrint[])
-    {
+    template <typename T>
+    void prettyPrintArray(T arrayToPrint[]) {
         DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
-        for (uint8_t i = 0; i < _variableCount; i++)
-        {
+        for (uint8_t i = 0; i < _variableCount; i++) {
             DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
             DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
         }
         DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
-    #define prettyPrintArray(...)
+#define prettyPrintArray(...)
 #endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
-
 };
 
 #endif  // Header Guard

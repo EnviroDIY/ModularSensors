@@ -27,7 +27,7 @@
  Not all Arduino boards have the same pin capabilities.
  The known compatibile pins for common variants are shown below.
 
- Arduino Uno: 	All pins.
+ Arduino Uno:     All pins.
 
  Arduino Mega or Mega 2560:
  10, 11, 12, 13, 14, 15, 50, 51, 52, 53, A8 (62),
