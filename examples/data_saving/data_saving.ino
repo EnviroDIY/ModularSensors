@@ -234,8 +234,8 @@ Variable* ds3231Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
 #else
+// NeoSWSerial&   modbusSerial = neoSSerial1;    // For software serial
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial&   modbusSerial = neoSSerial1;    // For software serial
 #endif
 const int8_t rs485AdapterPower =
     sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
