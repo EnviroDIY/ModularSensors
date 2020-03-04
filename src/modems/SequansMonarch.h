@@ -106,6 +106,7 @@ class SequansMonarch : public loggerModem {
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
     bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
  private:
     const char* _apn;

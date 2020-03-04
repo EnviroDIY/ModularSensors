@@ -34,6 +34,7 @@ SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
 // Destructor
 SequansMonarch::~SequansMonarch() {}
 
+MS_IS_MODEM_AWAKE(SequansMonarch);
 MS_MODEM_WAKE(SequansMonarch);
 
 MS_MODEM_CONNECT_INTERNET(SequansMonarch);

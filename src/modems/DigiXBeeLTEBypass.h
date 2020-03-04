@@ -67,6 +67,7 @@ class DigiXBeeLTEBypass : public DigiXBee {
  protected:
     bool isInternetAvailable(void) override;
     bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
  private:
     const char* _apn;

@@ -34,6 +34,7 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream, int8_t powerPin,
 // Destructor
 SodaqUBeeU201::~SodaqUBeeU201() {}
 
+MS_IS_MODEM_AWAKE(SodaqUBeeU201);
 MS_MODEM_WAKE(SodaqUBeeU201);
 
 MS_MODEM_CONNECT_INTERNET(SodaqUBeeU201);

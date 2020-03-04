@@ -128,29 +128,7 @@ bool loggerModem::modemSetup(void) {
     }
 
     // Check if the modem was awake, wake it if not
-    bool wasAwake = true;
-    if (_wakePulse_ms > 0 && _statusPin >= 0) {
-        // If there's a pulse wake up (ie, non-zero wake time) and there's a
-        // status pin, use that to determine if the modem was awake before setup
-        // began.
-        wasAwake = digitalRead(_statusPin) == static_cast<int>(_statusLevel);
-    } else if (_wakePulse_ms == 0) {
-        // If the wake up is one where a pin is held (0 wake time) then we're
-        // going to check the level of the held pin as the indication of whether
-        // attempts were made to wake the modem before entering the setup
-        // function
-        int8_t sleepRqBitNumber = log(digitalPinToBitMask(_modemSleepRqPin)) /
-            log(2);
-        int8_t currentRqPinState =
-            bitRead(*portInputRegister(digitalPinToPort(_modemSleepRqPin)),
-                    sleepRqBitNumber);
-        MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin, '=',
-               currentRqPinState ? F("HIGH") : F("LOW"),
-               F("meaning it should be"),
-               currentRqPinState == static_cast<int8_t>(_wakeLevel) ? F("on")
-                                                                    : F("off"));
-        wasAwake = (currentRqPinState == static_cast<int8_t>(_wakeLevel));
-    }
+    bool wasAwake = isModemAwake();
     if (!wasAwake) {
         while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}
         MS_DBG(F("Waking up the modem for setup ..."));
@@ -210,12 +188,9 @@ bool loggerModem::modemSleep(void) {
     // where possible I've selected a pulse time that is sufficient to wake but
     // not quite long enough to put it to sleep and am using AT commands to
     // sleep.  This *should* keep everything lined up.
-    if (_statusPin >= 0 && digitalRead(_statusPin) != _statusLevel &&
-        _wakePulse_ms > 0) {
-        MS_DBG(
-            F("Status pin"), _statusPin, F("on"), getModemName(), F("is"),
-            digitalRead(_statusPin),
-            F("indicating it is already off!  Will not run sleep function."));
+    if (!isModemAwake()) {
+        MS_DBG(getModemName(),
+               F("is already off!  Will not run sleep function."));
         // loggerModem::_priorActivationDuration = 0;
     } else {
         // Run the sleep function
@@ -367,14 +342,14 @@ bool loggerModem::updateModemMetadata(void) {
     uint32_t startMillis = millis();
     do {
         success &= getModemSignalQuality(rssi, percent);
-        MS_DBG(F("CURRENT RSSI:"), rssi);
-        MS_DBG(F("CURRENT Percent signal strength:"), percent);
         loggerModem::_priorRSSI          = rssi;
         loggerModem::_priorSignalPercent = percent;
         if (rssi != 0 && rssi != -9999) break;
         delay(250);
     } while ((rssi == 0 || rssi == -9999) && millis() - startMillis < 15000L &&
              success);
+    MS_DBG(F("CURRENT RSSI:"), rssi);
+    MS_DBG(F("CURRENT Percent signal strength:"), percent);
 
     success &= getModemBatteryStats(state, bpercent, volt);
     MS_DBG(F("CURRENT Modem Battery Charge State:"), state);

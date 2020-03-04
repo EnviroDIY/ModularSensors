@@ -104,6 +104,7 @@ class EspressifESP8266 : public loggerModem {
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
     bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
  private:
     bool        ESPwaitForBoot(void);

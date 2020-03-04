@@ -31,6 +31,7 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
 // Destructor
 DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent() {}
 
+MS_IS_MODEM_AWAKE(DigiXBeeCellularTransparent);
 MS_MODEM_WAKE(DigiXBeeCellularTransparent);
 
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);

@@ -33,6 +33,7 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
 // Destructor
 DigiXBeeWifi::~DigiXBeeWifi() {}
 
+MS_IS_MODEM_AWAKE(DigiXBeeWifi);
 MS_MODEM_WAKE(DigiXBeeWifi);
 
 MS_MODEM_CONNECT_INTERNET(DigiXBeeWifi);

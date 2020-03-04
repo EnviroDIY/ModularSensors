@@ -133,6 +133,7 @@ class loggerModem {
     virtual bool modemSleepFxn(void)       = 0;
     virtual bool modemWakeFxn(void)        = 0;
     virtual bool extraModemSetup(void)     = 0;
+    virtual bool isModemAwake(void)        = 0;
 
     static uint32_t parseNISTBytes(byte nistBytes[4]);
 
