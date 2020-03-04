@@ -44,6 +44,7 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
 // Destructor
 EspressifESP8266::~EspressifESP8266() {}
 
+MS_IS_MODEM_AWAKE(EspressifESP8266);
 MS_MODEM_WAKE(EspressifESP8266);
 
 MS_MODEM_CONNECT_INTERNET(EspressifESP8266);

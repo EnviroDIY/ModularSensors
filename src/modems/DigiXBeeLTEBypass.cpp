@@ -32,6 +32,7 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
 // Destructor
 DigiXBeeLTEBypass::~DigiXBeeLTEBypass() {}
 
+MS_IS_MODEM_AWAKE(DigiXBeeLTEBypass);
 MS_MODEM_WAKE(DigiXBeeLTEBypass);
 
 MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
