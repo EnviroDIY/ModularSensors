@@ -24,26 +24,18 @@ YosemitechParent::YosemitechParent(
     const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
     uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage) {
-    _model          = model;
-    _modbusAddress  = modbusAddress;
-    _stream         = stream;
-    _RS485EnablePin = enablePin;
-    _powerPin2      = powerPin2;
-}
+             measurementTime_ms, powerPin, -1, measurementsToAverage),
+      _ysensor(), _model(model), _modbusAddress(modbusAddress), _stream(stream),
+      _RS485EnablePin(enablePin), _powerPin2(powerPin2) {}
 YosemitechParent::YosemitechParent(
     byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
     int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
     const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
     uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage) {
-    _model          = model;
-    _modbusAddress  = modbusAddress;
-    _stream         = &stream;
-    _RS485EnablePin = enablePin;
-    _powerPin2      = powerPin2;
-}
+             measurementTime_ms, powerPin, -1, measurementsToAverage),
+      _ysensor(), _model(model), _modbusAddress(modbusAddress),
+      _stream(&stream), _RS485EnablePin(enablePin), _powerPin2(powerPin2) {}
 // Destructor
 YosemitechParent::~YosemitechParent() {}
 
@@ -64,13 +56,13 @@ bool YosemitechParent::setup(void) {
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
 #ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
-    sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+    _ysensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
     // required This realy can't fail so adding the return value is just for
     // show
-    retVal &= sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
+    retVal &= _ysensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;
 }
@@ -90,7 +82,7 @@ bool YosemitechParent::wake(void) {
     MS_DBG(F("Start Measurement on"), getSensorNameAndLocation());
     while (!success && ntries < 5) {
         MS_DBG('(', ntries + 1, F("):"));
-        success = sensor.startMeasurement();
+        success = _ysensor.startMeasurement();
         ntries++;
     }
 
@@ -108,9 +100,9 @@ bool YosemitechParent::wake(void) {
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
-    if (_model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000) {
+    if (_model == Y511 || _model == Y514 || _model == Y550 || _model == Y4000) {
         MS_DBG(F("Activate Brush on"), getSensorNameAndLocation());
-        if (sensor.activateBrush()) {
+        if (_ysensor.activateBrush()) {
             MS_DBG(F("Brush activated."));
         } else {
             MS_DBG(F("Brush NOT activated!"));
@@ -136,7 +128,7 @@ bool YosemitechParent::sleep(void) {
     MS_DBG(F("Stop Measurement on"), getSensorNameAndLocation());
     while (!success && ntries < 5) {
         MS_DBG('(', ntries + 1, F("):"));
-        success = sensor.stopMeasurement();
+        success = _ysensor.stopMeasurement();
         ntries++;
     }
     if (success) {
@@ -229,23 +221,23 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
 
                 // Get Values
                 MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = sensor.getValues(DOmgL, Turbidity, Cond, pH, Temp,
-                                           ORP, Chlorophyll, BGA);
+                success = _ysensor.getValues(DOmgL, Turbidity, Cond, pH, Temp,
+                                             ORP, Chlorophyll, BGA);
 
                 // Fix not-a-number values
-                if (!success or isnan(DOmgL)) DOmgL = -9999;
-                if (!success or isnan(Turbidity)) Turbidity = -9999;
-                if (!success or isnan(Cond)) Cond = -9999;
-                if (!success or isnan(pH)) pH = -9999;
-                if (!success or isnan(Temp)) Temp = -9999;
-                if (!success or isnan(ORP)) ORP = -9999;
-                if (!success or isnan(Chlorophyll)) Chlorophyll = -9999;
-                if (!success or isnan(BGA)) BGA = -9999;
+                if (!success || isnan(DOmgL)) DOmgL = -9999;
+                if (!success || isnan(Turbidity)) Turbidity = -9999;
+                if (!success || isnan(Cond)) Cond = -9999;
+                if (!success || isnan(pH)) pH = -9999;
+                if (!success || isnan(Temp)) Temp = -9999;
+                if (!success || isnan(ORP)) ORP = -9999;
+                if (!success || isnan(Chlorophyll)) Chlorophyll = -9999;
+                if (!success || isnan(BGA)) BGA = -9999;
 
                 // For conductivity, convert mS/cm to µS/cm
                 if (Cond != -9999) Cond *= 1000;
 
-                MS_DBG(F("    "), sensor.getParameter());
+                MS_DBG(F("    "), _ysensor.getParameter());
                 MS_DBG(F("    "), DOmgL, ',', Turbidity, ',', Cond, ',', pH,
                        ',', Temp, ',', ORP, ',', Chlorophyll, ',', BGA);
 
@@ -269,17 +261,17 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
 
                 // Get Values
                 MS_DBG(F("Get Values from"), getSensorNameAndLocation());
-                success = sensor.getValues(parmValue, tempValue, thirdValue);
+                success = _ysensor.getValues(parmValue, tempValue, thirdValue);
 
                 // Fix not-a-number values
-                if (!success or isnan(parmValue)) parmValue = -9999;
-                if (!success or isnan(tempValue)) tempValue = -9999;
-                if (!success or isnan(thirdValue)) thirdValue = -9999;
+                if (!success || isnan(parmValue)) parmValue = -9999;
+                if (!success || isnan(tempValue)) tempValue = -9999;
+                if (!success || isnan(thirdValue)) thirdValue = -9999;
 
                 // For conductivity, convert mS/cm to µS/cm
-                if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
+                if (_model == Y520 && parmValue != -9999) parmValue *= 1000;
 
-                MS_DBG(F(" "), sensor.getParameter(), ':', parmValue);
+                MS_DBG(F(" "), _ysensor.getParameter(), ':', parmValue);
                 MS_DBG(F("  Temp:"), tempValue);
 
                 // Not all sensors return a third value

@@ -58,22 +58,19 @@ bool RainCounterI2C::setup(void) {
 
 bool RainCounterI2C::addSingleMeasurementResult(void) {
     // intialize values
-    uint8_t Byte1 = 0;  // Low byte of data
-    uint8_t Byte2 = 0;  // High byte of data
-
     float   rain = -9999;  // Number of mm of rain
     int16_t tips = -9999;  // Number of tip events
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
-    if (Wire.requestFrom(int(_i2cAddressHex), 2)) {
+    if (Wire.requestFrom(static_cast<int>(_i2cAddressHex), 2)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        Byte1 = Wire.read();
-        Byte2 = Wire.read();
+        uint8_t Byte1 = Wire.read();  // Low byte of data
+        uint8_t Byte2 = Wire.read();  // High byte of data
 
         tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
-        rain = float(tips) *
+        rain = static_cast<float>(tips) *
             _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 
         if (tips < 0)

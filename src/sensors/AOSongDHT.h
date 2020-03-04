@@ -99,7 +99,7 @@ class AOSongDHT : public Sensor {
 class AOSongDHT_Humidity : public Variable {
  public:
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
-                       const char* varCode = "DHTHumidity")
+                                const char* varCode = "DHTHumidity")
         : Variable(parentSense, (const uint8_t)DHT_HUMIDITY_VAR_NUM,
                    (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
                    "percent", varCode, uuid) {}
@@ -115,7 +115,7 @@ class AOSongDHT_Humidity : public Variable {
 class AOSongDHT_Temp : public Variable {
  public:
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
-                   const char* varCode = "DHTTemp")
+                            const char* varCode = "DHTTemp")
         : Variable(parentSense, (const uint8_t)DHT_TEMP_VAR_NUM,
                    (uint8_t)DHT_TEMP_RESOLUTION, "temperature", "degreeCelsius",
                    varCode, uuid) {}
@@ -131,7 +131,7 @@ class AOSongDHT_Temp : public Variable {
 class AOSongDHT_HI : public Variable {
  public:
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
-                 const char* varCode = "DHTHI")
+                          const char* varCode = "DHTHI")
         : Variable(parentSense, (const uint8_t)DHT_HI_VAR_NUM,
                    (uint8_t)DHT_HI_RESOLUTION, "heatIndex", "degreeCelsius",
                    varCode, uuid) {}

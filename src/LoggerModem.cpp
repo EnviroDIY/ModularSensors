@@ -59,7 +59,7 @@ void loggerModem::setModemLED(int8_t modemLEDPin) {
         pinMode(_modemLEDPin, OUTPUT);
         digitalWrite(_modemLEDPin, LOW);
     }
-};
+}
 void loggerModem::modemLEDOn(void) {
     if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, HIGH); }
 }
@@ -94,9 +94,10 @@ void loggerModem::modemPowerUp(void) {
 
 void loggerModem::modemPowerDown(void) {
     if (_powerPin >= 0) {
-        // loggerModem::_priorPoweredDuration = ((float)(millis() -
-        // _millisPowerOn)) / 1000; MS_DBG(F("Total modem power-on time (s):"),
-        // String(loggerModem::_priorPoweredDuration, 3));
+        // loggerModem::_priorPoweredDuration =
+        //     (static_cast<float>(millis() - _millisPowerOn)) / 1000;
+        // MS_DBG(F("Total modem power-on time (s):"),
+        //        String(loggerModem::_priorPoweredDuration, 3));
 
         MS_DBG(F("Turning off power to"), getModemName(), F("with pin"),
                _powerPin);
@@ -132,7 +133,7 @@ bool loggerModem::modemSetup(void) {
         // If there's a pulse wake up (ie, non-zero wake time) and there's a
         // status pin, use that to determine if the modem was awake before setup
         // began.
-        wasAwake = digitalRead(_statusPin) == _statusLevel;
+        wasAwake = digitalRead(_statusPin) == static_cast<int>(_statusLevel);
     } else if (_wakePulse_ms == 0) {
         // If the wake up is one where a pin is held (0 wake time) then we're
         // going to check the level of the held pin as the indication of whether
@@ -146,8 +147,9 @@ bool loggerModem::modemSetup(void) {
         MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin, '=',
                currentRqPinState ? F("HIGH") : F("LOW"),
                F("meaning it should be"),
-               currentRqPinState == _wakeLevel ? F("on") : F("off"));
-        wasAwake = (currentRqPinState == _wakeLevel);
+               currentRqPinState == static_cast<int8_t>(_wakeLevel) ? F("on")
+                                                                    : F("off"));
+        wasAwake = (currentRqPinState == static_cast<int8_t>(_wakeLevel));
     }
     if (!wasAwake) {
         while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}
@@ -242,8 +244,8 @@ bool loggerModem::modemSleepPowerDown(void) {
                    _statusPin, F("going"), !_statusLevel ? F("HIGH") : F("LOW"),
                    F("..."));
             while (millis() - start < _disconnetTime_ms &&
-                   digitalRead(_statusPin) == _statusLevel) {}
-            if (digitalRead(_statusPin) == _statusLevel) {
+                   digitalRead(_statusPin) == static_cast<int>(_statusLevel)) {}
+            if (digitalRead(_statusPin) == static_cast<int>(_statusLevel)) {
                 MS_DBG(F("... "), getModemName(),
                        F("did not successfully shut down!"));
             } else {
@@ -256,9 +258,10 @@ bool loggerModem::modemSleepPowerDown(void) {
             while (millis() - start < _disconnetTime_ms) {}
         }
 
-        // loggerModem::_priorPoweredDuration = ((float)(millis() -
-        // _millisPowerOn)) / 1000; MS_DBG(F("Total modem power-on time (s):"),
-        // String(loggerModem::_priorPoweredDuration, 3));
+        // loggerModem::_priorPoweredDuration =
+        //     (static_cast<float>(millis() - _millisPowerOn)) / 1000;
+        // MS_DBG(F("Total modem power-on time (s):"),
+        //        String(loggerModem::_priorPoweredDuration, 3));
 
         MS_DBG(F("Turning off power to"), getModemName(), F("with pin"),
                _powerPin);
@@ -266,7 +269,7 @@ bool loggerModem::modemSleepPowerDown(void) {
         // Unset the power-on time
         _millisPowerOn = 0;
     } else {
-        // loggerModem::_priorPoweredDuration = (float)-9999;
+        // loggerModem::_priorPoweredDuration = static_cast<float>(-9999);
 
         // If we're not going to power the modem down, there's no reason to hold
         // up the main processor while waiting for the modem to shut down.
@@ -378,19 +381,19 @@ bool loggerModem::updateModemMetadata(void) {
     MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
     MS_DBG(F("CURRENT Modem Battery Voltage:"), volt);
     if (state != 99)
-        loggerModem::_priorBatteryState = (float)state;
+        loggerModem::_priorBatteryState = static_cast<float>(state);
     else
-        loggerModem::_priorBatteryState = (float)-9999;
+        loggerModem::_priorBatteryState = static_cast<float>(-9999);
 
     if (bpercent != -99)
-        loggerModem::_priorBatteryPercent = (float)bpercent;
+        loggerModem::_priorBatteryPercent = static_cast<float>(bpercent);
     else
-        loggerModem::_priorBatteryPercent = (float)-9999;
+        loggerModem::_priorBatteryPercent = static_cast<float>(-9999);
 
     if (volt != 9999)
-        loggerModem::_priorBatteryVoltage = (float)volt;
+        loggerModem::_priorBatteryVoltage = static_cast<float>(volt);
     else
-        loggerModem::_priorBatteryVoltage = (float)-9999;
+        loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
 
     loggerModem::_priorModemTemp = getModemChipTemperature();
     MS_DBG(F("CURRENT Modem Chip Temperature:"), loggerModem::_priorModemTemp);
@@ -484,7 +487,7 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
     // Connection is then immediately closed, so there is no need to close it
     uint32_t secFrom1900 = 0;
     for (uint8_t i = 0; i < 4; i++) {
-        MS_DBG(F("Response Byte"), i, ':', (char)nistBytes[i], '=',
+        MS_DBG(F("Response Byte"), i, ':', static_cast<char>(nistBytes[i]), '=',
                nistBytes[i], '=', String(nistBytes[i], BIN));
         secFrom1900 += 0x000000FF & nistBytes[i];
         // MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900,

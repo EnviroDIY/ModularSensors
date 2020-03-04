@@ -29,13 +29,9 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream, int8_t powerPin,
                            uint32_t stabilizationTime_ms,
                            uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage) {
-    _model          = model;
-    _modbusAddress  = modbusAddress;
-    _stream         = stream;
-    _RS485EnablePin = enablePin;
-    _powerPin2      = powerPin2;
-}
+             measurementTime_ms, powerPin, -1, measurementsToAverage),
+      _ksensor(), _model(model), _modbusAddress(modbusAddress), _stream(stream),
+      _RS485EnablePin(enablePin), _powerPin2(powerPin2) {}
 KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                            int8_t powerPin2, int8_t enablePin,
                            uint8_t measurementsToAverage, kellerModel model,
@@ -44,13 +40,9 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                            uint32_t stabilizationTime_ms,
                            uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage) {
-    _model          = model;
-    _modbusAddress  = modbusAddress;
-    _stream         = &stream;
-    _RS485EnablePin = enablePin;
-    _powerPin2      = powerPin2;
-}
+             measurementTime_ms, powerPin, -1, measurementsToAverage),
+      _ksensor(), _model(model), _modbusAddress(modbusAddress),
+      _stream(&stream), _RS485EnablePin(enablePin), _powerPin2(powerPin2) {}
 // Destructor
 KellerParent::~KellerParent() {}
 
@@ -77,7 +69,7 @@ bool KellerParent::setup(void) {
     // This sensor begin is just setting more pin modes, etc, no sensor power
     // required This realy can't fail so adding the return value is just for
     // show
-    retVal &= sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
+    retVal &= _ksensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;
 }
@@ -151,16 +143,16 @@ bool KellerParent::addSingleMeasurementResult(void) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         // Get Values
-        success     = sensor.getValues(waterPressureBar, waterTempertureC);
-        waterDepthM = sensor.calcWaterDepthM(
+        success     = _ksensor.getValues(waterPressureBar, waterTempertureC);
+        waterDepthM = _ksensor.calcWaterDepthM(
             waterPressureBar,
             waterTempertureC);  // float calcWaterDepthM(float waterPressureBar,
                                 // float waterTempertureC)
 
         // Fix not-a-number values
-        if (!success or isnan(waterPressureBar)) waterPressureBar = -9999;
-        if (!success or isnan(waterTempertureC)) waterTempertureC = -9999;
-        if (!success or isnan(waterDepthM)) waterDepthM = -9999;
+        if (!success || isnan(waterPressureBar)) waterPressureBar = -9999;
+        if (!success || isnan(waterTempertureC)) waterTempertureC = -9999;
+        if (!success || isnan(waterDepthM)) waterDepthM = -9999;
 
         // For waterPressureBar, convert bar to millibar
         if (waterPressureBar != -9999)

@@ -37,11 +37,13 @@ const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":\"";
 // Constructors
 EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
     // MS_DBG(F("dataPublisher object created"));
+    _registrationToken = NULL;
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                        uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     // MS_DBG(F("dataPublisher object created"));
+    _registrationToken = NULL;
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        uint8_t sendEveryX, uint8_t sendOffset)

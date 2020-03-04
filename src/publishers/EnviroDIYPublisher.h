@@ -78,7 +78,7 @@ class EnviroDIYPublisher : public dataPublisher {
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataEnviroDIY(void);
-    virtual int16_t publishData(Client* _outClient);
+    int16_t publishData(Client* _outClient) override;
 
  protected:
     // portions of the POST request

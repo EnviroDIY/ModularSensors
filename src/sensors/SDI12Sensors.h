@@ -68,8 +68,8 @@ class SDI12Sensors : public Sensor {
 
     bool setup(void) override;
 
-    bool         startSingleMeasurement(void) override;
-    virtual bool addSingleMeasurementResult(void);
+    bool startSingleMeasurement(void) override;
+    bool addSingleMeasurementResult(void) override;
 
  protected:
     bool  requestSensorAcknowledgement(void);

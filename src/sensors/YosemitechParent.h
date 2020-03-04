@@ -69,10 +69,10 @@ class YosemitechParent : public Sensor {
     void powerUp(void) override;
     void powerDown(void) override;
 
-    virtual bool addSingleMeasurementResult(void);
+    bool addSingleMeasurementResult(void) override;
 
  private:
-    yosemitech      sensor;
+    yosemitech      _ysensor;
     yosemitechModel _model;
     byte            _modbusAddress;
     Stream*         _stream;

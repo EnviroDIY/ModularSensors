@@ -1,6 +1,7 @@
 /*
  * AtlasScientificpH.h
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano
@@ -36,9 +37,9 @@
 // The main class for the Atlas Scientific pH temperature sensor
 class AtlasScientificpH : public AtlasParent {
  public:
-    AtlasScientificpH(int8_t  powerPin,
-                      uint8_t i2cAddressHex         = ATLAS_PH_I2C_ADDR,
-                      uint8_t measurementsToAverage = 1)
+    explicit AtlasScientificpH(int8_t  powerPin,
+                               uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+                               uint8_t measurementsToAverage = 1)
         : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                       "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
                       ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,

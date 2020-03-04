@@ -39,7 +39,6 @@ bool MeterTeros11::addSingleMeasurementResult(void) {
     bool success = false;
 
     // Set up the float variables for receiving data
-    float raw  = -9999;
     float ea   = -9999;
     float temp = -9999;
     float VWC  = -9999;
@@ -77,7 +76,7 @@ bool MeterTeros11::addSingleMeasurementResult(void) {
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         // First variable returned is the raw count value. This gets convertd
         // into dielectric ea
-        raw = _SDI12Internal.parseFloat();
+        float raw = _SDI12Internal.parseFloat();
         if (raw < 0 || raw > 5000) raw = -9999;
         if (raw != -9999) {
             ea = ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) +

@@ -50,7 +50,8 @@ bool MaximDS3231::startSingleMeasurement(void) {
 
     // force a temperature sampling and conversion
     // this function already has a forced wait for the conversion to complete
-    // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
+    // TODO(SRGDamia1):  Test how long the conversion takes, update DS3231 lib
+    // accordingly!
     MS_DBG(F("Forcing new temperature reading by DS3231"));
     rtc.convertTemperature(false);
 

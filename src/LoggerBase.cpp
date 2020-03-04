@@ -166,17 +166,17 @@ void Logger::setSDCardPwr(int8_t SDCardPowerPin) {
 void Logger::turnOnSDcard(bool waitToSettle) {
     if (_SDCardPowerPin >= 0) {
         digitalWrite(_SDCardPowerPin, HIGH);
-        // TODO:  figure out how long to wait
+        // TODO(SRGDamia1):  figure out how long to wait
         if (waitToSettle) { delay(6); }
     }
 }
 void Logger::turnOffSDcard(bool waitForHousekeeping) {
     if (_SDCardPowerPin >= 0) {
-        // TODO: set All SPI pins to INPUT?
-        // TODO: set ALL SPI pins HIGH (~30k pullup)
+        // TODO(SRGDamia1): set All SPI pins to INPUT?
+        // TODO(SRGDamia1): set ALL SPI pins HIGH (~30k pullup)
         pinMode(_SDCardPowerPin, OUTPUT);
         digitalWrite(_SDCardPowerPin, LOW);
-        // TODO:  wait in lower power mode
+        // TODO(SRGDamia1):  wait in lower power mode
         if (waitForHousekeeping) {
             // Specs say up to 1s for internal housekeeping after each write
             delay(1000);
@@ -743,7 +743,7 @@ void Logger::systemSleep(void) {
 
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
-// TODO:  Make sure can find all serial ports
+// TODO(SRGDamia1):  Make sure can find all serial ports
 #if defined(STANDARD_SERIAL_OUTPUT)
     STANDARD_SERIAL_OUTPUT.flush();  // for debugging
 #endif
@@ -1450,8 +1450,8 @@ void Logger::logData(void) {
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
-        // TODO:  Decide how much delay is needed between turning on the card
-        // and writing to it.  Could we turn it on just before writing?
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
 
         // Do a complete sensor update
@@ -1498,8 +1498,8 @@ void Logger::logDataAndPublish(void) {
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
-        // TODO:  Decide how much delay is needed between turning on the card
-        // and writing to it.  Could we turn it on just before writing?
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
 
         // Do a complete update on the variable array.
@@ -1553,9 +1553,9 @@ void Logger::logDataAndPublish(void) {
         }
 
 
-        // TODO:  Do some sort of verification that minimum 1 sec has passed
-        // for internal SD card housekeeping before cutting power
-        // It seems very unlikely based on my testing that less than one second
+        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
+        // passed for internal SD card housekeeping before cutting power It
+        // seems very unlikely based on my testing that less than one second
         // would be taken up in publishing data to remotes
         // Cut power from the SD card - without additional housekeeping wait
         turnOffSDcard(false);

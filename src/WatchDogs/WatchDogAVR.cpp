@@ -86,8 +86,8 @@ void extendedWatchDogAVR::resetWatchDog() {
 }
 
 
-ISR(WDT_vect)  // ISR for watchdog early warning
-{
+// ISR for watchdog early warning
+ISR(WDT_vect) {
     extendedWatchDogAVR::_barksUntilReset--;  // Increament down the counter,
                                               // makes multi cycle WDT possible
     // MS_DBG(F("\nWatchdog interrupt!"),

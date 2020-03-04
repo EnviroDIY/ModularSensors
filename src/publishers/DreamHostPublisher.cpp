@@ -25,11 +25,13 @@ const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 // Constructors
 DreamHostPublisher::DreamHostPublisher() : dataPublisher() {
     // MS_DBG(F("DreamHostPublisher object created"));
+    _DreamHostPortalRX = NULL;
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                        uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     // MS_DBG(F("DreamHostPublisher object created"));
+    _DreamHostPortalRX = NULL;
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
                                        uint8_t sendEveryX, uint8_t sendOffset)

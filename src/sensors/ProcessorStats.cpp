@@ -147,12 +147,12 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     float sensorValue_battery = -9999;
 
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0) {
+    if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
         // Get the battery voltage
         float rawBattery    = analogRead(_batteryPin);
         sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
     }
-    if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0) {
+    if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") == 0) {
         // Get the battery voltage
         float rawBattery    = analogRead(_batteryPin);
         sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;

@@ -69,7 +69,7 @@ class DreamHostPublisher : public dataPublisher {
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataDreamHost(void);
-    int16_t publishData(Client* _outClient);
+    int16_t publishData(Client* _outClient) override;
 
  protected:
     // portions of the GET request

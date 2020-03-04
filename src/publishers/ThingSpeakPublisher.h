@@ -58,7 +58,7 @@ class ThingSpeakPublisher : public dataPublisher {
     virtual ~ThingSpeakPublisher();
 
     // Returns the data destination
-    virtual String getEndpoint(void) {
+    String getEndpoint(void) override {
         return String(mqttServer);
     }
 
@@ -85,7 +85,7 @@ class ThingSpeakPublisher : public dataPublisher {
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);
-    virtual int16_t publishData(Client* _outClient);
+    int16_t publishData(Client* _outClient) override;
 
  protected:
     static const char* mqttServer;

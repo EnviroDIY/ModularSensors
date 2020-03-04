@@ -28,7 +28,7 @@
 #define MS_MODEM_WAKE(specificModem)                                           \
     bool specificModem::modemWake(void) {                                      \
         /* Power up */                                                         \
-        if (_millisPowerOn == 0) modemPowerUp();                               \
+        if (_millisPowerOn == 0) { modemPowerUp(); }                           \
                                                                                \
         /* Set-up pin modes */                                                 \
         /* Because the modem calls wake BEFORE the first setup, we must set    \
@@ -46,7 +46,8 @@
          * possible I've selected a pulse time that is sufficient to wake but  \
          * not quite long enough to put it to sleep and am using AT commands   \
          * to sleep.  This *should* keep everything lined up.*/                \
-        if (_statusPin >= 0 && digitalRead(_statusPin) == _statusLevel &&      \
+        if (_statusPin >= 0 &&                                                 \
+            digitalRead(_statusPin) == static_cast<int>(_statusLevel) &&       \
             _wakePulse_ms > 0) {                                               \
             MS_DBG(getModemName(), F("was already on!  (status pin"),          \
                    _statusPin, F("level = "),                                  \
@@ -77,7 +78,8 @@
             }                                                                  \
                                                                                \
             /* Re-check the status pin */                                      \
-            if ((_statusPin >= 0 && digitalRead(_statusPin) != _statusLevel && \
+            if ((_statusPin >= 0 &&                                            \
+                 digitalRead(_statusPin) != static_cast<int>(_statusLevel) &&  \
                  !success) ||                                                  \
                 !success) {                                                    \
                 MS_DBG(getModemName(), F("doesn't appear to be responsive!")); \
@@ -200,48 +202,48 @@
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it
 // over TCP because I don't have a UDP library for all the modems.
-#define MS_MODEM_GET_NIST_TIME(specificModem)                                  \
-    uint32_t specificModem::getNISTTime(void) {                                \
-        /* bail if not connected to the internet */                            \
-        if (!isInternetAvailable()) {                                          \
-            MS_DBG(F("No internet connection, cannot connect to NIST."));      \
-            return 0;                                                          \
-        }                                                                      \
-                                                                               \
-        /* Try up to 12 times to get a timestamp from NIST */                  \
-        for (uint8_t i = 0; i < 12; i++) {                                     \
-            /* Must ensure that we do not ping the daylight server more than   \
-             * once every 4 seconds.  NIST clearly specifies here that this is \
-             * a requirement for all software that accesses its servers:       \
-             * https://tf.nist.gov/tf-cgi/servers.cgi */                       \
-            while (millis() < _lastNISTrequest + 4000) {}                      \
-                                                                               \
-            /* Make TCP connection */                                          \
-            MS_DBG(F("\nConnecting to NIST daytime Server"));                  \
-            bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15);  \
-                                                                               \
-            /* Wait up to 5 seconds for a response */                          \
-            if (connectionMade) {                                              \
-                uint32_t start = millis();                                     \
-                while (gsmClient && gsmClient.available() < 4 &&               \
-                       millis() - start < 5000L) {}                            \
-                                                                               \
-                if (gsmClient.available() >= 4) {                              \
-                    MS_DBG(F("NIST responded after"), millis() - start,        \
-                           F("ms"));                                           \
-                    byte response[4] = {0};                                    \
-                    gsmClient.read(response, 4);                               \
-                    if (gsmClient.connected()) gsmClient.stop();               \
-                    return parseNISTBytes(response);                           \
-                } else {                                                       \
-                    MS_DBG(F("NIST Time server did not respond!"));            \
-                    if (gsmClient.connected()) gsmClient.stop();               \
-                }                                                              \
-            } else {                                                           \
-                MS_DBG(F("Unable to open TCP to NIST!"));                      \
-            }                                                                  \
-        }                                                                      \
-        return 0;                                                              \
+// NOTE:  We eust ensure that we do not ping the daylight server more than once
+// every 4 seconds.  NIST clearly specifies here that this is a requirement for
+// all software that accesses its servers:
+// https://tf.nist.gov/tf-cgi/servers.cgi */
+#define MS_MODEM_GET_NIST_TIME(specificModem)                                 \
+    uint32_t specificModem::getNISTTime(void) {                               \
+        /* bail if not connected to the internet */                           \
+        if (!isInternetAvailable()) {                                         \
+            MS_DBG(F("No internet connection, cannot connect to NIST."));     \
+            return 0;                                                         \
+        }                                                                     \
+                                                                              \
+        /* Try up to 12 times to get a timestamp from NIST */                 \
+        for (uint8_t i = 0; i < 12; i++) {                                    \
+            while (millis() < _lastNISTrequest + 4000) {}                     \
+                                                                              \
+            /* Make TCP connection */                                         \
+            MS_DBG(F("\nConnecting to NIST daytime Server"));                 \
+            bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15); \
+                                                                              \
+            /* Wait up to 5 seconds for a response */                         \
+            if (connectionMade) {                                             \
+                uint32_t start = millis();                                    \
+                while (gsmClient && gsmClient.available() < 4 &&              \
+                       millis() - start < 5000L) {}                           \
+                                                                              \
+                if (gsmClient.available() >= 4) {                             \
+                    MS_DBG(F("NIST responded after"), millis() - start,       \
+                           F("ms"));                                          \
+                    byte response[4] = {0};                                   \
+                    gsmClient.read(response, 4);                              \
+                    if (gsmClient.connected()) gsmClient.stop();              \
+                    return parseNISTBytes(response);                          \
+                } else {                                                      \
+                    MS_DBG(F("NIST Time server did not respond!"));           \
+                    if (gsmClient.connected()) gsmClient.stop();              \
+                }                                                             \
+            } else {                                                          \
+                MS_DBG(F("Unable to open TCP to NIST!"));                     \
+            }                                                                 \
+        }                                                                     \
+        return 0;                                                             \
     }
 
 #if defined TINY_GSM_MODEM_XBEE || defined TINY_GSM_MODEM_ESP8266
@@ -258,22 +260,22 @@
     MS_DBG(F("Signal percent calcuated from CSQ:"), percent);
 #endif
 
-#define MS_MODEM_GET_MODEM_SIGNAL_QUALITY(specificModem)                      \
-    bool specificModem::getModemSignalQuality(int16_t& rssi,                  \
-                                              int16_t& percent) {             \
-        /* Get signal quality */                                              \
-        /* NOTE:  We can't actually distinguish between a bad modem response, \
-         * no modem response, and a real response from the modem of no        \
-         * service/signal.  The TinyGSM getSignalQuality function returns the \
-         * same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases. */       \
-        MS_DBG(F("Getting signal quality:"));                                 \
-        int16_t signalQual = gsmModem.getSignalQuality();                     \
-        MS_DBG(F("Raw signal quality:"), signalQual);                         \
-                                                                              \
-        /* Convert signal quality to RSSI, if necessary */                    \
-        MS_MODEM_CALC_SIGNAL_QUALITY                                          \
-                                                                              \
-        return true;                                                          \
+/* NOTE:  We can't actually distinguish between a bad modem response,
+ * no modem response, and a real response from the modem of no
+ * service/signal.  The TinyGSM getSignalQuality function returns the
+ * same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases. */
+#define MS_MODEM_GET_MODEM_SIGNAL_QUALITY(specificModem)          \
+    bool specificModem::getModemSignalQuality(int16_t& rssi,      \
+                                              int16_t& percent) { \
+        /* Get signal quality */                                  \
+        MS_DBG(F("Getting signal quality:"));                     \
+        int16_t signalQual = gsmModem.getSignalQuality();         \
+        MS_DBG(F("Raw signal quality:"), signalQual);             \
+                                                                  \
+        /* Convert signal quality to RSSI, if necessary */        \
+        MS_MODEM_CALC_SIGNAL_QUALITY                              \
+                                                                  \
+        return true;                                              \
     }
 
 #ifdef TINY_GSM_MODEM_HAS_BATTERY
@@ -310,7 +312,7 @@
 #define MS_MODEM_GET_MODEM_TEMPERATURE_DATA(specificModem)   \
     float specificModem::getModemChipTemperature(void) {     \
         MS_DBG(F("This modem doesn't return temperature!")); \
-        return (float)-9999;                                 \
+        return static_cast<float>(-9999);                    \
     }
 #endif
 

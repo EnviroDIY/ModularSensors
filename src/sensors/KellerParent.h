@@ -74,10 +74,10 @@ class KellerParent : public Sensor {
     void powerUp(void) override;
     void powerDown(void) override;
 
-    virtual bool addSingleMeasurementResult(void);
+    bool addSingleMeasurementResult(void) override;
 
  private:
-    keller      sensor;
+    keller      _ksensor;
     kellerModel _model;
     byte        _modbusAddress;
     Stream*     _stream;

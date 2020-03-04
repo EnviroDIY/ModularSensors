@@ -1,6 +1,7 @@
 /*
  * MaximDS18.h
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial library developement done by Sara Damiano
  * (sdamiano@stroudcenter.org).
@@ -82,7 +83,7 @@ class MaximDS18 : public Sensor {
 class MaximDS18_Temp : public Variable {
  public:
     explicit MaximDS18_Temp(MaximDS18* parentSense, const char* uuid = "",
-                   const char* varCode = "DS18Temp")
+                            const char* varCode = "DS18Temp")
         : Variable(parentSense, (const uint8_t)DS18_TEMP_VAR_NUM,
                    (uint8_t)DS18_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}

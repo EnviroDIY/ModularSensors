@@ -1,6 +1,7 @@
 /*
  * AtlasScientificEC.h
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano
@@ -114,9 +115,9 @@ class AtlasScientificEC_Salinity : public Variable {
 // The class for the Specific Gravity Variable
 class AtlasScientificEC_SpecificGravity : public Variable {
  public:
-    AtlasScientificEC_SpecificGravity(Sensor*     parentSense,
-                                      const char* uuid    = "",
-                                      const char* varCode = "AtlasSpecGravity")
+    explicit AtlasScientificEC_SpecificGravity(
+        Sensor* parentSense, const char* uuid = "",
+        const char* varCode = "AtlasSpecGravity")
         : Variable(parentSense, (const uint8_t)ATLAS_SG_VAR_NUM,
                    (uint8_t)ATLAS_SG_RESOLUTION, "specificGravity",
                    "dimensionless", varCode, uuid) {}

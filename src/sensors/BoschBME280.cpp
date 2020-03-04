@@ -65,7 +65,7 @@ bool BoschBME280::setup(void) {
     // Make 5 attempts
     uint8_t ntries  = 0;
     bool    success = false;
-    while (!success and ntries < 5) {
+    while (!success && ntries < 5) {
         success = bme_internal.begin(_i2cAddressHex);
         ntries++;
     }
@@ -103,8 +103,8 @@ bool BoschBME280::wake(void) {
     //  - humidity oversampling = 16x
     //  - built-in IIR filter = off
     //  - sleep time between measurements = 0.5ms
-    // TODO:  Figure out why this is necessary; setSampling should be enough
-    // this adds a bunch of small delays...
+    // TODO(SRGDamia1):  Figure out why this is necessary; setSampling should be
+    // enough this adds a bunch of small delays...
     bme_internal.begin(_i2cAddressHex);
 
     // When the Adafruit library is updated to remove the built-in delay after

@@ -1,6 +1,7 @@
 /*
  * AtlasScientificCO2.h
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano
@@ -33,7 +34,7 @@
 
 // Sensor Specific Defines
 #define ATLAS_CO2_NUM_VARIABLES 2
-// TODO:  Test timing with sensor
+// TODO(SRGDamia1):  Test timing with sensor
 #define ATLAS_CO2_WARM_UP_TIME_MS 850
 // NOTE:  This has a long stabilization time!
 #define ATLAS_CO2_STABILIZATION_TIME_MS 10000
@@ -48,9 +49,9 @@
 // The main class for the Atlas Scientific CO2 temperature sensor
 class AtlasScientificCO2 : public AtlasParent {
  public:
-    AtlasScientificCO2(int8_t  powerPin,
-                       uint8_t i2cAddressHex         = ATLAS_CO2_I2C_ADDR,
-                       uint8_t measurementsToAverage = 1);
+    explicit AtlasScientificCO2(int8_t  powerPin,
+                                uint8_t i2cAddressHex = ATLAS_CO2_I2C_ADDR,
+                                uint8_t measurementsToAverage = 1);
     ~AtlasScientificCO2();
 
     bool setup(void) override;

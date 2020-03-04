@@ -8,7 +8,7 @@
  *This file is for Digi S6B Wifi XBee's
  */
 
-// Included DependenciesV
+// Included Dependencies
 #include "DigiXBeeWifi.h"
 #include "LoggerModemMacros.h"
 
@@ -268,9 +268,9 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     volt = gsmModem.getBattVoltage();
     MS_DBG(F("CURRENT Modem input battery voltage:"), volt);
     if (volt != 9999)
-        loggerModem::_priorBatteryVoltage = (float)volt;
+        loggerModem::_priorBatteryVoltage = static_cast<float>(volt);
     else
-        loggerModem::_priorBatteryVoltage = (float)-9999;
+        loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
 
     MS_DBG(F("Getting chip temperature:"));
     loggerModem::_priorModemTemp = getModemChipTemperature();

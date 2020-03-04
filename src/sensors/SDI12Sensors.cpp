@@ -111,7 +111,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
 
     MS_DBG(F("  Asking for sensor acknowlegement"));
     String myCommand = "";
-    myCommand += (char)_SDI12address;
+    myCommand += static_cast<char>(_SDI12address);
     myCommand += "!";  // sends 'acknowledge active' command [address][!]
 
     bool    didAcknowledge = false;
@@ -171,7 +171,7 @@ bool SDI12Sensors::getSensorInfo(void) {
 
     MS_DBG(F("  Getting sensor info"));
     String myCommand = "";
-    myCommand += (char)_SDI12address;
+    myCommand += static_cast<char>(_SDI12address);
     myCommand += "I!";  // sends 'info' command [address][I][!]
     _SDI12Internal.sendCommand(myCommand);
     MS_DBG(F("    >>>"), myCommand);
@@ -366,7 +366,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         for (uint8_t i = 0; i < _numReturnedVars; i++) {
             float result = _SDI12Internal.parseFloat();
             // The SDI-12 library should return -9999 on timeout
-            if (result == -9999 or isnan(result)) result = -9999;
+            if (result == -9999 || isnan(result)) result = -9999;
             MS_DBG(F("    <<< Result #"), i, ':', result);
             verifyAndAddMeasurementResult(i, result);
         }
@@ -388,7 +388,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         // of the "failed" result values
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
         for (uint8_t i = 0; i < _numReturnedVars; i++) {
-            verifyAndAddMeasurementResult(i, (float)-9999);
+            verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
         }
     }
 

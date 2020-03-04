@@ -1,6 +1,7 @@
 /*
  * MaximDS18.cpp
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial library developement done by Sara Damiano
  * (sdamiano@stroudcenter.org).
@@ -95,7 +96,7 @@ bool MaximDS18::setup(void) {
         ntries          = 0;
         bool gotAddress = false;
         // Try 5 times to get an address
-        while (!gotAddress and ntries < 5) {
+        while (!gotAddress && ntries < 5) {
             gotAddress = _internalOneWire.search(address);
             ntries++;
         }

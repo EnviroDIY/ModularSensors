@@ -426,7 +426,7 @@ bool VariableArray::updateAllSensors(void) {
             ***/
 
             // Only do checks on sensors that still have measurements to finish
-            if (lastSensorVariable[i] and
+            if (lastSensorVariable[i] &&
                 nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
                 // first, make sure the sensor is stable
                 if (arrayOfVars[i]->parentSensor->isStable(deepDebugTiming)) {

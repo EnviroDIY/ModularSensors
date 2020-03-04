@@ -1,6 +1,7 @@
 /*
  * AtlasParent.cpp
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano
@@ -166,7 +167,7 @@ bool AtlasParent::addSingleMeasurementResult(void) {
         // of the "failed" result values
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
         for (uint8_t i = 0; i < _numReturnedVars; i++) {
-            verifyAndAddMeasurementResult(i, (float)-9999);
+            verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
         }
     }
 

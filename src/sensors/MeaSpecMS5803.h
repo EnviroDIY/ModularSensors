@@ -77,8 +77,9 @@
 // The main class for the Measurement Specialties MS5803
 class MeaSpecMS5803 : public Sensor {
  public:
-    MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex = 0x76,
-                  int16_t maxPressure = 14, uint8_t measurementsToAverage = 1);
+    explicit MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex = 0x76,
+                           int16_t maxPressure           = 14,
+                           uint8_t measurementsToAverage = 1);
     ~MeaSpecMS5803();
 
     bool   setup(void) override;

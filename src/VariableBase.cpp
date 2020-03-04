@@ -357,7 +357,7 @@ float Variable::getValue(bool updateValue) {
 String Variable::getValueString(bool updateValue) {
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0) {
-        int16_t val = int(getValue(updateValue));
+        int16_t val = static_cast<int16_t>(getValue(updateValue));
         return String(val);
     } else {
         return String(getValue(updateValue), _decimalResolution);

@@ -127,7 +127,7 @@ bool ExternalVoltage::addSingleMeasurementResult(void) {
         MS_DBG(F("  ads.readADC_SingleEnded_V("), _adsChannel, F("):"),
                adcVoltage);
 
-        if (adcVoltage < 3.6 and adcVoltage > -0.3) {
+        if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
             // Apply the gain calculation, with a defualt gain of 10 V/V Gain
             calibResult = adcVoltage * _gain;
@@ -146,7 +146,7 @@ bool ExternalVoltage::addSingleMeasurementResult(void) {
     // Unset the status bits for a measurement request (bits 5 & 6)
     _sensorStatus &= 0b10011111;
 
-    if (adcVoltage < 3.6 and adcVoltage > -0.3) {
+    if (adcVoltage < 3.6 && adcVoltage > -0.3) {
         return true;
     } else {
         return false;

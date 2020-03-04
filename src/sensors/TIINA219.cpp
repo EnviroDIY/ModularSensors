@@ -16,7 +16,7 @@ TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex,
     _i2cAddressHex = i2cAddressHex;
 }
 // Destructor
-TIINA219::~TIINA219(){}
+TIINA219::~TIINA219() {}
 
 
 String TIINA219::getSensorLocation(void) {
