@@ -1,23 +1,25 @@
 /*
  *KellerParent.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
- *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ *Initial library developement done by Anthony Aufdenkampe
+ *<aaufdenkampe@limno.com>
  *
- *This file is for Modbus communication to  Keller pressure and water level sensors
- *of Series 30, Class 5, Group 20 (such as the KellerAcculevel)
- *that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
- *Only tested the Acculevel
+ *This file is for Modbus communication to  Keller pressure and water level
+ *sensors of Series 30, Class 5, Group 20 (such as the KellerAcculevel) that are
+ *Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th
+ *week) Only tested the Acculevel
  *
  *Documentation for the Keller commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY KellerModbus library at:
  * https://github.com/EnviroDIY/KellerModbus
-*/
+ */
 
 // Header Guards
-#ifndef KellerParent_h
-#define KellerParent_h
+#ifndef SRC_SENSORS_KELLERPARENT_H_
+#define SRC_SENSORS_KELLERPARENT_H_
 
 // Debugging Statement
 // #define MS_KELLERPARENT_DEBUG
@@ -35,6 +37,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+#include "VariableBase.h"
 #include "SensorBase.h"
 #include <KellerModbus.h>
 
@@ -45,36 +48,41 @@
 #define KELLER_HEIGHT_VAR_NUM 2
 
 // The main class for the Keller Sensors
-class KellerParent : public Sensor
-{
-public:
-    KellerParent(byte modbusAddress, Stream* stream,
-                 int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-                 kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
-                 uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
-    KellerParent(byte modbusAddress, Stream& stream,
-                 int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-                 kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
-                 uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
+class KellerParent : public Sensor {
+ public:
+    KellerParent(byte modbusAddress, Stream* stream, int8_t powerPin,
+                 int8_t powerPin2, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1, kellerModel model = OTHER,
+                 const char* sensName = "Keller-Sensor",
+                 uint8_t numVariables = 3, uint32_t warmUpTime_ms = 500,
+                 uint32_t stabilizationTime_ms = 5000,
+                 uint32_t measurementTime_ms   = 1500);
+    KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
+                 int8_t powerPin2, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1, kellerModel model = OTHER,
+                 const char* sensName = "Keller-Sensor",
+                 uint8_t numVariables = 3, uint32_t warmUpTime_ms = 500,
+                 uint32_t stabilizationTime_ms = 5000,
+                 uint32_t measurementTime_ms   = 1500);
     virtual ~KellerParent();
 
     String getSensorLocation(void) override;
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 
     // Override these to use two power pins
-    virtual void powerUp(void) override;
-    virtual void powerDown(void) override;
+    void powerUp(void) override;
+    void powerDown(void) override;
 
-    virtual bool addSingleMeasurementResult(void);
+    bool addSingleMeasurementResult(void) override;
 
-private:
-    keller sensor;
+ private:
+    keller      _ksensor;
     kellerModel _model;
-    byte _modbusAddress;
-    Stream* _stream;
-    int8_t _RS485EnablePin;
-    int8_t _powerPin2;
+    byte        _modbusAddress;
+    Stream*     _stream;
+    int8_t      _RS485EnablePin;
+    int8_t      _powerPin2;
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_KELLERPARENT_H_

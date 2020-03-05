@@ -1,16 +1,17 @@
 /*
  *LoggerModem.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file wraps the tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
  *and adds in the power functions to turn the modem on and off.
-*/
+ */
 
 // Header Guards
-#ifndef LoggerModem_h
-#define LoggerModem_h
+#ifndef SRC_LOGGERMODEM_H_
+#define SRC_LOGGERMODEM_H_
 
 // FOR DEBUGGING
 // #define MS_LOGGERMODEM_DEBUG
@@ -36,14 +37,13 @@
 // #define MODEM_POWERED_RESOLUTION 3
 
 /* ===========================================================================
-* Functions for the modem class
-* This is basically a wrapper for TinyGsm with power control added
-* ========================================================================= */
+ * Functions for the modem class
+ * This is basically a wrapper for TinyGsm with power control added
+ * ========================================================================= */
 
 // template <class Derived, typename modemType, typename modemClientType>
-class loggerModem
-{
-public:
+class loggerModem {
+ public:
     // Constructor/Destructor
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 int8_t modemResetPin, bool resetLevel, uint32_t resetPulse_ms,
@@ -60,9 +60,13 @@ public:
 
     // Sets up the modem before first use
     virtual bool modemSetup(void);
-    bool setup(void) { return modemSetup(); }
+    bool         setup(void) {
+        return modemSetup();
+    }
     virtual bool modemWake(void) = 0;
-    bool wake(void) { return modemWake(); }
+    bool         wake(void) {
+        return modemWake();
+    }
 
     // Note:  modemPowerDown() simply kills power, while modemSleepPowerDown()
     // allows for graceful shut down.  You should use modemSleepPowerDown()
@@ -79,7 +83,7 @@ public:
 
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
-    virtual void disconnectInternet(void) = 0;
+    virtual void disconnectInternet(void)                             = 0;
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
@@ -93,9 +97,10 @@ public:
     // this is done by the "logDataAndPublish()" function of the logger, but
     // if "handwriting" a logging function, remember to call this.
     // These three functions will query the modem to get new values
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) = 0;
-    virtual float getModemChipTemperature(void) = 0;
+    virtual bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) = 0;
+    virtual bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                                       uint16_t& milliVolts)             = 0;
+    virtual float getModemChipTemperature(void)                          = 0;
     // This gets all of the above at once
     virtual bool updateModemMetadata(void);
 
@@ -111,7 +116,7 @@ public:
     // static float getModemActivationDuration();
     // static float getModemPoweredDuration();
 
-protected:
+ protected:
     // Helper to get approximate RSSI from CSQ (assuming no noise)
     static int16_t getRSSIFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
@@ -120,30 +125,31 @@ protected:
     static int16_t getPctFromRSSI(int16_t rssi);
 
     // Other helper functions
-    void modemLEDOn(void);
-    void modemLEDOff(void);
+    void         modemLEDOn(void);
+    void         modemLEDOff(void);
     virtual void setModemPinModes(void);
 
     virtual bool isInternetAvailable(void) = 0;
-    virtual bool modemSleepFxn(void) = 0;
-    virtual bool modemWakeFxn(void) = 0;
-    virtual bool extraModemSetup(void) = 0;
+    virtual bool modemSleepFxn(void)       = 0;
+    virtual bool modemWakeFxn(void)        = 0;
+    virtual bool extraModemSetup(void)     = 0;
+    virtual bool isModemAwake(void)        = 0;
 
     static uint32_t parseNISTBytes(byte nistBytes[4]);
 
-    // Helper to set the timing for specific cellular chipsets based on their documentation
-    // void setModemTiming(void);
+    // Helper to set the timing for specific cellular chipsets based on their
+    // documentation void setModemTiming(void);
 
-    int8_t _powerPin;
-    int8_t _statusPin;
-    bool _statusLevel;
-    int8_t _modemResetPin;
-    bool _resetLevel;
+    int8_t   _powerPin;
+    int8_t   _statusPin;
+    bool     _statusLevel;
+    int8_t   _modemResetPin;
+    bool     _resetLevel;
     uint32_t _resetPulse_ms;
-    int8_t _modemSleepRqPin;
-    bool _wakeLevel;
+    int8_t   _modemSleepRqPin;
+    bool     _wakeLevel;
     uint32_t _wakePulse_ms;
-    int8_t _modemLEDPin;
+    int8_t   _modemLEDPin;
 
     uint32_t _statusTime_ms;
     uint32_t _disconnetTime_ms;
@@ -152,18 +158,18 @@ protected:
 
     uint32_t _millisPowerOn;
     uint32_t _lastNISTrequest;
-    bool _hasBeenSetup;
-    bool _pinModesSet;
+    bool     _hasBeenSetup;
+    bool     _pinModesSet;
 
     // NOTE:  These must be static so that the modem variables can call the
     // member functions that return them.  (Non-static member functions cannot
     // be called without an object.)
     static int16_t _priorRSSI;
     static int16_t _priorSignalPercent;
-    static float _priorModemTemp;
-    static float _priorBatteryState;
-    static float _priorBatteryPercent;
-    static float _priorBatteryVoltage;
+    static float   _priorModemTemp;
+    static float   _priorBatteryState;
+    static float   _priorBatteryPercent;
+    static float   _priorBatteryVoltage;
     // static float _priorActivationDuration;
     // static float _priorPoweredDuration;
 
@@ -182,131 +188,104 @@ protected:
 // last time it connected to the internet.
 
 // Defines the received signal strength indication
-class Modem_RSSI : public Variable
-{
-public:
-    Modem_RSSI(loggerModem *parentModem,
-               const char *uuid = "",
-               const char *varCode = "RSSI")
-        : Variable(&parentModem->getModemRSSI,
-                   (uint8_t)MODEM_RSSI_RESOLUTION,
-                   &*"RSSI", &*"decibelMiliWatt",
-                   varCode, uuid)
-    {}
-    ~Modem_RSSI(){}
+class Modem_RSSI : public Variable {
+ public:
+    explicit Modem_RSSI(loggerModem* parentModem, const char* uuid = "",
+                        const char* varCode = "RSSI")
+        : Variable(&parentModem->getModemRSSI, (uint8_t)MODEM_RSSI_RESOLUTION,
+                   &*"RSSI", &*"decibelMiliWatt", varCode, uuid) {}
+    ~Modem_RSSI() {}
 };
 
 
 // Defines the Signal Percentage
-class Modem_SignalPercent : public Variable
-{
-public:
-    Modem_SignalPercent(loggerModem *parentModem,
-                        const char *uuid = "",
-                        const char *varCode = "signalPercent")
+class Modem_SignalPercent : public Variable {
+ public:
+    explicit Modem_SignalPercent(loggerModem* parentModem,
+                                 const char*  uuid    = "",
+                                 const char*  varCode = "signalPercent")
         : Variable(&parentModem->getModemSignalPercent,
-                   (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
-                   &*"signalPercent", &*"percent",
-                   varCode, uuid)
-    {}
-    ~Modem_SignalPercent(){}
+                   (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION, &*"signalPercent",
+                   &*"percent", varCode, uuid) {}
+    ~Modem_SignalPercent() {}
 };
 
 
 // Defines the Battery Charge State
-class Modem_BatteryState : public Variable
-{
-public:
-    Modem_BatteryState(loggerModem *parentModem,
-                       const char *uuid = "",
-                       const char *varCode = "modemBatteryCS")
+class Modem_BatteryState : public Variable {
+ public:
+    explicit Modem_BatteryState(loggerModem* parentModem, const char* uuid = "",
+                                const char* varCode = "modemBatteryCS")
         : Variable(&parentModem->getModemBatteryChargeState,
                    (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
-                   &*"batteryChargeState", &*"number",
-                   varCode, uuid)
-    {}
-    ~Modem_BatteryState(){}
+                   &*"batteryChargeState", &*"number", varCode, uuid) {}
+    ~Modem_BatteryState() {}
 };
 
 
 // Defines the Battery Charge Percent
-class Modem_BatteryPercent : public Variable
-{
-public:
-    Modem_BatteryPercent(loggerModem *parentModem,
-                         const char *uuid = "",
-                         const char *varCode = "modemBatteryPct")
+class Modem_BatteryPercent : public Variable {
+ public:
+    explicit Modem_BatteryPercent(loggerModem* parentModem,
+                                  const char*  uuid    = "",
+                                  const char*  varCode = "modemBatteryPct")
         : Variable(&parentModem->getModemBatteryChargePercent,
                    (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
-                   &*"batteryVoltage", &*"percent",
-                   varCode, uuid)
-    {}
-    ~Modem_BatteryPercent(){}
+                   &*"batteryVoltage", &*"percent", varCode, uuid) {}
+    ~Modem_BatteryPercent() {}
 };
 
 
 // Defines the Battery Voltage
-class Modem_BatteryVoltage : public Variable
-{
-public:
-    Modem_BatteryVoltage(loggerModem *parentModem,
-                         const char *uuid = "",
-                         const char *varCode = "modemBatterymV")
+class Modem_BatteryVoltage : public Variable {
+ public:
+    explicit Modem_BatteryVoltage(loggerModem* parentModem,
+                                  const char*  uuid    = "",
+                                  const char*  varCode = "modemBatterymV")
         : Variable(&parentModem->getModemBatteryVoltage,
-                   (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
-                   &*"batteryVoltage", &*"millivolt",
-                   varCode, uuid)
-    {}
-    ~Modem_BatteryVoltage(){}
+                   (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION, &*"batteryVoltage",
+                   &*"millivolt", varCode, uuid) {}
+    ~Modem_BatteryVoltage() {}
 };
 
 
 // Defines the Temperature Sensor on the modem (not all modems have one)
-class Modem_Temp : public Variable
-{
-public:
-    Modem_Temp(loggerModem *parentModem,
-               const char *uuid = "",
-               const char *varCode = "modemTemp")
+class Modem_Temp : public Variable {
+ public:
+    explicit Modem_Temp(loggerModem* parentModem, const char* uuid = "",
+                        const char* varCode = "modemTemp")
         : Variable(&parentModem->getModemTemperature,
-                   (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
-                   &*"temperature", &*"degreeCelsius",
-                   varCode, uuid)
-    {}
-    ~Modem_Temp(){}
+                   (uint8_t)MODEM_TEMPERATURE_RESOLUTION, &*"temperature",
+                   &*"degreeCelsius", varCode, uuid) {}
+    ~Modem_Temp() {}
 };
 
 
 // // Defines a diagnostic variable for how long the modem was last active
-// class Modem_ActivationDuration : public Variable
-// {
-// public:
-//     Modem_ActivationDuration(loggerModem *parentModem,
-//                              const char *uuid = "",
-//                              const char *varCode = "modemActiveSec")
+// class Modem_ActivationDuration : public Variable {
+//  public:
+//     explicit Modem_ActivationDuration(loggerModem* parentModem,
+//                                       const char*  uuid    = "",
+//                                       const char*  varCode =
+//                                       "modemActiveSec")
 //         : Variable(&parentModem->getModemActivationDuration,
-//                    (uint8_t)MODEM_ACTIVATION_RESOLUTION,
-//                    &*"timeElapsed", &*"second",
-//                    varCode, uuid)
-//     {}
-//     ~Modem_ActivationDuration(){}
+//                    (uint8_t)MODEM_ACTIVATION_RESOLUTION, &*"timeElapsed",
+//                    &*"second", varCode, uuid) {}
+//     ~Modem_ActivationDuration() {}
 // };
 
 
 // // Defines a diagnostic variable for how long the modem was last active
-// class Modem_PoweredDuration : public Variable
-// {
-// public:
-//     Modem_PoweredDuration(loggerModem *parentModem,
-//                           const char *uuid = "",
-//                           const char *varCode = "modemPoweredSec")
+// class Modem_PoweredDuration : public Variable {
+//  public:
+//     explicit Modem_PoweredDuration(loggerModem* parentModem,
+//                                    const char*  uuid    = "",
+//                                    const char*  varCode = "modemPoweredSec")
 //         : Variable(&parentModem->getModemPoweredDuration,
-//                    (uint8_t)MODEM_POWERED_RESOLUTION,
-//                    &*"timeElapsed", &*"second",
-//                    varCode, uuid)
-//     {}
-//     ~Modem_PoweredDuration(){}
+//                    (uint8_t)MODEM_POWERED_RESOLUTION, &*"timeElapsed",
+//                    &*"second", varCode, uuid) {}
+//     ~Modem_PoweredDuration() {}
 // };
 
 // #include <LoggerModem.tpp>
-#endif  // Header Guard
+#endif  // SRC_LOGGERMODEM_H_

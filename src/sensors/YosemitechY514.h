@@ -1,6 +1,7 @@
 /*
  *YosemitechY514.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
@@ -26,11 +27,11 @@
  *
  * Time before sensor responds after power - 1.2 seconds
  * Time between "StartMeasurement" command and stable reading - 8sec
-*/
+ */
 
 // Header Guards
-#ifndef YosemitechY514_h
-#define YosemitechY514_h
+#ifndef SRC_SENSORS_YOSEMITECHY514_H_
+#define SRC_SENSORS_YOSEMITECHY514_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -48,66 +49,59 @@
 #define Y514_TEMP_VAR_NUM 1
 
 // The main class for the Decagon Y514
-class YosemitechY514 : public YosemitechParent
-{
-public:
+class YosemitechY514 : public YosemitechParent {
+ public:
     // Constructors with overloads
-    YosemitechY514(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y514, "YosemitechY514", Y514_NUM_VARIABLES,
-                        Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
-    {}
-    YosemitechY514(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y514, "YosemitechY514", Y514_NUM_VARIABLES,
-                        Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
-    {}
-    ~YosemitechY514(){}
+    YosemitechY514(byte modbusAddress, Stream* stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y514,
+                           "YosemitechY514", Y514_NUM_VARIABLES,
+                           Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS,
+                           Y514_MEASUREMENT_TIME_MS) {}
+    YosemitechY514(byte modbusAddress, Stream& stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y514,
+                           "YosemitechY514", Y514_NUM_VARIABLES,
+                           Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS,
+                           Y514_MEASUREMENT_TIME_MS) {}
+    ~YosemitechY514() {}
 };
 
 
 // Defines the Chlorophyll Concentration
-class YosemitechY514_Chlorophyll : public Variable
-{
-public:
-    YosemitechY514_Chlorophyll(Sensor *parentSense,
-                               const char *uuid = "",
-                               const char *varCode = "Y514Chloro")
-      : Variable(parentSense,
-                 (const uint8_t)Y514_CHLORO_VAR_NUM,
-                 (uint8_t)Y514_CHLORO_RESOLUTION,
-                 "chlorophyllFluorescence", "microgramPerLiter",
-                 varCode, uuid)
-    {}
+class YosemitechY514_Chlorophyll : public Variable {
+ public:
+    explicit YosemitechY514_Chlorophyll(YosemitechY514* parentSense,
+                                        const char*     uuid    = "",
+                                        const char*     varCode = "Y514Chloro")
+        : Variable(parentSense, (const uint8_t)Y514_CHLORO_VAR_NUM,
+                   (uint8_t)Y514_CHLORO_RESOLUTION, "chlorophyllFluorescence",
+                   "microgramPerLiter", varCode, uuid) {}
     YosemitechY514_Chlorophyll()
-      : Variable((const uint8_t)Y514_CHLORO_VAR_NUM,
-                 (uint8_t)Y514_CHLORO_RESOLUTION,
-                 "chlorophyllFluorescence", "microgramPerLiter", "Y514Chloro")
-    {}
-    ~YosemitechY514_Chlorophyll(){}
+        : Variable((const uint8_t)Y514_CHLORO_VAR_NUM,
+                   (uint8_t)Y514_CHLORO_RESOLUTION, "chlorophyllFluorescence",
+                   "microgramPerLiter", "Y514Chloro") {}
+    ~YosemitechY514_Chlorophyll() {}
 };
 
 
 // Defines the Temperature Variable
-class YosemitechY514_Temp : public Variable
-{
-public:
-    YosemitechY514_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y514Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y514_TEMP_VAR_NUM,
-                 (uint8_t)Y514_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class YosemitechY514_Temp : public Variable {
+ public:
+    explicit YosemitechY514_Temp(YosemitechY514* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y514Temp")
+        : Variable(parentSense, (const uint8_t)Y514_TEMP_VAR_NUM,
+                   (uint8_t)Y514_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     YosemitechY514_Temp()
-      : Variable((const uint8_t)Y514_TEMP_VAR_NUM,
-                 (uint8_t)Y514_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y514Temp")
-    {}
-    ~YosemitechY514_Temp(){}
+        : Variable((const uint8_t)Y514_TEMP_VAR_NUM,
+                   (uint8_t)Y514_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y514Temp") {}
+    ~YosemitechY514_Temp() {}
 };
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY514_H_

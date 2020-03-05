@@ -2,6 +2,7 @@
  *WatchDogSAMD.h
 
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
@@ -12,8 +13,8 @@
 */
 
 // Header Guards
-#ifndef WatchDogSAMD_h
-#define WatchDogSAMD_h
+#ifndef SRC_WATCHDOGS_WATCHDOGSAMD_H_
+#define SRC_WATCHDOGS_WATCHDOGSAMD_H_
 
 // Debugging Statement
 // #define MS_WATCHDOGSAMD_DEBUG
@@ -29,10 +30,8 @@
 
 void WDT_Handler(void);  // ISR HANDLER FOR WDT EW INTERRUPT
 
-class extendedWatchDogSAMD
-{
-
-public:
+class extendedWatchDogSAMD {
+ public:
     // Constructor
     extendedWatchDogSAMD();
     ~extendedWatchDogSAMD();
@@ -46,9 +45,9 @@ public:
 
     static volatile uint32_t _barksUntilReset;
 
-private:
+ private:
     void inline waitForWDTBitSync();
     uint32_t _resetTime_s;
 };
 
-#endif
+#endif  // SRC_WATCHDOGS_WATCHDOGSAMD_H_

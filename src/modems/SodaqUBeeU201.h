@@ -1,15 +1,16 @@
 /*
  *SodaqUBeeU201.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is the Sodaq UBee based on the u-blox SARA U201 3G Cellular Module
-*/
+ */
 
 // Header Guards
-#ifndef SodaqUBeeU201_h
-#define SodaqUBeeU201_h
+#ifndef SRC_MODEMS_SODAQUBEEU201_H_
+#define SRC_MODEMS_SODAQUBEEU201_H_
 
 // Debugging Statement
 // #define MS_SODAQUBEEU201_DEBUG
@@ -61,44 +62,42 @@
 #include <StreamDebugger.h>
 #endif
 
-class SodaqUBeeU201 : public loggerModem
-{
-
-public:
+class SodaqUBeeU201 : public loggerModem {
+ public:
     // Constructor/Destructor
-    SodaqUBeeU201(Stream* modemStream,
-                  int8_t powerPin, int8_t statusPin,
+    SodaqUBeeU201(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char *apn);
+                  const char* apn);
     ~SodaqUBeeU201();
 
     bool modemWake(void) override;
 
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    virtual void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-    virtual uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    virtual float getModemChipTemperature(void) override;
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                               uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
+    TinyGsm       gsmModem;
     TinyGsmClient gsmClient;
 
-protected:
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
+ protected:
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
     bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SODAQUBEEU201_H_

@@ -1,6 +1,7 @@
 /*
  *YosemitechY533.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
@@ -31,11 +32,11 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 4.5sec
-*/
+ */
 
 // Header Guards
-#ifndef YosemitechY533_h
-#define YosemitechY533_h
+#ifndef SRC_SENSORS_YOSEMITECHY533_H_
+#define SRC_SENSORS_YOSEMITECHY533_H_
 
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
@@ -56,89 +57,75 @@
 #define Y533_VOLT_VAR_NUM 2
 
 // The main class for the Decagon Y533
-class YosemitechY533 : public YosemitechParent
-{
-public:
+class YosemitechY533 : public YosemitechParent {
+ public:
     // Constructors with overloads
-    YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y533, "YosemitechY533", Y533_NUM_VARIABLES,
-                        Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
-    {}
-    YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y533, "YosemitechY533", Y533_NUM_VARIABLES,
-                        Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
-    {}
-    ~YosemitechY533(){}
+    YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y533,
+                           "YosemitechY533", Y533_NUM_VARIABLES,
+                           Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
+                           Y533_MEASUREMENT_TIME_MS) {}
+    YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y533,
+                           "YosemitechY533", Y533_NUM_VARIABLES,
+                           Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
+                           Y533_MEASUREMENT_TIME_MS) {}
+    ~YosemitechY533() {}
 };
 
 
 // Defines the pH Variable
-class YosemitechY533_pH : public Variable
-{
-public:
-    YosemitechY533_pH(Sensor *parentSense,
-                      const char *uuid = "",
-                      const char *varCode = "Y533pH")
-      : Variable(parentSense,
-                 (const uint8_t)Y533_PH_VAR_NUM,
-                 (uint8_t)Y533_PH_RESOLUTION,
-                 "pH", "pH",
-                 varCode, uuid)
-    {}
+class YosemitechY533_pH : public Variable {
+ public:
+    explicit YosemitechY533_pH(YosemitechY533* parentSense,
+                               const char*     uuid    = "",
+                               const char*     varCode = "Y533pH")
+        : Variable(parentSense, (const uint8_t)Y533_PH_VAR_NUM,
+                   (uint8_t)Y533_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     YosemitechY533_pH()
-      : Variable((const uint8_t)Y533_PH_VAR_NUM,
-                 (uint8_t)Y533_PH_RESOLUTION,
-                 "pH", "pH", "Y533pH")
-    {}
-    ~YosemitechY533_pH(){}
+        : Variable((const uint8_t)Y533_PH_VAR_NUM, (uint8_t)Y533_PH_RESOLUTION,
+                   "pH", "pH", "Y533pH") {}
+    ~YosemitechY533_pH() {}
 };
 
 
 // Defines the Temperature Variable
-class YosemitechY533_Temp : public Variable
-{
-public:
-    YosemitechY533_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y533Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y533_TEMP_VAR_NUM,
-                 (uint8_t)Y533_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class YosemitechY533_Temp : public Variable {
+ public:
+    explicit YosemitechY533_Temp(YosemitechY533* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y533Temp")
+        : Variable(parentSense, (const uint8_t)Y533_TEMP_VAR_NUM,
+                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     YosemitechY533_Temp()
-      : Variable((const uint8_t)Y533_TEMP_VAR_NUM,
-                 (uint8_t)Y533_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y533Temp")
-    {}
-    ~YosemitechY533_Temp(){}
+        : Variable((const uint8_t)Y533_TEMP_VAR_NUM,
+                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y533Temp") {}
+    ~YosemitechY533_Temp() {}
 };
 
 
 // Defines the Electrode Electrical Potential
-class YosemitechY533_Voltage : public Variable
-{
-public:
-    YosemitechY533_Voltage(Sensor *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "Y533Potential")
-      : Variable(parentSense,
-                 (const uint8_t)Y533_VOLT_VAR_NUM,
-                 (uint8_t)Y533_VOLT_RESOLUTION,
-                 "voltage", "millivolt",
-                 varCode, uuid)
-    {}
+class YosemitechY533_Voltage : public Variable {
+ public:
+    explicit YosemitechY533_Voltage(YosemitechY533* parentSense,
+                                    const char*     uuid    = "",
+                                    const char*     varCode = "Y533Potential")
+        : Variable(parentSense, (const uint8_t)Y533_VOLT_VAR_NUM,
+                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt",
+                   varCode, uuid) {}
     YosemitechY533_Voltage()
-      : Variable((const uint8_t)Y533_VOLT_VAR_NUM,
-                 (uint8_t)Y533_VOLT_RESOLUTION,
-                 "voltage", "millivolt", "Y533Potential")
-    {}
-    ~YosemitechY533_Voltage(){}
+        : Variable((const uint8_t)Y533_VOLT_VAR_NUM,
+                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt",
+                   "Y533Potential") {}
+    ~YosemitechY533_Voltage() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_YOSEMITECHY533_H_

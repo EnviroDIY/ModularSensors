@@ -1,6 +1,7 @@
 /*
  * AtlasParent.h
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano
@@ -13,8 +14,8 @@
  */
 
 // Header Guards
-#ifndef AtlasParent_h
-#define AtlasParent_h
+#ifndef SRC_SENSORS_ATLASPARENT_H_
+#define SRC_SENSORS_ATLASPARENT_H_
 
 // Debugging Statement
 // #define MS_ATLASPARENT_DEBUG
@@ -31,28 +32,29 @@
 #include <Wire.h>
 
 // A parent class for Atlas sensors
-class AtlasParent : public Sensor
-{
-public:
-    AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
-                const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
-                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
-                uint32_t measurementTime_ms = 0);
+class AtlasParent : public Sensor {
+ public:
+    AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
+                uint8_t       measurementsToAverage = 1,
+                const char*   sensorName            = "AtlasSensor",
+                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
+                uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms   = 0);
     virtual ~AtlasParent();
 
     String getSensorLocation(void) override;
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
     // NOTE:  The sensor should wake as soon as any command is sent.
     // I assume that means we can use the command to take a reading to both
     // wake it and ask for a reading.
-    // virtual bool wake(void) override;
-    virtual bool sleep(void) override;
+    // bool wake(void) override;
+    bool sleep(void) override;
 
-    virtual bool startSingleMeasurement(void) override;
-    virtual bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement(void) override;
+    bool addSingleMeasurementResult(void) override;
 
-protected:
+ protected:
     int8_t _i2cAddressHex;
     // Wait for a command to process
     // NOTE:  This should ONLY be used as a wait when no response is
@@ -61,4 +63,4 @@ protected:
     bool waitForProcessing(uint32_t timeout = 1000L);
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASPARENT_H_

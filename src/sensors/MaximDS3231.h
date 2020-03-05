@@ -1,6 +1,7 @@
 /*
  *MaximDS3231.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
@@ -15,11 +16,11 @@
  * The clock should have a separate power supply and never be turned off.
  * We assume it's always warmed up and stable.
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
-*/
+ */
 
 // Header Guards
-#ifndef MaximDS3231_h
-#define MaximDS3231_h
+#ifndef SRC_SENSORS_MAXIMDS3231_H_
+#define SRC_SENSORS_MAXIMDS3231_H_
 
 // Debugging Statement
 // #define MS_MAXIMDS3231_DEBUG
@@ -45,12 +46,12 @@
 
 
 // The "Main" class for the DS3231
-// Only need a sleep and wake since these DON'T use the default of powering up and down
-class MaximDS3231 : public Sensor
-{
-public:
+// Only need a sleep and wake since these DON'T use the default of powering up
+// and down
+class MaximDS3231 : public Sensor {
+ public:
     // Only input is the number of readings to average
-    MaximDS3231(uint8_t measurementsToAverage = 1);
+    explicit MaximDS3231(uint8_t measurementsToAverage = 1);
     // Destructor
     ~MaximDS3231();
 
@@ -63,24 +64,18 @@ public:
 };
 
 
-class MaximDS3231_Temp : public Variable
-{
-public:
-    MaximDS3231_Temp(Sensor *parentSense,
-                     const char *uuid = "",
-                     const char *varCode = "BoardTemp")
-      : Variable(parentSense,
-                 (const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius",
-                 varCode, uuid)
-    {}
+class MaximDS3231_Temp : public Variable {
+ public:
+    explicit MaximDS3231_Temp(MaximDS3231* parentSense, const char* uuid = "",
+                              const char* varCode = "BoardTemp")
+        : Variable(parentSense, (const uint8_t)DS3231_TEMP_VAR_NUM,
+                   (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
+                   "degreeCelsius", varCode, uuid) {}
     MaximDS3231_Temp()
-      : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius", "BoardTemp")
-    {}
-    ~MaximDS3231_Temp(){}
+        : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
+                   (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
+                   "degreeCelsius", "BoardTemp") {}
+    ~MaximDS3231_Temp() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_MAXIMDS3231_H_

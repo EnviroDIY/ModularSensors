@@ -2,6 +2,7 @@
  *WatchDogAVR.h
 
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
@@ -11,8 +12,8 @@
 */
 
 // Header Guards
-#ifndef WatchDogAVR_h
-#define WatchDogAVR_h
+#ifndef SRC_WATCHDOGS_WATCHDOGAVR_H_
+#define SRC_WATCHDOGS_WATCHDOGAVR_H_
 
 // Debugging Statement
 // #define MS_WATCHDOGAVR_DEBUG
@@ -25,10 +26,8 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
-class extendedWatchDogAVR
-{
-
-public:
+class extendedWatchDogAVR {
+ public:
     // Constructor
     extendedWatchDogAVR();
     ~extendedWatchDogAVR();
@@ -41,8 +40,9 @@ public:
     void resetWatchDog();
 
     static volatile uint32_t _barksUntilReset;
-private:
+
+ private:
     uint32_t _resetTime_s;
 };
 
-#endif
+#endif  // SRC_WATCHDOGS_WATCHDOGAVR_H_
