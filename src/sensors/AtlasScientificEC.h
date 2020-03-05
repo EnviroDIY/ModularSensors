@@ -116,7 +116,7 @@ class AtlasScientificEC_Salinity : public Variable {
 class AtlasScientificEC_SpecificGravity : public Variable {
  public:
     explicit AtlasScientificEC_SpecificGravity(
-        Sensor* parentSense, const char* uuid = "",
+        AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = "AtlasSpecGravity")
         : Variable(parentSense, (const uint8_t)ATLAS_SG_VAR_NUM,
                    (uint8_t)ATLAS_SG_RESOLUTION, "specificGravity",
