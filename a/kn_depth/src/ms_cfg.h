@@ -247,13 +247,16 @@ eMcpB_end
     #define EPD_RESET   -1 //Actually 5 // can set to -1 and share with microcontroller Reset!
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
+
 //define one Radio  _Module
-#define DigiXBeeWifi_Module 1
+//#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoAutonomoWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable LTE BYPASS
+#if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
 #define UseModem_Module 1
+#endif // Modules
 //end of _Module
 
   #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
@@ -299,7 +302,7 @@ eMcpB_end
 #define  loggingInterval_CDEF_MIN 5
 #else
 //logging to SD/Publishing and sampling are same
-#define  loggingInterval_CDEF_MIN 2
+#define  loggingInterval_CDEF_MIN 15
 #endif //loggingMultiplier_MAX_CDEF
 
 // Maximum logging setting allowed
