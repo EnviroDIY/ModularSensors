@@ -249,7 +249,7 @@ eMcpB_end
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 
 //define one Radio  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoAutonomoWithDigiXBeeCellTransparent
