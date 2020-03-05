@@ -69,8 +69,8 @@ bool AOSongDHT::addSingleMeasurementResult(void) {
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         // Reading temperature or humidity takes about 250 milliseconds!
-        for (uint8_t i = 0; i < 5;
-             i++) {  // Make 5 attempts to get a decent reading
+        // Make 5 attempts to get a decent reading
+        for (uint8_t i = 0; i < 5; i++) {
             MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
             // First read the humidity
             humid_val = dht_internal.readHumidity();

@@ -122,6 +122,8 @@ void Sensor::powerUp(void) {
     if (_powerPin >= 0) {
         MS_DBG(F("Powering"), getSensorNameAndLocation(), F("with pin"),
                _powerPin);
+        // Set the pin mode, just in case
+        pinMode(_powerPin, OUTPUT);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
