@@ -254,8 +254,8 @@ public:
     bool setRTClock(uint32_t UTCEpochSeconds);
 
     // This checks that the logger time is within a "sane" range
-    bool isRTCSane(void);
-    bool isRTCSane(uint32_t epochTime);
+    static bool isRTCSane(void);
+    static bool isRTCSane(uint32_t epochTime);
 
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time

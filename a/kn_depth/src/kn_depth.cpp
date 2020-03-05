@@ -83,7 +83,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.16";
+//const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = __FILE__; //"xxx.cpp";
 const char build_date[] = __DATE__ " " __TIME__;
@@ -521,7 +521,6 @@ EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin,
                           wifiId, wifiPwd,
-                          1,  // measurements to average, optional
                           espSleepRqPin, espStatusPin  // Optional arguments
                          );
 // Create an extra reference to the modem by a generic name (not necessary)
@@ -1632,6 +1631,7 @@ Variable *variableList[] = {
     new Modem_BatteryPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
 #if defined INA219M_A_MIN_UUID
     new Variable(&ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
@@ -1917,9 +1917,8 @@ void setup()
     SerialStd.print(F("\nUsing ModularSensors Library version "));
     SerialStd.println(MODULAR_SENSORS_VERSION);
 
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        SerialStd.println(F(
-            "WARNING: THIS WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
 
     Wire.begin();
 
@@ -2126,6 +2125,7 @@ void processSensors()
     // will take the place of logging for this interval!
     // dataLogger.setupSensorsAndFile(); !v0.21.2 see v0.19.6 replaced varArray.setupSensors();
 
+    dataLogger.watchDogTimer.resetWatchDog();
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (dataLogger.checkInterval())
@@ -2181,8 +2181,10 @@ void processSensors()
         #endif //loggingMultiplier_MAX_CDEF 
         {
             #if defined loggingMultiplier_MAX_CDEF
+            dataLogger.watchDogTimer.resetWatchDog();
             varArrFast.completeUpdate();
             #endif //loggingMultiplier_MAX_CDEF
+            dataLogger.watchDogTimer.resetWatchDog();
             varArray.completeUpdate();
             loggingMultiplierCnt=0;
             varArrayPub=true;
@@ -2205,6 +2207,7 @@ void processSensors()
 
         if (varArrayPub) {
             varArrayPub = false;
+            dataLogger.watchDogTimer.resetWatchDog();
             // Create a csv data record and save it to the log file
             dataLogger.logToSD();
 
@@ -2240,11 +2243,12 @@ void processSensors()
                         //protected ?? modemPhy.extraModemSetup();//setupXBee();
                         nistSyncRtc = true;
                     }
+                    dataLogger.watchDogTimer.resetWatchDog();
                     // Connect to the network
                     MS_DBG(F("  Connecting to the Internet... "));
                     if (modemPhy.connectInternet())
                     {
-
+                        dataLogger.watchDogTimer.resetWatchDog();
                         MS_DBG(F("  publishing... "));
                         // Post the data to the WebSDL
                         dataLogger.publishDataToRemotes();
@@ -2273,6 +2277,7 @@ void processSensors()
                         }
                         if (nistSyncNow )
                         {
+                            dataLogger.watchDogTimer.resetWatchDog();
                             MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
                             nistSyncRtc = true; //Needs to run every access until sucess
                             if (true == dataLogger.syncRTC()) {

@@ -47,7 +47,7 @@ public:
     static volatile uint32_t _barksUntilReset;
 
 private:
-    void waitForWDTBitSync();
+    void inline waitForWDTBitSync();
     uint32_t _resetTime_s;
 };
 

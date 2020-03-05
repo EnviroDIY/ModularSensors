@@ -91,7 +91,7 @@ public:
 protected:
     static const char *mqttServer;
     static const int mqttPort;
-    static const char *mqttClient;
+    static const char *mqttClientName;
     static const char *mqttUser;
 
 private:

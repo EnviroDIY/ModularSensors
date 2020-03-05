@@ -34,6 +34,7 @@
 
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
+#include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -47,21 +48,13 @@ public:
     DigiXBeeCellularTransparent(Stream* modemStream,
                                 int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                                const char *apn,
-                                uint8_t measurementsToAverage = 1);
+                                const char* apn);
     ~DigiXBeeCellularTransparent();
 
-    bool modemWakeFxn(void) override;
-    bool modemSleepFxn(void) override;
-    bool addSingleMeasurementResult(void) override;
+    bool modemWake(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
-
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;
     uint32_t getNISTTimeOrig(void);
@@ -69,9 +62,15 @@ public:
     uint32_t getTimeCellTower(void);
 
 
-    #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
+    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
+
+    bool updateModemMetadata(void) override;
+
+#ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
@@ -81,9 +80,9 @@ public:
     String getApn(void);
 
 protected:
-    bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
-    bool verifyMeasurementComplete(bool debug=false) override;
+    bool modemWakeFxn(void) override;
+    bool modemSleepFxn(void) override;
     bool extraModemSetup(void) override;
 
 private:

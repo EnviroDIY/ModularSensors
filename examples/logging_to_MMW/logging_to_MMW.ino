@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.16
-
 This shows most of the standard functions of the library at once.
 
 DISCLAIMER:
@@ -40,8 +38,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -250,10 +246,9 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
+    Serial.println();
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -265,7 +260,6 @@ void setup()
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
-
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -290,24 +284,6 @@ void setup()
     dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
-    // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
-    {
-        modem.modemPowerUp();
-        modem.wake();
-        modem.setup();
-
-        // Synchronize the RTC with NIST
-        Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-        if (modem.connectInternet(120000L))
-        {
-            dataLogger.setRTClock(modem.getNISTTime());
-        }
-        else
-        {
-            Serial.println(F("Could not connect to internet for clock sync."));
-        }
-    }
 
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)
@@ -316,9 +292,13 @@ void setup()
         varArray.setupSensors();
     }
 
-    // Power down the modem
-    modem.disconnectInternet();
-    modem.modemSleepPowerDown();
+    // Sync the clock if it isn't valid or we have battery to spare
+    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
+    {
+        // Synchronize the RTC with NIST
+        // This will also set up the modem
+        dataLogger.syncRTC();
+    }
 
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
@@ -327,9 +307,10 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
+        Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+        dataLogger.createLogFile(true); // true = write a new header
+        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep
@@ -343,7 +324,6 @@ void setup()
 // ==========================================================================
 
 // Use this short loop for simple data logging and sending
-// /*
 void loop()
 {
     // Note:  Please change these battery voltages to match your battery
