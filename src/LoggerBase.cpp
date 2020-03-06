@@ -560,12 +560,7 @@ int8_t Logger::getTZOffset(void)
 uint32_t Logger::getNowEpoch(void)
 {
     //Depreciated in 0.23.4, left in for compatiblity 
-    //njh 0.23.16: return getNowEpochTz();
-    uint32_t currentEpochTime = rtc.now().getEpoch();
-    // Do NOT apply an offset if the timestamp is obviously bad
-    if (isRTCSane(currentEpochTime))
-        currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
-    return currentEpochTime;
+    return getNowEpochT0();
 }
 
 uint32_t Logger::getNowEpochT0(void)
@@ -588,25 +583,24 @@ void Logger::setNowEpochT0(uint32_t ts){rtc.setEpoch(ts);}
 uint32_t Logger::getNowEpoch(void)
 {
   //Depreciated in 0.23.4, left in for compatiblity 
-  //njh 0.23.16 return getNowEpochTz();
-    uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-    // Do NOT apply an offset if the timestamp is obviously bad
-    if (isRTCSane(currentEpochTime))
-        currentEpochTime += ((uint32_t)_loggerRTCOffset) * 3600;
-    return currentEpochTime;  
-
+  return getNowEpochTz();
 }
 
 uint32_t Logger::getNowEpochT0(void)
 {
-  return zero_sleep_rtc.getEpoch();
+  uint32_t currentEpochTime =  zero_sleep_rtc.getEpoch();
+  if (!isRTCSane(currentEpochTime))  {
+    PRINTOUT(F("Bad time, resetting clock."),currentEpochTime);
+    setNowEpochT0(currentEpochTime);
+    currentEpochTime=EPOCH_TIME_20200101_SECS;
+
+  }
+  return currentEpochTime;  
 }
 
 uint32_t Logger::getNowEpochTz(void)
 {
-  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
-  return currentEpochTime;
+  return getNowEpochT0() + ((uint32_t)_loggerRTCOffset)*3600;
 }
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
 void Logger::setNowEpochT0(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
@@ -633,7 +627,9 @@ DateTime Logger::dtFromEpochT0(uint32_t epochTimeT0)
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
 DateTime Logger::dtFromEpochTz(uint32_t epochTimeTz)
 {
-    DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF); //I think this is This is wrong 
+    // The DateTime object constructor requires the number of seconds from
+    // January 1, 2000 (NOT 1970) as input, so we need to subtract.
+    DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF); 
     return dtTz;
 }
 
@@ -753,8 +749,8 @@ bool Logger::isRTCSane(void)
 }
 bool Logger::isRTCSane(uint32_t epochTime)
 {
-    if (epochTime < 1577836800 ||  /*Before January 1, 2020*/
-        epochTime > 1735689600)  /*After January 1, 2025*/
+    if (epochTime < EPOCH_TIME_20200101_SECS ||  /*Before January 1, 2020*/
+        epochTime > EPOCH_TIME_20250101_SECS)  /*After January 1, 2025*/
     {
         return false;
     }

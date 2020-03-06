@@ -48,6 +48,8 @@
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
 // timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
 // epoch beginning 1970-jan-01 00:00:00.
+#define EPOCH_TIME_20200101_SECS 1577836800
+#define EPOCH_TIME_20250101_SECS 1735689600
 
 #include "SdFat.h"  // To communicate with the SD card
 #if defined BOARD_SDQ_QSPI_FLASH
@@ -251,7 +253,7 @@ public:
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
     // This sets the real time clock to the given time
-    bool setRTClock(uint32_t UTCEpochSeconds);
+    static bool setRTClock(uint32_t UTCEpochSeconds);
 
     // This checks that the logger time is within a "sane" range
     static bool isRTCSane(void);
