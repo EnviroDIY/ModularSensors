@@ -135,9 +135,9 @@ public:
 const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
 //    0    1    2    3   Hyst
 //   Use  Low  Med  Good
-    {3.7, 3.8, 3.9, 4.0, 0.05},
-    {3.6, 3.7, 3.8, 3.9, 0.04},
-    {3.5, 3.6, 3.7, 3.8, 0.03}
+    {3.3, 3.4, 3.6, 3.8, 0.05},
+    {3.2, 3.3, 3.4, 3.7, 0.04},
+    {3.1, 3.2, 3.3, 3.6, 0.03}
    };
 //use EDIY_PROGMEM
 #define PS_LBATT_USEABLE_V  PS_LBATT_TBL[_liion_type][0]

@@ -1888,7 +1888,7 @@ void setup()
 
     // A vital check on power availability
     do {
-        LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ))?true:false);
+        LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ))?true:false);
         if (LiBattPower_Unseable)
         {
             /* Sleep 
@@ -2134,9 +2134,7 @@ void processSensors()
         //Logger::isLoggingNow = true;
 
         if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ)) {
-            MS_DBG(F("---NewReading CANCELLED--Lbatt_V="));
-            MS_DBG(mcuBoard.getBatteryVm1(false));
-            MS_DBG("\n");
+            PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="),mcuBoard.getBatteryVm1(false));
             return;
         }
         // Print a line to show new reading
@@ -2216,7 +2214,7 @@ void processSensors()
             //if Modem  is Cellular then PS_PWR_HEAVY_REQ
             if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
             {          
-                MS_DBG(F("---NewCloud Update CANCELLED"));
+                PRINTOUT(F("---NewCloud Update CANCELLED--Lbatt_V="),mcuBoard.getBatteryVm1(false));
             } else 
             {
                 //if (dataLogger._logModem != NULL)
