@@ -142,7 +142,7 @@ bool analogElecConductivity::addSingleMeasurementResult(void)
             #endif
 
             uint32_t ElecCond_adc = analogRead(_EcAdcPin);
-            sensorValue_EC = (3.3 / 1023.) * 4.7 * rawBattery;
+            sensorValue_EC = (3.3 / 1023.) * 4.7 * ElecCond_adc;
             sensorValue_EC = ElecCond_adc;
 
 
