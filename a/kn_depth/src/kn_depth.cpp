@@ -1624,8 +1624,9 @@ Variable *variableList[] = {
 #endif //MaximDS3231_Temp_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #if defined(Modem_SignalPercent_UUID)
-    //new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
+    new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
 #endif
+    //new analogPinEc_EC(&analogPinEc_EC, "12345678-abcd-1234-ef00-1234567890ab"),
 #ifdef SENSOR_CONFIG_GENERAL
     new Modem_BatteryState(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_BatteryPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),

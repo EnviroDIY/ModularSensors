@@ -362,8 +362,8 @@ eMcpB_end
   #endif //INA219_PHY_ACT
 
   //#define Modem_RSSI_UUID ""
-  // Seems to cause XBEE WiFi S6 to crash  nneds ModemLast branch
-  //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+  // Seems to cause XBEE WiFi S6 to crash 
+  #define Modem_SignalPercent_UUID    "SignalPercent_UUID"
   #define ProcessorStats_ACT 1
   #ifdef ProcessorStats_ACT
     #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
