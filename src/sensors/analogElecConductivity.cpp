@@ -91,12 +91,12 @@
 
 
 // For Mayfly version because the battery resistor depends on it
-analogElecConductivity::analogElecConductivity(const char *version)
+analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
     : Sensor(BOARD, ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS, ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS, ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS,
-             -1, -1, 1)
+             powerPin, dataPin, measurementsToAverage)
 {
-    _version = version;
+    //_version = version;
     _EcPowerPin = -1;
     _EcAdcPin = -1;
     _ptrWaterTemperature_C = NULL;
@@ -119,36 +119,92 @@ analogElecConductivity::analogElecConductivity(const char *version)
 // Destructor
 analogElecConductivity::~analogElecConductivity(){}
 
-
 String analogElecConductivity::getSensorLocation(void) {return BOARD;}
+
+/************ ***********************
+ * SensorsR   
+ * 
+ * SensorV-- adcPin/Ra --- R1 ---- Sensorconnector&Wire  -- Rwater --- Groond
+ * R1 series resistance ~ 500ohms
+ * Rwater - Resistenace of Water
+ * Ra - Resistance of applied Source - possibly uP Digital Pin
+ * 
+ * Returns microSiemens the inverse of resistance
+ *
+ * https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino
+ * http://www.reagecon.com/pdf/technicalpapers/Effect_of_Temperature_TSP-07_Issue3.pdf
+*/
+float analogElecConductivity::readEC(uint8_t analogPinNum) { 
+    uint32_t sensorEC_adc;
+    //float sensorEC_V= 0;
+    float Rwater_ohms;   //literal value of water
+    float EC_uScm,EC25_uScm;  // units are uS per cm
+
+ 
+    #if defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+    analogReadResolution(analogElecConductivityDef_Resolution);
+    #endif //ARDUINO_SAMD_FEATHER_Mx_
+ 
+    //************Estimates Resistance of Liquid ****************//
+    //digitalWrite(_EcPowerPin,HIGH); assume done by class Sensor
+    analogRead(analogPinNum);
+    sensorEC_adc= analogRead(_EcAdcPin);// This is not a mistake, First reading will be low beause if charged a capacitor
+    //digitalWrite(_EcPowerPin,LOW);
+ 
+
+    //***************** Converts to EC **************************//
+ 
+    //sensorEC_V= (SensorV* sensorEC_adc)/EC_SENSOR_ADC_RANGE;
+    //Rwater_ohms=(sensorEC_V*Rseries_ohms)/(SensorV-sensorEC_V);
+
+    /*Assuming sensorEC_adc is ratio metric - adc Reference is same as applied to EC sensor.
+    * The Vcc ~ 3.3V can vary, as battery level gets low, so would be nice to elliminate it in the calcs
+    * 
+    * The current is same through both Rseries and Rwater I =Vrseries/Rseries=Vwater/Rwater
+    * [1] Rwater = Rseries * Vwater/Vseries
+    * From 
+    * Vwater = I*RWater  
+    * Vrseries=I*Rseries  or I=Vrseries/Rseries
+    * Vwater = RWater  *Vrseries/Rseries
+    * [1] Rwater = Rseries *Vwater/Vseries
+    * 
+    * [2] Vwater = Vref*sensorAdc/ADC_RANGE
+    * [3] Vrseries = Vref*(ADC_RANGE-sensorADC)/ADC_RANGE= Vref*(1-sensorADC/ADC_RANGE)
+    *  combining [2] & [3] in [1]
+    * [4] Rwater = Rseries *Vref*(sensorADC/ADC_RANGE) /(Vref*(1-sensorADC/ADC_RANGE))   
+    *  cancel Vref
+    *     Rwater = Rseries *sensorADC/(ADC_RANGE(1-sensorADC/ADC_RANGE))
+    *     Rwater = Rseries *sensorADC/(ADC_RANGE-sesnosrADC)
+    */
+    Rwater_ohms = Rseries_ohms*sensorEC_adc/(EC_SENSOR_ADC_RANGE-sensorEC_adc);
+
+    /* The Rwater is an absolute value, but is based on a defined size of the plates of the sensor.
+    *  Translating a magic "sensorsEC_konst" is used, derived from others experiments
+    */
+    EC_uScm = 1000000/(Rwater_ohms*sensorEC_Konst);
+ 
+ 
+    //*************Compensating For Temperaure********************//
+    if (NULL != _ptrWaterTemperature_C) {
+
+        EC25_uScm =  EC_uScm/ (1+ TemperatureCoef*(*_ptrWaterTemperature_C-25.0));
+    }else {
+        EC25_uScm = EC_uScm;
+    }
+
+    return EC25_uScm; 
+ 
+}
 
 bool analogElecConductivity::addSingleMeasurementResult(void)
 {
 
 
-        MS_DBG(F("Getting EC of Water"));
+    MS_DBG(F("Getting EC of Water"));
 
-        float sensorValue_EC = SENSOR_UNINIT_VAL;
-        #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-
-            // Just the voltage
-            float rawBattery = analogRead(_EcAdcPin);
-            sensorValue_EC = (3.3 / 1023.) * 4.7 * rawBattery;
-
-
-        #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-            #if defined analogElecConductivityDef_Resolution
-            analogReadResolution(analogElecConductivityDef_Resolution);
-            #endif
-
-            uint32_t ElecCond_adc = analogRead(_EcAdcPin);
-            sensorValue_EC = (3.3 / 1023.) * 4.7 * ElecCond_adc;
-            sensorValue_EC = ElecCond_adc;
-
-
-        #endif
-
-        verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM, sensorValue_EC);
+    float sensorEC_uScm = readEC(_EcAdcPin);
+    MS_DBG(F("Water EC (uSm/cm"),sensorEC_uScm);
+    verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM, sensorEC_uScm);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

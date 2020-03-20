@@ -240,7 +240,25 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 
+//#define analogEC_EC1_UUID "analogEC_EC1_UUID"
+#if defined(analogEC_EC1_UUID)
+#info "analogElecConductivity needs UT"
+#include "analogElecConductivity.h"
+//Real pins tbd
+const int8_t analogEC_PowerPin = sensorPowerPin_DEF;
+const int8_t analogEC_adcPin = 5;//sensorPowerPin_DEF;
+analogElecConductivity analogEC1parent(analogEC_PowerPin,analogEC_adcPin);
+#endif //analogEC_EC1_UUID
 
+//#define analogTh_T1_UUID "analogTh_T1_UUID"
+#if defined(analogTh_T1_UUID)
+#info "analogThermistor needs UT"
+#include "analogThermistor.h"
+//Real pins tbd
+const int8_t analogThermistor_PowerPin = sensorPowerPin_DEF;
+const int8_t analogThermistor_adcPin = 5;//sensorPowerPin_DEF;
+analogThermistor analogTherm1parent(analogThermistor_PowerPin,analogThermistor_adcPin);
+#endif //
 // ==========================================================================
 //    Settings for Additional Serial Ports
 // ==========================================================================
@@ -1514,6 +1532,12 @@ Variable *variableList[] = {
 #endif
 #if defined(ProcVolt_Volt0_UUID)
     new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
+#endif
+#if defined(analogTh_T1_UUID)
+    new analogThermistor_Temperature(&analogTherm1parent,analogTh_T1_UUID),
+#endif 
+#if defined(analogEC_EC1_UUID)
+    new analogElecConductivity_EC(&analogEC1parent,analogEC_EC1_UUID),
 #endif
 #if defined(AdcProc_Volt1_UUID)
     new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),

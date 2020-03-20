@@ -32,7 +32,7 @@
 #include "math.h"
 
 // Sensor Specific Defines
-#define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 3
+#define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
 #define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 0
 #define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 0
 #define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
@@ -40,21 +40,21 @@
 #define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 3
 #define ANALOGELECCONDUCTIVITY_EC_VAR_NUM 0
 
-#define ANALOGELECCONDUCTIVITY_TEMPERATURE_RESOLUTION 0
-#define ANALOGELECCONDUCTIVITY_TEMPERATURE_VAR_NUM 1
+//#define ANALOGELECCONDUCTIVITY_TEMPERATURE_RESOLUTION 0
+//#define ANALOGELECCONDUCTIVITY_TEMPERATURE_VAR_NUM 1
 
-#define ANALOGELECCONDUCTIVITY_SAMPNUM_RESOLUTION 0
-#define ANALOGELECCONDUCTIVITY_SAMPNUM_VAR_NUM 2
+//#define ANALOGELECCONDUCTIVITY_SAMPNUM_RESOLUTION 0
+//#define ANALOGELECCONDUCTIVITY_SAMPNUM_VAR_NUM 2
 
 #define analogElecConductivityDef_Resolution 10
-#define ProcAdc_Max ((1<< analogElecConductivityDef_Resolution)-1)
-
+#define analogElecConductivityAdc_Max ((1<< analogElecConductivityDef_Resolution)-1)
+#define EC_SENSOR_ADC_RANGE (1<< analogElecConductivityDef_Resolution)
 
 #if !defined SENSOR_UNINIT_VAL
 #define SENSOR_UNINIT_VAL -9999
 #endif //SENSOR_UNINIT_VAL
 
-
+#if 0
 #define APTT_KELVIN_OFFSET 273.15	
 #define AP_TYPES 4
 #define AP_LPBATT_TBL_NUM (AP_TYPES+1)
@@ -76,24 +76,24 @@ const float AP_LBATT_TBL[APTT_NUM][AP_LPBATT_TBL_NUM] = {
     //{3.2, 3.3, 3.4, 3.7, 0.04},
     {0.0, 0.0, 0.0, 0.0, 0.0}
    };
- 
+ #endif //0
 
 class analogElecConductivity : public Sensor
 {
 public:
     // Need to know the  Mayfly version because the battery resistor depends on it
-    analogElecConductivity(const char *version);
+    analogElecConductivity(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage=1);
     ~analogElecConductivity();
 
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
-    void set_active_sensors(uint8_t sensors_mask);
-    uint8_t which_sensors_active(void);
+    //void set_active_sensors(uint8_t sensors_mask);
+    //uint8_t which_sensors_active(void);
     //void setWaterTemperature(float  WaterTemperature_C); 
     void setWaterTemperature(float  *WaterTemperature_C); 
     //void setEc_k(int8_t powerPin, int8_t adcPin, float  sourceResistance_ohms,float  appliedV_V, uint8_t probeType); 
-
+    float readEC(uint8_t analogPinNum);
 
 
 private:
@@ -103,6 +103,13 @@ private:
 
     //float _WaterTemperature_C;
     float *_ptrWaterTemperature_C;
+    const float SensorV= 3.3;
+    const float Rseries_ohms=500; //that is R1 + any series port resistance
+    const float TemperatureCoef=0.019; //depends on what chemical/transport is being measured    
+    //********************** Cell Constant For Ec Measurements *********************//
+    //Mine was around 2.9 with plugs being a standard size they should all be around the same
+    //But If you get bad readings you can use the calibration script and fluid to get a better estimate for K
+    const float sensorEC_Konst=2.88;
 
 };
 
@@ -117,13 +124,13 @@ public:
       : Variable(parentSense,
                  (const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                  (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
-                 "ElectricalConductivity", "uS",
+                 "ElectricalConductivity", "uScm",
                  varCode, uuid)
     {}
     analogElecConductivity_EC()
       : Variable((const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                  (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
-                 "ElectricalConductivity", "uS", "EC_UUID")
+                 "ElectricalConductivity", "uScm", "EC_UUID")
     {}
     ~analogElecConductivity_EC(){}
 };

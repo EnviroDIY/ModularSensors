@@ -33,24 +33,27 @@
 #include "math.h"
 
 // Sensor Specific Defines
-#define ANALOGTHERMISTOR_NUM_VARIABLES 3
+#define ANALOGTHERMISTOR_NUM_VARIABLES 1
 #define ANALOGTHERMISTOR_WARM_UP_TIME_MS 0
 #define ANALOGTHERMISTOR_STABILIZATION_TIME_MS 0
 #define ANALOGTHERMISTOR_MEASUREMENT_TIME_MS 0
 
-#define ANALOGTHERMISTOR_EC_RESOLUTION 3
-#define ANALOGTHERMISTOR_EC_VAR_NUM 0
+//#define ANALOGTHERMISTOR_EC_RESOLUTION 3
+//#define ANALOGTHERMISTOR_EC_VAR_NUM 0
 
-#define ANALOGTHERMISTOR_TEMPERATURE_RESOLUTION 0
-#define ANALOGTHERMISTOR_TEMPERATURE_VAR_NUM 1
+#define ANALOGTHERMISTOR_TEMPERATURE_RESOLUTION 2
+#define ANALOGTHERMISTOR_TEMPERATURE_VAR_NUM 0
 
-#define ANALOGTHERMISTOR_SAMPNUM_RESOLUTION 0
-#define ANALOGTHERMISTOR_SAMPNUM_VAR_NUM 2
-
+//#define ANALOGTHERMISTOR_SAMPNUM_RESOLUTION 0
+//#define ANALOGTHERMISTOR_SAMPNUM_VAR_NUM 2
+#ifndef analogThermistorDef_Resolution
 #define analogThermistorDef_Resolution 10
-#define ProcAdc_Max ((1<< analogThermistorDef_Resolution)-1)
+#endif //
 
+#define analogThermistorAdc_Max ((1<< analogThermistorDef_Resolution)-1)
+#define THERMISTOR_SENSOR_ADC_RANGE (1<< analogThermistorDef_Resolution)
 
+//nalogThermistorDef_Resolution
 /* Masks to control polling of sensors */
 
 //#define ANALOGTHERMISTOR_POLLMASK_EC 0x01
@@ -91,7 +94,7 @@ class analogThermistor : public Sensor
 {
 public:
     // Need to know the  Mayfly version because the battery resistor depends on it
-    analogThermistor(const char *version);
+    analogThermistor(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage=1);
     ~analogThermistor();
 
     String getSensorLocation(void) override;
@@ -102,7 +105,9 @@ public:
     //void setWaterTemperature(float  WaterTemperature_C); 
     //void setWaterTemperature(float  *WaterTemperature_C); 
     //void setEc_k(int8_t powerPin, int8_t adcPin, float  sourceResistance_ohms,float  appliedV_V, uint8_t probeType); 
-    void setTemperature_k(int8_t powerPin=-1, int8_t adcPin=-1, uint8_t thermistorType=APTT_UNDEF,float  sourceResistance_ohms=AP_THERMISTOR_SERIES_R_OHMS); //,float  appliedV_V,
+
+    void setTemperature_k( uint8_t thermistorType=APTT_UNDEF,float  sourceResistance_ohms=AP_THERMISTOR_SERIES_R_OHMS); //,float  appliedV_V,
+    //void setTemperature_k(int8_t powerPin=-1, int8_t adcPin=-1, uint8_t thermistorType=APTT_UNDEF,float  sourceResistance_ohms=AP_THERMISTOR_SERIES_R_OHMS); //,float  appliedV_V,
 
     //float _WaterTemperature_C;
     float *_ptrWaterTemperature_C;

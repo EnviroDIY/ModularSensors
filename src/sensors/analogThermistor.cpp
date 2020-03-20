@@ -98,14 +98,14 @@
 
 
 // For Mayfly version because the battery resistor depends on it
-analogThermistor::analogThermistor(const char *version)
+analogThermistor::analogThermistor(int8_t powerPin, int8_t adcPin, uint8_t measurementsToAverage)
     : Sensor(BOARD, ANALOGTHERMISTOR_NUM_VARIABLES,
              ANALOGTHERMISTOR_WARM_UP_TIME_MS, ANALOGTHERMISTOR_STABILIZATION_TIME_MS, ANALOGTHERMISTOR_MEASUREMENT_TIME_MS,
-             -1, -1, 1)
+             powerPin, adcPin, measurementsToAverage)
 {
-    _version = version;
-    _TemperaturePowerPin= -1;
-    _TemperatureAdcPin = -1;
+    //_version = version;
+    //_TemperaturePowerPin= -1;
+    _TemperatureAdcPin = adcPin, 
     _thermistorType = APTT_NCP15XH193F03RC;
     _thermistorSieresResistance_ohms = AP_THERMISTOR_SERIES_R_OHMS ;    
 
@@ -143,9 +143,9 @@ String analogThermistor::getSensorLocation(void) {return BOARD;}
     }*/
 #endif
 
-void analogThermistor::setTemperature_k(int8_t powerPin, int8_t adcPin, uint8_t thermistorType,float  sieresResistance_ohms){
-    _TemperaturePowerPin = powerPin;
-    _TemperatureAdcPin = adcPin, 
+void analogThermistor::setTemperature_k( uint8_t thermistorType,float  sieresResistance_ohms){
+   // _TemperaturePowerPin = powerPin;
+    //_TemperatureAdcPin = adcPin, 
     _thermistorType = thermistorType;
     _thermistorSieresResistance_ohms = sieresResistance_ohms ;
 }
