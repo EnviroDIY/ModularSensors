@@ -1,0 +1,199 @@
+<html><head>
+<title>Steinhart�Hart equation calculator
+</title>
+</head>
+<!--  body onload="DoMathABC();"-->
+
+Calculate Steinhart-Hart Equation coefficients from three meaurments:
+<br>
+low temperature, mid-range temperature and high temperature.
+<br>
+These can be taken from the manufacturers measurement
+<br>
+<br>
+eg for Thermistor NCP15XH193F03RC off data specs 0C = 27218.6 0ohms, 20C = 12080.5 0ohms, 40C = 5833.6 ohms
+<br>
+TUTORIAL instructions: With prefilled fields, press button "Calculate A,B,C" 
+<br>
+followed by button CaluclateTemperature for a test 10000 ohms- the Result should be close to 25C
+<br>
+<br>
+Right from <a href=http://en.wikipedia.org/wiki/Steinhart%E2%80%93Hart_equation#Inverse_of_the_equation>Wikipedia:</a>
+<br>
+
+<script type="text/javascript">
+
+function DoMathABC() {
+T1 = parseFloat(Calc.t1c.value)+273.15;
+T2 = parseFloat(Calc.t2c.value)+273.15;
+T3 = parseFloat(Calc.t3c.value)+273.15;
+
+L1 = Math.log(Calc.r1.value);
+L2 = Math.log(Calc.r2.value);
+L3 = Math.log(Calc.r3.value);
+
+Y1 = 1 / T1;
+Y2 = 1 / T2;
+Y3 = 1 / T3;
+
+U2 = (Y2-Y1)/(L2-L1);
+U3 = (Y3-Y1)/(L3-L1);
+
+C = (U3 - U2)/(L3 - L2) * Math.pow(L1 + L2 + L3, -1);
+B = U2 - C * (L1*L1 + L1*L2 + L2*L2);
+A = Y1 - (B+L1*L1*C)*L1;
+
+Calc.avalue.value = A;
+Calc.bvalue.value = B;
+Calc.cvalue.value = C;
+
+
+Calc.formula.value = "1 / (" + A + " + " + B + " * logR + " + C + " * logR * logR * logR)";
+
+}
+
+function DoMathT() {
+
+LNR = Math.log(Calc.r.value);
+
+A = Number(Calc.avalue.value);
+B = Number(Calc.bvalue.value);
+C = Number(Calc.cvalue.value);
+
+tempK = 1 / (A + B * LNR + C * Math.pow(LNR, 3));
+
+
+TC = tempK - 273.15;
+
+}
+
+
+</script>
+
+<FORM NAME="Calc">
+<TABLE BORDER=0>
+ <TR>
+  <TD>
+T low (C)
+  </td>
+  <TD>
+   <INPUT TYPE="text" NAME="t1c" value="0" >
+  </td>
+  <TD>
+   R low (Ohm)
+  </td>
+  <TD>
+   <INPUT TYPE="text" NAME="r1" value="27218.6">
+  </td> 
+ </tr>
+ <tr>
+
+ <TR>
+  <TD>
+T mid (C)
+  </td>
+  <TD>
+   <INPUT TYPE="text" NAME="t2c" value="20">
+  </td>
+  <TD>
+   R mid (Ohm)
+  </td>
+  <TD>
+   <INPUT TYPE="text" NAME="r2" value="12080.5">
+  </td> 
+ </tr>
+ <tr>
+
+ <TR>
+  <TD>
+T high (C)
+  </td>
+  <TD>
+   <INPUT TYPE="text" NAME="t3c" value="40">
+  </td>
+  <TD>
+   R high (Ohm)
+  </td>
+  <TD>
+   <INPUT TYPE="text" NAME="r3" value="5833.6">
+  </td> 
+ </tr>
+
+
+<tr>
+<td>
+
+<INPUT TYPE="button" NAME="zero"  VALUE="Calculate A, B, C" OnClick="DoMathABC();">
+<br>
+</TD>
+</TR>
+
+ <tr>
+  <TD>
+A
+<INPUT TYPE="text" NAME="avalue">
+<br>
+  </TD>
+  <TD>
+B
+<INPUT TYPE="text" NAME="bvalue">
+<br>
+  </TD>
+  <TD>
+C
+<INPUT TYPE="text" NAME="cvalue">
+<br>
+  </TD>
+</tr>
+
+<tr>
+ <td colspan=4>
+ C language formula:<br>
+<INPUT TYPE="text" NAME="formula" size=100>
+
+ </td>
+
+</tr>
+
+
+<tr>
+<td colspan="3">
+<br><br>
+Now, with these coefficients, you can calulatate the temperature for any given resistance:
+<br>
+
+R (Ohm)   <INPUT TYPE="text" NAME="r" value="10000">
+
+
+
+<INPUT TYPE="button" NAME="DoIt"  VALUE="Calculate Temperature" OnClick="DoMathT();Calc.tc.value = TC;Calc.tf.value = TF;">
+
+<br>
+Result (C)
+<INPUT TYPE="text" NAME="tc">
+<br>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<input type="reset" value="Reset!">
+</td>
+</TR>
+
+</TABLE>
+
+
+</FORM>
+<hr>
+Copyleft Andrey 2013, Modified Neil Hancock 2020
+
+<br><br><br>
+External links:<br>
+<a href=http://www.raltron.com/cust/tools/voltage_divider.asp>Voltage Divider calculator</a>
+
+
+</body>
+</html>
+
