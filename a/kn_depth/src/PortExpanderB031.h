@@ -20,7 +20,29 @@ Software License: BSD-3.
 #undef MS_DEBUGGING_DEEP
 
 #include "MCP23017.h" //Port 16bit Expander
-
+#define eMcp_B031_begin 40
+//shhould be same as thisVariantNumPins
+typedef enum { //Maps to hardware extensions. For Mask see eMcpA_bm eMcpB_bin
+eMcpA_SwV3Out_pinnum       = eMcp_B031_begin,
+eMcpA_SwVbatOut_pinnum     ,
+eMcpA_SwVrs485Out_pinnum   ,
+eMcpA_swV1wOut_pinnum      ,
+eMcpA_SwVsdiOut_pinnum     ,
+eMcpA_XbeeOnSleepNin_pinnum,
+eMcpA_XbeeSleeRqOut_pinnum ,
+eMcpA_SwV3v6_pinnum ,  //#7 Rev2 eMcpA_XbeeResetNOut_pinnum ,
+eMcpA_CustOut1Out_pinnum   ,
+eMcpB_CustOut2Out_pinnum   ,
+eMcpB_MuxAdcAOut_pinnum    ,
+eMcpB_MuxAdcBOut_pinnum    ,
+eMcpB_MuxAdcCOut_pinnum    ,
+eMcpB_MuxAdcEnOut_pinnum   ,
+eMcpB_UsbHostEn, //#14 eMcpB_SwVextOut_pinnum     ,
+eMcpB_SwVbst5v, //#15 rev2 eMcpB_eInk_RSTOut_pinnum   ,
+eMcpB_last = eMcpB_SwVbst5v,
+eMcpB_end 
+} eMcp_B031;
+#define totalNumPins (thisVariantNumPins+16)
 enum class peB031_bit :uint8_t 
 {
     eMcp_SwV3out_bit, //00
@@ -50,7 +72,7 @@ enum class eMcpA_bm :uint8_t  //bit mask
     eMcpA_SwVsdi_bmout     = 0x10,
     eMcpA_XbeeOnSleepN_bmin= 0x20,
     eMcpA_XbeeSleeRq_bmout = 0x40,
-    eMcpA_XbeeResetN_bmout = 0x80,
+    eMcpA_SwV3v6_bmout =     0x80, //rev3
 
     eMcpA_direction = 0b00100000,
     //eMcpA_default =(eMcpA_SwV3_bmout|eMcpA_XbeeSleeRq_bmout|eMcpA_XbeeResetN_bmout),
@@ -67,12 +89,12 @@ enum class eMcpB_bm :uint8_t
     eMcpB_MuxAdcB_bmout  = 0x08,
     eMcpB_MuxAdcC_bmout  = 0x10,
     eMcpB_MuxAdcEn_bmout = 0x20,
-    eMcpB_SwVext_Bmout   = 0x40,
-    eMcpB_eInk_RST_bmout = 0x80,
+    eMcpB_UsbHostEn_Bmout= 0x40, //rev3
+    eMcpB_SwVbst5v_bmout = 0x80, //rev3
 
     eMcpB_direction = 0x00,
  
-    eMcpB_default = (eMcpB_eInk_RST_bmout),
+    eMcpB_default = 0,
 };//eMcpB_bm
 //  mcpBdesc {"Cust1","Cust2","MuxAdcA","MuxAdcB","MuxAdcC","MuxAdcD","SwVext","eInk_RST"}
 

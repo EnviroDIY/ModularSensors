@@ -424,7 +424,7 @@ HardwareSerial &modemSerial = Serial1;  // Bee Socket
 const int8_t modemVccPin = modemVccPin_DEF;         // -2 MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = modemStatusPin_DEF;   //RTS 19 MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = modemResetPin_DEF;     // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;//DTR 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemSleepRqPin =modemSleepRqPin_DEF;//DTR 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLEDPin;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 bool modemSetup=false;
@@ -2106,28 +2106,14 @@ void setup()
     varArrFast.setupSensors(); //Assumption pwr is available
     #endif //loggingMultiplier_MAX_CDEF
 
-#if 0 //MS_DEBUG_THIS_MODULE
+#if 1 //MS_DEBUG_THIS_MODULE
     //Enable this in debugging or where there is no valid RTC
     // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
     //USE_RTCLIB implies extRtcPhy
     MS_DBG(F("  Modem setup & Timesync at init"));
-    modemPhy.modemPowerUp();
-    modemPhy.wake();
-    if (modemPhy.connectInternet())
-    {
-        modemSetup=true;
-        MS_DBG(F("  Attempting Timesync"));
-        if (true == dataLogger.syncRTC()) {
-            nistSyncRtc = false; //Sucess
-            MS_DBG(F("  Timesync success"));
-        } else {MS_DBG(F("  Timesync fails"));}
-        modemPhy.disconnectInternet();
-    } else {MS_DBG(F("  No internet connection..."));}
-
-    modemPhy.modemSleepPowerDown();    
-#else 
-
+    dataLogger.syncRTC();
+    nistSyncRtc = false;
 #endif //ARDUINO_ARCH_SAMD
 
     Logger::markTime(); //Init so never zero
@@ -2257,62 +2243,68 @@ void processSensors()
                     {
                         pinMode(modemSleepRqPin, OUTPUT);
                         digitalWrite(modemSleepRqPin, modemSleepRqState_DEF);
-                    }                    
+                    }
+                    #if 0                    
                     if (!modemSetup) {
                         modemSetup = true;
                         MS_DBG(F("  Modem setup up 1st pass"));
                         // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                        modemPhy.wake();  // Turn it on to talk
+                        modemPhy.modemWake();  // Turn it on to talk
                         //protected ?? modemPhy.extraModemSetup();//setupXBee();
                         nistSyncRtc = true;
                     }
+                    #endif
                     dataLogger.watchDogTimer.resetWatchDog();
-                    // Connect to the network
-                    MS_DBG(F("  Connecting to the Internet... "));
-                    if (modemPhy.connectInternet())
-                    {
-                        dataLogger.watchDogTimer.resetWatchDog();
-                        MS_DBG(F("  publishing... "));
-                        // Post the data to the WebSDL
-                        dataLogger.publishDataToRemotes();
-                        
-                        //Sync the RTC once a day, or if debug once an hour.
-                        #define DAY_SECS 86400
-                        #define HOUR_SECS 3600
-                        #if defined MS_DEBUG_THIS_MODULE
-                        #define CONFIG_NIST_CHECK_SECS HOUR_SECS
-                        #else
-                        #define CONFIG_NIST_CHECK_SECS DAY_SECS
-                        #endif
-                        #define CONFIG_NIST_ERR_MASK (~0x3F) 
-                        uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
-                        bool nistSyncNow=false;
-                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) 
-                        {
-                            nistSyncNow=true;
-                            PRINTOUT(F("SyncTimeCheck Atmpt "),nistSyncRtc,Logger::markedEpochTime
-                            ,"remainder ",nistCheckRemainder
-                            ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
-                        } else {
-                              PRINTOUT(F("SyncTimeCheck NotNeeded "),Logger::markedEpochTime
-                            ,"remainder ",nistCheckRemainder
-                            ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );                          
-                        }
-                        if (nistSyncNow )
+                    //MS_DBG(F("  Waking up... "));
+                    MS_DBG(F("  Waking up"), modemPhy.getModemName(), F("..."));
+                    if (modemPhy.modemWake()) {
+                        // Connect to the network
+                        MS_DBG(F("  Connecting to the Internet... "));
+                        if (modemPhy.connectInternet())
                         {
                             dataLogger.watchDogTimer.resetWatchDog();
-                            MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
-                            nistSyncRtc = true; //Needs to run every access until sucess
-                            if (true == dataLogger.syncRTC()) {
-                                nistSyncRtc = false; //Sucess
-                            } 
-                            //If time very different should ensure publish is accurate - possibly cancel
-                        }
+                            MS_DBG(F("  publishing... "),modemPhy.getModemName());
+                            // Post the data to the WebSDL
+                            dataLogger.publishDataToRemotes();
+                            
+                            //Sync the RTC once a day, or if debug once an hour.
+                            #define DAY_SECS 86400
+                            #define HOUR_SECS 3600
+                            #if defined MS_DEBUG_THIS_MODULE
+                            #define CONFIG_NIST_CHECK_SECS HOUR_SECS
+                            #else
+                            #define CONFIG_NIST_CHECK_SECS DAY_SECS
+                            #endif
+                            #define CONFIG_NIST_ERR_MASK (~0x3F) 
+                            uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
+                            bool nistSyncNow=false;
+                            if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) 
+                            {
+                                nistSyncNow=true;
+                                PRINTOUT(F("SyncTimeCheck Atmpt "),nistSyncRtc,Logger::markedEpochTime
+                                ,"remainder ",nistCheckRemainder
+                                ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
+                            } else {
+                                PRINTOUT(F("SyncTimeCheck NotNeeded "),Logger::markedEpochTime
+                                ,"remainder ",nistCheckRemainder
+                                ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );                          
+                            }
+                            if (nistSyncNow )
+                            {
+                                dataLogger.watchDogTimer.resetWatchDog();
+                                MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
+                                nistSyncRtc = true; //Needs to run every access until sucess
+                                if (true == dataLogger.syncRTC()) {
+                                    nistSyncRtc = false; //Sucess
+                                } 
+                                //If time very different should ensure publish is accurate - possibly cancel
+                            }
 
-                        // Disconnect from the network
-                        MS_DBG(F("  Disconnecting from the Internet..."));
-                        modemPhy.disconnectInternet();
-                    } else {MS_DBG(F("  No internet connection..."));}
+                            // Disconnect from the network
+                            MS_DBG(F("  Disconnecting from the Internet..."));
+                            modemPhy.disconnectInternet();
+                        } else {MS_DBG(F("  No internet connection..."));}
+                    }
                     // Ensure no leakage on pins
                     if (modemResetPin >= 0)
                     {

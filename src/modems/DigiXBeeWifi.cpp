@@ -285,13 +285,14 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
         }
 
         /* Make TCP connection */
-        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        MS_DBG(F("\nConnecting to NIST daytime Server "));
         bool connectionMade = false;
 
         /* This is the IP address of time-e-wwv.nist.gov  */
         /* XBee's address lookup falters on time.nist.gov */
         IPAddress ip(132, 163, 97, 6);
         connectionMade = gsmClient.connect(ip, 37);
+
         /* Wait again so NIST doesn't refuse us! */
         delay(4000L);
         /* Need to send something before connection is made */
@@ -605,8 +606,6 @@ void DigiXBeeWifi::setWiFiId(const char *newSsid,bool copyId)
 }
 
 void DigiXBeeWifi::setWiFiPwd(const char *newPwd,bool copyId)
-/* nh Tested with and without newPwd setting
-*/
 {
     uint8_t newPwd_sz = strlen(newPwd);
     _pwd = newPwd;

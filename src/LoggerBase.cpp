@@ -397,8 +397,8 @@ bool Logger::syncRTC()
         {
             if (_logModem->connectInternet(120000L))
             {
-                setRTClock(_logModem->getNISTTime());
-                success = true;
+                success = setRTClock(_logModem->getNISTTime());
+                //success = true;
                 _logModem->updateModemMetadata();
             }
             else
@@ -590,10 +590,9 @@ uint32_t Logger::getNowEpochT0(void)
 {
   uint32_t currentEpochTime =  zero_sleep_rtc.getEpoch();
   if (!isRTCSane(currentEpochTime))  {
-    PRINTOUT(F("Bad time, resetting clock."),currentEpochTime);
-    setNowEpochT0(currentEpochTime);
+    PRINTOUT(F("Bad time, resetting clock."),currentEpochTime," ", formatDateTime_ISO8601(currentEpochTime)," Setting to ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
     currentEpochTime=EPOCH_TIME_20200101_SECS;
-
+    setNowEpochT0(currentEpochTime);
   }
   return currentEpochTime;  
 }
@@ -1758,7 +1757,7 @@ void Logger::begin()
             zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
             zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
             #define zr zero_sleep_rtc
-            MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+            MS_DBG("Read internal rtc ",2000+zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
         #else // no external _RTC
             // If Power-on Reset Rcause.Bit0 have specific processing
             #define zr zero_sleep_rtc
@@ -1768,8 +1767,8 @@ void Logger::begin()
             }
         #endif // ADAFRUIT_FEATHERWING_RTC_SD
     #endif //ARDUINO_ARCH_SAMD
-
-    MS_DBG(F("RTC Time:"), formatDateTime_ISO8601(getNowEpochTz()) );
+    uint32_t nowEpochTz=getNowEpochTz();
+    MS_DBG(F("RTC Time:"), formatDateTime_ISO8601(nowEpochTz) );
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 

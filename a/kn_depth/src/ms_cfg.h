@@ -62,29 +62,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //Still a WIP
 //#define PROFILE02 02
 //#define  PROFILE_NAME PROFILE02
-#define eMcp_B031_begin 40
-//shhould be same as thisVariantNumPins
-typedef enum { //Maps to hardware extensions
-eMcpA_SwV3Out_pinnum       = eMcp_B031_begin,
-eMcpA_SwVbatOut_pinnum     ,
-eMcpA_SwVrs485Out_pinnum   ,
-eMcpA_swV1wOut_pinnum      ,
-eMcpA_SwVsdiOut_pinnum     ,
-eMcpA_XbeeOnSleepNin_pinnum,
-eMcpA_XbeeSleeRqOut_pinnum ,
-eMcpA_XbeeResetNOut_pinnum ,
-eMcpA_CustOut1Out_pinnum   ,
-eMcpB_CustOut2Out_pinnum   ,
-eMcpB_MuxAdcAOut_pinnum    ,
-eMcpB_MuxAdcBOut_pinnum    ,
-eMcpB_MuxAdcCOut_pinnum    ,
-eMcpB_MuxAdcEnOut_pinnum   ,
-eMcpB_SwVextOut_pinnum     ,
-eMcpB_eInk_RSTOut_pinnum   ,
-eMcpB_last =eMcpB_eInk_RSTOut_pinnum,
-eMcpB_end 
-} eMcp_B031;
-#define totalNumPins (thisVariantNumPins+16)
+
 #if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
 //This configuration is for a standard Mayfly0.bb
@@ -239,12 +217,12 @@ eMcpB_end
 
   #define ADAFRUIT_FEATHERWING_eInk1_5in_SD 1
   #if defined ADAFRUIT_FEATHERWING_eInk1_5in_SD
-    //Shared SPI with microSD CS and 
-    #define SD_SPI_CS_PIN_DEF 10
-    #define EPD_CS      9  //10 B031 SPI_ECS
-    #define EPD_DC      6  //9? B031 eInkDC
-    #define SRAM_CS     -1 //no6 used
-    #define EPD_RESET   -1 //Actually 5 // can set to -1 and share with microcontroller Reset!
+    //B031rev3 Shared SPI with microSD CS
+    #define SD_SPI_CS_PIN_DEF  5
+    #define EPD_CS       9  //10 B031r3 &r2 SPI_ECS
+    #define EPD_DC      10  //eInkDC B031r3 &r2=6
+    #define SRAM_CS     -1 //not used
+    #define EPD_RESET   -1  // can set to -1 and share with microcontroller Reset!
     #define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 
@@ -269,8 +247,8 @@ eMcpB_end
 #if defined DigiXBeeWifi_Module
 #define modemVccPin_DEF  eMcpA_SwV3Out_pinnum //-1 // B031r1:V3Sw mcpExp:PA0  for pwr off, other pins must be 0V
 #else
-//Expect S33 be cut and strapped Vbat - no control
-#define modemVccPin_DEF -1
+//For B031Rev3 S4 Xbee Pwr is 3v3 unless manually switched, and strapped Vbat
+#define modemVccPin_DEF eMcpA_SwV3Out_pinnum
 #endif //DigiXBeeWifi_Module
 //#define MODEMPHY_NEVER_SLEEPS 1
 #if 0 //defined MODEMPHY_NEVER_SLEEPS || (-1!=modemVccPin_DEF)
@@ -278,7 +256,7 @@ eMcpB_end
 #define modemStatusPin_DEF  -1
 #define modemSleepRqPin_DEF -1
 #else
-#define modemResetPin_DEF eMcpA_XbeeResetNOut_pinnum //B031r1:XbeeResetN PA7
+#define modemResetPin_DEF -1;//B031rev3 doesn't implement. Power cycle
 #define modemStatusPin_DEF  eMcpA_XbeeOnSleepNin_pinnum //B031r1:XbeeOnSleepN Exp:PA5
 #define modemSleepRqPin_DEF eMcpA_XbeeSleeRqOut_pinnum  //B031r1:XbeeSleepRq Exp:PA6
 #endif //MODEMPHY_NEVER_SLEEPS
