@@ -131,8 +131,10 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 // #define redLEDPin -1                  //Doesn't exist 
 //NeoPixel WS2812 on FeatherM4express
 #define NUM_NEOPIXELS 1
+#ifdef NUM_NEOPIXELS
 #define NEOPIXEL_PIN 8
 Adafruit_NeoPixel neoPixelPhy(NUM_NEOPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+#endif //NUM_NEOPIXELS
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
@@ -1789,22 +1791,43 @@ void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned 
         Status (3col) Led
         eInk  XbyY Display
 */
+typedef enum {
+  USR_OFF, //0
+  USR_SENSORS_ACTIVE, //Green Water flashing light
+  USR_COMMS_ACTIVE, //Blue Sky flashing
+  USR_END
+
+} UiStatus_req;
 void UiStatus(uint8_t status_req, String ui_out = "");
 void UiStatus(uint8_t status_req, String ui_out) {
    MS_DBG(F("UiStatus "),status_req);
   switch(status_req) {
-    case 0:
+    case USR_OFF:
         #ifndef SERIAL3_EN
         digitalWrite(LED_BUILTIN, LOW);
         #endif //SERIAL3_EN 
         neoPixelPhy.clear();
         neoPixelPhy.show();
        break;
-    default:
+    case USR_SENSORS_ACTIVE:
+        #ifndef SERIAL3_EN    
+        digitalWrite(LED_BUILTIN, HIGH);
+        #endif // SERIAL3_EN
+        neoPixelPhy.setPixelColor(0, neoPixelPhy.Color(0, 150, 0));
+        neoPixelPhy.show();
+        break;
+    case USR_COMMS_ACTIVE:
         #ifndef SERIAL3_EN    
         digitalWrite(LED_BUILTIN, HIGH);
         #endif // SERIAL3_EN
         neoPixelPhy.setPixelColor(0, neoPixelPhy.Color(0, 0, 150));
+        neoPixelPhy.show();
+        break;          
+    default:
+        #ifndef SERIAL3_EN    
+        digitalWrite(LED_BUILTIN, HIGH);
+        #endif // SERIAL3_EN
+        neoPixelPhy.setPixelColor(0, neoPixelPhy.Color(150, 0, 0));
         neoPixelPhy.show();
         break;
   }
@@ -1909,6 +1932,7 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
+    neoPixelPhy.begin();
     UiStatus(0);
 
     // A vital check on power availability
@@ -2111,6 +2135,7 @@ void setup()
     // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
     //USE_RTCLIB implies extRtcPhy
+    UiStatus(USR_COMMS_ACTIVE,"Comms");
     MS_DBG(F("  Modem setup & Timesync at init"));
     dataLogger.syncRTC();
     nistSyncRtc = false;
@@ -2121,6 +2146,7 @@ void setup()
     //modbusSerial.setDebugStream(&SerialTty);
     //dataLogger.systemSleep();
     //while (1) { greenredflash(4,500); delay(2000); }
+    UiStatus(USR_OFF,"Started");
 }
 
 
@@ -2158,6 +2184,7 @@ void processSensors()
         // Turn on the LED to show we're taking a reading
         //dataLogger.alertOn();
 
+        UiStatus(USR_SENSORS_ACTIVE,"Readings");
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -2215,6 +2242,7 @@ void processSensors()
 #endif //CONFIG_SENSOR_RS485_PHY
 
         if (varArrayPub) {
+            UiStatus(USR_COMMS_ACTIVE,"Comms");
             varArrayPub = false;
             dataLogger.watchDogTimer.resetWatchDog();
             // Create a csv data record and save it to the log file
@@ -2339,51 +2367,54 @@ void processSensors()
         // Unset flag
         //Logger::isLoggingNow = false;
     }
+    UiStatus(USR_OFF,"Sleep");
 }
 //#endif //KCONFIG_DEBUG_LEVEL > 0  
 // ==========================================================================
 int flash_lp=0;
 void loop()
 {
-    #if KCONFIG_DEBUG_LEVEL==0
-    flash_lp++;
 
-    SerialStd.print(F("Current Time ("));
-    SerialStd.print(flash_lp);
-    SerialStd.print(F(" ):"));
-    SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()) );
-    //SerialStd.println();
-    greenredflash();
-    delay(2000);
+    #if KCONFIG_DEBUG_LEVEL==0
+        flash_lp++;
+
+        SerialStd.print(F("Current Time ("));
+        SerialStd.print(flash_lp);
+        SerialStd.print(F(" ):"));
+        SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()) );
+        //SerialStd.println();
+        greenredflash();
+        delay(2000);
     #elif KCONFIG_DEBUG_LEVEL > 0
 
-    processSensors();
-    // Check if it was instead the testing interrupt that woke us up
-    // not implemented yet: if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
+        processSensors();
+        // Check if it was instead the testing interrupt that woke us up
+        // not implemented yet: if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
 
-    // Sleep
-    //if(_mcuWakePin >= 0){systemSleep();}
-    #if defined USE_USB_MSC_SD0 
-    while (dataLogger.usbDriveActive()) {
-        // USB is plugged in, uP can't sleep until USB is removed.
-        MS_DBG(F(" USB is active, Poll for SD change, Wait 2Sec."));
-        dataLogger.SDusbPoll(0);
-        delay(2000);
-    };
-    #endif //USE_USB_MSC_SD0
-    #define timeNow() dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch())
-    #if defined loggingMultiplier_MAX_CDEF
-        MS_DBG(F("dataLogFast Sleep "),timeNow());
-        dataLogFast.systemSleep();
-    #else 
-        MS_DBG(F("dataLogger Sleep "),timeNow());
-        dataLogger.systemSleep();
-    #endif //loggingMultiplier_MAX_CDEF
+        // Sleep
+        //if(_mcuWakePin >= 0){systemSleep();}
+            #if defined USE_USB_MSC_SD0 
+            while (dataLogger.usbDriveActive()) {
+                // USB is plugged in, uP can't sleep until USB is removed.
+                MS_DBG(F(" USB is active, Poll for SD change, Wait 2Sec."));
+                dataLogger.SDusbPoll(0);
+                delay(2000);
+            };
+            #endif //USE_USB_MSC_SD0
+        #define timeNow() dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch())
+
+            #if defined loggingMultiplier_MAX_CDEF
+                MS_DBG(F("dataLogFast Sleep "),timeNow());
+                dataLogFast.systemSleep();
+            #else 
+                MS_DBG(F("dataLogger Sleep "),timeNow());
+                dataLogger.systemSleep();
+            #endif //loggingMultiplier_MAX_CDEF
         MS_DBG(F("dataLogger Wake "),timeNow());
     #endif //KCONFIG_DEBUG_LEVEL
-#if defined(CHECK_SLEEP_POWER)
-    PRINTOUT(F("A"));
-#endif //(CHECK_SLEEP_POWER)
+    #if defined(CHECK_SLEEP_POWER)
+        PRINTOUT(F("A"));
+    #endif //(CHECK_SLEEP_POWER)
 
 }
 //The following is a holding place for WIRING_DIGITAL_DEBUG
