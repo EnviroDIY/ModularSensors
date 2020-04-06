@@ -227,7 +227,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 
 //define one Radio  _Module
-#define DigiXBeeWifi_Module 1
+//#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoAutonomoWithDigiXBeeCellTransparent
@@ -290,8 +290,24 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //From an Arduino Virtual Pin Numbering .. First Digital Extension then Analog Extension 
 #define ARD_DIGITAL_EXTENSION_PINS 16
 #define ARD_ANALOLG_EXTENSION_PINS 8
-#define ARD_ANLAOG__MULTIPLEX_PIN PIN_A5
+#define ARD_ANLAOG_MULTIPLEX_PIN PIN_A0
+//#define ARD_COMMON_PIN  PIN_A0
 #define PIN_EXT_ANALOG(extPin) (thisVariantNumPins+ARD_DIGITAL_EXTENSION_PINS+extPin)
+
+// BG031 extensions AEM = ADC_EXT_MUX pin on HC4051
+#define B031_AEM_EXTENSIONS 1
+#ifdef B031_AEM_EXTENSIONS
+#define B031_AEM_EXT0_PIN     0
+#define B031_AEM_EXT1_PIN     1
+#define B031_AEM_EXT2_PIN     2
+#define B031_AEM_EXT3_PIN     3
+#define B031_AEM_VBATT_PIN    4  // 1M/200k 
+#define B031_AEM_TEMP_AIR_PIN 5
+#define B031_AEM_V3V6_PIN     6  // 1M/200k 
+#define B031_AEM_X7_PIN       7
+#endif //B031_AEM_EXTENSIONS
+
+//This is the SAMD51J PIN
 
   //#define SENSOR_CONFIG_GENERAL 1
  
@@ -353,6 +369,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define ProcVolt_ACT 1
   #if defined ProcVolt_ACT
     #define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
+    #define ProcVolt_batt_UUID  "ProcVolt_batt_UUID"
+    #define ProcVolt_V3v6_UUID  "ProcVolt_V3v6_UUID"
   #endif //ProcVolt_ACT
 
   //Use sensor eg Adafruit_AM2314 or AM2320

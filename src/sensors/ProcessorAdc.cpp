@@ -136,19 +136,25 @@ bool processorAdc::addSingleMeasurementResult(void)
         uint8_t useAdcChannel = _adcChannel; 
         #if defined ARD_ANALOLG_EXTENSION_PINS
         if ((thisVariantNumPins+ARD_DIGITAL_EXTENSION_PINS)< _adcChannel) {
-            
-            //Setup mutliplexer
-            //digitalWrite(_adcChannel,1);
-            //useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
-            MS_DBG("  adc_Single Setup Multiplexer not supported ", _adcChannel,"-->",ARD_ANLAOG__MULTIPLEX_PIN); 
-
+            // ARD_COMMON_PIN on SAMD51
+            if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
+                //Setup mutliplexer
+                MS_DBG("  adc_Single Setup Multiplexer ", useAdcChannel,"-->",ARD_ANLAOG_MULTIPLEX_PIN); 
+                digitalWrite(useAdcChannel,1);
+                //useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
+            }
         } 
 
         #endif //ARD_ANALOLG_EXTENSION_PINS
         // Create an Auxillary ADD object
         // We create and set up the ADC object here so that each sensor using
         // the ADC may set the gain appropriately without effecting others.
-        uint32_t  rawAdc = analogRead(useAdcChannel);
+
+        // *** Trial to check the results of two reads
+        uint32_t rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
+        MS_DBG(F("  1stpass_adc("),rawAdc);
+        rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
+        digitalWrite(useAdcChannel,0);
         #define PROCADC_REF_V 3.3
         #define PROCADC_RANGE_MIN_V -0.3
         adcVoltage = (PROCADC_REF_V/ProcAdc_Max) * (float) rawAdc;

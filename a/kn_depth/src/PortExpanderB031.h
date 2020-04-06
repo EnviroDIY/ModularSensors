@@ -94,7 +94,7 @@ enum class eMcpB_bm :uint8_t
 
     eMcpB_direction = 0x00,
  
-    eMcpB_default = 0,
+    eMcpB_default = (eMcpB_MuxAdcEn_bmout),
 };//eMcpB_bm
 //  mcpBdesc {"Cust1","Cust2","MuxAdcA","MuxAdcB","MuxAdcC","MuxAdcD","SwVext","eInk_RST"}
 

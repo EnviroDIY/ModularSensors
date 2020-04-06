@@ -971,7 +971,7 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 // Create a voltage variable pointer
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ExternalVoltage_ACT
-#ifdef ProcVolt_ACT
+#if defined(ProcVolt_ACT) && defined(B031_AEM_EXTENSIONS)
 // ==========================================================================
 //    External Voltage  ProcessorAdc
 // ==========================================================================
@@ -981,7 +981,7 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 const int8_t procVoltPower = -1;//eMcpA_SwVbatOut_pinnum;  //Requires VbtSw Pin to switch power on and off (-1 if unconnected)
 //B031 has expanded channels - Assume PCB default. Opts for 8more ADC Pins.
 //J5 B031rev2  - which is ArduinioFramework PIN_A5 (Feather M4E pin 10). No Mux
-const int8_t procVoltChan0 = PIN_A0;//PIN_EXT_ANALOG(01);  // B031r2 J2Pin2 MC74VHC4051PinX1 MUX to PIN_A5
+const int8_t procVoltChan0 = ARD_ANLAOG_MULTIPLEX_PIN;//PIN_EXT_ANALOG(01);  // B031r2 J2Pin2 MC74VHC4051PinX1 MUX to PIN_A5
 //const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
 //const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
 //const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
@@ -990,8 +990,14 @@ const float procVoltDividerGain = 6.0; //  for ext 1M/200k = 66 measuredAdc(V wr
 const uint8_t procVoltReadsToAvg = 1; // Only read one sample
 
 // Create an External Voltage sensor object
-processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain, procVoltReadsToAvg);
+//processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain, procVoltReadsToAvg);
 //processorAdc procVolt1(procVoltPower, procVoltChan1, procVoltDividerGain, procVoltReadsToAvg);
+
+
+const int8_t sensor_Vbatt_PIN = PIN_EXT_ANALOG(B031_AEM_VBATT_PIN);
+const int8_t sensor_V3V6_PIN =  PIN_EXT_ANALOG(B031_AEM_V3V6_PIN);
+processorAdc sensor_batt_V(procVoltPower,  sensor_Vbatt_PIN, procVoltDividerGain, procVoltReadsToAvg);
+processorAdc sensor_V3v6_V(procVoltPower, sensor_V3V6_PIN,  procVoltDividerGain, procVoltReadsToAvg);
 
 #endif //ExternalVoltage_ACT
 #ifdef SENSOR_CONFIG_GENERAL
@@ -1526,15 +1532,18 @@ Variable *variableList[] = {
 #if defined(ProcessorStats_Batt_UUID)
     new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),
 #endif
+#if defined(ProcVolt_ACT)  && defined(B031_AEM_EXTENSIONS) 
+    //new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
+    new processorAdc_Volt(&sensor_batt_V,  ProcVolt_batt_UUID,"LiBat 4v2"),
+    new processorAdc_Volt(&sensor_V3v6_V, ProcVolt_V3v6_UUID, "ExtBt 3v6"),    
+#endif
 #if defined(ExternalVoltage_Volt0_UUID)
     new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
 #endif
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
-#if defined(ProcVolt_Volt0_UUID)
-    new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
-#endif
+
 #if defined(analogTh_T1_UUID)
     new analogThermistor_Temperature(&analogTherm1parent,analogTh_T1_UUID),
 #endif 
@@ -1649,7 +1658,7 @@ Variable *variableList[] = {
     new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
 #endif //MaximDS3231_Temp_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
-#if defined(Modem_SignalPercent_UUID)
+#if defined(Modem_SignalPercent_UUID) && defined(UseModem_Module)
     new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
 #endif
     //new analogPinEc_EC(&analogPinEc_EC, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -1965,10 +1974,12 @@ void setup()
     //UiStatus(1);
     SerialStd.print(F("\nUsing ModularSensors Library version "));
     SerialStd.println(MODULAR_SENSORS_VERSION);
-
+#if defined UseModem_Module
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
-
+#else 
+    Serial.print(F("TinyGSM - none"));
+#endif
     Wire.begin();
 
     #if defined HwFeatherWing_B031ALL  
@@ -2057,10 +2068,8 @@ void setup()
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
-        //digitalWrite(modemVccPin, LOW);
-        //MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
-        digitalWrite(modemVccPin, HIGH);
-        MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
+        digitalWrite(modemVccPin, LOW);
+        MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
     } else {MS_DBG(F("ModemVccPin not used "),modemVccPin);}
     if (sensorPowerPin >= 0)
     {
@@ -2444,11 +2453,12 @@ void digitalWrExt( uint32_t ulPin, uint32_t ulVal ) {
             23   111
         */
         if (ARD_DIGITAL_EXTENSION_PINS > vextPin) {
-            MS_DEEP_DBG("***digitalWrExt ",mcpExp.getPortStr(vextPin),ulPin,"(",vextPin,")=",ulVal); 
+            MS_DEEP_DBG("***digitalWrExtD ",mcpExp.getPortStr(vextPin),ulPin,"(",vextPin,")=",ulVal); 
             mcpExp.setBit((peB031_bit)(vextPin),ulVal);
         } else {
-            MS_DEEP_DBG("***digitalWrExtV ",ulPin,"(",vextPin,")=",ulVal); 
-            mcpExp.setupAnalogPin(vextPin-ARD_DIGITAL_EXTENSION_PINS,ulVal);
+            vextPin = vextPin - ARD_DIGITAL_EXTENSION_PINS; //Normalize of Analog range
+            MS_DEEP_DBG("***digitalWrExtA ",ulPin,"(",vextPin,")=",ulVal); 
+            mcpExp.setupAnalogPin(vextPin,ulVal);
         }
     }
 }

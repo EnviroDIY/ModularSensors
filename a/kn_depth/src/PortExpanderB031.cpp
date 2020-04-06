@@ -108,17 +108,23 @@ size_t PortExpanderB031::digitalWrite( uint32_t ulPin, uint32_t ulVal )
     }
     return retVal;
 }
+/* ulPin range 0-7 Analog Pin on the Mux
+   
+*/
 size_t PortExpanderB031::setupAnalogPin( uint32_t ulPin,uint32_t ulVal)
 {
     #define PORTB2_POS 2
-    #define PORTB2_MUXEN_MASK 0x20
     #define PORTB2_ANLGMSK 0x3c
+    #define PORTB2_MUXEN_MASK (uint8_t)(eMcpB_bm::eMcpB_MuxAdcEn_bmout)
+
     _portB &= ~PORTB2_ANLGMSK;
     if (ulVal) {
-        _portB |= ((ulPin<<PORTB2_POS) | PORTB2_MUXEN_MASK);
-    } 
+        _portB |= ((ulPin<<PORTB2_POS));// & ~PORTB2_MUXEN_MASK);
+    } else {
+        _portB |= PORTB2_MUXEN_MASK;
+    }
     //else bits already cleared and will disable MUX
-    
+    MS_DBG(F("wrPortAMUX "),_portB);
     return MCP23017::writeRegister(MCP23017_REGISTER::GPIOB, _portB);
 }
 String PortExpanderB031::getPortStr(uint8_t mcpBit) 
