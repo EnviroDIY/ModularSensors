@@ -62,8 +62,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define configIniID_DEF_STR "ms_cfg.ini"  
 #define CONFIG_TIME_ZONE_DEF -8
 
-
+// ** How frequently (in minutes) to log data **
+//For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
+#define  loggingInterval_Fast_MIN (1)
+#define  logger2Mult 5 //Not working for mayfly
+// How frequently (in minutes) to log data
+#if defined logger2Mult
+#define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*logger2Mult) 
+#else
 #define  loggingInterval_CDEF_MIN 15
+#endif //logger2Mult
+// Maximum logging setting allowed
+#define  loggingInterval_MAX_CDEF_MIN 6*60
 
 // Maximum logging setting allowed
 #define  loggingInterval_MAX_CDEF_MIN 6*60
@@ -78,8 +88,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //end of _Module
 
   #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
-  #define WIFIID_CDEF  "AzondeNetSsid"  // The WiFi access point, unnecessary for gprs
-  #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+  //#define WIFIID_CDEF  "NameSsid"  // The WiFi access point, unnecessary for gprs
+  //#define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+  #define WIFIID_CDEF  "Arthur2004Sid"  // The WiFi access point, unnecessary for gprs
+  #define WIFIPWD_CDEF  "LagunaGroup04Psk" // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+
+//This might need revisiting
+#define ARD_ANLAOG_MULTIPLEX_PIN A6
 
 //#define SENSOR_CONFIG_GENERAL 1
 //#define KellerAcculevel_ACT 1

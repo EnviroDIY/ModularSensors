@@ -15,11 +15,12 @@
  * We assume it's always warmed up.
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
 */
-
-//#include <Sodaq_DS3231.h>
+#if defined CUSTOM_B031
 #include <RTClib.h>
 extern RTC_DS3231 rtc;
-
+#else 
+#include <Sodaq_DS3231.h>
+#endif //CUSTOM_B031
 #include "MaximDS3231.h"
 
 // Only input is the number of readings to average

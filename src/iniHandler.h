@@ -3,6 +3,7 @@
 // For any Unhandled sections this is called
 // ==========================================================================
 #ifdef USE_MS_SD_INI
+#include <errno.h>
 //expect to be in near space
   //#define EDIY_PROGMEM PROGMEM
 #define mCONST_UNI(p1) const char p1##_pm[] PROGMEM = #p1
@@ -353,7 +354,9 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
 }
 #endif //USE_MS_SD_INI
 
+#if 0 
 //void ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,unsigned long offTime_ms = 150)
+//Shouldn't be here
 void ledflash(uint8_t numFlash, unsigned long onTime_ms,unsigned long offTime_ms)
 {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -363,3 +366,4 @@ void ledflash(uint8_t numFlash, unsigned long onTime_ms,unsigned long offTime_ms
         delay(offTime_ms);
     }
 }
+#endif 

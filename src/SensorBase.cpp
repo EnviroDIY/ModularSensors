@@ -459,11 +459,13 @@ bool Sensor::checkPowerOn(bool debug)
     if (_powerPin >= 0)
     {
         bool powerPinOff=true;
+        #if defined CUSTOM_B031
         if ( _powerPin >= thisVariantNumPins)
         {
            powerPinOff = (0 == digitalRdMir(_powerPin)); 
         } 
         else //Read Port hardware - no API
+        #endif //CUSTOM_B031
         { 
             int8_t powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
             powerPinOff =(bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW);

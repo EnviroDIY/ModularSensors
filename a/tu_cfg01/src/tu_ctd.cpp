@@ -61,13 +61,24 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = "logging_to MMW.ino";
+const char *sketchName = __FILE__; //"xxx.cpp";
+const char build_date[] = __DATE__ " " __TIME__;
+#ifdef PIO_SRC_REV
+const char git_branch[] = PIO_SRC_REV;
+#else 
+const char git_branch[] = "wip";
+#endif
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "TU001";
+//const char *LoggerID = "TU001";
+const char *LoggerID = LOGGERID_DEF_STR;
+const char *configIniID_def = configIniID_DEF_STR;  
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
+
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
 // Your logger's timezone.
-const int8_t timeZone = -8;  // Eastern Standard Time
+int8_t timeZone = CONFIG_TIME_ZONE_DEF; 
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 
@@ -120,8 +131,6 @@ const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection
-
 const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi, unnecessary for gprs
@@ -251,6 +260,12 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
+// ==========================================================================
+//     Local storage - evolving
+// ==========================================================================
+#ifdef USE_MS_SD_INI
+ persistent_store_t ps;
+#endif //#define USE_MS_SD_INI
 
 // ==========================================================================
 //     The Logger Object[s]
@@ -265,8 +280,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
-const char *registrationToken = "registrationToken_UUID";   // Device registration token
-const char *samplingFeature = "samplingFeature_UUID";     // Sampling feature UUID
+const char *registrationToken = registrationToken_UUID;   // Device registration token
+const char *samplingFeature = samplingFeature_UUID;     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
@@ -276,6 +291,8 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient, registrationTo
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
+#define SerialStd Serial
+#include "iniHandler.h"
 
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
