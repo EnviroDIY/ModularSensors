@@ -18,21 +18,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>  // The base Arduino library
 // Local default defitions here
 
-// FUT: Some board level would be in a per board level persistent storage - eg FLASH
-// These are either pre .ini read or per board defintions
-#define MFsn_def  F("unknown")
-
-
-
-
-//Required for TinyGsmClient.h - select one
-#define TINY_GSM_MODEM_XBEE
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
-// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-// End TinyGsmClient.h options
-
-
 //**************************************************************************
 //This configuration is for a standard Mayfly0.bb
 // Not expected to be used as softserial stopped working
@@ -78,6 +63,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Maximum logging setting allowed
 #define  loggingInterval_MAX_CDEF_MIN 6*60
 
+
+// FUT: Some board level would be in a per board level persistent storage - eg FLASH
+// These are either pre .ini read or per board defintions
+#define MFsn_def  F("unknown")
+
+//Required for TinyGsmClient.h - select one
+#define TINY_GSM_MODEM_XBEE
+// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+// End TinyGsmClient.h options
 //define one  _Module
 #define DigiXBeeWifi_Module 1
 #warning infoMayflyWithDigiXBeeWiFi
@@ -101,6 +97,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //Defaults for data.envirodiy.org
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
+
+//#define Decagon_CTD_UUID 1
+#ifdef Decagon_CTD_UUID
+  //#define CONFIG_SENSOR_RS485_PHY 1
+  //Mayfly definitions
+  //#define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
+  //#define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
+  #define CTD10_DEPTH_UUID "CTD10_DEPTH_UUID"
+  #define CTD10_TEMP_UUID  "CTD10_TEMP_UUID"
+  #define CTD10_COND_UUID  "CTD10_COND_UUID"  
+#endif // KellerNanolevel_ACT
+
 //#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
@@ -110,11 +118,20 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
 #endif // KellerNanolevel_ACT
+
 //#define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
   #define INA219M_MA_UUID      "INA219_MA_UUID"
   #define INA219M_VOLT_UUID    "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
+
+
+//#define ASONG_AM23XX_UUID 1
+#if defined ASONG_AM23XX_UUID
+  #define ASONG_AM23_Air_Temperature_UUID  "Air_Temperature_UUID" 
+  #define ASONG_AM23_Air_TemperatureF_UUID "Air_TemperatureF_UUID"   
+  #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
+#endif // ASONG_AM23XX_UUID
 
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #define MaximDS3231_Temp_UUID       "MaximDS3231_Temp_UUID"

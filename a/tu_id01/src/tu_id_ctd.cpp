@@ -129,6 +129,7 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 const int8_t modemResetPin = 20;    // MCU pin connected to modem reset pin (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
+const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Network connection information
 const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
@@ -179,7 +180,8 @@ DigiXBeeWifi modemPhy = modemXBWF;
 const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3NumberReadings = 10;
 const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-
+#endif //0
+#if defined Decagon_CTD_UUID
 // ==========================================================================
 //    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
@@ -191,9 +193,26 @@ const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
 // Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
-#endif //0
+DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
+#endif //ecagon_CTD_UUID
 
+#if defined(ASONG_AM23XX_UUID)
+// ==========================================================================
+//    AOSong AM2315 Digital Humidity and Temperature Sensor
+// ==========================================================================
+#include <sensors/AOSongAM2315.h>
+
+// const int8_t I2CPower = 1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+
+// Create an AOSong AM2315 sensor object
+// Data sheets says AM2315 and AM2320 have same address 0xB8 (8bit addr) of 1011 1000 or 7bit 0x5c=0101 1100 
+// AM2320 AM2315 address 0x5C
+AOSongAM2315 am23xx(I2CPower);
+
+// Create humidity and temperature variable pointers for the AM2315
+// Variable *am2315Humid = new AOSongAM2315_Humidity(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *am2315Temp = new AOSongAM2315_Temp(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
+#endif //ASONG_AM23XX_UUID
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -241,14 +260,23 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard, "SampleNumber_UUID"),
+    new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
+    new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+    new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
+    #if defined Decagon_CTD_UUID 
+    new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
+    new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
+    #endif //Decagon_CTD_UUID
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ProcessorStats_Battery(&mcuBoard, "Batt_UUID"),
-    new MaximDS3231_Temp(&ds3231, "MaximDS3231_Temp_UUID"),
+    #if defined(ASONG_AM23XX_UUID)
+    //new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
+    //ASONG_AM23_Air_TemperatureF_UUID
+    #endif // ASONG_AM23XX_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     //new Modem_SignalPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 };
@@ -364,6 +392,7 @@ void setup()
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
+    //not in this scope Wire.begin();
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -373,15 +402,23 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
-    modemPhy.setModemLED(modemLEDPin);
+    //modemPhy.setModemLED(modemLEDPin);
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
+#ifdef USE_MS_SD_INI
+    //Set up SD card access
+    Serial.println(F("---parseIni "));
+    dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
+    Serial.println(F("\n\n---parseIni complete "));
+#endif //USE_MS_SD_INI
+
     // Begin the logger
+    MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
 
-
+    MS_DBG(F("---getBatteryVoltage "));
     float batteryV = getBatteryVoltage(); //Get once
 
     // Sync the clock if it isn't valid and we have battery to spare
