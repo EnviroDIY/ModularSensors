@@ -80,7 +80,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
-
+#if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
+#define UseModem_Module 1
+#endif // Modules
 //end of _Module
 
   #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi

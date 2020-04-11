@@ -619,7 +619,7 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 }
 DateTime Logger::dtFromEpochT0(uint32_t epochTimeT0)
 {
-    DateTime dt(epochTimeT0);
+    DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
     return dt;
 }
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -673,7 +673,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
 String Logger::formatDateTime_ISO8601(uint32_t epochTimeTz)
 {
     // Create a DateTime object from the epochTime
-    DateTime dtTz(epochTimeTz);
+    DateTime dtTz(epochTimeTz-EPOCH_TIME_OFF); //DateTime is from Year 2000
     //MS_DBG("dtTz ",dtTz.year(),"/",dtTz.month(),"/",dtTz.date()," ",dtTz.hour(),":",dtTz.minute(),":",dtTz.second());
     return formatDateTime_ISO8601(dtTz);
 }
@@ -698,6 +698,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // Only works for ARM CC if long, AVR was uint32_t
     uint32_t nistTz_sec = UTCEpochSeconds+ ((int32_t)getTZOffset())*3600;
     MS_DBG(F("    NIST Time:"), UTCEpochSeconds, \
+        F("Tz="), getTZOffset(),
         F("->"), formatDateTime_ISO8601(nistTz_sec));
 
     // Check the current RTC time

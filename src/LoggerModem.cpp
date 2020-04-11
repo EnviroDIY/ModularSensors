@@ -532,7 +532,7 @@ int16_t loggerModem::getPctFromRSSI(int16_t rssi)
 }
 
 
-
+// Return EPOCH time
 uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
 {
     // Response is returned as 32-bit number as soon as connection is made
@@ -557,12 +557,16 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
     uint32_t unixTimeStamp = secFrom1900 - 2208988800;
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
     // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-    if (unixTimeStamp < 1546300800)
+    #define EPOCH_LOWER_RANGE_SEC 1546300800
+    #define EPOCH_UPPER_RANGE_SEC 1893456000
+    if (unixTimeStamp < EPOCH_LOWER_RANGE_SEC)
     {
+        MS_DBG(F("Invalid Time less than :"), EPOCH_LOWER_RANGE_SEC);
         return 0;
     }
     else if (unixTimeStamp > 1893456000)
     {
+        MS_DBG(F("Invalid Time greater than :"), EPOCH_UPPER_RANGE_SEC);
         return 0;
     }
     else

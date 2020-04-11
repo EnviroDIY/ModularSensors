@@ -262,7 +262,7 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
-    new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
+    //new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
     #if defined Decagon_CTD_UUID 
     new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
@@ -313,8 +313,8 @@ const char *samplingFeature = samplingFeature_UUID;     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient, registrationToken, samplingFeature);
-
+//EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
 
 // ==========================================================================
 //    Working Functions
@@ -362,11 +362,10 @@ void setup()
     Serial.begin(serialBaud);
 
     // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
+    Serial.print(F("Now running '"));
     Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
+    Serial.print(F("' on Logger "));
     Serial.println(LoggerID);
-    Serial.println();
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
@@ -415,7 +414,10 @@ void setup()
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
-
+    #if defined UseModem_Module
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    #endif // UseModem_Module
+    
     // Note:  Please change these battery voltages to match your battery
 
     MS_DBG(F("---getBatteryVoltage "));
