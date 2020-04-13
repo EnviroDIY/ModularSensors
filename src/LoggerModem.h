@@ -99,6 +99,13 @@ public:
     // This gets all of the above at once
     virtual bool updateModemMetadata(void);
 
+    //By default modem metadata won't be polled. Call this to enable.
+    #define POLL_MODEM_META_DATA_ON 0x80
+    void pollModemMetadata(uint8_t status= POLL_MODEM_META_DATA_ON);
+    #if not defined SENSOR_DEFAULT
+       #define  SENSOR_DEFAULT -1
+    #endif //SENSOR_DEFAULT
+
     // These functions simply return the stored values
     // NOTE:  These must be static so that the modem variables can call them.
     // (Non-static member functions cannot be called without an object.)
@@ -158,6 +165,7 @@ protected:
     // NOTE:  These must be static so that the modem variables can call the
     // member functions that return them.  (Non-static member functions cannot
     // be called without an object.)
+    static bool _pollModemMetaData;
     static int16_t _priorRSSI;
     static int16_t _priorSignalPercent;
     static float _priorModemTemp;

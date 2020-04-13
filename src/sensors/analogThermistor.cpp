@@ -155,7 +155,7 @@ bool analogThermistor::addSingleMeasurementResult(void){
 
     // Calculate R relative to R1 - 75000  ~ ThermistorR is series with R= 75K, and same Vcc
     // Vref could be Vcc/2   - Vthermistor+Vr = Vcc
-
+#warning - should the followinb be used bitRead(_sensorStatus, 6)
     //Rthermistor = Vth/Vref*75000  - where for raw ADC  ADCth/(ADCrange-ADCth)*75000 (ohms)  
     //T(c)+273.15		1 / (0.0008746904041902967 + 0.0002532755006290475 * logR + 1.877479431169023e-7 * logR * logR * logR)		
     #define THERMISTOR_ADC_RANGE 1024

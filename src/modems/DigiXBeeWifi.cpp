@@ -416,16 +416,19 @@ bool DigiXBeeWifi::updateModemMetadata(void)
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI = -9999;
-    loggerModem::_priorSignalPercent = -9999;
-    loggerModem::_priorBatteryState = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp = -9999;
+    loggerModem::_priorRSSI = SENSOR_DEFAULT;
+    loggerModem::_priorSignalPercent = SENSOR_DEFAULT;;
+    //loggerModem::_priorBatteryState = -9999;
+    //loggerModem::_priorBatteryPercent = -9999;
+    //loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp = SENSOR_DEFAULT;
 
     // Initialize variable
-    int16_t signalQual = -9999;
-    uint16_t volt = 9999;
+    int16_t signalQual = SENSOR_DEFAULT;;
+    uint16_t volt = SENSOR_DEFAULT;;
+
+    //if not enabled don't collect data
+    if (!loggerModem::_pollModemMetaData) return false;
 
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode:"));

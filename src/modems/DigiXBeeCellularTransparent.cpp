@@ -317,7 +317,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
 
         /* This is the IP address of time-e-wwv.nist.gov  */
         /* XBee's address lookup falters on time.nist.gov */
-        IPAddress ip(132, 163, 97, 6);
+        IPAddress ip(132, 163, 97, 1);
         connectionMade = gsmClient.connect(ip, 37, 15);
         /* Wait again so NIST doesn't refuse us! */
         delay(4000L);
@@ -360,15 +360,18 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI = -9999;
-    loggerModem::_priorSignalPercent = -9999;
-    loggerModem::_priorBatteryState = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp = -9999;
+    loggerModem::_priorRSSI = SENSOR_DEFAULT;
+    loggerModem::_priorSignalPercent =SENSOR_DEFAULT;
+    //loggerModem::_priorBatteryState = SENSOR_DEFAULT;
+    //loggerModem::_priorBatteryPercent = SENSOR_DEFAULT;
+    //loggerModem::_priorBatteryPercent = SENSOR_DEFAULT;
+    loggerModem::_priorModemTemp = SENSOR_DEFAULT;
 
     // Initialize variable
-    int16_t signalQual = -9999;
+    int16_t signalQual = SENSOR_DEFAULT;
+
+    //if not enabled don't collect data
+    if (!loggerModem::_pollModemMetaData) return false;
 
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode:"));

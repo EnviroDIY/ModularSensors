@@ -75,10 +75,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // End TinyGsmClient.h options
 //define one  _Module
-#define DigiXBeeWifi_Module 1
-#warning infoMayflyWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
-//#warning infoMayflyWithDigiXBeeCellTransparent
+//#define DigiXBeeWifi_Module 1
+//#warning infoMayflyWithDigiXBeeWiFi
+#define DigiXBeeCellularTransparent_Module 1
+#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
 #define UseModem_Module 1

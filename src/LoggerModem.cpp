@@ -11,6 +11,7 @@
 #include "LoggerModem.h"
 
 // Initialize the static members
+bool loggerModem::_pollModemMetaData=false;
 int16_t loggerModem::_priorRSSI = -9999;
 int16_t loggerModem::_priorSignalPercent = -9999;
 float loggerModem::_priorModemTemp = -9999;
@@ -374,7 +375,11 @@ void loggerModem::setModemPinModes(void)
     #endif //POWERPIN_ALLPINS_OFF    
 }
 
-
+void loggerModem::pollModemMetadata(uint8_t status) {
+    if (POLL_MODEM_META_DATA_ON & status) {
+        _pollModemMetaData = true;
+    }
+}
 bool loggerModem::updateModemMetadata(void)
 {
     bool success = true;
