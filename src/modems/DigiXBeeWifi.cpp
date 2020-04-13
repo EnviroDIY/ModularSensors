@@ -292,19 +292,21 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
 
         /* This is the IP address of time-e-wwv.nist.gov  */
         /* If it fails options here https://tf.nist.gov/tf-cgi/servers.cgi */
-        //gsmclient.ip("time.nist.gov");
+        /* Uses "TIME" protocol on port 37 NIST: This protocol is very expensive in terms of network bandwidth, since it uses the complete tcp machinery to transmit only 32 bits of data. Users are *strongly* encouraged to upgrade to the network time protocol (NTP), which is both more accurate and more robust.*/
+        #define TIME_PROTOCOL_PORT 37
         #define IP_STR_LEN 18
         const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {{"132,163, 97, 1"},{"132, 163, 97, 2"},{"132, 163, 97, 3"},{"132, 163, 97, 4"}} ;
         IPAddress ip1(132,163,97,1); //Initialize
         gsmModem.sendAT(F("LAtime.nist.gov"));
-        index = gsmModem.waitResponse(1000,nistIpStr);
+        index = gsmModem.waitResponse(4000,nistIpStr);
         nistIpStr.trim();
-        if ((nistIpStr == "") || (nistIpStr == GF("ERROR")) || (nistIpStr.length() >6) ) {
+        uint16_t nistIp_len =nistIpStr.length();
+        if ( (nistIp_len <7) || (nistIp_len>20)) {
             ip1.fromString(ipAddr[i]);
-            MS_DBG(F("Bad lookup"),nistIpStr,"'=",nistIpStr.length(), F(" Using "),ipAddr[i]);
+            MS_DBG(F("Bad lookup"),nistIpStr,"'=",nistIp_len, F(" Using "),ipAddr[i]);
         } else {
             ip1.fromString(nistIpStr);
-            MS_DBG(F("Good lookup mdmIP["),i,"/",MDM_LP_IPMAX,F("] '"),nistIpStr,"'=",nistIpStr.length());
+            MS_DBG(F("Good lookup mdmIP["),i,"/",NIST_SERVER_RETRYS,F("] '"),nistIpStr,"'=",nistIp_len);
         }
 
 
@@ -312,16 +314,16 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
         //connectionMade = gsmClient.connect(ipAddr[i], 37);
         //IPAddress ip[NIST_SERVER_RETRYS] ={(132, 163, 97, 6),(132, 163, 97, 6),(132, 163, 97, 6),(132, 163, 97, 6) };
 
-        connectionMade = gsmClient.connect(ip1, 37);
+        connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT);
 
         // delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
 
         /* Wait up to 5 seconds for a response */
         if (connectionMade)
         {
-            uint32_t start = millis();
             /* Slight delay Wait again so NIST doesn't refuse us! */
             delay((i+1)*100L);
+            uint32_t start = millis();
             /* Need to send something before connection is made */
             gsmClient.println('!');
             while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)

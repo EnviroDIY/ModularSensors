@@ -206,7 +206,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
                 //String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
                 //ui_op += " Cell Scan "+ui_scan;
                 PRINTOUT(ui_op);
-                if (100 == loops) {
+                if (50 == loops) {
                     /*Not clear why this may force a registration
                     Early experience with Hologram SIMs was they aren't registering,
                     However throwing this in, might do something or maybe just coincedence that it started working after this
@@ -299,35 +299,57 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
         MS_DBG(F("No internet connection, cannot connect to NIST."));
         return 0;
     }
-
+    #if !defined NIST_SERVER_RETRYS
+    #define NIST_SERVER_RETRYS 4
+    #endif //NIST_SERVER_RETRYS
+    String nistIpStr;
+    uint8_t index=0;
     /* Try up to 12 times to get a timestamp from NIST */
-    for (uint8_t i = 0; i < 12; i++)
+    for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++)
     {
 
         /* Must ensure that we do not ping the daylight more than once every 4 seconds */
         /* NIST clearly specifies here that this is a requirement for all software */
         /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+        /* Uses "TIME" protocol on port 37 NIST: This protocol is very expensive in terms of network bandwidth, since it uses the complete tcp machinery to transmit only 32 bits of data. Users are *strongly* encouraged to upgrade to the network time protocol (NTP), which is both more accurate and more robust.*/
+        #define TIME_PROTOCOL_PORT 37
         while (millis() < _lastNISTrequest + 4000)
         {
         }
 
         /* Make TCP connection */
-        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        MS_DBG(F("\nConnecting to NIST daytime Server @"),millis());
         bool connectionMade = false;
 
         /* This is the IP address of time-e-wwv.nist.gov  */
         /* XBee's address lookup falters on time.nist.gov */
-        IPAddress ip(132, 163, 97, 1);
-        connectionMade = gsmClient.connect(ip, 37, 15);
-        /* Wait again so NIST doesn't refuse us! */
-        delay(4000L);
-        /* Try sending something to ensure connection */
-        gsmClient.println('!');
+        #define IP_STR_LEN 18
+        const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {{"132,163, 97, 1"},{"132, 163, 97, 2"},{"132, 163, 97, 3"},{"132, 163, 97, 4"}} ;
+        IPAddress ip1(132,163,97,1); //Initialize
+        gsmModem.sendAT(F("LAtime.nist.gov"));
+        index = gsmModem.waitResponse(4000,nistIpStr);
+        nistIpStr.trim();
+        uint16_t nistIp_len =nistIpStr.length();
+        if ( (nistIp_len <7)  || (nistIp_len>20)) {
+            ip1.fromString(ipAddr[i]);
+            MS_DBG(F("Bad lookup"),nistIpStr,"'=",nistIp_len, F(" Using "),ipAddr[i]);
+        } else {
+            ip1.fromString(nistIpStr);
+            MS_DBG(F("Good lookup mdmIP["),i,"/",NIST_SERVER_RETRYS,F("] '"),nistIpStr,"'=",nistIp_len);
+        }
+
+        connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT, 15);
+
 
         /* Wait up to 5 seconds for a response */
         if (connectionMade)
         {
+            /* Wait so port can be opened! */
+            delay((i+1)*100L);
             uint32_t start = millis();
+            /* Try sending something to ensure connection */
+            gsmClient.println('!');
+
             while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)
             {
             }
