@@ -309,19 +309,12 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
             MS_DBG(F("Good lookup mdmIP["),i,"/",NIST_SERVER_RETRYS,F("] '"),nistIpStr,"'=",nistIp_len);
         }
 
-
-        //const char *address ="132, 163, 97, 6";
-        //connectionMade = gsmClient.connect(ipAddr[i], 37);
-        //IPAddress ip[NIST_SERVER_RETRYS] ={(132, 163, 97, 6),(132, 163, 97, 6),(132, 163, 97, 6),(132, 163, 97, 6) };
-
         connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT);
-
-        // delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
 
         /* Wait up to 5 seconds for a response */
         if (connectionMade)
         {
-            /* Slight delay Wait again so NIST doesn't refuse us! */
+            //* Wait so port can be opened! */
             delay((i+1)*100L);
             uint32_t start = millis();
             /* Need to send something before connection is made */

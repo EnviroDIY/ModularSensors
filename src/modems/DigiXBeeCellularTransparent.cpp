@@ -322,7 +322,9 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
         bool connectionMade = false;
 
         /* This is the IP address of time-e-wwv.nist.gov  */
-        /* XBee's address lookup falters on time.nist.gov */
+        /* If it fails, options here https://tf.nist.gov/tf-cgi/servers.cgi */
+        /* Uses "TIME" protocol on port 37 NIST: This protocol is expensive, since it uses the complete tcp machinery to transmit only 32 bits of data. 
+          FUTURE Users are *strongly* encouraged to upgrade to the network time protocol (NTP), which is both more accurate and more robust.*/        
         #define IP_STR_LEN 18
         const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {{"132,163, 97, 1"},{"132, 163, 97, 2"},{"132, 163, 97, 3"},{"132, 163, 97, 4"}} ;
         IPAddress ip1(132,163,97,1); //Initialize
@@ -339,7 +341,6 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
         }
 
         connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT, 15);
-
 
         /* Wait up to 5 seconds for a response */
         if (connectionMade)
