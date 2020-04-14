@@ -75,10 +75,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // End TinyGsmClient.h options
 //define one  _Module
-//#define DigiXBeeWifi_Module 1
-//#warning infoMayflyWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
-#warning infoMayflyWithDigiXBeeCellTransparent
+#define DigiXBeeWifi_Module 1
+#warning infoMayflyWithDigiXBeeWiFi
+//#define DigiXBeeCellularTransparent_Module 1
+//#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
 #define UseModem_Module 1
@@ -100,7 +100,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
 
-//#define Decagon_CTD_UUID 1
+#define Decagon_CTD_UUID 1
 #ifdef Decagon_CTD_UUID
   //#define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
@@ -136,7 +136,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif // ASONG_AM23XX_UUID
 
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
-#define MaximDS3231_Temp_UUID       "MaximDS3231_Temp_UUID"
+#define MaximDS3231_TEMP_UUID  "MaximDS3231_TEMP_UUID"
+#define MaximDS3231_TEMPF_UUID "MaximDS3231_TEMPF_UUID"
 #endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
 //#define Modem_RSSI_UUID ""
 // Seems to cause XBEE WiFi S6 to crash
@@ -145,7 +146,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
 
-#define ExternalVoltage_ACT 1
+//#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
   #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
   //#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"

@@ -256,6 +256,79 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 #endif //0
 
 // ==========================================================================
+// Units conversion functions
+// ==========================================================================
+#define SENSOR_UNINIT -9999
+float convertDegCtoF(float tempInput)
+{ // Simple deg C to deg F conversion
+    if (SENSOR_UNINIT == tempInput) return SENSOR_UNINIT; 
+    return tempInput * 1.8 + 32;
+}
+
+float convertMmtoIn(float mmInput)
+{ // Simple millimeters to inches conversion
+    if (SENSOR_UNINIT == mmInput) return SENSOR_UNINIT; 
+    return mmInput / 25.4;
+}
+// ==========================================================================
+// Creating Variable objects for those values for which we're reporting in converted units, via calculated variables
+// Based on baro_rho_correction.ino and VariableBase.h from enviroDIY.
+// ==========================================================================
+#if defined Decagon_CTD_UUID
+// Create a temperature variable pointer for the Decagon CTD
+Variable *CTDTempC = new DecagonCTD_Temp(&ctdPhy, "NotUsed");
+float CTDTempFgetValue(void)
+{ // Convert temp for the CTD
+    return convertDegCtoF(CTDTempC->getValue());
+}
+// Create the calculated water temperature Variable object and return a pointer to it
+Variable *CTDTempFcalc = new Variable(
+    CTDTempFgetValue,              // function that does the calculation
+    1,                          // resolution
+    "temperatureSensor",        // var name. This must be a value from http://vocabulary.odm2.org/variablename/
+    "degreeFahrenheit",         // var unit. This must be a value from This must be a value from http://vocabulary.odm2.org/units/
+    "TempInF",                  // var code
+    CTD10_TEMP_UUID);
+
+// Create a depth variable pointer for the Decagon CTD
+Variable *CTDDepthMm = new DecagonCTD_Depth(&ctdPhy,"NotUsed");
+float CTDDepthInGetValue(void)
+{ // Convert depth for the CTD
+    // Pass true to getValue() for the Variables for which we're only sending a calculated version
+    // of the sensor reading; this forces the sensor to take a reading when getValue is called.
+    return convertMmtoIn(CTDDepthMm->getValue(true));
+}
+// Create the calculated depth Variable object and return a pointer to it
+Variable *CTDDepthInCalc = new Variable(
+    CTDDepthInGetValue,            // function that does the calculation
+    1,                          // resolution
+    "CTDdepth",                 // var name. This must be a value from http://vocabulary.odm2.org/variablename/
+    "Inch",                     // var unit. This must be a value from This must be a value from http://vocabulary.odm2.org/units/
+    "waterDepth",               // var code
+    CTD10_DEPTH_UUID);
+#endif //Decagon_CTD_UUID
+
+#if defined MaximDS3231_TEMP_UUID
+// Create a temperature variable pointer for the DS3231
+Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231,MaximDS3231_TEMP_UUID);
+float ds3231TempFgetValue(void)
+{ // Convert temp for the DS3231
+    // Pass true to getValue() for the Variables for which we're only sending a calculated version
+    // of the sensor reading; this forces the sensor to take a reading when getValue is called.
+    return convertDegCtoF(ds3231TempC->getValue(true));
+}
+// Create the calculated Mayfly temperature Variable object and return a pointer to it
+Variable *ds3231TempFcalc = new Variable(
+    ds3231TempFgetValue,      // function that does the calculation
+    1,                          // resolution
+    "temperatureDatalogger",    // var name. This must be a value from http://vocabulary.odm2.org/variablename/
+    "degreeFahrenheit",         // var unit. This must be a value from http://vocabulary.odm2.org/units/
+    "TempInF",                  // var code
+    MaximDS3231_TEMPF_UUID);
+#endif // MaximDS3231_Temp_UUID
+
+
+// ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 
@@ -264,8 +337,10 @@ Variable *variableList[] = {
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
     //new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
     #if defined Decagon_CTD_UUID 
-    new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
-    new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
+    //new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
+    CTDDepthInCalc,
+    //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
+    CTDTempFcalc,
     #endif //Decagon_CTD_UUID
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -273,12 +348,19 @@ Variable *variableList[] = {
     //new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
     #if defined(ASONG_AM23XX_UUID)
-    //new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
     new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
     //ASONG_AM23_Air_TemperatureF_UUID
+    //calcAM2315_TempF
     #endif // ASONG_AM23XX_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     //new Modem_SignalPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+    #if defined(MaximDS3231_TEMP_UUID)
+    //new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
+    ds3231TempC,
+    ds3231TempFcalc,
+    #endif //MaximDS3231_Temp_UUID
+
 };
 
 
@@ -360,18 +442,24 @@ void setup()
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-
+    Serial.print(F("\n---Boot. Build date: ")); 
+    Serial.print(build_date);
     // Print a start-up note to the first serial port
-    Serial.print(F("Now running '"));
+    Serial.print(F(" '"));
     Serial.print(sketchName);
+    Serial.print(" ");
+    Serial.println(git_branch);
     Serial.print(F("' on Logger "));
     Serial.println(LoggerID);
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+#if defined UseModem_Module
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
-    Serial.println();
+#else 
+    Serial.print(F("TinyGSM - none"));
+#endif
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h

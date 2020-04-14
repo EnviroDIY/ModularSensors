@@ -110,11 +110,13 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         SerialStd.print(":");
         SerialStd.print(name);
         SerialStd.print(F("={"));
-        SerialStd.print(value);        
+        SerialStd.print(value);
         do {
+            MS_DEEP_DBG(F(" ["),uuid_search_i,F("]"),variableList[uuid_search_i]->getVarUUID().c_str(),"#" ); 
             if (strcmp((const char *)variableList[uuid_search_i]->getVarUUID().c_str(),name)==0) 
             {//Found a match
                 variableList[uuid_search_i]->setVarUUID_atl((char *)value,true);
+                MS_DEEP_DBG(F("set"),name,F(" for ["),uuid_search_i,F("]"),variableList[uuid_search_i]->getVarUUID().c_str());
                 uuid_search_i=variableCount;
             }
             uuid_search_i++;
@@ -136,7 +138,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         } else 
         {
             //SerialStd.println();
-            SerialStd.println(F(" UUID not supported"));
+            SerialStd.println(F("} UUID not supported"));
             //SerialStd.print(name);
             //SerialStd.print("=");
             //SerialStd.println(value);

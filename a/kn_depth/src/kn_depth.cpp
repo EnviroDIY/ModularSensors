@@ -1941,6 +1941,16 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
+
+    SerialStd.print(F("\nUsing ModularSensors Library version "));
+    SerialStd.println(MODULAR_SENSORS_VERSION);
+#if defined UseModem_Module
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
+#else 
+    Serial.print(F("TinyGSM - none"));
+#endif
+
     neoPixelPhy.begin();
     UiStatus(0);
 
@@ -1972,14 +1982,7 @@ void setup()
     SerialStd.print(mcuBoard.getBatteryVm1(false));        
     /////// Measured LiIon voltage is good enough to start up
     //UiStatus(1);
-    SerialStd.print(F("\nUsing ModularSensors Library version "));
-    SerialStd.println(MODULAR_SENSORS_VERSION);
-#if defined UseModem_Module
-    Serial.print(F("TinyGSM Library version "));
-    Serial.println(TINYGSM_VERSION);
-#else 
-    Serial.print(F("TinyGSM - none"));
-#endif
+
     Wire.begin();
 
     #if defined HwFeatherWing_B031ALL  
