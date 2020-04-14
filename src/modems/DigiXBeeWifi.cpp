@@ -291,8 +291,9 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
         bool connectionMade = false;
 
         /* This is the IP address of time-e-wwv.nist.gov  */
-        /* If it fails options here https://tf.nist.gov/tf-cgi/servers.cgi */
-        /* Uses "TIME" protocol on port 37 NIST: This protocol is very expensive in terms of network bandwidth, since it uses the complete tcp machinery to transmit only 32 bits of data. Users are *strongly* encouraged to upgrade to the network time protocol (NTP), which is both more accurate and more robust.*/
+        /* If it fails, options here https://tf.nist.gov/tf-cgi/servers.cgi */
+        /* Uses "TIME" protocol on port 37 NIST: This protocol is expensive, since it uses the complete tcp machinery to transmit only 32 bits of data. 
+          FUTURE Users are *strongly* encouraged to upgrade to the network time protocol (NTP), which is both more accurate and more robust.*/
         #define TIME_PROTOCOL_PORT 37
         #define IP_STR_LEN 18
         const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {{"132,163, 97, 1"},{"132, 163, 97, 2"},{"132, 163, 97, 3"},{"132, 163, 97, 4"}} ;
