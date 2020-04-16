@@ -556,6 +556,7 @@ float getBatteryVoltage()
 
 // Manages the Modbus Physical Pins.
 // Pins pulled high when powered off will cause a ghost power leakage. -
+#if defined KellerXxxLevel_ACT
 void modbusPinPowerMng(bool status) {
     MS_DBG(F("  **** modbusPinPower"), status);
     #if 1
@@ -566,7 +567,7 @@ void modbusPinPowerMng(bool status) {
     }
     #endif
 }
-
+#endif //KellerXxxLevel_ACT
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -692,8 +693,9 @@ void setup()
     // all sensor names correct
     // Writing to the SD card can be power intensive, so if we're skipping
     // the sensor setup we'll skip this too.
-
+    #if defined KellerNanolevel_ACT
     nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
+    #endif //
     Serial.println(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true); // true = write a new header

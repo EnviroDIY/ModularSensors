@@ -111,7 +111,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define CTD10_COND_UUID  "CTD10_COND_UUID"  
 #endif // KellerNanolevel_ACT
 
-#define KellerNanolevel_ACT 1
+//#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
