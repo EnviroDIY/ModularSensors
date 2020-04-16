@@ -1267,8 +1267,16 @@ void Logger::testingMode() {
     PRINTOUT(F("Entering sensor testing mode"));
     delay(100);  // This seems to prevent crashes, no clue why ....
 
-    // Power up the modem
-    if (_logModem != NULL) _logModem->modemPowerUp();
+    // Get the modem ready
+    if (_logModem != NULL) {
+        _logModem->modemPowerUp();
+        _logModem->modemWake();
+        // Connect to the network
+        watchDogTimer.resetWatchDog();
+        MS_DBG(F("Connecting to the Internet..."));
+        _logModem->connectInternet();
+        watchDogTimer.resetWatchDog();
+    }
 
     // Power up all of the sensors
     _internalArray->sensorsPowerUp();
@@ -1279,6 +1287,21 @@ void Logger::testingMode() {
     // Update the sensors and print out data 25 times
     for (uint8_t i = 0; i < 25; i++) {
         PRINTOUT(F("------------------------------------------"));
+
+        // Update the modem metadata
+        // NOTE:  the extra get signal quality is an annoying redundancy
+        // needed only for the wifi XBee.  Update metadata will also ask the
+        // module for current signal quality using the underlying TinyGSM
+        // getSignalQuality() function, but for the WiFi XBee it will not
+        // actually measure anything except by explicitly making a connection,
+        // which getModemSignalQuality() does.  For all of the other modules,
+        // getModemSignalQuality() is just a straigh pass-through to
+        // getSignalQuality().
+        if (_logModem->getModemName().indexOf(F("Digi XBee Wi-Fi")) >= 0) {
+            _logModem->getModemSignalQuality();
+        }
+        _logModem->updateModemMetadata();
+
         watchDogTimer.resetWatchDog();
         // Update the values from all attached sensors
         // NOTE:  NOT using complete update because we want everything left
@@ -1296,6 +1319,7 @@ void Logger::testingMode() {
         watchDogTimer.resetWatchDog();
 
         delay(5000);
+        watchDogTimer.resetWatchDog();
     }
 
     // Put sensors to sleep
@@ -1303,8 +1327,10 @@ void Logger::testingMode() {
     _internalArray->sensorsPowerDown();
 
     // Turn the modem off
-    _logModem->disconnectInternet();
-    _logModem->modemSleepPowerDown();
+    if (_logModem != NULL) {
+        _logModem->disconnectInternet();
+        _logModem->modemSleepPowerDown();
+    }
 
     PRINTOUT(F("Exiting testing mode"));
     PRINTOUT(F("------------------------------------------"));

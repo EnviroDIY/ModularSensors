@@ -112,7 +112,7 @@ void DigiXBeeWifi::disconnectInternet(void) {
 
 // Get the time from NIST via TIME protocol (rfc868)
 uint32_t DigiXBeeWifi::getNISTTime(void) {
-    /* bail if not connected to the internet */
+    // bail if not connected to the internet
     if (!isInternetAvailable()) {
         MS_DBG(F("No internet connection, cannot connect to NIST."));
         return 0;
@@ -120,7 +120,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
     gsmClient.stop();
 
-    /* Try up to 12 times to get a timestamp from NIST */
+    // Try up to 12 times to get a timestamp from NIST
     for (uint8_t i = 0; i < 12; i++) {
         // Must ensure that we do not ping the daylight more than once every 4
         // seconds.  NIST clearly specifies here that this is a requirement for
@@ -128,22 +128,22 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         // https://tf.nist.gov/tf-cgi/servers.cgi
         while (millis() < _lastNISTrequest + 4000) {}
 
-        /* Make TCP connection */
+        // Make TCP connection
         MS_DBG(F("\nConnecting to NIST daytime Server"));
         bool connectionMade = false;
 
-        /* This is the IP address of time-e-wwv.nist.gov  */
-        /* XBee's address lookup falters on time.nist.gov */
+        // This is the IP address of time-e-wwv.nist.gov
+        // XBee's address lookup falters on time.nist.gov
+        // NOTE:  This "connect" only sets up the connection parameters, the TCP
+        // socket isn't actually opened until we first send data (the '!' below)
         IPAddress ip(132, 163, 97, 6);
         connectionMade = gsmClient.connect(ip, 37);
-        /* Wait again so NIST doesn't refuse us! */
-        delay(4000L);
-        /* Need to send something before connection is made */
+        // Need to send something before connection is made
         gsmClient.println('!');
         // Need this delay!  Can get away with 50, but 100 is safer.
         // delay(100);
 
-        /* Wait up to 5 seconds for a response */
+        // Wait up to 5 seconds for a response
         if (connectionMade) {
             uint32_t start = millis();
             while (gsmClient && gsmClient.available() < 4 &&
@@ -175,30 +175,16 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t& rssi, int16_t& percent) {
     percent            = -9999;
     rssi               = -9999;
 
-    // The WiFi XBee needs to make an actual TCP connection and get some sort
-    // of response on that connection before it knows the signal quality.
-    // Connecting to the Google DNS servers - this doesn't really work
-    // MS_DBG(F("Opening connection to check connection strength..."));
-    // bool usedGoogle = false;
-    // if (!gsmModem.gotIPforSavedHost())
-    // {
-    //     usedGoogle = true;
-    //     IPAddress ip(8, 8, 8, 8);  // This is one of Google's IP's
-    //     gsmClient.stop();
-    //     success &= gsmClient.connect(ip, 80);
-    // }
-    // Need to send something before connection is made
-    // gsmClient.print('!');
-    // Need this delay!  Can get away with 50, but 100 is safer.
-    // delay(100);
-
+    // NOTE:  using Google doesn't work because there's no reply
     MS_DBG(F("Opening connection to NIST to check connection strength..."));
     // This is the IP address of time-c-g.nist.gov
     // XBee's address lookup falters on time.nist.gov
+    // NOTE:  This "connect" only sets up the connection parameters, the TCP
+    // socket isn't actually opened until we first send data (the '!' below)
     IPAddress ip(132, 163, 97, 6);
     gsmClient.connect(ip, 37);
-    // Wait again so NIST doesn't refuse us!
-    delay(4000L);
+    // Wait so NIST doesn't refuse us!
+    while (millis() < _lastNISTrequest + 4000) {}
     // Need to send something before connection is made
     gsmClient.println('!');
     delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.

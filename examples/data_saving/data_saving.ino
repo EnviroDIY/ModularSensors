@@ -594,6 +594,7 @@ void loop() {
                     loggerAllVars.watchDogTimer.resetWatchDog();
                     // Publish data to remotes
                     loggerToGo.publishDataToRemotes();
+                    modem.updateModemMetadata();
 
                     loggerAllVars.watchDogTimer.resetWatchDog();
                     // Sync the clock at midnight
