@@ -44,46 +44,202 @@
 // template <class Derived, typename modemType, typename modemClientType>
 class loggerModem {
  public:
-    // Constructor/Destructor
+    /**
+     * @brief Construct a new logger Modem object
+     *
+     * @param powerPin The digital pin number of the pin suppling power to the
+     * modem (active HIGH)
+     * @param statusPin The digital pin number of a pin indicating modem status
+     * @param statusLevel The level of the status pin (0/LOW or 1/HIGH) when the
+     * modem is active
+     * @param modemResetPin The digital pin number of a pin for hard or panic
+     * resets
+     * @param resetLevel The level on the modemResetPin which will reset the
+     * modem
+     * @param resetPulse_ms The length of time in ms required to reset the modem
+     * using a panic reset
+     * @param modemSleepRqPin The digital pin number of a pin used to request
+     * the modem enter its lowest possible power state
+     * @param wakeLevel The level the modemSleepRqPin should be set to to *wake*
+     * the modem
+     * @param wakePulse_ms The length of time the modemSleepRqPin should be held
+     * at the wakeLevel in order to wake the modem.  Set to 0 if the pin must be
+     * continuously held to the level to keep the modem at fully functional
+     * state.
+     * @param max_status_time_ms The maximum length of time in milliseconds
+     * between when power is supplied to the modem and when the statusPin should
+     * reach the statusLevel.
+     * @param max_disconnetTime_ms The maximum length of time in milliseconds
+     * between when the modem is requested to enter lowest power state and when
+     * it should have completed necessary steps to shut down.
+     * @param wakeDelayTime_ms The time in milliseconds between when power is
+     * supplied to the modem and when the wake function can be used to request
+     * the modem enter fully power operation.
+     * @param max_atresponse_time_ms The maximum length of time in milliseconds
+     * between when the modem has been requested to wake and when it begins
+     * responding to commands over the main serial connection.
+     */
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 int8_t modemResetPin, bool resetLevel, uint32_t resetPulse_ms,
                 int8_t modemSleepRqPin, bool wakeLevel, uint32_t wakePulse_ms,
                 uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                 uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms);
+
+    /**
+     * @brief Destroy the logger Modem object - no action taken
+     */
     virtual ~loggerModem();
 
-    // Sets an LED to turn on when the modem is on
+    /**
+     * @brief Sets an LED to turn on when the modem is on
+     *
+     * @param modemLEDPin the digital PIN number for the LED
+     */
     void setModemLED(int8_t modemLEDPin);
 
-    // Merely returns the modem name
+    /**
+     * @brief Merely returns the modem name
+     *
+     * @return String The modem name
+     */
     String getModemName(void);
 
-    // Sets up the modem before first use
+    /**
+     * @brief Sets up the modem before first use
+     *
+     * @return true Setup was successful
+     * @return false Setup was not successful
+     */
     virtual bool modemSetup(void);
-    bool         setup(void) {
+    /**
+     * @brief Sets up the modem before first use
+     * This is an overload only for backwards compatibility
+     *
+     * @return true Setup was successful
+     * @return false Setup was not successful
+     */
+    bool setup(void) {
         return modemSetup();
     }
+
+    /**
+     * @brief Does whatever is needed to prepare the modem to connect to the
+     * internet.  Includes powering up the modem if necessary.
+     *
+     * @return true Wake was sucessful, modem should be ready
+     * @return false Wake failed, modem is probably not able to communicate
+     */
     virtual bool modemWake(void) = 0;
-    bool         wake(void) {
+    /**
+     * @brief Does whatever is needed to prepare the modem to connect to the
+     * internet.  This is an overload for backwards compatibility.
+     *
+     * @return true Wake was sucessful, modem should be ready
+     * @return false Wake failed, modem is probably not able to communicate
+     */
+    bool wake(void) {
         return modemWake();
     }
 
-    // Note:  modemPowerDown() simply kills power, while modemSleepPowerDown()
-    // allows for graceful shut down.  You should use modemSleepPowerDown()
-    // whenever possible.
+    /**
+     * @brief sets whatever pin is defined for modem power in the constructor
+     * high
+     */
     virtual void modemPowerUp(void);
+    /**
+     * @brief sets whatever pin is defined for modem power in the constructor
+     * low.
+     *
+     * NOTE:  modemPowerDown() simply kills power, while modemSleepPowerDown()
+     * allows for graceful shut down.  You should use modemSleepPowerDown()
+     * whenever possible.
+     */
     virtual void modemPowerDown(void);
+    /**
+     * @brief requests that the modem enter its lowest possible power state
+     *
+     * @return true The modem has sucessfully entered low power state
+     * @return false The modem didn't enter low power state successfully
+     */
     virtual bool modemSleep(void);
+    /**
+     * @brief requests that the modem enter its lowest possible power state and
+     * then sets the power pin low after the modem has indicated successfully
+     * going to low power.
+     *
+     * @return true The modem has sucessfully entered low power state and then
+     * powered off
+     * @return false The modem didn't enter low power state successfully
+     */
     virtual bool modemSleepPowerDown(void);
+
+    /**
+     * @brief Uses the modem reset pin specified in the constructor to signal
+     * the modem for a "hard" or "panic" reset.
+     *
+     * This should only be used if the modem is clearly non-responsive.
+     *
+     * @return true The reset succeeded and the modem should now be responsive
+     * @return false The modem remains non-responsive either because the reset
+     * failed to fix the communication issue or because a reset is not possible
+     * with the current pin/modem configuration.
+     */
     virtual bool modemHardReset(void);
-    // Options to change pin levels from the "standard" for the modem
+
+
+    /**
+     * @brief Sets what pin level is to be expected when the on the modem status
+     * pin when the modem is active.
+     *
+     * If this function is not called, the modem status pin is assumed to
+     * exactly follow the hardware specifications for that modems raw cellular
+     * component.
+     *
+     * @param level The active level of the pin (0/LOW or 1/HIGH)
+     */
     void setModemStatusLevel(bool level);
+    /**
+     * @brief Set the pin level to be used to wake the modem.
+     *
+     * If this function is not called, the modem status pin is assumed to
+     * exactly follow the hardware specifications for that modems raw cellular
+     * component.
+     *
+     * @param level The pin level (0/LOW or 1/HIGH) of the pin while waking the
+     * modem.
+     */
     void setModemWakeLevel(bool level);
+    /**
+     * @brief Set the pin level to be used to reset the modem.
+     *
+     * If this function is not called, the modem status pin is assumed to
+     * exactly follow the hardware specifications for that modems raw cellular
+     * component - nearly always low.
+     *
+     * @param level The pin level (0/LOW or 1/HIGH) of the pin while resetting
+     * the modem.
+     */
     void setModemResetLevel(bool level);
 
-    // Access the internet
+    /**
+     * @brief Waits for the modem to successfully register on the cellular
+     * network and then requests that it establish either EPS or GPRS data
+     * connection.
+     *
+     * @param maxConnectionTime The maximum length of time in milliseconds to
+     * wait for network registration and data sconnection.  Defaults to 50,000ms
+     * (50s).
+     * @return true EPS or GPRS data connection has been established
+     * @return false The modem was either unable to communicated, unable to
+     * register with the cellular network, or unable to establish a EPS or GPRS
+     * connection.
+     */
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
-    virtual void disconnectInternet(void)                             = 0;
+    /**
+     * @brief Detatches from EPS or GPRS data connection and then deregisters
+     * from the cellular network.
+     */
+    virtual void disconnectInternet(void) = 0;
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
