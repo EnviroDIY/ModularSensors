@@ -121,13 +121,15 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // AltSoftSerial can only be used on one set of pins on each board so only one
 // AltSoftSerial port can be used.
 // Not all AVR boards are supported by AltSoftSerial.
+// AltSoftSerial is capable of running up to 31250 baud on 16 MHz AVR. Slower baud rates are recommended when other code may delay AltSoftSerial's interrupt response.
 #include <AltSoftSerial.h>
-AltSoftSerial altSoftSerial;
+AltSoftSerial altSoftSerialPhy;
 
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
 // Not all AVR boards are supported by NeoSWSerial.
+#if 0
 #include <NeoSWSerial.h>  // for the stream communication
 const int8_t neoSSerial1Rx = 11;     // data in pin
 const int8_t neoSSerial1Tx = -1;     // data out pin
@@ -138,7 +140,8 @@ void neoSSerial1ISR()
 {
     NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
 }
-
+#endif 
+#if 0 //Not used
 // The "standard" software serial library uses interrupts that conflict
 // with several other libraries used within this program, we must use a
 // version of software serial that has been stripped of interrupts.
@@ -148,6 +151,7 @@ const int8_t softSerialTx = A4;     // data out pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
+#endif
 #endif  // End software serial for avr boards
 // ==========================================================================
 //    Wifi/Cellular Modem Settings
@@ -156,7 +160,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// AltSoftSerial &modemSerial = altSoftSerialPhy;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 // Use this to create a modem if you want to monitor modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
@@ -254,7 +258,7 @@ DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 #if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
 HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
 #else
- AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
+ AltSoftSerial &modbusSerial = altSoftSerialPhy;  // For software serial if needed
  //NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
 #endif
 
@@ -550,6 +554,18 @@ float getBatteryVoltage()
     return mcuBoard.sensorValues[0];
 }
 
+// Manages the Modbus Physical Pins.
+// Pins pulled high when powered off will cause a ghost power leakage. -
+void modbusPinPowerMng(bool status) {
+    MS_DBG(F("  **** modbusPinPower"), status);
+    #if 1
+    if (status) {
+        modbusSerial.setupPhyPins();
+    } else {
+        modbusSerial.disablePhyPins();
+    }
+    #endif
+}
 
 // ==========================================================================
 // Main setup function
@@ -603,7 +619,7 @@ void setup()
     MS_DEEP_DBG("***modbusSerial.begin"); 
     delay(10);
     modbusSerial.begin(9600);
-
+    modbusPinPowerMng(false); //Turn off pins 
     #endif
 
     // Set up pins for the LED's
@@ -677,13 +693,14 @@ void setup()
     // Writing to the SD card can be power intensive, so if we're skipping
     // the sensor setup we'll skip this too.
 
+    nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
     Serial.println(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true); // true = write a new header
     dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
 
     //modbusSerial.setDebugStream(&Serial); not for AltSoftSerial or NeoSWserial
-    MS_DBG(F("Setup Complete ****\n\n"));
+    MS_DBG(F("\n\nSetup Complete ****"));
     // Call the processor sleep
     //Serial.println(F("processor to sleep\n"));
     //dataLogger.systemSleep();

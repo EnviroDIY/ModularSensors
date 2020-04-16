@@ -67,6 +67,9 @@ public:
     virtual void powerDown(void) override;
 
     virtual bool addSingleMeasurementResult(void);
+    void registerPinPowerMng(void (* fn)(bool));
+    //Pins that need to be managed during power On and Off events
+    void registerSerialPins(uint8_t txPin, uint8_t rxPin);
 
 private:
     keller sensor;
@@ -75,6 +78,9 @@ private:
     Stream* _stream;
     int8_t _RS485EnablePin;
     int8_t _powerPin2;
+    void (* _pinPowerMngFn)(bool) = nullptr;
+    uint8_t _txPin=-1; 
+    uint8_t _rxPin=-1;
 };
 
 #endif  // Header Guard

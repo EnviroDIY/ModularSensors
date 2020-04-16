@@ -76,7 +76,11 @@ bool KellerParent::setup(void)
 
     return retVal;
 }
-
+// Manage the pins that are used
+void KellerParent::registerPinPowerMng(void (* fn)(bool))
+{
+    _pinPowerMngFn =fn;
+}
 
 // This turns on sensor power
 void KellerParent::powerUp(void)
@@ -100,6 +104,9 @@ void KellerParent::powerUp(void)
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
     }
+    if (NULL != _pinPowerMngFn) {
+        (* _pinPowerMngFn) (true); // callback to turn on Modbus 
+    }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
 }
@@ -108,6 +115,9 @@ void KellerParent::powerUp(void)
 // This turns off sensor power
 void KellerParent::powerDown(void)
 {
+    if (NULL != _pinPowerMngFn) {
+        (* _pinPowerMngFn) (false); // callback to turn on Modbus 
+    }    
     if (_powerPin >= 0)
     {
         MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
