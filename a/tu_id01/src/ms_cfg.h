@@ -88,8 +88,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
   //#define WIFIID_CDEF  "NameSsid"  // The WiFi access point, unnecessary for gprs
   //#define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
-  #define WIFIID_CDEF  "Arthur2004Sid"  // The WiFi access point, unnecessary for gprs
-  #define WIFIPWD_CDEF  "LagunaGroup04Psk" // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+  #define WIFIID_CDEF  "xxx"  // The WiFi access point, unnecessary for gprs
+  #define WIFIPWD_CDEF  "yyy" // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
 //This might need revisiting
 #define ARD_ANLAOG_MULTIPLEX_PIN A6
@@ -119,6 +119,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+  #define KellerNanolevelModbusAddress_DEF 0x01
+  #define CONFIG_HW_RS485PHY_DIR_PIN -1 
+  #define max485EnablePin_DEF   -1  
+  #define rs485AdapterPower_DEF 22 // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+  #define modbusSensorPower_DEF 22;  // Pin to switch power on and off (-1 if unconnected) 
 #endif // KellerNanolevel_ACT
 
 //#define INA219M_PHY_ACT 1

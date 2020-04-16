@@ -102,7 +102,53 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
+// ==========================================================================
+//    Settings for Additional Serial Ports
+// ==========================================================================
 
+// The modem and a number of sensors communicate over UART/TTL - often called "serial".
+// "Hardware" serial ports (automatically controlled by the MCU) are generally
+// the most accurate and should be configured and used for as many peripherals
+// as possible.  In some cases (ie, modbus communication) many sensors can share
+// the same serial port.
+
+#if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)  // For AVR boards
+// Unfortunately, most AVR boards have only one or two hardware serial ports,
+// so we'll set up three types of extra software serial ports to use
+
+// AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
+// is the most accurate software serial port for AVR boards.
+// AltSoftSerial can only be used on one set of pins on each board so only one
+// AltSoftSerial port can be used.
+// Not all AVR boards are supported by AltSoftSerial.
+#include <AltSoftSerial.h>
+AltSoftSerial altSoftSerial;
+
+// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
+// serial that can be used on any pin supporting interrupts.
+// You can use as many instances of NeoSWSerial as you want.
+// Not all AVR boards are supported by NeoSWSerial.
+#include <NeoSWSerial.h>  // for the stream communication
+const int8_t neoSSerial1Rx = 11;     // data in pin
+const int8_t neoSSerial1Tx = -1;     // data out pin
+NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
+// To use NeoSWSerial in this library, we define a function to receive data
+// This is just a short-cut for later
+void neoSSerial1ISR()
+{
+    NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
+}
+
+// The "standard" software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts.
+// NOTE:  Only use if necessary.  This is not a very accurate serial port!
+const int8_t softSerialRx = A3;     // data in pin
+const int8_t softSerialTx = A4;     // data out pin
+
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
+#endif  // End software serial for avr boards
 // ==========================================================================
 //    Wifi/Cellular Modem Settings
 // ==========================================================================
@@ -196,6 +242,72 @@ const int8_t SDI12Data = 7;  // The SDI12 data pin
 DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 #endif //ecagon_CTD_UUID
 
+// ==========================================================================
+//    Keller Acculevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT)
+#define KellerXxxLevel_ACT 1
+//#include <sensors/KellerAcculevel.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+#if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
+HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
+#else
+ AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
+ //NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+#endif
+
+//byte acculevelModbusAddress = KellerAcculevelModbusAddress;  // The modbus address of KellerAcculevel
+const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+
+const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
+const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+const int8_t RS485PHY_DIR_PIN = CONFIG_HW_RS485PHY_DIR_PIN;
+
+#endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
+
+#if defined KellerAcculevel_ACT
+#include <sensors/KellerAcculevel.h>
+
+byte acculevelModbusAddress = KellerAcculevelModbusAddress_DEF;  // The modbus address of KellerAcculevel
+const uint8_t acculevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Acculevel sensor object
+KellerAcculevel acculevel_snsr(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Acculevel
+// Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+#endif //KellerAcculevel_ACT 
+
+
+// ==========================================================================
+//    Keller Nanolevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#ifdef KellerNanolevel_ACT
+#include <sensors/KellerNanolevel.h>
+
+byte nanolevelModbusAddress = KellerNanolevelModbusAddress_DEF;  // The modbus address of KellerNanolevel
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+
+KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+// Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+
+#endif //KellerNanolevel_ACT
+
 #if defined(ASONG_AM23XX_UUID)
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
@@ -213,6 +325,8 @@ AOSongAM2315 am23xx(I2CPower);
 // Variable *am2315Humid = new AOSongAM2315_Humidity(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *am2315Temp = new AOSongAM2315_Temp(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ASONG_AM23XX_UUID
+
+
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -333,21 +447,30 @@ Variable *ds3231TempFcalc = new Variable(
 // ==========================================================================
 
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
-    new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
-    //new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
-    #if defined Decagon_CTD_UUID 
+    //new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
+    //new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined Decagon_CTD_UUID 
     //new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
     //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
     CTDTempFcalc,
-    #endif //Decagon_CTD_UUID
+#endif //Decagon_CTD_UUID
+#if defined KellerAcculevel_ACT
+    //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
+    new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
+#endif // KellerAcculevel_ACT
+#if defined KellerNanolevel_ACT
+//   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
+#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-    #if defined(ASONG_AM23XX_UUID)
+    #if defined ASONG_AM23XX_UUID
     new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
     new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
     //ASONG_AM23_Air_TemperatureF_UUID
@@ -355,7 +478,7 @@ Variable *variableList[] = {
     #endif // ASONG_AM23XX_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     //new Modem_SignalPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
-    #if defined(MaximDS3231_TEMP_UUID)
+    #if defined MaximDS3231_TEMP_UUID
     //new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
     ds3231TempC,
     ds3231TempFcalc,
@@ -470,7 +593,18 @@ void setup()
     #endif
 
     // Start the serial connection with the modem
+    #if defined UseModem_Module
+    MS_DEEP_DBG("***modemSerial.begin");     
     modemSerial.begin(modemBaud);
+    #endif // UseModem_Module
+
+    #if defined(CONFIG_SENSOR_RS485_PHY) 
+    // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
+    MS_DEEP_DBG("***modbusSerial.begin"); 
+    delay(10);
+    modbusSerial.begin(9600);
+
+    #endif
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -548,9 +682,12 @@ void setup()
     dataLogger.createLogFile(true); // true = write a new header
     dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
 
+    //modbusSerial.setDebugStream(&Serial); not for AltSoftSerial or NeoSWserial
+    MS_DBG(F("Setup Complete ****\n\n"));
     // Call the processor sleep
     //Serial.println(F("processor to sleep\n"));
     //dataLogger.systemSleep();
+
 }
 
 
