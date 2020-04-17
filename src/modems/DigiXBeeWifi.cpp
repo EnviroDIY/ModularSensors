@@ -412,16 +412,16 @@ bool DigiXBeeWifi::updateModemMetadata(void)
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI = SENSOR_DEFAULT;
-    loggerModem::_priorSignalPercent = SENSOR_DEFAULT;;
+    loggerModem::_priorRSSI = SENSOR_DEFAULT_I;
+    loggerModem::_priorSignalPercent = SENSOR_DEFAULT_I;
     //loggerModem::_priorBatteryState = -9999;
     //loggerModem::_priorBatteryPercent = -9999;
     //loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp = SENSOR_DEFAULT;
+    loggerModem::_priorModemTemp = SENSOR_DEFAULT_F;
 
     // Initialize variable
-    int16_t signalQual = SENSOR_DEFAULT;;
-    uint16_t volt = SENSOR_DEFAULT;;
+    int16_t signalQual = SENSOR_DEFAULT_I;
+    uint16_t volt = SENSOR_DEFAULT_I;
 
     //if not enabled don't collect data
     if (!loggerModem::_pollModemMetaData) return false;

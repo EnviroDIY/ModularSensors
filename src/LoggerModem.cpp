@@ -12,12 +12,12 @@
 
 // Initialize the static members
 bool loggerModem::_pollModemMetaData=false;
-int16_t loggerModem::_priorRSSI = -9999;
-int16_t loggerModem::_priorSignalPercent = -9999;
-float loggerModem::_priorModemTemp = -9999;
-float loggerModem::_priorBatteryState = -9999;
-float loggerModem::_priorBatteryPercent = -9999;
-float loggerModem::_priorBatteryVoltage = -9999;
+int16_t loggerModem::_priorRSSI = SENSOR_DEFAULT_I;
+int16_t loggerModem::_priorSignalPercent = SENSOR_DEFAULT_I;
+float loggerModem::_priorModemTemp = SENSOR_DEFAULT_F;
+float loggerModem::_priorBatteryState = SENSOR_DEFAULT_F;
+float loggerModem::_priorBatteryPercent = SENSOR_DEFAULT_F;
+float loggerModem::_priorBatteryVoltage = SENSOR_DEFAULT_F;
 // float loggerModem::_priorActivationDuration = -9999;
 // float loggerModem::_priorPoweredDuration = -9999;
 
