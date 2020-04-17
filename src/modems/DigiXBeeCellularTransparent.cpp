@@ -383,15 +383,15 @@ bool DigiXBeeCellularTransparent::updateModemMetadata(void)
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI = SENSOR_DEFAULT;
-    loggerModem::_priorSignalPercent =SENSOR_DEFAULT;
+    loggerModem::_priorRSSI = SENSOR_DEFAULT_I;
+    loggerModem::_priorSignalPercent =SENSOR_DEFAULT_I;
     //loggerModem::_priorBatteryState = SENSOR_DEFAULT;
     //loggerModem::_priorBatteryPercent = SENSOR_DEFAULT;
     //loggerModem::_priorBatteryPercent = SENSOR_DEFAULT;
-    loggerModem::_priorModemTemp = SENSOR_DEFAULT;
+    loggerModem::_priorModemTemp = SENSOR_DEFAULT_F;
 
     // Initialize variable
-    int16_t signalQual = SENSOR_DEFAULT;
+    int16_t signalQual = SENSOR_DEFAULT_I;
 
     //if not enabled don't collect data
     if (!loggerModem::_pollModemMetaData) return false;

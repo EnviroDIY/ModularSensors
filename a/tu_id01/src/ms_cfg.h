@@ -144,7 +144,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define MaximDS3231_TEMP_UUID  "MaximDS3231_TEMP_UUID"
 #define MaximDS3231_TEMPF_UUID "MaximDS3231_TEMPF_UUID"
 #endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
-//#define Modem_RSSI_UUID ""
+#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 // Seems to cause XBEE WiFi S6 to crash
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #define ProcessorStats_ACT 1

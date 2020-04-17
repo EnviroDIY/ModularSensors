@@ -102,10 +102,12 @@ public:
     //By default modem metadata won't be polled. Call this to enable.
     #define POLL_MODEM_META_DATA_ON 0x80
     void pollModemMetadata(uint8_t status= POLL_MODEM_META_DATA_ON);
-    #if not defined SENSOR_DEFAULT
-       #define  SENSOR_DEFAULT -1
+    #if not defined SENSOR_DEFAULT_I
+       #define  SENSOR_DEFAULT_I -1
     #endif //SENSOR_DEFAULT
-
+    #if not defined SENSOR_DEFAULT_F
+       #define  SENSOR_DEFAULT_F -0.0099
+    #endif //SENSOR_DEFAULT
     // These functions simply return the stored values
     // NOTE:  These must be static so that the modem variables can call them.
     // (Non-static member functions cannot be called without an object.)

@@ -376,16 +376,16 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 // Units conversion functions
 // ==========================================================================
-#define SENSOR_UNINIT -9999
+#define  SENSOR_DEFAULT_F -0.0099
 float convertDegCtoF(float tempInput)
 { // Simple deg C to deg F conversion
-    if (SENSOR_UNINIT == tempInput) return SENSOR_UNINIT; 
+    if (SENSOR_DEFAULT_F == tempInput) return SENSOR_DEFAULT_F; 
     return tempInput * 1.8 + 32;
 }
 
 float convertMmtoIn(float mmInput)
 { // Simple millimeters to inches conversion
-    if (SENSOR_UNINIT == mmInput) return SENSOR_UNINIT; 
+    if (SENSOR_DEFAULT_F == mmInput) return SENSOR_DEFAULT_F; 
     return mmInput / 25.4;
 }
 // ==========================================================================
@@ -451,8 +451,8 @@ Variable *ds3231TempFcalc = new Variable(
 // ==========================================================================
 
 Variable *variableList[] = {
-    //new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
-    //new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+    new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
+    new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
 #if defined Decagon_CTD_UUID 
     //new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
@@ -480,8 +480,10 @@ Variable *variableList[] = {
     //ASONG_AM23_Air_TemperatureF_UUID
     //calcAM2315_TempF
     #endif // ASONG_AM23XX_UUID
-    //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+    #if defined DIGI_RSSI_UUID
+    new Modem_RSSI(&modemPhy, DIGI_RSSI_UUID),
     //new Modem_SignalPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+    #endif //DIGI_RSSI_UUID
     #if defined MaximDS3231_TEMP_UUID
     //new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
     ds3231TempC,
@@ -700,7 +702,9 @@ void setup()
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true); // true = write a new header
     dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
-
+    #if defined DIGI_RSSI_UUID
+    modemPhy.pollModemMetadata(); //Turn on RSSI collection 
+    #endif //DIGI_RSSI_UUID
     //modbusSerial.setDebugStream(&Serial); not for AltSoftSerial or NeoSWserial
     MS_DBG(F("\n\nSetup Complete ****"));
     // Call the processor sleep
