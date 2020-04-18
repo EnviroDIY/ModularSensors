@@ -100,7 +100,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
 
-//#define Decagon_CTD_UUID 1
+#define Decagon_CTD_UUID 1
 #ifdef Decagon_CTD_UUID
   //#define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions

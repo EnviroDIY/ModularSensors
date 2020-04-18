@@ -376,15 +376,17 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#define  SENSOR_DEFAULT_F -0.0099
+#define  SENSOR_DEFAULT_F -0.009999
 float convertDegCtoF(float tempInput)
 { // Simple deg C to deg F conversion
+    if (           -9999 == tempInput) return SENSOR_DEFAULT_F; 
     if (SENSOR_DEFAULT_F == tempInput) return SENSOR_DEFAULT_F; 
     return tempInput * 1.8 + 32;
 }
 
 float convertMmtoIn(float mmInput)
 { // Simple millimeters to inches conversion
+    if (           -9999 == mmInput) return SENSOR_DEFAULT_F; 
     if (SENSOR_DEFAULT_F == mmInput) return SENSOR_DEFAULT_F; 
     return mmInput / 25.4;
 }
