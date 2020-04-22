@@ -1,14 +1,18 @@
 /*
- *InsituLevelTroll.h
+ *InsituLevelTroll.h - wip. Not working yet.
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>,updated by Neil Hancock.
  *
  *This file is for Modbus communication to  Insitu Level Troll System Spec 1 and Spec 3,
  *from InSitu Modbus Communication Protocol Version 5.10  ar
- *Only tested on the Insitu LT400
+ *Target testing on the Insitu LT400
  *
- * It uses the KellerParent as the base ~ which maybe should be called ModbusParent
+ * It uses the KellerParent as the base 
+ * Testing - LT500+cable+pigtail to RS485board
+ * STATUS: no response has been received from an LT400. 
+ * It may be that the CRC has to be switched around as Keller was non-standard modbus.
+ * Winsitu is used to program LT500 and defaults to 19200.
  *
 */
 
@@ -46,7 +50,7 @@ public:
                     int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                     Leveltroll_InsituModel, "InsituLevelTroll", KELLER_NUM_VARIABLES,
-                    LEVELTROL_WARM_UP_TIME_MS, LEVELTROL_STABILIZATION_TIME_MS, LEVELTROL_MEASUREMENT_TIME_MS)
+                    LEVELTROLL_WARM_UP_TIME_MS, LEVELTROLL_STABILIZATION_TIME_MS, LEVELTROLL_MEASUREMENT_TIME_MS)
     {}
     // Destructor
     ~InsituLevelTroll(){}
@@ -62,13 +66,13 @@ public:
                              const char *varCode = "Insitu LTxPress")
       : Variable(parentSense,
                  (const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                 (uint8_t)LEVELTROL_PRESSURE_RESOLUTION,
+                 (uint8_t)LEVELTROLL_PRESSURE_RESOLUTION,
                  "pressureGauge", "millibar",
                  varCode, uuid)
     {}
     InsituLevelTroll_Pressure()
       : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                 (uint8_t)LEVELTROL_PRESSURE_RESOLUTION,
+                 (uint8_t)LEVELTROLL_PRESSURE_RESOLUTION,
                  "pressureGauge", "millibar", "Insitu LTxPress")
     {}
     ~InsituLevelTroll_Pressure(){}
@@ -84,13 +88,13 @@ public:
                          const char *varCode = "Insitu LTxTemp")
       : Variable(parentSense,
                  (const uint8_t)KELLER_TEMP_VAR_NUM,
-                 (uint8_t)LEVELTROL_TEMP_RESOLUTION,
+                 (uint8_t)LEVELTROLL_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
                  varCode, uuid)
     {}
     InsituLevelTroll_Temp()
       : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
-                 (uint8_t)LEVELTROL_TEMP_RESOLUTION,
+                 (uint8_t)LEVELTROLL_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Insitu LTxTemp")
     {}
     ~InsituLevelTroll_Temp(){}
@@ -105,13 +109,13 @@ public:
                            const char *varCode = "InsituLTxHeight")
       : Variable(parentSense,
                  (const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                 (uint8_t)LEVELTROL_HEIGHT_RESOLUTION,
+                 (uint8_t)LEVELTROLL_HEIGHT_RESOLUTION,
                  "gaugeHeight", "meter",
                  varCode, uuid)
     {}
     InsituLevelTroll_Height()
       : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                 (uint8_t)LEVELTROL_HEIGHT_RESOLUTION,
+                 (uint8_t)LEVELTROLL_HEIGHT_RESOLUTION,
                  "gaugeHeight", "meter", "InsituLTxHeight")
     {}
     ~InsituLevelTroll_Height(){}

@@ -244,12 +244,27 @@ const int8_t SDI12Data = 7;  // The SDI12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
-#endif //ecagon_CTD_UUID
+#endif //Decagon_CTD_UUID
+
+#if defined Insitu_TrollSdi12_UUID
+// ==========================================================================
+//    Insitu Aqua/Level Troll Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+#include <sensors/InsituTrollSdi12.h>
+
+const char *ITROLLSDI12address = "1";  // The SDI-12 Address of the ITROLL
+const uint8_t ITROLLNumberReadings = 2;  // The number of readings to average
+const int8_t IT_SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t IT_SDI12Data = 7;  // The SDI12 data pin
+
+// Create a  ITROLL sensor object
+InsituTrollSdi12 itrollPhy(*ITROLLSDI12address, IT_SDI12Power, IT_SDI12Data, ITROLLNumberReadings);
+#endif //Insitu_TrollSdi12_UUID
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT)
+#if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT) || defined(InsituLTrs485_ACT)
 #define KellerXxxLevel_ACT 1
 //#include <sensors/KellerAcculevel.h>
 
@@ -311,6 +326,30 @@ KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485Adapte
 // Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
 
 #endif //KellerNanolevel_ACT
+
+// ==========================================================================
+//    Insitu Level/Aqua Troll High Accuracy Submersible Level Transmitter
+// wip Tested for Level Troll 500
+// ==========================================================================
+#ifdef InsituLTrs485_ACT
+#include <sensors/InsituTrollModbus.h>
+
+byte ltModbusAddress = InsituLTrs485ModbusAddress_DEF;  // The modbus address of InsituLTrs485
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t ltNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+
+InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, ltNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+// Variable *nanolevPress =  new InsituLTrs485_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevTemp =   new InsituLTrs485_Temp(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevHeight = new InsituLTrs485_Height(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+
+#endif //InsituLTrs485_ACT
 
 #if defined(ASONG_AM23XX_UUID)
 // ==========================================================================
@@ -376,15 +415,17 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 // Units conversion functions
 // ==========================================================================
-#define  SENSOR_DEFAULT_F -0.0099
+#define  SENSOR_DEFAULT_F -0.009999
 float convertDegCtoF(float tempInput)
 { // Simple deg C to deg F conversion
+    if (           -9999 == tempInput) return SENSOR_DEFAULT_F; 
     if (SENSOR_DEFAULT_F == tempInput) return SENSOR_DEFAULT_F; 
     return tempInput * 1.8 + 32;
 }
 
 float convertMmtoIn(float mmInput)
 { // Simple millimeters to inches conversion
+    if (           -9999 == mmInput) return SENSOR_DEFAULT_F; 
     if (SENSOR_DEFAULT_F == mmInput) return SENSOR_DEFAULT_F; 
     return mmInput / 25.4;
 }
@@ -459,6 +500,12 @@ Variable *variableList[] = {
     //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
     CTDTempFcalc,
 #endif //Decagon_CTD_UUID
+#if defined Insitu_TrollSdi12_UUID 
+    new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
+    //CTDDepthInCalc,
+    new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
+    //CTDTempFcalc,
+#endif //Insitu_TrollSdi12_UUID
 #if defined KellerAcculevel_ACT
     //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
@@ -468,6 +515,11 @@ Variable *variableList[] = {
 //   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
     new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
+#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
+#if defined InsituLTrs485_ACT
+//   new insituLevelTroll_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
+    new InsituLevelTroll_Temp(&InsituLT_snsr,   InsituLTrs485_Temp_UUID),
+    new InsituLevelTroll_Height(&InsituLT_snsr, InsituLTrs485_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -615,13 +667,14 @@ void setup()
     #if defined UseModem_Module
     MS_DEEP_DBG("***modemSerial.begin");     
     modemSerial.begin(modemBaud);
-    #endif // UseModem_Module
+      #endif // UseModem_Module
 
     #if defined(CONFIG_SENSOR_RS485_PHY) 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     MS_DEEP_DBG("***modbusSerial.begin"); 
     delay(10);
-    modbusSerial.begin(9600);
+
+    modbusSerial.begin(MODBUS_BAUD_RATE);
     modbusPinPowerMng(false); //Turn off pins 
     #endif
 
@@ -697,6 +750,12 @@ void setup()
     // the sensor setup we'll skip this too.
     #if defined KellerNanolevel_ACT
     nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
+    #endif //
+    #if defined InsituLTrs485_ACT
+    InsituLT_snsr.registerPinPowerMng(&modbusPinPowerMng);
+        #if defined MS_MODBUS_DEBUG
+        InsituLT_snsr.setDebugStream(&SerialStd); //For RAW modbus data.
+        #endif// MS_MODBUS_DEBUG
     #endif //
     Serial.println(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up

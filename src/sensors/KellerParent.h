@@ -70,6 +70,9 @@ public:
     void registerPinPowerMng(void (* fn)(bool));
     //Pins that need to be managed during power On and Off events
     void registerSerialPins(uint8_t txPin, uint8_t rxPin);
+    // This sets a stream for debugging information to go to;
+    void setDebugStream(Stream *stream){sensor.setDebugStream(stream);}
+    void stopDebugging(void){sensor.stopDebugging();}
 
 private:
     keller sensor;

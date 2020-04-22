@@ -102,29 +102,50 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 //#define Decagon_CTD_UUID 1
 #ifdef Decagon_CTD_UUID
-  //#define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
-  //#define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
-  //#define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define CTD10_DEPTH_UUID "CTD10_DEPTH_UUID"
   #define CTD10_TEMP_UUID  "CTD10_TEMP_UUID"
   #define CTD10_COND_UUID  "CTD10_COND_UUID"  
-#endif // KellerNanolevel_ACT
+#endif // Decagon_CTD_UUID
 
-#define KellerNanolevel_ACT 1
+#define Insitu_TrollSdi12_UUID 1
+#ifdef Insitu_TrollSdi12_UUID
+  //Mayfly definitions
+  #define ITROLL_DEPTH_UUID "KellerNanolevel_Height_UUID"
+  #define ITROLL_TEMP_UUID  "KellerNanolevel_Temp_UUID"
+  //#define ITROLL_PRESSURE_UUID  "ITROLL_PRESSURE_UUID"  
+#endif // Insitu_Troll_UUID
+
+//#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
-  //Mayfly definitions
-  #define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
-  #define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #define KellerNanolevelModbusAddress_DEF 0x01
+#endif // KellerNanolevel_ACT
+
+//#define InsituLTrs485_ACT 1
+#ifdef InsituLTrs485_ACT
+  #define CONFIG_SENSOR_RS485_PHY 1
+  #define InsituLTrs485_Height_UUID "KellerNanolevel_Height_UUID"
+  #define InsituLTrs485_Temp_UUID   "KellerNanolevel_Temp_UUID"
+  #define InsituLTrs485ModbusAddress_DEF 0x01
+  //Default is 19200 lets hope serial works with it.
+  #define MODBUS_BAUD_RATE 19200
+#endif // InsituLTrs485_ACT
+
+#ifdef CONFIG_SENSOR_RS485_PHY
+  //Mayfly definitions
+  #define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
+  #define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define CONFIG_HW_RS485PHY_DIR_PIN -1 
   #define max485EnablePin_DEF   -1  
   #define rs485AdapterPower_DEF 22 // Pin to switch RS485 adapter power on and off (-1 if unconnected)
   #define modbusSensorPower_DEF 22;  // Pin to switch power on and off (-1 if unconnected) 
-#endif // KellerNanolevel_ACT
+  #ifndef MODBUS_BAUD_RATE
+  #define MODBUS_BAUD_RATE 9600
+  #endif //MODBUS_BAUD_RATE
+#endif //CONFIG_SENSOR_RS485_PHY
 
 //#define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
@@ -144,7 +165,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define MaximDS3231_TEMP_UUID  "MaximDS3231_TEMP_UUID"
 #define MaximDS3231_TEMPF_UUID "MaximDS3231_TEMPF_UUID"
 #endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
-#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
+//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 // Seems to cause XBEE WiFi S6 to crash
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #define ProcessorStats_ACT 1
