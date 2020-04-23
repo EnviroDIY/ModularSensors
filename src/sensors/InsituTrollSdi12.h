@@ -9,13 +9,14 @@
  *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super class.
  *
  * The Insitu Aqua/Level Troll require 8-36VDC (extra boost)
+ * Instructions for cabling with a Polo #boost are at the end
  * 
  *Documentation for the SDI-12 Protocol commands and responses
  * The Insitu Level/Aqua Troll can be found at:
  * Insitu SDI-12-Commands-and-Level-TROLL-400-500-700-Responses 20140210.pdf
  * Insitu SDI-12-Commands-and-Aqua-TROLL-100-200-Responses 20070123.pdf
  *
- * I haven't audit why Insity have a different SDI manual for Level and Aqua
+ * I haven't audited why Insitu have a different SDI manual for Level and Aqua
  *
  * For Pressure:
  *  Resolution is 0.001 
@@ -39,8 +40,10 @@
  * Parameters are very flexible and need to be aligned with this program
  * The SDI address needs to be changed to what the class is set to - default is '1'
  * The depth sensor third paramter needs to be created.
- * 
- * The following needed to be audited.
+ * The expected paramters and order are 
+ *   0 Pressure (PSI)   ITROLL_PRESSURE_VAR_NUM
+ *   1 Temperature (C)  ITROLL_TEMP_VAR_NUM
+ *   2 Depth (ft)       ITROLL_DEPTH_VAR_NUM  Resolution 0.005% For 11.5ft +/ 0.00005ft
  * 
 */
 
@@ -57,17 +60,17 @@
 #define ITROLL_STABILIZATION_TIME_MS 0
 #define ITROLL_MEASUREMENT_TIME_MS 500
 
-#define ITROLL_COND_RESOLUTION 1
+#define ITROLL_PRESSURE_RESOLUTION 5
 // adding extra digit to resolution for averaging
-#define ITROLL_COND_VAR_NUM 2
+#define ITROLL_PRESSURE_VAR_NUM 0
 
 #define ITROLL_TEMP_RESOLUTION 2
 // adding extra digit to resolution for averaging
 #define ITROLL_TEMP_VAR_NUM 1
 
-#define ITROLL_DEPTH_RESOLUTION 1
+#define ITROLL_DEPTH_RESOLUTION 5
 // adding extra digit to resolution for averaging
-#define ITROLL_DEPTH_VAR_NUM 0
+#define ITROLL_DEPTH_VAR_NUM 2
 
 // The main class for the Insitu Level/Aqua Troll
 class InsituTrollSdi12 : public SDI12Sensors
@@ -100,17 +103,17 @@ class InsituTrollSdi12_Pressure : public Variable
 public:
     InsituTrollSdi12_Pressure(Sensor *parentSense,
                     const char *uuid = "",
-                    const char *varCode = "ITROLLPressure")
+                    const char *varCode = "ITROLLPressure") //Does this maap to something?
       : Variable(parentSense,
-                 (const uint8_t)ITROLL_COND_VAR_NUM,
-                 (uint8_t)ITROLL_COND_RESOLUTION,
-                 "pressure", "PSI?",
+                 (const uint8_t)ITROLL_PRESSURE_VAR_NUM,
+                 (uint8_t)ITROLL_PRESSURE_RESOLUTION,
+                 "pressure", "PSI",
                  varCode, uuid)
     {}
     InsituTrollSdi12_Pressure()
-      : Variable((const uint8_t)ITROLL_COND_VAR_NUM,
-                 (uint8_t)ITROLL_COND_RESOLUTION,
-                 "pressure", "PSI?", "LTpressure")
+      : Variable((const uint8_t)ITROLL_PRESSURE_VAR_NUM,
+                 (uint8_t)ITROLL_PRESSURE_RESOLUTION,
+                 "pressure", "PSI", "Insitu TROLL Pressure")
     {}
     ~InsituTrollSdi12_Pressure(){}
 };
@@ -132,7 +135,7 @@ public:
     InsituTrollSdi12_Temp()
       : Variable((const uint8_t)ITROLL_TEMP_VAR_NUM,
                  (uint8_t)ITROLL_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "ITROLLtemp")
+                 "temperature", "degreeCelsius", "Insitu TROLL temperature")
     {}
     ~InsituTrollSdi12_Temp(){}
 };
@@ -148,13 +151,13 @@ public:
       : Variable(parentSense,
                  (const uint8_t)ITROLL_DEPTH_VAR_NUM,
                  (uint8_t)ITROLL_DEPTH_RESOLUTION,
-                 "waterDepth", "millimeter",
+                 "waterDepth", "feet",
                  varCode, uuid)
     {}
     InsituTrollSdi12_Depth()
       : Variable((const uint8_t)ITROLL_DEPTH_VAR_NUM,
                  (uint8_t)ITROLL_DEPTH_RESOLUTION,
-                 "waterDepth", "millimeter", "ITROLLdepth")
+                 "waterDepth", "feet", "Insitu TROLL depth")
     {}
     ~InsituTrollSdi12_Depth(){}
 };
