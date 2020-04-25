@@ -622,6 +622,48 @@ void modbusPinPowerMng(bool status) {
     #endif
 }
 #endif //KellerXxxLevel_ACT
+
+
+#define PORT_SAFE(pinNum) pinMode(pinNum,INPUT);     digitalWrite(pinNum, LOW);
+void  unusedBitsMakeSafe() 
+{
+// Set all unused Pins to a safe no current mode for sleeping
+  //Mayfly variant.h: D0->23  (Analog0-7) or D24-31
+    //PORT_SAFE( 0); Rx0  Tty
+    //PORT_SAFE( 1); Tx0  TTy
+    //PORT_SAFE( 2); Rx1  Xb?
+    //PORT_SAFE( 3); Tx1  Xb?
+    PORT_SAFE(04);
+    PORT_SAFE(05);
+    PORT_SAFE(06);
+    //PORT_SAFE(07); SDI12
+    //PORT_SAFE(08); Grn Led
+    //PORT_SAFE(09); Red LED
+    PORT_SAFE(10); //?? RTC Int
+    PORT_SAFE(11);
+    PORT_SAFE(12);
+    //mosi LED PORT_SAFE(13);
+    //miso PORT_SAFE(14);
+    //sck PORT_SAFE(15);
+    //scl PORT_SAFE(16);
+    //sda PORT_SAFE(17);
+    PORT_SAFE(18);
+    PORT_SAFE(19); //Xbee CTS 
+    PORT_SAFE(20); //Xbee RTS
+    PORT_SAFE(21);
+    //PORT_SAFE(22);  //Pwr Sw
+    PORT_SAFE(23); //Xbee DTR
+    //Analog from here on 
+    PORT_SAFE(24);
+    PORT_SAFE(25);
+    PORT_SAFE(26);
+    PORT_SAFE(27);
+    PORT_SAFE(28);
+    PORT_SAFE(29);
+    PORT_SAFE(30);
+    PORT_SAFE(31);
+};
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -654,6 +696,8 @@ void setup()
 #else 
     Serial.print(F("TinyGSM - none"));
 #endif
+
+    unusedBitsMakeSafe();
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
