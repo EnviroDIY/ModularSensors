@@ -6,10 +6,25 @@
  *This sensor encapsulates sensors using an anlog input .
  * EC from IEC probe, requires ADC_PIN, Source Resistance, Applied Voltage, water temperature. Requires switched power pin
  *     The water Temperature must be calculated seperately.
- *
+ * 
+ *  Power on A0, with 500R to A[1,2,3,4,5] and then sensor
+ *  
+ * Parts & Wiring for Mayfly
+ *  Mayfly 0.5b or later
+ *  0.1" male headers - at least 2x2 for one connector, 2x5
+ *  Sensor  AC Power Cord 12t with male IEC 320-C8 connector. 
+ *  IEC 320-C8 Instrument connector so can be detached on instalation
+ *  Rlmt eg 500R
+ * 
+ * 
+ * Wiring
+ *  Rlmt from J3-A0 to Sensor Pin J3-A1
+ *  Sensors one side to Analog Sensor eg J3-A1
+ *  Sensor  one side to GND Mayfly J3-GND
+ * 
  *For EC calculation 
- *  Range of 0-5V with 10bit ADC - resolution of 0.005
- *
+ *  (better to be ratio meteric))
+ *  Range of 0-3V3 with 10bit ADC - resolution of 0.003
  * 
  */
 
@@ -33,7 +48,7 @@
 
 // Sensor Specific Defines
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
-#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 0
+#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
 #define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 0
 #define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
 
@@ -120,17 +135,17 @@ class analogElecConductivity_EC : public Variable
 public:
     analogElecConductivity_EC(Sensor *parentSense,
                         const char *uuid = "",
-                        const char *varCode = "EC_UUID")
+                        const char *varCode = "anlgEc")
       : Variable(parentSense,
                  (const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                  (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
-                 "ElectricalConductivity", "uScm",
+                 "electricalConductivity", "uScm",
                  varCode, uuid)
     {}
     analogElecConductivity_EC()
       : Variable((const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                  (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
-                 "ElectricalConductivity", "uScm", "EC_UUID")
+                 "ElectricalConductivity", "uScm", "anlgEc")
     {}
     ~analogElecConductivity_EC(){}
 };

@@ -334,7 +334,7 @@ KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485Adapte
 #ifdef InsituLTrs485_ACT
 #include <sensors/InsituTrollModbus.h>
 
-byte ltModbusAddress = InsituLTrs485ModbusAddress_DEF;  // The modbus address of InsituLTrs485
+const byte ltModbusAddress = InsituLTrs485ModbusAddress_DEF;  // The modbus address of InsituLTrs485
 // const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
@@ -350,6 +350,16 @@ InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower,
 // Variable *nanolevHeight = new InsituLTrs485_Height(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
 
 #endif //InsituLTrs485_ACT
+
+// ==========================================================================
+//    Electrical Conductivity using the processors analog pins
+// ==========================================================================
+#ifdef AnalogProcEC_ACT
+#include <sensors/analogElecConductivity.h>
+const int8_t ECpwrPin = ECpwrPin_DEF;
+const int8_t ECdataPin1 = ECdataPin1_DEF;
+analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
+#endif //AnalogProcEC_ACT
 
 #if defined(ASONG_AM23XX_UUID)
 // ==========================================================================
@@ -541,6 +551,9 @@ Variable *variableList[] = {
     ds3231TempC,
     ds3231TempFcalc,
     #endif //MaximDS3231_Temp_UUID
+    #if defined AnalogProcEC_ACT
+    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
+    #endif //AnalogProcEC_ACT
 
 };
 
@@ -683,9 +696,9 @@ void setup()
     // Print a start-up note to the first serial port
     Serial.print(F(" '"));
     Serial.print(sketchName);
-    Serial.print(" ");
-    Serial.println(git_branch);
-    Serial.print(F("' on Logger "));
+    Serial.print("' ");
+    Serial.print(git_branch);
+    Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
 
     Serial.print(F("Using ModularSensors Library version "));
@@ -762,8 +775,8 @@ void setup()
     float batteryV = getBatteryVoltage(); //Get once
 
     // Sync the clock if it isn't valid and we have battery to spare
-    #define POWER_THRESHOLD_NEED_COMMS_PWR 3.6
-    #define POWER_THRESHOLD_NEED_BASIC_PWR 3.4
+    #define POWER_THRESHOLD_NEED_COMMS_PWR 3.2
+    #define POWER_THRESHOLD_NEED_BASIC_PWR 2.8
     while  (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR && !dataLogger.isRTCSane())
     {
         MS_DBG(F("Not enough power to sync with NIST "),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);

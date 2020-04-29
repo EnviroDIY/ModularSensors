@@ -143,7 +143,7 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
 bool ProcessorStats::addSingleMeasurementResult(void)
 {
     // Get the battery voltage
-    MS_DBG(F("Getting battery voltage"));
+    //MS_DBG(F("Getting battery voltage"));
 
     float sensorValue_battery = -9999;
 
@@ -196,10 +196,11 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     #endif
 
+    MS_DBG(F("Vbat"),sensorValue_battery);
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
 
     // Used only for debugging - can be removed
-    MS_DBG(F("Getting Free RAM"));
+    //MS_DBG(F("Getting Free RAM"));
 
     #if defined __AVR__ || defined ARDUINO_ARCH_AVR
     extern int16_t __heap_start, *__brkval;
@@ -218,6 +219,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     // bump up the sample number
     sampNum += 1;
+    MS_DBG(F("SampNum="),(unsigned int)sampNum);
 
     verifyAndAddMeasurementResult(PROCESSOR_SAMPNUM_VAR_NUM, sampNum);
 

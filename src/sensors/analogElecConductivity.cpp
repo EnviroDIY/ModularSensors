@@ -6,6 +6,7 @@
 */
 
 #include "analogElecConductivity.h"
+#include "ms_cfg.h"
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -92,7 +93,7 @@
 
 // For Mayfly version because the battery resistor depends on it
 analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
-    : Sensor(BOARD, ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
+    : Sensor("analogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS, ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS, ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage)
 {
@@ -119,7 +120,12 @@ analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin, 
 // Destructor
 analogElecConductivity::~analogElecConductivity(){}
 
-String analogElecConductivity::getSensorLocation(void) {return BOARD;}
+String analogElecConductivity::getSensorLocation(void) 
+{
+    String sensorLocation = F("anlgEc Proc Data/Pwr");
+    sensorLocation += String( _EcAdcPin) + "/" + String(_EcPowerPin);    
+  return BOARD;
+}
 
 /************ ***********************
  * SensorsR   
@@ -198,12 +204,20 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
 
 bool analogElecConductivity::addSingleMeasurementResult(void)
 {
+    float sensorEC_uScm = -9999;
 
+    if (bitRead(_sensorStatus, 6))
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    MS_DBG(F("Getting EC of Water"));
+        sensorEC_uScm = readEC(_EcAdcPin);
+        MS_DBG(F("Water EC (uSm/cm"),sensorEC_uScm);
+    }
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
-    float sensorEC_uScm = readEC(_EcAdcPin);
-    MS_DBG(F("Water EC (uSm/cm"),sensorEC_uScm);
     verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM, sensorEC_uScm);
 
     // Unset the time stamp for the beginning of this measurement

@@ -147,6 +147,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #endif //MODBUS_BAUD_RATE
 #endif //CONFIG_SENSOR_RS485_PHY
 
+#define AnalogProcEC_ACT
+#ifdef AnalogProcEC_ACT
+  #define EC1_UUID      "EC1_UUID"
+  #define ECpwrPin_DEF A0 
+  #define ECdataPin1_DEF A1
+#endif //AnalogProcEC_ACT
+
 //#define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
   #define INA219M_MA_UUID      "INA219_MA_UUID"
