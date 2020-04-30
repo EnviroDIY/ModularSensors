@@ -909,7 +909,8 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // Variable *fivetmEa = new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *fivetmVWC = new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *fivetmTemp = new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
-
+#endif //SENSOR_CONFIG_GENERAL
+#ifdef Decagon_CTD_UUID
 
 // ==========================================================================
 //    Decagon CTD Conductivity, Temperature, and Depth Sensor
@@ -929,7 +930,8 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // Variable *ctdTemp = new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *ctdDepth = new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
 
-
+#endif //Decagon_CTD_UUID
+#ifdef SENSOR_CONFIG_GENERAL 
 // ==========================================================================
 //    Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
@@ -1173,6 +1175,20 @@ void ina219m_voltLowThresholdAlertFn(bool exceed,float value_V) {
 }
 #endif //INA219M_PHY_ACT
 
+#if defined Insitu_TrollSdi12_UUID
+// ==========================================================================
+//    Insitu Aqua/Level Troll Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+#include <sensors/InsituTrollSdi12.h>
+
+const char *ITROLLSDI12address = "1";  // The SDI-12 Address of the ITROLL
+const uint8_t ITROLLNumberReadings = 2;  // The number of readings to average
+const int8_t IT_SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t IT_SDI12Data = 7;  // The SDI12 data pin
+
+// Create a  ITROLL sensor object
+InsituTrollSdi12 itrollPhy(*ITROLLSDI12address, IT_SDI12Power, IT_SDI12Data, ITROLLNumberReadings);
+#endif //Insitu_TrollSdi12_UUID
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
@@ -1495,6 +1511,16 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 #endif //SENSOR_CONFIG_GENERAL
 
 // ==========================================================================
+//    Electrical Conductivity using the processors analog pins
+// ==========================================================================
+#ifdef AnalogProcEC_ACT
+#include <sensors/analogElecConductivity.h>
+const int8_t ECpwrPin = ECpwrPin_DEF;
+const int8_t ECdataPin1 = ECdataPin1_DEF;  
+analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
+#endif //AnalogProcEC_ACT
+
+// ==========================================================================
 //    Calculated Variables
 // ==========================================================================
 
@@ -1614,7 +1640,12 @@ Variable *variableList[] = {
     new TIINA219_Power(&ina219, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif //SENSOR_CONFIG_GENERAL
 
-
+#if defined Insitu_TrollSdi12_UUID 
+    new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
+    //CTDDepthInCalc,
+    new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
+    //CTDTempFcalc,
+#endif //Insitu_TrollSdi12_UUID
 #ifdef KellerAcculevel_ACT
     //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
@@ -1654,6 +1685,9 @@ Variable *variableList[] = {
     new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
+    #if defined AnalogProcEC_ACT
+    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
+    #endif //AnalogProcEC_ACT
 #if defined(MaximDS3231_Temp_UUID)
     new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
 #endif //MaximDS3231_Temp_UUID

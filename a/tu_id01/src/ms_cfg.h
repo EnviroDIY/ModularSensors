@@ -124,7 +124,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define KellerNanolevelModbusAddress_DEF 0x01
 #endif // KellerNanolevel_ACT
 
-//#define InsituLTrs485_ACT 1
+//#define InsituLTrs485_ACT 1 -not working
 #ifdef InsituLTrs485_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
   #define InsituLTrs485_Height_UUID "KellerNanolevel_Height_UUID"
