@@ -242,15 +242,6 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 
-//#define analogEC_EC1_UUID "analogEC_EC1_UUID"
-#if defined(analogEC_EC1_UUID)
-#info "analogElecConductivity needs UT"
-#include "analogElecConductivity.h"
-//Real pins tbd
-const int8_t analogEC_PowerPin = sensorPowerPin_DEF;
-const int8_t analogEC_adcPin = 5;//sensorPowerPin_DEF;
-analogElecConductivity analogEC1parent(analogEC_PowerPin,analogEC_adcPin);
-#endif //analogEC_EC1_UUID
 
 //#define analogTh_T1_UUID "analogTh_T1_UUID"
 #if defined(analogTh_T1_UUID)
@@ -651,7 +642,7 @@ SodaqUBeeU201 modem = modemU201;
 // Variable *modemSignalPct = new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
-#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
+#if defined MaximDS3231_TEMP_UUID
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -1558,6 +1549,9 @@ Variable *variableList[] = {
 #if defined(ProcessorStats_Batt_UUID)
     new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),
 #endif
+#if defined AnalogProcEC_ACT
+    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
+#endif //AnalogProcEC_ACT
 #if defined(ProcVolt_ACT)  && defined(B031_AEM_EXTENSIONS) 
     //new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
     new processorAdc_Volt(&sensor_batt_V,  ProcVolt_batt_UUID,"LiBat 4v2"),
@@ -1573,9 +1567,6 @@ Variable *variableList[] = {
 #if defined(analogTh_T1_UUID)
     new analogThermistor_Temperature(&analogTherm1parent,analogTh_T1_UUID),
 #endif 
-#if defined(analogEC_EC1_UUID)
-    new analogElecConductivity_EC(&analogEC1parent,analogEC_EC1_UUID),
-#endif
 #if defined(AdcProc_Volt1_UUID)
     new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),
 #endif
@@ -1685,9 +1676,7 @@ Variable *variableList[] = {
     new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-    #if defined AnalogProcEC_ACT
-    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
-    #endif //AnalogProcEC_ACT
+
 #if defined(MaximDS3231_Temp_UUID)
     new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
 #endif //MaximDS3231_Temp_UUID

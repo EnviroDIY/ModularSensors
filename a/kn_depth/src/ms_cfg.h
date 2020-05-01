@@ -140,9 +140,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define INA219M_VOLT_UUID    "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
-#ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
-#define MaximDS3231_Temp_UUID       "MaximDS3231_Temp_UUID"
-#endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
+ //On maylfy
+//#define MaximDS3231_Temp_UUID       "MaximDS3231_TEMP_UUID"
+
 //#define Modem_RSSI_UUID ""
 // Seems to cause XBEE WiFi S6 to crash
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
@@ -374,8 +374,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #define rs485AdapterPower_DEF eMcpA_SwVbatOut_pinnum //Boost Sensor Power
   #endif //CONFIG_SENSOR_RS485_PHY
 
-  #define AnalogProcEC_ACT 1
-  // B031 Not Tested
+  //#define AnalogProcEC_ACT 1
+  //AnalogProcEC_ACT B031 not UT 
   #ifdef AnalogProcEC_ACT
     #define EC1_UUID      "EC1_UUID"
     //Simplest is ARED=VCC Power D4 - and then ADC_X2 or ADC_X3 - Wiring on J1
@@ -400,7 +400,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
   //#define Modem_RSSI_UUID ""
   // Seems to cause XBEE WiFi S6 to crash 
-  #define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+  //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
   #define ProcessorStats_ACT 1
   #ifdef ProcessorStats_ACT
     #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
@@ -409,7 +409,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
   //To Use internal ADC (Needs  SAMD51 testing)
   // Needs testing for B031r1 range.
-  #define ProcVolt_ACT 1
+  //#define ProcVolt_ACT 1
   #if defined ProcVolt_ACT
     #define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
     #define ProcVolt_batt_UUID  "ProcVolt_batt_UUID"
@@ -417,7 +417,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #endif //ProcVolt_ACT
 
   //Use sensor eg Adafruit_AM2314 or AM2320
-  #define ASONG_AM23XX_UUID 1
+  //#define ASONG_AM23XX_UUID 1
   #if defined ASONG_AM23XX_UUID
     #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
     #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"

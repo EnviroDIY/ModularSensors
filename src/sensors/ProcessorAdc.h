@@ -104,7 +104,7 @@ class processorAdc_Volt : public Variable
 public:
     processorAdc_Volt(Sensor *parentSense,
                          const char *uuid = "",
-                         const char *varCode = "adcProc")
+                         const char *varCode = "adcProcV")
       : Variable(parentSense,
                  (const uint8_t)PROC_ADC_VAR_NUM,
                  (uint8_t)PROC_ADC_RESOLUTION,
@@ -114,7 +114,7 @@ public:
     processorAdc_Volt()
       : Variable((const uint8_t)PROC_ADC_VAR_NUM,
                  (uint8_t)PROC_ADC_RESOLUTION,
-                 "voltage", "volt", "adcProc")
+                 "voltage", "volt", "adcProcV")
     {}
     ~processorAdc_Volt(){}
 };

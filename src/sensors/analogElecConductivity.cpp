@@ -128,7 +128,7 @@ String analogElecConductivity::getSensorLocation(void)
 }
 
 /************ ***********************
- * SensorsR   
+ * readEC  
  * 
  * SensorV-- adcPin/Ra --- R1 ---- Sensorconnector&Wire  -- Rwater --- Groond
  * R1 series resistance ~ 500ohms
@@ -147,14 +147,28 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     float EC_uScm,EC25_uScm;  // units are uS per cm
 
  
-    #if defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+    #if !defined ARDUINO_ARCH_AVR
     analogReadResolution(analogElecConductivityDef_Resolution);
-    #endif //ARDUINO_SAMD_FEATHER_Mx_
- 
+    analogReference(ProcAdcDef_Reference); //VDDANA = 3V3
+    #endif //ARDUINO_ARCH_AVR
+    uint8_t useAdcChannel = analogPinNum; 
+    #if defined ARD_ANALOLG_EXTENSION_PINS
+    if ((thisVariantNumPins+ARD_DIGITAL_EXTENSION_PINS)< analogPinNum) {
+        // ARD_COMMON_PIN on SAMD51
+        if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
+            //Setup mutliplexer
+            MS_DBG("  adc_Single Setup Multiplexer ", useAdcChannel,"-->",ARD_ANLAOG_MULTIPLEX_PIN); 
+            digitalWrite(useAdcChannel,1);
+            //useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
+        }
+        analogPinNum = ARD_ANLAOG_MULTIPLEX_PIN;
+    } 
+
+    #endif //ARD_ANALOLG_EXTENSION_PINS
     //************Estimates Resistance of Liquid ****************//
     //digitalWrite(_EcPowerPin,HIGH); assume done by class Sensor
     analogRead(analogPinNum);
-    sensorEC_adc= analogRead(_EcAdcPin);// This is not a mistake, First reading will be low beause if charged a capacitor
+    sensorEC_adc= analogRead(analogPinNum);// This is not a mistake, First reading will be low beause if charged a capacitor
     //digitalWrite(_EcPowerPin,LOW);
  
 
@@ -197,7 +211,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     }else {
         EC25_uScm = EC_uScm;
     }
-
+    
     return EC25_uScm; 
  
 }

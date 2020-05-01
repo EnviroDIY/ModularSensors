@@ -92,6 +92,10 @@ const float AP_LBATT_TBL[APTT_NUM][AP_LPBATT_TBL_NUM] = {
     {0.0, 0.0, 0.0, 0.0, 0.0}
    };
  #endif //0
+#if !defined ProcAdcDef_Reference
+// one of eAnalogReference 
+#define ProcAdcDef_Reference AR_DEFAULT 
+#endif //ProcAdcDef_Reference
 
 class analogElecConductivity : public Sensor
 {
@@ -149,11 +153,6 @@ public:
     {}
     ~analogElecConductivity_EC(){}
 };
-
-
-
-
-
 
 
 #endif  //analogElecConductivity
