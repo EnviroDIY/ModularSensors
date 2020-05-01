@@ -361,6 +361,72 @@ const int8_t ECdataPin1 = ECdataPin1_DEF;
 analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
 #endif //AnalogProcEC_ACT
 
+// ==========================================================================
+//    Keller Acculevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT)
+#define KellerXxxLevel_ACT 1
+//#include <sensors/KellerAcculevel.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+#if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
+HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
+#else
+ AltSoftSerial &modbusSerial = altSoftSerialPhy;  // For software serial if needed
+ //NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+#endif
+
+//byte acculevelModbusAddress = KellerAcculevelModbusAddress;  // The modbus address of KellerAcculevel
+const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+
+const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
+const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+const int8_t RS485PHY_DIR_PIN = CONFIG_HW_RS485PHY_DIR_PIN;
+
+#endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
+
+#if defined KellerAcculevel_ACT
+#include <sensors/KellerAcculevel.h>
+
+byte acculevelModbusAddress = KellerAcculevelModbusAddress_DEF;  // The modbus address of KellerAcculevel
+const uint8_t acculevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Acculevel sensor object
+KellerAcculevel acculevel_snsr(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Acculevel
+// Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+#endif //KellerAcculevel_ACT 
+
+
+// ==========================================================================
+//    Keller Nanolevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#ifdef KellerNanolevel_ACT
+#include <sensors/KellerNanolevel.h>
+
+byte nanolevelModbusAddress = KellerNanolevelModbusAddress_DEF;  // The modbus address of KellerNanolevel
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+
+KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+// Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+
+#endif //KellerNanolevel_ACT
+
 #if defined(ASONG_AM23XX_UUID)
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
@@ -544,16 +610,13 @@ Variable *variableList[] = {
     #endif // ASONG_AM23XX_UUID
     #if defined DIGI_RSSI_UUID
     new Modem_RSSI(&modemPhy, DIGI_RSSI_UUID),
-    //new Modem_SignalPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+    //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     #endif //DIGI_RSSI_UUID
     #if defined MaximDS3231_TEMP_UUID
     //new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
     ds3231TempC,
     ds3231TempFcalc,
     #endif //MaximDS3231_Temp_UUID
-    #if defined AnalogProcEC_ACT
-    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
-    #endif //AnalogProcEC_ACT
 
 };
 
@@ -678,6 +741,19 @@ void  unusedBitsMakeSafe()
 };
 
 // ==========================================================================
+#if defined KellerXxxLevel_ACT
+void modbusPinPowerMng(bool status) {
+    MS_DBG(F("  **** modbusPinPower"), status);
+    #if 1
+    if (status) {
+        modbusSerial.setupPhyPins();
+    } else {
+        modbusSerial.disablePhyPins();
+    }
+    #endif
+}
+#endif //KellerXxxLevel_ACT
+// ==========================================================================
 // Main setup function
 // ==========================================================================
 void setup()
@@ -693,12 +769,12 @@ void setup()
     Serial.begin(serialBaud);
     Serial.print(F("\n---Boot. Build date: ")); 
     Serial.print(build_date);
-    // Print a start-up note to the first serial port
+
     Serial.print(F(" '"));
     Serial.print(sketchName);
-    Serial.print("' ");
-    Serial.print(git_branch);
-    Serial.print(F(" on Logger "));
+    Serial.print(" ");
+    Serial.println(git_branch);
+    Serial.print(F("' on Logger "));
     Serial.println(LoggerID);
 
     Serial.print(F("Using ModularSensors Library version "));
@@ -724,7 +800,7 @@ void setup()
     #if defined UseModem_Module
     MS_DEEP_DBG("***modemSerial.begin");     
     modemSerial.begin(modemBaud);
-      #endif // UseModem_Module
+    #endif // UseModem_Module
 
     #if defined(CONFIG_SENSOR_RS485_PHY) 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
@@ -807,12 +883,6 @@ void setup()
     // the sensor setup we'll skip this too.
     #if defined KellerNanolevel_ACT
     nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
-    #endif //
-    #if defined InsituLTrs485_ACT
-    InsituLT_snsr.registerPinPowerMng(&modbusPinPowerMng);
-        #if defined MS_MODBUS_DEBUG
-        InsituLT_snsr.setDebugStream(&SerialStd); //For RAW modbus data.
-        #endif// MS_MODBUS_DEBUG
     #endif //
     Serial.println(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up

@@ -88,8 +88,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
   //#define WIFIID_CDEF  "NameSsid"  // The WiFi access point, unnecessary for gprs
   //#define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
-  #define WIFIID_CDEF  "Arthur2004Sid"  // The WiFi access point, unnecessary for gprs
-  #define WIFIPWD_CDEF  "LagunaGroup04Psk" // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+  #define WIFIID_CDEF  "xxx"  // The WiFi access point, unnecessary for gprs
+  #define WIFIPWD_CDEF  "yyy" // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
 //This might need revisiting
 #define ARD_ANLAOG_MULTIPLEX_PIN A6
@@ -100,7 +100,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
 
-//#define Decagon_CTD_UUID 1
+#define Decagon_CTD_UUID 1
 #ifdef Decagon_CTD_UUID
   //#define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
@@ -151,7 +151,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
 
-#define ExternalVoltage_ACT 1
+//#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
   #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
   //#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"

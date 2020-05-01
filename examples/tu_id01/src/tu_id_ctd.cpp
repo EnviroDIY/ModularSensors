@@ -332,6 +332,8 @@ AOSongAM2315 am23xx(I2CPower);
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
+//    Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
@@ -453,22 +455,42 @@ Variable *ds3231TempFcalc = new Variable(
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
-    //new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
     #if defined Decagon_CTD_UUID 
-    new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
-    new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
+    //new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
+    CTDDepthInCalc,
+    //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
+    CTDTempFcalc,
     #endif //Decagon_CTD_UUID
+#if defined KellerAcculevel_ACT
+    //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
+    new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
+#endif // KellerAcculevel_ACT
+#if defined KellerNanolevel_ACT
+    //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
+#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-    #if defined(ASONG_AM23XX_UUID)
-    //new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    #if defined ASONG_AM23XX_UUID
+    new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
     new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
     //ASONG_AM23_Air_TemperatureF_UUID
+    //calcAM2315_TempF
     #endif // ASONG_AM23XX_UUID
+    #if defined DIGI_RSSI_UUID
+    new Modem_RSSI(&modemPhy, DIGI_RSSI_UUID),
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+    #endif //DIGI_RSSI_UUID
+    #if defined MaximDS3231_TEMP_UUID
+    //new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
+    ds3231TempC,
+    ds3231TempFcalc,
+    #endif //MaximDS3231_Temp_UUID
     //new Modem_SignalPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 };
 
