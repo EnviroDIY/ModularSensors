@@ -98,8 +98,8 @@ analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin, 
              powerPin, dataPin, measurementsToAverage)
 {
     //_version = version;
-    _EcPowerPin = -1;
-    _EcAdcPin = -1;
+    _EcPowerPin = powerPin;
+    _EcAdcPin = dataPin;
     _ptrWaterTemperature_C = NULL;
    /* #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
         _EcAdcPin = A6;
@@ -211,7 +211,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     }else {
         EC25_uScm = EC_uScm;
     }
-    
+
     return EC25_uScm; 
  
 }

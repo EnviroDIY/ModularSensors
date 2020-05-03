@@ -374,14 +374,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #define rs485AdapterPower_DEF eMcpA_SwVbatOut_pinnum //Boost Sensor Power
   #endif //CONFIG_SENSOR_RS485_PHY
 
-  //#define AnalogProcEC_ACT 1
+  #define AnalogProcEC_ACT 1
   //AnalogProcEC_ACT B031 not UT 
   #ifdef AnalogProcEC_ACT
     #define EC1_UUID      "EC1_UUID"
     //Simplest is ARED=VCC Power D4 - and then ADC_X2 or ADC_X3 - Wiring on J1
     #define PIN_D4_SQWAVE 4
     #define ECpwrPin_DEF PIN_D4_SQWAVE 
-    #define ECdataPin1_DEF B031_AEM_EXT3_PIN
+    #define ECdataPin1_DEF PIN_EXT_ANALOG(B031_AEM_EXT3_PIN)
   #endif //AnalogProcEC_ACT
 
   //Needs enabling to put in to powerdown reduces sleep by 1mA
