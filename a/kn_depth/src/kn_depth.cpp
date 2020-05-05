@@ -2130,7 +2130,7 @@ void setup()
     #if defined UseModem_Module
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
-    modemPhy.setModemLED(modemLEDPin);
+    //modemPhy.setModemLED(modemLEDPin);
     #endif // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLEDPin);
 
