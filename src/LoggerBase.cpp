@@ -1297,9 +1297,6 @@ void Logger::testingMode() {
         // which getModemSignalQuality() does.  For all of the other modules,
         // getModemSignalQuality() is just a straigh pass-through to
         // getSignalQuality().
-        if (_logModem->getModemName().indexOf(F("Digi XBee Wi-Fi")) >= 0) {
-            _logModem->getModemSignalQuality();
-        }
         _logModem->updateModemMetadata();
 
         watchDogTimer.resetWatchDog();

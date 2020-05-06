@@ -198,6 +198,7 @@ class loggerModem {
      * @param level The active level of the pin (0/LOW or 1/HIGH)
      */
     void setModemStatusLevel(bool level);
+
     /**
      * @brief Set the pin level to be used to wake the modem.
      *
@@ -209,6 +210,7 @@ class loggerModem {
      * modem.
      */
     void setModemWakeLevel(bool level);
+
     /**
      * @brief Set the pin level to be used to reset the modem.
      *
@@ -241,11 +243,17 @@ class loggerModem {
      */
     virtual void disconnectInternet(void) = 0;
 
-    // Get the time from NIST via TIME protocol (rfc868)
-    // This would be much more efficient if done over UDP, but I'm doing it
-    // over TCP because I don't have a UDP library for all the modems.
-    // NOTE:  The return is the number of seconds since Jan 1, 1970 IN UTC
+
+    /**
+     * @brief Get the time from NIST via TIME protocol (rfc868)
+     * This would be much more efficient if done over UDP, but I'm doing it over
+     * TCP because I don't have a UDP library for all the modems.
+     * @note The return is the number of seconds since Jan 1, 1970 IN UTC
+     *
+     * @return uint32_t The number of seconds since Jan 1, 1970 IN UTC
+     */
     virtual uint32_t getNISTTime(void) = 0;
+
 
     // Get modem metadata values
     // NOTE:  In order to use the modem variables called below, these functions
@@ -253,22 +261,108 @@ class loggerModem {
     // this is done by the "logDataAndPublish()" function of the logger, but
     // if "handwriting" a logging function, remember to call this.
     // These three functions will query the modem to get new values
-    virtual bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) = 0;
-    virtual bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
-                                       uint16_t& milliVolts)             = 0;
-    virtual float getModemChipTemperature(void)                          = 0;
-    // This gets all of the above at once
+    /**
+     * @brief Queries the modem for the current signal quality and writes the
+     * results to the supplied pointers.
+     *
+     * @param rssi A pointer to an int16_t which will be set with the received
+     * signal strength indicator
+     * @param percent A pointer to an int16_t which will be set with the
+     * "percent" signal strength
+     * @return true indicates that the communication with the modem was
+     * successful and the values referenced by the pointers should be valid
+     * @return false indicates that communication with the modem failed
+     */
+    virtual bool getModemSignalQuality(int16_t& rssi, int16_t& percent) = 0;
+
+    /**
+     * @brief Queries the modem for battery information and writes the values to
+     * the supplied pointers.
+     *
+     * @param chargeState A pointer to an uint8_t which will be set with the
+     * current charge state (significance of value varies)
+     * @param percent A pointer to an int8_t which will be set with the
+     * current charge percent - this may or may not be a valid value depending
+     * on the module and breakout.
+     * @param milliVolts A pointer to an uint16_t which will be set with the
+     * current battery voltage in mV - this may or may not be a valid value
+     * depending on the module and breakout.
+     * @return true indicates that the communication with the modem was
+     * successful and the values referenced by the pointers should be valid
+     * @return false indicates that communication with the modem failed
+     */
+    virtual bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                                      uint16_t& milliVolts) = 0;
+    /**
+     * @brief Get the current temperature provided by the modem module
+     *
+     * @return float The temperature in degrees Celsius
+     */
+    virtual float getModemChipTemperature(void) = 0;
+
+    /**
+     * @brief This queries the modem for signal quality, battery, and
+     * temperature information and stores the values to the static internal
+     * variables.
+     *
+     * @return true indicates that the communication with the modem was
+     * successful and the values of the internal static variables should be
+     * valid.
+     * @return false indicates that communication with the modem failed
+     */
     virtual bool updateModemMetadata(void);
 
     // These functions simply return the stored values
     // NOTE:  These must be static so that the modem variables can call them.
     // (Non-static member functions cannot be called without an object.)
+    /**
+     * @brief Get the stored Modem RSSI value.  Does NOT query the modem for a
+     * new value.
+     *
+     * @return float The stored RSSI
+     */
     static float getModemRSSI();
+
+    /**
+     * @brief Get the stored modem signal strength as a percent.  Does NOT query
+     * the modem for a new value.
+     *
+     * @return float The stored signal strength
+     */
     static float getModemSignalPercent();
+
+    /**
+     * @brief Get the stored modem battery charge state.  Does NOT query the
+     * modem for a new value.
+     *
+     * @return float The stored signal percent
+     */
     static float getModemBatteryChargeState();
+
+    /**
+     * @brief Get the stored modem battery charge percent object.  Does NOT
+     * query the modem for a new value.
+     *
+     * @return float The stored battery charge percent
+     */
     static float getModemBatteryChargePercent();
+
+    /**
+     * @brief Get the stored modem battery voltage.  Does NOT query the modem
+     * for a new value.
+     *
+     * @return float The stored battery voltage in mV
+     */
     static float getModemBatteryVoltage();
+
+    /**
+     * @brief Get the stored modem temperature.   Does NOT query the modem for a
+     * new value.
+     *
+     * @return float THe stored temperature in degrees Celsius
+     */
     static float getModemTemperature();
+
     // static float getModemActivationDuration();
     // static float getModemPoweredDuration();
 

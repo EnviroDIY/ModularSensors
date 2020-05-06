@@ -223,33 +223,29 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     loggerModem::_priorModemTemp      = -9999;
 
     // Initialize variable
-    int16_t  signalQual = -9999;
-    uint16_t volt       = 9999;
+    int16_t  rssi    = -9999;
+    int16_t  percent = -9999;
+    uint16_t volt    = 9999;
 
-    // Enter command mode only once
-    MS_DBG(F("Entering Command Mode:"));
-    success &= gsmModem.commandMode();
-
-    // Try for up to 15 seconds to get a valid signal quality
-    // NOTE:  We can't actually distinguish between a bad modem response, no
-    // modem response, and a real response from the modem of no service/signal.
-    // The TinyGSM getSignalQuality function returns the same "no signal"
-    // value (99 CSQ or 0 RSSI) in all 3 cases.
-    uint32_t startMillis = millis();
+    // Try up to 5 times to get a signal quality - that is, ping NIST 5 times
+    // and see if the value updates
+    int8_t   num_pings_remaining = 5;
+    uint32_t startMillis         = millis();
     do {
-        MS_DBG(F("Getting signal quality:"));
-        signalQual = gsmModem.getSignalQuality();
-        MS_DBG(F("Raw signal quality:"), signalQual);
-        if (signalQual != 0 && signalQual != -9999) break;
-        delay(250);
-    } while ((signalQual == 0 || signalQual == -9999) &&
-             millis() - startMillis < 15000L && success);
+        getModemSignalQuality(rssi, percent)
+            MS_DBG(F("Raw signal quality:"), signalQual);
+        if (percent != 0 && percent != -9999) break;
+        num_pings_remaining--;
+    } while ((percent == 0 || percent == -9999) && num_pings_remaining);
 
     // Convert signal quality to RSSI
-    loggerModem::_priorRSSI = signalQual;
-    MS_DBG(F("CURRENT RSSI:"), signalQual);
-    loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
-    MS_DBG(F("CURRENT Percent signal strength:"), getPctFromRSSI(signalQual));
+    loggerModem::_priorRSSI          = rssi;
+    loggerModem::_priorSignalPercent = percent;
+
+
+    // Enter command mode only once for temp and battery
+    MS_DBG(F("Entering Command Mode:"));
+    success &= gsmModem.commandMode();
 
     MS_DBG(F("Getting input voltage:"));
     volt = gsmModem.getBattVoltage();
