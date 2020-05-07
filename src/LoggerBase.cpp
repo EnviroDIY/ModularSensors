@@ -61,7 +61,13 @@ volatile bool Logger::startTesting = false;
 
 #if defined USE_RTCLIB
 USE_RTCLIB rtcExtPhy;
-#endif //USE_RTC_EXT_PHY
+    //For RTClib.h:DateTime(uint32_t) use secs since 1970
+    #define DateTimeClass(varNam,epochTime) DateTime varNam(epochTime);  
+#else 
+    //For Sodaq_DS3231.h:DateTime(long) uses secs since 2000 
+    //#define DateTimeClass(epochTime) DateTime dtTz((long)((uint64_t)(epochTimeTz-EPOCH_TIME_OFF))); 
+    #define DateTimeClass(varNam,epochTime) DateTime varNam((long)((uint64_t)(epochTime-EPOCH_TIME_OFF))); 
+#endif//  USE_RTCLIB
 
 // Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
@@ -621,7 +627,8 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 }
 DateTime Logger::dtFromEpochT0(uint32_t epochTimeT0)
 {
-    DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
+    //DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
+    DateTimeClass(dt,epochTimeT0)
     return dt;
 }
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -630,7 +637,8 @@ DateTime Logger::dtFromEpochTz(uint32_t epochTimeTz)
 {
     // The DateTime object constructor requires the number of seconds from
     // January 1, 2000 (NOT 1970) as input, so we need to subtract.
-    DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF); 
+    //DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF); 
+    DateTimeClass(dtTz,epochTimeTz)
     return dtTz;
 }
 
@@ -675,14 +683,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
 String Logger::formatDateTime_ISO8601(uint32_t epochTimeTz)
 {
     // Create a DateTime object from the epochTime
-    #if defined USE_RTCLIB
-    //For RTClib.h:DateTime(uint32_t) use secs since 1970
-    DateTime dtTz(epochTimeTz);  
-    #else 
-    //For Sodaq_DS3231.h:DateTime(long) uses secs since 2000 
-    DateTime dtTz((long)((uint64_t)(epochTimeTz-EPOCH_TIME_OFF))); 
-    #endif//  USE_RTCLIB
- 
+    DateTimeClass(dtTz,epochTimeTz);
     return formatDateTime_ISO8601(dtTz);
 }
 
@@ -1763,7 +1764,7 @@ void Logger::begin()
             zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
             zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
             #define zr zero_sleep_rtc
-            MS_DBG("Read internal rtc ",2000+zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+            MS_DBG("Read internal rtc UTC ",2000+zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
         #else // no external _RTC
             // If Power-on Reset Rcause.Bit0 have specific processing
             #define zr zero_sleep_rtc
@@ -1775,7 +1776,7 @@ void Logger::begin()
     #endif //ARDUINO_ARCH_SAMD
 
     // Print out the current time
-    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
+    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
 
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
