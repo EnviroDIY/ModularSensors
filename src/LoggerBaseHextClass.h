@@ -18,6 +18,8 @@ public:
     //virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
     void SDusbPoll(uint8_t sdActions);
     static bool usbDriveActive(void);
+    //Time woken up
+    uint32_t wakeUpTime_secs;
 
 private:
     static int32_t sd1_card_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);

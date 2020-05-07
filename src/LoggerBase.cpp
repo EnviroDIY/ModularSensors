@@ -706,20 +706,19 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // between the logger and the RTC.
     // Only works for ARM CC if long, AVR was uint32_t
     uint32_t nistTz_sec = UTCEpochSeconds+ ((int32_t)getTZOffset())*HOURS_TO_SECS;
-    MS_DBG(F("    NIST Time:"), UTCEpochSeconds, \
-        F("Tz="), getTZOffset(),
-        F("->"), formatDateTime_ISO8601(nistTz_sec));
+    MS_DBG(F("    NIST UST:"), UTCEpochSeconds, 
+        F("->"), formatDateTime_ISO8601(UTCEpochSeconds));
 
     // Check the current RTC time
     uint32_t cur_logT0_sec = getNowEpochT0();
-    uint32_t cur_logTz_sec = getNowEpochTz();
-    MS_DBG(F("    Current Epoch Time on RTC :"), cur_logT0_sec, F("->"), \
-        formatDateTime_ISO8601(cur_logTz_sec));
-    MS_DBG(F("    Offset between epoch NIST and RTC:"), abs(cur_logT0_sec - UTCEpochSeconds));
+    MS_DBG(F("    Current Epoch UST Time on RTC :"), cur_logT0_sec, F("->"), 
+        formatDateTime_ISO8601(cur_logT0_sec));
+    uint32_t time_diff_sec = abs( (long)((uint64_t)cur_logT0_sec) - (long)((uint64_t)UTCEpochSeconds));
+    MS_DBG(F("    Offset between epoch NIST and RTC:"), time_diff_sec  );
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     #define NIST_TIME_DIFF_SEC 5
-    if (abs(cur_logT0_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC )
+    if (time_diff_sec  > NIST_TIME_DIFF_SEC )
     {
         setNowEpochT0(UTCEpochSeconds);
         PRINTOUT(F("Internal Clock set "),formatDateTime_ISO8601(nistTz_sec));
@@ -738,11 +737,12 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec, \
         "->(T=", getTimeZone(),")", \
         formatDateTime_ISO8601(nowExtEpoch_sec));
-    if (abs(nowExtEpoch_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC)
+    time_diff_sec = abs( (long)((uint64_t)nowExtEpoch_sec) - (long)((uint64_t)UTCEpochSeconds));    
+    if (time_diff_sec> NIST_TIME_DIFF_SEC)
     {
 
         rtcExtPhy.adjust(UTCEpochSeconds);//const DateTime& dt);
-        MS_DBG("         rtcExt updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
+        MS_DBG("         rtcExt diff",time_diff_sec," updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
         retVal= true;
     }
 
@@ -858,7 +858,8 @@ bool Logger::checkInterval(void)
     #else  // ARDUINO_ARCH_SAMD
     //Assume that have slept for the right amount of time
     markTime();
-    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz));
+    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz),
+      "extRtc", Logger::formatDateTime_ISO8601( (rtcExtPhy.now()).unixtime() + ((int32_t)getTZOffset()*HOURS_TO_SECS) ));
     retval = true;
     #endif 
     return retval;
@@ -903,7 +904,6 @@ void Logger::wakeISR(void)
 
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
-static uint32_t wakeUpTime_secs;
 void Logger::systemSleep(uint8_t sleep_min)
 {
 
@@ -1272,7 +1272,6 @@ void Logger::printFileHeader(Stream *stream)
 void Logger::printSensorDataCSV(Stream *stream)
 {
     String csvString = "";
-    //Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz))
     dtFromEpochT0(Logger::markedEpochTimeTz).addToString(csvString);
     csvString += ',';
     stream->print(csvString);
@@ -1728,8 +1727,8 @@ void Logger::begin()
 
         //eg Apr 22 2019 16:46:09 in this TZ
         DateTime ccTimeTZ(__DATE__, __TIME__);
-        DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime())-(getTimeZone()*HOURS_TO_SECS)); //set to secs from UST/GMT Year 2000
-        #define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime())
+        DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime())+((int32_t)getTimeZone()*HOURS_TO_SECS)); //set to secs from UST/GMT Year 2000
+        #define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime()-(24*HOURS_TO_SECS))
         #define TIME_FUT_UPPER_UT0 (COMPILE_TIME_UT0+50*365*24*60*60)
         //MS_DBG("Sw Build Time Tz: ",ccTimeTZ.year(),"/",ccTimeTZ.month(),"/",ccTimeTZ.date()," ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second(), " secs2kTz ",ccTimeTZ.unixtime());
         //MS_DBG("Sw Build Time T0: ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date()," ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second()," secs2kT0 ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
