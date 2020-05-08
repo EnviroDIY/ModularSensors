@@ -1,0 +1,323 @@
+\hypertarget{class_logger}{}\doxysection{Logger Class Reference}
+\label{class_logger}\index{Logger@{Logger}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_aa243f5d0cbb1783de8c73ca262ab270d}\label{class_logger_aa243f5d0cbb1783de8c73ca262ab270d}} 
+{\bfseries Logger} (const char $\ast$logger\+ID, uint16\+\_\+t logging\+Interval\+Minutes, int8\+\_\+t S\+D\+Card\+S\+S\+Pin, int8\+\_\+t mcu\+Wake\+Pin, \mbox{\hyperlink{class_variable_array}{Variable\+Array}} $\ast$input\+Array)
+\item 
+\mbox{\Hypertarget{class_logger_af9481b3c381aa7373cd8139a846ac184}\label{class_logger_af9481b3c381aa7373cd8139a846ac184}} 
+{\bfseries Logger} (const char $\ast$logger\+ID, uint16\+\_\+t logging\+Interval\+Minutes, \mbox{\hyperlink{class_variable_array}{Variable\+Array}} $\ast$input\+Array)
+\item 
+\mbox{\Hypertarget{class_logger_a6c5bffad49a23a2b4592250fdd999175}\label{class_logger_a6c5bffad49a23a2b4592250fdd999175}} 
+void {\bfseries set\+Logger\+ID} (const char $\ast$logger\+ID)
+\item 
+\mbox{\Hypertarget{class_logger_ac7f32881ed4ab9f85724917677a10414}\label{class_logger_ac7f32881ed4ab9f85724917677a10414}} 
+const char $\ast$ {\bfseries get\+Logger\+ID} ()
+\item 
+\mbox{\Hypertarget{class_logger_a507bbc2e985fe693a8ef453d6058426c}\label{class_logger_a507bbc2e985fe693a8ef453d6058426c}} 
+void {\bfseries set\+Logging\+Interval} (uint16\+\_\+t logging\+Interval\+Minutes)
+\item 
+\mbox{\Hypertarget{class_logger_a4d953af109233fb875b3ee5aa4ed98c5}\label{class_logger_a4d953af109233fb875b3ee5aa4ed98c5}} 
+uint16\+\_\+t {\bfseries get\+Logging\+Interval} ()
+\item 
+\mbox{\Hypertarget{class_logger_a9a37a6c56e42de993eb7e77ce8578ab1}\label{class_logger_a9a37a6c56e42de993eb7e77ce8578ab1}} 
+void {\bfseries set\+Sampling\+Feature\+U\+U\+ID} (const char $\ast$sampling\+Feature\+U\+U\+ID)
+\item 
+\mbox{\Hypertarget{class_logger_a012fdaa54b32effb4703d28b9d50228f}\label{class_logger_a012fdaa54b32effb4703d28b9d50228f}} 
+const char $\ast$ {\bfseries get\+Sampling\+Feature\+U\+U\+ID} ()
+\item 
+\mbox{\Hypertarget{class_logger_a2521d1ea3009d87ffc05413d54844c24}\label{class_logger_a2521d1ea3009d87ffc05413d54844c24}} 
+void {\bfseries set\+S\+D\+Card\+Pwr} (int8\+\_\+t S\+D\+Card\+Power\+Pin)
+\item 
+\mbox{\Hypertarget{class_logger_ad44ea6d82dcf0634f8d5814e5b1e5e29}\label{class_logger_ad44ea6d82dcf0634f8d5814e5b1e5e29}} 
+void {\bfseries turn\+On\+S\+Dcard} (bool wait\+To\+Settle=true)
+\item 
+\mbox{\Hypertarget{class_logger_a72c4cd3d510016ba209b208eb994c284}\label{class_logger_a72c4cd3d510016ba209b208eb994c284}} 
+void {\bfseries turn\+Off\+S\+Dcard} (bool wait\+For\+Housekeeping=true)
+\item 
+\mbox{\Hypertarget{class_logger_a2b1e437123936f3e7edd5fab8ec14c4c}\label{class_logger_a2b1e437123936f3e7edd5fab8ec14c4c}} 
+void {\bfseries set\+S\+D\+Card\+SS} (int8\+\_\+t S\+D\+Card\+S\+S\+Pin)
+\item 
+\mbox{\Hypertarget{class_logger_a2dc67efee173cd909da71222218bb928}\label{class_logger_a2dc67efee173cd909da71222218bb928}} 
+void {\bfseries set\+S\+D\+Card\+Pins} (int8\+\_\+t S\+D\+Card\+S\+S\+Pin, int8\+\_\+t S\+D\+Card\+Power\+Pin)
+\item 
+\mbox{\Hypertarget{class_logger_a184223f894401e92eaa0472605a9a762}\label{class_logger_a184223f894401e92eaa0472605a9a762}} 
+void {\bfseries set\+R\+T\+C\+Wake\+Pin} (int8\+\_\+t mcu\+Wake\+Pin)
+\item 
+\mbox{\Hypertarget{class_logger_a0dc4d4617505a104180c092b97a778f3}\label{class_logger_a0dc4d4617505a104180c092b97a778f3}} 
+void {\bfseries set\+Alert\+Pin} (int8\+\_\+t led\+Pin)
+\item 
+\mbox{\Hypertarget{class_logger_a45f88f29462d825f442cae07490672c7}\label{class_logger_a45f88f29462d825f442cae07490672c7}} 
+void {\bfseries alert\+On} ()
+\item 
+\mbox{\Hypertarget{class_logger_a99301116348489ffd36d1002f1cf25b6}\label{class_logger_a99301116348489ffd36d1002f1cf25b6}} 
+void {\bfseries alert\+Off} ()
+\item 
+\mbox{\Hypertarget{class_logger_ada1bd39e7dd4e481d644559e089a4483}\label{class_logger_ada1bd39e7dd4e481d644559e089a4483}} 
+void {\bfseries set\+Testing\+Mode\+Pin} (int8\+\_\+t button\+Pin)
+\item 
+\mbox{\Hypertarget{class_logger_adcf78b20c6a4d22d9f503e93d1bdad6a}\label{class_logger_adcf78b20c6a4d22d9f503e93d1bdad6a}} 
+void {\bfseries set\+Logger\+Pins} (int8\+\_\+t mcu\+Wake\+Pin, int8\+\_\+t S\+D\+Card\+S\+S\+Pin, int8\+\_\+t S\+D\+Card\+Power\+Pin, int8\+\_\+t button\+Pin, int8\+\_\+t led\+Pin)
+\item 
+\mbox{\Hypertarget{class_logger_a3c24b4a2b4f1b0ce2e7868692453da48}\label{class_logger_a3c24b4a2b4f1b0ce2e7868692453da48}} 
+void {\bfseries set\+Variable\+Array} (\mbox{\hyperlink{class_variable_array}{Variable\+Array}} $\ast$input\+Array)
+\item 
+\mbox{\Hypertarget{class_logger_a76fc3bdbefe9ce63e46f5ab20487aadd}\label{class_logger_a76fc3bdbefe9ce63e46f5ab20487aadd}} 
+uint8\+\_\+t {\bfseries get\+Array\+Var\+Count} ()
+\item 
+\mbox{\Hypertarget{class_logger_aa61203408145be6ae33b82279f189db1}\label{class_logger_aa61203408145be6ae33b82279f189db1}} 
+String {\bfseries get\+Parent\+Sensor\+Name\+AtI} (uint8\+\_\+t position\+\_\+i)
+\item 
+\mbox{\Hypertarget{class_logger_acdaf1859ec94a747f94cc4ca275b1ff5}\label{class_logger_acdaf1859ec94a747f94cc4ca275b1ff5}} 
+String {\bfseries get\+Parent\+Sensor\+Name\+And\+Location\+AtI} (uint8\+\_\+t position\+\_\+i)
+\item 
+\mbox{\Hypertarget{class_logger_a922e5fab8b42fa66a7117d4e4add85e8}\label{class_logger_a922e5fab8b42fa66a7117d4e4add85e8}} 
+String {\bfseries get\+Var\+Name\+AtI} (uint8\+\_\+t position\+\_\+i)
+\item 
+\mbox{\Hypertarget{class_logger_ac129ac4015ac295d77f7f4d92d0e962c}\label{class_logger_ac129ac4015ac295d77f7f4d92d0e962c}} 
+String {\bfseries get\+Var\+Unit\+AtI} (uint8\+\_\+t position\+\_\+i)
+\item 
+\mbox{\Hypertarget{class_logger_a1bacbc447501972bfc9974a1efabcedb}\label{class_logger_a1bacbc447501972bfc9974a1efabcedb}} 
+String {\bfseries get\+Var\+Code\+AtI} (uint8\+\_\+t position\+\_\+i)
+\item 
+\mbox{\Hypertarget{class_logger_a0283acee6302155d26900ab17ab90bbc}\label{class_logger_a0283acee6302155d26900ab17ab90bbc}} 
+String {\bfseries get\+Var\+U\+U\+I\+D\+AtI} (uint8\+\_\+t position\+\_\+i)
+\item 
+\mbox{\Hypertarget{class_logger_aa237dc90d957020c48a14302ddc84ccd}\label{class_logger_aa237dc90d957020c48a14302ddc84ccd}} 
+String {\bfseries get\+Value\+String\+AtI} (uint8\+\_\+t position\+\_\+i)
+\item 
+\mbox{\Hypertarget{class_logger_a6c34020f1d197c679c4bbc842b1e2e27}\label{class_logger_a6c34020f1d197c679c4bbc842b1e2e27}} 
+void {\bfseries attach\+Modem} (\mbox{\hyperlink{classlogger_modem}{logger\+Modem}} \&modem)
+\item 
+\mbox{\Hypertarget{class_logger_ad2aebf45674c3c5e47aa303db7c52cd6}\label{class_logger_ad2aebf45674c3c5e47aa303db7c52cd6}} 
+bool {\bfseries sync\+R\+TC} ()
+\item 
+\mbox{\Hypertarget{class_logger_aa2d6df378ba7a9f7afac20ff7eeaf70e}\label{class_logger_aa2d6df378ba7a9f7afac20ff7eeaf70e}} 
+void {\bfseries register\+Data\+Publisher} (\mbox{\hyperlink{classdata_publisher}{data\+Publisher}} $\ast$publisher)
+\item 
+\mbox{\Hypertarget{class_logger_ab657579e57f29ebe614ba73bc6ab112d}\label{class_logger_ab657579e57f29ebe614ba73bc6ab112d}} 
+void {\bfseries publish\+Data\+To\+Remotes} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a8eb8f6d36a30b7f4d4e80b0a133192e2}\label{class_logger_a8eb8f6d36a30b7f4d4e80b0a133192e2}} 
+void {\bfseries send\+Data\+To\+Remotes} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a03aa67e62a92ee47afb5f28a6d4d28c3}\label{class_logger_a03aa67e62a92ee47afb5f28a6d4d28c3}} 
+bool {\bfseries set\+R\+T\+Clock} (uint32\+\_\+t U\+T\+C\+Epoch\+Seconds)
+\item 
+\mbox{\Hypertarget{class_logger_a6a97d7cad5296f467f15fef37e026ad5}\label{class_logger_a6a97d7cad5296f467f15fef37e026ad5}} 
+bool {\bfseries check\+Interval} (void)
+\item 
+\mbox{\Hypertarget{class_logger_ac4836d098cb01be4ff7800304643e12b}\label{class_logger_ac4836d098cb01be4ff7800304643e12b}} 
+bool {\bfseries check\+Marked\+Interval} (void)
+\item 
+\mbox{\Hypertarget{class_logger_ace2bea5c224cd938cc1d113cba9db108}\label{class_logger_ace2bea5c224cd938cc1d113cba9db108}} 
+void {\bfseries system\+Sleep} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a245218fa18260292c0ed47e77a342b5a}\label{class_logger_a245218fa18260292c0ed47e77a342b5a}} 
+void {\bfseries set\+File\+Name} (const char $\ast$file\+Name)
+\item 
+\mbox{\Hypertarget{class_logger_a0396c4ed48cf8c72211c8fca8f5683a8}\label{class_logger_a0396c4ed48cf8c72211c8fca8f5683a8}} 
+void {\bfseries set\+File\+Name} (String \&file\+Name)
+\item 
+\mbox{\Hypertarget{class_logger_ab7b8db13230d88ef2382a5f8b2452ca5}\label{class_logger_ab7b8db13230d88ef2382a5f8b2452ca5}} 
+String {\bfseries get\+File\+Name} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a4de271d0622bfd4b38acef2607c8aa64}\label{class_logger_a4de271d0622bfd4b38acef2607c8aa64}} 
+virtual void {\bfseries print\+File\+Header} (Stream $\ast$stream)
+\item 
+\mbox{\Hypertarget{class_logger_a9d6a8598a0ec7fff1e09836b75409fcb}\label{class_logger_a9d6a8598a0ec7fff1e09836b75409fcb}} 
+void {\bfseries print\+Sensor\+Data\+C\+SV} (Stream $\ast$stream)
+\item 
+\mbox{\Hypertarget{class_logger_a3fda4b6a89c97789653af166fbf09d2c}\label{class_logger_a3fda4b6a89c97789653af166fbf09d2c}} 
+bool {\bfseries create\+Log\+File} (String \&filename, bool write\+Default\+Header=false)
+\item 
+\mbox{\Hypertarget{class_logger_a88b4b9247c72d389653985a679067b74}\label{class_logger_a88b4b9247c72d389653985a679067b74}} 
+bool {\bfseries create\+Log\+File} (bool write\+Default\+Header=false)
+\item 
+\mbox{\Hypertarget{class_logger_a453249138181eb007a79a04b245fae6d}\label{class_logger_a453249138181eb007a79a04b245fae6d}} 
+bool {\bfseries log\+To\+SD} (String \&filename, String \&rec)
+\item 
+\mbox{\Hypertarget{class_logger_a898b5c598b90086303569c677e3ca2c3}\label{class_logger_a898b5c598b90086303569c677e3ca2c3}} 
+bool {\bfseries log\+To\+SD} (String \&rec)
+\item 
+\mbox{\Hypertarget{class_logger_aada7ed61575988e4a2a45eaff25ccfb1}\label{class_logger_aada7ed61575988e4a2a45eaff25ccfb1}} 
+bool {\bfseries log\+To\+SD} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a660167dd63eccf44a50387904ead4544}\label{class_logger_a660167dd63eccf44a50387904ead4544}} 
+virtual void {\bfseries testing\+Mode} ()
+\item 
+\mbox{\Hypertarget{class_logger_acfb1b3bbf1a197fd28e9f968ee30785a}\label{class_logger_acfb1b3bbf1a197fd28e9f968ee30785a}} 
+virtual void {\bfseries begin} (const char $\ast$logger\+ID, uint16\+\_\+t logging\+Interval\+Minutes, \mbox{\hyperlink{class_variable_array}{Variable\+Array}} $\ast$input\+Array)
+\item 
+\mbox{\Hypertarget{class_logger_ae06fedef09176ddc023e02927c30a6d7}\label{class_logger_ae06fedef09176ddc023e02927c30a6d7}} 
+virtual void {\bfseries begin} (\mbox{\hyperlink{class_variable_array}{Variable\+Array}} $\ast$input\+Array)
+\item 
+\mbox{\Hypertarget{class_logger_aad628291154b62e38901798e39558839}\label{class_logger_aad628291154b62e38901798e39558839}} 
+virtual void {\bfseries begin} ()
+\item 
+\mbox{\Hypertarget{class_logger_ace559e64d27d3e487d6fe2ced9510d1f}\label{class_logger_ace559e64d27d3e487d6fe2ced9510d1f}} 
+virtual void {\bfseries log\+Data} (void)
+\item 
+\mbox{\Hypertarget{class_logger_aca115f990f222be0a791154792a317e3}\label{class_logger_aca115f990f222be0a791154792a317e3}} 
+void {\bfseries log\+Data\+And\+Publish} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_a0e3f69559c6058e56edf2e8e5bb3e759}\label{class_logger_a0e3f69559c6058e56edf2e8e5bb3e759}} 
+static void {\bfseries set\+Logger\+Time\+Zone} (int8\+\_\+t time\+Zone)
+\item 
+\mbox{\Hypertarget{class_logger_aafcb44fb0b07f1b1bc2eadc77878d299}\label{class_logger_aafcb44fb0b07f1b1bc2eadc77878d299}} 
+static int8\+\_\+t {\bfseries get\+Logger\+Time\+Zone} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a79aa89573ae15d30e41d145963f46cab}\label{class_logger_a79aa89573ae15d30e41d145963f46cab}} 
+static void {\bfseries set\+Time\+Zone} (int8\+\_\+t time\+Zone)
+\item 
+\mbox{\Hypertarget{class_logger_a326286ce66995057d3fc4d2af942fe36}\label{class_logger_a326286ce66995057d3fc4d2af942fe36}} 
+static int8\+\_\+t {\bfseries get\+Time\+Zone} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a621cf4e0ac6e586a386446044624cd1b}\label{class_logger_a621cf4e0ac6e586a386446044624cd1b}} 
+static void {\bfseries set\+R\+T\+C\+Time\+Zone} (int8\+\_\+t time\+Zone)
+\item 
+\mbox{\Hypertarget{class_logger_a9764b9c516d10425a338c4f6ffccebc3}\label{class_logger_a9764b9c516d10425a338c4f6ffccebc3}} 
+static int8\+\_\+t {\bfseries get\+R\+T\+C\+Time\+Zone} (void)
+\item 
+\mbox{\Hypertarget{class_logger_afcee1baf5ec52fcc1793132e22ab11f3}\label{class_logger_afcee1baf5ec52fcc1793132e22ab11f3}} 
+static void {\bfseries set\+T\+Z\+Offset} (int8\+\_\+t offset)
+\item 
+\mbox{\Hypertarget{class_logger_af9806369ac3eb092b88544b5594860c5}\label{class_logger_af9806369ac3eb092b88544b5594860c5}} 
+static int8\+\_\+t {\bfseries get\+T\+Z\+Offset} (void)
+\item 
+\mbox{\Hypertarget{class_logger_aac63a12bfb0955f6c9947f056c52466b}\label{class_logger_aac63a12bfb0955f6c9947f056c52466b}} 
+static uint32\+\_\+t {\bfseries get\+Now\+Epoch} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a96f162f8fff2c55463648802e5a40c0e}\label{class_logger_a96f162f8fff2c55463648802e5a40c0e}} 
+static void {\bfseries set\+Now\+Epoch} (uint32\+\_\+t ts)
+\item 
+\mbox{\Hypertarget{class_logger_a8781623acb07ce4afb684308c52670b6}\label{class_logger_a8781623acb07ce4afb684308c52670b6}} 
+static Date\+Time {\bfseries dt\+From\+Epoch} (uint32\+\_\+t epoch\+Time)
+\item 
+\mbox{\Hypertarget{class_logger_a540c984bbd2ec0e456b5904192e856dc}\label{class_logger_a540c984bbd2ec0e456b5904192e856dc}} 
+static String {\bfseries format\+Date\+Time\+\_\+\+I\+S\+O8601} (Date\+Time \&dt)
+\item 
+\mbox{\Hypertarget{class_logger_ad8a51a4d38cce1c3d2405f38e996c8fa}\label{class_logger_ad8a51a4d38cce1c3d2405f38e996c8fa}} 
+static String {\bfseries format\+Date\+Time\+\_\+\+I\+S\+O8601} (uint32\+\_\+t epoch\+Time)
+\item 
+\mbox{\Hypertarget{class_logger_a32614ef014dac3d16463b0f60173b94c}\label{class_logger_a32614ef014dac3d16463b0f60173b94c}} 
+static bool {\bfseries is\+R\+T\+C\+Sane} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a4e8a32a9062f2afeecb0551315507430}\label{class_logger_a4e8a32a9062f2afeecb0551315507430}} 
+static bool {\bfseries is\+R\+T\+C\+Sane} (uint32\+\_\+t epoch\+Time)
+\item 
+\mbox{\Hypertarget{class_logger_a93cb6cb163ca22b8089ad8d9794d6ff7}\label{class_logger_a93cb6cb163ca22b8089ad8d9794d6ff7}} 
+static void {\bfseries mark\+Time} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a668dc984eaef9d90a274555a9605bf9e}\label{class_logger_a668dc984eaef9d90a274555a9605bf9e}} 
+static void {\bfseries wake\+I\+SR} (void)
+\item 
+\mbox{\Hypertarget{class_logger_abbadc1060ed23e55afc30473e672a8e3}\label{class_logger_abbadc1060ed23e55afc30473e672a8e3}} 
+static void {\bfseries testing\+I\+SR} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_a3adb5f6b1c2b3ac98a6a829b7b4cfbab}\label{class_logger_a3adb5f6b1c2b3ac98a6a829b7b4cfbab}} 
+\mbox{\hyperlink{classextended_watch_dog_a_v_r}{extended\+Watch\+Dog\+A\+VR}} {\bfseries watch\+Dog\+Timer}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_a5e164c225c44630ddf96c3ce1c4dc4cc}\label{class_logger_a5e164c225c44630ddf96c3ce1c4dc4cc}} 
+static uint32\+\_\+t {\bfseries marked\+Epoch\+Time} = 0
+\item 
+\mbox{\Hypertarget{class_logger_a9ec3dd21d0eb0350293dc0373b1d902e}\label{class_logger_a9ec3dd21d0eb0350293dc0373b1d902e}} 
+static volatile bool {\bfseries is\+Logging\+Now} = false
+\item 
+\mbox{\Hypertarget{class_logger_a64fdfb6c9a71b21aaefac691393b607a}\label{class_logger_a64fdfb6c9a71b21aaefac691393b607a}} 
+static volatile bool {\bfseries is\+Testing\+Now} = false
+\item 
+\mbox{\Hypertarget{class_logger_ade9ad57a3cf5c7f7d22fabc743ece17f}\label{class_logger_ade9ad57a3cf5c7f7d22fabc743ece17f}} 
+static volatile bool {\bfseries start\+Testing} = false
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_a8761ee67d7c49d4c9acd2b42ec230b47}\label{class_logger_a8761ee67d7c49d4c9acd2b42ec230b47}} 
+bool {\bfseries initialize\+S\+D\+Card} (void)
+\item 
+\mbox{\Hypertarget{class_logger_a7f5510d561305dc1ac113d68201948d4}\label{class_logger_a7f5510d561305dc1ac113d68201948d4}} 
+void {\bfseries generate\+Auto\+File\+Name} (void)
+\item 
+\mbox{\Hypertarget{class_logger_ac0441b0384792cb5fde631bde9e2cb71}\label{class_logger_ac0441b0384792cb5fde631bde9e2cb71}} 
+void {\bfseries set\+File\+Timestamp} (File file\+To\+Stamp, uint8\+\_\+t stamp\+Flag)
+\item 
+\mbox{\Hypertarget{class_logger_a7521b29cde2c5848d895d7d9210c1249}\label{class_logger_a7521b29cde2c5848d895d7d9210c1249}} 
+bool {\bfseries open\+File} (String \&filename, bool create\+File, bool write\+Default\+Header)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_a35f366ba16bbbf20b76f4d35111b42b6}\label{class_logger_a35f366ba16bbbf20b76f4d35111b42b6}} 
+const char $\ast$ {\bfseries \+\_\+logger\+ID}
+\item 
+\mbox{\Hypertarget{class_logger_a5b52d33b8568a25b14fe376610d02d05}\label{class_logger_a5b52d33b8568a25b14fe376610d02d05}} 
+uint16\+\_\+t {\bfseries \+\_\+logging\+Interval\+Minutes}
+\item 
+\mbox{\Hypertarget{class_logger_a4c2e39dba376c4d943e1fb5c945228d0}\label{class_logger_a4c2e39dba376c4d943e1fb5c945228d0}} 
+int8\+\_\+t {\bfseries \+\_\+\+S\+D\+Card\+S\+S\+Pin}
+\item 
+\mbox{\Hypertarget{class_logger_a03b3ed7db530304059d5f04884b42560}\label{class_logger_a03b3ed7db530304059d5f04884b42560}} 
+int8\+\_\+t {\bfseries \+\_\+\+S\+D\+Card\+Power\+Pin}
+\item 
+\mbox{\Hypertarget{class_logger_a77c536c07049e5717ee7dc5d31899341}\label{class_logger_a77c536c07049e5717ee7dc5d31899341}} 
+int8\+\_\+t {\bfseries \+\_\+mcu\+Wake\+Pin}
+\item 
+\mbox{\Hypertarget{class_logger_a84a289bec9cc6f542e403427fab1ec59}\label{class_logger_a84a289bec9cc6f542e403427fab1ec59}} 
+int8\+\_\+t {\bfseries \+\_\+led\+Pin}
+\item 
+\mbox{\Hypertarget{class_logger_af42ccf041608f3d0f4728195aabcb7cc}\label{class_logger_af42ccf041608f3d0f4728195aabcb7cc}} 
+int8\+\_\+t {\bfseries \+\_\+button\+Pin}
+\item 
+\mbox{\Hypertarget{class_logger_ac557c92cb4c07344ee9c9ab68e3b0526}\label{class_logger_ac557c92cb4c07344ee9c9ab68e3b0526}} 
+const char $\ast$ {\bfseries \+\_\+sampling\+Feature\+U\+U\+ID}
+\item 
+\mbox{\Hypertarget{class_logger_a69469ecbce459f835d0d4b6aa838081d}\label{class_logger_a69469ecbce459f835d0d4b6aa838081d}} 
+\mbox{\hyperlink{class_variable_array}{Variable\+Array}} $\ast$ {\bfseries \+\_\+internal\+Array}
+\item 
+\mbox{\Hypertarget{class_logger_a5a0d6486e5e2ee68825c741122d3a47e}\label{class_logger_a5a0d6486e5e2ee68825c741122d3a47e}} 
+\mbox{\hyperlink{classlogger_modem}{logger\+Modem}} $\ast$ {\bfseries \+\_\+log\+Modem}
+\item 
+\mbox{\Hypertarget{class_logger_a89ce1e56fd75e216faa3ffe2aa955ecd}\label{class_logger_a89ce1e56fd75e216faa3ffe2aa955ecd}} 
+\mbox{\hyperlink{classdata_publisher}{data\+Publisher}} $\ast$ {\bfseries data\+Publishers} \mbox{[}M\+A\+X\+\_\+\+N\+U\+M\+B\+E\+R\+\_\+\+S\+E\+N\+D\+E\+RS\mbox{]}
+\item 
+\mbox{\Hypertarget{class_logger_a35cb09421eab3122c0489cd88e57f8d6}\label{class_logger_a35cb09421eab3122c0489cd88e57f8d6}} 
+Sd\+Fat {\bfseries sd}
+\item 
+\mbox{\Hypertarget{class_logger_a01618684d05a39696dc155566eba0a4e}\label{class_logger_a01618684d05a39696dc155566eba0a4e}} 
+File {\bfseries log\+File}
+\item 
+\mbox{\Hypertarget{class_logger_a9e86ced1966319d94334276f61d41b53}\label{class_logger_a9e86ced1966319d94334276f61d41b53}} 
+String {\bfseries \+\_\+file\+Name}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_affd5dfd55b3fd2b2473d13cf83226db5}\label{class_logger_affd5dfd55b3fd2b2473d13cf83226db5}} 
+static int8\+\_\+t {\bfseries \+\_\+logger\+Time\+Zone} = 0
+\item 
+\mbox{\Hypertarget{class_logger_ae23ccf6e15aed5e91b200beb06c59dc6}\label{class_logger_ae23ccf6e15aed5e91b200beb06c59dc6}} 
+static int8\+\_\+t {\bfseries \+\_\+logger\+R\+T\+C\+Offset} = 0
+\end{DoxyCompactItemize}
+\doxysubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_logger_ae18bf1e876898962ba1a37b127f87e54}\label{class_logger_ae18bf1e876898962ba1a37b127f87e54}} 
+class {\bfseries data\+Publisher}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/Logger\+Base.\+h\item 
+src/Logger\+Base.\+cpp\end{DoxyCompactItemize}

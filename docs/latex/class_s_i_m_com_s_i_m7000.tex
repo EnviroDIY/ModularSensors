@@ -1,0 +1,200 @@
+\hypertarget{class_s_i_m_com_s_i_m7000}{}\doxysection{S\+I\+M\+Com\+S\+I\+M7000 Class Reference}
+\label{class_s_i_m_com_s_i_m7000}\index{SIMComSIM7000@{SIMComSIM7000}}
+Inheritance diagram for S\+I\+M\+Com\+S\+I\+M7000\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_s_i_m_com_s_i_m7000}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a75d1029abeb4ec73d1a8bb34b023a75b}\label{class_s_i_m_com_s_i_m7000_a75d1029abeb4ec73d1a8bb34b023a75b}} 
+{\bfseries S\+I\+M\+Com\+S\+I\+M7000} (Stream $\ast$modem\+Stream, int8\+\_\+t power\+Pin, int8\+\_\+t status\+Pin, int8\+\_\+t modem\+Reset\+Pin, int8\+\_\+t modem\+Sleep\+Rq\+Pin, const char $\ast$apn)
+\item 
+bool \mbox{\hyperlink{class_s_i_m_com_s_i_m7000_a5ec591d9fe31a388420694f186a5a577}{modem\+Wake}} (void) override
+\begin{DoxyCompactList}\small\item\em Does whatever is needed to prepare the modem to connect to the internet. Includes powering up the modem if necessary. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_s_i_m_com_s_i_m7000_a065f7c35e6e8e7139d8c65e8b4e6c48f}{connect\+Internet}} (uint32\+\_\+t max\+Connection\+Time=50000L) override
+\begin{DoxyCompactList}\small\item\em Waits for the modem to successfully register on the cellular network and then requests that it establish either E\+PS or G\+P\+RS data connection. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a44385ffb76670ad6bf98ead7ed13a19d}\label{class_s_i_m_com_s_i_m7000_a44385ffb76670ad6bf98ead7ed13a19d}} 
+void \mbox{\hyperlink{class_s_i_m_com_s_i_m7000_a44385ffb76670ad6bf98ead7ed13a19d}{disconnect\+Internet}} (void) override
+\begin{DoxyCompactList}\small\item\em Detatches from E\+PS or G\+P\+RS data connection and then deregisters from the cellular network. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{class_s_i_m_com_s_i_m7000_ac3f435508d2e285a8a64ab1f32e2e178}{get\+N\+I\+S\+T\+Time}} (void) override
+\begin{DoxyCompactList}\small\item\em Get the time from N\+I\+ST via T\+I\+ME protocol (rfc868) This would be much more efficient if done over U\+DP, but I\textquotesingle{}m doing it over T\+CP because I don\textquotesingle{}t have a U\+DP library for all the modems. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_s_i_m_com_s_i_m7000_ac1e0880478509a23f1d6fb6c46d911d3}{get\+Modem\+Signal\+Quality}} (int16\+\_\+t \&rssi, int16\+\_\+t \&percent) override
+\begin{DoxyCompactList}\small\item\em Queries the modem for the current signal quality and writes the results to the supplied pointers. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_s_i_m_com_s_i_m7000_a3736eb55d321b3f53a04d9a115ff1fdd}{get\+Modem\+Battery\+Stats}} (uint8\+\_\+t \&charge\+State, int8\+\_\+t \&percent, uint16\+\_\+t \&milli\+Volts) override
+\begin{DoxyCompactList}\small\item\em Queries the modem for battery information and writes the values to the supplied pointers. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_s_i_m_com_s_i_m7000_a0fbc5d87cb9629feb9e5e2adee2d4325}{get\+Modem\+Chip\+Temperature}} (void) override
+\begin{DoxyCompactList}\small\item\em Get the current temperature provided by the modem module. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a0f95086ae32f25638c4d39eddad37f6c}\label{class_s_i_m_com_s_i_m7000_a0f95086ae32f25638c4d39eddad37f6c}} 
+Tiny\+Gsm {\bfseries gsm\+Modem}
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a3269a4d1f4203819dc2c0f2928ce1311}\label{class_s_i_m_com_s_i_m7000_a3269a4d1f4203819dc2c0f2928ce1311}} 
+Tiny\+Gsm\+Client {\bfseries gsm\+Client}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a2f138d8738f633e20eadfd2c7e2f51e5}\label{class_s_i_m_com_s_i_m7000_a2f138d8738f633e20eadfd2c7e2f51e5}} 
+bool {\bfseries is\+Internet\+Available} (void) override
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a01804fa9b2240000b48049ad008970cb}\label{class_s_i_m_com_s_i_m7000_a01804fa9b2240000b48049ad008970cb}} 
+bool {\bfseries modem\+Sleep\+Fxn} (void) override
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a4c0b1567a3bb9283a48639f5cdd5f6b9}\label{class_s_i_m_com_s_i_m7000_a4c0b1567a3bb9283a48639f5cdd5f6b9}} 
+bool {\bfseries modem\+Wake\+Fxn} (void) override
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_adab4ae0482c9944e0f9d97ee4f773be4}\label{class_s_i_m_com_s_i_m7000_adab4ae0482c9944e0f9d97ee4f773be4}} 
+bool {\bfseries extra\+Modem\+Setup} (void) override
+\item 
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a0e9615dbc905b0435accbea921e4ed0f}\label{class_s_i_m_com_s_i_m7000_a0e9615dbc905b0435accbea921e4ed0f}} 
+bool {\bfseries is\+Modem\+Awake} (void) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a065f7c35e6e8e7139d8c65e8b4e6c48f}\label{class_s_i_m_com_s_i_m7000_a065f7c35e6e8e7139d8c65e8b4e6c48f}} 
+\index{SIMComSIM7000@{SIMComSIM7000}!connectInternet@{connectInternet}}
+\index{connectInternet@{connectInternet}!SIMComSIM7000@{SIMComSIM7000}}
+\doxysubsubsection{\texorpdfstring{connectInternet()}{connectInternet()}}
+{\footnotesize\ttfamily bool S\+I\+M\+Com\+S\+I\+M7000\+::connect\+Internet (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{max\+Connection\+Time = {\ttfamily 50000L} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Waits for the modem to successfully register on the cellular network and then requests that it establish either E\+PS or G\+P\+RS data connection. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em max\+Connection\+Time} & The maximum length of time in milliseconds to wait for network registration and data sconnection. Defaults to 50,000ms (50s). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true E\+PS or G\+P\+RS data connection has been established 
+
+false The modem was either unable to communicated, unable to register with the cellular network, or unable to establish a E\+PS or G\+P\+RS connection. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_aad2064a5a75500fbc63209eef250fb4b}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a3736eb55d321b3f53a04d9a115ff1fdd}\label{class_s_i_m_com_s_i_m7000_a3736eb55d321b3f53a04d9a115ff1fdd}} 
+\index{SIMComSIM7000@{SIMComSIM7000}!getModemBatteryStats@{getModemBatteryStats}}
+\index{getModemBatteryStats@{getModemBatteryStats}!SIMComSIM7000@{SIMComSIM7000}}
+\doxysubsubsection{\texorpdfstring{getModemBatteryStats()}{getModemBatteryStats()}}
+{\footnotesize\ttfamily bool S\+I\+M\+Com\+S\+I\+M7000\+::get\+Modem\+Battery\+Stats (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \&}]{charge\+State,  }\item[{int8\+\_\+t \&}]{percent,  }\item[{uint16\+\_\+t \&}]{milli\+Volts }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Queries the modem for battery information and writes the values to the supplied pointers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em charge\+State} & A pointer to an uint8\+\_\+t which will be set with the current charge state (significance of value varies) \\
+\hline
+{\em percent} & A pointer to an int8\+\_\+t which will be set with the current charge percent -\/ this may or may not be a valid value depending on the module and breakout. \\
+\hline
+{\em milli\+Volts} & A pointer to an uint16\+\_\+t which will be set with the current battery voltage in mV -\/ this may or may not be a valid value depending on the module and breakout. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true indicates that the communication with the modem was successful and the values referenced by the pointers should be valid 
+
+false indicates that communication with the modem failed 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_ab5dabb3b126e9efaca5d0c53996d0003}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a0fbc5d87cb9629feb9e5e2adee2d4325}\label{class_s_i_m_com_s_i_m7000_a0fbc5d87cb9629feb9e5e2adee2d4325}} 
+\index{SIMComSIM7000@{SIMComSIM7000}!getModemChipTemperature@{getModemChipTemperature}}
+\index{getModemChipTemperature@{getModemChipTemperature}!SIMComSIM7000@{SIMComSIM7000}}
+\doxysubsubsection{\texorpdfstring{getModemChipTemperature()}{getModemChipTemperature()}}
+{\footnotesize\ttfamily float S\+I\+M\+Com\+S\+I\+M7000\+::get\+Modem\+Chip\+Temperature (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Get the current temperature provided by the modem module. 
+
+\begin{DoxyReturn}{Returns}
+float The temperature in degrees Celsius 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_ab9008332e41b32b8bffc93c689add260}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_ac1e0880478509a23f1d6fb6c46d911d3}\label{class_s_i_m_com_s_i_m7000_ac1e0880478509a23f1d6fb6c46d911d3}} 
+\index{SIMComSIM7000@{SIMComSIM7000}!getModemSignalQuality@{getModemSignalQuality}}
+\index{getModemSignalQuality@{getModemSignalQuality}!SIMComSIM7000@{SIMComSIM7000}}
+\doxysubsubsection{\texorpdfstring{getModemSignalQuality()}{getModemSignalQuality()}}
+{\footnotesize\ttfamily bool S\+I\+M\+Com\+S\+I\+M7000\+::get\+Modem\+Signal\+Quality (\begin{DoxyParamCaption}\item[{int16\+\_\+t \&}]{rssi,  }\item[{int16\+\_\+t \&}]{percent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Queries the modem for the current signal quality and writes the results to the supplied pointers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rssi} & A pointer to an int16\+\_\+t which will be set with the received signal strength indicator \\
+\hline
+{\em percent} & A pointer to an int16\+\_\+t which will be set with the \char`\"{}percent\char`\"{} signal strength \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true indicates that the communication with the modem was successful and the values referenced by the pointers should be valid 
+
+false indicates that communication with the modem failed 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_aa132afc4a28cafb1dc2e0a925f6a64ef}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_ac3f435508d2e285a8a64ab1f32e2e178}\label{class_s_i_m_com_s_i_m7000_ac3f435508d2e285a8a64ab1f32e2e178}} 
+\index{SIMComSIM7000@{SIMComSIM7000}!getNISTTime@{getNISTTime}}
+\index{getNISTTime@{getNISTTime}!SIMComSIM7000@{SIMComSIM7000}}
+\doxysubsubsection{\texorpdfstring{getNISTTime()}{getNISTTime()}}
+{\footnotesize\ttfamily uint32\+\_\+t S\+I\+M\+Com\+S\+I\+M7000\+::get\+N\+I\+S\+T\+Time (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Get the time from N\+I\+ST via T\+I\+ME protocol (rfc868) This would be much more efficient if done over U\+DP, but I\textquotesingle{}m doing it over T\+CP because I don\textquotesingle{}t have a U\+DP library for all the modems. 
+
+\begin{DoxyNote}{Note}
+The return is the number of seconds since Jan 1, 1970 IN U\+TC
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+uint32\+\_\+t The number of seconds since Jan 1, 1970 IN U\+TC 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_a8be23e50e1de587dcd71384dea5185ff}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_s_i_m_com_s_i_m7000_a5ec591d9fe31a388420694f186a5a577}\label{class_s_i_m_com_s_i_m7000_a5ec591d9fe31a388420694f186a5a577}} 
+\index{SIMComSIM7000@{SIMComSIM7000}!modemWake@{modemWake}}
+\index{modemWake@{modemWake}!SIMComSIM7000@{SIMComSIM7000}}
+\doxysubsubsection{\texorpdfstring{modemWake()}{modemWake()}}
+{\footnotesize\ttfamily bool S\+I\+M\+Com\+S\+I\+M7000\+::modem\+Wake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Does whatever is needed to prepare the modem to connect to the internet. Includes powering up the modem if necessary. 
+
+\begin{DoxyReturn}{Returns}
+true Wake was sucessful, modem should be ready 
+
+false Wake failed, modem is probably not able to communicate 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_af2c32f1b143a2dc94c0fe5a67121af88}{logger\+Modem}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/modems/S\+I\+M\+Com\+S\+I\+M7000.\+h\item 
+src/modems/S\+I\+M\+Com\+S\+I\+M7000.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,26 @@
+var class_variable_array =
+[
+    [ "VariableArray", "class_variable_array.html#a21ad2a1cf6ca1049bf9f4ba82ba76811", null ],
+    [ "VariableArray", "class_variable_array.html#ae57bce4fdb94536fa61016f2760ade41", null ],
+    [ "VariableArray", "class_variable_array.html#a89ef7cf7e9f5906479dd7c5523b6aabf", null ],
+    [ "~VariableArray", "class_variable_array.html#ae4f3371b7a7a13ad969e407758db8748", null ],
+    [ "begin", "class_variable_array.html#a2b62a4faefe6d2ab1397413e5d5f49c6", null ],
+    [ "begin", "class_variable_array.html#a042cb9ce52beaf76ddd78630391333bc", null ],
+    [ "begin", "class_variable_array.html#a54c338a7305f0d30caf206c1eac3ab6e", null ],
+    [ "completeUpdate", "class_variable_array.html#adb63e000ac2db95f172d5fd9b41c61b3", null ],
+    [ "getCalculatedVariableCount", "class_variable_array.html#a52c38882eaa89579b6598c49d65fec1b", null ],
+    [ "getSensorCount", "class_variable_array.html#a5e1c212e2ae005aebee7f51d259aed29", null ],
+    [ "getVariableCount", "class_variable_array.html#a0d5b2f80ae85225c2cef7b385693cc03", null ],
+    [ "matchUUIDs", "class_variable_array.html#ab8e9af41e1311600b177764a3aa91b16", null ],
+    [ "printSensorData", "class_variable_array.html#a686f78d9e6531dbe291423e82a585e1e", null ],
+    [ "sensorsPowerDown", "class_variable_array.html#a7e8145b59e32a080e035fbcf0067747f", null ],
+    [ "sensorsPowerUp", "class_variable_array.html#a2ffbb603281e527d1715eb36d0827d71", null ],
+    [ "sensorsSleep", "class_variable_array.html#a20e71581938f629c09f24fe334b58a34", null ],
+    [ "sensorsWake", "class_variable_array.html#a4e44c44195edcaeb2049c86cf416b5a3", null ],
+    [ "setupSensors", "class_variable_array.html#aae604ab62c7556277f22216189156ad2", null ],
+    [ "updateAllSensors", "class_variable_array.html#adbd33ac2037fcadef5f1afb8d3e863cc", null ],
+    [ "_maxSamplestoAverage", "class_variable_array.html#a2bb5cd78018657e3ef999df0c8d82b58", null ],
+    [ "_sensorCount", "class_variable_array.html#a55ee05fb10630e4568dbea35a3aae99e", null ],
+    [ "_variableCount", "class_variable_array.html#afb0bf46b6ab204241294b753d0c1a18d", null ],
+    [ "arrayOfVars", "class_variable_array.html#a744f9014342b03d62114d3a1b6827222", null ]
+];

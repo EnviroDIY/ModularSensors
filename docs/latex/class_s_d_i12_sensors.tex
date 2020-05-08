@@ -1,0 +1,69 @@
+\hypertarget{class_s_d_i12_sensors}{}\doxysection{S\+D\+I12\+Sensors Class Reference}
+\label{class_s_d_i12_sensors}\index{SDI12Sensors@{SDI12Sensors}}
+Inheritance diagram for S\+D\+I12\+Sensors\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.823529cm]{class_s_d_i12_sensors}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a1017312b563979fe22672c513d7e7647}\label{class_s_d_i12_sensors_a1017312b563979fe22672c513d7e7647}} 
+{\bfseries S\+D\+I12\+Sensors} (char S\+D\+I12address, int8\+\_\+t power\+Pin, int8\+\_\+t data\+Pin, uint8\+\_\+t measurements\+To\+Average=1, const char $\ast$sensor\+Name=\char`\"{}S\+D\+I12-\/\mbox{\hyperlink{class_sensor}{Sensor}}\char`\"{}, const uint8\+\_\+t num\+Returned\+Vars=1, uint32\+\_\+t warm\+Up\+Time\+\_\+ms=0, uint32\+\_\+t stabilization\+Time\+\_\+ms=0, uint32\+\_\+t measurement\+Time\+\_\+ms=0)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_acefa4d9a7107b7fc82f36089ab18e5a6}\label{class_s_d_i12_sensors_acefa4d9a7107b7fc82f36089ab18e5a6}} 
+{\bfseries S\+D\+I12\+Sensors} (char $\ast$S\+D\+I12address, int8\+\_\+t power\+Pin, int8\+\_\+t data\+Pin, uint8\+\_\+t measurements\+To\+Average=1, const char $\ast$sensor\+Name=\char`\"{}S\+D\+I12-\/\mbox{\hyperlink{class_sensor}{Sensor}}\char`\"{}, const uint8\+\_\+t num\+Returned\+Vars=1, uint32\+\_\+t warm\+Up\+Time\+\_\+ms=0, uint32\+\_\+t stabilization\+Time\+\_\+ms=0, uint32\+\_\+t measurement\+Time\+\_\+ms=0)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_af3bca1cbbab75f9a35f256a1e28b75e3}\label{class_s_d_i12_sensors_af3bca1cbbab75f9a35f256a1e28b75e3}} 
+{\bfseries S\+D\+I12\+Sensors} (int S\+D\+I12address, int8\+\_\+t power\+Pin, int8\+\_\+t data\+Pin, uint8\+\_\+t measurements\+To\+Average=1, const char $\ast$sensor\+Name=\char`\"{}S\+D\+I12-\/\mbox{\hyperlink{class_sensor}{Sensor}}\char`\"{}, const uint8\+\_\+t num\+Returned\+Vars=1, uint32\+\_\+t warm\+Up\+Time\+\_\+ms=0, uint32\+\_\+t stabilization\+Time\+\_\+ms=0, uint32\+\_\+t measurement\+Time\+\_\+ms=0)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a2cfae37b59f3419f5f4fc550e74ba6ae}\label{class_s_d_i12_sensors_a2cfae37b59f3419f5f4fc550e74ba6ae}} 
+String {\bfseries get\+Sensor\+Vendor} (void)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a576264cf8b13c0f69fd29006b811d934}\label{class_s_d_i12_sensors_a576264cf8b13c0f69fd29006b811d934}} 
+String {\bfseries get\+Sensor\+Model} (void)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_aac6c5aaadc225c66ac76cb8c6faa1c58}\label{class_s_d_i12_sensors_aac6c5aaadc225c66ac76cb8c6faa1c58}} 
+String {\bfseries get\+Sensor\+Version} (void)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_adacdd954762334288fc53d38f972b37a}\label{class_s_d_i12_sensors_adacdd954762334288fc53d38f972b37a}} 
+String {\bfseries get\+Sensor\+Serial\+Number} (void)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a986f9a62f33702a55ef054904e49d526}\label{class_s_d_i12_sensors_a986f9a62f33702a55ef054904e49d526}} 
+String {\bfseries get\+Sensor\+Location} (void) override
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a61e6e45c5385550cc4f962fcc999d661}\label{class_s_d_i12_sensors_a61e6e45c5385550cc4f962fcc999d661}} 
+bool {\bfseries setup} (void) override
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_ad08877b1895e8805612ccce2077c3c7e}\label{class_s_d_i12_sensors_ad08877b1895e8805612ccce2077c3c7e}} 
+bool {\bfseries start\+Single\+Measurement} (void) override
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a4f031d54c802ccff01f8cef630ff6fa4}\label{class_s_d_i12_sensors_a4f031d54c802ccff01f8cef630ff6fa4}} 
+bool {\bfseries add\+Single\+Measurement\+Result} (void) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a7f2df35554b4ea236b333f015cbc17ec}\label{class_s_d_i12_sensors_a7f2df35554b4ea236b333f015cbc17ec}} 
+bool {\bfseries request\+Sensor\+Acknowledgement} (void)
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a88cace021d28ce7824e892d0a06e9f16}\label{class_s_d_i12_sensors_a88cace021d28ce7824e892d0a06e9f16}} 
+bool {\bfseries get\+Sensor\+Info} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_ac62051c0d9551dc3bd0692634aaccfac}\label{class_s_d_i12_sensors_ac62051c0d9551dc3bd0692634aaccfac}} 
+S\+D\+I12 {\bfseries \+\_\+\+S\+D\+I12\+Internal}
+\item 
+\mbox{\Hypertarget{class_s_d_i12_sensors_a15c553ed0cb9fa5b5f20234276cc0021}\label{class_s_d_i12_sensors_a15c553ed0cb9fa5b5f20234276cc0021}} 
+char {\bfseries \+\_\+\+S\+D\+I12address}
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/sensors/S\+D\+I12\+Sensors.\+h\item 
+src/sensors/S\+D\+I12\+Sensors.\+cpp\end{DoxyCompactItemize}

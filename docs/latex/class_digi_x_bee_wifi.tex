@@ -1,0 +1,215 @@
+\hypertarget{class_digi_x_bee_wifi}{}\doxysection{Digi\+X\+Bee\+Wifi Class Reference}
+\label{class_digi_x_bee_wifi}\index{DigiXBeeWifi@{DigiXBeeWifi}}
+Inheritance diagram for Digi\+X\+Bee\+Wifi\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_digi_x_bee_wifi}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_digi_x_bee_wifi_a5fb0a398beb43d0cc100e30d7f720824}\label{class_digi_x_bee_wifi_a5fb0a398beb43d0cc100e30d7f720824}} 
+{\bfseries Digi\+X\+Bee\+Wifi} (Stream $\ast$modem\+Stream, int8\+\_\+t power\+Pin, int8\+\_\+t status\+Pin, bool use\+C\+T\+S\+Status, int8\+\_\+t modem\+Reset\+Pin, int8\+\_\+t modem\+Sleep\+Rq\+Pin, const char $\ast$ssid, const char $\ast$pwd)
+\item 
+bool \mbox{\hyperlink{class_digi_x_bee_wifi_ab97e8f4a2c814d7d2eb602273a109c12}{modem\+Wake}} (void) override
+\begin{DoxyCompactList}\small\item\em Does whatever is needed to prepare the modem to connect to the internet. Includes powering up the modem if necessary. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_digi_x_bee_wifi_ab39d0eb2c44f556cec09a5c9d30d5669}{connect\+Internet}} (uint32\+\_\+t max\+Connection\+Time=50000L) override
+\begin{DoxyCompactList}\small\item\em Waits for the modem to successfully register on the cellular network and then requests that it establish either E\+PS or G\+P\+RS data connection. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_digi_x_bee_wifi_a189dd7bd8e8baef1089133e85efd80de}\label{class_digi_x_bee_wifi_a189dd7bd8e8baef1089133e85efd80de}} 
+void \mbox{\hyperlink{class_digi_x_bee_wifi_a189dd7bd8e8baef1089133e85efd80de}{disconnect\+Internet}} (void) override
+\begin{DoxyCompactList}\small\item\em Detatches from E\+PS or G\+P\+RS data connection and then deregisters from the cellular network. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{class_digi_x_bee_wifi_af0c3df62810779188f718ee187348088}{get\+N\+I\+S\+T\+Time}} (void) override
+\begin{DoxyCompactList}\small\item\em Get the time from N\+I\+ST via T\+I\+ME protocol (rfc868) This would be much more efficient if done over U\+DP, but I\textquotesingle{}m doing it over T\+CP because I don\textquotesingle{}t have a U\+DP library for all the modems. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_digi_x_bee_wifi_aff20d7e5137c4daf95657c0fabfa776d}{get\+Modem\+Signal\+Quality}} (int16\+\_\+t \&rssi, int16\+\_\+t \&percent) override
+\begin{DoxyCompactList}\small\item\em Queries the modem for the current signal quality and writes the results to the supplied pointers. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_digi_x_bee_wifi_aff2ea608ec913d507963743fcd8761f5}{get\+Modem\+Battery\+Stats}} (uint8\+\_\+t \&charge\+State, int8\+\_\+t \&percent, uint16\+\_\+t \&milli\+Volts) override
+\begin{DoxyCompactList}\small\item\em Queries the modem for battery information and writes the values to the supplied pointers. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{class_digi_x_bee_wifi_ac6daedb02b32576d5a431c2670d602c5}{get\+Modem\+Chip\+Temperature}} (void) override
+\begin{DoxyCompactList}\small\item\em Get the current temperature provided by the modem module. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_digi_x_bee_wifi_a61defb23766e53009757e9f82467ba1a}{update\+Modem\+Metadata}} (void) override
+\begin{DoxyCompactList}\small\item\em This queries the modem for signal quality, battery, and temperature information and stores the values to the static internal variables. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_digi_x_bee_wifi_a4d9e0a2e3a067c6580cf4e28ae21852a}\label{class_digi_x_bee_wifi_a4d9e0a2e3a067c6580cf4e28ae21852a}} 
+Tiny\+Gsm {\bfseries gsm\+Modem}
+\item 
+\mbox{\Hypertarget{class_digi_x_bee_wifi_a2ba3814bcc1b6b7281747b7083874083}\label{class_digi_x_bee_wifi_a2ba3814bcc1b6b7281747b7083874083}} 
+Tiny\+Gsm\+Client {\bfseries gsm\+Client}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_digi_x_bee_wifi_a756162822d6a11acb5e855c3c8a87905}\label{class_digi_x_bee_wifi_a756162822d6a11acb5e855c3c8a87905}} 
+bool {\bfseries is\+Internet\+Available} (void) override
+\item 
+\mbox{\Hypertarget{class_digi_x_bee_wifi_ab7b2a7afd1e889fd67a30ef02dc8ba1b}\label{class_digi_x_bee_wifi_ab7b2a7afd1e889fd67a30ef02dc8ba1b}} 
+bool {\bfseries extra\+Modem\+Setup} (void) override
+\item 
+\mbox{\Hypertarget{class_digi_x_bee_wifi_a69c1538ff753cce1c7d0d98363e2e1d1}\label{class_digi_x_bee_wifi_a69c1538ff753cce1c7d0d98363e2e1d1}} 
+bool {\bfseries is\+Modem\+Awake} (void) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_digi_x_bee_wifi_ab39d0eb2c44f556cec09a5c9d30d5669}\label{class_digi_x_bee_wifi_ab39d0eb2c44f556cec09a5c9d30d5669}} 
+\index{DigiXBeeWifi@{DigiXBeeWifi}!connectInternet@{connectInternet}}
+\index{connectInternet@{connectInternet}!DigiXBeeWifi@{DigiXBeeWifi}}
+\doxysubsubsection{\texorpdfstring{connectInternet()}{connectInternet()}}
+{\footnotesize\ttfamily bool Digi\+X\+Bee\+Wifi\+::connect\+Internet (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{max\+Connection\+Time = {\ttfamily 50000L} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Waits for the modem to successfully register on the cellular network and then requests that it establish either E\+PS or G\+P\+RS data connection. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em max\+Connection\+Time} & The maximum length of time in milliseconds to wait for network registration and data sconnection. Defaults to 50,000ms (50s). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true E\+PS or G\+P\+RS data connection has been established 
+
+false The modem was either unable to communicated, unable to register with the cellular network, or unable to establish a E\+PS or G\+P\+RS connection. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_aad2064a5a75500fbc63209eef250fb4b}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_digi_x_bee_wifi_aff2ea608ec913d507963743fcd8761f5}\label{class_digi_x_bee_wifi_aff2ea608ec913d507963743fcd8761f5}} 
+\index{DigiXBeeWifi@{DigiXBeeWifi}!getModemBatteryStats@{getModemBatteryStats}}
+\index{getModemBatteryStats@{getModemBatteryStats}!DigiXBeeWifi@{DigiXBeeWifi}}
+\doxysubsubsection{\texorpdfstring{getModemBatteryStats()}{getModemBatteryStats()}}
+{\footnotesize\ttfamily bool Digi\+X\+Bee\+Wifi\+::get\+Modem\+Battery\+Stats (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \&}]{charge\+State,  }\item[{int8\+\_\+t \&}]{percent,  }\item[{uint16\+\_\+t \&}]{milli\+Volts }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Queries the modem for battery information and writes the values to the supplied pointers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em charge\+State} & A pointer to an uint8\+\_\+t which will be set with the current charge state (significance of value varies) \\
+\hline
+{\em percent} & A pointer to an int8\+\_\+t which will be set with the current charge percent -\/ this may or may not be a valid value depending on the module and breakout. \\
+\hline
+{\em milli\+Volts} & A pointer to an uint16\+\_\+t which will be set with the current battery voltage in mV -\/ this may or may not be a valid value depending on the module and breakout. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true indicates that the communication with the modem was successful and the values referenced by the pointers should be valid 
+
+false indicates that communication with the modem failed 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_ab5dabb3b126e9efaca5d0c53996d0003}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_digi_x_bee_wifi_ac6daedb02b32576d5a431c2670d602c5}\label{class_digi_x_bee_wifi_ac6daedb02b32576d5a431c2670d602c5}} 
+\index{DigiXBeeWifi@{DigiXBeeWifi}!getModemChipTemperature@{getModemChipTemperature}}
+\index{getModemChipTemperature@{getModemChipTemperature}!DigiXBeeWifi@{DigiXBeeWifi}}
+\doxysubsubsection{\texorpdfstring{getModemChipTemperature()}{getModemChipTemperature()}}
+{\footnotesize\ttfamily float Digi\+X\+Bee\+Wifi\+::get\+Modem\+Chip\+Temperature (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Get the current temperature provided by the modem module. 
+
+\begin{DoxyReturn}{Returns}
+float The temperature in degrees Celsius 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_ab9008332e41b32b8bffc93c689add260}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_digi_x_bee_wifi_aff20d7e5137c4daf95657c0fabfa776d}\label{class_digi_x_bee_wifi_aff20d7e5137c4daf95657c0fabfa776d}} 
+\index{DigiXBeeWifi@{DigiXBeeWifi}!getModemSignalQuality@{getModemSignalQuality}}
+\index{getModemSignalQuality@{getModemSignalQuality}!DigiXBeeWifi@{DigiXBeeWifi}}
+\doxysubsubsection{\texorpdfstring{getModemSignalQuality()}{getModemSignalQuality()}}
+{\footnotesize\ttfamily bool Digi\+X\+Bee\+Wifi\+::get\+Modem\+Signal\+Quality (\begin{DoxyParamCaption}\item[{int16\+\_\+t \&}]{rssi,  }\item[{int16\+\_\+t \&}]{percent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Queries the modem for the current signal quality and writes the results to the supplied pointers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rssi} & A pointer to an int16\+\_\+t which will be set with the received signal strength indicator \\
+\hline
+{\em percent} & A pointer to an int16\+\_\+t which will be set with the \char`\"{}percent\char`\"{} signal strength \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true indicates that the communication with the modem was successful and the values referenced by the pointers should be valid 
+
+false indicates that communication with the modem failed 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_aa132afc4a28cafb1dc2e0a925f6a64ef}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_digi_x_bee_wifi_af0c3df62810779188f718ee187348088}\label{class_digi_x_bee_wifi_af0c3df62810779188f718ee187348088}} 
+\index{DigiXBeeWifi@{DigiXBeeWifi}!getNISTTime@{getNISTTime}}
+\index{getNISTTime@{getNISTTime}!DigiXBeeWifi@{DigiXBeeWifi}}
+\doxysubsubsection{\texorpdfstring{getNISTTime()}{getNISTTime()}}
+{\footnotesize\ttfamily uint32\+\_\+t Digi\+X\+Bee\+Wifi\+::get\+N\+I\+S\+T\+Time (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Get the time from N\+I\+ST via T\+I\+ME protocol (rfc868) This would be much more efficient if done over U\+DP, but I\textquotesingle{}m doing it over T\+CP because I don\textquotesingle{}t have a U\+DP library for all the modems. 
+
+\begin{DoxyNote}{Note}
+The return is the number of seconds since Jan 1, 1970 IN U\+TC
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+uint32\+\_\+t The number of seconds since Jan 1, 1970 IN U\+TC 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_a8be23e50e1de587dcd71384dea5185ff}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_digi_x_bee_wifi_ab97e8f4a2c814d7d2eb602273a109c12}\label{class_digi_x_bee_wifi_ab97e8f4a2c814d7d2eb602273a109c12}} 
+\index{DigiXBeeWifi@{DigiXBeeWifi}!modemWake@{modemWake}}
+\index{modemWake@{modemWake}!DigiXBeeWifi@{DigiXBeeWifi}}
+\doxysubsubsection{\texorpdfstring{modemWake()}{modemWake()}}
+{\footnotesize\ttfamily bool Digi\+X\+Bee\+Wifi\+::modem\+Wake (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Does whatever is needed to prepare the modem to connect to the internet. Includes powering up the modem if necessary. 
+
+\begin{DoxyReturn}{Returns}
+true Wake was sucessful, modem should be ready 
+
+false Wake failed, modem is probably not able to communicate 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classlogger_modem_af2c32f1b143a2dc94c0fe5a67121af88}{logger\+Modem}}.
+
+\mbox{\Hypertarget{class_digi_x_bee_wifi_a61defb23766e53009757e9f82467ba1a}\label{class_digi_x_bee_wifi_a61defb23766e53009757e9f82467ba1a}} 
+\index{DigiXBeeWifi@{DigiXBeeWifi}!updateModemMetadata@{updateModemMetadata}}
+\index{updateModemMetadata@{updateModemMetadata}!DigiXBeeWifi@{DigiXBeeWifi}}
+\doxysubsubsection{\texorpdfstring{updateModemMetadata()}{updateModemMetadata()}}
+{\footnotesize\ttfamily bool Digi\+X\+Bee\+Wifi\+::update\+Modem\+Metadata (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+This queries the modem for signal quality, battery, and temperature information and stores the values to the static internal variables. 
+
+\begin{DoxyReturn}{Returns}
+true indicates that the communication with the modem was successful and the values of the internal static variables should be valid. 
+
+false indicates that communication with the modem failed 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classlogger_modem_aa0cd44673db35745e9cace36e8bab0e5}{logger\+Modem}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/modems/Digi\+X\+Bee\+Wifi.\+h\item 
+src/modems/Digi\+X\+Bee\+Wifi.\+cpp\end{DoxyCompactItemize}

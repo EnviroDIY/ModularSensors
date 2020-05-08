@@ -1,0 +1,571 @@
+%!PS-Adobe-2.0 EPSF-2.0
+%%Title: ClassName
+%%Creator: Doxygen
+%%CreationDate: Time
+%%For: 
+%Magnification: 1.00
+%%Orientation: Portrait
+%%BoundingBox: 0 0 500 4502.369629
+%%Pages: 0
+%%BeginSetup
+%%EndSetup
+%%EndComments
+
+% ----- variables -----
+
+/boxwidth 0 def
+/boxheight 40 def
+/fontheight 24 def
+/marginwidth 10 def
+/distx 20 def
+/disty 40 def
+/boundaspect 0.111053 def  % aspect ratio of the BoundingBox (width/height)
+/boundx 500 def
+/boundy boundx boundaspect div def
+/xspacing 0 def
+/yspacing 0 def
+/rows 95 def
+/cols 2 def
+/scalefactor 0 def
+/boxfont /Times-Roman findfont fontheight scalefont def
+
+% ----- procedures -----
+
+/dotted { [1 4] 0 setdash } def
+/dashed { [5] 0 setdash } def
+/solid  { [] 0 setdash } def
+
+/max % result = MAX(arg1,arg2)
+{
+  /a exch def
+  /b exch def
+  a b gt {a} {b} ifelse
+} def
+
+/xoffset % result = MAX(0,(scalefactor-(boxwidth*cols+distx*(cols-1)))/2)
+{
+  0 scalefactor boxwidth cols mul distx cols 1 sub mul add sub 2 div max
+} def
+
+/cw % boxwidth = MAX(boxwidth, stringwidth(arg1))
+{
+  /str exch def
+  /boxwidth boxwidth str stringwidth pop max def
+} def
+
+/box % draws a box with text 'arg1' at grid pos (arg2,arg3)
+{ gsave
+  2 setlinewidth
+  newpath
+  exch xspacing mul xoffset add
+  exch yspacing mul
+  moveto
+  boxwidth 0 rlineto 
+  0 boxheight rlineto 
+  boxwidth neg 0 rlineto 
+  0 boxheight neg rlineto 
+  closepath
+  dup stringwidth pop neg boxwidth add 2 div
+  boxheight fontheight 2 div sub 2 div
+  rmoveto show stroke
+  grestore
+} def  
+
+/mark
+{ newpath
+  exch xspacing mul xoffset add boxwidth add
+  exch yspacing mul
+  moveto
+  0 boxheight 4 div rlineto
+  boxheight neg 4 div boxheight neg 4 div rlineto
+  closepath
+  eofill
+  stroke
+} def
+
+/arrow
+{ newpath
+  moveto
+  3 -8 rlineto
+  -6 0 rlineto
+  3 8 rlineto
+  closepath
+  eofill
+  stroke
+} def
+
+/out % draws an output connector for the block at (arg1,arg2)
+{
+  newpath
+  exch xspacing mul xoffset add boxwidth 2 div add
+  exch yspacing mul boxheight add
+  /y exch def
+  /x exch def
+  x y moveto
+  0 disty 2 div rlineto 
+  stroke
+  1 eq { x y disty 2 div add arrow } if
+} def
+
+/in % draws an input connector for the block at (arg1,arg2)
+{
+  newpath
+  exch xspacing mul xoffset add boxwidth 2 div add
+  exch yspacing mul disty 2 div sub
+  /y exch def
+  /x exch def
+  x y moveto
+  0 disty 2 div rlineto
+  stroke
+  1 eq { x y disty 2 div add arrow } if
+} def
+
+/hedge
+{
+  exch xspacing mul xoffset add boxwidth 2 div add
+  exch yspacing mul boxheight 2 div sub
+  /y exch def
+  /x exch def
+  newpath
+  x y moveto
+  boxwidth 2 div distx add 0 rlineto
+  stroke
+  1 eq
+  { newpath x boxwidth 2 div distx add add y moveto
+    -8 3 rlineto
+    0 -6 rlineto
+    8 3 rlineto
+    closepath
+    eofill
+    stroke
+  } if
+} def
+
+/vedge
+{
+  /ye exch def
+  /ys exch def
+  /xs exch def
+  newpath
+  xs xspacing mul xoffset add boxwidth 2 div add dup
+  ys yspacing mul boxheight 2 div sub
+  moveto
+  ye yspacing mul boxheight 2 div sub
+  lineto
+  stroke
+} def
+
+/conn % connections the blocks from col 'arg1' to 'arg2' of row 'arg3'
+{
+  /ys exch def
+  /xe exch def
+  /xs exch def
+  newpath
+  xs xspacing mul xoffset add boxwidth 2 div add
+  ys yspacing mul disty 2 div sub
+  moveto
+  xspacing xe xs sub mul 0
+  rlineto
+  stroke
+} def
+
+% ----- main ------
+
+boxfont setfont
+1 boundaspect scale
+(Variable) cw
+(AOSongAM2315_Humidity) cw
+(AOSongAM2315_Temp) cw
+(AOSongDHT_HI) cw
+(AOSongDHT_Humidity) cw
+(AOSongDHT_Temp) cw
+(ApogeeSQ212_PAR) cw
+(ApogeeSQ212_Voltage) cw
+(AtlasScientificCO2_CO2) cw
+(AtlasScientificCO2_Temp) cw
+(AtlasScientificDO_DOmgL) cw
+(AtlasScientificDO_DOpct) cw
+(AtlasScientificEC_Cond) cw
+(AtlasScientificEC_Salinity) cw
+(AtlasScientificEC_SpecificGravity) cw
+(AtlasScientificEC_TDS) cw
+(AtlasScientificORP_Potential) cw
+(AtlasScientificpH_pH) cw
+(AtlasScientificRTD_Temp) cw
+(BoschBME280_Altitude) cw
+(BoschBME280_Humidity) cw
+(BoschBME280_Pressure) cw
+(BoschBME280_Temp) cw
+(CampbellOBS3_Turbidity) cw
+(CampbellOBS3_Voltage) cw
+(Decagon5TM_Ea) cw
+(Decagon5TM_Temp) cw
+(Decagon5TM_VWC) cw
+(DecagonCTD_Cond) cw
+(DecagonCTD_Depth) cw
+(DecagonCTD_Temp) cw
+(DecagonES2_Cond) cw
+(DecagonES2_Temp) cw
+(ExternalVoltage_Volt) cw
+(KellerAcculevel_Height) cw
+(KellerAcculevel_Pressure) cw
+(KellerAcculevel_Temp) cw
+(KellerNanolevel_Height) cw
+(KellerNanolevel_Pressure) cw
+(KellerNanolevel_Temp) cw
+(MaxBotixSonar_Range) cw
+(MaximDS18_Temp) cw
+(MaximDS3231_Temp) cw
+(MeaSpecMS5803_Pressure) cw
+(MeaSpecMS5803_Temp) cw
+(MeterTeros11_Ea) cw
+(MeterTeros11_Temp) cw
+(MeterTeros11_VWC) cw
+(Modem_BatteryPercent) cw
+(Modem_BatteryState) cw
+(Modem_BatteryVoltage) cw
+(Modem_RSSI) cw
+(Modem_SignalPercent) cw
+(Modem_Temp) cw
+(MPL115A2_Pressure) cw
+(MPL115A2_Temp) cw
+(ProcessorStats_Battery) cw
+(ProcessorStats_FreeRam) cw
+(ProcessorStats_SampleNumber) cw
+(RainCounterI2C_Depth) cw
+(RainCounterI2C_Tips) cw
+(TIINA219_Current) cw
+(TIINA219_Power) cw
+(TIINA219_Volt) cw
+(YosemitechY4000_BGA) cw
+(YosemitechY4000_Chlorophyll) cw
+(YosemitechY4000_Cond) cw
+(YosemitechY4000_DOmgL) cw
+(YosemitechY4000_ORP) cw
+(YosemitechY4000_pH) cw
+(YosemitechY4000_Temp) cw
+(YosemitechY4000_Turbidity) cw
+(YosemitechY504_DOmgL) cw
+(YosemitechY504_DOpct) cw
+(YosemitechY504_Temp) cw
+(YosemitechY510_Temp) cw
+(YosemitechY510_Turbidity) cw
+(YosemitechY511_Temp) cw
+(YosemitechY511_Turbidity) cw
+(YosemitechY514_Chlorophyll) cw
+(YosemitechY514_Temp) cw
+(YosemitechY520_Cond) cw
+(YosemitechY520_Temp) cw
+(YosemitechY532_pH) cw
+(YosemitechY532_Temp) cw
+(YosemitechY532_Voltage) cw
+(YosemitechY533_pH) cw
+(YosemitechY533_Temp) cw
+(YosemitechY533_Voltage) cw
+(YosemitechY550_COD) cw
+(YosemitechY550_Temp) cw
+(YosemitechY550_Turbidity) cw
+(ZebraTechDOpto_DOmgL) cw
+(ZebraTechDOpto_DOpct) cw
+(ZebraTechDOpto_Temp) cw
+/boxwidth boxwidth marginwidth 2 mul add def
+/xspacing boxwidth distx add def
+/yspacing boxheight disty add def
+/scalefactor 
+  boxwidth cols mul distx cols 1 sub mul add
+  boxheight rows mul disty rows 1 sub mul add boundaspect mul 
+  max def
+boundx scalefactor div boundy scalefactor div scale
+
+% ----- classes -----
+
+ (Variable) 0.000000 94.000000 box
+ (AOSongAM2315_Humidity) 1.000000 93.000000 box
+ (AOSongAM2315_Temp) 1.000000 92.000000 box
+ (AOSongDHT_HI) 1.000000 91.000000 box
+ (AOSongDHT_Humidity) 1.000000 90.000000 box
+ (AOSongDHT_Temp) 1.000000 89.000000 box
+ (ApogeeSQ212_PAR) 1.000000 88.000000 box
+ (ApogeeSQ212_Voltage) 1.000000 87.000000 box
+ (AtlasScientificCO2_CO2) 1.000000 86.000000 box
+ (AtlasScientificCO2_Temp) 1.000000 85.000000 box
+ (AtlasScientificDO_DOmgL) 1.000000 84.000000 box
+ (AtlasScientificDO_DOpct) 1.000000 83.000000 box
+ (AtlasScientificEC_Cond) 1.000000 82.000000 box
+ (AtlasScientificEC_Salinity) 1.000000 81.000000 box
+ (AtlasScientificEC_SpecificGravity) 1.000000 80.000000 box
+ (AtlasScientificEC_TDS) 1.000000 79.000000 box
+ (AtlasScientificORP_Potential) 1.000000 78.000000 box
+ (AtlasScientificpH_pH) 1.000000 77.000000 box
+ (AtlasScientificRTD_Temp) 1.000000 76.000000 box
+ (BoschBME280_Altitude) 1.000000 75.000000 box
+ (BoschBME280_Humidity) 1.000000 74.000000 box
+ (BoschBME280_Pressure) 1.000000 73.000000 box
+ (BoschBME280_Temp) 1.000000 72.000000 box
+ (CampbellOBS3_Turbidity) 1.000000 71.000000 box
+ (CampbellOBS3_Voltage) 1.000000 70.000000 box
+ (Decagon5TM_Ea) 1.000000 69.000000 box
+ (Decagon5TM_Temp) 1.000000 68.000000 box
+ (Decagon5TM_VWC) 1.000000 67.000000 box
+ (DecagonCTD_Cond) 1.000000 66.000000 box
+ (DecagonCTD_Depth) 1.000000 65.000000 box
+ (DecagonCTD_Temp) 1.000000 64.000000 box
+ (DecagonES2_Cond) 1.000000 63.000000 box
+ (DecagonES2_Temp) 1.000000 62.000000 box
+ (ExternalVoltage_Volt) 1.000000 61.000000 box
+ (KellerAcculevel_Height) 1.000000 60.000000 box
+ (KellerAcculevel_Pressure) 1.000000 59.000000 box
+ (KellerAcculevel_Temp) 1.000000 58.000000 box
+ (KellerNanolevel_Height) 1.000000 57.000000 box
+ (KellerNanolevel_Pressure) 1.000000 56.000000 box
+ (KellerNanolevel_Temp) 1.000000 55.000000 box
+ (MaxBotixSonar_Range) 1.000000 54.000000 box
+ (MaximDS18_Temp) 1.000000 53.000000 box
+ (MaximDS3231_Temp) 1.000000 52.000000 box
+ (MeaSpecMS5803_Pressure) 1.000000 51.000000 box
+ (MeaSpecMS5803_Temp) 1.000000 50.000000 box
+ (MeterTeros11_Ea) 1.000000 49.000000 box
+ (MeterTeros11_Temp) 1.000000 48.000000 box
+ (MeterTeros11_VWC) 1.000000 47.000000 box
+ (Modem_BatteryPercent) 1.000000 46.000000 box
+ (Modem_BatteryState) 1.000000 45.000000 box
+ (Modem_BatteryVoltage) 1.000000 44.000000 box
+ (Modem_RSSI) 1.000000 43.000000 box
+ (Modem_SignalPercent) 1.000000 42.000000 box
+ (Modem_Temp) 1.000000 41.000000 box
+ (MPL115A2_Pressure) 1.000000 40.000000 box
+ (MPL115A2_Temp) 1.000000 39.000000 box
+ (ProcessorStats_Battery) 1.000000 38.000000 box
+ (ProcessorStats_FreeRam) 1.000000 37.000000 box
+ (ProcessorStats_SampleNumber) 1.000000 36.000000 box
+ (RainCounterI2C_Depth) 1.000000 35.000000 box
+ (RainCounterI2C_Tips) 1.000000 34.000000 box
+ (TIINA219_Current) 1.000000 33.000000 box
+ (TIINA219_Power) 1.000000 32.000000 box
+ (TIINA219_Volt) 1.000000 31.000000 box
+ (YosemitechY4000_BGA) 1.000000 30.000000 box
+ (YosemitechY4000_Chlorophyll) 1.000000 29.000000 box
+ (YosemitechY4000_Cond) 1.000000 28.000000 box
+ (YosemitechY4000_DOmgL) 1.000000 27.000000 box
+ (YosemitechY4000_ORP) 1.000000 26.000000 box
+ (YosemitechY4000_pH) 1.000000 25.000000 box
+ (YosemitechY4000_Temp) 1.000000 24.000000 box
+ (YosemitechY4000_Turbidity) 1.000000 23.000000 box
+ (YosemitechY504_DOmgL) 1.000000 22.000000 box
+ (YosemitechY504_DOpct) 1.000000 21.000000 box
+ (YosemitechY504_Temp) 1.000000 20.000000 box
+ (YosemitechY510_Temp) 1.000000 19.000000 box
+ (YosemitechY510_Turbidity) 1.000000 18.000000 box
+ (YosemitechY511_Temp) 1.000000 17.000000 box
+ (YosemitechY511_Turbidity) 1.000000 16.000000 box
+ (YosemitechY514_Chlorophyll) 1.000000 15.000000 box
+ (YosemitechY514_Temp) 1.000000 14.000000 box
+ (YosemitechY520_Cond) 1.000000 13.000000 box
+ (YosemitechY520_Temp) 1.000000 12.000000 box
+ (YosemitechY532_pH) 1.000000 11.000000 box
+ (YosemitechY532_Temp) 1.000000 10.000000 box
+ (YosemitechY532_Voltage) 1.000000 9.000000 box
+ (YosemitechY533_pH) 1.000000 8.000000 box
+ (YosemitechY533_Temp) 1.000000 7.000000 box
+ (YosemitechY533_Voltage) 1.000000 6.000000 box
+ (YosemitechY550_COD) 1.000000 5.000000 box
+ (YosemitechY550_Temp) 1.000000 4.000000 box
+ (YosemitechY550_Turbidity) 1.000000 3.000000 box
+ (ZebraTechDOpto_DOmgL) 1.000000 2.000000 box
+ (ZebraTechDOpto_DOpct) 1.000000 1.000000 box
+ (ZebraTechDOpto_Temp) 1.000000 0.000000 box
+
+% ----- relations -----
+
+solid
+1 0.000000 93.250000 out
+solid
+0 0.000000 93.500000 hedge
+solid
+0 0.000000 92.500000 hedge
+solid
+0 0.000000 91.500000 hedge
+solid
+0 0.000000 90.500000 hedge
+solid
+0 0.000000 89.500000 hedge
+solid
+0 0.000000 88.500000 hedge
+solid
+0 0.000000 87.500000 hedge
+solid
+0 0.000000 86.500000 hedge
+solid
+0 0.000000 85.500000 hedge
+solid
+0 0.000000 84.500000 hedge
+solid
+0 0.000000 83.500000 hedge
+solid
+0 0.000000 82.500000 hedge
+solid
+0 0.000000 81.500000 hedge
+solid
+0 0.000000 80.500000 hedge
+solid
+0 0.000000 79.500000 hedge
+solid
+0 0.000000 78.500000 hedge
+solid
+0 0.000000 77.500000 hedge
+solid
+0 0.000000 76.500000 hedge
+solid
+0 0.000000 75.500000 hedge
+solid
+0 0.000000 74.500000 hedge
+solid
+0 0.000000 73.500000 hedge
+solid
+0 0.000000 72.500000 hedge
+solid
+0 0.000000 71.500000 hedge
+solid
+0 0.000000 70.500000 hedge
+solid
+0 0.000000 69.500000 hedge
+solid
+0 0.000000 68.500000 hedge
+solid
+0 0.000000 67.500000 hedge
+solid
+0 0.000000 66.500000 hedge
+solid
+0 0.000000 65.500000 hedge
+solid
+0 0.000000 64.500000 hedge
+solid
+0 0.000000 63.500000 hedge
+solid
+0 0.000000 62.500000 hedge
+solid
+0 0.000000 61.500000 hedge
+solid
+0 0.000000 60.500000 hedge
+solid
+0 0.000000 59.500000 hedge
+solid
+0 0.000000 58.500000 hedge
+solid
+0 0.000000 57.500000 hedge
+solid
+0 0.000000 56.500000 hedge
+solid
+0 0.000000 55.500000 hedge
+solid
+0 0.000000 54.500000 hedge
+solid
+0 0.000000 53.500000 hedge
+solid
+0 0.000000 52.500000 hedge
+solid
+0 0.000000 51.500000 hedge
+solid
+0 0.000000 50.500000 hedge
+solid
+0 0.000000 49.500000 hedge
+solid
+0 0.000000 48.500000 hedge
+solid
+0 0.000000 47.500000 hedge
+solid
+0 0.000000 46.500000 hedge
+solid
+0 0.000000 45.500000 hedge
+solid
+0 0.000000 44.500000 hedge
+solid
+0 0.000000 43.500000 hedge
+solid
+0 0.000000 42.500000 hedge
+solid
+0 0.000000 41.500000 hedge
+solid
+0 0.000000 40.500000 hedge
+solid
+0 0.000000 39.500000 hedge
+solid
+0 0.000000 38.500000 hedge
+solid
+0 0.000000 37.500000 hedge
+solid
+0 0.000000 36.500000 hedge
+solid
+0 0.000000 35.500000 hedge
+solid
+0 0.000000 34.500000 hedge
+solid
+0 0.000000 33.500000 hedge
+solid
+0 0.000000 32.500000 hedge
+solid
+0 0.000000 31.500000 hedge
+solid
+0 0.000000 30.500000 hedge
+solid
+0 0.000000 29.500000 hedge
+solid
+0 0.000000 28.500000 hedge
+solid
+0 0.000000 27.500000 hedge
+solid
+0 0.000000 26.500000 hedge
+solid
+0 0.000000 25.500000 hedge
+solid
+0 0.000000 24.500000 hedge
+solid
+0 0.000000 23.500000 hedge
+solid
+0 0.000000 22.500000 hedge
+solid
+0 0.000000 21.500000 hedge
+solid
+0 0.000000 20.500000 hedge
+solid
+0 0.000000 19.500000 hedge
+solid
+0 0.000000 18.500000 hedge
+solid
+0 0.000000 17.500000 hedge
+solid
+0 0.000000 16.500000 hedge
+solid
+0 0.000000 15.500000 hedge
+solid
+0 0.000000 14.500000 hedge
+solid
+0 0.000000 13.500000 hedge
+solid
+0 0.000000 12.500000 hedge
+solid
+0 0.000000 11.500000 hedge
+solid
+0 0.000000 10.500000 hedge
+solid
+0 0.000000 9.500000 hedge
+solid
+0 0.000000 8.500000 hedge
+solid
+0 0.000000 7.500000 hedge
+solid
+0 0.000000 6.500000 hedge
+solid
+0 0.000000 5.500000 hedge
+solid
+0 0.000000 4.500000 hedge
+solid
+0 0.000000 3.500000 hedge
+solid
+0 0.000000 2.500000 hedge
+solid
+0 0.000000 1.500000 hedge
+solid
+0 0.000000 0.500000 hedge
+solid
+0.000000 94.000000 0.500000 vedge
