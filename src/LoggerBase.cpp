@@ -858,8 +858,13 @@ bool Logger::checkInterval(void)
     #else  // ARDUINO_ARCH_SAMD
     //Assume that have slept for the right amount of time
     markTime();
+    DateTime rtcExtNowDt =  rtcExtPhy.now();
+    //const char *DateFmt = "YYMMDD:hhmmss";- caused reboot rtcExtNowDt.toString((char *)DateFmt) 
+    //const char *DateFmt = "YY-MM-DD:hhmmss";
+    //uint32_t rtcExtNowTzSec = rtcExtNowDt.unixtime()+ ((int32_t)getTZOffset()*HOURS_TO_SECS);
     MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz),
-      "extRtc", Logger::formatDateTime_ISO8601( (rtcExtPhy.now()).unixtime() + ((int32_t)getTZOffset()*HOURS_TO_SECS) ));
+      "extRtc", rtcExtNowDt.timestamp(DateTime::TIMESTAMP_FULL));
+      //  - caused reboot
     retval = true;
     #endif 
     return retval;
