@@ -17,6 +17,9 @@ public:
     bool parseIniSd(const char *ini_fn,ini_handler_atl485 handler_fn);
     //virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
     void SDusbPoll(uint8_t sdActions);
+#if defined USE_RTCLIB
+    USE_RTCLIB *rtcExtPhyObj();
+#endif //USE_RTCLIB
     static bool usbDriveActive(void);
     //Time woken up
     uint32_t wakeUpTime_secs;

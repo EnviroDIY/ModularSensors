@@ -63,7 +63,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include "Adafruit_NeoPixel.h"
 
 #include "PortExpanderB031.h"
-
+#if defined USE_RTCLIB
+#include <RTClib.h> 
+#endif //USE_RTCLIB
 #define KCONFIG_SHOW_NETWORK_INFO 1
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define KCONFIG_DEBUG_LEVEL 1
@@ -1968,10 +1970,10 @@ void setup()
     SerialStd.print(F("\nUsing ModularSensors Library version "));
     SerialStd.println(MODULAR_SENSORS_VERSION);
 #if defined UseModem_Module
-    Serial.print(F("TinyGSM Library version "));
-    Serial.println(TINYGSM_VERSION);
+    SerialStd.print(F("TinyGSM Library version "));
+    SerialStd.println(TINYGSM_VERSION);
 #else 
-    Serial.print(F("TinyGSM - none"));
+    SerialStd.print(F("TinyGSM - none"));
 #endif
 
     neoPixelPhy.begin();
@@ -2049,9 +2051,9 @@ void setup()
 
 #ifdef USE_MS_SD_INI
     //Set up SD card access, and also USB
-    Serial.println(F("---parseIni "));
+    SerialStd.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
-    Serial.println(F("\n\n---parseIni complete "));
+    SerialStd.println(F("\n\n---parseIni complete "));
 #endif //USE_MS_SD_INI
 
 #if 0
@@ -2136,6 +2138,28 @@ void setup()
 
     // Begin the logger
     dataLogger.begin();
+    #if defined USE_RTCLIB
+    SerialStd.println(F("extRtcPhy check "));
+    USE_RTCLIB * rtcPhyExt = dataLogger.rtcExtPhyObj();
+    DateTime start_dt = rtcPhyExt->now();
+    DateTime nxt_dt;
+    int16_t dt_lp=0;
+    #define DT_LP_MAX 10
+    do { 
+        delay(200);
+        nxt_dt = rtcPhyExt->now();
+        if (nxt_dt.second()!=start_dt.second()) {
+            SerialStd.println(F("extRtcPhy sec changed "));
+            break;
+        }
+        SerialStd.print(dt_lp);
+        SerialStd.println(F("] extRtcPhy sec NOT changing "));    
+    } while (++dt_lp<DT_LP_MAX ); 
+    SerialStd.print(F("extRtcPhy start "));
+    SerialStd.print(start_dt.timestamp(DateTime::TIMESTAMP_FULL));
+        SerialStd.print(F(" nxt="));
+    SerialStd.println(nxt_dt.timestamp(DateTime::TIMESTAMP_FULL));    
+    #endif //USE_RTCLIB
     #if defined UseModem_Module
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
     #endif // UseModem_Module

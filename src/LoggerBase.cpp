@@ -1741,47 +1741,53 @@ void Logger::begin()
 
         #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
             MS_DBG("ExtRTC init");
-            rtcExtPhy.begin();
-            delay(100);
-            bool cold_init = false; //Simple test for time being - expand with RAM signature
-            USE_RTCLIB::ErrorNum errRtc;// = rtcExtPhy.initialized();
-            #define RTC_INIT_MAX_NUM 10
-            uint8_t init_counter =0;
-            do {
-                errRtc = rtcExtPhy.initialized();
-                if (USE_RTCLIB::NO_ERROR == errRtc) break;
-                cold_init = true; //As oscillator wasn't working
-                MS_DBG(init_counter,"] ExtRTC !init. err=",errRtc," waiting for stability");
-                delay(100);
-            } while (++init_counter<RTC_INIT_MAX_NUM);
-
-            if (cold_init) {
-                MS_DBG("ExtRTC cold !init. set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
-                rtcExtPhy.init();
-                rtcExtPhy.adjust(ccTimeT0);
-
+            if (! rtcExtPhy.begin()){
+                PRINTOUT(F("*** extRTC not found. Equipment Error"));
+                //reboot or ?
             } else {
-                DateTime rNow_dt = rtcExtPhy.now();
-                uint32_t rnow_usecs = rNow_dt.unixtime();
 
-                MS_DBG("ExtRTC t0 ",rNow_dt.year(),"/",rNow_dt.month(),"/",rNow_dt.date()," ",rNow_dt.hour(),":",rNow_dt.minute(),":",rNow_dt.second()," or epoch ",rnow_usecs);
-                MS_DBG("Good if between ",COMPILE_TIME_UT0,"<",rnow_usecs ,"<",TIME_FUT_UPPER_UT0);
-                if ((rnow_usecs < COMPILE_TIME_UT0) || (rnow_usecs  > TIME_FUT_UPPER_UT0) ) {
+                delay(100);
+                bool cold_init = false; //Simple test for time being - expand with RAM signature
+                USE_RTCLIB::ErrorNum errRtc;// = rtcExtPhy.initialized();
+                #define RTC_INIT_MAX_NUM 10
+                uint8_t init_counter =0;
+                do {
+                    errRtc = rtcExtPhy.initialized();
+                    if (USE_RTCLIB::NO_ERROR == errRtc) break;
+                    cold_init = true; //As oscillator wasn't working
+                    MS_DBG(init_counter,"] ExtRTC !init. err=",errRtc," waiting for stability");
+                    delay(100);
+                } while (++init_counter<RTC_INIT_MAX_NUM);
+
+                if (cold_init) {
+                    MS_DBG("ExtRTC cold !init. set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                    rtcExtPhy.init();
                     rtcExtPhy.adjust(ccTimeT0);
-                    MS_DBG("ExtRTC t0 set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
-                }
-            }
-            
-            watchDogTimer.resetWatchDog();
 
-            DateTime now = rtcExtPhy.now();
-        
-            MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
-            zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
-            zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
-            #define zr zero_sleep_rtc
-            MS_DBG("Read internal rtc UTC ",2000+zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
-        #else // no external _RTC
+                } else {
+                    DateTime rNow_dt = rtcExtPhy.now();
+                    uint32_t rnow_usecs = rNow_dt.unixtime();
+
+                    MS_DBG("ExtRTC t0 ",rNow_dt.year(),"/",rNow_dt.month(),"/",rNow_dt.date()," ",rNow_dt.hour(),":",rNow_dt.minute(),":",rNow_dt.second()," or epoch ",rnow_usecs);
+                    MS_DBG("Good if between ",COMPILE_TIME_UT0,"<",rnow_usecs ,"<",TIME_FUT_UPPER_UT0);
+                    if ((rnow_usecs < COMPILE_TIME_UT0) || (rnow_usecs  > TIME_FUT_UPPER_UT0) ) {
+                        rtcExtPhy.adjust(ccTimeT0);
+                        MS_DBG("ExtRTC t0 set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                    }
+                }
+                
+                watchDogTimer.resetWatchDog();
+
+                DateTime now = rtcExtPhy.now();
+            
+                MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
+                zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
+                zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
+                #define zr zero_sleep_rtc
+                MS_DBG("Read internal rtc UTC ",2000+zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+                
+            }        
+            #else // no external _RTC
             // If Power-on Reset Rcause.Bit0 have specific processing
             #define zr zero_sleep_rtc
             if ( (0== zr.getYear()) && (1==zr.getMonth()) && (1==zr.getDay()) ) {

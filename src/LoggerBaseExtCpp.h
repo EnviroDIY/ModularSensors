@@ -625,3 +625,9 @@ bool Logger::parseIniSd(const char *ini_fn,ini_handler_atl485 unhandledFnReq)
 }
 
 // End parse.ini
+#if defined USE_RTCLIB
+USE_RTCLIB * Logger::rtcExtPhyObj()
+   { 
+       return &rtcExtPhy;
+   }
+#endif //USE_RTCLIB
