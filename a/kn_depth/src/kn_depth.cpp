@@ -2002,7 +2002,7 @@ void setup()
         }
     } while (LiBattPower_Unseable); 
     SerialStd.print(F("Good BatV="));
-    SerialStd.print(mcuBoard.getBatteryVm1(false));        
+    SerialStd.println(mcuBoard.getBatteryVm1(false));        
     /////// Measured LiIon voltage is good enough to start up
     //UiStatus(1);
 

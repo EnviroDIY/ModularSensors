@@ -742,6 +742,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     {
 
         rtcExtPhy.adjust(UTCEpochSeconds);//const DateTime& dt);
+        nowExt = rtcExtPhy.now();
         MS_DBG("         rtcExt diff",time_diff_sec," updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
         retVal= true;
     }
@@ -1739,13 +1740,24 @@ void Logger::begin()
         //MS_DBG("Sw Build Time T0: ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date()," ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second()," secs2kT0 ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
 
         #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
+            MS_DBG("ExtRTC init");
             rtcExtPhy.begin();
+            delay(100);
+            bool cold_init = false; //Simple test for time being - expand with RAM signature
+            USE_RTCLIB::ErrorNum errRtc;// = rtcExtPhy.initialized();
+            #define RTC_INIT_MAX_NUM 10
+            uint8_t init_counter =0;
+            do {
+                errRtc = rtcExtPhy.initialized();
+                if (USE_RTCLIB::NO_ERROR == errRtc) break;
+                cold_init = true; //As oscillator wasn't working
+                MS_DBG(init_counter,"] ExtRTC !init. err=",errRtc," waiting for stability");
+                delay(100);
+            } while (++init_counter<RTC_INIT_MAX_NUM);
 
-            USE_RTCLIB::ErrorNum errRtc = rtcExtPhy.initialized();
-
-            if (USE_RTCLIB::NO_ERROR != errRtc)
-            {
-                MS_DBG("ExtRTC !init. err=",errRtc," set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+            if (cold_init) {
+                MS_DBG("ExtRTC cold !init. set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                rtcExtPhy.init();
                 rtcExtPhy.adjust(ccTimeT0);
 
             } else {
