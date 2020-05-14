@@ -61,7 +61,7 @@
 //#define ANALOGELECCONDUCTIVITY_SAMPNUM_RESOLUTION 0
 //#define ANALOGELECCONDUCTIVITY_SAMPNUM_VAR_NUM 2
 
-#define analogElecConductivityDef_Resolution 10
+#define analogElecConductivityDef_Resolution 10  //Changing this has impacts on other modules
 #define analogElecConductivityAdc_Max ((1<< analogElecConductivityDef_Resolution)-1)
 #define EC_SENSOR_ADC_RANGE (1<< analogElecConductivityDef_Resolution)
 

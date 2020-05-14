@@ -148,8 +148,10 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
 
  
     #if !defined ARDUINO_ARCH_AVR
+
     analogReadResolution(analogElecConductivityDef_Resolution);
-    analogReference(ProcAdcDef_Reference); //VDDANA = 3V3
+    analogReference(AR_EXTERNAL); //ratio metric for the EC resistor
+    //analogReference(ProcAdcDef_Reference); //VDDANA = 3V3
     #endif //ARDUINO_ARCH_AVR
     uint8_t useAdcChannel = analogPinNum; 
     #if defined ARD_ANALOLG_EXTENSION_PINS
@@ -166,7 +168,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
 
     #endif //ARD_ANALOLG_EXTENSION_PINS
     //************Estimates Resistance of Liquid ****************//
-    //digitalWrite(_EcPowerPin,HIGH); assume done by class Sensor
+    //digitalWrite(_EcPowerPin,HIGH); //assume done by class Sensor
     analogRead(analogPinNum);
     sensorEC_adc= analogRead(analogPinNum);// This is not a mistake, First reading will be low beause if charged a capacitor
     //digitalWrite(_EcPowerPin,LOW);

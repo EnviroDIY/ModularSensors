@@ -2139,6 +2139,7 @@ void setup()
     // Begin the logger
     dataLogger.begin();
     #if defined USE_RTCLIB
+    //extRtcPhy equipment test
     SerialStd.println(F("extRtcPhy check "));
     USE_RTCLIB * rtcPhyExt = dataLogger.rtcExtPhyObj();
     DateTime start_dt = rtcPhyExt->now();
@@ -2146,7 +2147,7 @@ void setup()
     int16_t dt_lp=0;
     #define DT_LP_MAX 10
     do { 
-        delay(200);
+        delay(500);
         nxt_dt = rtcPhyExt->now();
         if (nxt_dt.second()!=start_dt.second()) {
             SerialStd.println(F("extRtcPhy sec changed "));
@@ -2158,7 +2159,9 @@ void setup()
     SerialStd.print(F("extRtcPhy start "));
     SerialStd.print(start_dt.timestamp(DateTime::TIMESTAMP_FULL));
         SerialStd.print(F(" nxt="));
-    SerialStd.println(nxt_dt.timestamp(DateTime::TIMESTAMP_FULL));    
+    SerialStd.println(nxt_dt.timestamp(DateTime::TIMESTAMP_FULL));
+    SerialStd.flush();
+ 
     #endif //USE_RTCLIB
     #if defined UseModem_Module
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
@@ -2174,6 +2177,7 @@ void setup()
     SerialStd.print(Logger::formatDateTime_ISO8601(sysStartTime_epochTzSec  ));
     SerialStd.print(" TZ=");
     SerialStd.println(timeZone);
+    SerialStd.flush();
     // Attach the modem and information pins to the logger
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
@@ -2189,7 +2193,7 @@ void setup()
     varArrFast.setupSensors(); //Assumption pwr is available
     #endif //loggingMultiplier_MAX_CDEF
 
-#if 1 //MS_DEBUG_THIS_MODULE
+#if defined UseModem_Module //MS_DEBUG_THIS_MODULE
     //Enable this in debugging or where there is no valid RTC
     // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time

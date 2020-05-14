@@ -147,6 +147,13 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     float sensorValue_battery = -9999;
 
+    #if !defined ARDUINO_ARCH_AVR
+        #if !defined PROC_ADC_DEFAULT_RESOLUTION
+            #define PROC_ADC_DEFAULT_RESOLUTION 10
+        #endif //PROC_ADC_DEFAULT_RESOLUTION
+        analogReadResolution(PROC_ADC_DEFAULT_RESOLUTION);
+        analogReference(AR_DEFAULT); 
+    #endif //ARDUINO_ARCH_AVR
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
         if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
         {
