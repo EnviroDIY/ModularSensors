@@ -164,7 +164,7 @@
             "name": "Adafruit MPL115A2",
             "library id": "406",
             "url": "https://github.com/adafruit/Adafruit_MPL115A2.git",
-            "version": "=1.1.0",
+            "version": "=1.1.2",
             "note": "MPL115A2 Barometer Library by Adafruit",
             "authors": [
                 "Adafruit"

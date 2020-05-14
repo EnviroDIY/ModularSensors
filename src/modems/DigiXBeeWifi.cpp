@@ -187,7 +187,10 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t& rssi, int16_t& percent) {
     while (millis() < _lastNISTrequest + 4000) {}
     // Need to send something before connection is made
     gsmClient.println('!');
+    uint32_t start = millis();
     delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
+    while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L) {
+    }
 
     // Get signal quality
     // NOTE:  We can't actually distinguish between a bad modem response, no
@@ -232,8 +235,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     int8_t   num_pings_remaining = 5;
     uint32_t startMillis         = millis();
     do {
-        getModemSignalQuality(rssi, percent)
-            MS_DBG(F("Raw signal quality:"), signalQual);
+        getModemSignalQuality(rssi, percent);
+        MS_DBG(F("Raw signal quality:"), rssi);
         if (percent != 0 && percent != -9999) break;
         num_pings_remaining--;
     } while ((percent == 0 || percent == -9999) && num_pings_remaining);
