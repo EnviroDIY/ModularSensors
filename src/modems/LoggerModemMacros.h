@@ -98,6 +98,7 @@
          * the pin modes here */                                               \
         setModemPinModes();                                                    \
                                                                                \
+        MS_DBG(F("Wait"), _wakeDelayTime_ms, F("for warm-up"));                \
         while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}               \
                                                                                \
         if (isModemAwake()) {                                                  \
@@ -237,9 +238,9 @@
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it
 // over TCP because I don't have a UDP library for all the modems.
-// NOTE:  We eust ensure that we do not ping the daylight server more than once
-// every 4 seconds.  NIST clearly specifies here that this is a requirement for
-// all software that accesses its servers:
+// NOTE:  We eust ensure that we do not ping the daylight server more
+// than once every 4 seconds.  NIST clearly specifies here that this is
+// a requirement for all software that accesses its servers:
 // https://tf.nist.gov/tf-cgi/servers.cgi */
 #define MS_MODEM_GET_NIST_TIME(specificModem)                                 \
     uint32_t specificModem::getNISTTime(void) {                               \

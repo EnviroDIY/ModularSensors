@@ -243,7 +243,8 @@ bool loggerModem::modemSleepPowerDown(void) {
         // up the main processor while waiting for the modem to shut down.
         // It can just do its thing unwatched while the main processor sleeps.
         MS_DBG(F("Power to"), getModemName(),
-               F("is not controlled by this library."));
+               F("is not controlled by this library - not waiting for "
+                 "shut-down to complete."));
         // Unset the power-on time
         // _millisPowerOn = 0;
     }
@@ -390,7 +391,7 @@ float loggerModem::getModemBatteryChargePercent() {
     return retVal;
 }
 float loggerModem::getModemBatteryVoltage() {
-    float retVal = loggerModem::_priorBatteryPercent;
+    float retVal = loggerModem::_priorBatteryVoltage;
     // MS_DBG(F("PRIOR Modem Battery Voltage:"), retVal);
     return retVal;
 }
