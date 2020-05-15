@@ -789,7 +789,7 @@ WARN_IF_DOC_ERROR      = YES
 # EXTRACT_ALL is set to YES then this flag will automatically be disabled.
 # The default value is: NO.
 
-WARN_NO_PARAMDOC       = NO
+WARN_NO_PARAMDOC       = YES
 
 # If the WARN_AS_ERROR tag is set to YES then doxygen will immediately stop when
 # a warning is encountered.
@@ -823,7 +823,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = C:\Users\sdamiano\Documents\GitHub\EnviroDIY\ModularSensors\src
+INPUT                  =
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -855,26 +855,11 @@ FILE_PATTERNS          = *.c \
                          *.cxx \
                          *.cpp \
                          *.c++ \
-                         *.java \
-                         *.ii \
-                         *.ixx \
-                         *.ipp \
-                         *.i++ \
-                         *.inl \
-                         *.idl \
-                         *.ddl \
-                         *.odl \
                          *.h \
                          *.hh \
                          *.hxx \
                          *.hpp \
                          *.h++ \
-                         *.cs \
-                         *.d \
-                         *.php \
-                         *.php4 \
-                         *.php5 \
-                         *.phtml \
                          *.inc \
                          *.m \
                          *.markdown \
@@ -882,21 +867,7 @@ FILE_PATTERNS          = *.c \
                          *.mm \
                          *.dox \
                          *.doc \
-                         *.txt \
-                         *.py \
-                         *.pyw \
-                         *.f90 \
-                         *.f95 \
-                         *.f03 \
-                         *.f08 \
-                         *.f18 \
-                         *.f \
-                         *.for \
-                         *.vhd \
-                         *.vhdl \
-                         *.ucf \
-                         *.qsf \
-                         *.ice
+                         *.txt
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
@@ -1117,7 +1088,7 @@ VERBATIM_HEADERS       = YES
 # generated with the -Duse_libclang=ON option for CMake.
 # The default value is: NO.
 
-CLANG_ASSISTED_PARSING = NO
+CLANG_ASSISTED_PARSING = YES
 
 # If clang assisted parsing is enabled you can provide the compiler with command
 # line options that you would normally use when invoking the compiler. Note that
@@ -1125,7 +1096,65 @@ CLANG_ASSISTED_PARSING = NO
 # specified with INPUT and INCLUDE_PATH.
 # This tag requires that the tag CLANG_ASSISTED_PARSING is set to YES.
 
-CLANG_OPTIONS          =
+CLANG_OPTIONS          = \
+                         -I"examples/logger_test"  \
+                         -I"~/.platformio/lib/ModularSensors/src"  \
+                         -I"~/.platformio/lib/Adafruit ADS1X15"  \
+                         -I"~/.platformio/lib/Adafruit AM2315_ID773"  \
+                         -I"~/.platformio/lib/Adafruit BME280 Library_ID166"  \
+                         -I"~/.platformio/lib/Adafruit BusIO_ID6214"  \
+                         -I"~/.platformio/lib/Adafruit INA219_ID160"  \
+                         -I"~/.platformio/lib/Adafruit MPL115A2_ID406"  \
+                         -I"~/.platformio/lib/Adafruit Unified Sensor_ID31"  \
+                         -I"~/.platformio/lib/AltSoftSerial"  \
+                         -I"~/.platformio/lib/Arduino-SDI-12/src"  \
+                         -I"~/.platformio/lib/DHT sensor library_ID19"  \
+                         -I"~/.platformio/lib/DallasTemperature_ID54"  \
+                         -I"~/.platformio/lib/OneWire_ID1"  \
+                         -I"~/.platformio/lib/EnableInterrupt_ID311"  \
+                         -I"~/.platformio/lib/EnableInterrupt_ID311/utility"  \
+                         -I"~/.platformio/lib/EnviroDIY_DS3231_ID2079/src"  \
+                         -I"~/.platformio/lib/KellerModbus_ID5439/src"  \
+                         -I"~/.platformio/lib/SensorModbusMaster_ID1824/src"  \
+                         -I"~/.platformio/lib/MS5803_ID5431/src"  \
+                         -I"~/.platformio/lib/NeoSWSerial/src"  \
+                         -I"~/.platformio/lib/PubSubClient/src"  \
+                         -I"~/.platformio/lib/SdFat_ID322/src"  \
+                         -I"~/.platformio/lib/SoftwareSerial_ExtInts/src"  \
+                         -I"~/.platformio/lib/SoftwareWire_ID832"  \
+                         -I"~/.platformio/lib/StreamDebugger_ID1286"  \
+                         -I"~/.platformio/lib/TinyGSM/src"  \
+                         -I"~/.platformio/lib/YosemitechModbus_ID2078/src"  \
+                         -I"~/.platformio/packages/framework-arduino-avr/libraries/Wire/src"  \
+                         -I"~/.platformio/packages/framework-arduino-avr/libraries/SPI/src"  \
+                         -I"~/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src"  \
+                         -I"~/.platformio/packages/framework-arduino-avr/libraries/HID/src"  \
+                         -I"~/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src"  \
+                         -I"~/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/5.4.0/include"  \
+                         -I"~/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/5.4.0/include-fixed"  \
+                         -I"~/.platformio/packages/toolchain-atmelavr/avr/include"  \
+                         -I"~/.platformio/packages/framework-arduino-avr/cores/arduino"  \
+                         -I"~/.platformio/packages/framework-arduino-avr/variants/mayfly"  \
+                         -I"~/.platformio/packages/tool-unity"  \
+                         -iquote \
+                         -DPLATFORMIO=40303  \
+                         -DARDUINO_AVR_ENVIRODIY_MAYFLY  \
+                         -DSDI12_EXTERNAL_PCINT  \
+                         -DNEOSWSERIAL_EXTERNAL_PCINT  \
+                         -DMQTT_MAX_PACKET_SIZE=240  \
+                         -DTINY_GSM_RX_BUFFER=64  \
+                         -DTINY_GSM_YIELD_MS=2  \
+                         -DMS_BUILD_TESTING  \
+                         -DTINY_GSM_DEBUG=Serial  \
+                         -DMS_LOGGERMODEM_DEBUG  \
+                         -DMS_LOGGERMODEM_DEBUG_DEEP  \
+                         -DMS_BUILD_TEST_SIM800  \
+                         -DMS_SIMCOMSIM800_DEBUG  \
+                         -DMS_BUILD_TEST_ALL_SENSORS \
+                         -DF_CPU=8000000L  \
+                         -DARDUINO_ARCH_AVR  \
+                         -DARDUINO=10808  \
+                         -D__AVR_ATmega1284P__
 
 # If clang assisted parsing is enabled you can provide the clang parser with the
 # path to the compilation database (see:
@@ -1289,7 +1318,7 @@ HTML_COLORSTYLE_GAMMA  = 80
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_TIMESTAMP         = NO
+HTML_TIMESTAMP         = YES
 
 # If the HTML_DYNAMIC_MENUS tag is set to YES then the generated HTML
 # documentation will contain a main index with vertical navigation menus that
@@ -1308,7 +1337,7 @@ HTML_DYNAMIC_MENUS     = YES
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_DYNAMIC_SECTIONS  = NO
+HTML_DYNAMIC_SECTIONS  = YES
 
 # With HTML_INDEX_NUM_ENTRIES one can control the preferred number of entries
 # shown in the various tree structured indices initially; the user can expand
@@ -1742,7 +1771,7 @@ EXTRA_SEARCH_MAPPINGS  =
 # If the GENERATE_LATEX tag is set to YES, doxygen will generate LaTeX output.
 # The default value is: YES.
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
@@ -2304,7 +2333,7 @@ HIDE_UNDOC_RELATIONS   = YES
 # set to NO
 # The default value is: NO.
 
-HAVE_DOT               = NO
+HAVE_DOT               = YES
 
 # The DOT_NUM_THREADS specifies the number of dot invocations doxygen is allowed
 # to run in parallel. When set to 0 doxygen will base this on the number of
@@ -2391,7 +2420,7 @@ UML_LIMIT_NUM_FIELDS   = 10
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-TEMPLATE_RELATIONS     = NO
+TEMPLATE_RELATIONS     = YES
 
 # If the INCLUDE_GRAPH, ENABLE_PREPROCESSING and SEARCH_INCLUDES tags are set to
 # YES then doxygen will generate a graph for each documented file showing the
