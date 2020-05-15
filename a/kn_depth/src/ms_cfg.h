@@ -381,7 +381,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     //Simplest is ARED=VCC Power D4 - and then ADC_X2 or ADC_X3 - Wiring on J1
     #define PIN_D4_SQWAVE 4
     #define ECpwrPin_DEF PIN_D4_SQWAVE 
-    #define ECdataPin1_DEF PIN_EXT_ANALOG(B031_AEM_EXT3_PIN)
+    #define ECdataPin1_DEF PIN_EXT_ANALOG(B031_AEM_EXT2_PIN)
   #endif //AnalogProcEC_ACT
 
   //Needs enabling to put in to powerdown reduces sleep by 1mA

@@ -169,10 +169,11 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     #endif //ARD_ANALOLG_EXTENSION_PINS
     //************Estimates Resistance of Liquid ****************//
     //digitalWrite(_EcPowerPin,HIGH); //assume done by class Sensor
-    analogRead(analogPinNum);
+    delay(1); //Total time is about 5mS
     sensorEC_adc= analogRead(analogPinNum);// This is not a mistake, First reading will be low beause if charged a capacitor
     //digitalWrite(_EcPowerPin,LOW);
- 
+    digitalWrite(useAdcChannel,0); //Turn off Mux
+    MS_DEEP_DBG("adc=",sensorEC_adc);
 
     //***************** Converts to EC **************************//
  
@@ -182,23 +183,13 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     /*Assuming sensorEC_adc is ratio metric - adc Reference is same as applied to EC sensor.
     * The Vcc ~ 3.3V can vary, as battery level gets low, so would be nice to elliminate it in the calcs
     * 
-    * The current is same through both Rseries and Rwater I =Vrseries/Rseries=Vwater/Rwater
-    * [1] Rwater = Rseries * Vwater/Vseries
-    * From 
-    * Vwater = I*RWater  
-    * Vrseries=I*Rseries  or I=Vrseries/Rseries
-    * Vwater = RWater  *Vrseries/Rseries
-    * [1] Rwater = Rseries *Vwater/Vseries
-    * 
-    * [2] Vwater = Vref*sensorAdc/ADC_RANGE
-    * [3] Vrseries = Vref*(ADC_RANGE-sensorADC)/ADC_RANGE= Vref*(1-sensorADC/ADC_RANGE)
-    *  combining [2] & [3] in [1]
-    * [4] Rwater = Rseries *Vref*(sensorADC/ADC_RANGE) /(Vref*(1-sensorADC/ADC_RANGE))   
-    *  cancel Vref
-    *     Rwater = Rseries *sensorADC/(ADC_RANGE(1-sensorADC/ADC_RANGE))
-    *     Rwater = Rseries *sensorADC/(ADC_RANGE-sesnosrADC)
-    */
-    Rwater_ohms = Rseries_ohms*sensorEC_adc/(EC_SENSOR_ADC_RANGE-sensorEC_adc);
+    *   raw_adc/EC_SENSOR_ADC_RANGE = Rwater_ohms/(Rwater_ohms+Rseries_ohms)
+     *
+     * 
+     */ 
+    if (0==sensorEC_adc)sensorEC_adc=1; //Prevent underflow, can never be EC_SENSOR_ADC_RANGE
+
+    Rwater_ohms = Rseries_ohms/(((float)EC_SENSOR_ADC_RANGE/(float)sensorEC_adc)-1);
 
     /* The Rwater is an absolute value, but is based on a defined size of the plates of the sensor.
     *  Translating a magic "sensorsEC_konst" is used, derived from others experiments
@@ -214,6 +205,8 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
         EC25_uScm = EC_uScm;
     }
 
+    //Note return Rwater_ohms if MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+    MS_DEEP_DBG("ohms=",EC25_uScm = Rwater_ohms);
     return EC25_uScm; 
  
 }
@@ -227,7 +220,7 @@ bool analogElecConductivity::addSingleMeasurementResult(void)
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         sensorEC_uScm = readEC(_EcAdcPin);
-        MS_DBG(F("Water EC (uSm/cm"),sensorEC_uScm);
+        MS_DBG(F("Water EC (uSm/cm)"),sensorEC_uScm);
     }
     else
     {

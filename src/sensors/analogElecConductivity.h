@@ -38,10 +38,13 @@
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG
 #define MS_DEBUGGING_STD "analogElecConductivity"
 #endif
-
+#ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "analogElecConductivity"
+#endif
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "math.h"
@@ -52,7 +55,7 @@
 #define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 0
 #define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
 
-#define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 3
+#define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 1
 #define ANALOGELECCONDUCTIVITY_EC_VAR_NUM 0
 
 //#define ANALOGELECCONDUCTIVITY_TEMPERATURE_RESOLUTION 0
@@ -66,7 +69,7 @@
 #define EC_SENSOR_ADC_RANGE (1<< analogElecConductivityDef_Resolution)
 
 #if !defined SENSOR_UNINIT_VAL
-#define SENSOR_UNINIT_VAL -9999
+#define SENSOR_UNINIT_VAL -0.1
 #endif //SENSOR_UNINIT_VAL
 
 #if 0
@@ -123,7 +126,7 @@ private:
     //float _WaterTemperature_C;
     float *_ptrWaterTemperature_C;
     const float SensorV= 3.3;
-    const float Rseries_ohms=500; //that is R1 + any series port resistance
+    const float Rseries_ohms=499; //that is R1 + any series port resistance
     const float TemperatureCoef=0.019; //depends on what chemical/transport is being measured    
     //********************** Cell Constant For Ec Measurements *********************//
     //Mine was around 2.9 with plugs being a standard size they should all be around the same
