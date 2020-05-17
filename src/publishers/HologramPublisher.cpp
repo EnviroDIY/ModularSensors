@@ -28,7 +28,8 @@ const char *HologramPublisher::contentTypeHeader = "\r\nContent-Type: applicatio
 
 const char *HologramPublisher::deviceIdTag = "{\"deviceid\":";
 const char *HologramPublisher::bodyTag = ",\"body\":\"";
-
+// const char *HologramPublisher::deviceId = "511833"; // this is for the Grizzly Bay one (salmon-panda)
+const char *HologramPublisher::deviceId = "541830"; // this is for the Bellingham one (tan-zebra)
 
 // Constructors
 HologramPublisher::HologramPublisher()
@@ -127,7 +128,7 @@ uint16_t HologramPublisher::calculatePostSize()
 void HologramPublisher::printSensorDataJSON(Stream *stream)
 {
     stream->print(deviceIdTag);
-    // stream->print(_baseLogger->getSamplingFeatureUUID());
+    // stream->print(_baseLogger->getSamplingFeatureUUID()); // deviceId is in here now.
     stream->print(deviceId);
     stream->print(bodyTag);
     stream->print(_baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime));
