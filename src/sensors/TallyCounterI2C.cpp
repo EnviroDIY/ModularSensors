@@ -55,9 +55,13 @@ bool TallyCounterI2C::setup(void)
     // Make 5 attempts
     uint8_t ntries = 0;
     bool success = false;
+    uint8_t Stat = false; //Used to test for connectivity to Tally device
     while (!success and ntries < 5)
     {
-        success = counter_internal.begin(_i2cAddressHex);
+        Stat = counter_internal.begin();
+        counter_internal.Sleep();  //Engage auto-sleep mode between event counts
+        counter_internal.Clear(); //Clear device count on startup to ensure first reading is valid
+        if(Stat == 0) success = true;
         ntries++;
     }
     if (!success)
