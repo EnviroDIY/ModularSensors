@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.16
-
 This shows most of the standard functions of the library at once.
 
 DISCLAIMER:
@@ -41,8 +39,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -295,7 +291,6 @@ EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin,
                           wifiId, wifiPwd,
-                          1,  // measurements to average, optional
                           espSleepRqPin, espStatusPin  // Optional arguments
                          );
 // Create an extra reference to the modem by a generic name (not necessary)
@@ -1301,7 +1296,6 @@ Variable *variableList[] = {
     new Modem_BatteryPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     calculatedVar,
 };
 
@@ -1426,14 +1420,14 @@ void setup()
     // NOTE:  Only use this when debugging - if not connected to a PC, this
     // could prevent the script from starting
     #if defined SERIAL_PORT_USBVIRTUAL
-      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
+      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)){}
     #endif
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
     // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
+    Serial.print(F("\n\nNow running "));
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
@@ -1441,10 +1435,9 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
+    Serial.println();
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -1499,30 +1492,19 @@ void setup()
     dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
-    // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
-    {
-        modem.modemPowerUp();
-        modem.wake();
-        modem.setup();
-
-        // Synchronize the RTC with NIST
-        Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-        if (modem.connectInternet(120000L))
-        {
-            dataLogger.setRTClock(modem.getNISTTime());
-        }
-        else
-        {
-            Serial.println(F("Could not connect to internet for clock sync."));
-        }
-    }
-
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)
     {
         Serial.println(F("Setting up sensors..."));
         varArray.setupSensors();
+    }
+
+    // Sync the clock if it isn't valid or we have battery to spare
+    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
+    {
+        // Synchronize the RTC with NIST
+        // This will also set up the modem
+        dataLogger.syncRTC();
     }
 
     // Create the log file, adding the default header to it
@@ -1534,22 +1516,8 @@ void setup()
     {
         Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
-    }
-
-    // Power down the modem - but only if there will be more than 15 seconds before
-    // the first logging interval - it can take the LTE modem that long to shut down
-    if (Logger::getNowEpoch() % (loggingInterval*60) > 15 ||
-        Logger::getNowEpoch() % (loggingInterval*60) < 6)
-    {
-        Serial.println(F("Putting modem to sleep"));
-        modem.disconnectInternet();
-        modem.modemSleepPowerDown();
-    }
-    else
-    {
-        Serial.println(F("Leaving modem on until after first measurement"));
+        dataLogger.createLogFile(true); // true = write a new header
+        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep
@@ -1596,6 +1564,9 @@ void loop()
 /*
 void loop()
 {
+    // Reset the watchdog
+    dataLogger.watchDogTimer.resetWatchDog();
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     // We're only doing anything at all if the battery is above 3.4V
@@ -1603,6 +1574,7 @@ void loop()
     {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
+        dataLogger.watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));
@@ -1610,6 +1582,7 @@ void loop()
         dataLogger.alertOn();
         // Power up the SD Card, but skip any waits after power up
         dataLogger.turnOnSDcard(false);
+        dataLogger.watchDogTimer.resetWatchDog();
 
         // Turn on the modem to let it start searching for the network
         // Only turn the modem on if the battery at the last interval was high enough
@@ -1626,34 +1599,46 @@ void loop()
         // to run if the sensor was not previously set up.
         varArray.completeUpdate();
 
+        dataLogger.watchDogTimer.resetWatchDog();
+
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
+        dataLogger.watchDogTimer.resetWatchDog();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
         if (getBatteryVoltage() > 3.55)
         {
+            dataLogger.watchDogTimer.resetWatchDog();
             if (modem.connectInternet())
             {
+                dataLogger.watchDogTimer.resetWatchDog();
                 // Publish data to remotes
                 dataLogger.publishDataToRemotes();
 
                 // Sync the clock at midnight
+                dataLogger.watchDogTimer.resetWatchDog();
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
                 {
                     Serial.println(F("Running a daily clock sync..."));
                     dataLogger.setRTClock(modem.getNISTTime());
+                    dataLogger.watchDogTimer.resetWatchDog();
+                    modem.updateModemMetadata();
+                    dataLogger.watchDogTimer.resetWatchDog();
                 }
 
                 // Disconnect from the network
                 modem.disconnectInternet();
+                dataLogger.watchDogTimer.resetWatchDog();
             }
             // Turn the modem off
             modem.modemSleepPowerDown();
+            dataLogger.watchDogTimer.resetWatchDog();
         }
 
         // Cut power from the SD card - without additional housekeeping wait
         dataLogger.turnOffSDcard(false);
+        dataLogger.watchDogTimer.resetWatchDog();
         // Turn off the LED
         dataLogger.alertOff();
         // Print a line to show reading ended

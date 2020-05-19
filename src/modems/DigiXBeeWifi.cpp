@@ -9,18 +9,15 @@
 
 // Included DependenciesV
 #include "DigiXBeeWifi.h"
-#include "modems/LoggerModemMacros.h"
-
+#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *ssid, const char *pwd,
-                           uint8_t measurementsToAverage)
+                           const char *ssid, const char *pwd)
   : DigiXBee(powerPin, statusPin, useCTSStatus,
-             modemResetPin, modemSleepRqPin,
-             measurementsToAverage),
+             modemResetPin, modemSleepRqPin),
     #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger, modemResetPin),
@@ -33,17 +30,16 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
     _pwd = pwd;
 }
 
-
 // Destructor
-DigiXBeeWifi::~DigiXBeeWifi(){}
+DigiXBeeWifi::~DigiXBeeWifi() {}
 
+MS_MODEM_WAKE(DigiXBeeWifi);
 
-MS_MODEM_DID_AT_RESPOND(DigiXBeeWifi);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
-MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeWifi);
-MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeWifi);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 
+MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeWifi);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeWifi);
 
 bool DigiXBeeWifi::extraModemSetup(void)
 {
@@ -102,159 +98,13 @@ bool DigiXBeeWifi::extraModemSetup(void)
 
     if (success)
     {
-        MS_DBG(F("... Setup successful!"));
+        MS_DBG(F("... setup successful!"));
     }
     else
     {
-        MS_DBG(F("... failed!"));
+        MS_DBG(F("... setup failed!"));
     }
     return success;
-}
-
-
-bool DigiXBeeWifi::startSingleMeasurement(void)
-{
-    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
-    // the timestamp and status bits.  If it returns false, there's no reason to go on.
-    if (!Sensor::startSingleMeasurement()) return false;
-
-    bool success = true;
-    MS_DBG(F("Starting measurement on"), getSensorName());
-    // Set the status bits for measurement requested (bit 5)
-    // Setting this bit even if we failed to start a measurement to show that an attempt was made.
-    _sensorStatus |= 0b00100000;
-
-    // The SSID and password need to be set before the ESP8266m can join a
-    //network and get signal strength
-    bool alreadyConnect = gsmModem.isNetworkConnected();
-    if (!alreadyConnect) success &= gsmModem.networkConnect(_ssid, _pwd);
-
-    if (success)
-    {
-
-        // The WiFi XBee needs to make an actual TCP connection and get some sort
-        // of response on that connection before it knows the signal quality.
-        // MS_DBG(F("Opening connection to check connection strength..."));
-        // Connecting to the Google DNS servers - this just isn't as reliable
-        // if (!gsmModem.gotIPforSavedHost())
-        // {
-        //     MS_DBG(F("Using a Google IP to test connection..."));
-        //     gsmClient.stop();
-        //     IPAddress ip(8, 8, 8, 8);  // This is one of Google's IP's
-        //     success &= gsmClient.connect(ip, 80);
-        // }
-        // else
-        // {
-        //     MS_DBG(F("Using last connected IP to test connection:"));
-        // }
-        // gsmClient.print('!');  // Need to send something before connection is made
-
-        MS_DBG(F("Opening connection to NIST to check connection strength..."));
-        // This is the IP address of time-e-wwv.nist.gov
-        // XBee's address lookup falters on time.nist.gov
-        IPAddress ip(132, 163, 97, 6);
-        gsmClient.connect(ip, 37);
-
-        // Unfortunately, using a ping doesn't work
-        // gsmModem.commandMode();
-        // gsmModem.sendAT(GF("PG8.8.8.8"));
-        // gsmModem.waitResponse(10000L, GF("ms"));
-        // gsmModem.exitCommand();
-
-        // Update the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    }
-    // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
-    else
-    {
-        MS_DBG(getSensorNameAndLocation(), F("did not successfully start a measurement."));
-        _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
-    }
-
-    return success;
-}
-
-
-// This checks to see if enough time has passed for measurement completion
-// In the case of the modem, we consider a measurement to be "complete" when
-// the modem has registered on the network.
-bool DigiXBeeWifi::verifyMeasurementComplete(bool debug)
-{
-    /* If a measurement failed to start, the sensor will never return a result, */
-    /* so the measurement time is essentially already passed */
-    /* For a cellular modem nothing happens to "start" a measurement so bit 6 */
-    /* will be set by startSingleMeasurement() as long as bit 4 was set by wake(). */
-    /* For a WiFi modem, startSingleMeasurement actually sets the WiFi connection */
-    /* parameters. */
-    if (!bitRead(_sensorStatus, 6))
-    {
-        if (debug)
-        {
-            MS_DBG(getSensorName(),
-                   F("is not measuring and will not return a value!"));
-        }
-        return true;
-    }
-
-    /* just defining this to not call multiple times below */
-    uint32_t now = millis();
-
-    /* We don't want to ping any of the modems too fast so they don't get */
-    /* overwhelmed.  Make sure we've waited a little */
-    if (now - _lastConnectionCheck < 250)
-        return false;
-
-    /* Check how long we've been waiting for the network connection and/or a */
-    /* good measurement of signal quality. */
-    uint32_t elapsed_in_wait;
-    MS_MODEM_IMEC_WAIT_LINE
-
-    /* If we're connected AND receiving valid signal strength, measurement is complete */
-    /* In theory these happen at the same time, but in reality one or the other */
-    /* may happen first. */
-    bool isConnected = gsmModem.isNetworkConnected();
-    int signalResponse = gsmModem.getSignalQuality();
-    /* The Wifi XBee is unique in that it cannot get signal quality until it */
-    /* not only is connected to an access point and has opened a socket, but */
-    /* has actually received data on that socket.  There's no command to force */
-    /* open the socket, so we do it by sending out one character. */
-    if (isConnected && signalResponse == 0 && millis() > _lastNISTrequest + 4000)
-    {
-        if (debug)
-        {
-            MS_DBG(F("Attempting to force open a connection to try and get valid signal strength!"));
-        }
-        gsmClient.print('!');  // Need to send something before connection is made
-        delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-        return false;
-    }
-    if (isConnected && signalResponse != 0 && signalResponse != 99)
-    {
-        if (debug)
-        {
-            MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"), getSensorName(),
-            F("is now registered on the network and reporting valid signal strength!"));
-        }
-        _lastConnectionCheck = now;
-        return true;
-    }
-
-    /* If we've exceeded the allowed time to wait for the network, give up */
-    if (elapsed_in_wait > _measurementTime_ms)
-    {
-        if (debug)
-        {
-            MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"), getSensorName(),
-             F("has maxed out wait for network registration!  Ending wait."));
-        }
-        /* Leave status bits and times set - can still get a valid value! */
-        return true;
-    }
-
-    /* If the modem isn't registered yet or doesn't report valid signal, we still need to wait */
-    _lastConnectionCheck = now;
-    return false;
 }
 
 
@@ -336,8 +186,9 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
 
 bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
 {
-    // Initialize float variable
     bool success = true;
+
+    // Initialize float variable
     int16_t signalQual = -9999;
     percent = -9999;
     rssi = -9999;
@@ -393,82 +244,64 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
 }
 
 
-bool DigiXBeeWifi::addSingleMeasurementResult(void)
+bool DigiXBeeWifi::updateModemMetadata(void)
 {
     bool success = true;
 
-    /* Initialize float variable */
+    // Unset whatever we had previously
+    loggerModem::_priorRSSI = -9999;
+    loggerModem::_priorSignalPercent = -9999;
+    loggerModem::_priorBatteryState = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp = -9999;
+
+    // Initialize variable
     int16_t signalQual = -9999;
-    int16_t percent = -9999;
-    int16_t rssi = -9999;
-    float temp = -9999;
-    float volt = -9999;
+    uint16_t volt = 9999;
 
-    /* Check a measurement was *successfully* started (status bit 6 set) */
-    /* Only go on to get a result if it was */
-    if (bitRead(_sensorStatus, 6))
+    // Enter command mode only once
+    MS_DBG(F("Entering Command Mode:"));
+    success &= gsmModem.commandMode();
+
+    // Try for up to 15 seconds to get a valid signal quality
+    // NOTE:  We can't actually distinguish between a bad modem response, no
+    // modem response, and a real response from the modem of no service/signal.
+    // The TinyGSM getSignalQuality function returns the same "no signal"
+    // value (99 CSQ or 0 RSSI) in all 3 cases.
+    uint32_t startMillis = millis();
+    do
     {
-
-        // Enter command mode only once
-        MS_DBG(F("Entering Command Mode:"));
-        gsmModem.commandMode();
-
-        // Get signal quality
-        // NOTE:  We can't actually distinguish between a bad modem response, no
-        // modem response, and a real response from the modem of no service/signal.
-        // The TinyGSM getSignalQuality function returns the same "no signal"
-        // value (99 CSQ or 0 RSSI) in all 3 cases.
         MS_DBG(F("Getting signal quality:"));
         signalQual = gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
+        if (signalQual != 0 && signalQual != -9999)
+            break;
+        delay(250);
+    } while ((signalQual == 0 || signalQual == -9999) &&
+             millis() - startMillis < 15000L && success);
 
-        // Since we had to open a connection in start single measurement, we
-        // want to stop it here
-        if (gsmClient.connected())
-        {
-            gsmClient.stop();
-        }
+    // Convert signal quality to RSSI
+    loggerModem::_priorRSSI = signalQual;
+    MS_DBG(F("CURRENT RSSI:"), signalQual);
+    loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
+    MS_DBG(F("CURRENT Percent signal strength:"), getPctFromRSSI(signalQual));
 
-        // Convert signal quality to RSSI
-        rssi = signalQual;
-        percent = getPctFromRSSI(signalQual);
-
-        MS_DBG(F("RSSI:"), rssi);
-        MS_DBG(F("Percent signal strength:"), percent);
-
-        MS_DBG(F("Getting input voltage temperature:"));
-        volt = gsmModem.getBattVoltage();
-        MS_DBG(F("Modem input battery voltage:"), volt);
-
-        MS_DBG(F("Getting chip temperature:"));
-        temp = getModemTemperature();
-        MS_DBG(F("Modem temperature:"), temp);
-
-        // Exit command modem
-        MS_DBG(F("Leaving Command Mode:"));
-        gsmModem.exitCommand();
-    }
+    MS_DBG(F("Getting input voltage:"));
+    volt = gsmModem.getBattVoltage();
+    MS_DBG(F("CURRENT Modem input battery voltage:"), volt);
+    if (volt != 9999)
+        loggerModem::_priorBatteryVoltage = (float)volt;
     else
-    {
-        MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
-    }
+        loggerModem::_priorBatteryVoltage = (float)-9999;
 
-    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
-    MS_DBG(F("PRIOR modem powered time:"), String(_priorPoweredDuration, 3));
+    MS_DBG(F("Getting chip temperature:"));
+    loggerModem::_priorModemTemp = getModemChipTemperature();
+    MS_DBG(F("CURRENT Modem temperature:"), loggerModem::_priorModemTemp);
 
-    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
-    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, (float)-9999);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, (float)-9999);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, volt);
-    verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
-    verifyAndAddMeasurementResult(MODEM_POWERED_VAR_NUM, _priorPoweredDuration);
-
-    /* Unset the time stamp for the beginning of this measurement */
-    _millisMeasurementRequested = 0;
-    /* Unset the status bits for a measurement request (bits 5 & 6) */
-    _sensorStatus &= 0b10011111;
+    // Exit command modem
+    MS_DBG(F("Leaving Command Mode:"));
+    gsmModem.exitCommand();
 
     return success;
 }

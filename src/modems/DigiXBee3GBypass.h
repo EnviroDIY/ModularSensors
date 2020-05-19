@@ -27,8 +27,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "DigiXBee.h"
 #include "TinyGsmClient.h"
+#include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEE3GBYPASS_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -42,31 +42,31 @@ public:
     DigiXBee3GBypass(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage = 1);
+                           const char *apn);
     ~DigiXBee3GBypass();
+
+    bool modemWake(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
-    // Get values by other names
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemTemperature(void) override;
-
     uint32_t getNISTTime(void) override;
 
-    #ifdef MS_DIGIXBEE3GBYPASS_DEBUG_DEEP
+    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    float getModemChipTemperature(void) override;
+
+    bool modemHardReset(void) override;
+
+#ifdef MS_DIGIXBEE3GBYPASS_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
-    #endif
+#endif
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
 protected:
-    bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
-    bool verifyMeasurementComplete(bool debug=false) override;
     bool extraModemSetup(void) override;
 
 private:

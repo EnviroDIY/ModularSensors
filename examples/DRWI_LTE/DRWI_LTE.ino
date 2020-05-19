@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.16
-
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
 The William Penn Foundation's Delaware River Watershed Initiative
@@ -39,8 +37,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -176,8 +172,6 @@ Variable *variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-ef00-1234567890ab"; // Device registration token
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-ef00-1234567890ab";   // Sampling feature UUID
 const char *UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
@@ -189,6 +183,8 @@ const char *UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
 };
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab"; // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";   // Sampling feature UUID
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -210,8 +206,6 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at http://data.WikiWatershed.org
-const char *registrationToken = REGISTRATION_TOKEN; // Device registration token
-const char *samplingFeature = SAMPLING_FEATURE;     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
@@ -263,10 +257,9 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    Serial.print(F("TinyGSM Library version "));
+    Serial.println(TINYGSM_VERSION);
+    Serial.println();
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
@@ -294,30 +287,63 @@ void setup()
     dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
-    // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
-    {
-        modem.modemPowerUp();
-        modem.wake();
-        modem.setup();
-
-        // Synchronize the RTC with NIST
-        Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-        if (modem.connectInternet(120000L))
-        {
-            dataLogger.setRTClock(modem.getNISTTime());
-        }
-        else
-        {
-            Serial.println(F("Could not connect to internet for clock sync."));
-        }
-    }
-
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)
     {
         Serial.println(F("Setting up sensors..."));
         varArray.setupSensors();
+    }
+
+    // Extra modem set-up - selecting AT&T as the carrier and LTE-M only
+    // NOTE:  The code for this could be shortened using the "commandMode" and
+    // other XBee specific commands in TinyGSM.  I've written it this way in this
+    // example to show how the settings could be changed in either bypass OR
+    // transparent mode.
+    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    modem.modemWake(); // NOTE:  This will also set up the modem
+    // Go back to command mode to set carrier options
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        delay(1010);                     // Wait the required guard time before entering command mode
+        modem.gsmModem.streamWrite(GF("+++")); // enter command mode
+        if (modem.gsmModem.waitResponse(2000, GF("OK\r")) == 1)
+            break;
+    }
+    // Carrier Profile - 0 = Automatic selection
+    //                 - 1 = No profile/SIM ICCID selected
+    //                 - 2 = AT&T
+    //                 - 3 = Verizon
+    // NOTE:  To select T-Mobile, you must enter bypass mode!
+    modem.gsmModem.sendAT(GF("CP"), 2);
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Cellular network technology - 0 = LTE-M with NB-IoT fallback
+    //                             - 1 = NB-IoT with LTE-M fallback
+    //                             - 2 = LTE-M only
+    //                             - 3 = NB-IoT only
+    modem.gsmModem.sendAT(GF("N#"), 2);
+    modem.gsmModem.waitResponse();
+    // Write changes to flash and apply them
+    Serial.println(F("Wait while applying changes..."));
+    // Write changes to flash
+    modem.gsmModem.sendAT(GF("WR"));
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Apply changes
+    modem.gsmModem.sendAT(GF("AC"));
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Reset the cellular component to ensure network settings are changed
+    modem.gsmModem.sendAT(GF("!R"));
+    modem.gsmModem.waitResponse(30000L, GF("OK\r"));
+    // Force reset of the Digi component as well
+    // This effectively exits command mode
+    modem.gsmModem.sendAT(GF("FR"));
+    modem.gsmModem.waitResponse(5000L, GF("OK\r"));
+
+    // Sync the clock if it isn't valid or we have battery to spare
+    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
+    {
+        // Synchronize the RTC with NIST
+        // This will also set up the modem
+        dataLogger.syncRTC();
     }
 
     // Create the log file, adding the default header to it
@@ -329,22 +355,8 @@ void setup()
     {
         Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
-    }
-
-    // Power down the modem - but only if there will be more than 15 seconds before
-    // the first logging interval - it can take the LTE modem that long to shut down
-    if (Logger::getNowEpoch() % (loggingInterval*60) > 15 ||
-        Logger::getNowEpoch() % (loggingInterval*60) < 6)
-    {
-        Serial.println(F("Putting modem to sleep"));
-        modem.disconnectInternet();
-        modem.modemSleepPowerDown();
-    }
-    else
-    {
-        Serial.println(F("Leaving modem on until after first measurement"));
+        dataLogger.createLogFile(true); // true = write a new header
+        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

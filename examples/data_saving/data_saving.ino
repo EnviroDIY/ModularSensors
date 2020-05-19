@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.16
-
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
 
@@ -41,8 +39,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -462,10 +458,6 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
-
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
 
@@ -508,20 +500,6 @@ void setup()
     loggerToGo.setSamplingFeatureUUID(samplingFeature);
 
     // Note:  Please change these battery voltages to match your battery
-    // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.55 || !loggerAllVars.isRTCSane())
-    {
-        modem.modemPowerUp();
-        modem.wake();
-        modem.setup();
-
-        // Synchronize the RTC with NIST
-        Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-        if (modem.connectInternet(120000L))
-        {
-            loggerAllVars.setRTClock(modem.getNISTTime());
-        }
-    }
 
     // Set up the sensors, except at lowest battery level
     // Like with the logger, because the variables are duplicated in the arrays,
@@ -532,9 +510,13 @@ void setup()
         arrayComplete.setupSensors();
     }
 
-    // Power down the modem
-    modem.disconnectInternet();
-    modem.modemSleepPowerDown();
+    // Sync the clock if it isn't valid or we have battery to spare
+    if (getBatteryVoltage() > 3.55 || !loggerAllVars.isRTCSane())
+    {
+        // Synchronize the RTC with NIST
+        // This will also set up the modem
+        loggerAllVars.syncRTC();
+    }
 
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
@@ -544,11 +526,12 @@ void setup()
     if (getBatteryVoltage() > 3.4)
     {
         loggerAllVars.turnOnSDcard(true);  // true = wait for card to settle after power up
-        loggerAllVars.createLogFile(true);  // true = write a new header
-        loggerAllVars.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+        loggerAllVars.createLogFile(true); // true = write a new header
+        loggerAllVars.turnOffSDcard(true); // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep
+    Serial.println(F("Putting processor to sleep"));
     loggerAllVars.systemSleep();
 }
 
@@ -566,6 +549,9 @@ void setup()
 // sensors update, testing mode starts, or it goes back to sleep.
 void loop()
 {
+    // Reset the watchdog
+    loggerAllVars.watchDogTimer.resetWatchDog();
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     // We're only doing anything at all if the battery is above 3.4V
@@ -573,6 +559,7 @@ void loop()
     {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
+        loggerAllVars.watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));
@@ -580,14 +567,7 @@ void loop()
         loggerAllVars.alertOn();
         // Power up the SD Card, but skip any waits after power up
         loggerAllVars.turnOnSDcard(false);
-
-        // Turn on the modem to let it start searching for the network
-        // Only turn the modem on if the battery at the last interval was high enough
-        // NOTE:  if the modemPowerUp function is not run before the completeUpdate
-        // function is run, the modem will not be powered and will not return
-        // a signal strength readign.
-        if (getBatteryVoltage() > 3.55)
-            modem.modemPowerUp();
+        loggerAllVars.watchDogTimer.resetWatchDog();
 
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -600,6 +580,7 @@ void loop()
         // NOTE:  The wake function for each sensor should force sensor setup
         // to run if the sensor was not previously set up.
         arrayComplete.completeUpdate();
+        loggerAllVars.watchDogTimer.resetWatchDog();
 
         // End the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -621,33 +602,44 @@ void loop()
 
         // Create a csv data record and save it to the log file
         loggerAllVars.logToSD();
+        loggerAllVars.watchDogTimer.resetWatchDog();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
         if (getBatteryVoltage() > 3.55)
         {
-            if (modem.connectInternet())
+            if (modem.modemWake())
             {
-                // Publish data to remotes
-                loggerToGo.publishDataToRemotes();
-
-                // Sync the clock at midnight
-                // NOTE:  All loggers have the same clock, pick one
-                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                loggerAllVars.watchDogTimer.resetWatchDog();
+                if (modem.connectInternet())
                 {
-                    Serial.println(F("Running a daily clock sync..."));
-                    loggerAllVars.setRTClock(modem.getNISTTime());
-                }
+                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    // Publish data to remotes
+                    loggerToGo.publishDataToRemotes();
+                    modem.updateModemMetadata();
 
-                // Disconnect from the network
-                modem.disconnectInternet();
+                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    // Sync the clock at midnight
+                    // NOTE:  All loggers have the same clock, pick one
+                    if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                    {
+                        Serial.println(F("Running a daily clock sync..."));
+                        loggerAllVars.setRTClock(modem.getNISTTime());
+                    }
+
+                    // Disconnect from the network
+                    loggerAllVars.watchDogTimer.resetWatchDog();
+                    modem.disconnectInternet();
+                }
             }
             // Turn the modem off
+            loggerAllVars.watchDogTimer.resetWatchDog();
             modem.modemSleepPowerDown();
         }
 
         // Cut power from the SD card - without additional housekeeping wait
         loggerAllVars.turnOffSDcard(false);
+        loggerAllVars.watchDogTimer.resetWatchDog();
         // Turn off the LED
         loggerAllVars.alertOff();
         // Print a line to show reading ended

@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.16
-
 This sketch is an example of logging data to an SD card as should be used by
 groups involved with The William Penn Foundation's Delaware River Watershed
 Initiative at sites without cellular service.
@@ -33,8 +31,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char *libraryVersion = "0.23.16";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -136,8 +132,6 @@ Variable *variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-ef00-1234567890ab"; // Device registration token
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-ef00-1234567890ab";   // Sampling feature UUID
 const char *UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
@@ -147,6 +141,8 @@ const char *UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
 };
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab"; // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";   // Sampling feature UUID
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -166,8 +162,6 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // This should be obtained after registration at http://data.envirodiy.org
 // This is needed so the logger file will be "drag-and-drop" ready for manual
 // upload to the portal.
-const char *registrationToken = REGISTRATION_TOKEN; // Device registration token
-const char *samplingFeature = SAMPLING_FEATURE;     // Sampling feature UUID
 
 
 // ==========================================================================
@@ -216,10 +210,6 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
-
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
@@ -241,6 +231,7 @@ void setup()
     // Begin the logger
     dataLogger.begin();
 
+    // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)
     {
@@ -255,9 +246,10 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
+        Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+        dataLogger.createLogFile(true); // true = write a new header
+        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

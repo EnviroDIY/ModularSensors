@@ -101,7 +101,7 @@ void setup(){
 
   Serial.println("Opening SDI-12 bus...");
   mySDI12.begin();
-  delay(500); // allow things to settle
+  delay(500);  // allow things to settle
 
   // Power the sensors;
   if(POWER_PIN > 0){
@@ -140,7 +140,7 @@ void loop(){
   }
 
   if(!found){
-    Serial.println("No sensor detected. Check physical connections."); // couldn't find a sensor. check connections..
+    Serial.println("No sensor detected. Check physical connections.");  // couldn't find a sensor. check connections..
   }
   else
   {

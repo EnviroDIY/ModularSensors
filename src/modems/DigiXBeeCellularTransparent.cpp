@@ -9,50 +9,47 @@
 
 // Included Dependencies
 #include "DigiXBeeCellularTransparent.h"
-#include "modems/LoggerModemMacros.h"
+#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn,
-                           uint8_t measurementsToAverage)
+                           const char *apn)
   : DigiXBee(powerPin, statusPin, useCTSStatus,
-             modemResetPin, modemSleepRqPin,
-             measurementsToAverage),
+             modemResetPin, modemSleepRqPin),
     #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
-    gsmModem(_modemATDebugger),
+    gsmModem(_modemATDebugger, modemResetPin),
     #else
-    gsmModem(*modemStream),
+    gsmModem(*modemStream, modemResetPin),
     #endif
     gsmClient(gsmModem)
 {
     _apn = apn;
 }
 
-
 // Destructor
-DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent(){}
+DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent() {}
 
+MS_MODEM_WAKE(DigiXBeeCellularTransparent);
 
-MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularTransparent);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
-MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularTransparent);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
-MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);
-MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
+MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeCellularTransparent);
+MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeCellularTransparent);
 
 // We turn off airplane mode in the wake.
 bool DigiXBeeCellularTransparent::modemWakeFxn(void)
 {
     if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
-        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("LOW to wake XBee"));
-        digitalWrite(_modemSleepRqPin, LOW);
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, _wakeLevel ? F("HIGH") : F("LOW"),
+               F("to wake"), _modemName);
+        digitalWrite(_modemSleepRqPin, _wakeLevel);
         MS_DBG(F("Turning off airplane mode..."));
         if (gsmModem.commandMode())
         {
@@ -87,8 +84,9 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void)
             // Exit command mode
             gsmModem.exitCommand();
         }
-        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
-        digitalWrite(_modemSleepRqPin, HIGH);
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, !_wakeLevel ? F("HIGH") : F("LOW"),
+               F("to put"), _modemName, F("to sleep"));
+        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         return true;
     }
     else
@@ -153,13 +151,13 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Set the socket timeout to 10s
         gsmModem.sendAT(GF("TM"),64);
         success &= gsmModem.waitResponse() == 1;
-        MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Carrier Profile - Automatic
-        gsmModem.sendAT(GF("CP"),0);
-        gsmModem.waitResponse();  // Don't check for success - only works on LTE
-        // Cellular network technology - LTE-M/NB IoT
-        gsmModem.sendAT(GF("N#"),0);
-        gsmModem.waitResponse();  // Don't check for success - only works on LTE
+        // MS_DBG(F("Setting Cellular Carrier Options..."));
+        // // Carrier Profile - 1 = No profile/SIM ICCID selected
+        // gsmModem.sendAT(GF("CP"),0);
+        // gsmModem.waitResponse();  // Don't check for success - only works on LTE
+        // // Cellular network technology - LTE-M/NB IoT
+        // gsmModem.sendAT(GF("N#"),0);
+        // gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
@@ -171,7 +169,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.writeChanges();
         // Exit command mode
         gsmModem.exitCommand();
-        // Force restart the modem, just for good measure
+        // Force restart the modem to make sure all settings take
         MS_DBG(F("Restarting XBee..."));
         success &= gsmModem.restart();
     }
@@ -182,11 +180,11 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 
     if (success)
     {
-        MS_DBG(F("... Setup successful!"));
+        MS_DBG(F("... setup successful!"));
     }
     else
     {
-        MS_DBG(F("... failed!"));
+        MS_DBG(F("... setup failed!"));
     }
     return success;
 }
@@ -298,69 +296,55 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 }
 
 
-bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
+bool DigiXBeeCellularTransparent::updateModemMetadata(void)
 {
     bool success = true;
 
-    /* Initialize float variable */
+    // Unset whatever we had previously
+    loggerModem::_priorRSSI = -9999;
+    loggerModem::_priorSignalPercent = -9999;
+    loggerModem::_priorBatteryState = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorBatteryPercent = -9999;
+    loggerModem::_priorModemTemp = -9999;
+
+    // Initialize variable
     int16_t signalQual = -9999;
-    int16_t percent = -9999;
-    int16_t rssi = -9999;
-    float temp = -9999;
 
-    /* Check a measurement was *successfully* started (status bit 6 set) */
-    /* Only go on to get a result if it was */
-    if (bitRead(_sensorStatus, 6))
+    // Enter command mode only once
+    MS_DBG(F("Entering Command Mode:"));
+    gsmModem.commandMode();
+
+    // Try for up to 15 seconds to get a valid signal quality
+    // NOTE:  We can't actually distinguish between a bad modem response, no
+    // modem response, and a real response from the modem of no service/signal.
+    // The TinyGSM getSignalQuality function returns the same "no signal"
+    // value (99 CSQ or 0 RSSI) in all 3 cases.
+    uint32_t startMillis = millis();
+    do
     {
-        // Enter command mode only once
-        MS_DBG(F("Entering Command Mode:"));
-        gsmModem.commandMode();
-
-        // Get signal quality
-        // NOTE:  We can't actually distinguish between a bad modem response, no
-        // modem response, and a real response from the modem of no service/signal.
-        // The TinyGSM getSignalQuality function returns the same "no signal"
-        // value (99 CSQ or 0 RSSI) in all 3 cases.
         MS_DBG(F("Getting signal quality:"));
         signalQual = gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
+        if (signalQual != 0 && signalQual != -9999)
+            break;
+        delay(250);
+    } while ((signalQual == 0 || signalQual == -9999) &&
+             millis() - startMillis < 15000L && success);
 
-        // Convert signal quality to RSSI
-        rssi = signalQual;
-        percent = getPctFromRSSI(signalQual);
+    // Convert signal quality to RSSI
+    loggerModem::_priorRSSI = signalQual;
+    MS_DBG(F("CURRENT RSSI:"), signalQual);
+    loggerModem::_priorSignalPercent = getPctFromRSSI(signalQual);
+    MS_DBG(F("CURRENT Percent signal strength:"), getPctFromRSSI(signalQual));
 
-        MS_DBG(F("RSSI:"), rssi);
-        MS_DBG(F("Percent signal strength:"), percent);
+    MS_DBG(F("Getting chip temperature:"));
+    loggerModem::_priorModemTemp = getModemChipTemperature();
+    MS_DBG(F("CURRENT Modem temperature:"), loggerModem::_priorModemTemp);
 
-        MS_DBG(F("Getting chip temperature:"));
-        temp = getModemTemperature();
-        MS_DBG(F("Modem temperature:"), temp);
-
-        // Exit command modem
-        MS_DBG(F("Leaving Command Mode:"));
-        gsmModem.exitCommand();
-    }
-    else
-    {
-        MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
-    }
-
-    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
-    MS_DBG(F("PRIOR modem powered time:"), String(_priorPoweredDuration, 3));
-
-    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
-    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, (float)-9999);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, (float)-9999);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
-    verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
-    verifyAndAddMeasurementResult(MODEM_POWERED_VAR_NUM, _priorPoweredDuration);
-
-    /* Unset the time stamp for the beginning of this measurement */
-    _millisMeasurementRequested = 0;
-    /* Unset the status bits for a measurement request (bits 5 & 6) */
-    _sensorStatus &= 0b10011111;
+    // Exit command modem
+    MS_DBG(F("Leaving Command Mode:"));
+    gsmModem.exitCommand();
 
     return success;
 }
