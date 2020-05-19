@@ -1592,7 +1592,7 @@ Variable *variableList[] = {
     new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab"),
     #endif //SENSOR_CONFIG_GENERAL
     #if defined(ASONG_AM23XX_UUID)
-    //new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
     new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
     #endif // ASONG_AM23XX_UUID
     #ifdef SENSOR_CONFIG_GENERAL
@@ -1694,6 +1694,12 @@ Variable *variableList[] = {
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
+#if defined Modem_SignalPercent_UUID
+    new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
+#endif //Modem_SignalPercent_UUID
+#if defined Modem_RSSI_UUID
+    new Modem_RSSI(&modemPhy, Modem_RSSI_UUID),
+#endif //Modem_SignalPercent_UUID
 #if defined INA219M_A_MIN_UUID
     new Variable(&ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
 #endif
@@ -2126,13 +2132,15 @@ void setup()
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
-    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    Logger::setRTCTimeZone(0); // Only tested for UTC (UTC+0)
 
     #if defined UseModem_Module
-    // Attach the modem and information pins to the logger
-    dataLogger.attachModem(modemPhy);
-    //modemPhy.setModemLED(modemLEDPin);
+        // Attach the modem and information pins to the logger
+        dataLogger.attachModem(modemPhy);
+        //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
+        #if defined Modem_SignalPercent_UUID //|| or others
+            modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+        #endif 
     #endif // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLEDPin);
 

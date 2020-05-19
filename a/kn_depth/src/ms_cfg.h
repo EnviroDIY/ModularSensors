@@ -229,7 +229,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
  #endif// ADAFRUIT_FEATHERWING_eInk1_5in_SD
 
 //define one Radio  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoAutonomoWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoAutonomoWithDigiXBeeCellTransparent
@@ -329,7 +329,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #define CONFIG_SENSOR_SDI12_PHY 1
   #endif // Insitu_Troll_UUID
 
-  //#define KellerNanolevel_ACT 1
+  #define KellerNanolevel_ACT 1
   #ifdef KellerNanolevel_ACT 
     #define KellerNanolevelModbusAddress_DEF 0x01
     #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
@@ -398,9 +398,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #endif 
   #endif //INA219_PHY_ACT
 
-  //#define Modem_RSSI_UUID ""
-  // Seems to cause XBEE WiFi S6 to crash 
-  //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+  //Radio Modem sensors - collected at end of connection, reported next cycle
+  // Enable  pollModemMetadata(POLL_MODEM_META_DATA_ON),enables all data collection, timewasting
+  //still problems #define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+  //not tested #define Modem_RSSI_UUID    "RSSI_UUID"
+  //Not supported yet #define Modem_RadioActive_UUID    "RadioActive_UUID"
   #define ProcessorStats_ACT 1
   #ifdef ProcessorStats_ACT
     #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
@@ -416,8 +418,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #define ProcVolt_V3v6_UUID  "ProcVolt_V3v6_UUID"
   #endif //ProcVolt_ACT
 
-  //Use sensor eg Adafruit_AM2314 or AM2320
-  //#define ASONG_AM23XX_UUID 1
+  //Use sensor eg Adafruit_AM2314 or AM2320 plugged in I2C
+  #define ASONG_AM23XX_UUID 1
   #if defined ASONG_AM23XX_UUID
     #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
     #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
