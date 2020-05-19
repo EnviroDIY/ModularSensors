@@ -51,7 +51,9 @@ class TallyCounterI2C : public Sensor
 public:
     // The constructor - all arguments are optional
     // Address of I2C device is 0x33 by default
-    TallyCounterI2C(uint8_t i2cAddressHex = 0x33);
+    // powerPin is -1 by default because often deployed with power always on,
+    //   but Tally also has a super capacitor that allows powering down.
+    TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex = 0x33);
     // Destructor
     ~TallyCounterI2C();
 
