@@ -57,7 +57,7 @@ bool TallyCounterI2C::setup(void)
     bool success = false;
     while (!success and ntries < 5)
     {
-        success = counter_internal.begin();
+        success = counter_internal.begin(_i2cAddressHex);
         ntries++;
     }
     if (!success)
@@ -68,7 +68,6 @@ bool TallyCounterI2C::setup(void)
         _sensorStatus &= 0b11111110;
     }
     retVal &= success;
-
 
     // Turn the power back off it it had been turned on
     if (!wasOn) {powerDown();}
@@ -83,8 +82,6 @@ bool TallyCounterI2C::wake(void)
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
-    // Restart always needed after power-up to set sampling modes
-    counter_internal.begin(_i2cAddressHex);
 
     return true;
 }
