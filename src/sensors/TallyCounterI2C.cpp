@@ -26,6 +26,7 @@ TallyCounterI2C::TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex)
      : Sensor("TallyCounterI2C", TALLY_NUM_VARIABLES,
               TALLY_WARM_UP_TIME_MS, TALLY_STABILIZATION_TIME_MS, TALLY_MEASUREMENT_TIME_MS,
               powerPin, -1, 1)
+              // measurementsToAverage = 1, b/c counts all events over interval
 {
     _i2cAddressHex  = i2cAddressHex;
 }

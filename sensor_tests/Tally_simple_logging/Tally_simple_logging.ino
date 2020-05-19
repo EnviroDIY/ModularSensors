@@ -83,10 +83,15 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 #include <sensors/TallyCounterI2C.h>
 
+const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+// Tally I2CPower is -1 by default because it is often deployed with power always on,
+// but Tally also has a super capacitor that it to be self powered between readings/recharge
+// see docs at https://github.com/NorthernWidget-Skunkworks/Project-Tally
+
 const uint8_t TallyCounterI2CAddress = 0x33;  // I2C Address for external tip counter
 
 // Create a Rain Counter sensor object
-TallyCounterI2C tallyi2c(TallyCounterI2CAddress);
+TallyCounterI2C tallyi2c(I2CPower, TallyCounterI2CAddress);
 
 // Create number of event count variable pointers for the Tally event counter
 Variable *tallyEvents = new TallyCounterI2C_Events(&tallyi2c, "12345678-abcd-1234-efgh-1234567890ab");
