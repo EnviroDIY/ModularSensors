@@ -75,8 +75,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // End TinyGsmClient.h options
 //define one  _Module
-#define DigiXBeeWifi_Module 1
-#warning infoMayflyWithDigiXBeeWiFi
+//#define DigiXBeeWifi_Module 1
+//#warning infoMayflyWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
@@ -108,7 +108,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define CTD10_COND_UUID  "CTD10_COND_UUID"  
 #endif // Decagon_CTD_UUID
 
-#define Insitu_TrollSdi12_UUID 1
+//#define Insitu_TrollSdi12_UUID 1
 #ifdef Insitu_TrollSdi12_UUID
   //Mayfly definitions
   #define ITROLL_DEPTH_UUID "KellerNanolevel_Height_UUID"
@@ -150,8 +150,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define AnalogProcEC_ACT
 #ifdef AnalogProcEC_ACT
   #define EC1_UUID      "EC1_UUID"
-  #define ECpwrPin_DEF A0 
-  #define ECdataPin1_DEF A1
+  #define ECpwrPin_DEF A4
+  #define ECdataPin1_DEF A0
 #endif //AnalogProcEC_ACT
 
 //#define INA219M_PHY_ACT 1

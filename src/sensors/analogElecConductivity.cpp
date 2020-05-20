@@ -206,7 +206,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     }
 
     //Note return Rwater_ohms if MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
-    MS_DEEP_DBG("ohms=",EC25_uScm = Rwater_ohms);
+    MS_DEEP_DBG("ohms=", Rwater_ohms);
     return EC25_uScm; 
  
 }

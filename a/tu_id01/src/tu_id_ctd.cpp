@@ -570,6 +570,9 @@ Variable *ds3231TempFcalc = new Variable(
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined AnalogProcEC_ACT
+    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
+#endif //AnalogProcEC_ACT    
 #if defined Decagon_CTD_UUID 
     //new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
@@ -650,11 +653,12 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 const char *registrationToken = registrationToken_UUID;   // Device registration token
 const char *samplingFeature = samplingFeature_UUID;     // Sampling feature UUID
 
+#if defined UseModem_Module 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 //EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient, registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
-
+#endif //UseModem_Module 
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -730,14 +734,14 @@ void  unusedBitsMakeSafe()
     //PORT_SAFE(22);  //Pwr Sw
     PORT_SAFE(23); //Xbee DTR
     //Analog from here on 
-    PORT_SAFE(24);
-    PORT_SAFE(25);
-    PORT_SAFE(26);
-    PORT_SAFE(27);
-    PORT_SAFE(28);
-    PORT_SAFE(29);
-    PORT_SAFE(30);
-    PORT_SAFE(31);
+    //PORT_SAFE(24);//A0 ECData1
+    PORT_SAFE(25); //A1
+    PORT_SAFE(26); //A2
+    PORT_SAFE(27); //A3
+    //PORT_SAFE(28); //A4  ECpwrPin
+    PORT_SAFE(29); //A5
+    PORT_SAFE(30); //A6
+    //PORT_SAFE(31); //A7 Timer Int
 };
 
 // ==========================================================================
@@ -774,8 +778,6 @@ void setup()
     Serial.print(sketchName);
     Serial.print(" ");
     Serial.println(git_branch);
-    Serial.print(F("' on Logger "));
-    Serial.println(LoggerID);
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
@@ -783,7 +785,7 @@ void setup()
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
 #else 
-    Serial.print(F("TinyGSM - none"));
+    Serial.println(F("TinyGSM - none"));
 #endif
 
     unusedBitsMakeSafe();
@@ -826,17 +828,22 @@ void setup()
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     Logger::setRTCTimeZone(0);
 
+    #ifdef UseModem_Module
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
-    //modemPhy.setModemLED(modemLEDPin);
+    //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
+        #if defined Modem_SignalPercent_UUID //|| or others
+                modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+        #endif 
+    #endif //UseModem_Module 
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
-#ifdef USE_MS_SD_INI
+    #ifdef USE_MS_SD_INI
     //Set up SD card access
     Serial.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
     Serial.println(F("\n\n---parseIni complete "));
-#endif //USE_MS_SD_INI
+    #endif //USE_MS_SD_INI
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
@@ -861,10 +868,15 @@ void setup()
     } 
 
     if (!dataLogger.isRTCSane()) {
+        #if defined UseModem_Module
         MS_DBG(F("Sync with NIST "));
         // Synchronize the RTC with NIST
         // This will also set up the modemPhy
         dataLogger.syncRTC();
+        #else
+        MS_DBG(F("Time Bad. Please Correct "));
+        // Need to do error - flash light, stop
+        #endif
     }
 
     //Check if enough power to go on
@@ -916,15 +928,24 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modemPhy
-    else if (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR)
+    else 
+    #if defined UseModem_Module
+    if (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR)
+    #endif
     {
-        MS_DBG(F("Cancel Publish collect readings & log. V too low batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);
+        #if defined UseModem_Module
+        MS_DBG(F("Cancel Publish collect readings & log. V too low batteryV="),batteryV,F("Need >"), POWER_THRESHOLD_NEED_COMMS_PWR );
+        #else
+        MS_DBG(F("Collect readings & log. batteryV="),batteryV,F("Threshold >"), POWER_THRESHOLD_NEED_BASIC_PWR );
+        #endif // UseModem_Module
         dataLogger.logData();
     }
+    #if defined UseModem_Module
     // If the battery is good, send the data to the world
     else
     {
         MS_DBG(F("Starting logging/Publishing"),batteryV);
         dataLogger.logDataAndPublish();
     }
+    #endif// UseModem_Module
 }

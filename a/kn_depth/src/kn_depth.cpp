@@ -1979,7 +1979,7 @@ void setup()
     SerialStd.print(F("TinyGSM Library version "));
     SerialStd.println(TINYGSM_VERSION);
 #else 
-    SerialStd.print(F("TinyGSM - none"));
+    SerialStd.println(F("TinyGSM - none"));
 #endif
 
     neoPixelPhy.begin();

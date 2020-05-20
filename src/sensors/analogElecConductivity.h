@@ -18,8 +18,10 @@
  *  Analog JP8 JP9 for ADC 16bit/ADS1115 uses different algorithim
  * 
  * Wiring
- * Will use J3-Pin2 A0 but could be any of A0-A7
- *  Rlmt to 3.3V_SW and Sensor; J3-Pin10 to Sensor J3-Pin2
+ * Will use J3-Pin2 A0 but could be any of A0-A3,A5 
+ *  and one pin switches pwr eg AA (PwrPin)
+ *  A7 by default is tied to DS3231 Timer Int
+ *  Rlmt/500ohms to A7 and Sensor; J3-Pin10 to Sensor J3-Pin2
  *  Sensors one side; J3-Pin2
  *  Sensor  one side to GND Mayfly J3-Pin20
  * 
