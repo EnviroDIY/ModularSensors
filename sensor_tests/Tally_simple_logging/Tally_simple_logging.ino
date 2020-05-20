@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.24.5
+This example sketch is written for ModularSensors library version 0.25.0
 
 This sketch is an example of logging data to an SD card
 
@@ -18,20 +18,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
+#include <Arduino.h>          // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>  // The modular sensors library
+#include <LoggerBase.h>       // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
-// The library version this example was written for
-const char *libraryVersion = "0.24.5";
 // The name of this file
-const char *sketchName = "simple_logging.ino";
+const char* sketchName = "Tally_simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 1;
 // Your logger's timezone.
@@ -43,20 +41,20 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
-
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
-const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+// NOTE:  Use -1 for pins that do not apply
+const long   serialBaud = 115200;  // Baud rate for debugging
+const int8_t greenLED   = 8;       // Pin for the green LED
+const int8_t redLED     = 9;       // Pin for the red LED
+const int8_t buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
+const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 
@@ -75,7 +73,8 @@ MaximDS3231 ds3231(1);
 // Additional sensors can setup here, similar to the RTC, but only if
 //   they have been supported with ModularSensors wrapper functions. See:
 //   https://github.com/EnviroDIY/ModularSensors/wiki#just-getting-started
-// Syntax for the include statement and constructor function for each sensor is at
+// Syntax for the include statement and constructor function for each sensor is
+// at
 //   https://github.com/EnviroDIY/ModularSensors/wiki#these-sensors-are-currently-supported
 //   or can be copied from the `menu_a_la_carte.ino` example
 
@@ -84,18 +83,22 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 #include <sensors/TallyCounterI2C.h>
 
-const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-// Tally I2CPower is -1 by default because it is often deployed with power always on,
-// but Tally also has a super capacitor that it to be self powered between readings/recharge
-// see docs at https://github.com/NorthernWidget-Skunkworks/Project-Tally
+const int8_t TallyPower = -1;  // Power pin (-1 if unconnected)
+// NorthernWidget Tally I2CPower is -1 by default because it is often deployed
+// with power always on, but Tally also has a super capacitor that enables it
+// to be self powered between readings/recharge as described at
+// https://github.com/NorthernWidget-Skunkworks/Project-Tally
 
-const uint8_t TallyCounterI2CAddress = 0x33;  // I2C Address for external tip counter
+const uint8_t TallyCounterI2CAddress = 0x33;
+// The Tally I2C address is 0x33 by default
 
-// Create a Rain Counter sensor object
-TallyCounterI2C tallyi2c(I2CPower, TallyCounterI2CAddress);
+// Create a Tally Counter sensor object
+TallyCounterI2C tallyi2c(TallyPower, TallyCounterI2CAddress);
 
-// Create number of event count variable pointers for the Tally event counter
-Variable *tallyEvents = new TallyCounterI2C_Events(&tallyi2c, "12345678-abcd-1234-efgh-1234567890ab");
+// Create variable pointers for the Tally event counter
+Variable *tallyEvents =
+    new TallyCounterI2C_Events(&tallyi2c,
+        "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -104,10 +107,10 @@ Variable *tallyEvents = new TallyCounterI2C_Events(&tallyi2c, "12345678-abcd-123
 
 // Create the function to give your calculated result.
 // The function should take no input (void) and return a float.
-// You can use any named variable pointers to access values by way of variable->getValue()
+// You can use any named variable pointers to access values by way of
+// variable->getValue()
 
-float calculateWindSpeed(void)
-{
+float calculateWindSpeed(void) {
     float tallyWindSpeed = -9999;  // Always safest to start with a bad value
     float period = -9999;  // seconds between gettting event counts
     float frequency = -9999;  // average event frequency in Hz
@@ -116,23 +119,29 @@ float calculateWindSpeed(void)
     {
         period = loggingInterval * 60.0;    // in seconds
         frequency = tallyEventCount/period; // average event frequency in Hz
-        tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h, from 2.5 mph/Hz & 1.60934 kmph/mph
-    	// 2.5 mph/Hz conversion factor from https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
+        tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h,
+        // 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
+    	// https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
     }
     return tallyWindSpeed;
 }
 
 // Properties of the calculated variable
-const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
-const char *calculatedVarName = "windSpeed";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *calculatedVarUnit = "KilometerPerHour";  // This must be a value from http://vocabulary.odm2.org/units/
-const char *calculatedVarCode = "TallyWindSpeed";  // A short code for the variable
-const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
+// The number of digits after the decimal place
+const uint8_t calculatedVarResolution = 3;
+// This must be a value from http://vocabulary.odm2.org/variablename/
+const char *calculatedVarName = "windSpeed";
+// This must be a value from http://vocabulary.odm2.org/units/
+const char *calculatedVarUnit = "KilometerPerHour";
+// A short code for the variable
+const char *calculatedVarCode = "TallyWindSpeed";
+// The (optional) universallly unique identifier
+const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";
 
-// Finally, Create a calculated variable pointer and return a variable pointer to it
-Variable *calculatedWindSpeed = new Variable(calculateWindSpeed, calculatedVarResolution,
-                                       calculatedVarName, calculatedVarUnit,
-                                       calculatedVarCode, calculatedVarUUID);
+// Create a calculated variable pointer and return a variable pointer to it
+Variable *calculatedWindSpeed = new Variable(
+    calculateWindSpeed, calculatedVarResolution, calculatedVarName,
+    calculatedVarUnit, calculatedVarCode, calculatedVarUUID);
 
 
 // ==========================================================================
@@ -140,13 +149,14 @@ Variable *calculatedWindSpeed = new Variable(calculateWindSpeed, calculatedVarRe
 // ==========================================================================
 #include <VariableArray.h>
 
-Variable *variableList[] = {
+Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     // new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
     // Additional sensor variables can be added here, by copying the syntax
-    //   for creating the variable pointer (FORM1) from the `menu_a_la_carte.ino` example
+    //   for creating the variable pointer (FORM1) from the
+    //   `menu_a_la_carte.ino` example
     // The example code snippets in the wiki are primarily FORM2.
     tallyEvents,
     calculatedWindSpeed,
@@ -171,8 +181,7 @@ Logger dataLogger;
 // ==========================================================================
 
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
-{
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
   for (uint8_t i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
@@ -188,8 +197,7 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 // ==========================================================================
 // Main setup function
 // ==========================================================================
-void setup()
-{
+void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -202,10 +210,6 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
-
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -222,7 +226,8 @@ void setup()
     Logger::setRTCTimeZone(0);
 
     // Set information pins
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
+                             greenLED);
 
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
@@ -245,7 +250,6 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
-void loop()
-{
+void loop() {
     dataLogger.logData();
 }
