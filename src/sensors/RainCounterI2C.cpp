@@ -1,48 +1,48 @@
 /*
  *RainCounterI2C.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for an external tip counter, used to measure rainfall via a tipping bucket
- *rain gauge
+ *This file is for an external tip counter, used to measure rainfall via a
+ *tipping bucket rain gauge
  *
  *Documentation for the sensor can be found at:
  *https://github.com/EnviroDIY/TippingBucketRainCounter
  *
  * For Rainfall:
  *  Accuracy and resolution are dependent on the sensor used
- *  Standard resolution is 0.01" or 0.2mm of rainfall (depending on if sensor is set to english or metric)
+ *  Standard resolution is 0.01" or 0.2mm of rainfall (depending on if sensor is
+ *set to english or metric)
  *
  * Assume sensor is immediately stable
-*/
+ */
 
 #include "RainCounterI2C.h"
 
 
-// The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
+// The constructor - because this is I2C, only need the power pin and rain per
+// event if a non-standard value is used
 RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
-              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              -1, -1, 1)
-{
-    _i2cAddressHex  = i2cAddressHex;
-    _rainPerTip = rainPerTip;
+    : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
+             BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
+             1) {
+    _i2cAddressHex = i2cAddressHex;
+    _rainPerTip    = rainPerTip;
 }
 // Destructor
-RainCounterI2C::~RainCounterI2C(){}
+RainCounterI2C::~RainCounterI2C() {}
 
 
-String RainCounterI2C::getSensorLocation(void)
-{
+String RainCounterI2C::getSensorLocation(void) {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool RainCounterI2C::setup(void)
-{
+bool RainCounterI2C::setup(void) {
     Wire.begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -56,35 +56,31 @@ bool RainCounterI2C::setup(void)
 }
 
 
-bool RainCounterI2C::addSingleMeasurementResult(void)
-{
-    //intialize values
-    uint8_t Byte1 = 0;  // Low byte of data
-    uint8_t Byte2 = 0;  // High byte of data
-
-    float rain = -9999;  // Number of mm of rain
+bool RainCounterI2C::addSingleMeasurementResult(void) {
+    // intialize values
+    float   rain = -9999;  // Number of mm of rain
     int16_t tips = -9999;  // Number of tip events
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
-    if (Wire.requestFrom(int(_i2cAddressHex), 2))
-    {
+    if (Wire.requestFrom(static_cast<int>(_i2cAddressHex), 2)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        Byte1 = Wire.read();
-        Byte2 = Wire.read();
+        uint8_t Byte1 = Wire.read();  // Low byte of data
+        uint8_t Byte2 = Wire.read();  // High byte of data
 
         tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
-        rain = float(tips) * _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
+        rain = static_cast<float>(tips) *
+            _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 
-        if (tips < 0) tips = -9999;  // If negetive value results, return failure
-        if (rain < 0) rain = -9999;  // If negetive value results, return failure
+        if (tips < 0)
+            tips = -9999;  // If negetive value results, return failure
+        if (rain < 0)
+            rain = -9999;  // If negetive value results, return failure
 
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);
-    }
-    else
-    {
+    } else {
         MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
     }
 

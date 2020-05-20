@@ -1,17 +1,18 @@
 /*
  *SIMComSIM800.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Adafruit Fona 2G, the Sodaq GPRSBee R4 and almost any
  * other module based on the SIMCOM SIM800 or SIM900
  *the SIMCOM SIM800h.
-*/
+ */
 
 // Header Guards
-#ifndef SIMComSIM800_h
-#define SIMComSIM800_h
+#ifndef SRC_MODEMS_SIMCOMSIM800_H_
+#define SRC_MODEMS_SIMCOMSIM800_H_
 
 // Debugging Statement
 // #define MS_SIMCOMSIM800_DEBUG
@@ -44,7 +45,8 @@
 #define SIM800_WAKE_PULSE_MS 1100
 // Time after power on before "PWRKEY" can be used - >0.4sec
 #define SIM800_WARM_UP_TIME_MS 450
-// Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
+// Time after end pulse until serial port becomes active (>3sec from start of 1s
+// pulse)
 #define SIM800_ATRESPONSE_TIME_MS 3000
 
 // power down (gracefully) takes >3sec
@@ -62,44 +64,41 @@
 #endif
 
 
-class SIMComSIM800 : public loggerModem
-{
-
-public:
+class SIMComSIM800 : public loggerModem {
+ public:
     // Constructor/Destructor
-    SIMComSIM800(Stream* modemStream,
-                 int8_t powerPin, int8_t statusPin,
-                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                 const char *apn);
+    SIMComSIM800(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+                 int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn);
     ~SIMComSIM800();
 
     bool modemWake(void) override;
 
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    virtual void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-    virtual uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    virtual float getModemChipTemperature(void) override;
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                               uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
+    TinyGsm       gsmModem;
     TinyGsmClient gsmClient;
 
-protected:
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void) override;
+ protected:
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SIMCOMSIM800_H_

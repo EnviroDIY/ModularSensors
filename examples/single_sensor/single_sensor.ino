@@ -21,21 +21,21 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 // Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
+#include <Arduino.h>          // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <SensorBase.h>
 #include <VariableBase.h>
 
 // The name of this file
-const char *sketchName = "single_sensor.ino";
+const char* sketchName = "single_sensor.ino";
 
 // ==========================================================================
 // Board setup info
 // ==========================================================================
 
-const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;  // Pin for the green LED
-const int8_t redLED = 9;  // Pin for the red LED
+const long   serialBaud = 115200;  // Baud rate for debugging
+const int8_t greenLED   = 8;       // Pin for the green LED
+const int8_t redLED     = 9;       // Pin for the red LED
 
 // ==========================================================================
 // Set up the sensor object
@@ -43,10 +43,10 @@ const int8_t redLED = 9;  // Pin for the red LED
 #include <sensors/MaxBotixSonar.h>
 
 // Create a reference to the serial port for the sonar
-HardwareSerial &sonarSerial = Serial1;  // Use hardware serial if possible
+HardwareSerial& sonarSerial = Serial1;  // Use hardware serial if possible
 
-const int8_t SonarPower = 22;   // excite (power) pin
-const int SonarTrigger = -1;   // Trigger pin
+const int8_t SonarPower   = 22;  // excite (power) pin
+const int    SonarTrigger = -1;  // Trigger pin
 
 // Create a new instance of the sonar sensor;
 MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger);
@@ -55,21 +55,20 @@ MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger);
 MaxBotixSonar_Range sonar_range(&sonar);
 
 // Create a function to calculate the water depth from the sonar range
-// For this example, we'll assume that the sonar is mounted 5m above the stream bottom
-float calcDepth(void)
-{
+// For this example, we'll assume that the sonar is mounted 5m above the stream
+// bottom
+float calcDepth(void) {
     float mountHeight = 5000;
-    float sonarRange = sonar_range.getValue();
+    float sonarRange  = sonar_range.getValue();
     return mountHeight - sonarRange;
 }
 // Create a calculated variable for the water depth
-// Variable calcVar(functionName, VariableName, VariableUnit, Resolution, UUID, Code);
-// VariableName must be a value from http://vocabulary.odm2.org/variablename/
-// VariableUnit must be a value from http://vocabulary.odm2.org/units/
-Variable waterDepth(calcDepth, 0,
-                    "waterDepth", "millimeter",
-                    "sonarDepth", "12345678-abcd-1234-ef00-1234567890ab");
-
+// Variable calcVar(functionName, VariableName, VariableUnit, Resolution, UUID,
+// Code); VariableName must be a value from
+// http://vocabulary.odm2.org/variablename/ VariableUnit must be a value from
+// http://vocabulary.odm2.org/units/
+Variable waterDepth(calcDepth, 0, "waterDepth", "millimeter", "sonarDepth",
+                    "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -77,25 +76,23 @@ Variable waterDepth(calcDepth, 0,
 // ==========================================================================
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
-{
-  for (int i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+void greenredflash(int numFlash = 4) {
+    for (int i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(75);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(75);
+    }
     digitalWrite(redLED, LOW);
-    delay(75);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(75);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
 // ==========================================================================
 // Main setup function
 // ==========================================================================
-void setup()
-{
+void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -126,8 +123,7 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
-void loop()
-{
+void loop() {
     // Turn on the LED to show we're taking a reading
     digitalWrite(greenLED, HIGH);
 

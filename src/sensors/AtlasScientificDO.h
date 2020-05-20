@@ -1,6 +1,7 @@
 /*
  * AtlasScientificDO.h
  * This file is part of the EnviroDIY modular sensors library for Arduino
+ * Copyright 2020 Stroud Water Research Center
  *
  * Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano
@@ -12,8 +13,8 @@
  */
 
 // Header Guards
-#ifndef AtlasScientificDO_h
-#define AtlasScientificDO_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICDO_H_
+#define SRC_SENSORS_ATLASSCIENTIFICDO_H_
 
 // Debugging Statement
 // #define MS_ATLASSCIENTIFICDO_DEBUG
@@ -46,56 +47,48 @@
 #define ATLAS_DOPCT_VAR_NUM 1
 
 // The main class for the Atlas Scientific DO sensor
-class AtlasScientificDO : public AtlasParent
-{
-public:
-    AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
-                      uint8_t measurementsToAverage = 1);
+class AtlasScientificDO : public AtlasParent {
+ public:
+    explicit AtlasScientificDO(int8_t  powerPin,
+                               uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
+                               uint8_t measurementsToAverage = 1);
     ~AtlasScientificDO();
 
-    virtual bool setup(void) override;
+    bool setup(void) override;
 };
 
 // The class for the DO Concentration Variable
-class AtlasScientificDO_DOmgL : public Variable
-{
-public:
-    AtlasScientificDO_DOmgL(Sensor *parentSense,
-                            const char *uuid = "",
-                            const char *varCode = "AtlasDOmgL")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_DOMGL_VAR_NUM,
-                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter",
-                 varCode, uuid)
-    {}
+class AtlasScientificDO_DOmgL : public Variable {
+ public:
+    explicit AtlasScientificDO_DOmgL(AtlasScientificDO* parentSense,
+                                     const char*        uuid    = "",
+                                     const char*        varCode = "AtlasDOmgL")
+        : Variable(parentSense, (const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                   (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
+                   "milligramPerLiter", varCode, uuid) {}
     AtlasScientificDO_DOmgL()
-      : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
-                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter", "AtlasDOmgL")
-    {}
-    ~AtlasScientificDO_DOmgL(){}
+        : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                   (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
+                   "milligramPerLiter", "AtlasDOmgL") {}
+    ~AtlasScientificDO_DOmgL() {}
 };
 
 // The class for the DO Percent of Saturation Variable
-class AtlasScientificDO_DOpct : public Variable
-{
-public:
-    AtlasScientificDO_DOpct(Sensor *parentSense,
-                            const char *uuid = "",
-                            const char *varCode = "AtlasDOpct")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_DOPCT_VAR_NUM,
-                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent",
-                 varCode, uuid)
-    {}
+class AtlasScientificDO_DOpct : public Variable {
+ public:
+    explicit AtlasScientificDO_DOpct(AtlasScientificDO* parentSense,
+                                     const char*        uuid    = "",
+                                     const char*        varCode = "AtlasDOpct")
+        : Variable(parentSense, (const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                   (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent", varCode,
+                   uuid) {}
     AtlasScientificDO_DOpct()
-      : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
-                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent", "AtlasDOpct")
-    {}
-    ~AtlasScientificDO_DOpct(){}
+        : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                   (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent",
+                   "AtlasDOpct") {}
+    ~AtlasScientificDO_DOpct() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICDO_H_

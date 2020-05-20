@@ -1,15 +1,16 @@
 /*
  *SIMComSIM7000.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ *Copyright 2020 Stroud Water Research Center
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Botletics and other modules based on the SIMCOM SIM7000.
-*/
+ */
 
 // Header Guards
-#ifndef SIMComSIM7000_h
-#define SIMComSIM7000_h
+#ifndef SRC_MODEMS_SIMCOMSIM7000_H_
+#define SRC_MODEMS_SIMCOMSIM7000_H_
 
 // Debugging Statement
 // #define MS_SIMCOMSIM7000_DEBUG
@@ -36,8 +37,8 @@
 
 // Module is switched on by a >1 second LOW pulse on the PWRKEY pin
 // NOTE: Module is switched OFF by a >1.2 second LOW pulse on the PWRKEY pin,
-// so by using a pulse of >1 but <1.2 s to wake the SIM7000 and using AT commands to
-// put it to sleep, we should always be in the correct state
+// so by using a pulse of >1 but <1.2 s to wake the SIM7000 and using AT
+// commands to put it to sleep, we should always be in the correct state
 #define SIM7000_WAKE_LEVEL LOW
 #define SIM7000_WAKE_PULSE_MS 1100
 // Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
@@ -59,44 +60,42 @@
 #endif
 
 
-class SIMComSIM7000 : public loggerModem
-{
-
-public:
+class SIMComSIM7000 : public loggerModem {
+ public:
     // Constructor/Destructor
-    SIMComSIM7000(Stream* modemStream,
-                  int8_t powerPin, int8_t statusPin,
+    SIMComSIM7000(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char *apn);
+                  const char* apn);
     ~SIMComSIM7000();
 
     bool modemWake(void) override;
 
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    virtual void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-    virtual uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    virtual float getModemChipTemperature(void) override;
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                               uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
+    TinyGsm       gsmModem;
     TinyGsmClient gsmClient;
 
-protected:
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void) override;
+ protected:
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SIMCOMSIM7000_H_
