@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.4
+This example sketch is written for ModularSensors library version 0.24.5
 
 This sketch is an example of logging data to an SD card
 
@@ -20,13 +20,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.4";
+const char *libraryVersion = "0.24.5";
 // The name of this file
 const char *sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -113,7 +114,7 @@ float calculateWindSpeed(void)
     float tallyEventCount = tallyEvents->getValue();
     if (tallyEventCount != -9999)  // make sure both inputs are good
     {
-        period = loggingInterval * 60.0;
+        period = loggingInterval * 60.0;    // in seconds
         frequency = tallyEventCount/period; // average event frequency in Hz
         tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h, from 2.5 mph/Hz & 1.60934 kmph/mph
     	// 2.5 mph/Hz conversion factor from https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
@@ -141,7 +142,7 @@ Variable *calculatedWindSpeed = new Variable(calculateWindSpeed, calculatedVarRe
 
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
-    new ProcessorStats_FreeRam(&mcuBoard),
+    // new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
     // Additional sensor variables can be added here, by copying the syntax
@@ -160,7 +161,6 @@ VariableArray varArray;
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a logger instance
 Logger dataLogger;
