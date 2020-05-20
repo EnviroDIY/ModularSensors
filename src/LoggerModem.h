@@ -359,7 +359,7 @@ class loggerModem {
      * @brief Get the stored modem temperature.   Does NOT query the modem for a
      * new value.
      *
-     * @return float THe stored temperature in degrees Celsius
+     * @return float The stored temperature in degrees Celsius
      */
     static float getModemTemperature();
 
