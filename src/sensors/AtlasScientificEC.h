@@ -1,16 +1,22 @@
 /*
- * AtlasScientificEC.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
- *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
+ * @file AtlasScientificEC.h
+ * @brief This file contains the AtlasScientificCO2 subclass of the AtlasParent
+ * sensor class along with the variable subclasses AtlasScientificEC_Cond,
+ * AtlasScientificEC_TDS, AtlasScientificEC_Salinity and
+ * AtlasScientificEC_SpecificGravity.  These are used for any sensor attached to
+ * an Atlas EZO conductivity circuit.  This depends on the Arduino core
+ * Wire library.
  *
  * The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS,
  * salinity, and specific gravity
  *     Accuracy is ± 2%
  *     Range is 0.07 − 500,000+ μS/cm
  *     Resolution is 3 decimal places
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

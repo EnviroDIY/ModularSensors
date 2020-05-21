@@ -1,11 +1,12 @@
-/*
- *DigiXBeeLTEBypass.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file DigiXBeeLTEBypass.h
+ * @brief This file is the DigiXBeeLTEBypass subclass of the DigiXBee class for
+ * Digi Cellular XBee3's based on u-blox SARA R410M chips and operated in bypass
+ * mode.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for Digi Cellular XBee's BASED ON UBLOX CHIPS in bypass mode
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

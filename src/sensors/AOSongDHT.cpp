@@ -1,28 +1,10 @@
-/*
- *AOSongDHT.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file AOSongDHT.cpp
+ * @brief Implements the AOSongDHT class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the AOSong Digital-output relative humidity & temperature
- *sensor/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).  It is dependent on
- *the Adafruit DHT Library
- *
- *Documentation for the sensor can be found at:
- *http://www.aosong.com/en/products/details.asp?id=117
- *
- * For Relative Humidity:
- *  Resolution is 0.1 % RH
- *  Accuracy is ± 2 % RH
- *  Range is 0 to 100 % RH
- *
- * For Temperature:
- *  Resolution is 0.1°C
- *  Accuracy is ±0.5°C
- *  Range is -40°C to +80°C
- *
- * Warm up/sampling time: 1.7sec
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "AOSongDHT.h"

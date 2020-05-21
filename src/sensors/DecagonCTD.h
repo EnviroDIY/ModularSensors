@@ -1,17 +1,14 @@
-/*
- *DecagonCTD.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file DecagonCTD.h
+ * @brief This file contains the DecagonCTD subclass of the SDI12Sensors class
+ * along with the variable subclasses DecagonCTD_Cond, DecagonCTD_Temp, and
+ * DecagonCTD_Depth.  These are used for the Meter Hydros 21, formerly known as
+ * the Decagon Devices CTD-10.  This depends on the EnviroDIY SDI-12
+ * library and the SDI12Sensors super class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Decagon Devices CTD-10
- *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super
- *class.
- *
- *Documentation for the SDI-12 Protocol commands and responses
- *for the Decagon CTD-10 can be found at:
- * http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
+ * Documentation for the SDI-12 Protocol commands and responses for the Decagon
+ * CTD-10 can be found at:
+ * http://publications.metergroup.com/Integrator%20Guide/CTD%20Integrator%20Guide.pdf
  *
  * For Specific Conductance:
  *  Resolution is 0.001 mS/cm = 1 µS/cm
@@ -30,6 +27,10 @@
  *
  * Maximum warm-up time in SDI-12 mode: 500ms, assume stability at warm-up
  * Maximum measurement duration: 500ms
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

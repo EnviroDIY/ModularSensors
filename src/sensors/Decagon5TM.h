@@ -1,17 +1,10 @@
-/*
- *Decagon5TM.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
- *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super
- *class.
- *
- *Documentation for the SDI-12 Protocol commands and responses
- *for the Decagon 5TM can be found at:
- * http://manuals.decagon.com/Integration%20Guides/5TM%20Integrators%20Guide.pdf
+/**
+ * @file Decagon5TM.h
+ * @brief This file contains the Decagon5TM subclass of the SDI12Sensors class
+ * along with the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and
+ * Decagon5TM_VWC.  These are used for discontinued Decagon Devices 5TM Soil
+ * Moisture probe.  This depends on the EnviroDIY SDI-12 library and the
+ * SDI12Sensors super class.
  *
  * For Ea and VWC:
  *     Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
@@ -26,6 +19,10 @@
  *
  * Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
  * Maximum measurement duration: 200ms
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

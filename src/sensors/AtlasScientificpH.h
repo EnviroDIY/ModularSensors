@@ -1,15 +1,18 @@
 /*
- * AtlasScientificpH.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
- *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
+ * @file AtlasScientificpH.h
+ * @brief This file contains the AtlasScientificRTD subclass of the AtlasParent
+ * sensor class along with the variable subclass AtlasScientificpH_pH.  These
+ * are used for any sensor attached to an Atlas EZO pH circuit.
  *
  * The output from the Atlas Scientifc pH is the temperature in degrees C.
  *     Accuracy is ± 0.002
  *     Range is 0.001 − 14.000
  *     Resolution is 0.001
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,15 +1,18 @@
 /*
- * AtlasScientificRTD.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
- *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
+ * @file AtlasScientificRTD.h
+ * @brief This file contains the AtlasScientificRTD subclass of the AtlasParent
+ * sensor class along with the variable subclass AtlasScientificRTD_Temp.  These
+ * are used for any sensor attached to an Atlas EZO RTD circuit.
  *
  * The output from the Atlas Scientifc RTD is the temperature in degrees C.
  *     Accuracy is ± (0.10°C + 0.0017 x °C)
  *     Range is -126.000 °C − 1254 °C
  *     Resolution is 0.001 °C
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

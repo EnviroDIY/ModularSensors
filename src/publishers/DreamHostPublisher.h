@@ -1,12 +1,12 @@
-/*
- *DreamHostPublisher.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file DreamHostPublisher.h
+ * @brief This file contains the DreamHostPublisher subclass of dataPublisher
+ * for publishing data to the Stroud Center's now-deprecated DreamHost based
+ * live sensor data system.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the EnviroDIY logging functions - ie, sending get requests to
- *DreamHost
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

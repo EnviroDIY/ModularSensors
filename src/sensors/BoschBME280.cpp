@@ -1,32 +1,10 @@
-/*
- *BoschBME280.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file BoschBME280.cpp
+ * @brief Implements the BoschBME280 class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Bosch BME280 Digital Pressure and Humidity Sensor
- *It is dependent on the Adafruit BME280 Library
- *
- *Documentation for the sensor can be found at:
- *https://www.bosch-sensortec.com/bst/products/all_products/bme280
- *
- * For Barometric Pressure:
- *  Resolution is 0.18Pa
- *  Absolute Accuracy is ±1hPa
- *  Relative Accuracy is ±0.12hPa
- *  Range is 300 to 1100 hPa
- *
- * For Temperature:
- *  Resolution is 0.01°C
- *  Accuracy is ±0.5°C
- *  Range is -40°C to +85°C
- *
- * For Humidity:
- *  Resolution is 0.008 % RH (16 bit)
- *  Accuracy is ± 3 % RH
- *
- * Slowest response time (humidity): 1sec
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "BoschBME280.h"

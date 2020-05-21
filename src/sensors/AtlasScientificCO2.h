@@ -1,15 +1,19 @@
 /*
- * AtlasScientificCO2.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
- *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
+ * @file AtlasScientificCO2.h
+ * @brief This file contains the AtlasScientificCO2 subclass of the AtlasParent
+ * sensor class along with the variable subclasses AtlasScientificCO2_CO2 and
+ * AtlasScientificCO2_Temp.  These are used for any sensor attached to an Atlas
+ * EZO CO2 circuit.  This depends on the Arduino core Wire library.
  *
  * The output from the Atlas Scientifc CO2 is the temperature in degrees C.
  *     Accuracy is ± 3% or ± 30 ppm
  *     Range is 0 − 10000 ppm
  *     Resolution is 1 ppm
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

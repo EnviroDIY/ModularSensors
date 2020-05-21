@@ -1,11 +1,10 @@
-/*
- *DigiXBeeLTEBypass.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file DigiXBeeLTEBypass.cpp
+ * @brief Implements the DigiXBeeLTEBypass class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for Digi Cellular XBee's BASED ON UBLOX CHIPS in bypass mode
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

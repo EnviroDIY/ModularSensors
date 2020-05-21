@@ -1,11 +1,11 @@
-/*
- *SIMComSIM7000.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file SIMComSIM7000.h
+ * @brief This file contains the SIMComSIM7000 subclass of loggerModem for
+ * Botletics other modules based on the SIMCOM SIM7000.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Botletics and other modules based on the SIMCOM SIM7000.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
