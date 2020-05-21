@@ -1,11 +1,10 @@
-/*
- *VariableBase.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file VariableBase.cpp
+ * @brief Implements the Variable class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the variable base class.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "VariableBase.h"
@@ -124,7 +123,7 @@ Variable::~Variable() {}
 
 
 // This does all of the setup that can't happen in the constructors
-// That is, anything that is dependent on another object having been created
+// That is, anything that depends on another object having been created
 // first or anything that requires the actual processor/MCU to do something.
 Variable* Variable::begin(Sensor* parentSense, const char* uuid,
                           const char* customVarCode) {

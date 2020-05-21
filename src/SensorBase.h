@@ -1,11 +1,10 @@
-/*
- *SensorBase.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file SensorBase.h
+ * @brief This file contains the Sensor class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the sensor base class.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
@@ -30,7 +29,10 @@
 
 class Variable;  // Forward declaration
 
-// Defines the "Sensor" Class
+/**
+ * @brief The "Sensor" class is used for all sensor-level operations - waking,
+ * sleeping, and taking measurements.
+ */
 class Sensor {
  public:
     Sensor(const char*   sensorName      = "Unknown",

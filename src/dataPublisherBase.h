@@ -1,11 +1,11 @@
-/*
- *dataPublisherBase.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file dataPublisherBase.h
+ * @brief This file contains the dataPublisher class - a virtual class used by
+ * other publishes to distribute data online.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is a skeleton for sending out remote data.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

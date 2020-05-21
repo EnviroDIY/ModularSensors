@@ -1,13 +1,14 @@
-/*
- *LoggerBase.h
-
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file LoggerBase.h
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * @brief This file contains the LoggerBase class which handles basic logging
+ * functions - ie, communicating with a real-time clock, saving to an SD card,
+ * and publishing data to remotes via a loggerModem connection.
  *
- *This file is for the basic logging functions - ie, saving to an SD card.
-*/
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ */
 
 // Header Guards
 #ifndef SRC_LOGGERBASE_H_
@@ -59,7 +60,6 @@ class dataPublisher;  // Forward declaration
  * @brief The "Logger" Class handles low power sleep for the main processor,
  * interfacing with the real-time clock and modem, writing to the SD card, and
  * passing data on to the data publishers
- *
  */
 class Logger {
     friend class dataPublisher;

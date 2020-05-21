@@ -1,12 +1,15 @@
-/*
- *LoggerModem.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file LoggerModem.h
+ * @brief This file contains the loggerModem class which wraps the TinyGSM
+ * library:  https://github.com/vshymanskyy/TinyGSM and adds in the power
+ * functions to turn the modem on and off.  This also contains the variable
+ * subclasses Modem_RSSI, Modem_SignalPercent, Modem_BatteryState,
+ * Modem_BatteryPercent, and Modem_BatteryVoltage - all of which are implentend
+ * as "calculated" variables.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file wraps the tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
- *and adds in the power functions to turn the modem on and off.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
@@ -42,6 +45,10 @@
  * ========================================================================= */
 
 // template <class Derived, typename modemType, typename modemClientType>
+/**
+ * @brief The "loggerModem" class provides an internet connection for the logger
+ * and supplies and Arduino "Client" instance to use to publish data.
+ */
 class loggerModem {
  public:
     /**
