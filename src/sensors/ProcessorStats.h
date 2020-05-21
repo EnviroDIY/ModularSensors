@@ -1,5 +1,9 @@
 /**
  * @file ProcessorStats.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the ProcessorStats sensor subclass and the variable
  * subclasses ProcessorStats_Battery, ProcessorStats_FreeRam, and
  * ProcessorStats_SampleNumber.
@@ -10,10 +14,6 @@
  *  Range of 0-5V with 10bit ADC - resolution of 0.005
  *
  * If the processor is awake, it's ready to take a reading.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

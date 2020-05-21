@@ -1,5 +1,10 @@
 /**
  * @file AtlasScientificpH.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
  * class along with the variable subclass AtlasScientificpH_pH.
  *
@@ -9,11 +14,6 @@
  *     Accuracy is ± 0.002
  *     Range is 0.001 − 14.000
  *     Resolution is 0.001
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

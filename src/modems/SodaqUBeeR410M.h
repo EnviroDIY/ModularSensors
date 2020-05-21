@@ -1,11 +1,11 @@
 /**
  * @file SodaqUBeeR410M.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the SodaqUBeeR410M subclass of loggerModem for the Sodaq UBee
  * based on the u-blox SARA R410M LTE-M cellular module.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

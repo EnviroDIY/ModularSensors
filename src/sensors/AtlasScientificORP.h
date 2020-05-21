@@ -1,5 +1,10 @@
 /**
  * @file AtlasScientificORP.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
  * class along with the variable subclass AtlasScientificORP_Potential.
  *
@@ -9,11 +14,6 @@
  *     Accuracy is ± 1 mV
  *     Range is -1019.9mV − 1019.9mV
  *     Resolution is 0.1 mV
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

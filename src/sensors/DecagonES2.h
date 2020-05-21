@@ -1,5 +1,9 @@
 /**
  * @file DecagonES2.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the DecagonES2 subclass of the SDI12Sensors class along with
  * the variable subclasses DecagonES2_Cond and DecagonES2_Temp.
  *
@@ -21,10 +25,6 @@
  *
  * Maximum warm-up time in SDI-12 mode: 250ms, assume stability at warm-up
  * Maximum measurement duration: 250ms
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,5 +1,9 @@
 /**
  * @file YosemitechY514.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the YosemitechY514 sensor subclass and the variable
  * subclasses YosemitechY514_Chlorophyll and YosemitechY514_Temp.
  *
@@ -26,10 +30,6 @@
  *
  * Time before sensor responds after power - 1.2 seconds
  * Time between "StartMeasurement" command and stable reading - 8sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

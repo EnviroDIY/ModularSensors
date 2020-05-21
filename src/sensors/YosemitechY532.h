@@ -1,5 +1,9 @@
 /**
  * @file YosemitechY532.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the YosemitechY532 sensor subclass and the variable
  * subclasses YosemitechY532_pH, YosemitechY532_Temp, and
  * YosemitechY532_Voltage.
@@ -27,10 +31,6 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 4.5sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,14 +1,14 @@
 /**
  * @file WatchDogSAMD.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the extendedWatchDogSAMD class.
  *
  * Code for this is taken from the Adafruit SleepyDog library:
  * https://github.com/adafruit/Adafruit_SleepyDog/ and this library:
  * https://github.com/javos65/WDTZero
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

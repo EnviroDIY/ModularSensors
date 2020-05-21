@@ -1,10 +1,10 @@
 /**
  * @file MaximDS3231.cpp
- * @brief Implements the MaximDS18 class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the MaximDS18 class.
  */
 
 #include <Sodaq_DS3231.h>

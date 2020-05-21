@@ -1,5 +1,10 @@
 /**
  * @file MeterTeros11.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the MeterTeros11 sensor subclass and the variable subclasses
  * MeterTeros11_Ea, MeterTeros11_Temp, and MeterTeros11_VWC.
  *
@@ -31,11 +36,6 @@
  * Supply Voltage (VCC to GND), 4.0 to 15.0 VDC
  * Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)
  * Digital Output Voltage (logic high), 3.6 typical
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

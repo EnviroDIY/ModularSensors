@@ -1,5 +1,9 @@
 /**
  * @file YosemitechY550.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the YosemitechY550 sensor subclass and the variable
  * subclasses YosemitechY550_COD, YosemitechY550_Temp, and
  * YosemitechY550_Turbidity.
@@ -31,10 +35,6 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 22sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

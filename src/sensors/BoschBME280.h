@@ -1,5 +1,9 @@
 /**
  * @file BoschBME280.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the BoschBME280 sensor subclass and the variable subclasses
  * BoschBME280_Temp, BoschBME280_Humidity, BoschBME280_Pressure, and
  * BoschBME280_Altitude.
@@ -29,10 +33,6 @@
  * Sensor takes about 100ms to respond
  * Slowest response time (humidity): 1sec
  * Assume sensor is immediately stable
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

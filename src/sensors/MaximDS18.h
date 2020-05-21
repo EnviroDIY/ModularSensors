@@ -1,5 +1,9 @@
 /**
  * @file MaximDS18.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the MaximDS18 sensor subclass and the MaximDS18_Temp variable
  * subclass.
  *
@@ -20,10 +24,6 @@
  *
  * Max time to take reading at 12-bit: 750ms
  * Reset time is < 480 µs
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

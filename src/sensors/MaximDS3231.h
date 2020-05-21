@@ -1,5 +1,9 @@
 /**
  * @file MaximDS3231.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the MaximDS3231 sensor subclass and the MaximDS3231_Temp
  * variable subclass.
  *
@@ -16,10 +20,6 @@
  * The clock should have a separate power supply and never be turned off.
  * We assume it's always warmed up and stable.
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

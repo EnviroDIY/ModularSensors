@@ -1,5 +1,9 @@
 /**
  * @file ZebraTechDOpto.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the ZebraTechDOpto sensor subclass and the variable
  * subclasses ZebraTechDOpto_Temp, ZebraTechDOpto_DOpct, and
  * ZebraTechDOpto_DOmgL.
@@ -31,10 +35,6 @@
  * it that way the sensor would send an interruption when it was finished,
  * possibly colliding with and confusing other sensor results
  *
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

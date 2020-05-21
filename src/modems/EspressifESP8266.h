@@ -1,13 +1,13 @@
 /**
  * @file EspressifESP8266.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the EspressifESP8266 subclass of loggerModem which SHOULD
  * work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32
  * wifi/bluetooth chip that has been flashed with Espressif's AT command
  * firmware.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

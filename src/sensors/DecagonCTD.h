@@ -1,5 +1,9 @@
 /**
  * @file DecagonCTD.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the DecagonCTD subclass of the SDI12Sensors class along with
  * the variable subclasses DecagonCTD_Cond, DecagonCTD_Temp, and
  * DecagonCTD_Depth.
@@ -31,10 +35,6 @@
  *
  * Maximum warm-up time in SDI-12 mode: 500ms, assume stability at warm-up
  * Maximum measurement duration: 500ms
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

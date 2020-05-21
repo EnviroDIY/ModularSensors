@@ -1,5 +1,10 @@
 /**
  * @file FreescaleMPL115A2.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the MPL115A2 sensor subclass and the variable subclasses
  * MPL115A2_Temp and MPL115A2_Pressure.
  *
@@ -19,11 +24,6 @@
  *
  * Sensor takes about 1.6 ms to respond
  * Assume sensor is immediately stable
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Bobby Schulz <schu3119@umn.edu>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

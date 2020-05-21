@@ -1,10 +1,10 @@
 /**
  * @file EnviroDIYPublisher.cpp
- * @brief Implements the EnviroDIYPublisher class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the EnviroDIYPublisher class.
  */
 
 #include "EnviroDIYPublisher.h"

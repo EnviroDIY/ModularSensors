@@ -1,5 +1,10 @@
 /**
  * @file AtlasScientificEC.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
  * class along with the variable subclasses AtlasScientificEC_Cond,
  * AtlasScientificEC_TDS, AtlasScientificEC_Salinity and
@@ -14,11 +19,6 @@
  *     Accuracy is ± 2%
  *     Range is 0.07 − 500,000+ μS/cm
  *     Resolution is 3 decimal places
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,5 +1,9 @@
 /**
  * @file KellerParent.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the KellerParent sensor subclass, itself used as a parent
  * class for all Keller modbus sensors.
@@ -9,11 +13,6 @@
  * Documentation for the Keller Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY
  * KellerModbus library at: https://github.com/EnviroDIY/KellerModbus
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

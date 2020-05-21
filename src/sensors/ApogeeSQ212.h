@@ -1,5 +1,11 @@
 /**
  * @file ApogeeSQ212.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
+ * <sdamiano@stroudcenter.org>
  *
  * @brief Contains the ApogeeSQ212 sensor subclass and the variable subclasses
  * ApogeeSQ212_PAR and ApogeeSQ212_Voltage.
@@ -28,13 +34,6 @@
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
- * <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

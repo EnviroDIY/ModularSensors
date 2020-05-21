@@ -1,5 +1,9 @@
 /**
  * @file YosemitechParent.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the YosemitechParent sensor subclass, itself a parent class
  * for all Yosemitech sensors that communicate via Modbus and are supported by
  * the EnviroDIY Yosemitech library.
@@ -7,10 +11,6 @@
  * Documentation for the Yosemitech Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY
  * Yosemitech library at: https://github.com/EnviroDIY/YosemitechModbus
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

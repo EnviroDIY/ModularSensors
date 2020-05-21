@@ -1,10 +1,10 @@
 /**
  * @file AOSongDHT.cpp
- * @brief Implements the AOSongDHT class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the AOSongDHT class.
  */
 
 #include "AOSongDHT.h"

@@ -1,13 +1,13 @@
 /**
  * @file LoggerModemMacros.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains PRE-ROCESSOR MACROS for use with logger modems.
  *
  * @note These are NOT FUNCTIONS; they are pre-processor macros that I am
  * collecting here to avoid writing the same functions multiple times later.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 /* Header Guards */
@@ -16,6 +16,7 @@
 
 
 /**
+ *
  * @brief Creates an extraModemSetup function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
@@ -32,6 +33,7 @@
 
 
 /**
+ *
  * @brief Creates an isModemAwake function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
@@ -92,6 +94,7 @@
 
 
 /**
+ *
  * @brief Creates a modemWake function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
@@ -174,6 +177,7 @@
 
 #if defined TINY_GSM_MODEM_HAS_GPRS
 /**
+ *
  * @brief Creates an isInternetAvailable function for a specific *cellular*
  * modem subclass.
  *

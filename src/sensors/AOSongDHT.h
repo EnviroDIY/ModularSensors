@@ -1,5 +1,9 @@
 /**
  * @file AOSongDHT.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the AOSongDHT sensor subclass and the variable subclasses
  * AOSongDHT_Humidity, AOSongDHT_Temp, and AOSongDHT_HI.
  *
@@ -22,10 +26,6 @@
  *  Range is -40°C to +80°C
  *
  * Warm up/sampling time: 1.7sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,5 +1,9 @@
 /**
  * @file Decagon5TM.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the Decagon5TM subclass of the SDI12Sensors class along with
  * the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and Decagon5TM_VWC.
  *
@@ -21,10 +25,6 @@
  *
  * Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
  * Maximum measurement duration: 200ms
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,11 +1,11 @@
 /**
  * @file dataPublisherBase.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the dataPublisher class - a virtual class used by other
  * publishes to distribute data online.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
@@ -38,6 +38,7 @@
 class dataPublisher {
  public:
     /**
+     *
      * @brief Construct a new data Publisher object untied to any logger or
      * client.
      *
@@ -50,6 +51,7 @@ class dataPublisher {
      */
     dataPublisher();
     /**
+     *
      * @brief Construct a new data Publisher object using a single client
      * created on the TinyGSM based logger modem.
      *
@@ -73,6 +75,7 @@ class dataPublisher {
     explicit dataPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
                            uint8_t sendOffset = 0);
     /**
+     *
      * @brief Construct a new data Publisher object.
      *
      * @param baseLogger The logger supplying the data to be published
@@ -94,11 +97,13 @@ class dataPublisher {
     dataPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
                   uint8_t sendOffset = 0);
     /**
+     *
      * @brief Destroy the data Publisher object - no action is taken.
      */
     virtual ~dataPublisher();
 
     /**
+     *
      * @brief Set the Client object.
      *
      * Gives the publisher a client instance to use to "print" data.
@@ -108,6 +113,7 @@ class dataPublisher {
     void setClient(Client* inClient);
 
     /**
+     *
      * @brief Attach the publisher to a logger.
      *
      * The publisher must be tied to a data loger to provide it with the data to
@@ -117,6 +123,7 @@ class dataPublisher {
      */
     void attachToLogger(Logger& baseLogger);
     /**
+     *
      * @brief Set the parameters for frequency of sending and any offset, if
      * needed.
      *
@@ -131,6 +138,7 @@ class dataPublisher {
     void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
 
     /**
+     *
      * @brief Begin the publisher - linking it to the client and logger.
      *
      * This can be used as an alternative to adding the logger and client in the
@@ -150,6 +158,7 @@ class dataPublisher {
     void begin(Logger& baseLogger, Client* inClient);
 
     /**
+     *
      * @brief Begin the publisher - linking it to the logger but not
      * attaching a client.
      *
@@ -172,6 +181,7 @@ class dataPublisher {
 
 
     /**
+     *
      * @brief Get the destination for published data.
      *
      * @return String The URL or HOST to receive published data
@@ -180,6 +190,7 @@ class dataPublisher {
 
 
     /**
+     *
      * @brief Open a socket to the correct receiver and sends out the formatted
      * data.
      *
@@ -194,6 +205,7 @@ class dataPublisher {
      */
     virtual int16_t publishData(Client* _outClient) = 0;
     /**
+     *
      * @brief Open a socket to the correct receiver and send out the formatted
      * data.
      *
@@ -207,6 +219,7 @@ class dataPublisher {
     virtual int16_t publishData();
 
     /**
+     *
      * @brief Retained for backwards compatibility.
      *
      * @deprecated use publishData(Client* _outClient)
@@ -219,6 +232,7 @@ class dataPublisher {
      */
     virtual int16_t sendData(Client* _outClient);
     /**
+     *
      * @brief Retained for backwards compatibility.
      *
      * @deprecated use publishData()
@@ -229,6 +243,7 @@ class dataPublisher {
     virtual int16_t sendData();
 
     /**
+     *
      * @brief Translate a PubSubClient code into a String with the code
      * explanation.
      *
@@ -240,29 +255,35 @@ class dataPublisher {
 
  protected:
     /**
+     *
      * @brief The internal pointer to the logger instance to be used.
      */
     Logger* _baseLogger;
     /**
+     *
      * @brief The internal pointer to the client instance to be used.
      */
     Client* _inClient;
 
     /**
+     *
      * @brief A buffer for outgoing data.
      */
     static char txBuffer[MS_SEND_BUFFER_SIZE];
     /**
+     *
      * @brief Get the number of empty spots in the buffer.
      *
      * @return int The number of available characters in the buffer
      */
     static int bufferFree(void);
     /**
+     *
      * @brief Fill the TX buffer with nulls ('\0').
      */
     static void emptyTxBuffer(void);
     /**
+     *
      * @brief Write the TX buffer to a stream and also to the debugging
      * port.
      *
@@ -274,11 +295,13 @@ class dataPublisher {
     static void printTxBuffer(Stream* stream, bool addNewLine = false);
 
     /**
+     *
      * @brief Unimplemented; intended for future use to enable caching and bulk
      * publishing.
      */
     uint8_t _sendEveryX;
     /**
+     *
      * @brief Unimplemented; intended for future use to enable publishing data
      * at a time slightly delayed from when it is collected.
      */
@@ -286,18 +309,22 @@ class dataPublisher {
 
     // Basic chunks of HTTP
     /**
+     *
      * @brief the text "GET "
      */
     static const char* getHeader;
     /**
+     *
      * @brief the text "POST "
      */
     static const char* postHeader;
     /**
+     *
      * @brief the text " HTTP/1.1"
      */
     static const char* HTTPtag;
     /**
+     *
      * @brief the text "\r\nHost: "
      */
     static const char* hostHeader;

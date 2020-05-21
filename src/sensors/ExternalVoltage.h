@@ -1,6 +1,13 @@
 /**
- * @file ExternalVoltage.h
- * This file contains the ExternalVoltage sensor subclass and the
+ * @file ExternalVoltage.h *
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
+ * <sdamiano@stroudcenter.org>
+ *
+ * @brief This file contains the ExternalVoltage sensor subclass and the
  * ExternalVoltage_Volt variable subclass.
  *
  * These for any voltage measureable on a TI ADS1115 or ADS1015.  There is a
@@ -47,13 +54,6 @@
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Bobby Schulz <schu3119@umn.edu>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
- * <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

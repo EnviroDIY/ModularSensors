@@ -1,5 +1,9 @@
 /**
  * @file CampbellOBS3.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the CampbellOBS3 sensor subclass and the variable subclasses
  * CampbellOBS3_Turbidity and CampbellOBS3_Voltage.
  *
@@ -23,10 +27,6 @@
  *
  * Minimum stabilization time: 2s
  * Maximum data rate = 10Hz (100ms/sample)
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

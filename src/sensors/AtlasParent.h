@@ -1,5 +1,10 @@
 /**
  * @file AtlasParent.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the AtlasParent sensor subclass which is itself the
  * parent class for all Atlas sensors.
  *
@@ -9,11 +14,6 @@
  * command is written until it is possible to request a response or result,
  * except for the commands to take a calibration point or a reading which have a
  * 600ms processing/response time.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

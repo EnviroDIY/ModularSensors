@@ -1,5 +1,9 @@
 /**
  * @file MaxBotixSonar.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the MaxBotixSonar sensor subclass and the MaxBotixSonar_Range
  * variable subclass.
  *
@@ -10,10 +14,6 @@
  *     Range is 300-5000mm or 500 to 9999mm, depending on model
  *
  * Warm up time to completion of header:  160ms
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

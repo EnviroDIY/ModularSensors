@@ -1,5 +1,10 @@
 /**
  * @file KellerNanolevel.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com> and Neil
+ * Hancock Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the KellerNanolevel sensor subclass and the
  * KellerNanolevel_Pressure, KellerNanolevel_Temp, and KellerNanolevel_Height
  * variable subclasses.
@@ -11,11 +16,6 @@
  * Documentation for the Keller Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY
  * KellerModbus library at: https://github.com/EnviroDIY/KellerModbus
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com> and Neil
- * Hancock Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

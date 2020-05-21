@@ -1,12 +1,12 @@
 /**
  * @file dataPublisherBase.cpp
- * @brief Implements the dataPublisher class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *This file is a skeleton for sending out remote data.
+ * @brief Implements the dataPublisher class.
+ *
+ * This file is a skeleton for sending out remote data.
  */
 #include "dataPublisherBase.h"
 

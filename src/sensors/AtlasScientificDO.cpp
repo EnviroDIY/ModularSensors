@@ -1,11 +1,11 @@
 /**
  * @file AtlasScientificDO.cpp
- * @brief Implements the AtlasScientificCO2 class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the AtlasScientificCO2 class.
  */
 
 // Included Dependencies

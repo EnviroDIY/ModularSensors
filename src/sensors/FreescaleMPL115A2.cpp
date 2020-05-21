@@ -1,11 +1,11 @@
 /**
  * @file FreescaleMPL115A2.cpp
- * @brief Implements the MPL115A2 class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the MPL115A2 class.
  */
 
 #include "FreescaleMPL115A2.h"

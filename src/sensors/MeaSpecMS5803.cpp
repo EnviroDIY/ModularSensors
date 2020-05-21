@@ -1,12 +1,12 @@
 /**
  * @file MeaSpecMS5803.cpp
- * @brief Implements the MeaSpecMS5803 class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>. with help from Beth
  * Fisher, Evan Host and Bobby Schulz.
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the MeaSpecMS5803 class.
  */
 
 #include "MeaSpecMS5803.h"

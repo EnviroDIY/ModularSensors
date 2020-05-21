@@ -1,5 +1,9 @@
 /**
  * @file YosemitechY520.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the YosemitechY520 sensor subclass and the variable
  * subclasses YosemitechY520_Cond and YosemitechY520_Temp.
  *
@@ -26,10 +30,6 @@
  *
  * Time before sensor responds after power - 1200 ms
  * Time between "StartMeasurement" command and stable reading - 10sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

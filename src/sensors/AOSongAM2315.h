@@ -1,5 +1,9 @@
 /**
  * @file AOSongAM2315.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the AOSongAM2315 sensor subclass and the variable subclasses
  * AOSongAM2315_Humidity and AOSongAM2315_Temp.
  *
@@ -21,10 +25,6 @@
  *  Range is -40°C to +125°C
  *
  * Warm up/stability/re-sampling time: 2sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

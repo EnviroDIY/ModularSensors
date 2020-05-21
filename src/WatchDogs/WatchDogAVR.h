@@ -1,13 +1,13 @@
 /**
  * @file WatchDogAVR.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the extendedWatchDogAVR class
  *
  * Code for this is taken from this forum post:
  * https://forum.arduino.cc/index.php?topic=248263.0
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

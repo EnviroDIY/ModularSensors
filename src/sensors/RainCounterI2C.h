@@ -1,5 +1,10 @@
 /**
  * @file RainCounterI2C.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
  * @brief Contains the RainCounterI2C sensor subclass and the variable
  * subclasses RainCounterI2C_Tips and RainCounterI2C_Depth.
  *
@@ -15,11 +20,6 @@
  * set to english or metric)
  *
  * Assume sensor is immediately stable
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Bobby Schulz <schu3119@umn.edu>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
