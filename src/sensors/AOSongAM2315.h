@@ -1,9 +1,12 @@
 /**
  * @file AOSongAM2315.h
- * @brief This file contains the AOSongAM2315 sensor subclass and the variable
- * subclasses AOSongAM2315_Humidity and AOSongAM2315_Temp.  These are used for
- * the AOSong AM2315 capacitive humidity and temperature sensor.  This file is
- * dependent on the Adafruit AM2315 Library.
+ * @brief Contains the AOSongAM2315 sensor subclass and the variable subclasses
+ * AOSongAM2315_Humidity and AOSongAM2315_Temp.
+ *
+ * These are used for the AOSong AM2315 capacitive humidity and temperature
+ * sensor.
+ *
+ * This file is dependent on the Adafruit AM2315 Library.
  *
  * Documentation for the sensor can be found at:
  * www.aosong.com/asp_bin/Products/en/AM2315.pdf

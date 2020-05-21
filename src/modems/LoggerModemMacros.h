@@ -1,6 +1,7 @@
 /**
  * @file LoggerModemMacros.h
- * @brief This file contains PRE-ROCESSOR MACROS for use with logger modems.
+ * @brief Contains PRE-ROCESSOR MACROS for use with logger modems.
+ *
  * @note These are NOT FUNCTIONS; they are pre-processor macros that I am
  * collecting here to avoid writing the same functions multiple times later.
  *
@@ -13,8 +14,14 @@
 #ifndef SRC_MODEMS_LOGGERMODEMMACROS_H_
 #define SRC_MODEMS_LOGGERMODEMMACROS_H_
 
-// Set up the modem
 
+/**
+ * @brief Creates an extraModemSetup function for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return An extraModemSetup function specific to a single modem subclass.
+ */
 #define MS_MODEM_EXTRA_SETUP(specificModem)     \
     bool specificModem::extraModemSetup(void) { \
         bool success = gsmModem.init();         \
@@ -24,15 +31,13 @@
     }
 
 
-// Check if the modem was awake using all possible means
-// Don't want to accidently pulse an already on modem to off
-/* NOTE:  It's possible that the status pin is on, but the modem is
- * actually mid-shutdown.  In that case, we'll mistakenly skip
- * re-waking it.  This only applies to modules with a pulse wake (ie,
- * non-zero wake time).  For all modules that do pulse on, where
- * possible I've selected a pulse time that is sufficient to wake but
- * not quite long enough to put it to sleep and am using AT commands
- * to sleep.  This *should* keep everything lined up.*/
+/**
+ * @brief Creates an isModemAwake function for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return An isModemAwake function specific to a single modem subclass.
+ */
 #define MS_IS_MODEM_AWAKE(specificModem)                                       \
     bool specificModem::isModemAwake(void) {                                   \
         if (_wakePulse_ms > 0 && _statusPin >= 0) {                            \
@@ -86,7 +91,13 @@
     }
 
 
-// The function to wake up the modem
+/**
+ * @brief Creates a modemWake function for a specific modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return A modemWake function specific to a single modem subclass.
+ */
 #define MS_MODEM_WAKE(specificModem)                                           \
     bool specificModem::modemWake(void) {                                      \
         /* Power up */                                                         \
@@ -162,6 +173,15 @@
     }
 
 #if defined TINY_GSM_MODEM_HAS_GPRS
+/**
+ * @brief Creates an isInternetAvailable function for a specific *cellular*
+ * modem subclass.
+ *
+ * @param specificModem The modem subclass
+ *
+ * @return An isInternetAvailable function specific to a single *cellular* modem
+ * subclass.
+ */
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
     bool specificModem::isInternetAvailable(void) {   \
         return gsmModem.isGprsConnected();            \

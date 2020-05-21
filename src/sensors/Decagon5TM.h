@@ -1,10 +1,12 @@
 /**
  * @file Decagon5TM.h
- * @brief This file contains the Decagon5TM subclass of the SDI12Sensors class
- * along with the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and
- * Decagon5TM_VWC.  These are used for discontinued Decagon Devices 5TM Soil
- * Moisture probe.  This depends on the EnviroDIY SDI-12 library and the
- * SDI12Sensors super class.
+ * @brief Contains the Decagon5TM subclass of the SDI12Sensors class along with
+ * the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and Decagon5TM_VWC.
+ *
+ * These are used for the discontinued Decagon Devices 5TM Soil Moisture probe.
+ *
+ * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ * class.
  *
  * For Ea and VWC:
  *     Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC

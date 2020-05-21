@@ -1,7 +1,7 @@
 /**
  * @file DigiXBeeLTEBypass.h
- * @brief This file is the DigiXBeeLTEBypass subclass of the DigiXBee class for
- * Digi Cellular XBee3's based on u-blox SARA R410M chips and operated in bypass
+ * @brief Contains the DigiXBeeLTEBypass subclass of the DigiXBee class for Digi
+ * Cellular XBee3's based on u-blox SARA R410M chips and operated in bypass
  * mode.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino

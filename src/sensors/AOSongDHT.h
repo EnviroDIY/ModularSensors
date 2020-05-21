@@ -1,10 +1,12 @@
 /**
  * @file AOSongDHT.cpp
- * @brief This file contains the AOSongDHT sensor subclass and the variable
- * subclasses AOSongDHT_Humidity, AOSongDHT_Temp, and AOSongDHT_HI.  These are
- * used for the AOSong digital-output relative humidity & temperature
- * sensors/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).  This file is
- * dependent on the Adafruit DHT Library.
+ * @brief Contains the AOSongDHT sensor subclass and the variable subclasses
+ * AOSongDHT_Humidity, AOSongDHT_Temp, and AOSongDHT_HI.
+ *
+ * These are used for the AOSong digital-output relative humidity & temperature
+ * sensors/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).
+ *
+ * This file is dependent on the Adafruit DHT Library.
  *
  * Documentation for the sensor can be found at:
  * http://www.aosong.com/en/products/details.asp?id=117

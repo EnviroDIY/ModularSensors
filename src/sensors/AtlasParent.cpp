@@ -1,4 +1,4 @@
-/*
+/**
  * @file AtlasParent.cpp
  * @brief Implements the AtlasParent class.
  *

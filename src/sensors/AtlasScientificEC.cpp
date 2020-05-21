@@ -1,4 +1,4 @@
-/*
+/**
  * @file AtlasScientificEC.cpp
  * @brief Implements the AtlasScientificEC class.
  *

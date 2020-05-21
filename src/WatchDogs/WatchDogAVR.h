@@ -1,6 +1,7 @@
 /**
  * @file WatchDogAVR.h
- * @brief This file contains the extendedWatchDogAVR class
+ * @brief Contains the extendedWatchDogAVR class
+ *
  * Code for this is taken from this forum post:
  * https://forum.arduino.cc/index.php?topic=248263.0
  *

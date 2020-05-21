@@ -1,9 +1,12 @@
 /**
  * @file YosemitechY550.h
- * @brief This file contains the YosemitechY550 sensor subclass and the variable
- *subclasses YosemitechY550_COD, YosemitechY550_Temp, and
- *YosemitechY550_Turbidity.  These are for the Yosemitech Y550 COD Sensor with
- *Wiper. This depends on the YosemitechParent super class.
+ * @brief Contains the YosemitechY550 sensor subclass and the variable
+ * subclasses YosemitechY550_COD, YosemitechY550_Temp, and
+ * YosemitechY550_Turbidity.
+ *
+ * These are for the Yosemitech Y550 COD Sensor with Wiper.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
@@ -22,8 +25,9 @@
  *
  * For COD:
  *     Accuracy is ± ???
- *     Range is 0.75 to 370 mg/L COD (equiv. KHP) 0.2 - 150 mg/L TOC (equiv.
- *KHP) Resolution is 0.01 mg/L COD
+ *     Range is 0.75 to 370 mg/L COD (equiv. KHP)
+ *               0.2 to 150 mg/L TOC (equiv. KHP)
+ *     Resolution is 0.01 mg/L COD
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 22sec

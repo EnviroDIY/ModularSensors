@@ -1,9 +1,12 @@
 /**
  * @file YosemitechY532.h
- * @brief This file contains the YosemitechY532 sensor subclass and the variable
+ * @brief Contains the YosemitechY532 sensor subclass and the variable
  * subclasses YosemitechY532_pH, YosemitechY532_Temp, and
- * YosemitechY532_Voltage.  These are for the Yosemitech Y532 pH sensor. This
- * depends on the YosemitechParent super class.
+ * YosemitechY532_Voltage.
+ *
+ * These are for the Yosemitech Y532 pH sensor.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:

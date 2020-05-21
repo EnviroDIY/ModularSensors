@@ -1,11 +1,13 @@
 /**
  * @file MeaSpecMS5803.h
- *  @brief This file contains the MeaSpecMS5803 semsor subclass and the variable
- * subclasses MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.  THese are for the
- * Measurement Specialties MS5803 pressure sensor, which is used in the SparkFun
- * Pressure Sensor Breakout - MS5803-14BA. This depends on the
- * https://github.com/EnviroDIY/MS5803 library, which was modified for
- * NodularSensors based on a fork from the
+ * @brief Contains the MeaSpecMS5803 semsor subclass and the variable subclasses
+ * MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.
+ *
+ * These are for the Measurement Specialties MS5803 pressure sensor, which is
+ * used in the SparkFun Pressure Sensor Breakout - MS5803-14BA.
+ *
+ * This depends on the https://github.com/EnviroDIY/MS5803 library, which was
+ * modified for ModularSensors based on a fork from the
  * https://github.com/NorthernWidget/MS5803 library, which itself expanded on
  * https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
  *

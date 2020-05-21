@@ -1,8 +1,8 @@
 /**
  * @file SIMComSIM800.h
- * @brief This file contains the SIMComSIM800 subclass of loggerModem for
- * Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on
- * the SIMCOM SIM800 or SIM900 modules and thier variants.
+ * @brief Contains the SIMComSIM800 subclass of loggerModem for Adafruit Fona
+ * 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM
+ * SIM800 or SIM900 modules and thier variants.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

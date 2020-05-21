@@ -1,10 +1,12 @@
 /**
  * @file ApogeeSQ212.h
  *
- * @brief This file contains the ApogeeSQ212 sensor subclass and the variable
- * subclasses ApogeeSQ212_PAR and ApogeeSQ212_Voltage. It is for the Apogee
- * SQ-212 Quantum Light sensor. This depends on the soligen2010 fork of the
- * Adafruit ADS1015 library.
+ * @brief Contains the ApogeeSQ212 sensor subclass and the variable subclasses
+ * ApogeeSQ212_PAR and ApogeeSQ212_Voltage.
+ *
+ * These are used for the Apogee SQ-212 Quantum Light sensor.
+ *
+ * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  *
  * Apogee SQ-212 Quantum Light sensor measures photosynthetically active
  * radiation (PAR) and is typically defined as total radiation across a range of

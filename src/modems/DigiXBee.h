@@ -1,7 +1,7 @@
 /**
  * @file DigiXBee.h
- * @brief This file contains the DigiXBee modem subclass of loggerModem, which
- * itself is a parent class for all other XBee's and XBee3's.
+ * @brief Contains the DigiXBee modem subclass of loggerModem, which itself is a
+ * parent class for all other XBee's and XBee3's.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

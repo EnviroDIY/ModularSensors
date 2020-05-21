@@ -1,6 +1,7 @@
 /**
  * @file WatchDogSAMD.h
- * @brief This file contains the extendedWatchDogSAMD class.
+ * @brief Contains the extendedWatchDogSAMD class.
+ *
  * Code for this is taken from the Adafruit SleepyDog library:
  * https://github.com/adafruit/Adafruit_SleepyDog/ and this library:
  * https://github.com/javos65/WDTZero

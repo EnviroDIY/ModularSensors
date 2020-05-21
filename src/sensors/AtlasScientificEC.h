@@ -1,11 +1,13 @@
-/*
+/**
  * @file AtlasScientificEC.h
- * @brief This file contains the AtlasScientificCO2 subclass of the AtlasParent
- * sensor class along with the variable subclasses AtlasScientificEC_Cond,
+ * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
+ * class along with the variable subclasses AtlasScientificEC_Cond,
  * AtlasScientificEC_TDS, AtlasScientificEC_Salinity and
- * AtlasScientificEC_SpecificGravity.  These are used for any sensor attached to
- * an Atlas EZO conductivity circuit.  This depends on the Arduino core
- * Wire library.
+ * AtlasScientificEC_SpecificGravity.
+ *
+ * These are used for any sensor attached to an Atlas EZO conductivity circuit.
+ *
+ * This depends on the Arduino core Wire library.
  *
  * The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS,
  * salinity, and specific gravity

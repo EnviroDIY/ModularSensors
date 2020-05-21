@@ -1,7 +1,7 @@
 /**
  * @file DigiXBeeWifi.h
- * @brief This file contains the DigiXBeeWifi subclass of the DigiXBee class
- * for Digi S6B Wifi XBee's.
+ * @brief Contains the DigiXBeeWifi subclass of the DigiXBee class for Digi S6B
+ * Wifi XBee's.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

@@ -1,7 +1,8 @@
-/*
+/**
  * @file AtlasScientificORP.h
- * @brief This file contains the AtlasScientificRTD subclass of the AtlasParent
- * sensor class along with the variable subclass AtlasScientificORP_Potential.
+ * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
+ * class along with the variable subclass AtlasScientificORP_Potential.
+ *
  * These are used for any sensor attached to an Atlas EZO ORP circuit.
  *
  * The output from the Atlas Scientifc ORP is the temperature in degrees C.

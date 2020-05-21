@@ -1,8 +1,8 @@
 /**
  * @file DreamHostPublisher.h
- * @brief This file contains the DreamHostPublisher subclass of dataPublisher
- * for publishing data to the Stroud Center's now-deprecated DreamHost based
- * live sensor data system.
+ * @brief Contains the DreamHostPublisher subclass of dataPublisher for
+ * publishing data to the Stroud Center's now-deprecated DreamHost based live
+ * sensor data system.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

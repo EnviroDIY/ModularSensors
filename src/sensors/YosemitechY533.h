@@ -1,9 +1,12 @@
 /**
  * @file YosemitechY533.h
- * @brief This file contains the YosemitechY533 sensor subclass and the variable
+ * @brief Contains the YosemitechY533 sensor subclass and the variable
  * subclasses YosemitechY533_pH, YosemitechY533_Temp, and
- * YosemitechY533_Voltage.  These are for the Yosemitech Y533 ORP sensor. This
- * depends on the YosemitechParent super class.
+ * YosemitechY533_Voltage.
+ *
+ * These are for the Yosemitech Y533 ORP sensor.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:

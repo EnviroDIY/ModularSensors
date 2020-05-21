@@ -1,6 +1,6 @@
 /**
  * @file VariableBase.h
- * @brief This file contains the Variable class.
+ * @brief Contains the Variable class.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

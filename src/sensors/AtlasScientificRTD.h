@@ -1,8 +1,9 @@
-/*
+/**
  * @file AtlasScientificRTD.h
- * @brief This file contains the AtlasScientificRTD subclass of the AtlasParent
- * sensor class along with the variable subclass AtlasScientificRTD_Temp.  These
- * are used for any sensor attached to an Atlas EZO RTD circuit.
+ * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
+ * class along with the variable subclass AtlasScientificRTD_Temp.
+ *
+ * These are used for any sensor attached to an Atlas EZO RTD circuit.
  *
  * The output from the Atlas Scientifc RTD is the temperature in degrees C.
  *     Accuracy is ± (0.10°C + 0.0017 x °C)

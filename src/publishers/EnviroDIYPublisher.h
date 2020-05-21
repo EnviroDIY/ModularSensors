@@ -1,7 +1,7 @@
 /**
  * @file EnviroDIYPublisher.h
- * @brief This file contains the EnviroDIYPublisher subclass of dataPublisher
- * for publishing data to the EnviroDIY/Monitor My Watershed data portal at
+ * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
+ * publishing data to the EnviroDIY/Monitor My Watershed data portal at
  * http://data.enviroDIY.org
  *
  * Part of the EnviroDIY ModularSensors library for Arduino

@@ -195,7 +195,7 @@ SHORT_NAMES            = NO
 # description.)
 # The default value is: NO.
 
-JAVADOC_AUTOBRIEF      = NO
+JAVADOC_AUTOBRIEF      = YES
 
 # If the JAVADOC_BANNER tag is set to YES then doxygen will interpret a line
 # such as
@@ -1101,14 +1101,14 @@ CLANG_OPTIONS          = \
                          -I"~/.platformio/lib/ModularSensors/src"  \
                          -I"~/.platformio/lib/Adafruit ADS1X15"  \
                          -I"~/.platformio/lib/Adafruit AM2315_ID773"  \
-                         -I"~/.platformio/lib/Adafruit BME280 Library_ID166"  \
+                         -I"~/.platformio/lib/Adafruit BME280_Library_ID166"  \
                          -I"~/.platformio/lib/Adafruit BusIO_ID6214"  \
                          -I"~/.platformio/lib/Adafruit INA219_ID160"  \
                          -I"~/.platformio/lib/Adafruit MPL115A2_ID406"  \
-                         -I"~/.platformio/lib/Adafruit Unified Sensor_ID31"  \
+                         -I"~/.platformio/lib/Adafruit Unified_Sensor_ID31"  \
                          -I"~/.platformio/lib/AltSoftSerial"  \
                          -I"~/.platformio/lib/Arduino-SDI-12/src"  \
-                         -I"~/.platformio/lib/DHT sensor library_ID19"  \
+                         -I"~/.platformio/lib/DHT sensor_library_ID19"  \
                          -I"~/.platformio/lib/DallasTemperature_ID54"  \
                          -I"~/.platformio/lib/OneWire_ID1"  \
                          -I"~/.platformio/lib/EnableInterrupt_ID311"  \
@@ -2184,7 +2184,7 @@ PERLMOD_MAKEVAR_PREFIX =
 # C-preprocessor directives found in the sources and include files.
 # The default value is: YES.
 
-ENABLE_PREPROCESSING   = YES
+ENABLE_PREPROCESSING   = NO
 
 # If the MACRO_EXPANSION tag is set to YES, doxygen will expand all macro names
 # in the source code. If set to NO, only conditional compilation will be
@@ -2193,7 +2193,7 @@ ENABLE_PREPROCESSING   = YES
 # The default value is: NO.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-MACRO_EXPANSION        = NO
+MACRO_EXPANSION        = YES
 
 # If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES then
 # the macro expansion is limited to the macros specified with the PREDEFINED and
@@ -2201,7 +2201,7 @@ MACRO_EXPANSION        = NO
 # The default value is: NO.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-EXPAND_ONLY_PREDEF     = NO
+EXPAND_ONLY_PREDEF     = YES
 
 # If the SEARCH_INCLUDES tag is set to YES, the include files in the
 # INCLUDE_PATH will be searched if a #include is found.
@@ -2215,7 +2215,46 @@ SEARCH_INCLUDES        = YES
 # preprocessor.
 # This tag requires that the tag SEARCH_INCLUDES is set to YES.
 
-INCLUDE_PATH           =
+INCLUDE_PATH           = \
+                         "examples/logger_test"  \
+                         "~/.platformio/lib/ModularSensors/src"  \
+                         "~/.platformio/lib/Adafruit ADS1X15"  \
+                         "~/.platformio/lib/Adafruit AM2315_ID773"  \
+                         "~/.platformio/lib/Adafruit BME280_Library_ID166"  \
+                         "~/.platformio/lib/Adafruit BusIO_ID6214"  \
+                         "~/.platformio/lib/Adafruit INA219_ID160"  \
+                         "~/.platformio/lib/Adafruit MPL115A2_ID406"  \
+                         "~/.platformio/lib/Adafruit Unified_Sensor_ID31"  \
+                         "~/.platformio/lib/AltSoftSerial"  \
+                         "~/.platformio/lib/Arduino-SDI-12/src"  \
+                         "~/.platformio/lib/DHT sensor_library_ID19"  \
+                         "~/.platformio/lib/DallasTemperature_ID54"  \
+                         "~/.platformio/lib/OneWire_ID1"  \
+                         "~/.platformio/lib/EnableInterrupt_ID311"  \
+                         "~/.platformio/lib/EnableInterrupt_ID311/utility"  \
+                         "~/.platformio/lib/EnviroDIY_DS3231_ID2079/src"  \
+                         "~/.platformio/lib/KellerModbus_ID5439/src"  \
+                         "~/.platformio/lib/SensorModbusMaster_ID1824/src"  \
+                         "~/.platformio/lib/MS5803_ID5431/src"  \
+                         "~/.platformio/lib/NeoSWSerial/src"  \
+                         "~/.platformio/lib/PubSubClient/src"  \
+                         "~/.platformio/lib/SdFat_ID322/src"  \
+                         "~/.platformio/lib/SoftwareSerial_ExtInts/src"  \
+                         "~/.platformio/lib/SoftwareWire_ID832"  \
+                         "~/.platformio/lib/StreamDebugger_ID1286"  \
+                         "~/.platformio/lib/TinyGSM/src"  \
+                         "~/.platformio/lib/YosemitechModbus_ID2078/src"  \
+                         "~/.platformio/packages/framework-arduino-avr/libraries/Wire/src"  \
+                         "~/.platformio/packages/framework-arduino-avr/libraries/SPI/src"  \
+                         "~/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src"  \
+                         "~/.platformio/packages/framework-arduino-avr/libraries/HID/src"  \
+                         "~/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src"  \
+                         "~/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/5.4.0/include"  \
+                         "~/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/5.4.0/include-fixed"  \
+                         "~/.platformio/packages/toolchain-atmelavr/avr/include"  \
+                         "~/.platformio/packages/framework-arduino-avr/cores/arduino"  \
+                         "~/.platformio/packages/framework-arduino-avr/variants/mayfly"  \
+                         "~/.platformio/packages/tool-unity"
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
@@ -2223,7 +2262,16 @@ INCLUDE_PATH           =
 # used.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-INCLUDE_FILE_PATTERNS  =
+INCLUDE_FILE_PATTERNS  = *.c \
+                         *.cc \
+                         *.cxx \
+                         *.cpp \
+                         *.c++ \
+                         *.h \
+                         *.hh \
+                         *.hxx \
+                         *.hpp \
+                         *.h++
 
 # The PREDEFINED tag can be used to specify one or more macro names that are
 # defined before the preprocessor is started (similar to the -D option of e.g.

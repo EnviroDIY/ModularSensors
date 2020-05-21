@@ -1,12 +1,13 @@
 /**
  * @file RainCounterI2C.h
- * @brief This file contains the RainCounterI2C sensor subclass and the variable
- * subclasses RainCounterI2C_Tips and RainCounterI2C_Depth.  These are for an
- * external tip counter, used to measure rainfall via a tipping bucket rain
- * gauge
+ * @brief Contains the RainCounterI2C sensor subclass and the variable
+ * subclasses RainCounterI2C_Tips and RainCounterI2C_Depth.
  *
- * The tip counter works on an Adafruit Trinket.  Documentation for the it can
- * be found at: https://github.com/EnviroDIY/TippingBucketRainCounter
+ * These are for an external tip counter, used to measure rainfall via a tipping
+ * bucket rain gauge
+ *
+ * The tip counter works on an Adafruit Trinket.  Documentation for it can be
+ * found at: https://github.com/EnviroDIY/TippingBucketRainCounter
  *
  * For Rainfall:
  *  Accuracy and resolution are dependent on the sensor used

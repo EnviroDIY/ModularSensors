@@ -1,4 +1,4 @@
-/*
+/**
  * @file AtlasScientificDO.cpp
  * @brief Implements the AtlasScientificCO2 class.
  *

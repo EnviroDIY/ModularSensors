@@ -1,9 +1,7 @@
 /**
  * @file DigiXBee3GBypass.h
- * @brief
- * @brief This file is the DigiXBee3GBypass subclass of the DigiXBee class for
- * Digi Cellular XBee's based on u-blox SARA U201 chips and operated in bypass
- * mode.
+ * @brief Contains the DigiXBee3GBypass subclass of the DigiXBee class for Digi
+ * Cellular XBee's based on u-blox SARA U201 chips and operated in bypass mode.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

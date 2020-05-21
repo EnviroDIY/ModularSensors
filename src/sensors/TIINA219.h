@@ -1,10 +1,12 @@
 /**
  * @file TIINA219.h
  *
- * @brief This file contains the TIINA219 sensor subclass and the variale
- * subclasses TIINA219_Current, TIINA219_Volt, and TIINA219_Power.  These are
- * for the Texas Instruments INA219 current/voltage sensor.  This depends on the
- * Adafruit Ina219 Library
+ * @brief Contains the TIINA219 sensor subclass and the variale subclasses
+ * TIINA219_Current, TIINA219_Volt, and TIINA219_Power.
+ *
+ * These are for the Texas Instruments INA219 current/voltage sensor.
+ *
+ * This depends on the Adafruit INA219 Library
  *
  * Documentation for the sensor can be found at:
  * https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout and

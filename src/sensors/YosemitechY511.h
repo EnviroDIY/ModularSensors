@@ -1,9 +1,11 @@
 /**
  * @file YosemitechY511.h
- * @brief This file contains the YosemitechY511 sensor subclass and the variable
- * subclasses YosemitechY511_Turbidity and YosemitechY511_Temp.  These are for
- * the Yosemitech Y511 Turbidity Sensor with Wiper.  This depends on the
- * YosemitechParent super class.
+ * @brief Contains the YosemitechY511 sensor subclass and the variable
+ * subclasses YosemitechY511_Turbidity and YosemitechY511_Temp.
+ *
+ * These are for the Yosemitech Y511 Turbidity Sensor with Wiper.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:

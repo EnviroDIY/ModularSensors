@@ -1,10 +1,14 @@
 /**
  * @file DecagonCTD.h
- * @brief This file contains the DecagonCTD subclass of the SDI12Sensors class
- * along with the variable subclasses DecagonCTD_Cond, DecagonCTD_Temp, and
- * DecagonCTD_Depth.  These are used for the Meter Hydros 21, formerly known as
- * the Decagon Devices CTD-10.  This depends on the EnviroDIY SDI-12
- * library and the SDI12Sensors super class.
+ * @brief Contains the DecagonCTD subclass of the SDI12Sensors class along with
+ * the variable subclasses DecagonCTD_Cond, DecagonCTD_Temp, and
+ * DecagonCTD_Depth.
+ *
+ * These are used for the Meter Hydros 21, formerly known as the Decagon Devices
+ * CTD-10.
+ *
+ * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ * class.
  *
  * Documentation for the SDI-12 Protocol commands and responses for the Decagon
  * CTD-10 can be found at:

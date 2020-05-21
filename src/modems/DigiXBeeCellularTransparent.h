@@ -1,7 +1,7 @@
 /**
  * @file DigiXBeeCellularTransparent.h
- * @brief This file contains the DigiXBeeCellularTransparent class for Digi
- * Cellular XBee's operating in transparent mode.
+ * @brief Contains the DigiXBeeCellularTransparent class for Digi Cellular
+ * XBee's operating in transparent mode.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

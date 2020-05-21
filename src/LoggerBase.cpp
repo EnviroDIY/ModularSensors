@@ -5,7 +5,7 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
-*/
+ */
 
 #include "LoggerBase.h"
 #include "dataPublisherBase.h"
@@ -62,6 +62,9 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     // Start with no feature UUID
     _samplingFeatureUUID = NULL;
 
+    // Start with no modem attached
+    _logModem = NULL;
+
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         dataPublishers[i] = NULL;
@@ -94,6 +97,9 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     // Start with no feature UUID
     _samplingFeatureUUID = NULL;
 
+    // Start with no modem attached
+    _logModem = NULL;
+
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         dataPublishers[i] = NULL;
@@ -119,6 +125,9 @@ Logger::Logger() {
 
     // Start with no feature UUID
     _samplingFeatureUUID = NULL;
+
+    // Start with no modem attached
+    _logModem = NULL;
 
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {

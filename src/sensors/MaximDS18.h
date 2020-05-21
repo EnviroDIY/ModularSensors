@@ -1,9 +1,13 @@
-/*
+/**
  * @file MaximDS18.h
- * @brief This file contains the MaximDS18 sensor subclass and the
- * MaximDS18_Temp variable subclass. It is for the Maxim DS18B20, DS18S20,
- * MAX31820, DS1822, and DS1820 Temperature sensors. This depends on Dallas
- * Temperature library, which itself is dependent on the OneWire library.
+ * @brief Contains the MaximDS18 sensor subclass and the MaximDS18_Temp variable
+ * subclass.
+ *
+ * These are for the Maxim DS18B20, DS18S20, MAX31820, DS1822, and DS1820
+ * vtemperature sensors.
+ *
+ * This depends on Dallas Temperature library, which itself is dependent on the
+ * OneWire library.
  *
  * The resolution of the DS18B20, DS1822, and MAX31820 temperature sensors are
  * user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of

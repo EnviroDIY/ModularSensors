@@ -1,9 +1,12 @@
-/*
+/**
  * @file AtlasScientificDO.h
- * @brief This file contains the AtlasScientificCO2 subclass of the AtlasParent
- * sensor class along with the variable subclasses AtlasScientificDO_DOmgL and
- * AtlasScientificDO_DOpct.  These are used for any sensor attached to an Atlas
- * EZO DO circuit.  This depends on the Arduino core Wire library.
+ * @brief Contains the AtlasScientificCO2 subclass of the AtlasParent sensor
+ * class along with the variable subclasses AtlasScientificDO_DOmgL and
+ * AtlasScientificDO_DOpct.
+ *
+ * These are used for any sensor attached to an Atlas EZO DO circuit.
+ *
+ * This depends on the Arduino core Wire library.
  *
  * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
  *     Accuracy is ± 0.05 mg/L

@@ -1,9 +1,11 @@
 /**
  * @file YosemitechY514.h
- * @brief This file contains the YosemitechY514 sensor subclass and the variable
- * subclasses YosemitechY514_Chlorophyll and YosemitechY514_Temp.  These are for
- * the Yosemitech Y514 Chlorophyll Sensor with Wiper.  This depends on the
- * YosemitechParent super class.
+ * @brief Contains the YosemitechY514 sensor subclass and the variable
+ * subclasses YosemitechY514_Chlorophyll and YosemitechY514_Temp.
+ *
+ * These are for the Yosemitech Y514 Chlorophyll Sensor with Wiper.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:

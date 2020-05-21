@@ -1,9 +1,11 @@
 /**
  * @file YosemitechY520.h
- * @brief This file contains the YosemitechY520 sensor subclass and the variable
- * subclasses YosemitechY520_Cond and YosemitechY520_Temp.  These are for the
- * Yosemitech Y520 4-pole Conductivity sensor.  This depends on the
- * YosemitechParent super class.
+ * @brief Contains the YosemitechY520 sensor subclass and the variable
+ * subclasses YosemitechY520_Cond and YosemitechY520_Temp.
+ *
+ * These are for the Yosemitech Y520 4-pole Conductivity sensor.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:

@@ -1,9 +1,12 @@
 /**
  * @file BoschBME280.h
- * @brief This file contains the BoschBME280 sensor subclass and the variable
- * subclasses BoschBME280_Temp, BoschBME280_Humidity, BoschBME280_Pressure, and
- * BoschBME280_Altitude.  These are used for the Bosch BME280 digital oressure
- * and humidity sensor.  This depends on the Adafruit BME280 Library.
+ * @brief Contains the BoschBME280 sensor subclass and the variable subclasses
+ * BoschBME280_Temp, BoschBME280_Humidity, BoschBME280_Pressure, and
+ * BoschBME280_Altitude.
+ *
+ * These are used for the Bosch BME280 digital pressure and humidity sensor.
+ *
+ * This depends on the Adafruit BME280 Library.
  *
  * Documentation for the sensor can be found at:
  * https://www.bosch-sensortec.com/bst/products/all_products/bme280

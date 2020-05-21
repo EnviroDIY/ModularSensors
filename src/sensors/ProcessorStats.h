@@ -1,9 +1,10 @@
 /**
  * @file ProcessorStats.h
- * @brief This file contains the ProcessorStats sensor subclass and the variable
+ * @brief Contains the ProcessorStats sensor subclass and the variable
  * subclasses ProcessorStats_Battery, ProcessorStats_FreeRam, and
- * ProcessorStats_SampleNumber.  These are for metadata on the processor
- * functionality.
+ * ProcessorStats_SampleNumber.
+ *
+ * These are for metadata on the processor functionality.
  *
  * For battery voltage:
  *  Range of 0-5V with 10bit ADC - resolution of 0.005

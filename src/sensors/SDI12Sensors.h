@@ -1,8 +1,9 @@
 /**
  * @file SDI12Sensors.h
- * @brief This file contains the SDI12Sensors sensor subclass, itself a parent
- * class for all devices that communicate over SDI-12.  This depends on the
- * EnviroDIY SDI-12 library.
+ * @brief Contains the SDI12Sensors sensor subclass, itself a parent class for
+ * all devices that communicate over SDI-12.
+ *
+ * This depends on the EnviroDIY SDI-12 library.
  *
  * Documentation for the SDI-12 Protocol commands and responses can be found at:
  * http://www.sdi-12.org/

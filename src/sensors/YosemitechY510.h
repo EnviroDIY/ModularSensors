@@ -1,9 +1,11 @@
 /**
  * @file YosemitechY510.h
- * @brief This file contains the YosemitechY510 sensor subclass and the variable
- * subclasses YosemitechY510_Turbidity and YosemitechY510_Temp.  These are for
- * Yosemitech Y510 Turbidity Sensor. This depends on the YosemitechParent super
- * class.
+ * @brief Contains the YosemitechY510 sensor subclass and the variable
+ * subclasses YosemitechY510_Turbidity and YosemitechY510_Temp.
+ *
+ * These are for Yosemitech Y510 Turbidity Sensor.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:

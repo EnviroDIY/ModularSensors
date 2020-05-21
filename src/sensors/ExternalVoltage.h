@@ -1,10 +1,12 @@
 /**
  * @file ExternalVoltage.h
  * This file contains the ExternalVoltage sensor subclass and the
- * ExternalVoltage_Volt variable subclass. It is for any voltage measureable on
- * an TI ADS1115 or ADS1015.  There is a multiplier allowed for a voltage
- * divider between the raw voltage and the ADS. This depends on the
- * soligen2010 fork of the Adafruit ADS1015 library.
+ * ExternalVoltage_Volt variable subclass.
+ *
+ * These for any voltage measureable on a TI ADS1115 or ADS1015.  There is a
+ * multiplier allowed for a voltage divider between the raw voltage and the ADS.
+ *
+ * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  *
  * The grove voltage divider is a simple voltage divider designed to measure
  * high external voltages on a low voltage ADC. This module employs a variable

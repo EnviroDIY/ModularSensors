@@ -1,4 +1,4 @@
-/*
+/**
  * @file MaximDS18.cpp
  * @brief Implements the MaximDS18 class.
  *

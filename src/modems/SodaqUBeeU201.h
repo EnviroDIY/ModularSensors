@@ -1,7 +1,7 @@
 /**
  * @file SodaqUBeeU201.h
- * @brief This file contains the SodaqUBeeU201 subclass of loggerModem for the
- * Sodaq UBee based on the u-blox SARA U201 3G cellular module.
+ * @brief Contains the SodaqUBeeU201 subclass of loggerModem for the Sodaq UBee
+ * based on the u-blox SARA U201 3G cellular module.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

@@ -1,9 +1,12 @@
 /**
  * @file MeterTeros11.h
- * @brief This file contains the MeterTeros11 sensor subclass and the variable
- * subclasses MeterTeros11_Ea, MeterTeros11_Temp, and MeterTeros11_VWC.  These
- * are for the Meter Teros 11 Advanced Soil Moisture probe. This depends on the
- * EnviroDIY SDI-12 library and the SDI12Sensors super class.
+ * @brief Contains the MeterTeros11 sensor subclass and the variable subclasses
+ * MeterTeros11_Ea, MeterTeros11_Temp, and MeterTeros11_VWC.
+ *
+ * These are for the Meter Teros 11 Advanced Soil Moisture probe.
+ *
+ * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ * class.
  *
  * Documentation for the SDI-12 Protocol commands and responses for the Meter
  * Teros 11 can be found at:

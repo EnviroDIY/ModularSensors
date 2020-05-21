@@ -1,11 +1,13 @@
 /**
  * @file YosemitechY4000.h
- * @brief This file contains the YosemitechY4000 sensor subclass and the
- * variable subclasses YosemitechY4000_DOmgL, YosemitechY4000_Turbidity,
+ * @brief Contains the YosemitechY4000 sensor subclass and the variable
+ * subclasses YosemitechY4000_DOmgL, YosemitechY4000_Turbidity,
  * YosemitechY4000_Cond, YosemitechY4000_pH, YosemitechY4000_Temp,
  * YosemitechY4000_ORP, YosemitechY4000_Chlorophyll, and YosemitechY4000_BGA.
- * These are for the Yosemitech Y4000 MultiParameter Sonde.  This depends on the
- * YosemitechParent super class.
+ *
+ * These are for the Yosemitech Y4000 MultiParameter Sonde.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:

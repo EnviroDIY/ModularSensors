@@ -1,11 +1,14 @@
 /**
  * @file KellerAcculevel.h
- * @brief This file contains the KellerAcculevel sensor subclass and the
+ * @brief Contains the KellerAcculevel sensor subclass and the
  * KellerAcculevel_Pressure, KellerAcculevel_Temp, and KellerAcculevel_Height
- * variable subclasses.  These are for Keller Series 30, Class 5, Group 20
- * sensors using Modbus communication, that are Software version 5.20-12.28 and
- * later (i.e. made after the 2012 in the 28th week).  Only tested on the
- * Acculevel.
+ * variable subclasses.
+ *
+ * These are for Keller Series 30, Class 5, Group 20 sensors using Modbus
+ * communication, that are Software version 5.20-12.28 and later (i.e. made
+ * after the 2012 in the 28th week).
+ *
+ * Only tested on the Acculevel.
  *
  * Documentation for the Keller Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY

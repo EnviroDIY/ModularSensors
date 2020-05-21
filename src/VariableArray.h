@@ -1,6 +1,6 @@
 /**
  * @file VariableArray.h
- * @brief This file contains the VariableArray class.
+ * @brief Contains the VariableArray class.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

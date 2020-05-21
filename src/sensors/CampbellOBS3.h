@@ -1,9 +1,11 @@
 /**
  * @file CampbellOBS3.h
- * @brief This file contains the CampbellOBS3 sensor subclass and the variable
- *subclasses CampbellOBS3_Turbidity and CampbellOBS3_Voltage.  These are used
- *for the Campbell Scientific OBS-3+.  This depends on the soligen2010 fork
- *of the Adafruit ADS1015 library.
+ * @brief Contains the CampbellOBS3 sensor subclass and the variable subclasses
+ * CampbellOBS3_Turbidity and CampbellOBS3_Voltage.
+ *
+ * These are used for the Campbell Scientific OBS-3+.
+ *
+ * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  *
  * Ranges: (depends on sediment size, particle shape, and reflectivity)
  *  Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU

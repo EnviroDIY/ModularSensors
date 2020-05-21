@@ -1,7 +1,7 @@
 /**
  * @file dataPublisherBase.h
- * @brief This file contains the dataPublisher class - a virtual class used by
- * other publishes to distribute data online.
+ * @brief Contains the dataPublisher class - a virtual class used by other
+ * publishes to distribute data online.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
@@ -39,7 +39,8 @@ class dataPublisher {
  public:
     /**
      * @brief Construct a new data Publisher object untied to any logger or
-     * client
+     * client.
+     *
      * @note Using the default empty constructor requires you to use a the
      * begin(const Logger& baseLogger, Client* inClient) function to initialize
      * the logger and client values.  If a client is never specified, the
@@ -50,7 +51,7 @@ class dataPublisher {
     dataPublisher();
     /**
      * @brief Construct a new data Publisher object using a single client
-     * created on the TinyGSM based logger modem
+     * created on the TinyGSM based logger modem.
      *
      * @note If a client is never specified, the publisher will attempt to
      * create and use a client on a LoggerModem instance tied to the attached
@@ -72,7 +73,7 @@ class dataPublisher {
     explicit dataPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
                            uint8_t sendOffset = 0);
     /**
-     * @brief Construct a new data Publisher object
+     * @brief Construct a new data Publisher object.
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -93,28 +94,31 @@ class dataPublisher {
     dataPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
                   uint8_t sendOffset = 0);
     /**
-     * @brief Destroy the data Publisher object - no action is taken
+     * @brief Destroy the data Publisher object - no action is taken.
      */
     virtual ~dataPublisher();
 
     /**
-     * @brief Set the Client object.  Gives the publisher a client instance to
-     * use to "print" data.
+     * @brief Set the Client object.
+     *
+     * Gives the publisher a client instance to use to "print" data.
      *
      * @param inClient A pointer to an Arduino client instance
      */
     void setClient(Client* inClient);
 
     /**
-     * @brief Attaches the publisher to a logger.  The publisher must be tied to
-     * a data loger to provide it with the data to be published.
+     * @brief Attach the publisher to a logger.
+     *
+     * The publisher must be tied to a data loger to provide it with the data to
+     * be published.
      *
      * @param baseLogger A reference to the ModularSensors logger instance
      */
     void attachToLogger(Logger& baseLogger);
     /**
-     * @brief Sets the parameters for frequency of sending and any offset, if
-     * needed
+     * @brief Set the parameters for frequency of sending and any offset, if
+     * needed.
      *
      * @param sendEveryX Currently unimplemented, intended for future use to
      * enable caching and bulk publishing
@@ -127,16 +131,16 @@ class dataPublisher {
     void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
 
     /**
-     * @brief "Begins" the publisher - linking it to the client and logger
+     * @brief Begin the publisher - linking it to the client and logger.
      *
-     * @note This can be used as an alternative to adding the logger and client
-     * in the constructor.  This is slightly "safer" because we expect the
-     * publishers to be created in the "global scope" and we cannot control the
-     * order in which objects in that global scope will be created.  That is, we
-     * cannot guarantee that the logger will actually be created before the
-     * publisher that wants to attach to it unless we wait to attach the
-     * publisher until in the setup or loop function of the main program.  In
-     * reality, it is very unlikely that this is necessary.
+     * This can be used as an alternative to adding the logger and client in the
+     * constructor.  This is slightly "safer" because we expect the publishers
+     * to be created in the "global scope" and we cannot control the order in
+     * which objects in that global scope will be created.  That is, we cannot
+     * guarantee that the logger will actually be created before the publisher
+     * that wants to attach to it unless we wait to attach the publisher until
+     * in the setup or loop function of the main program.  In reality, it is
+     * very unlikely that this is necessary.
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -146,21 +150,21 @@ class dataPublisher {
     void begin(Logger& baseLogger, Client* inClient);
 
     /**
-     * @brief "Begins" the publisher - linking it to the logger but not
-     * attaching a client
+     * @brief Begin the publisher - linking it to the logger but not
+     * attaching a client.
      *
      * @note If a client is never specified, the publisher will attempt to
      * create and use a client on a LoggerModem instance tied to the attached
      * logger.
      *
-     * @note This can be used as an alternative to adding the logger and client
-     * in the constructor.  This is slightly "safer" because we expect the
-     * publishers to be created in the "global scope" and we cannot control the
-     * order in which objects in that global scope will be created.  That is, we
-     * cannot guarantee that the logger will actually be created before the
-     * publisher that wants to attach to it unless we wait to attach the
-     * publisher until in the setup or loop function of the main program.  In
-     * reality, it is very unlikely that this is necessary.
+     * This can be used as an alternative to adding the logger and client in the
+     * constructor.  This is slightly "safer" because we expect the publishers
+     * to be created in the "global scope" and we cannot control the order in
+     * which objects in that global scope will be created.  That is, we cannot
+     * guarantee that the logger will actually be created before the publisher
+     * that wants to attach to it unless we wait to attach the publisher until
+     * in the setup or loop function of the main program.  In reality, it is
+     * very unlikely that this is necessary.
      *
      * @param baseLogger The logger supplying the data to be published
      */
@@ -168,7 +172,7 @@ class dataPublisher {
 
 
     /**
-     * @brief Returns the destination for published data
+     * @brief Get the destination for published data.
      *
      * @return String The URL or HOST to receive published data
      */
@@ -176,9 +180,11 @@ class dataPublisher {
 
 
     /**
-     * @brief This opens a socket to the correct receiver and sends out the
-     * formatted data This depends on an internet connection already having been
-     * made and a client being available.
+     * @brief Open a socket to the correct receiver and sends out the formatted
+     * data.
+     *
+     * This depends on an internet connection already having been made and a
+     * client being available.
      *
      * @param _outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
@@ -188,10 +194,12 @@ class dataPublisher {
      */
     virtual int16_t publishData(Client* _outClient) = 0;
     /**
-     * @brief This opens a socket to the correct receiver and sends out the
-     * formatted data This depends on an internet connection already having been
-     * made and either a client having been linked to the publisher or a logger
-     * modem having been linked to the logger linked to the publisher.
+     * @brief Open a socket to the correct receiver and send out the formatted
+     * data.
+     *
+     * This depends on an internet connection already having been made and
+     * either a client having been linked to the publisher or a logger modem
+     * having been linked to the logger linked to the publisher.
      *
      * @return int16_t The result of publishing data.  May be an http response
      * code or a result code from PubSubClient.
@@ -199,8 +207,9 @@ class dataPublisher {
     virtual int16_t publishData();
 
     /**
-     * @brief Identical functionality to publishData(Client* _outClient)
-     * retained for backwards compatibility
+     * @brief Retained for backwards compatibility.
+     *
+     * @deprecated use publishData(Client* _outClient)
      *
      * @param _outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
@@ -210,8 +219,9 @@ class dataPublisher {
      */
     virtual int16_t sendData(Client* _outClient);
     /**
-     * @brief Identical functionality to publishData() retained for backwards
-     * compatibility
+     * @brief Retained for backwards compatibility.
+     *
+     * @deprecated use publishData()
      *
      * @return int16_t The result of publishing data.  May be an http response
      * code or a result code from PubSubClient.
@@ -219,7 +229,7 @@ class dataPublisher {
     virtual int16_t sendData();
 
     /**
-     * @brief Translates a PubSubClient code into a String with the code
+     * @brief Translate a PubSubClient code into a String with the code
      * explanation.
      *
      * @param state A result code returned by a PubSubClient action
@@ -230,11 +240,11 @@ class dataPublisher {
 
  protected:
     /**
-     * @brief The internal pointer to the logger instance to be used
+     * @brief The internal pointer to the logger instance to be used.
      */
     Logger* _baseLogger;
     /**
-     * @brief The internal pointer to the client instance to be used
+     * @brief The internal pointer to the client instance to be used.
      */
     Client* _inClient;
 
@@ -243,18 +253,18 @@ class dataPublisher {
      */
     static char txBuffer[MS_SEND_BUFFER_SIZE];
     /**
-     * @brief This returns the number of empty spots in the buffer
+     * @brief Get the number of empty spots in the buffer.
      *
      * @return int The number of available characters in the buffer
      */
     static int bufferFree(void);
     /**
-     * @brief This fills the TX buffer with nulls ('\0')
+     * @brief Fill the TX buffer with nulls ('\0').
      */
     static void emptyTxBuffer(void);
     /**
-     * @brief This writes the TX buffer to a stream and also to the debugging
-     * port
+     * @brief Write the TX buffer to a stream and also to the debugging
+     * port.
      *
      * @param stream A pointer to an Arduino Stream instance to use to print
      * data
@@ -265,12 +275,12 @@ class dataPublisher {
 
     /**
      * @brief Unimplemented; intended for future use to enable caching and bulk
-     * publishing
+     * publishing.
      */
     uint8_t _sendEveryX;
     /**
      * @brief Unimplemented; intended for future use to enable publishing data
-     * at a time slightly delayed from when it is collected
+     * at a time slightly delayed from when it is collected.
      */
     uint8_t _sendOffset;
 

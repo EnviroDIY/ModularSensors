@@ -1,9 +1,12 @@
 /**
  * @file MaximDS3231.h
- * @brief This file contains the MaximDS3231 sensor subclass and the
- * MaximDS3231_Temp variable subclass. These are for the DS3231 real time clock
- * which is required for all AVR boards.  This depends on the EnviroDIY DS3231
- * library.
+ * @brief Contains the MaximDS3231 sensor subclass and the MaximDS3231_Temp
+ * variable subclass.
+ *
+ * These are for the DS3231 real time clock which is required for all AVR
+ * boards.
+ *
+ * This depends on the EnviroDIY DS3231 library.
  *
  * For temperature from the DS3231:
  *  Resolution is 0.25°C

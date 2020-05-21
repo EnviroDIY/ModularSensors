@@ -1,9 +1,12 @@
 /**
  * @file FreescaleMPL115A2.h
- * @brief This file contains the MPL115A2 sensor subclass and the variable
- * subclasses MPL115A2_Temp and MPL115A2_Pressure.  These are used for the
- * Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer. This
- * depends on the https://github.com/adafruit/Adafruit_MPL115A2 library
+ * @brief Contains the MPL115A2 sensor subclass and the variable subclasses
+ * MPL115A2_Temp and MPL115A2_Pressure.
+ *
+ * These are used for the Freescale Semiconductor MPL115A2 Miniature I2C Digital
+ * Barometer.
+ *
+ * This depends on the https://github.com/adafruit/Adafruit_MPL115A2 library
  *
  * Documentation for the sensor can be found at:
  * https://www.adafruit.com/product/992 and

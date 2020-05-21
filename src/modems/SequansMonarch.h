@@ -1,7 +1,7 @@
 /**
  * @file SequansMonarch.h
- * @brief This file contains the SequansMonarch subclass of loggerModem for
- * Nimbelink or other modules based on the Sequans Monarch VZM20Q.
+ * @brief Contains the SequansMonarch subclass of loggerModem for Nimbelink or
+ * other modules based on the Sequans Monarch VZM20Q.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

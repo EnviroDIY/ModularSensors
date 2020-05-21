@@ -1,8 +1,9 @@
 /**
  * @file MaxBotixSonar.h
- * @brief This file contains the MaxBotixSonar sensor subclass and the
- * MaxBotixSonar_Range variable subclass. These are for the MaxBotix
- * HRXL-MaxSonar ultrasonic range finders.
+ * @brief Contains the MaxBotixSonar sensor subclass and the MaxBotixSonar_Range
+ * variable subclass.
+ *
+ * These are for the MaxBotix HRXL-MaxSonar ultrasonic range finders.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
  *     Accuracy is ± 1%

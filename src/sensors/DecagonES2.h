@@ -1,10 +1,13 @@
 /**
  * @file DecagonES2.h
- * @brief This file contains the DecagonES2 subclass of the SDI12Sensors class
- * along with the variable subclasses DecagonES2_Cond and DecagonES2_Temp. These
- * are used for discontinued Decagon Devices ES-2 Electrical Conductivity
- * Sensor.  This depends on the EnviroDIY SDI-12 library and the
- * SDI12Sensors super class.
+ * @brief Contains the DecagonES2 subclass of the SDI12Sensors class along with
+ * the variable subclasses DecagonES2_Cond and DecagonES2_Temp.
+ *
+ * These are used for the discontinued Decagon Devices ES-2 Electrical
+ * Conductivity Sensor.
+ *
+ * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ * class.
  *
  * For Specific Conductance:
  *  Resolution is 0.001 mS/cm = 1 µS/cm

@@ -1,7 +1,7 @@
 /**
  * @file Sodaq2GBeeR6.h
- * @brief This file contains the Sodaq2GBeeR6 subclass of the SIMComSIM800 class
- * and is specific to the Sodaq 2GBee revisions 6 and higher based on the SIMCOM
+ * @brief Contains the Sodaq2GBeeR6 subclass of the SIMComSIM800 class and is
+ * specific to the Sodaq 2GBee revisions 6 and higher based on the SIMCOM
  * SIM800h.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino

@@ -1,9 +1,10 @@
 /**
  * @file KellerParent.h
  *
- * @brief This file contains the KellerParent sensor subclass, itself used as a
- * parent class for all Keller modbus sensors.  This depends on the KellerModbus
- * and SensorModbusMaster libraries.
+ * @brief Contains the KellerParent sensor subclass, itself used as a parent
+ * class for all Keller modbus sensors.
+ *
+ * This depends on the KellerModbus and SensorModbusMaster libraries.
  *
  * Documentation for the Keller Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY

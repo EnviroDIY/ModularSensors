@@ -1,9 +1,12 @@
 /**
  * @file ZebraTechDOpto.h
- * @brief This file contains ZebraTechDOpto sensor subclass and the variable
+ * @brief Contains the ZebraTechDOpto sensor subclass and the variable
  * subclasses ZebraTechDOpto_Temp, ZebraTechDOpto_DOpct, and
- * ZebraTechDOpto_DOmgL.  These are for the ZebraTech D-Opto digital dissolved
- * oxygen sensor.  This depends on the SDI12Sensors parent class.
+ * ZebraTechDOpto_DOmgL.
+ *
+ * These are for the ZebraTech D-Opto digital dissolved oxygen sensor.
+ *
+ * This depends on the SDI12Sensors parent class.
  *
  * The manual for this sensor is available at:
  * www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf

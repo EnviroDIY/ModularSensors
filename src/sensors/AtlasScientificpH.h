@@ -1,8 +1,9 @@
-/*
+/**
  * @file AtlasScientificpH.h
- * @brief This file contains the AtlasScientificRTD subclass of the AtlasParent
- * sensor class along with the variable subclass AtlasScientificpH_pH.  These
- * are used for any sensor attached to an Atlas EZO pH circuit.
+ * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
+ * class along with the variable subclass AtlasScientificpH_pH.
+ *
+ * These are used for any sensor attached to an Atlas EZO pH circuit.
  *
  * The output from the Atlas Scientifc pH is the temperature in degrees C.
  *     Accuracy is ± 0.002

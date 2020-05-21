@@ -1,8 +1,9 @@
-/*
+/**
  * @file AtlasParent.h
- * @brief This file contains the AtlasParent sensor subclass which is itself the
- * parent class for all Atlas sensors. This depends on the Arduino core
- * Wire library.
+ * @brief Contains the AtlasParent sensor subclass which is itself the
+ * parent class for all Atlas sensors.
+ *
+ * This depends on the Arduino core Wire library.
  *
  * @note Most Atlas I2C commands have a 300ms processing time from the time the
  * command is written until it is possible to request a response or result,

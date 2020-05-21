@@ -1,9 +1,9 @@
 /**
  * @file EspressifESP8266.h
- * @brief This file contains the EspressifESP8266 subclass of loggerModem which
- * SHOULD work for essentially any breakout of the Espressif ESP8266 wifi chip
- * or ESP32 wifi/bluetooth chip that has been flashed with Espressif's AT
- * command firmware.
+ * @brief Contains the EspressifESP8266 subclass of loggerModem which SHOULD
+ * work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32
+ * wifi/bluetooth chip that has been flashed with Espressif's AT command
+ * firmware.
  *
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center

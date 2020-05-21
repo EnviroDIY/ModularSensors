@@ -1,10 +1,12 @@
 /**
  * @file KellerNanolevel.h
- * @brief This file contains the KellerNanolevel sensor subclass and the
+ * @brief Contains the KellerNanolevel sensor subclass and the
  * KellerNanolevel_Pressure, KellerNanolevel_Temp, and KellerNanolevel_Height
- * variable subclasses.  These are for Keller Series 30, Class 5, Group 20
- * sensors using Modbus communication, that are Software version 5.20-12.28 and
- * later (i.e. made after the 2012 in the 28th week).
+ * variable subclasses.
+ *
+ * These are for Keller Series 30, Class 5, Group 20 sensors using Modbus
+ * communication, that are Software version 5.20-12.28 and later (i.e. made
+ * after the 2012 in the 28th week).
  *
  * Documentation for the Keller Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY
