@@ -1,15 +1,10 @@
-/*
- *MaxBotixSonar.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file MaxBotixSonar.cpp
+ * @brief Implements the MaxBotixSonar class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the MaxBotix Sonar Library
- *
- * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
- *
- * Warm up time to completion of header:  160ms
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "MaxBotixSonar.h"

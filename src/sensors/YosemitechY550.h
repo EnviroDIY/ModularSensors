@@ -1,19 +1,16 @@
-/*
- *YosemitechY550.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file YosemitechY550.h
+ * @brief This file contains the YosemitechY550 sensor subclass and the variable
+ *subclasses YosemitechY550_COD, YosemitechY550_Temp, and
+ *YosemitechY550_Turbidity.  These are for the Yosemitech Y550 COD Sensor with
+ *Wiper. This depends on the YosemitechParent super class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * Documentation for the Modbus Protocol commands and responses can be found
+ * within the documentation in the YosemitechModbus library at:
+ * https://github.com/EnviroDIY/YosemitechModbus
  *
- *This file is for the Yosemitech Y550 COD Sensor with Wiper
- *It is dependent on the YosemitechParent super class.
- *
- *Documentation for the Modbus Protocol commands and responses can be found
- *within the documentation in the YosemitechModbus library at:
- *https://github.com/EnviroDIY/YosemitechModbus
- *
- *These devices output very high "resolution" (32bits) so the resolutions are
- *based on their accuracy, not the resolution of the sensor
+ * These devices output very high "resolution" (32bits) so the resolutions are
+ * based on their accuracy, not the resolution of the sensor.
  *
  * For Turbidity:
  *     Accuracy is ＜5% or 0.3NTU
@@ -30,6 +27,10 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 22sec
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

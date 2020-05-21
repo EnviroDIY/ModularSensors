@@ -1,22 +1,24 @@
-/*
- *RainCounterI2C.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file RainCounterI2C.h
+ * @brief This file contains the RainCounterI2C sensor subclass and the variable
+ * subclasses RainCounterI2C_Tips and RainCounterI2C_Depth.  These are for an
+ * external tip counter, used to measure rainfall via a tipping bucket rain
+ * gauge
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for an external tip counter, used to measure rainfall via a
- *tipping bucket rain gauge
- *
- *Documentation for the sensor can be found at:
- *https://github.com/EnviroDIY/TippingBucketRainCounter
+ * The tip counter works on an Adafruit Trinket.  Documentation for the it can
+ * be found at: https://github.com/EnviroDIY/TippingBucketRainCounter
  *
  * For Rainfall:
  *  Accuracy and resolution are dependent on the sensor used
  *  Standard resolution is 0.01" or 0.2mm of rainfall (depending on if sensor is
- *set to english or metric)
+ * set to english or metric)
  *
  * Assume sensor is immediately stable
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

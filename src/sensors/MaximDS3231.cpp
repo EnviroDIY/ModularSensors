@@ -1,20 +1,10 @@
-/*
- *MaximDS3231.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file MaximDS3231.cpp
+ * @brief Implements the MaximDS18 class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for required DS3231 real time clock.
- *It is dependent on the EnviroDIY DS3231 library.
- *
- *For temperature from the DS3231:
- *  Resolution is 0.25°C
- *  Accuracy is ±3°C
- *
- * The clock should have a separate power supply and never be turned off.
- * We assume it's always warmed up.
- * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include <Sodaq_DS3231.h>

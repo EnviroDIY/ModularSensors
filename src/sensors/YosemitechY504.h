@@ -1,19 +1,16 @@
-/*
- *YosemitechY504.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file YosemitechY504.h
+ * @brief This file contains the YosemitechY504 sensor subclass and the variable
+ * subclasses YosemitechY504_DOpct, YosemitechY504_Temp, and
+ * YosemitechY504_DOmgL.  These are for the Yosemitech Y504 Optical Dissolved
+ * Oxyben sensor This depends on the YosemitechParent super class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * Documentation for the Modbus Protocol commands and responses can be found
+ * within the documentation in the YosemitechModbus library at:
+ * https://github.com/EnviroDIY/YosemitechModbus
  *
- *This file is for the Yosemitech Y504 Optical Dissolved Oxyben sensor
- *It is dependent on the YosemitechParent super class.
- *
- *Documentation for the Modbus Protocol commands and responses can be found
- *within the documentation in the YosemitechModbus library at:
- *https://github.com/EnviroDIY/YosemitechModbus
- *
- *These devices output very high "resolution" (32bits) so the resolutions are
- *based on their accuracy, not the resolution of the sensor
+ * These devices output very high "resolution" (32bits) so the resolutions are
+ * based on their accuracy, not the resolution of the sensor.
  *
  * For Dissolved Oxygen:
  *     Accuracy is ± 1 %
@@ -26,6 +23,10 @@
  *
  * Time before sensor responds after power - 275-300ms (use 350 for safety)
  * Time between "StartMeasurement" command and stable reading - 8sec
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

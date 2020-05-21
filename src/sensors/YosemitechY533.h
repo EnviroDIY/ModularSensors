@@ -1,19 +1,16 @@
-/*
- *YosemitechY533.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file YosemitechY533.h
+ * @brief This file contains the YosemitechY533 sensor subclass and the variable
+ * subclasses YosemitechY533_pH, YosemitechY533_Temp, and
+ * YosemitechY533_Voltage.  These are for the Yosemitech Y533 ORP sensor. This
+ * depends on the YosemitechParent super class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * Documentation for the Modbus Protocol commands and responses can be found
+ * within the documentation in the YosemitechModbus library at:
+ * https://github.com/EnviroDIY/YosemitechModbus
  *
- *This file is for the Yosemitech Y533 ORP sensor
- *It is dependent on the YosemitechParent super class.
- *
- *Documentation for the Modbus Protocol commands and responses can be found
- *within the documentation in the YosemitechModbus library at:
- *https://github.com/EnviroDIY/YosemitechModbus
- *
- *These devices output very high "resolution" (32bits) so the resolutions are
- *based on their accuracy, not the resolution of the sensor
+ * These devices output very high "resolution" (32bits) so the resolutions are
+ * based on their accuracy, not the resolution of the sensor.
  *
  * For pH:
  *     Resolution is 0.01 pH units
@@ -32,6 +29,10 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 4.5sec
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

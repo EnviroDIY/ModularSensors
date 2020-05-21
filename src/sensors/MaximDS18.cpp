@@ -1,22 +1,10 @@
 /*
- * MaximDS18.cpp
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
+ * @file MaximDS18.cpp
+ * @brief Implements the MaximDS18 class.
  *
- * Initial library developement done by Sara Damiano
- * (sdamiano@stroudcenter.org).
- *
- * This file is for the Maxim DS18B20 Temperature sensor.
- * It is dependent on Dallas Temperature library, which itself is dependent on
- * the OneWire library.
- *
- * The resolution of the temperature sensor is user-configurable to
- * 9, 10, 11, or 12 bits, corresponding to increments of
- * 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively.
- * The default resolution at power-up is 12-bit.
- *
- * Time to take reading at 12-bit: 750ms
- * Reset time is < 480 µs
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "MaximDS18.h"

@@ -1,16 +1,10 @@
-/*
- *ProcessorStats.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file ProcessorStats.cpp
+ * @brief Implements the ProcessorStats class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for metadata on the processor functionality.
- *
- *For battery voltage:
- *  Range of 0-5V with 10bit ADC - resolution of 0.005
- *
- * If the processor is awake, it's ready to take a reading.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "ProcessorStats.h"

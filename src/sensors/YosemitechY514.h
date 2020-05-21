@@ -1,19 +1,16 @@
-/*
- *YosemitechY514.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file YosemitechY514.h
+ * @brief This file contains the YosemitechY514 sensor subclass and the variable
+ * subclasses YosemitechY514_Chlorophyll and YosemitechY514_Temp.  These are for
+ * the Yosemitech Y514 Chlorophyll Sensor with Wiper.  This depends on the
+ * YosemitechParent super class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * Documentation for the Modbus Protocol commands and responses can be found
+ * within the documentation in the YosemitechModbus library at:
+ * https://github.com/EnviroDIY/YosemitechModbus
  *
- *This file is for the Yosemitech Y514 Chlorophyll Sensor with Wiper
- *It is dependent on the YosemitechParent super class.
- *
- *Documentation for the Modbus Protocol commands and responses can be found
- *within the documentation in the YosemitechModbus library at:
- *https://github.com/EnviroDIY/YosemitechModbus
- *
- *These devices output very high "resolution" (32bits) so the resolutions are
- *based on their accuracy, not the resolution of the sensor
+ * These devices output very high "resolution" (32bits) so the resolutions are
+ * based on their accuracy, not the resolution of the sensor.
  *
  * For Chlorophyll:
  *     Resolution is 0.1 µg/L / 0.1 RFU
@@ -27,6 +24,10 @@
  *
  * Time before sensor responds after power - 1.2 seconds
  * Time between "StartMeasurement" command and stable reading - 8sec
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

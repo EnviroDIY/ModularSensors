@@ -1,14 +1,9 @@
 /*
- * MaximDS18.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
- *
- * Initial library developement done by Sara Damiano
- * (sdamiano@stroudcenter.org).
- *
- * This file is for the Maxim DS18B20, DS18S20, MAX31820, DS1822, and DS1820
- * Temperature sensors. It is dependent on Dallas Temperature library, which
- * itself is dependent on the OneWire library.
+ * @file MaximDS18.h
+ * @brief This file contains the MaximDS18 sensor subclass and the
+ * MaximDS18_Temp variable subclass. It is for the Maxim DS18B20, DS18S20,
+ * MAX31820, DS1822, and DS1820 Temperature sensors. This depends on Dallas
+ * Temperature library, which itself is dependent on the OneWire library.
  *
  * The resolution of the DS18B20, DS1822, and MAX31820 temperature sensors are
  * user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of
@@ -21,6 +16,10 @@
  *
  * Max time to take reading at 12-bit: 750ms
  * Reset time is < 480 µs
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
