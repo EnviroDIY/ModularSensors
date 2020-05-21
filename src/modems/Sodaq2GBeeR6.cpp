@@ -1,12 +1,10 @@
-/*
- *Sodaq2GBeeR6.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file Sodaq2GBeeR6.cpp
+ * @brief Implements the Sodaq2GBeeR6 class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is the Sodaq 2GBee revisions 6 and higher - these are based on
- *the SIMCOM SIM800h.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

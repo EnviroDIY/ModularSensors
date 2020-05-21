@@ -1,13 +1,10 @@
-/*
- *SIMComSIM800.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file SIMComSIM800.cpp
+ * @brief Implements the SIMComSIM800 class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Adafruit Fona 2G, the Sodaq GPRSBee R4 and almost any
- * other module based on the SIMCOM SIM800 or SIM900
- *the SIMCOM SIM800h.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

@@ -1,25 +1,11 @@
-/*
- *MPL115A2.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file FreescaleMPL115A2.cpp
+ * @brief Implements the MPL115A2 class.
  *
- *Initial library developement done by Bobby Schulz <schu3119@umn.edu>.
- *
- *This file is for the Freescale Semiconductor MPL115A2 Miniature I2C Digital
- *Barometer
- *It is dependent on the https://github.com/adafruit/Adafruit_MPL115A2 library
- *
- *Documentation for the sensor can be found at:
- *https://www.adafruit.com/product/992
- *https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB
- *
- * For Pressure:
- *  Resolution is 1.5 hPa
- *  Accuracy ±10 hPa
- *  Range is 500-1150 hPa
- *
- * Sensor takes about 1.6 ms to respond
- * Assume sensor is immediately stable
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "FreescaleMPL115A2.h"

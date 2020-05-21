@@ -1,19 +1,16 @@
-/*
- *YosemitechY520.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file YosemitechY520.h
+ * @brief This file contains the YosemitechY520 sensor subclass and the variable
+ * subclasses YosemitechY520_Cond and YosemitechY520_Temp.  These are for the
+ * Yosemitech Y520 4-pole Conductivity sensor.  This depends on the
+ * YosemitechParent super class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * Documentation for the Modbus Protocol commands and responses can be found
+ * within the documentation in the YosemitechModbus library at:
+ * https://github.com/EnviroDIY/YosemitechModbus
  *
- *This file is for the Yosemitech Y520 4-pole Conductivity sensor
- *It is dependent on the YosemitechParent super class.
- *
- *Documentation for the Modbus Protocol commands and responses can be found
- *within the documentation in the YosemitechModbus library at:
- *https://github.com/EnviroDIY/YosemitechModbus
- *
- *These devices output very high "resolution" (32bits) so the resolutions are
- *based on their accuracy, not the resolution of the sensor
+ * These devices output very high "resolution" (32bits) so the resolutions are
+ * based on their accuracy, not the resolution of the sensor.
  *
  * For Conductivity:
  *     Resolution is 0.1 µS/cm
@@ -27,6 +24,10 @@
  *
  * Time before sensor responds after power - 1200 ms
  * Time between "StartMeasurement" command and stable reading - 10sec
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

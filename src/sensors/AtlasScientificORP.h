@@ -1,15 +1,18 @@
 /*
- * AtlasScientificORP.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
- *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
+ * @file AtlasScientificORP.h
+ * @brief This file contains the AtlasScientificRTD subclass of the AtlasParent
+ * sensor class along with the variable subclass AtlasScientificORP_Potential.
+ * These are used for any sensor attached to an Atlas EZO ORP circuit.
  *
  * The output from the Atlas Scientifc ORP is the temperature in degrees C.
  *     Accuracy is ± 1 mV
  *     Range is -1019.9mV − 1019.9mV
  *     Resolution is 0.1 mV
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,11 +1,11 @@
-/*
- *SodaqUBeeU201.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file SodaqUBeeU201.h
+ * @brief This file contains the SodaqUBeeU201 subclass of loggerModem for the
+ * Sodaq UBee based on the u-blox SARA U201 3G cellular module.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is the Sodaq UBee based on the u-blox SARA U201 3G Cellular Module
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

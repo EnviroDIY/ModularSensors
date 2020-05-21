@@ -1,15 +1,19 @@
 /*
- * AtlasScientificDO.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
- *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
+ * @file AtlasScientificDO.h
+ * @brief This file contains the AtlasScientificCO2 subclass of the AtlasParent
+ * sensor class along with the variable subclasses AtlasScientificDO_DOmgL and
+ * AtlasScientificDO_DOpct.  These are used for any sensor attached to an Atlas
+ * EZO DO circuit.  This depends on the Arduino core Wire library.
  *
  * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
  *     Accuracy is ± 0.05 mg/L
  *     Range is 0.01 − 100+ mg/L (0.1 − 400+ % saturation)
  *     Resolution is 0.01 mg/L or 0.1 % saturation
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

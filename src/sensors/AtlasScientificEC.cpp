@@ -1,16 +1,11 @@
 /*
- * AtlasScientificEC.cpp
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
+ * @file AtlasScientificEC.cpp
+ * @brief Implements the AtlasScientificEC class.
  *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
- *
- * The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS,
- * salinity, and specific gravity
- *     Accuracy is ± 2%
- *     Range is 0.07 − 500,000+ μS/cm
- *     Resolution is 3 decimal places
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

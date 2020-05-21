@@ -1,22 +1,17 @@
-/*
- *MeaSpecMS5803.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file MeaSpecMS5803.h
+ *  @brief This file contains the MeaSpecMS5803 semsor subclass and the variable
+ * subclasses MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.  THese are for the
+ * Measurement Specialties MS5803 pressure sensor, which is used in the SparkFun
+ * Pressure Sensor Breakout - MS5803-14BA. This depends on the
+ * https://github.com/EnviroDIY/MS5803 library, which was modified for
+ * NodularSensors based on a fork from the
+ * https://github.com/NorthernWidget/MS5803 library, which itself expanded on
+ * https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
  *
- *Initial library developement done by Anthony Aufdenkampe
- <aaufdenkampe@limno.com>.
- * with help from Beth Fisher, Evan Host and Bobby Schulz
- *
- *This file is for the Measurement Specialties MS5803 pressure sensor,
-  for which is used in SparkFun Pressure Sensor Breakout - MS5803-14BA.
- *It is dependent on the https://github.com/EnviroDIY/MS5803 library, which was
-  modified for EnviroDIY_Modular sensors based on a fork
-  from the https://github.com/NorthernWidget/MS5803 library, which expanded on
- *https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
- *
- *Documentation for the sensor can be found at:
- *https://www.sparkfun.com/products/12909
- *https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
+ * Documentation for the sensor can be found at:
+ * https://www.sparkfun.com/products/12909 and
+ * https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
  *
  * For Pressure (sensor designed for water pressure):
  *  Resolution is:
@@ -41,7 +36,13 @@
  * Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
  *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
  * Assume sensor is immediately stable
-*/
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>. with help from Beth
+ * Fisher, Evan Host and Bobby Schulz.
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ */
 
 // Header Guards
 #ifndef SRC_SENSORS_MEASPECMS5803_H_

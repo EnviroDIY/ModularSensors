@@ -1,15 +1,11 @@
 /*
- * AtlasScientificCO2.cpp
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
+ * @file AtlasScientificCO2.cpp
+ * @brief Implements the AtlasScientificCO2 class.
  *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
- *
- * The output from the Atlas Scientifc CO2 is the temperature in degrees C.
- *     Accuracy is ± 3% or ± 30 ppm
- *     Range is 0 − 10000 ppm
- *     Resolution is 1 ppm
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

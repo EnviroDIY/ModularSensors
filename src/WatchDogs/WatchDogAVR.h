@@ -1,15 +1,13 @@
-/*
- *WatchDogAVR.h
-
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file WatchDogAVR.h
+ * @brief This file contains the extendedWatchDogAVR class
+ * Code for this is taken from this forum post:
+ * https://forum.arduino.cc/index.php?topic=248263.0
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the watchdog timer
- *Code for this is taken from this forum post:
- *https://forum.arduino.cc/index.php?topic=248263.0
-*/
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ */
 
 // Header Guards
 #ifndef SRC_WATCHDOGS_WATCHDOGAVR_H_

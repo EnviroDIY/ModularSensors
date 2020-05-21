@@ -1,11 +1,10 @@
-/*
- *DigiXBeeWifi.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file DigiXBeeWifi.cpp
+ * @brief Implements the DigiXBeeWifi class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for Digi S6B Wifi XBee's
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

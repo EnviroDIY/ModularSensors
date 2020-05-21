@@ -1,39 +1,13 @@
-/*
- *MeaSpecMS5803.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file MeaSpecMS5803.cpp
+ * @brief Implements the MeaSpecMS5803 class.
  *
- *Initial library developement done by Anthony Aufdenkampe
- <aaufdenkampe@limno.com>.
- * with help from Beth Fisher, Evan Host and Bobby Schulz
- *
- *This file is for the Measurement Specialties MS5803 pressure sensor,
-  for which is used in SparkFun Pressure Sensor Breakout - MS5803-14BA.
- *It is dependent on the https://github.com/EnviroDIY/MS5803 library, which was
-  modified for EnviroDIY_Modular sensors based on a fork
-  from the https://github.com/NorthernWidget/MS5803 library, which expanded on
- *https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library *
- *Documentation for the sensor can be found at:
- *https://www.sparkfun.com/products/12909
- *https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
- *
- * For Pressure (sensor designed for water pressure):
- *  Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
- *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
- *  Accuracy 0 to +40°C is ±20mbar
- *  Accuracy -40°C to +85°C is ±40mbar
- *  Range is 0 to 14 bar
- *  Long term stability is -20 mbar/yr
- *
- * For Temperature:
- *  Resolution is <0.01°C
- *  Accuracy is ±0.8°C
- *  Range is -40°C to +85°C
- *
- * Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
- *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
- * Assume sensor is immediately stable
-*/
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>. with help from Beth
+ * Fisher, Evan Host and Bobby Schulz.
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ */
 
 #include "MeaSpecMS5803.h"
 

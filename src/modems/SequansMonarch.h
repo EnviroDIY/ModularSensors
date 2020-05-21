@@ -1,12 +1,11 @@
-/*
- *SequansMonarch.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file SequansMonarch.h
+ * @brief This file contains the SequansMonarch subclass of loggerModem for
+ * Nimbelink or other modules based on the Sequans Monarch VZM20Q.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Dragino BG96, Nimbelink Skywire 4G LTE-M Global, and
- *other modules based on the Quectel BG96.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,15 +1,12 @@
-/*
- *BoschBME280.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file BoschBME280.h
+ * @brief This file contains the BoschBME280 sensor subclass and the variable
+ * subclasses BoschBME280_Temp, BoschBME280_Humidity, BoschBME280_Pressure, and
+ * BoschBME280_Altitude.  These are used for the Bosch BME280 digital oressure
+ * and humidity sensor.  This depends on the Adafruit BME280 Library.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Bosch BME280 Digital Pressure and Humidity Sensor
- *It is dependent on the Adafruit BME280 Library
- *
- *Documentation for the sensor can be found at:
- *https://www.bosch-sensortec.com/bst/products/all_products/bme280
+ * Documentation for the sensor can be found at:
+ * https://www.bosch-sensortec.com/bst/products/all_products/bme280
  *
  * For Barometric Pressure:
  *  Resolution is 0.18Pa
@@ -29,6 +26,10 @@
  * Sensor takes about 100ms to respond
  * Slowest response time (humidity): 1sec
  * Assume sensor is immediately stable
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

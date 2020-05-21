@@ -1,17 +1,10 @@
-/*
- *DecagonES2.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
- *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Decagon Devices ES-2 Electrical Conductivity Sensor
- *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super
- *class.
- *
- *Documentation fo the SDI-12 Protocol commands and responses
- *for the Decagon ES-2 can be found at:
- * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
+/**
+ * @file DecagonES2.h
+ * @brief This file contains the DecagonES2 subclass of the SDI12Sensors class
+ * along with the variable subclasses DecagonES2_Cond and DecagonES2_Temp. These
+ * are used for discontinued Decagon Devices ES-2 Electrical Conductivity
+ * Sensor.  This depends on the EnviroDIY SDI-12 library and the
+ * SDI12Sensors super class.
  *
  * For Specific Conductance:
  *  Resolution is 0.001 mS/cm = 1 µS/cm
@@ -25,6 +18,10 @@
  *
  * Maximum warm-up time in SDI-12 mode: 250ms, assume stability at warm-up
  * Maximum measurement duration: 250ms
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

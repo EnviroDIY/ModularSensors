@@ -1,12 +1,10 @@
-/*
- *SodaqUBeeR410M.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file SodaqUBeeR410M.cpp
+ * @brief Implements the SodaqUBeeR410M class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is the Sodaq UBee based on the u-blox SARA R410M LTE-M Cellular
- *Module
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

@@ -1,54 +1,13 @@
-/*
- *ExternalVoltage.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file ExternalVoltage.cpp
+ * Implements the ExternalVoltage class.
  *
- * Written By:  Bobby Schulz <schu3119@umn.edu>
- * Adapted from ApogeeSQ212.h by Sara Damiano (sdamiano@stroudcenter.org)
- *
- * This file is for the grove voltage divider (but will work with any voltage
- * divider with an output in the range of 0 ~ 3.3v)
- * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
- *
- * The grove voltage divider is a simple voltage divider designed to measure
- * high external voltages on a low voltage ADC. This module employs a variable
- * gain via two pairs of voltage dividers, and a unity gain amplification to
- * reduce output impedance of the module.
- *
- * Range:
- *   NOTE:  Range is determined by supply voltage - No more than VDD + 0.3 V or
- *          5.5 V (whichever is smaller) must be applied to this device.
- *   without voltage divider:  0 - 3.6V [when ADC is powered at 3.3V]
- *   1/gain = 3x: 0.3 ~ 12.9V
- *   1/gain = 10x: 1 ~ 43V
- * Accuracy:
- *   16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
- *   12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
- * Resolution:
- *   NOTE:  1 bit of resolution is lost in single-ended reading.  The maximum
- *          possible resolution is over the differential range from
- *          negative to positive full scale, a single ended reading is only over
- *          the range from 0 to positive full scale)
- *   NOTE:  Assuming the ADC is powered at 3.3V, this program sets the the ACD's
- *          inbuilt gain to 1, which divides the bit resolution over range of
- *          0-4.096V
- *   16-bit ADC:
- *     without voltage divider:  0.125 mV
- *     1/gain = 3x: 0.375 mV
- *     1/gain = 10x: 1.25 mV
- *   12-bit ADC:
- *     without voltage divider:  2 mV
- *     1/gain = 3x: 6 mV
- *     1/gain = 10x: 20 mV
- *
- * Technical specifications for the Grove Voltage Divider can be found at:
- * http://wiki.seeedstudio.com/Grove-Voltage_Divider
- *
- * Technical specifications for the TI ADS1115 can be found at:
- * http://www.ti.com/product/ADS1115
- *
- * Response time: < 1ms
- * Resample time: max of ADC (860/sec)
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
+ * <sdamiano@stroudcenter.org>
  */
 
 

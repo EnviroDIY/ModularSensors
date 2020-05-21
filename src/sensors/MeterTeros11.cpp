@@ -1,36 +1,11 @@
-/*
- *MeterTeros11.cpp - MODIFIED FOR new TEROS 11 sensor !!!
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file MeterTeros11.cpp
+ * @brief Implements the MeterTeros11 class.
  *
- *Written by Anthony Aufdenkampe <aaufdenkampe@limno.com>, based on
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Meter Teros 11 Advanced Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super
- *class.
- *
- *Documentation for the SDI-12 Protocol commands and responses
- *for the Meter Teros 11 can be found at:
- * http://publications.metergroup.com/Integrator%20Guide/18224%20TEROS%2011-12%20Integrator%20Guide.pdf
- *
- * For Ea and VWC:
- *     Resolution is 0.001 m3/m3 (0.1% VWC) from 0 – 70% VWC
- *     Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
- *     Accuracy for Medium Specific Calibration: ± 0.01 to 0.02 m3/m3 (± 1-2%
- *VWC) Range is 0 – 1 m3/m3 (0 – 100% VWC)
- *
- * For Temperature:
- *     Resolution is 0.1°C
- *     Accuracy is ± 0.5°C, from - 40°C to 0°C
- *     Accuracy is ± 0.3°C, from 0°C to + 60°C
- *
- * Warm-up time in SDI-12 mode: 245ms typical, assume stability at warm-up
- * Measurement duration: 25 ms to 50 ms
- *
- * Supply Voltage (VCC to GND), 4.0 to 15.0 VDC
- * Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)
- * Digital Output Voltage (logic high), 3.6 typical
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #include "MeterTeros11.h"

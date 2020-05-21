@@ -1,20 +1,18 @@
-/*
- *KellerParent.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file KellerParent.h
  *
- *Initial library developement done by Anthony Aufdenkampe
- *<aaufdenkampe@limno.com>
+ * @brief This file contains the KellerParent sensor subclass, itself used as a
+ * parent class for all Keller modbus sensors.  This depends on the KellerModbus
+ * and SensorModbusMaster libraries.
  *
- *This file is for Modbus communication to  Keller pressure and water level
- *sensors of Series 30, Class 5, Group 20 (such as the KellerAcculevel) that are
- *Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th
- *week) Only tested the Acculevel
+ * Documentation for the Keller Protocol commands and responses, along with
+ * information about the various variables, can be found in the EnviroDIY
+ * KellerModbus library at: https://github.com/EnviroDIY/KellerModbus
  *
- *Documentation for the Keller commands and responses, along with
- *information about the various variables, can be found
- *in the EnviroDIY KellerModbus library at:
- * https://github.com/EnviroDIY/KellerModbus
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

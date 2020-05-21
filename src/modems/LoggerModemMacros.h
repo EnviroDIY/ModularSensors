@@ -1,13 +1,12 @@
-/*
- *LoggerModemMacros.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file LoggerModemMacros.h
+ * @brief This file contains PRE-ROCESSOR MACROS for use with logger modems.
+ * @note These are NOT FUNCTIONS; they are pre-processor macros that I am
+ * collecting here to avoid writing the same functions multiple times later.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file contains PRE-ROCESSOR MACROS for use with logger modems
- * NOTE:  These are NOT FUNCTIONS they are pre-processor macros that I'm
- * collecting here to avoid writing functions later.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 /* Header Guards */

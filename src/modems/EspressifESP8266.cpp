@@ -1,13 +1,10 @@
-/*
- *EspressifESP8266.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file EspressifESP8266.cpp
+ * @brief Implements the EspressifESP8266 class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file SHOULD work for essentially any breakout of the Espressif ESP8266
- *wifi chip as long as the chip has been flashed with Espressif's AT command
- *firmware.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

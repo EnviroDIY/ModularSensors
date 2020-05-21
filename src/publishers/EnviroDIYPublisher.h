@@ -1,12 +1,12 @@
-/*
- *EnviroDIYPublisher.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
- *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the EnviroDIY logging functions - ie, sending JSON data to
+/**
+ * @file EnviroDIYPublisher.h
+ * @brief This file contains the EnviroDIYPublisher subclass of dataPublisher
+ * for publishing data to the EnviroDIY/Monitor My Watershed data portal at
  * http://data.enviroDIY.org
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,29 +1,10 @@
-/*
- *CampbellOBS3.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file CampbellOBS3.cpp
+ * @brief Implements the CampbellOBS3 class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Campbell Scientific OBS-3+
- *This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
- *
- * Ranges: (depends on sediment size, particle shape, and reflectivity)
- *  Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
- *  Mud: 5000 to 10,000 mg L–1
- *  Sand: 50,000 to 100,000 mg L–1
- * Accuracy: (whichever is larger)
- *  Turbidity: 2% of reading or 0.5 NTU
- *  Mud: 2% of reading or 1 mg L–1
- *  Sand: 4% of reading or 10 mg L–1
- * Resolution:
- *  16-bit ADC
- *      Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5 NTU
- *  12-bit ADC
- *      Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
- *
- * Minimum stabilization time: 2s
- * Maximum data rate = 10Hz (100ms/sample)
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 

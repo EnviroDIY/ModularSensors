@@ -1,15 +1,11 @@
 /*
- * AtlasScientificDO.cpp
- * This file is part of the EnviroDIY modular sensors library for Arduino
- * Copyright 2020 Stroud Water Research Center
+ * @file AtlasScientificDO.cpp
+ * @brief Implements the AtlasScientificCO2 class.
  *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
- *
- * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
- *     Accuracy is ± 0.05 mg/L
- *     Range is 0.01 − 100+ mg/L (0.1 − 400+ % saturation)
- *     Resolution is 0.01 mg/L or 0.1 % saturation
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  */
 
 // Included Dependencies

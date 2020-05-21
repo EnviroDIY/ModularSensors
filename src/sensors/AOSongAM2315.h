@@ -1,15 +1,12 @@
-/*
- *AOSongAM2315.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file AOSongAM2315.h
+ * @brief This file contains the AOSongAM2315 sensor subclass and the variable
+ * subclasses AOSongAM2315_Humidity and AOSongAM2315_Temp.  These are used for
+ * the AOSong AM2315 capacitive humidity and temperature sensor.  This file is
+ * dependent on the Adafruit AM2315 Library.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the AOSong AM2315 Capacitive Humidity and Temperature sensor
- *It is dependent on the Adafruit AM2315 Library
- *
- *Documentation for the sensor can be found at:
- *www.aosong.com/asp_bin/Products/en/AM2315.pdf
+ * Documentation for the sensor can be found at:
+ * www.aosong.com/asp_bin/Products/en/AM2315.pdf
  *
  * For Relative Humidity:
  *  Resolution is 0.1 % RH (16 bit)
@@ -20,8 +17,11 @@
  *  Accuracy is ±0.1°C
  *  Range is -40°C to +125°C
  *
- * Warm up/stability: unknown
- * Measurement time: 2sec
+ * Warm up/stability/re-sampling time: 2sec
+ *
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

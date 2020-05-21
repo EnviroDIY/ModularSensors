@@ -1,35 +1,14 @@
-/*
- *ApogeeSQ212.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file ApogeeSQ212.cpp
+ * @brief Implements the ApogeeSQ212 class.
  *
- * Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
- * Adapted from CampbellOBS3.h by Sara Damiano (sdamiano@stroudcenter.org)
- *
- * This file is for the Apogee SQ-212 Quantum Light sensor
- * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
- *
- * Apogee SQ-212 Quantum Light sensor measures photosynthetically active
- radiation (PAR) and is typically defined as total radiation across a range of
- 400 to 700 nm. PAR is often expressed as photosynthetic photon flux density
- (PPFD): photon flux in units of micromoles per square meter per second (μmol
- m-2 s-1, equal to microEinsteins per square meter per second) summed from 400
- to 700 nm.
- *
- * Range is 0 to 2500 µmol m-2 s-1
- * Accuracy is ± 0.5%
- * Resolution:
- *  16-bit ADC: 0.3125 µmol m-2 s-1
- *  12-bit ADC: 5 µmol m-2 s-1
- *
- * Technical specifications for the Apogee SQ-212 can be found at:
- * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
- *
- * Power supply: 5-24 V DC with a nominal current draw of 300 μA
- *
- * Response time: < 1ms
- * Resample time: max of ADC (860/sec)
-*/
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Adapted from CampbellOBS3.cpp by Sara Geleskie Damiano
+ * <sdamiano@stroudcenter.org>
+ */
 
 
 #include "ApogeeSQ212.h"

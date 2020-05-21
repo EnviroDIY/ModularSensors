@@ -1,12 +1,10 @@
-/*
- *SDI12Sensors.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center
+/**
+ * @file SDI12Sensors.cpp
+ * @brief Implements the SDI12Sensors class.
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for all Decagon Devices that communicate with SDI-12
- *It is dependent on the EnviroDIY SDI-12 library.
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @copyright 2020 Stroud Water Research Center
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
