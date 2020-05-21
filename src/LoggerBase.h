@@ -57,7 +57,6 @@ class dataPublisher;  // Forward declaration
 
 
 /**
- *
  * @brief The "Logger" Class handles low power sleep for the main processor,
  * interfacing with the real-time clock and modem, writing to the SD card, and
  * passing data on to the data publishers.
@@ -67,7 +66,6 @@ class Logger {
 
  public:
     /**
-     *
      * @brief Construct a new Logger object.
      *
      * @param loggerID A name for the logger - unless otherwise specified, files
@@ -87,7 +85,6 @@ class Logger {
     Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
     /**
-     *
      * @brief Construct a new Logger object.
      *
      * @param loggerID A name for the logger - unless otherwise specified, files
@@ -102,7 +99,6 @@ class Logger {
     Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
            VariableArray* inputArray);
     /**
-     *
      * @brief Construct a new Logger object.
      *
      * @note The logger ID and logging interval must be specified before the
@@ -110,7 +106,6 @@ class Logger {
      */
     Logger();
     /**
-     *
      * @brief Destroy the Logger object - takes no action.
      */
     virtual ~Logger();
@@ -120,7 +115,6 @@ class Logger {
     // ===================================================================== //
 
     /**
-     *
      * @brief Set the Logger ID.
      *
      * Unless otherwise specified, files saved to the SD card will be named with
@@ -130,7 +124,6 @@ class Logger {
      */
     void setLoggerID(const char* loggerID);
     /**
-     *
      * @brief Get the Logger ID.
      *
      * @return const char* A pointer to eh logger ID
@@ -140,7 +133,6 @@ class Logger {
     }
 
     /**
-     *
      * @brief Set the logging interval in minutes.
      *
      * @param loggingIntervalMinutes The frequency with which to update sensor
@@ -148,7 +140,6 @@ class Logger {
      */
     void setLoggingInterval(uint16_t loggingIntervalMinutes);
     /**
-     *
      * @brief Get the Logging Interval.
      *
      * @return uint16_t The logging interval in minutes
@@ -158,7 +149,6 @@ class Logger {
     }
 
     /**
-     *
      * @brief Set the universally unique identifier (UUID or GUID) of the
      * sampling feature.
      *
@@ -166,7 +156,6 @@ class Logger {
      */
     void setSamplingFeatureUUID(const char* samplingFeatureUUID);
     /**
-     *
      * @brief Get the Sampling Feature UUID.
      *
      * @return const char* The sampling feature UUID
@@ -176,7 +165,6 @@ class Logger {
     }
 
     /**
-     *
      * @brief Set the pin (on the mcu) to use to control power to the SD card.
      *
      * @note This functionality is not tested!
@@ -186,7 +174,6 @@ class Logger {
      */
     void setSDCardPwr(int8_t SDCardPowerPin);
     /**
-     *
      * @brief Send power to the SD card by setting the SDCardPowerPin HIGH.
      *
      * Optionally waits for the card to "settle."  Has no effect if a pin has
@@ -197,7 +184,6 @@ class Logger {
      */
     void turnOnSDcard(bool waitToSettle = true);
     /**
-     *
      * @brief Cut power to the SD card by setting the SDCardPowerPin LOW.
      *
      * Optionally waits for the card to do "housekeeping" before cutting the
@@ -210,7 +196,6 @@ class Logger {
     void turnOffSDcard(bool waitForHousekeeping = true);
 
     /**
-     *
      * @brief Set a pin for the slave select (chip select) of the SD card.
      *
      * This over-writes the value (if any) given in the constructor.
@@ -221,7 +206,6 @@ class Logger {
     void setSDCardSS(int8_t SDCardSSPin);
 
     /**
-     *
      * @brief Set both pins related to the SD card.
      *
      * These over-write the values (if any) given in the constructor.
@@ -235,7 +219,6 @@ class Logger {
 
     //
     /**
-     *
      * @brief Set up the wake up pin for an RTC interrupt.
      *
      * This over-writes the value (if any) given in the constructor.  Use a
@@ -249,7 +232,6 @@ class Logger {
     void setRTCWakePin(int8_t mcuWakePin);
 
     /**
-     *
      * @brief Set a pin to put out an alert that a measurement is being logged.
      *
      * This is intended to be a pin with a LED on it so you can see the light
@@ -260,18 +242,15 @@ class Logger {
      */
     void setAlertPin(int8_t ledPin);
     /**
-     *
      * @brief Set the alert pin high.
      */
     void alertOn();
     /**
-     *
      * @brief Set the alert pin low.
      */
     void alertOff();
 
     /**
-     *
      * @brief Set up a pin for an interrupt to enter testing mode.
      *
      * Intended to be attached to a button or other manual interrupt source.
@@ -288,7 +267,6 @@ class Logger {
     void setTestingModePin(int8_t buttonPin);
 
     /**
-     *
      * @brief Set the five pins of interest for the logger
      *
      * @param mcuWakePin The pin on the mcu to listen to for a value-change
@@ -308,43 +286,35 @@ class Logger {
  protected:
     // Initialization variables
     /**
-     *
      * @brief Internal reference to the logger id
      */
     const char* _loggerID;
     /**
-     *
      * @brief Internal reference to the logging interval in minutes
      */
     uint16_t _loggingIntervalMinutes;
     /**
-     *
      * @brief Internal reference to the SD card slave select pin
      */
     int8_t _SDCardSSPin;
     /**
-     *
      * @brief Internal reference to the SD card power pin
      */
     int8_t _SDCardPowerPin;
     /**
-     *
      * @brief Internal reference to the deep-sleep interrupt wake pin
      */
     int8_t _mcuWakePin;
     /**
-     *
      * @brief Internal reference to the alert pin
      */
     int8_t _ledPin;
     /**
-     *
      * @brief Internal reference to the testing mode interrupt pin
      */
     int8_t _buttonPin;
 
     /**
-     *
      * @brief Internal reference to the sampleing feature UUID
      */
     const char* _samplingFeatureUUID;
@@ -355,7 +325,6 @@ class Logger {
 
  public:
     /**
-     *
      * @brief Set the variable array object.
      *
      * @param inputArray A variable array object instance.  This is NOT an array
@@ -364,7 +333,6 @@ class Logger {
     void setVariableArray(VariableArray* inputArray);
 
     /**
-     *
      * @brief Get the number of variables in the internal variable array object.
      *
      * @return uint8_t The number of variables in the internal variable array
@@ -373,7 +341,6 @@ class Logger {
     uint8_t getArrayVarCount();
 
     /**
-     *
      * @brief Get the name of the parent sensor of the variable at the given
      * position in the internal variable array object.
      *
@@ -383,7 +350,6 @@ class Logger {
      */
     String getParentSensorNameAtI(uint8_t position_i);
     /**
-     *
      * @brief Get the name and pin location of the parent sensor of the variable
      * at the given position in the internal variable array object.
      *
@@ -393,7 +359,6 @@ class Logger {
      */
     String getParentSensorNameAndLocationAtI(uint8_t position_i);
     /**
-     *
      * @brief Get the name of the variable at the given position in the
      * internal variable array object.
      *
@@ -405,7 +370,6 @@ class Logger {
      */
     String getVarNameAtI(uint8_t position_i);
     /**
-     *
      * @brief Get the unit of the variable at the given position in the
      * internal variable array object.
      *
@@ -417,7 +381,6 @@ class Logger {
      */
     String getVarUnitAtI(uint8_t position_i);
     /**
-     *
      * @brief Get the customized code of the variable at the given position in
      * the internal variable array object.
      *
@@ -426,7 +389,6 @@ class Logger {
      */
     String getVarCodeAtI(uint8_t position_i);
     /**
-     *
      * @brief Get the UUID of the variable at the given position in the internal
      * variable array object.
      *
@@ -435,7 +397,6 @@ class Logger {
      */
     String getVarUUIDAtI(uint8_t position_i);
     /**
-     *
      * @brief Get the most recent value of the variable at the given position in
      * the internal variable array object.
      *
@@ -447,7 +408,6 @@ class Logger {
 
  protected:
     /**
-     *
      * @brief A pointer to the internal variable array instance
      */
     VariableArray* _internalArray;
@@ -458,7 +418,6 @@ class Logger {
 
  public:
     /**
-     *
      * @brief Attach a loggerModem to the logger to provide internet access.
      *
      * See [Modem and Internet
@@ -472,7 +431,6 @@ class Logger {
      */
     void attachModem(loggerModem& modem);
     /**
-     *
      * @brief Use the attahed loggerModem to synchronize the real-time clock
      * with NIST time servers.
      *
@@ -482,19 +440,16 @@ class Logger {
     bool syncRTC();
 
     /**
-     *
      * @brief Register a data publisher object to receive data from the logger.
      *
      * @param publisher A dataPublisher object
      */
     void registerDataPublisher(dataPublisher* publisher);
     /**
-     *
      * @brief Publish data to all registered data publishers.
      */
     void publishDataToRemotes(void);
     /**
-     *
      * @brief Retained for backwards compatibility.
      *
      * @deprecated use publishDataToRemotes()
@@ -503,7 +458,6 @@ class Logger {
 
  protected:
     /**
-     *
      * @brief The internal modem instance
      *
      * @note The internal _logModem must be a POINTER not a reference because it
@@ -514,7 +468,6 @@ class Logger {
     //
 
     /**
-     *
      * @brief An array of all of the attached data publishers
      */
     dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
@@ -525,7 +478,6 @@ class Logger {
 
  public:
     /**
-     *
      * @brief Set the static timezone that the data will be logged in.
      *
      * @note This must be set.
@@ -535,7 +487,6 @@ class Logger {
      */
     static void setLoggerTimeZone(int8_t timeZone);
     /**
-     *
      * @brief Get the Logger Time Zone.
      *
      * @return int8_t The timezone data is be saved to the SD card in.  This is
@@ -543,7 +494,6 @@ class Logger {
      */
     static int8_t getLoggerTimeZone(void);
     /**
-     *
      * @brief Retained for backwards compatibility.
      *
      * @deprecated use setLoggerTimeZone(int8_t timeZone)
@@ -553,7 +503,6 @@ class Logger {
      */
     static void setTimeZone(int8_t timeZone);
     /**
-     *
      * @brief Retained for backwards compatibility.
      *
      * @deprecated use getLoggerTimeZone()
@@ -564,7 +513,6 @@ class Logger {
     static int8_t getTimeZone(void);
 
     /**
-     *
      * @brief Set the static timezone that the RTC is programmed in.
      *
      * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
@@ -573,7 +521,6 @@ class Logger {
      */
     static void setRTCTimeZone(int8_t timeZone);
     /**
-     *
      * @brief Get the timezone of the real-time clock (RTC).
      *
      * @return int8_t The timezone of the real-time clock (RTC)
@@ -581,7 +528,6 @@ class Logger {
     static int8_t getRTCTimeZone(void);
 
     /**
-     *
      * @brief Set the offset between the built-in clock and the time zone
      * where the data is being recorded.
      *
@@ -594,7 +540,6 @@ class Logger {
      */
     static void setTZOffset(int8_t offset);
     /**
-     *
      * @brief Get the offset between the built-in clock and the time zone
      * where the data is being recorded.
      *
@@ -608,7 +553,6 @@ class Logger {
 // zone
 #if defined(ARDUINO_ARCH_SAMD)
     /**
-     *
      * @brief The RTC object.
      *
      * @note Only one RTC may be used.  Either the built-in RTC of a SAMD board
@@ -618,7 +562,6 @@ class Logger {
 #endif
 
     /**
-     *
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
      * logging time zone.
@@ -628,7 +571,6 @@ class Logger {
      */
     static uint32_t getNowEpoch(void);
     /**
-     *
      * @brief Set the real time clock to the given number of seconds from
      * January 1, 1970.
      *
@@ -641,7 +583,6 @@ class Logger {
     static void setNowEpoch(uint32_t ts);
 
     /**
-     *
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
      * object instance.
      *
@@ -651,7 +592,6 @@ class Logger {
     static DateTime dtFromEpoch(uint32_t epochTime);
 
     /**
-     *
      * @brief Convert a date-time object into a ISO8601 formatted string.
      *
      * This assumes the supplied date/time is in the LOGGER's timezone and adds
@@ -663,7 +603,6 @@ class Logger {
     static String formatDateTime_ISO8601(DateTime& dt);
 
     /**
-     *
      * @brief Convert an epoch time (unix time) into a ISO8601 formatted string.
      *
      * This assumes the supplied date/time is in the LOGGER's timezone and adds
@@ -675,7 +614,6 @@ class Logger {
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
     /**
-     *
      * @brief Veify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
@@ -688,7 +626,6 @@ class Logger {
     bool setRTClock(uint32_t UTCEpochSeconds);
 
     /**
-     *
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
      * @return true Current time on the RTC passes sanity range checking
@@ -696,7 +633,6 @@ class Logger {
      */
     static bool isRTCSane(void);
     /**
-     *
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
      *
@@ -707,7 +643,6 @@ class Logger {
     static bool isRTCSane(uint32_t epochTime);
 
     /**
-     *
      * @brief Set static variables for the date/time
      *
      * This is needed so that all data outputs (SD, EnviroDIY, serial printing,
@@ -720,7 +655,6 @@ class Logger {
     static void markTime(void);
 
     /**
-     *
      * @brief Check if the CURRENT time is an even interval of the logging rate
      *
      * @return true The current time on the RTC is an even interval of the
@@ -731,7 +665,6 @@ class Logger {
     bool checkInterval(void);
 
     /**
-     *
      * @brief Check if the MARKED time is an even interval of the logging rate -
      * That is the value saved in the static variable markedEpochTime.
      *
@@ -749,7 +682,6 @@ class Logger {
 
  protected:
     /**
-     *
      * @brief The static timezone data is being logged in.
      *
      * @note All logger objects, if multiple are used, will be in the same
@@ -757,7 +689,6 @@ class Logger {
      */
     static int8_t _loggerTimeZone;
     /**
-     *
      * @brief The static difference between the timezone of the RTC and the
      * timezone data is being logged in.
      *
@@ -772,7 +703,6 @@ class Logger {
 
  public:
     /**
-     *
      * @brief Set up the Interrupt Service Request for waking
      *
      * In this case, we're doing nothing, we just want the processor to wake.
@@ -782,7 +712,6 @@ class Logger {
     static void wakeISR(void);
 
     /**
-     *
      * @brief Put the mcu to sleep to conserve battery life and handle
      * post-interrupt wake actions
      *
@@ -792,14 +721,12 @@ class Logger {
 
 #if defined(ARDUINO_ARCH_SAMD)
     /**
-     *
      * @brief A watch-dog implementation to use to reboot the system in case of
      * lock-ups
      */
     extendedWatchDogSAMD watchDogTimer;
 #else
     /**
-     *
      * @brief A watch-dog implementation to use to reboot the system in case of
      * lock-ups
      */
@@ -812,7 +739,6 @@ class Logger {
 
  public:
     /**
-     *
      * @brief Set the file name, if you want to decide on it in advance.
      *
      * If the file name is set using this function, the same file name will be
@@ -822,7 +748,6 @@ class Logger {
      */
     void setFileName(const char* fileName);
     /**
-     *
      * @brief Set the file name, if you want to decide on it in advance.
      *
      * If the file name is set using this function, the same file name will be
@@ -833,7 +758,6 @@ class Logger {
     void setFileName(String& fileName);
 
     /**
-     *
      * @brief Get the current filename.
      *
      * This may be a single filename set using the setFileName(name) function or
@@ -847,7 +771,6 @@ class Logger {
     }
 
     /**
-     *
      * @brief Print a header out to a stream.
      *
      * This removes need to pass around very long string objects which can crash
@@ -859,7 +782,6 @@ class Logger {
     virtual void printFileHeader(Stream* stream);
 
     /**
-     *
      * @brief Print a comma separated list of volues of sensor data -
      * including the time in the logging timezone -  out over an Arduino stream
      *
@@ -869,7 +791,6 @@ class Logger {
     void printSensorDataCSV(Stream* stream);
 
     /**
-     *
      * @brief Create a file on the SD card and set the created, modified, and
      * accessed timestamps in that file.
      *
@@ -886,7 +807,6 @@ class Logger {
      */
     bool createLogFile(String& filename, bool writeDefaultHeader = false);
     /**
-     *
      * @brief Create a file on the SD card and set the created, modified, and
      * accessed timestamps in that file.
      *
@@ -904,7 +824,6 @@ class Logger {
     bool createLogFile(bool writeDefaultHeader = false);
 
     /**
-     *
      * @brief Open a file with the given name on the SD card and append the
      * given line to the bottom of it.
      *
@@ -921,7 +840,6 @@ class Logger {
      */
     bool logToSD(String& filename, String& rec);
     /**
-     *
      * @brief Open a file named with the current internal filename value and
      * append the given line to the bottom of it.
      *
@@ -938,7 +856,6 @@ class Logger {
      */
     bool logToSD(String& rec);
     /**
-     *
      * @brief Open a file named with the current internal filename value and
      * append a line to the bottom of it with the most recent values of all
      * variables in the variable array as a comma separated list.
@@ -957,23 +874,19 @@ class Logger {
  protected:
     // The SD card and file
     /**
-     *
      * @brief An internal reference to SdFat for SD card control
      */
     SdFat sd;
     /**
-     *
      * @brief An internal reference to an SdFat file instance
      */
     File logFile;
     /**
-     *
      * @brief An internal reference to the current filename
      */
     String _fileName;
 
     /**
-     *
      * @brief Check if the SD card is available and ready to write to.
      *
      * We run this check before every communication with the SD card to prevent
@@ -985,7 +898,6 @@ class Logger {
     bool initializeSDCard(void);
 
     /**
-     *
      * @brief Generate a file name from the logger id and the current date.
      *
      * @note This cannot be called until *after* the RTC is started
@@ -993,7 +905,6 @@ class Logger {
     void generateAutoFileName(void);
 
     /**
-     *
      * @brief Set a timestamp on a file.
      *
      * @param fileToStamp The filename to change the timestamp of
@@ -1003,7 +914,6 @@ class Logger {
     void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
 
     /**
-     *
      * @brief Open or creates a file, converting a string file name to a
      * character file name.
      *
@@ -1027,14 +937,12 @@ class Logger {
     // void checkForTestingMode(int8_t buttonPin);
 
     /**
-     *
      * @brief The interrupt sevice routine called when an iterrupt is detected
      * on the pin assigned for "testing" mode.
      */
     static void testingISR(void);
 
     /**
-     *
      * @brief Execute testing mode.
      *
      * In testing mode, the logger uses the loggerModem, if attached, to connect
@@ -1053,7 +961,6 @@ class Logger {
     // ===================================================================== //
 
     /**
-     *
      * @brief Set all pin levels and does initial communication with the
      * real-time clock and SD card to prepare the logger for full functionality.
      *
@@ -1074,7 +981,6 @@ class Logger {
     virtual void begin(const char* loggerID, uint16_t loggingIntervalMinutes,
                        VariableArray* inputArray);
     /**
-     *
      * @brief Set all pin levels and does initial communication with the
      * real-time clock and SD card to prepare the logger for full functionality.
      *
@@ -1088,7 +994,6 @@ class Logger {
      */
     virtual void begin(VariableArray* inputArray);
     /**
-     *
      * @brief Set all pin levels and does initial communication with the
      * real-time clock and SD card to prepare the logger for full functionality.
      *
@@ -1098,20 +1003,17 @@ class Logger {
     virtual void begin();
 
     /**
-     *
      * @brief This is a one-and-done to log data
      */
     virtual void logData(void);
 
     /**
-     *
      * @brief This is a one-and-done to log data and publish the results to any
      * associated publishers.
      */
     void logDataAndPublish(void);
 
     /**
-     *
      * @brief The internal value of the "marked" epoch time.
      */
     static uint32_t markedEpochTime;
@@ -1121,19 +1023,16 @@ class Logger {
     // of set-up, it's probably sleeping
     // Setting these as volatile because the flags can be changed in ISR's
     /**
-     *
      * @brief Internal flag set to true when logger is currently updating
      * sensors or writing to the SD card
      */
     static volatile bool isLoggingNow;
     /**
-     *
      * @brief Internal flag set to true when the logger is going through the
      * "testing mode" routine.
      */
     static volatile bool isTestingNow;
     /**
-     *
      * @brief Internal flag set to true with then logger should begin the
      * "testing mode" routine when it finishes other operations.
      */

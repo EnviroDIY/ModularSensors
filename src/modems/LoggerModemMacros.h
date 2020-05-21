@@ -16,7 +16,6 @@
 
 
 /**
- *
  * @brief Creates an extraModemSetup function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
@@ -33,7 +32,6 @@
 
 
 /**
- *
  * @brief Creates an isModemAwake function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
@@ -94,7 +92,6 @@
 
 
 /**
- *
  * @brief Creates a modemWake function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
@@ -177,7 +174,6 @@
 
 #if defined TINY_GSM_MODEM_HAS_GPRS
 /**
- *
  * @brief Creates an isInternetAvailable function for a specific *cellular*
  * modem subclass.
  *

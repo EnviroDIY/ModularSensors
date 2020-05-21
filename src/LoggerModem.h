@@ -48,14 +48,12 @@
 
 // template <class Derived, typename modemType, typename modemClientType>
 /**
- *
  * @brief The "loggerModem" class provides an internet connection for the logger
  * and supplies and Arduino "Client" instance to use to publish data.
  */
 class loggerModem {
  public:
     /**
-     *
      * @brief Construct a new logger Modem object.
      *
      * @param powerPin The digital pin number of the pin suppling power to the
@@ -97,13 +95,11 @@ class loggerModem {
                 uint32_t wakeDelayTime_ms, uint32_t max_atresponse_time_ms);
 
     /**
-     *
      * @brief Destroy the logger Modem object - no action taken.
      */
     virtual ~loggerModem();
 
     /**
-     *
      * @brief Set an LED to turn on when the modem is on.
      *
      * @param modemLEDPin the digital PIN number for the LED
@@ -111,7 +107,6 @@ class loggerModem {
     void setModemLED(int8_t modemLEDPin);
 
     /**
-     *
      * @brief Get the modem name.
      *
      * @return String The modem name
@@ -119,7 +114,6 @@ class loggerModem {
     String getModemName(void);
 
     /**
-     *
      * @brief Set up the modem before first use.
      *
      * This is used for operations that cannot happen in the modem constructor -
@@ -130,7 +124,6 @@ class loggerModem {
      */
     virtual bool modemSetup(void);
     /**
-     *
      * @brief Retained for backwards compatibility.
      *
      * @deprecated use modemSetup()
@@ -143,7 +136,6 @@ class loggerModem {
     }
 
     /**
-     *
      * @brief Wake up the modem.
      *
      * This sets pin modes, powers up the modem if necessary, sets time stamps,
@@ -158,7 +150,6 @@ class loggerModem {
      */
     virtual bool modemWake(void) = 0;
     /**
-     *
      * @brief Retained for backwards compatibility.
      *
      * @deprecated use modemWake()
@@ -171,12 +162,10 @@ class loggerModem {
     }
 
     /**
-     *
      * @brief Power the modem by setting the modem power pin high.
      */
     virtual void modemPowerUp(void);
     /**
-     *
      * @brief Cut power to the modem by setting the modem power pin low.
      *
      * NOTE:  modemPowerDown() simply kills power, while modemSleepPowerDown()
@@ -185,7 +174,6 @@ class loggerModem {
      */
     virtual void modemPowerDown(void);
     /**
-     *
      * @brief Request that the modem enter its lowest possible power state.
      *
      * @return true The modem has sucessfully entered low power state
@@ -193,7 +181,6 @@ class loggerModem {
      */
     virtual bool modemSleep(void);
     /**
-     *
      * @brief Request that the modem enter its lowest possible power state and
      * then set the power pin low after the modem has indicated it has
      * successfully gone to low power.
@@ -208,7 +195,6 @@ class loggerModem {
     virtual bool modemSleepPowerDown(void);
 
     /**
-     *
      * @brief Use the modem reset pin specified in the constructor to perform a
      * "hard" or "panic" reset.
      *
@@ -223,7 +209,6 @@ class loggerModem {
 
 
     /**
-     *
      * @brief Set the pin level to be expected when the on the modem status pin
      * when the modem is active.
      *
@@ -236,7 +221,6 @@ class loggerModem {
     void setModemStatusLevel(bool level);
 
     /**
-     *
      * @brief Set the pin level to be used to wake the modem.
      *
      * If this function is not called, the modem status pin is assumed to
@@ -249,7 +233,6 @@ class loggerModem {
     void setModemWakeLevel(bool level);
 
     /**
-     *
      * @brief Set the pin level to be used to reset the modem.
      *
      * If this function is not called, the modem status pin is assumed to
@@ -262,7 +245,6 @@ class loggerModem {
     void setModemResetLevel(bool level);
 
     /**
-     *
      * @brief Wait for the modem to successfully register on the cellular
      * network and then request that it establish either EPS or GPRS data
      * connection.
@@ -277,7 +259,6 @@ class loggerModem {
      */
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     /**
-     *
      * @brief Detatch from EPS or GPRS data connection and then deregister from
      * the cellular network.
      */
@@ -285,7 +266,6 @@ class loggerModem {
 
 
     /**
-     *
      * @brief Get the time from NIST via TIME protocol (rfc868).
      *
      * This would be much more efficient if done over UDP, but I'm doing it over
@@ -305,7 +285,6 @@ class loggerModem {
     // if "handwriting" a logging function, remember to call this.
     // These three functions will query the modem to get new values
     /**
-     *
      * @brief Query the modem for the current signal quality and write the
      * results to the supplied non-constant references.
      *
@@ -320,7 +299,6 @@ class loggerModem {
     virtual bool getModemSignalQuality(int16_t& rssi, int16_t& percent) = 0;
 
     /**
-     *
      * @brief Query the modem for battery information and write the values to
      * the supplied non-constant references.
      *
@@ -339,7 +317,6 @@ class loggerModem {
     virtual bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
                                       uint16_t& milliVolts) = 0;
     /**
-     *
      * @brief Get the current temperature provided by the modem module.
      *
      * @return float The temperature in degrees Celsius
@@ -347,7 +324,6 @@ class loggerModem {
     virtual float getModemChipTemperature(void) = 0;
 
     /**
-     *
      * @brief Query the modem for signal quality, battery, and temperature
      * information and store the values to the static internal variables.
      *
@@ -362,7 +338,6 @@ class loggerModem {
     // NOTE:  These must be static so that the modem variables can call them.
     // (Non-static member functions cannot be called without an object.)
     /**
-     *
      * @brief Get the stored Modem RSSI value.
      *
      * @note Does NOT query the modem for a new value.
@@ -372,7 +347,6 @@ class loggerModem {
     static float getModemRSSI();
 
     /**
-     *
      * @brief Get the stored modem signal strength as a percent.
      *
      * @note Does NOT query the modem for a new value.
@@ -382,7 +356,6 @@ class loggerModem {
     static float getModemSignalPercent();
 
     /**
-     *
      * @brief Get the stored modem battery charge state.
      *
      * @note Does NOT query the modem for a new value.
@@ -392,7 +365,6 @@ class loggerModem {
     static float getModemBatteryChargeState();
 
     /**
-     *
      * @brief Get the stored modem battery charge percent object.
      *
      * @note Does NOT query the modem for a new value.
@@ -402,7 +374,6 @@ class loggerModem {
     static float getModemBatteryChargePercent();
 
     /**
-     *
      * @brief Get the stored modem battery voltage.
      *
      * @note Does NOT query the modem for a new value.
@@ -412,7 +383,6 @@ class loggerModem {
     static float getModemBatteryVoltage();
 
     /**
-     *
      * @brief Get the stored modem temperature.
      *
      * @note Does NOT query the modem for a new value.
@@ -426,7 +396,6 @@ class loggerModem {
 
  protected:
     /**
-     *
      * @brief Get approximate RSSI from CSQ (assuming no noise).
      *
      * The RSSI is estimated from a look-up assuming no noise.
@@ -436,7 +405,6 @@ class loggerModem {
      */
     static int16_t getRSSIFromCSQ(int16_t csq);
     /**
-     *
      * @brief Get signal percent from CSQ.
      *
      * The percent is grabbed from a look-up.
@@ -446,7 +414,6 @@ class loggerModem {
      */
     static int16_t getPctFromCSQ(int16_t csq);
     /**
-     *
      * @brief Get signal percent from CSQ.
      *
      * @param rssi The RSSI in dBm.
@@ -456,24 +423,20 @@ class loggerModem {
 
     // Other helper functions
     /**
-     *
      * @brief Turn on the modem LED/alert pin - sets it HIGH
      */
     void modemLEDOn(void);
     /**
-     *
      * @brief Turn off the modem LED/alert pin - sets it LOW
      */
     void modemLEDOff(void);
     /**
-     *
      * @brief Set the processor pin modes (input vs output, with and without
      * pullup) for all pins connected between the modem module and the mcu.
      */
     virtual void setModemPinModes(void);
 
     /**
-     *
      * @brief Check whether there is an active internet connection available.
      *
      * @return true
@@ -481,7 +444,6 @@ class loggerModem {
      */
     virtual bool isInternetAvailable(void) = 0;
     /**
-     *
      * @brief Perform the parts of the modem sleep process that are unique to a
      * specific module, as opposed to the parts of setup that are common to all
      * modem modules.
@@ -491,7 +453,6 @@ class loggerModem {
      */
     virtual bool modemSleepFxn(void) = 0;
     /**
-     *
      * @brief Perform the parts of the modem wake up process that are unique to
      * a specific module, as opposed to the parts of setup that are common to
      * all modem modules.
@@ -502,7 +463,6 @@ class loggerModem {
      */
     virtual bool modemWakeFxn(void) = 0;
     /**
-     *
      * @brief Perform the parts of the modem set up process that are unique to a
      * specific module, as opposed to the parts of setup that are common to all
      * modem modules.
@@ -515,7 +475,6 @@ class loggerModem {
      */
     virtual bool extraModemSetup(void) = 0;
     /**
-     *
      * @brief Check if the modem was awake using all possible means.
      *
      * If possible, we always want to check if the modem was awake before
@@ -540,7 +499,6 @@ class loggerModem {
     virtual bool isModemAwake(void) = 0;
 
     /**
-     *
      * @brief Convert the 4 bytes returned on the NIST daytime protocol to the
      * number of seconds since January 1, 1970 in UTC.
      *
@@ -554,42 +512,139 @@ class loggerModem {
      */
     static uint32_t parseNISTBytes(byte nistBytes[4]);
 
-    // Helper to set the timing for specific cellular chipsets based on their
-    // documentation void setModemTiming(void);
-
-    int8_t   _powerPin;
-    int8_t   _statusPin;
-    bool     _statusLevel;
-    int8_t   _modemResetPin;
-    bool     _resetLevel;
+    /**
+     * @brief The mcu pin controlling modem power.
+     */
+    int8_t _powerPin;
+    /**
+     * @brief The mcu pin detecting modem status.
+     */
+    int8_t _statusPin;
+    /**
+     * @brief The level of the _statusPin when the modem is active.
+     */
+    bool _statusLevel;
+    /**
+     * @brief The mcu pin controlling modem reset.
+     */
+    int8_t _modemResetPin;
+    /**
+     * @brief The level (high/low) on the _modemResetPin used to reset the
+     * modem.
+     */
+    bool _resetLevel;
+    /**
+     * @brief The length of pulse in milliseconds at _resetLevel needed on
+     * _modemResetPin to reset the modem.
+     */
     uint32_t _resetPulse_ms;
-    int8_t   _modemSleepRqPin;
-    bool     _wakeLevel;
+    /**
+     * @brief The mcu pin controlling modem sleep/wake.
+     */
+    int8_t _modemSleepRqPin;
+    /**
+     * @brief The level (high/low) on the _modemSleepRqPin used to wake the
+     * modem.
+     */
+    bool _wakeLevel;
+    /**
+     * @brief The length of pulse in milliseconds at _wakeLevel needed on the
+     * _modemSleepRqPin to wake the modem.  Use 0 if the pin must be
+     * continuously held at _wakeLevel to keep the modem active.
+     */
     uint32_t _wakePulse_ms;
-    int8_t   _modemLEDPin;
+    /**
+     * @brief The mcu pin used to indicate the modem's current activity state.
+     *
+     * Intended to be a pin attached to a LED.
+     */
+    int8_t _modemLEDPin;
 
+    /**
+     * @brief The time in ms between when the modemWake is run and when the
+     * _statusPin is expected to be at _statusLevel.
+     */
     uint32_t _statusTime_ms;
+    /**
+     * @brief The time in ms between when the modemSleep is run and when the
+     * modem is expected to have finished shutdown procedures.
+     */
     uint32_t _disconnetTime_ms;
+    /**
+     * @brief The time in ms between when the modem is powered and when it is
+     * able to receive a wake command.
+     *
+     * That is, the time that should be allowed between modemPowerUp() and
+     * modemWake().
+     */
     uint32_t _wakeDelayTime_ms;
+    /**
+     * @brief The time in ms between when the modem is awake and when its serial
+     * ports reach full functionality and are ready to accept AT commands.
+     *
+     */
     uint32_t _max_atresponse_time_ms;
 
+    /**
+     * @brief The processor elapsed time when the power was turned on for the
+     * modem.
+     *
+     * The _millisPowerOn value is set in the modemPowerUp() function.  It is
+     * un-set in the modemSleepPowerDown() function.
+     */
     uint32_t _millisPowerOn;
+    /**
+     * @brief The processor elapsed time when the a connection to the NIST time
+     * server was last attempted.
+     *
+     * NIST documentation is very clear that it must not be contacted more than
+     * once every 4 seconds.
+     */
     uint32_t _lastNISTrequest;
-    bool     _hasBeenSetup;
-    bool     _pinModesSet;
+    /**
+     * @brief Flag.  True indicates that the modem has already successfully
+     * completed setup.
+     */
+    bool _hasBeenSetup;
+    /**
+     * @brief Flag.  True indicates that the pins on the mcu attached to the
+     * modem are set to the correct mode (ie, input vs output).
+     */
+    bool _pinModesSet;
 
     // NOTE:  These must be static so that the modem variables can call the
     // member functions that return them.  (Non-static member functions cannot
     // be called without an object.)
+    /**
+     * @brief The last stored RSSI value
+     */
     static int16_t _priorRSSI;
+    /**
+     * @brief The last stored signal strength percent value
+     */
     static int16_t _priorSignalPercent;
-    static float   _priorModemTemp;
-    static float   _priorBatteryState;
-    static float   _priorBatteryPercent;
-    static float   _priorBatteryVoltage;
+    /**
+     * @brief The last stored modem chip temperature value
+     */
+    static float _priorModemTemp;
+    /**
+     * @brief The last stored modem battery state value
+     */
+    static float _priorBatteryState;
+    /**
+     * @brief The last stored modem battery percent value
+     */
+    static float _priorBatteryPercent;
+    /**
+     * @brief The last stored modem battery voltage value
+     */
+    static float _priorBatteryVoltage;
     // static float _priorActivationDuration;
     // static float _priorPoweredDuration;
 
+    /**
+     * @brief Internal reference to the modem name
+     */
     String _modemName;
 
     // modemType gsmModem;
@@ -604,7 +659,11 @@ class loggerModem {
 // calculation function is to ask the modem object for the values from the
 // last time it connected to the internet.
 
-// Defines the received signal strength indication
+/**
+ * @brief The variable class used for RSSI measured by a modem.
+ *
+ * The value is in decibelMiliWatts and has resolution of 1 dBm.
+ */
 class Modem_RSSI : public Variable {
  public:
     explicit Modem_RSSI(loggerModem* parentModem, const char* uuid = "",
@@ -615,7 +674,12 @@ class Modem_RSSI : public Variable {
 };
 
 
-// Defines the Signal Percentage
+/**
+ * @brief The variable class used for percent of maximum signal measured by a
+ * modem.
+ *
+ * The value is in units of percent and has resolution of 1 percent.
+ */
 class Modem_SignalPercent : public Variable {
  public:
     explicit Modem_SignalPercent(loggerModem* parentModem,
@@ -628,7 +692,15 @@ class Modem_SignalPercent : public Variable {
 };
 
 
-// Defines the Battery Charge State
+/**
+ * @brief The variable class used for battery charge state measured by a
+ * modem.
+ *
+ * Whether or not this value is meaningful depends on the specific modem
+ * subclass and the wiring of the logger setup.
+ *
+ * The value is dimensionless and has a resolution of 1.
+ */
 class Modem_BatteryState : public Variable {
  public:
     explicit Modem_BatteryState(loggerModem* parentModem, const char* uuid = "",
@@ -640,7 +712,15 @@ class Modem_BatteryState : public Variable {
 };
 
 
-// Defines the Battery Charge Percent
+/**
+ * @brief The variable class used for battery charge percent measured by a
+ * modem.
+ *
+ * Whether or not this value is meaningful depends on the specific modem
+ * subclass and the wiring of the logger setup.
+ *
+ * The value is has units of percent and has a resolution of 1%.
+ */
 class Modem_BatteryPercent : public Variable {
  public:
     explicit Modem_BatteryPercent(loggerModem* parentModem,
@@ -653,7 +733,14 @@ class Modem_BatteryPercent : public Variable {
 };
 
 
-// Defines the Battery Voltage
+/**
+ * @brief The variable class used for battery voltage measured by a modem.
+ *
+ * Whether or not this value is meaningful depends on the specific modem
+ * subclass and the wiring of the logger setup.
+ *
+ * The value has units of mV and has a resolution of 1mV.
+ */
 class Modem_BatteryVoltage : public Variable {
  public:
     explicit Modem_BatteryVoltage(loggerModem* parentModem,
@@ -666,7 +753,14 @@ class Modem_BatteryVoltage : public Variable {
 };
 
 
-// Defines the Temperature Sensor on the modem (not all modems have one)
+/**
+ * @brief The variable class used for chip temperature as measured by the modem.
+ *
+ * Whether or not this value is meaningful depends on the specific modem
+ * subclass.
+ *
+ * The value has units of degrees Celsius and has a resolution of 1°C.
+ */
 class Modem_Temp : public Variable {
  public:
     explicit Modem_Temp(loggerModem* parentModem, const char* uuid = "",
@@ -686,7 +780,8 @@ class Modem_Temp : public Variable {
 //                                       const char*  varCode =
 //                                       "modemActiveSec")
 //         : Variable(&parentModem->getModemActivationDuration,
-//                    (uint8_t)MODEM_ACTIVATION_RESOLUTION, &*"timeElapsed",
+//                    (uint8_t)MODEM_ACTIVATION_RESOLUTION,
+//                    &*"timeElapsed",
 //                    &*"second", varCode, uuid) {}
 //     ~Modem_ActivationDuration() {}
 // };
@@ -697,7 +792,8 @@ class Modem_Temp : public Variable {
 //  public:
 //     explicit Modem_PoweredDuration(loggerModem* parentModem,
 //                                    const char*  uuid    = "",
-//                                    const char*  varCode = "modemPoweredSec")
+//                                    const char*  varCode =
+//                                    "modemPoweredSec")
 //         : Variable(&parentModem->getModemPoweredDuration,
 //                    (uint8_t)MODEM_POWERED_RESOLUTION, &*"timeElapsed",
 //                    &*"second", varCode, uuid) {}
