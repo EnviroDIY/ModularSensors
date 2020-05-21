@@ -114,9 +114,9 @@ typedef struct {
 #define mModularSensorsCommon_t(p1)
 #endif //USE_PS_modularSensorsCommon)
 
-//******
-//#define USE_PS_modularSensorsNetwork 1
-//******
+#if defined UseModem_Module
+#define USE_PS_modularSensorsNetwork 1
+#endif // UseModem_Module
 #if defined(USE_PS_modularSensorsNetwork)
 #define MSCN_APN_SZ 32
 #define MSCN_WIFI_ID_SZ 32
@@ -137,14 +137,17 @@ typedef struct {
 #endif //USE_PS_modularSensorsNetwork
 
 //******
+#if defined UseModem_Module
 #define USE_PS_Provider 1
+#endif // UseModem_Module
 //******
-#if defined(USE_PS_Provider)
+
 #define UUIDE_CLOUD_ID_SZ 38 
 #define UUIDE_REGISTRATION_TOKEN_SZ 38
 #define UUIDE_SAMPLING_FEAUTRE_SZ 38
 #define UUIDE_SENSOR_UUID_SZ 38
 #define UUIDE_SENSOR_CNT_MAX_SZ 10
+#if defined(USE_PS_Provider)
 typedef struct {
     //v01 initial structure
     // All are in ascii strings, with the first unused octet \0
@@ -161,7 +164,7 @@ typedef struct {
 } provider_t;
 #define mProvider_t(p1) provider_t p1 
 #else
-#define provider_t(p1)
+#define mProvider_t(p1)
 #endif //USE_PS_provider
 
 typedef struct {

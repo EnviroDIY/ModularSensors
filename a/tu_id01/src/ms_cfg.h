@@ -32,6 +32,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
 #define USE_MS_SD_INI 1
+//#define USE_PS_HW_BOOT 1
+//#define USE_PS_modularSensorsCommon 1
 
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
 #define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
@@ -68,20 +70,20 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // These are either pre .ini read or per board defintions
 #define MFsn_def  F("unknown")
 
-//Required for TinyGsmClient.h - select one
-#define TINY_GSM_MODEM_XBEE
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
-// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-// End TinyGsmClient.h options
 //define one  _Module
 //#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
+// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+// End TinyGsmClient.h options
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
 #define UseModem_Module 1
+//Required for TinyGsmClient.h 
+#define TINY_GSM_MODEM_XBEE
 #endif // Modules
 //end of _Module
 

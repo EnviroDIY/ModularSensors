@@ -67,25 +67,26 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
     bool ram_track = true;
     #endif
     //MS_DBG(F("inih "),section," ",name," ",value);
+    #if definedUSE_PS_Provider
     if (strcmp_P(section,PROVIDER_pm)== 0)
     {
         if        (strcmp_P(name,REGISTRATION_TOKEN_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher
-            strcpy(ps.provider.s.registration_token, value);
+            strcpy(ps_ram.provider.s.registration_token, value);
             SerialStd.print(F("PROVIDER Setting registration token: "));
-            SerialStd.println(ps.provider.s.registration_token );
-            //EnviroDIYPOST.setToken(ps.provider.s.registration_token);
+            SerialStd.println(ps_ram.provider.s.registration_token );
+            //EnviroDIYPOST.setToken(ps_ram.provider.s.registration_token);
         } else if (strcmp_P(name,CLOUD_ID_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher - though hardcoded
-            strcpy(ps.provider.s.cloudId, value);
+            strcpy(ps_ram.provider.s.cloudId, value);
             SerialStd.print(F("PROVIDER Setting cloudId: "));
-            SerialStd.println(ps.provider.s.cloudId );
+            SerialStd.println(ps_ram.provider.s.cloudId );
         } else if (strcmp_P(name,SAMPLING_FEATURE_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher
-            strcpy(ps.provider.s.sampling_feature, value);
+            strcpy(ps_ram.provider.s.sampling_feature, value);
             SerialStd.print(F("PROVIDER Setting SamplingFeature: "));
-            SerialStd.println(ps.provider.s.sampling_feature );
-            //dataLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
+            SerialStd.println(ps_ram.provider.s.sampling_feature );
+            //dataLogger.setSamplingFeatureUUID(ps_ram.provider.s.sampling_feature);
         } else {
             SerialStd.print(F("PROVIDER not supported:"));
             SerialStd.print(name);
@@ -144,7 +145,9 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             //SerialStd.println(value);
         } 
         uuid_index++;
-    } else if (strcmp_P(section,COMMON_pm)== 0) {// [COMMON] processing
+    } else 
+    #endif// USE_PS_Provider
+    if (strcmp_P(section,COMMON_pm)== 0) {// [COMMON] processing
         char *endptr;
         errno=0;
         if (strcmp_P(name,LOGGER_ID_pm)== 0) {
@@ -309,7 +312,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         #if 0
         //FUT: needs to go into EEPROM
         if (strcmp_P(name,VER_pm)== 0) {
-            strcpy(ps.provider.s.registration_token, value);
+            strcpy(ps_ram.provider.s.registration_token, value);
         } else
         const char VER_pm[] EDIY_PROGMEM = "VER";
 const char MAYFLY_SN_pm[] EDIY_PROGMEM = "MAYFLY_SN"; 
@@ -318,7 +321,7 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
         #endif  
         if (strcmp_P(name,MAYFLY_SN_pm)== 0) {
             //FUT: needs to go into EEPROM
-            //strcpy(ps.hw_boot.s.Serial_num, value);
+            //strcpy(ps_ram.hw_boot.s.Serial_num, value);
             //MFsn_def
             //FUT needs to be checked for sz
             SerialStd.print(F("Mayfly SerialNum :"));
@@ -327,7 +330,7 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
 //Need to use to update EEPROM. Can cause problems if wrong. 
         } else if (strcmp_P(name,MAYFLY_REV_pm)== 0) {
             //FUT: needs to go into EEPROM
-            //strcpy(ps.hw_boot.s.rev, value);
+            //strcpy(ps_ram.hw_boot.s.rev, value);
             //FUT needs to be checked for sz
             strcpy(MFVersion, value); //won't work with mcuBoardVersion
             SerialStd.print(F("Mayfly Rev:"));

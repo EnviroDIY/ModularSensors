@@ -55,7 +55,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>  // The modular sensors library
-
+#include "ms_common.h"
 
 // ==========================================================================
 //    Data Logger Settings
@@ -634,7 +634,7 @@ VariableArray varArray(variableCount, variableList);
 //     Local storage - evolving
 // ==========================================================================
 #ifdef USE_MS_SD_INI
- persistent_store_t ps;
+persistent_store_t ps_ram;
 #endif //#define USE_MS_SD_INI
 
 // ==========================================================================
@@ -789,7 +789,7 @@ void setup()
 #endif
 
     unusedBitsMakeSafe();
-
+    MS_DBG(F("persisten store cache size"),sizeof(ps_ram));
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
         enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
@@ -849,7 +849,7 @@ void setup()
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
     #if defined UseModem_Module
-    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.provider.s.registration_token, ps_ram.provider.s.sampling_feature);
     #endif // UseModem_Module
     
     // Note:  Please change these battery voltages to match your battery
