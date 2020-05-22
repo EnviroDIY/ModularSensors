@@ -85,10 +85,9 @@ class AOSongAM2315 : public Sensor {
     ~AOSongAM2315();
 
     /**
-     * @brief Get the pin or connection location between the mcu and the
-     * sensor.  For the AM2315 reports the I2C address - which is always 0xB8.
+     * @brief Report the I2C address of the AM2315 - which is always 0xB8.
      *
-     * @return String Text describing how the sensor is attached to the mcu.
+     * @return **String** Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
@@ -96,16 +95,20 @@ class AOSongAM2315 : public Sensor {
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
-     * For the AOSong AM2315 this starts the Wire library.  The sensor does not
-     * need to be powered.
+     * This sets the #_powerPin mode, begins the Wire library (sets pin levels
+     * and modes for I2C), and updates the #_sensorStatus.  Sensor power
+     * is not required.
      *
-     * @return true The setup was successful.  For the AOSong AM2315 the result
-     * will always be true.
-     * @return false Some part of the setup failed.  For the AOSong AM2315 this
-     * should not happen.
+     * @return **true** The setup was successful.  For the AOSong AM2315 the
+     * result will always be true.
+     * @return **false** Some part of the setup failed.  For the AOSong AM2315
+     * this should not happen.
      */
     bool setup(void) override;
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 };
 

@@ -118,7 +118,7 @@ class VariableArray {
     void begin();
 
     /**
-     * @brief Internal pointer to the array of variable pointers.
+     * @brief Pointer to the array of variable pointers.
      */
     Variable** arrayOfVars;
 
@@ -127,7 +127,7 @@ class VariableArray {
     /**
      * @brief Get the count of variables in the variable array
      *
-     * @return uint8_t the number of variables
+     * @return **uint8_t** the number of variables
      */
     uint8_t getVariableCount(void) {
         return _variableCount;
@@ -136,8 +136,8 @@ class VariableArray {
     /**
      * @brief Get the number of calculated variables
      *
-     * @return uint8_t The number of calculated (ie, not measured by a sensor)
-     * variables
+     * @return **uint8_t** The number of calculated (ie, not measured by a
+     * sensor) variables
      */
     uint8_t getCalculatedVariableCount(void);
 
@@ -149,7 +149,7 @@ class VariableArray {
      * This will often be different from the number of variables because many
      * sensors can return multiple variables.
      *
-     * @return uint8_t The number of sensors
+     * @return **uint8_t** The number of sensors
      */
     uint8_t getSensorCount(void);
 
@@ -173,8 +173,8 @@ class VariableArray {
      * respond to its setup command, the command is called 5 times in attempt to
      * make a connection.  If all sensors are set up successfully, returns true.
      *
-     * @return true Indicates all sensors have been set up successfully.
-     * @return false One or more sensor setup steps failed.
+     * @return **true** Indicates all sensors have been set up successfully.
+     * @return **false** One or more sensor setup steps failed.
      */
     bool setupSensors(void);
 
@@ -191,8 +191,8 @@ class VariableArray {
      * Runs the wake sensor function for each unique sensor.  Repeatedly checks
      * each sensor's readiness state to optimize timing.
      *
-     * @return true All wake functions were run successfully
-     * @return false One or more wake functions returned false.
+     * @return **true** All wake functions were run successfully
+     * @return **false** One or more wake functions returned false.
      */
     bool sensorsWake(void);
 
@@ -201,8 +201,8 @@ class VariableArray {
      *
      * Runs the sleep sensor function for each unique sensor.
      *
-     * @return true All sleep functions were run successfully.
-     * @return false One or more sleep functions returned false.
+     * @return **true** All sleep functions were run successfully.
+     * @return **false** One or more sleep functions returned false.
      */
     bool sensorsSleep(void);
 
@@ -219,8 +219,9 @@ class VariableArray {
      * overall success.  Does NOT return any values.  Repeatedly checks each
      * sensor's readiness state to optimize timing.
      *
-     * @return true All steps of the update succeeded
-     * @return false At least one step of updating all of the sensors failed.
+     * @return **true** All steps of the update succeeded
+     * @return **false** At least one step of updating all of the sensors
+     * failed.
      */
     bool updateAllSensors(void);
 
@@ -234,8 +235,9 @@ class VariableArray {
      * values.  Repeatedly checks each sensor's readiness state to optimize
      * timing.
      *
-     * @return true All steps of the update succeeded
-     * @return false At least one step of updating all of the sensors failed.
+     * @return **true** All steps of the update succeeded
+     * @return **false** At least one step of updating all of the sensors
+     * failed.
      */
     bool completeUpdate(void);
 
@@ -254,17 +256,15 @@ class VariableArray {
 
  protected:
     /**
-     * @brief Internal value of the count of variables in the array
+     * @brief The count of variables in the array
      */
     uint8_t _variableCount;
     /**
-     * @brief Internal value of the count of unique sensors tied to
-     * variables in the array
+     * @brief The count of unique sensors tied to variables in the array
      */
     uint8_t _sensorCount;
     /**
-     * @brief Internal value of the maximum number of samples to average of
-     * an single sensor.
+     * @brief The maximum number of samples to average of an single sensor.
      */
     uint8_t _maxSamplestoAverage;
 

@@ -30,7 +30,9 @@
 // total WAG
 #define XBEE_STATUS_TIME_MS 15
 
-// Reset is via a LOW pulse on the RESET_N pin
+/**
+ * @brief Reset is via a LOW pulse on the RESET_N pin
+ */
 #define XBEE_RESET_LEVEL LOW
 #define XBEE_RESET_PULSE_MS 5
 

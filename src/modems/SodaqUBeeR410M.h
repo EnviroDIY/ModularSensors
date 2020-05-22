@@ -25,11 +25,14 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// Status should be monitored on the V_INT pin
-// V_INT becomes active mid-way through on-pulse so it should be instantly
-// visible
-#define R410M_STATUS_LEVEL HIGH
+/**
+ * @brief V_INT becomes active mid-way through on-pulse so it should be
+ * instantly visible
+ *
+ * Status should be monitored on the V_INT pin
+ */
 #define R410M_STATUS_TIME_MS 0
+#define R410M_STATUS_LEVEL HIGH
 
 // R4 series are reset with a >10 SECOND low pulse on the RESET_N pin
 #define R410M_RESET_LEVEL LOW

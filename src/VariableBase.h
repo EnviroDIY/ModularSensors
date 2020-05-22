@@ -229,7 +229,7 @@ class Variable {
      *
      * This is a helper needed for dealing with variables in arrays
      *
-     * @return String The parent sensor name
+     * @return **String** The parent sensor name
      */
     String getParentSensorName(void);
     /**
@@ -237,7 +237,7 @@ class Variable {
      *
      * This is a helper needed for dealing with variables in arrays
      *
-     * @return String The parent sensor's concatentated name and location.
+     * @return **String** The parent sensor's concatentated name and location.
      */
     String getParentSensorNameAndLocation(void);
 
@@ -252,7 +252,7 @@ class Variable {
     /**
      * @brief Get the variable's resolution - in decimal places
      *
-     * @return uint8_t the variable resolution
+     * @return **uint8_t** the variable resolution
      */
     uint8_t getResolution(void);
     /**
@@ -264,7 +264,7 @@ class Variable {
     /**
      * @brief Get the variable name
      *
-     * @return String The variable name
+     * @return **String** The variable name
      */
     String getVarName(void);
     /**
@@ -280,7 +280,7 @@ class Variable {
     /**
      * @brief Get the variable unit
      *
-     * @return String The variable unit
+     * @return **String** The variable unit
      */
     String getVarUnit(void);
     /**
@@ -296,7 +296,7 @@ class Variable {
     /**
      * @brief Get the customized code for the variable
      *
-     * @return String The customized code for the variable
+     * @return **String** The customized code for the variable
      */
     String getVarCode(void);
     /**
@@ -311,7 +311,7 @@ class Variable {
     /**
      * @brief Get the customized code for the variable
      *
-     * @return String The customized code for the variable
+     * @return **String** The customized code for the variable
      */
     String getVarUUID(void);
     /**
@@ -323,8 +323,8 @@ class Variable {
     /**
      * @brief Verify the the UUID is correctly formatted
      *
-     * @return true The UUID is correctly formatted
-     * @return false There is an error in the UUID
+     * @return **true** The UUID is correctly formatted
+     * @return **false** There is an error in the UUID
      */
     bool checkUUIDFormat(void);
 
@@ -333,7 +333,7 @@ class Variable {
      *
      * @param updateValue True to ask the parent sensor to measure and return a
      * new value.  Default is false.
-     * @return float The current value of the variable
+     * @return **float** The current value of the variable
      */
     float getValue(bool updateValue = false);
     /**
@@ -342,12 +342,12 @@ class Variable {
      *
      * @param updateValue True to ask the parent sensor to measure and return a
      * new value.  Default is false.
-     * @return String The current value of the variable
+     * @return **String** The current value of the variable
      */
     String getValueString(bool updateValue = false);
 
     /**
-     * @brief Internal pointer to the parent sensor
+     * @brief Pointer to the parent sensor
      */
     Sensor* parentSensor;
     /**
@@ -357,7 +357,7 @@ class Variable {
 
  protected:
     /**
-     * @brief Internal current data value
+     * @brief The current data value
      */
     float _currentValue;
 

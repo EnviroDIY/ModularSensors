@@ -32,10 +32,11 @@ Sensor::Sensor(const char* sensorName, const uint8_t numReturnedVars,
     _millisPowerOn = 0;
 
     // This is the time needed from the when a sensor is activated until the
-    // readings are stable The _millisSensorActivated value is *usually* set in
-    // the wake() function, but may also be set in the startSingleMeasurement()
-    // function.  It is generally un-set in the sleep() function. The
-    // "waitForStability()" function verifies that enough time has passed.
+    // readings are stable.  The _millisSensorActivated value is *usually* set
+    // in the wake() function, but may also be set in the
+    // startSingleMeasurement() function.  It is generally un-set in the sleep()
+    // function. The "waitForStability()" function verifies that enough time has
+    // passed.
     _stabilizationTime_ms  = stabilizationTime_ms;
     _millisSensorActivated = 0;
 

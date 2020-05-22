@@ -25,7 +25,9 @@
 #undef MS_DEBUGGING_STD
 #include <pins_arduino.h>
 
-// The largest number of variables from a single sensor
+/**
+ * @brief The largest number of variables from a single sensor
+ */
 #define MAX_NUMBER_VARS 8
 
 
@@ -84,26 +86,26 @@ class Sensor {
      * @note This is NOT the position of the sensor in the environment, merely
      * how it is attached to the mcu.
      *
-     * @return String Text describing how the sensor is attached to the mcu.
+     * @return **String** Text describing how the sensor is attached to the mcu.
      */
     virtual String getSensorLocation(void);
     /**
      * @brief Get the name of the sensor.
      *
-     * @return String The sensor name as given in the constructor.
+     * @return **String** The sensor name as given in the constructor.
      */
     virtual String getSensorName(void);
     /**
      * @brief Concatentate and returns the name and location.
      *
-     * @return String A concatenation of the sensor name and its "location" -
-     * how it is connected to the mcu.
+     * @return **String** A concatenation of the sensor name and its "location"
+     * - how it is connected to the mcu.
      */
     String getSensorNameAndLocation(void);
     /**
      * @brief Get the pin number controlling sensor power.
      *
-     * @return int8_t The pin on the mcu controlling power to the sensor.
+     * @return **int8_t** The pin on the mcu controlling power to the sensor.
      */
     virtual int8_t getPowerPin(void);
 
@@ -119,8 +121,8 @@ class Sensor {
     /**
      * @brief Get the number of measurements to average.
      *
-     * @return uint8_t The number of readings to take and average to create a
-     * result from the sensor.
+     * @return **uint8_t** The number of readings to take and average to create
+     * a result from the sensor.
      *
      * @copydetails _measurementsToAverage
      */
@@ -159,11 +161,11 @@ class Sensor {
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
-     * May not require any action.  Generally, the sensor must be powered on for
-     * setup.
+     * This sets the pin modes of the _powerPin and _dataPin, updates
+     * #_sensorStatus, and returns true.
      *
-     * @return true The setup was successful
-     * @return false Some part of the setup failed
+     * @return **true** The setup was successful
+     * @return **false** Some part of the setup failed
      */
     virtual bool setup(void);
 
@@ -184,69 +186,63 @@ class Sensor {
      * used.  To work with many sensors together, use the VariableArray class
      * which optimizes the timing and waits for many sensors working together.
      *
-     * @return true All steps of the sensor update completed successfully
-     * @return false One or more of the update steps failed.
+     * @return **true** All steps of the sensor update completed successfully
+     * @return **false** One or more of the update steps failed.
      */
     virtual bool update(void);
 
     /**
      * @brief Turn on the sensor power, if applicable.
      *
-     * Generally this is done by setting the power pin HIGH.  Also sets the
-     * _millisPowerOn timestamp.
+     * Generally this is done by setting the #_powerPin HIGH.  Also sets the
+     * #_millisPowerOn timestamp and updates the #_sensorStatus.
      */
     virtual void powerUp(void);
     /**
      * @brief Turn off the sensor power, if applicable.
      *
-     * Generally this is done by setting the power pin LOW.  Also un-sets the
-     * _millisPowerOn timestamp (sets _millisPowerOn to 0.)
+     * Generally this is done by setting the #_powerPin LOW.  Also un-sets the
+     * #_millisPowerOn timestamp (sets #_millisPowerOn to 0) and updates the
+     * #_sensorStatus.
      */
     virtual void powerDown(void);
 
     /**
-     * @brief Wake the sensor up, if necessary.
+     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
+     * sensor in the proper state to begin a measurement.
      *
-     * Does whatever it takes to get a sensor in the proper state to begin a
-     * measurement after the power is on. This *may* require a waitForWarmUp()
-     * before wake commands can be sent. The wait is NOT included in this
-     * function! This also sets the _millisSensorActivated timestamp.
+     * Verifies that the power is on and updates the #_sensorStatus. This also
+     * sets the #_millisSensorActivated timestamp.
      *
-     * By default, verifies the power is on and returns true.
+     * @note This does NOT include any wait for sensor readiness.
      *
-     * @return true The wake function completed successfully.
-     * @return false Wake did not complete successfully.
+     * @return **true** The wake function completed successfully.
+     * @return **false** Wake did not complete successfully.
      */
     virtual bool wake(void);
     /**
      * @brief Puts the sensor to sleep, if necessary.
      *
-     * This also un-sets the _millisSensorActivated timestamp (sets it to 0) if
-     * any action is taken to put the sensor to sleep.  This does NOT power down
-     * the sensor!
+     * Does not take any action if not necessary.
      *
-     * The default implentation takes no action - not even un-setting the time
-     * stamp.
+     * @note This does NOT power down the sensor!
      *
-     * @return true The sleep function completed successfully.
-     * @return false Sleep did not complete successfully.
+     * @return **true** The sleep function completed successfully.
+     * @return **false** Sleep did not complete successfully.
      */
     virtual bool sleep(void);
 
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
      *
-     * This also sets the _millisMeasurementRequested timestamp.
+     * This also sets the #_millisMeasurementRequested timestamp and updates the
+     * #_sensorStatus.
      *
-     * The default implentation only sets the timestamp.
+     * @note This function does NOT include any waiting for the sensor to be
+     * warmed up or stable!
      *
-     * @note The sensor *may* require a waitForWarmUp() before measurement
-     * commands can bee sent. It *may* also require a waitForStability() before
-     * returned measurements will be any good. The waits are NOT included in
-     * this function!
-     *
-     * @return true The start measurement function completed successfully.
-     * @return false The start measurement function did not complete
+     * @return **true** The start measurement function completed successfully.
+     * @return **false** The start measurement function did not complete
      * successfully.
      */
     virtual bool startSingleMeasurement(void);
@@ -257,14 +253,14 @@ class Sensor {
      * This asks the sensor for a new result, verifies that it passes sanity
      * range checks, and then adds the value to the result array.
      *
-     * This also un-sets the _millisMeasurementRequested timestamp (sets
-     * _millisMeasurementRequested to 0).
+     * This also un-sets the #_millisMeasurementRequested timestamp (sets
+     * #_millisMeasurementRequested to 0) and updates the #_sensorStatus.
      *
-     * @note The sensor *probably* requires a waitForMeasurementCompletion() to
-     * ensure a measurement is done.  The wait is NOT included in this function.
+     * @note This function does NOT include any waiting for the sensor complete
+     * a measurement.
      *
-     * @return true The function completed successfully.
-     * @return false The function did not complete successfully.
+     * @return **true** The function completed successfully.
+     * @return **false** The function did not complete successfully.
      */
     virtual bool addSingleMeasurementResult(void) = 0;
 
@@ -272,8 +268,10 @@ class Sensor {
      * @brief The array of result values for each sensor.
      */
     float sensorValues[MAX_NUMBER_VARS];
+
     // This is a string with a pretty-print of the values array
     // String getStringValueArray(void);
+
     /**
      * @brief Clear the values array - that is, sets all values to -9999.
      */
@@ -318,12 +316,12 @@ class Sensor {
 
 
     /**
-     * @brief Check if the power pin is currently high.
+     * @brief Check if the #_powerPin is currently high.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return true Indicates the power pin is currently HIGH
-     * @return false Indicates the power pin is currently not high (ie, it's
-     * low)
+     * @return **true** Indicates the #_powerPin is currently HIGH
+     * @return **false** Indicates the #_powerPin is currently not high (ie,
+     * it's low)
      */
     bool checkPowerOn(bool debug = false);
     /**
@@ -331,9 +329,9 @@ class Sensor {
      * receiving power and being ready to respond to logger commands.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return true Indicates that enough time has passed
-     * @return false Indicates that the sensor is not yet ready to respond to
-     * commands
+     * @return **true** Indicates that enough time has passed
+     * @return **false** Indicates that the sensor is not yet ready to respond
+     * to commands
      */
     virtual bool isWarmedUp(bool debug = false);
     /**
@@ -347,8 +345,8 @@ class Sensor {
      * being awoken/activated and being ready to output stable values.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return true Indicates that enough time has passed
-     * @return false Indicates that the sensor has not yet stabilized
+     * @return **true** Indicates that enough time has passed
+     * @return **false** Indicates that the sensor has not yet stabilized
      */
     virtual bool isStable(bool debug = false);
     /**
@@ -363,8 +361,8 @@ class Sensor {
      * is expected to be complete.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return true Indicates that enough time has passed
-     * @return false Indicates that the measurement is not expected to have
+     * @return **true** Indicates that enough time has passed
+     * @return **false** Indicates that the measurement is not expected to have
      * completed
      */
     virtual bool isMeasurementComplete(bool debug = false);
@@ -377,29 +375,27 @@ class Sensor {
 
  protected:
     /**
-     * @brief Internal value of the sensor data pin
+     * @brief Digital pin number on the mcu receiving sensor data
      *
      * @note SIGNED int, to allow negative numbers for unused pins
      */
     int8_t _dataPin;
     /**
-     * @brief Internal value of the sensor power pin
+     * @brief Digital pin number on the mcu controlling sensor power
      *
      * @note SIGNED int, to allow negative numbers for unused pins
      */
     int8_t _powerPin;
     /**
-     * @brief Internal value of the sensor name.
+     * @brief The sensor name.
      */
     const char* _sensorName;
     /**
-     * @brief Internalvalue of the number of values the sensor is capable
-     * of reporting.
+     * @brief The number of values the sensor is capable of reporting.
      */
     const uint8_t _numReturnedVars;
     /**
-     * @brief Internal value of the number of measurements from the sensor
-     * to average.
+     * @brief The number of measurements from the sensor to average.
      *
      * This will become the number of readings actually taken by a sensor prior
      * to data averaging.  Any "bad" (-9999) values returned by the sensor will
@@ -423,7 +419,7 @@ class Sensor {
      * @brief The processor elapsed time when the power was turned on for the
      * sensor.
      *
-     * The _millisPowerOn value is set in the powerUp() function.  It is un-set
+     * The #_millisPowerOn value is set in the powerUp() function.  It is un-set
      * in the powerDown() function.
      */
     uint32_t _millisPowerOn;
@@ -435,11 +431,11 @@ class Sensor {
     uint32_t _stabilizationTime_ms;
     /**
      * @brief The processor elapsed time when the sensor was activiated - ie,
-     * when the wake function was run.
+     * when the wake() function was run.
      *
-     * The _millisSensorActivated value is *usually* set in the wake() function,
-     * but may also be set in the startSingleMeasurement() function.  It is
-     * generally un-set in the sleep() function.
+     * The #_millisSensorActivated value is *usually* set in the wake()
+     * function, but may also be set in the startSingleMeasurement() function.
+     * It is generally un-set in the sleep() function.
      */
     uint32_t _millisSensorActivated;
 
@@ -450,9 +446,9 @@ class Sensor {
     uint32_t _measurementTime_ms;
     /**
      * @brief The processor elapsed time when a measuremnt was started - ie,
-     * when the startSingleMeasurement function was run.
+     * when the startSingleMeasurement() function was run.
      *
-     * The _millisMeasurementRequested value is set in the
+     * The #_millisMeasurementRequested value is set in the
      * startSingleMeasurement() function. It *may* be unset in the
      * addSingleMeasurementResult() function.
      */

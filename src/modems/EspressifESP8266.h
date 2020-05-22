@@ -49,9 +49,13 @@
 // See notes above.. this is user configurable, but useless
 #define ESP8266_WAKE_LEVEL LOW
 #define ESP8266_WAKE_PULSE_MS 0
-// Module turns on when power is applied regardless of pin states
+/**
+ * @brief Module turns on when power is applied regardless of pin states
+ */
 #define ESP8266_WARM_UP_TIME_MS 0
-// Time until system and digital pins are operational
+/**
+ * @brief Time until system and digital pins are operational
+ */
 #define ESP8266_ATRESPONSE_TIME_MS 350
 
 // power down ???

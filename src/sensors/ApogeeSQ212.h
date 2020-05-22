@@ -121,14 +121,16 @@ class ApogeeSQ212 : public Sensor {
     ~ApogeeSQ212();
 
     /**
-     * @brief Get the pin or connection location between the mcu and the sensor.
-     * For the SQ-212 returns the I1C address of the ADS and the channel that
-     * the SQ-212 is attached to.
+     * @brief Report the I1C address of the ADS and the channel that the SQ-212
+     * is attached to.
      *
-     * @return String Text describing how the sensor is attached to the mcu.
+     * @return **String** Text describing how the sensor is attached to the mcu.
      */
     String getSensorLocation(void) override;
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 
  private:

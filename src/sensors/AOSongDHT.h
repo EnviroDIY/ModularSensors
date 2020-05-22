@@ -114,25 +114,18 @@ class AOSongDHT : public Sensor {
     ~AOSongDHT();
 
     /**
-     * @brief Do any one-time preparations needed before the sensor will be able
-     * to take readings.
-     *
-     * May not require any action.  Generally, the sensor must be powered on for
-     * setup.
-     *
-     * @return true The setup was successful
-     * @return false Some part of the setup failed
+     * @copydoc Sensor::setup()
      */
     bool setup(void) override;
 
     /**
-     * @brief Get the name of the sensor.  For the DHT the type of DHT is
-     * returned.
-     *
-     * @return String The sensor name as given in the constructor.
+     * @copydoc Sensor::getSensorName()
      */
     String getSensorName(void) override;
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 
  private:

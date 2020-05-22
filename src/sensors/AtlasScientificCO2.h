@@ -36,7 +36,9 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-// I2C address
+/**
+ * @brief Default I2C address is 0x69 (105)
+ */
 #define ATLAS_CO2_I2C_ADDR 0x69  // 105
 
 // Sensor Specific Defines
@@ -53,9 +55,21 @@
 #define ATLAS_CO2TEMP_RESOLUTION 0
 #define ATLAS_CO2TEMP_VAR_NUM 1
 
-// The main class for the Atlas Scientific CO2 temperature sensor
+/**
+ * @brief The main class for the Atlas Scientific CO2 temperature sensor
+ */
 class AtlasScientificCO2 : public AtlasParent {
  public:
+    /**
+     * @brief Construct a new Atlas Scientific CO2 object
+     *
+     * @param powerPin The pin on the mcu controlling powering to the Atlas
+     * circuit
+     * @param i2cAddressHex The I2C address of the Atlas circuit.  Defaults to
+     * 0x69.
+     * @param measurementsToAverage The number of measurements to average.
+     * Defaults to 1.
+     */
     explicit AtlasScientificCO2(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_CO2_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1);
@@ -67,32 +81,70 @@ class AtlasScientificCO2 : public AtlasParent {
 // The class for the CO2 Concentration Variable
 class AtlasScientificCO2_CO2 : public Variable {
  public:
+    /**
+     * @brief Construct a new AtlasScientificCO2_CO2 object.
+     *
+     * @param parentSense The parent AtlasScientificCO2 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is AtlasCO2ppm.
+     */
     explicit AtlasScientificCO2_CO2(AtlasScientificCO2* parentSense,
                                     const char*         uuid    = "",
                                     const char*         varCode = "AtlasCO2ppm")
         : Variable(parentSense, (const uint8_t)ATLAS_CO2_VAR_NUM,
                    (uint8_t)ATLAS_CO2_RESOLUTION, "carbonDioxide",
                    "partPerMillion", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificCO2_CO2 object.
+     *
+     * @note This must be tied with a parent AtlasScientificCO2 before it can be
+     * used.
+     */
     AtlasScientificCO2_CO2()
         : Variable((const uint8_t)ATLAS_CO2_VAR_NUM,
                    (uint8_t)ATLAS_CO2_RESOLUTION, "carbonDioxide",
                    "partPerMillion", "AtlasCO2ppm") {}
+    /**
+     * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
+     */
     ~AtlasScientificCO2_CO2() {}
 };
 
 // The class for the Temp Variable
 class AtlasScientificCO2_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new AtlasScientificCO2_Temp object.
+     *
+     * @param parentSense The parent AtlasScientificCO2 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is AtlasCO2Temp.
+     */
     explicit AtlasScientificCO2_Temp(AtlasScientificCO2* parentSense,
                                      const char*         uuid = "",
                                      const char* varCode      = "AtlasCO2Temp")
         : Variable(parentSense, (const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
                    (uint8_t)ATLAS_CO2TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificCO2_Temp object.
+     *
+     * @note This must be tied with a parent AtlasScientificCO2 before it can be
+     * used.
+     */
     AtlasScientificCO2_Temp()
         : Variable((const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
                    (uint8_t)ATLAS_CO2TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "AtlasCO2Temp") {}
+    /**
+     * @brief Destroy the AtlasScientificCO2_Temp object - no action needed.
+     */
     ~AtlasScientificCO2_Temp() {}
 };
 
