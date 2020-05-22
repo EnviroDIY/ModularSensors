@@ -7,6 +7,8 @@
  * @brief Contains the DreamHostPublisher subclass of dataPublisher for
  * publishing data to the Stroud Center's now-deprecated DreamHost based live
  * sensor data system.
+ *
+ * @copydetails DreamHostPublisher
  */
 
 // Header Guards

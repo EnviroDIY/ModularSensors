@@ -6,6 +6,8 @@
  *
  * @brief Contains the dataPublisher class - a virtual class used by other
  * publishes to distribute data online.
+ *
+ * @copydetails dataPublisher
  */
 
 // Header Guards
@@ -19,12 +21,20 @@
 #define MS_DEBUGGING_STD "dataPublisherBase"
 #endif
 
-// Send Buffer
-// This determines how many characters to set out at once over the TCP/UDP
-// connection.  Increasing this may decrease data use by a loger, while
-// decreasing it will save memory.  Do not make it smaller than 47 (to keep all
-// variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
-// Maximum Transmission Unit).
+
+/**
+ * @def MS_SEND_BUFFER_SIZE
+ * @brief Send Buffer
+ *
+ * This determines how many characters to set out at once over the TCP/UDP
+ * connection.  Increasing this may decrease data use by a loger, while
+ * decreasing it will save memory.  Do not make it smaller than 47 (to keep all
+ * variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
+ * Maximum Transmission Unit).
+ *
+ * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
+ * compiling.
+ */
 #ifndef MS_SEND_BUFFER_SIZE
 #define MS_SEND_BUFFER_SIZE 750
 #endif
@@ -35,6 +45,14 @@
 #include "LoggerBase.h"
 #include "Client.h"
 
+/**
+ * @brief The dataPublisher class is a virtual class used by other publishes to
+ * distribute data online.
+ *
+ * A dataPublisher is a abstract concept.  It is something that "watches" the
+ * logger for new data and correctly formats and sends that data to some online
+ * web service.
+ */
 class dataPublisher {
  public:
     /**

@@ -4,14 +4,12 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the loggerModem class which wraps the TinyGSM library and
- * adds in the power functions to turn the modem on and off.
+ * @brief Contains the loggerModem class and  the variable subclasses
+ * Modem_RSSI, Modem_SignalPercent, Modem_BatteryState, Modem_BatteryPercent,
+ * and Modem_BatteryVoltage - all of which are implentend as "calculated"
+ * variables.
  *
- * TinyGSM is available here:  https://github.com/vshymanskyy/TinyGSM
- *
- * This also contains the variable subclasses Modem_RSSI, Modem_SignalPercent,
- * Modem_BatteryState, Modem_BatteryPercent, and Modem_BatteryVoltage - all of
- * which are implentend as "calculated" variables.
+ * @copydetails loggerModem
  */
 
 // Header Guards
@@ -50,11 +48,19 @@
 /**
  * @brief The "loggerModem" class provides an internet connection for the logger
  * and supplies and Arduino "Client" instance to use to publish data.
+ *
+ * A modem is a device that can be controlled by a logger to send out data
+ * directly to the world wide web.
+ *
+ * The loggerModem class wraps the TinyGSM library and adds in the power
+ * functions to turn the modem on and off and some error checking.
+ *
+ * TinyGSM is available here:  https://github.com/vshymanskyy/TinyGSM
  */
 class loggerModem {
  public:
     /**
-     * @brief Construct a new logger Modem object.
+     * @brief Construct a new loggerModem object.
      *
      * @param powerPin The digital pin number of the pin suppling power to the
      * modem (active HIGH)
@@ -581,7 +587,6 @@ class loggerModem {
     /**
      * @brief The time in ms between when the modem is awake and when its serial
      * ports reach full functionality and are ready to accept AT commands.
-     *
      */
     uint32_t _max_atresponse_time_ms;
 
@@ -666,10 +671,22 @@ class loggerModem {
  */
 class Modem_RSSI : public Variable {
  public:
+    /**
+     * @brief Construct a new Modem_RSSI object.
+     *
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is RSSI.
+     */
     explicit Modem_RSSI(loggerModem* parentModem, const char* uuid = "",
                         const char* varCode = "RSSI")
         : Variable(&parentModem->getModemRSSI, (uint8_t)MODEM_RSSI_RESOLUTION,
                    &*"RSSI", &*"decibelMiliWatt", varCode, uuid) {}
+    /**
+     * @brief Destroy the Modem_RSSI object - no action needed.
+     */
     ~Modem_RSSI() {}
 };
 
@@ -682,12 +699,24 @@ class Modem_RSSI : public Variable {
  */
 class Modem_SignalPercent : public Variable {
  public:
+    /**
+     * @brief Construct a new Modem_SignalPercent object.
+     *
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is signalPercent.
+     */
     explicit Modem_SignalPercent(loggerModem* parentModem,
                                  const char*  uuid    = "",
                                  const char*  varCode = "signalPercent")
         : Variable(&parentModem->getModemSignalPercent,
                    (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION, &*"signalPercent",
                    &*"percent", varCode, uuid) {}
+    /**
+     * @brief Destroy the Modem_SignalPercent object - no action needed.
+     */
     ~Modem_SignalPercent() {}
 };
 
@@ -703,11 +732,23 @@ class Modem_SignalPercent : public Variable {
  */
 class Modem_BatteryState : public Variable {
  public:
+    /**
+     * @brief Construct a new Modem_BatteryState object.
+     *
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is modemBatteryCS.
+     */
     explicit Modem_BatteryState(loggerModem* parentModem, const char* uuid = "",
                                 const char* varCode = "modemBatteryCS")
         : Variable(&parentModem->getModemBatteryChargeState,
                    (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
                    &*"batteryChargeState", &*"number", varCode, uuid) {}
+    /**
+     * @brief Destroy the Modem_BatteryState object - no action needed.
+     */
     ~Modem_BatteryState() {}
 };
 
@@ -723,12 +764,24 @@ class Modem_BatteryState : public Variable {
  */
 class Modem_BatteryPercent : public Variable {
  public:
+    /**
+     * @brief Construct a new Modem_BatteryPercent object.
+     *
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is modemBatteryPct.
+     */
     explicit Modem_BatteryPercent(loggerModem* parentModem,
                                   const char*  uuid    = "",
                                   const char*  varCode = "modemBatteryPct")
         : Variable(&parentModem->getModemBatteryChargePercent,
                    (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
                    &*"batteryVoltage", &*"percent", varCode, uuid) {}
+    /**
+     * @brief Destroy the Modem_BatteryPercent object - no action needed.
+     */
     ~Modem_BatteryPercent() {}
 };
 
@@ -743,12 +796,24 @@ class Modem_BatteryPercent : public Variable {
  */
 class Modem_BatteryVoltage : public Variable {
  public:
+    /**
+     * @brief Construct a new Modem_BatteryVoltage object.
+     *
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is modemBatterymV.
+     */
     explicit Modem_BatteryVoltage(loggerModem* parentModem,
                                   const char*  uuid    = "",
                                   const char*  varCode = "modemBatterymV")
         : Variable(&parentModem->getModemBatteryVoltage,
                    (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION, &*"batteryVoltage",
                    &*"millivolt", varCode, uuid) {}
+    /**
+     * @brief Destroy the Modem_BatteryVoltage object - no action needed.
+     */
     ~Modem_BatteryVoltage() {}
 };
 
@@ -759,15 +824,27 @@ class Modem_BatteryVoltage : public Variable {
  * Whether or not this value is meaningful depends on the specific modem
  * subclass.
  *
- * The value has units of degrees Celsius and has a resolution of 1°C.
+ * The value has units of degrees Celsius and has a resolution of 0.1°C.
  */
 class Modem_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new Modem_Temp object.
+     *
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is modemTemp.
+     */
     explicit Modem_Temp(loggerModem* parentModem, const char* uuid = "",
                         const char* varCode = "modemTemp")
         : Variable(&parentModem->getModemTemperature,
                    (uint8_t)MODEM_TEMPERATURE_RESOLUTION, &*"temperature",
                    &*"degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Destroy the Modem_Temp object - no action needed.
+     */
     ~Modem_Temp() {}
 };
 

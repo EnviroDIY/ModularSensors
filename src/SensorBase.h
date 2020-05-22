@@ -5,6 +5,8 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the Sensor class.
+ *
+ * @copydetails Sensor
  */
 
 // Header Guards
@@ -32,6 +34,15 @@ class Variable;  // Forward declaration
 /**
  * @brief The "Sensor" class is used for all sensor-level operations - waking,
  * sleeping, and taking measurements.
+ *
+ * A sensor is some sort of device that is capable of taking one or more
+ * measurements using some sort of method.  Most often we can think of these as
+ * probes or other instruments that can give back information about the world
+ * around them.  Sensors can usually be given power or have that power cut. They
+ * may be awoken or activated and then returned to a sleeping/low power use
+ * state.  The may need to be asked to begin a single reading or they may
+ * continuously return data.  They _**must**_ be capable of returning the value
+ * of their readings to a logger of some type.
  */
 class Sensor {
  public:
@@ -70,8 +81,10 @@ class Sensor {
     /**
      * @brief Get the pin or connection location between the mcu and the sensor.
      *
-     * @return String A String with either the data pin number of other
-     * information about how the sensor is attached to the mcu.
+     * @note This is NOT the position of the sensor in the environment, merely
+     * how it is attached to the mcu.
+     *
+     * @return String Text describing how the sensor is attached to the mcu.
      */
     virtual String getSensorLocation(void);
     /**
@@ -97,6 +110,8 @@ class Sensor {
     /**
      * @brief Set the number measurements to average.
      *
+     * @copydetails _measurementsToAverage
+     *
      * @param nReadings The number of readings to take and average to create a
      * result from the sensor.  Overrides any value given in the constructor.
      */
@@ -106,6 +121,8 @@ class Sensor {
      *
      * @return uint8_t The number of readings to take and average to create a
      * result from the sensor.
+     *
+     * @copydetails _measurementsToAverage
      */
     uint8_t getNumberMeasurementsToAverage(void);
 
@@ -153,9 +170,19 @@ class Sensor {
     /**
      * @brief Update the sensor's values.
      *
-     * This clears the values array, starts and averages as many measurement
-     * readings as requested, and then notifies the registered variables of the
-     * new results.  All possible waits are included in this function!
+     * For digital sensors with a single information return, this only needs to
+     * be called once for each sensor, even if there are multiple variable
+     * subclasses for the sensor.
+     *
+     * In general, the update function clears the value results array, powers
+     * the sensor, wakes or activates it, tells it one or more times to a start
+     * measurement and get the result, averages all the values, notifies the
+     * attached variables that new values are available, puts the sensor back to
+     * sleep (if it had been asleep) and powers the sensor down (if it had been
+     * unpowered).   All possible waits are included in this function.  To get
+     * new results from a single sensor, this is the function that should be
+     * used.  To work with many sensors together, use the VariableArray class
+     * which optimizes the timing and waits for many sensors working together.
      *
      * @return true All steps of the sensor update completed successfully
      * @return false One or more of the update steps failed.
@@ -174,7 +201,6 @@ class Sensor {
      *
      * Generally this is done by setting the power pin LOW.  Also un-sets the
      * _millisPowerOn timestamp (sets _millisPowerOn to 0.)
-     *
      */
     virtual void powerDown(void);
 
@@ -228,10 +254,13 @@ class Sensor {
     /**
      * @brief Get the results from a single measurement.
      *
+     * This asks the sensor for a new result, verifies that it passes sanity
+     * range checks, and then adds the value to the result array.
+     *
      * This also un-sets the _millisMeasurementRequested timestamp (sets
      * _millisMeasurementRequested to 0).
      *
-     * @note The sensor *may* also require awaitForMeasurementCompletion() to
+     * @note The sensor *probably* requires a waitForMeasurementCompletion() to
      * ensure a measurement is done.  The wait is NOT included in this function.
      *
      * @return true The function completed successfully.
@@ -247,7 +276,6 @@ class Sensor {
     // String getStringValueArray(void);
     /**
      * @brief Clear the values array - that is, sets all values to -9999.
-     *
      */
     void clearValues();
     /**
@@ -349,29 +377,35 @@ class Sensor {
 
  protected:
     /**
-     * @brief Internal reference to the sensor data pin
+     * @brief Internal value of the sensor data pin
      *
      * @note SIGNED int, to allow negative numbers for unused pins
      */
     int8_t _dataPin;
     /**
-     * @brief Internal reference to the sensor power pin
+     * @brief Internal value of the sensor power pin
      *
      * @note SIGNED int, to allow negative numbers for unused pins
      */
     int8_t _powerPin;
     /**
-     * @brief Internal reference to the sensor name.
+     * @brief Internal value of the sensor name.
      */
     const char* _sensorName;
     /**
-     * @brief Internal reference to the number of values the sensor is capable
+     * @brief Internalvalue of the number of values the sensor is capable
      * of reporting.
      */
     const uint8_t _numReturnedVars;
     /**
-     * @brief Internal reference to the number of measurements from the sensor
+     * @brief Internal value of the number of measurements from the sensor
      * to average.
+     *
+     * This will become the number of readings actually taken by a sensor prior
+     * to data averaging.  Any "bad" (-9999) values returned by the sensor will
+     * not be included in the final averaging.  This means that the actual
+     * number of "good" values that are averaged may be less than what is set by
+     * setNumberMeasurementsToAverage or in the sensor constructor.
      */
     uint8_t _measurementsToAverage;
     /**
@@ -397,7 +431,6 @@ class Sensor {
     /**
      * @brief The time needed from the when a sensor is activated until the
      * readings are stable.
-     *
      */
     uint32_t _stabilizationTime_ms;
     /**
@@ -407,14 +440,12 @@ class Sensor {
      * The _millisSensorActivated value is *usually* set in the wake() function,
      * but may also be set in the startSingleMeasurement() function.  It is
      * generally un-set in the sleep() function.
-     *
      */
     uint32_t _millisSensorActivated;
 
     /**
      * @brief The time needed from the when a sensor is told to take a single
      * reading until that reading is expected to be complete
-     *
      */
     uint32_t _measurementTime_ms;
     /**
@@ -424,7 +455,6 @@ class Sensor {
      * The _millisMeasurementRequested value is set in the
      * startSingleMeasurement() function. It *may* be unset in the
      * addSingleMeasurementResult() function.
-     *
      */
     uint32_t _millisMeasurementRequested;
 

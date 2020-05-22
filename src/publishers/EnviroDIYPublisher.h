@@ -7,6 +7,8 @@
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
  * publishing data to the EnviroDIY/Monitor My Watershed data portal at
  * http://data.enviroDIY.org
+ *
+ * @copydetails EnviroDIYPublisher
  */
 
 // Header Guards

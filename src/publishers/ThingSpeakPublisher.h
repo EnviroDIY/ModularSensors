@@ -6,6 +6,8 @@
  *
  * @brief Contains the ThingSpeakPublisher subclass of dataPublisher for
  * publishing data to ThingSpeak using the MQTT protocol.
+ *
+ * @copydetails ThingSpeakPublisher
  */
 
 // Header Guards

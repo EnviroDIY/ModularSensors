@@ -12,20 +12,7 @@
  *
  * This file is dependent on the Adafruit DHT Library.
  *
- * Documentation for the sensor can be found at:
- * http://www.aosong.com/en/products/details.asp?id=117
- *
- * For Relative Humidity:
- *  Resolution is 0.1 % RH
- *  Accuracy is ± 2 % RH
- *  Range is 0 to 100 % RH
- *
- * For Temperature:
- *  Resolution is 0.1°C
- *  Accuracy is ±0.5°C
- *  Range is -40°C to +80°C
- *
- * Warm up/sampling time: 1.7sec
+ * @copydetails AOSongDHT
  */
 
 // Header Guards
@@ -68,7 +55,9 @@
 #define DHT_HI_RESOLUTION 1
 #define DHT_HI_VAR_NUM 2
 
-// For the various communication devices"
+/**
+ * @brief The possible types of DHT
+ */
 typedef enum DHTtype {
     DHT11  = 11,
     DHT21  = 21,
@@ -77,16 +66,71 @@ typedef enum DHTtype {
     AM2302 = 22
 } DHTtype;
 
-// The main class for the AOSong DHT
+/**
+ * @brief The main class for the AOSong digital-output relative humidity &
+ * temperature sensors/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).
+ *
+ * Documentation for the sensor can be found at:
+ * http://www.aosong.com/en/products/details.asp?id=117
+ *
+ * For Relative Humidity:
+ *   - Resolution is 0.1 % RH
+ *   - Accuracy is ± 2 % RH
+ *   - Range is 0 to 100 % RH
+ *   - Reported as percent RH
+ *   - Result stored as sensorValues[0]
+ *
+ * For Temperature:
+ *   - Resolution is 0.1°C
+ *   - Accuracy is ±0.5°C
+ *   - Range is -40°C to +80°C
+ *   - Reported as degrees Celsius
+ *   - Result stored as sensorValues[1]
+ *
+ * Heat index is calculated from temperature and humidity.
+ *   - Reported as a dimensionless index
+ *   - Result stored as sensorValues[2]
+ *
+ * Warm up/sampling time: 1.7sec
+ */
 class AOSongDHT : public Sensor {
  public:
-    // The constructor - need the power pin, the data pin, and the sensor type
+    /**
+     * @brief Construct a new AOSongDHT object - need the power pin, the data
+     * pin, and the sensor type
+     *
+     * @param powerPin The pin on the mcu controlling power to the AOSong DHT.
+     * Use -1 if the sensor is continuously powered.
+     * @param dataPin The pin on the mcu receiving data from the AOSong DHT
+     * @param type The type of DHT.  Possible values are DHT11, DHT21, AM2301,
+     * DHT22, or AM2302.
+     * @param measurementsToAverage The number of measurements to average.e
+     */
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type,
               uint8_t measurementsToAverage = 1);
-    // Destructor
+    /**
+     * @brief Destroy the AOSongDHT object - no action needed.
+     */
     ~AOSongDHT();
 
-    bool   setup(void) override;
+    /**
+     * @brief Do any one-time preparations needed before the sensor will be able
+     * to take readings.
+     *
+     * May not require any action.  Generally, the sensor must be powered on for
+     * setup.
+     *
+     * @return true The setup was successful
+     * @return false Some part of the setup failed
+     */
+    bool setup(void) override;
+
+    /**
+     * @brief Get the name of the sensor.  For the DHT the type of DHT is
+     * returned.
+     *
+     * @return String The sensor name as given in the constructor.
+     */
     String getSensorName(void) override;
 
     bool addSingleMeasurementResult(void) override;
@@ -97,49 +141,125 @@ class AOSongDHT : public Sensor {
 };
 
 
-// Defines the Humidity Variable
+/**
+ * @brief The variable class used for humidity measured by an AOSong DHT.
+ *
+ * For Relative Humidity:
+ *   - Resolution is 0.1 % RH
+ *   - Accuracy is ± 2 % RH
+ *   - Range is 0 to 100 % RH
+ *   - Reported as percent RH
+ *   - Result stored as sensorValues[0]
+ */
 class AOSongDHT_Humidity : public Variable {
  public:
+    /**
+     * @brief Construct a new AOSongDHT_Humidity object.
+     *
+     * @param parentSense The parent AOSongDHT providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is DHTHumidity.
+     */
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
                                 const char* varCode = "DHTHumidity")
         : Variable(parentSense, (const uint8_t)DHT_HUMIDITY_VAR_NUM,
                    (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
                    "percent", varCode, uuid) {}
+    /**
+     * @brief Construct a new AOSongDHT_Humidity object.
+     *
+     * @note This must be tied with a parent AOSongDHT before it can be used.
+     */
     AOSongDHT_Humidity()
         : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
                    (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
                    "percent", "DHTHumidity") {}
+    /**
+     * @brief Destroy the AOSongDHT_Humidity object - no action needed.
+     */
     ~AOSongDHT_Humidity() {}
 };
 
 
-// Defines the Temperature Variable
+/**
+ * @brief The variable class used for temperature measured by an AOSong DHT.
+ *
+ * For Temperature:
+ *   - Resolution is 0.1°C
+ *   - Accuracy is ±0.5°C
+ *   - Range is -40°C to +80°C
+ *   - Reported as degrees Celsius
+ *   - Result stored as sensorValues[1]
+ */
 class AOSongDHT_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new AOSongDHT_Temp object.
+     *
+     * @param parentSense The parent AOSongDHT providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is DHTTemp.
+     */
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
                             const char* varCode = "DHTTemp")
         : Variable(parentSense, (const uint8_t)DHT_TEMP_VAR_NUM,
                    (uint8_t)DHT_TEMP_RESOLUTION, "temperature", "degreeCelsius",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new AOSongDHT_Temp object.
+     *
+     * @note This must be tied with a parent AOSongDHT before it can be used.
+     */
     AOSongDHT_Temp()
         : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
                    (uint8_t)DHT_TEMP_RESOLUTION, "temperature", "degreeCelsius",
                    "DHTTemp") {}
+    /**
+     * @brief Destroy the AOSongDHT_Temp object - no action needed.
+     */
     ~AOSongDHT_Temp() {}
 };
 
 
-// Defines the Heat Index Variable
+/**
+ * @brief The variable class used for Heat Index measured by an AOSong DHT.
+ *
+ * Heat index is calculated within the Adafruit library from the measured
+ * temperature and humidity.
+ *   - Reported as a dimensionless index
+ *   - Result stored as sensorValues[2]
+ */
 class AOSongDHT_HI : public Variable {
  public:
+    /**
+     * @brief Construct a new AOSongDHT_HI object.
+     *
+     * @param parentSense The parent AOSongDHT providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is DHTHI.
+     */
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
                           const char* varCode = "DHTHI")
         : Variable(parentSense, (const uint8_t)DHT_HI_VAR_NUM,
                    (uint8_t)DHT_HI_RESOLUTION, "heatIndex", "degreeCelsius",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new AOSongDHT_HI object.
+     *
+     * @note This must be tied with a parent AOSongDHT before it can be used.
+     */
     AOSongDHT_HI()
         : Variable((const uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
                    "heatIndex", "degreeCelsius", "DHTHI") {}
+    /**
+     * @brief Destroy the AOSongDHT_HI object - no action needed.
+     */
     ~AOSongDHT_HI() {}
 };
 

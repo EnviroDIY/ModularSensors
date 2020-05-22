@@ -8,6 +8,8 @@
  *
  * Basic logger functions include communicating with a real-time clock, saving
  * to an SD card, and publishing data to remotes via a loggerModem connection.
+ *
+ * @copydetails Logger
  */
 
 // Header Guards
@@ -60,6 +62,16 @@ class dataPublisher;  // Forward declaration
  * @brief The "Logger" Class handles low power sleep for the main processor,
  * interfacing with the real-time clock and modem, writing to the SD card, and
  * passing data on to the data publishers.
+ *
+ * A logger is a device that can control all functions of the modem sensors and
+ * that are attached to it and save the values of all variables measured by
+ * those sensors to an attached SD card.  It must also work with a real-time
+ * clock to give timestamps to values.  It may also work with a loggerModem for
+ * internet connection and send out data over the internet through one or more
+ * data publishers.
+ *
+ * In this library, all loggers are Arduino-style small processor circuit
+ * boards.
  */
 class Logger {
     friend class dataPublisher;
@@ -286,36 +298,36 @@ class Logger {
  protected:
     // Initialization variables
     /**
-     * @brief Internal reference to the logger id
+     * @brief Internal pointer to the logger id
      */
     const char* _loggerID;
     /**
-     * @brief Internal reference to the logging interval in minutes
+     * @brief Internal value of to the logging interval in minutes
      */
     uint16_t _loggingIntervalMinutes;
     /**
-     * @brief Internal reference to the SD card slave select pin
+     * @brief Internal value of the SD card slave select pin
      */
     int8_t _SDCardSSPin;
     /**
-     * @brief Internal reference to the SD card power pin
+     * @brief Internal value of the SD card power pin
      */
     int8_t _SDCardPowerPin;
     /**
-     * @brief Internal reference to the deep-sleep interrupt wake pin
+     * @brief Internal value of the deep-sleep interrupt wake pin
      */
     int8_t _mcuWakePin;
     /**
-     * @brief Internal reference to the alert pin
+     * @brief Internal value of the alert pin
      */
     int8_t _ledPin;
     /**
-     * @brief Internal reference to the testing mode interrupt pin
+     * @brief Internal value of the testing mode interrupt pin
      */
     int8_t _buttonPin;
 
     /**
-     * @brief Internal reference to the sampleing feature UUID
+     * @brief Internal pointer to the sampling feature UUID
      */
     const char* _samplingFeatureUUID;
 
