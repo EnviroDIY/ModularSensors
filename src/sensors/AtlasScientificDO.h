@@ -36,7 +36,9 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-// I2C address
+/**
+ * @brief Default I2C address is 0x61 (97)
+ */
 #define ATLAS_DO_I2C_ADDR 0x61  // 97
 
 // Sensor Specific Defines
@@ -53,26 +55,56 @@
 #define ATLAS_DOPCT_RESOLUTION 1
 #define ATLAS_DOPCT_VAR_NUM 1
 
-// The main class for the Atlas Scientific DO sensor
-class AtlasScientificDO : public AtlasParent {
+/**
+ * @brief The main class for the Atlas Scientific DO sensor
+ */
+AtlasParent {
  public:
     explicit AtlasScientificDO(int8_t  powerPin,
                                uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
                                uint8_t measurementsToAverage = 1);
     ~AtlasScientificDO();
 
+    /**
+     * @brief Do any one-time preparations needed before the sensor will be able
+     * to take readings.
+     *
+     * This begins the Wire library (sets pin modes for I2C), tells the CO2
+     * circuit to report all possible measurement parameters, and sets the
+     * status bit if successful.  The circuit must be powered for setup.
+     *
+     * @return **true** The setup was successful
+     * @return **false** Some part of the setup failed
+     */
     bool setup(void) override;
 };
 
-// The class for the DO Concentration Variable
+/**
+ * @brief The variable class used for DO Concentration measured by a xxx.
+ *
+ * The value is in units of xxx and has resolution of xxx.  This is the xxx
+ * value (array positon x) returned by the xxx.
+ */
 class AtlasScientificDO_DOmgL : public Variable {
  public:
+    /**
+     * @brief Construct a new AtlasScientificDO_DOmgL object.
+     *
+     * @param parentSense The parent AtlasScientificDO providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
     explicit AtlasScientificDO_DOmgL(AtlasScientificDO* parentSense,
                                      const char*        uuid    = "",
                                      const char*        varCode = "AtlasDOmgL")
         : Variable(parentSense, (const uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificDO_DOmgL object.
+     *
+     * @note This must be tied with a parent AtlasScientificDO before it can be
+     * used.
+     */
     AtlasScientificDO_DOmgL()
         : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",

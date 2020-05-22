@@ -23,7 +23,10 @@
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-// I2C address
+
+/**
+ * @brief Default I2C address is 0x62 (98)
+ */
 #define ATLAS_ORP_I2C_ADDR 0x62  // 98
 
 // Sensor Specific Defines

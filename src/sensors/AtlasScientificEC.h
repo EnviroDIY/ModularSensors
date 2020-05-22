@@ -38,7 +38,10 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-// I2C address
+
+/**
+ * @brief Default I2C address is 0x64 (100)
+ */
 #define ATLAS_COND_I2C_ADDR 0x64  // 100
 
 // Sensor Specific Defines
@@ -113,10 +116,20 @@ class AtlasScientificEC_Salinity : public Variable {
         : Variable(parentSense, (const uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, "salinity",
                    "practicalSalinityUnit", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificEC_Salinity object.
+     *
+     * @note This must be tied with a parent AtlasScientificEC before it can be
+     * used.
+     */
     AtlasScientificEC_Salinity()
         : Variable((const uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, "salinity",
                    "practicalSalinityUnit", "AtlasSalinity") {}
+    /**
+     * @brief Destroy the AtlasScientificEC_Salinity() object - no action
+     * needed.
+     */
     ~AtlasScientificEC_Salinity() {}
 };
 

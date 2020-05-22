@@ -23,7 +23,10 @@
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-// I2C address
+
+/**
+ * @brief Default I2C address is 0x63 (99)
+ */
 #define ATLAS_PH_I2C_ADDR 0x63  // 99
 
 // Sensor Specific Defines
@@ -38,17 +41,17 @@
 #define ATLAS_PH_RESOLUTION 3
 #define ATLAS_PH_VAR_NUM 0
 
-// The main class for the Atlas Scientific pH temperature sensor
-class AtlasScientificpH : public AtlasParent {
- public:
-    explicit AtlasScientificpH(int8_t  powerPin,
-                               uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
-                               uint8_t measurementsToAverage = 1)
-        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                      "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
-                      ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
-                      ATLAS_PH_MEASUREMENT_TIME_MS) {}
-    ~AtlasScientificpH() {}
+/**
+ * @brief The main class for the Atlas Scientific pH temperature sensor
+ */
+AtlasParent{
+    public : explicit AtlasScientificpH(
+        int8_t powerPin, uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+        uint8_t measurementsToAverage = 1) :
+        AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                    "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
+                    ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
+                    ATLAS_PH_MEASUREMENT_TIME_MS){} ~AtlasScientificpH(){}
 };
 
 // The class for the pH variable

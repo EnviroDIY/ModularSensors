@@ -23,7 +23,10 @@
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-// I2C address
+
+/**
+ * @brief Default I2C address is 0x66 (102)
+ */
 #define ATLAS_RTD_I2C_ADDR 0x66  // 102
 
 // Sensor Specific Defines
@@ -38,7 +41,9 @@
 #define ATLAS_RTD_RESOLUTION 3
 #define ATLAS_RTD_VAR_NUM 0
 
-// The main class for the Atlas Scientific RTD temperature sensor
+/**
+ * @brief The main class for the Atlas Scientific RTD temperature sensor
+ */
 class AtlasScientificRTD : public AtlasParent {
  public:
     explicit AtlasScientificRTD(int8_t  powerPin,

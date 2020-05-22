@@ -73,8 +73,22 @@ class AtlasScientificCO2 : public AtlasParent {
     explicit AtlasScientificCO2(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_CO2_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Destroy the Atlas Scientific CO2 object - no action needed.
+     */
     ~AtlasScientificCO2();
 
+    /**
+     * @brief Do any one-time preparations needed before the sensor will be able
+     * to take readings.
+     *
+     * This begins the Wire library (sets pin modes for I2C), tells the CO2
+     * circuit to report all possible measurement parameters, and sets the
+     * status bit if successful.  The circuit must be powered for setup.
+     *
+     * @return **true** The setup was successful
+     * @return **false** Some part of the setup failed
+     */
     bool setup(void) override;
 };
 
