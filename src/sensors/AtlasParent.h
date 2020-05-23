@@ -79,8 +79,8 @@ class AtlasParent : public Sensor {
      * to take readings.
      *
      * This sets the #_powerPin mode, begins the Wire library (sets pin levels
-     * and modes for I2C), and updates the #_sensorStatus.  Sensor power
-     * is not required.
+     * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
+     * required.
      *
      * @return **true** The setup was successful
      * @return **false** Some part of the setup failed

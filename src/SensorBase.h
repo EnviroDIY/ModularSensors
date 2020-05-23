@@ -96,7 +96,7 @@ class Sensor {
      */
     virtual String getSensorName(void);
     /**
-     * @brief Concatentate and returns the name and location.
+     * @brief Concatentate and returns the name and location of the sensor.
      *
      * @return **String** A concatenation of the sensor name and its "location"
      * - how it is connected to the mcu.
@@ -131,29 +131,49 @@ class Sensor {
     /**
      * @brief Get the 8-bit code for the current status of the sensor.
      *
-     * Bit 0 - 0=Has NOT been successfully set up, 1=Has been setup
-     * Bit 1 - 0=No attempt made to power sensor, 1=Attempt made to power sensor
-     * Bit 2 - 0=Power up attampt failed, 1=Power up attempt succeeded
-     *       - Use the isWarmedUp() function to check if enough time has passed
-     *         to be ready for sensor communication.
-     * Bit 3 - 0=Activation/wake attempt made, 1=No activation/wake attempt made
-     *       - check _millisSensorActivated or bit 4 to see if wake() attempt
-     *       was successful
-     *       - a failed activation attempt will give _millisSensorActivated = 0
-     * Bit 4 - 0=Wake/Activate failed, 1=Is awake/actively measuring
-     *       - Use the isStable() function to check if enough time has passed
-     *         to begin a measurement.
-     * Bit 5 - 0=Start measurement requested attempt made, 1=No measurements
-     * have been requested
-     *       - check _millisMeasurementRequested or bit 6 to see if
-     *       startSingleMeasurement() attempt was successful
-     *       - a failed request attempt will give _millisMeasurementRequested =
-     *       0
-     * Bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
-     *       - Use the isMeasurementComplete() to check if enough time has
-     *       passed
-     *         for a measurement to have been completed.
-     * Bit 7 - 0=No known errors, 1=Some sort of error has occurred
+     * Bit 0
+     * - 0 => Has NOT been successfully set up
+     * - 1 => Has been setup
+     *
+     * Bit 1
+     * - 0 => No attempt made to power sensor
+     * - 1 => Attempt made to power sensor
+     *
+     * Bit 2
+     * - 0 => Power up attampt failed
+     * - 1 => Power up attempt succeeded
+     * - Use the isWarmedUp() function to check if enough time has passed to be
+     * ready for sensor communication.
+     *
+     * Bit 3
+     * - 0 => Activation/wake attempt made
+     * - 1 => No activation/wake attempt made
+     * - check _millisSensorActivated or bit 4 to see if wake() attempt was
+     * successful
+     * - a failed activation attempt will give _millisSensorActivated = 0
+     *
+     * Bit 4
+     * - 0 => Wake/Activate failed
+     * - 1 => Is awake/actively measuring
+     * - Use the isStable() function to check if enough time has passed to begin
+     * a measurement.
+     *
+     * Bit 5
+     * - 0 => Start measurement requested attempt made
+     * - 1 => No measurements have been requested
+     * - check _millisMeasurementRequested or bit 6 to see if
+     * startSingleMeasurement() attempt was successful
+     * - a failed request attempt will give _millisMeasurementRequested = 0
+     *
+     * Bit 6
+     * - 0 => Measurement start failed
+     * - 1 => Measurement attempt succeeded
+     * - Use the isMeasurementComplete() to check if enough time has passed for
+     * a measurement to have been completed.
+     *
+     * Bit 7
+     * - 0 => No known errors
+     * - 1 => Some sort of error has occurred
      */
     uint8_t getStatus(void);
 
@@ -400,8 +420,8 @@ class Sensor {
      * This will become the number of readings actually taken by a sensor prior
      * to data averaging.  Any "bad" (-9999) values returned by the sensor will
      * not be included in the final averaging.  This means that the actual
-     * number of "good" values that are averaged may be less than what is set by
-     * setNumberMeasurementsToAverage or in the sensor constructor.
+     * number of "good" values that are averaged may be less than what was
+     * requested.
      */
     uint8_t _measurementsToAverage;
     /**
@@ -461,7 +481,7 @@ class Sensor {
 
     /**
      * @brief An array for each sensor containing the variable objects tied to
-     * that sensor.  The MAX_NUMBER_VARS cannot be determined on a per-sensor
+     * that sensor.  The #MAX_NUMBER_VARS cannot be determined on a per-sensor
      * basis, because of the way memory is used on an Arduino.  It must be
      * defined once for the whole class.
      */
