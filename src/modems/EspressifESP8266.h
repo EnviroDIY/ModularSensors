@@ -42,8 +42,13 @@
 #define ESP8266_STATUS_LEVEL HIGH
 #define ESP8266_STATUS_TIME_MS 350
 
-// Reset is very fast
+/**
+ * @brief Reset uses a low pulse on pin 32
+ */
 #define ESP8266_RESET_LEVEL LOW
+/**
+ * @brief Reset time is undocumented but very fast - 1ms seems to be sufficient
+ */
 #define ESP8266_RESET_PULSE_MS 1
 
 // See notes above.. this is user configurable, but useless

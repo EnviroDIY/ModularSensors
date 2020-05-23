@@ -53,18 +53,10 @@
  * www.aosong.com/asp_bin/Products/en/AM2315.pdf
  *
  * For Relative Humidity:
- *   - Resolution is 0.1 % RH (16 bit)
- *   - Accuracy is ± 2 % RH at 25°C
- *   - Range is 0 to 100% RH
- *   - Reported as percent RH
- *   - Result stored as sensorValues[0]
+ *   @copydetails AOSongAM2315_Humidity
  *
  * For Temperature:
- *   - Resolution is 0.1°C (16 bit)
- *   - Accuracy is ±0.1°C
- *   - Range is -40°C to +125°C
- *   - Reported as degrees Celsius
- *   - Result stored as sensorValues[1]
+ *   @copydetails AOSongAM2315_Temp
  *
  * Warm up/stability/re-sampling time: 2sec
  */
@@ -116,7 +108,6 @@ class AOSongAM2315 : public Sensor {
 /**
  * @brief The variable class used for humidity measured by an AOSong AM2315.
  *
- * For Relative Humidity:
  *   - Resolution is 0.1 % RH (16 bit)
  *   - Accuracy is ± 2 % RH at 25°C
  *   - Range is 0 to 100% RH
@@ -159,7 +150,6 @@ class AOSongAM2315_Humidity : public Variable {
 /**
  * @brief The variable class used for temperature measured by an AOSong AM2315.
  *
- * For Temperature:
  *   - Resolution is 0.1°C (16 bit)
  *   - Accuracy is ±0.1°C
  *   - Range is -40°C to +125°C

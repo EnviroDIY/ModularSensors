@@ -70,25 +70,10 @@
  * to 700 nm.
  *
  * For photosynthetically active radiation (PAR):
- *   - Range is 0 to 2500 µmol m-2 s-1
- *   - Accuracy is ± 0.5%
- *   - Resolution:
- *     - 16-bit ADC: 0.3125 µmol m-2 s-1 (ADS1115)
- *     - 12-bit ADC: 5 µmol m-2 s-1 (ADS1015)
- *   - Reported as microeinsteins per square meter per second
- *   - Result stored as sensorValues[0]
+ *   @copydetails ApogeeSQ212_PAR
  *
  * For raw voltage as reported by ADS1x15:
- *   - Range is 0 to 3.6V [when ADC is powered at 3.3V]
- *   - Accuracy is ± 0.5%
- *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
- *     - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
- *   - Resolution [assuming the ADC is powered at 3.3V with inbuilt gain set to
- *     1 (0-4.096V)]:
- *     - 16-bit ADC: 0.125 mV (ADS1115)
- *     - 12-bit ADC: 2 mV (ADS1015)
- *   - Reported as volts
- *   - Result stored as sensorValues[1]
+ *   @copydetails ApogeeSQ212_Voltage
  *
  * Technical specifications for the Apogee SQ-212 can be found at:
  * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
@@ -143,7 +128,6 @@ class ApogeeSQ212 : public Sensor {
  * @brief The variable class used for photosynthetically active radiation (PAR)
  * measured by an Apogee SQ-212.
  *
- * For photosynthetically active radiation (PAR):
  *   - Range is 0 to 2500 µmol m-2 s-1
  *   - Accuracy is ± 0.5%
  *   - Resolution:
@@ -189,7 +173,6 @@ class ApogeeSQ212_PAR : public Variable {
 /**
  * @brief The variable class used for raw voltage measured by an Apogee SQ-212.
  *
- * For raw voltage as reported by ADS1x15:
  *   - Range is 0 to 3.6V [when ADC is powered at 3.3V]
  *   - Accuracy is ± 0.5%
  *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)

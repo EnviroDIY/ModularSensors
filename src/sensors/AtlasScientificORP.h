@@ -10,10 +10,7 @@
  *
  * These are used for any sensor attached to an Atlas EZO ORP circuit.
  *
- * The output from the Atlas Scientifc ORP is the temperature in degrees C.
- *     Accuracy is ± 1 mV
- *     Range is -1019.9mV − 1019.9mV
- *     Resolution is 0.1 mV
+ * @copydetails AtlasScientificORP
  */
 
 // Header Guards
@@ -41,7 +38,16 @@
 #define ATLAS_ORP_RESOLUTION 1
 #define ATLAS_ORP_VAR_NUM 0
 
-// The main class for the Atlas Scientific ORP temperature sensor
+/**
+ * @brief The main class for the Atlas Scientific ORP (oxidation/reduction
+ * potential) sensor - used for any sensor attached to an Atlas EZO ORP circuit.
+ *
+ * Documentation on the circuit is available here:
+ * https://www.atlas-scientific.com/circuits/ezo-orp-circuit/
+ *
+ * For oxidation/reduction potential:
+ *   @AtlasScientificORP_Potential
+ */
 class AtlasScientificORP : public AtlasParent {
  public:
     explicit AtlasScientificORP(int8_t  powerPin,
@@ -55,19 +61,49 @@ class AtlasScientificORP : public AtlasParent {
     ~AtlasScientificORP() {}
 };
 
-// The class for the oxidation/reduction potential Variable
+
+/**
+ * @brief The variable class used for oxidation/reduction potential measured by
+ * an Atlas Scientific EZO circuit.
+ *
+ *   - Accuracy is ± 1 mV
+ *   - Range is -1019.9mV − 1019.9mV
+ *   - Resolution is 0.1 mV
+ *   - Reported as millivolts
+ *   - Result stored as sensorValues[0]
+ */
 class AtlasScientificORP_Potential : public Variable {
  public:
+    /**
+     * @brief Construct a new AtlasScientificORP_Potential object.
+     *
+     * @param parentSense The parent AtlasScientificORP providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is AtlasORP
+     */
     explicit AtlasScientificORP_Potential(AtlasScientificORP* parentSense,
                                           const char*         uuid = "",
                                           const char* varCode      = "AtlasORP")
         : Variable(parentSense, (const uint8_t)ATLAS_ORP_VAR_NUM,
                    (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
                    "millivolt", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificORP_Potential object.
+     *
+     * @note This must be tied with a parent AtlasScientificORP before it can be
+     * used.
+     */
     AtlasScientificORP_Potential()
         : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
                    (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
                    "millivolt", "AtlasORP") {}
+    /**
+     * @brief Destroy the AtlasScientificORP_Potential() object - no action
+     * needed.
+     */
     ~AtlasScientificORP_Potential() {}
 };
 

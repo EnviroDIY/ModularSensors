@@ -8,7 +8,8 @@
  * @brief Contains the AtlasParent sensor subclass which is itself the
  * parent class for all Atlas sensors.
  *
- * This depends on the Arduino core Wire library.
+ * This depends on the Arduino core Wire library.  It does *not* use the Atlas
+ * Arduino library.
  *
  * @copydetails AtlasParent
  */
@@ -33,6 +34,8 @@
 
 /**
  * @brief A parent class for Atlas sensors
+ *
+ * This contains the main I2C functionality for all Atlas EZO circuits.
  */
 class AtlasParent : public Sensor {
  public:

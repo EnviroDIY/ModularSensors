@@ -11,12 +11,7 @@
  *
  * These are used for any sensor attached to an Atlas EZO DO circuit.
  *
- * This depends on the Arduino core Wire library.
- *
- * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
- *     Accuracy is ± 0.05 mg/L
- *     Range is 0.01 − 100+ mg/L (0.1 − 400+ % saturation)
- *     Resolution is 0.01 mg/L or 0.1 % saturation
+ * @copydetails AtlasScientificDO
  */
 
 // Header Guards
@@ -56,9 +51,22 @@
 #define ATLAS_DOPCT_VAR_NUM 1
 
 /**
- * @brief The main class for the Atlas Scientific DO sensor
+ * @brief The main class for the Atlas Scientific DO sensor - used for any
+ * sensor attached to an Atlas EZO DO circuit.
+ *
+ * Documentation on the probe is found here:
+ * https://www.atlas-scientific.com/probes/dissolved-oxygen-probe/
+ *
+ * Documentation on the measurement circuit is found here:
+ * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
+ *
+ * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
+ * For concentration:
+ *   @copydetails AtlasScientificDO_DOmgL
+ * For saturation:
+ *   @copydetails AtlasScientificDO_DOpct
  */
-AtlasParent {
+class AtlasScientificDO : public AtlasParent {
  public:
     explicit AtlasScientificDO(int8_t  powerPin,
                                uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
@@ -80,10 +88,14 @@ AtlasParent {
 };
 
 /**
- * @brief The variable class used for DO Concentration measured by a xxx.
+ * @brief The variable class used for dissolved oxygen concentration measured by
+ * an Atlas Scientific EZO circuit.
  *
- * The value is in units of xxx and has resolution of xxx.  This is the xxx
- * value (array positon x) returned by the xxx.
+ *   - Accuracy is ± 0.05 mg/L
+ *   - Range is 0.01 − 100+ mg/L
+ *   - Resolution is 0.01 mg/L
+ *   - Reported in percent saturation
+ *   - Result stored as sensorValues[0]
  */
 class AtlasScientificDO_DOmgL : public Variable {
  public:
@@ -93,6 +105,10 @@ class AtlasScientificDO_DOmgL : public Variable {
      * @param parentSense The parent AtlasScientificDO providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is AtlasDOmgL.
+     */
     explicit AtlasScientificDO_DOmgL(AtlasScientificDO* parentSense,
                                      const char*        uuid    = "",
                                      const char*        varCode = "AtlasDOmgL")
@@ -109,12 +125,35 @@ class AtlasScientificDO_DOmgL : public Variable {
         : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
                    (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", "AtlasDOmgL") {}
+    /**
+     * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
+     */
     ~AtlasScientificDO_DOmgL() {}
 };
 
-// The class for the DO Percent of Saturation Variable
+/**
+ * @brief The variable class used for dissolved oxygen percent of saturation
+ * measured by an Atlas Scientific EZO circuit.
+ *
+ * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
+ *   - Accuracy is ± 0.05 mg/L
+ *   - Range is 0.1 − 400+ % saturation
+ *   - Resolution is 0.1 % saturation
+ *   - Reported in percent saturation
+ *   - Result stored as sensorValues[1]
+ */
 class AtlasScientificDO_DOpct : public Variable {
  public:
+    /**
+     * @brief Construct a new AtlasScientificDO_DOpct object.
+     *
+     * @param parentSense The parent AtlasScientificDO providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is AtlasDOpct
+     */
     explicit AtlasScientificDO_DOpct(AtlasScientificDO* parentSense,
                                      const char*        uuid    = "",
                                      const char*        varCode = "AtlasDOpct")
@@ -122,11 +161,20 @@ class AtlasScientificDO_DOpct : public Variable {
                    (uint8_t)ATLAS_DOPCT_RESOLUTION,
                    "oxygenDissolvedPercentOfSaturation", "percent", varCode,
                    uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificDO_DOpct object.
+     *
+     * @note This must be tied with a parent AtlasScientificDO before it can be
+     * used.
+     */
     AtlasScientificDO_DOpct()
         : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION,
                    "oxygenDissolvedPercentOfSaturation", "percent",
                    "AtlasDOpct") {}
+    /**
+     * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
+     */
     ~AtlasScientificDO_DOpct() {}
 };
 

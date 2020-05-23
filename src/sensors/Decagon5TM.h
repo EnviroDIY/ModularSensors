@@ -84,6 +84,9 @@ class Decagon5TM : public SDI12Sensors {
     // Destructor
     ~Decagon5TM() {}
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 };
 
@@ -91,14 +94,31 @@ class Decagon5TM : public SDI12Sensors {
 // Defines the Ea/Matric Potential Variable
 class Decagon5TM_Ea : public Variable {
  public:
+    /**
+     * @brief Construct a new Decagon5TM_Ea object.
+     *
+     * @param parentSense The parent Decagon5TM providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is SoilEa.
+     */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = "SoilEa")
         : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM,
                    (uint8_t)TM_EA_RESOLUTION, "permittivity", "faradPerMeter",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new Decagon5TM_Ea object.
+     *
+     * @note This must be tied with a parent Decagon5TM before it can be used.
+     */
     Decagon5TM_Ea()
         : Variable((const uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
                    "permittivity", "faradPerMeter", "SoilEa") {}
+    /**
+     * @brief Destroy the Decagon5TM_Ea object - no action needed.
+     */
     ~Decagon5TM_Ea() {}
 };
 

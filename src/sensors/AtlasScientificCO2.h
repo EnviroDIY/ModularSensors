@@ -11,12 +11,7 @@
  *
  * These are used for any sensor attached to an Atlas EZO CO2 circuit.
  *
- * This depends on the Arduino core Wire library.
- *
- * The output from the Atlas Scientifc CO2 is the temperature in degrees C.
- *     Accuracy is ± 3% or ± 30 ppm
- *     Range is 0 − 10000 ppm
- *     Resolution is 1 ppm
+ * @copydetails AtlasScientificCO2
  */
 
 // Header Guards
@@ -56,7 +51,20 @@
 #define ATLAS_CO2TEMP_VAR_NUM 1
 
 /**
- * @brief The main class for the Atlas Scientific CO2 temperature sensor
+ * @brief The main class for the Atlas Scientific gaseous CO2 and temperature
+ * sensor - used for any sensor attached to an Atlas EZO CO2 circuit.
+ *
+ * Documentation on the CO2 circuit and probe is available here:
+ * https://www.atlas-scientific.com/probes/ezo-co2-embedded-ndir-carbon-dioxide-sensor/f
+ *
+ * For Carbon Dioxide:
+ *   @copydetails AtlasScientificCO2_CO2
+ * For Temperature:
+ *   @copydetails AtlasScientificCO2_Temp
+ *
+ * @note According to the probe datasheet, the temperature measurement is only
+ * intended to be used to verify that the sensor is in equilibrium with its
+ * surroundings.
  */
 class AtlasScientificCO2 : public AtlasParent {
  public:
@@ -92,7 +100,16 @@ class AtlasScientificCO2 : public AtlasParent {
     bool setup(void) override;
 };
 
-// The class for the CO2 Concentration Variable
+/**
+ * @brief The variable class used for CO2 concentration measured by an Atlas
+ * Scientific CO2 circuit.
+ *
+ *   - Resolution is 1 ppm
+ *   - Accuracy is ± 3% or ± 30 ppm
+ *   - Range is 0 − 10000 ppm
+ *   - Reported as parts per million
+ *   - Result stored as sensorValues[0]
+ */
 class AtlasScientificCO2_CO2 : public Variable {
  public:
     /**
@@ -127,7 +144,16 @@ class AtlasScientificCO2_CO2 : public Variable {
     ~AtlasScientificCO2_CO2() {}
 };
 
-// The class for the Temp Variable
+/**
+ * @brief The variable class used for temperature measured by an Atlas
+ * Scientific CO2 circuit.
+ *
+ *   - Resolution is 1°C
+ *   - Accuracy is not reported on the sensor datasheet
+ *   - Range is -20°C to +50°C
+ *   - Reported as degrees Celsius
+ *   - Result stored as sensorValues[1]
+ */
 class AtlasScientificCO2_Temp : public Variable {
  public:
     /**

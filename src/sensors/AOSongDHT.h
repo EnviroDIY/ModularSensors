@@ -74,22 +74,13 @@ typedef enum DHTtype {
  * http://www.aosong.com/en/products/details.asp?id=117
  *
  * For Relative Humidity:
- *   - Resolution is 0.1 % RH
- *   - Accuracy is ± 2 % RH
- *   - Range is 0 to 100 % RH
- *   - Reported as percent RH
- *   - Result stored as sensorValues[0]
+ *   @copydetails AOSongDHT_Humidity
  *
  * For Temperature:
- *   - Resolution is 0.1°C
- *   - Accuracy is ±0.5°C
- *   - Range is -40°C to +80°C
- *   - Reported as degrees Celsius
- *   - Result stored as sensorValues[1]
+ *   @copydetails AOSongDHT_Temp
  *
  * Heat index is calculated from temperature and humidity.
- *   - Reported as a dimensionless index
- *   - Result stored as sensorValues[2]
+ *   @copydetails AOSongDHT_HI
  *
  * Warm up/sampling time: 1.7sec
  */
@@ -137,7 +128,6 @@ class AOSongDHT : public Sensor {
 /**
  * @brief The variable class used for humidity measured by an AOSong DHT.
  *
- * For Relative Humidity:
  *   - Resolution is 0.1 % RH
  *   - Accuracy is ± 2 % RH
  *   - Range is 0 to 100 % RH
@@ -179,7 +169,6 @@ class AOSongDHT_Humidity : public Variable {
 /**
  * @brief The variable class used for temperature measured by an AOSong DHT.
  *
- * For Temperature:
  *   - Resolution is 0.1°C
  *   - Accuracy is ±0.5°C
  *   - Range is -40°C to +80°C

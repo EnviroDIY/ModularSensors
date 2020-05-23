@@ -10,10 +10,7 @@
  *
  * These are used for any sensor attached to an Atlas EZO pH circuit.
  *
- * The output from the Atlas Scientifc pH is the temperature in degrees C.
- *     Accuracy is ± 0.002
- *     Range is 0.001 − 14.000
- *     Resolution is 0.001
+ * @copydetails AtlasScientificpH
  */
 
 // Header Guards
@@ -42,29 +39,65 @@
 #define ATLAS_PH_VAR_NUM 0
 
 /**
- * @brief The main class for the Atlas Scientific pH temperature sensor
+ * @brief The main class for the Atlas Scientific pH temperature sensor - used
+ * for any sensor attached to an Atlas EZO pH circuit.
+ *
+ * For pH:
+ *   @copydetails AtlasScientificpH_pH
  */
-AtlasParent{
-    public : explicit AtlasScientificpH(
-        int8_t powerPin, uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
-        uint8_t measurementsToAverage = 1) :
-        AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                    "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
-                    ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
-                    ATLAS_PH_MEASUREMENT_TIME_MS){} ~AtlasScientificpH(){}
+class AtlasScientificpH : public AtlasParent {
+ public:
+    explicit AtlasScientificpH(int8_t  powerPin,
+                               uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+                               uint8_t measurementsToAverage = 1)
+        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                      "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
+                      ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
+                      ATLAS_PH_MEASUREMENT_TIME_MS) {}
+    ~AtlasScientificpH() {}
 };
 
-// The class for the pH variable
+/**
+ * @brief The variable class used for pH measured by an Atlas Scientific EZO pH
+ * circuit.
+ *
+ *   - Accuracy is ± 0.002
+ *   - Range is 0.001 − 14.000
+ *   - Resolution is 0.001
+ *   - Reported as dimensionless pH units
+ *   - Result stored as sensorValues[0]
+ *
+ * @note Be careful not to mix the similar variable and sensor object names!
+ */
 class AtlasScientificpH_pH : public Variable {
  public:
+    /**
+     * @brief Construct a new AtlasScientificpH_pH object.
+     *
+     * @param parentSense The parent AtlasScientificpH providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is AtlaspH
+     */
     explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
                                   const char*        uuid    = "",
                                   const char*        varCode = "AtlaspH")
         : Variable(parentSense, (const uint8_t)ATLAS_PH_VAR_NUM,
                    (uint8_t)ATLAS_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificpH_pH object.
+     *
+     * @note This must be tied with a parent AtlasScientificpH before it can be
+     * used.
+     */
     AtlasScientificpH_pH()
         : Variable((const uint8_t)ATLAS_PH_VAR_NUM,
                    (uint8_t)ATLAS_PH_RESOLUTION, "pH", "pH", "AtlaspH") {}
+    /**
+     * @brief Destroy the AtlasScientificpH_pH object - no action needed.
+     */
     ~AtlasScientificpH_pH() {}
 };
 
