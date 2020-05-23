@@ -231,8 +231,7 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
 
     // Try up to 5 times to get a signal quality - that is, ping NIST 5 times
     // and see if the value updates
-    int8_t   num_pings_remaining = 5;
-    uint32_t startMillis         = millis();
+    int8_t num_pings_remaining = 5;
     do {
         getModemSignalQuality(rssi, percent);
         MS_DBG(F("Raw signal quality:"), rssi);

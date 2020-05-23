@@ -29,6 +29,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"
+#undef TINY_GSM_MODEM_HAS_GPRS
 #include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP

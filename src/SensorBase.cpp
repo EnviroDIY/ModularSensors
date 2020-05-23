@@ -439,7 +439,7 @@ bool Sensor::checkPowerOn(bool debug) {
                     powerBitNumber) == LOW) {
             if (debug) { MS_DBG(F("was off.")); }
             // Reset time of power on, in-case it was set to a value
-            if (_millisPowerOn != 0) _millisPowerOn = 0;
+            _millisPowerOn = 0;
             // Unset the status bits for sensor power (bits 1 & 2),
             // activation (bits 3 & 4), and measurement request (bits 5 & 6)
             _sensorStatus &= 0b10000001;

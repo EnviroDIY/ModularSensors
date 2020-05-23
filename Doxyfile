@@ -1145,9 +1145,6 @@ CLANG_OPTIONS          = \
                          -DTINY_GSM_RX_BUFFER=64  \
                          -DTINY_GSM_YIELD_MS=2  \
                          -DMS_BUILD_TESTING  \
-                         -DTINY_GSM_DEBUG=Serial  \
-                         -DMS_LOGGERMODEM_DEBUG  \
-                         -DMS_LOGGERMODEM_DEBUG_DEEP  \
                          -DMS_BUILD_TEST_SIM800  \
                          -DMS_SIMCOMSIM800_DEBUG  \
                          -DMS_BUILD_TEST_ALL_SENSORS \
