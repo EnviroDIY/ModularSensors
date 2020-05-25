@@ -1454,7 +1454,7 @@ bool Logger::logToSD(String& filename, String& rec)
     // If we could successfully open or create the file, write the data to it
     logFile.println(rec);
     // Echo the line to the serial port
-    PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
+    PRINTOUT(F("\n \\/---- Line Saved to"),filename,F("----\\/"));
     PRINTOUT(rec);
 
     // Set write/modification date time
@@ -1498,7 +1498,7 @@ bool Logger::logToSD(void)
     printSensorDataCSV(&logFile);
     // Echo the line to the serial port
     #if defined(STANDARD_SERIAL_OUTPUT)
-        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
+        PRINTOUT(F("\n \\/---- Line Saved to"),_fileName,F("----\\/"));
         printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
         PRINTOUT('\n');
     #endif

@@ -60,6 +60,11 @@ typedef enum {
    PSLR_0500mA=0, //500mA or less 
    PSLR_1000mA,
    PSLR_4000mA, //4000mA or more
+   //Fut expanded to batterys
+   // LiSiOCL2 19Ahr/larger Pulse 150mA "D" cell - Nomonal 3.6 discharged at 3.2V
+   // LiSiOCL2  9Ahr        Pulse 100mA "C" cell - Nomonal 3.6 discharged at 3.2V
+   // 3 MnO2 "D" cell   Nominal 4.8V, discharged at 3.2V, though has energy to 2.4V
+   // 3 MnO2 "C" cell - higher impedance than "D" cell
    PSLR_NUM, ///Number of Battery types supported 
    PSLR_UNDEF,
 } ps_liion_rating_t;

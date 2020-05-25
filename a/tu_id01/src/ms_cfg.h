@@ -32,7 +32,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
 #define USE_MS_SD_INI 1
-//#define USE_PS_HW_BOOT 1
+#define USE_PS_EEPROM  1 //Alterantive USE_PS_2ND_SD
+#define USE_PS_HW_BOOT 1
+
 //#define USE_PS_modularSensorsCommon 1
 
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)

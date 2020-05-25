@@ -46,6 +46,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define EF(x)  x
 #endif
 
+#if defined USE_PS_EEPROM
+#include <util/crc16.h>
+#endif // USE_PS_EEPROM
+
 /*****************************************************************************
  * Persistent structures.
  * Defines data structures for per software build & geographical location customizations 
@@ -64,25 +68,29 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if defined(USE_PLAN_FOR_UPGRADE) 
 #define STRCT_SZ(parm1) uint16_t parm1;
 #else
-#define STRCT_SZ(parm1)
+#define STRCT_SZ(parm1) sizof(parm1)
 #endif //USE_PLAN_FOR_UPGRADE
 //#define USE_PS_HW_BOOT 1
 //******
 #if defined(USE_PS_HW_BOOT)
 //Hardware Boot Structure - rarely expected to change
-#define HW_BOOT_SERIAL_NUM_SZ 10
-#define HW_BOOT_REV_SZ 8
-#define HW_BOOT_NAME_SZ 10
-#define HW_BOOT_SD_BOOT_INI_SZ 12
+#define HW_BOOT_BOARD_NAME_SZ 21
+#define HW_BOOT_SERIAL_NUM_SZ 21
+#define HW_BOOT_REV_SZ 11
+#define HW_BOOT_EXP 17
 typedef struct 
 {
+    uint16_t crc16; // Across just the hw_boot_t except crc16
     uint8_t struct_ver; //1-255 - increment for any changes in this structure
-    uint8_t serial_num[HW_BOOT_SERIAL_NUM_SZ];
-    uint8_t rev[HW_BOOT_REV_SZ];
-    uint8_t name[HW_BOOT_NAME_SZ];
-    uint8_t sd_boot_ini[HW_BOOT_SD_BOOT_INI_SZ];
-} hw_boot_t;
-#define mHw_boot_t(p1) hw_boot_t p1 
+    uint8_t board_name[HW_BOOT_BOARD_NAME_SZ]; //eg Mayfly
+    uint8_t serial_num[HW_BOOT_SERIAL_NUM_SZ]; //eg 1234
+    uint8_t rev[HW_BOOT_REV_SZ];  //eg 0.5b
+    uint8_t exp[HW_BOOT_EXP];
+} hw_boot001_t;
+#define HW_BOOT_STRUCT_VER_001 001
+#define HW_BOOT_STRUCT_VER HW_BOOT_STRUCT_VER_001
+#define mHw_boot_t(p1) hw_boot001_t p1 
+#define sizeof_hw_boot sizeof(hw_boot001_t)
 #else
 #define mHw_boot_t(p1) 
 #endif //USE_PS_HW_BOOT
@@ -95,18 +103,19 @@ typedef struct
 #define USE_PS_modularSensorsCommon 1
 //
 #if defined(USE_PS_modularSensorsCommon)
-#define MSC_LOGGER_ID_SZ 8
-#define MSC_GEOLOCATION_ID_SZ 160
+#define MSC_LOGGER_ID_SZ      17
+#define MSC_GEOLOCATION_ID_SZ 61
 typedef struct {
     //v01 Initial structure 
     uint8_t logging_interval_min; 
-    uint8_t time_zone;
+    int8_t time_zone;   //-12,0 to +11?
+    uint8_t battery_type;
     uint8_t logger_id[MSC_LOGGER_ID_SZ];
-    uint8_t geolocation_id[];
+    uint8_t geolocation_id[MSC_GEOLOCATION_ID_SZ];
     } msc01_t;
 #define MSC_ACTIVE msc01_t
 typedef struct {
-    STRCT_SZ(sz) 
+    uint8_t sz ;
     MSC_ACTIVE s;
 } modularSensorsCommon_t;
 #define mModularSensorsCommon_t(p1) modularSensorsCommon_t p1 
@@ -167,13 +176,21 @@ typedef struct {
 #define mProvider_t(p1)
 #endif //USE_PS_provider
 
-typedef struct {
-  mHw_boot_t(hw_boot);
+#define EP_HW_BOOT_ADDR 0
+#define EP_PERSISTENT_STORE_ADDR (sizeof_hw_boot)
+ typedef struct {
+  uint16_t crc16; // Across persistent_store_t
+  uint16_t struct_size; //Of struct including crc8, struct_ver struct_size
+  uint8_t struct_ver; //1-255 - increment for any changes in this structure
   mModularSensorsCommon_t(msc);
   mModularSensorsNetwork_t(msn);  
   mProvider_t(provider);
-} persistent_store_t;
+ } app_storage_t;
+typedef struct {
+  mHw_boot_t(hw_boot);
+  app_storage_t app;
+} persistent_store_t; 
 
-#define LOGGER_ID_ADDR ps.msc.s.logger_id
+//#define LOGGER_ID_ADDR ps.msc.s.logger_id
 
 #endif //ms_common_h

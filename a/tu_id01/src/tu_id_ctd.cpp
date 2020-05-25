@@ -55,6 +55,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>  // The modular sensors library
+#if defined USE_PS_EEPROM
+#include "EEPROM.h"
+#endif // USE_PS_EEPROM
 #include "ms_common.h"
 
 // ==========================================================================
@@ -635,6 +638,7 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 #ifdef USE_MS_SD_INI
 persistent_store_t ps_ram;
+#define epc ps_ram  
 #endif //#define USE_MS_SD_INI
 
 // ==========================================================================
@@ -642,6 +646,7 @@ persistent_store_t ps_ram;
 // ==========================================================================
 
 // Create a new logger instance
+//nh need to make LoggerId run time, so can choose between Eeprom or default
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 
@@ -789,7 +794,8 @@ void setup()
 #endif
 
     unusedBitsMakeSafe();
-    MS_DBG(F("persisten store cache size"),sizeof(ps_ram));
+    readAvrEeprom();
+
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
         enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
@@ -822,9 +828,7 @@ void setup()
     greenredflash();
     //not in this scope Wire.begin();
 
-    // Set the timezones for the logger/data and the RTC
-    // Logging in the given time zone
-    Logger::setLoggerTimeZone(timeZone);
+
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     Logger::setRTCTimeZone(0);
 
