@@ -1,11 +1,11 @@
 /**
  * @file RainCounterI2C.cpp
- * @brief Implements the RainCounterI2C class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the RainCounterI2C class.
  */
 
 #include "RainCounterI2C.h"

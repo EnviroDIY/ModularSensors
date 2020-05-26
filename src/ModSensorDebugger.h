@@ -14,7 +14,9 @@
 // Included Dependencies
 #include <Arduino.h>
 
-// The current library version number
+/**
+ * @brief The current library version number
+ */
 #define MODULAR_SENSORS_VERSION "0.25.0"
 
 #ifndef STANDARD_SERIAL_OUTPUT

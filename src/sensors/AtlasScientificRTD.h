@@ -1,18 +1,16 @@
-/*
+/**
  * @file AtlasScientificRTD.h
- * @brief This file contains the AtlasScientificRTD subclass of the AtlasParent
- * sensor class along with the variable subclass AtlasScientificRTD_Temp.  These
- * are used for any sensor attached to an Atlas EZO RTD circuit.
- *
- * The output from the Atlas Scientifc RTD is the temperature in degrees C.
- *     Accuracy is ± (0.10°C + 0.0017 x °C)
- *     Range is -126.000 °C − 1254 °C
- *     Resolution is 0.001 °C
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
+ * class along with the variable subclass AtlasScientificRTD_Temp.
+ *
+ * These are used for any sensor attached to an Atlas EZO RTD circuit.
+ *
+ * @copydetails AtlasScientificRTD
  */
 
 // Header Guards
@@ -22,7 +20,10 @@
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-// I2C address
+
+/**
+ * @brief Default I2C address is 0x66 (102)
+ */
 #define ATLAS_RTD_I2C_ADDR 0x66  // 102
 
 // Sensor Specific Defines
@@ -37,7 +38,13 @@
 #define ATLAS_RTD_RESOLUTION 3
 #define ATLAS_RTD_VAR_NUM 0
 
-// The main class for the Atlas Scientific RTD temperature sensor
+/**
+ * @brief The main class for the Atlas Scientific RTD temperature sensor - used
+ * for any sensor attached to an Atlas EZO RTD circuit.
+ *
+ * For temperature:
+ *   @copydetails AtlasScientificRTD_Temp
+ */
 class AtlasScientificRTD : public AtlasParent {
  public:
     explicit AtlasScientificRTD(int8_t  powerPin,
@@ -51,19 +58,47 @@ class AtlasScientificRTD : public AtlasParent {
     ~AtlasScientificRTD() {}
 };
 
-// The class for the Temp Variable
+/**
+ * @brief The variable class used for temperature measured by an Atlas
+ * Scientific RTD temperature sensor.
+ *
+ *   - Accuracy is ± (0.10°C + 0.0017 x °C)
+ *   - Range is -126.000 °C − 1254 °C
+ *   - Resolution is 0.001 °C
+ *   - Reported as degrees Celsius
+ *   - Result stored as sensorValues[0]
+ */
 class AtlasScientificRTD_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new AtlasScientificRTD_Temp object.
+     *
+     * @param parentSense The parent AtlasScientificRTD providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is AtlasTemp
+     */
     explicit AtlasScientificRTD_Temp(AtlasScientificRTD* parentSense,
                                      const char*         uuid    = "",
                                      const char*         varCode = "AtlasTemp")
         : Variable(parentSense, (const uint8_t)ATLAS_RTD_VAR_NUM,
                    (uint8_t)ATLAS_RTD_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificRTD_Temp object.
+     *
+     * @note This must be tied with a parent AtlasScientificRTD before it can be
+     * used.
+     */
     AtlasScientificRTD_Temp()
         : Variable((const uint8_t)ATLAS_RTD_VAR_NUM,
                    (uint8_t)ATLAS_RTD_RESOLUTION, "temperature",
                    "degreeCelsius", "AtlasTemp") {}
+    /**
+     * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.
+     */
     ~AtlasScientificRTD_Temp() {}
 };
 

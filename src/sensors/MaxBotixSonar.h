@@ -1,18 +1,19 @@
 /**
  * @file MaxBotixSonar.h
- * @brief This file contains the MaxBotixSonar sensor subclass and the
- * MaxBotixSonar_Range variable subclass. These are for the MaxBotix
- * HRXL-MaxSonar ultrasonic range finders.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the MaxBotixSonar sensor subclass and the MaxBotixSonar_Range
+ * variable subclass.
+ *
+ * These are for the MaxBotix HRXL-MaxSonar ultrasonic range finders.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
  *     Accuracy is ± 1%
  *     Range is 300-5000mm or 500 to 9999mm, depending on model
  *
  * Warm up time to completion of header:  160ms
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

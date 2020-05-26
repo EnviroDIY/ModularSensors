@@ -1,13 +1,13 @@
 /**
  * @file EspressifESP8266.h
- * @brief This file contains the EspressifESP8266 subclass of loggerModem which
- * SHOULD work for essentially any breakout of the Espressif ESP8266 wifi chip
- * or ESP32 wifi/bluetooth chip that has been flashed with Espressif's AT
- * command firmware.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the EspressifESP8266 subclass of loggerModem which SHOULD
+ * work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32
+ * wifi/bluetooth chip that has been flashed with Espressif's AT command
+ * firmware.
  */
 
 // Header Guards
@@ -42,16 +42,25 @@
 #define ESP8266_STATUS_LEVEL HIGH
 #define ESP8266_STATUS_TIME_MS 350
 
-// Reset is very fast
+/**
+ * @brief Reset uses a low pulse on pin 32
+ */
 #define ESP8266_RESET_LEVEL LOW
+/**
+ * @brief Reset time is undocumented but very fast - 1ms seems to be sufficient
+ */
 #define ESP8266_RESET_PULSE_MS 1
 
 // See notes above.. this is user configurable, but useless
 #define ESP8266_WAKE_LEVEL LOW
 #define ESP8266_WAKE_PULSE_MS 0
-// Module turns on when power is applied regardless of pin states
+/**
+ * @brief Module turns on when power is applied regardless of pin states
+ */
 #define ESP8266_WARM_UP_TIME_MS 0
-// Time until system and digital pins are operational
+/**
+ * @brief Time until system and digital pins are operational
+ */
 #define ESP8266_ATRESPONSE_TIME_MS 350
 
 // power down ???

@@ -1,10 +1,17 @@
 /**
  * @file DecagonES2.h
- * @brief This file contains the DecagonES2 subclass of the SDI12Sensors class
- * along with the variable subclasses DecagonES2_Cond and DecagonES2_Temp. These
- * are used for discontinued Decagon Devices ES-2 Electrical Conductivity
- * Sensor.  This depends on the EnviroDIY SDI-12 library and the
- * SDI12Sensors super class.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the DecagonES2 subclass of the SDI12Sensors class along with
+ * the variable subclasses DecagonES2_Cond and DecagonES2_Temp.
+ *
+ * These are used for the discontinued Decagon Devices ES-2 Electrical
+ * Conductivity Sensor.
+ *
+ * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ * class.
  *
  * For Specific Conductance:
  *  Resolution is 0.001 mS/cm = 1 µS/cm
@@ -18,10 +25,6 @@
  *
  * Maximum warm-up time in SDI-12 mode: 250ms, assume stability at warm-up
  * Maximum measurement duration: 250ms
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

@@ -1,9 +1,17 @@
 /**
  * @file MeterTeros11.h
- * @brief This file contains the MeterTeros11 sensor subclass and the variable
- * subclasses MeterTeros11_Ea, MeterTeros11_Temp, and MeterTeros11_VWC.  These
- * are for the Meter Teros 11 Advanced Soil Moisture probe. This depends on the
- * EnviroDIY SDI-12 library and the SDI12Sensors super class.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the MeterTeros11 sensor subclass and the variable subclasses
+ * MeterTeros11_Ea, MeterTeros11_Temp, and MeterTeros11_VWC.
+ *
+ * These are for the Meter Teros 11 Advanced Soil Moisture probe.
+ *
+ * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ * class.
  *
  * Documentation for the SDI-12 Protocol commands and responses for the Meter
  * Teros 11 can be found at:
@@ -28,11 +36,6 @@
  * Supply Voltage (VCC to GND), 4.0 to 15.0 VDC
  * Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)
  * Digital Output Voltage (logic high), 3.6 typical
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

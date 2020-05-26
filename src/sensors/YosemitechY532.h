@@ -1,9 +1,16 @@
 /**
  * @file YosemitechY532.h
- * @brief This file contains the YosemitechY532 sensor subclass and the variable
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the YosemitechY532 sensor subclass and the variable
  * subclasses YosemitechY532_pH, YosemitechY532_Temp, and
- * YosemitechY532_Voltage.  These are for the Yosemitech Y532 pH sensor. This
- * depends on the YosemitechParent super class.
+ * YosemitechY532_Voltage.
+ *
+ * These are for the Yosemitech Y532 pH sensor.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
@@ -24,10 +31,6 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 4.5sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

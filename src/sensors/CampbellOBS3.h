@@ -1,9 +1,15 @@
 /**
  * @file CampbellOBS3.h
- * @brief This file contains the CampbellOBS3 sensor subclass and the variable
- *subclasses CampbellOBS3_Turbidity and CampbellOBS3_Voltage.  These are used
- *for the Campbell Scientific OBS-3+.  This depends on the soligen2010 fork
- *of the Adafruit ADS1015 library.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the CampbellOBS3 sensor subclass and the variable subclasses
+ * CampbellOBS3_Turbidity and CampbellOBS3_Voltage.
+ *
+ * These are used for the Campbell Scientific OBS-3+.
+ *
+ * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  *
  * Ranges: (depends on sediment size, particle shape, and reflectivity)
  *  Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
@@ -21,10 +27,6 @@
  *
  * Minimum stabilization time: 2s
  * Maximum data rate = 10Hz (100ms/sample)
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
@@ -83,11 +85,17 @@ class CampbellOBS3 : public Sensor {
     // Destructor
     ~CampbellOBS3();
 
+    /**
+     * @copydoc Sensor::getSensorLocation()
+     */
     String getSensorLocation(void) override;
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 
- protected:
+ private:
     uint8_t _adsChannel;
     float   _x2_coeff_A, _x1_coeff_B, _x0_coeff_C;
     uint8_t _i2cAddress;
@@ -96,16 +104,30 @@ class CampbellOBS3 : public Sensor {
 
 // The main variable returned is turbidity
 // To utilize both high and low gain turbidity, you must create *two* sensor
-// objects on two different data pins and then create two variable objects, one
-// tied to each sensor.
+// objects on two different data channels and then create two variable objects,
+// one tied to each sensor.
 class CampbellOBS3_Turbidity : public Variable {
  public:
+    /**
+     * @brief Construct a new CampbellOBS3_Turbidity object.
+     *
+     * @param parentSense The parent CampbellOBS3 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is OBS3Turbidity
+     */
     explicit CampbellOBS3_Turbidity(CampbellOBS3* parentSense,
                                     const char*   uuid    = "",
                                     const char*   varCode = "OBS3Turbidity")
         : Variable(parentSense, (const uint8_t)OBS3_TURB_VAR_NUM,
                    (uint8_t)OBS3_RESOLUTION, "turbidity",
                    "nephelometricTurbidityUnit", varCode, uuid) {}
+    /**
+     * @brief Construct a new CampbellOBS3_Turbidity object.
+     *
+     * @note This must be tied with a parent CampbellOBS3 before it can be used.
+     */
     CampbellOBS3_Turbidity()
         : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
                    "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity") {
@@ -118,16 +140,33 @@ class CampbellOBS3_Turbidity : public Variable {
 // This could be helpful if the calibration equation was typed incorrectly
 class CampbellOBS3_Voltage : public Variable {
  public:
+    /**
+     * @brief Construct a new CampbellOBS3_Voltage object.
+     *
+     * @param parentSense The parent CampbellOBS3 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is OBS3Voltage
+     */
     explicit CampbellOBS3_Voltage(CampbellOBS3* parentSense,
                                   const char*   uuid    = "",
                                   const char*   varCode = "OBS3Voltage")
         : Variable(parentSense, (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt", varCode,
                    uuid) {}
+    /**
+     * @brief Construct a new CampbellOBS3_Voltage object.
+     *
+     * @note This must be tied with a parent CampbellOBS3 before it can be used.
+     */
     CampbellOBS3_Voltage()
         : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
                    (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt",
                    "OBS3Voltage") {}
+    /**
+     * @brief Destroy the CampbellOBS3_Voltage object - no action needed.
+     */
     ~CampbellOBS3_Voltage() {}
 };
 

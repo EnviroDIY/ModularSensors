@@ -1,11 +1,11 @@
 /**
  * @file QuectelBG96.h
- * @brief This file contains the QuectelBG96 subclass of loggerModem for
- * Dragino, Nimbelink, or any other module based on the Quectel BG96.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the QuectelBG96 subclass of loggerModem for Dragino,
+ * Nimbelink, or any other module based on the Quectel BG96.
  */
 
 // Header Guards

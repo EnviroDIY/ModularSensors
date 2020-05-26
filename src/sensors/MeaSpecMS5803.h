@@ -1,11 +1,19 @@
 /**
  * @file MeaSpecMS5803.h
- *  @brief This file contains the MeaSpecMS5803 semsor subclass and the variable
- * subclasses MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.  THese are for the
- * Measurement Specialties MS5803 pressure sensor, which is used in the SparkFun
- * Pressure Sensor Breakout - MS5803-14BA. This depends on the
- * https://github.com/EnviroDIY/MS5803 library, which was modified for
- * NodularSensors based on a fork from the
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>. with help from Beth
+ * Fisher, Evan Host and Bobby Schulz.
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the MeaSpecMS5803 semsor subclass and the variable subclasses
+ * MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.
+ *
+ * These are for the Measurement Specialties MS5803 pressure sensor, which is
+ * used in the SparkFun Pressure Sensor Breakout - MS5803-14BA.
+ *
+ * This depends on the https://github.com/EnviroDIY/MS5803 library, which was
+ * modified for ModularSensors based on a fork from the
  * https://github.com/NorthernWidget/MS5803 library, which itself expanded on
  * https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
  *
@@ -36,12 +44,6 @@
  * Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
  *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
  * Assume sensor is immediately stable
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>. with help from Beth
- * Fisher, Evan Host and Bobby Schulz.
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

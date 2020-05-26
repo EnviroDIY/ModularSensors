@@ -1,9 +1,16 @@
 /**
  * @file MaximDS3231.h
- * @brief This file contains the MaximDS3231 sensor subclass and the
- * MaximDS3231_Temp variable subclass. These are for the DS3231 real time clock
- * which is required for all AVR boards.  This depends on the EnviroDIY DS3231
- * library.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the MaximDS3231 sensor subclass and the MaximDS3231_Temp
+ * variable subclass.
+ *
+ * These are for the DS3231 real time clock which is required for all AVR
+ * boards.
+ *
+ * This depends on the EnviroDIY DS3231 library.
  *
  * For temperature from the DS3231:
  *  Resolution is 0.25°C
@@ -13,10 +20,6 @@
  * The clock should have a separate power supply and never be turned off.
  * We assume it's always warmed up and stable.
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

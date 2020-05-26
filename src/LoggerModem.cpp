@@ -1,13 +1,10 @@
 /**
  * @file LoggerModem.cpp
- * @brief Implements the loggerModem class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *This file wraps the tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
- *and adds in the power functions to turn the modem on and off.
+ * @brief Implements the loggerModem class.
  */
 
 #include "LoggerModem.h"

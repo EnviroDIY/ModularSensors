@@ -1,10 +1,16 @@
 /**
  * @file TIINA219.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Neil Hancock
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief This file contains the TIINA219 sensor subclass and the variale
- * subclasses TIINA219_Current, TIINA219_Volt, and TIINA219_Power.  These are
- * for the Texas Instruments INA219 current/voltage sensor.  This depends on the
- * Adafruit Ina219 Library
+ * @brief Contains the TIINA219 sensor subclass and the variale subclasses
+ * TIINA219_Current, TIINA219_Volt, and TIINA219_Power.
+ *
+ * These are for the Texas Instruments INA219 current/voltage sensor.
+ *
+ * This depends on the Adafruit INA219 Library
  *
  * Documentation for the sensor can be found at:
  * https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout and
@@ -22,11 +28,6 @@
  *  Range is 0 to 26V
  *
  * A single conversion takes >532 µs (586 µs typical) at 12 bit resolution
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Neil Hancock
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

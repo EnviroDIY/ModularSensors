@@ -1,9 +1,17 @@
 /**
  * @file FreescaleMPL115A2.h
- * @brief This file contains the MPL115A2 sensor subclass and the variable
- * subclasses MPL115A2_Temp and MPL115A2_Pressure.  These are used for the
- * Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer. This
- * depends on the https://github.com/adafruit/Adafruit_MPL115A2 library
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the MPL115A2 sensor subclass and the variable subclasses
+ * MPL115A2_Temp and MPL115A2_Pressure.
+ *
+ * These are used for the Freescale Semiconductor MPL115A2 Miniature I2C Digital
+ * Barometer.
+ *
+ * This depends on the https://github.com/adafruit/Adafruit_MPL115A2 library
  *
  * Documentation for the sensor can be found at:
  * https://www.adafruit.com/product/992 and
@@ -16,11 +24,6 @@
  *
  * Sensor takes about 1.6 ms to respond
  * Assume sensor is immediately stable
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Written By: Bobby Schulz <schu3119@umn.edu>
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

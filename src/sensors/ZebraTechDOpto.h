@@ -1,9 +1,16 @@
 /**
  * @file ZebraTechDOpto.h
- * @brief This file contains ZebraTechDOpto sensor subclass and the variable
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the ZebraTechDOpto sensor subclass and the variable
  * subclasses ZebraTechDOpto_Temp, ZebraTechDOpto_DOpct, and
- * ZebraTechDOpto_DOmgL.  These are for the ZebraTech D-Opto digital dissolved
- * oxygen sensor.  This depends on the SDI12Sensors parent class.
+ * ZebraTechDOpto_DOmgL.
+ *
+ * These are for the ZebraTech D-Opto digital dissolved oxygen sensor.
+ *
+ * This depends on the SDI12Sensors parent class.
  *
  * The manual for this sensor is available at:
  * www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf
@@ -28,10 +35,6 @@
  * it that way the sensor would send an interruption when it was finished,
  * possibly colliding with and confusing other sensor results
  *
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

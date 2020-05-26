@@ -1,9 +1,16 @@
 /**
  * @file BoschBME280.h
- * @brief This file contains the BoschBME280 sensor subclass and the variable
- * subclasses BoschBME280_Temp, BoschBME280_Humidity, BoschBME280_Pressure, and
- * BoschBME280_Altitude.  These are used for the Bosch BME280 digital oressure
- * and humidity sensor.  This depends on the Adafruit BME280 Library.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the BoschBME280 sensor subclass and the variable subclasses
+ * BoschBME280_Temp, BoschBME280_Humidity, BoschBME280_Pressure, and
+ * BoschBME280_Altitude.
+ *
+ * These are used for the Bosch BME280 digital pressure and humidity sensor.
+ *
+ * This depends on the Adafruit BME280 Library.
  *
  * Documentation for the sensor can be found at:
  * https://www.bosch-sensortec.com/bst/products/all_products/bme280
@@ -26,10 +33,6 @@
  * Sensor takes about 100ms to respond
  * Slowest response time (humidity): 1sec
  * Assume sensor is immediately stable
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
@@ -84,9 +87,15 @@ class BoschBME280 : public Sensor {
 
     bool   wake(void) override;
     bool   setup(void) override;
+    /**
+     * @copydoc Sensor::getSensorLocation()
+     */
     String getSensorLocation(void) override;
 
     // bool startSingleMeasurement(void) override;  // for forced mode
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 
  protected:
@@ -98,15 +107,32 @@ class BoschBME280 : public Sensor {
 // Defines the Temperature Variable
 class BoschBME280_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new BoschBME280_Temp object.
+     *
+     * @param parentSense The parent BoschBME280 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is BoschBME280Temp.
+     */
     explicit BoschBME280_Temp(BoschBME280* parentSense, const char* uuid = "",
                               const char* varCode = "BoschBME280Temp")
         : Variable(parentSense, (const uint8_t)BME280_TEMP_VAR_NUM,
                    (uint8_t)BME280_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new BoschBME280_Temp object.
+     *
+     * @note This must be tied with a parent BoschBME280 before it can be used.
+     */
     BoschBME280_Temp()
         : Variable((const uint8_t)BME280_TEMP_VAR_NUM,
                    (uint8_t)BME280_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "BoschBME280Temp") {}
+    /**
+     * @brief Destroy the BoschBME280_Temp object - no action needed.
+     */
     ~BoschBME280_Temp() {}
 };
 

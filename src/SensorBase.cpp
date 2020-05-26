@@ -1,10 +1,10 @@
 /**
  * @file SensorBase.cpp
- * @brief Implements the Sensor class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the Sensor class.
  */
 
 #include "SensorBase.h"
@@ -32,10 +32,11 @@ Sensor::Sensor(const char* sensorName, const uint8_t numReturnedVars,
     _millisPowerOn = 0;
 
     // This is the time needed from the when a sensor is activated until the
-    // readings are stable The _millisSensorActivated value is *usually* set in
-    // the wake() function, but may also be set in the startSingleMeasurement()
-    // function.  It is generally un-set in the sleep() function. The
-    // "waitForStability()" function verifies that enough time has passed.
+    // readings are stable.  The _millisSensorActivated value is *usually* set
+    // in the wake() function, but may also be set in the
+    // startSingleMeasurement() function.  It is generally un-set in the sleep()
+    // function. The "waitForStability()" function verifies that enough time has
+    // passed.
     _stabilizationTime_ms  = stabilizationTime_ms;
     _millisSensorActivated = 0;
 
@@ -438,7 +439,7 @@ bool Sensor::checkPowerOn(bool debug) {
                     powerBitNumber) == LOW) {
             if (debug) { MS_DBG(F("was off.")); }
             // Reset time of power on, in-case it was set to a value
-            if (_millisPowerOn != 0) _millisPowerOn = 0;
+            _millisPowerOn = 0;
             // Unset the status bits for sensor power (bits 1 & 2),
             // activation (bits 3 & 4), and measurement request (bits 5 & 6)
             _sensorStatus &= 0b10000001;

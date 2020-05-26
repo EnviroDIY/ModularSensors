@@ -1,10 +1,10 @@
 /**
  * @file DreamHostPublisher.cpp
- * @brief Implements the DreamHostPublisher class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the DreamHostPublisher class.
  */
 
 #include "DreamHostPublisher.h"

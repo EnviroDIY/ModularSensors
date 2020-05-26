@@ -1,9 +1,15 @@
 /**
  * @file YosemitechY511.h
- * @brief This file contains the YosemitechY511 sensor subclass and the variable
- * subclasses YosemitechY511_Turbidity and YosemitechY511_Temp.  These are for
- * the Yosemitech Y511 Turbidity Sensor with Wiper.  This depends on the
- * YosemitechParent super class.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the YosemitechY511 sensor subclass and the variable
+ * subclasses YosemitechY511_Turbidity and YosemitechY511_Temp.
+ *
+ * These are for the Yosemitech Y511 Turbidity Sensor with Wiper.
+ *
+ * This depends on the YosemitechParent super class.
  *
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
@@ -23,10 +29,6 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 22sec
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards

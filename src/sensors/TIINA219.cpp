@@ -1,11 +1,11 @@
 /**
  * @file TIINA219.cpp
- * @brief Implements the TIINA219 class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Neil Hancock
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the TIINA219 class.
  */
 
 #include "TIINA219.h"

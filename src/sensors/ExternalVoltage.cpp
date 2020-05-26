@@ -1,13 +1,13 @@
 /**
- * @file ExternalVoltage.cpp
- * Implements the ExternalVoltage class.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
+ * @file ExternalVoltage.cpp *
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
  * <sdamiano@stroudcenter.org>
+ *
+ * @brief Implements the ExternalVoltage class.
  */
 
 

@@ -1,11 +1,11 @@
 /**
  * @file DigiXBeeCellularTransparent.h
- * @brief This file contains the DigiXBeeCellularTransparent class for Digi
- * Cellular XBee's operating in transparent mode.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the DigiXBeeCellularTransparent class for Digi Cellular
+ * XBee's operating in transparent mode.
  */
 
 // Header Guards
@@ -29,6 +29,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"
+#undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP

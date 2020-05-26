@@ -1,11 +1,11 @@
 /**
  * @file DigiXBee.h
- * @brief This file contains the DigiXBee modem subclass of loggerModem, which
- * itself is a parent class for all other XBee's and XBee3's.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the DigiXBee modem subclass of loggerModem, which itself is a
+ * parent class for all other XBee's and XBee3's.
  */
 
 // Header Guards
@@ -30,7 +30,9 @@
 // total WAG
 #define XBEE_STATUS_TIME_MS 15
 
-// Reset is via a LOW pulse on the RESET_N pin
+/**
+ * @brief Reset is via a LOW pulse on the RESET_N pin
+ */
 #define XBEE_RESET_LEVEL LOW
 #define XBEE_RESET_PULSE_MS 5
 

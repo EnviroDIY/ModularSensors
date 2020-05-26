@@ -1,10 +1,16 @@
 /**
  * @file Decagon5TM.h
- * @brief This file contains the Decagon5TM subclass of the SDI12Sensors class
- * along with the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and
- * Decagon5TM_VWC.  These are used for discontinued Decagon Devices 5TM Soil
- * Moisture probe.  This depends on the EnviroDIY SDI-12 library and the
- * SDI12Sensors super class.
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the Decagon5TM subclass of the SDI12Sensors class along with
+ * the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and Decagon5TM_VWC.
+ *
+ * These are used for the discontinued Decagon Devices 5TM Soil Moisture probe.
+ *
+ * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ * class.
  *
  * For Ea and VWC:
  *     Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
@@ -19,10 +25,6 @@
  *
  * Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
  * Maximum measurement duration: 200ms
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  */
 
 // Header Guards
@@ -82,6 +84,9 @@ class Decagon5TM : public SDI12Sensors {
     // Destructor
     ~Decagon5TM() {}
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 };
 
@@ -89,14 +94,31 @@ class Decagon5TM : public SDI12Sensors {
 // Defines the Ea/Matric Potential Variable
 class Decagon5TM_Ea : public Variable {
  public:
+    /**
+     * @brief Construct a new Decagon5TM_Ea object.
+     *
+     * @param parentSense The parent Decagon5TM providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is SoilEa.
+     */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = "SoilEa")
         : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM,
                    (uint8_t)TM_EA_RESOLUTION, "permittivity", "faradPerMeter",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new Decagon5TM_Ea object.
+     *
+     * @note This must be tied with a parent Decagon5TM before it can be used.
+     */
     Decagon5TM_Ea()
         : Variable((const uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
                    "permittivity", "faradPerMeter", "SoilEa") {}
+    /**
+     * @brief Destroy the Decagon5TM_Ea object - no action needed.
+     */
     ~Decagon5TM_Ea() {}
 };
 

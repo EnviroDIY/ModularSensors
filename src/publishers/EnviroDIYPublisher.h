@@ -1,12 +1,14 @@
 /**
  * @file EnviroDIYPublisher.h
- * @brief This file contains the EnviroDIYPublisher subclass of dataPublisher
- * for publishing data to the EnviroDIY/Monitor My Watershed data portal at
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
+ * publishing data to the EnviroDIY/Monitor My Watershed data portal at
  * http://data.enviroDIY.org
  *
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @copyright 2020 Stroud Water Research Center
- * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copydetails EnviroDIYPublisher
  */
 
 // Header Guards

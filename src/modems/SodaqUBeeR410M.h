@@ -1,11 +1,11 @@
 /**
  * @file SodaqUBeeR410M.h
- * @brief This file contains the SodaqUBeeR410M subclass of loggerModem for the
- * Sodaq UBee based on the u-blox SARA R410M LTE-M cellular module.
- *
- * Part of the EnviroDIY ModularSensors library for Arduino
  * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ *
+ * @brief Contains the SodaqUBeeR410M subclass of loggerModem for the Sodaq UBee
+ * based on the u-blox SARA R410M LTE-M cellular module.
  */
 
 // Header Guards
@@ -25,11 +25,14 @@
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// Status should be monitored on the V_INT pin
-// V_INT becomes active mid-way through on-pulse so it should be instantly
-// visible
-#define R410M_STATUS_LEVEL HIGH
+/**
+ * @brief V_INT becomes active mid-way through on-pulse so it should be
+ * instantly visible
+ *
+ * Status should be monitored on the V_INT pin
+ */
 #define R410M_STATUS_TIME_MS 0
+#define R410M_STATUS_LEVEL HIGH
 
 // R4 series are reset with a >10 SECOND low pulse on the RESET_N pin
 #define R410M_RESET_LEVEL LOW
