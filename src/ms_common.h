@@ -103,11 +103,11 @@ typedef struct
 #define USE_PS_modularSensorsCommon 1
 //
 #if defined(USE_PS_modularSensorsCommon)
-#define MSC_LOGGER_ID_SZ      17
+#define MSC_LOGGER_ID_SZ      21
 #define MSC_GEOLOCATION_ID_SZ 61
 typedef struct {
     //v01 Initial structure 
-    uint8_t logging_interval_min; 
+    uint16_t logging_interval_min; 
     int8_t time_zone;   //-12,0 to +11?
     uint8_t battery_type;
     uint8_t logger_id[MSC_LOGGER_ID_SZ];
