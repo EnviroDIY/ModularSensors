@@ -52,31 +52,11 @@ const char COPY_pm[] EDIY_PROGMEM = "COPY";
 
 //static uint8_t uuid_index =0;
 
-#if defined USE_DALLAS_CRC8
-//
-// Compute a Dallas Semiconductor 8 bit CRC.
-//
-#include <util/crc16.h>
-uint8_t Dallas_crc8(const uint8_t *addr, uint8_t len)
-{
-	uint8_t crc = 0;
-
-	while (len--) {
-		uint8_t inbyte = *addr++;
-		for (uint8_t i = 8; i; i--) {
-			uint8_t mix = (crc ^ inbyte) & 0x01;
-			crc >>= 1;
-			if (mix) crc ^= 0x8C;
-			inbyte >>= 1;
-		}
-	}
-	return crc;
-}
-#endif //USE_DALLAS_CRC8
-
+#if defined USE_PS_EEPROM  && defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 //
 // Compute a 16 bit CRC.
 //
+#include <util/crc16.h>
 uint16_t calc_crc16(const uint8_t *addr, uint16_t len)
 {
 	uint16_t crc16 = 0;
@@ -87,7 +67,7 @@ uint16_t calc_crc16(const uint8_t *addr, uint16_t len)
 	}
 	return crc16;
 }
-
+#endif //USE_PS_EEPROM
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define RAM_AVAILABLE   ramAvailable();
 #define RAM_REPORT_LEVEL 1
@@ -470,6 +450,7 @@ const char SD_INIT_ID_pm[] EDIY_PROGMEM = "SD_INIT_ID";
     } else if (strcmp_P(section,USER_pm)== 0) 
     {
         if (strcmp_P(name,ACTION_pm)== 0) {
+#if defined USE_PS_EEPROM 
             if (strcmp_P(value,WRITE_pm) == 0 ) {
                 SerialStd.println(F("ACTION Write app EEPROM started:"));
                 uint16_t crc16=calc_crc16((const uint8_t *)((int)&epc.app+SIZE_UINT16_CRC16 ),((uint16_t)sizeof(epc.app)-SIZE_UINT16_CRC16 ) );
@@ -485,7 +466,9 @@ const char SD_INIT_ID_pm[] EDIY_PROGMEM = "SD_INIT_ID";
                 );
                 SerialStd.println(F("EEPROM Write finished"));
 
-            } else if (strcmp_P(value,COPY_pm)== 0) {
+            } else 
+#endif //USE_PS_EEPROM 
+            if (strcmp_P(value,COPY_pm)== 0) {
                 SerialStd.println(F("ACTION COPY not supported yet:"));
 
             } else {

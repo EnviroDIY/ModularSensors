@@ -137,7 +137,7 @@ typedef struct {
     } msn01_t;
 #define MSN_ACTIVE msn01_t
 typedef struct {
-    STRCT_SZ(sz)
+    uint8_t sz ;
     MSN_ACTIVE s;
 } modularSensorsNetwork_t;
 #define mModularSensorsNetwork_t(p1) modularSensorsNetwork_t p1 
@@ -168,7 +168,7 @@ typedef struct {
 } uuid_envirodiy01_t;
 #define UUID_ACTIVE uuid_envirodiy01_t
 typedef struct {
-    STRCT_SZ(sz)
+    uint8_t sz;
     UUID_ACTIVE s;
 } provider_t;
 #define mProvider_t(p1) provider_t p1 

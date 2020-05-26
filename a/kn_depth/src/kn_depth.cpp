@@ -1754,7 +1754,7 @@ PortExpanderB031 mcpExp = PortExpanderB031(MCP23017_ADDR);
 //     Local storage - evolving
 // ==========================================================================
 #ifdef USE_MS_SD_INI
- persistent_store_t ps;
+ persistent_store_t ps_ram;
 #endif //#define USE_MS_SD_INI
 
 // ==========================================================================
@@ -2064,7 +2064,7 @@ void setup()
 
 #if 0
     SerialStd.print(F(" .ini-Logger:"));
-    SerialStd.println(ps.msc.s.logger_id[0]);
+    SerialStd.println(ps_ram.app.msc.s.logger_id[0]);
     SerialStd.println(F(" List of UUIDs"));
     uint8_t i_lp;
     for (i_lp=0;i_lp<variableCount;i_lp++)
@@ -2077,7 +2077,7 @@ void setup()
     //SerialStd.print(F("sF "))
     SerialStd.print(samplingFeature);
     SerialStd.print(F("/"));
-    SerialStd.println(ps.provider.s.sampling_feature);
+    SerialStd.println(ps_ram.app.provider.s.sampling_feature);
 #endif //1
     //List PowerManagementSystem LiIon Bat thresholds
 
@@ -2172,7 +2172,7 @@ void setup()
  
     #endif //USE_RTCLIB
     #if defined UseModem_Module
-    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     #if defined loggingMultiplier_MAX_CDEF
     dataLogFast.begin();
