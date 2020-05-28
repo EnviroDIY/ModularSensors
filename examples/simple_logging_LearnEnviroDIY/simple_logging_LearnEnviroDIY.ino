@@ -32,7 +32,7 @@
 // ==========================================================================
 //  Data Logger Settings
 // ==========================================================================
-/** Start [logger settings]*/
+/** Start [logger_settings] */
 // The name of this file
 const char* sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -55,19 +55,19 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger settings]*/
+/** End [logger_settings] */
 
 
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor sensor]*/
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor sensor] */
+/** End [processor_sensor] */
 
 
 // ==========================================================================
@@ -134,7 +134,7 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-/** Start [variable arrays] */
+/** Start [variable_arrays] */
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
@@ -155,7 +155,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray;
-/** End [variable arrays] */
+/** End [variable_arrays] */
 
 
 // ==========================================================================
@@ -170,7 +170,7 @@ Logger dataLogger;
 // ==========================================================================
 //  Working Functions
 // ==========================================================================
-/** Start [working functions] */
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -183,7 +183,7 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     }
     digitalWrite(redLED, LOW);
 }
-/** End [working functions] */
+/** End [working_functions] */
 
 
 // ==========================================================================

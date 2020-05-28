@@ -51,7 +51,7 @@
 // ==========================================================================
 //  Data Logger Settings
 // ==========================================================================
-/** Start [logger settings]*/
+/** Start [logger_settings] */
 // The name of this file
 const char* sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -74,13 +74,13 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger settings]*/
+/** End [logger_settings] */
 
 
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor sensor]*/
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -95,13 +95,13 @@ Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor sensor]*/
+/** End [processor_sensor] */
 
 
 // ==========================================================================
 //    Settings for Additional Serial Ports
 // ==========================================================================
-/** Start [serial ports] */
+/** Start [serial_ports] */
 // The modem and a number of sensors communicate over UART/TTL - often called
 // "serial". "Hardware" serial ports (automatically controlled by the MCU) are
 // generally the most accurate and should be configured and used for as many
@@ -118,13 +118,13 @@ Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
 // AVR boards are supported by AltSoftSerial.
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
-/** End [serial ports] */
+/** End [serial_ports] */
 
 
 // ==========================================================================
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
-/** Start [modem settings] */
+/** Start [modem_settings] */
 /// Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 
@@ -151,7 +151,7 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
                                      "12345678-abcd-1234-ef00-1234567890ab");
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [modem settings] */
+/** End [modem_settings] */
 
 
 // ==========================================================================
@@ -172,7 +172,7 @@ Variable* ds3231Temp =
 // ==========================================================================
 //  Settings shared between Modbus sensors
 // ==========================================================================
-/** Start [modbus shared] */
+/** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
 
@@ -181,7 +181,7 @@ const int8_t rs485AdapterPower =
     sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Sensor power pin
 const int8_t rs485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
-/** End [modbus shared] */
+/** End [modbus_shared] */
 
 
 // ==========================================================================
@@ -283,7 +283,7 @@ Variable* y520Temp =
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-/** Start [variable arrays] */
+/** Start [variable_arrays] */
 // FORM2: Fill array with already created and named variable pointers
 // We put ALL of the variable pointers into the first array
 Variable* variableList_complete[] = {
@@ -308,7 +308,7 @@ int variableCount_toGo = sizeof(variableList_toGo) /
     sizeof(variableList_toGo[0]);
 // Create the VariableArray object
 VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
-/** End [variable arrays] */
+/** End [variable_arrays] */
 
 
 // ==========================================================================
@@ -346,7 +346,7 @@ EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient,
 // ==========================================================================
 //  Working Functions
 // ==========================================================================
-/** Start [working functions] */
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -366,7 +366,7 @@ float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-/** End [working functions] */
+/** End [working_functions] */
 
 
 // ==========================================================================

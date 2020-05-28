@@ -50,7 +50,7 @@
 // ==========================================================================
 //  Data Logger Settings
 // ==========================================================================
-/** Start [logger settings]*/
+/** Start [logger_settings] */
 // The name of this file
 const char* sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -73,25 +73,25 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger settings]*/
+/** End [logger_settings] */
 
 
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor sensor]*/
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor sensor]*/
+/** End [processor_sensor] */
 
 
 // ==========================================================================
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
-/** Start [modem settings] */
+/** Start [modem_settings] */
 // Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
@@ -125,7 +125,7 @@ DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
-/** End [modem settings] */
+/** End [modem_settings] */
 
 
 // ==========================================================================
@@ -180,7 +180,7 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-/** Start [variable arrays] */
+/** Start [variable_arrays] */
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     "12345678-abcd-1234-ef00-1234567890ab"),
@@ -202,7 +202,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-/** End [variable arrays] */
+/** End [variable_arrays] */
 
 
 // ==========================================================================
@@ -236,7 +236,7 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
 // ==========================================================================
 //  Working Functions
 // ==========================================================================
-/** Start [working functions] */
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -256,7 +256,7 @@ float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-/** End [working functions] */
+/** End [working_functions] */
 
 
 // ==========================================================================

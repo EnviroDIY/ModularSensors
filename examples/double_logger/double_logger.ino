@@ -32,7 +32,7 @@
 // ==========================================================================
 //  Data Logger Settings
 // ==========================================================================
-/** Start [logger settings]*/
+/** Start [logger_settings] */
 // The name of this file
 const char* sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
@@ -56,25 +56,25 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger settings]*/
+/** End [logger_settings] */
 
 
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor sensor]*/
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor sensor]*/
+/** End [processor_sensor] */
 
 
 // ==========================================================================
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
-/** Start [modem settings] */
+/** Start [modem_settings] */
 // Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
@@ -104,7 +104,7 @@ DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        wifiPwd);
 // Create an extra reference to the modem by a generic name
 DigiXBeeWifi modem = modemXBWF;
-/** End [modem settings] */
+/** End [modem_settings] */
 
 
 // ==========================================================================
@@ -134,7 +134,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-/** Start [variable arrays] */
+/** Start [variable_arrays] */
 // The variables to record at 1 minute intervals
 Variable* variableList_at1min[] = {new AOSongAM2315_Humidity(&am2315),
                                    new AOSongAM2315_Temp(&am2315)};
@@ -153,7 +153,7 @@ int variableCount5min = sizeof(variableList_at5min) /
     sizeof(variableList_at5min[0]);
 // Create the 5-minute VariableArray object
 VariableArray array5min;
-/** End [variable arrays] */
+/** End [variable_arrays] */
 
 
 // ==========================================================================
@@ -171,7 +171,7 @@ Logger logger5min;
 // ==========================================================================
 //  Working Functions
 // ==========================================================================
-/** Start [working functions] */
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -184,7 +184,7 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     }
     digitalWrite(redLED, LOW);
 }
-/** End [working functions] */
+/** End [working_functions] */
 
 
 // ==========================================================================

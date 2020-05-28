@@ -51,7 +51,7 @@
 // ==========================================================================
 //  Data Logger Settings
 // ==========================================================================
-/** Start [logger settings]*/
+/** Start [logger_settings] */
 // The name of this file
 const char* sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -74,13 +74,13 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger settings]*/
+/** End [logger_settings] */
 
 
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor sensor]*/
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -95,13 +95,13 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 //     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
 //     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor sensor]*/
+/** End [processor_sensor] */
 
 
 // ==========================================================================
 //  Settings for Additional Serial Ports
 // ==========================================================================
-/** Start [serial ports avr] */
+/** Start [serial_ports_avr] */
 // The modem and a number of sensors communicate over UART/TTL - often called
 // "serial". "Hardware" serial ports (automatically controlled by the MCU) are
 // generally the most accurate and should be configured and used for as many
@@ -144,10 +144,10 @@ const int8_t softSerialTx = A4;  // data out pin
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
-/** End [serial ports avr] */
+/** End [serial_ports_avr] */
 
 
-/** Start [serial ports SAMD] */
+/** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
 // communication. The "core" code for most boards defines one or more UART
 // (Serial) ports with the SERCOMs and uses others for I2C and SPI.  We can
@@ -202,13 +202,13 @@ void SERCOM2_Handler() {
 #endif
 
 #endif  // End hardware serial on SAMD21 boards
-/** End [serial ports SAMD] */
+/** End [serial_ports_SAMD] */
 
 
 // ==========================================================================
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
-/** Start [modem pins] */
+/** Start [modem_pins] */
 /// Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
@@ -225,14 +225,14 @@ const int8_t modemResetPin   = 20;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
-/** End [modem pins] */
+/** End [modem_pins] */
 
-/** Start [network info] */
+/** Start [network_info] */
 // Network connection information
 const char* apn     = "xxxxx";  // APN for GPRS connection, unnecessary for WiFi
 const char* wifiId  = "xxxxx";  // WiFi access point, unnecessary for GPRS
 const char* wifiPwd = "xxxxx";  // WiFi password, unnecessary for GPRS
-/** End [network info] */
+/** End [network_info] */
 
 
 // ==========================================================================
@@ -241,7 +241,7 @@ const char* wifiPwd = "xxxxx";  // WiFi password, unnecessary for GPRS
 // ==========================================================================
 
 #if not defined MS_BUILD_TESTING || defined MS_BUILD_TEST_XBEE_CELLULAR
-/** Start [xbee cell transparent] */
+/** Start [xbee_cell_transparent] */
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
 // in either bypass or transparent mode, each with pros and cons
@@ -256,11 +256,11 @@ DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
-/** End [xbee cell transparent] */
+/** End [xbee_cell_transparent] */
 // ==========================================================================
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_LTE_B
-/** Start [xbee3 ltem bypass] */
+/** Start [xbee3_ltem_bypass] */
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
@@ -274,11 +274,11 @@ DigiXBeeLTEBypass modemXBLTEB(&modemSerial, modemVccPin, modemStatusPin,
                               apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeLTEBypass modem = modemXBLTEB;
-/** End [xbee3 ltem bypass] */
+/** End [xbee3_ltem_bypass] */
 // ==========================================================================
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_3G_B
-/** Start [xbee 3g bypass] */
+/** Start [xbee_3g_bypass] */
 // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
@@ -292,11 +292,11 @@ DigiXBee3GBypass modemXB3GB(&modemSerial, modemVccPin, modemStatusPin,
                             apn);
 // Create an extra reference to the modem by a generic name
 DigiXBee3GBypass modem = modemXB3GB;
-/** End [xbee 3g bypass] */
+/** End [xbee_3g_bypass] */
 // ==========================================================================
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_WIFI
-/** Start [xbee wifi] */
+/** Start [xbee_wifi] */
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud       = 9600;  // All XBee's use 9600 by default
@@ -308,7 +308,7 @@ DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        wifiPwd);
 // Create an extra reference to the modem by a generic name
 DigiXBeeWifi modem = modemXBWF;
-/** End [xbee wifi] */
+/** End [xbee_wifi] */
 // ==========================================================================
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_ESP8266
@@ -401,7 +401,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 // ==========================================================================
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_R410M
-/** Start [sara r410m] */
+/** Start [sara_r410m] */
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
 #include <modems/SodaqUBeeR410M.h>
 const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
@@ -415,11 +415,11 @@ SodaqUBeeR410M modemR410(&modemSerial, modemVccPin, modemStatusPin,
                          modemResetPin, modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SodaqUBeeR410M modem = modemR410;
-/** End [sara r410m] */
+/** End [sara_r410m] */
 // ==========================================================================
 
 #elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_U201
-/** Start [sara u201] */
+/** Start [sara_u201] */
 // For the Sodaq UBee based on the 3G u-blox SARA U201
 #include <modems/SodaqUBeeU201.h>
 const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
@@ -427,12 +427,12 @@ SodaqUBeeU201 modemU201(&modemSerial, modemVccPin, modemStatusPin,
                         modemResetPin, modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SodaqUBeeU201 modem = modemU201;
-/** End [sara u201] */
+/** End [sara_u201] */
 // ==========================================================================
 #endif
 
 
-/** Start [modem variables] */
+/** Start [modem_variables] */
 // Create RSSI and signal strength variable pointers for the modem
 // Variable* modemRSSI = new Modem_RSSI(&modem,
 //                                      "12345678-abcd-1234-ef00-1234567890ab");
@@ -446,7 +446,7 @@ SodaqUBeeU201 modem = modemU201;
 //     new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* modemTemperature =
 //     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [modem variables] */
+/** End [modem_variables] */
 
 
 // ==========================================================================
@@ -467,7 +467,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //  Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 // ==========================================================================
-/** Start [atlas co2] */
+/** Start [atlas_co2] */
 #include <sensors/AtlasScientificCO2.h>
 
 const int8_t AtlasCO2Power = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -485,13 +485,13 @@ AtlasScientificCO2 atlasCO2(AtlasCO2Power);
 //     &atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* atlasCO2Temp = new AtlasScientificCO2_Temp(
 //     &atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas co2] */
+/** End [atlas_co2] */
 
 
 // ==========================================================================
 //  Atlas Scientific EZO-DO Dissolved Oxygen Sensor
 // ==========================================================================
-/** Start [atlas do] */
+/** Start [atlas_do] */
 #include <sensors/AtlasScientificDO.h>
 
 const int8_t AtlasDOPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -509,13 +509,13 @@ AtlasScientificDO atlasDO(AtlasDOPower);
 //     &atlasDO, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* atlasDOpct = new AtlasScientificDO_DOpct(
 //     &atlasDO, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas do] */
+/** End [atlas_do] */
 
 
 // ==========================================================================
 //  Atlas Scientific EZO-EC Conductivity Sensor
 // ==========================================================================
-/** Start [atlas ec] */
+/** Start [atlas_ec] */
 #include <sensors/AtlasScientificEC.h>
 
 const int8_t AtlasECPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -538,13 +538,13 @@ AtlasScientificEC atlasEC(AtlasECPower);
 //     &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* atlasGrav = new AtlasScientificEC_SpecificGravity(
 //     &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas ec] */
+/** End [atlas_ec] */
 
 
 // ==========================================================================
 //  Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
 // ==========================================================================
-/** Start [atlas orp] */
+/** Start [atlas_orp] */
 #include <sensors/AtlasScientificORP.h>
 
 const int8_t AtlasORPPower = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -560,13 +560,13 @@ AtlasScientificORP atlasORP(AtlasORPPower);
 // Create a potential variable pointer for the ORP
 // Variable* atlasORPot = new AtlasScientificORP_Potential(
 //     &atlasORP, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas orp] */
+/** End [atlas_orp] */
 
 
 // ==========================================================================
 //  Atlas Scientific EZO-pH Sensor
 // ==========================================================================
-/** Start [atlas ph] */
+/** Start [atlas_ph] */
 #include <sensors/AtlasScientificpH.h>
 
 const int8_t AtlaspHPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -583,13 +583,13 @@ AtlasScientificpH atlaspH(AtlaspHPower);
 // Variable* atlaspHpH =
 //     new AtlasScientificpH_pH(&atlaspH,
 //     "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas ph] */
+/** End [atlas_ph] */
 
 
 // ==========================================================================
 //  Atlas Scientific EZO-RTD Temperature Sensor
 // ==========================================================================
-/** Start [atlas rtd] */
+/** Start [atlas_rtd] */
 #include <sensors/AtlasScientificRTD.h>
 
 const int8_t AtlasRTDPower = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -605,7 +605,7 @@ AtlasScientificRTD atlasRTD(AtlasRTDPower);
 // Create a temperature variable pointer for the RTD
 // Variable* atlasTemp = new AtlasScientificRTD_Temp(
 //     &atlasRTD, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas rtd] */
+/** End [atlas_rtd] */
 
 
 // ==========================================================================
@@ -773,7 +773,7 @@ Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
 // ==========================================================================
 //  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-/** Start [decagon ctd] */
+/** Start [decagon_ctd] */
 #include <sensors/DecagonCTD.h>
 
 const char*   CTDSDI12address   = "1";    // The SDI-12 Address of the CTD
@@ -791,13 +791,13 @@ DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
 //                                         "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* ctdDepth =
 //     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [decagon ctd] */
+/** End [decagon_ctd] */
 
 
 // ==========================================================================
 //  Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
-/** Start [decagon es2] */
+/** Start [decagon_es2] */
 #include <sensors/DecagonES2.h>
 
 const char*   ES2SDI12address = "3";      // The SDI-12 Address of the ES2
@@ -813,7 +813,7 @@ DecagonES2 es2(*ES2SDI12address, ES2Power, ES2Data, ES2NumberReadings);
 //                                         "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* es2Temp = new DecagonES2_Temp(&es2,
 //                                         "12345678-abcd-1234-ef00-1234567890ab");
-/** End [decagon es2] */
+/** End [decagon_es2] */
 
 
 // ==========================================================================
@@ -976,7 +976,7 @@ MeterTeros11 teros11(*teros11SDI12address, terosPower, terosData,
 // ==========================================================================
 //  External I2C Rain Tipping Bucket Counter
 // ==========================================================================
-/** Start [i2c rain] */
+/** Start [i2c_rain] */
 #include <sensors/RainCounterI2C.h>
 
 const uint8_t RainCounterI2CAddress =
@@ -991,7 +991,7 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 //     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable* tbi2cDepth =
 //     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [i2c rain] */
+/** End [i2c_rain] */
 
 
 // ==========================================================================
@@ -1446,7 +1446,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, ZTPower, ZTData);
 // ==========================================================================
 //  Calculated Variable[s]
 // ==========================================================================
-/** Start [calculated variables] */
+/** Start [calculated_variables] */
 // Create the function to give your calculated result.
 // The function should take no input (void) and return a float.
 // You can use any named variable pointers to access values by way of
@@ -1481,13 +1481,13 @@ const char* calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";
 Variable* calculatedVar = new Variable(
     calculateVariableValue, calculatedVarResolution, calculatedVarName,
     calculatedVarUnit, calculatedVarCode, calculatedVarUUID);
-/** End [calculated variables] */
+/** End [calculated_variables] */
 
 
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-/** Start [variable arrays] */
+/** Start [variable_arrays] */
 // FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
 // NOTE:  Forms one and two can be mixed
@@ -1640,7 +1640,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 // VariableArray varArray(variableCount, variableList, UUIDs);
-/** End [variable arrays] */
+/** End [variable_arrays] */
 
 
 // ==========================================================================
@@ -1712,7 +1712,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
 // ==========================================================================
 //  Working Functions
 // ==========================================================================
-/** Start [working functions] */
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -1732,7 +1732,7 @@ float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-/** End [working functions] */
+/** End [working_functions] */
 
 
 // ==========================================================================
@@ -1940,7 +1940,7 @@ void setup() {
 // ==========================================================================
 //  Arduino Loop Function
 // ==========================================================================
-/** Start [simple loop] */
+/** Start [simple_loop] */
 // Use this short loop for simple data logging and sending
 void loop() {
     // Note:  Please change these battery voltages to match your battery
@@ -1957,10 +1957,10 @@ void loop() {
         dataLogger.logDataAndPublish();
     }
 }
-/** End [simple loop] */
+/** End [simple_loop] */
 
 #if defined MS_USE_COMPLEX_LOOP
-/** Start [complex loop] */
+/** Start [complex_loop] */
 // Use this long loop when you want to do something special
 // Because of the way alarms work on the RTC, it will wake the processor and
 // start the loop every minute exactly on the minute.
@@ -2058,4 +2058,4 @@ void loop() {
     dataLogger.systemSleep();
 }
 #endif
-/** End [complex loop] */
+/** End [complex_loop] */

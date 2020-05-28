@@ -51,7 +51,7 @@
 // ==========================================================================
 //  Data Logger Settings
 // ==========================================================================
-/** Start [logger settings]*/
+/** Start [logger_settings] */
 // The name of this file
 const char* sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -74,13 +74,13 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger settings]*/
+/** End [logger_settings] */
 
 
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor sensor]*/
+/** Start [processor_sensor] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -95,13 +95,13 @@ Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor sensor]*/
+/** End [processor_sensor] */
 
 
 // ==========================================================================
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
-/** Start [modem settings] */
+/** Start [modem_settings] */
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 
@@ -128,7 +128,7 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
                                      "12345678-abcd-1234-ef00-1234567890ab");
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [modem settings] */
+/** End [modem_settings] */
 
 
 // ==========================================================================
@@ -219,7 +219,7 @@ Variable* ms5803Temp =
 // ==========================================================================
 //  Calculated Variable[s]
 // ==========================================================================
-/** Start [calculated pressure] */
+/** Start [calculated_pressure] */
 // Create the function to calculate the water pressure
 // Water pressure = pressure from MS5803 (water+baro) - pressure from BME280
 // (baro) The MS5803 reports pressure in millibar, the BME280 in pascal 1 pascal
@@ -250,9 +250,9 @@ const char* waterPressureVarCode       = "CorrectedPressure";
 Variable* calcWaterPress = new Variable(
     calculateWaterPressure, waterPressureVarResolution, waterPressureVarName,
     waterPressureVarUnit, waterPressureVarCode, waterPressureUUID);
-/** End [calculated pressure] */
+/** End [calculated_pressure] */
 
-/** Start [calculated uncorrected depth] */
+/** Start [calculated_uncorrected_depth] */
 // Create the function to calculate the "raw" water depth
 // For this, we're using the conversion between mbar and mm pure water at 4°C
 // This calculation gives a final result in mm of water
@@ -278,9 +278,9 @@ const char* waterDepthVarCode       = "CalcDepth";
 Variable* calcRawDepth = new Variable(
     calculateWaterDepthRaw, waterDepthVarResolution, waterDepthVarName,
     waterDepthVarUnit, waterDepthVarCode, waterDepthUUID);
-/** End [calculated uncorrected depth] */
+/** End [calculated_uncorrected_depth] */
 
-/** Start [calculated corrected depth] */
+/** Start [calculated_corrected_depth] */
 // Create the function to calculate the water depth after correcting water
 // density for temperature This calculation gives a final result in mm of water
 float calculateWaterDepthTempCorrected(void) {
@@ -322,13 +322,13 @@ const char* rhoDepthVarCode       = "DensityDepth";
 Variable* calcCorrDepth = new Variable(
     calculateWaterDepthTempCorrected, rhoDepthVarResolution, rhoDepthVarName,
     rhoDepthVarUnit, rhoDepthVarCode, rhoDepthUUID);
-/** End [calculated corrected depth] */
+/** End [calculated_corrected_depth] */
 
 
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-/** Start [variable arrays] */
+/** Start [variable_arrays] */
 // FORM2: Fill array with already created and named variable pointers
 Variable* variableList[] = {mcuBoardSampNo, mcuBoardBatt,  mcuBoardAvailableRAM,
                             ds3231Temp,     bme280Temp,    bme280Humid,
@@ -341,7 +341,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-/** End [variable arrays] */
+/** End [variable_arrays] */
 
 
 // ==========================================================================
@@ -375,7 +375,7 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
 // ==========================================================================
 //  Working Functions
 // ==========================================================================
-/** Start [working functions] */
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -395,7 +395,7 @@ float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-/** End [working functions] */
+/** End [working_functions] */
 
 
 // ==========================================================================

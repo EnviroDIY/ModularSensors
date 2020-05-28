@@ -32,14 +32,14 @@
 // ==========================================================================
 // Board setup info
 // ==========================================================================
-/** Start [sketch info] */
+/** Start [sketch_info] */
 // The name of this file
 const char* sketchName = "single_sensor.ino";
 
 const long   serialBaud = 115200;  // Baud rate for debugging
 const int8_t greenLED   = 8;       // Pin for the green LED
 const int8_t redLED     = 9;       // Pin for the red LED
-/** End [sketch info] */
+/** End [sketch_info] */
 
 
 // ==========================================================================
@@ -77,13 +77,13 @@ float calcDepth(void) {
 // http://vocabulary.odm2.org/units/
 Variable waterDepth(calcDepth, 0, "waterDepth", "millimeter", "sonarDepth",
                     "12345678-abcd-1234-ef00-1234567890ab");
-/** End [calculated variables] */
+/** End [calculated_variables] */
 
 
 // ==========================================================================
 //  Working Functions
 // ==========================================================================
-/** Start [working functions] */
+/** Start [working_functions] */
 // Flashes to Mayfly's LED's
 void greenredflash(int numFlash = 4) {
     for (int i = 0; i < numFlash; i++) {
@@ -96,7 +96,7 @@ void greenredflash(int numFlash = 4) {
     }
     digitalWrite(redLED, LOW);
 }
-/** End [working functions] */
+/** End [working_functions] */
 
 
 // ==========================================================================
