@@ -1,24 +1,37 @@
 # ModularSensors
 
-### [Just getting started?](https://github.com/EnviroDIY/ModularSensors/wiki/Getting-Started)
+## Getting Started
 
-This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly. The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
+Check out the [Just Getting Started](https://github.com/EnviroDIY/ModularSensors/wiki/Getting-Started) section of the Wiki!
+
+This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly.
+The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
 * Retrieve data from many physical sensors;
 * Save that data to a SD memory card;
 * Transmit that data wirelessly to a web server; and
 * Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
 
-The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.  Using the common sensor and variable interface, the library attempts to optimize measurement timing as much as possible to reduce logger "on-time" and power consumption.
+The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns.
+These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
+Using the common sensor and variable interface, the library attempts to optimize measurement timing as much as possible to reduce logger "on-time" and power consumption.
 
 Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Compatibility) as well.
 
+- [ModularSensors](#modularsensors)
+  - [Getting Started](#getting-started)
+  - [Data Receivers](#data-receivers)
+  - [Supported Sensors](#supported-sensors)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Acknowledgments](#acknowledgments)
 
-## Data can currently be sent to these web services:
+
+## Data Receivers
 
 - [WikiWatershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
 - [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Functions)
 
-## These sensors are currently supported:
+## Supported Sensors
 
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://github.com/EnviroDIY/ModularSensors/wiki/Apogee-SQ212)
 - [AOSong AM2315: humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/AOSong-AM2315)
@@ -62,9 +75,13 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 
 
 ## Contributing
-Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.  Feel free to open issues about any bugs you find or any sensors you would like to have added.
+Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
+Feel free to open issues about any bugs you find or any sensors you would like to have added.
 
-If you would like to directly help with the coding development of the library, there are some [tips here](https://github.com/EnviroDIY/ModularSensors/wiki/Developer-Setup) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.  Please _take time to familiarize yourself with the [terminology, classes and data structures](https://github.com/EnviroDIY/ModularSensors/wiki/Terminology) this library uses_.  This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.  There is _extensive_ documentation in the wiki and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
+If you would like to directly help with the coding development of the library, there are some [tips here](https://github.com/EnviroDIY/ModularSensors/wiki/Developer-Setup) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.
+Please _take time to familiarize yourself with the [terminology, classes and data structures](https://github.com/EnviroDIY/ModularSensors/wiki/Terminology) this library uses_.
+This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.
+There is _extensive_ documentation in the wiki and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
 
 
 

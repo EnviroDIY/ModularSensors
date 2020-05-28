@@ -1,4 +1,4 @@
-# Example using the Modular Sensors Library to log data to EnviroDIY/Monitor My Watershed
+# Using ModularSensors to log data to EnviroDIY/Monitor My Watershed {#mmw_example}
 
 This sketch reduces menu_a_la_carte.ino to provide an example of how to log to https://monitormywatershed.org/ from two sensors, the BME280 and DS18. To complete the set up for logging to the web portal, the UUIDs for the site and each variable would need to be added to the sketch.
 

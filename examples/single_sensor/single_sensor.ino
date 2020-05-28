@@ -1,45 +1,51 @@
-/*****************************************************************************
-single_sensor.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
-Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
-  and the EnviroDIY Development Team
-
-This sketch is an example of getting data from a single sensor, in this case, a
-MaxBotix Ultrasonic Range Finder
-DISCLAIMER:
-THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
-*****************************************************************************/
-
-// ==========================================================================
-//    Defines for the Arduino IDE
-//    In PlatformIO, set these build flags in your platformio.ini
-// ==========================================================================
+/** =========================================================================
+ * @file single_sensor.ino
+ * @brief An example using only sensor functions and no logging.
+ *
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ *                          and the EnviroDIY Development Team
+ *            This example is published under the BSD-3 license.
+ *
+ * Build Environment: Visual Studios Code with PlatformIO
+ * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+ *
+ * DISCLAIMER:
+ * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * ======================================================================= */
 
 // ==========================================================================
 // Include the base required libraries
 // ==========================================================================
-#include <Arduino.h>          // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
+/** Start [includes] */
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+// EnableInterrupt is used by ModularSensors for external and pin change
+// interrupts and must be explicitely included in the main program.
+#include <EnableInterrupt.h>
+// SensorBase contains the Sensor class definition
 #include <SensorBase.h>
+// VariableBase contains the Variable class definition
 #include <VariableBase.h>
-
-// The name of this file
-const char* sketchName = "single_sensor.ino";
+/** End [includes] */
 
 // ==========================================================================
 // Board setup info
 // ==========================================================================
+/** Start [sketch info] */
+// The name of this file
+const char* sketchName = "single_sensor.ino";
 
 const long   serialBaud = 115200;  // Baud rate for debugging
 const int8_t greenLED   = 8;       // Pin for the green LED
 const int8_t redLED     = 9;       // Pin for the red LED
+/** End [sketch info] */
+
 
 // ==========================================================================
 // Set up the sensor object
 // ==========================================================================
+/** Start [sensor] */
 #include <sensors/MaxBotixSonar.h>
 
 // Create a reference to the serial port for the sonar
@@ -53,7 +59,9 @@ MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger);
 
 // Create a new instance of the range variable;
 MaxBotixSonar_Range sonar_range(&sonar);
+/** End [sensor] */
 
+/* Start [calculated variables] */
 // Create a function to calculate the water depth from the sonar range
 // For this example, we'll assume that the sonar is mounted 5m above the stream
 // bottom
@@ -69,12 +77,13 @@ float calcDepth(void) {
 // http://vocabulary.odm2.org/units/
 Variable waterDepth(calcDepth, 0, "waterDepth", "millimeter", "sonarDepth",
                     "12345678-abcd-1234-ef00-1234567890ab");
+/** End [calculated variables] */
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working functions] */
 // Flashes to Mayfly's LED's
 void greenredflash(int numFlash = 4) {
     for (int i = 0; i < numFlash; i++) {
@@ -87,11 +96,13 @@ void greenredflash(int numFlash = 4) {
     }
     digitalWrite(redLED, LOW);
 }
+/** End [working functions] */
 
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
+/** Start [setup] */
 void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);
@@ -118,11 +129,13 @@ void setup() {
     // Set up the sensor
     sonar.setup();
 }
+/** End [setup] */
 
 
 // ==========================================================================
-// Main loop function
+//  Arduino Loop Function
 // ==========================================================================
+/** Start [loop] */
 void loop() {
     // Turn on the LED to show we're taking a reading
     digitalWrite(greenLED, HIGH);
@@ -154,3 +167,4 @@ void loop() {
     // Wait for the next reading
     delay(5000);
 }
+/** End [loop] */

@@ -1,23 +1,26 @@
-/*****************************************************************************
-baro_rho_correction.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
-Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
-  and the EnviroDIY Development Team
-
-This sketch is an example of logging data to an SD card and sending the data to
-the EnviroDIY data portal.
-
-DISCLAIMER:
-THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
-*****************************************************************************/
+/** =========================================================================
+ * @file baro_rho_correction.ino
+ * @brief Example demonstrating calculated variables.
+ *
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ *                          and the EnviroDIY Development Team
+ *            This example is published under the BSD-3 license.
+ *
+ * Build Environment: Visual Studios Code with PlatformIO
+ * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+ *
+ * DISCLAIMER:
+ * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * ======================================================================= */
 
 // ==========================================================================
-//    Defines for the Arduino IDE
-//    In PlatformIO, set these build flags in your platformio.ini
+//  Defines for the Arduino IDE
+//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
+//         If you use PlatformIO, you should set these build flags in your
+//         platformio.ini
 // ==========================================================================
+/** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
@@ -27,19 +30,28 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #ifndef MQTT_MAX_PACKET_SIZE
 #define MQTT_MAX_PACKET_SIZE 240
 #endif
+/** End [defines] */
 
 
 // ==========================================================================
-//    Include the base required libraries
+//  Include the libraries required for any data logger
 // ==========================================================================
-#include <Arduino.h>          // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>       // The modular sensors library
+/** Start [includes] */
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+// EnableInterrupt is used by ModularSensors for external and pin change
+// interrupts and must be explicitely included in the main program.
+#include <EnableInterrupt.h>
+// To get all of the base classes for ModularSensors, include LoggerBase.
+// NOTE:  Individual sensor definitions must be included separately.
+#include <LoggerBase.h>
+/** End [includes] */
 
 
 // ==========================================================================
-//    Data Logger Settings
+//  Data Logger Settings
 // ==========================================================================
+/** Start [logger settings]*/
 // The name of this file
 const char* sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -50,11 +62,7 @@ const uint8_t loggingInterval = 1;
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
-// ==========================================================================
-//    Primary Arduino-Based Board and Processor
-// ==========================================================================
-#include <sensors/ProcessorStats.h>
+// Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 const long   serialBaud = 115200;  // Baud rate for debugging
 const int8_t greenLED   = 8;       // Pin for the green LED
@@ -66,6 +74,14 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+/** End [logger settings]*/
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor sensor]*/
+#include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
@@ -79,12 +95,13 @@ Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor sensor]*/
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Settings
 // ==========================================================================
-
+/** Start [modem settings] */
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 
@@ -103,7 +120,7 @@ const char* apn = "xxxxx";  // The APN for the gprs connection
 #include <modems/Sodaq2GBeeR6.h>
 const long   modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
-// Create an extra reference to the modem by a generic name (not necessary)
+// Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
 
 // Create RSSI and signal strength variable pointers for the modem
@@ -111,11 +128,13 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
                                      "12345678-abcd-1234-ef00-1234567890ab");
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [modem settings] */
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//  Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
+/** Start [ds3231] */
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
@@ -124,11 +143,13 @@ MaximDS3231 ds3231(1);
 // Create a temperature variable pointer for the DS3231
 Variable* ds3231Temp =
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ds3231] */
 
 
 // ==========================================================================
-//    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
+//  Bosch BME280 Environmental Sensor
 // ==========================================================================
+/** Start [bme280] */
 #include <sensors/BoschBME280.h>
 
 const int8_t I2CPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -148,11 +169,13 @@ Variable* bme280Press =
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* bme280Alt =
     new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [bme280] */
 
 
 // ==========================================================================
-//    Maxim DS18 One Wire Temperature Sensor
+//  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
+/** Start [ds18] */
 #include <sensors/MaximDS18.h>
 
 const int8_t OneWirePower = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -165,11 +188,13 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // Create a temperature variable pointer for the DS18
 Variable* ds18Temp = new MaximDS18_Temp(&ds18,
                                         "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ds18] */
 
 
 // ==========================================================================
-//    MeaSpecMS5803 (Pressure, Temperature)
+//  Measurement Specialties MS5803-14BA pressure sensor
 // ==========================================================================
+/** Start [ms5803] */
 #include <sensors/MeaSpecMS5803.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -188,12 +213,13 @@ Variable* ms5803Press =
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* ms5803Temp =
     new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ms5803] */
 
 
 // ==========================================================================
-//    Calculated Variables
+//  Calculated Variable[s]
 // ==========================================================================
-
+/** Start [calculated pressure] */
 // Create the function to calculate the water pressure
 // Water pressure = pressure from MS5803 (water+baro) - pressure from BME280
 // (baro) The MS5803 reports pressure in millibar, the BME280 in pascal 1 pascal
@@ -224,7 +250,9 @@ const char* waterPressureVarCode       = "CorrectedPressure";
 Variable* calcWaterPress = new Variable(
     calculateWaterPressure, waterPressureVarResolution, waterPressureVarName,
     waterPressureVarUnit, waterPressureVarCode, waterPressureUUID);
+/** End [calculated pressure] */
 
+/** Start [calculated uncorrected depth] */
 // Create the function to calculate the "raw" water depth
 // For this, we're using the conversion between mbar and mm pure water at 4°C
 // This calculation gives a final result in mm of water
@@ -250,7 +278,9 @@ const char* waterDepthVarCode       = "CalcDepth";
 Variable* calcRawDepth = new Variable(
     calculateWaterDepthRaw, waterDepthVarResolution, waterDepthVarName,
     waterDepthVarUnit, waterDepthVarCode, waterDepthUUID);
+/** End [calculated uncorrected depth] */
 
+/** Start [calculated corrected depth] */
 // Create the function to calculate the water depth after correcting water
 // density for temperature This calculation gives a final result in mm of water
 float calculateWaterDepthTempCorrected(void) {
@@ -292,12 +322,13 @@ const char* rhoDepthVarCode       = "DensityDepth";
 Variable* calcCorrDepth = new Variable(
     calculateWaterDepthTempCorrected, rhoDepthVarResolution, rhoDepthVarName,
     rhoDepthVarUnit, rhoDepthVarCode, rhoDepthUUID);
+/** End [calculated corrected depth] */
 
 
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+//  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-
+/** Start [variable arrays] */
 // FORM2: Fill array with already created and named variable pointers
 Variable* variableList[] = {mcuBoardSampNo, mcuBoardBatt,  mcuBoardAvailableRAM,
                             ds3231Temp,     bme280Temp,    bme280Humid,
@@ -310,19 +341,23 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+/** End [variable arrays] */
 
 
 // ==========================================================================
-//     The Logger Object[s]
+//  The Logger Object[s]
 // ==========================================================================
-
+/** Start [loggers] */
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
+/** End [loggers] */
 
 
 // ==========================================================================
-//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+//  Creating Data Publisher[s]
 // ==========================================================================
+/** Start [publishers] */
+// A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char* registrationToken =
@@ -334,12 +369,13 @@ const char* samplingFeature =
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);
+/** End [publishers] */
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -353,18 +389,19 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     digitalWrite(redLED, LOW);
 }
 
-
-// Read's the battery voltage
+// Uses the processor sensor to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
+/** End [working functions] */
 
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
+/** Start [setup] */
 void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);
@@ -440,12 +477,13 @@ void setup() {
     Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
+/** End [setup] */
 
 
 // ==========================================================================
-// Main loop function
+//  Arduino Loop Function
 // ==========================================================================
-
+/** Start [loop] */
 // Use this short loop for simple data logging and sending
 void loop() {
     // Note:  Please change these battery voltages to match your battery
@@ -462,3 +500,4 @@ void loop() {
         dataLogger.logDataAndPublish();
     }
 }
+/** End [loop] */

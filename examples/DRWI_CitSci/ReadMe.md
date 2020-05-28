@@ -1,4 +1,4 @@
-# Examples using the Modular Sensors Library for DRWI Sites
+# ModularSensors DRWI 2G Sites {#drwi_2g_example}
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This should be used at all sites with cellular 2G service.
 
@@ -31,7 +31,7 @@ const char *LoggerID = "XXXX";
 
 ```cpp
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
+//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
 const int8_t OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)

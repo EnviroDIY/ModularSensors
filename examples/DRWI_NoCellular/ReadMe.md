@@ -1,4 +1,4 @@
-# Examples using the Modular Sensors Library for DRWI sites with no Cellular Service
+# ModularSensors for DRWI sites with no Cellular Service {#drwi_no_cell_example}
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.
 
@@ -31,7 +31,7 @@ const char *LoggerID = "XXXX";
 
 ```cpp
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
+//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
 const int8_t OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)

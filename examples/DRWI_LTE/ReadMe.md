@@ -31,7 +31,7 @@ const char *LoggerID = "XXXX";
 
 ```cpp
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
+//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
 const int8_t OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
