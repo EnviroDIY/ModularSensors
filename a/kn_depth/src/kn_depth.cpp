@@ -1810,6 +1810,23 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modemPhy.gsmClient, thingSpeakMQTTKey, t
 //    Working Functions
 // ==========================================================================
 
+//Decode reason for this Reset
+#define NUM_RESET_BITS 8
+const char *rrReason[NUM_RESET_BITS] = {"POR ","BOD12 ","BOD33 " ,"NVM ","EXT ","WDT ","SYST ","Backup "};
+String decodeResetCause(uint8_t resetCause) {
+    char resetReason[60];
+    uint8_t rrLen=0;
+    int8_t  rrLp=(NUM_RESET_BITS-1);
+    resetReason[0]=0;
+    //resetCause =0xff;
+    for (; 0<=rrLp;--rrLp ) {
+        if ((0x1<<rrLp) & resetCause) strcpy(&resetReason[rrLen],rrReason[rrLp]);
+        rrLen = strlen(resetReason);
+    }
+    //MS_DBG("tot str size",rrLen);   
+    return (String) resetReason;
+} 
+
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned long timeOff_ms = 200)
 {
@@ -1911,6 +1928,8 @@ float getBatteryVoltage()
 // ==========================================================================
 void setup()
 {
+    uint8_t resetCause = REG_RSTC_RCAUSE;        //Reads from hw    
+    uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; //Reads from hw 
     bool LiBattPower_Unseable;
     uint16_t lp_wait=1;
 
@@ -1981,6 +2000,7 @@ void setup()
 #else 
     SerialStd.println(F("TinyGSM - none"));
 #endif
+    MS_DBG("SysCoreClock Mhz",SystemCoreClock, "ResetCause=",decodeResetCause(resetCause),"&",resetBackupExit,":");
 
     neoPixelPhy.begin();
     UiStatus(0);
@@ -2166,7 +2186,7 @@ void setup()
     } while (++dt_lp<DT_LP_MAX ); 
     SerialStd.print(F("extRtcPhy start "));
     SerialStd.print(start_dt.timestamp(DateTime::TIMESTAMP_FULL));
-        SerialStd.print(F(" nxt="));
+    SerialStd.print(F(" nxt="));
     SerialStd.println(nxt_dt.timestamp(DateTime::TIMESTAMP_FULL));
     SerialStd.flush();
  
@@ -2482,6 +2502,14 @@ void loop()
                 dataLogger.systemSleep();
             #endif //loggingMultiplier_MAX_CDEF
         MS_DBG(F("dataLogger Wake "),timeNow());
+        //Might have been the serial that woke up
+        while (Serial.available()) {
+            byte rec = Serial.read();
+            Serial.print(rec);
+            // Serial.print(" - ");
+            // Serial.print((char) rec);
+            Serial.print(" *** \n");
+        }
     #endif //KCONFIG_DEBUG_LEVEL
     #if defined(CHECK_SLEEP_POWER)
         PRINTOUT(F("A"));
