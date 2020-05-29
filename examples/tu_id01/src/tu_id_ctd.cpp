@@ -55,7 +55,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>  // The modular sensors library
-
+#if defined USE_PS_EEPROM
+#include "EEPROM.h"
+#endif // USE_PS_EEPROM
+#include "ms_common.h"
 
 // ==========================================================================
 //    Data Logger Settings
@@ -244,6 +247,121 @@ const int8_t SDI12Data = 7;  // The SDI12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
+#endif //Decagon_CTD_UUID
+
+#if defined Insitu_TrollSdi12_UUID
+// ==========================================================================
+//    Insitu Aqua/Level Troll Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+#include <sensors/InsituTrollSdi12.h>
+
+const char *ITROLLSDI12address = "1";  // The SDI-12 Address of the ITROLL
+const uint8_t ITROLLNumberReadings = 2;  // The number of readings to average
+const int8_t IT_SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t IT_SDI12Data = 7;  // The SDI12 data pin
+
+// Create a  ITROLL sensor object
+InsituTrollSdi12 itrollPhy(*ITROLLSDI12address, IT_SDI12Power, IT_SDI12Data, ITROLLNumberReadings);
+#endif //Insitu_TrollSdi12_UUID
+
+// ==========================================================================
+//    Keller Acculevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT) || defined(InsituLTrs485_ACT)
+#define KellerXxxLevel_ACT 1
+//#include <sensors/KellerAcculevel.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+#if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
+HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
+#else
+ AltSoftSerial &modbusSerial = altSoftSerialPhy;  // For software serial if needed
+ //NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+#endif
+
+//byte acculevelModbusAddress = KellerAcculevelModbusAddress;  // The modbus address of KellerAcculevel
+const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+
+const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
+const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+const int8_t RS485PHY_DIR_PIN = CONFIG_HW_RS485PHY_DIR_PIN;
+
+#endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
+
+#if defined KellerAcculevel_ACT
+#include <sensors/KellerAcculevel.h>
+
+byte acculevelModbusAddress = KellerAcculevelModbusAddress_DEF;  // The modbus address of KellerAcculevel
+const uint8_t acculevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Acculevel sensor object
+KellerAcculevel acculevel_snsr(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Acculevel
+// Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+#endif //KellerAcculevel_ACT 
+
+
+// ==========================================================================
+//    Keller Nanolevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#ifdef KellerNanolevel_ACT
+#include <sensors/KellerNanolevel.h>
+
+byte nanolevelModbusAddress = KellerNanolevelModbusAddress_DEF;  // The modbus address of KellerNanolevel
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+
+KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+// Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+
+#endif //KellerNanolevel_ACT
+
+// ==========================================================================
+//    Insitu Level/Aqua Troll High Accuracy Submersible Level Transmitter
+// wip Tested for Level Troll 500
+// ==========================================================================
+#ifdef InsituLTrs485_ACT
+#include <sensors/InsituTrollModbus.h>
+
+const byte ltModbusAddress = InsituLTrs485ModbusAddress_DEF;  // The modbus address of InsituLTrs485
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t ltNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+
+InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, ltNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+// Variable *nanolevPress =  new InsituLTrs485_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevTemp =   new InsituLTrs485_Temp(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevHeight = new InsituLTrs485_Height(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+
+#endif //InsituLTrs485_ACT
+
+// ==========================================================================
+//    Electrical Conductivity using the processors analog pins
+// ==========================================================================
+#ifdef AnalogProcEC_ACT
+#include <sensors/analogElecConductivity.h>
+const int8_t ECpwrPin = ECpwrPin_DEF;
+const int8_t ECdataPin1 = ECdataPin1_DEF;
+analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
 #endif //ecagon_CTD_UUID
 
 // ==========================================================================
@@ -455,12 +573,21 @@ Variable *ds3231TempFcalc = new Variable(
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined AnalogProcEC_ACT
+    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
+#endif //AnalogProcEC_ACT    
     #if defined Decagon_CTD_UUID 
     //new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
     CTDDepthInCalc,
     //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
     CTDTempFcalc,
     #endif //Decagon_CTD_UUID
+#if defined Insitu_TrollSdi12_UUID 
+    new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
+    //CTDDepthInCalc,
+    new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
+    //CTDTempFcalc,
+#endif //Insitu_TrollSdi12_UUID
 #if defined KellerAcculevel_ACT
     //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
@@ -470,6 +597,11 @@ Variable *variableList[] = {
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
     new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
+#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
+#if defined InsituLTrs485_ACT
+//   new insituLevelTroll_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
+    new InsituLevelTroll_Temp(&InsituLT_snsr,   InsituLTrs485_Temp_UUID),
+    new InsituLevelTroll_Height(&InsituLT_snsr, InsituLTrs485_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -505,7 +637,8 @@ VariableArray varArray(variableCount, variableList);
 //     Local storage - evolving
 // ==========================================================================
 #ifdef USE_MS_SD_INI
- persistent_store_t ps;
+persistent_store_t ps_ram;
+#define epc ps_ram  
 #endif //#define USE_MS_SD_INI
 
 // ==========================================================================
@@ -524,11 +657,12 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 const char *registrationToken = registrationToken_UUID;   // Device registration token
 const char *samplingFeature = samplingFeature_UUID;     // Sampling feature UUID
 
+#if defined UseModem_Module 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 //EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient, registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
-
+#endif //UseModem_Module 
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -558,6 +692,61 @@ float getBatteryVoltage()
     return mcuBoard.sensorValues[0];
 }
 
+// Manages the Modbus Physical Pins.
+// Pins pulled high when powered off will cause a ghost power leakage. -
+#if defined KellerXxxLevel_ACT
+void modbusPinPowerMng(bool status) {
+    MS_DBG(F("  **** modbusPinPower"), status);
+    #if 1
+    if (status) {
+        modbusSerial.setupPhyPins();
+    } else {
+        modbusSerial.disablePhyPins();
+    }
+    #endif
+}
+#endif //KellerXxxLevel_ACT
+
+
+#define PORT_SAFE(pinNum) pinMode(pinNum,INPUT);     digitalWrite(pinNum, LOW);
+void  unusedBitsMakeSafe() 
+{
+// Set all unused Pins to a safe no current mode for sleeping
+  //Mayfly variant.h: D0->23  (Analog0-7) or D24-31
+    //PORT_SAFE( 0); Rx0  Tty
+    //PORT_SAFE( 1); Tx0  TTy
+    //PORT_SAFE( 2); Rx1  Xb?
+    //PORT_SAFE( 3); Tx1  Xb?
+    PORT_SAFE(04);
+    PORT_SAFE(05);
+    PORT_SAFE(06);
+    //PORT_SAFE(07); SDI12
+    //PORT_SAFE(08); Grn Led
+    //PORT_SAFE(09); Red LED
+    PORT_SAFE(10); //?? RTC Int
+    PORT_SAFE(11);
+    PORT_SAFE(12);
+    //mosi LED PORT_SAFE(13);
+    //miso PORT_SAFE(14);
+    //sck PORT_SAFE(15);
+    //scl PORT_SAFE(16);
+    //sda PORT_SAFE(17);
+    PORT_SAFE(18);
+    PORT_SAFE(19); //Xbee CTS 
+    PORT_SAFE(20); //Xbee RTS
+    PORT_SAFE(21);
+    //PORT_SAFE(22);  //Pwr Sw
+    PORT_SAFE(23); //Xbee DTR
+    //Analog from here on 
+    //PORT_SAFE(24);//A0 ECData1
+    PORT_SAFE(25); //A1
+    PORT_SAFE(26); //A2
+    PORT_SAFE(27); //A3
+    //PORT_SAFE(28); //A4  ECpwrPin
+    PORT_SAFE(29); //A5
+    PORT_SAFE(30); //A6
+    //PORT_SAFE(31); //A7 Timer Int
+};
 
 // ==========================================================================
 #if defined KellerXxxLevel_ACT
@@ -593,8 +782,6 @@ void setup()
     Serial.print(sketchName);
     Serial.print(" ");
     Serial.println(git_branch);
-    Serial.print(F("' on Logger "));
-    Serial.println(LoggerID);
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
@@ -602,8 +789,11 @@ void setup()
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
 #else 
-    Serial.print(F("TinyGSM - none"));
+    Serial.println(F("TinyGSM - none"));
 #endif
+
+    unusedBitsMakeSafe();
+    readAvrEeprom();
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -623,7 +813,8 @@ void setup()
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     MS_DEEP_DBG("***modbusSerial.begin"); 
     delay(10);
-    modbusSerial.begin(9600);
+
+    modbusSerial.begin(MODBUS_BAUD_RATE);
     modbusPinPowerMng(false); //Turn off pins 
     #endif
 
@@ -636,15 +827,18 @@ void setup()
     greenredflash();
     //not in this scope Wire.begin();
 
-    // Set the timezones for the logger/data and the RTC
-    // Logging in the given time zone
-    Logger::setLoggerTimeZone(timeZone);
+
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     Logger::setRTCTimeZone(0);
 
+    #ifdef UseModem_Module
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     //modemPhy.setModemLED(modemLEDPin);
+        #if defined Modem_SignalPercent_UUID //|| or others
+                modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+        #endif 
+    #endif //UseModem_Module 
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
 #ifdef USE_MS_SD_INI
@@ -658,7 +852,7 @@ void setup()
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
     #if defined UseModem_Module
-    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.provider.s.registration_token, ps_ram.provider.s.sampling_feature);
     #endif // UseModem_Module
     
     // Note:  Please change these battery voltages to match your battery
@@ -667,8 +861,8 @@ void setup()
     float batteryV = getBatteryVoltage(); //Get once
 
     // Sync the clock if it isn't valid and we have battery to spare
-    #define POWER_THRESHOLD_NEED_COMMS_PWR 3.6
-    #define POWER_THRESHOLD_NEED_BASIC_PWR 3.4
+    #define POWER_THRESHOLD_NEED_COMMS_PWR 3.2
+    #define POWER_THRESHOLD_NEED_BASIC_PWR 2.8
     while  (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR && !dataLogger.isRTCSane())
     {
         MS_DBG(F("Not enough power to sync with NIST "),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);
@@ -677,10 +871,15 @@ void setup()
     } 
 
     if (!dataLogger.isRTCSane()) {
+        #if defined UseModem_Module
         MS_DBG(F("Sync with NIST "));
         // Synchronize the RTC with NIST
         // This will also set up the modemPhy
         dataLogger.syncRTC();
+        #else
+        MS_DBG(F("Time Bad. Please Correct "));
+        // Need to do error - flash light, stop
+        #endif
     }
 
     //Check if enough power to go on
@@ -732,15 +931,24 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modemPhy
-    else if (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR)
+    else 
+    #if defined UseModem_Module
+    if (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR)
+    #endif
     {
-        MS_DBG(F("Cancel Publish collect readings & log. V too low batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);
+        #if defined UseModem_Module
+        MS_DBG(F("Cancel Publish collect readings & log. V too low batteryV="),batteryV,F("Need >"), POWER_THRESHOLD_NEED_COMMS_PWR );
+        #else
+        MS_DBG(F("Collect readings & log. batteryV="),batteryV,F("Threshold >"), POWER_THRESHOLD_NEED_BASIC_PWR );
+        #endif // UseModem_Module
         dataLogger.logData();
     }
+    #if defined UseModem_Module
     // If the battery is good, send the data to the world
     else
     {
         MS_DBG(F("Starting logging/Publishing"),batteryV);
         dataLogger.logDataAndPublish();
     }
+    #endif// UseModem_Module
 }

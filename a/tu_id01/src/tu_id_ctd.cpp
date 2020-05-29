@@ -646,7 +646,6 @@ persistent_store_t ps_ram;
 // ==========================================================================
 
 // Create a new logger instance
-//nh need to make LoggerId run time, so can choose between Eeprom or default
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 

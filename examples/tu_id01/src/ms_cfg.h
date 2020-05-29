@@ -32,6 +32,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
 #define USE_MS_SD_INI 1
+#define USE_PS_EEPROM  1 //Alterantive USE_PS_2ND_SD
+#define USE_PS_HW_BOOT 1
+
+//#define USE_PS_modularSensorsCommon 1
 
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
 #define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
@@ -69,7 +73,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFsn_def  F("unknown")
 
 //Required for TinyGsmClient.h - select one
-#define TINY_GSM_MODEM_XBEE
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
@@ -77,11 +80,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //define one  _Module
 //#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
-#warning infoMayflyWithDigiXBeeCellTransparent
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // #define DigiXBeeLTE_Module 1 - unstable
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
 #define UseModem_Module 1
+//Required for TinyGsmClient.h 
+#define TINY_GSM_MODEM_XBEE
 #endif // Modules
 //end of _Module
 
@@ -100,30 +104,58 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
 
-#define Decagon_CTD_UUID 1
+//#define Decagon_CTD_UUID 1
 #ifdef Decagon_CTD_UUID
-  //#define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
-  //#define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
-  //#define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define CTD10_DEPTH_UUID "CTD10_DEPTH_UUID"
   #define CTD10_TEMP_UUID  "CTD10_TEMP_UUID"
   #define CTD10_COND_UUID  "CTD10_COND_UUID"  
+#endif // Decagon_CTD_UUID
+
+//#define Insitu_TrollSdi12_UUID 1
+#ifdef Insitu_TrollSdi12_UUID
+  //Mayfly definitions
+  #define ITROLL_DEPTH_UUID "KellerNanolevel_Height_UUID"
+  #define ITROLL_TEMP_UUID  "KellerNanolevel_Temp_UUID"
+  //#define ITROLL_PRESSURE_UUID  "ITROLL_PRESSURE_UUID"  
 #endif // KellerNanolevel_ACT
 
 //#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
-  //Mayfly definitions
-  #define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
-  #define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
   #define KellerNanolevelModbusAddress_DEF 0x01
+#endif // KellerNanolevel_ACT
+
+//#define InsituLTrs485_ACT 1 -not working
+#ifdef InsituLTrs485_ACT
+  #define CONFIG_SENSOR_RS485_PHY 1
+  #define InsituLTrs485_Height_UUID "KellerNanolevel_Height_UUID"
+  #define InsituLTrs485_Temp_UUID   "KellerNanolevel_Temp_UUID"
+  #define InsituLTrs485ModbusAddress_DEF 0x01
+  //Default is 19200 lets hope serial works with it.
+  #define MODBUS_BAUD_RATE 19200
+#endif // InsituLTrs485_ACT
+
+#ifdef CONFIG_SENSOR_RS485_PHY
+  //Mayfly definitions
+  #define CONFIG_HW_RS485PHY_TX_PIN 5  //Mayfly OCRA1 map AltSoftSerial Tx pin 
+  #define CONFIG_HW_RS485PHY_RX_PIN 6  //Mayfly ICES1 map AltSoftSerial Rx pin
   #define CONFIG_HW_RS485PHY_DIR_PIN -1 
   #define max485EnablePin_DEF   -1  
   #define rs485AdapterPower_DEF 22 // Pin to switch RS485 adapter power on and off (-1 if unconnected)
   #define modbusSensorPower_DEF 22;  // Pin to switch power on and off (-1 if unconnected) 
+  #ifndef MODBUS_BAUD_RATE
+  #define MODBUS_BAUD_RATE 9600
+  #endif //MODBUS_BAUD_RATE
+#endif //CONFIG_SENSOR_RS485_PHY
+
+#define AnalogProcEC_ACT
+#ifdef AnalogProcEC_ACT
+  #define EC1_UUID      "EC1_UUID"
+  #define ECpwrPin_DEF A4
+  #define ECdataPin1_DEF A0
 #endif // KellerNanolevel_ACT
 
 //#define INA219M_PHY_ACT 1
@@ -141,10 +173,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif // ASONG_AM23XX_UUID
 
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
-#define MaximDS3231_TEMP_UUID  "MaximDS3231_TEMP_UUID"
+//#define MaximDS3231_TEMP_UUID  "MaximDS3231_TEMP_UUID"
 #define MaximDS3231_TEMPF_UUID "MaximDS3231_TEMPF_UUID"
 #endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
-#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
+//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 // Seems to cause XBEE WiFi S6 to crash
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #define ProcessorStats_ACT 1
