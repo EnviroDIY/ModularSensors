@@ -22,17 +22,13 @@ ___
 The [single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor) example shows making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port.
 It also shows creating a calculated variable which is the water depth.
 
-<---!
-@subpage single_sensor_example
---->
+[//]: <> (@subpage single_sensor_example)
 
 ### Simple Logging
 
 The [simple_logging](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging) example shows how to create multiple sensors, create variables for the sensors in a variable array, and log the data from the sensors to an SD card.
 
-<---!
-@subpage simple_logging_example
---->
+<---! @subpage simple_logging_example --->
 
 ### Simple Logging for LearnEnviroDIY
 
