@@ -184,10 +184,12 @@ const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
+#if defined UseModem_Module 
 // Network connection information
 const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi, unnecessary for gprs
+#endif //UseModem_Module 
 
 #ifdef DigiXBeeCellularTransparent_Module 
 // For any Digi Cellular XBee's
@@ -263,72 +265,6 @@ const int8_t IT_SDI12Data = 7;  // The SDI12 data pin
 // Create a  ITROLL sensor object
 InsituTrollSdi12 itrollPhy(*ITROLLSDI12address, IT_SDI12Power, IT_SDI12Data, ITROLLNumberReadings);
 #endif //Insitu_TrollSdi12_UUID
-
-// ==========================================================================
-//    Keller Acculevel High Accuracy Submersible Level Transmitter
-// ==========================================================================
-#if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT) || defined(InsituLTrs485_ACT)
-#define KellerXxxLevel_ACT 1
-//#include <sensors/KellerAcculevel.h>
-
-// Create a reference to the serial port for modbus
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
-HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
-#else
- AltSoftSerial &modbusSerial = altSoftSerialPhy;  // For software serial if needed
- //NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
-#endif
-
-//byte acculevelModbusAddress = KellerAcculevelModbusAddress;  // The modbus address of KellerAcculevel
-const int8_t rs485AdapterPower = rs485AdapterPower_DEF;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-const int8_t modbusSensorPower = modbusSensorPower_DEF;  // Pin to switch sensor power on and off (-1 if unconnected)
-const int8_t max485EnablePin = max485EnablePin_DEF;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-
-const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
-const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
-const int8_t RS485PHY_DIR_PIN = CONFIG_HW_RS485PHY_DIR_PIN;
-
-#endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
-
-#if defined KellerAcculevel_ACT
-#include <sensors/KellerAcculevel.h>
-
-byte acculevelModbusAddress = KellerAcculevelModbusAddress_DEF;  // The modbus address of KellerAcculevel
-const uint8_t acculevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
-
-// Create a Keller Acculevel sensor object
-KellerAcculevel acculevel_snsr(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
-
-// Create pressure, temperature, and height variable pointers for the Acculevel
-// Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
-#endif //KellerAcculevel_ACT 
-
-
-// ==========================================================================
-//    Keller Nanolevel High Accuracy Submersible Level Transmitter
-// ==========================================================================
-#ifdef KellerNanolevel_ACT
-#include <sensors/KellerNanolevel.h>
-
-byte nanolevelModbusAddress = KellerNanolevelModbusAddress_DEF;  // The modbus address of KellerNanolevel
-// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
-// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
-
-// Create a Keller Nanolevel sensor object
-
-KellerNanolevel nanolevel_snsr(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
-
-// Create pressure, temperature, and height variable pointers for the Nanolevel
-// Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *nanolevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
-
-#endif //KellerNanolevel_ACT
 
 // ==========================================================================
 //    Insitu Level/Aqua Troll High Accuracy Submersible Level Transmitter
@@ -494,18 +430,18 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 // Units conversion functions
 // ==========================================================================
-#define  SENSOR_DEFAULT_F -0.009999
+#define  SENSOR_T_DEFAULT_F -0.009999
 float convertDegCtoF(float tempInput)
 { // Simple deg C to deg F conversion
-    if (           -9999 == tempInput) return SENSOR_DEFAULT_F; 
-    if (SENSOR_DEFAULT_F == tempInput) return SENSOR_DEFAULT_F; 
+    if (           -9999 == tempInput) return SENSOR_T_DEFAULT_F; 
+    if (SENSOR_T_DEFAULT_F == tempInput) return SENSOR_T_DEFAULT_F; 
     return tempInput * 1.8 + 32;
 }
 
 float convertMmtoIn(float mmInput)
 { // Simple millimeters to inches conversion
-    if (           -9999 == mmInput) return SENSOR_DEFAULT_F; 
-    if (SENSOR_DEFAULT_F == mmInput) return SENSOR_DEFAULT_F; 
+    if (           -9999 == mmInput) return SENSOR_T_DEFAULT_F; 
+    if (SENSOR_T_DEFAULT_F == mmInput) return SENSOR_T_DEFAULT_F; 
     return mmInput / 25.4;
 }
 // ==========================================================================
@@ -546,16 +482,22 @@ Variable *CTDDepthInCalc = new Variable(
     CTD10_DEPTH_UUID);
 #endif //Decagon_CTD_UUID
 
-#if defined MaximDS3231_TEMP_UUID
+#if defined MaximDS3231_TEMP_UUID || defined MaximDS3231_TEMPF_UUID
 // Create a temperature variable pointer for the DS3231
+#if defined MaximDS3231_TEMP_UUID 
 Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231,MaximDS3231_TEMP_UUID);
+#else
+Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231);
+#endif 
 float ds3231TempFgetValue(void)
 { // Convert temp for the DS3231
     // Pass true to getValue() for the Variables for which we're only sending a calculated version
     // of the sensor reading; this forces the sensor to take a reading when getValue is called.
     return convertDegCtoF(ds3231TempC->getValue(true));
 }
+#endif // MaximDS3231_TEMP_UUID
 // Create the calculated Mayfly temperature Variable object and return a pointer to it
+#if defined MaximDS3231_TEMPF_UUID
 Variable *ds3231TempFcalc = new Variable(
     ds3231TempFgetValue,      // function that does the calculation
     1,                          // resolution
@@ -621,8 +563,10 @@ Variable *variableList[] = {
     #if defined MaximDS3231_TEMP_UUID
     //new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
     ds3231TempC,
+    #endif //  MaximDS3231_TEMP_UUID
+    #if defined MaximDS3231_TEMPF_UUID
     ds3231TempFcalc,
-    #endif //MaximDS3231_Temp_UUID
+    #endif //MaximDS3231_TempF_UUID
 
 };
 
@@ -692,8 +636,9 @@ float getBatteryVoltage()
     return mcuBoard.sensorValues[0];
 }
 
+// ==========================================================================
 // Manages the Modbus Physical Pins.
-// Pins pulled high when powered off will cause a ghost power leakage. -
+// Pins pulled high when powered off will cause a ghost power leakage.
 #if defined KellerXxxLevel_ACT
 void modbusPinPowerMng(bool status) {
     MS_DBG(F("  **** modbusPinPower"), status);
@@ -706,7 +651,6 @@ void modbusPinPowerMng(bool status) {
     #endif
 }
 #endif //KellerXxxLevel_ACT
-
 
 #define PORT_SAFE(pinNum) pinMode(pinNum,INPUT);     digitalWrite(pinNum, LOW);
 void  unusedBitsMakeSafe() 
@@ -748,19 +692,6 @@ void  unusedBitsMakeSafe()
     //PORT_SAFE(31); //A7 Timer Int
 };
 
-// ==========================================================================
-#if defined KellerXxxLevel_ACT
-void modbusPinPowerMng(bool status) {
-    MS_DBG(F("  **** modbusPinPower"), status);
-    #if 1
-    if (status) {
-        modbusSerial.setupPhyPins();
-    } else {
-        modbusSerial.disablePhyPins();
-    }
-    #endif
-}
-#endif //KellerXxxLevel_ACT
 // ==========================================================================
 // Main setup function
 // ==========================================================================
