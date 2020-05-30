@@ -21,24 +21,24 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //**************************************************************************
 //This configuration is for a standard Mayfly0.bb
 //Sensors Used - two std to begin then
-//#define AnalogProcEC_ACT 1
+#define AnalogProcEC_ACT 1
 #define ENVIRODIY_MAYFLY_TEMPERATURE 1
-#define Decagon_CTD_UUID 1
-//**************************************************************************
-//This configuration is for a standard Mayfly0.bb
-// Not expected to be used as softserial stopped working
-//Standard - target TU power Mon using INA219 0-10A, 0-16V
-// Wireless XbeeS6 wiFi and Xbee LTE 
-//This is hardcoded to mean things in ProcessorStats !!!!
-//This defines rev 0.5ba changes for Mayfly. 
-// Rev0.5ba is an enhancement on 0.5b
-// C4 removed, strap for AA2/Vbat AA3/SolarV, C 100uF Cer across XbeeVcc
+//#define Decagon_CTD_UUID 1
+//#define Insitu_TrollSdi12_UUID 1
+//Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
+//#define KellerAcculevel_ACT 1
+//#define KellerNanolevel_ACT 1
+
+//Mayfly configuration 
+// Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
+// Digi WiFi S6 plugged in directly
+// For debug: C4 removed, strap for AA2/Vbat AA3/SolarV, 
 #define MFVersion_DEF "v0.5b"
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define USE_MS_SD_INI 1
-#define USE_PS_EEPROM  1 //Alterantive USE_PS_2ND_SD
+#define USE_MS_SD_INI  1
+#define USE_PS_EEPROM  1 
 #define USE_PS_HW_BOOT 1
 
 //#define USE_PS_modularSensorsCommon 1
@@ -73,16 +73,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define  loggingInterval_MAX_CDEF_MIN 6*60
 
 
-//Required for TinyGsmClient.h - select one
+//Instructions: define only one  _Module
+//#define DigiXBeeWifi_Module 1
+//#warning infoMayflyWithDigiXBeeWiFi
+//#define DigiXBeeCellularTransparent_Module 1
+//#warning infoMayflyWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // End TinyGsmClient.h options
-//define one  _Module
-//#define DigiXBeeWifi_Module 1
-//#warning infoMayflyWithDigiXBeeWiFi
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-// #define DigiXBeeLTE_Module 1 - unstable
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
 #define UseModem_Module 1
 //Required for TinyGsmClient.h 
@@ -106,7 +106,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
 
-//#define Decagon_CTD_UUID 1
+
 #ifdef Decagon_CTD_UUID
   //Mayfly definitions
   #define CTD10_DEPTH_UUID "CTD10_DEPTH_UUID"
@@ -114,15 +114,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define CTD10_COND_UUID  "CTD10_COND_UUID"  
 #endif // Decagon_CTD_UUID
 
-//#define Insitu_TrollSdi12_UUID 1
+
 #ifdef Insitu_TrollSdi12_UUID
   //Mayfly definitions
   #define ITROLL_DEPTH_UUID "KellerNanolevel_Height_UUID"
   #define ITROLL_TEMP_UUID  "KellerNanolevel_Temp_UUID"
   //#define ITROLL_PRESSURE_UUID  "ITROLL_PRESSURE_UUID"  
-#endif // KellerNanolevel_ACT
+#endif // Insitu_Troll_UUID
 
-//#define KellerNanolevel_ACT 1
+
 #ifdef KellerAcculevel_ACT 
   #define KellerAcculevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerAcculevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
@@ -165,7 +165,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define EC1_UUID      "EC1_UUID"
   #define ECpwrPin_DEF A4
   #define ECdataPin1_DEF A0
-#endif // KellerNanolevel_ACT
+#endif //AnalogProcEC_ACT
 
 //#define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
@@ -181,16 +181,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define ASONG_AM23_Air_Humidity_UUID    "Air_Humidity_UUID"
 #endif // ASONG_AM23XX_UUID
 
-//#define MaximDS3231_TEMP_UUID  "MaximDS3231_TEMP_UUID"
+
 #ifdef ENVIRODIY_MAYFLY_TEMPERATURE
 #define MaximDS3231_TEMP_UUID  "MaximDS3231_TEMP_UUID"
 //#define MaximDS3231_TEMPF_UUID "MaximDS3231_TEMPF_UUID"
-#endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
+#endif //ENVIRODIY_MAYFLY_TEMPERATURE
 
 //#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
-//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
-// Seems to cause XBEE WiFi S6 to crash
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+
+
 #define ProcessorStats_ACT 1
 #if defined ProcessorStats_ACT
 #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
