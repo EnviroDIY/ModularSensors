@@ -39,9 +39,11 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
+
 // EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitely included in the main program.
+// interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
+
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.
 #include <LoggerBase.h>
@@ -78,27 +80,6 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
-//  Using the Processor as a Sensor
-// ==========================================================================
-/** Start [processor_sensor] */
-#include <sensors/ProcessorStats.h>
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
-
-// Create sample number, battery voltage, and free RAM variable pointers for the
-// processor
-Variable* mcuBoardBatt = new ProcessorStats_Battery(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor_sensor] */
-
-
-// ==========================================================================
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
 /** Start [modem_settings] */
@@ -129,6 +110,27 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [modem_settings] */
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+
+// Create sample number, battery voltage, and free RAM variable pointers for the
+// processor
+Variable* mcuBoardBatt = new ProcessorStats_Battery(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor_sensor] */
 
 
 // ==========================================================================
@@ -365,7 +367,7 @@ const char* registrationToken =
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);

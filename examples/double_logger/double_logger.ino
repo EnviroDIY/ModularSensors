@@ -20,9 +20,11 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
+
 // EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitely included in the main program.
+// interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
+
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.
 #include <LoggerBase.h>
@@ -60,27 +62,11 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
-//  Using the Processor as a Sensor
-// ==========================================================================
-/** Start [processor_sensor] */
-#include <sensors/ProcessorStats.h>
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
-
-
-// ==========================================================================
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
 /** Start [modem_settings] */
 // Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -105,6 +91,18 @@ DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
 // Create an extra reference to the modem by a generic name
 DigiXBeeWifi modem = modemXBWF;
 /** End [modem_settings] */
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [processor_sensor] */
 
 
 // ==========================================================================

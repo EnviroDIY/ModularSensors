@@ -39,63 +39,15 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
+
 // EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitely included in the main program.
+// interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
+
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.
 #include <LoggerBase.h>
 /** End [includes] */
-
-
-// ==========================================================================
-//  Data Logger Settings
-// ==========================================================================
-/** Start [logger_settings] */
-// The name of this file
-const char* sketchName = "menu_a_la_carte.ino";
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;  // Eastern Standard Time
-// NOTE:  Daylight savings time will not be applied!  Please use standard time!
-
-// Set the input and output pins for the logger
-// NOTE:  Use -1 for pins that do not apply
-const long   serialBaud = 115200;  // Baud rate for debugging
-const int8_t greenLED   = 8;       // Pin for the green LED
-const int8_t redLED     = 9;       // Pin for the red LED
-const int8_t buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
-// Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
-const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
-const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger_settings] */
-
-
-// ==========================================================================
-//  Using the Processor as a Sensor
-// ==========================================================================
-/** Start [processor_sensor] */
-#include <sensors/ProcessorStats.h>
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
-
-// Create sample number, battery voltage, and free RAM variable pointers for the
-// processor
-// Variable* mcuBoardBatt = new ProcessorStats_Battery(
-//     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
-//     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
-//     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor_sensor] */
 
 
 // ==========================================================================
@@ -203,6 +155,35 @@ void SERCOM2_Handler() {
 
 #endif  // End hardware serial on SAMD21 boards
 /** End [serial_ports_SAMD] */
+
+
+// ==========================================================================
+//  Data Logger Settings
+// ==========================================================================
+/** Start [logger_settings] */
+// The name of this file
+const char* sketchName = "menu_a_la_carte.ino";
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char* LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;  // Eastern Standard Time
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
+
+// Set the input and output pins for the logger
+// NOTE:  Use -1 for pins that do not apply
+const long   serialBaud = 115200;  // Baud rate for debugging
+const int8_t greenLED   = 8;       // Pin for the green LED
+const int8_t redLED     = 9;       // Pin for the red LED
+const int8_t buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
+const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+/** End [logger_settings] */
 
 
 // ==========================================================================
@@ -447,6 +428,27 @@ SodaqUBeeU201 modem = modemU201;
 // Variable* modemTemperature =
 //     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [modem_variables] */
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+
+// Create sample number, battery voltage, and free RAM variable pointers for the
+// processor
+// Variable* mcuBoardBatt = new ProcessorStats_Battery(
+//     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
+//     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
+//     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor_sensor] */
 
 
 // ==========================================================================
@@ -1663,7 +1665,7 @@ const char* registrationToken =
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);

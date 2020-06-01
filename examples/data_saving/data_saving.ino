@@ -39,13 +39,38 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
+
 // EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitely included in the main program.
+// interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
+
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.
 #include <LoggerBase.h>
 /** End [includes] */
+
+
+// ==========================================================================
+//  Settings for Additional Serial Ports
+// ==========================================================================
+/** Start [serial_ports] */
+// The modem and a number of sensors communicate over UART/TTL - often called
+// "serial". "Hardware" serial ports (automatically controlled by the MCU) are
+// generally the most accurate and should be configured and used for as many
+// peripherals as possible.  In some cases (ie, modbus communication) many
+// sensors can share the same serial port.
+
+// Unfortunately, most AVR boards have only one or two hardware serial ports,
+// so we'll set up three types of extra software serial ports to use
+
+// AltSoftSerial by Paul Stoffregen
+// (https://github.com/PaulStoffregen/AltSoftSerial) is the most accurate
+// software serial port for AVR boards. AltSoftSerial can only be used on one
+// set of pins on each board so only one AltSoftSerial port can be used. Not all
+// AVR boards are supported by AltSoftSerial.
+#include <AltSoftSerial.h>
+AltSoftSerial altSoftSerial;
+/** End [serial_ports] */
 
 
 // ==========================================================================
@@ -75,50 +100,6 @@ const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 /** End [logger_settings] */
-
-
-// ==========================================================================
-//  Using the Processor as a Sensor
-// ==========================================================================
-/** Start [processor_sensor] */
-#include <sensors/ProcessorStats.h>
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
-
-// Create sample number, battery voltage, and free RAM variable pointers for the
-// processor
-Variable* mcuBoardBatt = new ProcessorStats_Battery(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor_sensor] */
-
-
-// ==========================================================================
-//    Settings for Additional Serial Ports
-// ==========================================================================
-/** Start [serial_ports] */
-// The modem and a number of sensors communicate over UART/TTL - often called
-// "serial". "Hardware" serial ports (automatically controlled by the MCU) are
-// generally the most accurate and should be configured and used for as many
-// peripherals as possible.  In some cases (ie, modbus communication) many
-// sensors can share the same serial port.
-
-// Unfortunately, most AVR boards have only one or two hardware serial ports,
-// so we'll set up three types of extra software serial ports to use
-
-// AltSoftSerial by Paul Stoffregen
-// (https://github.com/PaulStoffregen/AltSoftSerial) is the most accurate
-// software serial port for AVR boards. AltSoftSerial can only be used on one
-// set of pins on each board so only one AltSoftSerial port can be used. Not all
-// AVR boards are supported by AltSoftSerial.
-#include <AltSoftSerial.h>
-AltSoftSerial altSoftSerial;
-/** End [serial_ports] */
 
 
 // ==========================================================================
@@ -152,6 +133,27 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [modem_settings] */
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+
+// Create sample number, battery voltage, and free RAM variable pointers for the
+// processor
+Variable* mcuBoardBatt = new ProcessorStats_Battery(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor_sensor] */
 
 
 // ==========================================================================
@@ -335,7 +337,7 @@ const char* registrationToken =
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient,

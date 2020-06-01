@@ -1,4 +1,5 @@
-# Using ModularSensors to save data to an SD card and send data to ThingSpeak {#thingspeak_example}
+[//]: # ( @page thingspeak_example ThingSpeak Example )
+# Using ModularSensors to save data to an SD card and send data to ThingSpeak
 
 This shows the use of a "ThingSpeak logger" object.  Data is sent to [ThingSpeak](https://thingspeak.com) using MQTT.
 

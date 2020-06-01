@@ -1,5 +1,5 @@
 /** =========================================================================
- * @file DWRI_CitSci.ino
+ * @file DRWI_CitSci.ino
  * @brief Example for DRWI CitSci 2G sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -35,9 +35,11 @@
 /** Start [includes] */
 // The Arduino library is needed for every Arduino program.
 #include <Arduino.h>
+
 // EnableInterrupt is used by ModularSensors for external and pin change
-// interrupts and must be explicitely included in the main program.
+// interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
+
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.
 #include <LoggerBase.h>
@@ -49,7 +51,7 @@
 // ==========================================================================
 /** Start [logger_settings] */
 // The name of this file
-const char* sketchName = "DWRI_CitSci.ino";
+const char* sketchName = "DRWI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -71,18 +73,6 @@ const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 /** End [logger_settings] */
-
-
-// ==========================================================================
-//  Using the Processor as a Sensor
-// ==========================================================================
-/** Start [processor_sensor] */
-#include <sensors/ProcessorStats.h>
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
 
 
 // ==========================================================================
@@ -110,6 +100,18 @@ Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
 /** End [modem_settings] */
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [processor_sensor] */
 
 
 // ==========================================================================
@@ -239,7 +241,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);

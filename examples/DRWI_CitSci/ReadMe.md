@@ -1,4 +1,5 @@
-# ModularSensors DRWI 2G Sites {#drwi_2g_example}
+[//]: # ( @page drwi_2g_example DRWI CitSci 2G Sites)
+# ModularSensors DRWI 2G Sites
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This should be used at all sites with cellular 2G service.
 

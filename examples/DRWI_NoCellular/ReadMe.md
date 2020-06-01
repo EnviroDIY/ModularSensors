@@ -1,4 +1,5 @@
-# ModularSensors for DRWI sites with no Cellular Service {#drwi_no_cell_example}
+[//]: # ( @page drwi_no_cell_example DRWI CitSci Sites without Live Data )
+# ModularSensors for DRWI sites with no Cellular Service
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.
 
