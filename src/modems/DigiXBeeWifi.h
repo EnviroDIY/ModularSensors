@@ -20,6 +20,9 @@
 #define MS_DEBUGGING_STD "DigiXBeeWifi"
 #endif
 
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
 #define TINY_GSM_MODEM_XBEE
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64

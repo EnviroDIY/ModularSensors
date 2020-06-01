@@ -20,6 +20,9 @@
 #define MS_DEBUGGING_STD "DigiXBee3GBypass"
 #endif
 
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
 #define TINY_GSM_MODEM_UBLOX
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
@@ -35,12 +38,35 @@
 #include <StreamDebugger.h>
 #endif
 
+
+/**
+ * @brief The loggerModem subclass for Digi Cellular XBee's based on u-blox SARA
+ * U201 chips and operated in bypass mode.
+ * @sa #DigiXBee
+ * @sa #SodaqUBeeU201
+ */
 class DigiXBee3GBypass : public DigiXBee {
  public:
     // Constructor/Destructor
+    /**
+     * @brief Construct a new Digi XBee 3G Bypass object
+     *
+     * @param modemStream The Arduino stream instance for serial communication.
+     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param useCTSStatus True to use the CTS pin of the XBee as a status
+     * indicator rather than the true status pin.  This inverts the
+     * loggerModem::_statusLevel.
+     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param apn The Access Point Name (APN) for the SIM card.
+     */
     DigiXBee3GBypass(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                      bool useCTSStatus, int8_t modemResetPin,
                      int8_t modemSleepRqPin, const char* apn);
+    /**
+     * @brief Destroy the Digi XBee 3G Bypass object - no action needed
+     */
     ~DigiXBee3GBypass();
 
     bool modemWake(void) override;

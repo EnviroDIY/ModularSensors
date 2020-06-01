@@ -21,6 +21,9 @@
 #define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
 
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
 #define TINY_GSM_MODEM_SARAR4
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64

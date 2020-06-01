@@ -17,7 +17,7 @@ DigiXBee::DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
     : loggerModem(powerPin, statusPin, !useCTSStatus, modemResetPin,
                   XBEE_RESET_LEVEL, XBEE_RESET_PULSE_MS, modemSleepRqPin,
                   XBEE_WAKE_LEVEL, XBEE_WAKE_PULSE_MS, XBEE_STATUS_TIME_MS,
-                  XBEE_DISCONNECT_TIME_MS, XBEE_WARM_UP_TIME_MS,
+                  XBEE_DISCONNECT_TIME_MS, XBEE_WAKE_DELAY_MS,
                   XBEE_ATRESPONSE_TIME_MS) {}
 
 // Destructor
