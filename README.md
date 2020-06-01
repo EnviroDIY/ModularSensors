@@ -1,5 +1,7 @@
+[//]: # ( @mainpage ModularSensors )
 # ModularSensors
-
+___
+[//]: # ( @section mainpage_getting_started Getting Started )
 ## Getting Started
 
 Check out the [Just Getting Started](https://github.com/EnviroDIY/ModularSensors/wiki/Getting-Started) section of the Wiki!
@@ -17,20 +19,31 @@ Using the common sensor and variable interface, the library attempts to optimize
 
 Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Compatibility) as well.
 
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
 - [ModularSensors](#modularsensors)
   - [Getting Started](#getting-started)
-  - [Data Receivers](#data-receivers)
+  - [Data Endpoints](#data-endpoints)
   - [Supported Sensors](#supported-sensors)
+  - [Supported Cellular/Wifi Modules:](#supported-cellularwifi-modules)
   - [Contributing](#contributing)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
+[//]: # ( End GitHub Only )
 
 
-## Data Receivers
+[//]: # ( @section mainpage_data_receivers Data Endpoints )
+## Data Endpoints
 
-- [WikiWatershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
+While data on an SD card is very nice, being able to see live data is much better.
+The "dataPublisher" objects add the functionality to send data to remote web services.
+The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/) and [ThingSpeak](https://thingspeak.com/).
+
+- [Monitor My Watershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
 - [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Functions)
 
+[//]: # ( @section mainpage_supported_sensors Supported Sensors )
 ## Supported Sensors
 
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://github.com/EnviroDIY/ModularSensors/wiki/Apogee-SQ212)
@@ -73,7 +86,20 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 - [Processor Metrics: battery voltage, free RAM, sample count](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Metadata)
 
 
+[//]: # ( @section mainpage_modems Supported Cellular/Wifi Modules )
+## Supported Cellular/Wifi Modules:
+- [Digi XBee](https://github.com/EnviroDIY/ModularSensors/wiki/Digi-XBee)
+- [ESP8266](https://github.com/EnviroDIY/ModularSensors/wiki/ESP8266)
+- [QuectelBG96](https://github.com/EnviroDIY/ModularSensors/wiki/QuectelBG96)
+- [Sequans Monarch](https://github.com/EnviroDIY/ModularSensors/wiki/Sequans-Monarch)
+- [SIM7000](https://github.com/EnviroDIY/ModularSensors/wiki/SIM7000)
+- [SIM800](https://github.com/EnviroDIY/ModularSensors/wiki/SIM800)
+- [Sodaq GPRSBeeR6](https://github.com/EnviroDIY/ModularSensors/wiki/Sodaq-GPRSBeeR6)
+- [Sodaq uBee](https://github.com/EnviroDIY/ModularSensors/wiki/Sodaq-uBee)
 
+
+
+[//]: # ( @section mainpage_contributing Contributing )
 ## Contributing
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
 Feel free to open issues about any bugs you find or any sensors you would like to have added.
@@ -85,6 +111,7 @@ There is _extensive_ documentation in the wiki and an _enormous_ number of comme
 
 
 
+[//]: # ( @section mainpage_license License )
 ## License
 Software sketches and code are released under the BSD 3-Clause License -- See [LICENSE.md](https://github.com/EnviroDIY/ModularSensors/blob/master/LICENSE.md) file for details.
 
@@ -92,6 +119,7 @@ Documentation is licensed as [Creative Commons Attribution-ShareAlike 4.0](https
 
 Hardware designs shared are released, unless otherwise indicated, under the [CERN Open Hardware License 1.2](http://www.ohwr.org/licenses/cern-ohl/v1.2) (CERN_OHL).
 
+[//]: # ( @section mainpage_acknowledgments Acknowledgments )
 ## Acknowledgments
 [EnviroDIY](http://envirodiy.org/)™ is presented by the Stroud Water Research Center, with contributions from a community of enthusiasts sharing do-it-yourself ideas for environmental science and monitoring.
 
