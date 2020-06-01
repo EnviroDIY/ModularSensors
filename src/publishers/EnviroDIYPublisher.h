@@ -5,7 +5,7 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
- * publishing data to the EnviroDIY/Monitor My Watershed data portal at
+ * publishing data to the Monitor My Watershed/EnviroDIY data portal at
  * http://data.enviroDIY.org
  *
  * @copydetails EnviroDIYPublisher
@@ -65,8 +65,8 @@ class EnviroDIYPublisher : public dataPublisher {
     // This generates a properly formatted JSON for EnviroDIY
     void printSensorDataJSON(Stream* stream);
 
-    // This prints a fully structured post request for WikiWatershed/EnviroDIY
-    // to the specified stream.
+    // This prints a fully structured post request for Monitor My
+    // Watershed/EnviroDIY to the specified stream.
     void printEnviroDIYRequest(Stream* stream);
 
     // A way to begin with everything already set
