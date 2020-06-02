@@ -1810,23 +1810,6 @@ ThingSpeakPublisher TsMqtt(dataLogger, &modemPhy.gsmClient, thingSpeakMQTTKey, t
 //    Working Functions
 // ==========================================================================
 
-//Decode reason for this Reset
-#define NUM_RESET_BITS 8
-const char *rrReason[NUM_RESET_BITS] = {"POR ","BOD12 ","BOD33 " ,"NVM ","EXT ","WDT ","SYST ","Backup "};
-String decodeResetCause(uint8_t resetCause) {
-    char resetReason[60];
-    uint8_t rrLen=0;
-    int8_t  rrLp=(NUM_RESET_BITS-1);
-    resetReason[0]=0;
-    //resetCause =0xff;
-    for (; 0<=rrLp;--rrLp ) {
-        if ((0x1<<rrLp) & resetCause) strcpy(&resetReason[rrLen],rrReason[rrLp]);
-        rrLen = strlen(resetReason);
-    }
-    //MS_DBG("tot str size",rrLen);   
-    return (String) resetReason;
-} 
-
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned long timeOff_ms = 200)
 {

@@ -697,6 +697,10 @@ void  unusedBitsMakeSafe()
 // ==========================================================================
 void setup()
 {
+    //uint8_t resetCause = REG_RSTC_RCAUSE;        AVR ?//Reads from hw    
+    //uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; AVR ?//Reads from hw 
+    bool LiBattPower_Unseable;
+    uint16_t lp_wait=1;    
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
     // could prevent the script from starting
@@ -725,6 +729,33 @@ void setup()
 
     unusedBitsMakeSafe();
     readAvrEeprom();
+
+    // A vital check on power availability
+    do {
+        LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ))?true:false);
+        if (LiBattPower_Unseable)
+        {
+            /* Sleep 
+            * If can't collect data wait for more power to accumulate.
+            * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
+            * Under no other load conditions the mega1284 takes about 35mA
+            * Another issue is that onstartup currently requires turning on comms device to set it up.
+            * On an XbeeS6 WiFi this can take 20seconds for some reason.
+            */
+            #if 1//defined(CHECK_SLEEP_POWER)
+            SerialStd.print(lp_wait++);
+            SerialStd.print(F(": BatteryLow-Sleep60sec, BatV="));
+            SerialStd.println(mcuBoard.getBatteryVm1(false));
+            #endif //(CHECK_SLEEP_POWER)
+            //delay(59000); //60Seconds
+            //if(_mcuWakePin >= 0){systemSleep();}
+            dataLogger.systemSleep(1); 
+            delay(1000);//debug
+            SerialStd.println(F("----Wakeup"));
+        }
+    } while (LiBattPower_Unseable); 
+    SerialStd.print(F("Good BatV="));
+    SerialStd.println(mcuBoard.getBatteryVm1(false));    
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -783,23 +814,24 @@ void setup()
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
     #if defined UseModem_Module
-    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.provider.s.registration_token, ps_ram.provider.s.sampling_feature);
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     
     // Note:  Please change these battery voltages to match your battery
 
-    MS_DBG(F("---getBatteryVoltage "));
-    float batteryV = getBatteryVoltage(); //Get once
-
+    //MS_DBG(F("---getBatteryVoltage "));
+    //float batteryV = getBatteryVoltage(); //Get once
+    #if defined UseModem_Module
     // Sync the clock if it isn't valid and we have battery to spare
-    #define POWER_THRESHOLD_NEED_COMMS_PWR 3.2
-    #define POWER_THRESHOLD_NEED_BASIC_PWR 2.8
-    while  (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR && !dataLogger.isRTCSane())
+    //#define POWER_THRESHOLD_NEED_COMMS_PWR 3.2
+    //#define POWER_THRESHOLD_NEED_BASIC_PWR 2.8
+
+    while  ( (PS_LBATT_UNUSEABLE_STATUS != mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) && !dataLogger.isRTCSane())
     {
-        MS_DBG(F("Not enough power to sync with NIST "),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);
+        MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), S_PWR_LOW_REQ);
         dataLogger.systemSleep();     
-        batteryV = getBatteryVoltage(); //reresh
     } 
+    #endif //UseModem_Module
 
     if (!dataLogger.isRTCSane()) {
         #if defined UseModem_Module
@@ -813,13 +845,14 @@ void setup()
         #endif
     }
 
+#if 0
     //Check if enough power to go on
     while (batteryV < POWER_THRESHOLD_NEED_BASIC_PWR) {
         MS_DBG(F("Wait for more power, batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_BASIC_PWR);
         dataLogger.systemSleep();        
         batteryV = getBatteryVoltage(); //referesh
     }
-
+#endif //0
     Serial.println(F("Setting up sensors..."));
     varArray.setupSensors();
     // Create the log file, adding the default header to it
@@ -850,27 +883,24 @@ void setup()
 // Main loop function
 // ==========================================================================
 
-// Use this short loop for simple data logging and sending
 void loop()
 {
-    // Note:  Please change these battery voltages to match your battery
-    // At very low battery, just go back to sleep
-    float batteryV = getBatteryVoltage();
-    if (batteryV < POWER_THRESHOLD_NEED_BASIC_PWR)
-    {
-        MS_DBG(F("Cancel logging, V too low batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_BASIC_PWR);
+    ps_Lbatt_status_t Lbatt_status;
+    Lbatt_status = mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
+    if (PS_LBATT_UNUSEABLE_STATUS==Lbatt_status ) {
+        PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="),mcuBoard.getBatteryVm1(false));
         dataLogger.systemSleep();
     }
-    // At moderate voltage, log data but don't send it over the modemPhy
+    // If battery low, log data but don't send it over the modemPhy
     else 
     #if defined UseModem_Module
-    if (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR)
+    if (PS_LBATT_LOW_STATUS <= Lbatt_status )
     #endif
     {
         #if defined UseModem_Module
-        MS_DBG(F("Cancel Publish collect readings & log. V too low batteryV="),batteryV,F("Need >"), POWER_THRESHOLD_NEED_COMMS_PWR );
+        PRINTOUT(F("Cancel Publish collect readings & log. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         #else
-        MS_DBG(F("Collect readings & log. batteryV="),batteryV,F("Threshold >"), POWER_THRESHOLD_NEED_BASIC_PWR );
+        PRINTOUT(F("Collect readings & log. batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         #endif // UseModem_Module
         dataLogger.logData();
     }
@@ -878,7 +908,7 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-        MS_DBG(F("Starting logging/Publishing"),batteryV);
+         PRINTOUT(F("Starting logging/Publishing"),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         dataLogger.logDataAndPublish();
     }
     #endif// UseModem_Module

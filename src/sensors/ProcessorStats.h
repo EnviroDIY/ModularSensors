@@ -61,14 +61,16 @@ typedef enum {
    PSLR_1000mA,
    PSLR_4000mA, //4000mA or more
    //Fut expanded to batterys
-   // LiSiOCL2 19Ahr/larger Pulse 150mA "D" cell - Nomonal 3.6 discharged at 3.2V
-   // LiSiOCL2  9Ahr        Pulse 100mA "C" cell - Nomonal 3.6 discharged at 3.2V
+   PLSR_LiSi09,// LiSiOCL2  9Ahr        Pulse 100mA "C" cell - Nomonal 3.6 discharged at 3.2V
+   PLSR_LiSi18,// LiSiOCL2 19Ahr/larger Pulse 150mA "D" cell - Nomonal 3.6 discharged at 3.2V
+
    // 3 MnO2 "D" cell   Nominal 4.8V, discharged at 3.2V, though has energy to 2.4V
    // 3 MnO2 "C" cell - higher impedance than "D" cell
    PSLR_NUM, ///Number of Battery types supported 
    PSLR_UNDEF,
 } ps_liion_rating_t;
 #define PSLR_LIION  PSLR_0500mA
+#define PLSR_BAT_TYPE_DEF  PSLR_0500mA
 typedef enum {
    PS_PWR_STATUS_REQ=0, //0 returns status
    //Order of following important and should map to ps_Lbatt_status_t
@@ -140,9 +142,11 @@ public:
 const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
 //    0    1    2    3   Hyst
 //   Use  Low  Med  Good
-    {3.3, 3.4, 3.6, 3.8, 0.05},
-    {3.2, 3.3, 3.4, 3.7, 0.04},
-    {3.1, 3.2, 3.3, 3.6, 0.03}
+    {3.3, 3.4, 3.6, 3.8, 0.05}, //PSLR_0500mA, //500mA or less 
+    {3.2, 3.3, 3.4, 3.7, 0.04}, //PSLR_1000mA
+    {3.1, 3.2, 3.3, 3.6, 0.03}, //PSLR_4000mA
+    {3.10, 3.20, 3.30, 3.40, 0.03}, //PLSR_LiSi09
+    {2.90, 3.10, 3.20, 3.30, 0.03}, //PLSR_LiSi18
    };
 //use EDIY_PROGMEM
 #define PS_LBATT_USEABLE_V  PS_LBATT_TBL[_liion_type][0]

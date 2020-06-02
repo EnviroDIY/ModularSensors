@@ -556,13 +556,16 @@ void readAvrEeprom() {
         epc.app.msc.sz = sizeof(epc.app.msc.s);
         epc.app.msc.s.logging_interval_min = 15;
         epc.app.msc.s.time_zone = CONFIG_TIME_ZONE_DEF;
+        epc.app.msc.s.battery_type = PLSR_BAT_TYPE_DEF;
         strcpy_P((char *)epc.app.msc.s.logger_id,(char *)F(LOGGERID_DEF_STR));
         strcpy_P((char *)epc.app.msc.s.geolocation_id ,(char *)F("Factory default"));
     }
 
     PRINTOUT(F("From eeprom common: Logger File Name["),(char *)epc.app.msc.s.logger_id
         ,F("] logging interval="),epc.app.msc.s.logging_interval_min
-        ,F("minutes, Tz="),epc.app.msc.s.time_zone);
+        ,F("minutes, Tz="),epc.app.msc.s.time_zone
+        ,F("battery type="),epc.app.msc.s.battery_type
+    );
     PRINTOUT(F("   Loc="),(char *)epc.app.msc.s.geolocation_id );
 
     MS_DBG(F("Common: sz="),epc.app.msc.sz);
@@ -576,3 +579,23 @@ void readAvrEeprom() {
 
 }
 #endif //USE_PS_EEPROM 
+
+//Decode reason for this Reset
+#if !defined ARDUINO_ARCH_AVR
+#include <sam.h>
+#define NUM_RESET_BITS 8
+const char *rrReason[NUM_RESET_BITS] = {"POR ","BOD12 ","BOD33 " ,"NVM ","EXT ","WDT ","SYST ","Backup "};
+String decodeResetCause(uint8_t resetCause) {
+    char resetReason[60];
+    uint8_t rrLen=0;
+    int8_t  rrLp=(NUM_RESET_BITS-1);
+    resetReason[0]=0;
+    //resetCause =0xff;
+    for (; 0<=rrLp;--rrLp ) {
+        if ((0x1<<rrLp) & resetCause) strcpy(&resetReason[rrLen],rrReason[rrLp]);
+        rrLen = strlen(resetReason);
+    }
+    //MS_DBG("tot str size",rrLen);   
+    return (String) resetReason;
+} 
+#endif //ARDUINO_ARCH_AVR

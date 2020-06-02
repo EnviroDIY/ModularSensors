@@ -21,9 +21,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //**************************************************************************
 //This configuration is for a standard Mayfly0.bb
 //Sensors Used - two std to begin then
-//#define AnalogProcEC_ACT 1
+#define AnalogProcEC_ACT 1
 #define ENVIRODIY_MAYFLY_TEMPERATURE 1
-#define Decagon_CTD_UUID 1
+//#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
 //Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
 //#define KellerAcculevel_ACT 1
