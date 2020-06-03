@@ -197,10 +197,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
 #endif //ProcessorStats_ACT
 
-//#define ExternalVoltage_ACT 1
+#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
   #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
-  //#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+  #define ExternalVoltage_Volt1_UUID "Volt1_UUID"
 #endif //ExternalVoltage_ACT
 
 #endif //ms_cfg_h

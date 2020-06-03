@@ -574,6 +574,15 @@ uint32_t Logger::getNowEpoch(void)
 uint32_t Logger::getNowEpochT0(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
+    if (!isRTCSane(currentEpochTime))  {
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        //PRINTOUT(F("The current clock timestamp is not valid!"), formatDateTime_ISO8601(currentEpochTime).substring(0, 10)," Setting to ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        PRINTOUT(F("Bad time "),currentEpochTime," ", formatDateTime_ISO8601(currentEpochTime).substring(0, 10)," Setting to ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        currentEpochTime=EPOCH_TIME_20200101_SECS;
+        setNowEpochT0(currentEpochTime);
+    }
+
   return currentEpochTime;
 }
 
@@ -830,7 +839,7 @@ bool Logger::checkInterval(void)
         delay(25);
         alertOff();
         delay(25);
-        PRINTOUT(F("The current clock timestamp is not valid!"));
+        PRINTOUT(F("The current clock timestamp is not valid!"), formatDateTime_ISO8601(getNowEpoch()).substring(0, 10));
         alertOn();
         delay(25);
         alertOff();

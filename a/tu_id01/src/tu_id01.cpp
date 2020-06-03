@@ -426,7 +426,31 @@ const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnec
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
 #endif //0
+#ifdef ExternalVoltage_ACT
+// ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <sensors/ExternalVoltage.h>
 
+const int8_t ADSPower = 1;// sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t ADSChannel0 = 0;  // The ADS channel of interest
+const int8_t ADSChannel1 = 1;  // The ADS channel of interest
+const int8_t ADSChannel2 = 2;  // The ADS channel of interest
+const int8_t ADSChannel3 = 3;  // The ADS channel of interest
+const float dividerGain = 2; //  Default 1/gain for grove voltage divider is 10x  assumes Rev001
+const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+
+// Create an External Voltage sensor object
+ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr, VoltReadsToAvg);
+//ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltReadsToAvg);
+//special Vcc 3.3V
+ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr, VoltReadsToAvg);
+//ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr, VoltReadsToAvg);
+
+// Create a voltage variable pointer
+// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
+#endif //ExternalVoltage_ACT
 // ==========================================================================
 // Units conversion functions
 // ==========================================================================
@@ -515,6 +539,12 @@ Variable *ds3231TempFcalc = new Variable(
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined(ExternalVoltage_Volt0_UUID)
+    new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
+#endif
+#if defined(ExternalVoltage_Volt1_UUID)
+    new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
+#endif    
 #if defined AnalogProcEC_ACT
     new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
 #endif //AnalogProcEC_ACT    

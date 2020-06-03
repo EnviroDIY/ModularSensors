@@ -61,10 +61,8 @@ typedef enum {
    PSLR_1000mA,
    PSLR_4000mA, //4000mA or more
    //Fut expanded to batterys
-   PLSR_LiSi09,// LiSiOCL2  9Ahr        Pulse 100mA "C" cell - Nomonal 3.6 discharged at 3.2V
    PLSR_LiSi18,// LiSiOCL2 19Ahr/larger Pulse 150mA "D" cell - Nomonal 3.6 discharged at 3.2V
-
-   // 3 MnO2 "D" cell   Nominal 4.8V, discharged at 3.2V, though has energy to 2.4V
+   PLSR_3D,// 3D * 1.6V MnO2 18AHR Pulse ?100mA "D" cell - Nomonal 4.8 discharged at 2.4V
    // 3 MnO2 "C" cell - higher impedance than "D" cell
    PSLR_NUM, ///Number of Battery types supported 
    PSLR_UNDEF,
@@ -140,13 +138,27 @@ public:
  ps_liion_rating_t _liion_type;
 //use EDIY_PROGMEM
 const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
+
 //    0    1    2    3   Hyst
 //   Use  Low  Med  Good
+#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
+//Mayfly rev 0.5,0.4 : Proc ADC Reported V is that of the Vin, which is only valid range 3.7V to 6V  
+// actual/Mayfly uP Measures - one Mayfly non-linear mapping
+//  3.70/3.33 3.80/3.38  3.90/3.59 3.95/3.654 
+//  4.00/3.79 4.05/3.87 4.10/3.96 4.15/4.09 4.20/4.12
+    {3.5, 3.6, 3.7, 3.8, 0.05}, //PSLR_0500mA, //500mA or less 
+    {3.5, 3.6, 3.7, 3.75, 0.04}, //PSLR_1000mA
+    {3.5, 3.6, 3.3, 3.7, 0.03}, //PSLR_4000mA
+    {3.5, 3.10, 3.20, 3.30, 0.03}, //PLSR_LiSi18
+    {3.5, 3.6, 4.00, 4.6, 0.03}, //3*D to 2.4 to 4.8V
+    // There could possibly be a MAYFLY off the ExternalVoltage ADS1115, it still is limited to 3.3V inpu
+#else //
     {3.3, 3.4, 3.6, 3.8, 0.05}, //PSLR_0500mA, //500mA or less 
     {3.2, 3.3, 3.4, 3.7, 0.04}, //PSLR_1000mA
     {3.1, 3.2, 3.3, 3.6, 0.03}, //PSLR_4000mA
-    {3.10, 3.20, 3.30, 3.40, 0.03}, //PLSR_LiSi09
     {2.90, 3.10, 3.20, 3.30, 0.03}, //PLSR_LiSi18
+    {3.5, 3.6, 4.00, 4.6, 0.03}, //3*D to 2.4 to 4.8V
+#endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
    };
 //use EDIY_PROGMEM
 #define PS_LBATT_USEABLE_V  PS_LBATT_TBL[_liion_type][0]
