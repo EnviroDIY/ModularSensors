@@ -45,6 +45,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define EFP(x) x
   #define EF(x)  x
 #endif
+#include "ms_cfg.h"
 
 #if defined USE_PS_EEPROM
 #include <util/crc16.h>

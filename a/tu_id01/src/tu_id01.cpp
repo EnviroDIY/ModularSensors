@@ -836,6 +836,7 @@ void setup()
     #ifdef USE_MS_SD_INI
     //Set up SD card access
     Serial.println(F("---parseIni "));
+    dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
     Serial.println(F("\n\n---parseIni complete "));
     #endif //USE_MS_SD_INI

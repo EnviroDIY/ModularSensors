@@ -1246,6 +1246,8 @@ void Logger::printFileHeader(Stream *stream)
     stream->print(F("Data Logger File: "));
     stream->println(_fileName);
 
+    printFileHeaderExtra(stream);
+    
     // Adding the sampling feature UUID (only applies to EnviroDIY logger)
     if (strlen(_samplingFeatureUUID) > 1)
     {

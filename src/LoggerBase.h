@@ -24,7 +24,7 @@
 #undef MS_DEBUGGING_STD
 #include "VariableArray.h"
 #include "LoggerModem.h"
-#include "ms_cfg.h"
+#include "ms_common.h"
 #include <Arduino.h>  // The base Arduino library
 
 

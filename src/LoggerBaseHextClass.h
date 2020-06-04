@@ -15,6 +15,10 @@
 
 public:
     bool parseIniSd(const char *ini_fn,ini_handler_atl485 handler_fn);
+    #ifdef USE_MS_SD_INI
+    void setPs_cache(persistent_store_t *ps_ram);
+    void printFileHeaderExtra(Stream *stream);
+    #endif //USE_MS_SD_INI
     //virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
     void SDusbPoll(uint8_t sdActions);
 #if defined USE_RTCLIB
@@ -32,6 +36,8 @@ private:
     static int32_t sdq_flashspi_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
     static void    sdq_flashspi_flush_cb (void);
     static bool    sdq_ready (void); //Called when USB present and checking of readiness
+
+    persistent_store_t *ps_cache=NULL;
 
 
 //void print_rootdir(File* rdir);

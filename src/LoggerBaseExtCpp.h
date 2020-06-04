@@ -623,11 +623,37 @@ bool Logger::parseIniSd(const char *ini_fn,ini_handler_atl485 unhandledFnReq)
     }
     return true;
 }
+#ifdef USE_MS_SD_INI
+void Logger::setPs_cache(persistent_store_t *ps_ram) 
+{
+    ps_cache=ps_ram;
+}
+void Logger::printFileHeaderExtra(Stream *stream) 
+{
+    if (NULL == ps_cache) return;
+    stream->print(F("Board: "));
+    stream->print((char *)ps_cache->hw_boot.board_name);
+    stream->print(F(" rev:'"));
+    stream->print((char *)ps_cache->hw_boot.rev);
+    stream->print(F("' sn:'"));
+    stream->print((char *)ps_cache->hw_boot.serial_num);      
+    stream->println(F("'"));      
 
-// End parse.ini
+    stream->print(F("Tz: "));
+    stream->print(ps_cache->app.msc.s.time_zone);
+    stream->print(F(" BatteryType: "));
+    stream->println(ps_cache->app.msc.s.battery_type);
+
+    stream->print(F("Location: "));
+    stream->println((char *)ps_cache->app.msc.s.geolocation_id);
+}
+#endif //USE_MS_SD_INI
+
 #if defined USE_RTCLIB
 USE_RTCLIB * Logger::rtcExtPhyObj()
    { 
        return &rtcExtPhy;
    }
 #endif //USE_RTCLIB
+
+// End parse.ini
