@@ -53,7 +53,6 @@
 // ==========================================================================
 //  Settings for Additional Serial Ports
 // ==========================================================================
-/** Start [serial_ports_avr] */
 // The modem and a number of sensors communicate over UART/TTL - often called
 // "serial". "Hardware" serial ports (automatically controlled by the MCU) are
 // generally the most accurate and should be configured and used for as many
@@ -69,13 +68,16 @@
 // software serial port for AVR boards. AltSoftSerial can only be used on one
 // set of pins on each board so only one AltSoftSerial port can be used. Not all
 // AVR boards are supported by AltSoftSerial.
+/** Start [altsoftserial] */
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
+/** End [altsoftserial] */
 
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
 // Not all AVR boards are supported by NeoSWSerial.
+/** Start [neoswserial] */
 #include <NeoSWSerial.h>          // for the stream communication
 const int8_t neoSSerial1Rx = 11;  // data in pin
 const int8_t neoSSerial1Tx = -1;  // data out pin
@@ -85,18 +87,22 @@ NeoSWSerial  neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
 void neoSSerial1ISR() {
     NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
 }
+/** End [neoswserial] */
 
 // The "standard" software serial library uses interrupts that conflict
-// with several other libraries used within this program, we must use a
-// version of software serial that has been stripped of interrupts.
+// with several other libraries used within this program.  I've created a
+// [version of software serial that has been stripped of
+// interrupts](https://github.com/EnviroDIY/SoftwareSerial_ExtInts) but it is
+// still far from ideal.
 // NOTE:  Only use if necessary.  This is not a very accurate serial port!
+/** Start [softwareserial] */
 const int8_t softSerialRx = A3;  // data in pin
 const int8_t softSerialTx = A4;  // data out pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
+/** End [softwareserial] */
 #endif  // End software serial for avr boards
-/** End [serial_ports_avr] */
 
 
 /** Start [serial_ports_SAMD] */
@@ -230,8 +236,8 @@ const char* wifiPwd = "xxxxx";  // WiFi password, unnecessary for GPRS
 #include <modems/DigiXBeeCellularTransparent.h>
 const long modemBaud       = 9600;   // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
-// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
-// the CTS pin can also be used if necessary
+// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
+// the `CTS` pin can also be used if necessary
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       useCTSforStatus, modemResetPin,
                                       modemSleepRqPin, apn);
@@ -248,8 +254,8 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 #include <modems/DigiXBeeLTEBypass.h>
 const long modemBaud       = 9600;   // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
-// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
-// the CTS pin can also be used if necessary
+// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
+// the `CTS` pin can also be used if necessary
 DigiXBeeLTEBypass modemXBLTEB(&modemSerial, modemVccPin, modemStatusPin,
                               useCTSforStatus, modemResetPin, modemSleepRqPin,
                               apn);
@@ -266,8 +272,8 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 #include <modems/DigiXBee3GBypass.h>
 const long modemBaud       = 9600;   // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
-// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
-// the CTS pin can also be used if necessary
+// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
+// the `CTS` pin can also be used if necessary
 DigiXBee3GBypass modemXB3GB(&modemSerial, modemVccPin, modemStatusPin,
                             useCTSforStatus, modemResetPin, modemSleepRqPin,
                             apn);
@@ -282,8 +288,8 @@ DigiXBee3GBypass modem = modemXB3GB;
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud       = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;  // Flag to use the XBee CTS pin for status
-// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
-// the CTS pin can also be used if necessary
+// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
+// the `CTS` pin can also be used if necessary
 DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,
                        wifiPwd);
@@ -389,9 +395,9 @@ const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
 // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
 // every power loss, the module will return to the default baud rate of 115200.
 // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
-// compensate by sending a baud rate change command in the wake function.
-// Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
-// instance as modemSerial.
+// compensate by sending a baud rate change command in the wake function when
+// compiled for a 8MHz board. Because of this, 8MHz boards, LIKE THE MAYFLY,
+// *MUST* use a HardwareSerial instance as modemSerial.
 SodaqUBeeR410M modemR410(&modemSerial, modemVccPin, modemStatusPin,
                          modemResetPin, modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
@@ -415,18 +421,18 @@ SodaqUBeeU201 modem = modemU201;
 
 /** Start [modem_variables] */
 // Create RSSI and signal strength variable pointers for the modem
-// Variable* modemRSSI = new Modem_RSSI(&modem,
-//                                      "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* modemSignalPct =
-//     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* modemBatteryState =
-//     new Modem_BatteryState(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* modemBatteryPct =
-//     new Modem_BatteryPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* modemBatteryVoltage =
-//     new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* modemTemperature =
-//     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* modemRSSI =
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab", "RSSI");
+Variable* modemSignalPct = new Modem_SignalPercent(
+    &modem, "12345678-abcd-1234-ef00-1234567890ab", "signalPercent");
+Variable* modemBatteryState = new Modem_BatteryState(
+    &modem, "12345678-abcd-1234-ef00-1234567890ab", "modemBatteryCS");
+Variable* modemBatteryPct = new Modem_BatteryPercent(
+    &modem, "12345678-abcd-1234-ef00-1234567890ab", "modemBatteryPct");
+Variable* modemBatteryVoltage = new Modem_BatteryVoltage(
+    &modem, "12345678-abcd-1234-ef00-1234567890ab", "modemBatterymV");
+Variable* modemTemperature =
+    new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab", "modemTemp");
 /** End [modem_variables] */
 
 
@@ -711,13 +717,13 @@ const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const uint8_t OBS3NumberReadings = 10;
 const uint8_t OBS3ADSi2c_addr    = 0x48;  // The I2C address of the ADS1115 ADC
 
-// Campbell OBS 3+ Low Range calibration in Volts
-const int8_t OBSLowADSChannel = 0;          // ADS channel for LOW range output
-const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [LOW range]
-const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [LOW range]
-const float  OBSLow_C         = 0.000E+00;  // "C" value [LOW range]
+// Campbell OBS 3+ *Low* Range Calibration in Volts
+const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
+const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
+const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [*low* range]
+const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
 
-// Create a Campbell OBS3+ LOW RANGE sensor object
+// Create a Campbell OBS3+ *low* range sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
                      OBS3ADSi2c_addr, OBS3NumberReadings);
 
@@ -729,13 +735,13 @@ CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
 //     "12345678-abcd-1234-ef00-1234567890ab");
 
 
-// Campbell OBS 3+ High Range calibration in Volts
-const int8_t OBSHighADSChannel = 1;  // ADS channel for HIGH range output
-const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [HIGH range]
-const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [HIGH range]
-const float  OBSHigh_C         = 0.000E+00;  // "C" value [HIGH range]
+// Campbell OBS 3+ *High* Range Calibration in Volts
+const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
+const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [*high* range]
+const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [*high* range]
+const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
 
-// Create a Campbell OBS3+ HIGH RANGE sensor object
+// Create a Campbell OBS3+ *high* range sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
                       OBSHigh_C, OBS3ADSi2c_addr, OBS3NumberReadings);
 
@@ -1740,15 +1746,17 @@ float getBatteryVoltage() {
 // ==========================================================================
 //  Arduino Setup Function
 // ==========================================================================
-/** Start [setup] */
 void setup() {
+/** Start [setup_wait] */
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
 #if defined SERIAL_PORT_USBVIRTUAL
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {}
 #endif
+    /** End [setup_wait] */
 
+    /** Start [setup_prints] */
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -1764,7 +1772,9 @@ void setup() {
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
     Serial.println();
+/** End [setup_prints] */
 
+/** Start [setup_softserial] */
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
@@ -1773,7 +1783,9 @@ void setup() {
 #if defined NeoSWSerial_h
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
+    /** End [setup_softserial] */
 
+    /** Start [setup_serial_begins] */
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
 
@@ -1789,9 +1801,11 @@ void setup() {
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600
     // baud
     sonarSerial.begin(9600);
+/** End [setup_serial_begins] */
 
 // Assign pins SERCOM functionality for SAMD boards
 // NOTE:  This must happen *after* the various serial.begin statements
+/** Start [setup_samd_pins] */
 #if defined ARDUINO_ARCH_SAMD
 #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
@@ -1802,7 +1816,9 @@ void setup() {
     pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
 #endif
 #endif
+    /** End [setup_samd_pins] */
 
+    /** Start [setup_flashing_led] */
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
@@ -1810,7 +1826,9 @@ void setup() {
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
+    /** End [setup_flashing_led] */
 
+    /** Start [setup_logger] */
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
@@ -1825,26 +1843,40 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
+    /** End [setup_logger] */
 
+    /** Start [setup_sesors] */
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up sensors..."));
         varArray.setupSensors();
     }
+    /** End [setup_sesors] */
 
 #if defined MS_BUILD_TEST_ESP8266 && F_CPU == 8000000L
+    /** Start [setup_esp] */
     if (modemBaud > 57600) {
+        modem.modemWake();  // NOTE:  This will also set up the modem
         modemSerial.begin(modemBaud);
         modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
         modem.gsmModem.waitResponse();
         modemSerial.end();
         modemSerial.begin(9600);
     }
+/** End [setup_esp] */
 #endif
 
+#if defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SKYWIRE
+    /** Start [setup_skywire] */
+    modem.setModemStatusLevel(LOW);  // If using CTS, LOW
+    modem.setModemWakeLevel(HIGH);   // Skywire dev board inverts the signal
+    modem.setModemResetLevel(HIGH);  // Skywire dev board inverts the signal
+/** End [setup_skywire] */
+#endif
 
 #if defined MS_BUILD_TEST_XBEE_CELLULAR
+    /** Start [setup_xbeec_carrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
@@ -1876,10 +1908,12 @@ void setup() {
     // This effectively exits command mode
     modem.gsmModem.sendAT(GF("FR"));
     modem.gsmModem.waitResponse(5000L);
+/** End [setup_xbeec_carrier] */
 #endif
 
 
 #if defined MS_BUILD_TEST_XBEE_LTE_B
+    /** Start [setup_r4_carrrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
@@ -1904,20 +1938,24 @@ void setup() {
     //                              - 8: LTE Cat.NB1
     // NOTE:  As of 2020 in the USA, AT&T and Verizon only use LTE-M
     // T-Mobile uses NB-IOT
-    // modem.gsmModem.sendAT(GF("+URAT="), 7, ',', 8);
-    // modem.gsmModem.waitResponse();
+    modem.gsmModem.sendAT(GF("+URAT="), 7, ',', 8);
+    modem.gsmModem.waitResponse();
     // Restart the module to apply changes
     modem.gsmModem.sendAT(GF("+CFUN=1,1"));
     modem.gsmModem.waitResponse(10000L);
+/** End [setup_r4_carrrier] */
 #endif
 
+    /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         dataLogger.syncRTC();
     }
+    /** End [setup_clock] */
 
+    /** Start [setup_file] */
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
     // all sensor names correct
@@ -1931,19 +1969,21 @@ void setup() {
         dataLogger.turnOffSDcard(
             true);  // true = wait for internal housekeeping after write
     }
+    /** End [setup_file] */
 
+    /** Start [setup_sleep] */
     // Call the processor sleep
     Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
+    /** End [setup_sleep] */
 }
-/** End [setup] */
 
 
 // ==========================================================================
 //  Arduino Loop Function
 // ==========================================================================
-/** Start [simple_loop] */
 // Use this short loop for simple data logging and sending
+/** Start [simple_loop] */
 void loop() {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
@@ -1992,9 +2032,9 @@ void loop() {
 
         // Turn on the modem to let it start searching for the network
         // Only turn the modem on if the battery at the last interval was high
-        enough
+        // enough
             // NOTE:  if the modemPowerUp function is not run before the
-            completeUpdate
+        // completeUpdate
             // function is run, the modem will not be powered and will not
             // return a signal strength reading.
             if (getBatteryVoltage() > 3.6) modem.modemPowerUp();

@@ -25,6 +25,9 @@
  */
 #define TINY_GSM_MODEM_SIM7000
 #ifndef TINY_GSM_RX_BUFFER
+/**
+ * @brief The size of the buffer for incoming data.
+ */
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
@@ -32,7 +35,7 @@
 /**
  * @brief The loggerModem::_statusLevel.
  *
- * Status of the SIM7000 should be monitored on the STATUS pin, which is at a
+ * Status of the SIM7000 should be monitored on the `STATUS` pin, which is at a
  * high level when the module has powered on and the firmware goes ready.
  *
  * Time after end pulse until status pin becomes active is >4.5sec.
@@ -40,32 +43,33 @@
 #define SIM7000_STATUS_LEVEL HIGH
 /**
  * @brief The loggerModem::_statusTime_ms.
- * @copydetails SIM7000_STATUS_LEVEL
+ * @copydetails #SIM7000_STATUS_LEVEL
  */
 #define SIM7000_STATUS_TIME_MS 5000L
 
 /**
  * @brief The loggerModem::_resetLevel.
  *
- * The active low level time impulse on RESET pin to reset SIM7000 is
+ * The active low level time impulse on `RESET` pin to reset SIM7000 is
  * miniumum 252ms.
  */
 #define SIM7000_RESET_LEVEL LOW
 /**
  * @brief The loggerModem::_resetPulse_ms.
- * @copydetails SIM7000_RESET_LEVEL
+ * @copydetails #SIM7000_RESET_LEVEL
  */
 #define SIM7000_RESET_PULSE_MS 300
 
 /**
  * @brief The loggerModem::_wakeLevel.
  *
- * The SIM7000 Module is switched on by a >1 second LOW pulse on the PWRKEY pin.
+ * The SIM7000 Module is switched on by a >1 second `LOW` pulse on the `PWRKEY`
+ * pin.
  *
- * @note Module is switched OFF by a >1.2 second LOW pulse on the PWRKEY pin, so
- * by using a pulse of >1 but <1.2 s to wake the SIM7000 and using AT commands
- * to put it to sleep, we should always be in the correct state, but if at all
- * possible the status pin should be monitored to confirm.
+ * @note Module is switched OFF by a >1.2 second `LOW` pulse on the `PWRKEY`
+ * pin, so by using a pulse of >1 but <1.2 s to wake the SIM7000 and using AT
+ * commands to put it to sleep, we should always be in the correct state, but if
+ * at all possible the status pin should be monitored to confirm.
  */
 #define SIM7000_WAKE_LEVEL LOW
 /**
@@ -76,7 +80,7 @@
 /**
  * @brief The loggerModem::_wakeDelayTime_ms.
  *
- * Time after power on before "PWRKEY" on SIM7000 can be used is undocumented.
+ * Time after power on before `PWRKEY` on SIM7000 can be used is undocumented.
  * Using 1s.
  */
 #define SIM7000_WAKE_DELAY_MS 1000L
@@ -109,25 +113,40 @@
  * @brief The loggerModem subclass for Botletics, And1, and other modules based
  * on the SIMCOM SIM7000.
  *
+ * #### Pin and timing information for the SIM7000
+ *
  * @copydetails #SIM7000_STATUS_LEVEL
+ *
  * @copydetails #SIM7000_RESET_LEVEL
+ *
  * @copydetails #SIM7000_WAKE_LEVEL
+ *
  * @copydetails #SIM7000_WAKE_DELAY_MS
+ *
  * @copydetails #SIM7000_ATRESPONSE_TIME_MS
+ *
  * @copydetails #SIM7000_DISCONNECT_TIME_MS
  */
 class SIMComSIM7000 : public loggerModem {
  public:
     /**
      * @brief Construct a new SIMComSIM7000 object
+     * The constuctor initializes all of the provided member variables,
+     * constructs a loggerModem parent class with the appropriate timing for the
+     * module, calls the constructor for a TinyGSM modem on the provided
+     * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
      * @param powerPin @copydoc loggerModem::_powerPin
      * @param statusPin @copydoc loggerModem::_statusPin
-     * @param statusLevel @copydoc loggerModem::_statusLevel
+     * This is the pin labeled `STATUS` in SIMCom's integration guide.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This is the pin labeled `RESET` in SIMCom's integration guide.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * This is the pin labeled `PWRKEY` in SIMCom's integration guide.
      * @param apn The Access Point Name (APN) for the SIM card.
+     *
+     * @see loggerModem::loggerModem
      */
     SIMComSIM7000(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
@@ -153,7 +172,13 @@ class SIMComSIM7000 : public loggerModem {
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm       gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM modem.
+     */
+    TinyGsm gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM Client.
+     */
     TinyGsmClient gsmClient;
 
  protected:

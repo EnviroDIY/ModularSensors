@@ -131,7 +131,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
 
 bool SodaqUBeeR410M::modemSleepFxn(void) {
     if (_modemSleepRqPin >= 0) {
-        // R410 must have access to PWR_ON pin to sleep
+        // R410 must have access to `PWR_ON` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking u-blox R410M to power down"));

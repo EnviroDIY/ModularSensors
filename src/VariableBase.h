@@ -83,6 +83,8 @@ class Variable {
      * libraries.  It is intended to be used internally with sensors defined in
      * this library.
      *
+     * @param sensorVarNum The position in the sensor's value array of this
+     * variable's value
      * @param decimalResolution The resolution (in decimal places) of the value
      * @param varName The name of the variable per the ODM2 variable name
      * controlled vocabulary
@@ -118,6 +120,7 @@ class Variable {
      * controlled vocabulary
      * @param varUnit The unit of the variable per the ODM2 unit controlled
      * vocabulary
+     * @param varCode A custom code for the variable
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode);

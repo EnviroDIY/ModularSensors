@@ -65,7 +65,7 @@ bool SIMComSIM7000::modemWakeFxn(void) {
 
 bool SIMComSIM7000::modemSleepFxn(void) {
     if (_modemSleepRqPin >= 0) {
-        // Must have access to PWRKEY pin to sleep
+        // Must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM7000 to power down"));

@@ -50,67 +50,83 @@ bool DigiXBee3GBypass::extraModemSetup(void) {
     bool success = false;
     MS_DBG(F("Putting XBee into command mode..."));
     for (uint8_t i = 0; i < 5; i++) {
-        // Wait the required guard time before entering command mode
+        /** First, wait the required guard time before entering command mode. */
         delay(1010);
-        gsmModem.streamWrite(GF("+++"));  // enter command mode
+        /** Now, enter command mode to set all pin I/O functionality. */
+        gsmModem.streamWrite(GF("+++"));
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
     if (success) {
         MS_DBG(F("Setting I/O Pins..."));
-        // Set DIO8 to be used for sleep requests
-        // NOTE:  Only pin 9/DIO8/DTR can be used for this function
+        /** Enable pin sleep functionality on `DIO9`.
+         * NOTE: Only the `DTR_N/SLEEP_RQ/DIO8` pin (9 on the bee socket) can be
+         * used for this pin sleep/wake. */
         gsmModem.sendAT(GF("D8"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Turn on status indication pin - will be HIGH when the XBee is awake
-        // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
+        /** Enable status indication on `DIO9` - it will be HIGH when the XBee
+         * is awake.
+         * NOTE: Only the `ON/SLEEP_N/DIO9` pin (13 on the bee socket) can be
+         * used for direct status indication. */
         gsmModem.sendAT(GF("D9"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Turn on CTS pin - it will be LOW when the XBee is ready to receive
-        // commands This can be used as proxy for status indication if the true
-        // status pin is not accessible
-        // NOTE:  Only pin 12/DIO7/CTS can be used for this function
+        /** Enable CTS on `DIO7` - it will be `LOW` when it is clear to send
+         * data to the XBee.  This can be used as proxy for status indication if
+         * that pin is not readable.
+         * NOTE: Only the `CTS_N/DIO7` pin (12 on the bee socket) can be used
+         * for CTS. */
         gsmModem.sendAT(GF("D7"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Turn on the associate LED (if you're using a board with one)
-        // NOTE:  Only pin 15/DIO5 can be used for this function
+        /** Enable association indication on `DIO5` - this is should be directly
+         * attached to an LED if possible.
+         * - Solid light indicates no connection
+         * - Single blink indicates connection
+         * - double blink indicates connection but failed TCP link on last
+         * attempt
+         *
+         * NOTE: Only the `Associate/DIO5` pin (15 on the bee socket) can be
+         * used for this function. */
         gsmModem.sendAT(GF("D5"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Turn on the RSSI indicator LED (if you're using a board with one)
-        // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
+        /** Enable RSSI PWM output on `DIO10` - this should be directly attached
+         * to an LED if possible.  A higher PWM duty cycle (and thus brighter
+         * LED) indicates better signal quality.
+         * NOTE: Only the `DIO10/PWM0` pin (6 on the bee socket) can be used for
+         * this function. */
         gsmModem.sendAT(GF("P0"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Put the XBee in pin sleep mode
+        /** Enable pin sleep on the XBee. */
         MS_DBG(F("Setting Sleep Options..."));
         gsmModem.sendAT(GF("SM"), 1);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Disassociate from network for lowest power deep sleep
+        /** Disassociate from the network for the lowest power deep sleep. */
         MS_DBG(F("Setting Other Options..."));
-        // Disable remote manager, enable 2G fallback
+        /** Disable remote manager and enable 2G fallback. */
         gsmModem.sendAT(GF("DO"), 02);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Make sure airplane mode is off - bypass and airplane mode are
-        // incompatible
+        /** Make sure airplane mode is off - bypass and airplane mode are
+         * incompatible. */
         MS_DBG(F("Making sure airplane mode is off..."));
         gsmModem.sendAT(GF("AM"), 0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Turning on Bypass Mode..."));
-        // Turn on bypass mode
+        /** Enable bypass mode. */
         gsmModem.sendAT(GF("AP5"));
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Write changes to flash
+        /** Write changes to flash. */
         gsmModem.sendAT(GF("WR"));
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Apply changes
+        /** Apply changes. */
         gsmModem.sendAT(GF("AC"));
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Force reset to actually enter bypass mode - this effectively exits
-        // command mode
+        /* Finally, force a reset to actually enter bypass mode - this
+         * effectively exits command mode. */
         MS_DBG(F("Resetting the module to reboot in bypass mode..."));
         gsmModem.sendAT(GF("FR"));
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
-        delay(5000L);  // Allow the unit to reset
-        // re-initialize
+        /** Allow 5s for the unit to reset. */
+        delay(5000L);
+        /** Re-initialize the TinyGSM u-blox instance. */
         MS_DBG(F("Attempting to reconnect to the u-blox SARA U201 module..."));
         success &= gsmModem.testAT(15000L);
         success &= gsmModem.init();

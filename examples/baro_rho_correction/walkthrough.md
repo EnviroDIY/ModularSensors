@@ -14,7 +14,7 @@ ___
     - [Defines for the Arduino IDE](#defines-for-the-arduino-ide)
     - [Library Includes](#library-includes)
   - [Logger and Modem Settings](#logger-and-modem-settings)
-    - [Logger Settings](#logger-settings)
+    - [Logging Options](#logging-options)
     - [Wifi/Cellular Modem Settings](#wificellular-modem-settings)
   - [Sensors and Measured Variables](#sensors-and-measured-variables)
     - [The processor as a sensor](#the-processor-as-a-sensor)
@@ -43,10 +43,11 @@ ___
 ### Defines for the Arduino IDE
 The top few lines of the examples set defines of buffer sizes and yields needed for the Arduino IDE.
 That IDE read any defines within the top few lines and applies them as build flags for the processor.
+This is _not_ standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.
 
 [//]: # ( @snippet{lineno} baro_rho_correction.ino defines )
 
-If you are using PlatformIO, you should instead set these as build flags in your platformio.ini.
+If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini.
 This is standard behaviour for C++.
 
 ```ini
@@ -67,19 +68,20 @@ Next, include the libraries needed for every program using ModularSensors.
 [//]: # ( @snippet{lineno} baro_rho_correction.ino includes )
 ___
 
-[//]: # ( @section baro_rho_logger-and-modem-settings Logger and Modem Settings )
+[//]: # ( @section baro_rho_logger_and_modem_settings Logger and Modem Settings )
 ## Logger and Modem Settings
 
-[//]: # ( @subsection baro_rho_logger_settings Logger Settings )
-### Logger Settings
+[//]: # ( @subsection baro_rho_logger_opts Logging Options )
+### Logging Options
 
-Set options for the logging and dataLogger object.
+Here we set options for the logging and dataLogger object.
 This includes setting the time zone (daylight savings time is **NOT** applied) and setting all of the input and output pins related to the logger.
 
 [//]: # ( @snippet{lineno} baro_rho_correction.ino logger_settings )
 ___
 
-[//]: # ( @subsection baro_rho_modem-settings Wifi/Cellular Modem Settings )
+
+[//]: # ( @subsection baro_rho_modem_settings Wifi/Cellular Modem Settings )
 ### Wifi/Cellular Modem Settings
 
 Now set up the modem and the internet connection options.
@@ -137,13 +139,13 @@ Create the #Sensor object and all of the #Variable objects.
 [//]: # ( @snippet{lineno} baro_rho_correction.ino ms5803 )
 ___
 
-[//]: # ( @section baro_rho_name_me Calculated Variables )
+[//]: # ( @section baro_rho_calc_vars Calculated Variables )
 ## Calculated Variables
 
 Create new #Variable objects calculated from the measured variables.
 For these calculate variables, we must not only supply a function for the calculation, but also all of the metadata about the variable - like the name of the variable and its units.
 
-[//]: # ( @subsection baro_rho_name_me Water pressure )
+[//]: # ( @subsection baro_rho_pressure Water pressure )
 ### Water pressure
 
 The water pressure is calculated by subtracting the atmospheric preasure measured by the BME280 from the total pressure from both water and atmosphere measured by the MS5803.
@@ -151,7 +153,7 @@ The water pressure is calculated by subtracting the atmospheric preasure measure
 [//]: # ( @snippet{lineno} baro_rho_correction.ino calculated_pressure )
 ___
 
-[//]: # ( @subsection baro_rho_name_me Raw water depth )
+[//]: # ( @subsection baro_rho_raw_depth Raw water depth )
 ### Raw water depth
 
 The water depth is calculated from the water pressure, assuming pure water at 4Â°C.
@@ -159,7 +161,7 @@ The water depth is calculated from the water pressure, assuming pure water at 4Â
 [//]: # ( @snippet{lineno} baro_rho_correction.ino calculated_uncorrected_depth )
 ___
 
-[//]: # ( @subsection baro_rho_name_me Corrected water depth )
+[//]: # ( @subsection baro_rho_corrected_depth Corrected water depth )
 ### Corrected water depth
 
 The water depth measurement can be improved by adjusting for the density of water at the real water temperature as measured by the DS18.
@@ -167,10 +169,10 @@ The water depth measurement can be improved by adjusting for the density of wate
 [//]: # ( @snippet{lineno} baro_rho_correction.ino calculated_corrected_depth )
 ___
 
-[//]: # ( @section baro_rho_name_me Creating the array, logger, publishers )
+[//]: # ( @section baro_rho_create_objs Creating the array, logger, publishers )
 ## Creating the array, logger, publishers
 
-[//]: # ( @subsection baro_rho_name_me The variable array )
+[//]: # ( @subsection baro_rho_variable_array The variable array )
 ### The variable array
 
 Create a #VariableArray containing all of the #Variable objects that we are logging the values of.
@@ -179,7 +181,7 @@ Since we've created all of the variables above, we only need to call them by nam
 [//]: # ( @snippet{lineno} baro_rho_correction.ino variable_arrays )
 ___
 
-[//]: # ( @subsection baro_rho_name_me The Logger Object )
+[//]: # ( @subsection baro_rho_logger_obj The Logger Object )
 ### The Logger Object
 
 Now that we've created the array, we can actually create the #Logger object.
@@ -187,7 +189,7 @@ Now that we've created the array, we can actually create the #Logger object.
 [//]: # ( @snippet{lineno} baro_rho_correction.ino loggers )
 ___
 
-[//]: # ( @subsection baro_rho_name_me Data Publisher )
+[//]: # ( @subsection baro_rho_data_publisher Data Publisher )
 ### Data Publisher
 
 Finally, create a #dataPublisher to the [Monitor My Watershed / EnviroDIY Data Sharing Portal.](http://monitormywatershed.org/)
@@ -195,7 +197,7 @@ Finally, create a #dataPublisher to the [Monitor My Watershed / EnviroDIY Data S
 [//]: # ( @snippet{lineno} baro_rho_correction.ino publishers )
 ___
 
-[//]: # ( @section baro_rho_name_me Extra Working Functions )
+[//]: # ( @section baro_rho_working Extra Working Functions )
 ## Extra Working Functions
 
 Here we're creating a few extra functions on the global scope.
@@ -205,7 +207,7 @@ The battery function calls the #ProcessorStats sensor to check the battery level
 [//]: # ( @snippet{lineno} baro_rho_correction.ino working_functions )
 ___
 
-[//]: # ( @section baro_rho_name_me Arduino Setup Function )
+[//]: # ( @section baro_rho_setup Arduino Setup Function )
 ## Arduino Setup Function
 
 This is our setup function.
@@ -217,7 +219,7 @@ These functions are frequently named "begin".
 [//]: # ( @snippet{lineno} baro_rho_correction.ino setup )
 ___
 
-[//]: # ( @section baro_rho_name_me Arduino Loop Function )
+[//]: # ( @section baro_rho_loop Arduino Loop Function )
 ## Arduino Loop Function
 
 This is the loop function which will run repeatedly as long as the board is turned on.

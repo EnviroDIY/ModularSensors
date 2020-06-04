@@ -28,9 +28,8 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
 // Destructor
 VariableArray::~VariableArray() {}
 
-void VariableArray::VariableArray::begin(uint8_t     variableCount,
-                                         Variable*   variableList[],
-                                         const char* uuids[]) {
+void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
+                          const char* uuids[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
 
@@ -867,7 +866,7 @@ bool VariableArray::completeUpdate(void) {
 
 
 // This function prints out the results for any connected sensors to a stream
-// Calculated variable results will be included
+//  Calculated Variable results will be included
 void VariableArray::printSensorData(Stream* stream) {
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (arrayOfVars[i]->isCalculated) {
@@ -913,7 +912,7 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex) {
     /*MS_DEEP_DBG(F("Checking if"), arrayOfVars[arrayIndex]->getVarName(), '(',
            arrayIndex, F(") is the last variable from a sensor..."));*/
 
-    // Calculated variables are never the last variable from a sensor, simply
+    //  Calculated Variables are never the last variable from a sensor, simply
     // because the don't come from a sensor at all.
     if (arrayOfVars[arrayIndex]->isCalculated) {
         // MS_DEEP_DBG(F("   ... Nope, it's calculated!"));

@@ -80,10 +80,18 @@
       <tab type="usergroup" url="@ref examples_everything" title="Everything at Once">
         <tab type="user" url="@ref menu_walkthrough" title="The a la carte Menu"/>
       </tab>
+    </tab>
 
+    <tab type="usergroup" title="FAQs">
+      <tab type="user" url="@ref processor_compatibility" title="Processor Compatibility"/>
+      <tab type="user" url="@ref arduino_streams" title="Arduino Streams and Software Serial"/>
+      <tab type="user" url="@ref power_parasites" title="Power Draw over Data Lines"/>
+      <tab type="user" url="@ref memory_use" title="Decreasing Memory Footprint"/>
+      <tab type="user" url="@ref code_debugging" title="In-Library Debugging"/>
       <tab type="user" url="@ref for_developers" title="For Developers"/>
+    </tab>
 
-    </tab><tab type="pages" visible="no" title="" intro=""/>
+    <tab type="pages" visible="no" title="" intro=""/>
   </navindex>
 
   <!-- Layout definition for a class page -->

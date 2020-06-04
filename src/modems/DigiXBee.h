@@ -19,27 +19,28 @@
 #define MS_DEBUGGING_STD "DigiXBee"
 #endif
 
-// NOTE:  all GPIOs are user configurable and are configured to follow these
-// settings in the modem setup functions.
-
 /**
  * @brief The loggerModem::_statusTime_ms.
  *
- * XBee status can either be measured directly with ON/SLP_N/DIO9 or indirectly
- * with CTS_N/DIO9 The status level will depend on which is being used - the
- * ON/SLP_N will be HIGH when the XBee is awake (ie, yes, I am not sleeping) but
- * the CTS_N will be LOW when the board is away (ie, no it's not not clear to
- * send). (double negatives much?) To use the CTS as the status indicator, set
- * useCTSStatus to true in the constructor.
+ * XBee status can either be measured directly with `ON/SLEEP_N/DIO9` or
+ * indirectly with `CTS_N/DIO7`.  The status level will depend on which is
+ * being used:
+ *     - the `ON/SLEEP_N/DIO9` will be `HIGH` when the XBee is awake
+ * (ie, yes, I am not sleeping)
+ *     - but the `CTS_N/DIO7` will be `LOW` when the
+ * board is away (ie, no it's not not clear to send).
  *
- * The time from wake until the status pin is active is not documented
+ * To use the `CTS_N/DIO7` as the status indicator, set useCTSStatus to true in
+ * the constructor.
+ *
+ * The time from wake until the status pin is active is not documented.
  */
 #define XBEE_STATUS_TIME_MS 15
 
 /**
  * @brief The loggerModem::_resetLevel.
  *
- * All Digi XBee/XBee3's are reset via a LOW pulse on the RESET_N pin
+ * All Digi XBee/XBee3's are reset via a `LOW` pulse on the `RESET_N` pin.
  */
 #define XBEE_RESET_LEVEL LOW
 /**
@@ -51,8 +52,8 @@
 /**
  * @brief The loggerModem::_wakeLevel.
  *
- * All XBee/XBee3 modules are woken by holding DTR_N/SLP_RQ/DIO8 LOW (not
- * pulsed)
+ * All XBee/XBee3 modules are woken by holding `DTR_N/SLEEP_RQ/DIO8` `LOW`
+ * (not pulsed).
  */
 #define XBEE_WAKE_LEVEL LOW
 /**
@@ -68,8 +69,9 @@
 /**
  * @brief The loggerModem::_max_atresponse_time_ms.
  *
- * The serial response time is not documented for the XBee; allowing a long 15s
- * buffer. It is probably much less than this, except possibly in bypass mode.
+ * The serial response time is not documented for the XBee so we allow a long
+ * (15s) buffer. It is probably much less than this, except possibly in bypass
+ * mode.
  */
 #define XBEE_ATRESPONSE_TIME_MS 15000L
 
@@ -77,7 +79,7 @@
  * @brief The loggerModem::_disconnetTime_ms.
  *
  * Power down time for the XBee is dependent on the underlying cellular or wifi
- * component.  Giving 15sec here in case it is not monitored.  The u-blox SARA
+ * component.  We allow 15 seconds in case it is not monitored.  The u-blox SARA
  * R4 on the LTE-M model takes nearly that long to shut down.
  */
 #define XBEE_DISCONNECT_TIME_MS 15000L
@@ -92,12 +94,30 @@
  * @brief The parent class for all Digi XBee and XBee3 wifi and cellular
  * modules.
  *
+ * All of the various cellular XBee's and XBee3's are supported. The wifi S6B is
+ * also supported.
+ *
+ * #### Pin and timing information for the XBees
+ *
  * @copydetails #XBEE_STATUS_TIME_MS
+ *
  * @copydetails #XBEE_RESET_LEVEL
+ *
  * @copydetails #XBEE_WAKE_LEVEL
+ *
  * @copydetails #XBEE_STATUS_TIME_MS
+ *
  * @copydetails #XBEE_ATRESPONSE_TIME_MS
+ *
  * @copydetails #XBEE_DISCONNECT_TIME_MS
+ *
+ * @note All GPIOs are user configurable and are configured to use the expected
+ * input/output mode in the modem setup functions.
+ *
+ * @note The ZigBee, 900mHZ, and other radio-based XBee's are not
+ * supported.
+ *
+ * @see @ref digi_xbees
  */
 class DigiXBee : public loggerModem {
  public:
@@ -106,11 +126,18 @@ class DigiXBee : public loggerModem {
      *
      * @param powerPin @copydoc loggerModem::_powerPin
      * @param statusPin @copydoc loggerModem::_statusPin
-     * @param useCTSStatus True to use the CTS pin of the XBee as a status
-     * indicator rather than the true status pin.  This inverts the
-     * loggerModem::_statusLevel.
+     * This can be either the pin named `ON/SLEEP_N/DIO9` or `CTS_N/DIO7` pin in
+     * Digi's hardware reference.
+     * @param useCTSStatus True to use the `CTS_N/DIO7` pin of the XBee as a
+     * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
+     * This inverts the loggerModem::_statusLevel.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This shold be the pin called `RESET_N` in Digi's hardware reference.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
+     * reference.
+     *
+     * @see loggerModem::loggerModem
      */
     DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
              int8_t modemResetPin, int8_t modemSleepRqPin);

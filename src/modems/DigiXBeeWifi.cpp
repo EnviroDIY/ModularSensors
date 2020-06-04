@@ -43,52 +43,77 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeWifi);
 
 bool DigiXBeeWifi::extraModemSetup(void) {
     bool success = true;
+    /** First run the TinyGSM init() function for the XBee. */
     MS_DBG(F("Initializing the XBee..."));
     success &= gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
+    /** Then enter command mode to set pin outputs. */
     MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode()) {
         MS_DBG(F("Setting I/O Pins..."));
-        // Set DIO8 to be used for sleep requests
-        // NOTE:  Only pin 9/DIO8/DTR can be used for this function
+        /** Enable pin sleep functionality on `DIO9`.
+         * NOTE: Only the `DTR_N/SLEEP_RQ/DIO8` pin (9 on the bee socket) can be
+         * used for this pin sleep/wake. */
         gsmModem.sendAT(GF("D8"), 1);
         success &= gsmModem.waitResponse() == 1;
-        // Turn on status indication pin - will be HIGH when the XBee is awake
-        // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
+        /** Enable status indication on `DIO9` - it will be HIGH when the XBee
+         * is awake.
+         * NOTE: Only the `ON/SLEEP_N/DIO9` pin (13 on the bee socket) can be
+         * used for direct status indication. */
         gsmModem.sendAT(GF("D9"), 1);
         success &= gsmModem.waitResponse() == 1;
-        // Turn on CTS pin - it will be LOW when the XBee is ready to receive
-        // commands This can be used as proxy for status indication if the true
-        // status pin is not accessible
-        // NOTE:  Only pin 12/DIO7/CTS can be used for this function
+        /** Enable CTS on `DIO7` - it will be `LOW` when it is clear to send
+         * data to the XBee.  This can be used as proxy for status indication if
+         * that pin is not readable.
+         * NOTE: Only the `CTS_N/DIO7` pin (12 on the bee socket) can be used
+         * for CTS. */
         gsmModem.sendAT(GF("D7"), 1);
         success &= gsmModem.waitResponse() == 1;
-        // Turn on the associate LED (if you're using a board with one)
-        // NOTE:  Only pin 15/DIO5 can be used for this function
+        /** Enable association indication on `DIO5` - this is should be directly
+         * attached to an LED if possible.
+         * - Solid light indicates no connection
+         * - Single blink indicates connection
+         * - double blink indicates connection but failed TCP link on last
+         * attempt
+         *
+         * NOTE: Only the `Associate/DIO5` pin (15 on the bee socket) can be
+         * used for this function. */
         gsmModem.sendAT(GF("D5"), 1);
         success &= gsmModem.waitResponse() == 1;
-        // Turn on the RSSI indicator LED (if you're using a board with one)
-        // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
+        /** Enable RSSI PWM output on `DIO10` - this should be directly attached
+         * to an LED if possible.  A higher PWM duty cycle (and thus brighter
+         * LED) indicates better signal quality.
+         * NOTE: Only the `DIO10/PWM0` pin (6 on the bee socket) can be used for
+         * this function. */
         gsmModem.sendAT(GF("P0"), 1);
         success &= gsmModem.waitResponse() == 1;
-        // Put the XBee in pin sleep mode
+        /** Enable pin sleep on the XBee. */
         MS_DBG(F("Setting Sleep Options..."));
         gsmModem.sendAT(GF("SM"), 1);
         success &= gsmModem.waitResponse() == 1;
-        // Disassociate from network for lowest power deep sleep
+        /** Disassociate from the network for the lowest power deep sleep. */
         gsmModem.sendAT(GF("SO"), 200);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Wifi Network Options..."));
-        // Put the network connection parameters into flash
+        /** Save the network connection parameters. */
         success &= gsmModem.networkConnect(_ssid, _pwd);
-        // Set the socket timeout to 10s (this is default)
+        /** Set the socket timeout to 10s (this is default). */
         gsmModem.sendAT(GF("TM"), 64);
         success &= gsmModem.waitResponse() == 1;
-        // Write changes to flash and apply them
+        success &= gsmModem.gprsConnect(_apn);
+        MS_DBG(F("Ensuring XBee is in transparent mode..."));
+        /* Make sure we're really in transparent mode. */
+        gsmModem.sendAT(GF("AP0"));
+        success &= gsmModem.waitResponse() == 1;
+        /** Write all changes to flash and apply them. */
+        MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
-        // Exit command mode
+        /** Finally, exit command mode. */
         gsmModem.exitCommand();
+        /** Force restart the modem to make sure all settings take. */
+        MS_DBG(F("Restarting XBee..."));
+        success &= gsmModem.restart();
     } else {
         success = false;
     }

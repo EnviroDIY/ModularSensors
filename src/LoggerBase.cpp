@@ -10,7 +10,11 @@
 #include "LoggerBase.h"
 #include "dataPublisherBase.h"
 
-// To prevent compiler/linker crashes with Enable interrupt
+/**
+ * @brief To prevent compiler/linker crashes with enable interrupt library, we
+ * must define LIBCALL_ENABLEINTERRUPT before importing EnableInterrupt within a
+ * library.
+ */
 #define LIBCALL_ENABLEINTERRUPT
 // To handle external and pin change interrupts
 #include <EnableInterrupt.h>
@@ -959,8 +963,11 @@ void Logger::generateAutoFileName(void) {
 }
 
 
-// This is a PRE-PROCESSOR MACRO to speed up generating header rows
-// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+/**
+ * @brief This is a PRE-PROCESSOR MACRO to speed up generating header rows
+ *
+ * THIS IS NOT A FUNCTION, it is a pre-processor macro
+ */
 #define STREAM_CSV_ROW(firstCol, function)                       \
     stream->print("\"");                                         \
     stream->print(firstCol);                                     \

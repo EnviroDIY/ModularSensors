@@ -27,6 +27,9 @@
  */
 #define TINY_GSM_MODEM_ESP8266
 #ifndef TINY_GSM_RX_BUFFER
+/**
+ * @brief The size of the buffer for incoming data.
+ */
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
@@ -38,15 +41,17 @@
  * deep sleep the pin state is undefined.
  *
  * For cases where a pin is defined for light sleep mode, the Espressif
- * documentation states:  since the system needs some time to wake up from light
- * sleep, it is suggested that wait at least 5ms before sending next AT command.
+ * documentation states:
+ * > since the system needs some time to wake up from light sleep, it is
+ * > suggested that wait at least 5ms before sending next AT command.
  * The documentation doesn't say anything about the time before the pin reaches
  * the expected level.  The status level during light sleep is user selectable,
- * but we set it low for wake and high for sleep.  Of course, despite being able
- * to configure light sleep mode for the module, it's not actually possible to
- * purposefully enter light sleep via AT commands, so we are dependent on the
- * module deciding it's been idle long enough and entering sleep on its own.  It
- * is a terrible system.  Use a deep-sleep with reset if possible.
+ * this library sets it low for wake and high for sleep.  Of course, despite
+ * being able to configure light sleep mode for the module, it's not actually
+ * possible to purposefully enter light sleep via AT commands, so we are
+ * dependent on the module deciding it's been idle long enough and entering
+ * sleep on its own.  It is a terrible system.  Use a deep-sleep with reset if
+ * possible.
  */
 #define ESP8266_STATUS_LEVEL HIGH
 /**
@@ -73,10 +78,7 @@
  * @brief The loggerModem::_wakeLevel.
  *
  * This light sleep wake level is user configurable on the ESP8266.  This
- * library uses a LOW level for wake.
- *
- * @note Light sleep modes on the ESP8266 may not function as expected (or at
- * all).
+ * library uses a `LOW` level for wake.
  */
 #define ESP8266_WAKE_LEVEL LOW
 /**
@@ -95,8 +97,10 @@
 /**
  * @brief The loggerModem::_max_atresponse_time_ms.
  *
- * The serial response time is undocumented for the ESP8266.  Other users online
- * esetimate about 350ms.
+ * The serial response time after boot (via power on or reset) is undocumented
+ * for the ESP8266.  Other users online estimate about 350ms.
+ *
+ * The serial response time on waking from light sleep is 5ms.
  */
 #define ESP8266_ATRESPONSE_TIME_MS 350
 
@@ -123,30 +127,48 @@
  * wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif's
  * AT command firmware.
  *
- * @copydetails #ESP8266_STATUS_LEVEL
- * @copydetails #ESP8266_RESET_LEVEL
- * @copydetails #ESP8266_WAKE_LEVEL
+ * #### Pin and timing information for the ESP8266
+ *
  * @copydetails #ESP8266_WAKE_DELAY_MS
+ *
+ * @copydetails #ESP8266_RESET_LEVEL
+ *
  * @copydetails #ESP8266_ATRESPONSE_TIME_MS
- * @copydetails #ESP8266_DISCONNECT_TIME_MS
+ *
+ * @copydetails #ESP8266_STATUS_LEVEL
+ *
+ * @warning Light sleep modes on the ESP8266 may not function as expected (or at
+ * all).
+ *
+ * @see @ref esp8266_page
  */
 class EspressifESP8266 : public loggerModem {
  public:
     // Constructor/Destructor
     /**
-     * @brief Construct a new Espressif ESP8266 object
+     * @brief Construct a new Espressif ESP8266 object.
+     *
+     * The constuctor initializes all of the provided member variables,
+     * constructs a loggerModem parent class with the appropriate timing for the
+     * module, calls the constructor for a TinyGSM modem on the provided
+     * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
      * @param powerPin @copydoc loggerModem::_powerPin
      * @param statusPin @copydoc loggerModem::_statusPin
+     * This can be any DIO pin on the esp.  It is only used in light sleep.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This is the ESP's `RSTB/DIO16` pin.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * This can be any DIO pin on the esp.  It is only used in light sleep.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, assuming WPA2.
      * @param espSleepRqPin The DIO pin on the ESP8266 assigned to light sleep
-     * wake.
+     * wake.  This can be any DIO pin on the esp.
      * @param espStatusPin The DIO pin on the ESP8566 assigned to status
-     * indication.
+     * indication.  This can be any DIO pin on the esp.
+     *
+     * @see loggerModem::loggerModem
      */
     EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                      int8_t modemResetPin, int8_t modemSleepRqPin,
@@ -173,10 +195,22 @@ class EspressifESP8266 : public loggerModem {
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm       gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM modem.
+     */
+    TinyGsm gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM Client.
+     */
     TinyGsmClient gsmClient;
 
-    // Need the stream for tossing junk on boot
+    /**
+     * @brief A pointer to the Arduino serial Stream used for communication
+     * between the MCU and the ESP8266.
+     *
+     * We need to keep the pointer to the stream for tossing junk on boot.
+     *
+     */
     Stream* _modemStream;
 
  protected:

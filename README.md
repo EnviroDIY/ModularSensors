@@ -93,9 +93,9 @@ The currently supported services are the [Monitor My Watershed data portal](http
 - [QuectelBG96](https://github.com/EnviroDIY/ModularSensors/wiki/QuectelBG96)
 - [Sequans Monarch](https://github.com/EnviroDIY/ModularSensors/wiki/Sequans-Monarch)
 - [SIM7000](https://github.com/EnviroDIY/ModularSensors/wiki/SIM7000)
-- [SIM800](https://github.com/EnviroDIY/ModularSensors/wiki/SIM800)
-- [Sodaq GPRSBeeR6](https://github.com/EnviroDIY/ModularSensors/wiki/Sodaq-GPRSBeeR6)
-- [Sodaq uBee](https://github.com/EnviroDIY/ModularSensors/wiki/Sodaq-uBee)
+- [SIM800](https://github.com/EnviroDIY/ModularSensors/wiki/SIM800), including the [Sodaq GPRSBee](https://github.com/EnviroDIY/ModularSensors/wiki/Sodaq-GPRSBeeR6)
+- u-blox LTE-M R4 and N4 series, including the [Sodaq uBee](https://github.com/EnviroDIY/ModularSensors/wiki/Sodaq-uBee)
+- u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://github.com/EnviroDIY/ModularSensors/wiki/Sodaq-uBee)
 
 
 

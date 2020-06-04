@@ -11,9 +11,6 @@ ___
 [//]: # ( @section examples_basic Basic Functionality )
 ## Basic Functionality
 
-## what is this header called
-
-
 [//]: # ( @subsection examples_single_sensor Single Sensor )
 ## Single Sensor
 

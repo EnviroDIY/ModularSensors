@@ -65,7 +65,7 @@ bool SIMComSIM800::modemWakeFxn(void) {
 
 bool SIMComSIM800::modemSleepFxn(void) {
     if (_modemSleepRqPin >= 0) {
-        // Must have access to PWRKEY pin to sleep
+        // Must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM800 to power down"));

@@ -104,8 +104,8 @@ const char* apn = "xxxxx";  // The APN for the gprs connection
 #include <modems/DigiXBeeCellularTransparent.h>
 const long modemBaud       = 9600;   // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
-// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
-// the CTS pin can also be used if necessary
+// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
+// the `CTS` pin can also be used if necessary
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       useCTSforStatus, modemResetPin,
                                       modemSleepRqPin, apn);
