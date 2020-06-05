@@ -53,9 +53,8 @@
             MS_DBG(getModemName(), F("status pin"), _statusPin, F("level = "), \
                    levelNow ? F("HIGH") : F("LOW"), F("meaning"),              \
                    getModemName(), F("should be"),                             \
-                   levelNow == static_cast<int>(_statusLevel) ? F("on")        \
-                                                              : F("off"));     \
-            return levelNow == static_cast<int>(_statusLevel);                 \
+                   levelNow == _statusLevel ? F("on") : F("off"));             \
+            return levelNow == _statusLevel;                                   \
         } else if (_wakePulse_ms == 0) {                                       \
             /** If the wake up is one where a pin is held (0 wake time) then   \
                we're going to check the level of the held pin as the           \
@@ -63,16 +62,14 @@
                before entering the setup function. */                          \
             int8_t sleepRqBitNumber =                                          \
                 log(digitalPinToBitMask(_modemSleepRqPin)) / log(2);           \
-            int8_t currentRqPinState = bitRead(                                \
+            bool currentRqPinState = bitRead(                                  \
                 *portInputRegister(digitalPinToPort(_modemSleepRqPin)),        \
                 sleepRqBitNumber);                                             \
             MS_DBG(F("Current state of sleep request pin"), _modemSleepRqPin,  \
                    '=', currentRqPinState ? F("HIGH") : F("LOW"),              \
                    F("meaning"), getModemName(), F("should be"),               \
-                   currentRqPinState == static_cast<int8_t>(_wakeLevel)        \
-                       ? F("on")                                               \
-                       : F("off"));                                            \
-            return (currentRqPinState == static_cast<int8_t>(_wakeLevel));     \
+                   currentRqPinState == _wakeLevel ? F("on") : F("off"));      \
+            return (currentRqPinState == _wakeLevel);                          \
         } else if (_statusPin < 0) {                                           \
             /** If there's no status pin, but still a pulsed wake up, try      \
                checking if the modem responds to AT commands. */               \
