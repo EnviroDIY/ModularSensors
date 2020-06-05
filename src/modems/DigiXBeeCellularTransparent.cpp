@@ -167,7 +167,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
         // gsmModem.sendAT(GF("N#"),0);
         // gsmModem.waitResponse();  // Don't check for success - only works on
         // LTE
-        MS_DBG(F("Setting Wifi Network Options..."));
+        MS_DBG(F("Setting the APN..."));
         /** Save the network connection parameters. */
         success &= gsmModem.gprsConnect(_apn);
         MS_DBG(F("Ensuring XBee is in transparent mode..."));

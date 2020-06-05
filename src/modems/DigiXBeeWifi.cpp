@@ -96,12 +96,11 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         gsmModem.sendAT(GF("SO"), 200);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Wifi Network Options..."));
-        /** Save the network connection parameters. */
-        success &= gsmModem.networkConnect(_ssid, _pwd);
         /** Set the socket timeout to 10s (this is default). */
         gsmModem.sendAT(GF("TM"), 64);
         success &= gsmModem.waitResponse() == 1;
-        success &= gsmModem.gprsConnect(_apn);
+        /** Save the network connection parameters. */
+        success &= gsmModem.networkConnect(_ssid, _pwd);
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         /* Make sure we're really in transparent mode. */
         gsmModem.sendAT(GF("AP0"));

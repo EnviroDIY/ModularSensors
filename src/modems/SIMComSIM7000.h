@@ -126,6 +126,8 @@
  * @copydetails #SIM7000_ATRESPONSE_TIME_MS
  *
  * @copydetails #SIM7000_DISCONNECT_TIME_MS
+ *
+ * @see @ref sim7000_page
  */
 class SIMComSIM7000 : public loggerModem {
  public:
