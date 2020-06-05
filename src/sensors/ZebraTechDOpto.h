@@ -45,18 +45,31 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the D-Opto can report 3 values.
 #define DOPTO_NUM_VARIABLES 3
+/// Sensor::_warmUpTime_ms; the D-Opto warms up in 275ms.
 #define DOPTO_WARM_UP_TIME_MS 275
+/// Sensor::_stabilizationTime_ms; the D-Opto is stable after 0ms.
 #define DOPTO_STABILIZATION_TIME_MS 0
+/// Sensor::_measurementTime_ms; the D-Opto takes 5335ms to complete a
+/// measurement.
 #define DOPTO_MEASUREMENT_TIME_MS 5335
 
+/// Decimals places in string representation; temperature should have 2.
 #define DOPTO_TEMP_RESOLUTION 2
+/// Variable number; temperature is stored in sensorValues[0].
 #define DOPTO_TEMP_VAR_NUM 0
 
+/// Decimals places in string representation; dissolved oxygen percent should
+/// have 2.
 #define DOPTO_DOPCT_RESOLUTION 2
+/// Variable number; dissolved oxygen percent is stored in sensorValues[1]
 #define DOPTO_DOPCT_VAR_NUM 1
 
+/// Decimals places in string representation; dissolved oxygen concentration
+/// should have 3.
 #define DOPTO_DOMGL_RESOLUTION 3
+/// Variable number; dissolved oxygen concentration is stored in sensorValues[2]
 #define DOPTO_DOMGL_VAR_NUM 2
 
 // The main class for the D-Opto
@@ -88,16 +101,34 @@ class ZebraTechDOpto : public SDI12Sensors {
 // Defines the Temperature Variable
 class ZebraTechDOpto_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new ZebraTechDOpto_Temp object.
+     *
+     * @param parentSense The parent ZebraTechDOpto providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is DOtempC
+     */
     explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense,
                                  const char*     uuid    = "",
                                  const char*     varCode = "DOtempC")
         : Variable(parentSense, (const uint8_t)DOPTO_TEMP_VAR_NUM,
                    (uint8_t)DOPTO_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new ZebraTechDOpto_Temp object.
+     *
+     * @note This must be tied with a parent ZebraTechDOpto before it can be
+     * used.
+     */
     ZebraTechDOpto_Temp()
         : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
                    (uint8_t)DOPTO_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "DOtempC") {}
+    /**
+     * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
+     */
     ~ZebraTechDOpto_Temp() {}
 };
 
@@ -105,6 +136,15 @@ class ZebraTechDOpto_Temp : public Variable {
 // Defines the Dissolved Oxygen Percent Saturation
 class ZebraTechDOpto_DOpct : public Variable {
  public:
+    /**
+     * @brief Construct a new ZebraTechDOpto_DOpct object.
+     *
+     * @param parentSense The parent ZebraTechDOpto providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is DOpercent
+     */
     explicit ZebraTechDOpto_DOpct(ZebraTechDOpto* parentSense,
                                   const char*     uuid    = "",
                                   const char*     varCode = "DOpercent")
@@ -112,11 +152,20 @@ class ZebraTechDOpto_DOpct : public Variable {
                    (uint8_t)DOPTO_DOPCT_RESOLUTION,
                    "oxygenDissolvedPercentOfSaturation", "percent", varCode,
                    uuid) {}
+    /**
+     * @brief Construct a new ZebraTechDOpto_DOpct object.
+     *
+     * @note This must be tied with a parent ZebraTechDOpto before it can be
+     * used.
+     */
     ZebraTechDOpto_DOpct()
         : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
                    (uint8_t)DOPTO_DOPCT_RESOLUTION,
                    "oxygenDissolvedPercentOfSaturation", "percent",
                    "DOpercent") {}
+    /**
+     * @brief Destroy the ZebraTechDOpto_DOpct object - no action needed.
+     */
     ~ZebraTechDOpto_DOpct() {}
 };
 
@@ -124,16 +173,34 @@ class ZebraTechDOpto_DOpct : public Variable {
 // Defines the Dissolved Oxygen Concentration
 class ZebraTechDOpto_DOmgL : public Variable {
  public:
+    /**
+     * @brief Construct a new ZebraTechDOpto_DOmgL object.
+     *
+     * @param parentSense The parent ZebraTechDOpto providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is DOppm
+     */
     explicit ZebraTechDOpto_DOmgL(ZebraTechDOpto* parentSense,
                                   const char*     uuid    = "",
                                   const char*     varCode = "DOppm")
         : Variable(parentSense, (const uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", varCode, uuid) {}
+    /**
+     * @brief Construct a new ZebraTechDOpto_DOmgL object.
+     *
+     * @note This must be tied with a parent ZebraTechDOpto before it can be
+     * used.
+     */
     ZebraTechDOpto_DOmgL()
         : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", "DOppm") {}
+    /**
+     * @brief Destroy the ZebraTechDOpto_DOmgL object - no action needed.
+     */
     ~ZebraTechDOpto_DOmgL() {}
 };
 

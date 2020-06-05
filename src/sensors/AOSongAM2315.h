@@ -50,12 +50,12 @@
 #define AM2315_MEASUREMENT_TIME_MS 2000
 
 /// Decimals places in string representation; humidity should have 1.
-#define AM2315_HUMIDITY_RESOLUTION 1.
+#define AM2315_HUMIDITY_RESOLUTION 1
 /// Variable number; humidity is stored in sensorValues[0].
 #define AM2315_HUMIDITY_VAR_NUM 0
 
 /// Decimals places in string representation; temperature should have 1.
-#define AM2315_TEMP_RESOLUTION 1.
+#define AM2315_TEMP_RESOLUTION 1
 /// Variable number; temperature is stored in sensorValues[1].
 #define AM2315_TEMP_VAR_NUM 1
 

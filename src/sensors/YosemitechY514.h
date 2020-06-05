@@ -40,15 +40,25 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the Y514 can report 2 values.
 #define Y514_NUM_VARIABLES 2
+/// Sensor::_warmUpTime_ms; the Y514 warms up in 1300ms.
 #define Y514_WARM_UP_TIME_MS 1300
+/// Sensor::_stabilizationTime_ms; the Y514 is stable after 8000ms.
 #define Y514_STABILIZATION_TIME_MS 8000
+/// Sensor::_measurementTime_ms; the Y514 takes 2000ms to complete a
+/// measurement.
 #define Y514_MEASUREMENT_TIME_MS 2000
 
+/// Decimals places in string representation; chlorophyll concentration should
+/// have 1.
 #define Y514_CHLORO_RESOLUTION 1
+/// Variable number; chlorophyll concentration is stored in sensorValues[0].
 #define Y514_CHLORO_VAR_NUM 0
 
+/// Decimals places in string representation; temperature should have 1.
 #define Y514_TEMP_RESOLUTION 1
+/// Variable number; temperature is stored in sensorValues[1].
 #define Y514_TEMP_VAR_NUM 1
 
 // The main class for the Decagon Y514
@@ -78,16 +88,35 @@ class YosemitechY514 : public YosemitechParent {
 // Defines the Chlorophyll Concentration
 class YosemitechY514_Chlorophyll : public Variable {
  public:
+    /**
+     * @brief Construct a new YosemitechY514_Chlorophyll object.
+     *
+     * @param parentSense The parent YosemitechY514 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is Y514Chloro
+     */
     explicit YosemitechY514_Chlorophyll(YosemitechY514* parentSense,
                                         const char*     uuid    = "",
                                         const char*     varCode = "Y514Chloro")
         : Variable(parentSense, (const uint8_t)Y514_CHLORO_VAR_NUM,
                    (uint8_t)Y514_CHLORO_RESOLUTION, "chlorophyllFluorescence",
                    "microgramPerLiter", varCode, uuid) {}
+    /**
+     * @brief Construct a new YosemitechY514_Chlorophyll object.
+     *
+     * @note This must be tied with a parent YosemitechY514 before it can be
+     * used.
+     */
     YosemitechY514_Chlorophyll()
         : Variable((const uint8_t)Y514_CHLORO_VAR_NUM,
                    (uint8_t)Y514_CHLORO_RESOLUTION, "chlorophyllFluorescence",
                    "microgramPerLiter", "Y514Chloro") {}
+    /**
+     * @brief Destroy the YosemitechY514_Chlorophyll() object - no action
+     * needed.
+     */
     ~YosemitechY514_Chlorophyll() {}
 };
 
@@ -95,16 +124,34 @@ class YosemitechY514_Chlorophyll : public Variable {
 // Defines the Temperature Variable
 class YosemitechY514_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new YosemitechY514_Temp object.
+     *
+     * @param parentSense The parent YosemitechY514 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is Y514Temp
+     */
     explicit YosemitechY514_Temp(YosemitechY514* parentSense,
                                  const char*     uuid    = "",
                                  const char*     varCode = "Y514Temp")
         : Variable(parentSense, (const uint8_t)Y514_TEMP_VAR_NUM,
                    (uint8_t)Y514_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new YosemitechY514_Temp object.
+     *
+     * @note This must be tied with a parent YosemitechY514 before it can be
+     * used.
+     */
     YosemitechY514_Temp()
         : Variable((const uint8_t)Y514_TEMP_VAR_NUM,
                    (uint8_t)Y514_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "Y514Temp") {}
+    /**
+     * @brief Destroy the YosemitechY514_Temp object - no action needed.
+     */
     ~YosemitechY514_Temp() {}
 };
 #endif  // SRC_SENSORS_YOSEMITECHY514_H_

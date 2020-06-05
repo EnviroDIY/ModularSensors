@@ -12,6 +12,11 @@
  * Arduino library.
  *
  * @copydetails AtlasParent
+ *
+ * @defgroup atlas_group Atlas Scientific
+ * The Sensor and Variable objects for all Atlas EZO circuits.
+ *
+ * @copydetails AtlasParent
  */
 
 // Header Guards
@@ -36,15 +41,20 @@
  * @brief A parent class for Atlas sensors
  *
  * This contains the main I2C functionality for all Atlas EZO circuits.
+ *
+ * @ingroup atlas_group
+ *
+ * @see atlas_page
  */
 class AtlasParent : public Sensor {
  public:
     /**
      * @brief Construct a new Atlas Parent object
      *
-     * @param powerPin The pin on the mcu controlling power to the Atlas circuit
+     * @param powerPin The pin on the mcu controlling power to the Atlas
+     * circuit.  Use -1 if the sensor is continuously powered.
      * @param i2cAddressHex The I2C address of the Atlas circuit
-     * @param measurementsToAverage
+     * @param measurementsToAverage The number of measurements to average
      * @param sensorName The name of the sensor, defaults to AtlasSensor.
      * @param numReturnedVars The number of results returned by the sensor.
      * Defaults to 1.

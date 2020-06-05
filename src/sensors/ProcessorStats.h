@@ -34,18 +34,31 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the processor can report 3 values.
 #define PROCESSOR_NUM_VARIABLES 3
+/// Sensor::_warmUpTime_ms; the processor is never powered down - there is now
+/// waiting for warmup.
 #define PROCESSOR_WARM_UP_TIME_MS 0
+/// Sensor::_stabilizationTime_ms; the processor is never powered down - there
+/// is now waiting for stabilization.
 #define PROCESSOR_STABILIZATION_TIME_MS 0
+/// Sensor::_measurementTime_ms; the processor measurement times aren't
+/// measurable
 #define PROCESSOR_MEASUREMENT_TIME_MS 0
 
+/// Decimals places in string representation; battery voltage should have 3.
 #define PROCESSOR_BATTERY_RESOLUTION 3
+/// Battery voltage is stored in sensorValues[0]
 #define PROCESSOR_BATTERY_VAR_NUM 0
 
+/// Decimals places in string representation; RAM should have 0.
 #define PROCESSOR_RAM_RESOLUTION 0
+/// Free RAM is stored in sensorValues[1]
 #define PROCESSOR_RAM_VAR_NUM 1
 
+/// Decimals places in string representation; sample number should have 0.
 #define PROCESSOR_SAMPNUM_RESOLUTION 0
+/// Sample number is stored in sensorValues[2]
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
 
 
@@ -73,16 +86,34 @@ class ProcessorStats : public Sensor {
 // For the battery supplying power to the processor
 class ProcessorStats_Battery : public Variable {
  public:
+    /**
+     * @brief Construct a new ProcessorStats_Battery object.
+     *
+     * @param parentSense The parent ProcessorStats providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is batteryVoltage.
+     */
     explicit ProcessorStats_Battery(ProcessorStats* parentSense,
                                     const char*     uuid    = "",
                                     const char*     varCode = "Battery")
         : Variable(parentSense, (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
                    "volt", varCode, uuid) {}
+    /**
+     * @brief Construct a new ProcessorStats_Battery object.
+     *
+     * @note This must be tied with a parent ProcessorStats before it can be
+     * used.
+     */
     ProcessorStats_Battery()
         : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                    (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
                    "volt", "Battery") {}
+    /**
+     * @brief Destroy the ProcessorStats_Battery object - no action needed.
+     */
     ~ProcessorStats_Battery() {}
 };
 
@@ -90,16 +121,34 @@ class ProcessorStats_Battery : public Variable {
 // Defines the "Free Ram" This is a board diagnostic
 class ProcessorStats_FreeRam : public Variable {
  public:
+    /**
+     * @brief Construct a new ProcessorStats_FreeRam object.
+     *
+     * @param parentSense The parent ProcessorStats providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is FreeRam
+     */
     explicit ProcessorStats_FreeRam(ProcessorStats* parentSense,
                                     const char*     uuid    = "",
                                     const char*     varCode = "FreeRam")
         : Variable(parentSense, (const uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new ProcessorStats_FreeRam object.
+     *
+     * @note This must be tied with a parent ProcessorStats before it can be
+     * used.
+     */
     ProcessorStats_FreeRam()
         : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
                    "FreeRam") {}
+    /**
+     * @brief Destroy the ProcessorStats_FreeRam object - no action needed.
+     */
     ~ProcessorStats_FreeRam() {}
 };
 
@@ -107,16 +156,35 @@ class ProcessorStats_FreeRam : public Variable {
 // Defines the "Sample Number" This is a board diagnostic
 class ProcessorStats_SampleNumber : public Variable {
  public:
+    /**
+     * @brief Construct a new ProcessorStats_SampleNumber object.
+     *
+     * @param parentSense The parent ProcessorStats providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is SampNum
+     */
     explicit ProcessorStats_SampleNumber(ProcessorStats* parentSense,
                                          const char*     uuid    = "",
                                          const char*     varCode = "SampNum")
         : Variable(parentSense, (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
                    "Dimensionless", varCode, uuid) {}
+    /**
+     * @brief Construct a new ProcessorStats_SampleNumber object.
+     *
+     * @note This must be tied with a parent ProcessorStats before it can be
+     * used.
+     */
     ProcessorStats_SampleNumber()
         : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
                    (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
                    "Dimensionless", "SampNum") {}
+    /**
+     * @brief Destroy the ProcessorStats_SampleNumber() object - no action
+     * needed.
+     */
     ~ProcessorStats_SampleNumber() {}
 };
 

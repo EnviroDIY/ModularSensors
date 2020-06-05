@@ -56,20 +56,20 @@
 #define SQ212_PAR_VAR_NUM 0
 #ifdef MS_USE_ADS1015
 /// Decimals places in string representation; PAR should have 0.
-#define SQ212_PAR_RESOLUTION 0.
+#define SQ212_PAR_RESOLUTION 0
 #else
 /// Decimals places in string representation; PAR should have 4.
-#define SQ212_PAR_RESOLUTION 4.
+#define SQ212_PAR_RESOLUTION 4
 #endif
 
-/// Variable number; VOLTAGE is stored in sensorValues[1].
+/// Variable number; voltage is stored in sensorValues[1].
 #define SQ212_VOLTAGE_VAR_NUM 1
 #ifdef MS_USE_ADS1015
-/// Decimals places in string representation; VOLT should have 1.
-#define SQ212_VOLT_RESOLUTION 1.
+/// Decimals places in string representation; voltage should have 1.
+#define SQ212_VOLT_RESOLUTION 1
 #else
-/// Decimals places in string representation; VOLT should have 4.
-#define SQ212_VOLT_RESOLUTION 4.
+/// Decimals places in string representation; voltage should have 4.
+#define SQ212_VOLT_RESOLUTION 4
 #endif
 
 /**

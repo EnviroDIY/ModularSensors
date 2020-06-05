@@ -12,6 +12,11 @@
  * These are used for any sensor attached to an Atlas EZO CO2 circuit.
  *
  * @copydetails AtlasScientificCO2
+ *
+ * @defgroup atlas_co2_group Atlas Scientific CO2 circuit
+ * The Sensor and Variable objects for the Atlas EZO CO2 circuit
+ *
+ * @copydetails AtlasScientificCO2
  */
 
 // Header Guards
@@ -37,17 +42,26 @@
 #define ATLAS_CO2_I2C_ADDR 0x69  // 105
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the Atlas CO2 sensor can report 2 values.
 #define ATLAS_CO2_NUM_VARIABLES 2
 // TODO(SRGDamia1):  Test timing with sensor
+/// Sensor::_warmUpTime_ms; the Atlas CO2 sensor warms up in 850ms.
 #define ATLAS_CO2_WARM_UP_TIME_MS 850
 // NOTE:  This has a long stabilization time!
+/// Sensor::_stabilizationTime_ms; the Atlas CO2 sensor is stable after 10000ms.
 #define ATLAS_CO2_STABILIZATION_TIME_MS 10000
+/// Sensor::_measurementTime_ms; the Atlas CO2 sensor takes 900ms to complete a
+/// measurement.
 #define ATLAS_CO2_MEASUREMENT_TIME_MS 900
 
+/// Decimals places in string representation; CO2 should have 1.
 #define ATLAS_CO2_RESOLUTION 1
+/// Variable number; CO2 is stored in sensorValues[0].
 #define ATLAS_CO2_VAR_NUM 0
 
+/// Decimals places in string representation; CO2TEMP should have 0.
 #define ATLAS_CO2TEMP_RESOLUTION 0
+/// Variable number; CO2TEMP is stored in sensorValues[1].
 #define ATLAS_CO2TEMP_VAR_NUM 1
 
 /**
@@ -55,16 +69,25 @@
  * sensor - used for any sensor attached to an Atlas EZO CO2 circuit.
  *
  * Documentation on the CO2 circuit and probe is available here:
- * https://www.atlas-scientific.com/probes/ezo-co2-embedded-ndir-carbon-dioxide-sensor/f
+ * https://www.atlas-scientific.com/probes/ezo-co2-embedded-ndir-carbon-dioxide-sensor
+ *
+ * Timing:
+ *     - warms up in 850ms
+ *     - not stable until 10s after warm-up
+ *     - measurements take 900ms to complete
  *
  * For Carbon Dioxide:
  *   @copydetails AtlasScientificCO2_CO2
+ *
  * For Temperature:
  *   @copydetails AtlasScientificCO2_Temp
  *
  * @note According to the probe datasheet, the temperature measurement is only
  * intended to be used to verify that the sensor is in equilibrium with its
  * surroundings.
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_co2_group
  */
 class AtlasScientificCO2 : public AtlasParent {
  public:
@@ -72,7 +95,7 @@ class AtlasScientificCO2 : public AtlasParent {
      * @brief Construct a new Atlas Scientific CO2 object
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas
-     * circuit
+     * circuit.  Use -1 if the sensor is continuously powered.
      * @param i2cAddressHex The I2C address of the Atlas circuit.  Defaults to
      * 0x69.
      * @param measurementsToAverage The number of measurements to average.
@@ -108,7 +131,11 @@ class AtlasScientificCO2 : public AtlasParent {
  *   - Accuracy is ± 3% or ± 30 ppm
  *   - Range is 0 − 10000 ppm
  *   - Reported as parts per million
- *   - Result stored as sensorValues[0]
+ *   - Result stored in sensorValues[0]
+ *   - Default variable code is AtlasCO2ppm
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_co2_group
  */
 class AtlasScientificCO2_CO2 : public Variable {
  public:
@@ -152,7 +179,11 @@ class AtlasScientificCO2_CO2 : public Variable {
  *   - Accuracy is not reported on the sensor datasheet
  *   - Range is -20°C to +50°C
  *   - Reported as degrees Celsius
- *   - Result stored as sensorValues[1]
+ *   - Result stored in sensorValues[1]
+ *   - Default variable code is AtlasCO2Temp
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_co2_group
  */
 class AtlasScientificCO2_Temp : public Variable {
  public:

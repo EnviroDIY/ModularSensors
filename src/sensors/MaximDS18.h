@@ -46,11 +46,17 @@
 #include <OneWire.h>
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the DS18 can report 1 value.
 #define DS18_NUM_VARIABLES 1
+/// Sensor::_warmUpTime_ms; the DS18 warms up in 2ms.
 #define DS18_WARM_UP_TIME_MS 2
+/// Sensor::_stabilizationTime_ms; the DS18 is stable after 0ms.
 #define DS18_STABILIZATION_TIME_MS 0
+/// Sensor::_measurementTime_ms; the DS18 takes 750ms to complete a measurement.
 #define DS18_MEASUREMENT_TIME_MS 750
+/// Variable number; temperature is stored in sensorValues[0].
 #define DS18_TEMP_VAR_NUM 0
+/// Decimals places in string representation; temperature should have 4.
 #define DS18_TEMP_RESOLUTION 4
 
 // The main class for the DS18
@@ -62,7 +68,19 @@ class MaximDS18 : public Sensor {
               uint8_t measurementsToAverage = 1);
     ~MaximDS18();
 
-    bool   setup(void) override;
+    /**
+     * @brief Do any one-time preparations needed before the sensor will be able
+     * to take readings.
+     *
+     * This sets the pin modes and verifies the DS18's address.  It also
+     * verifies that the sensor is connected, reporting maximum resolution, and
+     * operating in ASYNC mode and updates the #_sensorStatus. The sensor must
+     * be powered for setup.
+     *
+     * @return **true** The setup was successful
+     * @return **false** Some part of the setup failed
+     */
+    bool setup(void) override;
     String getSensorLocation(void) override;
 
     bool startSingleMeasurement(void) override;
@@ -85,15 +103,32 @@ class MaximDS18 : public Sensor {
 // The class for the Temperature Variable
 class MaximDS18_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new MaximDS18_Temp object.
+     *
+     * @param parentSense The parent MaximDS18 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is DS18Temp.
+     */
     explicit MaximDS18_Temp(MaximDS18* parentSense, const char* uuid = "",
                             const char* varCode = "DS18Temp")
         : Variable(parentSense, (const uint8_t)DS18_TEMP_VAR_NUM,
                    (uint8_t)DS18_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new MaximDS18_Temp object.
+     *
+     * @note This must be tied with a parent MaximDS18 before it can be used.
+     */
     MaximDS18_Temp()
         : Variable((const uint8_t)DS18_TEMP_VAR_NUM,
                    (uint8_t)DS18_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "DS18Temp") {}
+    /**
+     * @brief Destroy the MaximDS18_Temp object - no action needed.
+     */
     ~MaximDS18_Temp() {}
 };
 

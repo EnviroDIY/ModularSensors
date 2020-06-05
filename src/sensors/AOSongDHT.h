@@ -57,17 +57,17 @@
 #define DHT_MEASUREMENT_TIME_MS 2000
 
 /// Decimals places in string representation; humidity should have 1.
-#define DHT_HUMIDITY_RESOLUTION 1.
+#define DHT_HUMIDITY_RESOLUTION 1
 /// Variable number; humidity is stored in sensorValues[0].
 #define DHT_HUMIDITY_VAR_NUM 0
 
 /// Decimals places in string representation; temperature should have 1.
-#define DHT_TEMP_RESOLUTION 1.
+#define DHT_TEMP_RESOLUTION 1
 /// Variable number; temperature is stored in sensorValues[1].
 #define DHT_TEMP_VAR_NUM 1
 
 /// Decimals places in string representation; heat index should have 1.
-#define DHT_HI_RESOLUTION 1.
+#define DHT_HI_RESOLUTION 1
 /// Variable number; HI is stored in sensorValues[2].
 #define DHT_HI_VAR_NUM 2
 
