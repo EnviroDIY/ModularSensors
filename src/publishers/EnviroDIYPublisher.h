@@ -7,8 +7,6 @@
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
  * publishing data to the Monitor My Watershed/EnviroDIY data portal at
  * http://data.enviroDIY.org
- *
- * @copydetails EnviroDIYPublisher
  */
 
 // Header Guards
@@ -31,22 +29,103 @@
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
+/**
+ * @brief The EnviroDIYPublisher subclass of dataPublisher for publishing data
+ * to the Monitor My Watershed/EnviroDIY data portal at
+ * http://data.enviroDIY.org
+ */
 class EnviroDIYPublisher : public dataPublisher {
  public:
     // Constructors
+    /**
+     * @brief Construct a new EnviroDIY Publisher object with no members set.
+     */
     EnviroDIYPublisher();
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @note If a client is never specified, the publisher will attempt to
+     * create and use a client on a LoggerModem instance tied to the attached
+     * logger.
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param sendEveryX Currently unimplemented, intended for future use to
+     * enable caching and bulk publishing
+     * @param sendOffset Currently unimplemented, intended for future use to
+     * enable publishing data at a time slightly delayed from when it is
+     * collected
+     *
+     * @note It is possible (though very unlikey) that using this constructor
+     * could cause errors if the compiler attempts to initialize the publisher
+     * instance before the logger instance.  If you suspect you are seeing that
+     * issue, use the null constructor and a populated begin(...) within your
+     * set-up function.
+     */
     explicit EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
                                 uint8_t sendOffset = 0);
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param sendEveryX Currently unimplemented, intended for future use to
+     * enable caching and bulk publishing
+     * @param sendOffset Currently unimplemented, intended for future use to
+     * enable publishing data at a time slightly delayed from when it is
+     * collected
+     *
+     * @note It is possible (though very unlikey) that using this constructor
+     * could cause errors if the compiler attempts to initialize the publisher
+     * instance before the logger instance.  If you suspect you are seeing that
+     * issue, use the null constructor and a populated begin(...) within your
+     * set-up function.
+     */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on the
+     * Monitor My Watershed data portal.
+     * @param sendEveryX Currently unimplemented, intended for future use to
+     * enable caching and bulk publishing
+     * @param sendOffset Currently unimplemented, intended for future use to
+     * enable publishing data at a time slightly delayed from when it is
+     * collected
+     */
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
                        const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
                        uint8_t sendOffset = 0);
+    /**
+     * @brief Construct a new EnviroDIY Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on the
+     * Monitor My Watershed data portal.
+     * @param sendEveryX Currently unimplemented, intended for future use to
+     * enable caching and bulk publishing
+     * @param sendOffset Currently unimplemented, intended for future use to
+     * enable publishing data at a time slightly delayed from when it is
+     * collected
+     */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,
                        const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
                        uint8_t sendOffset = 0);
     // Destructor
+    /**
+     * @brief Destroy the EnviroDIY Publisher object
+     */
     virtual ~EnviroDIYPublisher();
 
     // Returns the data destination
@@ -55,23 +134,62 @@ class EnviroDIYPublisher : public dataPublisher {
     }
 
     // Adds the site registration token
+    /**
+     * @brief Set the site registration token
+     *
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     */
     void setToken(const char* registrationToken);
 
-    // Calculates how long the JSON will be
+    /**
+     * @brief Calculates how long the outgoing JSON will be
+     *
+     * @return uint16_t The number of characters in the JSON object.
+     */
     uint16_t calculateJsonSize();
-    // Calculates how long the full post request will be, including headers
+    // /**
+    //  * @brief Calculates how long the full post request will be, including
+    //  * headers
+    //  *
+    //  * @return uint16_t The length of the full request including HTTP
+    //  headers.
+    //  */
     // uint16_t calculatePostSize();
 
-    // This generates a properly formatted JSON for EnviroDIY
+    /**
+     * @brief This generates a properly formatted JSON for EnviroDIY and prints
+     * it to the input Arduino stream object.
+     *
+     * @param stream The Arduino stream to write out the JSON to.
+     */
     void printSensorDataJSON(Stream* stream);
 
-    // This prints a fully structured post request for Monitor My
-    // Watershed/EnviroDIY to the specified stream.
+    /**
+     * @brief This prints a fully structured post request for Monitor My
+     * Watershed/EnviroDIY to the specified stream.
+     *
+     * @param stream The Arduino stream to write out the request to.
+     */
     void printEnviroDIYRequest(Stream* stream);
 
     // A way to begin with everything already set
+    /**
+     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on the
+     * Monitor My Watershed data portal.
+     */
     void begin(Logger& baseLogger, Client* inClient,
                const char* registrationToken, const char* samplingFeatureUUID);
+    /**
+     * @copydoc dataPublisher::begin(Logger& baseLogger)
+     * @param registrationToken The registration token for the site on the
+     * Monitor My Watershed data portal.
+     * @param samplingFeatureUUID The sampling feature UUID for the site on the
+     * Monitor My Watershed data portal.
+     */
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
 
@@ -80,22 +198,38 @@ class EnviroDIYPublisher : public dataPublisher {
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataEnviroDIY(void);
+    /**
+     * @copydoc dataPublisher::publishData(Client* _outClient)
+     * @return **int16_t** The http status code of the response.
+     */
     int16_t publishData(Client* _outClient) override;
 
  protected:
-    // portions of the POST request
-    static const char* postEndpoint;
-    static const char* enviroDIYHost;
-    static const int   enviroDIYPort;
-    static const char* tokenHeader;
-    // static const char *cacheHeader;
-    // static const char *connectionHeader;
-    static const char* contentLengthHeader;
-    static const char* contentTypeHeader;
+    /**
+     * @anchor envirodiy_post_vars
+     * @name Portions of the POST request to EnviroDIY
+     *
+     * @{
+     */
+    static const char* postEndpoint;   ///< The endpoint
+    static const char* enviroDIYHost;  ///< The host name
+    static const int   enviroDIYPort;  ///< The host port
+    static const char* tokenHeader;    ///< The token header text
+    // static const char *cacheHeader;  ///< The cache header text
+    // static const char *connectionHeader;  ///< The keep alive header text
+    static const char* contentLengthHeader;  ///< The content length header text
+    static const char* contentTypeHeader;    ///< The content type header text
+    /**@}*/
 
-    // portions of the JSON
-    static const char* samplingFeatureTag;
-    static const char* timestampTag;
+    /**
+     * @anchor envirodiy_json_vars
+     * @name Portions of the JSON object for EnviroDIY
+     *
+     * @{
+     */
+    static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
+    static const char* timestampTag;        ///< The JSON feature timestamp tag
+                                            /**@}*/
 
  private:
     // Tokens and UUID's for EnviroDIY

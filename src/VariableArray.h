@@ -274,6 +274,13 @@ class VariableArray {
     bool    checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
+    /**
+     * @brief Prints out the contents of an array with even spaces and commas
+     * between the members
+     *
+     * @tparam T Any printable type
+     * @param arrayToPrint The array of values to print.
+     */
     template <typename T>
     void prettyPrintArray(T arrayToPrint[]) {
         DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
@@ -284,6 +291,10 @@ class VariableArray {
         DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
+/**
+ * @brief Prints out the contents of an array with even spaces and commas
+ * between the members
+ */
 #define prettyPrintArray(...)
 #endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
 };

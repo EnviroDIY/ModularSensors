@@ -52,7 +52,10 @@ ___
   - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
     - [The variable array](#the-variable-array)
     - [The Logger Object](#the-logger-object)
-    - [Data Publisher](#data-publisher)
+    - [Data Publishers](#data-publishers)
+      - [Monitor My Watershed](#monitor-my-watershed)
+      - [DreamHost](#dreamhost)
+      - [ThingSpeak](#thingspeak)
   - [Extra Working Functions](#extra-working-functions)
   - [Arduino Setup Function](#arduino-setup-function)
     - [Starting the Function](#starting-the-function)
@@ -557,11 +560,37 @@ Now that we've created the array, we can actually create the #Logger object.
 ___
 
 [//]: # ( @subsection menu_data_publisher Data Publisher )
-### Data Publisher
+### Data Publishers
 
-Finally, create a #dataPublisher to the [Monitor My Watershed / EnviroDIY Data Sharing Portal.](http://monitormywatershed.org/)
+Here we set up all three possible data publisers and link all of them to the same Logger object.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino publishers )
+[//]: # ( @subsubsection menu_mmw_publisher Monitor My Watershed )
+#### Monitor My Watershed
+
+To publish data to the Monitor My Watershed / EnviroDIY Data Sharing Portal first you must register yourself as a user at https://monitormywatershed.org or https://data.envirodiy.org.
+Then you must register your site.
+After registering your site, a sampling feature and registration token for that site should be visible on the site page.
+
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino monitormw )
+___
+
+[//]: # ( @subsubsection menu_dh_publisher DreamHost )
+#### DreamHost
+
+It is extrmemly unlikely you will use this.
+You should ignore this section.
+
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino dreamhost )
+___
+
+[//]: # ( @subsubsection menu_thingspeak_publisher ThingSpeak )
+#### ThingSpeak
+
+After you have set up channels on ThingSpeak, you can use this code to publish your data to it.
+
+Keep in mind that the order of variables in the VariableArray is **crucial** when publishing to ThingSpeak.
+
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino dreamhost )
 ___
 
 [//]: # ( @section menu_working Extra Working Functions )

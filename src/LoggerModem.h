@@ -8,8 +8,6 @@
  * Modem_RSSI, Modem_SignalPercent, Modem_BatteryState, Modem_BatteryPercent,
  * and Modem_BatteryVoltage - all of which are implemented as "calculated"
  * variables.
- *
- * @copydetails #loggerModem
  */
 
 // Header Guards
@@ -94,8 +92,7 @@ class loggerModem {
      * @param max_status_time_ms @copybrief loggerModem::_statusTime_ms
      * @param max_disconnetTime_ms @copybrief loggerModem::_disconnetTime_ms
      * @param wakeDelayTime_ms @copybrief loggerModem::_wakeDelayTime_ms
-     * @param max_atresponse_time_ms @copybrief
-     * loggerModem::_max_atresponse_time_ms
+     * @param max_atresponse_time_ms @copybrief #_max_atresponse_time_ms
      *
      * @see @ref modem_ctor_variables
      */

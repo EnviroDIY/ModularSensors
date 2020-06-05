@@ -9,8 +9,6 @@
  * Code for this is taken from the Adafruit SleepyDog library:
  * https://github.com/adafruit/Adafruit_SleepyDog/ and this library:
  * https://github.com/javos65/WDTZero
- *
- * @copydetails extendedWatchDogSAMD
  */
 
 // Header Guards
@@ -28,22 +26,57 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
+/**
+ * @brief ISR handler for watchdog timer early warning (WDT EW ) interrupt
+ */
+void WDT_Handler(void);
 
-void WDT_Handler(void);  // ISR HANDLER FOR WDT EW INTERRUPT
-
+/**
+ * @brief The extendedWatchDogSAMD class uses the early warning interrupt to of
+ * the built in SAMD watchdog to extend the allowable time between resets of the
+ * watchdog's clock up to multiple minute timescales.
+ *
+ * Code for this is taken from the Adafruit SleepyDog library:
+ * https://github.com/adafruit/Adafruit_SleepyDog/ and this library:
+ * https://github.com/javos65/WDTZero
+ */
 class extendedWatchDogSAMD {
  public:
-    // Constructor
+    /**
+     * @brief Construct a new extended watch dog object for SAMD processors.
+     */
     extendedWatchDogSAMD();
+    /**
+     * @brief Destroy the extended watch dog object for SAMD processors.
+     */
     ~extendedWatchDogSAMD();
 
-    // One-time initialization of watchdog timer.
+    /**
+     * @brief One-time initialization of watchdog timer.
+     *
+     * @param resetTime_s The length of time in seconds between resets of the
+     * watchdog before the entire board is reset.
+     */
     void setupWatchDog(uint32_t resetTime_s);
+    /**
+     * @brief Enable the watchdog.
+     */
     void enableWatchDog();
+    /**
+     * @brief Disable the watchdog.
+     */
     void disableWatchDog();
 
+    /**
+     * @brief Reset the watchdog's clock to prevent the board from resetting.
+     */
     void resetWatchDog();
 
+
+    /**
+     * @brief The number of times the pre-reset interrupt is allowed to fire
+     * before the watchdog reset is allowed.
+     */
     static volatile uint32_t _barksUntilReset;
 
  private:

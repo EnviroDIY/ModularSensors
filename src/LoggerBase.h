@@ -8,8 +8,6 @@
  *
  * Basic logger functions include communicating with a real-time clock, saving
  * to an SD card, and publishing data to remotes via a loggerModem connection.
- *
- * @copydetails #Logger
  */
 
 // Header Guards
@@ -80,6 +78,10 @@ class dataPublisher;  // Forward declaration
  * boards.
  */
 class Logger {
+    /**
+     * @brief The dataPublisher class contains endpoints for logged data and the
+     * proper formats for sending it.
+     */
     friend class dataPublisher;
 
  public:
