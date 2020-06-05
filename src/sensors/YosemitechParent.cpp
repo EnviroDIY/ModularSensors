@@ -268,7 +268,9 @@ bool YosemitechParent::addSingleMeasurementResult(void) {
                 MS_DBG(F("  Temp:"), tempValue);
 
                 // Not all sensors return a third value
-                if (_numReturnedVars > 2) { MS_DBG(F("  Third:"), thirdValue); }
+                if (_numReturnedValues > 2) {
+                    MS_DBG(F("  Third:"), thirdValue);
+                }
 
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, parmValue);

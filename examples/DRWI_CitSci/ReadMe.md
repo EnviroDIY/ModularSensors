@@ -7,16 +7,19 @@ Before programming your board with this example, you must register your site and
 
 _______
 
+[//]: # ( @section drwi_2g_use To Use this Example: )
 ## To Use this Example:
 
-#### Prepare and set up PlatformIO
-- Register a site and sensors at the WikiWatershed/EnviroDIY data portal (http://monitormywatershed.org/)
+[//]: # ( @subsection drwi_2g_pio Prepare and set up PlatformIO )
+## Prepare and set up PlatformIO
+- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
     - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.  Without this, the program won't compile or send data.
 - Download logging_to_EnviroDIY.ino and put it into the src directory of your project.  Delete main.cpp in that folder.
 
-#### Set the logger ID
+[//]: # ( @subsection drwi_2g_logger_id Set the logger ID )
+## Set the logger ID
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
@@ -24,7 +27,8 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-#### Set the calibration coefficients for the Campbell OBS3+
+[//]: # ( @subsection drwi_2g_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
+## Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change _**all**_ of the the ```0.000E+00``` and ```1.000E+00``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
     - The sketch will not compile if these values are not entered properly.
@@ -52,8 +56,9 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-#### Set the universally universal identifiers (UUID) for each variable
-- Go back to the web page for your site at the WikiWatershed/EnviroDIY data portal (http://monitormywatershed.org/)
+[//]: # ( @subsection drwi_2g_uuids Set the universally universal identifiers (UUID) for each variable )
+## Set the universally universal identifiers (UUID) for each variable
+- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
 - **VERY CAREFULLY** check that the variables are in exactly the same order as in the variable array:
 
@@ -89,5 +94,6 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 ```
 
-#### Upload!
+[//]: # ( @subsection drwi_2g_upload Upload! )
+## Upload!
 - Test everything at home **before** deploying out in the wild!

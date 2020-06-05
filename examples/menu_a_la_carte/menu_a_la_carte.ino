@@ -196,7 +196,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 //  Wifi/Cellular Modem Settings
 // ==========================================================================
 /** Start [modem_pins] */
-/// Create a reference to the serial port for the modem
+// Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
@@ -2033,11 +2033,11 @@ void loop() {
         // Turn on the modem to let it start searching for the network
         // Only turn the modem on if the battery at the last interval was high
         // enough
-            // NOTE:  if the modemPowerUp function is not run before the
+        // NOTE:  if the modemPowerUp function is not run before the
         // completeUpdate
-            // function is run, the modem will not be powered and will not
-            // return a signal strength reading.
-            if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
+        // function is run, the modem will not be powered and will not
+        // return a signal strength reading.
+        if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
 
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated

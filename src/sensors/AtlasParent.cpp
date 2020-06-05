@@ -149,7 +149,7 @@ bool AtlasParent::addSingleMeasurementResult(void) {
         }
         // If the response code is successful, parse the remaining results
         if (success) {
-            for (uint8_t i = 0; i < _numReturnedVars; i++) {
+            for (uint8_t i = 0; i < _numReturnedValues; i++) {
                 float result = Wire.parseFloat();
                 if (isnan(result)) result = -9999;
                 if (result < -1020) result = -9999;
@@ -161,7 +161,7 @@ bool AtlasParent::addSingleMeasurementResult(void) {
         // If there's no measurement, need to make sure we send over all
         // of the "failed" result values
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-        for (uint8_t i = 0; i < _numReturnedVars; i++) {
+        for (uint8_t i = 0; i < _numReturnedValues; i++) {
             verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
         }
     }

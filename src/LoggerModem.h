@@ -29,33 +29,47 @@
 #include <Arduino.h>
 
 /**
- * @brief RSSI is a rough calculation, so it has 0 decimal place resolution
+ * @brief Decimals places in string representation; RSSI should have 0.
+ *
+ * RSSI is a rough calculation, so it has 0 decimal place resolution
  */
-#define MODEM_RSSI_RESOLUTION 0
+#define MODEM_RSSI_RESOLUTION 0.
 /**
- * @brief Percent signal is a rough calculation, so it has 0 decimal place
- * resolution
+ * @brief Decimals places in string representation; percent signal should have
+ * 0.
+ *
+ * Percent signal is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_PERCENT_SIGNAL_RESOLUTION 0
 /**
- * @brief Battery state is a code value; it has 0 decimal place resolution
+ * @brief Decimals places in string representation; battery state should have 0.
+ *
+ * Battery state is a code value; it has 0 decimal place resolution
  */
 #define MODEM_BATTERY_STATE_RESOLUTION 0
 /**
- * @brief 0 decimal place resolution for battery percent
+ * @brief Decimals places in string representation; battery charge percent
+ * should have 0.
  */
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
 /**
- * @brief 0 decimal place resolution for battery voltage in mV (max resolution
- * of all modules)
+ * @brief Decimals places in string representation; battery voltage should have
+ * 0.
+ *
+ * No module has higher than 1mV resolution in battery reading.
  */
 #define MODEM_BATTERY_VOLT_RESOLUTION 0
 /**
- * @brief Most modules that can measure temperature measure to 0.1°C
+ * @brief Decimals places in string representation; temperature should
+ * have 1.
+ *
+ * Most modules that can measure temperature measure to 0.1°C
  */
-#define MODEM_TEMPERATURE_RESOLUTION 1
-// #define MODEM_ACTIVATION_RESOLUTION 3
-// #define MODEM_POWERED_RESOLUTION 3
+#define MODEM_TEMPERATURE_RESOLUTION 1.
+/// Decimals places in string representation; total active time should have 3.
+#define MODEM_ACTIVATION_RESOLUTION 3.
+/// Decimals places in string representation; total powered time should have 3.
+#define MODEM_POWERED_RESOLUTION 3.
 
 /* ===========================================================================
  * Functions for the modem class

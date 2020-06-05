@@ -15,6 +15,12 @@
  * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  *
  * @copydetails ApogeeSQ212
+ *
+ * @defgroup sq212_group AOSong AM2315
+ * The Sensor and Variable objects for the AOSong AM2315 capacitive humidity and
+ * temperature sensor.
+ *
+ * @copydetails ApogeeSQ212
  */
 
 // Header Guards
@@ -35,28 +41,35 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-#define ADS1115_ADDRESS 0x48
-// 1001 000 (ADDR = GND)
-
+/// Sensor::_numReturnedValues; the SQ212 can report 2 values.
 #define SQ212_NUM_VARIABLES 2
 // Using the warm-up time of the ADS1115
+/// Sensor::_warmUpTime_ms; SQ212 warms up in 2ms.
 #define SQ212_WARM_UP_TIME_MS 2
 // These times are not known!
+/// Sensor::_stabilizationTime_ms; SQ212 is stable after 2ms.
 #define SQ212_STABILIZATION_TIME_MS 2
+/// Sensor::_measurementTime_ms; SQ212 takes 2ms to complete a measurement.
 #define SQ212_MEASUREMENT_TIME_MS 2
 
+/// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-#define SQ212_PAR_RESOLUTION 0
+/// Decimals places in string representation; PAR should have 0.
+#define SQ212_PAR_RESOLUTION 0.
 #else
-#define SQ212_PAR_RESOLUTION 4
+/// Decimals places in string representation; PAR should have 4.
+#define SQ212_PAR_RESOLUTION 4.
 #endif
 
+/// Variable number; VOLTAGE is stored in sensorValues[1].
 #define SQ212_VOLTAGE_VAR_NUM 1
 #ifdef MS_USE_ADS1015
-#define SQ212_VOLT_RESOLUTION 1
+/// Decimals places in string representation; VOLT should have 1.
+#define SQ212_VOLT_RESOLUTION 1.
 #else
-#define SQ212_VOLT_RESOLUTION 4
+/// Decimals places in string representation; VOLT should have 4.
+#define SQ212_VOLT_RESOLUTION 4.
 #endif
 
 /**
@@ -69,23 +82,27 @@
  * m-2 s-1, equal to microEinsteins per square meter per second) summed from 400
  * to 700 nm.
  *
+ * Technical specifications for the Apogee SQ-212 can be found at:
+ * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
+ *
+ * Required power supply: 5-24 V DC with a nominal current draw of 300 μA
+ *
+ * Timing:
+ *     - Response time: < 1ms
+ *     - Resample time: max of ADC (860/sec)
+ *
  * For photosynthetically active radiation (PAR):
  *   @copydetails ApogeeSQ212_PAR
  *
  * For raw voltage as reported by ADS1x15:
  *   @copydetails ApogeeSQ212_Voltage
  *
- * Technical specifications for the Apogee SQ-212 can be found at:
- * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
+ * @ingroup sq212_group
  *
- * Power supply: 5-24 V DC with a nominal current draw of 300 μA
- *
- * Response time: < 1ms
- * Resample time: max of ADC (860/sec)
+ * @see sq212_page
  */
 class ApogeeSQ212 : public Sensor {
  public:
-    // The constructor - need the power pin and the data channel on the ADS1x15
     /**
      * @brief Construct a new Apogee SQ-212 object - need the power pin and the
      * data channel on the ADS1x15
@@ -94,11 +111,11 @@ class ApogeeSQ212 : public Sensor {
      * SQ-212.  Use -1 if the sensor is continuously powered.
      * @param adsChannel The ACS channel the Apogee SQ-212 is connected to
      * (0-3).
-     * @param i2cAddress The I2C address of the ADS 1x15, defaults to 0x48.
+     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
+     * = GND)
      * @param measurementsToAverage
      */
-    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
-                uint8_t i2cAddress            = ADS1115_ADDRESS,
+    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel, uint8_t i2cAddress = 0x48,
                 uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ApogeeSQ212 object - no action needed
@@ -134,7 +151,10 @@ class ApogeeSQ212 : public Sensor {
  *     - 16-bit ADC: 0.3125 µmol m-2 s-1 (ADS1115)
  *     - 12-bit ADC: 5 µmol m-2 s-1 (ADS1015)
  *   - Reported as microeinsteins per square meter per second
- *   - Result stored as sensorValues[0]
+ *   - Result stored in sensorValues[0]
+ *   - Default variable code is radiationIncomingPAR
+ *
+ * @ingroup sq212_group
  */
 class ApogeeSQ212_PAR : public Variable {
  public:
@@ -182,7 +202,10 @@ class ApogeeSQ212_PAR : public Variable {
  *     - 16-bit ADC: 0.125 mV (ADS1115)
  *     - 12-bit ADC: 2 mV (ADS1015)
  *   - Reported as volts
- *   - Result stored as sensorValues[1]
+ *   - Result stored in sensorValues[1]
+ *   - Default variable code is SQ212Voltage
+ *
+ * @ingroup sq212_group
  */
 class ApogeeSQ212_Voltage : public Variable {
  public:

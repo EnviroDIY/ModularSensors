@@ -415,7 +415,7 @@ class Sensor {
     /**
      * @brief The number of values the sensor is capable of reporting.
      */
-    const uint8_t _numReturnedVars;
+    const uint8_t _numReturnedValues;
     /**
      * @brief The number of measurements from the sensor to average.
      *

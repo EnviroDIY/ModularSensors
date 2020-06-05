@@ -302,7 +302,7 @@ bool SDI12Sensors::startSingleMeasurement(void) {
 
     // Verify the number of results the sensor will send
     // uint8_t numVariables = sdiResponse.substring(4).toInt();
-    // if (numVariables != _numReturnedVars)
+    // if (numVariables != _numReturnedValues)
     // {
     //     MS_DBG(numVariables, F("results expected"),
     //            F("This differs from the sensor's standard design of"),
@@ -361,7 +361,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
         MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
         _SDI12Internal.read();  // ignore the repeated SDI12 address
-        for (uint8_t i = 0; i < _numReturnedVars; i++) {
+        for (uint8_t i = 0; i < _numReturnedValues; i++) {
             float result = _SDI12Internal.parseFloat();
             // The SDI-12 library should return -9999 on timeout
             if (result == -9999 || isnan(result)) result = -9999;
@@ -385,7 +385,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         // If there's no measurement, need to make sure we send over all
         // of the "failed" result values
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-        for (uint8_t i = 0; i < _numReturnedVars; i++) {
+        for (uint8_t i = 0; i < _numReturnedValues; i++) {
             verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
         }
     }
