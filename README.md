@@ -13,7 +13,7 @@ This version of the ModularSensors library is a rugged solar powered wireless da
 ## New for this fork   
 * Adds geographically scaling for multiple loggers using the same program/binays. It does with a  custome ms_cfg.ini configuration file on the SD memory card
 * Adds electronic configuration information to the Mayfly board, so that the readings can be traced to specific mayfly at a specific geographical loction.
-* Manages the available battery power, with best management practices for power demand management. One option is the LiIon with a solar panel. Another option is standalone, no solar panel capability
+* Manages the available battery power, with best management practices for power demand management. One option is the LiIon rechargeable battery + solar panel. Another option is standalone, no solar panel capability. Confgiruable in the ms_cfg.ini
 * Tested for ruggedness/reliability with the Xbee LTE & WiFi S6 modules.
 * prebuilt hex files at https://github.com/neilh10/ms_releases/wiki
 * Specific development stream in ModularSensors\a\.. directories (Mayfly and other ARM SAMDx boards)   
