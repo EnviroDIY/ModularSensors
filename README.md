@@ -4,11 +4,11 @@
 
 This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly. 
 This version of the ModularSensors library is a rugged solar powered wireless data logger, that:
-* Based in the riparian corridor
+* Is based in the riparian zone
 * Polls local physical sensors
-* Supports Modbus/12V Sensors through an  Wingboard 
-* Stores the readings to a SD memory card;
+* Supports Modbus/12V Sensors through a Wingboard 
 * Transmit that data wirelessly to a web server; and
+* Stores the readings to a SD memory card;
 * powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
 ## New for this fork   
 * Adds geographically scaling for multiple loggers using the same program/binays. It does with a  custome ms_cfg.ini configuration file on the SD memory card
@@ -18,7 +18,7 @@ This version of the ModularSensors library is a rugged solar powered wireless da
 * prebuilt hex files at https://github.com/neilh10/ms_releases/wiki
 * Specific development stream in ModularSensors\a\.. directories (Mayfly and other ARM SAMDx boards)   
 
-To use, from platformio.ini open folder ModularSensors\a\<select a folder> - and press icon "Build" (the tick mark)   
+To use, from the IDE Platformio (platformio.org) open folder ModularSensors\a\<select a folder> - and press icon "Build" (the tick mark), then download to the target.   
 tbd - download a prebuilt image   
 This is an open source fork of https://github.com/EnviroDIY/ModularSensors   
 EnviroDIY/ModularSensors is a comprehensive package that covers a number of boards and example usages. Its the recommended starting point for anybody new to ModularSensors, its assumed you read the excellent https://github.com/EnviroDIY/ModularSensors/blob/master/README.md
