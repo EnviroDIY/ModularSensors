@@ -111,7 +111,8 @@
           the pin modes in the wake function. */                               \
         setModemPinModes();                                                    \
                                                                                \
-        MS_DBG(F("Wait"), _wakeDelayTime_ms, F("for warm-up"));                \
+        MS_DBG(F("Wait"), _wakeDelayTime_ms - (millis() - _millisPowerOn),     \
+               F("ms longer for warm-up"));                                    \
         while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}               \
                                                                                \
         if (isModemAwake()) {                                                  \
@@ -248,20 +249,49 @@
  * @return The text of a connectInternet(uint32_t maxConnectionTime) function
  * specific to a single modem subclass.
  */
-#define MS_MODEM_CONNECT_INTERNET(specificModem)                      \
-    bool specificModem::connectInternet(uint32_t maxConnectionTime) { \
-        MS_START_DEBUG_TIMER                                          \
-        MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,        \
-               F("seconds for cellular network registration..."));    \
-        if (gsmModem.waitForNetwork(maxConnectionTime)) {             \
-            MS_MODEM_SET_APN                                          \
-            MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,    \
-                   F("milliseconds."));                               \
-            return true;                                              \
-        } else {                                                      \
-            MS_DBG(F("...GPRS connection failed."));                  \
-            return false;                                             \
-        }                                                             \
+#define MS_MODEM_CONNECT_INTERNET(specificModem)                             \
+    bool specificModem::connectInternet(uint32_t maxConnectionTime) {        \
+        bool success = true;                                                 \
+                                                                             \
+        /** Power up, if necessary */                                        \
+        bool wasPowered = true;                                              \
+        if (_millisPowerOn == 0) {                                           \
+            modemPowerUp();                                                  \
+            wasPowered = false;                                              \
+        }                                                                    \
+                                                                             \
+        /** Check if the modem was awake, wake it if not */                  \
+        bool wasAwake = isModemAwake();                                      \
+        if (!wasAwake) {                                                     \
+            while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}         \
+            MS_DBG(F("Waking up the modem to connect to the internet ...")); \
+            success &= modemWake();                                          \
+        } else {                                                             \
+            MS_DBG(F("Modem was already awake and should be ready."));       \
+        }                                                                    \
+                                                                             \
+        if (success) {                                                       \
+            MS_START_DEBUG_TIMER                                             \
+            MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,           \
+                   F("seconds for cellular network registration..."));       \
+            if (gsmModem.waitForNetwork(maxConnectionTime)) {                \
+                MS_MODEM_SET_APN                                             \
+                MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,       \
+                       F("milliseconds."));                                  \
+                success = true;                                              \
+            } else {                                                         \
+                MS_DBG(F("...GPRS connection failed."));                     \
+                success = false;                                             \
+            }                                                                \
+        }                                                                    \
+        if (!wasPowered) {                                                   \
+            MS_DBG(F("Modem was powered to connect to the internet!  "       \
+                     "Remember to turn it off when you're done."));          \
+        } else if (!wasAwake) {                                              \
+            MS_DBG(F("Modem was woken up to connect to the internet!   "     \
+                     "Remember to put it to sleep when you're done."));      \
+        }                                                                    \
+        return success;                                                      \
     }
 
 /**

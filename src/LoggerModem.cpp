@@ -31,13 +31,13 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     : _powerPin(powerPin), _statusPin(statusPin), _statusLevel(statusLevel),
       _modemResetPin(modemResetPin), _resetLevel(resetLevel),
       _resetPulse_ms(resetPulse_ms), _modemSleepRqPin(modemSleepRqPin),
-      _wakeLevel(wakeLevel), _wakePulse_ms(wakePulse_ms), _modemLEDPin(-1),
+      _wakeLevel(wakeLevel), _wakePulse_ms(wakePulse_ms),
       _statusTime_ms(max_status_time_ms),
       _disconnetTime_ms(max_disconnetTime_ms),
       _wakeDelayTime_ms(wakeDelayTime_ms),
-      _max_atresponse_time_ms(max_atresponse_time_ms), _millisPowerOn(0),
-      _lastNISTrequest(0), _hasBeenSetup(false), _pinModesSet(false),
-      _modemName("unspecified modem") {}
+      _max_atresponse_time_ms(max_atresponse_time_ms), _modemLEDPin(-1),
+      _millisPowerOn(0), _lastNISTrequest(0), _hasBeenSetup(false),
+      _pinModesSet(false), _modemName("unspecified modem") {}
 
 
 // Destructor

@@ -36,6 +36,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"
+#undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
