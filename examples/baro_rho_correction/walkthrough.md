@@ -77,7 +77,7 @@ ___
 Here we set options for the logging and dataLogger object.
 This includes setting the time zone (daylight savings time is **NOT** applied) and setting all of the input and output pins related to the logger.
 
-[//]: # ( @snippet{lineno} baro_rho_correction.ino logger_settings )
+[//]: # ( @snippet{lineno} baro_rho_correction.ino logging_options )
 ___
 
 

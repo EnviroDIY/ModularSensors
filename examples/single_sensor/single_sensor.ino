@@ -36,7 +36,7 @@
 // Board setup info
 // ==========================================================================
 /** Start [sketch_info] */
-// The name of this file
+// The name of this program file
 const char* sketchName = "single_sensor.ino";
 
 const long   serialBaud = 115200;  // Baud rate for debugging

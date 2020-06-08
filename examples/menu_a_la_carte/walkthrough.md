@@ -28,7 +28,7 @@ ___
   - [Wifi/Cellular Modem Settings](#wificellular-modem-settings)
     - [Modem Pins](#modem-pins)
     - [Network Settings](#network-settings)
-    - [Specific Module Settings](#specific-module-settings)
+    - [Creating the loggerModem object](#creating-the-loggermodem-object)
       - [Digi XBee Cellular - Transparent Mode](#digi-xbee-cellular---transparent-mode)
       - [Digi XBee3 LTE-M - Bypass Mode](#digi-xbee3-lte-m---bypass-mode)
       - [Digi XBee 3G - Bypass Mode](#digi-xbee-3g---bypass-mode)
@@ -179,6 +179,7 @@ If you only want to use the serial line for incoming or outgoing data, set the o
 
 When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](@ref menu_setup_serial_interrupts).
 
+---
 
 [//]: # ( @subsubsection menu_samd_serial_ports SAMD Boards )
 #### SAMD Boards
@@ -197,6 +198,7 @@ This is shown in the [SAMD Pin Peripherals section](@ref menu_setup_pin_periph) 
 
 NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have any exmple code for using them.
 
+---
 
 [//]: # ( @subsection menu_logger_opts Logging Options )
 ### Logging Options
@@ -204,19 +206,22 @@ NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have
 Here we set options for the logging and dataLogger object.
 This includes setting the time zone (daylight savings time is **NOT** applied) and setting all of the input and output pins related to the logger.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino logger_settings )
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino logging_options )
 ___
 
 
 [//]: # ( @section menu_modem_settings Wifi/Cellular Modem Settings )
 ## Wifi/Cellular Modem Settings
 
-[//]: # ( @subsection menu_modem_pins Modem Pins )
+[//]: # ( @subsection menu_modem_serial Modem Pins )
 ### Modem Pins
 
 First, we'll assign all the physical connection information for the modem, the pin numbers and the serial port.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino modem_pins )
+There are tables with the default baud rates and proper pins to use for many different module on the @ref modem_notes_page page.
+Pins that do not apply should be set as -1.
+
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino modem_serial )
 
 [//]: # ( @subsection menu_network_setting Network Settings )
 ### Network Settings
@@ -231,9 +236,9 @@ The security is assumed to be WPA2.
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino network_info )
 
 
-[//]: # ( @subsection menu_specific_modems Specific Module Settings )
-### Specific Module Settings
-This modem section is very lengthy because it contains the code for every possible supported modem module.
+[//]: # ( @subsection menu_specific_modems Creating the loggerModem object )
+### Creating the loggerModem object
+This modem section is very lengthy because it contains the code with the constructor for every possible supported modem module.
 Do _NOT_ try to use more than one modem at a time - it will _NOT_ work.
 
 
@@ -242,9 +247,16 @@ Do _NOT_ try to use more than one modem at a time - it will _NOT_ work.
 
 This is the code to use for _any_ of Digi's cellular XBee or XBee3 modules.
 All of them can be implented as a DigiXBeeCellularTransparent object - a subclass of DigiXBee and loggerModem.
-To create a DigiXBeeCellularTransparent object we need to know the serial port, the MCU pin controlling modem power, the MCU pin connected to the status pin, whether the status pin is the "true" status pin (`ON/SLEEP_N/DIO9`) or the `CTS_N/DIO7` pin, the reset pin, the sleep/DTR pin, and the SIM card's cellular access point name (APN).
+To create a DigiXBeeCellularTransparent object we need to know
+- the serial object name,
+- the MCU pin controlling modem power,
+- the MCU pin connected to the status pin,
+- whether the status pin is the true status pin (`ON/SLEEP_N/DIO9`) or the `CTS_N/DIO7` pin,
+- the MCU pin connected to the `RESET_N`pin,
+- the `DTR_N/SLEEP_RQ/DIO8` pin,
+- and the SIM card's cellular access point name (APN).
 
-NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) may be more stable used in bypass mode (below).
+@note  The u-blox based Digi XBee's (3G global and LTE-M global) may be more stable used in bypass mode (below).
 The Telit based Digi XBees (LTE Cat1 both Verizon and AT&T) can only use this mode.
 
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino xbee_cell_transparent )
@@ -425,7 +437,7 @@ To create a Sodaq2GBeeR6 object we need to know
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
-The GPRSBee R6/R7 does not expose the `RESET` pin or the `STATUS` pin of the SIM800.
+The GPRSBee R6/R7 does not expose the `RESET` pin of the SIM800.
 The `PWRKEY` is held `LOW` as long as the SIM800 is powered (as mentioned above).
 
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino gprsbee )
@@ -536,7 +548,7 @@ ___
 Create new #Variable objects calculated from the measured variables.
 For these calculate variables, we must not only supply a function for the calculation, but also all of the metadata about the variable - like the name of the variable and its units.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino calculated_corrected_depth )
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino calculated_variables )
 ___
 
 [//]: # ( @section menu_create_objs Creating the array, logger, publishers )

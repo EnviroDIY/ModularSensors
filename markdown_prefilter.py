@@ -3,7 +3,11 @@ import fileinput, re
 
 print_me = True
 skip_me = False
+i = 1
+# for line in fileinput.input(openhook=fileinput.hook_encoded("utf-8", "surrogateescape")):
 for line in fileinput.input():
+    # print(i, print_me, skip_me, line)
+
     # Remove markdown comment tags from doxygen commands within the markdown
     if print_me and not skip_me:
         print(re.sub(r'\[//\]: # \( @(\w+?.*) \)', r'@\1', line), end="")
@@ -22,6 +26,8 @@ for line in fileinput.input():
         skip_me = True;
     if re.match(r'\[//\]: # \( @.*section', line) is not None:
         skip_me = True;
+    if re.match(r'\[//\]: # \( @paragraph', line) is not None:
+        skip_me = True;
 
     # I'm using these comments to fence off content that is only intended for
     # github mardown rendering
@@ -30,3 +36,5 @@ for line in fileinput.input():
 
     if "[//]: # ( End GitHub Only )" in line:
         print_me = True
+
+    i += 1

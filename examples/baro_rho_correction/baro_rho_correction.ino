@@ -51,10 +51,10 @@
 
 
 // ==========================================================================
-//  Data Logger Settings
+//  Data Logging Options
 // ==========================================================================
-/** Start [logger_settings] */
-// The name of this file
+/** Start [logging_options] */
+// The name of this program file
 const char* sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
@@ -76,7 +76,7 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-/** End [logger_settings] */
+/** End [logging_options] */
 
 
 // ==========================================================================
