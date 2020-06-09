@@ -78,6 +78,8 @@
 /// Variable number; power draw is stored in sensorValues[2].
 #define INA219_POWER_MW_VAR_NUM 2
 
+#define INA219_ADDRESS_BASE 0x40
+
 // The main class for the TexasInstruments INA219
 class TIINA219 : public Sensor {
  public:
