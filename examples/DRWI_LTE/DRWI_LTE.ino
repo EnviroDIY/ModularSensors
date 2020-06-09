@@ -78,35 +78,36 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [modem_settings] */
-// Create a reference to the serial port for the modem
-HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-
-// Modem Pins - Describe the physical pin connection of your modem to your board
-// NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin     = -2;  // MCU pin controlling modem power
-const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
-const int8_t modemResetPin   = 20;  // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
-                                    // status (-1 if unconnected)
-
-// Network connection information
-const char* apn = "hologram";  // The APN for the gprs connection
-
+/** Start [xbee_cell_transparent] */
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
 // are more stable used in bypass mode (below)
 // The Telit based Digi XBees (LTE Cat1) can only use this mode.
 #include <modems/DigiXBeeCellularTransparent.h>
-const long modemBaud       = 9600;   // All XBee's use 9600 by default
+
+// Create a reference to the serial port for the modem
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
+const long      modemBaud   = 9600;     // All XBee's use 9600 by default
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+const int8_t modemVccPin    = -2;    // MCU pin controlling modem power
+const int8_t modemStatusPin = 19;    // MCU pin used to read modem status
 const bool useCTSforStatus = false;  // Flag to use the modem CTS pin for status
+const int8_t modemResetPin = 20;     // MCU pin connected to modem reset pin
+const int8_t modemSleepRqPin = 23;   // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
+                                     // status (-1 if unconnected)
+
+// Network connection information
+const char* apn = "hologram";  // The APN for the gprs connection
+
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       useCTSforStatus, modemResetPin,
                                       modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
-/** End [modem_settings] */
+/** End [xbee_cell_transparent] */
 
 
 // ==========================================================================

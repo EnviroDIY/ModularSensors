@@ -524,6 +524,8 @@ In addition to the time, we can also use the required DS3231 real time clock to 
 This temperature is _not_ equivalent to an environmental temperature measurement and should only be used to as a diagnostic.
 As above, we create both the sensor and the variables measured by it.
 
+@see @ref ds3231_page
+
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino ds3231 )
 ___
 

@@ -12,14 +12,10 @@
  *
  * This depends on the EnviroDIY DS3231 library.
  *
- * For temperature from the DS3231:
- *  Resolution is 0.25°C
- *  Accuracy is ±3°C
- *  Range is 0°C to +70°C
+ * @defgroup ds3231_group xxxx
+ * Classes for the @ref ds3231_page
  *
- * The clock should have a separate power supply and never be turned off.
- * We assume it's always warmed up and stable.
- * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
+ * @copydoc ds3231_page
  */
 
 // Header Guards
@@ -58,16 +54,35 @@
 #define DS3231_TEMP_VAR_NUM 0
 
 
-// The "Main" class for the DS3231
-// Only need a sleep and wake since these DON'T use the default of powering up
-// and down
+/**
+ * @brief The main class for the DS3231 used as a sensor
+ *
+ * Only need a sleep and wake since these DON'T use the default of powering up
+ * and down
+ *
+ * @ingroup ds3231_group
+ *
+ * @see @ref ds3231_page
+ *
+ */
 class MaximDS3231 : public Sensor {
  public:
-    // Only input is the number of readings to average
+    /**
+     * @brief Construct a new Maxim DS3231 object
+     *
+     * @param measurementsToAverage The number of readings to average, default
+     * of 1
+     */
     explicit MaximDS3231(uint8_t measurementsToAverage = 1);
-    // Destructor
+    /**
+     * @brief Destroy the Maxim DS3231 object
+     *
+     */
     ~MaximDS3231();
 
+    /**
+     * @copydoc Sensor::getSensorLocation()
+     */
     String getSensorLocation(void) override;
 
     /**
@@ -84,11 +99,33 @@ class MaximDS3231 : public Sensor {
      */
     bool setup(void) override;
 
+    /**
+     * @brief Tell the sensor to start a single measurement, if needed.
+     *
+     * This also sets the #_millisMeasurementRequested timestamp.
+     *
+     * @note This function does NOT include any waiting for the sensor to be
+     * warmed up or stable!
+     *
+     * @return **true** The start measurement function completed successfully.
+     * @return **false** The start measurement function did not complete
+     * successfully.
+     */
     bool startSingleMeasurement(void) override;
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 };
 
 
+/**
+ * @brief The variable class used for temperature measured by a DS3231.
+ *
+ * @ingroup ds3231_group
+ *
+ * @see @ref ds3231_page
+ */
 class MaximDS3231_Temp : public Variable {
  public:
     /**
