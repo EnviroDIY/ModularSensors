@@ -15,7 +15,7 @@ ___
     - [Library Includes](#library-includes)
   - [Logger and Modem Settings](#logger-and-modem-settings)
     - [Logging Options](#logging-options)
-    - [Wifi/Cellular Modem Settings](#wificellular-modem-settings)
+    - [Wifi/Cellular Modem Options](#wificellular-modem-settings)
   - [Sensors and Measured Variables](#sensors-and-measured-variables)
     - [The processor as a sensor](#the-processor-as-a-sensor)
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
@@ -81,8 +81,8 @@ This includes setting the time zone (daylight savings time is **NOT** applied) a
 ___
 
 
-[//]: # ( @subsection baro_rho_modem_settings Wifi/Cellular Modem Settings )
-### Wifi/Cellular Modem Settings
+[//]: # ( @subsection baro_rho_modem_settings Wifi/Cellular Modem Options )
+### Wifi/Cellular Modem Options
 
 Now set up the modem and the internet connection options.
 This examples is using a Sodaq GPRSBee R6 or R7.

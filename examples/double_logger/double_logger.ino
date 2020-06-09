@@ -62,7 +62,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
-//  Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Options
 // ==========================================================================
 /** Start [modem_settings] */
 // Create a reference to the serial port for the modem
