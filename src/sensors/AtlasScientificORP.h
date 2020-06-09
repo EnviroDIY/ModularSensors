@@ -11,6 +11,11 @@
  * These are used for any sensor attached to an Atlas EZO ORP circuit.
  *
  * @copydetails AtlasScientificORP
+ *
+ * @defgroup atlas_orp_group Atlas Scientific ORP circuit
+ * The Sensor and Variable objects for the Atlas EZO ORP circuit
+ *
+ * @copydetails AtlasScientificORP
  */
 
 // Header Guards
@@ -24,18 +29,30 @@
 /**
  * @brief Default I2C address is 0x62 (98)
  */
-#define ATLAS_ORP_I2C_ADDR 0x62  // 98
+#define ATLAS_ORP_I2C_ADDR 0x62
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the Atlas EZO ORP circuit can report 1 value.
 #define ATLAS_ORP_NUM_VARIABLES 1
 
-#define ATLAS_ORP_WARM_UP_TIME_MS 850  // 846 in SRGD tests
+/// Sensor::_warmUpTime_ms; the Atlas EZO ORP circuit warms up in 850ms (846 in
+/// SRGD tests).
+#define ATLAS_ORP_WARM_UP_TIME_MS 850
+/// Sensor::_stabilizationTime_ms; the Atlas EZO ORP circuit is stable 0ms
+/// after warm-up.
 #define ATLAS_ORP_STABILIZATION_TIME_MS 0
-// NOTE:  Manual says measurement takes 900 ms, but in SRGD tests, no result was
-// available until 1577 ms
+/**
+ * @brief Sensor::_measurementTime_ms; the Atlas EZO ORP circuit takes
+ * 1580ms to complete a measurement.
+ *
+ * @note  Manual says measurement takes 900 ms, but in SRGD tests, no result was
+ * available until after 1577 ms.
+ */
 #define ATLAS_ORP_MEASUREMENT_TIME_MS 1580
 
+/// Decimals places in string representation; ORP should have 1.
 #define ATLAS_ORP_RESOLUTION 1
+/// Variable number; ORP is stored in sensorValues[0].
 #define ATLAS_ORP_VAR_NUM 0
 
 /**
@@ -45,11 +62,28 @@
  * Documentation on the circuit is available here:
  * https://www.atlas-scientific.com/circuits/ezo-orp-circuit/
  *
+ * Timing:
+ *     - warms up in 850ms
+ *     - stable at completion of warm up
+ *     - measurements take 1580ms to complete
+ *
  * For oxidation/reduction potential:
- *   @AtlasScientificORP_Potential
+ *   @copydetails AtlasScientificORP_Potential
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_orp_group
  */
 class AtlasScientificORP : public AtlasParent {
  public:
+    /**
+     * @brief Construct a new Atlas Scientific ORP object
+     *
+     * @param powerPin The pin on the mcu controlling powering to the Atlas
+     * circuit.  Use -1 if the sensor is continuously powered.
+     * @param i2cAddressHex The I2C address of the Atlas circuit.  Defaults to
+     * 0x62.
+     * @param measurementsToAverage The number of measurements to average
+     */
     explicit AtlasScientificORP(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1)
@@ -58,6 +92,9 @@ class AtlasScientificORP : public AtlasParent {
                       ATLAS_ORP_WARM_UP_TIME_MS,
                       ATLAS_ORP_STABILIZATION_TIME_MS,
                       ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+    /**
+     * @brief Destroy the Atlas Scientific ORP object
+     */
     ~AtlasScientificORP() {}
 };
 
@@ -70,7 +107,11 @@ class AtlasScientificORP : public AtlasParent {
  *   - Range is -1019.9mV − 1019.9mV
  *   - Resolution is 0.1 mV
  *   - Reported as millivolts
- *   - Result stored as sensorValues[0]
+ *   - Result stored in sensorValues[0]
+ *   - Default variable code is AtlasORP
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_orp_group
  */
 class AtlasScientificORP_Potential : public Variable {
  public:

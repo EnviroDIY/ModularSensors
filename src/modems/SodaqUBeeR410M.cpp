@@ -19,7 +19,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
     : loggerModem(powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
                   R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
                   R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
-                  R410M_DISCONNECT_TIME_MS, R410M_WARM_UP_TIME_MS,
+                  R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
                   R410M_ATRESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
@@ -38,7 +38,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
     : loggerModem(powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
                   R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
                   R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
-                  R410M_DISCONNECT_TIME_MS, R410M_WARM_UP_TIME_MS,
+                  R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
                   R410M_ATRESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
@@ -131,7 +131,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
 
 bool SodaqUBeeR410M::modemSleepFxn(void) {
     if (_modemSleepRqPin >= 0) {
-        // R410 must have access to PWR_ON pin to sleep
+        // R410 must have access to `PWR_ON` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking u-blox R410M to power down"));

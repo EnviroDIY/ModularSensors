@@ -174,6 +174,8 @@ class Sensor {
      * Bit 7
      * - 0 => No known errors
      * - 1 => Some sort of error has occurred
+     *
+     * @return The status as a uint8_t.
      */
     uint8_t getStatus(void);
 
@@ -214,15 +216,15 @@ class Sensor {
     /**
      * @brief Turn on the sensor power, if applicable.
      *
-     * Generally this is done by setting the #_powerPin HIGH.  Also sets the
+     * Generally this is done by setting the #_powerPin `HIGH`.  Also sets the
      * #_millisPowerOn timestamp and updates the #_sensorStatus.
      */
     virtual void powerUp(void);
     /**
      * @brief Turn off the sensor power, if applicable.
      *
-     * Generally this is done by setting the #_powerPin LOW.  Also un-sets the
-     * #_millisPowerOn timestamp (sets #_millisPowerOn to 0) and updates the
+     * Generally this is done by setting the #_powerPin `LOW`.  Also un-sets
+     * the #_millisPowerOn timestamp (sets #_millisPowerOn to 0) and updates the
      * #_sensorStatus.
      */
     virtual void powerDown(void);
@@ -339,7 +341,7 @@ class Sensor {
      * @brief Check if the #_powerPin is currently high.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **true** Indicates the #_powerPin is currently HIGH
+     * @return **true** Indicates the #_powerPin is currently `HIGH`
      * @return **false** Indicates the #_powerPin is currently not high (ie,
      * it's low)
      */
@@ -413,7 +415,7 @@ class Sensor {
     /**
      * @brief The number of values the sensor is capable of reporting.
      */
-    const uint8_t _numReturnedVars;
+    const uint8_t _numReturnedValues;
     /**
      * @brief The number of measurements from the sensor to average.
      *

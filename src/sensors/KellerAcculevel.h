@@ -28,14 +28,21 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
+/// Sensor::_warmUpTime_ms; the Acculevel warms up in 500ms.
 #define ACCULEVEL_WARM_UP_TIME_MS 500
+/// Sensor::_stabilizationTime_ms; the Acculevel is stable after 5000ms.
 #define ACCULEVEL_STABILIZATION_TIME_MS 5000
+/// Sensor::_measurementTime_ms; the Acculevel takes 1500ms to complete a
+/// measurement.
 #define ACCULEVEL_MEASUREMENT_TIME_MS 1500
 
+/// Decimals places in string representation; pressure should have 5.
 #define ACCULEVEL_PRESSURE_RESOLUTION 5
 
+/// Decimals places in string representation; temperature should have 2.
 #define ACCULEVEL_TEMP_RESOLUTION 2
 
+/// Decimals places in string representation; height should have 4.
 #define ACCULEVEL_HEIGHT_RESOLUTION 4
 
 
@@ -67,16 +74,35 @@ class KellerAcculevel : public KellerParent {
 // Defines the PressureGauge (vented & barometricPressure corrected) variable
 class KellerAcculevel_Pressure : public Variable {
  public:
+    /**
+     * @brief Construct a new KellerAcculevel_Pressure object.
+     *
+     * @param parentSense The parent KellerAcculevel providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is kellerAccuPress
+     */
     explicit KellerAcculevel_Pressure(KellerAcculevel* parentSense,
                                       const char*      uuid = "",
                                       const char* varCode   = "kellerAccuPress")
         : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION, "pressureGauge",
                    "millibar", varCode, uuid) {}
+    /**
+     * @brief Construct a new KellerAcculevel_Pressure object.
+     *
+     * @note This must be tied with a parent KellerAcculevel before it can be
+     * used.
+     */
     KellerAcculevel_Pressure()
         : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION, "pressureGauge",
                    "millibar", "kellerAccuPress") {}
+    /**
+     * @brief Destroy the KellerAcculevel_Pressure object - no action needed.
+     */
     ~KellerAcculevel_Pressure() {}
 };
 
@@ -84,16 +110,35 @@ class KellerAcculevel_Pressure : public Variable {
 // Defines the Temperature Variable
 class KellerAcculevel_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new KellerAcculevel_Temp object.
+     *
+     * @param parentSense The parent KellerAcculevel providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is kellerAccuTemp
+     */
     explicit KellerAcculevel_Temp(KellerAcculevel* parentSense,
                                   const char*      uuid    = "",
                                   const char*      varCode = "kellerAccuTemp")
         : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)ACCULEVEL_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new KellerAcculevel_Temp object.
+     *
+     * @note This must be tied with a parent KellerAcculevel before it can be
+     * used.
+     */
     KellerAcculevel_Temp()
         : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)ACCULEVEL_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "kellerAccuTemp") {}
+    /**
+     * @brief Destroy the KellerAcculevel_Temp object - no action needed.
+     */
     ~KellerAcculevel_Temp() {}
 };
 
@@ -101,16 +146,35 @@ class KellerAcculevel_Temp : public Variable {
 // Variable
 class KellerAcculevel_Height : public Variable {
  public:
+    /**
+     * @brief Construct a new KellerAcculevel_Height object.
+     *
+     * @param parentSense The parent KellerAcculevel providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is kellerAccuHeight
+     */
     explicit KellerAcculevel_Height(KellerAcculevel* parentSense,
                                     const char*      uuid = "",
                                     const char* varCode   = "kellerAccuHeight")
         : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new KellerAcculevel_Height object.
+     *
+     * @note This must be tied with a parent KellerAcculevel before it can be
+     * used.
+     */
     KellerAcculevel_Height()
         : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
                    "kellerAccuHeight") {}
+    /**
+     * @brief Destroy the KellerAcculevel_Height object - no action needed.
+     */
     ~KellerAcculevel_Height() {}
 };
 

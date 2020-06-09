@@ -1,4 +1,5 @@
-# Examples using the Modular Sensors Library for DRWI sites with no Cellular Service
+[//]: # ( @page drwi_no_cell_example DRWI CitSci Sites without Live Data )
+# ModularSensors for DRWI sites with no Cellular Service
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.
 
@@ -6,16 +7,19 @@ Before using this example, you must register a site and sensors at the data port
 
 _______
 
+[//]: # ( @section drwi_no_cell_using To Use this Example: )
 ## To Use this Example:
 
-#### Prepare and set up PlatformIO
-- Register a site and sensors at the WikiWatershed/EnviroDIY data portal (http://monitormywatershed.org/)
+[//]: # ( @subsection drwi_no_cell_pio Prepare and set up PlatformIO )
+## Prepare and set up PlatformIO
+- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
     - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.  Without this, the program won't compile or send data.
 - Download logging_to_EnviroDIY.ino and put it into the src directory of your project.  Delete main.cpp in that folder.
 
-#### Set the logger ID
+[//]: # ( @subsection drwi_no_cell_logger_id Set the logger ID )
+## Set the logger ID
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
@@ -23,7 +27,8 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-#### Set the calibration coefficients for the Campbell OBS3+
+[//]: # ( @subsection drwi_no_cell_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
+## Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change _**all**_ of the the ```0.000E+00``` and ```1.000E+00``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
     - The sketch will not compile if these values are not entered properly.
@@ -31,28 +36,29 @@ const char *LoggerID = "XXXX";
 
 ```cpp
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
+//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
 const int8_t OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
 const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-// Campbell OBS 3+ Low Range calibration in Volts
-const int8_t OBSLowADSChannel = 0;  // ADS channel for LOW range output
-const float OBSLow_A = 0.000E+00;  // "A" value (X^2) [LOW range]
-const float OBSLow_B = 1.000E+00;  // "B" value (X) [LOW range]
-const float OBSLow_C = 0.000E+00;  // "C" value [LOW range]
+// Campbell OBS 3+ *Low* Range Calibration in Volts
+const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
+const float OBSLow_A = 0.000E+00;  // "A" value (X^2) [*low* range]
+const float OBSLow_B = 1.000E+00;  // "B" value (X) [*low* range]
+const float OBSLow_C = 0.000E+00;  // "C" value [*low* range]
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
-// Campbell OBS 3+ High Range calibration in Volts
-const int8_t OBSHighADSChannel = 1;  // ADS channel for HIGH range output
-const float OBSHigh_A = 0.000E+00;  // "A" value (X^2) [HIGH range]
-const float OBSHigh_B = 1.000E+00;  // "B" value (X) [HIGH range]
-const float OBSHigh_C = 0.000E+00;  // "C" value [HIGH range]
+// Campbell OBS 3+ *High* Range Calibration in Volts
+const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
+const float OBSHigh_A = 0.000E+00;  // "A" value (X^2) [*high* range]
+const float OBSHigh_B = 1.000E+00;  // "B" value (X) [*high* range]
+const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-#### Set the universally universal identifiers (UUID) for each variable
-- Go back to the web page for your site at the WikiWatershed/EnviroDIY data portal (http://monitormywatershed.org/)
+[//]: # ( @subsection drwi_no_cell_uuids Set the universally universal identifiers (UUID) for each variable )
+## Set the universally universal identifiers (UUID) for each variable
+- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
 - **VERY CAREFULLY** check that the variables are in exactly the same order as in the variable array:
 
@@ -86,5 +92,6 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 ```
 
-#### Upload!
+[//]: # ( @subsection drwi_no_cell_upload Upload! )
+## Upload!
 - Test everything at home **before** deploying out in the wild!

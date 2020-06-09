@@ -45,21 +45,31 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the CTD can report 3 values.
 #define CTD_NUM_VARIABLES 3
+/// Sensor::_warmUpTime_ms; the CTD warms up in 500ms.
 #define CTD_WARM_UP_TIME_MS 500
+/// Sensor::_stabilizationTime_ms; the CTD is stable after 0ms.
 #define CTD_STABILIZATION_TIME_MS 0
+/// Sensor::_measurementTime_ms; the CTD takes 500ms to complete a measurement.
 #define CTD_MEASUREMENT_TIME_MS 500
 
+/// Decimals places in string representation; conductivity should have 1.
 #define CTD_COND_RESOLUTION 1
 // adding extra digit to resolution for averaging
+/// Variable number; conductivity is stored in sensorValues[2].
 #define CTD_COND_VAR_NUM 2
 
+/// Decimals places in string representation; temperature should have 2.
 #define CTD_TEMP_RESOLUTION 2
 // adding extra digit to resolution for averaging
+/// Variable number; temperature is stored in sensorValues[1].
 #define CTD_TEMP_VAR_NUM 1
 
+/// Decimals places in string representation; depth should have 1.
 #define CTD_DEPTH_RESOLUTION 1
 // adding extra digit to resolution for averaging
+/// Variable number; depth is stored in sensorValues[0].
 #define CTD_DEPTH_VAR_NUM 0
 
 // The main class for the Decagon CTD
@@ -89,15 +99,32 @@ class DecagonCTD : public SDI12Sensors {
 // Defines the Conductivity Variable
 class DecagonCTD_Cond : public Variable {
  public:
+    /**
+     * @brief Construct a new DecagonCTD_Cond object.
+     *
+     * @param parentSense The parent DecagonCTD providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is CTDcond.
+     */
     explicit DecagonCTD_Cond(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = "CTDcond")
         : Variable(parentSense, (const uint8_t)CTD_COND_VAR_NUM,
                    (uint8_t)CTD_COND_RESOLUTION, "specificConductance",
                    "microsiemenPerCentimeter", varCode, uuid) {}
+    /**
+     * @brief Construct a new DecagonCTD_Cond object.
+     *
+     * @note This must be tied with a parent DecagonCTD before it can be used.
+     */
     DecagonCTD_Cond()
         : Variable((const uint8_t)CTD_COND_VAR_NUM,
                    (uint8_t)CTD_COND_RESOLUTION, "specificConductance",
                    "microsiemenPerCentimeter", "CTDcond") {}
+    /**
+     * @brief Destroy the DecagonCTD_Cond object - no action needed.
+     */
     ~DecagonCTD_Cond() {}
 };
 
@@ -105,15 +132,32 @@ class DecagonCTD_Cond : public Variable {
 // Defines the Temperature Variable
 class DecagonCTD_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new DecagonCTD_Temp object.
+     *
+     * @param parentSense The parent DecagonCTD providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is CTDtemp.
+     */
     explicit DecagonCTD_Temp(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = "CTDtemp")
         : Variable(parentSense, (const uint8_t)CTD_TEMP_VAR_NUM,
                    (uint8_t)CTD_TEMP_RESOLUTION, "temperature", "degreeCelsius",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new DecagonCTD_Temp object.
+     *
+     * @note This must be tied with a parent DecagonCTD before it can be used.
+     */
     DecagonCTD_Temp()
         : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
                    (uint8_t)CTD_TEMP_RESOLUTION, "temperature", "degreeCelsius",
                    "CTDtemp") {}
+    /**
+     * @brief Destroy the DecagonCTD_Temp object - no action needed.
+     */
     ~DecagonCTD_Temp() {}
 };
 
@@ -121,15 +165,32 @@ class DecagonCTD_Temp : public Variable {
 // Defines the Depth Variable
 class DecagonCTD_Depth : public Variable {
  public:
+    /**
+     * @brief Construct a new DecagonCTD_Depth object.
+     *
+     * @param parentSense The parent DecagonCTD providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is CTDdepth.
+     */
     explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
                               const char* varCode = "CTDdepth")
         : Variable(parentSense, (const uint8_t)CTD_DEPTH_VAR_NUM,
                    (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new DecagonCTD_Depth object.
+     *
+     * @note This must be tied with a parent DecagonCTD before it can be used.
+     */
     DecagonCTD_Depth()
         : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,
                    (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter",
                    "CTDdepth") {}
+    /**
+     * @brief Destroy the DecagonCTD_Depth object - no action needed.
+     */
     ~DecagonCTD_Depth() {}
 };
 

@@ -8,8 +8,6 @@
  *
  * Basic logger functions include communicating with a real-time clock, saving
  * to an SD card, and publishing data to remotes via a loggerModem connection.
- *
- * @copydetails Logger
  */
 
 // Header Guards
@@ -80,6 +78,10 @@ class dataPublisher;  // Forward declaration
  * boards.
  */
 class Logger {
+    /**
+     * @brief The dataPublisher class contains endpoints for logged data and the
+     * proper formats for sending it.
+     */
     friend class dataPublisher;
 
  public:
@@ -192,7 +194,7 @@ class Logger {
      */
     void setSDCardPwr(int8_t SDCardPowerPin);
     /**
-     * @brief Send power to the SD card by setting the SDCardPowerPin HIGH.
+     * @brief Send power to the SD card by setting the SDCardPowerPin `HIGH`.
      *
      * Optionally waits for the card to "settle."  Has no effect if a pin has
      * not been set to control power to the SD card.
@@ -202,7 +204,7 @@ class Logger {
      */
     void turnOnSDcard(bool waitToSettle = true);
     /**
-     * @brief Cut power to the SD card by setting the SDCardPowerPin LOW.
+     * @brief Cut power to the SD card by setting the SDCardPowerPin `LOW`.
      *
      * Optionally waits for the card to do "housekeeping" before cutting the
      * power.  Has o effect if a pin has not been set to control power to the SD
@@ -255,7 +257,7 @@ class Logger {
      * This is intended to be a pin with a LED on it so you can see the light
      * come on when a measurement is being taken.
      *
-     * @param ledPin The pin on the mcu to be held HIGH while sensor data is
+     * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.
      */
     void setAlertPin(int8_t ledPin);
@@ -295,7 +297,7 @@ class Logger {
      * to the SD card.
      * @param buttonPin The pin on the mcu to listen to for a value-change
      * interrupt to enter testing mode.
-     * @param ledPin The pin on the mcu to be held HIGH while sensor data is
+     * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.
      */
     void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
@@ -841,7 +843,6 @@ class Logger {
      * written to the file based on the variable information from the variable
      * array.
      *
-     * @param filename The name of the file to create
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
      * @return **true** The file was successfully created.
@@ -873,7 +874,6 @@ class Logger {
      * attempt to create a file with that name and add a header to it.  Set the
      * modified and accessed timestamps of the file to the current time.
      *
-     * @param filename The name of the file to write to
      * @param rec The line to be written to the file
      * @return **true** The file was successfully accessed or created and data
      * appended to it.

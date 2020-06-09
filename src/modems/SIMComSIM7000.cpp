@@ -19,7 +19,7 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream, int8_t powerPin,
                   SIM7000_RESET_LEVEL, SIM7000_RESET_PULSE_MS, modemSleepRqPin,
                   SIM7000_WAKE_LEVEL, SIM7000_WAKE_PULSE_MS,
                   SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
-                  SIM7000_WARM_UP_TIME_MS, SIM7000_ATRESPONSE_TIME_MS),
+                  SIM7000_WAKE_DELAY_MS, SIM7000_ATRESPONSE_TIME_MS),
 #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger),
@@ -65,7 +65,7 @@ bool SIMComSIM7000::modemWakeFxn(void) {
 
 bool SIMComSIM7000::modemSleepFxn(void) {
     if (_modemSleepRqPin >= 0) {
-        // Must have access to PWRKEY pin to sleep
+        // Must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM7000 to power down"));

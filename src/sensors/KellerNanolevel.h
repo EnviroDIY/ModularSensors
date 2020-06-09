@@ -26,14 +26,21 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
+/// Sensor::_warmUpTime_ms; the Nanolevel warms up in 500ms.
 #define NANOLEVEL_WARM_UP_TIME_MS 500
+/// Sensor::_stabilizationTime_ms; the Nanolevel is stable after 5000ms.
 #define NANOLEVEL_STABILIZATION_TIME_MS 5000
+/// Sensor::_measurementTime_ms; the Nanolevel takes 1500ms to complete a
+/// measurement.
 #define NANOLEVEL_MEASUREMENT_TIME_MS 1500
 
+/// Decimals places in string representation; pressure should have 5.
 #define NANOLEVEL_PRESSURE_RESOLUTION 5
 
+/// Decimals places in string representation; temperature should have 2.
 #define NANOLEVEL_TEMP_RESOLUTION 2
 
+/// Decimals places in string representation; height should have 4.
 #define NANOLEVEL_HEIGHT_RESOLUTION 4
 
 
@@ -65,16 +72,35 @@ class KellerNanolevel : public KellerParent {
 // Defines the PressureGauge (vented & barometricPressure corrected) variable
 class KellerNanolevel_Pressure : public Variable {
  public:
+    /**
+     * @brief Construct a new KellerNanolevel_Pressure object.
+     *
+     * @param parentSense The parent KellerNanolevel providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is kellerNanoPress
+     */
     explicit KellerNanolevel_Pressure(KellerNanolevel* parentSense,
                                       const char*      uuid = "",
                                       const char* varCode   = "kellerNanoPress")
         : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION, "pressureGauge",
                    "millibar", varCode, uuid) {}
+    /**
+     * @brief Construct a new KellerNanolevel_Pressure object.
+     *
+     * @note This must be tied with a parent KellerNanolevel before it can be
+     * used.
+     */
     KellerNanolevel_Pressure()
         : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
                    (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION, "pressureGauge",
                    "millibar", "kellerNanoPress") {}
+    /**
+     * @brief Destroy the KellerNanolevel_Pressure object - no action needed.
+     */
     ~KellerNanolevel_Pressure() {}
 };
 
@@ -82,16 +108,35 @@ class KellerNanolevel_Pressure : public Variable {
 // Defines the Temperature Variable
 class KellerNanolevel_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new KellerNanolevel_Temp object.
+     *
+     * @param parentSense The parent KellerNanolevel providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is kellerNanoTemp
+     */
     explicit KellerNanolevel_Temp(KellerNanolevel* parentSense,
                                   const char*      uuid    = "",
                                   const char*      varCode = "kellerNanoTemp")
         : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)NANOLEVEL_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new KellerNanolevel_Temp object.
+     *
+     * @note This must be tied with a parent KellerNanolevel before it can be
+     * used.
+     */
     KellerNanolevel_Temp()
         : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
                    (uint8_t)NANOLEVEL_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "kellerNanoTemp") {}
+    /**
+     * @brief Destroy the KellerNanolevel_Temp object - no action needed.
+     */
     ~KellerNanolevel_Temp() {}
 };
 
@@ -99,16 +144,35 @@ class KellerNanolevel_Temp : public Variable {
 // Variable
 class KellerNanolevel_Height : public Variable {
  public:
+    /**
+     * @brief Construct a new KellerNanolevel_Height object.
+     *
+     * @param parentSense The parent KellerNanolevel providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is kellerNanoHeight
+     */
     explicit KellerNanolevel_Height(KellerNanolevel* parentSense,
                                     const char*      uuid = "",
                                     const char* varCode   = "kellerNanoHeight")
         : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
                    varCode, uuid) {}
+    /**
+     * @brief Construct a new KellerNanolevel_Height object.
+     *
+     * @note This must be tied with a parent KellerNanolevel before it can be
+     * used.
+     */
     KellerNanolevel_Height()
         : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
                    (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
                    "kellerNanoHeight") {}
+    /**
+     * @brief Destroy the KellerNanolevel_Height object - no action needed.
+     */
     ~KellerNanolevel_Height() {}
 };
 

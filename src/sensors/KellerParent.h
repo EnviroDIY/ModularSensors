@@ -40,9 +40,13 @@
 #include <KellerModbus.h>
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the Keller level sensors can report 3 values.
 #define KELLER_NUM_VARIABLES 3
+/// Variable number; pressure is stored in sensorValues[0].
 #define KELLER_PRESSURE_VAR_NUM 0
+/// Variable number; temperature is stored in sensorValues[1].
 #define KELLER_TEMP_VAR_NUM 1
+/// Variable number; height is stored in sensorValues[2].
 #define KELLER_HEIGHT_VAR_NUM 2
 
 // The main class for the Keller Sensors

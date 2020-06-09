@@ -1,22 +1,26 @@
-/*****************************************************************************
-logging_to MMW.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
-Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
-  and the EnviroDIY Development Team
-
-This shows most of the standard functions of the library at once.
-
-DISCLAIMER:
-THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
-*****************************************************************************/
+/** =========================================================================
+ * @file logging_to_MMW.ino
+ * @brief Example logging data and publishing to Monitor My Watershed.
+ *
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ *                          and the EnviroDIY Development Team
+ *            This example is published under the BSD-3 license.
+ *
+ * Build Environment: Visual Studios Code with PlatformIO
+ * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+ *
+ * DISCLAIMER:
+ * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * ======================================================================= */
 
 // ==========================================================================
-//    Defines for the Arduino IDE
-//    In PlatformIO, set these build flags in your platformio.ini
+//  Defines for the Arduino IDE
+//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
+//         If you use PlatformIO, you should set these build flags in your
+//         platformio.ini
 // ==========================================================================
+/** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
@@ -26,19 +30,30 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #ifndef MQTT_MAX_PACKET_SIZE
 #define MQTT_MAX_PACKET_SIZE 240
 #endif
+/** End [defines] */
 
 // ==========================================================================
-//    Include the base required libraries
+//  Include the libraries required for any data logger
 // ==========================================================================
-#include <Arduino.h>          // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>       // The modular sensors library
+/** Start [includes] */
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+
+// EnableInterrupt is used by ModularSensors for external and pin change
+// interrupts and must be explicitly included in the main program.
+#include <EnableInterrupt.h>
+
+// To get all of the base classes for ModularSensors, include LoggerBase.
+// NOTE:  Individual sensor definitions must be included separately.
+#include <LoggerBase.h>
+/** End [includes] */
 
 
 // ==========================================================================
-//    Data Logger Settings
+//  Data Logging Options
 // ==========================================================================
-// The name of this file
+/** Start [logging_options] */
+// The name of this program file
 const char* sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
@@ -48,11 +63,7 @@ const uint8_t loggingInterval = 5;
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
-// ==========================================================================
-//    Primary Arduino-Based Board and Processor
-// ==========================================================================
-#include <sensors/ProcessorStats.h>
+// Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 const long   serialBaud = 115200;  // Baud rate for debugging
 const int8_t greenLED   = 8;       // Pin for the green LED
@@ -64,22 +75,15 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [logging_options] */
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Settings
 // ==========================================================================
-
+/** Start [modem_settings] */
 // Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -100,27 +104,43 @@ const char* apn = "xxxxx";  // The APN for the gprs connection
 #include <modems/DigiXBeeCellularTransparent.h>
 const long modemBaud       = 9600;   // All XBee's use 9600 by default
 const bool useCTSforStatus = false;  // Flag to use the XBee CTS pin for status
-// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
-// the CTS pin can also be used if necessary
+// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
+// the `CTS` pin can also be used if necessary
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       useCTSforStatus, modemResetPin,
                                       modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name (not necessary)
+// Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
+/** End [modem_settings] */
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//  Using the Processor as a Sensor
 // ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [processor_sensor] */
+
+
+// ==========================================================================
+//  Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+/** Start [ds3231] */
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
+/** End [ds3231] */
 
 
 // ==========================================================================
-//    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
+//  Bosch BME280 Environmental Sensor
 // ==========================================================================
+/** Start [bme280] */
 #include <sensors/BoschBME280.h>
 
 const int8_t I2CPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -130,11 +150,13 @@ uint8_t      BMEi2c_addr = 0x76;
 
 // Create a Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
+/** End [bme280] */
 
 
 // ==========================================================================
-//    Maxim DS18 One Wire Temperature Sensor
+//  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
+/** Start [ds18] */
 #include <sensors/MaximDS18.h>
 
 // OneWire Address [array of 8 hex characters]
@@ -150,12 +172,13 @@ const int8_t OneWireBus   = 6;  // OneWire Bus Pin (-1 if unconnected)
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus
 // with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
+/** End [ds18] */
 
 
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+//  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-
+/** Start [variable_arrays] */
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     "12345678-abcd-1234-ef00-1234567890ab"),
@@ -177,19 +200,23 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+/** End [variable_arrays] */
 
 
 // ==========================================================================
-//     The Logger Object[s]
+//  The Logger Object[s]
 // ==========================================================================
-
+/** Start [loggers] */
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
+/** End [loggers] */
 
 
 // ==========================================================================
-//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+//  Creating Data Publisher[s]
 // ==========================================================================
+/** Start [publishers] */
+// A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char* registrationToken =
@@ -197,16 +224,17 @@ const char* registrationToken =
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);
+/** End [publishers] */
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -220,18 +248,19 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     digitalWrite(redLED, LOW);
 }
 
-
-// Read's the battery voltage
+// Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
+/** End [working_functions] */
 
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
+/** Start [setup] */
 void setup() {
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
@@ -323,12 +352,13 @@ void setup() {
     Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
+/** End [setup] */
 
 
 // ==========================================================================
-// Main loop function
+//  Arduino Loop Function
 // ==========================================================================
-
+/** Start [loop] */
 // Use this short loop for simple data logging and sending
 void loop() {
     // Note:  Please change these battery voltages to match your battery
@@ -345,3 +375,4 @@ void loop() {
         dataLogger.logDataAndPublish();
     }
 }
+/** End [loop] */

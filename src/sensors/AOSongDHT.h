@@ -13,6 +13,12 @@
  * This file is dependent on the Adafruit DHT Library.
  *
  * @copydetails AOSongDHT
+ *
+ * @defgroup dht_group AOSong DHT
+ * The Sensor and Variable objects for the AOSong DHT digital-output relative
+ * humidity & temperature sensors.
+ *
+ * @copydetails AOSongDHT
  */
 
 // Header Guards
@@ -41,18 +47,28 @@
 #undef AM2302
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the DHT can report 3 values.
 #define DHT_NUM_VARIABLES 3
+/// Sensor::_warmUpTime_ms; DHT warms up in 1700ms.
 #define DHT_WARM_UP_TIME_MS 1700
+/// Sensor::_stabilizationTime_ms; DHT is stable after 0ms.
 #define DHT_STABILIZATION_TIME_MS 0
+/// Sensor::_measurementTime_ms; DHT takes 2000ms to complete a measurement.
 #define DHT_MEASUREMENT_TIME_MS 2000
 
+/// Decimals places in string representation; humidity should have 1.
 #define DHT_HUMIDITY_RESOLUTION 1
+/// Variable number; humidity is stored in sensorValues[0].
 #define DHT_HUMIDITY_VAR_NUM 0
 
+/// Decimals places in string representation; temperature should have 1.
 #define DHT_TEMP_RESOLUTION 1
+/// Variable number; temperature is stored in sensorValues[1].
 #define DHT_TEMP_VAR_NUM 1
 
+/// Decimals places in string representation; heat index should have 1.
 #define DHT_HI_RESOLUTION 1
+/// Variable number; HI is stored in sensorValues[2].
 #define DHT_HI_VAR_NUM 2
 
 /**
@@ -73,6 +89,11 @@ typedef enum DHTtype {
  * Documentation for the sensor can be found at:
  * http://www.aosong.com/en/products/details.asp?id=117
  *
+ * Timing:
+ *     - warms up in 1.7sec
+ *     - stable on completion of warm up
+ *     - measurements take 2s to complete
+ *
  * For Relative Humidity:
  *   @copydetails AOSongDHT_Humidity
  *
@@ -82,7 +103,9 @@ typedef enum DHTtype {
  * Heat index is calculated from temperature and humidity.
  *   @copydetails AOSongDHT_HI
  *
- * Warm up/sampling time: 1.7sec
+ * @ingroup dht_group
+ *
+ * @see dht_page
  */
 class AOSongDHT : public Sensor {
  public:
@@ -95,7 +118,7 @@ class AOSongDHT : public Sensor {
      * @param dataPin The pin on the mcu receiving data from the AOSong DHT
      * @param type The type of DHT.  Possible values are DHT11, DHT21, AM2301,
      * DHT22, or AM2302.
-     * @param measurementsToAverage The number of measurements to average.e
+     * @param measurementsToAverage The number of measurements to average.
      */
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type,
               uint8_t measurementsToAverage = 1);
@@ -132,7 +155,10 @@ class AOSongDHT : public Sensor {
  *   - Accuracy is ± 2 % RH
  *   - Range is 0 to 100 % RH
  *   - Reported as percent RH
- *   - Result stored as sensorValues[0]
+ *   - Result stored in sensorValues[0]
+ *   - Default variable code is DHTHumidity
+ *
+ * @ingroup dht_group
  */
 class AOSongDHT_Humidity : public Variable {
  public:
@@ -173,7 +199,10 @@ class AOSongDHT_Humidity : public Variable {
  *   - Accuracy is ±0.5°C
  *   - Range is -40°C to +80°C
  *   - Reported as degrees Celsius
- *   - Result stored as sensorValues[1]
+ *   - Result stored in sensorValues[1]
+ *   - Default variable code is DHTTemp
+ *
+ * @ingroup dht_group
  */
 class AOSongDHT_Temp : public Variable {
  public:
@@ -208,12 +237,16 @@ class AOSongDHT_Temp : public Variable {
 
 
 /**
- * @brief The variable class used for Heat Index measured by an AOSong DHT.
+ * @brief The variable class used for heat index calculated from measurements
+ * made by an AOSong DHT.
  *
- * Heat index is calculated within the Adafruit library from the measured
+ *   - Heat index is calculated within the Adafruit library from the measured
  * temperature and humidity.
- *   - Reported as a dimensionless index
- *   - Result stored as sensorValues[2]
+ *   - Reported as degrees celsius
+ *   - Result stored in sensorValues[2]
+ *   - Default variable code is heatIndex
+ *
+ * @ingroup dht_group
  */
 class AOSongDHT_HI : public Variable {
  public:

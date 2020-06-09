@@ -56,21 +56,32 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the Teros 11 can report 3 values.
 #define TEROS11_NUM_VARIABLES 3
+/// Sensor::_warmUpTime_ms; the Teros 11 warms up in 250ms.
 #define TEROS11_WARM_UP_TIME_MS 250
+/// Sensor::_stabilizationTime_ms; the Teros 11 is stable after 50ms.
 #define TEROS11_STABILIZATION_TIME_MS 50
+/// Sensor::_measurementTime_ms; the Teros 11 takes 50ms to complete a
+/// measurement.
 #define TEROS11_MEASUREMENT_TIME_MS 50
 
+/// Decimals places in string representation; EA should have 5.
 #define TEROS11_EA_RESOLUTION 5
 // adding extra digit to resolution for averaging
+/// Variable number; EA is stored in sensorValues[0].
 #define TEROS11_EA_VAR_NUM 0
 
+/// Decimals places in string representation; temperature should have 2.
 #define TEROS11_TEMP_RESOLUTION 2
 // adding extra digit to resolution for averaging
+/// Variable number; temperature is stored in sensorValues[1].
 #define TEROS11_TEMP_VAR_NUM 1
 
+/// Decimals places in string representation; VWC should have 3.
 #define TEROS11_VWC_RESOLUTION 3
 // adding extra digit to resolution for averaging
+/// Variable number; VWC is stored in sensorValues[2].
 #define TEROS11_VWC_VAR_NUM 2
 
 // The main class for the Decagon 5TM
@@ -105,15 +116,32 @@ class MeterTeros11 : public SDI12Sensors {
 // Defines the Ea/Matric Potential Variable
 class MeterTeros11_Ea : public Variable {
  public:
+    /**
+     * @brief Construct a new MeterTeros11_Ea object.
+     *
+     * @param parentSense The parent MeterTeros11 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is SoilEa.
+     */
     explicit MeterTeros11_Ea(MeterTeros11* parentSense, const char* uuid = "",
                              const char* varCode = "SoilEa")
         : Variable(parentSense, (const uint8_t)TEROS11_EA_VAR_NUM,
                    (uint8_t)TEROS11_EA_RESOLUTION, "permittivity",
                    "faradPerMeter", varCode, uuid) {}
+    /**
+     * @brief Construct a new MeterTeros11_Ea object.
+     *
+     * @note This must be tied with a parent MeterTeros11 before it can be used.
+     */
     MeterTeros11_Ea()
         : Variable((const uint8_t)TEROS11_EA_VAR_NUM,
                    (uint8_t)TEROS11_EA_RESOLUTION, "permittivity",
                    "faradPerMeter", "SoilEa") {}
+    /**
+     * @brief Destroy the MeterTeros11_Ea object - no action needed.
+     */
     ~MeterTeros11_Ea() {}
 };
 
@@ -121,15 +149,32 @@ class MeterTeros11_Ea : public Variable {
 // Defines the Temperature Variable
 class MeterTeros11_Temp : public Variable {
  public:
+    /**
+     * @brief Construct a new MeterTeros11_Temp object.
+     *
+     * @param parentSense The parent MeterTeros11 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is SoilTemp.
+     */
     explicit MeterTeros11_Temp(MeterTeros11* parentSense, const char* uuid = "",
                                const char* varCode = "SoilTemp")
         : Variable(parentSense, (const uint8_t)TEROS11_TEMP_VAR_NUM,
                    (uint8_t)TEROS11_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", varCode, uuid) {}
+    /**
+     * @brief Construct a new MeterTeros11_Temp object.
+     *
+     * @note This must be tied with a parent MeterTeros11 before it can be used.
+     */
     MeterTeros11_Temp()
         : Variable((const uint8_t)TEROS11_TEMP_VAR_NUM,
                    (uint8_t)TEROS11_TEMP_RESOLUTION, "temperature",
                    "degreeCelsius", "SoilTemp") {}
+    /**
+     * @brief Destroy the MeterTeros11_Temp object - no action needed.
+     */
     ~MeterTeros11_Temp() {}
 };
 
@@ -137,15 +182,32 @@ class MeterTeros11_Temp : public Variable {
 // Defines the Volumetric Water Content Variable
 class MeterTeros11_VWC : public Variable {
  public:
+    /**
+     * @brief Construct a new MeterTeros11_VWC object.
+     *
+     * @param parentSense The parent MeterTeros11 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is SoilVWC.
+     */
     explicit MeterTeros11_VWC(MeterTeros11* parentSense, const char* uuid = "",
                               const char* varCode = "SoilVWC")
         : Variable(parentSense, (const uint8_t)TEROS11_VWC_VAR_NUM,
                    (uint8_t)TEROS11_VWC_RESOLUTION, "volumetricWaterContent",
                    "percent", varCode, uuid) {}
+    /**
+     * @brief Construct a new MeterTeros11_VWC object.
+     *
+     * @note This must be tied with a parent MeterTeros11 before it can be used.
+     */
     MeterTeros11_VWC()
         : Variable((const uint8_t)TEROS11_VWC_VAR_NUM,
                    (uint8_t)TEROS11_VWC_RESOLUTION, "volumetricWaterContent",
                    "percent", "SoilVWC") {}
+    /**
+     * @brief Destroy the MeterTeros11_VWC object - no action needed.
+     */
     ~MeterTeros11_VWC() {}
 };
 

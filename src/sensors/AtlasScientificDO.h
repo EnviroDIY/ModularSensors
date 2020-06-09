@@ -12,6 +12,11 @@
  * These are used for any sensor attached to an Atlas EZO DO circuit.
  *
  * @copydetails AtlasScientificDO
+ *
+ * @defgroup atlas_do_group Atlas Scientific DO circuit
+ * The Sensor and Variable objects for the Atlas EZO DO circuit
+ *
+ * @copydetails AtlasScientificDO
  */
 
 // Header Guards
@@ -34,20 +39,37 @@
 /**
  * @brief Default I2C address is 0x61 (97)
  */
-#define ATLAS_DO_I2C_ADDR 0x61  // 97
+#define ATLAS_DO_I2C_ADDR 0x61
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the Atlas DO sensor can report 2 values.
 #define ATLAS_DO_NUM_VARIABLES 2
 
-#define ATLAS_DO_WARM_UP_TIME_MS 745  // 737-739 in tests
+/// Sensor::_warmUpTime_ms; the Atlas DO sensor warms up in 745ms (737-739 in
+/// tests).
+#define ATLAS_DO_WARM_UP_TIME_MS 745
+/// Sensor::_stabilizationTime_ms; the Atlas DO sensor is stable 0ms after
+/// warm-up.
 #define ATLAS_DO_STABILIZATION_TIME_MS 0
-// 555 measurement time in tests, but keep the 600 recommended by manual
+/**
+ * @brief Sensor::_measurementTime_ms; the Atlas DO sensor takes 600ms to
+ * complete a measurement.
+ *
+ * 555 measurement time in tests, but keep the 600 recommended by manual
+ */
 #define ATLAS_DO_MEASUREMENT_TIME_MS 600
 
+/// Decimals places in string representation; dissolved oxygen concentration
+/// should have 2.
 #define ATLAS_DOMGL_RESOLUTION 2
+/// Variable number; dissolved oxygen concentration is stored in
+/// sensorValues[0].
 #define ATLAS_DOMGL_VAR_NUM 0
 
+/// Decimals places in string representation; dissolved oxygen percent should
+/// have 1.
 #define ATLAS_DOPCT_RESOLUTION 1
+/// Variable number; dissolved oxygen percent is stored in sensorValues[1]
 #define ATLAS_DOPCT_VAR_NUM 1
 
 /**
@@ -60,17 +82,38 @@
  * Documentation on the measurement circuit is found here:
  * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
  *
+ * Timing:
+ *     - warms up in 745ms
+ *     - stable at completion of warm up
+ *     - measurements take 600ms to complete
+ *
  * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
  * For concentration:
  *   @copydetails AtlasScientificDO_DOmgL
+ *
  * For saturation:
  *   @copydetails AtlasScientificDO_DOpct
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_do_group
  */
 class AtlasScientificDO : public AtlasParent {
  public:
+    /**
+     * @brief Construct a new Atlas Scientific DO object
+     *
+     * @param powerPin The pin on the mcu controlling powering to the Atlas
+     * circuit.  Use -1 if the sensor is continuously powered.
+     * @param i2cAddressHex The I2C address of the Atlas circuit.  Defaults to
+     * 0x61.
+     * @param measurementsToAverage The number of measurements to average
+     */
     explicit AtlasScientificDO(int8_t  powerPin,
                                uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
                                uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Destroy the Atlas Scientific DO object
+     */
     ~AtlasScientificDO();
 
     /**
@@ -95,7 +138,11 @@ class AtlasScientificDO : public AtlasParent {
  *   - Range is 0.01 − 100+ mg/L
  *   - Resolution is 0.01 mg/L
  *   - Reported in percent saturation
- *   - Result stored as sensorValues[0]
+ *   - Result stored in sensorValues[0]
+ *   - Default variable code is AtlasDOmgL
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_do_group
  */
 class AtlasScientificDO_DOmgL : public Variable {
  public:
@@ -140,7 +187,11 @@ class AtlasScientificDO_DOmgL : public Variable {
  *   - Range is 0.1 − 400+ % saturation
  *   - Resolution is 0.1 % saturation
  *   - Reported in percent saturation
- *   - Result stored as sensorValues[1]
+ *   - Result stored in sensorValues[1]
+ *   - Default variable code is AtlasDOpct
+ *
+ * @ingroup atlas_group
+ * @ingroup atlas_do_group
  */
 class AtlasScientificDO_DOpct : public Variable {
  public:

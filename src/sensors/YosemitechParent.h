@@ -60,6 +60,18 @@ class YosemitechParent : public Sensor {
 
     String getSensorLocation(void) override;
 
+    /**
+     * @brief Do any one-time preparations needed before the sensor will be able
+     * to take readings.
+     *
+     * This sets pin modes on the #_powerPin, adapter power, and adapter
+     * enable pins.  It also sets the expected stream timeout for modbus and
+     * updates the #_sensorStatus.  No sensor power is required. This will
+     * always return true.
+     *
+     * @return **true** The setup was successful
+     * @return **false** Some part of the setup failed
+     */
     bool setup(void) override;
     bool wake(void) override;
     bool sleep(void) override;

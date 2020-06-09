@@ -47,29 +47,37 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-#define ADS1115_ADDRESS 0x48
-// 1001 000 (ADDR = GND)
 
 // low and high range are treated as completely independent, so only 2
 // "variables" One for the raw voltage and another for the calibrated turbidity.
 // To get both high and low range values, create two sensor objects!
+/// Sensor::_numReturnedValues; the OBS3 can report 2 values.
 #define OBS3_NUM_VARIABLES 2
 // Using the warm-up time of the ADS1115
+/// Sensor::_warmUpTime_ms; OBS3 warms up in 2ms.
 #define OBS3_WARM_UP_TIME_MS 2
+/// Sensor::_stabilizationTime_ms; OBS3 is stable after 2000ms.
 #define OBS3_STABILIZATION_TIME_MS 2000
+/// Sensor::_measurementTime_ms; OBS3 takes 100ms to complete a measurement.
 #define OBS3_MEASUREMENT_TIME_MS 100
 
+/// Variable number; turbidity is stored in sensorValues[0].
 #define OBS3_TURB_VAR_NUM 0
 #ifdef MS_USE_ADS1015
+/// Decimals places in string representation; turbidity should have 1.
 #define OBS3_RESOLUTION 1
 #else
+/// Decimals places in string representation; turbidity should have 5.
 #define OBS3_RESOLUTION 5
 #endif
 
+/// Variable number; voltage is stored in sensorValues[1].
 #define OBS3_VOLTAGE_VAR_NUM 1
 #ifdef MS_USE_ADS1015
+/// Decimals places in string representation; voltage should have 1.
 #define OBS3_VOLT_RESOLUTION 1
 #else
+/// Decimals places in string representation; voltage should have 4.
 #define OBS3_VOLT_RESOLUTION 4
 #endif
 
@@ -78,11 +86,26 @@ class CampbellOBS3 : public Sensor {
  public:
     // The constructor - need the power pin, the ADS1X15 data channel, and the
     // calibration info
+    /**
+     * @brief Construct a new Campbell OBS3 object - need the power pin, the
+     * ADS1X15 data channel, and the calibration info
+     *
+     * @param powerPin  The pin on the mcu controlling power to the Apogee
+     * SQ-212.  Use -1 if the sensor is continuously powered.
+     * @param adsChannel The ACS channel the OBS3 is connected to (0-3).
+     * @param x2_coeff_A The x2 (A) coefficient for the calibration in volts
+     * @param x1_coeff_B The x (B) coefficient for the calibration in volts
+     * @param x0_coeff_C The x0 (C) coefficient for the calibration in volts
+     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
+     * = GND)
+     * @param measurementsToAverage The number of measurements to average.
+     */
     CampbellOBS3(int8_t powerPin, uint8_t adsChannel, float x2_coeff_A,
-                 float x1_coeff_B, float x0_coeff_C,
-                 uint8_t i2cAddress            = ADS1115_ADDRESS,
+                 float x1_coeff_B, float x0_coeff_C, uint8_t i2cAddress = 0x48,
                  uint8_t measurementsToAverage = 1);
-    // Destructor
+    /**
+     * @brief Destroy the Campbell OBS3 object
+     */
     ~CampbellOBS3();
 
     /**

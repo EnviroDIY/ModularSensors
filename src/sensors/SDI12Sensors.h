@@ -67,6 +67,18 @@ class SDI12Sensors : public Sensor {
     String getSensorSerialNumber(void);
     String getSensorLocation(void) override;
 
+    /**
+     * @brief Do any one-time preparations needed before the sensor will be able
+     * to take readings.
+     *
+     * This sets the pin modes for the data and power pin, sets the stream
+     * timeout time and value, and sets the status bit.  This also sets the
+     * mcu's timer prescaler values to clock the serial communication.  Sensor
+     * power is not required.
+     *
+     * @return **true** The setup was successful
+     * @return **false** Some part of the setup failed
+     */
     bool setup(void) override;
 
     bool startSingleMeasurement(void) override;

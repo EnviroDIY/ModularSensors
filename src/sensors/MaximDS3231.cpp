@@ -24,7 +24,7 @@ String MaximDS3231::getSensorLocation(void) {
 
 
 bool MaximDS3231::setup(void) {
-    rtc.begin();             // NOTE:  This also turns of interrupts on the RTC!
+    rtc.begin();  // NOTE:  This also turns off interrupts on the RTC!
     return Sensor::setup();  // this will set pin modes and the setup status bit
     // The clock should be continuously powered, so we never need to worry about
     // power up

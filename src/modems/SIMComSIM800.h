@@ -21,35 +21,80 @@
 #define MS_DEBUGGING_STD "SIMComSIM800"
 #endif
 
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
 #define TINY_GSM_MODEM_SIM800
 #ifndef TINY_GSM_RX_BUFFER
+/**
+ * @brief The size of the buffer for incoming data.
+ */
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// Status can be monitored on the STATUS pin which is active HIGH
-// Time after end pulse until status pin becomes active
-// SIM800 - >3sec from start of 1s pulse
-// SIM900 - >2.2sec from end of pulse
+
+/**
+ * @brief The loggerModem::_statusLevel.
+ *
+ * SIM800 status can be monitored on the `STATUS` pin which is active `HIGH`
+ * Time after end pulse until status pin becomes active:
+ *   - SIM800 - >3sec from start of 1s pulse
+ *   - SIM900 - >2.2sec from end of pulse
+ */
 #define SIM800_STATUS_LEVEL HIGH
+/**
+ * @brief The loggerModem::_statusTime_ms.
+ * @copydetails #SIM800_STATUS_LEVEL
+ */
 #define SIM800_STATUS_TIME_MS 3000
 
-// Reset with a >105ms low pulse on the RESET_N pin
+/**
+ * @brief The loggerModem::_resetLevel.
+ *
+ * SIM800 is reset with a >105ms low pulse on the `RESET_N` pin
+ */
 #define SIM800_RESET_LEVEL LOW
+/**
+ * @brief The loggerModem::_resetPulse_ms.
+ * @copydetails #SIM800_RESET_LEVEL
+ */
 #define SIM800_RESET_PULSE_MS 105
 
-// Module is switched on by a > 1 second LOW pulse on the PWR_ON pin
-// Module is switched on by a 1-3 second LOW pulse on the PWR_ON pin
-// Please monitor the status so on and off are correct!
+/**
+ * @brief The loggerModem::_wakeLevel.
+ *
+ * The SIM800 is switched on by a > 1 second `LOW` pulse on the `PWR_ON` pin.
+ * Module is switched on by a 1-3 second `LOW` pulse on the `PWR_ON` pin.
+ *
+ * @note Please monitor the status so on and off are correct!
+ */
 #define SIM800_WAKE_LEVEL LOW
+/**
+ * @brief The loggerModem::_wakePulse_ms.
+ * @copydetails #SIM800_WAKE_LEVEL
+ */
 #define SIM800_WAKE_PULSE_MS 1100
-// Time after power on before "PWRKEY" can be used - >0.4sec
-#define SIM800_WARM_UP_TIME_MS 450
-// Time after end pulse until serial port becomes active (>3sec from start of 1s
-// pulse)
+
+/**
+ * @brief The loggerModem::_wakeDelayTime_ms.
+ *
+ * Time after power on before `PWRKEY` on SIM800 can be used is >0.4sec.
+ */
+#define SIM800_WAKE_DELAY_MS 450
+/**
+ * @brief The loggerModem::_max_atresponse_time_ms.
+ *
+ * Time after end pulse until serial port becomes active on SIM800 is >3sec from
+ * start of 1s pulse.
+ */
 #define SIM800_ATRESPONSE_TIME_MS 3000
 
-// power down (gracefully) takes >3sec
-// (Giving 15sec for shutdown in case it is not monitored.)
+/**
+ * @brief The loggerModem::_disconnetTime_ms.
+ *
+ * SIM800 power down (gracefully) takes >3sec.  We allow up to 15sec for
+ * shutdown in case it is not monitored.
+ */
 #define SIM800_DISCONNECT_TIME_MS 15000L
 
 // Included Dependencies
@@ -63,11 +108,53 @@
 #endif
 
 
+/**
+ * @brief The loggerModem subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4
+ * and almost any other module based on the SIMCOM SIM800 or SIM900 modules and
+ * thier variants.
+ *
+ * #### Pin and timing information for the SIM800
+ *
+ * @copydetails #SIM800_RESET_LEVEL
+ *
+ * @copydetails #SIM800_WAKE_LEVEL
+ *
+ * @copydetails #SIM800_WAKE_DELAY_MS
+ *
+ * @copydetails #SIM800_ATRESPONSE_TIME_MS
+ *
+ * @copydetails #SIM800_DISCONNECT_TIME_MS
+ *
+ * @copydetails #SIM800_STATUS_LEVEL
+ *
+ * @see @ref sim800_page
+ */
 class SIMComSIM800 : public loggerModem {
  public:
-    // Constructor/Destructor
+    /**
+     * @brief Construct a new SIMComSIM800 object
+     * The constuctor initializes all of the provided member variables,
+     * constructs a loggerModem parent class with the appropriate timing for the
+     * module, calls the constructor for a TinyGSM modem on the provided
+     * modemStream, and creates a TinyGSM Client linked to the modem.
+     *
+     * @param modemStream The Arduino stream instance for serial communication.
+     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param statusPin @copydoc loggerModem::_statusPin
+     * This is the pin labeled `STATUS` in SIMCom's integration guide.
+     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This is the pin labeled `RESET` in SIMCom's integration guide.
+     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * This is the pin labeled `PWRKEY` in SIMCom's integration guide.
+     * @param apn The Access Point Name (APN) for the SIM card.
+     *
+     * @see loggerModem::loggerModem
+     */
     SIMComSIM800(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                  int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn);
+    /**
+     * @brief Destroy the SIMComSIM800 object - no action taken
+     */
     ~SIMComSIM800();
 
     bool modemWake(void) override;
@@ -86,7 +173,13 @@ class SIMComSIM800 : public loggerModem {
     StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm       gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM modem.
+     */
+    TinyGsm gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM Client.
+     */
     TinyGsmClient gsmClient;
 
  protected:

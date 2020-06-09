@@ -1,32 +1,41 @@
-/*****************************************************************************
-double_logger.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
-Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
-  and the EnviroDIY Development Team
-
-This sketch is an example of logging data from different variables at two
-different logging intervals.  This example uses more of the manual functions
-in the logging loop rather than the simple "log" function.
-
-DISCLAIMER:
-THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
-*****************************************************************************/
-
-// ==========================================================================
-//    Include the base required libraries
-// ==========================================================================
-#include <Arduino.h>          // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>       // The modular sensors library
-
+/** =========================================================================
+ * @file double_logger.ino
+ * @brief Example logging at two different timing intervals
+ *
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ *                          and the EnviroDIY Development Team
+ *            This example is published under the BSD-3 license.
+ *
+ * Build Environment: Visual Studios Code with PlatformIO
+ * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+ *
+ * DISCLAIMER:
+ * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * ======================================================================= */
 
 // ==========================================================================
-//    Data Logger Settings
+//  Include the libraries required for any data logger
 // ==========================================================================
-// The name of this file
+/** Start [includes] */
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+
+// EnableInterrupt is used by ModularSensors for external and pin change
+// interrupts and must be explicitly included in the main program.
+#include <EnableInterrupt.h>
+
+// To get all of the base classes for ModularSensors, include LoggerBase.
+// NOTE:  Individual sensor definitions must be included separately.
+#include <LoggerBase.h>
+/** End [includes] */
+
+
+// ==========================================================================
+//  Data Logging Options
+// ==========================================================================
+/** Start [logging_options] */
+// The name of this program file
 const char* sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
 const char* LoggerID = "XXXXX";
@@ -37,11 +46,7 @@ const char* FileName1min = "Logger_1MinuteInterval.csv";
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
-// ==========================================================================
-//    Primary Arduino-Based Board and Processor
-// ==========================================================================
-#include <sensors/ProcessorStats.h>
+// Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 const long   serialBaud = 115200;  // Baud rate for debugging
 const int8_t greenLED   = 8;       // Pin for the green LED
@@ -53,22 +58,15 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [logging_options] */
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Settings
 // ==========================================================================
-
+/** Start [modem_settings] */
 // Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -90,34 +88,51 @@ const bool useCTSforStatus = true;  // Flag to use the modem CTS pin for status
 DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,
                        wifiPwd);
-// Create an extra reference to the modem by a generic name (not necessary)
+// Create an extra reference to the modem by a generic name
 DigiXBeeWifi modem = modemXBWF;
+/** End [modem_settings] */
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//  Using the Processor as a Sensor
 // ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [processor_sensor] */
+
+
+// ==========================================================================
+//  Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+/** Start [ds3231] */
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
+/** End [ds3231] */
 
 
 // ==========================================================================
-//    AOSong AM2315 Digital Humidity and Temperature Sensor
+//  AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
+/** Start [am2315] */
 #include <sensors/AOSongAM2315.h>
 
 const int8_t I2CPower = sensorPowerPin;  // Power pin (-1 if unconnected)
 
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
+/** End [am2315] */
 
 
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+//  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-
+/** Start [variable_arrays] */
 // The variables to record at 1 minute intervals
 Variable* variableList_at1min[] = {new AOSongAM2315_Humidity(&am2315),
                                    new AOSongAM2315_Temp(&am2315)};
@@ -136,23 +151,25 @@ int variableCount5min = sizeof(variableList_at5min) /
     sizeof(variableList_at5min[0]);
 // Create the 5-minute VariableArray object
 VariableArray array5min;
+/** End [variable_arrays] */
 
 
 // ==========================================================================
-//     The Logger Object[s]
+//  The Logger Object[s]
 // ==========================================================================
-
+/** Start [loggers] */
 // Create the 1-minute  logger instance
 Logger logger1min;
 
 // Create the 5-minute  logger instance
 Logger logger5min;
+/** End [loggers] */
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -165,11 +182,13 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     }
     digitalWrite(redLED, LOW);
 }
+/** End [working_functions] */
 
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
+/** Start [setup] */
 void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);
@@ -261,12 +280,13 @@ void setup() {
     // Only need to do this for one of the loggers
     logger1min.systemSleep();
 }
+/** End [setup] */
 
 
 // ==========================================================================
-// Main loop function
+//  Arduino Loop Function
 // ==========================================================================
-
+/** Start [loop] */
 // Because of the way alarms work on the RTC, it will wake the processor and
 // start the loop every minute exactly on the minute.
 // The processor may also be woken up by another interrupt or level change on a
@@ -378,3 +398,4 @@ void loop() {
     // Only need to do this for one of the loggers
     logger1min.systemSleep();
 }
+/** End [loop] */

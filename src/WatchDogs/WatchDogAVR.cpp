@@ -87,7 +87,9 @@ void extendedWatchDogAVR::resetWatchDog() {
 }
 
 
-// ISR for watchdog early warning
+/**
+ * @brief ISR for watchdog early warning
+ */
 ISR(WDT_vect) {
     extendedWatchDogAVR::_barksUntilReset--;  // Increament down the counter,
                                               // makes multi cycle WDT possible

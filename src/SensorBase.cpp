@@ -19,7 +19,7 @@ Sensor::Sensor(const char* sensorName, const uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                uint32_t measurementTime_ms, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage)
-    : _sensorName(sensorName), _numReturnedVars(numReturnedVars) {
+    : _sensorName(sensorName), _numReturnedValues(numReturnedVars) {
     _powerPin              = powerPin;
     _dataPin               = dataPin;
     _measurementsToAverage = measurementsToAverage;
@@ -166,7 +166,7 @@ void Sensor::powerDown(void) {
 // By default, sets pin modes and returns true
 bool Sensor::setup(void) {
     MS_DBG(F("Setting up"), getSensorName(), F("attached at"),
-           getSensorLocation(), F("which can return up to"), _numReturnedVars,
+           getSensorLocation(), F("which can return up to"), _numReturnedValues,
            F("variable[s]."));
 
     MS_DBG(F("It warms up in"), _warmUpTime_ms, F("ms, is stable after"),
@@ -284,10 +284,10 @@ void Sensor::registerVariable(int sensorVarNum, Variable* var) {
 /*String Sensor::getStringValueArray(void)
 {
     String retVal = "[";
-    for (uint8_t i = 0; i < _numReturnedVars; i++)
+    for (uint8_t i = 0; i < _numReturnedValues; i++)
     {
         retVal += String(sensorValues[i]);
-        if (i < _numReturnedVars-1)
+        if (i < _numReturnedValues-1)
             retVal += ", ";
     }
     retVal += ']';
@@ -300,7 +300,7 @@ void Sensor::notifyVariables(void) {
            F("of value update."));
 
     // Notify variables of update
-    for (uint8_t i = 0; i < _numReturnedVars; i++) {
+    for (uint8_t i = 0; i < _numReturnedValues; i++) {
         if (variables[i] != NULL) {
             // Bad things happen if try to update nullptr
             MS_DBG(F("Sending value update from"), getSensorNameAndLocation(),
@@ -319,7 +319,7 @@ void Sensor::notifyVariables(void) {
 // This function just empties the value array
 void Sensor::clearValues(void) {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
-    for (uint8_t i = 0; i < _numReturnedVars; i++) {
+    for (uint8_t i = 0; i < _numReturnedValues; i++) {
         sensorValues[i]               = -9999;
         numberGoodMeasurementsMade[i] = 0;
     }
@@ -367,7 +367,7 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
 void Sensor::averageMeasurements(void) {
     MS_DBG(F("Averaging results from"), getSensorNameAndLocation(), F("over"),
            _measurementsToAverage, F("reading[s]"));
-    for (uint8_t i = 0; i < _numReturnedVars; i++) {
+    for (uint8_t i = 0; i < _numReturnedValues; i++) {
         if (numberGoodMeasurementsMade[i] > 0)
             sensorValues[i] /= numberGoodMeasurementsMade[i];
         MS_DBG(F("    ->Result #"), i, ':', sensorValues[i]);

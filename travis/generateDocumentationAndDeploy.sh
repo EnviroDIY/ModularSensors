@@ -43,6 +43,9 @@ set -e
 mkdir code_docs
 cd code_docs
 
+# Clone the wiki, because we'll be using it in the docs
+git clone https://github.com/EnviroDIY/ModularSensors.wiki
+
 # Get the current gh-pages branch
 # git clone -b gh-pages https://git@$GH_REPO_REF
 # cd $GH_REPO_NAME

@@ -1,35 +1,41 @@
-/*****************************************************************************
-simple_logging.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
-Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
-  and the EnviroDIY Development Team
-
-This sketch is an example of logging data to an SD card
-
-DISCLAIMER:
-THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
-*****************************************************************************/
-
-// ==========================================================================
-//    Defines for the Arduino IDE
-//    In PlatformIO, set these build flags in your platformio.ini
-// ==========================================================================
+/** =========================================================================
+ * @file simple_logging.ino
+ * @brief A simple data logging example.
+ *
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ *                          and the EnviroDIY Development Team
+ *            This example is published under the BSD-3 license.
+ *
+ * Build Environment: Visual Studios Code with PlatformIO
+ * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+ *
+ * DISCLAIMER:
+ * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * ======================================================================= */
 
 // ==========================================================================
-//    Include the base required libraries
+//  Include the libraries required for any data logger
 // ==========================================================================
-#include <Arduino.h>          // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>       // The modular sensors library
+/** Start [includes] */
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+
+// EnableInterrupt is used by ModularSensors for external and pin change
+// interrupts and must be explicitly included in the main program.
+#include <EnableInterrupt.h>
+
+// To get all of the base classes for ModularSensors, include LoggerBase.
+// NOTE:  Individual sensor definitions must be included separately.
+#include <LoggerBase.h>
+/** End [includes] */
 
 
 // ==========================================================================
-//    Data Logger Settings
+//  Data Logging Options
 // ==========================================================================
-// The name of this file
+/** Start [logging_options] */
+// The name of this program file
 const char* sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
@@ -39,11 +45,7 @@ const uint8_t loggingInterval = 5;
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
-// ==========================================================================
-//    Primary Arduino-Based Board and Processor
-// ==========================================================================
-#include <sensors/ProcessorStats.h>
+// Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 const long   serialBaud = 115200;  // Baud rate for debugging
 const int8_t greenLED   = 8;       // Pin for the green LED
@@ -55,19 +57,30 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+/** End [logging_options] */
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [processor_sensor] */
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//  Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
+/** Start [ds3231] */
 #include <sensors/MaximDS3231.h>  // Includes wrapper functions for Maxim DS3231 RTC
 
 // Create a DS3231 sensor object, using this constructor function:
 MaximDS3231 ds3231(1);
+/** End [ds3231] */
 
 
 // ==========================================================================
@@ -83,9 +96,9 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+//  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-
+/** Start [variable_arrays] */
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
@@ -100,20 +113,22 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray;
+/** End [variable_arrays] */
 
 
 // ==========================================================================
-//     The Logger Object[s]
+//  The Logger Object[s]
 // ==========================================================================
-
+/** Start [loggers] */
 // Create a logger instance
 Logger dataLogger;
+/** End [loggers] */
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -126,11 +141,13 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     }
     digitalWrite(redLED, LOW);
 }
+/** End [working_functions] */
 
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
+/** Start [setup] */
 void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);
@@ -179,11 +196,14 @@ void setup() {
     // Call the processor sleep
     dataLogger.systemSleep();
 }
+/** End [setup] */
 
 
 // ==========================================================================
-// Main loop function
+//  Arduino Loop Function
 // ==========================================================================
+/** Start [loop] */
 void loop() {
     dataLogger.logData();
 }
+/** End [loop] */

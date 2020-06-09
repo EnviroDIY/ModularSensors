@@ -1,23 +1,26 @@
-/*****************************************************************************
-data_saving.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
-Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
-  and the EnviroDIY Development Team
-
-This sketch is an example of logging data to an SD card and sending only a
-portion of that data to the EnviroDIY data portal.
-
-DISCLAIMER:
-THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
-*****************************************************************************/
+/** =========================================================================
+ * @file data_saving.ino
+ * @brief Example publishing only a portion of the logged variables.
+ *
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ *                          and the EnviroDIY Development Team
+ *            This example is published under the BSD-3 license.
+ *
+ * Build Environment: Visual Studios Code with PlatformIO
+ * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+ *
+ * DISCLAIMER:
+ * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * ======================================================================= */
 
 // ==========================================================================
-//    Defines for the Arduino IDE
-//    In PlatformIO, set these build flags in your platformio.ini
+//  Defines for the Arduino IDE
+//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
+//         If you use PlatformIO, you should set these build flags in your
+//         platformio.ini
 // ==========================================================================
+/** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
@@ -27,19 +30,54 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #ifndef MQTT_MAX_PACKET_SIZE
 #define MQTT_MAX_PACKET_SIZE 240
 #endif
-
-// ==========================================================================
-//    Include the base required libraries
-// ==========================================================================
-#include <Arduino.h>          // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>       // The modular sensors library
+/** End [defines] */
 
 
 // ==========================================================================
-//    Data Logger Settings
+//  Include the libraries required for any data logger
 // ==========================================================================
-// The name of this file
+/** Start [includes] */
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+
+// EnableInterrupt is used by ModularSensors for external and pin change
+// interrupts and must be explicitly included in the main program.
+#include <EnableInterrupt.h>
+
+// To get all of the base classes for ModularSensors, include LoggerBase.
+// NOTE:  Individual sensor definitions must be included separately.
+#include <LoggerBase.h>
+/** End [includes] */
+
+
+// ==========================================================================
+//  Settings for Additional Serial Ports
+// ==========================================================================
+/** Start [serial_ports] */
+// The modem and a number of sensors communicate over UART/TTL - often called
+// "serial". "Hardware" serial ports (automatically controlled by the MCU) are
+// generally the most accurate and should be configured and used for as many
+// peripherals as possible.  In some cases (ie, modbus communication) many
+// sensors can share the same serial port.
+
+// Unfortunately, most AVR boards have only one or two hardware serial ports,
+// so we'll set up three types of extra software serial ports to use
+
+// AltSoftSerial by Paul Stoffregen
+// (https://github.com/PaulStoffregen/AltSoftSerial) is the most accurate
+// software serial port for AVR boards. AltSoftSerial can only be used on one
+// set of pins on each board so only one AltSoftSerial port can be used. Not all
+// AVR boards are supported by AltSoftSerial.
+#include <AltSoftSerial.h>
+AltSoftSerial altSoftSerial;
+/** End [serial_ports] */
+
+
+// ==========================================================================
+//  Data Logging Options
+// ==========================================================================
+/** Start [logging_options] */
+// The name of this program file
 const char* sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
@@ -49,11 +87,7 @@ const uint8_t loggingInterval = 5;
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
-// ==========================================================================
-//    Primary Arduino-Based Board and Processor
-// ==========================================================================
-#include <sensors/ProcessorStats.h>
+// Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 const long   serialBaud = 115200;  // Baud rate for debugging
 const int8_t greenLED   = 8;       // Pin for the green LED
@@ -65,129 +99,13 @@ const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
-
-// Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
-
-// Create sample number, battery voltage, and free RAM variable pointers for the
-// processor
-Variable* mcuBoardBatt = new ProcessorStats_Battery(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
-    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [logging_options] */
 
 
 // ==========================================================================
-//    Settings for Additional Serial Ports
+//  Wifi/Cellular Modem Settings
 // ==========================================================================
-
-// The modem and a number of sensors communicate over UART/TTL - often called
-// "serial". "Hardware" serial ports (automatically controlled by the MCU) are
-// generally the most accurate and should be configured and used for as many
-// peripherals as possible.  In some cases (ie, modbus communication) many
-// sensors can share the same serial port.
-
-#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
-// Unfortunately, most AVR boards have only one or two hardware serial ports,
-// so we'll set up three types of extra software serial ports to use
-
-// AltSoftSerial by Paul Stoffregen
-// (https://github.com/PaulStoffregen/AltSoftSerial) is the most accurate
-// software serial port for AVR boards. AltSoftSerial can only be used on one
-// set of pins on each board so only one AltSoftSerial port can be used. Not all
-// AVR boards are supported by AltSoftSerial.
-#include <AltSoftSerial.h>
-AltSoftSerial altSoftSerial;
-
-// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
-// serial that can be used on any pin supporting interrupts.
-// You can use as many instances of NeoSWSerial as you want.
-// Not all AVR boards are supported by NeoSWSerial.
-#include <NeoSWSerial.h>          // for the stream communication
-const int8_t neoSSerial1Rx = 11;  // data in pin
-const int8_t neoSSerial1Tx = -1;  // data out pin
-NeoSWSerial  neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
-// To use NeoSWSerial in this library, we define a function to receive data
-// This is just a short-cut for later
-void neoSSerial1ISR() {
-    NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
-}
-
-// The "standard" software serial library uses interrupts that conflict
-// with several other libraries used within this program, we must use a
-// version of software serial that has been stripped of interrupts.
-// NOTE:  Only use if necessary.  This is not a very accurate serial port!
-const int8_t softSerialRx = A3;  // data in pin
-const int8_t softSerialTx = A4;  // data out pin
-
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
-SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
-#endif  // End software serial for avr boards
-
-
-// The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
-// communication. The "core" code for most boards defines one or more UART
-// (Serial) ports with the SERCOMs and uses others for I2C and SPI.  We can
-// create new UART ports on any available SERCOM.  The table below shows
-// definitions for select boards.
-
-// Board =>   Arduino Zero       Adafruit Feather    Sodaq Boards
-// -------    ---------------    ----------------    ----------------
-// SERCOM0    Serial1 (D0/D1)    Serial1 (D0/D1)     Serial (D0/D1)
-// SERCOM1    Available          Available           Serial3 (D12/D13)
-// SERCOM2    Available          Available           I2C (A4/A5)
-// SERCOM3    I2C (D20/D21)      I2C (D20/D21)       SPI (D11/12/13)
-// SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2
-// SERCOM5    EDBG/Serial        Available           Serial1
-
-// If using a Sodaq board, do not define the new sercoms, instead:
-// #define ENABLE_SERIAL2
-// #define ENABLE_SERIAL3
-
-
-#if defined ARDUINO_ARCH_SAMD
-#include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
-
-#ifndef ENABLE_SERIAL2
-// Set up a 'new' UART using SERCOM1
-// The Rx will be on digital pin 11, which is SERCOM1's Pad #0
-// The Tx will be on digital pin 10, which is SERCOM1's Pad #2
-// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
-//        but not all!  Please check the variant.cpp file for you individual
-//        board! Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard'
-//        SERCOM definitions!
-Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
-// Hand over the interrupts to the sercom port
-void SERCOM1_Handler() {
-    Serial2.IrqHandler();
-}
-#endif
-
-#ifndef ENABLE_SERIAL3
-// Set up a 'new' UART using SERCOM2
-// The Rx will be on digital pin 5, which is SERCOM2's Pad #3
-// The Tx will be on digital pin 2, which is SERCOM2's Pad #2
-// NOTE:  SERCOM2 is undefinied on a "standard" Arduino Zero and many clones,
-//        but not all!  Please check the variant.cpp file for you individual
-//        board! Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard'
-//        SERCOM definitions!
-Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
-// Hand over the interrupts to the sercom port
-void SERCOM2_Handler() {
-    Serial3.IrqHandler();
-}
-#endif
-
-#endif  // End hardware serial on SAMD21 boards
-
-
-// ==========================================================================
-//    Wifi/Cellular Modem Settings
-// ==========================================================================
-
+/** Start [modem_settings] */
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 
@@ -206,7 +124,7 @@ const char* apn = "xxxxx";  // The APN for the gprs connection
 #include <modems/Sodaq2GBeeR6.h>
 const long   modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
-// Create an extra reference to the modem by a generic name (not necessary)
+// Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
 
 // Create RSSI and signal strength variable pointers for the modem
@@ -214,11 +132,34 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
                                      "12345678-abcd-1234-ef00-1234567890ab");
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [modem_settings] */
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//  Using the Processor as a Sensor
 // ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+
+// Create sample number, battery voltage, and free RAM variable pointers for the
+// processor
+Variable* mcuBoardBatt = new ProcessorStats_Battery(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
+    &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [processor_sensor] */
+
+
+// ==========================================================================
+//  Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+/** Start [ds3231] */
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
@@ -227,25 +168,28 @@ MaximDS3231 ds3231(1);
 // Create a temperature variable pointer for the DS3231
 Variable* ds3231Temp =
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ds3231] */
 
+
+// ==========================================================================
+//  Settings shared between Modbus sensors
+// ==========================================================================
+/** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
-#else
-// NeoSWSerial&   modbusSerial = neoSSerial1;    // For software serial
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
-#endif
+
+// Define some pins that will be shared by all modbus sensors
 const int8_t rs485AdapterPower =
     sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Sensor power pin
 const int8_t rs485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
+/** End [modbus_shared] */
 
 
 // ==========================================================================
-//    Yosemitech Y504 Dissolved Oxygen Sensor
+//  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
+/** Start [Y504] */
 #include <sensors/YosemitechY504.h>
 
 byte          y504ModbusAddress  = 0x04;  // The modbus address of the Y504
@@ -265,11 +209,13 @@ Variable* y504DOmgL =
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y504Temp =
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [Y504] */
 
 
 // ==========================================================================
-//    Yosemitech Y511 Turbidity Sensor with Wiper
+//  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
+/** Start [Y511] */
 #include <sensors/YosemitechY511.h>
 
 byte          y511ModbusAddress  = 0x1A;  // The modbus address of the Y511
@@ -286,11 +232,13 @@ Variable* y511Turb =
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y511Temp =
     new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [Y511] */
 
 
 // ==========================================================================
-//    Yosemitech Y514 Chlorophyll Sensor
+//  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
+/** Start [Y514] */
 #include <sensors/YosemitechY514.h>
 
 byte          y514ModbusAddress  = 0x14;  // The modbus address of the Y514
@@ -308,11 +256,13 @@ Variable* y514Chloro = new YosemitechY514_Chlorophyll(
     &y514, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y514Temp =
     new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [Y514] */
 
 
 // ==========================================================================
-//    Yosemitech Y520 Conductivity Sensor
+//  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
+/** Start [Y520] */
 #include <sensors/YosemitechY520.h>
 
 byte          y520ModbusAddress  = 0x20;  // The modbus address of the Y520
@@ -329,12 +279,13 @@ Variable* y520Cond =
     new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y520Temp =
     new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [Y520] */
 
 
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+//  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-
+/** Start [variable_arrays] */
 // FORM2: Fill array with already created and named variable pointers
 // We put ALL of the variable pointers into the first array
 Variable* variableList_complete[] = {
@@ -359,21 +310,26 @@ int variableCount_toGo = sizeof(variableList_toGo) /
     sizeof(variableList_toGo[0]);
 // Create the VariableArray object
 VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
+/** End [variable_arrays] */
 
 
 // ==========================================================================
-//     The Logger Object[s]
+//  The Logger Object[s]
 // ==========================================================================
-
+/** Start [loggers] */
 // Create one new logger instance for the complete array
 Logger loggerAllVars(LoggerID, loggingInterval, &arrayComplete);
 
 // Create "another" logger for the variables to go out over the internet
 Logger loggerToGo(LoggerID, loggingInterval, &arrayToGo);
+/** End [loggers] */
+
 
 // ==========================================================================
-//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+//  Creating Data Publisher[s]
 // ==========================================================================
+/** Start [publishers] */
+// Create a publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char* registrationToken =
@@ -381,17 +337,18 @@ const char* registrationToken =
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient,
                                  registrationToken, samplingFeature);
+/** End [publishers] */
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
@@ -405,18 +362,19 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     digitalWrite(redLED, LOW);
 }
 
-
-// Read's the battery voltage
+// Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
+/** End [working_functions] */
 
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
+/** Start [setup] */
 void setup() {
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
@@ -516,12 +474,13 @@ void setup() {
     Serial.println(F("Putting processor to sleep"));
     loggerAllVars.systemSleep();
 }
+/** End [setup] */
 
 
 // ==========================================================================
-// Main loop function
+//  Arduino Loop Function
 // ==========================================================================
-
+/** Start [loop] */
 // Use this long loop when you want to do something special
 // Because of the way alarms work on the RTC, it will wake the processor and
 // start the loop every minute exactly on the minute.
@@ -639,3 +598,4 @@ void loop() {
     // Only need to do this for one of the loggers
     loggerAllVars.systemSleep();
 }
+/** End [loop] */

@@ -18,7 +18,7 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
     : loggerModem(powerPin, statusPin, BG96_STATUS_LEVEL, modemResetPin,
                   BG96_RESET_LEVEL, BG96_RESET_PULSE_MS, modemSleepRqPin,
                   BG96_WAKE_LEVEL, BG96_WAKE_PULSE_MS, BG96_STATUS_TIME_MS,
-                  BG96_DISCONNECT_TIME_MS, BG96_WARM_UP_TIME_MS,
+                  BG96_DISCONNECT_TIME_MS, BG96_WAKE_DELAY_MS,
                   BG96_ATRESPONSE_TIME_MS),
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
       _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
@@ -66,7 +66,7 @@ bool QuectelBG96::modemWakeFxn(void) {
 
 bool QuectelBG96::modemSleepFxn(void) {
     if (_modemSleepRqPin >= 0) {
-        // BG96 must have access to PWRKEY pin to sleep
+        // BG96 must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         return gsmModem.poweroff();

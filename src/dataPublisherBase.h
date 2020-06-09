@@ -190,7 +190,8 @@ class dataPublisher {
 
 
     /**
-     * @brief Get the destination for published data.
+     * @brief Get the destination for published data - generally the host name
+     * of the data receiver.
      *
      * @return **String** The URL or HOST to receive published data
      */

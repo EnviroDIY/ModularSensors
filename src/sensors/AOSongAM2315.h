@@ -13,6 +13,13 @@
  * This file is dependent on the Adafruit AM2315 Library.
  *
  * @copydetails AOSongAM2315
+ *
+ * @defgroup am2315_group AOSong AM2315
+ * The Sensor and Variable objects for the AOSong AM2315 capacitive humidity and
+ * temperature sensor.
+ *
+ * @copydetails AOSongAM2315
+ *
  */
 
 // Header Guards
@@ -33,15 +40,23 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+/// Sensor::_numReturnedValues; the AM2315 can report 2 values.
 #define AM2315_NUM_VARIABLES 2
+/// Sensor::_warmUpTime_ms; AM2315 warms up in 500ms.
 #define AM2315_WARM_UP_TIME_MS 500
+/// Sensor::_stabilizationTime_ms; AM2315 is stable after 500ms.
 #define AM2315_STABILIZATION_TIME_MS 500
+/// Sensor::_measurementTime_ms; AM2315 takes 2000ms to complete a measurement.
 #define AM2315_MEASUREMENT_TIME_MS 2000
 
+/// Decimals places in string representation; humidity should have 1.
 #define AM2315_HUMIDITY_RESOLUTION 1
+/// Variable number; humidity is stored in sensorValues[0].
 #define AM2315_HUMIDITY_VAR_NUM 0
 
+/// Decimals places in string representation; temperature should have 1.
 #define AM2315_TEMP_RESOLUTION 1
+/// Variable number; temperature is stored in sensorValues[1].
 #define AM2315_TEMP_VAR_NUM 1
 
 
@@ -52,19 +67,26 @@
  * Documentation for the sensor can be found at:
  * www.aosong.com/asp_bin/Products/en/AM2315.pdf
  *
+ * Timing:
+ *     - warm up estimated at 500ms
+ *     - stablization estimated at 500ms
+ *     - measurements take 2s to complete
+ *
  * For Relative Humidity:
  *   @copydetails AOSongAM2315_Humidity
  *
  * For Temperature:
  *   @copydetails AOSongAM2315_Temp
  *
- * Warm up/stability/re-sampling time: 2sec
+ * @ingroup am2315_group
+ *
+ * @see am2315_page
  */
 class AOSongAM2315 : public Sensor {
  public:
     /**
-     * @brief Construct a new AOSongAM2315 object - because this is I2C, only
-     * need the power pin.
+     * @brief Construct a new AOSongAM2315 object - because this is I2C and has
+     * only 1 possible address, we only need the power pin.
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong
      * AM2315.  Use -1 if the sensor is continuously powered.
@@ -106,13 +128,17 @@ class AOSongAM2315 : public Sensor {
 
 
 /**
- * @brief The variable class used for humidity measured by an AOSong AM2315.
+ * @brief The variable class used for relative humidity measured by an AOSong
+ * AM2315.
  *
- *   - Resolution is 0.1 % RH (16 bit)
- *   - Accuracy is ± 2 % RH at 25°C
  *   - Range is 0 to 100% RH
- *   - Reported as percent RH
- *   - Result stored as sensorValues[0]
+ *   - Accuracy is ± 2 % RH at 25°C
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.1 % RH (16 bit)
+ *   - Reported as percent relative humidity
+ *   - Default variable code is AM2315Humidity
+ *
+ * @ingroup am2315_group
  */
 class AOSongAM2315_Humidity : public Variable {
  public:
@@ -150,11 +176,14 @@ class AOSongAM2315_Humidity : public Variable {
 /**
  * @brief The variable class used for temperature measured by an AOSong AM2315.
  *
- *   - Resolution is 0.1°C (16 bit)
- *   - Accuracy is ±0.1°C
  *   - Range is -40°C to +125°C
+ *   - Accuracy is ±0.1°C
+ *   - Result stored in sensorValues[1]
+ *   - Resolution is 0.1°C (16 bit)
  *   - Reported as degrees Celsius
- *   - Result stored as sensorValues[1]
+ *   - Default variable code is AM2315Temp
+ *
+ * @ingroup am2315_group
  */
 class AOSongAM2315_Temp : public Variable {
  public:
