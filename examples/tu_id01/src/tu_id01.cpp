@@ -64,13 +64,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = __FILE__; //"xxx.cpp";
-const char build_date[] = __DATE__ " " __TIME__;
+extern const String build_ref = __FILE__ " " __DATE__ " " __TIME__ " " ;
 #ifdef PIO_SRC_REV
 const char git_branch[] = PIO_SRC_REV;
 #else 
-const char git_branch[] = "wip";
+const char git_branch[] = ".";
 #endif
+
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 //const char *LoggerID = "TU001";
 const char *LoggerID = LOGGERID_DEF_STR;
@@ -105,13 +105,13 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
-
 // ==========================================================================
-//    Wifi/Cellular Modem Settings
+//    Settings for Additional Serial Ports
 // ==========================================================================
 
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+// The modem and a number of sensors communicate over UART/TTL - often called "serial".
+// "Hardware" serial ports (automatically controlled by the MCU) are generally
+// the most accurate and should be configured and used for as many peripherals
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
@@ -163,7 +163,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// AltSoftSerial &modemSerial = altSoftSerialPhy;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 // Use this to create a modem if you want to monitor modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
@@ -298,7 +298,7 @@ InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower,
 const int8_t ECpwrPin = ECpwrPin_DEF;
 const int8_t ECdataPin1 = ECdataPin1_DEF;
 analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
-#endif //ecagon_CTD_UUID
+#endif //AnalogProcEC_ACT
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
@@ -383,8 +383,8 @@ AOSongAM2315 am23xx(I2CPower);
 // Variable *am2315Humid = new AOSongAM2315_Humidity(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *am2315Temp = new AOSongAM2315_Temp(&am23xx, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ASONG_AM23XX_UUID
-// ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+
+
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -426,9 +426,33 @@ const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnec
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
 #endif //0
-
+#ifdef ExternalVoltage_ACT
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <sensors/ExternalVoltage.h>
+
+const int8_t ADSPower = 1;// sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t ADSChannel0 = 0;  // The ADS channel of interest
+const int8_t ADSChannel1 = 1;  // The ADS channel of interest
+const int8_t ADSChannel2 = 2;  // The ADS channel of interest
+const int8_t ADSChannel3 = 3;  // The ADS channel of interest
+const float dividerGain = 2; //  Default 1/gain for grove voltage divider is 10x  assumes Rev001
+const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+
+// Create an External Voltage sensor object
+ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr, VoltReadsToAvg);
+//ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltReadsToAvg);
+//special Vcc 3.3V
+ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr, VoltReadsToAvg);
+//ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr, VoltReadsToAvg);
+
+// Create a voltage variable pointer
+// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
+#endif //ExternalVoltage_ACT
+// ==========================================================================
+// Units conversion functions
 // ==========================================================================
 #define  SENSOR_T_DEFAULT_F -0.009999
 float convertDegCtoF(float tempInput)
@@ -483,7 +507,7 @@ Variable *CTDDepthInCalc = new Variable(
 #endif //Decagon_CTD_UUID
 
 #if defined MaximDS3231_TEMP_UUID || defined MaximDS3231_TEMPF_UUID
-
+// Create a temperature variable pointer for the DS3231
 #if defined MaximDS3231_TEMP_UUID
 Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231,MaximDS3231_TEMP_UUID);
 #else
@@ -515,11 +539,17 @@ Variable *ds3231TempFcalc = new Variable(
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined(ExternalVoltage_Volt0_UUID)
+    new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
+#endif
+#if defined(ExternalVoltage_Volt1_UUID)
+    new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
+#endif    
 #if defined AnalogProcEC_ACT
     new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
 #endif //AnalogProcEC_ACT    
     #if defined Decagon_CTD_UUID 
-    //new MaximDS3231_Temp(&ds3231, MaximDS3231_Temp_UUID),
+    //new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
     //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
     CTDTempFcalc,
@@ -536,7 +566,7 @@ Variable *variableList[] = {
     new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
 #endif // KellerAcculevel_ACT
 #if defined KellerNanolevel_ACT
-    //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+//   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
     new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
@@ -566,8 +596,8 @@ Variable *variableList[] = {
     #endif //  MaximDS3231_TEMP_UUID
     #if defined MaximDS3231_TEMPF_UUID
     ds3231TempFcalc,
-    #endif //MaximDS3231_Temp_UUID
-    //new Modem_SignalPercent(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+    #endif //MaximDS3231_TempF_UUID
+
 };
 
 
@@ -636,8 +666,8 @@ float getBatteryVoltage()
     return mcuBoard.sensorValues[0];
 }
 
+// ==========================================================================
 // Manages the Modbus Physical Pins.
-// Pins pulled high when powered off will cause a ghost power leakage. -
 // Pins pulled high when powered off will cause a ghost power leakage.
 #if defined KellerXxxLevel_ACT
 void modbusPinPowerMng(bool status) {
@@ -697,6 +727,10 @@ void  unusedBitsMakeSafe()
 // ==========================================================================
 void setup()
 {
+    //uint8_t resetCause = REG_RSTC_RCAUSE;        AVR ?//Reads from hw    
+    //uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; AVR ?//Reads from hw 
+    bool LiBattPower_Unseable;
+    uint16_t lp_wait=1;    
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
     // could prevent the script from starting
@@ -706,16 +740,14 @@ void setup()
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Build date: ")); 
-    Serial.print(build_date);
-
-    Serial.print(F(" '"));
-    Serial.print(sketchName);
+    Serial.print(F("\n---Boot. Build: ")); 
+    Serial.print(build_ref);  
     Serial.print(" ");
     Serial.println(git_branch);
 
-    Serial.print(F("Using ModularSensors Library version "));
+    Serial.print(F("ModularSensors version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
 #if defined UseModem_Module
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
@@ -725,6 +757,33 @@ void setup()
 
     unusedBitsMakeSafe();
     readAvrEeprom();
+
+    // A vital check on power availability
+    do {
+        LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ))?true:false);
+        if (LiBattPower_Unseable)
+        {
+            /* Sleep 
+            * If can't collect data wait for more power to accumulate.
+            * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
+            * Under no other load conditions the mega1284 takes about 35mA
+            * Another issue is that onstartup currently requires turning on comms device to set it up.
+            * On an XbeeS6 WiFi this can take 20seconds for some reason.
+            */
+            #if 1//defined(CHECK_SLEEP_POWER)
+            SerialStd.print(lp_wait++);
+            SerialStd.print(F(": BatteryLow-Sleep60sec, BatV="));
+            SerialStd.println(mcuBoard.getBatteryVm1(false));
+            #endif //(CHECK_SLEEP_POWER)
+            //delay(59000); //60Seconds
+            //if(_mcuWakePin >= 0){systemSleep();}
+            dataLogger.systemSleep(1); 
+            delay(1000);//debug
+            SerialStd.println(F("----Wakeup"));
+        }
+    } while (LiBattPower_Unseable); 
+    SerialStd.print(F("Good BatV="));
+    SerialStd.println(mcuBoard.getBatteryVm1(false));    
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -765,7 +824,7 @@ void setup()
     #ifdef UseModem_Module
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
-    //modemPhy.setModemLED(modemLEDPin);
+    //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
         #if defined Modem_SignalPercent_UUID //|| or others
                 modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
         #endif 
@@ -775,50 +834,43 @@ void setup()
 #ifdef USE_MS_SD_INI
     //Set up SD card access
     Serial.println(F("---parseIni "));
+    dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
     Serial.println(F("\n\n---parseIni complete "));
 #endif //USE_MS_SD_INI
+
+    mcuBoard.printBatteryThresholds();
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
     #if defined UseModem_Module
-    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.provider.s.registration_token, ps_ram.provider.s.sampling_feature);
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     
-    // Note:  Please change these battery voltages to match your battery
-
-    MS_DBG(F("---getBatteryVoltage "));
-    float batteryV = getBatteryVoltage(); //Get once
-
     // Sync the clock if it isn't valid and we have battery to spare
-    #define POWER_THRESHOLD_NEED_COMMS_PWR 3.2
-    #define POWER_THRESHOLD_NEED_BASIC_PWR 2.8
-    while  (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR && !dataLogger.isRTCSane())
-    {
-        MS_DBG(F("Not enough power to sync with NIST "),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);
-        dataLogger.systemSleep();     
-        batteryV = getBatteryVoltage(); //reresh
-    } 
 
-    if (!dataLogger.isRTCSane()) {
+#if 0
+    //if (!dataLogger.isRTCSane()) 
+    {
         #if defined UseModem_Module
         MS_DBG(F("Sync with NIST "));
+        // this will correct RTC if bad dataLogger.isRTCSane()
+        while  ( (PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) )
+        {
+            MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
+        dataLogger.systemSleep();     
+    } 
         // Synchronize the RTC with NIST
         // This will also set up the modemPhy
         dataLogger.syncRTC();
         #else
-        MS_DBG(F("Time Bad. Please Correct "));
+        MS_DBG(F("Time Bad. Should have been updated "));
         // Need to do error - flash light, stop
         #endif
     }
-
-    //Check if enough power to go on
-    while (batteryV < POWER_THRESHOLD_NEED_BASIC_PWR) {
-        MS_DBG(F("Wait for more power, batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_BASIC_PWR);
-        dataLogger.systemSleep();        
-        batteryV = getBatteryVoltage(); //referesh
-    }
+    #endif //0 
+    PRINTOUT(F("Time "), dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
 
     Serial.println(F("Setting up sensors..."));
     varArray.setupSensors();
@@ -839,10 +891,10 @@ void setup()
     #endif //DIGI_RSSI_UUID
     //modbusSerial.setDebugStream(&Serial); not for AltSoftSerial or NeoSWserial
     MS_DBG(F("\n\nSetup Complete ****"));
-
     // Call the processor sleep
     //Serial.println(F("processor to sleep\n"));
     //dataLogger.systemSleep();
+
 }
 
 
@@ -850,27 +902,24 @@ void setup()
 // Main loop function
 // ==========================================================================
 
-// Use this short loop for simple data logging and sending
 void loop()
 {
-    // Note:  Please change these battery voltages to match your battery
-    // At very low battery, just go back to sleep
-    float batteryV = getBatteryVoltage();
-    if (batteryV < POWER_THRESHOLD_NEED_BASIC_PWR)
-    {
-        MS_DBG(F("Cancel logging, V too low batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_BASIC_PWR);
+    ps_Lbatt_status_t Lbatt_status;
+    Lbatt_status = mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
+    if (PS_LBATT_UNUSEABLE_STATUS==Lbatt_status ) {
+        PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="),mcuBoard.getBatteryVm1(false));
         dataLogger.systemSleep();
     }
-    // At moderate voltage, log data but don't send it over the modemPhy
+    // If battery low, log data but don't send it over the modemPhy
     else 
     #if defined UseModem_Module
-    if (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR)
+    if (PS_LBATT_LOW_STATUS >= Lbatt_status )
     #endif
     {
         #if defined UseModem_Module
-        MS_DBG(F("Cancel Publish collect readings & log. V too low batteryV="),batteryV,F("Need >"), POWER_THRESHOLD_NEED_COMMS_PWR );
+        PRINTOUT(F("Cancel Publish collect readings & log. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         #else
-        MS_DBG(F("Collect readings & log. batteryV="),batteryV,F("Threshold >"), POWER_THRESHOLD_NEED_BASIC_PWR );
+        PRINTOUT(F("Collect readings & log. batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         #endif // UseModem_Module
         dataLogger.logData();
     }
@@ -878,7 +927,7 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-        MS_DBG(F("Starting logging/Publishing"),batteryV);
+         PRINTOUT(F("Starting logging/Publishing"),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         dataLogger.logDataAndPublish();
     }
     #endif// UseModem_Module
