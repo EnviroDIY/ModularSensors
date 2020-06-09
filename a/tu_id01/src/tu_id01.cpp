@@ -64,13 +64,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = __FILE__; //"xxx.cpp";
-const char build_date[] = __DATE__ " " __TIME__;
+extern const String build_ref = __FILE__ " " __DATE__ " " __TIME__ " " ;
 #ifdef PIO_SRC_REV
 const char git_branch[] = PIO_SRC_REV;
 #else 
-const char git_branch[] = "wip";
+const char git_branch[] = ".";
 #endif
+
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 //const char *LoggerID = "TU001";
 const char *LoggerID = LOGGERID_DEF_STR;
@@ -740,16 +740,14 @@ void setup()
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Build date: ")); 
-    Serial.print(build_date);
-
-    Serial.print(F(" '"));
-    Serial.print(sketchName);
+    Serial.print(F("\n---Boot. Build: ")); 
+    Serial.print(build_ref);  
     Serial.print(" ");
     Serial.println(git_branch);
 
-    Serial.print(F("Using ModularSensors Library version "));
+    Serial.print(F("ModularSensors version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
 #if defined UseModem_Module
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
@@ -840,6 +838,8 @@ void setup()
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
     Serial.println(F("\n\n---parseIni complete "));
     #endif //USE_MS_SD_INI
+ 
+    mcuBoard.printBatteryThresholds();
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
@@ -848,42 +848,30 @@ void setup()
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     
-    // Note:  Please change these battery voltages to match your battery
-
-    //MS_DBG(F("---getBatteryVoltage "));
-    //float batteryV = getBatteryVoltage(); //Get once
-    #if defined UseModem_Module
     // Sync the clock if it isn't valid and we have battery to spare
-    //#define POWER_THRESHOLD_NEED_COMMS_PWR 3.2
-    //#define POWER_THRESHOLD_NEED_BASIC_PWR 2.8
 
-    while  ( (PS_LBATT_UNUSEABLE_STATUS != mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) && !dataLogger.isRTCSane())
+#if 0
+    //if (!dataLogger.isRTCSane()) 
     {
-        MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), S_PWR_LOW_REQ);
-        dataLogger.systemSleep();     
-    } 
-    #endif //UseModem_Module
-
-    if (!dataLogger.isRTCSane()) {
         #if defined UseModem_Module
         MS_DBG(F("Sync with NIST "));
+        // this will correct RTC if bad dataLogger.isRTCSane()
+        while  ( (PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) )
+        {
+            MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
+            dataLogger.systemSleep();     
+        } 
         // Synchronize the RTC with NIST
         // This will also set up the modemPhy
         dataLogger.syncRTC();
         #else
-        MS_DBG(F("Time Bad. Please Correct "));
+        MS_DBG(F("Time Bad. Should have been updated "));
         // Need to do error - flash light, stop
-        #endif
+        #endif        
     }
+    #endif //0 
+    PRINTOUT(F("Time "), dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
 
-#if 0
-    //Check if enough power to go on
-    while (batteryV < POWER_THRESHOLD_NEED_BASIC_PWR) {
-        MS_DBG(F("Wait for more power, batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_BASIC_PWR);
-        dataLogger.systemSleep();        
-        batteryV = getBatteryVoltage(); //referesh
-    }
-#endif //0
     Serial.println(F("Setting up sensors..."));
     varArray.setupSensors();
     // Create the log file, adding the default header to it
@@ -925,7 +913,7 @@ void loop()
     // If battery low, log data but don't send it over the modemPhy
     else 
     #if defined UseModem_Module
-    if (PS_LBATT_LOW_STATUS <= Lbatt_status )
+    if (PS_LBATT_LOW_STATUS >= Lbatt_status )
     #endif
     {
         #if defined UseModem_Module

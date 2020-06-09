@@ -562,7 +562,7 @@ void readAvrEeprom() {
     }
 
     PRINTOUT(F("From eeprom common: Logger File Name["),(char *)epc.app.msc.s.logger_id
-        ,F("] logging interval="),epc.app.msc.s.logging_interval_min
+        ,F("]\n\r   logging interval="),epc.app.msc.s.logging_interval_min
         ,F("minutes, Tz="),epc.app.msc.s.time_zone
         ,F("battery type="),epc.app.msc.s.battery_type
     );

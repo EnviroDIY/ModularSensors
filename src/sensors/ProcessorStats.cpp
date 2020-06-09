@@ -243,7 +243,7 @@ void ProcessorStats::setBatteryType(ps_liion_rating_t LiionType) {
     _liion_type = LiionType;
 }
 void ProcessorStats::printBatteryThresholds() {
-    Serial.print(F("Battery LiIonType="));
+    Serial.print(F("Battery Type="));
     Serial.println(_liion_type);
     Serial.print(F(" Thresholds USEABLE="));
     Serial.print(PS_LBATT_USEABLE_V);

@@ -628,9 +628,24 @@ void Logger::setPs_cache(persistent_store_t *ps_ram)
 {
     ps_cache=ps_ram;
 }
+
+extern const String build_ref;
 void Logger::printFileHeaderExtra(Stream *stream) 
 {
     if (NULL == ps_cache) return;
+    stream->print(F("Location: "));
+    stream->println((char *)ps_cache->app.msc.s.geolocation_id);
+    stream->print(F("  LoggingInterval (min): "));
+    stream->println(ps_cache->app.msc.s.logging_interval_min);
+    stream->print(F(" Tz: "));
+    stream->println(ps_cache->app.msc.s.time_zone);
+    stream->print(F("  BatteryType: "));
+    stream->println(ps_cache->app.msc.s.battery_type);
+    stream->print(F("Sw Build: "));
+    stream->print(build_ref);  
+    stream->print(F(" ModularSensors vers "));
+    stream->println(MODULAR_SENSORS_VERSION);
+    #if defined USE_PS_HW_BOOT
     stream->print(F("Board: "));
     stream->print((char *)ps_cache->hw_boot.board_name);
     stream->print(F(" rev:'"));
@@ -638,14 +653,8 @@ void Logger::printFileHeaderExtra(Stream *stream)
     stream->print(F("' sn:'"));
     stream->print((char *)ps_cache->hw_boot.serial_num);      
     stream->println(F("'"));      
+    #endif //USE_PS_HW_BOOT
 
-    stream->print(F("Tz: "));
-    stream->print(ps_cache->app.msc.s.time_zone);
-    stream->print(F(" BatteryType: "));
-    stream->println(ps_cache->app.msc.s.battery_type);
-
-    stream->print(F("Location: "));
-    stream->println((char *)ps_cache->app.msc.s.geolocation_id);
 }
 #endif //USE_MS_SD_INI
 
