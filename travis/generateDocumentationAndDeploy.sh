@@ -9,7 +9,7 @@ __AUTHOR__="Jeroen de Bruijn"
 #   must be installed.
 # - Doxygen configuration file must have the destination directory empty and
 #   source code directory with a $(TRAVIS_BUILD_DIR) prefix.
-# - An gh-pages branch should already exist. See below for mor info on hoe to
+# - An gh-pages branch should already exist. See below for more info on how to
 #   create a gh-pages branch.
 #
 # Required global variables:
@@ -43,14 +43,17 @@ set -e
 mkdir code_docs
 cd code_docs
 
+# Re-clone the main repo, not sparsely
+git clone -b master https://github.com/EnviroDIY/ModularSensors ModularSensors
+
 # Clone the wiki, because we'll be using it in the docs
 git clone https://github.com/EnviroDIY/ModularSensors.wiki
 
 # Get the current gh-pages branch
 # git clone -b gh-pages https://git@$GH_REPO_REF
 # cd $GH_REPO_NAME
-git clone -b gh-pages https://github.com/EnviroDIY/ModularSensors
-cd ModularSensors
+git clone -b gh-pages https://github.com/EnviroDIY/ModularSensors ModularSensorsDoxygen
+cd ModularSensorsDoxygen
 
 ##### Configure git.
 # Set the push default to simple i.e. push only the current branch.
@@ -74,10 +77,12 @@ echo "" > .nojekyll
 
 ################################################################################
 ##### Generate the Doxygen code documentation and log the output.          #####
+cd ../ModularSensors
 echo 'Generating Doxygen code documentation...'
 # Redirect both stderr and stdout to the log file AND the console.
 # doxygen $DOXYFILE 2>&1 | tee doxygen.log
-doxygen Doxyfile 2>&1 | tee doxygen.log
+doxygen doxyfile 2>&1 | tee doxygen.log
+cd ../ModularSensorsDoxygen
 
 ################################################################################
 ##### Upload the documentation to the gh-pages branch of the repository.   #####

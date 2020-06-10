@@ -42,6 +42,8 @@ ___
   - [Sensors and Measured Variables](#sensors-and-measured-variables)
     - [The processor as a sensor](#the-processor-as-a-sensor)
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
+    - [AOSong AM2315](#aosong-am2315)
+    - [AOSong DHT](#aosong-dht)
     - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
     - [Maxim DS18 one wire temperature sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS503 pressure and temperature sensor](#measurement-specialties-ms503-pressure-and-temperature-sensor)
@@ -528,6 +530,31 @@ As above, we create both the sensor and the variables measured by it.
 
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino ds3231 )
 ___
+
+[//]: # ( @subsection menu_am2315 AOSong AM2315 )
+### AOSong AM2315
+
+Here is the code for the AOSong AM2315 temperature and humidity sensor.
+This is an I2C sensor with only one possible address so the only argument required for the constructor is the pin on the MCU controlling power to the AM2315 (AM2315Power).
+The number of readings to average from the sensor is optional, but can be supplied as the second argument for the constructor if desired.
+
+@see @ref am2315_page
+
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino am2315 )
+___
+
+[//]: # ( @subsection menu_dht AOSong DHT )
+### AOSong DHT
+
+Here is the code for the AOSong DHT temperature and humidity sensor.
+To create the DHT sensor we need the power pin, the data pin, and the DHT type.
+The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
+
+@see @ref dht_page
+
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino dht )
+___
+
 
 [//]: # ( @subsection menu_bme280 Bosch BME280 environmental sensor )
 ### Bosch BME280 environmental sensor
