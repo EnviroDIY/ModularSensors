@@ -115,12 +115,11 @@ jobs:
           - git config --global user.email "sdamiano@stroudcenter.org"
           - git config --global user.name "SRGDamia1"
           - sudo apt-get update
-          - sudo apt-get -y install doxygen
-          - sudo apt-get -y install doxygen-doc
-          - sudo apt-get -y install doxygen-latex
-          - sudo apt-get -y install doxygen-gui
           - sudo apt-get -y install graphviz
         install:
+              chmod +x travis/build-install-doxygen.sh
+              sh travis/build-install-doxygen.sh
               cd $TRAVIS_BUILD_DIR
+        script:
               chmod +x travis/generateDocumentationAndDeploy.sh
-        script:  sh travis/generateDocumentationAndDeploy.sh
+              sh travis/generateDocumentationAndDeploy.sh
