@@ -120,7 +120,7 @@ jobs:
               - doxygen-latex
               - doxygen-gui
               - graphviz
-          script: |
+        install:
               cd $TRAVIS_BUILD_DIR
               chmod +x travis/generateDocumentationAndDeploy.sh
-              sh travis/generateDocumentationAndDeploy.sh
+        script:  sh travis/generateDocumentationAndDeploy.sh
