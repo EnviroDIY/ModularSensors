@@ -739,7 +739,7 @@ uint8_t      AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
 AtlasScientificCO2 atlasCO2(AtlasCO2Power);
 
 // Create concentration and temperature variable pointers for the EZO-CO2
-Variable* atlasCO2 = new AtlasScientificCO2_CO2(
+Variable* atlasCO2CO2 = new AtlasScientificCO2_CO2(
     &atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* atlasCO2Temp = new AtlasScientificCO2_Temp(
     &atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");

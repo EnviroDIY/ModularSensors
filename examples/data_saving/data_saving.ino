@@ -60,6 +60,7 @@
 // peripherals as possible.  In some cases (ie, modbus communication) many
 // sensors can share the same serial port.
 
+#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -70,6 +71,28 @@
 // AVR boards are supported by AltSoftSerial.
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
+#endif  // End software serial for avr boards
+
+
+#if defined ARDUINO_ARCH_SAMD
+#include <wiring_private.h>  // Needed for SAMD pinPeripheral() function
+
+#ifndef ENABLE_SERIAL2
+// Set up a 'new' UART using SERCOM1
+// The Rx will be on digital pin 11, which is SERCOM1's Pad #0
+// The Tx will be on digital pin 10, which is SERCOM1's Pad #2
+// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
+//        but not all!  Please check the variant.cpp file for you individual
+//        board! Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard'
+//        SERCOM definitions!
+Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
+// Hand over the interrupts to the sercom port
+void SERCOM1_Handler() {
+    Serial2.IrqHandler();
+}
+#endif
+
+#endif  // End hardware serial on SAMD21 boards
 /** End [serial_ports] */
 
 
@@ -176,7 +199,11 @@ Variable* ds3231Temp =
 // ==========================================================================
 /** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
+#else
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
+#endif
 
 // Define some pins that will be shared by all modbus sensors
 const int8_t rs485AdapterPower =

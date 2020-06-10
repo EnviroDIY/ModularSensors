@@ -40,6 +40,7 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_numReturnedValues; the SQ212 can report 2 values.
 #define SQ212_NUM_VARIABLES 2
 // Using the warm-up time of the ADS1115
@@ -70,6 +71,9 @@
 /// Decimals places in string representation; voltage should have 4.
 #define SQ212_VOLT_RESOLUTION 4
 #endif
+
+/// The assumed address fo the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
 
 /**
  * @brief The main class for the Apogee SQ-212 sensor
@@ -114,7 +118,8 @@ class ApogeeSQ212 : public Sensor {
      * = GND)
      * @param measurementsToAverage
      */
-    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel, uint8_t i2cAddress = 0x48,
+    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
+                uint8_t i2cAddress            = ADS1115_ADDRESS,
                 uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ApogeeSQ212 object - no action needed
