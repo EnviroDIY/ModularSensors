@@ -1,20 +1,8 @@
 before_install:
     - git config --global user.email "sdamiano@stroudcenter.org"
     - git config --global user.name "SRGDamia1"
-    - sudo apt-get install python-software-properties
-    - sudo apt-add-repository -y ppa:libreoffice/libreoffice-4-2
-    - sudo apt-get update
-    - sudo apt-get install doxygen
 
 sudo: false
-addons:
-  apt:
-    packages:
-      - doxygen
-      - doxygen-doc
-      - doxygen-latex
-      - doxygen-gui
-      - graphviz
 git:
   depth: 1
   sparse_checkout: travis/travis_sparse_checkout
@@ -64,9 +52,10 @@ install:
 script:
     - platformio ci --project-conf="travis/platformio.ini"
 
-matrix:
+jobs:
     include:
-      - language: node_js
+      - name: "Verify library JSON format"
+        language: node_js
         install: npm install -g jsonlint
         script: jsonlint -q library.json
         after_success: |
@@ -77,33 +66,73 @@ matrix:
               sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
           fi
 
-      - env:
+      - name: "Check Single Sensor Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Simple Logging Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check DRWI CitSci 2G Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check DRWI CitSci LTE Example"
+        env:
+          - PLATFORMIO_CI_SRC=examples/DRWI_LTE/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+
+      - name: "Check DRWI CitSci No Cellular Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Double Logger Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Baro Correction Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Data Saving Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check ThingSpeak Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Menu Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
 
-      - language: python
+      - name: "Build Doxygen Documentation"
+        if: branch = master
+        language: python
         python:
           - "3.7"
-        script: |
-          echo "TRAVIS_BRANCH=$TRAVIS_BRANCH TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
-          if [[ ($TRAVIS_BRANCH == master) &&
-                ($TRAVIS_PULL_REQUEST == false) ]] ; then
-              cd $TRAVIS_BUILD_DIR
-              chmod +x travis/generateDocumentationAndDeploy.sh
-              sh travis/generateDocumentationAndDeploy.sh
-          fi
+        addons:
+          apt:
+            update: true
+            packages:
+              - doxygen
+              - doxygen-doc
+              - doxygen-latex
+              - doxygen-gui
+              - graphviz
+          script:
+        # script: |
+        #   cd $TRAVIS_BUILD_DIR
+        #   mkdir code_docs
+        #   cd code_docs
+        #   git clone -b master https://github.com/EnviroDIY/ModularSensors ModularSensors
+        #   git clone https://github.com/EnviroDIY/ModularSensors.wiki
+        #   git clone -b gh-pages https://github.com/EnviroDIY/ModularSensors ModularSensorsDoxygen
+        #   cd ModularSensorsDoxygen
+        #   rm -rf *
+        #   echo "" > .nojekyll
+        #   cd ../ModularSensors
+        #   doxygen -v
+        #   doxygen Doxyfile 2>&1 | tee doxygen.log
+        #   cd ../ModularSensorsDoxygen
+        #   ls 2>&1
