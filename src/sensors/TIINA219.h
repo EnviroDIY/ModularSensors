@@ -78,13 +78,17 @@
 /// Variable number; power draw is stored in sensorValues[2].
 #define INA219_POWER_MW_VAR_NUM 2
 
+/// The default address of the INA219
+#define INA219_ADDRESS_BASE 0x40
+
 /**
  * @brief The main class for the TexasInstruments INA219
  sensor
  */
 class TIINA219 : public Sensor {
  public:
-    explicit TIINA219(int8_t powerPin, uint8_t i2cAddressHex = 0x40,
+    explicit TIINA219(int8_t  powerPin,
+                      uint8_t i2cAddressHex         = INA219_ADDRESS_BASE,
                       uint8_t measurementsToAverage = 1);
     ~TIINA219();
 
