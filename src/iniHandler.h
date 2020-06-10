@@ -50,7 +50,7 @@ const char ACTION_pm[] EDIY_PROGMEM = "ACTION";
 const char WRITE_pm[] EDIY_PROGMEM = "WRITE";
 const char COPY_pm[] EDIY_PROGMEM = "COPY";
 
-//static uint8_t uuid_index =0;
+static uint8_t uuid_index =0;
 
 #if defined USE_PS_EEPROM  && defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 //
@@ -94,25 +94,25 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
     bool ram_track = true;
     #endif
     //MS_DBG(F("inih "),section," ",name," ",value);
-    #if definedUSE_PS_Provider
+    #if defined USE_PS_Provider
     if (strcmp_P(section,PROVIDER_pm)== 0)
     {
         if        (strcmp_P(name,REGISTRATION_TOKEN_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher
-            strcpy(ps_ram.provider.s.registration_token, value);
+            strcpy(ps_ram.app.provider.s.registration_token, value);
             SerialStd.print(F("PROVIDER Setting registration token: "));
-            SerialStd.println(ps_ram.provider.s.registration_token );
+            SerialStd.println(ps_ram.app.provider.s.registration_token );
             //EnviroDIYPOST.setToken(ps_ram.provider.s.registration_token);
         } else if (strcmp_P(name,CLOUD_ID_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher - though hardcoded
-            strcpy(ps_ram.provider.s.cloudId, value);
+            strcpy(ps_ram.app.provider.s.cloudId, value);
             SerialStd.print(F("PROVIDER Setting cloudId: "));
-            SerialStd.println(ps_ram.provider.s.cloudId );
+            SerialStd.println(ps_ram.app.provider.s.cloudId );
         } else if (strcmp_P(name,SAMPLING_FEATURE_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher
-            strcpy(ps_ram.provider.s.sampling_feature, value);
+            strcpy(ps_ram.app.provider.s.sampling_feature, value);
             SerialStd.print(F("PROVIDER Setting SamplingFeature: "));
-            SerialStd.println(ps_ram.provider.s.sampling_feature );
+            SerialStd.println(ps_ram.app.provider.s.sampling_feature );
             //dataLogger.setSamplingFeatureUUID(ps_ram.provider.s.sampling_feature);
         } else {
             SerialStd.print(F("PROVIDER not supported:"));

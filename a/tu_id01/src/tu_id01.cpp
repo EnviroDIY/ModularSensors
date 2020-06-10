@@ -125,6 +125,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // AltSoftSerial port can be used.
 // Not all AVR boards are supported by AltSoftSerial.
 // AltSoftSerial is capable of running up to 31250 baud on 16 MHz AVR. Slower baud rates are recommended when other code may delay AltSoftSerial's interrupt response.
+//Pins In/Rx 6  Out/Tx=5
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerialPhy;
 
@@ -556,19 +557,17 @@ Variable *variableList[] = {
 #endif //Decagon_CTD_UUID
 #if defined Insitu_TrollSdi12_UUID 
     new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
-    //CTDDepthInCalc,
     new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
-    //CTDTempFcalc,
 #endif //Insitu_TrollSdi12_UUID
 #if defined KellerAcculevel_ACT
     //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
-    new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
-    new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerXxlevel_Temp_UUID),
+    new KellerAcculevel_Height(&acculevel_snsr, KellerXxlevel_Height_UUID),
 #endif // KellerAcculevel_ACT
 #if defined KellerNanolevel_ACT
 //   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
-    new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
+    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerXxlevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevel_snsr, KellerXxlevel_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #if defined InsituLTrs485_ACT
 //   new insituLevelTroll_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -691,8 +690,10 @@ void  unusedBitsMakeSafe()
     //PORT_SAFE( 1); Tx0  TTy
     //PORT_SAFE( 2); Rx1  Xb?
     //PORT_SAFE( 3); Tx1  Xb?
+    #if !defined KellerXxxLevel_ACT
     PORT_SAFE(04);
     PORT_SAFE(05);
+    #endif //KellerXxxLevel_ACT
     PORT_SAFE(06);
     //PORT_SAFE(07); SDI12
     //PORT_SAFE(08); Grn Led
@@ -879,9 +880,13 @@ void setup()
     // all sensor names correct
     // Writing to the SD card can be power intensive, so if we're skipping
     // the sensor setup we'll skip this too.
+    //SDI12?
     #if defined KellerNanolevel_ACT
     nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
-    #endif //
+    #endif //KellerNanolevel_ACT
+    #if defined KellerAcculevel_ACT
+    acculevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
+    #endif // KellerAcculevel_ACT
     Serial.println(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true); // true = write a new header
