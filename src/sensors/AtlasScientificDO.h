@@ -14,7 +14,7 @@
  * @copydetails AtlasScientificDO
  *
  * @defgroup atlas_do_group Atlas Scientific DO circuit
- * The Sensor and Variable objects for the Atlas EZO DO circuit
+ * Classes for the Atlas EZO DO circuit
  *
  * @copydetails AtlasScientificDO
  */

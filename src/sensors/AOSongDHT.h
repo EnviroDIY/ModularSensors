@@ -15,7 +15,7 @@
  * @copydetails AOSongDHT
  *
  * @defgroup dht_group AOSong DHT
- * The Sensor and Variable objects for the AOSong DHT digital-output relative
+ * Classes for the AOSong DHT digital-output relative
  * humidity & temperature sensors.
  *
  * @copydetails AOSongDHT

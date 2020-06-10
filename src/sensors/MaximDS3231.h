@@ -12,7 +12,7 @@
  *
  * This depends on the EnviroDIY DS3231 library.
  *
- * @defgroup ds3231_group xxxx
+ * @defgroup ds3231_group Maxim DS3231 RTC
  * Classes for the @ref ds3231_page
  *
  * @copydoc ds3231_page

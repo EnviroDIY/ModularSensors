@@ -263,7 +263,7 @@ TAB_SIZE               = 4
 
 ALIASES                = "license=@par License:\n" \
                          "environment=@par Development Environment:\n" \
-                         "platform=@par Hardware Platform:\n" \
+                         "platform=@par Hardware Platform:\n"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
@@ -338,7 +338,7 @@ MARKDOWN_SUPPORT       = YES
 # Minimum value: 0, maximum value: 99, default value: 5.
 # This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
 
-TOC_INCLUDE_HEADINGS   = 5
+TOC_INCLUDE_HEADINGS   = 10
 
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
@@ -417,7 +417,7 @@ SUBGROUPING            = YES
 
 INLINE_GROUPED_CLASSES = NO
 
-# When the INLINE_SIMPLE_STRU`CTS`  tag is set to YES, structs, classes, and unions
+# When the INLINE_SIMPLE_STRUCTS tag is set to YES, structs, classes, and unions
 # with only public data fields or simple typedef fields will be shown inline in
 # the documentation of the scope in which they are defined (i.e. file,
 # namespace, or group documentation), provided this scope is documented. If set
@@ -425,7 +425,7 @@ INLINE_GROUPED_CLASSES = NO
 # Man pages) or section (for LaTeX and RTF).
 # The default value is: NO.
 
-INLINE_SIMPLE_STRU`CTS`   = NO
+INLINE_SIMPLE_STRUCTS  = NO
 
 # When TYPEDEF_HIDES_STRUCT tag is enabled, a typedef of a struct, union, or
 # enum is documented as struct, union, or enum with the name of the typedef. So
@@ -828,6 +828,7 @@ WARN_LOGFILE           =
 INPUT                  = ReadMe.md \
                          src \
                          examples \
+                         doxygen_wiki_pages.dox \
                          ../ModularSensors.wiki
 
 # This tag can be used to specify the character encoding of the source files
@@ -887,7 +888,12 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                =
+EXCLUDE                = examples/logger_test \
+                         examples/logger_test_nonew \
+                         examples/YosemitechDO \
+                         ../ModularSensors.wiki/Class-Functionality \
+                         ../ModularSensors.wiki/Example-Snippets \
+                         ../ModularSensors.wiki/Supported-Web-Services
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1360,7 +1366,7 @@ HTML_DYNAMIC_SECTIONS  = YES
 # Minimum value: 0, maximum value: 9999, default value: 100.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_INDEX_NUM_ENTRIES = 50
+HTML_INDEX_NUM_ENTRIES = 500
 
 # If the GENERATE_DOCSET tag is set to YES, additional index files will be
 # generated that can be used as input for Apple's Xcode 3 integrated development
@@ -1593,7 +1599,7 @@ ENUM_VALUES_PER_LINE   = 4
 # Minimum value: 0, maximum value: 1500, default value: 250.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-TREEVIEW_WIDTH         = 250
+TREEVIEW_WIDTH         = 200
 
 # If the EXT_LINKS_IN_WINDOW option is set to YES, doxygen will open links to
 # external symbols imported via tag files in a separate window.
@@ -2280,7 +2286,11 @@ PREDEFINED             = __attribute__((__progmem__))= \
                          STANDARD_SERIAL_OUTPUT=Serial \
                          DEBUGGING_SERIAL_OUTPUT=Serial \
                          DEEP_DEBUGGING_SERIAL_OUTPUT=Serial \
-                         MS_BUILD_TESTING
+                         MS_BUILD_TESTING \
+                         TINY_GSM_MODEM_HAS_GPRS \
+                         TINY_GSM_MODEM_HAS_WIFI \
+                         TINY_GSM_MODEM_HAS_BATTERY \
+                         TINY_GSM_MODEM_HAS_TEMPERATURE
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The

@@ -13,7 +13,7 @@
  * @copydetails AtlasScientificpH
  *
  * @defgroup atlas_pH_group Atlas Scientific pH circuit
- * The Sensor and Variable objects for the Atlas EZO pH circuit
+ * Classes for the Atlas EZO pH circuit
  *
  * @copydetails AtlasScientificpH
  */

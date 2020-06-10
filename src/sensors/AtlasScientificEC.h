@@ -15,7 +15,7 @@
  * @copydetails AtlasScientificEC
  *
  * @defgroup atlas_cond_group Atlas Scientific conductivity circuit
- * The Sensor and Variable objects for the Atlas EZO conductivity circuit
+ * Classes for the Atlas EZO conductivity circuit
  *
  * @copydetails AtlasScientificEC
  */

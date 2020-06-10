@@ -17,8 +17,7 @@
  * @copydetails ApogeeSQ212
  *
  * @defgroup sq212_group AOSong AM2315
- * The Sensor and Variable objects for the AOSong AM2315 capacitive humidity and
- * temperature sensor.
+ * Classes for the Apogee SQ212 quantum light sensor.
  *
  * @copydetails ApogeeSQ212
  */
