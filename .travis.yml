@@ -120,19 +120,7 @@ jobs:
               - doxygen-latex
               - doxygen-gui
               - graphviz
-          script:
-        # script: |
-        #   cd $TRAVIS_BUILD_DIR
-        #   mkdir code_docs
-        #   cd code_docs
-        #   git clone -b master https://github.com/EnviroDIY/ModularSensors ModularSensors
-        #   git clone https://github.com/EnviroDIY/ModularSensors.wiki
-        #   git clone -b gh-pages https://github.com/EnviroDIY/ModularSensors ModularSensorsDoxygen
-        #   cd ModularSensorsDoxygen
-        #   rm -rf *
-        #   echo "" > .nojekyll
-        #   cd ../ModularSensors
-        #   doxygen -v
-        #   doxygen Doxyfile 2>&1 | tee doxygen.log
-        #   cd ../ModularSensorsDoxygen
-        #   ls 2>&1
+          script: |
+              cd $TRAVIS_BUILD_DIR
+              chmod +x travis/generateDocumentationAndDeploy.sh
+              sh travis/generateDocumentationAndDeploy.sh
