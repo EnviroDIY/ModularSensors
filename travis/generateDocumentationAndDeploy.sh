@@ -53,6 +53,7 @@ git clone https://github.com/EnviroDIY/ModularSensors.wiki
 # git clone -b gh-pages https://git@$GH_REPO_REF
 # cd $GH_REPO_NAME
 git clone -b gh-pages https://github.com/EnviroDIY/ModularSensors ModularSensorsDoxygen
+ls 2>&1
 cd ModularSensorsDoxygen
 
 ##### Configure git.
@@ -78,11 +79,13 @@ echo "" > .nojekyll
 ################################################################################
 ##### Generate the Doxygen code documentation and log the output.          #####
 cd ../ModularSensors
+ls 2>&1
 echo 'Generating Doxygen code documentation...'
 # Redirect both stderr and stdout to the log file AND the console.
 # doxygen $DOXYFILE 2>&1 | tee doxygen.log
 doxygen doxyfile 2>&1 | tee doxygen.log
 cd ../ModularSensorsDoxygen
+ls 2>&1
 
 ################################################################################
 ##### Upload the documentation to the gh-pages branch of the repository.   #####
