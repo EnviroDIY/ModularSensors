@@ -1763,7 +1763,7 @@ VariableArray varArray(variableCount, variableList);
 /** Start [variables_separate_uuids] */
 // Version 2: Create two separate arrays, on for the variables and a separate
 // one for the UUID's, then give both as input to the variable array
-// constructor.  Be cautious when doing this though beccause order is CRUCIAL!
+// constructor.  Be cautious when doing this though because order is CRUCIAL!
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),

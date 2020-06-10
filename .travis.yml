@@ -73,7 +73,7 @@ matrix:
               sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
               cd $TRAVIS_BUILD_DIR
               chmod +x travis/generateDocumentationAndDeploy.sh
-              ./travis/generateDocumentationAndDeploy.
+              sh travis/generateDocumentationAndDeploy.sh
           fi
 
       - env:
