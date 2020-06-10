@@ -78,11 +78,14 @@ echo "" > .nojekyll
 ################################################################################
 ##### Generate the Doxygen code documentation and log the output.          #####
 cd ../ModularSensors
+echo 'Current Doxygen version...'
+doxygen -v 2>&1
 echo 'Generating Doxygen code documentation...'
 # Redirect both stderr and stdout to the log file AND the console.
 # doxygen $DOXYFILE 2>&1 | tee doxygen.log
 doxygen Doxyfile 2>&1 | tee doxygen.log
 cd ../ModularSensorsDoxygen
+ls 2>&1
 
 ################################################################################
 ##### Upload the documentation to the gh-pages branch of the repository.   #####

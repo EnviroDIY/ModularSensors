@@ -1,6 +1,10 @@
 before_install:
     - git config --global user.email "sdamiano@stroudcenter.org"
     - git config --global user.name "SRGDamia1"
+    - sudo apt-get install python-software-properties
+    - sudo apt-add-repository -y ppa:libreoffice/libreoffice-4-2
+    - sudo apt-get update
+    - sudo apt-get install doxygen
 
 sudo: false
 addons:
@@ -71,9 +75,6 @@ matrix:
                 ($TRAVIS_PULL_REQUEST == false) ]] ; then
               curl -LO --retry 3 https://raw.github.com/mernst/plume-lib/master/bin/trigger-travis.sh
               sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
-              cd $TRAVIS_BUILD_DIR
-              chmod +x travis/generateDocumentationAndDeploy.sh
-              sh travis/generateDocumentationAndDeploy.sh
           fi
 
       - env:
@@ -94,3 +95,15 @@ matrix:
           - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
           - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
+
+      - language: python
+        python:
+          - "3.7"
+        script: |
+          echo "TRAVIS_BRANCH=$TRAVIS_BRANCH TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
+          if [[ ($TRAVIS_BRANCH == master) &&
+                ($TRAVIS_PULL_REQUEST == false) ]] ; then
+              cd $TRAVIS_BUILD_DIR
+              chmod +x travis/generateDocumentationAndDeploy.sh
+              sh travis/generateDocumentationAndDeploy.sh
+          fi

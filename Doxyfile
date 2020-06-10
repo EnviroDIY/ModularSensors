@@ -825,7 +825,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ReadMe.md \
+INPUT                  = README.md \
                          src \
                          examples \
                          doxygen_wiki_pages.dox \
@@ -1008,7 +1008,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = ReadMe.md
+USE_MDFILE_AS_MAINPAGE = README.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -2231,17 +2231,7 @@ SEARCH_INCLUDES        = YES
 # preprocessor.
 # This tag requires that the tag SEARCH_INCLUDES is set to YES.
 
-INCLUDE_PATH           = "~/.platformio/packages/framework-arduino-avr/libraries/Wire/src"  \
-                         "~/.platformio/packages/framework-arduino-avr/libraries/SPI/src"  \
-                         "~/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src"  \
-                         "~/.platformio/packages/framework-arduino-avr/libraries/HID/src"  \
-                         "~/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src"  \
-                         "~/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/5.4.0/include"  \
-                         "~/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/5.4.0/include-fixed"  \
-                         "~/.platformio/packages/toolchain-atmelavr/avr/include"  \
-                         "~/.platformio/packages/framework-arduino-avr/cores/arduino"  \
-                         "~/.platformio/packages/framework-arduino-avr/variants/mayfly"  \
-                         "~/.platformio/packages/tool-unity"
+INCLUDE_PATH           =
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
