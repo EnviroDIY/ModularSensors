@@ -1,19 +1,23 @@
-# Example using the Modular Sensors Library to save data to an SD card and send data to [ThingSpeak](https://thingspeak.com)
+[//]: # ( @page thingspeak_example ThingSpeak Example )
+# Using ModularSensors to save data to an SD card and send data to ThingSpeak
 
-This shows the use of a "ThingSpeak logger" object.  Data is sent to ThingSpeak using MQTT.
+This shows the use of a "ThingSpeak logger" object.  Data is sent to [ThingSpeak](https://thingspeak.com) using MQTT.
 
 _______
 
+[//]: # ( @section thingspeak_using To Use this Example: )
 ## To Use this Example:
 
-#### Prepare and set up PlatformIO
+[//]: # ( @subsection thingspeak_pio Prepare and set up PlatformIO )
+## Prepare and set up PlatformIO
 - Create a channel on ThingSpeak with fields to receive your data.
 - Create a new PlatformIO project
 - Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
     - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.  Without this, the program won't compile or send data.
 - Download logging_to_ThingSpeak.ino and put it into the src directory of your project.  Delete main.cpp in that folder.
 
-#### Modify the Example
+[//]: # ( @subsection thingspeak_modify Modify the Example )
+## Modify the Example
 - Modify logging_to_ThingSpeak.ino to have the modem, sensor, and variable objects that you are interested in.
     - This example is written for an _ESP8266 (wifi)_ modem.  Change this to whatever modem you are using.  Pastable chunks of code for each modem are available in the [wiki](https://github.com/EnviroDIY/ModularSensors/wiki/Home).
     - Don't forget to put in your wifi username/password or cellular APN!
@@ -31,5 +35,6 @@ const char *thingSpeakChannelID = "######";  // The numeric channel id for your 
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 ```
 
-#### Upload!
+[//]: # ( @subsection thingspeak_upload Upload! )
+## Upload!
 - Test everything at home **before** deploying out in the wild!

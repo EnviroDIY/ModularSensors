@@ -1,13 +1,19 @@
-/*
- *ExternalVoltage.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file ExternalVoltage.h *
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
+ * <sdamiano@stroudcenter.org>
  *
- * Written By:  Bobby Schulz <schu3119@umn.edu>
- * Adapted from ApogeeSQ212.h by Sara Damiano (sdamiano@stroudcenter.org)
+ * @brief This file contains the ExternalVoltage sensor subclass and the
+ * ExternalVoltage_Volt variable subclass.
  *
- * This file is for the grove voltage divider (but will work with any voltage
- * divider with an output in the range of 0 ~ 3.3v)
- * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
+ * These for any voltage measureable on a TI ADS1115 or ADS1015.  There is a
+ * multiplier allowed for a voltage divider between the raw voltage and the ADS.
+ *
+ * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  *
  * The grove voltage divider is a simple voltage divider designed to measure
  * high external voltages on a low voltage ADC. This module employs a variable
@@ -48,11 +54,11 @@
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
-*/
+ */
 
 // Header Guards
-#ifndef ExternalVoltage_h
-#define ExternalVoltage_h
+#ifndef SRC_SENSORS_EXTERNALVOLTAGE_H_
+#define SRC_SENSORS_EXTERNALVOLTAGE_H_
 
 // Debugging Statement
 // #define MS_EXTERNALVOLTAGE_DEBUG
@@ -68,66 +74,98 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-#define ADS1115_ADDRESS 0x48
-// 1001 000 (ADDR = GND)
-
+/// Sensor::_numReturnedValues; the ADS1115 can report 1 value.
 #define EXT_VOLT_NUM_VARIABLES 1
 // Using the warm-up time of the ADS1115
+/// Sensor::_warmUpTime_ms; the ADS1115 warms up in 2ms.
 #define EXT_VOLT_WARM_UP_TIME_MS 2
 // Assume a voltage is instantly ready
+/// Sensor::_stabilizationTime_ms; the ADS1115 is stable 0ms after warm-up.
 #define EXT_VOLT_STABILIZATION_TIME_MS 0
+/// Sensor::_measurementTime_ms; the ADS1115 takes 0ms to complete a
+/// measurement.
 #define EXT_VOLT_MEASUREMENT_TIME_MS 0
 
+/// Variable number; VOLT is stored in sensorValues[0].
 #define EXT_VOLT_VAR_NUM 0
 #ifdef MS_USE_ADS1015
+/// Decimals places in string representation; voltage should have 1.
 #define EXT_VOLT_RESOLUTION 1
 #else
+/// Decimals places in string representation; voltage should have 4.
 #define EXT_VOLT_RESOLUTION 4
 #endif
 
 // The main class for the external votlage monitor
-class ExternalVoltage : public Sensor
-{
-
-public:
-    // The constructor - need the power pin and the data channel on the ADS1x15
-    // The gain value, I2C address, and number of measurements to average are optional
-    // If nothing is given a 1x gain is used.
+class ExternalVoltage : public Sensor {
+ public:
+    /**
+     * @brief Construct a new External Voltage object - need the power pin and
+     * the data channel on the ADS1x15
+     *
+     * The gain value, I2C address, and number of measurements to average are
+     * optional.  If nothing is given a 1x gain is used.
+     *
+     * @param powerPin  The pin on the mcu controlling power to the sensor.  Use
+     * -1 if the sensor is continuously powered.
+     * @param adsChannel The ACS channel of interest (0-3).
+     * @param gain The gain multiplier, if a voltage divider is used.
+     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
+     * = GND)
+     * @param measurementsToAverage The number of measurements to average
+     */
     ExternalVoltage(int8_t powerPin, uint8_t adsChannel, float gain = 1,
-                    uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
-    // Destructor
+                    uint8_t i2cAddress            = 0x48,
+                    uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Destroy the External Voltage object
+     */
     ~ExternalVoltage();
 
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
-protected:
+ protected:
     uint8_t _adsChannel;
-    float _gain;
+    float   _gain;
     uint8_t _i2cAddress;
 };
 
 
 // The single available variable is voltage
-class ExternalVoltage_Volt : public Variable
-{
-public:
-    ExternalVoltage_Volt(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "extVoltage")
-      : Variable(parentSense,
-                 (const uint8_t)EXT_VOLT_VAR_NUM,
-                 (uint8_t)EXT_VOLT_RESOLUTION,
-                 "voltage", "volt",
-                 varCode, uuid)
-    {}
+class ExternalVoltage_Volt : public Variable {
+ public:
+    /**
+     * @brief Construct a new ExternalVoltage_Volt object.
+     *
+     * @param parentSense The parent ExternalVoltage providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is extVoltage
+     */
+    explicit ExternalVoltage_Volt(ExternalVoltage* parentSense,
+                                  const char*      uuid    = "",
+                                  const char*      varCode = "extVoltage")
+        : Variable(parentSense, (const uint8_t)EXT_VOLT_VAR_NUM,
+                   (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt", varCode,
+                   uuid) {}
+    /**
+     * @brief Construct a new ExternalVoltage_Volt object.
+     *
+     * @note This must be tied with a parent ExternalVoltage before it can be
+     * used.
+     */
     ExternalVoltage_Volt()
-      : Variable((const uint8_t)EXT_VOLT_VAR_NUM,
-                 (uint8_t)EXT_VOLT_RESOLUTION,
-                 "voltage", "volt", "extVoltage")
-    {}
-    ~ExternalVoltage_Volt(){}
+        : Variable((const uint8_t)EXT_VOLT_VAR_NUM,
+                   (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt",
+                   "extVoltage") {}
+    /**
+     * @brief Destroy the ExternalVoltage_Volt object - no action needed.
+     */
+    ~ExternalVoltage_Volt() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_EXTERNALVOLTAGE_H_

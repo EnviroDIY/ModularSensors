@@ -1,16 +1,16 @@
-/*
- *SequansMonarch.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file SequansMonarch.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the Dragino BG96, Nimbelink Skywire 4G LTE-M Global, and
- *other modules based on the Quectel BG96.
-*/
+ * @brief Contains the SequansMonarch subclass of loggerModem for Nimbelink or
+ * other modules based on the Sequans Monarch VZM20Q.
+ */
 
 // Header Guards
-#ifndef SEQUANSMONARCH_h
-#define SEQUANSMONARCH_h
+#ifndef SRC_MODEMS_SEQUANSMONARCH_H_
+#define SRC_MODEMS_SEQUANSMONARCH_H_
 
 // Debugging Statement
 // #define MS_SEQUANSMONARCH_DEBUG
@@ -20,41 +20,106 @@
 #define MS_DEBUGGING_STD "SequansMonarch"
 #endif
 
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
 #define TINY_GSM_MODEM_SEQUANS_MONARCH
 #ifndef TINY_GSM_RX_BUFFER
+/**
+ * @brief The size of the buffer for incoming data.
+ */
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// Depending on firmware, you MIGHT be able to monitor the status on either GPIO2/POWER_MON or GPIO3/STATUS_LED
-// The module integration guide says:
-// GPIO3: Optional STATUS_LED.  Note that the LED function is currently not available.
-// GPIO2:  GPIO or Power monitor (Output) in option.  POWER_MON is high right after POWER_ON,
-// then remains high until shutdown procedure is completed.  Module can be safely electrically power off
-// as soon as POWER_MON goes low.  Note that this feature is currently not available.
-// Very useful, right?
-// The Nimbelink manual for their breakout lists a status pin, but doesn't disclose which of these it is and
-// the time for reporting isn't mentioned either.
+
+/**
+ * @brief The loggerModem::_statusLevel.
+ *
+ * Depending on firmware, you MIGHT be able to monitor the status on either
+ * `GPIO2/POWER_MON` or `GPIO3/STATUS_LED`
+ *
+ * The module integration guide says:
+ * > GPIO3: Optional STATUS_LED.  _Note that the LED function is currently not
+ * > available._
+ * >
+ * > GPIO2:  GPIO or Power monitor (Output) in option.  POWER_MON is high right
+ * > after POWER_ON, then remains high until shutdown procedure is completed.
+ * > Module can be safely electrically power off as soon as POWER_MON goes
+ * > low. _Note that this feature is currently not available._
+ *
+ * Very useful, right?
+ *
+ * The Nimbelink manual for their breakout lists a status pin, but doesn't
+ * disclose which of these it is and the time for reporting isn't mentioned
+ * either.
+ */
 #define VZM20Q_STATUS_LEVEL HIGH
+/**
+ * @brief The loggerModem::_statusTime_ms.
+ *
+ * @copydetails #VZM20Q_STATUS_LEVEL
+ */
 #define VZM20Q_STATUS_TIME_MS 5000
 
-// Minimum 1µs LOW pulse on RESETN for reset - fast.  Max time not documented.
+/**
+ * @brief The loggerModem::_resetLevel.
+ *
+ * Reset for VZM20Q with a minimum 1µs `LOW` pulse on `RESETN`.  The maximum
+ * time is not documented.
+ */
 #define VZM20Q_RESET_LEVEL LOW
+/**
+ * @brief The loggerModem::_resetPulse_ms.
+ *
+ * @copydetails #VZM20Q_RESET_LEVEL
+ */
 #define VZM20Q_RESET_PULSE_MS 1
 
-// Module automatically boots when power is applied
-// To enter PSM, you need to do the following :
-// 1.Request timers from the network
-// 2.Register on the network
-// 3.Pull the RTS pin logic - level HIGH - device will enter PSM a minimum of 100s later
-// To exit PSM, you need to do the following :
-// 1.Pull the RTS pin logic - level LOW
-#define VZM20Q_WARM_UP_TIME_MS 0
+/**
+ * @brief The loggerModem::_wakeDelayTime_ms.
+ *
+ * Module automatically boots when power is applied, no further command is
+ * needed.
+ *
+ * To enter PSM (power save mode), you need to do the following :
+ * 1. Request timers from the network
+ * 2. Register on the network
+ * 3. Pull the `RTS` pin logic - level `HIGH` - device will enter PSM a minimum
+ * of 100s later
+ *
+ * To exit PSM, you need to do the following :
+ * 1. Pull the `RTS` pin logic - level `LOW`
+ */
+#define VZM20Q_WAKE_DELAY_MS 0
+/**
+ * @brief The loggerModem::_wakeLevel.
+ *
+ * The Sequans Monarch/VZM20Q wakes at `LOW` level.
+ *
+ * @note This wake functionality is unconfirmed.
+ *
+ */
 #define VZM20Q_WAKE_LEVEL LOW
+/**
+ * @brief The loggerModem::_wakePulse_ms.
+ *
+ * @copydetails #VZM20Q_WAKE_LEVEL
+ */
 #define VZM20Q_WAKE_PULSE_MS 0
-// ?? Time to UART availability not documented
+/**
+ * @brief The loggerModem::_max_atresponse_time_ms.
+ *
+ * Time to UART availability not documented for the VZM20Q; allowing a long 15s
+ * buffer.
+ */
 #define VZM20Q_ATRESPONSE_TIME_MS 15000L
 
-// ?? Undocumented (Giving 15sec here in case it is not monitored.)
+/**
+ * @brief The loggerModem::_disconnetTime_ms.
+ *
+ * Shutdown time for VZM20Q is undocumented.  We allow 15sec in case it is not
+ * monitored.
+ */
 #define VZM20Q_DISCONNECT_TIME_MS 15000L
 
 // Included Dependencies
@@ -68,44 +133,93 @@
 #endif
 
 
-class SequansMonarch : public loggerModem
-{
-
-public:
-    // Constructor/Destructor
-    SequansMonarch(Stream* modemStream,
-                   int8_t powerPin, int8_t statusPin,
+/**
+ * @brief The loggerModem subclass for Nimbelink or other modules based on the
+ * Sequans Monarch VZM20Q.
+ *
+ * #### Pin and timing information for the VZM20Q
+ *
+ * @copydetails #VZM20Q_STATUS_LEVEL
+ *
+ * @copydetails #VZM20Q_RESET_LEVEL
+ *
+ * @copydetails #VZM20Q_WAKE_LEVEL
+ *
+ * @copydetails #VZM20Q_WAKE_DELAY_MS
+ *
+ * @copydetails #VZM20Q_ATRESPONSE_TIME_MS
+ *
+ * @copydetails #VZM20Q_DISCONNECT_TIME_MS
+ *
+ * @see @ref monarch_page
+ */
+class SequansMonarch : public loggerModem {
+ public:
+    /**
+     * @brief Construct a new Sequans Monarch object
+     *
+     * The constuctor initializes all of the provided member variables,
+     * constructs a loggerModem parent class with the appropriate timing for the
+     * module, calls the constructor for a TinyGSM modem on the provided
+     * modemStream, and creates a TinyGSM Client linked to the modem.
+     *
+     * @param modemStream The Arduino stream instance for serial communication.
+     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param statusPin @copydoc loggerModem::_statusPin
+     * This could be the pin called either the `GPIO3/STATUS_LED` or `POWER_MON`
+     * in the Sequans Monarch integration guide.
+     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This should be the pin called `RESETN` in the Sequans Monarch integration
+     * guide.
+     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * This should be the pin called `RTS` or `RTS0` in the Sequans Monarch
+     * integration guide.
+     * @param apn The Access Point Name (APN) for the SIM card.
+     *
+     * @see loggerModem::loggerModem
+     */
+    SequansMonarch(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                    int8_t modemResetPin, int8_t modemSleepRqPin,
-                   const char *apn);
+                   const char* apn);
+    /**
+     * @brief Destroy the Sequans Monarch object - no action taken
+     */
     ~SequansMonarch();
 
     bool modemWake(void) override;
 
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    virtual void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-    virtual uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    virtual float getModemChipTemperature(void) override;
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                               uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
 #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
+    /**
+     * @brief Public reference to the TinyGSM modem.
+     */
     TinyGsm gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM Client.
+     */
     TinyGsmClient gsmClient;
 
-protected:
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void) override;
+ protected:
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SEQUANSMONARCH_H_

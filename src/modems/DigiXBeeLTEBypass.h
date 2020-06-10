@@ -1,15 +1,17 @@
-/*
- *DigiXBeeLTEBypass.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file DigiXBeeLTEBypass.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for Digi Cellular XBee's BASED ON UBLOX CHIPS in bypass mode
-*/
+ * @brief Contains the DigiXBeeLTEBypass subclass of the DigiXBee class for Digi
+ * Cellular XBee3's based on u-blox SARA R410M chips and operated in bypass
+ * mode.
+ */
 
 // Header Guards
-#ifndef DigiXBeeLTEBypass_h
-#define DigiXBeeLTEBypass_h
+#ifndef SRC_MODEMS_DIGIXBEELTEBYPASS_H_
+#define SRC_MODEMS_DIGIXBEELTEBYPASS_H_
 
 // Debugging Statement
 // #define MS_DIGIXBEELTEBYPASS_DEBUG
@@ -19,8 +21,14 @@
 #define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
 
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
 #define TINY_GSM_MODEM_SARAR4
 #ifndef TINY_GSM_RX_BUFFER
+/**
+ * @brief The size of the buffer for incoming data.
+ */
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
@@ -28,21 +36,57 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "TinyGsmClient.h"
+#undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-class DigiXBeeLTEBypass : public DigiXBee
-{
-
-public:
-    // Constructor/Destructor
-    DigiXBeeLTEBypass(Stream* modemStream,
-                           int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-                           int8_t modemResetPin, int8_t modemSleepRqPin,
-                           const char *apn);
+/**
+ * @brief The class for any of Digi's cellular LTE-M XBee3 modules operating in
+ * Digi's "bypass" mode.
+ *
+ * @warning Digi strongly recommends against this, but it actually seems to be
+ * more stable in our tests.  Your milage may vary.
+ *
+ * @see #DigiXBee
+ * @see #SodaqUBeeR410M
+ * @see @ref xbees_lte_bypass
+ */
+class DigiXBeeLTEBypass : public DigiXBee {
+ public:
+    /**
+     * @brief Construct a new Digi XBee LTE Bypass object.
+     *
+     * The constuctor initializes all of the provided member variables,
+     * constructs a loggerModem parent class with the appropriate timing for the
+     * module, calls the constructor for a TinyGSM modem on the provided
+     * modemStream, and creates a TinyGSM Client linked to the modem.
+     *
+     * @param modemStream The Arduino stream instance for serial communication.
+     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param statusPin @copydoc loggerModem::_statusPin
+     * This can be either the pin named `ON/SLEEP_N/DIO9` or `CTS_N/DIO7` pin in
+     * Digi's hardware reference.
+     * @param useCTSStatus True to use the `CTS_N/DIO7` pin of the XBee as a
+     * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
+     * This inverts the loggerModem::_statusLevel.
+     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This shold be the pin called `RESET_N` in Digi's hardware reference.
+     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
+     * reference.
+     * @param apn The Access Point Name (APN) for the SIM card.
+     *
+     * @see DigiXBee::DigiXBee
+     */
+    DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+                      bool useCTSStatus, int8_t modemResetPin,
+                      int8_t modemSleepRqPin, const char* apn);
+    /**
+     * @brief Destroy the Digi XBee LTE Bypass object - no action needed
+     */
     ~DigiXBeeLTEBypass();
 
     bool modemWake(void) override;
@@ -52,8 +96,9 @@ public:
 
     uint32_t getNISTTime(void) override;
 
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                               uint16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
     bool modemHardReset(void) override;
@@ -62,16 +107,32 @@ public:
     StreamDebugger _modemATDebugger;
 #endif
 
+    /**
+     * @brief Public reference to the TinyGSM modem.
+     */
     TinyGsm gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM Client.
+     */
     TinyGsmClient gsmClient;
 
-protected:
+ protected:
     bool isInternetAvailable(void) override;
+    /**
+     * @copybrief loggerModem::extraModemSetup()
+     *
+     * For XBees, this sets the appropriate operating mode (transparent or
+     * bypass), enables pin sleep, sets the DIO pins to the expected functions,
+     * and reboots the modem to ensure all settings are applied.
+     *
+     * @return true The extra setup succeeded.
+     * @return false The extra setup failed.
+     */
     bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_DIGIXBEELTEBYPASS_H_
