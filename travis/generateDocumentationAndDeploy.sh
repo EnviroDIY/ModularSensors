@@ -58,9 +58,6 @@ cd ModularSensorsDoxygen
 ##### Configure git.
 # Set the push default to simple i.e. push only the current branch.
 git config --global push.default simple
-# Pretend to be an user called Travis CI.
-git config user.name "Travis CI"
-git config user.email "travis@travis-ci.org"
 
 # Remove everything currently in the gh-pages branch.
 # GitHub is smart enough to know which files have changed and which files have
@@ -84,8 +81,14 @@ echo 'Generating Doxygen code documentation...'
 # Redirect both stderr and stdout to the log file AND the console.
 # doxygen $DOXYFILE 2>&1 | tee doxygen.log
 doxygen Doxyfile 2>&1 | tee doxygen.log
+echo '\n\nContents of Current folder...'
+ls 2>&1
+echo '\n\nContents of Parent folder...'
+cd ..
+ls 2>&1
 echo '\n\nContents of Doxygen folder...'
-cd ../ModularSensorsDoxygen
+# cd ../ModularSensorsDoxygen
+cd ModularSensorsDoxygen
 ls 2>&1
 
 ################################################################################
