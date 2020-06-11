@@ -23,4 +23,4 @@ echo "Current path: " $(pwd)
 ls
 
 echo 'Installed Doxygen version...'
-doxygen -v 2>&1
+./doxygen -v 2>&1
