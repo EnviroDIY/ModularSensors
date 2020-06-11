@@ -68,16 +68,16 @@ jobs:
 
       - name: "Build Doxygen Documentation"
         if: branch = master AND type != pull_request
-        language: python
-        python:
-          - "3.7"
+        language: cpp
         before_install:
           - git config --global user.email "sdamiano@stroudcenter.org"
           - git config --global user.name "SRGDamia1"
           - git config --global push.default simple
+          - sudo add-apt-repository ppa:deadsnakes/ppa
           - sudo apt-get update
+          - sudo apt-get -y install build-essential
+          - sudo apt-get install python3.7
           - sudo apt-get -y install graphviz
-          - sudo apt -y install build-essential
         install:
           - cd $TRAVIS_BUILD_DIR
           - chmod +x travis/copy-doc-sources.sh
