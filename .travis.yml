@@ -77,6 +77,7 @@ jobs:
           - git config --global push.default simple
           - sudo apt-get update
           - sudo apt-get -y install graphviz
+          - sudo apt -y install build-essential
         install:
           - cd $TRAVIS_BUILD_DIR
           - chmod +x travis/copy-doc-sources.sh
