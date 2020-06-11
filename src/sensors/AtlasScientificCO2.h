@@ -44,7 +44,7 @@
 // Sensor Specific Defines
 /// Sensor::_numReturnedValues; the Atlas CO2 sensor can report 2 values.
 #define ATLAS_CO2_NUM_VARIABLES 2
-// TODO(SRGDamia1):  Test timing with sensor
+/// @todo (SRGDamia1):  Test timing with sensor
 /// Sensor::_warmUpTime_ms; the Atlas CO2 sensor warms up in 850ms.
 #define ATLAS_CO2_WARM_UP_TIME_MS 850
 // NOTE:  This has a long stabilization time!
