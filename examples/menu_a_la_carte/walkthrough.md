@@ -44,7 +44,7 @@ ___
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
     - [AOSong AM2315](#aosong-am2315)
     - [AOSong DHT](#aosong-dht)
-    - [Apogee SQ212](#apogee-sq212)
+    - [Apogee SQ-212](#apogee-sq-212)
     - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
     - [Maxim DS18 one wire temperature sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS503 pressure and temperature sensor](#measurement-specialties-ms503-pressure-and-temperature-sensor)
@@ -556,8 +556,8 @@ The number of readings to average from the sensor is optional, but can be suppli
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino dht )
 ___
 
-[//]: # ( @subsection menu_dht AOSong DHT )
-### Apogee SQ212
+[//]: # ( @subsection menu_sq212 Apogee SQ-212 )
+### Apogee SQ-212
 
 Here is the code for the Apogee SQ-212 quantum light sensor.
 The SQ-212 is not directly connected to the MCU, but rather to an TI ADS1115 that communicates with the MCU.

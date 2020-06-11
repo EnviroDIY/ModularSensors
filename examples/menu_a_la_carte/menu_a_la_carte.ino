@@ -723,6 +723,67 @@ Variable* ds3231Temp =
 
 
 // ==========================================================================
+//  AOSong AM2315 Digital Humidity and Temperature Sensor
+// ==========================================================================
+/** Start [am2315] */
+#include <sensors/AOSongAM2315.h>
+
+const int8_t AM2315Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+
+// Create an AOSong AM2315 sensor object
+AOSongAM2315 am2315(AM2315Power);
+
+// Create humidity and temperature variable pointers for the AM2315
+Variable* am2315Humid =
+    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* am2315Temp =
+    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [am2315] */
+
+
+// ==========================================================================
+//  AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
+// ==========================================================================
+/** Start [dht] */
+#include <sensors/AOSongDHT.h>
+
+const int8_t DHTPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t DHTPin   = 10;              // DHT data pin
+DHTtype      dhtType  = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
+
+// Create an AOSong DHT sensor object
+AOSongDHT dht(DHTPower, DHTPin, dhtType);
+
+// Create humidity, temperature, and heat index variable pointers for the DHT
+Variable* dhtHumid =
+    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* dhtTemp = new AOSongDHT_Temp(&dht,
+                                       "12345678-abcd-1234-ef00-1234567890ab");
+Variable* dhtHI   = new AOSongDHT_HI(&dht,
+                                   "12345678-abcd-1234-ef00-1234567890ab");
+/** End [dht] */
+
+
+// ==========================================================================
+//  Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
+// ==========================================================================
+/** Start [sq212] */
+#include <sensors/ApogeeSQ212.h>
+
+const int8_t  SQ212Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  SQ212ADSChannel  = 3;         // The ADS channel for the SQ212
+const uint8_t SQ212ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+
+// Create an Apogee SQ212 sensor object
+ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel, SQ212ADSi2c_addr);
+
+// Create a PAR variable pointer for the SQ212
+Variable* sq212PAR =
+    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [sq212] */
+
+
+// ==========================================================================
 //  Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 // ==========================================================================
 /** Start [atlas_co2] */
@@ -862,67 +923,6 @@ AtlasScientificRTD atlasRTD(AtlasRTDPower);
 Variable* atlasTemp = new AtlasScientificRTD_Temp(
     &atlasRTD, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [atlas_rtd] */
-
-
-// ==========================================================================
-//  AOSong AM2315 Digital Humidity and Temperature Sensor
-// ==========================================================================
-/** Start [am2315] */
-#include <sensors/AOSongAM2315.h>
-
-const int8_t AM2315Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-
-// Create an AOSong AM2315 sensor object
-AOSongAM2315 am2315(AM2315Power);
-
-// Create humidity and temperature variable pointers for the AM2315
-Variable* am2315Humid =
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* am2315Temp =
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [am2315] */
-
-
-// ==========================================================================
-//  AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
-// ==========================================================================
-/** Start [dht] */
-#include <sensors/AOSongDHT.h>
-
-const int8_t DHTPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t DHTPin   = 10;              // DHT data pin
-DHTtype      dhtType  = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
-
-// Create an AOSong DHT sensor object
-AOSongDHT dht(DHTPower, DHTPin, dhtType);
-
-// Create humidity, temperature, and heat index variable pointers for the DHT
-Variable* dhtHumid =
-    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* dhtTemp = new AOSongDHT_Temp(&dht,
-                                       "12345678-abcd-1234-ef00-1234567890ab");
-Variable* dhtHI   = new AOSongDHT_HI(&dht,
-                                   "12345678-abcd-1234-ef00-1234567890ab");
-/** End [dht] */
-
-
-// ==========================================================================
-//  Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
-// ==========================================================================
-/** Start [sq212] */
-#include <sensors/ApogeeSQ212.h>
-
-const int8_t  SQ212Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  SQ212ADSChannel  = 3;         // The ADS channel for the SQ212
-const uint8_t SQ212ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-
-// Create an Apogee SQ212 sensor object
-ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel, SQ212ADSi2c_addr);
-
-// Create a PAR variable pointer for the SQ212
-Variable* sq212PAR =
-    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [sq212] */
 
 
 // ==========================================================================
