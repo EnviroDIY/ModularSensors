@@ -44,6 +44,7 @@ ___
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
     - [AOSong AM2315](#aosong-am2315)
     - [AOSong DHT](#aosong-dht)
+    - [Apogee SQ212](#apogee-sq212)
     - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
     - [Maxim DS18 one wire temperature sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS503 pressure and temperature sensor](#measurement-specialties-ms503-pressure-and-temperature-sensor)
@@ -551,6 +552,20 @@ To create the DHT sensor we need the power pin, the data pin, and the DHT type.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
 @see @ref dht_page
+
+[//]: # ( @snippet{lineno} menu_a_la_carte.ino dht )
+___
+
+[//]: # ( @subsection menu_dht AOSong DHT )
+### Apogee SQ212
+
+Here is the code for the Apogee SQ-212 quantum light sensor.
+The SQ-212 is not directly connected to the MCU, but rather to an TI ADS1115 that communicates with the MCU.
+The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
+If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
+
+@see @ref sq212_page
 
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino dht )
 ___

@@ -117,10 +117,10 @@ jobs:
           - sudo apt-get update
           - sudo apt-get -y install graphviz
         install:
-              cd $TRAVIS_BUILD_DIR
-              chmod +x travis/build-install-doxygen.sh
-              sh travis/build-install-doxygen.sh
+          - cd $TRAVIS_BUILD_DIR
+          - chmod +x travis/build-install-doxygen.sh
+          - sh travis/build-install-doxygen.sh
         script:
-              cd $TRAVIS_BUILD_DIR
-              chmod +x travis/generateDocumentationAndDeploy.sh
-              sh travis/generateDocumentationAndDeploy.sh
+          - cd $TRAVIS_BUILD_DIR
+          - chmod +x travis/generateDocumentationAndDeploy.sh
+          - sh travis/generateDocumentationAndDeploy.sh
