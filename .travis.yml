@@ -54,17 +54,17 @@ script:
 
 jobs:
     include:
-      - name: "Verify library JSON format"
-        language: node_js
-        install: npm install -g jsonlint
-        script: jsonlint -q library.json
-        after_success: |
-          echo "TRAVIS_BRANCH=$TRAVIS_BRANCH TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
-          if [[ ($TRAVIS_BRANCH == master) &&
-                ($TRAVIS_PULL_REQUEST == false) ]] ; then
-              curl -LO --retry 3 https://raw.github.com/mernst/plume-lib/master/bin/trigger-travis.sh
-              sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
-          fi
+      # - name: "Verify library JSON format"
+      #   language: node_js
+      #   install: npm install -g jsonlint
+      #   script: jsonlint -q library.json
+      #   after_success: |
+      #     echo "TRAVIS_BRANCH=$TRAVIS_BRANCH TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
+      #     if [[ ($TRAVIS_BRANCH == master) &&
+      #           ($TRAVIS_PULL_REQUEST == false) ]] ; then
+      #         curl -LO --retry 3 https://raw.github.com/mernst/plume-lib/master/bin/trigger-travis.sh
+      #         sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
+      #     fi
 
       - name: "Build Doxygen Documentation"
         if: branch = master AND type != pull_request
@@ -93,42 +93,42 @@ jobs:
           - chmod +x travis/deploy-documentation.sh
           - sh travis/deploy-documentation.sh
 
-      - name: "Check Single Sensor Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check Single Sensor Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check Simple Logging Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check Simple Logging Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check DRWI CitSci 2G Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check DRWI CitSci 2G Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check DRWI CitSci LTE Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/DRWI_LTE/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check DRWI CitSci LTE Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/DRWI_LTE/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check DRWI CitSci No Cellular Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check DRWI CitSci No Cellular Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check Double Logger Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check Double Logger Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check Baro Correction Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check Baro Correction Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check Data Saving Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check Data Saving Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check ThingSpeak Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+      # - name: "Check ThingSpeak Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-      - name: "Check Menu Example"
-        env:
-          - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
+      # - name: "Check Menu Example"
+      #   env:
+      #     - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
