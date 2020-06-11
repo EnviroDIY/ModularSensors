@@ -17,7 +17,7 @@ tar -xzf doxygen-1.8.18.linux.bin.tar.gz
 ls
 
 echo "Moving directory..."
-cp doxygen-1.8.18/bin/* .
+mv doxygen-1.8.18/bin/doxygen .
 chmod +x doxygen
 echo "Current path: " $(pwd)
 ls
