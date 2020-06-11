@@ -14,15 +14,15 @@ cd $TRAVIS_BUILD_DIR/code_docs
 echo "Documentation path: " $(pwd)
 
 # Re-clone the main repo, not sparsely
-git clone -b master https://github.com/EnviroDIY/ModularSensors ModularSensors
+git clone -b master --depth 1 https://github.com/EnviroDIY/ModularSensors ModularSensors
 
 # Clone the wiki, because we'll be using it in the docs
-git clone https://github.com/EnviroDIY/ModularSensors.wiki
+git clone --depth 1 https://github.com/EnviroDIY/ModularSensors.wiki
 
 # Get the current gh-pages branch
 # git clone -b gh-pages https://git@$GH_REPO_REF
 # cd $GH_REPO_NAME
-git clone -b gh-pages https://github.com/EnviroDIY/ModularSensors ModularSensorsDoxygen
+git clone -b gh-pages --depth 1 https://github.com/EnviroDIY/ModularSensors ModularSensorsDoxygen
 cd ModularSensorsDoxygen
 
 ##### Configure git.

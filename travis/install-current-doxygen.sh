@@ -15,8 +15,11 @@ wget -q http://doxygen.nl/files/doxygen-1.8.18.linux.bin.tar.gz
 echo "Decompressing..."
 tar -xzf doxygen-1.8.18.linux.bin.tar.gz
 
+echo "Moving directory..."
 cp doxygen-1.8.18/bin/* .
 chmod +x doxygen
+echo "Current path: " $(pwd)
+echo ls
 
-#echo "Configure and Install Doxygen"
-#cd doxygen-1.8.18 && ./configure && sudo make install
+echo 'Installed Doxygen version...'
+doxygen -v 2>&1
