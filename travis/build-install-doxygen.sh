@@ -1,5 +1,9 @@
 #!/bin/sh
-set -ex
+
+# Exit with nonzero exit code if anything fails
+set -e
+
+cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors
 
 # Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
 echo "Cloning doxygen repository..."
@@ -21,7 +25,7 @@ echo "Done building doxygen..."
 echo "doxygen path: " $(pwd)
 
 echo "Install Doxygen"
-cp ./bin/* $TRAVIS_BUILD_DIR
+cp ./bin/* $TRAVIS_BUILD_DIR/code_docs/ModularSensors
 #make install
 
-cd $TRAVIS_BUILD_DIR
+cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors

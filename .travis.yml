@@ -66,6 +66,41 @@ jobs:
               sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
           fi
 
+      - name: "Build Doxygen Documentation"
+        if: branch = master
+        language: python
+        python:
+          - "3.7"
+        before_install:
+          if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+            git config --global user.email "sdamiano@stroudcenter.org"
+            git config --global user.name "SRGDamia1"
+            git config --global push.default simple
+            sudo apt-get update
+            sudo apt-get -y install graphviz
+          fi
+        install:
+          if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+            cd $TRAVIS_BUILD_DIR
+            chmod +x travis/copy-doc-sources.sh
+            sh travis/copy-doc-sources.sh
+            cd $TRAVIS_BUILD_DIR
+            chmod +x travis/install-current-doxygen.sh
+            sh travis/install-current-doxygen.sh
+          fi
+        script:
+          if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+            cd $TRAVIS_BUILD_DIR
+            chmod +x travis/generate-documentation.sh
+            sh travis/generate-documentation.sh
+          fi
+        after_success:
+          if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
+            cd $TRAVIS_BUILD_DIR
+            chmod +x travis/deploy-documentation.sh
+            sh travis/deploy-documentation.sh
+          fi
+
       - name: "Check Single Sensor Example"
         env:
           - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
@@ -105,22 +140,3 @@ jobs:
       - name: "Check Menu Example"
         env:
           - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
-
-      - name: "Build Doxygen Documentation"
-        if: branch = master
-        language: python
-        python:
-          - "3.7"
-        before_install:
-          - git config --global user.email "sdamiano@stroudcenter.org"
-          - git config --global user.name "SRGDamia1"
-          - sudo apt-get update
-          - sudo apt-get -y install graphviz
-        install:
-          - cd $TRAVIS_BUILD_DIR
-          - chmod +x travis/build-install-doxygen.sh
-          - sh travis/build-install-doxygen.sh
-        script:
-          - cd $TRAVIS_BUILD_DIR
-          - chmod +x travis/generateDocumentationAndDeploy.sh
-          - sh travis/generateDocumentationAndDeploy.sh
