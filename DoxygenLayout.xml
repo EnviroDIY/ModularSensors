@@ -26,6 +26,15 @@
       <tab type="user" url="@ref library_terminology" title="Terminology"/>
     </tab>
 
+    <tab type="usergroup" url="@ref faq_page" title="FAQs">
+      <tab type="user" url="@ref processor_compatibility" title="Processor Compatibility" title=""/>
+      <tab type="user" url="@ref arduino_streams" title="Arduino Streams and Software Serial" title=""/>
+      <tab type="user" url="@ref power_parasites" title="Power Draw over Data Lines" title=""/>
+      <tab type="user" url="@ref memory_use" title="Decreasing Memory Footprint" title=""/>
+      <tab type="user" url="@ref code_debugging" title="In-Library Debugging" title=""/>
+      <tab type="user" url="@ref for_developers" title="For Developers" title=""/>
+    </tab>
+
     <tab type="modules" visible="yes" title="" intro=""/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
@@ -80,15 +89,6 @@
       <tab type="usergroup" url="@ref examples_everything" title="Everything at Once">
         <tab type="user" url="@ref menu_walkthrough" title="The a la carte Menu"/>
       </tab>
-    </tab>
-
-    <tab type="usergroup" url="@ref faq_page" title="FAQs">
-      <tab type="user" url="@ref processor_compatibility" title="Processor Compatibility" title=""/>
-      <tab type="user" url="@ref arduino_streams" title="Arduino Streams and Software Serial" title=""/>
-      <tab type="user" url="@ref power_parasites" title="Power Draw over Data Lines" title=""/>
-      <tab type="user" url="@ref memory_use" title="Decreasing Memory Footprint" title=""/>
-      <tab type="user" url="@ref code_debugging" title="In-Library Debugging" title=""/>
-      <tab type="user" url="@ref for_developers" title="For Developers" title=""/>
     </tab>
 
     <tab type="usergroup" url="@ref other_reading_page" title="Other Reading">

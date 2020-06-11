@@ -75,6 +75,10 @@ echo "" > .nojekyll
 ################################################################################
 ##### Generate the Doxygen code documentation and log the output.          #####
 cd ../ModularSensors
+
+# Copy Doxygen config / build files
+cp $TRAVIS_BUILD_DIR/doxygen/* doc/
+
 echo 'Current Doxygen version...'
 doxygen -v 2>&1
 echo 'Generating Doxygen code documentation...'
