@@ -5,7 +5,7 @@ set -e
 
 cd $TRAVIS_BUILD_DIR
 
-if [ ! -d $TRAVIS_BUILD_DIR/doxygen-src ]; then
+if [ ! -f $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen ]; then
 
     # Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
     echo "Cloning doxygen repository..."
@@ -21,15 +21,14 @@ if [ ! -d $TRAVIS_BUILD_DIR/doxygen-src ]; then
     cmake -G "Unix Makefiles" ..
     make
     echo "Done building doxygen."
+    echo "doxygen path: " $(pwd)
 fi
 
 echo "Current Doxygen version..."
-./bin/doxygen -v
+$TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen -v
 
-echo "doxygen path: " $(pwd)
-
-echo "Install Doxygen"
-cp ./bin/* $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+echo "Move Doxygen to working directory"
+cp $TRAVIS_BUILD_DIR/doxygen-src/build/bin/* $TRAVIS_BUILD_DIR/code_docs/ModularSensors
 #make install
 
 cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors
