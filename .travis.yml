@@ -92,10 +92,17 @@ jobs:
           - cd $TRAVIS_BUILD_DIR
           - chmod +x travis/generate-documentation.sh
           - sh travis/generate-documentation.sh
-        after_success:
-          - cd $TRAVIS_BUILD_DIR
-          - chmod +x travis/deploy-documentation.sh
-          - sh travis/deploy-documentation.sh
+        # after_success:
+        #   - cd $TRAVIS_BUILD_DIR
+        #   - chmod +x travis/deploy-documentation.sh
+        #   - sh travis/deploy-documentation.sh
+        deploy:
+          provider: pages:git
+          token: $GH_REPO_TOKEN
+          edge: true # opt in to dpl v2
+          keep_history: false
+          local_dir: $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen/html
+          project_name: ModularSensors
 
       # - name: "Check Single Sensor Example"
       #   env:
