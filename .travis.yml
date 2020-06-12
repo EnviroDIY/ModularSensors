@@ -13,7 +13,7 @@ cache:
     pip: true
     directories:
         - "~/.platformio"
-        - /doxygen-src
+        - $TRAVIS_BUILD_DIR/doxygen-src
 language: python
 python:
     - "2.7"

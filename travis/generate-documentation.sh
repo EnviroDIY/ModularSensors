@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Script modified from scripts by Jeroen de Bruijn, thephez, and Adafruit
 # https://gist.github.com/vidavidorra/548ffbcdae99d752da02
