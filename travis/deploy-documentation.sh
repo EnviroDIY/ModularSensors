@@ -7,8 +7,17 @@
 
 # Exit with nonzero exit code if anything fails
 set -e
-
+cd $TRAVIS_BUILD_DIR/code_docs
+echo "Current path: " $(pwd)
+echo "Contents (ls):"
+ls
+cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+echo "Current path: " $(pwd)
+echo "Contents (ls):"
+ls
 cd $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen
+echo "Current path: " $(pwd)
+echo "Contents (ls):"
 ls
 
 ################################################################################

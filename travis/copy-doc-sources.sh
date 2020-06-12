@@ -25,9 +25,6 @@ git clone -b gh-pages --depth 1 https://github.com/EnviroDIY/ModularSensors Modu
 cd ModularSensorsDoxygen
 echo "Documentation path: " $(pwd)
 
-##### Configure git.
-# Set the push default to simple i.e. push only the current branch.
-
 # Remove everything currently in the gh-pages branch.
 # GitHub is smart enough to know which files have changed and which files have
 # stayed the same and will only update the changed files. So the gh-pages branch
