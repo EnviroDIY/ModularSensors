@@ -3,23 +3,27 @@
 # Exit with nonzero exit code if anything fails
 set -e
 
-cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+cd $TRAVIS_BUILD_DIR
 
-# Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
-echo "Cloning doxygen repository..."
-git clone https://github.com/doxygen/doxygen.git doxygen-src
+if [ ! -d $TRAVIS_BUILD_DIR/doxygen-src ]; then
 
-cd doxygen-src
+    # Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
+    echo "Cloning doxygen repository..."
+    git clone https://github.com/doxygen/doxygen.git doxygen-src
 
-echo "Create build folder..."
-mkdir build
-cd build
+    cd doxygen-src
 
-echo "Make..."
-cmake -G "Unix Makefiles" ..
-make
+    echo "Create build folder..."
+    mkdir build
+    cd build
 
-echo "Done building doxygen..."
+    echo "Make..."
+    cmake -G "Unix Makefiles" ..
+    make
+    echo "Done building doxygen."
+fi
+
+echo "Current Doxygen version..."
 ./bin/doxygen -v
 
 echo "doxygen path: " $(pwd)

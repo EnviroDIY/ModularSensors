@@ -13,6 +13,7 @@ cache:
     pip: true
     directories:
         - "~/.platformio"
+        - /doxygen-src
 language: python
 python:
     - "2.7"
