@@ -9,13 +9,15 @@
 set -e
 
 cd $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen
+ls
 
 ################################################################################
 ##### Upload the documentation to the gh-pages branch of the repository.   #####
 # Only upload if Doxygen successfully created the documentation.
 # Check this by verifying that the html directory and the file html/index.html
 # both exist. This is a good indication that Doxygen did it's work.
-if [ -d "html" ] && [ -f "html/index.html" ]; then
+if [ -d $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen/html ] &&
+   [ -f $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen/html/index.html ]; then
 
     echo 'Uploading documentation to the gh-pages branch...'
     # Add everything in this directory (the Doxygen code documentation) to the

@@ -11,7 +11,6 @@ set -e
 # Create a clean working directory for this script.
 mkdir $TRAVIS_BUILD_DIR/code_docs
 cd $TRAVIS_BUILD_DIR/code_docs
-echo "Documentation path: " $(pwd)
 
 # Re-clone the main repo, not sparsely
 git clone -b master --depth 1 https://github.com/EnviroDIY/ModularSensors ModularSensors
@@ -24,6 +23,7 @@ git clone --depth 1 https://github.com/EnviroDIY/ModularSensors.wiki
 # cd $GH_REPO_NAME
 git clone -b gh-pages --depth 1 https://github.com/EnviroDIY/ModularSensors ModularSensorsDoxygen
 cd ModularSensorsDoxygen
+echo "Documentation path: " $(pwd)
 
 ##### Configure git.
 # Set the push default to simple i.e. push only the current branch.
@@ -40,3 +40,4 @@ rm -rf *
 # Presumably this is only needed when the SHORT_NAMES option in Doxygen is set
 # to NO, which it is by default. So creating the file just in case.
 echo "" > .nojekyll
+ls
