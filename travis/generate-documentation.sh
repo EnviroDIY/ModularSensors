@@ -16,5 +16,5 @@ echo 'Generating Doxygen code documentation...'
 
 # Redirect both stderr and stdout to the log file AND the console.
 # Print out doxygen warnings in red
-doxygen $DOXYFILE 2>&1 | tee doxygen.log
+./doxygen $DOXYFILE 2>&1 | tee doxygen.log
 # ./doxygen Doxyfile 2>&1 | tee doxygen.log > >(while read line; do echo -e "\e[01;31m$line\e[0m" >&2; done)
