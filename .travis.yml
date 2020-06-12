@@ -86,8 +86,8 @@ jobs:
           - chmod +x travis/copy-doc-sources.sh
           - sh travis/copy-doc-sources.sh
           - cd $TRAVIS_BUILD_DIR
-          - chmod +x travis/install-current-doxygen.sh
-          - sh travis/install-current-doxygen.sh
+          - chmod +x travis/build-install-doxygen.sh
+          - sh travis/build-install-doxygen.sh
         script:
           - cd $TRAVIS_BUILD_DIR
           - chmod +x travis/generate-documentation.sh
