@@ -125,6 +125,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // AltSoftSerial port can be used.
 // Not all AVR boards are supported by AltSoftSerial.
 // AltSoftSerial is capable of running up to 31250 baud on 16 MHz AVR. Slower baud rates are recommended when other code may delay AltSoftSerial's interrupt response.
+//Pins In/Rx 6  Out/Tx=5
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerialPhy;
 
@@ -556,19 +557,17 @@ Variable *variableList[] = {
     #endif //Decagon_CTD_UUID
 #if defined Insitu_TrollSdi12_UUID 
     new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
-    //CTDDepthInCalc,
     new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
-    //CTDTempFcalc,
 #endif //Insitu_TrollSdi12_UUID
 #if defined KellerAcculevel_ACT
     //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
-    new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
-    new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerXxlevel_Temp_UUID),
+    new KellerAcculevel_Height(&acculevel_snsr, KellerXxlevel_Height_UUID),
 #endif // KellerAcculevel_ACT
 #if defined KellerNanolevel_ACT
 //   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
-    new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
+    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerXxlevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevel_snsr, KellerXxlevel_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #if defined InsituLTrs485_ACT
 //   new insituLevelTroll_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -691,8 +690,10 @@ void  unusedBitsMakeSafe()
     //PORT_SAFE( 1); Tx0  TTy
     //PORT_SAFE( 2); Rx1  Xb?
     //PORT_SAFE( 3); Tx1  Xb?
+    #if !defined KellerXxxLevel_ACT
     PORT_SAFE(04);
     PORT_SAFE(05);
+    #endif //KellerXxxLevel_ACT
     PORT_SAFE(06);
     //PORT_SAFE(07); SDI12
     //PORT_SAFE(08); Grn Led
@@ -825,7 +826,7 @@ void setup()
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
-        #if defined Modem_SignalPercent_UUID //|| or others
+        #if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID //|| or others
                 modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
         #endif 
     #endif //UseModem_Module 
@@ -848,28 +849,17 @@ void setup()
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     
-    // Sync the clock if it isn't valid and we have battery to spare
-
-#if 0
-    //if (!dataLogger.isRTCSane()) 
-    {
-        #if defined UseModem_Module
-        MS_DBG(F("Sync with NIST "));
-        // this will correct RTC if bad dataLogger.isRTCSane()
+    // Sync the clock  and we have battery to spare
+    #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
         while  ( (PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) )
         {
             MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
         dataLogger.systemSleep();     
     } 
-        // Synchronize the RTC with NIST
-        // This will also set up the modemPhy
-        dataLogger.syncRTC();
-        #else
-        MS_DBG(F("Time Bad. Should have been updated "));
-        // Need to do error - flash light, stop
+    MS_DBG(F("Sync with NIST "));
+    dataLogger.syncRTC(); //Will also set up the modemPhy
         #endif
-    }
-    #endif //0 
+    // List start time, if RTC invalid will also be initialized
     PRINTOUT(F("Time "), dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
 
     Serial.println(F("Setting up sensors..."));
@@ -879,9 +869,13 @@ void setup()
     // all sensor names correct
     // Writing to the SD card can be power intensive, so if we're skipping
     // the sensor setup we'll skip this too.
+    //SDI12?
     #if defined KellerNanolevel_ACT
     nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
-    #endif //
+    #endif //KellerNanolevel_ACT
+    #if defined KellerAcculevel_ACT
+    acculevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
+    #endif // KellerAcculevel_ACT
     Serial.println(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true); // true = write a new header
@@ -917,7 +911,7 @@ void loop()
     #endif
     {
         #if defined UseModem_Module
-        PRINTOUT(F("Cancel Publish collect readings & log. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
+        PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" LogOnly. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
         #else
         PRINTOUT(F("Collect readings & log. batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         #endif // UseModem_Module
@@ -927,7 +921,7 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-         PRINTOUT(F("Starting logging/Publishing"),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
+         PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" log&Pub V_batt"),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
         dataLogger.logDataAndPublish();
     }
     #endif// UseModem_Module
