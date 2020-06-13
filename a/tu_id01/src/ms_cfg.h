@@ -75,9 +75,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 //Instructions: define only one  _Module
-#define DigiXBeeWifi_Module 1
+//#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
+#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof

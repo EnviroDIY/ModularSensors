@@ -826,8 +826,8 @@ void setup()
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
-        #if defined Modem_SignalPercent_UUID //|| or others
-                modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+        #if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID //|| or others
+        modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
         #endif 
     #endif //UseModem_Module 
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
@@ -849,28 +849,17 @@ void setup()
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     
-    // Sync the clock if it isn't valid and we have battery to spare
-
-#if 0
-    //if (!dataLogger.isRTCSane()) 
+    // Sync the clock  and we have battery to spare
+    #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
+    while  ( (PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) )
     {
-        #if defined UseModem_Module
-        MS_DBG(F("Sync with NIST "));
-        // this will correct RTC if bad dataLogger.isRTCSane()
-        while  ( (PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) )
-        {
-            MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
-            dataLogger.systemSleep();     
-        } 
-        // Synchronize the RTC with NIST
-        // This will also set up the modemPhy
-        dataLogger.syncRTC();
-        #else
-        MS_DBG(F("Time Bad. Should have been updated "));
-        // Need to do error - flash light, stop
-        #endif        
-    }
-    #endif //0 
+        MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
+        dataLogger.systemSleep();     
+    } 
+    MS_DBG(F("Sync with NIST "));
+    dataLogger.syncRTC(); //Will also set up the modemPhy
+    #endif        
+    // List start time, if RTC invalid will also be initialized
     PRINTOUT(F("Time "), dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
 
     Serial.println(F("Setting up sensors..."));
@@ -922,7 +911,7 @@ void loop()
     #endif
     {
         #if defined UseModem_Module
-        PRINTOUT(F("Cancel Publish collect readings & log. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
+        PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" LogOnly. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
         #else
         PRINTOUT(F("Collect readings & log. batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
         #endif // UseModem_Module
@@ -932,7 +921,7 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-         PRINTOUT(F("Starting logging/Publishing"),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
+         PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" log&Pub V_batt"),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
         dataLogger.logDataAndPublish();
     }
     #endif// UseModem_Module
