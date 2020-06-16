@@ -88,7 +88,7 @@ ___
 Now set up the modem and the internet connection options.
 This examples is using a Sodaq GPRSBee R6 or R7.
 
-[//]: # ( @snippet{lineno} baro_rho_correction.ino modem_settings )
+[//]: # ( @snippet{lineno} baro_rho_correction.ino gprsbee )
 ___
 
 [//]: # ( @section baro_rho_sensors_and_vars Sensors and Measured Variables )
