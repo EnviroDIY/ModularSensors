@@ -15,7 +15,7 @@ ___
     - [Library Includes](#library-includes)
   - [Logger and Modem Settings](#logger-and-modem-settings)
     - [Logging Options](#logging-options)
-    - [Wifi/Cellular Modem Options](#wificellular-modem-settings)
+    - [Wifi/Cellular Modem Options](#wificellular-modem-options)
   - [Sensors and Measured Variables](#sensors-and-measured-variables)
     - [The processor as a sensor](#the-processor-as-a-sensor)
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
@@ -33,6 +33,7 @@ ___
   - [Extra Working Functions](#extra-working-functions)
   - [Arduino Setup Function](#arduino-setup-function)
   - [Arduino Loop Function](#arduino-loop-function)
+
 [//]: # ( End GitHub Only )
 
 

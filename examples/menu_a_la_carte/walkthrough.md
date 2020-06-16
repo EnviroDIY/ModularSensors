@@ -79,6 +79,7 @@ ___
   - [Arduino Loop Function](#arduino-loop-function)
     - [A Typical Loop](#a-typical-loop)
     - [A Complex Loop](#a-complex-loop)
+
 [//]: # ( End GitHub Only )
 
 

@@ -17,7 +17,7 @@
  * @copydetails ApogeeSQ212
  *
  * @defgroup sq212_group AOSong AM2315
- * Classes for the Apogee SQ212 quantum light sensor.
+ * Classes for the @ref sq212_page
  *
  * @copydoc sq212_page
  */
