@@ -399,7 +399,6 @@ bool loggerModem::updateModemMetadata(void)
     int8_t bpercent = -99;
     uint16_t volt = 9999;
 
-    // Need to have modem turned ON for this
     // Try for up to 15 seconds to get a valid signal quality
     uint32_t startMillis = millis();
     do
@@ -438,6 +437,16 @@ bool loggerModem::updateModemMetadata(void)
     MS_DBG(F("CURRENT Modem Chip Temperature:"), loggerModem::_priorModemTemp);
 
     return success;
+}
+
+void loggerModem::pollModemMetadata(uint8_t status) {
+
+    if (POLL_MODEM_META_DATA_ON & status) {
+
+        _pollModemMetaData = true;
+
+    }
+
 }
 
 float loggerModem::getModemRSSI()

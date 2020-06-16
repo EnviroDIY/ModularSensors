@@ -9,7 +9,6 @@ Software License: BSD-3.
   and they may change this title to Stroud Water Research Center as required
   and the EnviroDIY Development Team
 
-This is written for ModularSensors library version 0.21.3 or greater
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -141,9 +140,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define INA219M_VOLT_UUID    "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
-#ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
-#define MaximDS3231_Temp_UUID       "MaximDS3231_Temp_UUID"
-#endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
+ //On maylfy
+//#define MaximDS3231_Temp_UUID       "MaximDS3231_TEMP_UUID"
+
 //#define Modem_RSSI_UUID ""
 // Seems to cause XBEE WiFi S6 to crash
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
@@ -160,12 +159,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #elif PROFILE_NAME == PROFILE04_ADAFRUIT_FEATHER_M4
 //**************************************************************************
 //This configuration expects a standard ADAFRUIT_FEATHER_M4 
-// plugged into a B031r2 with upgraded Arduino Wiring files for
+// plugged into a B031r3 with upgraded Arduino Wiring files for
 // with a INA219(FeatherWing) connected on I2C 
 // with a RTC_PCF2127 on I2C
 // with a MCP on I2C
 // Optional ADC Mux driven off MCP
-//
+// expects -DCUSTOM_B031
+// B031r3 Hardware Support a numer of Buffered Phy, SOFTWARE only supports ONE of
+//   CONFIG_SENSOR_RS485_PHY CONFIG_SENSOR_SDI12_PHY CONFIG_SENSOR_WIRE1_PHY
+// Some SDI-12 instruments work with 3V data and 5Volt Power 
 //This is hardcode to mean things in ProcessorStats !!!!
   /*cmd line -D ARDUINO_ARCH_SAMD  ARDUINO_FEATHER_M4 ADAFRUIT_FEATHER_M4_EXPRESS
     __SAMD51J19A__ __SAMD51__ __FPU_PRESENT ARM_MATH_CM4 
@@ -315,31 +317,72 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define registrationToken_UUID "registrationToken_UUID"
   #define samplingFeature_UUID   "samplingFeature_UUID"
 
-  //#define KellerAcculevel_ACT 1
+  //#define Decagon_CTD_UUID 1 - place maker not include yet
+
+ // #define Insitu_TrollSdi12_UUID 1
+    //Not tested B031, needs to activate SDI-12 Pwr buffer
+  #ifdef Insitu_TrollSdi12_UUID
+    //SDI-12 Port - Setup Address 1, Depth/Height as Param 2 (3 total 0-2)
+    #define ITROLL_DEPTH_UUID "KellerNanolevel_Height_UUID"
+    #define ITROLL_TEMP_UUID  "KellerNanolevel_Temp_UUID"
+    //#define ITROLL_PRESSURE_UUID  "ITROLL_PRESSURE_UUID"  
+    #define CONFIG_SENSOR_SDI12_PHY 1
+  #endif // Insitu_Troll_UUID
+
   #define KellerNanolevel_ACT 1
-  #if (defined KellerNanolevel_ACT) || (defined KellerAcculevel_ACT) 
+  #ifdef KellerNanolevel_ACT 
+    #define KellerNanolevelModbusAddress_DEF 0x01
+    #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
+    #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+    #define CONFIG_SENSOR_RS485_PHY 1
+  #endif //KellerNanolevel_ACT
+
+  //#define KellerAcculevel_ACT 1
+  #ifdef KellerAcculevel_ACT 
+    #define KellerAcculevelModbusAddress_DEF 0x01
+    #define KellerAcculevel_Height_UUID "KellerNanolevel_Height_UUID"
+    #define KellerAcculevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+    #define CONFIG_SENSOR_RS485_PHY 1
+  #endif//KellerAcculevel_ACT 
+
+  //#define InsituLTrs485_ACT 1 -not working, needs CRC flipped
+  //  #define MODBUS_BAUD_RATE 19200
+
+  #if defined CONFIG_SENSOR_RS485_PHY 
   //  SwVbat=1 for Vbst@12V and opt Sw12V
   //  SwVrs485 for Vbat-->Vrs to IC 
   //  Serial2 for Tx/A4/secom0.0 & Rx/A1/secom0.1
-    #define CONFIG_SENSOR_RS485_PHY 1
+  //
+    //??#define PWR_COMMS_PHY SwRs485
+    #define modbusSensorPower_DEF eMcpA_SwVrs485Out_pinnum //Secondary RS485 Transciever
+  #elif defined CONFIG_SENSOR_SDI12_PHY
+    //#define PWR_COMMS_PHY SwVsdi
+    #define sdi12SensorPower_DEF eMcpA_SwVsdiOut_pinnum //Secondary SDI12 Transciever
+  #elif defined CONFIG_SENRSOR_WIRE1_PHY
+    //#define PWR_COMMS_PHY SwV1w
+    #define w1SensorPower_DEF eMcpA_swV1wOut_pinnum
+  #else
+    #define PWR_COMMS_PHY -1
+  #endif //  #ifdef KellerNanolevel_ACT 
+
+  #if (defined CONFIG_SENSOR_RS485_PHY) || (defined CONFIG_SENSOR_SDI12_PHY) || (defined CONFIG_SENRSOR_WIRE1_PHY)
     //Full Duplex
     #define CONFIG_HW_RS485PHY_TX_PIN PIN_A1  //Feather_M4 Serial2 Tx pin 
     #define CONFIG_HW_RS485PHY_RX_PIN PIN_A4  //Feather_M4 Serial2 Rx pin
     #define CONFIG_HW_RS485PHY_DIR_PIN PIN_A5 //Also needs -DSERIAL2_TE_CNTL or -DSERIAL2_TE_HALF_DUPLEX for for variant.cpp 
     #define max485EnablePin_DEF -1 //Hw Opt PIN_A5
     #define rs485AdapterPower_DEF eMcpA_SwVbatOut_pinnum //Boost Sensor Power
-    #define modbusSensorPower_DEF eMcpA_SwVrs485Out_pinnum //Secondary RS485 Transciever
-  #endif //  #ifdef KellerNanolevel_ACT 
-  #ifdef KellerNanolevel_ACT 
-    #define KellerNanolevelModbusAddress_DEF 0x01
-    #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
-    #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
-  #endif //KellerNanolevel_ACT
-  #ifdef KellerAcculevel_ACT 
-    #define KellerAcculevelModbusAddress_DEF 0x01
-    #define KellerAcculevel_Height_UUID "KellerNanolevel_Height_UUID"
-    #define KellerAcculevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
-  #endif//KellerAcculevel_ACT 
+  #endif //CONFIG_SENSOR_RS485_PHY
+
+  #define AnalogProcEC_ACT 1
+  //AnalogProcEC_ACT B031 not UT 
+  #ifdef AnalogProcEC_ACT
+    #define EC1_UUID      "EC1_UUID"
+    //Simplest is ARED=VCC Power D4 - and then ADC_X2 or ADC_X3 - Wiring on J1
+    #define PIN_D4_SQWAVE 4
+    #define ECpwrPin_DEF PIN_D4_SQWAVE 
+    #define ECdataPin1_DEF PIN_EXT_ANALOG(B031_AEM_EXT2_PIN)
+  #endif //AnalogProcEC_ACT
 
   //Needs enabling to put in to powerdown reduces sleep by 1mA
   //#define INA219M_PHY_ACT 
@@ -355,9 +398,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
     #endif 
   #endif //INA219_PHY_ACT
 
-  //#define Modem_RSSI_UUID ""
-  // Seems to cause XBEE WiFi S6 to crash 
-  #define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+  //Radio Modem sensors - collected at end of connection, reported next cycle
+  // Enable  pollModemMetadata(POLL_MODEM_META_DATA_ON),enables all data collection, timewasting
+  //still problems #define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+  //not tested #define Modem_RSSI_UUID    "RSSI_UUID"
+  //Not supported yet #define Modem_RadioActive_UUID    "RadioActive_UUID"
   #define ProcessorStats_ACT 1
   #ifdef ProcessorStats_ACT
     #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
@@ -366,14 +411,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
   //To Use internal ADC (Needs  SAMD51 testing)
   // Needs testing for B031r1 range.
-  #define ProcVolt_ACT 1
+  //#define ProcVolt_ACT 1
   #if defined ProcVolt_ACT
     #define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
     #define ProcVolt_batt_UUID  "ProcVolt_batt_UUID"
     #define ProcVolt_V3v6_UUID  "ProcVolt_V3v6_UUID"
   #endif //ProcVolt_ACT
 
-  //Use sensor eg Adafruit_AM2314 or AM2320
+  //Use sensor eg Adafruit_AM2314 or AM2320 plugged in I2C
   #define ASONG_AM23XX_UUID 1
   #if defined ASONG_AM23XX_UUID
     #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID" 
@@ -689,5 +734,9 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #if !defined NEW_LOGGERID_MAX_SIZE
 #define NEW_LOGGERID_MAX_SIZE 40
 #endif 
+
+#if !defined MODBUS_BAUD_RATE
+  #define MODBUS_BAUD_RATE 9600
+#endif //MODBUS_BAUD_RATE
 
 #endif //ms_cfg_h

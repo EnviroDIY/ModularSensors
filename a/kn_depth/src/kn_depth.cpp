@@ -63,7 +63,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include "Adafruit_NeoPixel.h"
 
 #include "PortExpanderB031.h"
-
+#if defined USE_RTCLIB
+#include <RTClib.h> 
+#endif //USE_RTCLIB
 #define KCONFIG_SHOW_NETWORK_INFO 1
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define KCONFIG_DEBUG_LEVEL 1
@@ -242,15 +244,6 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 
-//#define analogEC_EC1_UUID "analogEC_EC1_UUID"
-#if defined(analogEC_EC1_UUID)
-#info "analogElecConductivity needs UT"
-#include "analogElecConductivity.h"
-//Real pins tbd
-const int8_t analogEC_PowerPin = sensorPowerPin_DEF;
-const int8_t analogEC_adcPin = 5;//sensorPowerPin_DEF;
-analogElecConductivity analogEC1parent(analogEC_PowerPin,analogEC_adcPin);
-#endif //analogEC_EC1_UUID
 
 //#define analogTh_T1_UUID "analogTh_T1_UUID"
 #if defined(analogTh_T1_UUID)
@@ -651,7 +644,7 @@ SodaqUBeeU201 modem = modemU201;
 // Variable *modemSignalPct = new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
-#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
+#if defined MaximDS3231_TEMP_UUID
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -909,7 +902,8 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // Variable *fivetmEa = new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *fivetmVWC = new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *fivetmTemp = new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
-
+#endif //SENSOR_CONFIG_GENERAL
+#ifdef Decagon_CTD_UUID
 
 // ==========================================================================
 //    Decagon CTD Conductivity, Temperature, and Depth Sensor
@@ -929,7 +923,8 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // Variable *ctdTemp = new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *ctdDepth = new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
 
-
+#endif //Decagon_CTD_UUID
+#ifdef SENSOR_CONFIG_GENERAL 
 // ==========================================================================
 //    Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
@@ -1173,6 +1168,20 @@ void ina219m_voltLowThresholdAlertFn(bool exceed,float value_V) {
 }
 #endif //INA219M_PHY_ACT
 
+#if defined Insitu_TrollSdi12_UUID
+// ==========================================================================
+//    Insitu Aqua/Level Troll Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+#include <sensors/InsituTrollSdi12.h>
+
+const char *ITROLLSDI12address = "1";  // The SDI-12 Address of the ITROLL
+const uint8_t ITROLLNumberReadings = 2;  // The number of readings to average
+const int8_t IT_SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t IT_SDI12Data = 7;  // The SDI12 data pin
+
+// Create a  ITROLL sensor object
+InsituTrollSdi12 itrollPhy(*ITROLLSDI12address, IT_SDI12Power, IT_SDI12Data, ITROLLNumberReadings);
+#endif //Insitu_TrollSdi12_UUID
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
@@ -1495,6 +1504,16 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 #endif //SENSOR_CONFIG_GENERAL
 
 // ==========================================================================
+//    Electrical Conductivity using the processors analog pins
+// ==========================================================================
+#ifdef AnalogProcEC_ACT
+#include <sensors/analogElecConductivity.h>
+const int8_t ECpwrPin = ECpwrPin_DEF;
+const int8_t ECdataPin1 = ECdataPin1_DEF;  
+analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
+#endif //AnalogProcEC_ACT
+
+// ==========================================================================
 //    Calculated Variables
 // ==========================================================================
 
@@ -1532,6 +1551,9 @@ Variable *variableList[] = {
 #if defined(ProcessorStats_Batt_UUID)
     new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),
 #endif
+#if defined AnalogProcEC_ACT
+    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
+#endif //AnalogProcEC_ACT
 #if defined(ProcVolt_ACT)  && defined(B031_AEM_EXTENSIONS) 
     //new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
     new processorAdc_Volt(&sensor_batt_V,  ProcVolt_batt_UUID,"LiBat 4v2"),
@@ -1547,9 +1569,6 @@ Variable *variableList[] = {
 #if defined(analogTh_T1_UUID)
     new analogThermistor_Temperature(&analogTherm1parent,analogTh_T1_UUID),
 #endif 
-#if defined(analogEC_EC1_UUID)
-    new analogElecConductivity_EC(&analogEC1parent,analogEC_EC1_UUID),
-#endif
 #if defined(AdcProc_Volt1_UUID)
     new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),
 #endif
@@ -1573,7 +1592,7 @@ Variable *variableList[] = {
     new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab"),
     #endif //SENSOR_CONFIG_GENERAL
     #if defined(ASONG_AM23XX_UUID)
-    //new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
+    new AOSongAM2315_Humidity(&am23xx,ASONG_AM23_Air_Humidity_UUID),
     new AOSongAM2315_Temp    (&am23xx,ASONG_AM23_Air_Temperature_UUID),
     #endif // ASONG_AM23XX_UUID
     #ifdef SENSOR_CONFIG_GENERAL
@@ -1614,7 +1633,12 @@ Variable *variableList[] = {
     new TIINA219_Power(&ina219, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif //SENSOR_CONFIG_GENERAL
 
-
+#if defined Insitu_TrollSdi12_UUID 
+    new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
+    //CTDDepthInCalc,
+    new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
+    //CTDTempFcalc,
+#endif //Insitu_TrollSdi12_UUID
 #ifdef KellerAcculevel_ACT
     //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
@@ -1654,6 +1678,7 @@ Variable *variableList[] = {
     new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
+
 #if defined(MaximDS3231_Temp_UUID)
     new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
 #endif //MaximDS3231_Temp_UUID
@@ -1669,6 +1694,12 @@ Variable *variableList[] = {
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
+#if defined Modem_SignalPercent_UUID
+    new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
+#endif //Modem_SignalPercent_UUID
+#if defined Modem_RSSI_UUID
+    new Modem_RSSI(&modemPhy, Modem_RSSI_UUID),
+#endif //Modem_SignalPercent_UUID
 #if defined INA219M_A_MIN_UUID
     new Variable(&ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
 #endif
@@ -1723,7 +1754,7 @@ PortExpanderB031 mcpExp = PortExpanderB031(MCP23017_ADDR);
 //     Local storage - evolving
 // ==========================================================================
 #ifdef USE_MS_SD_INI
- persistent_store_t ps;
+ persistent_store_t ps_ram;
 #endif //#define USE_MS_SD_INI
 
 // ==========================================================================
@@ -1880,6 +1911,8 @@ float getBatteryVoltage()
 // ==========================================================================
 void setup()
 {
+    uint8_t resetCause = REG_RSTC_RCAUSE;        //Reads from hw    
+    uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; //Reads from hw 
     bool LiBattPower_Unseable;
     uint16_t lp_wait=1;
 
@@ -1941,6 +1974,17 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
+
+    SerialStd.print(F("\nUsing ModularSensors Library version "));
+    SerialStd.println(MODULAR_SENSORS_VERSION);
+#if defined UseModem_Module
+    SerialStd.print(F("TinyGSM Library version "));
+    SerialStd.println(TINYGSM_VERSION);
+#else 
+    SerialStd.println(F("TinyGSM - none"));
+#endif
+    MS_DBG("SysCoreClock Mhz",SystemCoreClock, "ResetCause=",decodeResetCause(resetCause),"&",resetBackupExit,":");
+
     neoPixelPhy.begin();
     UiStatus(0);
 
@@ -1969,17 +2013,10 @@ void setup()
         }
     } while (LiBattPower_Unseable); 
     SerialStd.print(F("Good BatV="));
-    SerialStd.print(mcuBoard.getBatteryVm1(false));        
+    SerialStd.println(mcuBoard.getBatteryVm1(false));        
     /////// Measured LiIon voltage is good enough to start up
     //UiStatus(1);
-    SerialStd.print(F("\nUsing ModularSensors Library version "));
-    SerialStd.println(MODULAR_SENSORS_VERSION);
-#if defined UseModem_Module
-    Serial.print(F("TinyGSM Library version "));
-    Serial.println(TINYGSM_VERSION);
-#else 
-    Serial.print(F("TinyGSM - none"));
-#endif
+
     Wire.begin();
 
     #if defined HwFeatherWing_B031ALL  
@@ -2023,14 +2060,14 @@ void setup()
 
 #ifdef USE_MS_SD_INI
     //Set up SD card access, and also USB
-    Serial.println(F("---parseIni "));
+    SerialStd.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
-    Serial.println(F("\n\n---parseIni complete "));
+    SerialStd.println(F("\n\n---parseIni complete "));
 #endif //USE_MS_SD_INI
 
 #if 0
     SerialStd.print(F(" .ini-Logger:"));
-    SerialStd.println(ps.msc.s.logger_id[0]);
+    SerialStd.println(ps_ram.app.msc.s.logger_id[0]);
     SerialStd.println(F(" List of UUIDs"));
     uint8_t i_lp;
     for (i_lp=0;i_lp<variableCount;i_lp++)
@@ -2043,7 +2080,7 @@ void setup()
     //SerialStd.print(F("sF "))
     SerialStd.print(samplingFeature);
     SerialStd.print(F("/"));
-    SerialStd.println(ps.provider.s.sampling_feature);
+    SerialStd.println(ps_ram.app.provider.s.sampling_feature);
 #endif //1
     //List PowerManagementSystem LiIon Bat thresholds
 
@@ -2098,20 +2135,47 @@ void setup()
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
-    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
+    Logger::setRTCTimeZone(0); // Only tested for UTC (UTC+0)
 
     #if defined UseModem_Module
-    // Attach the modem and information pins to the logger
-    dataLogger.attachModem(modemPhy);
-    modemPhy.setModemLED(modemLEDPin);
+        // Attach the modem and information pins to the logger
+        dataLogger.attachModem(modemPhy);
+        //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
+        #if defined Modem_SignalPercent_UUID //|| or others
+            modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+        #endif 
     #endif // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLEDPin);
 
     // Begin the logger
     dataLogger.begin();
+    #if defined USE_RTCLIB
+    //extRtcPhy equipment test
+    SerialStd.println(F("extRtcPhy check "));
+    USE_RTCLIB * rtcPhyExt = dataLogger.rtcExtPhyObj();
+    DateTime start_dt = rtcPhyExt->now();
+    DateTime nxt_dt;
+    int16_t dt_lp=0;
+    #define DT_LP_MAX 10
+    do { 
+        delay(500);
+        nxt_dt = rtcPhyExt->now();
+        if (nxt_dt.second()!=start_dt.second()) {
+            SerialStd.println(F("extRtcPhy sec changed "));
+            break;
+        }
+        SerialStd.print(dt_lp);
+        SerialStd.println(F("] extRtcPhy sec NOT changing "));    
+    } while (++dt_lp<DT_LP_MAX ); 
+    SerialStd.print(F("extRtcPhy start "));
+    SerialStd.print(start_dt.timestamp(DateTime::TIMESTAMP_FULL));
+    SerialStd.print(F(" nxt="));
+    SerialStd.println(nxt_dt.timestamp(DateTime::TIMESTAMP_FULL));
+    SerialStd.flush();
+ 
+    #endif //USE_RTCLIB
     #if defined UseModem_Module
-    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     #if defined loggingMultiplier_MAX_CDEF
     dataLogFast.begin();
@@ -2124,6 +2188,7 @@ void setup()
     SerialStd.print(Logger::formatDateTime_ISO8601(sysStartTime_epochTzSec  ));
     SerialStd.print(" TZ=");
     SerialStd.println(timeZone);
+    SerialStd.flush();
     // Attach the modem and information pins to the logger
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
@@ -2139,7 +2204,7 @@ void setup()
     varArrFast.setupSensors(); //Assumption pwr is available
     #endif //loggingMultiplier_MAX_CDEF
 
-#if 1 //MS_DEBUG_THIS_MODULE
+#if defined UseModem_Module //MS_DEBUG_THIS_MODULE
     //Enable this in debugging or where there is no valid RTC
     // defined ARDUINO_ARCH_SAMD && !defined USE_RTCLIB
     //ARCH_SAMD doesn't have persistent clock - get time
@@ -2420,6 +2485,14 @@ void loop()
                 dataLogger.systemSleep();
             #endif //loggingMultiplier_MAX_CDEF
         MS_DBG(F("dataLogger Wake "),timeNow());
+        //Might have been the serial that woke up
+        while (Serial.available()) {
+            byte rec = Serial.read();
+            Serial.print(rec);
+            // Serial.print(" - ");
+            // Serial.print((char) rec);
+            Serial.print(" *** \n");
+        }
     #endif //KCONFIG_DEBUG_LEVEL
     #if defined(CHECK_SLEEP_POWER)
         PRINTOUT(F("A"));

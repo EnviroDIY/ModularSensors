@@ -55,19 +55,22 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>  // The modular sensors library
-
+#if defined USE_PS_EEPROM
+#include "EEPROM.h"
+#endif // USE_PS_EEPROM
+#include "ms_common.h"
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = __FILE__; //"xxx.cpp";
-const char build_date[] = __DATE__ " " __TIME__;
+extern const String build_ref = __FILE__ " " __DATE__ " " __TIME__ " " ;
 #ifdef PIO_SRC_REV
 const char git_branch[] = PIO_SRC_REV;
 #else 
-const char git_branch[] = "wip";
+const char git_branch[] = ".";
 #endif
+
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 //const char *LoggerID = "TU001";
 const char *LoggerID = LOGGERID_DEF_STR;
@@ -102,13 +105,13 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
-
 // ==========================================================================
-//    Wifi/Cellular Modem Settings
+//    Settings for Additional Serial Ports
 // ==========================================================================
 
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+// The modem and a number of sensors communicate over UART/TTL - often called "serial".
+// "Hardware" serial ports (automatically controlled by the MCU) are generally
+// the most accurate and should be configured and used for as many peripherals
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
@@ -122,6 +125,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // AltSoftSerial port can be used.
 // Not all AVR boards are supported by AltSoftSerial.
 // AltSoftSerial is capable of running up to 31250 baud on 16 MHz AVR. Slower baud rates are recommended when other code may delay AltSoftSerial's interrupt response.
+//Pins In/Rx 6  Out/Tx=5
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerialPhy;
 
@@ -160,7 +164,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// AltSoftSerial &modemSerial = altSoftSerialPhy;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 // Use this to create a modem if you want to monitor modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
@@ -181,10 +185,12 @@ const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
+#if defined UseModem_Module 
 // Network connection information
 const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi, unnecessary for gprs
+#endif //UseModem_Module 
 
 #ifdef DigiXBeeCellularTransparent_Module 
 // For any Digi Cellular XBee's
@@ -244,7 +250,56 @@ const int8_t SDI12Data = 7;  // The SDI12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
-#endif //ecagon_CTD_UUID
+#endif //Decagon_CTD_UUID
+
+#if defined Insitu_TrollSdi12_UUID
+// ==========================================================================
+//    Insitu Aqua/Level Troll Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+#include <sensors/InsituTrollSdi12.h>
+
+const char *ITROLLSDI12address = "1";  // The SDI-12 Address of the ITROLL
+const uint8_t ITROLLNumberReadings = 2;  // The number of readings to average
+const int8_t IT_SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t IT_SDI12Data = 7;  // The SDI12 data pin
+
+// Create a  ITROLL sensor object
+InsituTrollSdi12 itrollPhy(*ITROLLSDI12address, IT_SDI12Power, IT_SDI12Data, ITROLLNumberReadings);
+#endif //Insitu_TrollSdi12_UUID
+
+// ==========================================================================
+//    Insitu Level/Aqua Troll High Accuracy Submersible Level Transmitter
+// wip Tested for Level Troll 500
+// ==========================================================================
+#ifdef InsituLTrs485_ACT
+#include <sensors/InsituTrollModbus.h>
+
+const byte ltModbusAddress = InsituLTrs485ModbusAddress_DEF;  // The modbus address of InsituLTrs485
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t ltNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+
+InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, ltNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+// Variable *nanolevPress =  new InsituLTrs485_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevTemp =   new InsituLTrs485_Temp(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevHeight = new InsituLTrs485_Height(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab");
+
+#endif //InsituLTrs485_ACT
+
+// ==========================================================================
+//    Electrical Conductivity using the processors analog pins
+// ==========================================================================
+#ifdef AnalogProcEC_ACT
+#include <sensors/analogElecConductivity.h>
+const int8_t ECpwrPin = ECpwrPin_DEF;
+const int8_t ECdataPin1 = ECdataPin1_DEF;
+analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
+#endif //AnalogProcEC_ACT
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
@@ -372,20 +427,46 @@ const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnec
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
 #endif //0
+#ifdef ExternalVoltage_ACT
+// ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <sensors/ExternalVoltage.h>
 
+const int8_t ADSPower = 1;// sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t ADSChannel0 = 0;  // The ADS channel of interest
+const int8_t ADSChannel1 = 1;  // The ADS channel of interest
+const int8_t ADSChannel2 = 2;  // The ADS channel of interest
+const int8_t ADSChannel3 = 3;  // The ADS channel of interest
+const float dividerGain = 2; //  Default 1/gain for grove voltage divider is 10x  assumes Rev001
+const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+
+// Create an External Voltage sensor object
+ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr, VoltReadsToAvg);
+//ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltReadsToAvg);
+//special Vcc 3.3V
+ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr, VoltReadsToAvg);
+//ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr, VoltReadsToAvg);
+
+// Create a voltage variable pointer
+// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
+#endif //ExternalVoltage_ACT
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+// Units conversion functions
 // ==========================================================================
-#define  SENSOR_DEFAULT_F -0.0099
+#define  SENSOR_T_DEFAULT_F -0.009999
 float convertDegCtoF(float tempInput)
 { // Simple deg C to deg F conversion
-    if (SENSOR_DEFAULT_F == tempInput) return SENSOR_DEFAULT_F; 
+    if (           -9999 == tempInput) return SENSOR_T_DEFAULT_F; 
+    if (SENSOR_T_DEFAULT_F == tempInput) return SENSOR_T_DEFAULT_F; 
     return tempInput * 1.8 + 32;
 }
 
 float convertMmtoIn(float mmInput)
 { // Simple millimeters to inches conversion
-    if (SENSOR_DEFAULT_F == mmInput) return SENSOR_DEFAULT_F; 
+    if (           -9999 == mmInput) return SENSOR_T_DEFAULT_F; 
+    if (SENSOR_T_DEFAULT_F == mmInput) return SENSOR_T_DEFAULT_F; 
     return mmInput / 25.4;
 }
 // ==========================================================================
@@ -426,16 +507,22 @@ Variable *CTDDepthInCalc = new Variable(
     CTD10_DEPTH_UUID);
 #endif //Decagon_CTD_UUID
 
-#if defined MaximDS3231_TEMP_UUID
+#if defined MaximDS3231_TEMP_UUID || defined MaximDS3231_TEMPF_UUID
 // Create a temperature variable pointer for the DS3231
+#if defined MaximDS3231_TEMP_UUID 
 Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231,MaximDS3231_TEMP_UUID);
+#else
+Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231);
+#endif 
 float ds3231TempFgetValue(void)
 { // Convert temp for the DS3231
     // Pass true to getValue() for the Variables for which we're only sending a calculated version
     // of the sensor reading; this forces the sensor to take a reading when getValue is called.
     return convertDegCtoF(ds3231TempC->getValue(true));
 }
+#endif // MaximDS3231_TEMP_UUID
 // Create the calculated Mayfly temperature Variable object and return a pointer to it
+#if defined MaximDS3231_TEMPF_UUID
 Variable *ds3231TempFcalc = new Variable(
     ds3231TempFgetValue,      // function that does the calculation
     1,                          // resolution
@@ -453,21 +540,39 @@ Variable *ds3231TempFcalc = new Variable(
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
-    #if defined Decagon_CTD_UUID 
+#if defined(ExternalVoltage_Volt0_UUID)
+    new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
+#endif
+#if defined(ExternalVoltage_Volt1_UUID)
+    new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
+#endif    
+#if defined AnalogProcEC_ACT
+    new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
+#endif //AnalogProcEC_ACT    
+#if defined Decagon_CTD_UUID 
     //new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
     //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
     CTDTempFcalc,
-    #endif //Decagon_CTD_UUID
+#endif //Decagon_CTD_UUID
+#if defined Insitu_TrollSdi12_UUID 
+    new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
+    new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
+#endif //Insitu_TrollSdi12_UUID
 #if defined KellerAcculevel_ACT
     //new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
-    new KellerAcculevel_Temp(&acculevel_snsr, KellerAcculevel_Temp_UUID),
-    new KellerAcculevel_Height(&acculevel_snsr, KellerAcculevel_Height_UUID),
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerXxlevel_Temp_UUID),
+    new KellerAcculevel_Height(&acculevel_snsr, KellerXxlevel_Height_UUID),
 #endif // KellerAcculevel_ACT
 #if defined KellerNanolevel_ACT
 //   new KellerNanolevel_Pressure(&nanolevel_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerNanolevel_Temp_UUID),
-    new KellerNanolevel_Height(&nanolevel_snsr, KellerNanolevel_Height_UUID),
+    new KellerNanolevel_Temp(&nanolevel_snsr,   KellerXxlevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevel_snsr, KellerXxlevel_Height_UUID),
+#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
+#if defined InsituLTrs485_ACT
+//   new insituLevelTroll_Pressure(&InsituLT_snsr, "12345678-abcd-1234-efgh-1234567890ab"),
+    new InsituLevelTroll_Temp(&InsituLT_snsr,   InsituLTrs485_Temp_UUID),
+    new InsituLevelTroll_Height(&InsituLT_snsr, InsituLTrs485_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
     //new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     //new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -487,8 +592,10 @@ Variable *variableList[] = {
     #if defined MaximDS3231_TEMP_UUID
     //new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
     ds3231TempC,
+    #endif //  MaximDS3231_TEMP_UUID
+    #if defined MaximDS3231_TEMPF_UUID
     ds3231TempFcalc,
-    #endif //MaximDS3231_Temp_UUID
+    #endif //MaximDS3231_TempF_UUID
 
 };
 
@@ -503,7 +610,8 @@ VariableArray varArray(variableCount, variableList);
 //     Local storage - evolving
 // ==========================================================================
 #ifdef USE_MS_SD_INI
- persistent_store_t ps;
+persistent_store_t ps_ram;
+#define epc ps_ram  
 #endif //#define USE_MS_SD_INI
 
 // ==========================================================================
@@ -522,11 +630,12 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 const char *registrationToken = registrationToken_UUID;   // Device registration token
 const char *samplingFeature = samplingFeature_UUID;     // Sampling feature UUID
 
+#if defined UseModem_Module 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 //EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient, registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
-
+#endif //UseModem_Module 
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -556,8 +665,9 @@ float getBatteryVoltage()
     return mcuBoard.sensorValues[0];
 }
 
-
 // ==========================================================================
+// Manages the Modbus Physical Pins.
+// Pins pulled high when powered off will cause a ghost power leakage.
 #if defined KellerXxxLevel_ACT
 void modbusPinPowerMng(bool status) {
     MS_DBG(F("  **** modbusPinPower"), status);
@@ -570,11 +680,58 @@ void modbusPinPowerMng(bool status) {
     #endif
 }
 #endif //KellerXxxLevel_ACT
+
+#define PORT_SAFE(pinNum) pinMode(pinNum,INPUT);     digitalWrite(pinNum, LOW);
+void  unusedBitsMakeSafe() 
+{
+// Set all unused Pins to a safe no current mode for sleeping
+  //Mayfly variant.h: D0->23  (Analog0-7) or D24-31
+    //PORT_SAFE( 0); Rx0  Tty
+    //PORT_SAFE( 1); Tx0  TTy
+    //PORT_SAFE( 2); Rx1  Xb?
+    //PORT_SAFE( 3); Tx1  Xb?
+    #if !defined KellerXxxLevel_ACT
+    PORT_SAFE(04);
+    PORT_SAFE(05);
+    #endif //KellerXxxLevel_ACT
+    PORT_SAFE(06);
+    //PORT_SAFE(07); SDI12
+    //PORT_SAFE(08); Grn Led
+    //PORT_SAFE(09); Red LED
+    PORT_SAFE(10); //?? RTC Int
+    PORT_SAFE(11);
+    PORT_SAFE(12);
+    //mosi LED PORT_SAFE(13);
+    //miso PORT_SAFE(14);
+    //sck PORT_SAFE(15);
+    //scl PORT_SAFE(16);
+    //sda PORT_SAFE(17);
+    PORT_SAFE(18);
+    PORT_SAFE(19); //Xbee CTS 
+    PORT_SAFE(20); //Xbee RTS
+    PORT_SAFE(21);
+    //PORT_SAFE(22);  //Pwr Sw
+    PORT_SAFE(23); //Xbee DTR
+    //Analog from here on 
+    //PORT_SAFE(24);//A0 ECData1
+    PORT_SAFE(25); //A1
+    PORT_SAFE(26); //A2
+    PORT_SAFE(27); //A3
+    //PORT_SAFE(28); //A4  ECpwrPin
+    PORT_SAFE(29); //A5
+    PORT_SAFE(30); //A6
+    //PORT_SAFE(31); //A7 Timer Int
+};
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
 void setup()
 {
+    //uint8_t resetCause = REG_RSTC_RCAUSE;        AVR ?//Reads from hw    
+    //uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; AVR ?//Reads from hw 
+    bool LiBattPower_Unseable;
+    uint16_t lp_wait=1;    
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
     // could prevent the script from starting
@@ -584,24 +741,50 @@ void setup()
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Build date: ")); 
-    Serial.print(build_date);
-
-    Serial.print(F(" '"));
-    Serial.print(sketchName);
+    Serial.print(F("\n---Boot. Build: ")); 
+    Serial.print(build_ref);  
     Serial.print(" ");
     Serial.println(git_branch);
-    Serial.print(F("' on Logger "));
-    Serial.println(LoggerID);
 
-    Serial.print(F("Using ModularSensors Library version "));
+    Serial.print(F("ModularSensors version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
 #if defined UseModem_Module
     Serial.print(F("TinyGSM Library version "));
     Serial.println(TINYGSM_VERSION);
 #else 
-    Serial.print(F("TinyGSM - none"));
+    Serial.println(F("TinyGSM - none"));
 #endif
+
+    unusedBitsMakeSafe();
+    readAvrEeprom();
+
+    // A vital check on power availability
+    do {
+        LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ))?true:false);
+        if (LiBattPower_Unseable)
+        {
+            /* Sleep 
+            * If can't collect data wait for more power to accumulate.
+            * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
+            * Under no other load conditions the mega1284 takes about 35mA
+            * Another issue is that onstartup currently requires turning on comms device to set it up.
+            * On an XbeeS6 WiFi this can take 20seconds for some reason.
+            */
+            #if 1//defined(CHECK_SLEEP_POWER)
+            SerialStd.print(lp_wait++);
+            SerialStd.print(F(": BatteryLow-Sleep60sec, BatV="));
+            SerialStd.println(mcuBoard.getBatteryVm1(false));
+            #endif //(CHECK_SLEEP_POWER)
+            //delay(59000); //60Seconds
+            //if(_mcuWakePin >= 0){systemSleep();}
+            dataLogger.systemSleep(1); 
+            delay(1000);//debug
+            SerialStd.println(F("----Wakeup"));
+        }
+    } while (LiBattPower_Unseable); 
+    SerialStd.print(F("Good BatV="));
+    SerialStd.println(mcuBoard.getBatteryVm1(false));    
 
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -621,7 +804,8 @@ void setup()
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     MS_DEEP_DBG("***modbusSerial.begin"); 
     delay(10);
-    modbusSerial.begin(9600);
+
+    modbusSerial.begin(MODBUS_BAUD_RATE);
     modbusPinPowerMng(false); //Turn off pins 
     #endif
 
@@ -634,59 +818,49 @@ void setup()
     greenredflash();
     //not in this scope Wire.begin();
 
-    // Set the timezones for the logger/data and the RTC
-    // Logging in the given time zone
-    Logger::setLoggerTimeZone(timeZone);
+
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
     Logger::setRTCTimeZone(0);
 
+    #ifdef UseModem_Module
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
-    //modemPhy.setModemLED(modemLEDPin);
+    //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
+        #if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID //|| or others
+        modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+        #endif 
+    #endif //UseModem_Module 
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
-#ifdef USE_MS_SD_INI
+    #ifdef USE_MS_SD_INI
     //Set up SD card access
     Serial.println(F("---parseIni "));
+    dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
     Serial.println(F("\n\n---parseIni complete "));
-#endif //USE_MS_SD_INI
+    #endif //USE_MS_SD_INI
+ 
+    mcuBoard.printBatteryThresholds();
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
     #if defined UseModem_Module
-    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps_ram.app.provider.s.registration_token, ps_ram.app.provider.s.sampling_feature);
     #endif // UseModem_Module
     
-    // Note:  Please change these battery voltages to match your battery
-
-    MS_DBG(F("---getBatteryVoltage "));
-    float batteryV = getBatteryVoltage(); //Get once
-
-    // Sync the clock if it isn't valid and we have battery to spare
-    #define POWER_THRESHOLD_NEED_COMMS_PWR 3.6
-    #define POWER_THRESHOLD_NEED_BASIC_PWR 3.4
-    while  (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR && !dataLogger.isRTCSane())
+    // Sync the clock  and we have battery to spare
+    #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
+    while  ( (PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) )
     {
-        MS_DBG(F("Not enough power to sync with NIST "),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);
+        MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
         dataLogger.systemSleep();     
-        batteryV = getBatteryVoltage(); //reresh
     } 
-
-    if (!dataLogger.isRTCSane()) {
-        MS_DBG(F("Sync with NIST "));
-        // Synchronize the RTC with NIST
-        // This will also set up the modemPhy
-        dataLogger.syncRTC();
-    }
-
-    //Check if enough power to go on
-    while (batteryV < POWER_THRESHOLD_NEED_BASIC_PWR) {
-        MS_DBG(F("Wait for more power, batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_BASIC_PWR);
-        dataLogger.systemSleep();        
-        batteryV = getBatteryVoltage(); //referesh
-    }
+    MS_DBG(F("Sync with NIST "));
+    dataLogger.syncRTC(); //Will also set up the modemPhy
+    #endif        
+    // List start time, if RTC invalid will also be initialized
+    PRINTOUT(F("Time "), dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
 
     Serial.println(F("Setting up sensors..."));
     varArray.setupSensors();
@@ -695,9 +869,13 @@ void setup()
     // all sensor names correct
     // Writing to the SD card can be power intensive, so if we're skipping
     // the sensor setup we'll skip this too.
+    //SDI12?
     #if defined KellerNanolevel_ACT
     nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
-    #endif //
+    #endif //KellerNanolevel_ACT
+    #if defined KellerAcculevel_ACT
+    acculevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
+    #endif // KellerAcculevel_ACT
     Serial.println(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true); // true = write a new header
@@ -707,10 +885,10 @@ void setup()
     #endif //DIGI_RSSI_UUID
     //modbusSerial.setDebugStream(&Serial); not for AltSoftSerial or NeoSWserial
     MS_DBG(F("\n\nSetup Complete ****"));
-
     // Call the processor sleep
     //Serial.println(F("processor to sleep\n"));
     //dataLogger.systemSleep();
+
 }
 
 
@@ -718,27 +896,33 @@ void setup()
 // Main loop function
 // ==========================================================================
 
-// Use this short loop for simple data logging and sending
 void loop()
 {
-    // Note:  Please change these battery voltages to match your battery
-    // At very low battery, just go back to sleep
-    float batteryV = getBatteryVoltage();
-    if (batteryV < POWER_THRESHOLD_NEED_BASIC_PWR)
-    {
-        MS_DBG(F("Cancel logging, V too low batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_BASIC_PWR);
+    ps_Lbatt_status_t Lbatt_status;
+    Lbatt_status = mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
+    if (PS_LBATT_UNUSEABLE_STATUS==Lbatt_status ) {
+        PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="),mcuBoard.getBatteryVm1(false));
         dataLogger.systemSleep();
     }
-    // At moderate voltage, log data but don't send it over the modemPhy
-    else if (batteryV < POWER_THRESHOLD_NEED_COMMS_PWR)
+    // If battery low, log data but don't send it over the modemPhy
+    else 
+    #if defined UseModem_Module
+    if (PS_LBATT_LOW_STATUS >= Lbatt_status )
+    #endif
     {
-        MS_DBG(F("Cancel Publish collect readings & log. V too low batteryV="),batteryV,F("Need"), POWER_THRESHOLD_NEED_COMMS_PWR);
+        #if defined UseModem_Module
+        PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" LogOnly. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
+        #else
+        PRINTOUT(F("Collect readings & log. batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
+        #endif // UseModem_Module
         dataLogger.logData();
     }
+    #if defined UseModem_Module
     // If the battery is good, send the data to the world
     else
     {
-        MS_DBG(F("Starting logging/Publishing"),batteryV);
+         PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" log&Pub V_batt"),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
         dataLogger.logDataAndPublish();
     }
+    #endif// UseModem_Module
 }
