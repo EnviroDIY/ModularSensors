@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h  - ModularSensors Configuration - tgt _CTD10 _LT5 _EC
+ms_cfg.h_LT5  - ModularSensors Configuration - tgt _CTD10 _LT5 _EC
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -38,7 +38,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define USE_MS_SD_INI 1
+#define USE_MS_SD_INI  1
 #define USE_PS_EEPROM  1 
 #define USE_PS_HW_BOOT 1
 

@@ -375,7 +375,11 @@ void loggerModem::setModemPinModes(void)
     #endif //POWERPIN_ALLPINS_OFF    
 }
 
-
+void loggerModem::pollModemMetadata(uint8_t status) {
+    if (POLL_MODEM_META_DATA_ON & status) {
+        _pollModemMetaData = true;
+    }
+}
 bool loggerModem::updateModemMetadata(void)
 {
     bool success = true;
