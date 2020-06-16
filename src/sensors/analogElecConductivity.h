@@ -3,13 +3,31 @@
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *
- *This sensor encapsulates sensors using an anlog input .
+ *This sensor encapsulates sensors using an anlog input and onboard ADC and ADC ref.
  * EC from IEC probe, requires ADC_PIN, Source Resistance, Applied Voltage, water temperature. Requires switched power pin
- *     The water Temperature must be calculated seperately.
- *
+ *     The water Temperature must be suplied seperately for a calculation.
+ * 
+ *  To use, must switch power to series resistor  499R, then measurement from anlog pin A[0-7] and then sensor
+ *  
+ * Parts & Wiring for Mayfly
+ *  Mayfly 0.5b or later
+ *  Sensor  AC Power Cord 12t with male IEC 320-C8 connector. 
+ *  2x10 J3 for any pins A0-A7
+ *  Rlmt eg 499R series 1/4W
+ * 
+ *  Analog JP8 JP9 for ADC 16bit/ADS1115 uses different algorithim
+ * 
+ * Wiring
+ * Will use J3-Pin2 A0 but could be any of A0-A3,A5 
+ *  and one pin switches pwr eg AA (PwrPin)
+ *  A7 by default is tied to DS3231 Timer Int
+ *  Rlmt/500ohms to A7 and Sensor; J3-Pin10 to Sensor J3-Pin2
+ *  Sensors one side; J3-Pin2
+ *  Sensor  one side to GND Mayfly J3-Pin20
+ * 
  *For EC calculation 
- *  Range of 0-5V with 10bit ADC - resolution of 0.005
- *
+ *  (better to be ratio meteric))
+ *  Range of 0-3V3 with 10bit ADC - resolution of 0.003
  * 
  */
 
@@ -17,66 +35,41 @@
 #ifndef analogElecConductivity_h
 #define analogElecConductivity_h
 
-// Debugging Statement
-// #define MS_ANALOGELECCONDUCTIVITY_DEBUG
-
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG
 #define MS_DEBUGGING_STD "analogElecConductivity"
 #endif
-
+#ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "analogElecConductivity"
+#endif
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include "math.h"
 
 // Sensor Specific Defines
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
-#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 0
+#define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
 #define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 0
 #define ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS 0
 
-#define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 3
+#define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 1
 #define ANALOGELECCONDUCTIVITY_EC_VAR_NUM 0
 
-//#define ANALOGELECCONDUCTIVITY_TEMPERATURE_RESOLUTION 0
-//#define ANALOGELECCONDUCTIVITY_TEMPERATURE_VAR_NUM 1
-
-//#define ANALOGELECCONDUCTIVITY_SAMPNUM_RESOLUTION 0
-//#define ANALOGELECCONDUCTIVITY_SAMPNUM_VAR_NUM 2
-
-#define analogElecConductivityDef_Resolution 10
+#define analogElecConductivityDef_Resolution 10  //Default for all boards, change through API as needed
 #define analogElecConductivityAdc_Max ((1<< analogElecConductivityDef_Resolution)-1)
 #define EC_SENSOR_ADC_RANGE (1<< analogElecConductivityDef_Resolution)
 
 #if !defined SENSOR_UNINIT_VAL
-#define SENSOR_UNINIT_VAL -9999
+#define SENSOR_UNINIT_VAL -0.1
 #endif //SENSOR_UNINIT_VAL
 
-#if 0
-#define APTT_KELVIN_OFFSET 273.15	
-#define AP_TYPES 4
-#define AP_LPBATT_TBL_NUM (AP_TYPES+1)
-#ifndef AP_THERMISTOR_SERIES_R_OHMS 
-#define AP_THERMISTOR_SERIES_R_OHMS 75000
-#endif//AP_THERMISTOR_SERIES_R_OHMS 
-typedef enum {
-   APTT_NCP15XH193F03RC=0, //Murata Thermistor 
-   APTT_1,
-   APTT_2, //
-   APTT_NUM, ///Number of Thermistor Types supported 
-   APTT_UNDEF,
-} ac_type_thermistor_t;
-const float AP_LBATT_TBL[APTT_NUM][AP_LPBATT_TBL_NUM] = {
-//    0    1    2    3   
-//   A     B   C   FUT
-{0.0008746904041902967 , 0.0002532755006290475, 1.877479431169023e-7, 0.0},
-    //{3.3, 3.4, 3.6, 3.8, 0.05},
-    //{3.2, 3.3, 3.4, 3.7, 0.04},
-    {0.0, 0.0, 0.0, 0.0, 0.0}
-   };
- #endif //0
+#if !defined ProcAdcDef_Reference
+// one of eAnalogReference for all host platforms
+#define ProcAdcDef_Reference AR_DEFAULT 
+#endif //ProcAdcDef_Reference
 
 class analogElecConductivity : public Sensor
 {
@@ -104,12 +97,21 @@ private:
     //float _WaterTemperature_C;
     float *_ptrWaterTemperature_C;
     const float SensorV= 3.3;
-    const float Rseries_ohms=500; //that is R1 + any series port resistance
-    const float TemperatureCoef=0.019; //depends on what chemical/transport is being measured    
+    #if !defined RSERIES_OHMS_DEF
+    #define RSERIES_OHMS_DEF 499
+    #endif //RSERIES_OHMS_DEF
+    const float Rseries_ohms=RSERIES_OHMS_DEF; //that is R1 + any series port resistance
+    #if !defined TEMPERATURECOEF_DEF
+    #define TEMPERATURECOEF_DEF 0.019
+    #endif //TEMPERATURECOEF_DEF
+    const float TemperatureCoef=TEMPERATURECOEF_DEF; //depends on what chemical/transport is being measured    
     //********************** Cell Constant For Ec Measurements *********************//
     //Mine was around 2.9 with plugs being a standard size they should all be around the same
     //But If you get bad readings you can use the calibration script and fluid to get a better estimate for K
-    const float sensorEC_Konst=2.88;
+    #if !defined SENSOREC_KONST_DEF
+    #define SENSOREC_KONST_DEF 2.88
+    #endif //SENSOREC_KONST_DEF
+    const float sensorEC_Konst=SENSOREC_KONST_DEF;
 
 };
 
@@ -120,25 +122,20 @@ class analogElecConductivity_EC : public Variable
 public:
     analogElecConductivity_EC(Sensor *parentSense,
                         const char *uuid = "",
-                        const char *varCode = "EC_UUID")
+                        const char *varCode = "anlgEc")
       : Variable(parentSense,
                  (const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                  (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
-                 "ElectricalConductivity", "uScm",
+                 "electricalConductivity", "uScm",
                  varCode, uuid)
     {}
     analogElecConductivity_EC()
       : Variable((const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                  (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
-                 "ElectricalConductivity", "uScm", "EC_UUID")
+                 "ElectricalConductivity", "uScm", "anlgEc")
     {}
     ~analogElecConductivity_EC(){}
 };
-
-
-
-
-
 
 
 #endif  //analogElecConductivity

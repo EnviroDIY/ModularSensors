@@ -53,13 +53,21 @@ volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards
 #if defined(ARDUINO_ARCH_SAMD)
+    //RTCZero internal registers based on year 2000
+    // "Epoch" seconds from 1900, using  "struct tm", mktime, gmtime
     RTCZero Logger::zero_sleep_rtc;
 #endif
 
 
 #if defined USE_RTCLIB
 USE_RTCLIB rtcExtPhy;
-#endif //USE_RTC_EXT_PHY
+    //For RTClib.h:DateTime(uint32_t) use secs since 1970
+    #define DateTimeClass(varNam,epochTime) DateTime varNam(epochTime);  
+#else 
+    //For Sodaq_DS3231.h:DateTime(long) uses secs since 2000 
+    //#define DateTimeClass(epochTime) DateTime dtTz((long)((uint64_t)(epochTimeTz-EPOCH_TIME_OFF))); 
+    #define DateTimeClass(varNam,epochTime) DateTime varNam((long)((uint64_t)(epochTime-EPOCH_TIME_OFF))); 
+#endif//  USE_RTCLIB
 
 // Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
@@ -566,14 +574,23 @@ uint32_t Logger::getNowEpoch(void)
 uint32_t Logger::getNowEpochT0(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
+    if (!isRTCSane(currentEpochTime))  {
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        //PRINTOUT(F("The current clock timestamp is not valid!"), formatDateTime_ISO8601(currentEpochTime).substring(0, 10)," Setting to ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        PRINTOUT(F("Bad time "),currentEpochTime," ", formatDateTime_ISO8601(currentEpochTime).substring(0, 10)," Setting to ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        currentEpochTime=EPOCH_TIME_20200101_SECS;
+        setNowEpochT0(currentEpochTime);
+    }
+
   return currentEpochTime;
 }
 
 uint32_t Logger::getNowEpochTz(void)
 {
-  uint32_t currentEpochTime = rtc.now().getEpoch();
-  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
-  return currentEpochTime;
+  int64_t currentEpochTime = (int64_t)((uint64_t)rtc.now().getEpoch());
+  currentEpochTime += (_loggerRTCOffset*HOURS_TO_SECS);
+  return (uint32_t )currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
 void Logger::setNowEpochT0(uint32_t ts){rtc.setEpoch(ts);}
@@ -599,7 +616,7 @@ uint32_t Logger::getNowEpochT0(void)
 
 uint32_t Logger::getNowEpochTz(void)
 {
-  return getNowEpochT0() + ((uint32_t)_loggerRTCOffset)*3600;
+  return (uint32_t)(getNowEpochT0() + (_loggerRTCOffset*HOURS_TO_SECS));
 }
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
 void Logger::setNowEpochT0(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
@@ -619,7 +636,8 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 }
 DateTime Logger::dtFromEpochT0(uint32_t epochTimeT0)
 {
-    DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
+    //DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
+    DateTimeClass(dt,epochTimeT0)
     return dt;
 }
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -628,7 +646,8 @@ DateTime Logger::dtFromEpochTz(uint32_t epochTimeTz)
 {
     // The DateTime object constructor requires the number of seconds from
     // January 1, 2000 (NOT 1970) as input, so we need to subtract.
-    DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF); 
+    //DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF); 
+    DateTimeClass(dtTz,epochTimeTz)
     return dtTz;
 }
 
@@ -673,8 +692,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
 String Logger::formatDateTime_ISO8601(uint32_t epochTimeTz)
 {
     // Create a DateTime object from the epochTime
-    DateTime dtTz(epochTimeTz-EPOCH_TIME_OFF); //DateTime is from Year 2000
-    //MS_DBG("dtTz ",dtTz.year(),"/",dtTz.month(),"/",dtTz.date()," ",dtTz.hour(),":",dtTz.minute(),":",dtTz.second());
+    DateTimeClass(dtTz,epochTimeTz);
     return formatDateTime_ISO8601(dtTz);
 }
 
@@ -687,7 +705,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // If the timestamp is zero, just exit
     if  (UTCEpochSeconds == 0)
     {
-        PRINTOUT(F("Bad timestamp 0, not setting clock."));
+        PRINTOUT(F("Bad timestamp, not setting clock."));
         return false;
     }
 
@@ -696,21 +714,20 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // The RTC's timezone is a label and isn't used in calculations, only the offset is used to make it more readable
     // between the logger and the RTC.
     // Only works for ARM CC if long, AVR was uint32_t
-    uint32_t nistTz_sec = UTCEpochSeconds+ ((int32_t)getTZOffset())*3600;
-    MS_DBG(F("    NIST Time:"), UTCEpochSeconds, \
-        F("Tz="), getTZOffset(),
-        F("->"), formatDateTime_ISO8601(nistTz_sec));
+    uint32_t nistTz_sec = UTCEpochSeconds+ ((int32_t)getTZOffset())*HOURS_TO_SECS;
+    MS_DBG(F("    NIST UST:"), UTCEpochSeconds, 
+        F("->"), formatDateTime_ISO8601(UTCEpochSeconds));
 
     // Check the current RTC time
     uint32_t cur_logT0_sec = getNowEpochT0();
-    uint32_t cur_logTz_sec = getNowEpochTz();
-    MS_DBG(F("    Current Epoch Time on RTC :"), cur_logT0_sec, F("->"), \
-        formatDateTime_ISO8601(cur_logTz_sec));
-    MS_DBG(F("    Offset between epoch NIST and RTC:"), abs(cur_logT0_sec - UTCEpochSeconds));
+    MS_DBG(F("    Current Epoch UST Time on RTC :"), cur_logT0_sec, F("->"), 
+        formatDateTime_ISO8601(cur_logT0_sec));
+    uint32_t time_diff_sec = abs( (long)((uint64_t)cur_logT0_sec) - (long)((uint64_t)UTCEpochSeconds));
+    MS_DBG(F("    Offset between epoch NIST and RTC:"), time_diff_sec  );
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     #define NIST_TIME_DIFF_SEC 5
-    if (abs(cur_logT0_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC )
+    if (time_diff_sec  > NIST_TIME_DIFF_SEC )
     {
         setNowEpochT0(UTCEpochSeconds);
         PRINTOUT(F("Internal Clock set "),formatDateTime_ISO8601(nistTz_sec));
@@ -729,11 +746,13 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec, \
         "->(T=", getTimeZone(),")", \
         formatDateTime_ISO8601(nowExtEpoch_sec));
-    if (abs(nowExtEpoch_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC)
+    time_diff_sec = abs( (long)((uint64_t)nowExtEpoch_sec) - (long)((uint64_t)UTCEpochSeconds));    
+    if (time_diff_sec> NIST_TIME_DIFF_SEC)
     {
 
         rtcExtPhy.adjust(UTCEpochSeconds);//const DateTime& dt);
-        MS_DBG("         rtcExt updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
+        nowExt = rtcExtPhy.now();
+        MS_DBG("         rtcExt diff",time_diff_sec," updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
         retVal= true;
     }
 
@@ -820,7 +839,7 @@ bool Logger::checkInterval(void)
         delay(25);
         alertOff();
         delay(25);
-        PRINTOUT(F("The current clock timestamp is not valid!"));
+        PRINTOUT(F("The current clock timestamp is not valid!"), formatDateTime_ISO8601(getNowEpoch()).substring(0, 10));
         alertOn();
         delay(25);
         alertOff();
@@ -849,7 +868,13 @@ bool Logger::checkInterval(void)
     #else  // ARDUINO_ARCH_SAMD
     //Assume that have slept for the right amount of time
     markTime();
-    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz));
+    DateTime rtcExtNowDt =  rtcExtPhy.now();
+    //const char *DateFmt = "YYMMDD:hhmmss";- caused reboot rtcExtNowDt.toString((char *)DateFmt) 
+    //const char *DateFmt = "YY-MM-DD:hhmmss";
+    //uint32_t rtcExtNowTzSec = rtcExtNowDt.unixtime()+ ((int32_t)getTZOffset()*HOURS_TO_SECS);
+    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz),
+      "extRtc", rtcExtNowDt.timestamp(DateTime::TIMESTAMP_FULL));
+      //  - caused reboot
     retval = true;
     #endif 
     return retval;
@@ -894,7 +919,6 @@ void Logger::wakeISR(void)
 
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
-static uint32_t wakeUpTime_secs;
 void Logger::systemSleep(uint8_t sleep_min)
 {
 
@@ -1222,6 +1246,8 @@ void Logger::printFileHeader(Stream *stream)
     stream->print(F("Data Logger File: "));
     stream->println(_fileName);
 
+    printFileHeaderExtra(stream);
+    
     // Adding the sampling feature UUID (only applies to EnviroDIY logger)
     if (strlen(_samplingFeatureUUID) > 1)
     {
@@ -1263,7 +1289,6 @@ void Logger::printFileHeader(Stream *stream)
 void Logger::printSensorDataCSV(Stream *stream)
 {
     String csvString = "";
-    //Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz))
     dtFromEpochT0(Logger::markedEpochTimeTz).addToString(csvString);
     csvString += ',';
     stream->print(csvString);
@@ -1440,7 +1465,7 @@ bool Logger::logToSD(String& filename, String& rec)
     // If we could successfully open or create the file, write the data to it
     logFile.println(rec);
     // Echo the line to the serial port
-    PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
+    PRINTOUT(F("\n \\/---- Line Saved to"),filename,F("----\\/"));
     PRINTOUT(rec);
 
     // Set write/modification date time
@@ -1484,7 +1509,7 @@ bool Logger::logToSD(void)
     printSensorDataCSV(&logFile);
     // Echo the line to the serial port
     #if defined(STANDARD_SERIAL_OUTPUT)
-        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
+        PRINTOUT(F("\n \\/---- Line Saved to"),_fileName,F("----\\/"));
         printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
         PRINTOUT('\n');
     #endif
@@ -1708,9 +1733,6 @@ void Logger::begin()
     #endif
     watchDogTimer.resetWatchDog();
 
-    // Print out the current time
-    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
-
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -1722,44 +1744,61 @@ void Logger::begin()
 
         //eg Apr 22 2019 16:46:09 in this TZ
         DateTime ccTimeTZ(__DATE__, __TIME__);
-        DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime())-(getTimeZone()*3600)); //set to secs from UST/GMT Year 2000
-        #define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime())
+        DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime())+((int32_t)getTimeZone()*HOURS_TO_SECS)); //set to secs from UST/GMT Year 2000
+        #define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime()-(24*HOURS_TO_SECS))
         #define TIME_FUT_UPPER_UT0 (COMPILE_TIME_UT0+50*365*24*60*60)
         //MS_DBG("Sw Build Time Tz: ",ccTimeTZ.year(),"/",ccTimeTZ.month(),"/",ccTimeTZ.date()," ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second(), " secs2kTz ",ccTimeTZ.unixtime());
         //MS_DBG("Sw Build Time T0: ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date()," ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second()," secs2kT0 ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
 
         #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
-            rtcExtPhy.begin();
-
-            USE_RTCLIB::ErrorNum errRtc = rtcExtPhy.initialized();
-
-            if (USE_RTCLIB::NO_ERROR != errRtc)
-            {
-                MS_DBG("ExtRTC !init. err=",errRtc," set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
-                rtcExtPhy.adjust(ccTimeT0);
-
+            MS_DBG("ExtRTC init");
+            if (! rtcExtPhy.begin()){
+                PRINTOUT(F("*** extRTC not found. Equipment Error"));
+                //reboot or ?
             } else {
-                DateTime rNow_dt = rtcExtPhy.now();
-                uint32_t rnow_usecs = rNow_dt.unixtime();
 
-                MS_DBG("ExtRTC t0 ",rNow_dt.year(),"/",rNow_dt.month(),"/",rNow_dt.date()," ",rNow_dt.hour(),":",rNow_dt.minute(),":",rNow_dt.second()," or epoch ",rnow_usecs);
-                MS_DBG("Good if between ",COMPILE_TIME_UT0,"<",rnow_usecs ,"<",TIME_FUT_UPPER_UT0);
-                if ((rnow_usecs < COMPILE_TIME_UT0) || (rnow_usecs  > TIME_FUT_UPPER_UT0) ) {
+                delay(100);
+                bool cold_init = false; //Simple test for time being - expand with RAM signature
+                USE_RTCLIB::ErrorNum errRtc;// = rtcExtPhy.initialized();
+                #define RTC_INIT_MAX_NUM 10
+                uint8_t init_counter =0;
+                do {
+                    errRtc = rtcExtPhy.initialized();
+                    if (USE_RTCLIB::NO_ERROR == errRtc) break;
+                    cold_init = true; //As oscillator wasn't working
+                    MS_DBG(init_counter,"] ExtRTC !init. err=",errRtc," waiting for stability");
+                    delay(100);
+                } while (++init_counter<RTC_INIT_MAX_NUM);
+
+                if (cold_init) {
+                    MS_DBG("ExtRTC cold !init. set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                    rtcExtPhy.init();
                     rtcExtPhy.adjust(ccTimeT0);
-                    MS_DBG("ExtRTC t0 set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
-                }
-            }
-            
-            watchDogTimer.resetWatchDog();
 
-            DateTime now = rtcExtPhy.now();
-        
-            MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
-            zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
-            zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
-            #define zr zero_sleep_rtc
-            MS_DBG("Read internal rtc ",2000+zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
-        #else // no external _RTC
+                } else {
+                    DateTime rNow_dt = rtcExtPhy.now();
+                    uint32_t rnow_usecs = rNow_dt.unixtime();
+
+                    MS_DBG("ExtRTC t0 ",rNow_dt.year(),"/",rNow_dt.month(),"/",rNow_dt.date()," ",rNow_dt.hour(),":",rNow_dt.minute(),":",rNow_dt.second()," or epoch ",rnow_usecs);
+                    MS_DBG("Good if between ",COMPILE_TIME_UT0,"<",rnow_usecs ,"<",TIME_FUT_UPPER_UT0);
+                    if ((rnow_usecs < COMPILE_TIME_UT0) || (rnow_usecs  > TIME_FUT_UPPER_UT0) ) {
+                        rtcExtPhy.adjust(ccTimeT0);
+                        MS_DBG("ExtRTC t0 set to compile time T0 ",COMPILE_TIME_UT0," which is Tz ",__DATE__," ",__TIME__);
+                    }
+                }
+                
+                watchDogTimer.resetWatchDog();
+
+                DateTime now = rtcExtPhy.now();
+            
+                MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
+                zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
+                zero_sleep_rtc.setDate(now.date(), now.month(), now.year()-2000);
+                #define zr zero_sleep_rtc
+                MS_DBG("Read internal rtc UTC ",2000+zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+                
+            }        
+            #else // no external _RTC
             // If Power-on Reset Rcause.Bit0 have specific processing
             #define zr zero_sleep_rtc
             if ( (0== zr.getYear()) && (1==zr.getMonth()) && (1==zr.getDay()) ) {
@@ -1768,8 +1807,10 @@ void Logger::begin()
             }
         #endif // ADAFRUIT_FEATHERWING_RTC_SD
     #endif //ARDUINO_ARCH_SAMD
-    uint32_t nowEpochTz=getNowEpochTz();
-    MS_DBG(F("RTC Time:"), formatDateTime_ISO8601(nowEpochTz) );
+
+    // Print out the current time
+    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
+
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 

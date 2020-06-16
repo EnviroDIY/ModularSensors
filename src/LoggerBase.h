@@ -24,7 +24,7 @@
 #undef MS_DEBUGGING_STD
 #include "VariableArray.h"
 #include "LoggerModem.h"
-#include "ms_cfg.h"
+#include "ms_common.h"
 #include <Arduino.h>  // The base Arduino library
 
 
@@ -46,6 +46,7 @@
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
 #include <Sodaq_DS3231.h>
 #endif 
+#define HOURS_TO_SECS 3600
 // SECONDS_FROM_1970_TO_2000 946684800
 #define EPOCH_TIME_OFF 946684800
 // This is 2000-jan-01 00:00:00 in "epoch" time

@@ -111,7 +111,7 @@ processorAdc::~processorAdc(){}
 
 String processorAdc::getSensorLocation(void)
 {
-    String sensorLocation = F("procAdc");
+    String sensorLocation = F("procAdcV");
     sensorLocation += String(_adcChannel);
     return sensorLocation;
 }

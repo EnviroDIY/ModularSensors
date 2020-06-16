@@ -99,6 +99,7 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void)
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
 {
     bool success = true;
+    String ui_vers;
     MS_DBG(F("Initializing the XBee..."));
     success &= gsmModem.init();
     gsmClient.init(&gsmModem);
@@ -169,15 +170,17 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
 
-        String ui_vers = gsmModem.getIMEI();
-        PRINTOUT(F("IMa "), ui_vers);
-        //ui_vers = gsmModem.getIMEI();
-        //PRINTOUT(F("IMb "), ui_vers);
-        //ui_vers = gsmModem.getRegistrationStatus();
-        //gsmModem.sendAT(GF("+CREG"));
-        //ui_vers=gsmModem.readResponseInt(10000L);
-        //PRINTOUT(F("Registration '"), ui_vers,"'");
         #if defined MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
+        ui_vers = gsmModem.getIMEI();
+        PRINTOUT(F("IM "), ui_vers);
+        ui_vers = gsmModem.getSimCCID();
+        PRINTOUT(F("CCID "), ui_vers);
+        gsmModem.sendAT(GF("%V")); //Get Voltage requires ver 11415
+        ui_vers=gsmModem.readResponseInt(2000L);
+        PRINTOUT(F("ModemV '"), ui_vers,"'");
+        gsmModem.sendAT(GF("%L")); //Low Voltage Threshold shutoff
+        ui_vers=gsmModem.readResponseInt(2000L);
+        PRINTOUT(F("LowV Threshold '"), ui_vers,"'");
         ui_vers = gsmModem.sendATGetString(GF("VR"));
         //ui_vers += " "+gsmModem.sendATGetString(F("VL"));
         MS_DBG(F("Version "), ui_vers);
@@ -206,7 +209,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
                 //String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
                 //ui_op += " Cell Scan "+ui_scan;
                 PRINTOUT(ui_op);
-                if (50 == loops) {
+                if (10 == loops) {
                     /*Not clear why this may force a registration
                     Early experience with Hologram SIMs was they aren't registering,
                     However throwing this in, might do something or maybe just coincedence that it started working after this
@@ -214,14 +217,27 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
                     gsmModem.sendAT(GF("+CREG"));
                     //String ui_creg=gsmModem.readResponseInt(10000L);
                     //PRINTOUT(F("UseRandom +CREG '"), ui_creg,"'");
-                    PRINTOUT(F("UseRandom +CREG '"));
+                    PRINTOUT(F("Try +CREG '"));
                 }
             }
             delay(1000);
         }
         if (cellRegistered) {
+            ui_vers = gsmModem.getRegistrationStatus();
+            PRINTOUT(F("Digi Xbee3 setup Sucess. Registration '"), ui_vers,"'");
+            #if 0
+            //Doesn't work reliably, and doesn't show network operator
             String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
             PRINTOUT(F("Cell scan '"),ui_scan,"' success",success);
+            int8_t scanLp=3;
+            int16_t ui_len;
+            while(--scanLp) {
+                ui_scan=gsmModem.readResponseInt(1000L);
+                ui_len=ui_scan.length();
+                PRINTOUT(ui_len,"]",ui_scan,".");
+                if (1 < ui_scan.length() ) break;
+            }
+            #endif 
             success = true; //Not sure why need to force this
         } else {success = false;}
  
@@ -235,16 +251,9 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
     else
     {
         success = false;
+        PRINTOUT(F("Digi Xbee3 setup failed!"));
     }
 
-    if (success)
-    {
-        MS_DBG(F("... setup successful!"));
-    }
-    else
-    {
-        MS_DBG(F("... setup failed!"));
-    }
     return success;
 }
 
@@ -291,6 +300,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         return unixTimeStamp;
     }
 }*/
+#define timeHost "time.nist.gov"
 uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
 {
     /* bail if not connected to the internet */
@@ -300,11 +310,19 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
         return 0;
     }
     #if !defined NIST_SERVER_RETRYS
-    #define NIST_SERVER_RETRYS 4
+    #define NIST_SERVER_RETRYS 10
     #endif //NIST_SERVER_RETRYS
+    #if 0
     String nistIpStr;
     uint8_t index=0;
     /* Try up to 12 times to get a timestamp from NIST */
+    #define IP_STR_LEN 18
+    const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {{"132.163.97.1"},{"132.163.97.2"},{"132.163.97.3"},{"132.163.97.4"}} ;
+    //IPAddress ip2[4] = {"132,163, 97, 1","132, 163, 97, 2","132, 163, 97, 3","132, 163, 97, 4"} ;
+    //const char *ipAddrPtr;
+    IPAddress ip1; //Initialize
+    uint16_t nistIp_len;
+    #endif //0
     for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++)
     {
 
@@ -325,22 +343,8 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
         /* If it fails, options here https://tf.nist.gov/tf-cgi/servers.cgi */
         /* Uses "TIME" protocol on port 37 NIST: This protocol is expensive, since it uses the complete tcp machinery to transmit only 32 bits of data. 
           FUTURE Users are *strongly* encouraged to upgrade to the network time protocol (NTP), which is both more accurate and more robust.*/        
-        #define IP_STR_LEN 18
-        const char ipAddr[NIST_SERVER_RETRYS][IP_STR_LEN] = {{"132,163, 97, 1"},{"132, 163, 97, 2"},{"132, 163, 97, 3"},{"132, 163, 97, 4"}} ;
-        IPAddress ip1(132,163,97,1); //Initialize
-        gsmModem.sendAT(F("LAtime.nist.gov"));
-        index = gsmModem.waitResponse(4000,nistIpStr);
-        nistIpStr.trim();
-        uint16_t nistIp_len =nistIpStr.length();
-        if ( (nistIp_len <7)  || (nistIp_len>20)) {
-            ip1.fromString(ipAddr[i]);
-            MS_DBG(F("Bad lookup"),nistIpStr,"'=",nistIp_len, F(" Using "),ipAddr[i]);
-        } else {
-            ip1.fromString(nistIpStr);
-            MS_DBG(F("Good lookup mdmIP["),i,"/",NIST_SERVER_RETRYS,F("] '"),nistIpStr,"'=",nistIp_len);
-        }
-
-        connectionMade = gsmClient.connect(ip1, TIME_PROTOCOL_PORT, 15);
+        PRINTOUT(i,F("] Connect "),timeHost);
+        connectionMade = gsmClient.connect(timeHost, TIME_PROTOCOL_PORT, 15);
 
         /* Wait up to 5 seconds for a response */
         if (connectionMade)
@@ -357,7 +361,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
 
             if (gsmClient.available() >= 4)
             {
-                MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+                PRINTOUT(F("NIST responded after"), millis() - start, F("ms"));
                 byte response[4] = {0};
                 gsmClient.read(response, 4);
                 gsmClient.stop();
@@ -365,13 +369,14 @@ uint32_t DigiXBeeCellularTransparent::getNISTTimeOrig(void)
             }
             else
             {
-                MS_DBG(F("NIST Time server did not respond!"));
+                PRINTOUT(F("NIST Time server did not respond!"));
                 gsmClient.stop();
             }
         }
         else
         {
             MS_DBG(F("Unable to open TCP to NIST!"));
+            gsmClient.stop();
         }
     }
     return 0;
@@ -440,9 +445,14 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 {
     uint32_t time_epochTz0;
     time_epochTz0 = getNISTTimeOrig();
+    #if 0
+    //Cell tower not reliable
+    // https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its
+    // Need NTP/UDP or Daytime Protocol (RFC-867) ??
     if (0 == time_epochTz0) {
         time_epochTz0= (getTimeCellTower()+(8*3600));
     }
+    #endif 
     return time_epochTz0;
 }
 

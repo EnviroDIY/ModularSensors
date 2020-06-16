@@ -6,6 +6,7 @@
 */
 
 #include "analogElecConductivity.h"
+#include "ms_cfg.h"
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -92,13 +93,13 @@
 
 // For Mayfly version because the battery resistor depends on it
 analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
-    : Sensor(BOARD, ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
+    : Sensor("analogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS, ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS, ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage)
 {
     //_version = version;
-    _EcPowerPin = -1;
-    _EcAdcPin = -1;
+    _EcPowerPin = powerPin;
+    _EcAdcPin = dataPin;
     _ptrWaterTemperature_C = NULL;
    /* #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
         _EcAdcPin = A6;
@@ -119,10 +120,15 @@ analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin, 
 // Destructor
 analogElecConductivity::~analogElecConductivity(){}
 
-String analogElecConductivity::getSensorLocation(void) {return BOARD;}
+String analogElecConductivity::getSensorLocation(void) 
+{
+    String sensorLocation = F("anlgEc Proc Data/Pwr");
+    sensorLocation += String( _EcAdcPin) + "/" + String(_EcPowerPin);    
+  return BOARD;
+}
 
 /************ ***********************
- * SensorsR   
+ * readEC  
  * 
  * SensorV-- adcPin/Ra --- R1 ---- Sensorconnector&Wire  -- Rwater --- Groond
  * R1 series resistance ~ 500ohms
@@ -141,16 +147,33 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     float EC_uScm,EC25_uScm;  // units are uS per cm
 
  
-    #if defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+    #if !defined ARDUINO_ARCH_AVR
+
     analogReadResolution(analogElecConductivityDef_Resolution);
-    #endif //ARDUINO_SAMD_FEATHER_Mx_
- 
+    analogReference(AR_EXTERNAL); //ratio metric for the EC resistor
+    //analogReference(ProcAdcDef_Reference); //VDDANA = 3V3
+    #endif //ARDUINO_ARCH_AVR
+    uint8_t useAdcChannel = analogPinNum; 
+    #if defined ARD_ANALOLG_EXTENSION_PINS
+    if ((thisVariantNumPins+ARD_DIGITAL_EXTENSION_PINS)< analogPinNum) {
+        // ARD_COMMON_PIN on SAMD51
+        if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
+            //Setup mutliplexer
+            MS_DBG("  adc_Single Setup Multiplexer ", useAdcChannel,"-->",ARD_ANLAOG_MULTIPLEX_PIN); 
+            digitalWrite(useAdcChannel,1);
+            //useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
+        }
+        analogPinNum = ARD_ANLAOG_MULTIPLEX_PIN;
+    } 
+
+    #endif //ARD_ANALOLG_EXTENSION_PINS
     //************Estimates Resistance of Liquid ****************//
-    //digitalWrite(_EcPowerPin,HIGH); assume done by class Sensor
-    analogRead(analogPinNum);
-    sensorEC_adc= analogRead(_EcAdcPin);// This is not a mistake, First reading will be low beause if charged a capacitor
+    //digitalWrite(_EcPowerPin,HIGH); //assume done by class Sensor
+    delay(1); //Total time is about 5mS
+    sensorEC_adc= analogRead(analogPinNum);// This is not a mistake, First reading will be low beause if charged a capacitor
     //digitalWrite(_EcPowerPin,LOW);
- 
+    digitalWrite(useAdcChannel,0); //Turn off Mux
+    MS_DEEP_DBG("adc=",sensorEC_adc);
 
     //***************** Converts to EC **************************//
  
@@ -160,23 +183,13 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     /*Assuming sensorEC_adc is ratio metric - adc Reference is same as applied to EC sensor.
     * The Vcc ~ 3.3V can vary, as battery level gets low, so would be nice to elliminate it in the calcs
     * 
-    * The current is same through both Rseries and Rwater I =Vrseries/Rseries=Vwater/Rwater
-    * [1] Rwater = Rseries * Vwater/Vseries
-    * From 
-    * Vwater = I*RWater  
-    * Vrseries=I*Rseries  or I=Vrseries/Rseries
-    * Vwater = RWater  *Vrseries/Rseries
-    * [1] Rwater = Rseries *Vwater/Vseries
-    * 
-    * [2] Vwater = Vref*sensorAdc/ADC_RANGE
-    * [3] Vrseries = Vref*(ADC_RANGE-sensorADC)/ADC_RANGE= Vref*(1-sensorADC/ADC_RANGE)
-    *  combining [2] & [3] in [1]
-    * [4] Rwater = Rseries *Vref*(sensorADC/ADC_RANGE) /(Vref*(1-sensorADC/ADC_RANGE))   
-    *  cancel Vref
-    *     Rwater = Rseries *sensorADC/(ADC_RANGE(1-sensorADC/ADC_RANGE))
-    *     Rwater = Rseries *sensorADC/(ADC_RANGE-sesnosrADC)
-    */
-    Rwater_ohms = Rseries_ohms*sensorEC_adc/(EC_SENSOR_ADC_RANGE-sensorEC_adc);
+    *   raw_adc/EC_SENSOR_ADC_RANGE = Rwater_ohms/(Rwater_ohms+Rseries_ohms)
+     *
+     * 
+     */ 
+    if (0==sensorEC_adc)sensorEC_adc=1; //Prevent underflow, can never be EC_SENSOR_ADC_RANGE
+
+    Rwater_ohms = Rseries_ohms/(((float)EC_SENSOR_ADC_RANGE/(float)sensorEC_adc)-1);
 
     /* The Rwater is an absolute value, but is based on a defined size of the plates of the sensor.
     *  Translating a magic "sensorsEC_konst" is used, derived from others experiments
@@ -192,18 +205,28 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
         EC25_uScm = EC_uScm;
     }
 
+    //Note return Rwater_ohms if MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
+    MS_DEEP_DBG("ohms=", Rwater_ohms);
     return EC25_uScm; 
  
 }
 
 bool analogElecConductivity::addSingleMeasurementResult(void)
 {
+    float sensorEC_uScm = -9999;
 
+    if (bitRead(_sensorStatus, 6))
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    MS_DBG(F("Getting EC of Water"));
+        sensorEC_uScm = readEC(_EcAdcPin);
+        MS_DBG(F("Water EC (uSm/cm)"),sensorEC_uScm);
+    }
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
-    float sensorEC_uScm = readEC(_EcAdcPin);
-    MS_DBG(F("Water EC (uSm/cm"),sensorEC_uScm);
     verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM, sensorEC_uScm);
 
     // Unset the time stamp for the beginning of this measurement

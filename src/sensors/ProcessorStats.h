@@ -57,13 +57,18 @@
 
 
 typedef enum {
-   PSLR_0500mA=0, //500mA or less 
-   PSLR_1000mA,
-   PSLR_4000mA, //4000mA or more
+   PSLR_ALL=0, //ALL works
+   PSLR_0500mA,//500mA or less
+   PSLR_1000mA, //1000mA or more
+   //Fut expanded to batterys
+   PLSR_LiSi18,// LiSiOCL2 19Ahr/larger Pulse 150mA "D" cell - Nomonal 3.6 discharged at 3.2V
+   PLSR_3D,// 3D * 1.6V MnO2 18AHR Pulse ?100mA "D" cell - Nomonal 4.8 discharged at 2.4V
+   // 3 MnO2 "C" cell - higher impedance than "D" cell
    PSLR_NUM, ///Number of Battery types supported 
    PSLR_UNDEF,
 } ps_liion_rating_t;
 #define PSLR_LIION  PSLR_0500mA
+#define PLSR_BAT_TYPE_DEF  PSLR_0500mA
 typedef enum {
    PS_PWR_STATUS_REQ=0, //0 returns status
    //Order of following important and should map to ps_Lbatt_status_t
@@ -133,11 +138,27 @@ public:
  ps_liion_rating_t _liion_type;
 //use EDIY_PROGMEM
 const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
+
 //    0    1    2    3   Hyst
 //   Use  Low  Med  Good
-    {3.3, 3.4, 3.6, 3.8, 0.05},
-    {3.2, 3.3, 3.4, 3.7, 0.04},
-    {3.1, 3.2, 3.3, 3.6, 0.03}
+#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
+//Mayfly rev 0.5,0.4 : Proc ADC Reported V is that of the Vin, which is only valid range 3.7V to 6V  
+// actual/Mayfly uP Measures - one Mayfly non-linear mapping
+//  3.70/3.33 3.80/3.38  3.90/3.59 3.95/3.654 
+//  4.00/3.79 4.05/3.87 4.10/3.96 4.15/4.09 4.20/4.12
+    {0.1, 0.2, 0.3, 0.4, 0.05},  //0 All readings return OK 
+    {3.5, 3.6, 3.7, 3.75, 0.04}, //1 PSLR_0500mA
+    {3.5, 3.6, 3.3, 3.7, 0.03},  //2 PSLR_1000mA
+    {3.35, 3.38, 3.42, 3.46, 0.03},//3 PLSR_LiSi18
+    {2.4, 2.5, 2.60, 2.7, 0.03}, //4 fut Test 3*D to 2.4 to 4.8V
+    // There could possibly be a MAYFLY off the ExternalVoltage ADS1115, it still is limited to 3.3V inpu
+#else //
+    {3.3, 3.4, 3.6, 3.8, 0.05}, //PSLR_0500mA, //500mA or less 
+    {3.2, 3.3, 3.4, 3.7, 0.04}, //PSLR_1000mA
+    {3.1, 3.2, 3.3, 3.6, 0.03}, //PSLR_4000mA
+    {2.90, 3.10, 3.20, 3.30, 0.03}, //PLSR_LiSi18
+    {3.5, 3.6, 4.00, 4.6, 0.03}, //3*D to 2.4 to 4.8V
+#endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
    };
 //use EDIY_PROGMEM
 #define PS_LBATT_USEABLE_V  PS_LBATT_TBL[_liion_type][0]

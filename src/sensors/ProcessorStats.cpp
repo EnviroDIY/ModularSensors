@@ -143,10 +143,17 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
 bool ProcessorStats::addSingleMeasurementResult(void)
 {
     // Get the battery voltage
-    MS_DBG(F("Getting battery voltage"));
+    //MS_DBG(F("Getting battery voltage"));
 
     float sensorValue_battery = -9999;
 
+    #if !defined ARDUINO_ARCH_AVR
+        #if !defined PROC_ADC_DEFAULT_RESOLUTION
+            #define PROC_ADC_DEFAULT_RESOLUTION 10
+        #endif //PROC_ADC_DEFAULT_RESOLUTION
+        analogReadResolution(PROC_ADC_DEFAULT_RESOLUTION);
+        analogReference(AR_DEFAULT); 
+    #endif //ARDUINO_ARCH_AVR
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
         if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
         {
@@ -196,10 +203,11 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     #endif
 
+    MS_DBG(F("Vbat"),sensorValue_battery);
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
 
     // Used only for debugging - can be removed
-    MS_DBG(F("Getting Free RAM"));
+    //MS_DBG(F("Getting Free RAM"));
 
     #if defined __AVR__ || defined ARDUINO_ARCH_AVR
     extern int16_t __heap_start, *__brkval;
@@ -218,6 +226,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     // bump up the sample number
     sampNum += 1;
+    MS_DBG(F("SampNum="),(unsigned int)sampNum);
 
     verifyAndAddMeasurementResult(PROCESSOR_SAMPNUM_VAR_NUM, sampNum);
 
@@ -234,7 +243,7 @@ void ProcessorStats::setBatteryType(ps_liion_rating_t LiionType) {
     _liion_type = LiionType;
 }
 void ProcessorStats::printBatteryThresholds() {
-    Serial.print(F("Battery LiIonType="));
+    Serial.print(F("Battery Type="));
     Serial.println(_liion_type);
     Serial.print(F(" Thresholds USEABLE="));
     Serial.print(PS_LBATT_USEABLE_V);
