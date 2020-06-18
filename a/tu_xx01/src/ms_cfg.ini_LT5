@@ -1,0 +1,43 @@
+[COMMON]
+;This section required. Max 80 active chars, not including after any ;
+LOGGER_ID =TU_RC_test04a ;Auto Site Reference
+LOGGING_INTERVAL_MINUTES=60
+LIION_TYPE = 2 ;0=Any 1=LiIon0.5A 2=1AH 3=LiSOCL2 4=3Leclanche
+TIME_ZONE=-8  ; -12 to +12
+GEOGRAPHICAL_ID="At TU-RCtest04 RiverX Monitor"
+
+[NETWORK]
+;apn only one depending on cell plan
+apn=VZWINTERNET
+apn=hologram
+
+
+[PROVIDER]
+; Supported: data.enviroDIY.com 
+CLOUD_ID=data.enviroDIY.com
+REGISTRATION_TOKEN=30f562fc-f9bd-4884-97b7-3c9f7b942087 ; registration token
+SAMPLING_FEATURE=  61055766-be1e-4f49-a509-bcdf28ec183e ; Sampling feature
+
+[UUIDs]
+ITROLL_DEPTH_UUID=93eb7647-14c3-40a7-8248-06e84680ff6c ;Gage height ft LT500 
+ITROLL_TEMP_UUID= e7cd9faa-398b-4c0d-bcf5-ef6bf371c159 ;Temperature LT500 Temp
+KellerXxlevel_Height_UUID=193286f0-7ee8-44f4-9488-cb8ddc2cf54f ;Gage height Keller_Acculevel_gageHeight
+KellerXxlevel_Temp_UUID=  081a8bad-1876-4dc5-aeb6-6ef1883fd410 ;Temperature Keller_Acculevel_Temp
+DIGI_RSSI_UUID=   381bdd6a-f39f-465a-9f64-ddfcbc0c3e7b ;Received signal strength indication (Digi_Cellular_RSSI)
+Batt_UUID=        49c86561-d83e-454b-928a-cc961f445083 ;Battery voltage EnviroDIY_Mayfly_Batt
+SampleNumber_UUID=1da9af8c-168b-42e1-a0f7-e405bf1a307c ;Sequence number EnviroDIY_Mayfly_SampleNum
+
+
+;[BOOT]
+; For configuring a Mayfly with unique info from [BOOT]
+;BOARD_NAME=mayfly
+;BOARD_SN=MAYFLY180347
+;BOARD_REV=0.5bC01
+;EEPROM_WRITE=YES ;Last operation
+
+;[USER]
+; For configuring project specific [COMMON]
+;ACTION=WRITE ; Last Operation
+
+
+
