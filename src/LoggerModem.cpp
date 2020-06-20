@@ -439,16 +439,6 @@ bool loggerModem::updateModemMetadata(void)
     return success;
 }
 
-void loggerModem::pollModemMetadata(uint8_t status) {
-
-    if (POLL_MODEM_META_DATA_ON & status) {
-
-        _pollModemMetaData = true;
-
-    }
-
-}
-
 float loggerModem::getModemRSSI()
 {
     float retVal = loggerModem::_priorRSSI;

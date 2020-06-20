@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h  - ModularSensors Configuration - tgt _CTD10 _LT5 _EC
+ms_cfg.h_EC  - ModularSensors Configuration - tgt _CTD10 _LT5 _EC
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -21,12 +21,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //**************************************************************************
 //This configuration is for a standard Mayfly0.bb
 //Sensors Used - two std to begin then
-//#define AnalogProcEC_ACT 1
-//#define ENVIRODIY_MAYFLY_TEMPERATURE 1
+#define AnalogProcEC_ACT 1
+#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
-#define Insitu_TrollSdi12_UUID 1
+//#define Insitu_TrollSdi12_UUID 1
 //Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
-#define KellerAcculevel_ACT 1
+//#define KellerAcculevel_ACT 1
 //#define KellerNanolevel_ACT 1
 //#define ASONG_AM23XX_UUID 1
 
@@ -75,9 +75,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 //Instructions: define only one  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
+//#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
@@ -85,7 +85,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // End TinyGsmClient.h options
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
+// The Modem is used to push data and also sync Time
+// In standalong logger, no internet, Modem can be required at factor to do a sync Time
+// Normally enable both of the following. In standalone, disable UseModem_PushData.
 #define UseModem_Module 1
+//#define UseModem_PushData 1
 //Required for TinyGsmClient.h 
 #define TINY_GSM_MODEM_XBEE
 
@@ -186,9 +190,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define MaximDS3231_TEMPF_UUID "MaximDS3231_TEMPF_UUID"
 #endif //ENVIRODIY_MAYFLY_TEMPERATURE
 
-#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
+#if defined UseModem_Module 
+//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
-
+#endif //UseModem_Module 
 
 #define ProcessorStats_ACT 1
 #if defined ProcessorStats_ACT

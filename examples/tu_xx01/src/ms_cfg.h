@@ -28,6 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
 //#define KellerAcculevel_ACT 1
 //#define KellerNanolevel_ACT 1
+//#define ASONG_AM23XX_UUID 1
 
 //Mayfly configuration 
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
@@ -74,7 +75,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 //Instructions: define only one  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
@@ -84,7 +85,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // End TinyGsmClient.h options
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
+// The Modem is used to push data and also sync Time
+// In standalong logger, no internet, Modem can be required at factor to do a sync Time
+// Normally enable both of the following. In standalone, disable UseModem_PushData.
 #define UseModem_Module 1
+//#define UseModem_PushData 1
 //Required for TinyGsmClient.h 
 #define TINY_GSM_MODEM_XBEE
 
@@ -117,22 +122,22 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #ifdef Insitu_TrollSdi12_UUID
   //Mayfly definitions
-  #define ITROLL_DEPTH_UUID "KellerNanolevel_Height_UUID"
-  #define ITROLL_TEMP_UUID  "KellerNanolevel_Temp_UUID"
+  #define ITROLL_DEPTH_UUID "ITROLL_DEPTH_UUID"
+  #define ITROLL_TEMP_UUID  "ITROLL_TEMP_UUID"
   //#define ITROLL_PRESSURE_UUID  "ITROLL_PRESSURE_UUID"  
 #endif // Insitu_Troll_UUID
 
 
 #ifdef KellerAcculevel_ACT 
-  #define KellerAcculevel_Height_UUID "KellerNanolevel_Height_UUID"
-  #define KellerAcculevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+  #define KellerXxlevel_Height_UUID "KellerXxlevel_Height_UUID"
+  #define KellerXxlevel_Temp_UUID   "KellerXxlevel_Temp_UUID"
   #define CONFIG_SENSOR_RS485_PHY 1
   #define KellerAcculevelModbusAddress_DEF 0x01
   #endif//KellerAcculevel_ACT 
 
 #ifdef KellerNanolevel_ACT
-  #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
-  #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+  #define KellerXxlevel_Height_UUID "KellerXxlevel_Height_UUID"
+  #define KellerXxlevel_Temp_UUID   "KellerXxlevel_Temp_UUID"
   #define CONFIG_SENSOR_RS485_PHY 1
   #define KellerNanolevelModbusAddress_DEF 0x01
 #endif // KellerNanolevel_ACT
@@ -173,8 +178,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define INA219M_VOLT_UUID    "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
-
-//#define ASONG_AM23XX_UUID 1
 #if defined ASONG_AM23XX_UUID
   #define ASONG_AM23_Air_Temperature_UUID  "Air_Temperature_UUID" 
   #define ASONG_AM23_Air_TemperatureF_UUID "Air_TemperatureF_UUID"   
@@ -187,9 +190,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define MaximDS3231_TEMPF_UUID "MaximDS3231_TEMPF_UUID"
 #endif //ENVIRODIY_MAYFLY_TEMPERATURE
 
+#if defined UseModem_Module 
 //#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
-
+#endif //UseModem_Module 
 
 #define ProcessorStats_ACT 1
 #if defined ProcessorStats_ACT
@@ -200,7 +204,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
   #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
-  //#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+  #define ExternalVoltage_Volt1_UUID "Volt1_UUID"
 #endif //ExternalVoltage_ACT
 
 #endif //ms_cfg_h

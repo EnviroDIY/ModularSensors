@@ -856,9 +856,21 @@ void setup()
             MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
         dataLogger.systemSleep();     
     } 
+        #if defined DigiXBeeWifi_Module
+            //For the WiFi module, it may not be configured if no nscfg.ini file present, 
+            // this supports the standalone logger, but need to get time at factory/ms_cfg.ini present
+            uint8_t cmp_result=modemPhy.getWiFiId().compareTo(wifiId_def);
+            // MS_DBG(F("cmp_result="),cmp_result," ",modemPhy.getWiFiId(),"/",wifiId_def);
+            if (!(cmp_result==0) ) {
+                SerialStd.print(F("Sync with NIST over WiFi network "));
+                SerialStd.println(modemPhy.getWiFiId());
+                dataLogger.syncRTC(); //Will also set up the modemPhy
+            }
+        #else
     MS_DBG(F("Sync with NIST "));
     dataLogger.syncRTC(); //Will also set up the modemPhy
-        #endif
+        #endif //DigiXBeeWifi_Module
+    #endif //UseModem_Module    
     // List start time, if RTC invalid will also be initialized
     PRINTOUT(F("Time "), dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
 
@@ -880,14 +892,11 @@ void setup()
     dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true); // true = write a new header
     dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
-    #if defined DIGI_RSSI_UUID
-    modemPhy.pollModemMetadata(); //Turn on RSSI collection 
-    #endif //DIGI_RSSI_UUID
-    //modbusSerial.setDebugStream(&Serial); not for AltSoftSerial or NeoSWserial
+
+
+
     MS_DBG(F("\n\nSetup Complete ****"));
-    // Call the processor sleep
-    //Serial.println(F("processor to sleep\n"));
-    //dataLogger.systemSleep();
+
 
 }
 
@@ -906,23 +915,23 @@ void loop()
     }
     // If battery low, log data but don't send it over the modemPhy
     else 
-    #if defined UseModem_Module
+    #if defined UseModem_PushData
     if (PS_LBATT_LOW_STATUS >= Lbatt_status )
-    #endif
+    #endif //UseModem_PushData
     {
-        #if defined UseModem_Module
+        #if defined UseModem_PushData
         PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" LogOnly. V too low batteryV="),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
         #else
         PRINTOUT(F("Collect readings & log. batteryV="),mcuBoard.getBatteryVm1(false),F(" status="), Lbatt_status);
-        #endif // UseModem_Module
+        #endif // UseModem_PushData
         dataLogger.logData();
     }
-    #if defined UseModem_Module
+    #if defined UseModem_PushData
     // If the battery is good, send the data to the world
     else
     {
          PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),F(" log&Pub V_batt"),mcuBoard.getBatteryVm1(false),F(" Lbatt="), Lbatt_status);
         dataLogger.logDataAndPublish();
     }
-    #endif// UseModem_Module
+    #endif// UseModem_PushData
 }

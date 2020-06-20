@@ -1,0 +1,22 @@
+[COMMON]
+;This section required. Max 80 active chars, not including after any ;
+LOGGER_ID =TU_RC_ECtst02 ;Auto Site Reference
+LOGGING_INTERVAL_MINUTES=15
+LIION_TYPE = 3 ;0=Any 1=LiIon0.5A 2=1AH 3=LiSOCL2 4=3Leclanche
+TIME_ZONE=-8  ; -12 to +12
+GEOGRAPHICAL_ID="TU EC DemoCreek#02 Monitor" 
+
+[NETWORK]
+
+
+;[BOOT]
+;BOARD_NAME=mayfly
+;BOARD_SN=MAYFLY180369
+;BOARD_REV=0.5bA01C01
+;EEPROM_WRITE=YES ;Last operation
+
+[USER]
+;ACTION=WRITE ; Last Operation
+
+
+
