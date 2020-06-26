@@ -13,7 +13,7 @@
  * @copydetails AtlasScientificRTD
  *
  * @defgroup atlas_rtd_group Atlas Scientific RTD circuit
- * The Sensor and Variable objects for the Atlas EZO RTD circuit
+ * Classes for the Atlas EZO RTD circuit
  *
  * @copydetails AtlasScientificRTD
  */

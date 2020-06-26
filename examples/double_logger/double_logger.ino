@@ -62,35 +62,36 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
-//  Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [modem_settings] */
+/** Start [xbee_wifi] */
+// For the Digi Wifi XBee (S6B)
+#include <modems/DigiXBeeWifi.h>
 // Create a reference to the serial port for the modem
+
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
+const long      modemBaud   = 9600;     // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin     = -2;  // MCU pin controlling modem power
-const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
-const int8_t modemResetPin   = 20;  // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
-                                    // status (-1 if unconnected)
+const int8_t modemVccPin    = -2;    // MCU pin controlling modem power
+const int8_t modemStatusPin = 19;    // MCU pin used to read modem status
+const bool useCTSforStatus  = true;  // Flag to use the modem CTS pin for status
+const int8_t modemResetPin  = 20;    // MCU pin connected to modem reset pin
+const int8_t modemSleepRqPin = 23;   // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
+                                     // status (-1 if unconnected)
 
 // Network connection information
 const char* wifiId  = "xxxxx";  // WiFi access point, unnecessary for GPRS
 const char* wifiPwd = "xxxxx";  // WiFi password, unnecessary for GPRS
 
-// For the Digi Wifi XBee (S6B)
-#include <modems/DigiXBeeWifi.h>
-const long modemBaud       = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;  // Flag to use the modem CTS pin for status
 DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,
                        wifiPwd);
 // Create an extra reference to the modem by a generic name
 DigiXBeeWifi modem = modemXBWF;
-/** End [modem_settings] */
+/** End [xbee_wifi] */
 
 
 // ==========================================================================

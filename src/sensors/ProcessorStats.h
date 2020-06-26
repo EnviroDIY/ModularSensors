@@ -10,10 +10,10 @@
  *
  * These are for metadata on the processor functionality.
  *
- * For battery voltage:
- *  Range of 0-5V with 10bit ADC - resolution of 0.005
+ * @defgroup processor_group Processor Metadata
+ * Classes for the @ref processor_sensor_page
  *
- * If the processor is awake, it's ready to take a reading.
+ * @copydoc processor_sensor_page
  */
 
 // Header Guards
@@ -62,18 +62,46 @@
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
 
 
-// The "Main" class for the Processor
+// The main class for the Processor
 // Only need a sleep and wake since these DON'T use the default of powering up
 // and down
+/**
+ * @brief The main class to use the main processor (MCU) as a sensor.
+ *
+ * @ingroup processor_group
+ *
+ * @see @ref processor_sensor_page
+ */
 class ProcessorStats : public Sensor {
  public:
-    // Need to know the Mayfly version because the battery resistor depends on
-    // it
+    /**
+     * @brief Construct a new Processor Stats object
+     *
+     * Need to know the Mayfly version because the battery resistor depends on
+     * it
+     *
+     * @param version The version of the MCU, if applicable
+     *
+     * @note It is not possible to average more than one measurement for
+     * processor variables - it just doesn't make sense for them.
+     */
     explicit ProcessorStats(const char* version);
+    /**
+     * @brief Destroy the Processor Stats object
+     *
+     */
     ~ProcessorStats();
 
+    /**
+     * @copydoc Sensor::getSensorLocation()
+     *
+     * This returns the processor name as read from the compiler variable.
+     */
     String getSensorLocation(void) override;
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 
  private:
@@ -83,7 +111,14 @@ class ProcessorStats : public Sensor {
 };
 
 
-// For the battery supplying power to the processor
+/**
+ * @brief The variable class used for the battery supplying power to the
+ * processor as measured by the processor itself.
+ *
+ * @ingroup processor_group
+ *
+ * @see @ref processor_sensor_page
+ */
 class ProcessorStats_Battery : public Variable {
  public:
     /**
@@ -118,7 +153,15 @@ class ProcessorStats_Battery : public Variable {
 };
 
 
-// Defines the "Free Ram" This is a board diagnostic
+/**
+ * @brief The variable class used for "Free Ram" measured by the MCU.
+ *
+ * This is a board diagnostic.
+ *
+ * @ingroup processor_group
+ *
+ * @see @ref processor_sensor_page
+ */
 class ProcessorStats_FreeRam : public Variable {
  public:
     /**
@@ -153,7 +196,15 @@ class ProcessorStats_FreeRam : public Variable {
 };
 
 
-// Defines the "Sample Number" This is a board diagnostic
+/**
+ * @brief The variable class used for "Sample Number" on the main processor.
+ *
+ * This is a board diagnostic.
+ *
+ * @ingroup processor_group
+ *
+ * @see @ref processor_sensor_page
+ */
 class ProcessorStats_SampleNumber : public Variable {
  public:
     /**

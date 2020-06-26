@@ -80,36 +80,42 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
-//  Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [modem_settings] */
-// Create a reference to the serial port for the modem
-HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-
-// Modem Pins - Describe the physical pin connection of your modem to your board
-// NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin    = 23;      // MCU pin controlling modem power
-const int8_t modemStatusPin = 19;      // MCU pin used to read modem status
-const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
-                                       // status (-1 if unconnected)
-
-// Network connection information
-const char* apn = "xxxxx";  // The APN for the gprs connection
-
+/** Start [gprsbee] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
 #include <modems/Sodaq2GBeeR6.h>
-const long   modemBaud = 9600;  //  SIM800 does auto-bauding by default
+
+// Create a reference to the serial port for the modem
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
+
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+// Example pins are for a Sodaq GPRSBee R6 or R7 with a Mayfly
+const int8_t modemVccPin     = 23;  // MCU pin controlling modem power
+const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
+const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
+const int8_t modemSleepRqPin = -1;  // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
+                                    // status
+
+// Network connection information
+const char* apn = "xxxxx";  // APN for GPRS connection
+
+// Create the modem object
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
 
 // Create RSSI and signal strength variable pointers for the modem
-Variable* modemRSSI = new Modem_RSSI(&modem,
-                                     "12345678-abcd-1234-ef00-1234567890ab");
-Variable* modemSignalPct =
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [modem_settings] */
+Variable* modemRSSI =
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab", "RSSI");
+Variable* modemSignalPct = new Modem_SignalPercent(
+    &modem, "12345678-abcd-1234-ef00-1234567890ab", "signalPercent");
+/** End [gprsbee] */
 
 
 // ==========================================================================
@@ -199,7 +205,6 @@ Variable* ds18Temp = new MaximDS18_Temp(&ds18,
 /** Start [ms5803] */
 #include <sensors/MeaSpecMS5803.h>
 
-// const int8_t I2CPower = sensorPowerPin;  // Power pin (-1 if unconnected)
 const uint8_t MS5803i2c_addr =
     0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
 const int16_t MS5803maxPressure =
@@ -331,7 +336,7 @@ Variable* calcCorrDepth = new Variable(
 //  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 /** Start [variable_arrays] */
-// FORM2: Fill array with already created and named variable pointers
+// Fill array with already created and named variable pointers
 Variable* variableList[] = {mcuBoardSampNo, mcuBoardBatt,  mcuBoardAvailableRAM,
                             ds3231Temp,     bme280Temp,    bme280Humid,
                             bme280Press,    bme280Alt,     ms5803Temp,

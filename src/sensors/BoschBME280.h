@@ -12,12 +12,12 @@
  *
  * This depends on the Adafruit BME280 Library.
  *
- * @copydetails #BoschBME280
+ * @copydetails BoschBME280
  *
  * @defgroup bme280_group Bosch BME280
- * The Sensor and Variable objects for the Bosch BME280 environmental sensor.
+ * Classes for the @ref bme280_page.
  *
- * @copydetails #BoschBME280
+ * @copydetails BoschBME280
  */
 
 // Header Guards
@@ -101,7 +101,7 @@
  *     @copydetails BoschBME280_Temp
  *
  * For Humidity:
- *     @copydetails
+ *     @copydetails BoschBME280_Humidity
  *
  * @ingroup bme280_group
  */

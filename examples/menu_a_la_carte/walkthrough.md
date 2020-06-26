@@ -25,22 +25,19 @@ ___
         - [SoftwareSerial with External Interrupts](#softwareserial-with-external-interrupts)
       - [SAMD Boards](#samd-boards)
     - [Logging Options](#logging-options)
-  - [Wifi/Cellular Modem Settings](#wificellular-modem-settings)
-    - [Modem Pins](#modem-pins)
-    - [Network Settings](#network-settings)
-    - [Creating the loggerModem object](#creating-the-loggermodem-object)
-      - [Digi XBee Cellular - Transparent Mode](#digi-xbee-cellular---transparent-mode)
-      - [Digi XBee3 LTE-M - Bypass Mode](#digi-xbee3-lte-m---bypass-mode)
-      - [Digi XBee 3G - Bypass Mode](#digi-xbee-3g---bypass-mode)
-      - [Digi XBee S6B Wifi](#digi-xbee-s6b-wifi)
-      - [Espressif ESP8266](#espressif-esp8266)
-      - [Quectel BG96](#quectel-bg96)
-      - [Sequans Monarch](#sequans-monarch)
-      - [SIMCom SIM800](#simcom-sim800)
-      - [SIMCom SIM7000](#simcom-sim7000)
-      - [Sodaq GPRSBee](#sodaq-gprsbee)
-      - [u-blox SARA R410M](#u-blox-sara-r410m)
-      - [u-blox SARA U201](#u-blox-sara-u201)
+  - [Wifi/Cellular Modem Options](#wificellular-modem-options)
+    - [Digi XBee Cellular - Transparent Mode](#digi-xbee-cellular---transparent-mode)
+    - [Digi XBee3 LTE-M - Bypass Mode](#digi-xbee3-lte-m---bypass-mode)
+    - [Digi XBee 3G - Bypass Mode](#digi-xbee-3g---bypass-mode)
+    - [Digi XBee S6B Wifi](#digi-xbee-s6b-wifi)
+    - [Espressif ESP8266](#espressif-esp8266)
+    - [Quectel BG96](#quectel-bg96)
+    - [Sequans Monarch](#sequans-monarch)
+    - [SIMCom SIM800](#simcom-sim800)
+    - [SIMCom SIM7000](#simcom-sim7000)
+    - [Sodaq GPRSBee](#sodaq-gprsbee)
+    - [u-blox SARA R410M](#u-blox-sara-r410m)
+    - [u-blox SARA U201](#u-blox-sara-u201)
     - [Modem Measured Variables](#modem-measured-variables)
   - [Sensors and Measured Variables](#sensors-and-measured-variables)
     - [The processor as a sensor](#the-processor-as-a-sensor)
@@ -210,40 +207,30 @@ This includes setting the time zone (daylight savings time is **NOT** applied) a
 ___
 
 
-[//]: # ( @section menu_modem_settings Wifi/Cellular Modem Settings )
-## Wifi/Cellular Modem Settings
+[//]: # ( @section menu_modem_settings Wifi/Cellular Modem Options )
+## Wifi/Cellular Modem Options
 
-[//]: # ( @subsection menu_modem_serial Modem Pins )
-### Modem Pins
-
-First, we'll assign all the physical connection information for the modem, the pin numbers and the serial port.
-
-There are tables with the default baud rates and proper pins to use for many different module on the @ref modem_notes_page page.
-Pins that do not apply should be set as -1.
-
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino modem_serial )
-
-[//]: # ( @subsection menu_network_setting Network Settings )
-### Network Settings
-
-Next we set up the network connection information.
-
-For a cellular modem, you need the APN (access point name) assigned for your SIM card and cellular data plan.
-
-For a WiFi modem, you need the network SSID and the password.
-The security is assumed to be WPA2.
-
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino network_info )
-
-
-[//]: # ( @subsection menu_specific_modems Creating the loggerModem object )
-### Creating the loggerModem object
 This modem section is very lengthy because it contains the code with the constructor for every possible supported modem module.
 Do _NOT_ try to use more than one modem at a time - it will _NOT_ work.
 
+To create any of the modems, we follow a similar pattern:
 
-[//]: # ( @subsubsection menu_xbee_cell_trans Digi XBee Cellular )
-#### Digi XBee Cellular - Transparent Mode
+First, we'll create a pointer to the serial port (Arduino Stream object) that we'll use for communication between the modem and the MCU.
+We also assign the baud rate to a variable here.
+There is a table of @ref modem_notes_bauds on the @ref modem_notes_page page.
+The baud rate of any of the modules can be changed using AT commands or the `modem.gsmModem.setBaud(uint32_t baud)` function.
+
+Next, we'll assign all the pin numbers for all the other pins connected between the modem and the MCU.
+Pins that do not apply should be set as -1.
+There is a table of general @ref modem_notes_sleep and @ref modem_notes_mayfly_pins on the @ref modem_notes_page page.
+
+All the modems also need some sort of network credentials for internet access.
+For WiFi modems, you need the network name and password (assuming WPA2).
+For cellular models, you will need the APN assigned to you by the carrier you bought your SIM card from.
+
+
+[//]: # ( @subsection menu_xbee_cell_trans Digi XBee Cellular )
+### Digi XBee Cellular - Transparent Mode
 
 This is the code to use for _any_ of Digi's cellular XBee or XBee3 modules.
 All of them can be implented as a DigiXBeeCellularTransparent object - a subclass of DigiXBee and loggerModem.
@@ -265,9 +252,11 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [XBee Cellular Carrier](@ref menu_setup_xbeec_carrier) chunk of the setup function.
 
+@see @ref xbees_xbee_cellular_transparent
 
-[//]: # ( @subsubsection menu_xbee_ltem_by Digi XBee3 LTE-M Bypass )
-#### Digi XBee3 LTE-M - Bypass Mode
+
+[//]: # ( @subsection menu_xbee_ltem_by Digi XBee3 LTE-M Bypass )
+### Digi XBee3 LTE-M - Bypass Mode
 
 This code is for Digi's LTE-M XBee3 based on the u-blox SARA R410M - used in bypass mode.
 To create a DigiXBeeLTEBypass object we need to know
@@ -287,9 +276,11 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
 
+@see @ref xbees_lte_bypass
+
 
 [//]: # ( @subsubsection menu_digi_3gby Digi XBee 3G - Bypass Mode )
-#### Digi XBee 3G - Bypass Mode
+### Digi XBee 3G - Bypass Mode
 
 This code is for Digi's 3G/2G XBee based on the u-blox SARA U201 - used in bypass mode.
 To create a DigiXBee3GBypass object we need to know
@@ -303,11 +294,13 @@ To create a DigiXBee3GBypass object we need to know
 
 Pins that do not apply should be set as -1.
 
+@see @ref xbees_3g_bypass
+
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino xbee_3g_bypass )
 
 
-[//]: # ( @subsubsection menu_xbee_wifi Digi XBee S6B Wifi )
-#### Digi XBee S6B Wifi
+[//]: # ( @subsection menu_xbee_wifi Digi XBee S6B Wifi )
+### Digi XBee S6B Wifi
 
 This code is for the Digi's S6B wifi module.
 To create a DigiXBeeWifi object we need to know
@@ -322,11 +315,13 @@ To create a DigiXBeeWifi object we need to know
 
 Pins that do not apply should be set as -1.
 
+@see @ref xbees_s6b
+
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino xbee_wifi )
 
 
-[//]: # ( @subsubsection menu_esp Espressif ESP8266 )
-#### Espressif ESP8266
+[//]: # ( @subsection menu_esp Espressif ESP8266 )
+### Espressif ESP8266
 
 This code is for the Espressif ESP8266 or ESP32 operating with "AT" firmware.
 To create a EspressifESP8266 object we need to know
@@ -345,9 +340,11 @@ Pins that do not apply should be set as -1.
 Because the ESP8266's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
 You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(@ref menu_setup_esp) part of the setup function below.
 
+@see @ref esp8266_page
 
-[//]: # ( @subsubsection menu_bg96 Quectel BG96 )
-#### Quectel BG96
+
+[//]: # ( @subsection menu_bg96 Quectel BG96 )
+### Quectel BG96
 
 This code is for the Dragino, Nimbelink or other boards based on the Quectel BG96.
 To create a QuectelBG96 object we need to know
@@ -365,9 +362,11 @@ Pins that do not apply should be set as -1.
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
 Code to invert the pin levels is in the [Skywire Pin Inversions](@ref menu_setup_skywire) part of the setup function below.
 
+@see @ref bg96_page
 
-[//]: # ( @subsubsection menu_monarch Sequans Monarch )
-#### Sequans Monarch
+
+[//]: # ( @subsection menu_monarch Sequans Monarch )
+### Sequans Monarch
 
 This code is for the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series SoC.
 To create a SequansMonarch object we need to know
@@ -389,9 +388,11 @@ The default baud rate of the SVZM20 is much too fast for almost all Arduino boar
 _Before_ attampting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
 The proper command to decrease the baud rate to 9600 (8N1) is: ```AT+IPR=9600```.
 
+@see @ref monarch_page
 
-[//]: # ( @subsubsection menu_sim800 SIMCom SIM800 )
-#### SIMCom SIM800
+
+[//]: # ( @subsection menu_sim800 SIMCom SIM800 )
+### SIMCom SIM800
 
 This code is for a SIMCom SIM800 or SIM900 or one of their many variants, including the Adafruit Fona and the Sodaq 2GBee R4.
 To create a SIMComSIM800 object we need to know
@@ -407,11 +408,13 @@ Pins that do not apply should be set as -1.
 _NOTE:_  This is NOT the correct form for a Sodaq 2GBee R6 or R7.
 See the  section for a 2GBee R6.
 
+@see @ref sim800_page
+
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino sim800 )
 
 
-[//]: # ( @subsubsection menu_sim7000 SIMCom SIM7000 )
-#### SIMCom SIM7000
+[//]: # ( @subsection menu_sim7000 SIMCom SIM7000 )
+### SIMCom SIM7000
 
 This code is for a SIMCom SIM7000 or one of its variants.
 To create a SIMComSIM7000 object we need to know
@@ -424,11 +427,13 @@ To create a SIMComSIM7000 object we need to know
 
 Pins that do not apply should be set as -1.
 
+@see @ref sim7000_page
+
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino sim7000 )
 
 
-[//]: # ( @subsubsection menu_gprsbee Sodaq GPRSBee )
-#### Sodaq GPRSBee
+[//]: # ( @subsection menu_gprsbee Sodaq GPRSBee )
+### Sodaq GPRSBee
 
 This code is for the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800.
 To create a Sodaq2GBeeR6 object we need to know
@@ -440,11 +445,13 @@ Pins that do not apply should be set as -1.
 The GPRSBee R6/R7 does not expose the `RESET` pin of the SIM800.
 The `PWRKEY` is held `LOW` as long as the SIM800 is powered (as mentioned above).
 
+@see @ref gprsbee_page
+
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino gprsbee )
 
 
-[//]: # ( @subsubsection menu_ubeer410 u-blox SARA R410M )
-#### u-blox SARA R410M
+[//]: # ( @subsection menu_ubeer410 u-blox SARA R410M )
+### u-blox SARA R410M
 
 This code is for modules based on the 4G LTE-M u-blox SARA R410M including the Sodaq UBee.
 To create a SodaqUBeeR410M object we need to know
@@ -463,8 +470,10 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
 
-[//]: # ( @subsubsection menu_ubeeu201 u-blox SARA U201 )
-#### u-blox SARA U201
+@see @ref ubee_ltem
+
+[//]: # ( @subsection menu_ubeeu201 u-blox SARA U201 )
+### u-blox SARA U201
 
 This code is for modules based on the 3G/2G u-blox SARA U201 including the Sodaq UBee or the Sodaq 3GBee.
 To create a SodaqUBeeU201 object we need to know
@@ -477,6 +486,8 @@ To create a SodaqUBeeU201 object we need to know
 
 Pins that do not apply should be set as -1.
 
+@see @ref ubee_2g
+
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino sara_u201 )
 
 
@@ -486,7 +497,7 @@ Pins that do not apply should be set as -1.
 After creating the modem object, we can create Variable objects for each of the variables the modem is capable of measuring (Modem_SignalPercent, Modem_BatteryState, Modem_BatteryPercent, Modem_BatteryVoltage, and Modem_Temp).
 When we create the modem-linked variable objects, the first argument of the constructor, the loggerModem to like the variables to is required.
 The second and third arguments (the UUID and the variable code) included here are optional.
-Note that here we create the variables for anything measured by _any_ of the modems, but most modems are not capable of measure all of the values.
+Note that here we create the variables for anything measured by _any_ of the modems, but most modems are not capable of measuring all of the values.
 Some modem-measured values may be meaningless depending on the board configuration - often the battery parameters returned by a cellular component have little meaning because the module is downstream of a voltage regulator.
 
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino modem_variables )
@@ -499,8 +510,9 @@ ___
 [//]: # ( @subsection menu_processor_sensor The processor as a sensor )
 ### The processor as a sensor
 
-Set options for using the processor as a sensor to report battery level, processor free ram, and sample number.
-Note that because we intend to use all of our variables in two places, we are creating the Variable objects here instead of just creating the Sensor.
+Set options and create the objects for using the processor as a sensor to report battery level, processor free ram, and sample number.
+
+@see @ref processor_sensor_page
 
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino processor_sensor )
 ___
@@ -511,6 +523,8 @@ ___
 In addition to the time, we can also use the required DS3231 real time clock to report the temperature of the circuit board.
 This temperature is _not_ equivalent to an environmental temperature measurement and should only be used to as a diagnostic.
 As above, we create both the sensor and the variables measured by it.
+
+@see @ref ds3231_page
 
 [//]: # ( @snippet{lineno} menu_a_la_carte.ino ds3231 )
 ___

@@ -103,11 +103,15 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 
 // ==========================================================================
-//  Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [modem_settings] */
+/** Start [gprsbee] */
+// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
+const long      modemBaud   = 9600;     //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -119,10 +123,6 @@ const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
 // Network connection information
 const char* apn = "xxxxx";  // The APN for the gprs connection
 
-// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
-// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-#include <modems/Sodaq2GBeeR6.h>
-const long   modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
@@ -132,7 +132,7 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
                                      "12345678-abcd-1234-ef00-1234567890ab");
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [modem_settings] */
+/** End [gprsbee] */
 
 
 // ==========================================================================

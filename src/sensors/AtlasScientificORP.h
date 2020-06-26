@@ -13,7 +13,7 @@
  * @copydetails AtlasScientificORP
  *
  * @defgroup atlas_orp_group Atlas Scientific ORP circuit
- * The Sensor and Variable objects for the Atlas EZO ORP circuit
+ * Classes for the Atlas EZO ORP circuit
  *
  * @copydetails AtlasScientificORP
  */

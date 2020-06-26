@@ -13,7 +13,7 @@
  *
  * @copydetails AtlasParent
  *
- * @defgroup atlas_group Atlas Scientific
+ * @defgroup atlas_group Atlas Scientific EZO Circuits
  * The Sensor and Variable objects for all Atlas EZO circuits.
  *
  * @copydetails AtlasParent

@@ -4,12 +4,12 @@
   <navindex>
 
     <tab type="mainpage" visible="yes" title="">
-      <!-- <tab type="user" url="@ref mainpage_data_receivers" title="Data Endpoints"/>
+      <tab type="user" url="@ref mainpage_data_receivers" title="Data Endpoints"/>
       <tab type="user" url="@ref mainpage_supported_sensors" title="Supported Sensors"/>
       <tab type="user" url="@ref mainpage_modems" title="Supported Cellular/Wifi Modules"/>
       <tab type="user" url="@ref mainpage_contributing" title="Contributing"/>
       <tab type="user" url="@ref mainpage_license" title="License"/>
-      <tab type="user" url="@ref mainpage_acknowledgments" title="Acknowledgments"/> -->
+      <tab type="user" url="@ref mainpage_acknowledgments" title="Acknowledgments"/>
     </tab>
 
     <tab type="usergroup" url="@ref getting_started" title="Getting Started">
@@ -83,20 +83,51 @@
     </tab>
 
     <tab type="usergroup" url="@ref faq_page" title="FAQs">
-      <tab type="user" url="@ref processor_compatibility" title="Processor Compatibility"/>
-      <tab type="user" url="@ref arduino_streams" title="Arduino Streams and Software Serial"/>
-      <tab type="user" url="@ref power_parasites" title="Power Draw over Data Lines"/>
-      <tab type="user" url="@ref memory_use" title="Decreasing Memory Footprint"/>
-      <tab type="user" url="@ref code_debugging" title="In-Library Debugging"/>
-      <tab type="user" url="@ref for_developers" title="For Developers"/>
+      <tab type="user" url="@ref processor_compatibility" title="Processor Compatibility" title=""/>
+      <tab type="user" url="@ref arduino_streams" title="Arduino Streams and Software Serial" title=""/>
+      <tab type="user" url="@ref power_parasites" title="Power Draw over Data Lines" title=""/>
+      <tab type="user" url="@ref memory_use" title="Decreasing Memory Footprint" title=""/>
+      <tab type="user" url="@ref code_debugging" title="In-Library Debugging" title=""/>
+      <tab type="user" url="@ref for_developers" title="For Developers" title=""/>
     </tab>
 
     <tab type="usergroup" url="@ref other_reading_page" title="Other Reading">
-      <tab type="user" url="@ref sensor_notes_page" title="Sensor Information"/>
-      <tab type="user" url="@ref modem_notes_page" title="Modem Information"/>
+      <tab type="usergroup" url="@ref sensor_notes_page" title="Sensor Information">
+        <tab type="user" url="@ref processor_sensor_page" title="Processor Metadata"/>
+        <tab type="user" url="@ref ds3231_page" title="Maxim DS3231 RTC"/>
+        <tab type="user" url="@ref am2315_page" title="AOSong AM2315"/>
+        <tab type="user" url="@ref dht_page" title="AOSong DHT"/>
+        <tab type="user" url="@ref sq212_page" title="Apogee SQ212"/>
+        <tab type="user" url="@ref atlas_page" title="Atlas EZO Circuits"/>
+        <tab type="user" url="@ref bme280_page" title="Bosch BME28"/>
+        <tab type="user" url="@ref obs3_page" title="Campbell OBS3+"/>
+        <tab type="user" url="@ref es2_page" title="Decagon ES2"/>
+        <tab type="user" url="@ref mpl115a2_page" title="Freescale MPL115A2"/>
+        <tab type="user" url="@ref i2c_rain_page" title="Arduino I2C Tipping Bucket"/>
+        <tab type="user" url="@ref keller_page" title="Keller Water Level Sensors"/>
+        <tab type="user" url="@ref maxbotics_page" title="Maxbotix Ultrasonic Range Finders"/>
+        <tab type="user" url="@ref ds18_page" title="Maxim DS18"/>
+        <tab type="user" url="@ref ms5803_page" title="Measurement Specialties MS5803"/>
+        <tab type="user" url="@ref meter_soil_page" title="Meter Soil Moisture Sensors"/>
+        <tab type="user" url="@ref hydros21_page" title="Meter Hydros 21"/>
+        <tab type="user" url="@ref ads1115_page" title="TI ADS1115"/>
+        <tab type="user" url="@ref ina219_page" title="TI INA219"/>
+        <tab type="user" url="@ref yosemitech_page" title="Yosemitech Environmental Sensors"/>
+        <tab type="user" url="@ref dopto_page" title="ZebraTech D-Opto"/>
+      </tab>
+      <tab type="usergroup" url="@ref modem_notes_page" title="Modem Information">
+        <tab type="user" url="@ref digi_xbees" title="Digi XBee"/>
+        <tab type="user" url="@ref esp8266_page" title="Espressif ESP8266"/>
+        <tab type="user" url="@ref bg96_page" title="Quectel BG96"/>
+        <tab type="user" url="@ref monarch_page" title="Sequans Monarch VZM20Q"/>
+        <tab type="user" url="@ref sim800_page" title="SIMCom SIM800"/>
+        <tab type="user" url="@ref sim7000_page" title="SIMCom SIM7000"/>
+        <tab type="user" url="@ref gprsbee_page" title="Sodaq GPRSBee"/>
+        <tab type="user" url="@ref ubee_page" title="Sodaq UBee"/>
+      </tab>
     </tab>
 
-    <tab type="pages" visible="yes" title="" intro=""/>
+    <tab type="pages" visible="no" title="Other Reading" intro="Here are links to detailed information about the various supported sensors and modems as well as how to deal with some common issues with the ModularSensors library."/>
   </navindex>
 
   <!-- Layout definition for a class page -->

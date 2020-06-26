@@ -14,7 +14,7 @@
  * @copydetails AtlasScientificCO2
  *
  * @defgroup atlas_co2_group Atlas Scientific CO2 circuit
- * The Sensor and Variable objects for the Atlas EZO CO2 circuit
+ * Classes for the Atlas EZO CO2 circuit
  *
  * @copydetails AtlasScientificCO2
  */
