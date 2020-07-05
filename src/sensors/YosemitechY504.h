@@ -25,7 +25,7 @@
  *
  * Time before sensor responds after power - 275-300ms (use 350 for safety)
  * Time between "StartMeasurement" command and stable reading - 8sec
-*/
+ */
 
 // Header Guards
 #ifndef YosemitechY504_h
@@ -50,89 +50,73 @@
 #define Y504_DOMGL_VAR_NUM 2
 
 // The main class for the Decagon Y504
-class YosemitechY504 : public YosemitechParent
-{
+class YosemitechY504 : public YosemitechParent {
 public:
-    // Constructors with overloads
-    YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y504, "YosemitechY504", Y504_NUM_VARIABLES,
-                        Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
-    {}
-    YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y504, "YosemitechY504", Y504_NUM_VARIABLES,
-                        Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
-    {}
-    ~YosemitechY504(){}
+  // Constructors with overloads
+  YosemitechY504(byte modbusAddress, Stream *stream, int8_t powerPin,
+                 int8_t powerPin2 = -1, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1)
+      : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                         measurementsToAverage, Y504, "YosemitechY504",
+                         Y504_NUM_VARIABLES, Y504_WARM_UP_TIME_MS,
+                         Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS) {
+  }
+  YosemitechY504(byte modbusAddress, Stream &stream, int8_t powerPin,
+                 int8_t powerPin2 = -1, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1)
+      : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                         measurementsToAverage, Y504, "YosemitechY504",
+                         Y504_NUM_VARIABLES, Y504_WARM_UP_TIME_MS,
+                         Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS) {
+  }
+  ~YosemitechY504() {}
 };
-
 
 // Defines the Dissolved Oxygen Percent Saturation
-class YosemitechY504_DOpct : public Variable
-{
+class YosemitechY504_DOpct : public Variable {
 public:
-    YosemitechY504_DOpct(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "Y504DOpct")
-      : Variable(parentSense,
-                 (const uint8_t)Y504_DOPCT_VAR_NUM,
+  YosemitechY504_DOpct(Sensor *parentSense, const char *uuid = "",
+                       const char *varCode = "Y504DOpct")
+      : Variable(parentSense, (const uint8_t)Y504_DOPCT_VAR_NUM,
                  (uint8_t)Y504_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent",
-                 varCode, uuid)
-    {}
-    YosemitechY504_DOpct()
+                 "oxygenDissolvedPercentOfSaturation", "percent", varCode,
+                 uuid) {}
+  YosemitechY504_DOpct()
       : Variable((const uint8_t)Y504_DOPCT_VAR_NUM,
                  (uint8_t)Y504_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct")
-    {}
-    ~YosemitechY504_DOpct(){}
+                 "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct") {
+  }
+  ~YosemitechY504_DOpct() {}
 };
-
 
 // Defines the Temperature Variable
-class YosemitechY504_Temp : public Variable
-{
+class YosemitechY504_Temp : public Variable {
 public:
-    YosemitechY504_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y504Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y504_TEMP_VAR_NUM,
-                 (uint8_t)Y504_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    YosemitechY504_Temp()
+  YosemitechY504_Temp(Sensor *parentSense, const char *uuid = "",
+                      const char *varCode = "Y504Temp")
+      : Variable(parentSense, (const uint8_t)Y504_TEMP_VAR_NUM,
+                 (uint8_t)Y504_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                 varCode, uuid) {}
+  YosemitechY504_Temp()
       : Variable((const uint8_t)Y504_TEMP_VAR_NUM,
-                 (uint8_t)Y504_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y504Temp")
-    {}
-    ~YosemitechY504_Temp(){}
+                 (uint8_t)Y504_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                 "Y504Temp") {}
+  ~YosemitechY504_Temp() {}
 };
-
 
 // Defines the Dissolved Oxygen Concentration
-class YosemitechY504_DOmgL : public Variable
-{
+class YosemitechY504_DOmgL : public Variable {
 public:
-    YosemitechY504_DOmgL(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "Y504DOmgL")
-      : Variable(parentSense,
-                 (const uint8_t)Y504_DOMGL_VAR_NUM,
-                 (uint8_t)Y504_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter",
-                 varCode, uuid)
-    {}
-    YosemitechY504_DOmgL()
+  YosemitechY504_DOmgL(Sensor *parentSense, const char *uuid = "",
+                       const char *varCode = "Y504DOmgL")
+      : Variable(parentSense, (const uint8_t)Y504_DOMGL_VAR_NUM,
+                 (uint8_t)Y504_DOMGL_RESOLUTION, "oxygenDissolved",
+                 "milligramPerLiter", varCode, uuid) {}
+  YosemitechY504_DOmgL()
       : Variable((const uint8_t)Y504_DOMGL_VAR_NUM,
-                 (uint8_t)Y504_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter", "Y504DOmgL")
-    {}
-    ~YosemitechY504_DOmgL(){}
+                 (uint8_t)Y504_DOMGL_RESOLUTION, "oxygenDissolved",
+                 "milligramPerLiter", "Y504DOmgL") {}
+  ~YosemitechY504_DOmgL() {}
 };
 
-#endif  // Header Guard
+#endif // Header Guard

@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for Digi S6B Wifi XBee's
-*/
+ */
 
 // Header Guards
 #ifndef DigiXBeeWifi_h
@@ -27,62 +27,60 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
 #include "DigiXBee.h"
+#include "TinyGsmClient.h"
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-class DigiXBeeWifi : public DigiXBee
-{
+class DigiXBeeWifi : public DigiXBee {
 
 public:
-    // Constructor/Destructor
-    DigiXBeeWifi(Stream* modemStream,
-                 int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                 const char *ssid, const char *pwd);
-    ~DigiXBeeWifi();
+  // Constructor/Destructor
+  DigiXBeeWifi(Stream *modemStream, int8_t powerPin, int8_t statusPin,
+               bool useCTSStatus, int8_t modemResetPin, int8_t modemSleepRqPin,
+               const char *ssid, const char *pwd);
+  ~DigiXBeeWifi();
 
-    bool modemWake(void) override;
+  bool modemWake(void) override;
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+  bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+  void disconnectInternet(void) override;
 
-    uint32_t getNISTTime(void) override;
+  uint32_t getNISTTime(void) override;
 
-    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    float getModemChipTemperature(void) override;
+  bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+  bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent,
+                            uint16_t &milliVolts) override;
+  float getModemChipTemperature(void) override;
 
-    bool updateModemMetadata(void) override;
+  bool updateModemMetadata(void) override;
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-    #endif
+  StreamDebugger _modemATDebugger;
+#endif
 
-    TinyGsm gsmModem;
-    TinyGsmClient gsmClient;
+  TinyGsm gsmModem;
+  TinyGsmClient gsmClient;
 
-    //Az extension
-    void setWiFiId(const char *WiFiId, bool copyId=false);
-    void setWiFiPwd(const char *WiFiPwd, bool copyId=false);
-    String getWiFiId(void);
-    String getWiFiPwd(void);
+  // Az extension
+  void setWiFiId(const char *WiFiId, bool copyId = false);
+  void setWiFiPwd(const char *WiFiPwd, bool copyId = false);
+  String getWiFiId(void);
+  String getWiFiPwd(void);
 
 protected:
-    bool isInternetAvailable(void) override;
-    bool extraModemSetup(void) override;
+  bool isInternetAvailable(void) override;
+  bool extraModemSetup(void) override;
 
 private:
-    const char *_ssid;
-    const char *_pwd;
+  const char *_ssid;
+  const char *_pwd;
 
-    //Az extension
-    char *_ssid_buf=NULL;
-    char *_pwd_buf=NULL;
-
+  // Az extension
+  char *_ssid_buf = NULL;
+  char *_pwd_buf = NULL;
 };
 
-#endif  // Header Guard
+#endif // Header Guard

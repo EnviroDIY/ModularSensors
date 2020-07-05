@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for Digi Cellular XBee's
-*/
+ */
 
 // Header Guards
 #ifndef DigiXBeeCellularTransparent_h
@@ -34,61 +34,59 @@
 
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
-#include "DigiXBee.h"
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-class DigiXBeeCellularTransparent : public DigiXBee
-{
+class DigiXBeeCellularTransparent : public DigiXBee {
 
 public:
-    // Constructor/Destructor
-    DigiXBeeCellularTransparent(Stream* modemStream,
-                                int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-                                int8_t modemResetPin, int8_t modemSleepRqPin,
-                                const char* apn);
-    ~DigiXBeeCellularTransparent();
+  // Constructor/Destructor
+  DigiXBeeCellularTransparent(Stream *modemStream, int8_t powerPin,
+                              int8_t statusPin, bool useCTSStatus,
+                              int8_t modemResetPin, int8_t modemSleepRqPin,
+                              const char *apn);
+  ~DigiXBeeCellularTransparent();
 
-    bool modemWake(void) override;
+  bool modemWake(void) override;
 
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+  bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+  void disconnectInternet(void) override;
 
-    uint32_t getNISTTime(void) override;
-    uint32_t getNISTTimeOrig(void);
-    uint32_t getTimeNTP(void);
-    uint32_t getTimeCellTower(void);
+  uint32_t getNISTTime(void) override;
+  uint32_t getNISTTimeOrig(void);
+  uint32_t getTimeNTP(void);
+  uint32_t getTimeCellTower(void);
 
+  bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+  bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent,
+                            uint16_t &milliVolts) override;
+  float getModemChipTemperature(void) override;
 
-    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool getModemBatteryStats(uint8_t& chargeState, int8_t& percent, uint16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
-
-    bool updateModemMetadata(void) override;
+  bool updateModemMetadata(void) override;
 
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
+  StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
-    TinyGsmClient gsmClient;
+  TinyGsm gsmModem;
+  TinyGsmClient gsmClient;
 
-    //Az Extensions
-    void setApn(const char *APN, bool copyId=false);
-    String getApn(void);
+  // Az Extensions
+  void setApn(const char *APN, bool copyId = false);
+  String getApn(void);
 
 protected:
-    bool isInternetAvailable(void) override;
-    bool modemWakeFxn(void) override;
-    bool modemSleepFxn(void) override;
-    bool extraModemSetup(void) override;
+  bool isInternetAvailable(void) override;
+  bool modemWakeFxn(void) override;
+  bool modemSleepFxn(void) override;
+  bool extraModemSetup(void) override;
 
 private:
-    const char *_apn;
-    //Az extension
-    char *_apn_buf = NULL; //Pointer to updated buffer
+  const char *_apn;
+  // Az extension
+  char *_apn_buf = NULL; // Pointer to updated buffer
 };
 
-#endif  // Header Guard
+#endif // Header Guard

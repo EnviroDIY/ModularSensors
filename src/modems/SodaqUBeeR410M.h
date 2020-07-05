@@ -4,8 +4,9 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is the Sodaq UBee based on the u-blox SARA R410M LTE-M Cellular Module
-*/
+ *This file is the Sodaq UBee based on the u-blox SARA R410M LTE-M Cellular
+ *Module
+ */
 
 // Header Guards
 #ifndef SodaqUBeeR410M_h
@@ -25,7 +26,8 @@
 #endif
 
 // Status should be monitored on the V_INT pin
-// V_INT becomes active mid-way through on-pulse so it should be instantly visible
+// V_INT becomes active mid-way through on-pulse so it should be instantly
+// visible
 #define R410M_STATUS_LEVEL HIGH
 #define R410M_STATUS_TIME_MS 0
 
@@ -50,66 +52,61 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
 #include "LoggerModem.h"
+#include "TinyGsmClient.h"
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-class SodaqUBeeR410M : public loggerModem
-{
+class SodaqUBeeR410M : public loggerModem {
 
 public:
-    // Constructor/Destructor
-    #if F_CPU == 8000000L
-    // At this slow baud rate, we need to begin and end serial communication,
-    // so we need a Serial instance rather than a stream
-    SodaqUBeeR410M(HardwareSerial* modemStream,
-                   int8_t powerPin, int8_t statusPin,
-                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                   const char *apn);
-    #else
-    SodaqUBeeR410M(Stream* modemStream,
-                   int8_t powerPin, int8_t statusPin,
-                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                   const char *apn);
-    #endif
-    ~SodaqUBeeR410M();
+// Constructor/Destructor
+#if F_CPU == 8000000L
+  // At this slow baud rate, we need to begin and end serial communication,
+  // so we need a Serial instance rather than a stream
+  SodaqUBeeR410M(HardwareSerial *modemStream, int8_t powerPin, int8_t statusPin,
+                 int8_t modemResetPin, int8_t modemSleepRqPin, const char *apn);
+#else
+  SodaqUBeeR410M(Stream *modemStream, int8_t powerPin, int8_t statusPin,
+                 int8_t modemResetPin, int8_t modemSleepRqPin, const char *apn);
+#endif
+  ~SodaqUBeeR410M();
 
-    bool modemWake(void) override;
+  bool modemWake(void) override;
 
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    virtual void disconnectInternet(void) override;
+  virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+  virtual void disconnectInternet(void) override;
 
-    virtual uint32_t getNISTTime(void) override;
+  virtual uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    virtual float getModemChipTemperature(void) override;
+  virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+  virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent,
+                                    uint16_t &milliVolts) override;
+  virtual float getModemChipTemperature(void) override;
 
-    bool modemHardReset(void) override;
+  bool modemHardReset(void) override;
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
+  StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
-    TinyGsmClient gsmClient;
+  TinyGsm gsmModem;
+  TinyGsmClient gsmClient;
 
 #if F_CPU == 8000000L
-    HardwareSerial *_modemSerial;
+  HardwareSerial *_modemSerial;
 #endif
 
 protected:
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void) override;
+  virtual bool isInternetAvailable(void) override;
+  virtual bool modemSleepFxn(void) override;
+  virtual bool modemWakeFxn(void) override;
+  virtual bool extraModemSetup(void) override;
 
 private:
-    const char *_apn;
-
+  const char *_apn;
 };
 
-#endif  // Header Guard
+#endif // Header Guard

@@ -2,19 +2,20 @@
  *InsituLevelTroll.h - wip. Not working yet.
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>,updated by Neil Hancock.
+ *Initial library developement done by Anthony Aufdenkampe
+ *<aaufdenkampe@limno.com>,updated by Neil Hancock.
  *
- *This file is for Modbus communication to  Insitu Level Troll System Spec 1 and Spec 3,
- *from InSitu Modbus Communication Protocol Version 5.10  ar
- *Target testing on the Insitu LT400
+ *This file is for Modbus communication to  Insitu Level Troll System Spec 1 and
+ *Spec 3, from InSitu Modbus Communication Protocol Version 5.10  ar Target
+ *testing on the Insitu LT400
  *
- * It uses the KellerParent as the base 
+ * It uses the KellerParent as the base
  * Testing - LT500+cable+pigtail to RS485board
- * STATUS: no response has been received from an LT400. 
- * It may be that the CRC has to be switched around as Keller was non-standard modbus.
- * Winsitu is used to program LT500 and defaults to 19200.
+ * STATUS: no response has been received from an LT400.
+ * It may be that the CRC has to be switched around as Keller was non-standard
+ *modbus. Winsitu is used to program LT500 and defaults to 19200.
  *
-*/
+ */
 
 // Header Guards
 #ifndef InsituLevelTroll_h
@@ -34,91 +35,74 @@
 
 #define LEVELTROLL_HEIGHT_RESOLUTION 4
 
-
 // The main class for Modbus Keller/Insitu Sensors
-class InsituLevelTroll : public KellerParent
-{
+class InsituLevelTroll : public KellerParent {
 public:
-    // Constructors with overloads
-    InsituLevelTroll(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                    Leveltroll_InsituModel, "InsituLevelTroll", KELLER_NUM_VARIABLES,
-                    LEVELTROLL_WARM_UP_TIME_MS, LEVELTROLL_STABILIZATION_TIME_MS, LEVELTROLL_MEASUREMENT_TIME_MS)
-    {}
-    InsituLevelTroll(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                    Leveltroll_InsituModel, "InsituLevelTroll", KELLER_NUM_VARIABLES,
-                    LEVELTROLL_WARM_UP_TIME_MS, LEVELTROLL_STABILIZATION_TIME_MS, LEVELTROLL_MEASUREMENT_TIME_MS)
-    {}
-    // Destructor
-    ~InsituLevelTroll(){}
+  // Constructors with overloads
+  InsituLevelTroll(byte modbusAddress, Stream *stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+      : KellerParent(
+            modbusAddress, stream, powerPin, powerPin2, enablePin,
+            measurementsToAverage, Leveltroll_InsituModel, "InsituLevelTroll",
+            KELLER_NUM_VARIABLES, LEVELTROLL_WARM_UP_TIME_MS,
+            LEVELTROLL_STABILIZATION_TIME_MS, LEVELTROLL_MEASUREMENT_TIME_MS) {}
+  InsituLevelTroll(byte modbusAddress, Stream &stream, int8_t powerPin,
+                   int8_t powerPin2 = -1, int8_t enablePin = -1,
+                   uint8_t measurementsToAverage = 1)
+      : KellerParent(
+            modbusAddress, stream, powerPin, powerPin2, enablePin,
+            measurementsToAverage, Leveltroll_InsituModel, "InsituLevelTroll",
+            KELLER_NUM_VARIABLES, LEVELTROLL_WARM_UP_TIME_MS,
+            LEVELTROLL_STABILIZATION_TIME_MS, LEVELTROLL_MEASUREMENT_TIME_MS) {}
+  // Destructor
+  ~InsituLevelTroll() {}
 };
-
 
 // Defines the PressureGauge (vented & barometricPressure corrected) variable
-class InsituLevelTroll_Pressure : public Variable
-{
+class InsituLevelTroll_Pressure : public Variable {
 public:
-    InsituLevelTroll_Pressure(Sensor *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "Insitu LTxPress")
-      : Variable(parentSense,
-                 (const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                 (uint8_t)LEVELTROLL_PRESSURE_RESOLUTION,
-                 "pressureGauge", "millibar",
-                 varCode, uuid)
-    {}
-    InsituLevelTroll_Pressure()
+  InsituLevelTroll_Pressure(Sensor *parentSense, const char *uuid = "",
+                            const char *varCode = "Insitu LTxPress")
+      : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
+                 (uint8_t)LEVELTROLL_PRESSURE_RESOLUTION, "pressureGauge",
+                 "millibar", varCode, uuid) {}
+  InsituLevelTroll_Pressure()
       : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                 (uint8_t)LEVELTROLL_PRESSURE_RESOLUTION,
-                 "pressureGauge", "millibar", "Insitu LTxPress")
-    {}
-    ~InsituLevelTroll_Pressure(){}
+                 (uint8_t)LEVELTROLL_PRESSURE_RESOLUTION, "pressureGauge",
+                 "millibar", "Insitu LTxPress") {}
+  ~InsituLevelTroll_Pressure() {}
 };
-
 
 // Defines the Temperature Variable
-class InsituLevelTroll_Temp : public Variable
-{
+class InsituLevelTroll_Temp : public Variable {
 public:
-    InsituLevelTroll_Temp(Sensor *parentSense,
-                         const char *uuid = "",
-                         const char *varCode = "Insitu LTxTemp")
-      : Variable(parentSense,
-                 (const uint8_t)KELLER_TEMP_VAR_NUM,
-                 (uint8_t)LEVELTROLL_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    InsituLevelTroll_Temp()
+  InsituLevelTroll_Temp(Sensor *parentSense, const char *uuid = "",
+                        const char *varCode = "Insitu LTxTemp")
+      : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
+                 (uint8_t)LEVELTROLL_TEMP_RESOLUTION, "temperature",
+                 "degreeCelsius", varCode, uuid) {}
+  InsituLevelTroll_Temp()
       : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
-                 (uint8_t)LEVELTROLL_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Insitu LTxTemp")
-    {}
-    ~InsituLevelTroll_Temp(){}
+                 (uint8_t)LEVELTROLL_TEMP_RESOLUTION, "temperature",
+                 "degreeCelsius", "Insitu LTxTemp") {}
+  ~InsituLevelTroll_Temp() {}
 };
 
-// Defines the gageHeight (Water level with regard to an arbitrary gage datum) Variable
-class InsituLevelTroll_Height : public Variable
-{
+// Defines the gageHeight (Water level with regard to an arbitrary gage datum)
+// Variable
+class InsituLevelTroll_Height : public Variable {
 public:
-    InsituLevelTroll_Height(Sensor *parentSense,
-                           const char *uuid = "",
-                           const char *varCode = "InsituLTxHeight")
-      : Variable(parentSense,
-                 (const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                 (uint8_t)LEVELTROLL_HEIGHT_RESOLUTION,
-                 "gaugeHeight", "meter",
-                 varCode, uuid)
-    {}
-    InsituLevelTroll_Height()
+  InsituLevelTroll_Height(Sensor *parentSense, const char *uuid = "",
+                          const char *varCode = "InsituLTxHeight")
+      : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
+                 (uint8_t)LEVELTROLL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
+                 varCode, uuid) {}
+  InsituLevelTroll_Height()
       : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                 (uint8_t)LEVELTROLL_HEIGHT_RESOLUTION,
-                 "gaugeHeight", "meter", "InsituLTxHeight")
-    {}
-    ~InsituLevelTroll_Height(){}
+                 (uint8_t)LEVELTROLL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
+                 "InsituLTxHeight") {}
+  ~InsituLevelTroll_Height() {}
 };
 
-#endif  // Header Guard
+#endif // Header Guard

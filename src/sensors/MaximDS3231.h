@@ -15,7 +15,7 @@
  * The clock should have a separate power supply and never be turned off.
  * We assume it's always warmed up and stable.
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
-*/
+ */
 
 // Header Guards
 #ifndef MaximDS3231_h
@@ -31,8 +31,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 // Sensor Specific Defines
 #define DS3231_NUM_VARIABLES 1
@@ -43,44 +43,36 @@
 #define DS3231_TEMP_RESOLUTION 2
 #define DS3231_TEMP_VAR_NUM 0
 
-
 // The "Main" class for the DS3231
-// Only need a sleep and wake since these DON'T use the default of powering up and down
-class MaximDS3231 : public Sensor
-{
+// Only need a sleep and wake since these DON'T use the default of powering up
+// and down
+class MaximDS3231 : public Sensor {
 public:
-    // Only input is the number of readings to average
-    MaximDS3231(uint8_t measurementsToAverage = 1);
-    // Destructor
-    ~MaximDS3231();
+  // Only input is the number of readings to average
+  MaximDS3231(uint8_t measurementsToAverage = 1);
+  // Destructor
+  ~MaximDS3231();
 
-    String getSensorLocation(void) override;
+  String getSensorLocation(void) override;
 
-    bool setup(void) override;
+  bool setup(void) override;
 
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
+  bool startSingleMeasurement(void) override;
+  bool addSingleMeasurementResult(void) override;
 };
 
-
-class MaximDS3231_Temp : public Variable
-{
+class MaximDS3231_Temp : public Variable {
 public:
-    MaximDS3231_Temp(Sensor *parentSense,
-                     const char *uuid = "",
-                     const char *varCode = "BoardTemp")
-      : Variable(parentSense,
-                 (const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    MaximDS3231_Temp()
+  MaximDS3231_Temp(Sensor *parentSense, const char *uuid = "",
+                   const char *varCode = "BoardTemp")
+      : Variable(parentSense, (const uint8_t)DS3231_TEMP_VAR_NUM,
+                 (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
+                 "degreeCelsius", varCode, uuid) {}
+  MaximDS3231_Temp()
       : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
-                 (uint8_t)DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius", "BoardTemp")
-    {}
-    ~MaximDS3231_Temp(){}
+                 (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
+                 "degreeCelsius", "BoardTemp") {}
+  ~MaximDS3231_Temp() {}
 };
 
-#endif  // Header Guard
+#endif // Header Guard

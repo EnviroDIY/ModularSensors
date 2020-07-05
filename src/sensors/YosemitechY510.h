@@ -25,7 +25,7 @@
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 22sec
-*/
+ */
 
 // Header Guards
 #ifndef YosemitechY510_h
@@ -47,67 +47,56 @@
 #define Y510_TEMP_VAR_NUM 1
 
 // The main class for the Decagon Y510
-class YosemitechY510 : public YosemitechParent
-{
+class YosemitechY510 : public YosemitechParent {
 public:
-    // Constructors with overloads
-    YosemitechY510(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y510, "YosemitechY510", Y510_NUM_VARIABLES,
-                        Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS)
-    {}
-    YosemitechY510(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                        Y510, "YosemitechY510", Y510_NUM_VARIABLES,
-                        Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS)
-    {}
-    ~YosemitechY510(){}
+  // Constructors with overloads
+  YosemitechY510(byte modbusAddress, Stream *stream, int8_t powerPin,
+                 int8_t powerPin2 = -1, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1)
+      : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                         measurementsToAverage, Y510, "YosemitechY510",
+                         Y510_NUM_VARIABLES, Y510_WARM_UP_TIME_MS,
+                         Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS) {
+  }
+  YosemitechY510(byte modbusAddress, Stream &stream, int8_t powerPin,
+                 int8_t powerPin2 = -1, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1)
+      : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                         measurementsToAverage, Y510, "YosemitechY510",
+                         Y510_NUM_VARIABLES, Y510_WARM_UP_TIME_MS,
+                         Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS) {
+  }
+  ~YosemitechY510() {}
 };
-
 
 // Defines the Turbidity
-class YosemitechY510_Turbidity : public Variable
-{
+class YosemitechY510_Turbidity : public Variable {
 public:
-    YosemitechY510_Turbidity(Sensor *parentSense,
-                             const char *uuid = "",
-                             const char *varCode = "Y510Turbidity")
-      : Variable(parentSense,
-                 (const uint8_t)Y510_TURB_VAR_NUM,
-                 (uint8_t)Y510_TURB_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit",
-                 varCode, uuid)
-    {}
-    YosemitechY510_Turbidity()
+  YosemitechY510_Turbidity(Sensor *parentSense, const char *uuid = "",
+                           const char *varCode = "Y510Turbidity")
+      : Variable(parentSense, (const uint8_t)Y510_TURB_VAR_NUM,
+                 (uint8_t)Y510_TURB_RESOLUTION, "turbidity",
+                 "nephelometricTurbidityUnit", varCode, uuid) {}
+  YosemitechY510_Turbidity()
       : Variable((const uint8_t)Y510_TURB_VAR_NUM,
-                 (uint8_t)Y510_TURB_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit", "Y510Turbidity")
-    {}
-    ~YosemitechY510_Turbidity(){}
+                 (uint8_t)Y510_TURB_RESOLUTION, "turbidity",
+                 "nephelometricTurbidityUnit", "Y510Turbidity") {}
+  ~YosemitechY510_Turbidity() {}
 };
-
 
 // Defines the Temperature Variable
-class YosemitechY510_Temp : public Variable
-{
+class YosemitechY510_Temp : public Variable {
 public:
-    YosemitechY510_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "Y510Temp")
-      : Variable(parentSense,
-                 (const uint8_t)Y510_TEMP_VAR_NUM,
-                 (uint8_t)Y510_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    YosemitechY510_Temp()
+  YosemitechY510_Temp(Sensor *parentSense, const char *uuid = "",
+                      const char *varCode = "Y510Temp")
+      : Variable(parentSense, (const uint8_t)Y510_TEMP_VAR_NUM,
+                 (uint8_t)Y510_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                 varCode, uuid) {}
+  YosemitechY510_Temp()
       : Variable((const uint8_t)Y510_TEMP_VAR_NUM,
-                 (uint8_t)Y510_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "Y510Temp")
-    {}
-    ~YosemitechY510_Temp(){}
+                 (uint8_t)Y510_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                 "Y510Temp") {}
+  ~YosemitechY510_Temp() {}
 };
 
-#endif  // Header Guard
+#endif // Header Guard

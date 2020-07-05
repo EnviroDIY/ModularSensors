@@ -26,29 +26,27 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
+void WDT_Handler(void); // ISR HANDLER FOR WDT EW INTERRUPT
 
-void WDT_Handler(void);  // ISR HANDLER FOR WDT EW INTERRUPT
-
-class extendedWatchDogSAMD
-{
+class extendedWatchDogSAMD {
 
 public:
-    // Constructor
-    extendedWatchDogSAMD();
-    ~extendedWatchDogSAMD();
+  // Constructor
+  extendedWatchDogSAMD();
+  ~extendedWatchDogSAMD();
 
-    // One-time initialization of watchdog timer.
-    void setupWatchDog(uint32_t resetTime_s);
-    void enableWatchDog();
-    void disableWatchDog();
+  // One-time initialization of watchdog timer.
+  void setupWatchDog(uint32_t resetTime_s);
+  void enableWatchDog();
+  void disableWatchDog();
 
-    void resetWatchDog();
+  void resetWatchDog();
 
-    static volatile uint32_t _barksUntilReset;
+  static volatile uint32_t _barksUntilReset;
 
 private:
-    void inline waitForWDTBitSync();
-    uint32_t _resetTime_s;
+  void inline waitForWDTBitSync();
+  uint32_t _resetTime_s;
 };
 
 #endif

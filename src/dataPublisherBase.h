@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is a skeleton for sending out remote data.
-*/
+ */
 
 // Header Guards
 #ifndef dataPublisherBase_h
@@ -31,82 +31,78 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "LoggerBase.h"
 #include "Client.h"
+#include "LoggerBase.h"
 
-class dataPublisher
-{
+class dataPublisher {
 
 public:
+  // Constructors
+  dataPublisher();
+  dataPublisher(Logger &baseLogger, uint8_t sendEveryX = 1,
+                uint8_t sendOffset = 0);
+  dataPublisher(Logger &baseLogger, Client *inClient, uint8_t sendEveryX = 1,
+                uint8_t sendOffset = 0);
+  // Destructor
+  virtual ~dataPublisher();
 
-    // Constructors
-    dataPublisher();
-    dataPublisher(Logger& baseLogger,
-                  uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    dataPublisher(Logger& baseLogger, Client *inClient,
-                  uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    // Destructor
-    virtual ~dataPublisher();
+  // Sets the client
+  void setClient(Client *inClient);
 
-    // Sets the client
-    void setClient(Client *inClient);
+  // Attaches to a logger
+  void attachToLogger(Logger &baseLogger);
 
-    // Attaches to a logger
-    void attachToLogger(Logger& baseLogger);
+  // Sets the parameters for frequency of sending and any offset, if needed
+  // NOTE:  These parameters are not currently used!!
+  void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
 
-    // Sets the parameters for frequency of sending and any offset, if needed
-    // NOTE:  These parameters are not currently used!!
-    void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
+  // "Begins" the publisher - attaches client and logger
+  // Not doing this in the constructor because we expect the publishers to be
+  // created in the "global scope" and we cannot control the order in which
+  // objects in that global scope will be created.  That is, we cannot
+  // guarantee that the logger will actually be created before the publisher
+  // that wants to attach to it unless we wait to attach the publisher until
+  // in the setup or loop function of the main program.
+  void begin(Logger &baseLogger, Client *inClient);
+  void begin(Logger &baseLogger);
 
-    // "Begins" the publisher - attaches client and logger
-    // Not doing this in the constructor because we expect the publishers to be
-    // created in the "global scope" and we cannot control the order in which
-    // objects in that global scope will be created.  That is, we cannot
-    // guarantee that the logger will actually be created before the publisher
-    // that wants to attach to it unless we wait to attach the publisher until
-    // in the setup or loop function of the main program.
-    void begin(Logger& baseLogger, Client *inClient);
-    void begin(Logger& baseLogger);
+  // Returns the data destination
+  virtual String getEndpoint(void) = 0;
 
-    // Returns the data destination
-    virtual String getEndpoint(void) = 0;
+  // This opens a socket to the correct receiver and sends out the formatted
+  // data This depends on an internet connection already being made and a client
+  // being available
+  virtual int16_t publishData(Client *_outClient) = 0;
+  virtual int16_t publishData();
+  // These are duplicates of the above functions for backwards compatibility
+  virtual int16_t sendData(Client *_outClient);
+  virtual int16_t sendData();
 
-    // This opens a socket to the correct receiver and sends out the formatted data
-    // This depends on an internet connection already being made and a client
-    // being available
-    virtual int16_t publishData(Client *_outClient) = 0;
-    virtual int16_t publishData();
-    // These are duplicates of the above functions for backwards compatibility
-    virtual int16_t sendData(Client *_outClient);
-    virtual int16_t sendData();
-
-    // This spits out a string description of the PubSubClient codes
-    String parseMQTTState(int state);
-
+  // This spits out a string description of the PubSubClient codes
+  String parseMQTTState(int state);
 
 protected:
-    // The internal logger instance
-    Logger *_baseLogger;
-    // The internal client
-    Client *_inClient;
+  // The internal logger instance
+  Logger *_baseLogger;
+  // The internal client
+  Client *_inClient;
 
-    static char txBuffer[MS_SEND_BUFFER_SIZE];
-    // This returns the number of empty spots in the buffer
-    static int bufferFree(void);
-    // This fills the TX buffer with nulls ('\0')
-    static void emptyTxBuffer(void);
-    // This writes the TX buffer to a stream and also to the debugging port
-    static void printTxBuffer(Stream *stream, bool addNewLine = false);
+  static char txBuffer[MS_SEND_BUFFER_SIZE];
+  // This returns the number of empty spots in the buffer
+  static int bufferFree(void);
+  // This fills the TX buffer with nulls ('\0')
+  static void emptyTxBuffer(void);
+  // This writes the TX buffer to a stream and also to the debugging port
+  static void printTxBuffer(Stream *stream, bool addNewLine = false);
 
-    uint8_t _sendEveryX;
-    uint8_t _sendOffset;
+  uint8_t _sendEveryX;
+  uint8_t _sendOffset;
 
-    // Basic chunks of HTTP
-    static const char *getHeader;
-    static const char *postHeader;
-    static const char *HTTPtag;
-    static const char *hostHeader;
-
+  // Basic chunks of HTTP
+  static const char *getHeader;
+  static const char *postHeader;
+  static const char *HTTPtag;
+  static const char *hostHeader;
 };
 
-#endif  // Header Guard
+#endif // Header Guard

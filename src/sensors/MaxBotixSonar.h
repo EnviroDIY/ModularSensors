@@ -27,8 +27,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 // Sensor Specific Defines
 #define HRXL_NUM_VARIABLES 1
@@ -39,44 +39,38 @@
 #define HRXL_VAR_NUM 0
 
 // The main class for the MaxBotix Sonar
-class MaxBotixSonar : public Sensor
-{
+class MaxBotixSonar : public Sensor {
 public:
-    MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
-    MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
-    ~MaxBotixSonar();
+  MaxBotixSonar(Stream *stream, int8_t powerPin, int8_t triggerPin = -1,
+                uint8_t measurementsToAverage = 1);
+  MaxBotixSonar(Stream &stream, int8_t powerPin, int8_t triggerPin = -1,
+                uint8_t measurementsToAverage = 1);
+  ~MaxBotixSonar();
 
-    String getSensorLocation(void) override;
+  String getSensorLocation(void) override;
 
-    bool setup(void) override;
-    bool wake(void) override;
+  bool setup(void) override;
+  bool wake(void) override;
 
-    bool addSingleMeasurementResult(void) override;
+  bool addSingleMeasurementResult(void) override;
 
 private:
-    int8_t _triggerPin;
-    Stream* _stream;
+  int8_t _triggerPin;
+  Stream *_stream;
 };
-
 
 // The class for the Range Variable
-class MaxBotixSonar_Range : public Variable
-{
+class MaxBotixSonar_Range : public Variable {
 public:
-    MaxBotixSonar_Range(Sensor *parentSense, const char *uuid = "",
-                        const char *varCode = "SonarRange")
-      : Variable(parentSense,
-                 (const uint8_t)HRXL_VAR_NUM,
-                 (uint8_t)HRXL_RESOLUTION,
-                 "distance", "millimeter",
-                 varCode, uuid)
-    {}
-    MaxBotixSonar_Range()
-      : Variable((const uint8_t)HRXL_VAR_NUM,
-                 (uint8_t)HRXL_RESOLUTION,
-                 "distance", "millimeter", "SonarRange")
-    {}
-    ~MaxBotixSonar_Range(){}
+  MaxBotixSonar_Range(Sensor *parentSense, const char *uuid = "",
+                      const char *varCode = "SonarRange")
+      : Variable(parentSense, (const uint8_t)HRXL_VAR_NUM,
+                 (uint8_t)HRXL_RESOLUTION, "distance", "millimeter", varCode,
+                 uuid) {}
+  MaxBotixSonar_Range()
+      : Variable((const uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
+                 "distance", "millimeter", "SonarRange") {}
+  ~MaxBotixSonar_Range() {}
 };
 
-#endif  // Header Guard
+#endif // Header Guard

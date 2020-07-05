@@ -5,7 +5,8 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Decagon Devices ES-2 Electrical Conductivity Sensor
- *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super class.
+ *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super
+ *class.
  *
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon ES-2 can be found at:
@@ -23,7 +24,7 @@
  *
  * Maximum warm-up time in SDI-12 mode: 250ms, assume stability at warm-up
  * Maximum measurement duration: 250ms
-*/
+ */
 
 // Header Guards
 #ifndef DecagonES2_h
@@ -47,70 +48,55 @@
 #define ES2_TEMP_VAR_NUM 1
 
 // The main class for the Decagon ES-2
-class DecagonES2 : public SDI12Sensors
-{
+class DecagonES2 : public SDI12Sensors {
 public:
-    // Constructors with overloads
-    DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "DecagonES2", ES2_NUM_VARIABLES,
-                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
-    {}
-    DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "DecagonES2", ES2_NUM_VARIABLES,
-                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
-    {}
-    DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    "DecagonES2", ES2_NUM_VARIABLES,
-                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
-    {}
-    // Destructor
-    ~DecagonES2(){}
+  // Constructors with overloads
+  DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin,
+             uint8_t measurementsToAverage = 1)
+      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                     "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
+                     ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
+  DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin,
+             uint8_t measurementsToAverage = 1)
+      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                     "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
+                     ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
+  DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin,
+             uint8_t measurementsToAverage = 1)
+      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                     "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
+                     ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
+  // Destructor
+  ~DecagonES2() {}
 };
 
-
 // Defines the Conductivity Variable
-class DecagonES2_Cond : public Variable
-{
+class DecagonES2_Cond : public Variable {
 public:
-    DecagonES2_Cond(Sensor *parentSense,
-                    const char *uuid = "",
-                    const char *varCode = "ES2Cond")
-      : Variable(parentSense,
-                 (const uint8_t)ES2_COND_VAR_NUM,
-                 (uint8_t)ES2_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter",
-                 varCode, uuid)
-    {}
-    DecagonES2_Cond()
-      : Variable((const uint8_t)ES2_COND_VAR_NUM,
-                 (uint8_t)ES2_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter", "ES2Cond")
-    {}
-    ~DecagonES2_Cond(){}
+  DecagonES2_Cond(Sensor *parentSense, const char *uuid = "",
+                  const char *varCode = "ES2Cond")
+      : Variable(parentSense, (const uint8_t)ES2_COND_VAR_NUM,
+                 (uint8_t)ES2_COND_RESOLUTION, "specificConductance",
+                 "microsiemenPerCentimeter", varCode, uuid) {}
+  DecagonES2_Cond()
+      : Variable((const uint8_t)ES2_COND_VAR_NUM, (uint8_t)ES2_COND_RESOLUTION,
+                 "specificConductance", "microsiemenPerCentimeter", "ES2Cond") {
+  }
+  ~DecagonES2_Cond() {}
 };
 
 // Defines the Temperature Variable
-class DecagonES2_Temp : public Variable
-{
+class DecagonES2_Temp : public Variable {
 public:
-    DecagonES2_Temp(Sensor *parentSense,
-                    const char *uuid = "",
-                    const char *varCode = "ES2Temp")
-      : Variable(parentSense,
-                 (const uint8_t)ES2_TEMP_VAR_NUM,
-                 (uint8_t)ES2_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    DecagonES2_Temp()
-      : Variable((const uint8_t)ES2_TEMP_VAR_NUM,
-                 (uint8_t)ES2_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "ES2Temp")
-    {}
-    ~DecagonES2_Temp(){}
+  DecagonES2_Temp(Sensor *parentSense, const char *uuid = "",
+                  const char *varCode = "ES2Temp")
+      : Variable(parentSense, (const uint8_t)ES2_TEMP_VAR_NUM,
+                 (uint8_t)ES2_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                 varCode, uuid) {}
+  DecagonES2_Temp()
+      : Variable((const uint8_t)ES2_TEMP_VAR_NUM, (uint8_t)ES2_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "ES2Temp") {}
+  ~DecagonES2_Temp() {}
 };
 
-#endif  // Header Guard
+#endif // Header Guard

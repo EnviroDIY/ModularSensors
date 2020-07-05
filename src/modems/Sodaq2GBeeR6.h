@@ -6,7 +6,7 @@
  *
  *This file is the Sodaq 2GBee revisions 6 and higher - these are based on
  *the SIMCOM SIM800h.
-*/
+ */
 
 // Header Guards
 #ifndef Sodaq2GBeeR6_h
@@ -33,37 +33,33 @@
 #include <StreamDebugger.h>
 #endif
 
-class Sodaq2GBeeR6 : public SIMComSIM800
-{
+class Sodaq2GBeeR6 : public SIMComSIM800 {
 
 public:
-    // Constructor/Destructor
-    // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-    // NOTE:  The power pin of the SIM800 is wired to the XBee's DTR
-    // pin, the actualy PWR_KEY is not exposed, there is no way to
-    // request sleep.  The normal Vin pin of the Bee socket (pin 1)
-    // is used for voltage reference only.
-    // The order of the pins in the constructor is different from
-    // other modems for backwards compatibility and because the
-    // Sodaq documentation is confusing
-    Sodaq2GBeeR6(Stream *modemStream,
-                 int8_t powerPin, int8_t statusPin,
-                 const char *apn);
-    Sodaq2GBeeR6(Stream *modemStream,
-                 int8_t vRefPin, int8_t statusPin, int8_t powerPin,
-                 const char *apn);
-    ~Sodaq2GBeeR6();
+  // Constructor/Destructor
+  // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+  // NOTE:  The power pin of the SIM800 is wired to the XBee's DTR
+  // pin, the actualy PWR_KEY is not exposed, there is no way to
+  // request sleep.  The normal Vin pin of the Bee socket (pin 1)
+  // is used for voltage reference only.
+  // The order of the pins in the constructor is different from
+  // other modems for backwards compatibility and because the
+  // Sodaq documentation is confusing
+  Sodaq2GBeeR6(Stream *modemStream, int8_t powerPin, int8_t statusPin,
+               const char *apn);
+  Sodaq2GBeeR6(Stream *modemStream, int8_t vRefPin, int8_t statusPin,
+               int8_t powerPin, const char *apn);
+  ~Sodaq2GBeeR6();
 
-    void setVRefPin(int8_t vRefPin);
+  void setVRefPin(int8_t vRefPin);
 
 protected:
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
+  bool modemSleepFxn(void) override;
+  bool modemWakeFxn(void) override;
+  bool extraModemSetup(void) override;
 
 private:
-    int8_t _vRefPin;
-
+  int8_t _vRefPin;
 };
 
-#endif  // Header Guard
+#endif // Header Guard

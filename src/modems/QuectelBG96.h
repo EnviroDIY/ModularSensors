@@ -6,7 +6,7 @@
  *
  *This file is for the Dragino BG96, Nimbelink Skywire 4G LTE-M Global, and
  *other modules based on the Quectel BG96.
-*/
+ */
 
 // Header Guards
 #ifndef QuectelBG96_h
@@ -51,54 +51,50 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "TinyGsmClient.h"
 #include "LoggerModem.h"
+#include "TinyGsmClient.h"
 
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-
-class QuectelBG96 : public loggerModem
-{
+class QuectelBG96 : public loggerModem {
 
 public:
-    // Constructor/Destructor
-    QuectelBG96(Stream* modemStream,
-                int8_t powerPin, int8_t statusPin,
-                int8_t modemResetPin, int8_t modemSleepRqPin,
-                const char *apn);
-    ~QuectelBG96();
+  // Constructor/Destructor
+  QuectelBG96(Stream *modemStream, int8_t powerPin, int8_t statusPin,
+              int8_t modemResetPin, int8_t modemSleepRqPin, const char *apn);
+  ~QuectelBG96();
 
-    bool modemWake(void) override;
+  bool modemWake(void) override;
 
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    virtual void disconnectInternet(void) override;
+  virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+  virtual void disconnectInternet(void) override;
 
-    virtual uint32_t getNISTTime(void) override;
+  virtual uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    virtual float getModemChipTemperature(void) override;
+  virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+  virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent,
+                                    uint16_t &milliVolts) override;
+  virtual float getModemChipTemperature(void) override;
 
-    bool modemHardReset(void) override;
+  bool modemHardReset(void) override;
 
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
+  StreamDebugger _modemATDebugger;
 #endif
 
-    TinyGsm gsmModem;
-    TinyGsmClient gsmClient;
+  TinyGsm gsmModem;
+  TinyGsmClient gsmClient;
 
 protected:
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void) override;
+  virtual bool isInternetAvailable(void) override;
+  virtual bool modemSleepFxn(void) override;
+  virtual bool modemWakeFxn(void) override;
+  virtual bool extraModemSetup(void) override;
 
 private:
-    const char *_apn;
-
+  const char *_apn;
 };
 
-#endif  // Header Guard
+#endif // Header Guard

@@ -19,12 +19,12 @@
 #include "sensors/AtlasParent.h"
 
 // I2C address
-#define ATLAS_RTD_I2C_ADDR 0x66  // 102
+#define ATLAS_RTD_I2C_ADDR 0x66 // 102
 
 // Sensor Specific Defines
 #define ATLAS_RTD_NUM_VARIABLES 1
 
-#define ATLAS_RTD_WARM_UP_TIME_MS 740  // 731-735 in tests
+#define ATLAS_RTD_WARM_UP_TIME_MS 740 // 731-735 in tests
 #define ATLAS_RTD_STABILIZATION_TIME_MS 0
 // NOTE:  Manual says measurement time is 600, but in SRGD tests, didn't get a
 // result until after 643 ms; AG got results as soon as 393ms.
@@ -34,38 +34,31 @@
 #define ATLAS_RTD_VAR_NUM 0
 
 // The main class for the Atlas Scientific RTD temperature sensor
-class AtlasScientificRTD : public AtlasParent
-{
+class AtlasScientificRTD : public AtlasParent {
 public:
-    AtlasScientificRTD(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
-                       uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                   "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
-                   ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
-                   ATLAS_RTD_MEASUREMENT_TIME_MS)
-    {}
-    ~AtlasScientificRTD(){}
+  AtlasScientificRTD(int8_t powerPin,
+                     uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
+                     uint8_t measurementsToAverage = 1)
+      : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                    "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
+                    ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
+                    ATLAS_RTD_MEASUREMENT_TIME_MS) {}
+  ~AtlasScientificRTD() {}
 };
 
 // The class for the Temp Variable
-class AtlasScientificRTD_Temp : public Variable
-{
+class AtlasScientificRTD_Temp : public Variable {
 public:
-    AtlasScientificRTD_Temp(Sensor *parentSense,
-                            const char *uuid = "",
-                            const char *varCode = "AtlasTemp")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_RTD_VAR_NUM,
-                 (uint8_t)ATLAS_RTD_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    AtlasScientificRTD_Temp()
+  AtlasScientificRTD_Temp(Sensor *parentSense, const char *uuid = "",
+                          const char *varCode = "AtlasTemp")
+      : Variable(parentSense, (const uint8_t)ATLAS_RTD_VAR_NUM,
+                 (uint8_t)ATLAS_RTD_RESOLUTION, "temperature", "degreeCelsius",
+                 varCode, uuid) {}
+  AtlasScientificRTD_Temp()
       : Variable((const uint8_t)ATLAS_RTD_VAR_NUM,
-                 (uint8_t)ATLAS_RTD_RESOLUTION,
-                 "temperature", "degreeCelsius", "AtlasTemp")
-    {}
-    ~AtlasScientificRTD_Temp(){}
+                 (uint8_t)ATLAS_RTD_RESOLUTION, "temperature", "degreeCelsius",
+                 "AtlasTemp") {}
+  ~AtlasScientificRTD_Temp() {}
 };
 
-#endif  // Header Guard
+#endif // Header Guard

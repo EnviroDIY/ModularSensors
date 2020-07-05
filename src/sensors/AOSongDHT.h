@@ -4,8 +4,9 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the AOSong Digital-output relative humidity & temperature sensor/modules:
- *DHT11, DHT21(AM2301), and DHT 22 (AM2302).  It is dependent on the Adafruit DHT Library
+ *This file is for the AOSong Digital-output relative humidity & temperature
+ *sensor/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).  It is dependent on
+ *the Adafruit DHT Library
  *
  *Documentation for the sensor can be found at:
  *http://www.aosong.com/en/products/details.asp?id=117
@@ -22,7 +23,7 @@
  *
  * Warm up time: 1.7sec; assume stable on warm-up
  * Re-sampling time: 2.0sec
-*/
+ */
 
 // Header Guards
 #ifndef AOSongDHT_h
@@ -38,8 +39,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "SensorBase.h"
+#include "VariableBase.h"
 #include <DHT.h>
 
 // Undefine these macros so I can use a typedef instead
@@ -65,8 +66,7 @@
 #define DHT_HI_VAR_NUM 2
 
 // For the various communication devices"
-typedef enum DHTtype
-{
+typedef enum DHTtype {
   DHT11 = 11,
   DHT21 = 21,
   AM2301 = 21,
@@ -75,88 +75,65 @@ typedef enum DHTtype
 } DHTtype;
 
 // The main class for the AOSong DHT
-class AOSongDHT : public Sensor
-{
+class AOSongDHT : public Sensor {
 public:
-    // The constructor - need the power pin, the data pin, and the sensor type
-    AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage = 1);
-    // Destructor
-    ~AOSongDHT();
+  // The constructor - need the power pin, the data pin, and the sensor type
+  AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type,
+            uint8_t measurementsToAverage = 1);
+  // Destructor
+  ~AOSongDHT();
 
-    bool setup(void) override;
-    String getSensorName(void) override;
+  bool setup(void) override;
+  String getSensorName(void) override;
 
-    bool addSingleMeasurementResult(void) override;
+  bool addSingleMeasurementResult(void) override;
 
 private:
-    DHT dht_internal;
-    DHTtype _dhtType;
+  DHT dht_internal;
+  DHTtype _dhtType;
 };
-
 
 // Defines the Humidity Variable
-class AOSongDHT_Humidity : public Variable
-{
+class AOSongDHT_Humidity : public Variable {
 public:
-    AOSongDHT_Humidity(Sensor *parentSense,
-                       const char *uuid = "",
-                       const char *varCode = "DHTHumidity")
-      : Variable(parentSense,
-                 (const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                 (uint8_t)DHT_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent",
-                 varCode, uuid)
-    {}
-    AOSongDHT_Humidity()
+  AOSongDHT_Humidity(Sensor *parentSense, const char *uuid = "",
+                     const char *varCode = "DHTHumidity")
+      : Variable(parentSense, (const uint8_t)DHT_HUMIDITY_VAR_NUM,
+                 (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
+                 "percent", varCode, uuid) {}
+  AOSongDHT_Humidity()
       : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                 (uint8_t)DHT_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent", "DHTHumidity")
-    {}
-    ~AOSongDHT_Humidity(){};
+                 (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
+                 "percent", "DHTHumidity") {}
+  ~AOSongDHT_Humidity(){};
 };
-
 
 // Defines the Temperature Variable
-class AOSongDHT_Temp : public Variable
-{
+class AOSongDHT_Temp : public Variable {
 public:
-    AOSongDHT_Temp(Sensor *parentSense,
-                   const char *uuid = "",
-                   const char *varCode = "DHTTemp")
-      : Variable(parentSense,
-                 (const uint8_t)DHT_TEMP_VAR_NUM,
-                 (uint8_t)DHT_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    AOSongDHT_Temp()
-      : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
-                 (uint8_t)DHT_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "DHTTemp")
-    {}
-    ~AOSongDHT_Temp(){};
+  AOSongDHT_Temp(Sensor *parentSense, const char *uuid = "",
+                 const char *varCode = "DHTTemp")
+      : Variable(parentSense, (const uint8_t)DHT_TEMP_VAR_NUM,
+                 (uint8_t)DHT_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                 varCode, uuid) {}
+  AOSongDHT_Temp()
+      : Variable((const uint8_t)DHT_TEMP_VAR_NUM, (uint8_t)DHT_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "DHTTemp") {}
+  ~AOSongDHT_Temp(){};
 };
-
 
 // Defines the Heat Index Variable
-class AOSongDHT_HI : public Variable
-{
+class AOSongDHT_HI : public Variable {
 public:
-    AOSongDHT_HI(Sensor *parentSense,
-                 const char *uuid = "",
-                 const char *varCode = "DHTHI")
-      : Variable(parentSense,
-                 (const uint8_t)DHT_HI_VAR_NUM,
-                 (uint8_t)DHT_HI_RESOLUTION,
-                 "heatIndex", "degreeCelsius",
-                 varCode, uuid)
-    {}
-    AOSongDHT_HI()
-      : Variable((const uint8_t)DHT_HI_VAR_NUM,
-                 (uint8_t)DHT_HI_RESOLUTION,
-                 "heatIndex", "degreeCelsius", "DHTHI")
-    {}
-    ~AOSongDHT_HI(){};
+  AOSongDHT_HI(Sensor *parentSense, const char *uuid = "",
+               const char *varCode = "DHTHI")
+      : Variable(parentSense, (const uint8_t)DHT_HI_VAR_NUM,
+                 (uint8_t)DHT_HI_RESOLUTION, "heatIndex", "degreeCelsius",
+                 varCode, uuid) {}
+  AOSongDHT_HI()
+      : Variable((const uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
+                 "heatIndex", "degreeCelsius", "DHTHI") {}
+  ~AOSongDHT_HI(){};
 };
 
-#endif  // Header Guard
+#endif // Header Guard
