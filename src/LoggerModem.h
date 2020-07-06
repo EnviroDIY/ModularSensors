@@ -386,6 +386,16 @@ class loggerModem {
     virtual bool updateModemMetadata(void);
     /**@}*/
 
+// By default modem metadata won't be polled. Call this to enable.
+#define POLL_MODEM_META_DATA_ON 0x80
+  void pollModemMetadata(uint8_t status = POLL_MODEM_META_DATA_ON);
+#if not defined SENSOR_DEFAULT_I
+#define SENSOR_DEFAULT_I -1
+#endif // SENSOR_DEFAULT
+#if not defined SENSOR_DEFAULT_F
+#define SENSOR_DEFAULT_F -0.0099
+#endif // SENSOR_DEFAULT
+
     /**
      * @anchor modem_static_functions
      * @name Functions to return the current value of static member variables
@@ -737,6 +747,7 @@ class loggerModem {
     // NOTE:  These must be static so that the modem variables can call the
     // member functions that return them.  (Non-static member functions cannot
     // be called without an object.)
+    static bool _pollModemMetaData;
     /**
      * @anchor modem_static_variables
      * @name Static member variables used to hold modem metadata

@@ -37,6 +37,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
    SYS_ARCH_;
  *
 */
+#include <Arduino.h> // The base Arduino library
 // Local routing defitions here
 #if defined(__AVR__)
 #define EDIY_PROGMEM PROGMEM

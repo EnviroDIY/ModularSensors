@@ -12,6 +12,8 @@
 // Header Guards
 #ifndef SRC_VARIABLEBASE_H_
 #define SRC_VARIABLEBASE_H_
+#include "ms_common.h"
+
 
 // Debugging Statement
 // #define MS_VARIABLEBASE_DEBUG

@@ -509,7 +509,7 @@ Variable *CTDDepthInCalc = new Variable(
 
 #if defined MaximDS3231_TEMP_UUID || defined MaximDS3231_TEMPF_UUID
 // Create a temperature variable pointer for the DS3231
-#if defined MaximDS3231_TEMP_UUID 
+#if defined MaximDS3231_TEMP_UUID
 Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231,MaximDS3231_TEMP_UUID);
 #else
 Variable *ds3231TempC = new MaximDS3231_Temp(&ds3231);
@@ -549,12 +549,12 @@ Variable *variableList[] = {
 #if defined AnalogProcEC_ACT
     new analogElecConductivity_EC(&EC_procPhy,EC1_UUID ),
 #endif //AnalogProcEC_ACT    
-#if defined Decagon_CTD_UUID 
+    #if defined Decagon_CTD_UUID 
     //new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
     //new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
     CTDTempFcalc,
-#endif //Decagon_CTD_UUID
+    #endif //Decagon_CTD_UUID
 #if defined Insitu_TrollSdi12_UUID 
     new InsituTrollSdi12_Depth(&itrollPhy,ITROLL_DEPTH_UUID),
     new InsituTrollSdi12_Temp(&itrollPhy,ITROLL_TEMP_UUID),
@@ -832,14 +832,14 @@ void setup()
     #endif //UseModem_Module 
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
-    #ifdef USE_MS_SD_INI
+#ifdef USE_MS_SD_INI
     //Set up SD card access
     Serial.println(F("---parseIni "));
     dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
     Serial.println(F("\n\n---parseIni complete "));
-    #endif //USE_MS_SD_INI
- 
+#endif //USE_MS_SD_INI
+
     mcuBoard.printBatteryThresholds();
 
     // Begin the logger
@@ -854,8 +854,8 @@ void setup()
         while  ( (PS_LBATT_UNUSEABLE_STATUS == mcuBoard.isBatteryStatusAbove(true,PS_PWR_LOW_REQ)) )
         {
             MS_DBG(F("Not enough power to sync with NIST "),mcuBoard.getBatteryVm1(false),F("Need"), PS_PWR_LOW_REQ);
-            dataLogger.systemSleep();     
-        } 
+        dataLogger.systemSleep();     
+    } 
         #if defined DigiXBeeWifi_Module
             //For the WiFi module, it may not be configured if no nscfg.ini file present, 
             // this supports the standalone logger, but need to get time at factory/ms_cfg.ini present

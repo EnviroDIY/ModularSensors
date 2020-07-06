@@ -75,7 +75,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 //Instructions: define only one  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
@@ -85,7 +85,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // End TinyGsmClient.h options
 #if defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module) 
+// The Modem is used to push data and also sync Time
+// In standalong logger, no internet, Modem can be required at factor to do a sync Time
+// Normally enable both of the following. In standalone, disable UseModem_PushData.
 #define UseModem_Module 1
+//#define UseModem_PushData 1
 //Required for TinyGsmClient.h 
 #define TINY_GSM_MODEM_XBEE
 
@@ -187,7 +191,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif //ENVIRODIY_MAYFLY_TEMPERATURE
 
 #if defined UseModem_Module 
-#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
+//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #endif //UseModem_Module 
 

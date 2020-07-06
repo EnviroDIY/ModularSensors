@@ -827,7 +827,7 @@ void setup()
     dataLogger.attachModem(modemPhy);
     //modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
         #if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID //|| or others
-                modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+        modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
         #endif 
     #endif //UseModem_Module 
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
@@ -867,8 +867,8 @@ void setup()
                 dataLogger.syncRTC(); //Will also set up the modemPhy
             }
         #else
-    MS_DBG(F("Sync with NIST "));
-    dataLogger.syncRTC(); //Will also set up the modemPhy
+            MS_DBG(F("Sync with NIST "));
+            dataLogger.syncRTC(); //Will also set up the modemPhy
         #endif //DigiXBeeWifi_Module
     #endif //UseModem_Module    
     // List start time, if RTC invalid will also be initialized

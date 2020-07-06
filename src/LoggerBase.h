@@ -612,6 +612,10 @@ class Logger {
     static RTCZero zero_sleep_rtc;
 #endif
 
+  static uint32_t getNowEpochT0(void);    // Get Epoch standard UST
+  static uint32_t getNowEpochTz(void);    // Get Epoch with time zone offset
+  static void setNowEpochT0(uint32_t ts); // Set Epoch with standard UST
+  // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
     /**
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
@@ -632,6 +636,9 @@ class Logger {
      * @param ts The number of seconds since 1970.
      */
     static void setNowEpoch(uint32_t ts);
+
+  static DateTime dtFromEpochT0(uint32_t epochTime);
+  static DateTime dtFromEpochTz(uint32_t epochTime);
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
