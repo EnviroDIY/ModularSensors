@@ -1,21 +1,17 @@
-/*
- *ProcessorStats.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file ProcessorStats.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for metadata on the processor functionality.
- *
- *For battery voltage:
- *  Range of 0-5V with 10bit ADC - resolution of 0.005
- *
- * If the processor is awake, it's ready to take a reading.
+ * @brief Implements the ProcessorStats class.
  */
 
 #include "ProcessorStats.h"
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
+/// Pretty text for the board name derived from the board's compiler define.
 #define BOARD "EnviroDIY Mayfly"
 
 // Sodaq boards
@@ -93,8 +89,8 @@
 
 #else
 #define BOARD "Unknown"
-#error BOARD Unknown
 #endif
+
 
 // Need to know the Mayfly version because the battery resistor depends on it
 ProcessorStats::ProcessorStats(const char *version)
@@ -128,7 +124,11 @@ ProcessorStats::ProcessorStats(const char *version)
 // Destructor
 ProcessorStats::~ProcessorStats() {}
 
-String ProcessorStats::getSensorLocation(void) { return BOARD; }
+
+String ProcessorStats::getSensorLocation(void) {
+    return BOARD;
+}
+
 
 #if defined(ARDUINO_ARCH_SAMD)
 extern "C" char *sbrk(int i);
@@ -139,9 +139,10 @@ int16_t FreeRam() {
 }
 #endif
 
+
 bool ProcessorStats::addSingleMeasurementResult(void) {
   // Get the battery voltage
-  // MS_DBG(F("Getting battery voltage"));
+    MS_DBG(F("Getting battery voltage"));
 
   float sensorValue_battery = -9999;
 
@@ -153,12 +154,12 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
   analogReference(AR_DEFAULT);
 #endif // ARDUINO_ARCH_AVR
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-  if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0) {
+    if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
     // Get the battery voltage
     float rawBattery = analogRead(_batteryPin);
     sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
   }
-  if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0) {
+    if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") == 0) {
     // Get the battery voltage
     float rawBattery = analogRead(_batteryPin);
     sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
@@ -201,17 +202,18 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
 
 #endif
 
-  MS_DBG(F("Vbat"), sensorValue_battery);
-  verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
+     MS_DBG(F("Vbat"), sensorValue_battery);
+     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM,
+                                  sensorValue_battery);
 
   // Used only for debugging - can be removed
-  // MS_DBG(F("Getting Free RAM"));
+    MS_DBG(F("Getting Free RAM"));
 
 #if defined __AVR__ || defined ARDUINO_ARCH_AVR
   extern int16_t __heap_start, *__brkval;
   int16_t v;
-  float sensorValue_freeRam =
-      (int)&v - (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
+    float          sensorValue_freeRam = (int)&v -
+        (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
 
 #elif defined(ARDUINO_ARCH_SAMD)
   float sensorValue_freeRam = FreeRam();

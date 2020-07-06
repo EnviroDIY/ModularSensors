@@ -1,156 +1,184 @@
-/*****************************************************************************
-DWRI_CitSci.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
-Software License: BSD-3.
-  Copyright (c) 2017, Stroud Water Research Center (SWRC)
-  and the EnviroDIY Development Team
-
-This sketch is an example of logging data to an SD card and sending the data to
-both the EnviroDIY data portal as should be used by groups involved with
-The William Penn Foundation's Delaware River Watershed Initiative
-
-DISCLAIMER:
-THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
-*****************************************************************************/
+/** =========================================================================
+ * @file DRWI_CitSci.ino
+ * @brief Example for DRWI CitSci 2G sites.
+ *
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ *                          and the EnviroDIY Development Team
+ *            This example is published under the BSD-3 license.
+ *
+ * Build Environment: Visual Studios Code with PlatformIO
+ * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+ *
+ * DISCLAIMER:
+ * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+ * ======================================================================= */
 
 // ==========================================================================
-//    Defines for the Arduino IDE
-//    In PlatformIO, set these build flags in your platformio.ini
+//  Defines for the Arduino IDE
+//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
+//         If you use PlatformIO, you should set these build flags in your
+//         platformio.ini
 // ==========================================================================
+/** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
 #endif
+/** End [defines] */
 
 // ==========================================================================
-//    Include the base required libraries
+//  Include the libraries required for any data logger
 // ==========================================================================
-#include <Arduino.h>  // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>  // The modular sensors library
+/** Start [includes] */
+// The Arduino library is needed for every Arduino program.
+#include <Arduino.h>
+
+// EnableInterrupt is used by ModularSensors for external and pin change
+// interrupts and must be explicitly included in the main program.
+#include <EnableInterrupt.h>
+
+// To get all of the base classes for ModularSensors, include LoggerBase.
+// NOTE:  Individual sensor definitions must be included separately.
+#include <LoggerBase.h>
+/** End [includes] */
 
 
 // ==========================================================================
-//    Data Logger Settings
+//  Data Logging Options
 // ==========================================================================
-// The name of this file
-const char *sketchName = "DWRI_CitSci.ino";
+/** Start [logging_options] */
+// The name of this program file
+const char* sketchName = "DRWI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
-// ==========================================================================
-//    Primary Arduino-Based Board and Processor
-// ==========================================================================
-#include <sensors/ProcessorStats.h>
-
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
-const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+// Set the input and output pins for the logger
+// NOTE:  Use -1 for pins that do not apply
+const long   serialBaud = 115200;  // Baud rate for debugging
+const int8_t greenLED   = 8;       // Pin for the green LED
+const int8_t redLED     = 9;       // Pin for the red LED
+const int8_t buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
-
-// Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
-ProcessorStats mcuBoard(mcuBoardVersion);
+const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
+const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+/** End [logging_options] */
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Settings
+//  Wifi/Cellular Modem Options
 // ==========================================================================
-
-// Create a reference to the serial port for the modem
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-
-// Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = 23;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
-
-// Network connection information
-const char *apn = "hologram";  // The APN for the gprs connection
-
+/** Start [gprsbee] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
 #include <modems/Sodaq2GBeeR6.h>
-const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
-Sodaq2GBeeR6 modem2GB(&modemSerial,
-                      modemVccPin, modemStatusPin,
-                      apn);
-// Create an extra reference to the modem by a generic name (not necessary)
+
+// Create a reference to the serial port for the modem
+HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
+const long      modemBaud   = 9600;     //  SIM800 does auto-bauding by default
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+const int8_t modemVccPin    = 23;      // MCU pin controlling modem power
+const int8_t modemStatusPin = 19;      // MCU pin used to read modem status
+const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
+                                       // status (-1 if unconnected)
+
+// Network connection information
+const char* apn = "hologram";  // The APN for the gprs connection
+
+Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
+// Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
+/** End [gprsbee] */
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//  Using the Processor as a Sensor
 // ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
+
+// Create the main processor chip "sensor" - for general metadata
+const char*    mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+/** End [processor_sensor] */
+
+
+// ==========================================================================
+//  Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+/** Start [ds3231] */
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
+/** End [ds3231] */
 
 
 // ==========================================================================
-//    Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
+//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
+/** Start [obs3] */
 #include <sensors/CampbellOBS3.h>
 
-const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const uint8_t OBS3NumberReadings = 10;
-const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-// Campbell OBS 3+ Low Range calibration in Volts
-const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
-const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+const uint8_t ADSi2c_addr        = 0x48;  // The I2C address of the ADS1115 ADC
+// Campbell OBS 3+ *Low* Range Calibration in Volts
+const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
+const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
+const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [*low* range]
+const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
 
-// Create a Campbell OBS3+ LOW RANGE sensor object
-CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3NumberReadings);
+// Create a Campbell OBS3+ *low* range sensor object
+CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
+                     ADSi2c_addr, OBS3NumberReadings);
 
 
-// Campbell OBS 3+ High Range calibration in Volts
-const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range output
-const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+// Campbell OBS 3+ *High* Range Calibration in Volts
+const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
+const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [*high* range]
+const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [*high* range]
+const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
 
-// Create a Campbell OBS3+ HIGH RANGE sensor object
-CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
+// Create a Campbell OBS3+ *high* range sensor object
+CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
+                      OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
+/** End [obs3] */
 
 
 // ==========================================================================
-//    Decagon CTD Conductivity, Temperature, and Depth Sensor
+//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
+/** Start [decagon_ctd] */
 #include <sensors/DecagonCTD.h>
 
-const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;  // The number of readings to average
-const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SDI12Data = 7;  // The SDI12 data pin
+const char*   CTDSDI12address   = "1";      // The SDI-12 Address of the CTD
+const uint8_t CTDNumberReadings = 6;        // The number of readings to average
+const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  SDI12Data  = 7;               // The SDI12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
+/** End [decagon_ctd] */
 
 
 // ==========================================================================
-//    Creating the Variable Array[s] and Filling with Variable Objects
+//  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-
-Variable *variableList[] = {
+/** Start [variable_arrays] */
+Variable* variableList[] = {
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
@@ -159,60 +187,74 @@ Variable *variableList[] = {
     new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
     new Modem_RSSI(&modem),
-    new Modem_SignalPercent(&modem),
-};
+    new Modem_SignalPercent(&modem)};
+
+// All UUID's, device registration, and sampling feature information can be
+// pasted directly from Monitor My Watershed.  To get the list, click the "View
+// token UUID list" button on the upper right of the site page.
+
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-const char *UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
-    "12345678-abcd-1234-ef00-1234567890ab",
+const char* UUIDs[] = {
+    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity
+                                             // (Decagon_CTD-10_Cond)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
+                                             // (Decagon_CTD-10_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
+                                             // (Decagon_CTD-10_Depth)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
+                                             // (EnviroDIY_Mayfly_Batt)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
+                                             // (EnviroDIY_Mayfly_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength
+                                             // indication (Sodaq_2GBee_RSSI)
+    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale
+                                             // (Sodaq_2GBee_SignalPercent)
 };
-const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab"; // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";   // Sampling feature UUID
+const char* registrationToken =
+    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature =
+    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList, UUIDs);
+/** End [variable_arrays] */
 
 
 // ==========================================================================
-//     The Logger Object[s]
+//  The Logger Object[s]
 // ==========================================================================
-
+/** Start [loggers] */
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
+/** End [loggers] */
 
 
 // ==========================================================================
-//    A Publisher to WikiWatershed
+//  Creating Data Publisher[s]
 // ==========================================================================
-// Device registration and sampling feature information can be obtained after
-// registration at http://data.WikiWatershed.org
-
-// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+/** Start [publishers] */
+// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
+                                 registrationToken, samplingFeature);
+/** End [publishers] */
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
-{
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -224,21 +266,20 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
     digitalWrite(redLED, LOW);
 }
 
-
-// Read's the battery voltage
+// Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
-float getBatteryVoltage()
-{
+float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
+/** End [working_functions] */
 
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
-void setup()
-{
+/** Start [setup] */
+void setup() {
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -275,23 +316,21 @@ void setup()
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
     modem.setModemLED(modemLEDPin);
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
+                             greenLED);
 
     // Begin the logger
     dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
-
     // Set up the sensors, except at lowest battery level
-    if (getBatteryVoltage() > 3.4)
-    {
+    if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up sensors..."));
         varArray.setupSensors();
     }
 
     // Sync the clock if it isn't valid or we have battery to spare
-    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
-    {
+    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         dataLogger.syncRTC();
@@ -302,41 +341,40 @@ void setup()
     // all sensor names correct
     // Writing to the SD card can be power intensive, so if we're skipping
     // the sensor setup we'll skip this too.
-    if (getBatteryVoltage() > 3.4)
-    {
+    if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true); // true = write a new header
-        dataLogger.turnOffSDcard(true); // true = wait for internal housekeeping after write
+        dataLogger.turnOnSDcard(
+            true);  // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
+        dataLogger.turnOffSDcard(
+            true);  // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep
     Serial.println(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
 }
+/** End [setup] */
 
 
 // ==========================================================================
-// Main loop function
+//  Arduino Loop Function
 // ==========================================================================
-
+/** Start [loop] */
 // Use this short loop for simple data logging and sending
-void loop()
-{
+void loop() {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
-    if (getBatteryVoltage() < 3.4)
-    {
+    if (getBatteryVoltage() < 3.4) {
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.55)
-    {
+    else if (getBatteryVoltage() < 3.55) {
         dataLogger.logData();
     }
     // If the battery is good, send the data to the world
-    else
-    {
+    else {
         dataLogger.logDataAndPublish();
     }
 }
+/** End [loop] */

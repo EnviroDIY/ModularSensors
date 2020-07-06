@@ -1,18 +1,18 @@
-/*
- *WatchDogAVR.h
-
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file WatchDogAVR.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * @brief Contains the extendedWatchDogAVR class
  *
- *This file is for the watchdog timer
- *Code for this is taken from this forum post:
- *https://forum.arduino.cc/index.php?topic=248263.0
-*/
+ * Code for this is taken from this forum post:
+ * https://forum.arduino.cc/index.php?topic=248263.0
+ */
 
 // Header Guards
-#ifndef WatchDogAVR_h
-#define WatchDogAVR_h
+#ifndef SRC_WATCHDOGS_WATCHDOGAVR_H_
+#define SRC_WATCHDOGS_WATCHDOGAVR_H_
 
 // Debugging Statement
 // #define MS_WATCHDOGAVR_DEBUG
@@ -25,24 +25,58 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
+/**
+ * @brief The extendedWatchDogAVR class uses the pre-reset interrupt to of the
+ * built in AVR watchdog to extend the allowable time between resets of the
+ * watchdog's clock up to multiple minute timescales.
+ *
+ * The standard watchdog on an AVR processor has a maximum period of 8s without
+ * a reset of the watchdog clock before the processor is restarted.
+ *
+ * Code for this is taken from this forum post:
+ * https://forum.arduino.cc/index.php?topic=248263.0
+ */
 class extendedWatchDogAVR {
+ public:
+    /**
+     * @brief Construct a new extended watch dog object for AVR processors.
+     */
+    extendedWatchDogAVR();
+    /**
+     * @brief Destroy the extended watch dog object for AVR processors.
+     */
+    ~extendedWatchDogAVR();
 
-public:
-  // Constructor
-  extendedWatchDogAVR();
-  ~extendedWatchDogAVR();
+    /**
+     * @brief One-time initialization of watchdog timer.
+     *
+     * @param resetTime_s The length of time in seconds between resets of the
+     * watchdog before the entire board is reset.
+     */
+    void setupWatchDog(uint32_t resetTime_s);
+    /**
+     * @brief Enable the watchdog.
+     */
+    void enableWatchDog();
+    /**
+     * @brief Disable the watchdog.
+     */
+    void disableWatchDog();
 
-  // One-time initialization of watchdog timer.
-  void setupWatchDog(uint32_t resetTime_s);
-  void enableWatchDog();
-  void disableWatchDog();
+    /**
+     * @brief Reset the watchdog's clock to prevent the board from resetting.
+     */
+    void resetWatchDog();
 
-  void resetWatchDog();
 
-  static volatile uint32_t _barksUntilReset;
+    /**
+     * @brief The number of times the pre-reset interrupt is allowed to fire
+     * before the watchdog reset is allowed.
+     */
+    static volatile uint32_t _barksUntilReset;
 
-private:
-  uint32_t _resetTime_s;
+ private:
+    uint32_t _resetTime_s;
 };
 
-#endif
+#endif  // SRC_WATCHDOGS_WATCHDOGAVR_H_

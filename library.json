@@ -1,8 +1,8 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.24.5",
+    "version": "0.25.0",
     "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
-    "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, ThingSpeak",
+    "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
     "platforms": "atmelavr, atmelsam",
     "frameworks": "arduino",
     "authors": [
@@ -164,7 +164,7 @@
             "name": "Adafruit MPL115A2",
             "library id": "406",
             "url": "https://github.com/adafruit/Adafruit_MPL115A2.git",
-            "version": "=1.1.0",
+            "version": "=1.1.2",
             "note": "MPL115A2 Barometer Library by Adafruit",
             "authors": [
                 "Adafruit"
