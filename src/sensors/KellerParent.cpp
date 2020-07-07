@@ -87,6 +87,9 @@ void KellerParent::powerUp(void) {
         MS_DBG(F("Power to"), getSensorNameAndLocation(),
                F("is not controlled by this library."));
     }
+    if (NULL != _pinPowerMngFn) {
+        (* _pinPowerMngFn) (true); // callback to turn on Modbus 
+    }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
 }
@@ -94,6 +97,9 @@ void KellerParent::powerUp(void) {
 
 // This turns off sensor power
 void KellerParent::powerDown(void) {
+    if (NULL != _pinPowerMngFn) {
+        (* _pinPowerMngFn) (false); // callback to turn on Modbus 
+    }    
     if (_powerPin >= 0) {
         MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin);
@@ -168,19 +174,6 @@ bool KellerParent::addSingleMeasurementResult(void) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     _sensorStatus &= 0b10011111;
-
-  /*
-    if (_powerPin2 >= 0) {
-      MS_DBG(F("Turning off secondary power to"), getSensorNameAndLocation(),
-            F("with pin"), _powerPin2);
-      digitalWrite(_powerPin2, LOW);
-    }
-    if (_powerPin < 0 && _powerPin2 < 0) {
-      MS_DBG(F("Power to"), getSensorNameAndLocation(),
-            F("is not controlled by this library."));
-      // Do NOT unset any status bits or timestamps if we didn't really power
-      // down!
-    } */
 
     // Return true when finished
     return success;
