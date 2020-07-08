@@ -1,15 +1,16 @@
-/*
- *SodaqUBeeU201.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file SodaqUBeeU201.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is the Sodaq UBee based on the u-blox SARA U201 3G Cellular Module
-*/
+ * @brief Contains the SodaqUBeeU201 subclass of loggerModem for the Sodaq UBee
+ * based on the u-blox SARA U201 3G cellular module.
+ */
 
 // Header Guards
-#ifndef SodaqUBeeU201_h
-#define SodaqUBeeU201_h
+#ifndef SRC_MODEMS_SODAQUBEEU201_H_
+#define SRC_MODEMS_SODAQUBEEU201_H_
 
 // Debugging Statement
 // #define MS_SODAQUBEEU201_DEBUG
@@ -19,35 +20,79 @@
 #define MS_DEBUGGING_STD "SodaqUBeeU201"
 #endif
 
+/**
+ * @brief The modem type for the underlying TinyGSM library.
+ */
 #define TINY_GSM_MODEM_UBLOX
 #ifndef TINY_GSM_RX_BUFFER
+/**
+ * @brief The size of the buffer for incoming data.
+ */
 #define TINY_GSM_RX_BUFFER 64
 #endif
 
-// Status should be monitored on the V_INT pin
-// The time after end of wake pulse until V_INT becomes active is
-// unspecified in documentation; Taking value from Lisa U2
+/**
+ * @brief The loggerModem::_statusLevel.
+ *
+ * Status of the U201 should be monitored on the `V_INT` pin.  The time after
+ * end of wake pulse until `V_INT` becomes active is unspecified in
+ * documentation; we use the value from the Lisa U2, which is 100ms.
+ */
 #define U201_STATUS_LEVEL HIGH
+/**
+ * @brief The loggerModem::_statusTime_ms.
+ * @copydetails #U201_STATUS_LEVEL
+ */
 #define U201_STATUS_TIME_MS 100
 
-// U201 is reset with a >50ms low pulse on the RESET_N pin
+/**
+ * @brief The loggerModem::_resetLevel.
+ *
+ * U201 is reset with a >50ms low pulse on the `RESET_N` pin
+ */
 #define U201_RESET_LEVEL LOW
+/**
+ * @brief The loggerModem::_resetPulse_ms.
+ * @copydetails #U201_RESET_LEVEL
+ */
 #define U201_RESET_PULSE_MS 75
 
-// Module is switched on by a 50-80 MICRO second LOW pulse on the PWR_ON pin
+/**
+ * @brief The loggerModem::_wakeLevel.
+ *
+ * The SARA U201 is switched on by a 50-80 MICRO second `LOW` pulse on the
+ * `PWR_ON` pin.
+ */
 #define U201_WAKE_LEVEL LOW
+/**
+ * @brief The loggerModem::_wakePulse_ms.
+ * @copydetails #U201_WAKE_LEVEL
+ */
 #define U201_WAKE_PULSE_MS 1
-#define U201_WAKE_TIME_US 65
-// Module turns on when power is applied - level of PWR_ON then irrelevant
-#define U201_WARM_UP_TIME_MS 0
-// Time until system and digital pins are operational
-// (6 sec typical for SARA U201)
+
+/**
+ * @brief The loggerModem::_wakeDelayTime_ms.
+ *
+ * The SARA U201 turns on when power is applied - the level of `PWR_ON` then is
+ * irrelevant.  No separate pulse or other wake is needed.
+ */
+#define U201_WAKE_DELAY_MS 0
+/**
+ * @brief The loggerModem::_max_atresponse_time_ms.
+ *
+ * Time until system and digital pins are operational is 6 sec typical for SARA
+ * U201.
+ */
 #define U201_ATRESPONSE_TIME_MS 6000L
 
-// Power down time "can largely vary depending
-// on the application / network settings and the concurrent module
-// activities."  Vint/status pin should be monitored and power not withdrawn
-// until that pin reads low.  Giving 15sec here in case it is not monitored.
+/**
+ * @brief The loggerModem::_disconnetTime_ms.
+ *
+ * Power down time for u-blox modules _"can largely vary depending on the
+ * application / network settings and the concurrent module activities."_  The
+ * `V_INT` pin should be monitored and power not withdrawn until that pin reads
+ * low.  We allow up to 15 seconds for shutdown in case it is not monitored.
+ */
 #define U201_DISCONNECT_TIME_MS 15000L
 
 
@@ -61,44 +106,98 @@
 #include <StreamDebugger.h>
 #endif
 
-class SodaqUBeeU201 : public loggerModem
-{
 
-public:
-    // Constructor/Destructor
-    SodaqUBeeU201(Stream* modemStream,
-                  int8_t powerPin, int8_t statusPin,
+/**
+ * @brief The loggerModem subclass for the Sodaq UBee based on the u-blox SARA
+ * U201 3G cellular module.
+ *
+ * #### Pin and timing information for the SARA U2 series
+ *
+ * @copydetails #U201_STATUS_LEVEL
+ *
+ * @copydetails #U201_RESET_LEVEL
+ *
+ * @copydetails #U201_WAKE_LEVEL
+ *
+ * @copydetails #U201_WAKE_DELAY_MS
+ *
+ * @copydetails #U201_ATRESPONSE_TIME_MS
+ *
+ * @copydetails #U201_DISCONNECT_TIME_MS
+ *
+ * @see @ref ubee_page
+ */
+class SodaqUBeeU201 : public loggerModem {
+ public:
+    /**
+     * @brief Construct a new Sodaq UBee U201 object
+     *
+     * The constuctor initializes all of the provided member variables,
+     * constructs a loggerModem parent class with the appropriate timing for the
+     * module, calls the constructor for a TinyGSM modem on the provided
+     * modemStream, and creates a TinyGSM Client linked to the modem.
+     *
+     * @param modemStream The Arduino stream instance for serial communication.
+     * @param powerPin @copydoc loggerModem::_powerPin
+     * For the Sodaq UBee, this is the pin labeled `ON/OFF`; pin 9 on the bee
+     * socket.  The fact that this pin controls the power to the u-blox module
+     * is not clear in the Sodaq documentation.
+     * @param statusPin @copydoc loggerModem::_statusPin
+     * This is the pin labeled `V_INT` in the u-blox integration guide.  It is
+     * (misleadingly) called `CTS` in some of the Sodaq UBee documentation
+     * because Sodaq wired the `V_INT` from the u-blox to the pin usually
+     * reserved for `CTS` on the bee socket.
+     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This is the pin labeled `RESET_N` in both u-blox and Sodaq documentation.
+     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * This is the pin labeled `PWR_ON` in both u-blox and Sodaq
+     * documentation.
+     * @param apn The Access Point Name (APN) for the SIM card.
+     *
+     * @see loggerModem::loggerModem
+     */
+    SodaqUBeeU201(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char *apn);
+                  const char* apn);
+    /**
+     * @brief Destroy the Sodaq UBee U201 object - no action taken
+     */
     ~SodaqUBeeU201();
 
     bool modemWake(void) override;
 
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    virtual void disconnectInternet(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-    virtual uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime(void) override;
 
-    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
-    virtual float getModemChipTemperature(void) override;
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
+                               uint16_t& milliVolts) override;
+    float getModemChipTemperature(void) override;
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
+    /**
+     * @brief Public reference to the TinyGSM modem.
+     */
     TinyGsm gsmModem;
+    /**
+     * @brief Public reference to the TinyGSM Client.
+     */
     TinyGsmClient gsmClient;
 
-protected:
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
+ protected:
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
     bool extraModemSetup(void) override;
+    bool isModemAwake(void) override;
 
-private:
-    const char *_apn;
-
+ private:
+    const char* _apn;
 };
 
-#endif  // Header Guard
+#endif  // SRC_MODEMS_SODAQUBEEU201_H_

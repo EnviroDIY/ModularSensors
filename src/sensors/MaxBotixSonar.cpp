@@ -1,53 +1,46 @@
-/*
- *MaxBotixSonar.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file MaxBotixSonar.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the MaxBotix Sonar Library
- *
- * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
- *
- * Warm up time to completion of header:  160ms
+ * @brief Implements the MaxBotixSonar class.
  */
 
 #include "MaxBotixSonar.h"
 
 
-MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
-             HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage)
-{
+MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
+                             uint8_t measurementsToAverage)
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
+             HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
+             measurementsToAverage) {
     _triggerPin = triggerPin;
-    _stream = stream;
+    _stream     = stream;
 }
-MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
-             HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage)
-{
+MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
+                             uint8_t measurementsToAverage)
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
+             HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
+             measurementsToAverage) {
     _triggerPin = triggerPin;
-    _stream = &stream;
+    _stream     = &stream;
 }
 // Destructor
-MaxBotixSonar::~MaxBotixSonar(){}
+MaxBotixSonar::~MaxBotixSonar() {}
 
 
 // unfortunately, we really cannot know where the stream is attached.
-String MaxBotixSonar::getSensorLocation(void)
-{
+String MaxBotixSonar::getSensorLocation(void) {
     // attach the trigger pin to the stream number
     String loc = "sonarStream_trigger" + String(_triggerPin);
     return loc;
 }
 
 
-bool MaxBotixSonar::setup(void)
-{
+bool MaxBotixSonar::setup(void) {
     // Set up the trigger, if applicable
-    if (_triggerPin >= 0)
-    {
+    if (_triggerPin >= 0) {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
     }
@@ -61,96 +54,83 @@ bool MaxBotixSonar::setup(void)
 
 
 // Parsing and tossing the header lines in the wake-up
-bool MaxBotixSonar::wake(void)
-{
+bool MaxBotixSonar::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
-    // NOTE: After the power is turned on to the MaxBotix, it sends several lines
-    // of header to the serial port, beginning at ~65ms and finising at ~160ms.
-    // Although we are waiting for them to complete in the "waitForWarmUp"
-    // function, the values will still be in the serial buffer and need
-    // to be read to be cleared out
-    // For an HRXL without temperature compensation, the headers are:
-    // HRXL-MaxSonar-WRL
-    // PN:MB7386
-    // Copyright 2011-2013
-    // MaxBotix Inc.
-    // RoHS 1.8b090  0713
-    // TempI
+    // NOTE: After the power is turned on to the MaxBotix, it sends several
+    // lines of header to the serial port, beginning at ~65ms and finising at
+    // ~160ms. Although we are waiting for them to complete in the
+    // "waitForWarmUp" function, the values will still be in the serial buffer
+    // and need to be read to be cleared out For an HRXL without temperature
+    // compensation, the headers are: HRXL-MaxSonar-WRL PN:MB7386 Copyright
+    // 2011-2013 MaxBotix Inc. RoHS 1.8b090  0713 TempI
 
     // NOTE ALSO:  Depending on what type of serial stream you are using, there
     // may also be a bunch of junk in the buffer that this will clear out.
     MS_DBG(F("Dumping Header Lines from MaxBotix on"), getSensorLocation());
-    for(int i = 0; i < 6; i++)
-    {
+    for (int i = 0; i < 6; i++) {
         String headerLine = _stream->readStringUntil('\r');
         MS_DBG(i, '-', headerLine);
     }
     // Clear anything else out of the stream buffer
     uint8_t junkChars = _stream->available();
-    if (junkChars)
-    {
-        MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer"));
-        for (uint8_t i = 0; i < junkChars; i++)
-        {
-            #ifdef MS_MAXBOTIXSONAR_DEBUG
+    if (junkChars) {
+        MS_DBG(F("Dumping"), junkChars,
+               F("characters from MaxBotix stream buffer"));
+        for (uint8_t i = 0; i < junkChars; i++) {
+#ifdef MS_MAXBOTIXSONAR_DEBUG
             DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
-            #else
+#else
             _stream->read();
-            #endif
+#endif
         }
-        #ifdef MS_MAXBOTIXSONAR_DEBUG
+#ifdef MS_MAXBOTIXSONAR_DEBUG
         DEBUGGING_SERIAL_OUTPUT.println();
-        #endif
+#endif
     }
 
     return true;
 }
 
 
-bool MaxBotixSonar::addSingleMeasurementResult(void)
-{
+bool MaxBotixSonar::addSingleMeasurementResult(void) {
     // Initialize values
-    bool success = false;
+    bool    success       = false;
     uint8_t rangeAttempts = 0;
-    int16_t result = -9999;
+    int16_t result        = -9999;
 
     // Clear anything out of the stream buffer
     uint8_t junkChars = _stream->available();
-    if (junkChars)
-    {
-        MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer:"));
-        for (uint8_t i = 0; i < junkChars; i++)
-        {
-            #ifdef MS_MAXBOTIXSONAR_DEBUG
+    if (junkChars) {
+        MS_DBG(F("Dumping"), junkChars,
+               F("characters from MaxBotix stream buffer:"));
+        for (uint8_t i = 0; i < junkChars; i++) {
+#ifdef MS_MAXBOTIXSONAR_DEBUG
             DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
-            #else
+#else
             _stream->read();
-            #endif
+#endif
         }
-        #ifdef MS_MAXBOTIXSONAR_DEBUG
+#ifdef MS_MAXBOTIXSONAR_DEBUG
         DEBUGGING_SERIAL_OUTPUT.println();
-        #endif
+#endif
     }
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6))
-    {
+    if (bitRead(_sensorStatus, 6)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        while (success == false && rangeAttempts < 25)
-        {
-             // If the sonar is running on a trigger, activating the trigger
-             // should in theory happen within the startSingleMeasurement
-             // function.  Because we're really taking up to 25 measurements
-             // for each "single measurement" until a valid value is returned
-             // and the measurement time is <166ms, we'll actually activate
-             // the trigger here.
-            if (_triggerPin >= 0)
-            {
+        while (success == false && rangeAttempts < 25) {
+            // If the sonar is running on a trigger, activating the trigger
+            // should in theory happen within the startSingleMeasurement
+            // function.  Because we're really taking up to 25 measurements
+            // for each "single measurement" until a valid value is returned
+            // and the measurement time is <166ms, we'll actually activate
+            // the trigger here.
+            if (_triggerPin >= 0) {
                 MS_DBG(F("  Triggering Sonar with"), _triggerPin);
                 digitalWrite(_triggerPin, HIGH);
                 delayMicroseconds(30);  // Trigger must be held high for >20 µs
@@ -164,27 +144,25 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             MS_DBG(F("  Sonar Range:"), result);
             rangeAttempts++;
 
-            // If it cannot obtain a result , the sonar is supposed to send a value
-            // just above it's max range.  For 10m models, this is 9999, for 5m models
-            // it's 4999.  The sonar might also send readings of 300 or 500 (the
-            // blanking distance) if there are too many acoustic echos.
-            // If the result becomes garbled or the sonar is disconnected, the
-            // parseInt function returns 0.  Luckily, these sensors are not
-            // capable of reading 0, so we also know the 0 value is bad.
-            if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
-            {
-                MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"), rangeAttempts);
+            // If it cannot obtain a result , the sonar is supposed to send a
+            // value just above it's max range.  For 10m models, this is 9999,
+            // for 5m models it's 4999.  The sonar might also send readings of
+            // 300 or 500 (the blanking distance) if there are too many acoustic
+            // echos. If the result becomes garbled or the sonar is
+            // disconnected, the parseInt function returns 0.  Luckily, these
+            // sensors are not capable of reading 0, so we also know the 0 value
+            // is bad.
+            if (result <= 300 || result == 500 || result == 4999 ||
+                result == 9999 || result == 0) {
+                MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"),
+                       rangeAttempts);
                 result = -9999;
-            }
-            else
-            {
+            } else {
                 MS_DBG(F("  Good result found"));
                 success = true;
             }
         }
-    }
-    else
-    {
+    } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 

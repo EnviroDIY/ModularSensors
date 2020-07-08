@@ -6,10 +6,14 @@ sudo: false
 git:
   depth: 1
   sparse_checkout: travis/travis_sparse_checkout
+branches:
+  except:
+    - gh-pages
 cache:
     pip: true
     directories:
         - "~/.platformio"
+        - $TRAVIS_BUILD_DIR/doxygen-src
 language: python
 python:
     - "2.7"
@@ -49,9 +53,10 @@ install:
 script:
     - platformio ci --project-conf="travis/platformio.ini"
 
-matrix:
+jobs:
     include:
-      - language: node_js
+      - name: "Verify library JSON format"
+        language: node_js
         install: npm install -g jsonlint
         script: jsonlint -q library.json
         after_success: |
@@ -62,21 +67,79 @@ matrix:
               sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
           fi
 
-      - env:
+      - name: "Build Doxygen Documentation"
+        if: branch = master AND type != pull_request
+        language: python
+        python:
+          - "3.7"
+        before_install:
+          - git config --global user.email "sdamiano@stroudcenter.org"
+          - git config --global user.name "SRGDamia1"
+          - git config --global push.default simple
+          - sudo apt-get update
+          - sudo apt-get -y install build-essential
+          - sudo apt-get -y install graphviz
+          - sudo apt-get -y install flex
+          - sudo apt-get -y install bison
+        install:
+          - cd $TRAVIS_BUILD_DIR
+          - chmod +x travis/copy-doc-sources.sh
+          - sh travis/copy-doc-sources.sh
+          - cd $TRAVIS_BUILD_DIR
+          - chmod +x travis/build-install-doxygen.sh
+          - sh travis/build-install-doxygen.sh
+        script:
+          - cd $TRAVIS_BUILD_DIR
+          - chmod +x travis/generate-documentation.sh
+          - sh travis/generate-documentation.sh
+        # after_success:
+        #   - cd $TRAVIS_BUILD_DIR
+        #   - chmod +x travis/deploy-documentation.sh
+        #   - sh travis/deploy-documentation.sh
+        deploy:
+          provider: pages:git
+          token: $GH_REPO_TOKEN
+          edge: true # opt in to dpl v2
+          keep_history: false
+          local_dir: $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen/html
+          project_name: ModularSensors
+
+      - name: "Check Single Sensor Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Simple Logging Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check DRWI CitSci 2G Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check DRWI CitSci LTE Example"
+        env:
+          - PLATFORMIO_CI_SRC=examples/DRWI_LTE/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
+
+      - name: "Check DRWI CitSci No Cellular Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Double Logger Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Baro Correction Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Data Saving Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check ThingSpeak Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
-      - env:
+
+      - name: "Check Menu Example"
+        env:
           - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
