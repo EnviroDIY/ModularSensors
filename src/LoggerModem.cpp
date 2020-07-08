@@ -10,13 +10,13 @@
 #include "LoggerModem.h"
 
 // Initialize the static members
-bool loggerModem::_pollModemMetaData = false;
-int16_t loggerModem::_priorRSSI = SENSOR_DEFAULT_I;
-int16_t loggerModem::_priorSignalPercent = SENSOR_DEFAULT_I;
-float loggerModem::_priorModemTemp = SENSOR_DEFAULT_F;
-float loggerModem::_priorBatteryState = SENSOR_DEFAULT_F;
-float loggerModem::_priorBatteryPercent = SENSOR_DEFAULT_F;
-float loggerModem::_priorBatteryVoltage = SENSOR_DEFAULT_F;
+bool    loggerModem::_pollModemMetaData   = false;
+int16_t loggerModem::_priorRSSI           = SENSOR_DEFAULT_I;
+int16_t loggerModem::_priorSignalPercent  = SENSOR_DEFAULT_I;
+float   loggerModem::_priorModemTemp      = SENSOR_DEFAULT_F;
+float   loggerModem::_priorBatteryState   = SENSOR_DEFAULT_F;
+float   loggerModem::_priorBatteryPercent = SENSOR_DEFAULT_F;
+float   loggerModem::_priorBatteryVoltage = SENSOR_DEFAULT_F;
 // float loggerModem::_priorActivationDuration = -9999;
 // float loggerModem::_priorPoweredDuration = -9999;
 
@@ -313,26 +313,20 @@ void loggerModem::setModemPinModes(void) {
 
 // Turn off pins connected to modem
 #if defined POWERPIN_ALLPINS_OFF
-  if (_modemSleepRqPin >= 0) {
-    digitalWrite(_modemSleepRqPin, LOW);
-  }
-  if (_modemResetPin >= 0) {
-    digitalWrite(_modemResetPin, LOW);
-  }
-  // need uart.end() ..modemSerial.end();  //need a modemSerial.begin(9600);
-  // Uart is via HardwareSerial/Uart.cpp in  DigiXbeeWiFi.gsmModem.stream
-  // This assumes Modem Pins ie DIgiXbeeWiFi.DigiXbee.loggerModem
-  pinMode(MODEMPHY_TX_PIN, OUTPUT);
-  pinMode(MODEMPHY_RX_PIN, OUTPUT);
-  digitalWrite(MODEMPHY_TX_PIN, LOW);
-  digitalWrite(MODEMPHY_RX_PIN, LOW);
-#endif // POWERPIN_ALLPINS_OFF
+    if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, LOW); }
+    if (_modemResetPin >= 0) { digitalWrite(_modemResetPin, LOW); }
+    // need uart.end() ..modemSerial.end();  //need a modemSerial.begin(9600);
+    // Uart is via HardwareSerial/Uart.cpp in  DigiXbeeWiFi.gsmModem.stream
+    // This assumes Modem Pins ie DIgiXbeeWiFi.DigiXbee.loggerModem
+    pinMode(MODEMPHY_TX_PIN, OUTPUT);
+    pinMode(MODEMPHY_RX_PIN, OUTPUT);
+    digitalWrite(MODEMPHY_TX_PIN, LOW);
+    digitalWrite(MODEMPHY_RX_PIN, LOW);
+#endif  // POWERPIN_ALLPINS_OFF
 }
 
 void loggerModem::pollModemMetadata(uint8_t status) {
-  if (POLL_MODEM_META_DATA_ON & status) {
-    _pollModemMetaData = true;
-  }
+    if (POLL_MODEM_META_DATA_ON & status) { _pollModemMetaData = true; }
 }
 bool loggerModem::updateModemMetadata(void) {
     bool success = true;
@@ -464,44 +458,44 @@ int16_t loggerModem::getPctFromCSQ(int16_t csq) {
 
 // Helper to get signal percent from RSSI
 int16_t loggerModem::getPctFromRSSI(int16_t rssi) {
-  int16_t pct = 1.6163 * rssi + 182.61;
+    int16_t pct = 1.6163 * rssi + 182.61;
     if (rssi == 0) pct = 0;
     if (rssi == (255 - 93)) pct = 0;  // This is a no-data-yet value from XBee
-  return pct;
+    return pct;
 }
 
 
 uint32_t loggerModem::parseNISTBytes(byte nistBytes[4]) {
-  // Response is returned as 32-bit number as soon as connection is made
-  // Connection is then immediately closed, so there is no need to close it
-  uint32_t secFrom1900 = 0;
-  MS_DBG(F("NIST Response"));
-  for (uint8_t i = 0; i < 4; i++) {
+    // Response is returned as 32-bit number as soon as connection is made
+    // Connection is then immediately closed, so there is no need to close it
+    uint32_t secFrom1900 = 0;
+    MS_DBG(F("NIST Response"));
+    for (uint8_t i = 0; i < 4; i++) {
         MS_DBG(F("Response Byte"), i, ':', static_cast<char>(nistBytes[i]), '=',
                nistBytes[i], '=', String(nistBytes[i], BIN));
-    secFrom1900 += 0x000000FF & nistBytes[i];
+        secFrom1900 += 0x000000FF & nistBytes[i];
         // MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900,
         // BIN));
-    if (i + 1 < 4) { secFrom1900 = secFrom1900 << 8; }
-  }
+        if (i + 1 < 4) { secFrom1900 = secFrom1900 << 8; }
+    }
     MS_DBG(F("Seconds from Jan 1, 1900 returned by NIST (UTC):"), secFrom1900,
            '=', String(secFrom1900, BIN));
 
-  // Return the timestamp
-  uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-  MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
+    // Return the timestamp
+    uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+    MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
 // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
 #define EPOCH_LOWER_RANGE_SEC 1546300800
 #define EPOCH_UPPER_RANGE_SEC 1893456000
-  if (unixTimeStamp < EPOCH_LOWER_RANGE_SEC) {
-    MS_DBG(F("Invalid Time less than :"), EPOCH_LOWER_RANGE_SEC);
-    return 0;
-  } else if (unixTimeStamp > 1893456000) {
-    MS_DBG(F("Invalid Time greater than :"), EPOCH_UPPER_RANGE_SEC);
-    return 0;
-  } else {
-    return unixTimeStamp;
-  }
+    if (unixTimeStamp < EPOCH_LOWER_RANGE_SEC) {
+        MS_DBG(F("Invalid Time less than :"), EPOCH_LOWER_RANGE_SEC);
+        return 0;
+    } else if (unixTimeStamp > 1893456000) {
+        MS_DBG(F("Invalid Time greater than :"), EPOCH_UPPER_RANGE_SEC);
+        return 0;
+    } else {
+        return unixTimeStamp;
+    }
 }
 
 

@@ -222,7 +222,7 @@ class SodaqUBeeR410M : public loggerModem {
     bool modemHardReset(void) override;
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-  StreamDebugger _modemATDebugger;
+    StreamDebugger _modemATDebugger;
 #endif
 
     /**

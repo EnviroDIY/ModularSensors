@@ -51,49 +51,53 @@
 
 // The main class for the Keller Sensors
 class KellerParent : public Sensor {
-public:
-  KellerParent(byte modbusAddress, Stream *stream, int8_t powerPin,
-               int8_t powerPin2, int8_t enablePin = -1,
-               uint8_t measurementsToAverage = 1, kellerModel model = OTHER,
+ public:
+    KellerParent(byte modbusAddress, Stream* stream, int8_t powerPin,
+                 int8_t powerPin2, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1, kellerModel model = OTHER,
                  const char* sensName = "Keller-Sensor",
                  uint8_t numVariables = 3, uint32_t warmUpTime_ms = 500,
-               uint32_t stabilizationTime_ms = 5000,
-               uint32_t measurementTime_ms = 1500);
-  KellerParent(byte modbusAddress, Stream &stream, int8_t powerPin,
-               int8_t powerPin2, int8_t enablePin = -1,
-               uint8_t measurementsToAverage = 1, kellerModel model = OTHER,
+                 uint32_t stabilizationTime_ms = 5000,
+                 uint32_t measurementTime_ms   = 1500);
+    KellerParent(byte modbusAddress, Stream& stream, int8_t powerPin,
+                 int8_t powerPin2, int8_t enablePin = -1,
+                 uint8_t measurementsToAverage = 1, kellerModel model = OTHER,
                  const char* sensName = "Keller-Sensor",
                  uint8_t numVariables = 3, uint32_t warmUpTime_ms = 500,
-               uint32_t stabilizationTime_ms = 5000,
-               uint32_t measurementTime_ms = 1500);
-  virtual ~KellerParent();
+                 uint32_t stabilizationTime_ms = 5000,
+                 uint32_t measurementTime_ms   = 1500);
+    virtual ~KellerParent();
 
-  String getSensorLocation(void) override;
+    String getSensorLocation(void) override;
 
     bool setup(void) override;
 
-  // Override these to use two power pins
+    // Override these to use two power pins
     void powerUp(void) override;
     void powerDown(void) override;
 
     bool addSingleMeasurementResult(void) override;
-  void registerPinPowerMng(void (*fn)(bool));
-  // Pins that need to be managed during power On and Off events
-  void registerSerialPins(uint8_t txPin, uint8_t rxPin);
-  // This sets a stream for debugging information to go to;
-  void setDebugStream(Stream *stream) { _ksensor.setDebugStream(stream); }
-  void stopDebugging(void) { _ksensor.stopDebugging(); }
+    void registerPinPowerMng(void (*fn)(bool));
+    // Pins that need to be managed during power On and Off events
+    void registerSerialPins(uint8_t txPin, uint8_t rxPin);
+    // This sets a stream for debugging information to go to;
+    void setDebugStream(Stream* stream) {
+        _ksensor.setDebugStream(stream);
+    }
+    void stopDebugging(void) {
+        _ksensor.stopDebugging();
+    }
 
-private:
+ private:
     keller      _ksensor;
-  kellerModel _model;
-  byte _modbusAddress;
-  Stream *_stream;
-  int8_t _RS485EnablePin;
-  int8_t _powerPin2;
-  void (*_pinPowerMngFn)(bool) = nullptr;
-  uint8_t _txPin = -1;
-  uint8_t _rxPin = -1;
+    kellerModel _model;
+    byte        _modbusAddress;
+    Stream*     _stream;
+    int8_t      _RS485EnablePin;
+    int8_t      _powerPin2;
+    void (*_pinPowerMngFn)(bool) = nullptr;
+    uint8_t _txPin               = -1;
+    uint8_t _rxPin               = -1;
 };
 
 #endif  // SRC_SENSORS_KELLERPARENT_H_

@@ -179,7 +179,7 @@ class EspressifESP8266 : public loggerModem {
      */
     ~EspressifESP8266();
 
-  bool modemWake(void) override;
+    bool modemWake(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;

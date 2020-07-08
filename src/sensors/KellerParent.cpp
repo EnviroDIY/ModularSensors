@@ -62,11 +62,11 @@ bool KellerParent::setup(void) {
     // show
     retVal &= _ksensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
-  return retVal;
+    return retVal;
 }
 // Manage the pins that are used
 void KellerParent::registerPinPowerMng(void (*fn)(bool)) {
-  _pinPowerMngFn = fn;
+    _pinPowerMngFn = fn;
 }
 
 // This turns on sensor power
@@ -88,7 +88,7 @@ void KellerParent::powerUp(void) {
                F("is not controlled by this library."));
     }
     if (NULL != _pinPowerMngFn) {
-        (* _pinPowerMngFn) (true); // callback to turn on Modbus 
+        (*_pinPowerMngFn)(true);  // callback to turn on Modbus
     }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
@@ -98,8 +98,8 @@ void KellerParent::powerUp(void) {
 // This turns off sensor power
 void KellerParent::powerDown(void) {
     if (NULL != _pinPowerMngFn) {
-        (* _pinPowerMngFn) (false); // callback to turn on Modbus 
-    }    
+        (*_pinPowerMngFn)(false);  // callback to turn on Modbus
+    }
     if (_powerPin >= 0) {
         MS_DBG(F("Turning off power to"), getSensorNameAndLocation(),
                F("with pin"), _powerPin);

@@ -37,16 +37,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
    SYS_ARCH_;
  *
 */
-#include <Arduino.h> // The base Arduino library
+#include <Arduino.h>  // The base Arduino library
 // Local routing defitions here
 #if defined(__AVR__)
 #define EDIY_PROGMEM PROGMEM
-typedef const __FlashStringHelper *EdiyConstStr;
+typedef const __FlashStringHelper* EdiyConstStr;
 #define EFP(x) (reinterpret_cast<EdiyConstStr>(x))
 #define EF(x) F(x)
 #else
 #define EDIY_PROGMEM
-typedef const char *EdiyConstStr;
+typedef const char* EdiyConstStr;
 #define EFP(x) x
 #define EF(x) x
 #endif
@@ -54,7 +54,7 @@ typedef const char *EdiyConstStr;
 
 #if defined USE_PS_EEPROM
 #include <util/crc16.h>
-#endif // USE_PS_EEPROM
+#endif  // USE_PS_EEPROM
 
 /*****************************************************************************
  * Persistent structures.
@@ -79,7 +79,7 @@ typedef const char *EdiyConstStr;
 #define STRCT_SZ(parm1) uint16_t parm1;
 #else
 #define STRCT_SZ(parm1) sizof(parm1)
-#endif // USE_PLAN_FOR_UPGRADE
+#endif  // USE_PLAN_FOR_UPGRADE
 //#define USE_PS_HW_BOOT 1
 //******
 #if defined(USE_PS_HW_BOOT)
@@ -89,12 +89,12 @@ typedef const char *EdiyConstStr;
 #define HW_BOOT_REV_SZ 11
 #define HW_BOOT_EXP 17
 typedef struct {
-  uint16_t crc16;     // Across just the hw_boot_t except crc16
-  uint8_t struct_ver; // 1-255 - increment for any changes in this structure
-  uint8_t board_name[HW_BOOT_BOARD_NAME_SZ]; // eg Mayfly
-  uint8_t serial_num[HW_BOOT_SERIAL_NUM_SZ]; // eg 1234
-  uint8_t rev[HW_BOOT_REV_SZ];               // eg 0.5b
-  uint8_t exp[HW_BOOT_EXP];
+    uint16_t crc16;       // Across just the hw_boot_t except crc16
+    uint8_t  struct_ver;  // 1-255 - increment for any changes in this structure
+    uint8_t  board_name[HW_BOOT_BOARD_NAME_SZ];  // eg Mayfly
+    uint8_t  serial_num[HW_BOOT_SERIAL_NUM_SZ];  // eg 1234
+    uint8_t  rev[HW_BOOT_REV_SZ];                // eg 0.5b
+    uint8_t  exp[HW_BOOT_EXP];
 } hw_boot001_t;
 #define HW_BOOT_STRUCT_VER_001 001
 #define HW_BOOT_STRUCT_VER HW_BOOT_STRUCT_VER_001
@@ -102,7 +102,7 @@ typedef struct {
 #define sizeof_hw_boot sizeof(hw_boot001_t)
 #else
 #define mHw_boot_t(p1)
-#endif // USE_PS_HW_BOOT
+#endif  // USE_PS_HW_BOOT
 //******
 // For extensibility - each structures data size (not including sz) can be
 // defined at the beginning of the structure this allows any parsing algorithims
@@ -116,49 +116,49 @@ typedef struct {
 #define MSC_LOGGER_ID_SZ 21
 #define MSC_GEOLOCATION_ID_SZ 61
 typedef struct {
-  // v01 Initial structure
-  uint16_t logging_interval_min;
-  int8_t time_zone; //-12,0 to +11?
-  uint8_t battery_type;
-  uint8_t logger_id[MSC_LOGGER_ID_SZ];
-  uint8_t geolocation_id[MSC_GEOLOCATION_ID_SZ];
+    // v01 Initial structure
+    uint16_t logging_interval_min;
+    int8_t   time_zone;  //-12,0 to +11?
+    uint8_t  battery_type;
+    uint8_t  logger_id[MSC_LOGGER_ID_SZ];
+    uint8_t  geolocation_id[MSC_GEOLOCATION_ID_SZ];
 } msc01_t;
 #define MSC_ACTIVE msc01_t
 typedef struct {
-  uint8_t sz;
-  MSC_ACTIVE s;
+    uint8_t    sz;
+    MSC_ACTIVE s;
 } modularSensorsCommon_t;
 #define mModularSensorsCommon_t(p1) modularSensorsCommon_t p1
 #else
 #define mModularSensorsCommon_t(p1)
-#endif // USE_PS_modularSensorsCommon)
+#endif  // USE_PS_modularSensorsCommon)
 
 #if defined UseModem_Module
 #define USE_PS_modularSensorsNetwork 1
-#endif // UseModem_Module
+#endif  // UseModem_Module
 #if defined(USE_PS_modularSensorsNetwork)
 #define MSCN_APN_SZ 32
 #define MSCN_WIFI_ID_SZ 32
 #define MSCN_WIFI_PWD_SZ 32
 typedef struct {
-  char apn[MSCN_APN_SZ];          // 32
-  char WiFiId[MSCN_WIFI_ID_SZ];   // 32?
-  char WiFiPwd[MSCN_WIFI_PWD_SZ]; // 32??
+    char apn[MSCN_APN_SZ];           // 32
+    char WiFiId[MSCN_WIFI_ID_SZ];    // 32?
+    char WiFiPwd[MSCN_WIFI_PWD_SZ];  // 32??
 } msn01_t;
 #define MSN_ACTIVE msn01_t
 typedef struct {
-  uint8_t sz;
-  MSN_ACTIVE s;
+    uint8_t    sz;
+    MSN_ACTIVE s;
 } modularSensorsNetwork_t;
 #define mModularSensorsNetwork_t(p1) modularSensorsNetwork_t p1
 #else
 #define mModularSensorsNetwork_t(p1)
-#endif // USE_PS_modularSensorsNetwork
+#endif  // USE_PS_modularSensorsNetwork
 
 //******
 #if defined UseModem_Module
 #define USE_PS_Provider 1
-#endif // UseModem_Module
+#endif  // UseModem_Module
 //******
 
 #define UUIDE_CLOUD_ID_SZ 38
@@ -168,39 +168,39 @@ typedef struct {
 #define UUIDE_SENSOR_CNT_MAX_SZ 10
 #if defined(USE_PS_Provider)
 typedef struct {
-  // v01 initial structure
-  // All are in ascii strings, with the first unused octet \0
-  uint8_t uuid_provider;
-  char cloudId[UUIDE_CLOUD_ID_SZ]; // ASCII url
-  char registration_token[UUIDE_REGISTRATION_TOKEN_SZ];
-  char sampling_feature[UUIDE_SAMPLING_FEAUTRE_SZ];
-  // char uuid[UUIDE_SENSOR_CNT_MAX_SZ][UUIDE_SENSOR_UUID_SZ];
+    // v01 initial structure
+    // All are in ascii strings, with the first unused octet \0
+    uint8_t uuid_provider;
+    char    cloudId[UUIDE_CLOUD_ID_SZ];  // ASCII url
+    char    registration_token[UUIDE_REGISTRATION_TOKEN_SZ];
+    char    sampling_feature[UUIDE_SAMPLING_FEAUTRE_SZ];
+    // char uuid[UUIDE_SENSOR_CNT_MAX_SZ][UUIDE_SENSOR_UUID_SZ];
 } uuid_envirodiy01_t;
 #define UUID_ACTIVE uuid_envirodiy01_t
 typedef struct {
-  uint8_t sz;
-  UUID_ACTIVE s;
+    uint8_t     sz;
+    UUID_ACTIVE s;
 } provider_t;
 #define mProvider_t(p1) provider_t p1
 #else
 #define mProvider_t(p1)
-#endif // USE_PS_provider
+#endif  // USE_PS_provider
 
 #define EP_HW_BOOT_ADDR 0
 #define EP_PERSISTENT_STORE_ADDR (sizeof_hw_boot)
 typedef struct {
-  uint16_t crc16;       // Across persistent_store_t
-  uint16_t struct_size; // Of struct including crc8, struct_ver struct_size
-  uint8_t struct_ver;   // 1-255 - increment for any changes in this structure
-  mModularSensorsCommon_t(msc);
-  mModularSensorsNetwork_t(msn);
-  mProvider_t(provider);
+    uint16_t crc16;        // Across persistent_store_t
+    uint16_t struct_size;  // Of struct including crc8, struct_ver struct_size
+    uint8_t  struct_ver;  // 1-255 - increment for any changes in this structure
+    mModularSensorsCommon_t(msc);
+    mModularSensorsNetwork_t(msn);
+    mProvider_t(provider);
 } app_storage_t;
 typedef struct {
-  mHw_boot_t(hw_boot);
-  app_storage_t app;
+    mHw_boot_t(hw_boot);
+    app_storage_t app;
 } persistent_store_t;
 
 //#define LOGGER_ID_ADDR ps.msc.s.logger_id
 
-#endif // ms_common_h
+#endif  // ms_common_h

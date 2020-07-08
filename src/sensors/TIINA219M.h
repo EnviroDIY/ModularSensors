@@ -48,11 +48,11 @@
 #define INA219_NUM_VARIABLES 3
 
 #define INA219_WARM_UP_TIME_MS 100
-#define INA219_STABILIZATION_TIME_MS                                           \
-  4000 // 0.5 s for good numbers, but optimal at 4 s based on tests using
-       // INA219timingTest.ino
-#define INA219_MEASUREMENT_TIME_MS                                             \
-  1100 // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
+#define INA219_STABILIZATION_TIME_MS \
+    4000  // 0.5 s for good numbers, but optimal at 4 s based on tests using
+          // INA219timingTest.ino
+#define INA219_MEASUREMENT_TIME_MS \
+    1100  // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
 
 #define INA219_CURRENT_MA_RESOLUTION 4
 #define INA219_CURRENT_MA_VAR_NUM 0
@@ -75,79 +75,80 @@
 
 // The main class for the TexasInstruments INA219
 class TIINA219M : public Sensor {
-public:
-  TIINA219M(int8_t powerPin, uint8_t i2cAddressHex = INA219_ADDRESS_BASE,
-            uint8_t measurementsToAverage = 1);
-  ~TIINA219M();
+ public:
+    TIINA219M(int8_t powerPin, uint8_t i2cAddressHex = INA219_ADDRESS_BASE,
+              uint8_t measurementsToAverage = 1);
+    ~TIINA219M();
 
-  bool wake(void) override;
-  bool setup(void) override;
-  String getSensorLocation(void) override;
+    bool   wake(void) override;
+    bool   setup(void) override;
+    String getSensorLocation(void) override;
 
-  bool addSingleMeasurementResult(void) override;
-  void set_active_sensors(uint8_t sensors_mask);
-  uint8_t which_sensors_active(void);
-  void setCustomAmpMult(float ampMult);
-  float getCustomAmpMult(void);
-  void setCustomVoltThreshold(float voltLowThreshold_V,
-                              void (*thresholdFxn)(bool exceed, float value_V));
-  float getCustomVoltThreshold(void);
+    bool    addSingleMeasurementResult(void) override;
+    void    set_active_sensors(uint8_t sensors_mask);
+    uint8_t which_sensors_active(void);
+    void    setCustomAmpMult(float ampMult);
+    float   getCustomAmpMult(void);
+    void    setCustomVoltThreshold(float voltLowThreshold_V,
+                                   void (*thresholdFxn)(bool  exceed,
+                                                     float value_V));
+    float   getCustomVoltThreshold(void);
 
-protected:
-  Adafruit_INA219 ina219_phy;
-  uint8_t _i2cAddressHex;
-  uint8_t _ina219_pollmask;
+ protected:
+    Adafruit_INA219 ina219_phy;
+    uint8_t         _i2cAddressHex;
+    uint8_t         _ina219_pollmask;
 
-private:
-  float _ampMult;
-  float _voltLowThreshold_V; // 0 is off, Drops below activate
-                             // _thresholdAlertFxn()
-  void (*_thresholdAlertFxn)(
-      bool exceed, float value_V); // Fn to Alert when threshold is exceeded
+ private:
+    float _ampMult;
+    float _voltLowThreshold_V;  // 0 is off, Drops below activate
+                                // _thresholdAlertFxn()
+    void (*_thresholdAlertFxn)(
+        bool exceed, float value_V);  // Fn to Alert when threshold is exceeded
 };
 
 // Defines the Temperature Variable
 class TIINA219M_Current : public Variable {
-public:
-  TIINA219M_Current(Sensor *parentSense, const char *uuid = "",
-                    const char *varCode = "TIINA219Amp")
-      : Variable(parentSense, (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                 (uint8_t)INA219_CURRENT_MA_RESOLUTION, "milliamps", "mA",
-                 varCode, uuid) {}
-  TIINA219M_Current()
-      : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                 (uint8_t)INA219_CURRENT_MA_RESOLUTION, "milliamps", "mA",
-                 "TIINA219Amp") {}
-  ~TIINA219M_Current(){};
+ public:
+    TIINA219M_Current(Sensor* parentSense, const char* uuid = "",
+                      const char* varCode = "TIINA219Amp")
+        : Variable(parentSense, (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+                   (uint8_t)INA219_CURRENT_MA_RESOLUTION, "milliamps", "mA",
+                   varCode, uuid) {}
+    TIINA219M_Current()
+        : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+                   (uint8_t)INA219_CURRENT_MA_RESOLUTION, "milliamps", "mA",
+                   "TIINA219Amp") {}
+    ~TIINA219M_Current(){};
 };
 
 // Defines the Volt Variable
 class TIINA219M_Volt : public Variable {
-public:
-  TIINA219M_Volt(Sensor *parentSense, const char *uuid = "",
-                 const char *varCode = "TIINA219Volt")
-      : Variable(parentSense, (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                 (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION, "Volt", "V", varCode,
-                 uuid) {}
-  TIINA219M_Volt()
-      : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                 (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION, "Volt", "V",
-                 "TIINA219Volt") {}
-  ~TIINA219M_Volt(){};
+ public:
+    TIINA219M_Volt(Sensor* parentSense, const char* uuid = "",
+                   const char* varCode = "TIINA219Volt")
+        : Variable(parentSense, (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION, "Volt", "V", varCode,
+                   uuid) {}
+    TIINA219M_Volt()
+        : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION, "Volt", "V",
+                   "TIINA219Volt") {}
+    ~TIINA219M_Volt(){};
 };
 
 // Defines the Power Variable
 class TIINA219M_Power : public Variable {
-public:
-  TIINA219M_Power(Sensor *parentSense, const char *uuid = "",
-                  const char *varCode = "TIINA219Power")
-      : Variable(parentSense, (const uint8_t)INA219_POWER_MW_VAR_NUM,
-                 (uint8_t)INA219_POWER_MW_RESOLUTION, "milliwatt", "mW",
-                 varCode, uuid) {}
-  TIINA219M_Power()
-      : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,
-                 (uint8_t)INA219_POWER_MW_RESOLUTION, "milliwatt", "mW",
-                 "TIINA219Power") {}
+ public:
+    TIINA219M_Power(Sensor* parentSense, const char* uuid = "",
+                    const char* varCode = "TIINA219Power")
+        : Variable(parentSense, (const uint8_t)INA219_POWER_MW_VAR_NUM,
+                   (uint8_t)INA219_POWER_MW_RESOLUTION, "milliwatt", "mW",
+                   varCode, uuid) {}
+    TIINA219M_Power()
+        : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,
+                   (uint8_t)INA219_POWER_MW_RESOLUTION, "milliwatt", "mW",
+                   "TIINA219Power") {}
 };
 
-#endif // Header Guard
+#endif  // Header Guard

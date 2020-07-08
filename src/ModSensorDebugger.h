@@ -173,7 +173,7 @@ static void MS_DBG(T head, Args... tail) {
 #elif defined __AVR__ || defined ARDUINO_ARCH_AVR
 #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 #endif
-#endif // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
+#endif  // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
 
 #if defined DEEP_DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_DEEP
 // namespace {

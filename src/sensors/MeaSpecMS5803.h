@@ -107,7 +107,7 @@ class MeaSpecMS5803 : public Sensor {
      * @return **true** The setup was successful
      * @return **false** Some part of the setup failed
      */
-    bool setup(void) override;
+    bool   setup(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;

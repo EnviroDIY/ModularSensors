@@ -156,7 +156,7 @@ class QuectelBG96 : public loggerModem {
      */
     ~QuectelBG96();
 
-  bool modemWake(void) override;
+    bool modemWake(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
@@ -168,10 +168,10 @@ class QuectelBG96 : public loggerModem {
                                uint16_t& milliVolts) override;
     float getModemChipTemperature(void) override;
 
-  bool modemHardReset(void) override;
+    bool modemHardReset(void) override;
 
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
-  StreamDebugger _modemATDebugger;
+    StreamDebugger _modemATDebugger;
 #endif
 
     /**

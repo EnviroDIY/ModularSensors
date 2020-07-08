@@ -122,7 +122,7 @@ class VariableArray {
      */
     Variable** arrayOfVars;
 
-  // Functions to return information about the list
+    // Functions to return information about the list
 
     /**
      * @brief Get the count of variables in the variable array
@@ -287,9 +287,9 @@ class VariableArray {
         for (uint8_t i = 0; i < _variableCount; i++) {
             DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
             DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
+        }
+        DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
     }
-    DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
-  }
 #else
 /**
  * @brief Prints out the contents of an array with even spaces and commas

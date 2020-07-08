@@ -169,9 +169,9 @@ bool Sensor::setup(void) {
            getSensorLocation(), F("which can return up to"), _numReturnedValues,
            F("variable[s]."));
 
-  MS_DBG(F("It warms up in"), _warmUpTime_ms, F("ms, is stable after"),
-         _stabilizationTime_ms, F("ms, and takes a single measurement in"),
-         _measurementTime_ms, F("ms."));
+    MS_DBG(F("It warms up in"), _warmUpTime_ms, F("ms, is stable after"),
+           _stabilizationTime_ms, F("ms, and takes a single measurement in"),
+           _measurementTime_ms, F("ms."));
 
     MS_DBG(_measurementsToAverage,
            F("individual measurements will be averaged for each reading."));
@@ -180,10 +180,10 @@ bool Sensor::setup(void) {
     if (_dataPin >= 0)
         pinMode(_dataPin, INPUT);  // NOTE:  Not turning on pull-up!
 
-  // Set the status bit marking that the sensor has been set up (bit 0)
-  _sensorStatus |= 0b00000001;
+    // Set the status bit marking that the sensor has been set up (bit 0)
+    _sensorStatus |= 0b00000001;
 
-  return true;
+    return true;
 }
 
 
@@ -205,12 +205,12 @@ bool Sensor::wake(void) {
         return false;
     }
 
-  // Mark the time that the sensor was activated
-  _millisSensorActivated = millis();
-  // Set the status bit for sensor wake/activation success (bit 4)
-  _sensorStatus |= 0b00010000;
+    // Mark the time that the sensor was activated
+    _millisSensorActivated = millis();
+    // Set the status bit for sensor wake/activation success (bit 4)
+    _sensorStatus |= 0b00010000;
 
-  return true;
+    return true;
 }
 
 
@@ -318,20 +318,20 @@ void Sensor::notifyVariables(void) {
 
 // This function just empties the value array
 void Sensor::clearValues(void) {
-  MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
+    MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
-    sensorValues[i] = -9999;
-    numberGoodMeasurementsMade[i] = 0;
-  }
+        sensorValues[i]               = -9999;
+        numberGoodMeasurementsMade[i] = 0;
+    }
 }
 
 
 // This verifies that a measurement is good before adding it to the values to be
 // averaged
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
-                                           float resultValue) {
-  // If the new result is good and there was were only bad results, set the
-  // result value as the new result and add 1 to the good result total
+                                           float   resultValue) {
+    // If the new result is good and there was were only bad results, set the
+    // result value as the new result and add 1 to the good result total
     if (sensorValues[resultNumber] == -9999 && resultValue != -9999) {
         MS_DBG(F("Putting"), resultValue, F("in result array for variable"),
                resultNumber, F("from"), getSensorNameAndLocation());
@@ -395,11 +395,11 @@ bool Sensor::update(void) {
     // bail if the wake failed
     if (!ret_val) return ret_val;
 
-  // Clear values before starting loop
-  clearValues();
+    // Clear values before starting loop
+    clearValues();
 
-  // Wait for the sensor to stabilize
-  waitForStability();
+    // Wait for the sensor to stabilize
+    waitForStability();
 
     // loop through as many measurements as requested
     for (uint8_t j = 0; j < _measurementsToAverage; j++) {
@@ -411,7 +411,7 @@ bool Sensor::update(void) {
         ret_val += addSingleMeasurementResult();
     }
 
-  averageMeasurements();
+    averageMeasurements();
 
     // Put the sensor back to sleep if it had been activated
     if (wasActive) { sleep(); }
@@ -419,10 +419,10 @@ bool Sensor::update(void) {
     // Turn the power back off it it had been turned on
     if (!wasOn) { powerDown(); }
 
-  // Update the registered variables with the new values
-  notifyVariables();
+    // Update the registered variables with the new values
+    notifyVariables();
 
-  return ret_val;
+    return ret_val;
 }
 
 #ifdef __cplusplus
@@ -468,7 +468,7 @@ bool Sensor::checkPowerOn(bool debug) {
         _sensorStatus |= 0b00000110;
         return true;
     }
-  }
+}
 
 
 // This checks to see if enough time has passed for warm-up

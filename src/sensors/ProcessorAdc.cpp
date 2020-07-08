@@ -100,84 +100,84 @@ processorAdc::processorAdc(int8_t powerPin, uint8_t adcChannel, float gain,
     : Sensor("processorAdc", PROC_ADC_NUM_VARIABLES, PROC_ADC_WARM_UP_TIME_MS,
              PROC_ADC_STABILIZATION_TIME_MS, PROC_ADC_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage) {
-  _adcChannel = adcChannel;
-  _gain = gain;
+    _adcChannel = adcChannel;
+    _gain       = gain;
 }
 // Destructor
 processorAdc::~processorAdc() {}
 
 String processorAdc::getSensorLocation(void) {
-  String sensorLocation = F("procAdcV");
-  sensorLocation += String(_adcChannel);
-  return sensorLocation;
+    String sensorLocation = F("procAdcV");
+    sensorLocation += String(_adcChannel);
+    return sensorLocation;
 }
 
 bool processorAdc::addSingleMeasurementResult(void) {
-  // Variables to store the results in
-  float adcVoltage = -9999;
-  float calibResult = -9999;
+    // Variables to store the results in
+    float adcVoltage  = -9999;
+    float calibResult = -9999;
 
-  // Check a measurement was *successfully* started (status bit 6 set)
-  // Only go on to get a result if it was
-  if (bitRead(_sensorStatus, 6)) {
-    MS_DBG(getSensorNameAndLocation(), F(" is reporting:"));
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6)) {
+        MS_DBG(getSensorNameAndLocation(), F(" is reporting:"));
 #if !defined ARDUINO_ARCH_AVR
-    // Only for processors where ADC Resolution can be varied: not AVR
-    analogReadResolution(ProcAdcDef_Resolution);
-    analogReference(ProcAdcDef_Reference); // VDDANA = 3V3
-#endif                                     // ARDUINO_ARCH_AVR
-    uint8_t useAdcChannel = _adcChannel;
+        // Only for processors where ADC Resolution can be varied: not AVR
+        analogReadResolution(ProcAdcDef_Resolution);
+        analogReference(ProcAdcDef_Reference);  // VDDANA = 3V3
+#endif                                          // ARDUINO_ARCH_AVR
+        uint8_t useAdcChannel = _adcChannel;
 #if defined ARD_ANALOLG_EXTENSION_PINS
-    if ((thisVariantNumPins + ARD_DIGITAL_EXTENSION_PINS) < _adcChannel) {
-      // ARD_COMMON_PIN on SAMD51
-      if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
-        // Setup mutliplexer
-        MS_DBG("  adc_Single Setup Multiplexer ", useAdcChannel, "-->",
-               ARD_ANLAOG_MULTIPLEX_PIN);
-        digitalWrite(useAdcChannel, 1);
-        // useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
-      }
-    }
+        if ((thisVariantNumPins + ARD_DIGITAL_EXTENSION_PINS) < _adcChannel) {
+            // ARD_COMMON_PIN on SAMD51
+            if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
+                // Setup mutliplexer
+                MS_DBG("  adc_Single Setup Multiplexer ", useAdcChannel, "-->",
+                       ARD_ANLAOG_MULTIPLEX_PIN);
+                digitalWrite(useAdcChannel, 1);
+                // useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
+            }
+        }
 
-#endif // ARD_ANALOLG_EXTENSION_PINS
-    // Create an Auxillary ADD object
-    // We create and set up the ADC object here so that each sensor using
-    // the ADC may set the gain appropriately without effecting others.
+#endif  // ARD_ANALOLG_EXTENSION_PINS
+        // Create an Auxillary ADD object
+        // We create and set up the ADC object here so that each sensor using
+        // the ADC may set the gain appropriately without effecting others.
 
-    // *** Trial to check the results of two reads
-    uint32_t rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
-    MS_DBG(F("  1stpass_adc("), rawAdc);
-    rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
-    digitalWrite(useAdcChannel, 0);
+        // *** Trial to check the results of two reads
+        uint32_t rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
+        MS_DBG(F("  1stpass_adc("), rawAdc);
+        rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
+        digitalWrite(useAdcChannel, 0);
 #define PROCADC_REF_V 3.3
 #define PROCADC_RANGE_MIN_V -0.3
-    adcVoltage = (PROCADC_REF_V / ProcAdc_Max) * (float)rawAdc;
-    MS_DBG(F("  adc_SingleEnded_V("), _adcChannel, F("/"),
-           ProcAdcDef_Resolution, F("):"), adcVoltage, F(" rawAdc:"), rawAdc,
-           F(" gain="), _gain);
+        adcVoltage = (PROCADC_REF_V / ProcAdc_Max) * (float)rawAdc;
+        MS_DBG(F("  adc_SingleEnded_V("), _adcChannel, F("/"),
+               ProcAdcDef_Resolution, F("):"), adcVoltage, F(" rawAdc:"),
+               rawAdc, F(" gain="), _gain);
 
-    if (adcVoltage <= PROCADC_REF_V and
-        adcVoltage > PROCADC_RANGE_MIN_V) // Skip results out of range
-    {
-      // Apply the gain calculation, with a defualt gain of 10 V/V Gain
-      calibResult = adcVoltage * _gain;
-      MS_DBG(F("  calibResult:"), calibResult);
-    } else // set invalid voltages back to -9999
-    {
-      adcVoltage = -9999;
-    }
-  } else
-    MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        if (adcVoltage <= PROCADC_REF_V and
+            adcVoltage > PROCADC_RANGE_MIN_V)  // Skip results out of range
+        {
+            // Apply the gain calculation, with a defualt gain of 10 V/V Gain
+            calibResult = adcVoltage * _gain;
+            MS_DBG(F("  calibResult:"), calibResult);
+        } else  // set invalid voltages back to -9999
+        {
+            adcVoltage = -9999;
+        }
+    } else
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
-  verifyAndAddMeasurementResult(PROC_ADC_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(PROC_ADC_VAR_NUM, calibResult);
 
-  // Unset the time stamp for the beginning of this measurement
-  _millisMeasurementRequested = 0;
-  // Unset the status bits for a measurement request (bits 5 & 6)
-  _sensorStatus &= 0b10011111;
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
-  if (adcVoltage <= PROCADC_REF_V and adcVoltage > PROCADC_RANGE_MIN_V)
-    return true;
-  else
-    return false;
+    if (adcVoltage <= PROCADC_REF_V and adcVoltage > PROCADC_RANGE_MIN_V)
+        return true;
+    else
+        return false;
 }

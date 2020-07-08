@@ -27,7 +27,7 @@
 #include "VariableArray.h"
 #include "LoggerModem.h"
 #include "ms_common.h"
-#include <Arduino.h> // The base Arduino library
+#include <Arduino.h>  // The base Arduino library
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -43,7 +43,7 @@
 // Bring in the library to communicate with an external high-precision real time
 // clock This also implements a needed date/time class
 #if defined(ARDUINO_ARCH_SAMD)
-#include <RTClib.h> //was <Sodaq_DS3231.h>
+#include <RTClib.h>  //was <Sodaq_DS3231.h>
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
 #include <Sodaq_DS3231.h>
 #endif
@@ -67,13 +67,13 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 #if defined BOARD_SDQ_QSPI_FLASH
-#include "Adafruit_SPIFlash.h" //This can be on the Adafruit Express options
-#endif                         // BOARD_SDQ_QSPI_FLASH
+#include "Adafruit_SPIFlash.h"  //This can be on the Adafruit Express options
+#endif                          // BOARD_SDQ_QSPI_FLASH
 #if defined USE_TINYUSB
 #include "Adafruit_TinyUSB.h"
-#endif // USE_TINYUSB
-typedef int (*ini_handler_atl485)(const char *section, const char *name,
-                                  const char *value);
+#endif  // USE_TINYUSB
+typedef int (*ini_handler_atl485)(const char* section, const char* name,
+                                  const char* value);
 // The largest number of variables from a single sensor
 
 /**
@@ -82,7 +82,7 @@ typedef int (*ini_handler_atl485)(const char *section, const char *name,
 #define MAX_NUMBER_SENDERS 4
 
 
-class dataPublisher; // Forward declaration
+class dataPublisher;  // Forward declaration
 
 
 /**
@@ -463,9 +463,9 @@ class Logger {
      */
     VariableArray* _internalArray;
 
-  // ===================================================================== //
-  // Public functions for internet and dataPublishers
-  // ===================================================================== //
+    // ===================================================================== //
+    // Public functions for internet and dataPublishers
+    // ===================================================================== //
 
  public:
     /**
@@ -612,10 +612,10 @@ class Logger {
     static RTCZero zero_sleep_rtc;
 #endif
 
-  static uint32_t getNowEpochT0(void);    // Get Epoch standard UST
-  static uint32_t getNowEpochTz(void);    // Get Epoch with time zone offset
-  static void setNowEpochT0(uint32_t ts); // Set Epoch with standard UST
-  // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
+    static uint32_t getNowEpochT0(void);  // Get Epoch standard UST
+    static uint32_t getNowEpochTz(void);  // Get Epoch with time zone offset
+    static void     setNowEpochT0(uint32_t ts);  // Set Epoch with standard UST
+    // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
     /**
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
@@ -637,8 +637,8 @@ class Logger {
      */
     static void setNowEpoch(uint32_t ts);
 
-  static DateTime dtFromEpochT0(uint32_t epochTime);
-  static DateTime dtFromEpochTz(uint32_t epochTime);
+    static DateTime dtFromEpochT0(uint32_t epochTime);
+    static DateTime dtFromEpochTz(uint32_t epochTime);
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
@@ -932,7 +932,8 @@ class Logger {
     /**
      * @brief An internal reference to SdFat for SD card control
      */
-    SdFat sd1_card_fatfs;;
+    SdFat sd1_card_fatfs;
+    ;
     /**
      * @brief An internal reference to an SdFat file instance
      */
@@ -982,9 +983,9 @@ class Logger {
      */
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
 
-  // ===================================================================== //
+    // ===================================================================== //
     // Public functions for a "sensor testing" mode
-  // ===================================================================== //
+    // ===================================================================== //
 
  public:
     // This checks to see if you want to enter the sensor mode

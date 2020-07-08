@@ -65,49 +65,49 @@
 
 #if !defined ProcAdcDef_Resolution
 #define ProcAdcDef_Resolution 10
-#endif // ProcAdcDef_Resolution
+#endif  // ProcAdcDef_Resolution
 #if !defined ProcAdc_Max
 #define ProcAdc_Max ((1 << ProcAdcDef_Resolution) - 1)
-#endif // ProcAdc_Max
+#endif  // ProcAdc_Max
 #if !defined ProcAdcDef_Reference
 // one of eAnalogReference
 #define ProcAdcDef_Reference AR_DEFAULT
-#endif // ProcAdcDef_Reference
+#endif  // ProcAdcDef_Reference
 
 // The main class for the external votlage monitor
 class processorAdc : public Sensor {
+ public:
+    // The constructor - need the power pin and the data channel on the ADS1x15
+    // The gain value, and number of measurements to average are optional
+    // If nothing is given a 1x gain is used.
+    processorAdc(int8_t powerPin, uint8_t adcChannel, float gain = 1,
+                 uint8_t measurementsToAverage = 1);
+    // Destructor
+    ~processorAdc();
 
-public:
-  // The constructor - need the power pin and the data channel on the ADS1x15
-  // The gain value, and number of measurements to average are optional
-  // If nothing is given a 1x gain is used.
-  processorAdc(int8_t powerPin, uint8_t adcChannel, float gain = 1,
-               uint8_t measurementsToAverage = 1);
-  // Destructor
-  ~processorAdc();
+    String getSensorLocation(void) override;
 
-  String getSensorLocation(void) override;
+    bool addSingleMeasurementResult(void) override;
 
-  bool addSingleMeasurementResult(void) override;
-
-protected:
-  uint8_t _adcChannel;
-  float _gain;
-  // uint8_t _i2cAddress;
+ protected:
+    uint8_t _adcChannel;
+    float   _gain;
+    // uint8_t _i2cAddress;
 };
 
 // The single available variable is voltage
 class processorAdc_Volt : public Variable {
-public:
-  processorAdc_Volt(Sensor *parentSense, const char *uuid = "",
-                    const char *varCode = "adcProcV")
-      : Variable(parentSense, (const uint8_t)PROC_ADC_VAR_NUM,
-                 (uint8_t)PROC_ADC_RESOLUTION, "voltage", "volt", varCode,
-                 uuid) {}
-  processorAdc_Volt()
-      : Variable((const uint8_t)PROC_ADC_VAR_NUM, (uint8_t)PROC_ADC_RESOLUTION,
-                 "voltage", "volt", "adcProcV") {}
-  ~processorAdc_Volt() {}
+ public:
+    processorAdc_Volt(Sensor* parentSense, const char* uuid = "",
+                      const char* varCode = "adcProcV")
+        : Variable(parentSense, (const uint8_t)PROC_ADC_VAR_NUM,
+                   (uint8_t)PROC_ADC_RESOLUTION, "voltage", "volt", varCode,
+                   uuid) {}
+    processorAdc_Volt()
+        : Variable((const uint8_t)PROC_ADC_VAR_NUM,
+                   (uint8_t)PROC_ADC_RESOLUTION, "voltage", "volt",
+                   "adcProcV") {}
+    ~processorAdc_Volt() {}
 };
 
-#endif // Header Guard
+#endif  // Header Guard

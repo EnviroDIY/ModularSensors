@@ -74,74 +74,74 @@
 
 // The main class for the Insitu Level/Aqua Troll
 class InsituTrollSdi12 : public SDI12Sensors {
-public:
-  // Constructors with overloads
-  InsituTrollSdi12(char SDI12address, int8_t powerPin, int8_t dataPin,
-                   uint8_t measurementsToAverage = 1)
-      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                     "InsituTrollSdi12", ITROLL_NUM_VARIABLES,
-                     ITROLL_WARM_UP_TIME_MS, ITROLL_STABILIZATION_TIME_MS,
-                     ITROLL_MEASUREMENT_TIME_MS) {}
-  InsituTrollSdi12(char *SDI12address, int8_t powerPin, int8_t dataPin,
-                   uint8_t measurementsToAverage = 1)
-      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                     "InsituTrollSdi12", ITROLL_NUM_VARIABLES,
-                     ITROLL_WARM_UP_TIME_MS, ITROLL_STABILIZATION_TIME_MS,
-                     ITROLL_MEASUREMENT_TIME_MS) {}
-  InsituTrollSdi12(int SDI12address, int8_t powerPin, int8_t dataPin,
-                   uint8_t measurementsToAverage = 1)
-      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                     "InsituTrollSdi12", ITROLL_NUM_VARIABLES,
-                     ITROLL_WARM_UP_TIME_MS, ITROLL_STABILIZATION_TIME_MS,
-                     ITROLL_MEASUREMENT_TIME_MS) {}
-  // Destructor
-  ~InsituTrollSdi12() {}
+ public:
+    // Constructors with overloads
+    InsituTrollSdi12(char SDI12address, int8_t powerPin, int8_t dataPin,
+                     uint8_t measurementsToAverage = 1)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "InsituTrollSdi12", ITROLL_NUM_VARIABLES,
+                       ITROLL_WARM_UP_TIME_MS, ITROLL_STABILIZATION_TIME_MS,
+                       ITROLL_MEASUREMENT_TIME_MS) {}
+    InsituTrollSdi12(char* SDI12address, int8_t powerPin, int8_t dataPin,
+                     uint8_t measurementsToAverage = 1)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "InsituTrollSdi12", ITROLL_NUM_VARIABLES,
+                       ITROLL_WARM_UP_TIME_MS, ITROLL_STABILIZATION_TIME_MS,
+                       ITROLL_MEASUREMENT_TIME_MS) {}
+    InsituTrollSdi12(int SDI12address, int8_t powerPin, int8_t dataPin,
+                     uint8_t measurementsToAverage = 1)
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "InsituTrollSdi12", ITROLL_NUM_VARIABLES,
+                       ITROLL_WARM_UP_TIME_MS, ITROLL_STABILIZATION_TIME_MS,
+                       ITROLL_MEASUREMENT_TIME_MS) {}
+    // Destructor
+    ~InsituTrollSdi12() {}
 };
 
 // Defines the Conductivity Variable
 class InsituTrollSdi12_Pressure : public Variable {
-public:
-  InsituTrollSdi12_Pressure(
-      Sensor *parentSense, const char *uuid = "",
-      const char *varCode = "ITROLLPressure") // Does this maap to something?
-      : Variable(parentSense, (const uint8_t)ITROLL_PRESSURE_VAR_NUM,
-                 (uint8_t)ITROLL_PRESSURE_RESOLUTION, "pressure", "PSI",
-                 varCode, uuid) {}
-  InsituTrollSdi12_Pressure()
-      : Variable((const uint8_t)ITROLL_PRESSURE_VAR_NUM,
-                 (uint8_t)ITROLL_PRESSURE_RESOLUTION, "pressure", "PSI",
-                 "Insitu TROLL Pressure") {}
-  ~InsituTrollSdi12_Pressure() {}
+ public:
+    InsituTrollSdi12_Pressure(
+        Sensor* parentSense, const char* uuid = "",
+        const char* varCode = "ITROLLPressure")  // Does this maap to something?
+        : Variable(parentSense, (const uint8_t)ITROLL_PRESSURE_VAR_NUM,
+                   (uint8_t)ITROLL_PRESSURE_RESOLUTION, "pressure", "PSI",
+                   varCode, uuid) {}
+    InsituTrollSdi12_Pressure()
+        : Variable((const uint8_t)ITROLL_PRESSURE_VAR_NUM,
+                   (uint8_t)ITROLL_PRESSURE_RESOLUTION, "pressure", "PSI",
+                   "Insitu TROLL Pressure") {}
+    ~InsituTrollSdi12_Pressure() {}
 };
 
 // Defines the Temperature Variable
 class InsituTrollSdi12_Temp : public Variable {
-public:
-  InsituTrollSdi12_Temp(Sensor *parentSense, const char *uuid = "",
-                        const char *varCode = "ITROLLtemp")
-      : Variable(parentSense, (const uint8_t)ITROLL_TEMP_VAR_NUM,
-                 (uint8_t)ITROLL_TEMP_RESOLUTION, "temperature",
-                 "degreeCelsius", varCode, uuid) {}
-  InsituTrollSdi12_Temp()
-      : Variable((const uint8_t)ITROLL_TEMP_VAR_NUM,
-                 (uint8_t)ITROLL_TEMP_RESOLUTION, "temperature",
-                 "degreeCelsius", "Insitu TROLL temperature") {}
-  ~InsituTrollSdi12_Temp() {}
+ public:
+    InsituTrollSdi12_Temp(Sensor* parentSense, const char* uuid = "",
+                          const char* varCode = "ITROLLtemp")
+        : Variable(parentSense, (const uint8_t)ITROLL_TEMP_VAR_NUM,
+                   (uint8_t)ITROLL_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
+    InsituTrollSdi12_Temp()
+        : Variable((const uint8_t)ITROLL_TEMP_VAR_NUM,
+                   (uint8_t)ITROLL_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Insitu TROLL temperature") {}
+    ~InsituTrollSdi12_Temp() {}
 };
 
 // Defines the Depth Variable
 class InsituTrollSdi12_Depth : public Variable {
-public:
-  InsituTrollSdi12_Depth(Sensor *parentSense, const char *uuid = "",
-                         const char *varCode = "ITROLLdepth")
-      : Variable(parentSense, (const uint8_t)ITROLL_DEPTH_VAR_NUM,
-                 (uint8_t)ITROLL_DEPTH_RESOLUTION, "waterDepth", "feet",
-                 varCode, uuid) {}
-  InsituTrollSdi12_Depth()
-      : Variable((const uint8_t)ITROLL_DEPTH_VAR_NUM,
-                 (uint8_t)ITROLL_DEPTH_RESOLUTION, "waterDepth", "feet",
-                 "Insitu TROLL depth") {}
-  ~InsituTrollSdi12_Depth() {}
+ public:
+    InsituTrollSdi12_Depth(Sensor* parentSense, const char* uuid = "",
+                           const char* varCode = "ITROLLdepth")
+        : Variable(parentSense, (const uint8_t)ITROLL_DEPTH_VAR_NUM,
+                   (uint8_t)ITROLL_DEPTH_RESOLUTION, "waterDepth", "feet",
+                   varCode, uuid) {}
+    InsituTrollSdi12_Depth()
+        : Variable((const uint8_t)ITROLL_DEPTH_VAR_NUM,
+                   (uint8_t)ITROLL_DEPTH_RESOLUTION, "waterDepth", "feet",
+                   "Insitu TROLL depth") {}
+    ~InsituTrollSdi12_Depth() {}
 };
 
-#endif // Header Guard
+#endif  // Header Guard

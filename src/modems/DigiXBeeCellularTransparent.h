@@ -123,9 +123,9 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      */
     TinyGsmClient gsmClient;
 
-  // Az Extensions
-  void setApn(const char *APN, bool copyId = false);
-  String getApn(void);
+    // Az Extensions
+    void   setApn(const char* APN, bool copyId = false);
+    String getApn(void);
 
  protected:
     bool isInternetAvailable(void) override;
@@ -147,7 +147,7 @@ class DigiXBeeCellularTransparent : public DigiXBee {
  private:
     const char* _apn;
     // Az extension
-    char *_apn_buf = NULL; // Pointer to updated buffer
+    char* _apn_buf = NULL;  // Pointer to updated buffer
 };
 
 #endif  // SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_

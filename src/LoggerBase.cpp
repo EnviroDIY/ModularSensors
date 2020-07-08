@@ -24,7 +24,7 @@
 #if defined BOARD_SDQ_QSPI_FLASH
 // This works as a static instance and allows initializer for
 Adafruit_FlashTransport_QSPI
-    sdq_flashspi_transport_QSPI_phy; // Uses default pin for SQSP
+                  sdq_flashspi_transport_QSPI_phy;  // Uses default pin for SQSP
 Adafruit_SPIFlash sdq_flashspi_phy(&sdq_flashspi_transport_QSPI_phy);
 
 // File system object on external flash from SdFat
@@ -33,13 +33,13 @@ FatFileSystem sd0_card_fatfs;
 // Set to true when PC write to flash
 bool sd1_card_changed = false;
 bool sd0_card_changed = false;
-bool usbDriveStatus = false;
+bool usbDriveStatus   = false;
 
-#endif // BOARD_SDQ_QSPI_FLASH
+#endif  // BOARD_SDQ_QSPI_FLASH
 #if defined USE_TINYUSB
 // USB Mass Storage object - indepedent of other objects
 Adafruit_USBD_MSC usb_msc;
-#endif // USE_TINYUSB
+#endif  // USE_TINYUSB
 
 // Time Zone support in hours from UTC/GMT −10 to +14
 // https://en.wikipedia.org/wiki/Coordinated_Universal_Time
@@ -63,16 +63,16 @@ RTCZero Logger::zero_sleep_rtc;
 #endif
 
 #if defined USE_RTCLIB
-USE_RTCLIB rtcExtPhy;
+USE_RTCLIB  rtcExtPhy;
 // For RTClib.h:DateTime(uint32_t) use secs since 1970
 #define DateTimeClass(varNam, epochTime) DateTime varNam(epochTime);
 #else
 // For Sodaq_DS3231.h:DateTime(long) uses secs since 2000
 //#define DateTimeClass(epochTime) DateTime
-//dtTz((long)((uint64_t)(epochTimeTz-EPOCH_TIME_OFF)));
-#define DateTimeClass(varNam, epochTime)                                       \
-  DateTime varNam((long)((uint64_t)(epochTime - EPOCH_TIME_OFF)));
-#endif //  USE_RTCLIB
+// dtTz((long)((uint64_t)(epochTimeTz-EPOCH_TIME_OFF)));
+#define DateTimeClass(varNam, epochTime) \
+    DateTime varNam((long)((uint64_t)(epochTime - EPOCH_TIME_OFF)));
+#endif  //  USE_RTCLIB
 
 // Constructors
 Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
@@ -228,7 +228,7 @@ void Logger::turnOffSDcard(bool waitForHousekeeping) {
             delay(1000);
         }
     }
-  }
+}
 
 
 // Sets up a pin for the slave select (chip select) of the SD card
@@ -309,7 +309,7 @@ uint8_t Logger::getArrayVarCount() {
 
 // This gets the name of the parent sensor, if applicable
 String Logger::getParentSensorNameAtI(uint8_t position_i) {
-  return _internalArray->arrayOfVars[position_i]->getParentSensorName();
+    return _internalArray->arrayOfVars[position_i]->getParentSensorName();
 }
 // This gets the name and location of the parent sensor, if applicable
 String Logger::getParentSensorNameAndLocationAtI(uint8_t position_i) {
@@ -370,8 +370,8 @@ bool Logger::syncRTC() {
             }
         } else {
             PRINTOUT(F("Could not wake modem for clock sync."));
+        }
     }
-  }
 
     // Power down the modem - but only if there will be more than 15 seconds
     // before the NEXT logging interval - it can take the modem that long to
@@ -394,10 +394,10 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
             return;
         }
         if (dataPublishers[i] == NULL) break;
-  }
+    }
 
-  // register the publisher there
-  dataPublishers[i] = publisher;
+    // register the publisher there
+    dataPublishers[i] = publisher;
 }
 
 
@@ -413,7 +413,7 @@ void Logger::publishDataToRemotes(void) {
             watchDogTimer.resetWatchDog();
         }
     }
-  }
+}
 void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
 }
@@ -500,64 +500,70 @@ int8_t Logger::getTZOffset(void) {
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
 uint32_t Logger::getNowEpoch(void) {
-  // Depreciated in 0.23.4, left in for compatiblity
-  return getNowEpochT0();
+    // Depreciated in 0.23.4, left in for compatiblity
+    return getNowEpochT0();
 }
 
 uint32_t Logger::getNowEpochT0(void) {
-  uint32_t currentEpochTime = rtc.now().getEpoch();
-  if (!isRTCSane(currentEpochTime)) {
-    PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
-    // PRINTOUT(F("The current clock timestamp is not valid!"),
-    // formatDateTime_ISO8601(currentEpochTime).substring(0, 10)," Setting to
-    // ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
-    PRINTOUT(F("Bad time "), currentEpochTime, " ",
-             formatDateTime_ISO8601(currentEpochTime).substring(0, 10),
-             " Setting to ", formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
-    PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
-    currentEpochTime = EPOCH_TIME_20200101_SECS;
-    setNowEpochT0(currentEpochTime);
-  }
+    uint32_t currentEpochTime = rtc.now().getEpoch();
+    if (!isRTCSane(currentEpochTime)) {
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        // PRINTOUT(F("The current clock timestamp is not valid!"),
+        // formatDateTime_ISO8601(currentEpochTime).substring(0, 10)," Setting
+        // to
+        // ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        PRINTOUT(F("Bad time "), currentEpochTime, " ",
+                 formatDateTime_ISO8601(currentEpochTime).substring(0, 10),
+                 " Setting to ",
+                 formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        currentEpochTime = EPOCH_TIME_20200101_SECS;
+        setNowEpochT0(currentEpochTime);
+    }
 
-  return currentEpochTime;
+    return currentEpochTime;
 }
 
 uint32_t Logger::getNowEpochTz(void) {
-  int64_t currentEpochTime = (int64_t)((uint64_t)rtc.now().getEpoch());
-  currentEpochTime += (_loggerRTCOffset * HOURS_TO_SECS);
-  return (uint32_t)currentEpochTime;
+    int64_t currentEpochTime = (int64_t)((uint64_t)rtc.now().getEpoch());
+    currentEpochTime += (_loggerRTCOffset * HOURS_TO_SECS);
+    return (uint32_t)currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts) {
-  rtc.setEpoch(ts);
-} // Depreciated in 0.23.4, left in for compatiblity
-void Logger::setNowEpochT0(uint32_t ts) { rtc.setEpoch(ts); }
+    rtc.setEpoch(ts);
+}  // Depreciated in 0.23.4, left in for compatiblity
+void Logger::setNowEpochT0(uint32_t ts) {
+    rtc.setEpoch(ts);
+}
 
 #elif defined ARDUINO_ARCH_SAMD
 
 uint32_t Logger::getNowEpoch(void) {
-  // Depreciated in 0.23.4, left in for compatiblity
-  return getNowEpochTz();
+    // Depreciated in 0.23.4, left in for compatiblity
+    return getNowEpochTz();
 }
 
 uint32_t Logger::getNowEpochT0(void) {
-  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  if (!isRTCSane(currentEpochTime)) {
-    PRINTOUT(F("Bad time, resetting clock."), currentEpochTime, " ",
-             formatDateTime_ISO8601(currentEpochTime), " Setting to ",
-             formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
-    currentEpochTime = EPOCH_TIME_20200101_SECS;
-    setNowEpochT0(currentEpochTime);
-  }
-  return currentEpochTime;
+    uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+    if (!isRTCSane(currentEpochTime)) {
+        PRINTOUT(F("Bad time, resetting clock."), currentEpochTime, " ",
+                 formatDateTime_ISO8601(currentEpochTime), " Setting to ",
+                 formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        currentEpochTime = EPOCH_TIME_20200101_SECS;
+        setNowEpochT0(currentEpochTime);
+    }
+    return currentEpochTime;
 }
 
 uint32_t Logger::getNowEpochTz(void) {
-  return (uint32_t)(getNowEpochT0() + (_loggerRTCOffset * HOURS_TO_SECS));
+    return (uint32_t)(getNowEpochT0() + (_loggerRTCOffset * HOURS_TO_SECS));
 }
 void Logger::setNowEpoch(uint32_t ts) {
-  zero_sleep_rtc.setEpoch(ts);
-} // Depreciated in 0.23.4, left in for compatiblity
-void Logger::setNowEpochT0(uint32_t ts) { zero_sleep_rtc.setEpoch(ts); }
+    zero_sleep_rtc.setEpoch(ts);
+}  // Depreciated in 0.23.4, left in for compatiblity
+void Logger::setNowEpochT0(uint32_t ts) {
+    zero_sleep_rtc.setEpoch(ts);
+}
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -568,21 +574,21 @@ void Logger::setNowEpochT0(uint32_t ts) { zero_sleep_rtc.setEpoch(ts); }
 // The DateTime object constructor requires the number of seconds from
 // January 1, 2000 (NOT 1970) as input, so we need to subtract.
 DateTime Logger::dtFromEpoch(uint32_t epochTime) {
-  // Depreciated
-  return dtFromEpochTz(epochTime);
+    // Depreciated
+    return dtFromEpochTz(epochTime);
 }
 DateTime Logger::dtFromEpochT0(uint32_t epochTimeT0) {
-  // DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
-  DateTimeClass(dt, epochTimeT0) return dt;
+    // DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
+    DateTimeClass(dt, epochTimeT0) return dt;
 }
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time
 // zone
 DateTime Logger::dtFromEpochTz(uint32_t epochTimeTz) {
-  // The DateTime object constructor requires the number of seconds from
-  // January 1, 2000 (NOT 1970) as input, so we need to subtract.
-  // DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF);
-  DateTimeClass(dtTz, epochTimeTz) return dtTz;
+    // The DateTime object constructor requires the number of seconds from
+    // January 1, 2000 (NOT 1970) as input, so we need to subtract.
+    // DateTime dtTz(epochTimeTz - EPOCH_TIME_OFF);
+    DateTimeClass(dtTz, epochTimeTz) return dtTz;
 }
 
 // This converts a date-time object into a ISO8601 formatted string
@@ -615,86 +621,86 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
 // This converts an epoch time (unix time) into a ISO8601 formatted string
 // It assumes the supplied date/time is in the LOGGER's timezone
 String Logger::formatDateTime_ISO8601(uint32_t epochTimeTz) {
-  // Create a DateTime object from the epochTime
-  DateTimeClass(dtTz, epochTimeTz);
-  return formatDateTime_ISO8601(dtTz);
+    // Create a DateTime object from the epochTime
+    DateTimeClass(dtTz, epochTimeTz);
+    return formatDateTime_ISO8601(dtTz);
 }
 
 
 // This sets the real time clock to the given time
 bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
-  bool retVal = false;
+    bool retVal = false;
 
-  // If the timestamp is zero, just exit
-  if (UTCEpochSeconds == 0) {
-    PRINTOUT(F("Bad timestamp, not setting clock."));
-    return false;
-  }
+    // If the timestamp is zero, just exit
+    if (UTCEpochSeconds == 0) {
+        PRINTOUT(F("Bad timestamp, not setting clock."));
+        return false;
+    }
 
-  // The "UTCEpochSeconds" is the number of seconds since Jan 1, 1970 in UTC
-  // We're interested in the UTCEpochSeconds in the logger's and RTC's timezone
-  // The RTC's timezone is a label and isn't used in calculations, only the
-  // offset is used to make it more readable between the logger and the RTC.
-  // Only works for ARM CC if long, AVR was uint32_t
-  uint32_t nistTz_sec =
-      UTCEpochSeconds + ((int32_t)getTZOffset()) * HOURS_TO_SECS;
-  MS_DBG(F("    NIST UST:"), UTCEpochSeconds, F("->"),
-         formatDateTime_ISO8601(UTCEpochSeconds));
+    // The "UTCEpochSeconds" is the number of seconds since Jan 1, 1970 in UTC
+    // We're interested in the UTCEpochSeconds in the logger's and RTC's
+    // timezone The RTC's timezone is a label and isn't used in calculations,
+    // only the offset is used to make it more readable between the logger and
+    // the RTC. Only works for ARM CC if long, AVR was uint32_t
+    uint32_t nistTz_sec = UTCEpochSeconds +
+        ((int32_t)getTZOffset()) * HOURS_TO_SECS;
+    MS_DBG(F("    NIST UST:"), UTCEpochSeconds, F("->"),
+           formatDateTime_ISO8601(UTCEpochSeconds));
 
-  // Check the current RTC time
-  uint32_t cur_logT0_sec = getNowEpochT0();
-  MS_DBG(F("    Current Epoch UST Time on RTC :"), cur_logT0_sec, F("->"),
-         formatDateTime_ISO8601(cur_logT0_sec));
-  uint32_t time_diff_sec =
-      abs((long)((uint64_t)cur_logT0_sec) - (long)((uint64_t)UTCEpochSeconds));
-  MS_DBG(F("    Offset between epoch NIST and RTC:"), time_diff_sec);
+    // Check the current RTC time
+    uint32_t cur_logT0_sec = getNowEpochT0();
+    MS_DBG(F("    Current Epoch UST Time on RTC :"), cur_logT0_sec, F("->"),
+           formatDateTime_ISO8601(cur_logT0_sec));
+    uint32_t time_diff_sec = abs((long)((uint64_t)cur_logT0_sec) -
+                                 (long)((uint64_t)UTCEpochSeconds));
+    MS_DBG(F("    Offset between epoch NIST and RTC:"), time_diff_sec);
 
 // If the RTC and NIST disagree by more than 5 seconds, set the clock
 #define NIST_TIME_DIFF_SEC 5
-  if (time_diff_sec > NIST_TIME_DIFF_SEC) {
-    setNowEpochT0(UTCEpochSeconds);
-    PRINTOUT(F("Internal Clock set "), formatDateTime_ISO8601(nistTz_sec));
-    retVal = true;
-  } else {
-    PRINTOUT(F("Internal Clock within "), NIST_TIME_DIFF_SEC,
-             F("seconds of NIST."));
-    // return false;
-    retVal = true; // RTC valid
-  }
+    if (time_diff_sec > NIST_TIME_DIFF_SEC) {
+        setNowEpochT0(UTCEpochSeconds);
+        PRINTOUT(F("Internal Clock set "), formatDateTime_ISO8601(nistTz_sec));
+        retVal = true;
+    } else {
+        PRINTOUT(F("Internal Clock within "), NIST_TIME_DIFF_SEC,
+                 F("seconds of NIST."));
+        // return false;
+        retVal = true;  // RTC valid
+    }
 #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
-  // Check the current ExtRtc time -
-  DateTime nowExt = rtcExtPhy.now(); // T0 UST
-  uint32_t nowExtEpoch_sec = nowExt.unixtime();
-  MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec,
-         "->(T=", getTimeZone(), ")", formatDateTime_ISO8601(nowExtEpoch_sec));
-  time_diff_sec = abs((long)((uint64_t)nowExtEpoch_sec) -
-                      (long)((uint64_t)UTCEpochSeconds));
-  if (time_diff_sec > NIST_TIME_DIFF_SEC) {
+    // Check the current ExtRtc time -
+    DateTime nowExt          = rtcExtPhy.now();  // T0 UST
+    uint32_t nowExtEpoch_sec = nowExt.unixtime();
+    MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec,
+           "->(T=", getTimeZone(), ")",
+           formatDateTime_ISO8601(nowExtEpoch_sec));
+    time_diff_sec = abs((long)((uint64_t)nowExtEpoch_sec) -
+                        (long)((uint64_t)UTCEpochSeconds));
+    if (time_diff_sec > NIST_TIME_DIFF_SEC) {
+        rtcExtPhy.adjust(UTCEpochSeconds);  // const DateTime& dt);
+        nowExt = rtcExtPhy.now();
+        MS_DBG("         rtcExt diff", time_diff_sec, " updated to UTS ",
+               UTCEpochSeconds, "->", formatDateTime_ISO8601(UTCEpochSeconds));
+        retVal = true;
+    }
 
-    rtcExtPhy.adjust(UTCEpochSeconds); // const DateTime& dt);
-    nowExt = rtcExtPhy.now();
-    MS_DBG("         rtcExt diff", time_diff_sec, " updated to UTS ",
-           UTCEpochSeconds, "->", formatDateTime_ISO8601(UTCEpochSeconds));
-    retVal = true;
-  }
-
-#endif // ADAFRUIT_FEATHERWING_RTC_SD
-  return retVal;
+#endif  // ADAFRUIT_FEATHERWING_RTC_SD
+    return retVal;
 }
 
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane(void) {
-  uint32_t curRTC = getNowEpoch();
-  return isRTCSane(curRTC);
+    uint32_t curRTC = getNowEpoch();
+    return isRTCSane(curRTC);
 }
 bool Logger::isRTCSane(uint32_t epochTime) {
-  if (epochTime < EPOCH_TIME_20200101_SECS || /*Before January 1, 2020*/
-      epochTime > EPOCH_TIME_20250101_SECS)   /*After January 1, 2025*/
-  {
-    return false;
-  } else {
-    return true;
-  }
+    if (epochTime < EPOCH_TIME_20200101_SECS || /*Before January 1, 2020*/
+        epochTime > EPOCH_TIME_20250101_SECS)   /*After January 1, 2025*/
+    {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 
@@ -705,109 +711,109 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // It is not currently possible to output the instantaneous time an individual
 // sensor was updated, just a single marked time.  By custom, this should be
 // called before updating the sensors, not after.
-void Logger::markTime(void) { 
-  Logger::markedEpochTimeTz = getNowEpochTz(); 
+void Logger::markTime(void) {
+    Logger::markedEpochTimeTz = getNowEpochTz();
 }
 
 
 // This checks to see if the CURRENT time is an even interval of the logging
 // rate
 bool Logger::checkInterval(void) {
-  bool retval;
+    bool retval;
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-  uint32_t checkTime = getNowEpoch();
-  MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
-         formatDateTime_ISO8601(checkTime));
-  MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
-  MS_DBG(F("Mod of Logging Interval:"),
-         checkTime % (_loggingIntervalMinutes * 60));
+    uint32_t checkTime = getNowEpoch();
+    MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
+           formatDateTime_ISO8601(checkTime));
+    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
+    MS_DBG(F("Mod of Logging Interval:"),
+           checkTime % (_loggingIntervalMinutes * 60));
 
-  if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
-    // Update the time variables with the current time
+    if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
+        // Update the time variables with the current time
+        markTime();
+        MS_DBG(F("Time marked at (unix):"), Logger::markedEpochTimeTz);
+        MS_DBG(F("Time to log!"));
+        retval = true;
+    } else {
+        MS_DBG(F("Not time yet."));
+        retval = false;
+    }
+    if (!isRTCSane(checkTime)) {
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(' ');
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("The current clock timestamp is not valid!"),
+                 formatDateTime_ISO8601(getNowEpoch()).substring(0, 10));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(' ');
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+    }
+#else  // ARDUINO_ARCH_SAMD
+    // Assume that have slept for the right amount of time
     markTime();
-    MS_DBG(F("Time marked at (unix):"), Logger::markedEpochTimeTz);
-    MS_DBG(F("Time to log!"));
+    DateTime rtcExtNowDt = rtcExtPhy.now();
+    // const char *DateFmt = "YYMMDD:hhmmss";- caused reboot
+    // rtcExtNowDt.toString((char *)DateFmt) const char *DateFmt =
+    // "YY-MM-DD:hhmmss"; uint32_t rtcExtNowTzSec = rtcExtNowDt.unixtime()+
+    // ((int32_t)getTZOffset()*HOURS_TO_SECS);
+    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz, " ",
+           Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz), "extRtc",
+           rtcExtNowDt.timestamp(DateTime::TIMESTAMP_FULL));
+    //  - caused reboot
     retval = true;
-  } else {
-    MS_DBG(F("Not time yet."));
-    retval = false;
-  }
-  if (!isRTCSane(checkTime)) {
-    PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(' ');
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(F("The current clock timestamp is not valid!"),
-             formatDateTime_ISO8601(getNowEpoch()).substring(0, 10));
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(' ');
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-    PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
-    alertOn();
-    delay(25);
-    alertOff();
-    delay(25);
-  }
-#else // ARDUINO_ARCH_SAMD
-  // Assume that have slept for the right amount of time
-  markTime();
-  DateTime rtcExtNowDt = rtcExtPhy.now();
-  // const char *DateFmt = "YYMMDD:hhmmss";- caused reboot
-  // rtcExtNowDt.toString((char *)DateFmt) const char *DateFmt =
-  // "YY-MM-DD:hhmmss"; uint32_t rtcExtNowTzSec = rtcExtNowDt.unixtime()+
-  // ((int32_t)getTZOffset()*HOURS_TO_SECS);
-  MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTimeTz, " ",
-         Logger::formatDateTime_ISO8601(Logger::markedEpochTimeTz), "extRtc",
-         rtcExtNowDt.timestamp(DateTime::TIMESTAMP_FULL));
-  //  - caused reboot
-  retval = true;
 #endif
-  return retval;
+    return retval;
 }
 
 
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval(void) {
     bool retval;
-  MS_DBG(F("Marked Time:"), Logger::markedEpochTimeTz,
+    MS_DBG(F("Marked Time:"), Logger::markedEpochTimeTz,
            F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60),
            F("Mod of Logging Interval:"),
-         Logger::markedEpochTimeTz % (_loggingIntervalMinutes * 60));
+           Logger::markedEpochTimeTz % (_loggingIntervalMinutes * 60));
 
-  if (Logger::markedEpochTimeTz != 0 &&
-      (Logger::markedEpochTimeTz % (_loggingIntervalMinutes * 60) == 0)) {
+    if (Logger::markedEpochTimeTz != 0 &&
+        (Logger::markedEpochTimeTz % (_loggingIntervalMinutes * 60) == 0)) {
         MS_DBG(F("Time to log!"));
         retval = true;
     } else {
@@ -833,8 +839,7 @@ void Logger::wakeISR(void) {
 
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
-void Logger::systemSleep(uint8_t sleep_min) {
-
+void        Logger::systemSleep(uint8_t sleep_min) {
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
     // Don't go to sleep unless there's a wake pin!
@@ -842,78 +847,78 @@ void Logger::systemSleep(uint8_t sleep_min) {
         MS_DBG(F("Use a non-negative wake pin to request sleep!"));
         return;
     }
-  // Unfortunately, because of the way the alarm on the DS3231 is set up, it
-  // cannot interrupt on any frequencies other than every second, minute,
-  // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
-  // the hour, but not every 5 minutes.  This is why we set the alarm for
-  // every minute and use the checkInterval function.  This is a hardware
-  // limitation of the DS3231; it is not due to the libraries or software.
-  MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
-  rtc.enableInterrupts(EveryMinute);
+    // Unfortunately, because of the way the alarm on the DS3231 is set up, it
+    // cannot interrupt on any frequencies other than every second, minute,
+    // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
+    // the hour, but not every 5 minutes.  This is why we set the alarm for
+    // every minute and use the checkInterval function.  This is a hardware
+    // limitation of the DS3231; it is not due to the libraries or software.
+    MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
+    rtc.enableInterrupts(EveryMinute);
 
-  // Clear the last interrupt flag in the RTC status register
-  // The next timed interrupt will not be sent until this is cleared
-  rtc.clearINTStatus();
+    // Clear the last interrupt flag in the RTC status register
+    // The next timed interrupt will not be sent until this is cleared
+    rtc.clearINTStatus();
 
-  // Set up a pin to hear clock interrupt and attach the wake ISR to it
-  pinMode(_mcuWakePin, INPUT_PULLUP);
-  enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+    // Set up a pin to hear clock interrupt and attach the wake ISR to it
+    pinMode(_mcuWakePin, INPUT_PULLUP);
+    enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
 #elif defined ARDUINO_ARCH_SAMD
 
-  // Make sure interrupts are enabled for the clock
-  NVIC_EnableIRQ(RTC_IRQn);      // enable RTC interrupt
-  NVIC_SetPriority(RTC_IRQn, 0); // highest priority
+    // Make sure interrupts are enabled for the clock
+    NVIC_EnableIRQ(RTC_IRQn);       // enable RTC interrupt
+    NVIC_SetPriority(RTC_IRQn, 0);  // highest priority
 
-  // Alarms on the RTC built into the SAMD21 appear to be identical to those
-  // in the DS3231.  See more notes below.
-  // We're setting the alarm seconds to 59 and then seting it to go off
-  // whenever the seconds match the 59.  I'm using 59 instead of 00
-  // because there seems to be a bit of a wake-up delay
-  uint16_t local_secs;
-  uint32_t targetWakeup_secs;
-  uint32_t timeNow_secs;
-  uint32_t adjust_secs;
-  if (0 == sleep_min) {
-    local_secs = (_loggingIntervalMinutes * 60);
-  } else {
-    local_secs = (sleep_min * 60);
-  }
-  // zero_sleep_rtc.setAlarmSeconds(local_secs);
-  timeNow_secs = getNowEpoch();
-  targetWakeup_secs = timeNow_secs + local_secs;
-  adjust_secs = targetWakeup_secs % 60;
-  targetWakeup_secs -= adjust_secs;
-  MS_DBG("Setting alarm (", local_secs, "+", timeNow_secs, ") on RTC @",
-         targetWakeup_secs, " ", formatDateTime_ISO8601(targetWakeup_secs),
-         " adj=", adjust_secs, " fm now=", timeNow_secs,
-         " Awake=", timeNow_secs - wakeUpTime_secs);
-  zero_sleep_rtc.setAlarmEpoch(targetWakeup_secs);
+    // Alarms on the RTC built into the SAMD21 appear to be identical to those
+    // in the DS3231.  See more notes below.
+    // We're setting the alarm seconds to 59 and then seting it to go off
+    // whenever the seconds match the 59.  I'm using 59 instead of 00
+    // because there seems to be a bit of a wake-up delay
+    uint16_t local_secs;
+    uint32_t targetWakeup_secs;
+    uint32_t timeNow_secs;
+    uint32_t adjust_secs;
+    if (0 == sleep_min) {
+        local_secs = (_loggingIntervalMinutes * 60);
+    } else {
+        local_secs = (sleep_min * 60);
+    }
+    // zero_sleep_rtc.setAlarmSeconds(local_secs);
+    timeNow_secs      = getNowEpoch();
+    targetWakeup_secs = timeNow_secs + local_secs;
+    adjust_secs       = targetWakeup_secs % 60;
+    targetWakeup_secs -= adjust_secs;
+    MS_DBG("Setting alarm (", local_secs, "+", timeNow_secs, ") on RTC @",
+           targetWakeup_secs, " ", formatDateTime_ISO8601(targetWakeup_secs),
+           " adj=", adjust_secs, " fm now=", timeNow_secs,
+           " Awake=", timeNow_secs - wakeUpTime_secs);
+    zero_sleep_rtc.setAlarmEpoch(targetWakeup_secs);
 #define zsr zero_sleep_rtc
-  MS_DBG("Alm:", zsr.getAlarmYear(), zsr.getAlarmMonth(), zsr.getAlarmDay(),
-         "-", zsr.getAlarmHours(), ":", zsr.getAlarmMinutes(), ":",
-         zsr.getAlarmSeconds());
-  // Assume max is an hour - need to revisit
-  zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_MMSS);
+    MS_DBG("Alm:", zsr.getAlarmYear(), zsr.getAlarmMonth(), zsr.getAlarmDay(),
+           "-", zsr.getAlarmHours(), ":", zsr.getAlarmMinutes(), ":",
+           zsr.getAlarmSeconds());
+    // Assume max is an hour - need to revisit
+    zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_MMSS);
 #endif
 
-  // Send one last message before shutting down serial ports
-  MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
+    // Send one last message before shutting down serial ports
+    MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
 
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
 // TODO(SRGDamia1):  Make sure can find all serial ports
 #if defined(STANDARD_SERIAL_OUTPUT)
-  STANDARD_SERIAL_OUTPUT.flush(); // for debugging
+    STANDARD_SERIAL_OUTPUT.flush();  // for debugging
 #endif
 #if defined DEBUGGING_SERIAL_OUTPUT
-  DEBUGGING_SERIAL_OUTPUT.flush(); // for debugging
+    DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
 #endif
 
-  // Stop any I2C connections
-  // This function actually disables the two-wire pin functionality and
-  // turns off the internal pull-up resistors.
-  Wire.end();
+    // Stop any I2C connections
+    // This function actually disables the two-wire pin functionality and
+    // turns off the internal pull-up resistors.
+    Wire.end();
 // Now force the I2C pins to LOW
 // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
 // This will only work for the "main" I2C/TWI interface
@@ -928,142 +933,141 @@ void Logger::systemSleep(uint8_t sleep_min) {
 
 #if defined ARDUINO_ARCH_SAMD
 
-  // Disable the watch-dog timer
-  watchDogTimer.disableWatchDog();
+    // Disable the watch-dog timer
+    watchDogTimer.disableWatchDog();
 
-  // Sleep code from ArduinoLowPowerClass::sleep()
-  bool restoreUSBDevice = false;
-  // if (SERIAL_PORT_USBVIRTUAL)
-  // {
-  // 	USBDevice.standby();
-  // }
-  // else
-  // {
+    // Sleep code from ArduinoLowPowerClass::sleep()
+    bool restoreUSBDevice = false;
+    // if (SERIAL_PORT_USBVIRTUAL)
+    // {
+    // 	USBDevice.standby();
+    // }
+    // else
+    // {
 #ifndef USE_TINYUSB
-  USBDevice.detach();
+    USBDevice.detach();
 #endif
-  restoreUSBDevice = true;
-  // }
-  // Disable systick interrupt:  See
-  // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
-  SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+    restoreUSBDevice = true;
+    // }
+    // Disable systick interrupt:  See
+    // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
+    SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
 // Now go to sleep
 #if defined(MS_LOGGERBASE_DEBUG) || defined(MS_LOGGERBASE_SLEEP_DEBUG)
-  // Maintens MS_DEBUGGING_STD output, but current is 13mA/SAMD51
-  SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    // Maintens MS_DEBUGGING_STD output, but current is 13mA/SAMD51
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #else
-  // This drops the current to 3.3mA/SAMD51, however Debug output doesn't
-  // recover.
-  uint8_t rd_delay = 10;
-  /* Sleep Posibilities
-  PM_SLEEPCFG_SLEEPMODE_STANDBY 3.3mA Can wake and run
-  PM_SLEEPCFG_SLEEPMODE_HIBERNATE 3.1mA reset on int.watchdig
-  PM_SLEEPCFG_SLEEPMODE_BACKUP 3.1mA requires recovery
-  PM_SLEEPCFG_SLEEPMODE_OFF  2.9mA requires reset from ? watchdog*/
-  uint8_t sleepMode_req = PM_SLEEPCFG_SLEEPMODE_STANDBY;
-  // uint8_t sleepMode_req  = PM_SLEEPCFG_SLEEPMODE_HIBERNATE;
-  // PM->STDBYCFG.FASTWKUP =0; default
-  PM->SLEEPCFG.bit.SLEEPMODE = sleepMode_req;
-  do {
-    if (PM->SLEEPCFG.bit.SLEEPMODE != sleepMode_req)
-      break;
-  } while (--rd_delay); // Wait for it to take
+    // This drops the current to 3.3mA/SAMD51, however Debug output doesn't
+    // recover.
+    uint8_t rd_delay = 10;
+    /* Sleep Posibilities
+    PM_SLEEPCFG_SLEEPMODE_STANDBY 3.3mA Can wake and run
+    PM_SLEEPCFG_SLEEPMODE_HIBERNATE 3.1mA reset on int.watchdig
+    PM_SLEEPCFG_SLEEPMODE_BACKUP 3.1mA requires recovery
+    PM_SLEEPCFG_SLEEPMODE_OFF  2.9mA requires reset from ? watchdog*/
+    uint8_t sleepMode_req = PM_SLEEPCFG_SLEEPMODE_STANDBY;
+    // uint8_t sleepMode_req  = PM_SLEEPCFG_SLEEPMODE_HIBERNATE;
+    // PM->STDBYCFG.FASTWKUP =0; default
+    PM->SLEEPCFG.bit.SLEEPMODE = sleepMode_req;
+    do {
+        if (PM->SLEEPCFG.bit.SLEEPMODE != sleepMode_req) break;
+    } while (--rd_delay);  // Wait for it to take
 #endif
-  __DSB();
-  __WFI();
+    __DSB();
+    __WFI();
 
 #elif defined ARDUINO_ARCH_AVR
 
-  // Set the sleep mode
-  // In the avr/sleep.h file, the call names of these 5 sleep modes are:
-  // SLEEP_MODE_IDLE         -the least power savings
-  // SLEEP_MODE_ADC
-  // SLEEP_MODE_PWR_SAVE
-  // SLEEP_MODE_STANDBY
-  // SLEEP_MODE_PWR_DOWN     -the most power savings
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    // Set the sleep mode
+    // In the avr/sleep.h file, the call names of these 5 sleep modes are:
+    // SLEEP_MODE_IDLE         -the least power savings
+    // SLEEP_MODE_ADC
+    // SLEEP_MODE_PWR_SAVE
+    // SLEEP_MODE_STANDBY
+    // SLEEP_MODE_PWR_DOWN     -the most power savings
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 
-  // Disable the watch-dog timer
-  watchDogTimer.disableWatchDog();
+    // Disable the watch-dog timer
+    watchDogTimer.disableWatchDog();
 
-  // Temporarily disables interrupts, so no mistakes are made when writing
-  // to the processor registers
-  noInterrupts();
+    // Temporarily disables interrupts, so no mistakes are made when writing
+    // to the processor registers
+    noInterrupts();
 
-  // Disable the processor ADC (must be disabled before it will power down)
-  // ADCSRA = ADC Control and Status Register A
-  // ADEN = ADC Enable
-  ADCSRA &= ~_BV(ADEN);
+    // Disable the processor ADC (must be disabled before it will power down)
+    // ADCSRA = ADC Control and Status Register A
+    // ADEN = ADC Enable
+    ADCSRA &= ~_BV(ADEN);
 
 // turn off the brown-out detector, if possible
 // BODS = brown-out detector sleep
 // BODSE = brown-out detector sleep enable
 #if defined(BODS) && defined(BODSE)
-  sleep_bod_disable();
+    sleep_bod_disable();
 #endif
 
-  // disable all power-reduction modules (ie, the processor module clocks)
-  // NOTE:  This only shuts down the various clocks on the processor via
-  // the power reduction register!  It does NOT actually disable the
-  // modules themselves or set the pins to any particular state!  This
-  // means that the I2C/Serial/Timer/etc pins will still be active and
-  // powered unless they are turned off prior to calling this function.
-  power_all_disable();
+    // disable all power-reduction modules (ie, the processor module clocks)
+    // NOTE:  This only shuts down the various clocks on the processor via
+    // the power reduction register!  It does NOT actually disable the
+    // modules themselves or set the pins to any particular state!  This
+    // means that the I2C/Serial/Timer/etc pins will still be active and
+    // powered unless they are turned off prior to calling this function.
+    power_all_disable();
 
-  // Set the sleep enable bit.
-  sleep_enable();
+    // Set the sleep enable bit.
+    sleep_enable();
 
-  // Re-enables interrupts so we can wake up again
-  interrupts();
+    // Re-enables interrupts so we can wake up again
+    interrupts();
 
-  // Actually put the processor into sleep mode.
-  // This must happen after the SE bit is set.
-  sleep_cpu();
+    // Actually put the processor into sleep mode.
+    // This must happen after the SE bit is set.
+    sleep_cpu();
 
 #endif
-  // ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
 
 
-  // ---------------------------------------------------------------------
-  // -- The portion below this happens on wake up, after any wake ISR's --
+    // ---------------------------------------------------------------------
+    // -- The portion below this happens on wake up, after any wake ISR's --
 
 #if defined ARDUINO_ARCH_SAMD
-  // Reattach the USB after waking
-  // Enable systick interrupt
-  SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
-  if (restoreUSBDevice) {
+    // Reattach the USB after waking
+    // Enable systick interrupt
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+    if (restoreUSBDevice) {
 #ifndef USE_TINYUSB
-    USBDevice.attach();
+        USBDevice.attach();
 #endif
-    uint32_t startTimer = millis();
+        uint32_t startTimer = millis();
         while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {}
-  }
+    }
 #endif
 
 #if defined ARDUINO_ARCH_AVR
 
-  // Temporarily disables interrupts, so no mistakes are made when writing
-  // to the processor registers
-  noInterrupts();
+    // Temporarily disables interrupts, so no mistakes are made when writing
+    // to the processor registers
+    noInterrupts();
 
-  // Re-enable all power modules (ie, the processor module clocks)
-  // NOTE:  This only re-enables the various clocks on the processor!
-  // The modules may need to be re-initialized after the clocks re-start.
-  power_all_enable();
+    // Re-enable all power modules (ie, the processor module clocks)
+    // NOTE:  This only re-enables the various clocks on the processor!
+    // The modules may need to be re-initialized after the clocks re-start.
+    power_all_enable();
 
-  // Clear the SE (sleep enable) bit.
-  sleep_disable();
+    // Clear the SE (sleep enable) bit.
+    sleep_disable();
 
-  // Re-enable the processor ADC
-  ADCSRA |= _BV(ADEN);
+    // Re-enable the processor ADC
+    ADCSRA |= _BV(ADEN);
 
-  // Re-enables interrupts
-  interrupts();
+    // Re-enables interrupts
+    interrupts();
 
 #endif
 
-  // Re-enable the watch-dog timer
-  watchDogTimer.enableWatchDog();
+    // Re-enable the watch-dog timer
+    watchDogTimer.enableWatchDog();
 
 // Re-start the I2C interface
 #ifdef SDA
@@ -1094,12 +1098,12 @@ void Logger::systemSleep(uint8_t sleep_min) {
     zero_sleep_rtc.disableAlarm();
 #endif
 
-  // Wake-up message
-  wakeUpTime_secs = getNowEpochTz();
-  MS_DBG(F("\n\n\n... zzzZZ Processor awake @"), wakeUpTime_secs);
+    // Wake-up message
+    wakeUpTime_secs = getNowEpochTz();
+    MS_DBG(F("\n\n\n... zzzZZ Processor awake @"), wakeUpTime_secs);
 
-  // The logger will now start the next function after the systemSleep
-  // function in either the loop or setup
+    // The logger will now start the next function after the systemSleep
+    // function in either the loop or setup
 }
 
 
@@ -1203,31 +1207,32 @@ void Logger::printSensorDataCSV(Stream* stream) {
         stream->print(getValueStringAtI(i));
         if (i + 1 != getArrayVarCount()) { stream->print(','); }
     }
-  stream->println();
+    stream->println();
 }
 
 // Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void) {
-     bool retVal = true;
+    bool retVal = true;
     // If we don't know the slave select of the sd card, we can't use it
     if (_SDCardSSPin < 0) {
         PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
         PRINTOUT(F("Data will not be saved!"));
         retVal = false;
     } else {
-       // Initialise the SD card
-       if (!sd1_card_fatfs.begin(_SDCardSSPin, SPI_FULL_SPEED)) {
-           PRINTOUT(F("Error: SD card failed to initialize or is missing."));
-           PRINTOUT(F("Data will not be saved!"));
-           retVal = false;
-       } else {
-          // skip everything else if there's no SD card, otherwise it might hang
-          MS_DBG(
-          F("Successfully connected to SD Card with card/slave select on pin"),
-               _SDCardSSPin);
-       }
-     }
-  return SDextendedInit(retVal);
+        // Initialise the SD card
+        if (!sd1_card_fatfs.begin(_SDCardSSPin, SPI_FULL_SPEED)) {
+            PRINTOUT(F("Error: SD card failed to initialize or is missing."));
+            PRINTOUT(F("Data will not be saved!"));
+            retVal = false;
+        } else {
+            // skip everything else if there's no SD card, otherwise it might
+            // hang
+            MS_DBG(F("Successfully connected to SD Card with card/slave select "
+                     "on pin"),
+                   _SDCardSSPin);
+        }
+    }
+    return SDextendedInit(retVal);
 }
 
 
@@ -1384,7 +1389,7 @@ bool Logger::logToSD(void) {
     printSensorDataCSV(&logFile);
 // Echo the line to the serial port
 #if defined(STANDARD_SERIAL_OUTPUT)
-  PRINTOUT(F("\n \\/---- Line Saved to"), _fileName, F("----\\/"));
+    PRINTOUT(F("\n \\/---- Line Saved to"), _fileName, F("----\\/"));
     printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
     PRINTOUT('\n');
 #endif
@@ -1450,9 +1455,9 @@ void Logger::testingMode() {
     // Unset the startTesting flag
     Logger::startTesting = false;
 
-  PRINTOUT(F("------------------------------------------"));
-  PRINTOUT(F("Entering sensor testing mode"));
-  delay(100); // This seems to prevent crashes, no clue why ....
+    PRINTOUT(F("------------------------------------------"));
+    PRINTOUT(F("Entering sensor testing mode"));
+    delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Get the modem ready
     if (_logModem != NULL) {
@@ -1465,11 +1470,11 @@ void Logger::testingMode() {
         watchDogTimer.resetWatchDog();
     }
 
-  // Power up all of the sensors
-  _internalArray->sensorsPowerUp();
+    // Power up all of the sensors
+    _internalArray->sensorsPowerUp();
 
-  // Wake up all of the sensors
-  _internalArray->sensorsWake();
+    // Wake up all of the sensors
+    _internalArray->sensorsWake();
 
     // Update the sensors and print out data 25 times
     for (uint8_t i = 0; i < 25; i++) {
@@ -1506,9 +1511,9 @@ void Logger::testingMode() {
         watchDogTimer.resetWatchDog();
     }
 
-  // Put sensors to sleep
-  _internalArray->sensorsSleep();
-  _internalArray->sensorsPowerDown();
+    // Put sensors to sleep
+    _internalArray->sensorsSleep();
+    _internalArray->sensorsPowerDown();
 
     // Turn the modem off
     if (_logModem != NULL) {
@@ -1516,15 +1521,15 @@ void Logger::testingMode() {
         _logModem->modemSleepPowerDown();
     }
 
-  PRINTOUT(F("Exiting testing mode"));
-  PRINTOUT(F("------------------------------------------"));
-  watchDogTimer.resetWatchDog();
+    PRINTOUT(F("Exiting testing mode"));
+    PRINTOUT(F("------------------------------------------"));
+    watchDogTimer.resetWatchDog();
 
-  // Unset testing mode flag
-  Logger::isTestingNow = false;
+    // Unset testing mode flag
+    Logger::isTestingNow = false;
 
-  // Sleep
-  systemSleep();
+    // Sleep
+    systemSleep();
 }
 
 
@@ -1619,112 +1624,112 @@ void Logger::begin() {
 #endif
     watchDogTimer.resetWatchDog();
 
-  // Reset the watchdog
-  watchDogTimer.resetWatchDog();
-
-#if defined ARDUINO_ARCH_SAMD
-  /* Internal RTCZero Mode3       class Time relative to 2000 T0
-   * External RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
-   * Seconds, Minutes 0-59,  Hours 0-23,  Days 1-31, Months 1-12, Years 0-99
-   */
-
-  // eg Apr 22 2019 16:46:09 in this TZ
-  DateTime ccTimeTZ(__DATE__, __TIME__);
-  DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime()) +
-                    ((int32_t)getTimeZone() *
-                     HOURS_TO_SECS)); // set to secs from UST/GMT Year 2000
-#define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime() - (24 * HOURS_TO_SECS))
-#define TIME_FUT_UPPER_UT0 (COMPILE_TIME_UT0 + 50 * 365 * 24 * 60 * 60)
-  // MS_DBG("Sw Build Time Tz:
-  // ",ccTimeTZ.year(),"/",ccTimeTZ.month(),"/",ccTimeTZ.date(),"
-  // ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second(), " secs2kTz
-  // ",ccTimeTZ.unixtime()); MS_DBG("Sw Build Time T0:
-  // ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date(),"
-  // ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second()," secs2kT0
-  // ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
-
-#if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
-  MS_DBG("ExtRTC init");
-  if (!rtcExtPhy.begin()) {
-    PRINTOUT(F("*** extRTC not found. Equipment Error"));
-    // reboot or ?
-  } else {
-
-    delay(100);
-    bool cold_init =
-        false; // Simple test for time being - expand with RAM signature
-    USE_RTCLIB::ErrorNum errRtc; // = rtcExtPhy.initialized();
-#define RTC_INIT_MAX_NUM 10
-    uint8_t init_counter = 0;
-    do {
-      errRtc = rtcExtPhy.initialized();
-      if (USE_RTCLIB::NO_ERROR == errRtc)
-        break;
-      cold_init = true; // As oscillator wasn't working
-      MS_DBG(init_counter, "] ExtRTC !init. err=", errRtc,
-             " waiting for stability");
-      delay(100);
-    } while (++init_counter < RTC_INIT_MAX_NUM);
-
-    if (cold_init) {
-      MS_DBG("ExtRTC cold !init. set to compile time T0 ", COMPILE_TIME_UT0,
-             " which is Tz ", __DATE__, " ", __TIME__);
-      rtcExtPhy.init();
-      rtcExtPhy.adjust(ccTimeT0);
-
-    } else {
-      DateTime rNow_dt = rtcExtPhy.now();
-      uint32_t rnow_usecs = rNow_dt.unixtime();
-
-      MS_DBG("ExtRTC t0 ", rNow_dt.year(), "/", rNow_dt.month(), "/",
-             rNow_dt.date(), " ", rNow_dt.hour(), ":", rNow_dt.minute(), ":",
-             rNow_dt.second(), " or epoch ", rnow_usecs);
-      MS_DBG("Good if between ", COMPILE_TIME_UT0, "<", rnow_usecs, "<",
-             TIME_FUT_UPPER_UT0);
-      if ((rnow_usecs < COMPILE_TIME_UT0) ||
-          (rnow_usecs > TIME_FUT_UPPER_UT0)) {
-        rtcExtPhy.adjust(ccTimeT0);
-        MS_DBG("ExtRTC t0 set to compile time T0 ", COMPILE_TIME_UT0,
-               " which is Tz ", __DATE__, " ", __TIME__);
-      }
-    }
-
+    // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    DateTime now = rtcExtPhy.now();
+#if defined ARDUINO_ARCH_SAMD
+    /* Internal RTCZero Mode3       class Time relative to 2000 T0
+     * External RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
+     * Seconds, Minutes 0-59,  Hours 0-23,  Days 1-31, Months 1-12, Years 0-99
+     */
 
-    MS_DBG("Set internal rtc from ext rtc ", now.year(), "-", now.month(), "-",
-           now.date(), " ", now.hour(), ":", now.minute(), ":", now.second());
-    zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
-    zero_sleep_rtc.setDate(now.date(), now.month(), now.year() - 2000);
+    // eg Apr 22 2019 16:46:09 in this TZ
+    DateTime ccTimeTZ(__DATE__, __TIME__);
+    DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime()) +
+                      ((int32_t)getTimeZone() *
+                       HOURS_TO_SECS));  // set to secs from UST/GMT Year 2000
+#define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime() - (24 * HOURS_TO_SECS))
+#define TIME_FUT_UPPER_UT0 (COMPILE_TIME_UT0 + 50 * 365 * 24 * 60 * 60)
+    // MS_DBG("Sw Build Time Tz:
+    // ",ccTimeTZ.year(),"/",ccTimeTZ.month(),"/",ccTimeTZ.date(),"
+    // ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second(), " secs2kTz
+    // ",ccTimeTZ.unixtime()); MS_DBG("Sw Build Time T0:
+    // ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date(),"
+    // ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second()," secs2kT0
+    // ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
+
+#if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
+    MS_DBG("ExtRTC init");
+    if (!rtcExtPhy.begin()) {
+        PRINTOUT(F("*** extRTC not found. Equipment Error"));
+        // reboot or ?
+    } else {
+        delay(100);
+        bool cold_init =
+            false;  // Simple test for time being - expand with RAM signature
+        USE_RTCLIB::ErrorNum errRtc;  // = rtcExtPhy.initialized();
+#define RTC_INIT_MAX_NUM 10
+        uint8_t init_counter = 0;
+        do {
+            errRtc = rtcExtPhy.initialized();
+            if (USE_RTCLIB::NO_ERROR == errRtc) break;
+            cold_init = true;  // As oscillator wasn't working
+            MS_DBG(init_counter, "] ExtRTC !init. err=", errRtc,
+                   " waiting for stability");
+            delay(100);
+        } while (++init_counter < RTC_INIT_MAX_NUM);
+
+        if (cold_init) {
+            MS_DBG("ExtRTC cold !init. set to compile time T0 ",
+                   COMPILE_TIME_UT0, " which is Tz ", __DATE__, " ", __TIME__);
+            rtcExtPhy.init();
+            rtcExtPhy.adjust(ccTimeT0);
+
+        } else {
+            DateTime rNow_dt    = rtcExtPhy.now();
+            uint32_t rnow_usecs = rNow_dt.unixtime();
+
+            MS_DBG("ExtRTC t0 ", rNow_dt.year(), "/", rNow_dt.month(), "/",
+                   rNow_dt.date(), " ", rNow_dt.hour(), ":", rNow_dt.minute(),
+                   ":", rNow_dt.second(), " or epoch ", rnow_usecs);
+            MS_DBG("Good if between ", COMPILE_TIME_UT0, "<", rnow_usecs, "<",
+                   TIME_FUT_UPPER_UT0);
+            if ((rnow_usecs < COMPILE_TIME_UT0) ||
+                (rnow_usecs > TIME_FUT_UPPER_UT0)) {
+                rtcExtPhy.adjust(ccTimeT0);
+                MS_DBG("ExtRTC t0 set to compile time T0 ", COMPILE_TIME_UT0,
+                       " which is Tz ", __DATE__, " ", __TIME__);
+            }
+        }
+
+        watchDogTimer.resetWatchDog();
+
+        DateTime now = rtcExtPhy.now();
+
+        MS_DBG("Set internal rtc from ext rtc ", now.year(), "-", now.month(),
+               "-", now.date(), " ", now.hour(), ":", now.minute(), ":",
+               now.second());
+        zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
+        zero_sleep_rtc.setDate(now.date(), now.month(), now.year() - 2000);
 #define zr zero_sleep_rtc
-    MS_DBG("Read internal rtc UTC ", 2000 + zr.getYear(), "-", zr.getMonth(),
-           "-", zr.getDay(), " ", zr.getHours(), ":", zr.getMinutes(), ":",
-           zr.getSeconds());
-  }
-#else // no external _RTC
-                                      // If Power-on Reset Rcause.Bit0 have
-                                      // specific processing
+        MS_DBG("Read internal rtc UTC ", 2000 + zr.getYear(), "-",
+               zr.getMonth(), "-", zr.getDay(), " ", zr.getHours(), ":",
+               zr.getMinutes(), ":", zr.getSeconds());
+    }
+#else  // no external _RTC
+       // If Power-on Reset Rcause.Bit0 have
+       // specific processing
 #define zr zero_sleep_rtc
-  if ((0 == zr.getYear()) && (1 == zr.getMonth()) && (1 == zr.getDay())) {
-    MS_DBG("RTC.setDay to 2 for Power-On Reset case ");
-    zr.setDay(2); // Allow for calcs for -11hrs
-  }
-#endif // ADAFRUIT_FEATHERWING_RTC_SD
-#endif // ARDUINO_ARCH_SAMD
+    if ((0 == zr.getYear()) && (1 == zr.getMonth()) && (1 == zr.getDay())) {
+        MS_DBG("RTC.setDay to 2 for Power-On Reset case ");
+        zr.setDay(2);  // Allow for calcs for -11hrs
+    }
+#endif  // ADAFRUIT_FEATHERWING_RTC_SD
+#endif  // ARDUINO_ARCH_SAMD
 
-  // Print out the current time
-  PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
+    // Print out the current time
+    PRINTOUT(F("Current RTC time is:"),
+             formatDateTime_ISO8601(getNowEpochTz()));
 
-  // Reset the watchdog
-  watchDogTimer.resetWatchDog();
+    // Reset the watchdog
+    watchDogTimer.resetWatchDog();
 
-  // Begin the internal array
-  _internalArray->begin();
-  PRINTOUT(F("This logger has a variable array with"), getArrayVarCount(),
-           F("variables, of which"),
-           getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
-           F("come from"), _internalArray->getSensorCount(), F("sensors and"),
+    // Begin the internal array
+    _internalArray->begin();
+    PRINTOUT(F("This logger has a variable array with"), getArrayVarCount(),
+             F("variables, of which"),
+             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
+             F("come from"), _internalArray->getSensorCount(), F("sensors and"),
              _internalArray->getCalculatedVariableCount(),
              F("are calculated."));
 
@@ -1764,25 +1769,25 @@ void Logger::logData(void) {
         _internalArray->completeUpdate();
         watchDogTimer.resetWatchDog();
 
-    // Create a csv data record and save it to the log file
-    logToSD();
-    // Cut power from the SD card, waiting for housekeeping
-    turnOffSDcard(true);
+        // Create a csv data record and save it to the log file
+        logToSD();
+        // Cut power from the SD card, waiting for housekeeping
+        turnOffSDcard(true);
 
-    // Turn off the LED
-    alertOff();
-    // Print a line to show reading ended
-    PRINTOUT(F("------------------------------------------\n"));
+        // Turn off the LED
+        alertOff();
+        // Print a line to show reading ended
+        PRINTOUT(F("------------------------------------------\n"));
 
-    // Unset flag
-    Logger::isLoggingNow = false;
-  }
+        // Unset flag
+        Logger::isLoggingNow = false;
+    }
 
-  // Check if it was instead the testing interrupt that woke us up
+    // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-  // Sleep
-  systemSleep();
+    // Sleep
+    systemSleep();
 }
 // This is a one-and-done to log data
 void Logger::logDataAndPublish(void) {
@@ -1879,15 +1884,15 @@ void Logger::logDataAndPublish(void) {
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n"));
 
-    // Unset flag
-    Logger::isLoggingNow = false;
-  }
+        // Unset flag
+        Logger::isLoggingNow = false;
+    }
 
-  // Check if it was instead the testing interrupt that woke us up
+    // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-  // Call the processor sleep
-  systemSleep();
+    // Call the processor sleep
+    systemSleep();
 }
 #include "LoggerBaseExtCpp.h"
 // End of LoggerBase.cpp

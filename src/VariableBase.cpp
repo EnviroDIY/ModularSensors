@@ -332,62 +332,59 @@ bool Variable::checkUUIDFormat(void) {
             return false;
         }
     }
-  return true;
+    return true;
 }
 
 // Set the variable UUID.
 #if defined(__AVR__)
-#define freeRamCalc()                                                          \
-  (int)&v - (__brkval == 0 ? (int)&__heap_start : (int)__brkval)
+#define freeRamCalc() \
+    (int)&v - (__brkval == 0 ? (int)&__heap_start : (int)__brkval)
 #elif defined(ARDUINO_ARCH_SAMD)
-extern "C" char *sbrk(int i);
+extern "C" char* sbrk(int i);
 
 int16_t freeRamCalc() {
-  char stack_dummy = 0;
-  return &stack_dummy - sbrk(0);
+    char stack_dummy = 0;
+    return &stack_dummy - sbrk(0);
 }
 #endif
-void Variable::setVarUUID_atl(const char *newUUID, bool copyUid,
+void Variable::setVarUUID_atl(const char* newUUID, bool copyUid,
                               uint8_t uuidSize) {
 #ifdef DEBUGGING_SERIAL_OUTPUT
 #if defined __AVR__
-  extern int16_t __heap_start, *__brkval;
-  int16_t v;
-  int ramStart = freeRamCalc();
+    extern int16_t __heap_start, *__brkval;
+    int16_t        v;
+    int            ramStart = freeRamCalc();
 
 #elif defined(ARDUINO_ARCH_SAMD)
-  int ramStart = freeRamCalc();
+    int ramStart = freeRamCalc();
 
 #else
-  int ramStart = -9999;
+    int ramStart = -9999;
 #endif
-#endif // DEBUGGING_SERIAL_OUTPUT
-  //_UUID_atl =  newUUID;
-  _uuid = newUUID;
+#endif  // DEBUGGING_SERIAL_OUTPUT
+    //_UUID_atl =  newUUID;
+    _uuid = newUUID;
 
-  if (copyUid) {
+    if (copyUid) {
+        /* This allocate a memory for the UUID and copy it into there
+         * before assigning reference to it
+         */
 
-    /* This allocate a memory for the UUID and copy it into there
-     * before assigning reference to it
-     */
-
-    if (NULL == _UUID_buf_atl) {
-      _UUID_buf_atl = new char[uuidSize];
+        if (NULL == _UUID_buf_atl) { _UUID_buf_atl = new char[uuidSize]; }
+        if (NULL == _UUID_buf_atl) {
+            // Major problem
+            PRINTOUT(F("setVarUUID error - new didn't work for"), newUUID);
+        } else {
+            memcpy(_UUID_buf_atl, newUUID, uuidSize);
+            //_UUID =  _UUID_buf_atl;
+            _uuid = _UUID_buf_atl;
+        }
+        MS_DBG(F("setVarUUID cp "), newUUID);
     }
-    if (NULL == _UUID_buf_atl) {
-      // Major problem
-      PRINTOUT(F("setVarUUID error - new didn't work for"), newUUID);
-    } else {
-      memcpy(_UUID_buf_atl, newUUID, uuidSize);
-      //_UUID =  _UUID_buf_atl;
-      _uuid = _UUID_buf_atl;
-    }
-    MS_DBG(F("setVarUUID cp "), newUUID);
-  }
 #ifdef DEBUGGING_SERIAL_OUTPUT
-  int ramEnd = freeRamCalc();
-  MS_DBG(F("setVarUUID ramUsed "), ramStart - ramEnd, " left:", ramEnd);
-#endif // DEBUGGING_SERIAL_OUTPUT
+    int ramEnd = freeRamCalc();
+    MS_DBG(F("setVarUUID ramUsed "), ramStart - ramEnd, " left:", ramEnd);
+#endif  // DEBUGGING_SERIAL_OUTPUT
 }
 
 // This returns the current value of the variable as a float
@@ -401,8 +398,8 @@ float Variable::getValue(bool updateValue) {
     } else {
         if (updateValue) parentSensor->update();
         return _currentValue;
-    MS_DBG(F("setVarUUID cp "), newUUID);
-  }
+        MS_DBG(F("setVarUUID cp "), newUUID);
+    }
 }
 
 

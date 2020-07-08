@@ -88,9 +88,9 @@ void dataPublisher::emptyTxBuffer(void) {
 
 // Returns how much space is left in the buffer
 int dataPublisher::bufferFree(void) {
-  MS_DBG(F("Current TX Buffer Size:"), strlen(txBuffer));
-  return MS_SEND_BUFFER_SIZE - strlen(txBuffer);
-  }
+    MS_DBG(F("Current TX Buffer Size:"), strlen(txBuffer));
+    return MS_SEND_BUFFER_SIZE - strlen(txBuffer);
+}
 
 
 // Sends the tx buffer to a stream and then clears it

@@ -74,37 +74,37 @@
 */
 
 typedef enum {
-  PSLR_ALL = 0, // ALL works
-  PSLR_0500mA,  // 500mA or less
-  PSLR_1000mA,  // 1000mA or more
-  // Fut expanded to batterys
-  PLSR_LiSi18, // LiSiOCL2 19Ahr/larger Pulse 150mA "D" cell - Nomonal 3.6
-               // discharged at 3.2V
-  PLSR_3D,     // 3D * 1.6V MnO2 18AHR Pulse ?100mA "D" cell - Nomonal 4.8
-               // discharged at 2.4V
-  // 3 MnO2 "C" cell - higher impedance than "D" cell
-  PSLR_NUM, /// Number of Battery types supported
-  PSLR_UNDEF,
+    PSLR_ALL = 0,  // ALL works
+    PSLR_0500mA,   // 500mA or less
+    PSLR_1000mA,   // 1000mA or more
+    // Fut expanded to batterys
+    PLSR_LiSi18,  // LiSiOCL2 19Ahr/larger Pulse 150mA "D" cell - Nomonal 3.6
+                  // discharged at 3.2V
+    PLSR_3D,      // 3D * 1.6V MnO2 18AHR Pulse ?100mA "D" cell - Nomonal 4.8
+                  // discharged at 2.4V
+    // 3 MnO2 "C" cell - higher impedance than "D" cell
+    PSLR_NUM,  /// Number of Battery types supported
+    PSLR_UNDEF,
 } ps_liion_rating_t;
 #define PSLR_LIION PSLR_0500mA
 #define PLSR_BAT_TYPE_DEF PSLR_0500mA
 typedef enum {
-  PS_PWR_STATUS_REQ = 0, // 0 returns status
-  // Order of following important and should map to ps_Lbatt_status_t
-  PS_PWR_USEABLE_REQ, // 1 returns status if 1 or above, or else 0
-  PS_PWR_LOW_REQ,     // 2 returns status if 2 or above, or else 0
-  PS_PWR_MEDIUM_REQ,  // 3 returns status if 3 or above, or else 0
-  PS_PWR_HEAVY_REQ,   // 4 returns status if 4 or above, or else 0
-  // End of regular STATUS
+    PS_PWR_STATUS_REQ = 0,  // 0 returns status
+    // Order of following important and should map to ps_Lbatt_status_t
+    PS_PWR_USEABLE_REQ,  // 1 returns status if 1 or above, or else 0
+    PS_PWR_LOW_REQ,      // 2 returns status if 2 or above, or else 0
+    PS_PWR_MEDIUM_REQ,   // 3 returns status if 3 or above, or else 0
+    PS_PWR_HEAVY_REQ,    // 4 returns status if 4 or above, or else 0
+                         // End of regular STATUS
 } ps_pwr_req_t;
 typedef enum {
-  PS_LBATT_UNUSEABLE_STATUS = 0, // 0 PS_LBATT_REQUEST_STATUS,
-  // Order of following important and should maps to  ps_pwr_req_t
-  PS_LBATT_BARELYUSEABLE_STATUS, // 1 returns status if above 1, or else 0
-  PS_LBATT_LOW_STATUS,           // 2 returns status if above 2, or else 0
-  PS_LBATT_MEDIUM_STATUS,        // 3 returns status if above 3, or else 0
-  PS_LBATT_HEAVY_STATUS,         // 4 returns status if above 4, or else 0
-  // End of regular STATUS
+    PS_LBATT_UNUSEABLE_STATUS = 0,  // 0 PS_LBATT_REQUEST_STATUS,
+    // Order of following important and should maps to  ps_pwr_req_t
+    PS_LBATT_BARELYUSEABLE_STATUS,  // 1 returns status if above 1, or else 0
+    PS_LBATT_LOW_STATUS,            // 2 returns status if above 2, or else 0
+    PS_LBATT_MEDIUM_STATUS,         // 3 returns status if above 3, or else 0
+    PS_LBATT_HEAVY_STATUS,          // 4 returns status if above 4, or else 0
+                                    // End of regular STATUS
 } ps_Lbatt_status_t;
 
 // The main class for the Processor
@@ -118,7 +118,7 @@ typedef enum {
  * @see @ref processor_sensor_page
  */
 class ProcessorStats : public Sensor {
-public:
+ public:
     /**
      * @brief Construct a new Processor Stats object
      *
@@ -135,94 +135,95 @@ public:
      * @brief Destroy the Processor Stats object
      *
      */
-  ~ProcessorStats();
+    ~ProcessorStats();
 
     /**
      * @copydoc Sensor::getSensorLocation()
      *
      * This returns the processor name as read from the compiler variable.
      */
-  String getSensorLocation(void) override;
+    String getSensorLocation(void) override;
 
     /**
      * @copydoc Sensor::addSingleMeasurementResult()
      */
-  bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 
-  /* Battery Usage Level definitions
-   * LiIon (and any battery) has a charge and internal resistance.
-   * For the Logger there are different types of loads that need to be mapped to
-   * what the battery is capable of delivering. In terms of priority the system
-   * needs to: Determine battery charge status and what loads are possible
-   * - UNUSEABLE charge so low, it should immediately sleep and wait till charge
-   * improves (solar?)
-   * - USEABLE charge to run a basic logger, basic sensors and SD card logging,
-   * but no internet comms
-   * - LOW Battery, that can run sensors that use more power, and SD card
-   * logging, but no internet comms
-   * - MEDIUM Battery, that can support low power communications (eg WiFi/900Mz/
-   * CatNB?) and all sensors & SD card logging
-   * - Heavy power demand, that can support cellular comms, and all sensors and
-   * SD card logging
-   */
-  ps_Lbatt_status_t
-  isBatteryStatusAbove(bool newBattReading = false,
-                       ps_pwr_req_t status_req = PS_PWR_USEABLE_REQ);
-  void setBatteryType(ps_liion_rating_t LiionType);
-  void printBatteryThresholds(void);
-  /* Get Battery voltage
-   * This measures a complex Voltage, which when there is no other external
-   * voltage, is the LiIon Battery. What is really desired, is to measure the
-   * charge remaining in the LiIon battery (this is the API to do that). One way
-   * of measuring available charge is to measure both the float volt (with a
-   * small inconsequential load) and load voltage (voltage with system load) If
-   * the USB V is present, then it measures this voltage, but that typically
-   * means there is a good powersupply. There are a number of ways of measuring
-   * the voltage with degrees of accuracy. methdod1:Using the external 3.3V as
-   * reference, results in the most accurate absolute voltage providing the
-   * measured voltage range is 3.8V-15V. Its inacurrate beneath some threshold
-   * due to the different losses of the circuit parts. Ptactise has seen it
-   * become less accurate under 3.9V method2: determing an accurate voltage drop
-   * from an applied load, the Mayfly's mega1284P internal 2.4V reference can be
-   * used.
-   */
-  float getBatteryVm1(bool newBattReading);
-  float getBatteryVm1(float *BattV);
-  // float getBatteryVm2a(bool newBattReading);//snap float voltage
-  // float getBatteryVm2b(bool newBattReading);//snap load voltage
-  // float getBatteryVm2diff(bool newBattReading); //getDifference in measured
-  // batteryV using internal reference
+    /* Battery Usage Level definitions
+     * LiIon (and any battery) has a charge and internal resistance.
+     * For the Logger there are different types of loads that need to be mapped
+     * to what the battery is capable of delivering. In terms of priority the
+     * system needs to: Determine battery charge status and what loads are
+     * possible
+     * - UNUSEABLE charge so low, it should immediately sleep and wait till
+     * charge improves (solar?)
+     * - USEABLE charge to run a basic logger, basic sensors and SD card
+     * logging, but no internet comms
+     * - LOW Battery, that can run sensors that use more power, and SD card
+     * logging, but no internet comms
+     * - MEDIUM Battery, that can support low power communications (eg
+     * WiFi/900Mz/ CatNB?) and all sensors & SD card logging
+     * - Heavy power demand, that can support cellular comms, and all sensors
+     * and SD card logging
+     */
+    ps_Lbatt_status_t
+         isBatteryStatusAbove(bool         newBattReading = false,
+                              ps_pwr_req_t status_req     = PS_PWR_USEABLE_REQ);
+    void setBatteryType(ps_liion_rating_t LiionType);
+    void printBatteryThresholds(void);
+    /* Get Battery voltage
+     * This measures a complex Voltage, which when there is no other external
+     * voltage, is the LiIon Battery. What is really desired, is to measure the
+     * charge remaining in the LiIon battery (this is the API to do that). One
+     * way of measuring available charge is to measure both the float volt (with
+     * a small inconsequential load) and load voltage (voltage with system load)
+     * If the USB V is present, then it measures this voltage, but that
+     * typically means there is a good powersupply. There are a number of ways
+     * of measuring the voltage with degrees of accuracy. methdod1:Using the
+     * external 3.3V as reference, results in the most accurate absolute voltage
+     * providing the measured voltage range is 3.8V-15V. Its inacurrate beneath
+     * some threshold due to the different losses of the circuit parts. Ptactise
+     * has seen it become less accurate under 3.9V method2: determing an
+     * accurate voltage drop from an applied load, the Mayfly's mega1284P
+     * internal 2.4V reference can be used.
+     */
+    float getBatteryVm1(bool newBattReading);
+    float getBatteryVm1(float* BattV);
+    // float getBatteryVm2a(bool newBattReading);//snap float voltage
+    // float getBatteryVm2b(bool newBattReading);//snap load voltage
+    // float getBatteryVm2diff(bool newBattReading); //getDifference in measured
+    // batteryV using internal reference
 
 #define PS_TYPES 4
 #define PS_LPBATT_TBL_NUM (PS_TYPES + 1)
-  //
-  ps_liion_rating_t _liion_type;
-  // use EDIY_PROGMEM
-  const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
+    //
+    ps_liion_rating_t _liion_type;
+    // use EDIY_PROGMEM
+    const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
 
 //    0    1    2    3   Hyst
 //   Use  Low  Med  Good
 #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
-    // Mayfly rev 0.5,0.4 : Proc ADC Reported V is that of the Vin, which is
-    // only valid range 3.7V to 6V
-    // actual/Mayfly uP Measures - one Mayfly non-linear mapping
-    //  3.70/3.33 3.80/3.38  3.90/3.59 3.95/3.654
-    //  4.00/3.79 4.05/3.87 4.10/3.96 4.15/4.09 4.20/4.12
-    {0.1, 0.2, 0.3, 0.4, 0.05},     // 0 All readings return OK
-    {3.5, 3.6, 3.7, 3.75, 0.04},    // 1 PSLR_0500mA
-    {3.5, 3.6, 3.3, 3.7, 0.03},     // 2 PSLR_1000mA
-    {3.35, 3.38, 3.42, 3.46, 0.03}, // 3 PLSR_LiSi18
-    {2.4, 2.5, 2.60, 2.7, 0.03},    // 4 fut Test 3*D to 2.4 to 4.8V
-  // There could possibly be a MAYFLY off the ExternalVoltage ADS1115, it still
-  // is limited to 3.3V inpu
-#else  //
-    {3.3, 3.4, 3.6, 3.8, 0.05},     // PSLR_0500mA, //500mA or less
-    {3.2, 3.3, 3.4, 3.7, 0.04},     // PSLR_1000mA
-    {3.1, 3.2, 3.3, 3.6, 0.03},     // PSLR_4000mA
-    {2.90, 3.10, 3.20, 3.30, 0.03}, // PLSR_LiSi18
-    {3.5, 3.6, 4.00, 4.6, 0.03},    // 3*D to 2.4 to 4.8V
-#endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
-  };
+        // Mayfly rev 0.5,0.4 : Proc ADC Reported V is that of the Vin, which is
+        // only valid range 3.7V to 6V
+        // actual/Mayfly uP Measures - one Mayfly non-linear mapping
+        //  3.70/3.33 3.80/3.38  3.90/3.59 3.95/3.654
+        //  4.00/3.79 4.05/3.87 4.10/3.96 4.15/4.09 4.20/4.12
+        {0.1, 0.2, 0.3, 0.4, 0.05},      // 0 All readings return OK
+        {3.5, 3.6, 3.7, 3.75, 0.04},     // 1 PSLR_0500mA
+        {3.5, 3.6, 3.3, 3.7, 0.03},      // 2 PSLR_1000mA
+        {3.35, 3.38, 3.42, 3.46, 0.03},  // 3 PLSR_LiSi18
+        {2.4, 2.5, 2.60, 2.7, 0.03},     // 4 fut Test 3*D to 2.4 to 4.8V
+    // There could possibly be a MAYFLY off the ExternalVoltage ADS1115, it
+    // still is limited to 3.3V inpu
+#else   //
+        {3.3, 3.4, 3.6, 3.8, 0.05},      // PSLR_0500mA, //500mA or less
+        {3.2, 3.3, 3.4, 3.7, 0.04},      // PSLR_1000mA
+        {3.1, 3.2, 3.3, 3.6, 0.03},      // PSLR_4000mA
+        {2.90, 3.10, 3.20, 3.30, 0.03},  // PLSR_LiSi18
+        {3.5, 3.6, 4.00, 4.6, 0.03},     // 3*D to 2.4 to 4.8V
+#endif  // ARDUINO_AVR_ENVIRODIY_MAYFLY
+    };
 // use EDIY_PROGMEM
 #define PS_LBATT_USEABLE_V PS_LBATT_TBL[_liion_type][0]
 #define PS_LBATT_LOW_V PS_LBATT_TBL[_liion_type][1]
@@ -236,11 +237,11 @@ public:
 #define PS_LBATT_HEAVY_V 4.0
 #define PS_LBATT_HYSTERESIS 0.05
 #endif
-private:
-  const char *_version;
-  int8_t _batteryPin;
-  int16_t sampNum;
-  float LiIonBatt_V = -999.0;
+ private:
+    const char* _version;
+    int8_t      _batteryPin;
+    int16_t     sampNum;
+    float       LiIonBatt_V = -999.0;
 };
 
 
@@ -253,7 +254,7 @@ private:
  * @see @ref processor_sensor_page
  */
 class ProcessorStats_Battery : public Variable {
-public:
+ public:
     /**
      * @brief Construct a new ProcessorStats_Battery object.
      *
@@ -265,24 +266,24 @@ public:
      */
     explicit ProcessorStats_Battery(ProcessorStats* parentSense,
                                     const char*     uuid    = "",
-                         const char *varCode = "Battery")
-      : Variable(parentSense, (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
-                 (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
-                 "volt", varCode, uuid) {}
+                                    const char*     varCode = "Battery")
+        : Variable(parentSense, (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
+                   "volt", varCode, uuid) {}
     /**
      * @brief Construct a new ProcessorStats_Battery object.
      *
      * @note This must be tied with a parent ProcessorStats before it can be
      * used.
      */
-  ProcessorStats_Battery()
-      : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
-                 (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
-                 "volt", "Battery") {}
+    ProcessorStats_Battery()
+        : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
+                   "volt", "Battery") {}
     /**
      * @brief Destroy the ProcessorStats_Battery object - no action needed.
      */
-  ~ProcessorStats_Battery() {}
+    ~ProcessorStats_Battery() {}
 };
 
 
@@ -296,7 +297,7 @@ public:
  * @see @ref processor_sensor_page
  */
 class ProcessorStats_FreeRam : public Variable {
-public:
+ public:
     /**
      * @brief Construct a new ProcessorStats_FreeRam object.
      *
@@ -308,8 +309,8 @@ public:
      */
     explicit ProcessorStats_FreeRam(ProcessorStats* parentSense,
                                     const char*     uuid    = "",
-                         const char *varCode = "FreeRam")
-      : Variable(parentSense, (const uint8_t)PROCESSOR_RAM_VAR_NUM,
+                                    const char*     varCode = "FreeRam")
+        : Variable(parentSense, (const uint8_t)PROCESSOR_RAM_VAR_NUM,
                    (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
                    varCode, uuid) {}
     /**
@@ -318,14 +319,14 @@ public:
      * @note This must be tied with a parent ProcessorStats before it can be
      * used.
      */
-  ProcessorStats_FreeRam()
-      : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
-                 (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
-                 "FreeRam") {}
+    ProcessorStats_FreeRam()
+        : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
+                   (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
+                   "FreeRam") {}
     /**
      * @brief Destroy the ProcessorStats_FreeRam object - no action needed.
      */
-  ~ProcessorStats_FreeRam() {}
+    ~ProcessorStats_FreeRam() {}
 };
 
 
@@ -339,7 +340,7 @@ public:
  * @see @ref processor_sensor_page
  */
 class ProcessorStats_SampleNumber : public Variable {
-public:
+ public:
     /**
      * @brief Construct a new ProcessorStats_SampleNumber object.
      *
@@ -351,25 +352,25 @@ public:
      */
     explicit ProcessorStats_SampleNumber(ProcessorStats* parentSense,
                                          const char*     uuid    = "",
-                              const char *varCode = "SampNum")
-      : Variable(parentSense, (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
-                 (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
-                 "Dimensionless", varCode, uuid) {}
+                                         const char*     varCode = "SampNum")
+        : Variable(parentSense, (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
+                   "Dimensionless", varCode, uuid) {}
     /**
      * @brief Construct a new ProcessorStats_SampleNumber object.
      *
      * @note This must be tied with a parent ProcessorStats before it can be
      * used.
      */
-  ProcessorStats_SampleNumber()
-      : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
-                 (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
-                 "Dimensionless", "SampNum") {}
+    ProcessorStats_SampleNumber()
+        : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
+                   "Dimensionless", "SampNum") {}
     /**
      * @brief Destroy the ProcessorStats_SampleNumber() object - no action
      * needed.
      */
-  ~ProcessorStats_SampleNumber() {}
+    ~ProcessorStats_SampleNumber() {}
 };
 
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_

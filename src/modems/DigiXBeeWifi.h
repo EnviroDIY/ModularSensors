@@ -109,11 +109,11 @@ class DigiXBeeWifi : public DigiXBee {
      */
     TinyGsmClient gsmClient;
 
-  // Az extension
-  void setWiFiId(const char *WiFiId, bool copyId = false);
-  void setWiFiPwd(const char *WiFiPwd, bool copyId = false);
-  String getWiFiId(void);
-  String getWiFiPwd(void);
+    // Az extension
+    void   setWiFiId(const char* WiFiId, bool copyId = false);
+    void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
+    String getWiFiId(void);
+    String getWiFiPwd(void);
 
  protected:
     bool isInternetAvailable(void) override;
@@ -134,9 +134,9 @@ class DigiXBeeWifi : public DigiXBee {
     const char* _ssid;
     const char* _pwd;
 
-  // Az extension
-  char *_ssid_buf = NULL;
-  char *_pwd_buf = NULL;
+    // Az extension
+    char* _ssid_buf = NULL;
+    char* _pwd_buf  = NULL;
 };
 
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_

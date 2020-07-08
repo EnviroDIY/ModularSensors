@@ -51,7 +51,7 @@
 //#define ANALOGTHERMISTOR_SAMPNUM_VAR_NUM 2
 #ifndef analogThermistorDef_Resolution
 #define analogThermistorDef_Resolution 10
-#endif //
+#endif  //
 
 #define analogThermistorAdc_Max ((1 << analogThermistorDef_Resolution) - 1)
 #define THERMISTOR_SENSOR_ADC_RANGE (1 << analogThermistorDef_Resolution)
@@ -69,20 +69,20 @@
 
 #if !defined SENSOR_UNINIT_VAL
 #define SENSOR_UNINIT_VAL -9999
-#endif // SENSOR_UNINIT_VAL
+#endif  // SENSOR_UNINIT_VAL
 
 #define APTT_KELVIN_OFFSET 273.15
 #define AP_TYPES 4
 #define AP_LPBATT_TBL_NUM (AP_TYPES + 1)
 #ifndef AP_THERMISTOR_SERIES_R_OHMS
 #define AP_THERMISTOR_SERIES_R_OHMS 75000
-#endif // AP_THERMISTOR_SERIES_R_OHMS
+#endif  // AP_THERMISTOR_SERIES_R_OHMS
 typedef enum {
-  APTT_NCP15XH193F03RC = 0, // Murata Thermistor
-  APTT_1,
-  APTT_2,   //
-  APTT_NUM, /// Number of Thermistor Types supported
-  APTT_UNDEF,
+    APTT_NCP15XH193F03RC = 0,  // Murata Thermistor
+    APTT_1,
+    APTT_2,    //
+    APTT_NUM,  /// Number of Thermistor Types supported
+    APTT_UNDEF,
 } ac_type_thermistor_t;
 const float AP_LBATT_TBL[APTT_NUM][AP_LPBATT_TBL_NUM] = {
     //    0    1    2    3
@@ -93,54 +93,56 @@ const float AP_LBATT_TBL[APTT_NUM][AP_LPBATT_TBL_NUM] = {
     {0.0, 0.0, 0.0, 0.0, 0.0}};
 
 class analogThermistor : public Sensor {
-public:
-  // Need to know the  Mayfly version because the battery resistor depends on it
-  analogThermistor(int8_t powerPin, int8_t dataPin,
-                   uint8_t measurementsToAverage = 1);
-  ~analogThermistor();
+ public:
+    // Need to know the  Mayfly version because the battery resistor depends on
+    // it
+    analogThermistor(int8_t powerPin, int8_t dataPin,
+                     uint8_t measurementsToAverage = 1);
+    ~analogThermistor();
 
-  String getSensorLocation(void) override;
+    String getSensorLocation(void) override;
 
-  bool addSingleMeasurementResult(void) override;
-  // void set_active_sensors(uint8_t sensors_mask);
-  // uint8_t which_sensors_active(void);
-  // void setWaterTemperature(float  WaterTemperature_C);
-  // void setWaterTemperature(float  *WaterTemperature_C);
-  // void setEc_k(int8_t powerPin, int8_t adcPin, float
-  // sourceResistance_ohms,float  appliedV_V, uint8_t probeType);
+    bool addSingleMeasurementResult(void) override;
+    // void set_active_sensors(uint8_t sensors_mask);
+    // uint8_t which_sensors_active(void);
+    // void setWaterTemperature(float  WaterTemperature_C);
+    // void setWaterTemperature(float  *WaterTemperature_C);
+    // void setEc_k(int8_t powerPin, int8_t adcPin, float
+    // sourceResistance_ohms,float  appliedV_V, uint8_t probeType);
 
-  void setTemperature_k(uint8_t thermistorType = APTT_UNDEF,
-                        float sourceResistance_ohms =
-                            AP_THERMISTOR_SERIES_R_OHMS); //,float  appliedV_V,
-  // void setTemperature_k(int8_t powerPin=-1, int8_t adcPin=-1, uint8_t
-  // thermistorType=APTT_UNDEF,float
-  // sourceResistance_ohms=AP_THERMISTOR_SERIES_R_OHMS); //,float  appliedV_V,
+    void
+    setTemperature_k(uint8_t thermistorType = APTT_UNDEF,
+                     float   sourceResistance_ohms =
+                         AP_THERMISTOR_SERIES_R_OHMS);  //,float  appliedV_V,
+    // void setTemperature_k(int8_t powerPin=-1, int8_t adcPin=-1, uint8_t
+    // thermistorType=APTT_UNDEF,float
+    // sourceResistance_ohms=AP_THERMISTOR_SERIES_R_OHMS); //,float  appliedV_V,
 
-  // float _WaterTemperature_C;
-  float *_ptrWaterTemperature_C;
+    // float _WaterTemperature_C;
+    float* _ptrWaterTemperature_C;
 
-private:
-  const char *_version;
-  int8_t _TemperaturePowerPin;
-  int8_t _TemperatureAdcPin;
-  int8_t _thermistorType;
-  float _thermistorSieresResistance_ohms;
+ private:
+    const char* _version;
+    int8_t      _TemperaturePowerPin;
+    int8_t      _TemperatureAdcPin;
+    int8_t      _thermistorType;
+    float       _thermistorSieresResistance_ohms;
 };
 
 // Defines the "Free Ram" This is a board diagnostic
 class analogThermistor_Temperature : public Variable {
-public:
-  analogThermistor_Temperature(Sensor *parentSense, const char *uuid = "",
-                               const char *varCode = "Temperature_UUID")
-      : Variable(parentSense,
-                 (const uint8_t)ANALOGTHERMISTOR_TEMPERATURE_VAR_NUM,
-                 (uint8_t)ANALOGTHERMISTOR_TEMPERATURE_RESOLUTION,
-                 "Temperature", "C", varCode, uuid) {}
-  analogThermistor_Temperature()
-      : Variable((const uint8_t)ANALOGTHERMISTOR_TEMPERATURE_VAR_NUM,
-                 (uint8_t)ANALOGTHERMISTOR_TEMPERATURE_RESOLUTION,
-                 "Temperature", "C", "Temperature_UUID") {}
-  ~analogThermistor_Temperature() {}
+ public:
+    analogThermistor_Temperature(Sensor* parentSense, const char* uuid = "",
+                                 const char* varCode = "Temperature_UUID")
+        : Variable(parentSense,
+                   (const uint8_t)ANALOGTHERMISTOR_TEMPERATURE_VAR_NUM,
+                   (uint8_t)ANALOGTHERMISTOR_TEMPERATURE_RESOLUTION,
+                   "Temperature", "C", varCode, uuid) {}
+    analogThermistor_Temperature()
+        : Variable((const uint8_t)ANALOGTHERMISTOR_TEMPERATURE_VAR_NUM,
+                   (uint8_t)ANALOGTHERMISTOR_TEMPERATURE_RESOLUTION,
+                   "Temperature", "C", "Temperature_UUID") {}
+    ~analogThermistor_Temperature() {}
 };
 
-#endif // analogThermistor_h
+#endif  // analogThermistor_h

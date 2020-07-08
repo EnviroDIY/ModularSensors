@@ -48,7 +48,7 @@
  * to ThingSpeak using the MQTT protocol.
  */
 class ThingSpeakPublisher : public dataPublisher {
-public:
+ public:
     // Constructors
     /**
      * @brief Construct a new ThingSpeak Publisher object with no members
