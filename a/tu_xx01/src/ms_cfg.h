@@ -61,8 +61,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 // ** How frequently (in minutes) to log data **
 // For two Loggers defined logger2Mult with the faster loggers timeout and the
-// multiplier to the slower loggger #define  loggingInterval_Fast_MIN (1) #define
-//logger2Mult 5 //Not working for mayfly
+// multiplier to the slower loggger #define  loggingInterval_Fast_MIN (1)
+// #define
+// logger2Mult 5 //Not working for mayfly
 // How frequently (in minutes) to log data
 #if defined logger2Mult
 #define loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN * logger2Mult)
@@ -99,8 +100,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define APN_CDEF \
     "hologram"  // The APN for the gprs connection, unnecessary for WiFi
 //#define WIFIID_CDEF  "NameSsid"  // The WiFi access point, unnecessary for
-//gprs #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting
-//to WiFi, unnecessary for gprs
+// gprs #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for
+// connecting to WiFi, unnecessary for gprs
 #define WIFIID_CDEF "xxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF \
     "yyy"  // NULL for none, or  password for connecting to WiFi, unnecessary
