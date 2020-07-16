@@ -231,7 +231,12 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         if (bufferFree() < 36) printTxBuffer(_outClient);
         strcat(txBuffer, _baseLogger->getSamplingFeatureUUID());
 
-        if (bufferFree() < 42) printTxBuffer(_outClient);
+        // Following is record specific - start with space in buffer
+        uint16_t bufferSz = bufferFree();
+        if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(_outClient);
+        MS_DEEP_DBG(F("\n\rSZ "), bufferSz);
+
+        // if (bufferFree() < 42) printTxBuffer(_outClient);
         strcat(txBuffer, timestampTag);
         _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime)
             .toCharArray(tempBuffer, 37);
@@ -241,7 +246,8 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
             // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(_outClient);
+            if ((bufferSz = bufferFree()) < 47) printTxBuffer(_outClient);
+            MS_DEEP_DBG(i, F("sz"), bufferSz);
 
             txBuffer[strlen(txBuffer)] = '"';
             _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
@@ -256,7 +262,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
                 txBuffer[strlen(txBuffer)] = '}';
             }
         }
-
+        MS_DEEP_DBG(F("SZEND "), bufferFree());
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(_outClient, true);
 

@@ -224,7 +224,7 @@ class dataPublisher {
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData();
-
+    virtual int16_t storAndPublish();
     /**
      * @brief Retained for backwards compatibility.
      *

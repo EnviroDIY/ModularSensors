@@ -522,7 +522,7 @@ class Logger {
      * @brief An array of all of the attached data publishers
      */
     dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
-
+    uint8_t _dataPubInstance;
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //

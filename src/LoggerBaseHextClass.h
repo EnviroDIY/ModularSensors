@@ -55,6 +55,15 @@ const char* _registrationToken;
 const char* _samplingFeature;
 const char* _LoggerId_buf = NULL;
 
+virtual bool serializeReadings(void);
+virtual bool serializeLine(const char* queFile_hn);
+
+virtual bool deSerializeReadingsStart(void);
+virtual bool deSerializeReadingsClose(bool deleteFile = false);
+virtual bool deSerializeLine(void);
+virtual bool deSerializeReadingsNext(void);
+virtual bool deSerializeDbg(void);
+void         setFileAccessTime(File fileToStamp);
 // The SD card and file
 #if 0  // defined BOARD_SDQ_QSPI_FLASH
        // This can be on the Adafruit Express options

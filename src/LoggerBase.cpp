@@ -406,6 +406,7 @@ void Logger::publishDataToRemotes(void) {
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] != NULL) {
+            _dataPubInstance = i;
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
             // dataPublishers[i]->publishData(_logModem->getClient());
@@ -1823,6 +1824,12 @@ void Logger::logDataAndPublish(void) {
 
         // Create a csv data record and save it to the log file
         logToSD();
+
+        serializeReadings();  // Start Que
+#define SERIALIZE_sendEveryX_NUM 5
+#define SERIALIZE_sendOffset_min 5
+#define SERIALIZE_sendPacingDelay_sec 1
+        deSerializeDbg();
 
         if (_logModem != NULL) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));

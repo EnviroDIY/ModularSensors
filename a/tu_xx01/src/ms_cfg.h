@@ -24,9 +24,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define AnalogProcEC_ACT 1
 //#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
-#define Insitu_TrollSdi12_UUID 1
+//#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
-#define KellerAcculevel_ACT 1
+//#define KellerAcculevel_ACT 1
 //#define KellerNanolevel_ACT 1
 //#define ASONG_AM23XX_UUID 1
 
@@ -78,9 +78,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // Instructions: define only one  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
+//#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant

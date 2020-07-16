@@ -641,3 +641,195 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 #endif  // USE_RTCLIB
 
 // End parse.ini
+
+// This update the timestamp on a file
+void Logger::setFileAccessTime(File fileToStamp) {
+    DateTime markedDt(Logger::markedEpochTime);
+
+    fileToStamp.timestamp((T_WRITE | T_ACCESS), markedDt.year(),
+                          markedDt.month(), markedDt.date(), markedDt.hour(),
+                          markedDt.minute(), markedDt.second());
+}
+
+// keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
+const char queFile_fn[] = "QUE0A.TXT";
+#define QUEFILE_MAX_LINE INI_MAX_LINE
+char     queFile_line[QUEFILE_MAX_LINE];
+char*    queFile_nextChar;
+uint16_t nextStr_sz;
+long     queFile_epochTime = 0;
+// const char* delim_char        = ",";
+#define DELIM_CHAR2 ','
+bool Logger::serializeLine(const char* queFile_hn) {
+    if (!initializeSDCard()) return false;
+    if (logFile.open(queFile_hn, (O_WRITE | O_CREAT | O_AT_END))) {
+        uint16_t outputSz;
+        // String csvString(Logger::markedEpochTime);
+        outputSz = logFile.print(Logger::markedEpochTime);
+        for (uint8_t i = 0; i < getArrayVarCount(); i++) {
+            // csvString += ',';
+            outputSz += logFile.print(',' + getValueStringAtI(i));
+        }
+        outputSz += logFile.println();
+        // setFileAccessTime(logFile);
+        logFile.close();
+        MS_DBG(F("serializeReadings on "), queFile_hn, F(" at "),
+               markedEpochTime, F(" size="), outputSz);
+    } else {
+        PRINTOUT(F("serializeReadings; No file "), queFile_hn);
+        return false;
+    }
+    return true;
+}  // Logger::serializeReadings
+
+/*
+For serialize, create ASCII CSV records of the form
+<marked epoch time> n*[<,values>]
+*/
+bool Logger::serializeReadings() {
+    return serializeLine(queFile_fn);
+}
+/* Deserializer functions
+
+For deserialize, read  ASCII CSV records of the form
+<marked epoch time> n*[<,values>]
+
+deSerializeReadingsStart()   ~ to open file
+deSerializeLine()  to populate
+    queFile_epochTime &
+
+*/
+
+
+bool Logger::deSerializeReadingsStart(void) {
+    if (!initializeSDCard()) {
+        PRINTOUT(F("deSerialeReadinsStart; !SDcard "));
+        return false;
+    }
+    queFile_nextChar = queFile_line;
+    if (!logFile.open(queFile_fn, O_RDWR)) {
+        PRINTOUT(F("deSerialeReadinsStart; No file "), queFile_fn);
+        return false;
+    }
+
+    return true;
+}
+
+
+bool Logger::deSerializeLine(void) {
+    char* errCheck;
+    /* Scan through one line  */
+#define reader_fn(line1, max_line1) logFile.fgets(line1, max_line1)
+
+    uint16_t num_char = reader_fn(queFile_line, QUEFILE_MAX_LINE);
+
+    if (0 == num_char) return false;
+    // First is the epochTime,
+    queFile_epochTime = strtol(queFile_line, &errCheck, 10);
+    if (errCheck == queFile_line) {
+        PRINTOUT(F("deSerializeLine Epoch err'"), queFile_line, F("'"));
+        return false;  // EIO;
+    }
+    // Find next DELIM and go past it
+    queFile_nextChar = 1 + strchrnul(queFile_line, DELIM_CHAR2);
+    if (queFile_nextChar == queFile_line) {
+        PRINTOUT(F("deSerializeLine 1not found"), queFile_line, F("'"));
+        nextStr_sz = 0;
+        return false;
+    }
+    // Find sz of this field
+    char* nextCharEnd = strchrnul(queFile_nextChar, DELIM_CHAR2);
+    nextStr_sz        = nextCharEnd - queFile_nextChar;
+    return true;
+}
+
+bool Logger::deSerializeReadingsNext(void) {
+    char* queFile_old = queFile_nextChar;
+    // Find next DELIM and go past it
+    queFile_nextChar = 1 + strchrnul(queFile_nextChar, DELIM_CHAR2);
+    if ((queFile_old == queFile_nextChar)) {
+        nextStr_sz = 0;
+        PRINTOUT(F("deSerializeReadingsNext 1error:"), queFile_nextChar,
+                 F("'"));
+        return false;
+    }
+    /* Find sz of this field
+        either
+    <value>,[..]
+    <value><CR><LF>EOL
+    EOF
+    */
+    char* nextCharEnd = strchr(queFile_nextChar, DELIM_CHAR2);
+    nextStr_sz        = strlen(queFile_nextChar);
+    if ((0 == nextStr_sz)) {
+        // Found end of line
+        return false;
+    } else if (NULL == nextCharEnd) {
+        // Found <value>EOF ~ nextSr_sz is valid
+        nextStr_sz -= 1;  // take off turds <LF>
+        MS_DEEP_DBG(F("dSRN info "), nextStr_sz, " '", queFile_nextChar, "'");
+        // return true
+    } else {
+        // expect to have found <value>,[..]
+        // if found ,, then invalid and finish
+        nextStr_sz = nextCharEnd - queFile_nextChar;
+        if (0 == nextStr_sz) return false;
+    }
+    return true;
+}
+
+bool Logger::deSerializeReadingsClose(bool deleteFile) {
+    bool retVal = false;
+    if (!deleteFile) {
+        retVal = logFile.close();
+    } else {
+        if (!(retVal = logFile.remove())) {
+            PRINTOUT(F("Remove Failed "), queFile_fn);
+            if (!(retVal = logFile.close())) {
+                PRINTOUT(F("Close2 Failed "), queFile_fn);
+            }
+        }
+    }
+    return retVal;
+}
+
+/* Prototyping deserialize example
+ */
+
+uint16_t serialCnt = 0;
+// SdFat    sdfat_phy;
+// SdFile   rootDir;
+bool Logger::deSerializeDbg(void) {
+    // char* next_token;
+#define TEMPBUF_SZ 37
+    char tempBuffer[TEMPBUF_SZ] = "";
+    if (++serialCnt >= SERIALIZE_sendEveryX_NUM) {
+        String d_str(80);
+        serialCnt = 0;
+        deSerializeReadingsStart();
+        while (deSerializeLine()) {
+            d_str = formatDateTime_ISO8601(queFile_epochTime) + ';';
+            // next_token = find_chars_or_comment(queFile_nextChar,
+            // DELIM_CHAR2);
+            tempBuffer[0] = 0;
+            strncat(tempBuffer, queFile_nextChar, nextStr_sz);
+            strcat(tempBuffer, ";");
+            // PRINTOUT("Sn=", tempBuffer);
+            d_str.concat(tempBuffer);
+            // getline
+            while (deSerializeReadingsNext()) {
+                tempBuffer[0] = 0;
+                strncat(tempBuffer, queFile_nextChar, nextStr_sz);
+                strcat(tempBuffer, ";");
+                d_str.concat(tempBuffer);
+                // PRINTOUT("t='", tempBuffer, F("'"));
+            }
+            PRINTOUT("L=", d_str);
+        }
+        deSerializeReadingsClose(true);  // Delete serial file
+    }
+    return true;
+}
+
+
+// End LoggerBaseExtCpp.h
