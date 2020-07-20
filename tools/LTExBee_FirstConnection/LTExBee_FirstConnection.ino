@@ -105,13 +105,22 @@ void loop() {
         /** Set the socket timeout to 10s (this is default). */
         gsmModem.sendAT(GF("TM"), 64);
         gsmModem.waitResponse();
+
         DBG(F("Setting Cellular Carrier Options..."));
-        // Carrier Profile - 1 = No profile/SIM ICCID selected
-        gsmModem.sendAT(GF("CP"), 0);
+        // Carrier Profile - 0 = Automatic selection
+        //                 - 1 = No profile/SIM ICCID selected
+        //                 - 2 = AT&T
+        //                 - 3 = Verizon
+        // NOTE:  To select T-Mobile, you must enter bypass mode!
+        gsmModem.sendAT(GF("CP"), 2);
         gsmModem.waitResponse();
-        // Cellular network technology - LTE-M/NB IoT
+        // Cellular network technology - 0 = LTE-M with NB-IoT fallback
+        //                             - 1 = NB-IoT with LTE-M fallback
+        //                             - 2 = LTE-M only
+        //                             - 3 = NB-IoT only
         gsmModem.sendAT(GF("N#"), 0);
         gsmModem.waitResponse();
+
         DBG(F("Setting the APN..."));
         /** Save the network connection parameters. */
         gsmModem.gprsConnect(apn);
