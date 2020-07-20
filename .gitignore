@@ -69,6 +69,7 @@ include/readme.txt
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode
+.history
 
 # Other
 compile_tests/
@@ -79,3 +80,12 @@ barometric_correction/
 3G_Test/
 LocalDoxyfile
 DoxygenOutput.log
+Doxyfile-mcss
+doxygen/custom_navtree.css
+doxygen/custom_search.css
+doxygen/custom_tabs_archive.css
+doxygen/custom_tabs.css
+doxygen/envirodiy.html
+doxygen/footer.html
+doxygen/header_archive.html
+doxygen/header.html

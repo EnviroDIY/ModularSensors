@@ -3,7 +3,7 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
 
-    <tab type="mainpage" visible="yes" title="">
+    <tab type="mainpage" visible="yes" title="About">
       <tab type="user" url="@ref mainpage_data_receivers" title="Data Endpoints"/>
       <tab type="user" url="@ref mainpage_supported_sensors" title="Supported Sensors"/>
       <tab type="user" url="@ref mainpage_modems" title="Supported Cellular/Wifi Modules"/>
@@ -98,7 +98,14 @@
         <tab type="user" url="@ref am2315_page" title="AOSong AM2315"/>
         <tab type="user" url="@ref dht_page" title="AOSong DHT"/>
         <tab type="user" url="@ref sq212_page" title="Apogee SQ212"/>
-        <tab type="user" url="@ref atlas_page" title="Atlas EZO Circuits"/>
+        <tab type="usergroup" url="@ref atlas_page" title="Atlas EZO Circuits">
+          <tab type="user" url="@ref atlas_co2_page" title="Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor"/>
+          <tab type="user" url="@ref atlas_do_page" title="EZO-DO Dissolved Oxygen Circuit and Probe"/>
+          <tab type="user" url="@ref atlas_cond_page" title="Atlas Scientific EZO-EC Conductivity Circuit and Probes"/>
+          <tab type="user" url="@ref atlas_orp_page" title="Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes"/>
+          <tab type="user" url="@ref atlas_ph_page" title="Atlas Scientific EZO-pH Circuit and Probe"/>
+          <tab type="user" url="@ref atlas_rtd_page" title="Atlas Scientific EZO-RTD Temperature Circuit and Probes"/>
+        </tab>
         <tab type="user" url="@ref bme280_page" title="Bosch BME28"/>
         <tab type="user" url="@ref obs3_page" title="Campbell OBS3+"/>
         <tab type="user" url="@ref es2_page" title="Decagon ES2"/>
@@ -136,6 +143,7 @@
     <includes visible="$SHOW_INCLUDE_FILES"/>
     <inheritancegraph visible="$CLASS_GRAPH"/>
     <collaborationgraph visible="$COLLABORATION_GRAPH"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestedclasses visible="yes" title=""/>
       <publictypes title=""/>
@@ -170,7 +178,6 @@
       <related title="" subtitle=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <inlineclasses title=""/>
       <typedefs title=""/>
@@ -192,6 +199,7 @@
   <!-- Layout definition for a namespace page -->
   <namespace>
     <briefdescription visible="yes"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestednamespaces visible="yes" title=""/>
       <constantgroups visible="yes" title=""/>
@@ -207,7 +215,6 @@
       <variables title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <inlineclasses title=""/>
       <typedefs title=""/>
@@ -227,6 +234,7 @@
     <includegraph visible="$INCLUDE_GRAPH"/>
     <includedbygraph visible="$INCLUDED_BY_GRAPH"/>
     <sourcelink visible="yes"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <interfaces visible="yes" title=""/>
       <classes visible="yes" title=""/>
@@ -243,7 +251,6 @@
       <variables title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <inlineclasses title=""/>
       <defines title=""/>
@@ -261,6 +268,7 @@
   <group>
     <briefdescription visible="yes"/>
     <groupgraph visible="$GROUP_GRAPHS"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestedgroups visible="yes" title=""/>
       <dirs visible="yes" title=""/>
@@ -284,7 +292,6 @@
       <friends title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <pagedocs/>
       <inlineclasses title=""/>
@@ -311,10 +318,10 @@
   <directory>
     <briefdescription visible="yes"/>
     <directorygraph visible="yes"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <dirs visible="yes"/>
       <files visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
   </directory>
 </doxygenlayout>

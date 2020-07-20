@@ -777,9 +777,11 @@ const uint8_t SQ212ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 // Create an Apogee SQ212 sensor object
 ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel, SQ212ADSi2c_addr);
 
-// Create a PAR variable pointer for the SQ212
+// Create PAR and raw voltage variable pointers for the SQ212
 Variable* sq212PAR =
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* sq212voltage =
+    new ApogeeSQ212_Voltage(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [sq212] */
 
 
