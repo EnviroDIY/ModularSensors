@@ -270,7 +270,7 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
         }
         if (!_baseLogger->deszReadNext()) break;
     }
-    MS_DBG(F("Filled from SD in "), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+    MS_DBG(F("Filled from SD in "), MS_PRINT_DEBUG_TIMER, F("ms"));
 }
 // This utilizes an attached modem to make a TCP connection to the
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request

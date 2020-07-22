@@ -22,10 +22,15 @@ uint8_t getSendEveryX(void) {
 #endif  // SERIALIZE_sendEveryX_NUM
 // Range typically 0-20
 uint8_t _sendEveryX_num = SERIALIZE_sendEveryX_NUM;
-uint8_t _sendEveryX_cnt = 0;  // Counter to track status
+int8_t  _sendEveryX_cnt = 0;  // Counter to track status
 
-void setSendOffset(uint8_t param) {
-    _sendOffset_min = param;
+void setSendOffset(uint8_t param1) {
+    // Might also have check for SampleTime * _sendEveryX_num < param1
+    if (_sendOffset_MAX >= param1) {
+        _sendOffset_min = param1;
+    } else {
+        _sendOffset_min = _sendOffset_MAX;
+    }
 }
 uint8_t getSendOffset(void) {
     return _sendOffset_min;
@@ -33,8 +38,10 @@ uint8_t getSendOffset(void) {
 #if !defined SERIALIZE_sendOffset_min
 #define SERIALIZE_sendOffset_min 0
 #endif  // SERIALIZE_sendOffset_min
-uint8_t _sendOffset_min = SERIALIZE_sendOffset_min;
-uint8_t _sendOffset_cnt = 0;
+uint8_t       _sendOffset_min = SERIALIZE_sendOffset_min;
+const uint8_t _sendOffset_MAX = 14;  // Max allowed
+bool          _sendOffset_act = false;
+uint8_t       _sendOffset_cnt = 0;
 
 void setSendPacingDelay(uint8_t param) {
     _sendPacingDelay_mSec = param;
@@ -91,10 +98,22 @@ const char* _registrationToken;
 const char* _samplingFeature;
 const char* _LoggerId_buf = NULL;
 
+// ===================================================================== //
+// Serializing/Deserialing through READINGS.TXT
+// ===================================================================== //
+public:
+bool     deszReadNext(void);
+long     queFile_epochTime = 0;  // Marked Epoch Time
+char*    queFile_nextChar;
+uint16_t nextStr_sz;
+
 private:
+long queFile_status = 0;  // Bit wise status of reading
+
+
 // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
-File       deszReadFile;
-const char *readingsFn_str = "READINGS.TXT";
+File        deszReadFile;
+const char* readingsFn_str = "READINGS.TXT";
 
 File        postsLogHndl;                    // Record all POSTS when enabled
 const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
@@ -122,15 +141,9 @@ bool deszCleanup(bool debug = false);
 
 bool deszLine(void);
 
-virtual bool deszDbg(void);
-void         setFileAccessTime(File* fileToStamp);
+bool deszDbg(void);
+void setFileAccessTime(File* fileToStamp);
 
-public:
-bool     deszReadNext(void);
-long     queFile_status    = 0;  // Bit wise status of reading
-long     queFile_epochTime = 0;  // Marked Epoch Time
-char*    queFile_nextChar;
-uint16_t nextStr_sz;
 
 // The SD card and file
 #if 0  // defined BOARD_SDQ_QSPI_FLASH

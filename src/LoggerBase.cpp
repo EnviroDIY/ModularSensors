@@ -831,7 +831,7 @@ void Logger::markTime(void) {
 // This checks to see if the CURRENT time is an even interval of the logging
 // rate
 uint8_t Logger::checkInterval(void) {
-    uint8_t retval;
+    uint8_t retval = CIA_NOACTION;
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     uint32_t checkTime = getNowEpoch();
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
@@ -840,20 +840,42 @@ uint8_t Logger::checkInterval(void) {
     MS_DBG(F("Mod of Logging Interval:"),
            checkTime % (_loggingIntervalMinutes * 60));
 
+    if (_sendOffset_act) {
+        // A Timer is counting down to perform delayed Post Readings
+        if (0 >= --_sendOffset_cnt) {
+            // Timer has expired
+            _sendOffset_act = false;
+            retval |= CIA_POST_READINGS;
+            MS_DBG(F("sendOffset Post Readings"));
+        } else {
+            MS_DBG(F("sendOffset Timer "), _sendOffset_cnt);
+        }
+    }
+
     if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Take Sensor readings.Epoch:"), Logger::markedEpochTimeTz);
+        MS_DBG(F("Take Sensor readings. Epoch:"), Logger::markedEpochTimeTz);
 
         // Check what actions for this time period
-        retval = CIA_NEW_READING;
+        retval |= CIA_NEW_READING;
+
         if (1 < _sendEveryX_num) {
             _sendEveryX_cnt++;
             if (_sendEveryX_cnt >= _sendEveryX_num) {
                 _sendEveryX_cnt = 0;
-                // TODO: add _sendOffset_min processing here
-                retval |= CIA_POST_READINGS;
-                MS_DBG(F("sendEveryX Post Readings"));
+                // Check if delay ~ offset to Send Readings
+                if (0 == _sendOffset_min) {
+                    // No dealy ~ send readings now
+                    retval |= CIA_POST_READINGS;
+                    MS_DBG(F("sendEveryX Post Readings"));
+                } else {
+                    // delayed retval |= CIA_POST_READINGS;
+                    _sendOffset_act = true;
+                    _sendOffset_cnt = _sendOffset_min;
+                    MS_DBG(F("sendEveryX Timer sendOffset started "),
+                           _sendOffset_min);
+                }
             } else {
                 MS_DBG(F("sendEveryX "), _sendEveryX_cnt, F("counting to "),
                        _sendEveryX_num);
@@ -864,7 +886,6 @@ uint8_t Logger::checkInterval(void) {
         }
     } else {
         MS_DBG(F("Not time yet."));
-        retval = CIA_NOACTION;
     }
     if (!isRTCSane(checkTime)) {
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
