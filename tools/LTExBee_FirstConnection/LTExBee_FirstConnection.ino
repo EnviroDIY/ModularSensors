@@ -145,7 +145,11 @@ void loop() {
 
     // Wait forever for a connection
     DBG(F("Waiting for network registration"));
-    while (!gsmModem.isNetworkConnected()) {}
+    while (!gsmModem.isNetworkConnected()) {
+        int csq = gsmModem.getSignalQuality();
+        DBG("\nSignal quality:", csq);
+        delay(250);
+    }
 
     // Print some stuff after connected
     String ccid = gsmModem.getSimCCID();
@@ -162,9 +166,6 @@ void loop() {
 
     IPAddress local = gsmModem.localIP();
     DBG("Local IP:", local);
-
-    int csq = gsmModem.getSignalQuality();
-    DBG("Signal quality:", csq);
 
 
     // Shut down
