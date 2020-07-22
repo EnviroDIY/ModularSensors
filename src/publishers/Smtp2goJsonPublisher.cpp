@@ -200,7 +200,7 @@ int16_t Smtp2goJsonPublisher::publishData(Client* _outClient) {
 #define MAX_BUF_SZ 40
     char     tempBuffer[MAX_BUF_SZ] = "";
     uint16_t did_respond            = 0;
-    uint16_t Json_Length            = calculateJsonSize();
+    int16_t  Json_Length            = calculateJsonSize();
 #define MAX_TX_BUF_SZ 750  // DataPublisher
     if (Json_Length < MS_SEND_BUFFER_SIZE) {
         MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());

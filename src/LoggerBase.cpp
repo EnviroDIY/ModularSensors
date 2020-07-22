@@ -402,6 +402,7 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
 
 
 void Logger::publishDataToRemotes(void) {
+    // Assumes that there is an internet connection
     MS_DBG(F("Sending out remote data."));
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
@@ -415,6 +416,114 @@ void Logger::publishDataToRemotes(void) {
         }
     }
 }
+#define TEMP_BUFFER_SZ 37
+void Logger::publishDataQuedToRemotes(void) {
+    // Assumes that there is an internet connection
+    // bool    useQue = false;
+    int16_t rspCode;
+    bool    dslStatus = false;
+    bool    retVal    = false;
+    // MS_DBG(F("Pub Data Qued"));
+    MS_DBG(F("publishDataQuedToRemotes from"), serializeFn_str);
+
+    // Open debug file
+    retVal = postsLogHndl.open(postsLogFn_str, (O_WRITE | O_CREAT | O_AT_END));
+    if (retVal) PRINTOUT(F("postsLogHndl.open err"), postsLogFn_str);
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != NULL) {
+            _dataPubInstance = i;
+            PRINTOUT(F("\nSending data to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+            // open the qued file for serialized readings
+            // (char*)quedFileFn_str
+
+
+            // dataPublishers[i]->publishData(_logModem->getClient());
+            // Need to manage filenames[i]
+            //    serialCreateFn((char*)"0A");
+            if (dataPublishers[i]->setQued(true, ('0' + i))) {
+                // useQue = true;
+                deSerializeReadingsStart();
+                MS_START_DEBUG_TIMER;
+                while ((dslStatus = deSerializeLine())) {
+                    rspCode = dataPublishers[i]->publishData();
+
+                    watchDogTimer.resetWatchDog();
+// MS_DBG(F("Rsp"), rspCode, F(", in"),
+// MS_PRINT_DEBUG_TIMER,    F("ms\n"));
+
+// If debug ...keep record
+#if 0
+                    if (0 == postsLogHndl.print(getNowEpochT0())) {
+                        PRINTOUT(F("publishDataQuedToRemote postsLog err"));
+                    }
+#else
+
+                    char tempBuffer[TEMP_BUFFER_SZ];
+                    formatDateTime_ISO8601(getNowEpochT0())
+                        .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
+                    postsLogHndl.print(tempBuffer);
+#endif
+                    postsLogHndl.print(F(","));
+                    postsLogHndl.print(rspCode);
+                    postsLogHndl.print(F(","));
+                    postsLogHndl.print(deslzFile_line);
+#if 0
+                    if (201 != rspCode) {
+#define DESLZ_STATUS_UNACK '1'
+                        deslzFile_line[0] = DESLZ_STATUS_UNACK;
+                        // Add to que
+                        MS_DBG(F("publishDataQuedToRemotes qued"),
+                               deslzFile_line);
+                        retVal = quedFileHndl.print(deslzFile_line);
+                        if (0 == retVal) {
+                            PRINTOUT(F("publishDataQuedToRemote 0 printed"));
+                        }
+                    }
+#endif  // 0
+                }
+                deSerializeReadingsClose(true);
+                // retVal = quedFileHndl.close();
+                // if (!retVal)
+                //    PRINTOUT(
+                //        F("publishDataQuedToRemote quedFileHndl.close err"));
+
+                MS_DBG(F("publishDataQuedToRemotes"), deserialLinesRead,
+                       F("lines in"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+
+                // QUE.TXT retVal = serializeQueFn((char*)('0' + i));  // FUT +0
+                // if (retVal) PRINTOUT(F("publishDataQuedToRemote
+                // serializedQueFn err"));
+                // if (201 != rspCode) break;
+
+                /* FUT: this is where to do retrys
+                read from
+                quedFileHndl
+
+                if (!dslStatus) {
+                    // All reocrds sent. Cleanup
+                    deSerializeReadingsClose(true);
+                    MS_DBG(F("Pub"), deserialLinesRead, F("lines in"),
+                           MS_PRINT_DEBUG_TIMER, F("ms\n"));
+                } else {
+                    // Some records left.
+                    deSerializeCleanup();
+                    MS_DBG(F("Pub "), deserialLinesRead, F("/"),
+                           deserialLinesUnsent, F("lines in "),
+                           MS_PRINT_DEBUG_TIMER, F("ms\n"));
+                }
+
+                serializeQueCloseFile()
+                */
+            }
+            quedFileHndl.close();  // Ensure closed
+        }
+    }
+
+    postsLogHndl.close();
+}
+
 void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
 }
@@ -719,8 +828,8 @@ void Logger::markTime(void) {
 
 // This checks to see if the CURRENT time is an even interval of the logging
 // rate
-bool Logger::checkInterval(void) {
-    bool retval;
+uint8_t Logger::checkInterval(void) {
+    uint8_t retval;
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     uint32_t checkTime = getNowEpoch();
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
@@ -732,12 +841,28 @@ bool Logger::checkInterval(void) {
     if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Time marked at (unix):"), Logger::markedEpochTimeTz);
-        MS_DBG(F("Time to log!"));
-        retval = true;
+        MS_DBG(F("Take Sensor readings.Epoch:"), Logger::markedEpochTimeTz);
+
+        // Check what actions for this time period
+        retval = CIA_NEW_READING;
+        if (1 < _sendEveryX_num) {
+            _sendEveryX_cnt++;
+            if (_sendEveryX_cnt >= _sendEveryX_num) {
+                _sendEveryX_cnt = 0;
+                // TODO: add _sendOffset_min processing here
+                retval |= CIA_POST_READINGS;
+                MS_DBG(F("sendEveryX Post Readings"));
+            } else {
+                MS_DBG(F("sendEveryX "), _sendEveryX_cnt, F("counting to "),
+                       _sendEveryX_num);
+            }
+        } else {
+            retval |= CIA_POST_READINGS;
+            MS_DBG(F("Post readings."));
+        }
     } else {
         MS_DBG(F("Not time yet."));
-        retval = false;
+        retval = CIA_NOACTION;
     }
     if (!isRTCSane(checkTime)) {
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
@@ -1797,7 +1922,8 @@ void Logger::logDataAndPublish(void) {
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
-    if (checkInterval()) {
+    uint8_t cia_val = checkInterval();
+    if (cia_val) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1811,37 +1937,35 @@ void Logger::logDataAndPublish(void) {
         // TODO(SRGDamia1):  Decide how much delay is needed between turning on
         // the card and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
+        if (cia_val & CIA_NEW_READING) {
+            // Do a complete update on the variable array.
+            // This this includes powering all of the sensors, getting updated
+            // values, and turing them back off.
+            // NOTE:  The wake function for each sensor should force sensor
+            // setup to run if the sensor was not previously set up.
+            MS_DBG(F("Running a complete sensor update..."));
+            watchDogTimer.resetWatchDog();
+            _internalArray->completeUpdate();
+            watchDogTimer.resetWatchDog();
 
-        // Do a complete update on the variable array.
-        // This this includes powering all of the sensors, getting updated
-        // values, and turing them back off.
-        // NOTE:  The wake function for each sensor should force sensor setup
-        // to run if the sensor was not previously set up.
-        MS_DBG(F("Running a complete sensor update..."));
-        watchDogTimer.resetWatchDog();
-        _internalArray->completeUpdate();
-        watchDogTimer.resetWatchDog();
+            // Create a csv data record and save it to the log file
+            logToSD();
 
-        // Create a csv data record and save it to the log file
-        logToSD();
-
-        serializeReadings();  // Start Que
-#define SERIALIZE_sendEveryX_NUM 5
-#define SERIALIZE_sendOffset_min 5
-#define SERIALIZE_sendPacingDelay_sec 1
-        deSerializeDbg();
-
-        if (_logModem != NULL) {
-            MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
-            if (_logModem->modemWake()) {
-                // Connect to the network
-                watchDogTimer.resetWatchDog();
-                MS_DBG(F("Connecting to the Internet..."));
-                if (_logModem->connectInternet()) {
-                    // Publish data to remotes
+            serializeReadingsLine();  // Start Que
+        }
+        if (cia_val & CIA_POST_READINGS) {
+            if (_logModem != NULL) {
+                MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+                if (_logModem->modemWake()) {
+                    // Connect to the network
                     watchDogTimer.resetWatchDog();
-                    publishDataToRemotes();
-                    watchDogTimer.resetWatchDog();
+                    MS_DBG(F("Connecting to the Internet..."));
+                    if (_logModem->connectInternet()) {
+                        // Publish data to remotes
+                        watchDogTimer.resetWatchDog();
+                        // publishDataToRemotes();
+                        publishDataQuedToRemotes();
+                        watchDogTimer.resetWatchDog();
 
 // Sync the clock at midnight
 #define NIST_SYNC_DAY 86400
@@ -1853,29 +1977,31 @@ void Logger::logDataAndPublish(void) {
                 MS_DBG(F("SyncTimeCheck "),syncTimeCheck_remainder," Rate",logIntvl_sec," Time",Logger::markedEpochTime);
                 if (Logger::markedEpochTime != 0 && syncTimeCheck_remainder == 0)
 #endif
-                    if ((Logger::markedEpochTime != 0 &&
-                         Logger::markedEpochTime % 86400 == 43200) ||
-                        !isRTCSane(Logger::markedEpochTime)) {
-                        // Sync the clock at noon
-                        MS_DBG(F("Running a daily clock sync..."));
-                        setRTClock(_logModem->getNISTTime());
+                        if ((Logger::markedEpochTime != 0 &&
+                             Logger::markedEpochTime % 86400 == 43200) ||
+                            !isRTCSane(Logger::markedEpochTime)) {
+                            // Sync the clock at noon
+                            MS_DBG(F("Running a daily clock sync..."));
+                            setRTClock(_logModem->getNISTTime());
+                            watchDogTimer.resetWatchDog();
+                        }
+
+                        // Update the modem metadata
+                        MS_DBG(F("Updating modem metadata..."));
+                        _logModem->updateModemMetadata();
+
+                        // Disconnect from the network
+                        MS_DBG(F("Disconnecting from the Internet..."));
+                        _logModem->disconnectInternet();
+                    } else {
+                        MS_DBG(F("Could not connect to the internet!"));
                         watchDogTimer.resetWatchDog();
                     }
-
-                    // Update the modem metadata
-                    MS_DBG(F("Updating modem metadata..."));
-                    _logModem->updateModemMetadata();
-
-                    // Disconnect from the network
-                    MS_DBG(F("Disconnecting from the Internet..."));
-                    _logModem->disconnectInternet();
-                } else {
-                    MS_DBG(F("Could not connect to the internet!"));
-                    watchDogTimer.resetWatchDog();
                 }
-            }
-            // Turn the modem off
-            _logModem->modemSleepPowerDown();
+                // Turn the modem off
+                _logModem->modemSleepPowerDown();
+            } else
+                MS_DBG(F("No _logModem "));
         }
 
 

@@ -109,7 +109,7 @@ void dataPublisher::printTxBuffer(Stream* stream, bool addNewLine) {
     emptyTxBuffer();
 }
 
-int16_t dataPublisher::storAndPublish() {
+int16_t dataPublisher::storAndPublish() { // superseded ~ put in LoggerBaseExtCpp.h
     // Determine if file already exists
     if (NULL == _baseLogger) return 0;
     MS_DBG(F("logger "), _baseLogger->_loggerID, F("+"),

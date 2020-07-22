@@ -320,6 +320,17 @@ class dataPublisher {
      * @brief the text "\r\nHost: "
      */
     static const char* hostHeader;
+
+ public:
+    bool useQueDataSource = false;
+    bool virtual setQued(bool state, char uniqueId = '0') {
+        PRINTOUT(F("dataPublisherBase setQued check"), useQueDataSource);
+        return useQueDataSource;  // Default for not supported.
+    }
+    bool virtual getQued() {
+        PRINTOUT(F("dataPublisherBase getQued check"), useQueDataSource);
+        return useQueDataSource;  // Default for not supported.
+    }
 };
 
 #endif  // SRC_DATAPUBLISHERBASE_H_

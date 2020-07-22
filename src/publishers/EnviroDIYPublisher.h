@@ -240,6 +240,21 @@ class EnviroDIYPublisher : public dataPublisher {
  private:
     // Tokens and UUID's for EnviroDIY
     const char* _registrationToken;
+
+ protected:
+    void mmwPostHeader(char* tempBuffer);
+    void mmwPostDataArray(char* tempBuffer);
+    void mmwPostDataQued(char* tempBuffer);
+
+ public:
+    bool setQued(bool state, char uniqueId = '0') override {
+        PRINTOUT(F("EnviroyDIYPublisher setQued "), state);
+        return useQueDataSource = state;
+    }
+    bool getQued() override {
+        PRINTOUT(F("EnviroyDIYPublisher getQued "), useQueDataSource);
+        return useQueDataSource;
+    }
 };
 
 #endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

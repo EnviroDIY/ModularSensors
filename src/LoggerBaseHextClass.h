@@ -10,6 +10,41 @@
 void setLoggerId(const char* newLoggerId, bool copyId = false,
                  uint8_t LoggerIdSize = NEW_LOGGERID_MAX_SIZE);
 
+
+void setSendEveryX(uint8_t param) {
+    _sendEveryX_num = param;
+}
+uint8_t getSendEveryX(void) {
+    return _sendEveryX_num;
+}
+#if !defined SERIALIZE_sendEveryX_NUM
+#define SERIALIZE_sendEveryX_NUM 2
+#endif  // SERIALIZE_sendEveryX_NUM
+// Range typically 0-20
+uint8_t _sendEveryX_num = SERIALIZE_sendEveryX_NUM;
+uint8_t _sendEveryX_cnt = 0;  // Counter to track status
+
+void setSendOffset(uint8_t param) {
+    _sendOffset_min = param;
+}
+uint8_t getSendOffset(void) {
+    return _sendOffset_min;
+}
+#if !defined SERIALIZE_sendOffset_min
+#define SERIALIZE_sendOffset_min 0
+#endif  // SERIALIZE_sendOffset_min
+uint8_t _sendOffset_min = SERIALIZE_sendOffset_min;
+uint8_t _sendOffset_cnt = 0;
+
+void setSendPacingDelay(uint8_t param) {
+    _sendPacingDelay_mSec = param;
+}
+uint8_t getSendPacingDelay(void) {
+    return _sendPacingDelay_mSec;
+}
+#define SERIALIZE_sendPacingDelay_mSec 2
+uint16_t _sendPacingDelay_mSec = SERIALIZE_sendPacingDelay_mSec;
+
 // ===================================================================== //
 // Public functions for a "reading .ini" file
 // ===================================================================== //
@@ -28,6 +63,7 @@ USE_RTCLIB* rtcExtPhyObj();
 static bool usbDriveActive(void);
 // Time woken up
 uint32_t wakeUpTime_secs;
+
 
 private:
 static int32_t sd1_card_read_cb(uint32_t lba, void* buffer, uint32_t bufsize);
@@ -55,15 +91,44 @@ const char* _registrationToken;
 const char* _samplingFeature;
 const char* _LoggerId_buf = NULL;
 
-virtual bool serializeReadings(void);
-virtual bool serializeLine(const char* queFile_hn);
+private:
+uint16_t deserialLinesRead   = 0;
+uint16_t deserialLinesUnsent = 0;
 
-virtual bool deSerializeReadingsStart(void);
-virtual bool deSerializeReadingsClose(bool deleteFile = false);
-virtual bool deSerializeLine(void);
-virtual bool deSerializeReadingsNext(void);
+File        desReadingsFile;
+File        postsLogHndl;                    // Record all POSTS when enabled
+const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
+File        quedFileHndl;                    // Save for que - keep to 8.3
+const char* quedFileFn_str = "QUE";          // begin of name
+#define FN_BUFFER_SZ 13
+char serializeFn_str[FN_BUFFER_SZ] = "";
+
+#define QUEFILE_MAX_LINE 100
+char deslzFile_line[QUEFILE_MAX_LINE] = "";
+
+void publishDataQuedToRemotes(void);
+// bool serializeReadings(void);
+bool serializeReadingsLine(void);
+// void serializeReadingsFn(void);
+// virtual bool serializeQueFn(char* instance);
+void serializeQueCloseFile(bool action);
+
+bool deSerializeReadingsStart();
+bool deSerializeReadingsClose(bool deleteFile = false);
+bool deSerializeCleanup(bool debug = false);
+
+bool deSerializeLine(void);
+
 virtual bool deSerializeDbg(void);
 void         setFileAccessTime(File fileToStamp);
+
+public:
+virtual bool deSerializeReadingsNext(void);
+long         queFile_status    = 0;  // Bit wise status of reading
+long         queFile_epochTime = 0;  // Marked Epoch Time
+char*        queFile_nextChar;
+uint16_t     nextStr_sz;
+
 // The SD card and file
 #if 0  // defined BOARD_SDQ_QSPI_FLASH
        // This can be on the Adafruit Express options

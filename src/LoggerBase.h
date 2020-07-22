@@ -522,7 +522,7 @@ class Logger {
      * @brief An array of all of the attached data publishers
      */
     dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
-    uint8_t _dataPubInstance;
+    uint8_t        _dataPubInstance;
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //
@@ -720,16 +720,25 @@ class Logger {
      * @return **false** The current time on the RTC is NOT an even interval of
      * the logging rate.
      */
-    bool checkInterval(void);
+    uint8_t       checkInterval(void);
+    const uint8_t CIA_NOACTION      = 0x0;
+    const uint8_t CIA_NEW_READING   = 0x01;
+    const uint8_t CIA_POST_READINGS = 0x02;
 
+    /*typedef enum {
+        CIA_NOACTION      = 0x0,
+        CIA_NEW_READING   = 0x01,
+        CIA_POST_READINGS = 0x02,
+    } checkIntervalAct; */
     /**
-     * @brief Check if the MARKED time is an even interval of the logging rate -
-     * That is the value saved in the static variable markedEpochTime.
+     * @brief Check if the MARKED time is an even interval of the logging
+     * rate - That is the value saved in the static variable
+     * markedEpochTime.
      *
-     * This should be used in conjunction with markTime() to ensure that all
-     * data outputs from a single data update session (SD, EnviroDIY, serial
-     * printing, etc) have the same timestamp even though the update routine may
-     * take several (or many) seconds.
+     * This should be used in conjunction with markTime() to ensure that
+     * all data outputs from a single data update session (SD, EnviroDIY,
+     * serial printing, etc) have the same timestamp even though the update
+     * routine may take several (or many) seconds.
      *
      * @return **true** The marked time is an even interval of the
      * logging rate.
@@ -764,8 +773,8 @@ class Logger {
      * @brief Set up the Interrupt Service Request for waking
      *
      * In this case, we're doing nothing, we just want the processor to wake.
-     * This must be a static function (which means it can only call other static
-     * funcions.)
+     * This must be a static function (which means it can only call other
+     * static funcions.)
      */
     static void wakeISR(void);
 
