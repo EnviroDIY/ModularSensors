@@ -143,6 +143,11 @@ void loop() {
         return;
     }
 
+    // Scan for networks - this is probably really slow
+    gsmModem.sendAT(GF("AS"));
+    gsmModem.waitResponse(180000L, GF("S"), GF("ERROR"));
+    while (Serial1.available()) { Serial.println(Serial1.readStringUntil('\r')); }
+
     // Wait forever for a connection
     DBG(F("Waiting for network registration"));
     while (!gsmModem.isNetworkConnected()) {
@@ -150,6 +155,11 @@ void loop() {
         DBG("Signal quality:", csq);
         delay(250);
     }
+
+    // Scan for networks - this is probably really slow
+    gsmModem.sendAT(GF("AS"));
+    gsmModem.waitResponse(180000L, GF("S"), GF("ERROR"));
+    while (Serial1.available()) { Serial.println(Serial1.readStringUntil('\r')); }
 
     // Print some stuff after connected
     String ccid = gsmModem.getSimCCID();
