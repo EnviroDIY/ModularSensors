@@ -268,7 +268,7 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
         } else {
             txBuffer[strlen(txBuffer)] = '}';
         }
-        if (!_baseLogger->deSerializeReadingsNext()) break;
+        if (!_baseLogger->deszReadNext()) break;
     }
     MS_DBG(F("Filled from SD in "), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 }
@@ -279,8 +279,9 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
 
 int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
-    char     tempBuffer[TEMP_BUFFER_SZ] = "";
-    uint16_t did_respond                = 0;
+    char tempBuffer[TEMP_BUFFER_SZ] = "";
+#define RESPONSE_UNINIT 0xFFFE
+    uint16_t did_respond = RESPONSE_UNINIT;
     // int16_t  msg_sz                     = calculateJsonSize();
     // MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
     // Following is record specific - start with space in buffer
@@ -310,6 +311,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
 #define REQUIRED_MIN_RSP_SZ 12
         uint32_t start      = millis();
         uint32_t elapsed_ms = 0;
+        did_respond         = 0;
         while ((elapsed_ms < TIMER_MMW_POST_TIMEOUT_MSEC) &&
                (did_respond < REQUIRED_MIN_RSP_SZ)) {
             delay(10);  // mS delay to poll
@@ -335,13 +337,17 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
 
     // Process the HTTP response
     int16_t responseCode = 0;
-    if (did_respond > 0) {
+    if (RESPONSE_UNINIT == did_respond) {
+        // 503 Service Unavailable ~ couldn't connect
+        responseCode = 503;
+    } else if (did_respond >= REQUIRED_MIN_RSP_SZ) {
         char responseCode_char[4];
         for (uint8_t i = 0; i < 3; i++) {
             responseCode_char[i] = tempBuffer[i + 9];
         }
         responseCode = atoi(responseCode_char);
     } else {
+        // 504 Gateway Timeout
         responseCode = 504;
     }
     tempBuffer[TEMP_BUFFER_SZ - 1] = 0;

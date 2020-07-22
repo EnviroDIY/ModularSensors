@@ -424,7 +424,7 @@ void Logger::publishDataQuedToRemotes(void) {
     bool    dslStatus = false;
     bool    retVal    = false;
     // MS_DBG(F("Pub Data Qued"));
-    MS_DBG(F("publishDataQuedToRemotes from"), serializeFn_str);
+    MS_DBG(F("publishDataQuedToRemotes from"), readingsFn_str);
 
     // Open debug file
     retVal = postsLogHndl.open(postsLogFn_str, (O_WRITE | O_CREAT | O_AT_END));
@@ -444,9 +444,9 @@ void Logger::publishDataQuedToRemotes(void) {
             //    serialCreateFn((char*)"0A");
             if (dataPublishers[i]->setQued(true, ('0' + i))) {
                 // useQue = true;
-                deSerializeReadingsStart();
+                deszReadStart();
                 MS_START_DEBUG_TIMER;
-                while ((dslStatus = deSerializeLine())) {
+                while ((dslStatus = deszLine())) {
                     rspCode = dataPublishers[i]->publishData();
 
                     watchDogTimer.resetWatchDog();
@@ -483,15 +483,17 @@ void Logger::publishDataQuedToRemotes(void) {
                     }
 #endif  // 0
                 }
-                deSerializeReadingsClose(true);
+                deszReadClose(true);
                 // retVal = quedFileHndl.close();
                 // if (!retVal)
                 //    PRINTOUT(
                 //        F("publishDataQuedToRemote quedFileHndl.close err"));
 
-                MS_DBG(F("publishDataQuedToRemotes"), deserialLinesRead,
+                MS_DBG(F("publishDataQuedToRemotes"), deszLinesRead,
                        F("lines in"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
+                start = millis();
+                MS_DBG(F("publishDataQuedToRemotes from"), quedFileFn_str);
                 // QUE.TXT retVal = serializeQueFn((char*)('0' + i));  // FUT +0
                 // if (retVal) PRINTOUT(F("publishDataQuedToRemote
                 // serializedQueFn err"));
@@ -503,14 +505,14 @@ void Logger::publishDataQuedToRemotes(void) {
 
                 if (!dslStatus) {
                     // All reocrds sent. Cleanup
-                    deSerializeReadingsClose(true);
-                    MS_DBG(F("Pub"), deserialLinesRead, F("lines in"),
+                    deszReadClose(true);
+                    MS_DBG(F("Pub"), deszLinesRead, F("lines in"),
                            MS_PRINT_DEBUG_TIMER, F("ms\n"));
                 } else {
                     // Some records left.
-                    deSerializeCleanup();
-                    MS_DBG(F("Pub "), deserialLinesRead, F("/"),
-                           deserialLinesUnsent, F("lines in "),
+                    desCleanup();
+                    MS_DBG(F("Pub "), deszLinesRead, F("/"),
+                           deszLinesUnsent, F("lines in "),
                            MS_PRINT_DEBUG_TIMER, F("ms\n"));
                 }
 
@@ -1951,7 +1953,7 @@ void Logger::logDataAndPublish(void) {
             // Create a csv data record and save it to the log file
             logToSD();
 
-            serializeReadingsLine();  // Start Que
+            serzReadLine();  // Start Que
         }
         if (cia_val & CIA_POST_READINGS) {
             if (_logModem != NULL) {

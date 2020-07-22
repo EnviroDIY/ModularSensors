@@ -923,7 +923,9 @@ void setup() {
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
     EnviroDIYPOST.setQued(true);
-#endif  // UseModem_Module
+    dataLogger.setSendEveryX(2);  // Assumes a 2minute update
+    dataLogger.setSendOffset(1);  // Not implemented yet
+#endif                            // UseModem_Module
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST

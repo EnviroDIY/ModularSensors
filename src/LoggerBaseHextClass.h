@@ -92,42 +92,45 @@ const char* _samplingFeature;
 const char* _LoggerId_buf = NULL;
 
 private:
-uint16_t deserialLinesRead   = 0;
-uint16_t deserialLinesUnsent = 0;
+// keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
+File       deszReadFile;
+const char *readingsFn_str = "READINGS.TXT";
 
-File        desReadingsFile;
 File        postsLogHndl;                    // Record all POSTS when enabled
 const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
-File        quedFileHndl;                    // Save for que - keep to 8.3
-const char* quedFileFn_str = "QUE";          // begin of name
-#define FN_BUFFER_SZ 13
-char serializeFn_str[FN_BUFFER_SZ] = "";
 
+File        quedFileHndl;            // Save for que - keep to 8.3
+const char* quedFileFn_str = "QUE";  // begin of name
+#define FN_BUFFER_SZ 13
+char quedFn_str[FN_BUFFER_SZ] = "";
+
+uint16_t deszLinesRead   = 0;
+uint16_t deszLinesUnsent = 0;
 #define QUEFILE_MAX_LINE 100
 char deslzFile_line[QUEFILE_MAX_LINE] = "";
 
 void publishDataQuedToRemotes(void);
-// bool serializeReadings(void);
-bool serializeReadingsLine(void);
-// void serializeReadingsFn(void);
-// virtual bool serializeQueFn(char* instance);
-void serializeQueCloseFile(bool action);
+// bool serzRead(void);
+bool serzReadLine(void);
+// void serzReadFn(void);
+// virtual bool serzQueFn(char* instance);
+void serzQueCloseFile(bool action);
 
-bool deSerializeReadingsStart();
-bool deSerializeReadingsClose(bool deleteFile = false);
-bool deSerializeCleanup(bool debug = false);
+bool deszReadStart();
+bool deszReadClose(bool deleteFile = false);
+bool deszCleanup(bool debug = false);
 
-bool deSerializeLine(void);
+bool deszLine(void);
 
-virtual bool deSerializeDbg(void);
-void         setFileAccessTime(File fileToStamp);
+virtual bool deszDbg(void);
+void         setFileAccessTime(File* fileToStamp);
 
 public:
-virtual bool deSerializeReadingsNext(void);
-long         queFile_status    = 0;  // Bit wise status of reading
-long         queFile_epochTime = 0;  // Marked Epoch Time
-char*        queFile_nextChar;
-uint16_t     nextStr_sz;
+bool     deszReadNext(void);
+long     queFile_status    = 0;  // Bit wise status of reading
+long     queFile_epochTime = 0;  // Marked Epoch Time
+char*    queFile_nextChar;
+uint16_t nextStr_sz;
 
 // The SD card and file
 #if 0  // defined BOARD_SDQ_QSPI_FLASH

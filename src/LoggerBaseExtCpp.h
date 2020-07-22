@@ -647,38 +647,28 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 // ===================================================================== //
 
 // This update the timestamp on a file
-void Logger::setFileAccessTime(File fileToStamp) {
+void Logger::setFileAccessTime(File* fileToStamp) {
     DateTime markedDt(Logger::markedEpochTime);
 
-    fileToStamp.timestamp((T_WRITE | T_ACCESS), markedDt.year(),
-                          markedDt.month(), markedDt.date(), markedDt.hour(),
-                          markedDt.minute(), markedDt.second());
+    fileToStamp->timestamp((T_WRITE | T_ACCESS), markedDt.year(),
+                           markedDt.month(), markedDt.date(), markedDt.hour(),
+                           markedDt.minute(), markedDt.second());
 }
 
-// keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
-
-
-const char readingsFn_str[] = "READINGS.TXT";
 
 
 // const char* delim_char        = ",";
 #define DELIM_CHAR2 ','
 
 #if 0
-void Logger::serializeReadingsFn(void) {
-    strcpy(serializeFn_str, readingsFn_str);
-    // strcat(serializeFn_str, instance);
-}
-#endif  //
-#if 0
-bool Logger::serializeQueFn(char* instance) {
-    strcpy(serializeFn_str, quedFileFn_str);
-    strncat(serializeFn_str, instance, 1);
-    strcat(serializeFn_str, ".TXT");
-    return quedFileHndl.open(serializeFn_str, (O_WRITE | O_CREAT | O_AT_END));
+bool Logger::serzQueFn(char* instance) {
+    strcpy(quedFn_str, quedFileFn_str);
+    strncat(quedFn_str, instance, 1);
+    strcat(quedFn_str, ".TXT");
+    return quedFileHndl.open(quedFn_str, (O_WRITE | O_CREAT | O_AT_END));
 }
 #endif
-void Logger::serializeQueCloseFile(bool flush) {
+void Logger::serzQueCloseFile(bool flush) {
     /* This closes the file, removing the sent messages
      The algorithim is, rename to a temporary file,
      copy unsent lines to the new file.
@@ -689,12 +679,10 @@ void Logger::serializeQueCloseFile(bool flush) {
 
     if (flush) {
         retValIn = quedFileHndl.rename("DEL01.TXT");
-        if (!retValIn) PRINTOUT(F("serializeQueCloseFile err DEL01"));
+        if (!retValIn) PRINTOUT(F("serzQueCloseFile err DEL01"));
 
-        retValOut = tempFile.open(serializeFn_str,
-                                  (O_WRITE | O_CREAT | O_AT_END));
-        if (!retValOut)
-            PRINTOUT(F("serializeQueCloseFile err open"), serializeFn_str);
+        retValOut = tempFile.open(quedFn_str, (O_WRITE | O_CREAT | O_AT_END));
+        if (!retValOut) PRINTOUT(F("serzQueCloseFile err open"), quedFn_str);
 
         /* TODO: njh copy lines */
         uint16_t num_char;
@@ -703,13 +691,13 @@ void Logger::serializeQueCloseFile(bool flush) {
             (num_char = quedFileHndl.fgets(deslzFile_line, QUEFILE_MAX_LINE))) {
             retValOut = tempFile.write(deslzFile_line, num_char);
             if (retValOut != num_char) {
-                PRINTOUT(F("serializeQueCloseFile write err"));
+                PRINTOUT(F("serzQueCloseFile write err"));
                 break;
             }
 
             num_lines++;
         }
-        MS_DBG(F("serializeQueCloseFile wrote "), num_lines);
+        MS_DBG(F("serzQueCloseFile wrote "), num_lines);
         tempFile.close();
     }
 
@@ -720,29 +708,29 @@ void Logger::serializeQueCloseFile(bool flush) {
 For serialize, create ASCII CSV records of the form
 status,<marked epoch time> n*[<,values>]
 */
-bool Logger::serializeReadingsLine() {
+bool Logger::serzReadLine() {
     if (!initializeSDCard()) return false;
 
-    if (desReadingsFile.open(readingsFn_str, (O_WRITE | O_CREAT | O_AT_END))) {
+    if (deszReadFile.open(readingsFn_str, (O_WRITE | O_CREAT | O_AT_END))) {
         uint16_t outputSz;
         // String csvString(Logger::markedEpochTime);
-        outputSz = desReadingsFile.print("0,");  // Start READINGS_STATUS
-        outputSz += desReadingsFile.print(Logger::markedEpochTime);
+        outputSz = deszReadFile.print("0,");  // Start READINGS_STATUS
+        outputSz += deszReadFile.print(Logger::markedEpochTime);
         for (uint8_t i = 0; i < getArrayVarCount(); i++) {
             // csvString += ',';
-            outputSz += desReadingsFile.print(',' + getValueStringAtI(i));
+            outputSz += deszReadFile.print(',' + getValueStringAtI(i));
         }
-        outputSz += desReadingsFile.println();
-        // setFileAccessTime(desReadingsFile);
-        desReadingsFile.close();
-        MS_DBG(F("serializeLine on "), readingsFn_str, F(" at "),
-               markedEpochTime, F(" size="), outputSz);
+        outputSz += deszReadFile.println();
+        // setFileAccessTime(deszReadFile);
+        deszReadFile.close();
+        MS_DBG(F("serzReadLine on"), readingsFn_str, F(" at "), markedEpochTime,
+               F(" size="), outputSz);
     } else {
-        PRINTOUT(F("serializeLine; No file "), readingsFn_str);
+        PRINTOUT(F("serzReadLine; No file"), readingsFn_str);
         return false;
     }
     return true;
-}  // Logger::serializeLine
+}  // Logger::serzLine
 
 
 /* Deserializer functions
@@ -750,24 +738,24 @@ bool Logger::serializeReadingsLine() {
 For deserialize, read  ASCII CSV records of the form
 <marked epoch time> n*[<,values>]
 
-deSerializeReadingsStart()   ~ to open file
-deSerializeLine()  to populate
+deszReadStart()   ~ to open file
+deszLine()  to populate
     queFile_epochTime &
 
 */
 
 
-bool Logger::deSerializeReadingsStart() {
+bool Logger::deszReadStart() {
     if (!initializeSDCard()) {
-        PRINTOUT(F("deSerialeReadinsStart; !SDcard "));
+        PRINTOUT(F("deszReadStart; !SDcard "));
         return false;
     }
-    deserialLinesRead = deserialLinesUnsent = 0;
+    deszLinesRead = deszLinesUnsent = 0;
 
     queFile_nextChar = deslzFile_line;
     // Open - RD & WR. WR needed to be able to delete when complete.
-    if (!desReadingsFile.open(readingsFn_str, O_RDWR)) {
-        PRINTOUT(F("deSerialeReadinsStart; No file "), readingsFn_str);
+    if (!deszReadFile.open(readingsFn_str, O_RDWR)) {
+        PRINTOUT(F("deszReadinsStart; No file "), readingsFn_str);
         return false;
     }
 
@@ -775,7 +763,7 @@ bool Logger::deSerializeReadingsStart() {
 }
 
 
-bool Logger::deSerializeLine() {
+bool Logger::deszLine() {
     char* errCheck;
     /* Scan through one line. Expect format
       <ascii Digits>,   representing integer STATUS
@@ -791,37 +779,35 @@ bool Logger::deSerializeLine() {
             nextStr_sz
     */
 
-    uint16_t num_char = desReadingsFile.fgets(deslzFile_line, QUEFILE_MAX_LINE);
+    uint16_t num_char = deszReadFile.fgets(deslzFile_line, QUEFILE_MAX_LINE);
     char*    orig_nextChar;
 
     if (0 == num_char) return false;
-    deserialLinesRead++;
+    deszLinesRead++;
     // First is the Status of record
     queFile_status = strtol(deslzFile_line, &errCheck, 10);
     if (errCheck == deslzFile_line) {
-        PRINTOUT(F("deSerializeLine Status err'"), deslzFile_line, F("'"));
+        PRINTOUT(F("deszLine Status err'"), deslzFile_line, F("'"));
         return false;  // EIO;
     }
     // Find next DELIM and go past it
     queFile_nextChar = 1 + strchrnul(deslzFile_line, DELIM_CHAR2);
     if (queFile_nextChar == deslzFile_line) {
-        PRINTOUT(F("deSerializeLine epoch start not found"), deslzFile_line,
-                 F("'"));
+        PRINTOUT(F("deszLine epoch start not found"), deslzFile_line, F("'"));
         nextStr_sz = 0;
         return false;
     }
     // Second is the epochTime,
     queFile_epochTime = strtol(queFile_nextChar, &errCheck, 10);
     if (errCheck == deslzFile_line) {
-        PRINTOUT(F("deSerializeLine Epoch err'"), deslzFile_line, F("'"));
+        PRINTOUT(F("deszLine Epoch err'"), deslzFile_line, F("'"));
         return false;  // EIO;
     }
     // Find next DELIM and go past it
     orig_nextChar    = queFile_nextChar;
     queFile_nextChar = 1 + strchrnul(queFile_nextChar, DELIM_CHAR2);
     if (orig_nextChar == queFile_nextChar) {
-        PRINTOUT(F("deSerializeLine readung start not found"), deslzFile_line,
-                 F("'"));
+        PRINTOUT(F("deszLine readung start not found"), deslzFile_line, F("'"));
         nextStr_sz = 0;
         return false;
     }
@@ -831,14 +817,13 @@ bool Logger::deSerializeLine() {
     return true;
 }
 
-bool Logger::deSerializeReadingsNext(void) {
+bool Logger::deszReadNext(void) {
     char* queFile_old = queFile_nextChar;
     // Find next DELIM and go past it
     queFile_nextChar = 1 + strchrnul(queFile_nextChar, DELIM_CHAR2);
     if ((queFile_old == queFile_nextChar)) {
         nextStr_sz = 0;
-        PRINTOUT(F("deSerializeReadingsNext 1error:"), queFile_nextChar,
-                 F("'"));
+        PRINTOUT(F("deszReadNext 1error:"), queFile_nextChar, F("'"));
         return false;
     }
     /* Find sz of this field
@@ -873,7 +858,7 @@ bool Logger::deSerializeReadingsNext(void) {
 #define BUF_MIN_FN_SZ 13
 
 #if 0
-bool Logger::deSerializeCleanup(bool debug) {
+bool Logger::desCleanup(bool debug) {
     // Posting the data has failed, and there is still data not sent.
     uint16_t num_char;
     bool     retVal = false;
@@ -884,16 +869,16 @@ bool Logger::deSerializeCleanup(bool debug) {
         // copy to same file name
         while ((num_char = update ... reader_fn(deslzFile_line, QUEFILE_MAX_LINE))) {
             if ((retVal = logFile.write(deslzFile_line, num_char))) {
-                PRINTOUT(F("deSerializeCleanup wr err'"), deslzFile_line,
+                PRINTOUT(F("desCleanup wr err'"), deslzFile_line,
                          F("'"));
                 break;
             }
-            deserialLinesUnsent++;
+            deszLinesUnsent++;
         }
         if (debug) {
             char bufTemp[BUF_MIN_FN_SZ];
             logFile.getName(bufTemp, BUF_MIN_FN_SZ);
-            PRINTOUT(F("deSerializeCleanup leaving on SD'"), bufTemp);
+            PRINTOUT(F("desCleanup leaving on SD'"), bufTemp);
             logFile.close();
         } else {
             logFile.remove();
@@ -903,22 +888,22 @@ bool Logger::deSerializeCleanup(bool debug) {
     }
 
 
-    deserialLinesUnsent++;
+    deszLinesUnsent++;
     return true;
 }
 #endif  //
 
 
-bool Logger::deSerializeReadingsClose(bool deleteFile) {
+bool Logger::deszReadClose(bool deleteFile) {
     bool retVal = false;
     if (!deleteFile) {
-        if (!(retVal = desReadingsFile.close())) {
+        if (!(retVal = deszReadFile.close())) {
             PRINTOUT(F("deSRC Close1 Failed "), readingsFn_str);
         }
     } else {
-        if (!(retVal = desReadingsFile.remove())) {
+        if (!(retVal = deszReadFile.remove())) {
             PRINTOUT(F("deSRC Remove Failed "), readingsFn_str);
-            if (!(retVal = desReadingsFile.close())) {
+            if (!(retVal = deszReadFile.close())) {
                 PRINTOUT(F("deSRC Close2 Failed "), readingsFn_str);
             }
         }
@@ -926,21 +911,21 @@ bool Logger::deSerializeReadingsClose(bool deleteFile) {
     return retVal;
 }
 
-/* Prototyping deserialize example
+/* Prototyping des example
  */
 
 uint16_t serialCnt = 0;
 // SdFat    sdfat_phy;
 // SdFile   rootDir;
-bool Logger::deSerializeDbg(void) {
+bool Logger::deszDbg(void) {
     // char* next_token;
 #define TEMPBUF_SZ 37
     char tempBuffer[TEMPBUF_SZ] = "";
     if (++serialCnt >= SERIALIZE_sendEveryX_NUM) {
         String d_str(80);
         serialCnt = 0;
-        deSerializeReadingsStart();
-        while (deSerializeLine()) {
+        deszReadStart();
+        while (deszLine()) {
             d_str = formatDateTime_ISO8601(queFile_epochTime) + ';';
             // next_token = find_chars_or_comment(queFile_nextChar,
             // DELIM_CHAR2);
@@ -950,7 +935,7 @@ bool Logger::deSerializeDbg(void) {
             // PRINTOUT("Sn=", tempBuffer);
             d_str.concat(tempBuffer);
             // getline
-            while (deSerializeReadingsNext()) {
+            while (deszReadNext()) {
                 tempBuffer[0] = 0;
                 strncat(tempBuffer, queFile_nextChar, nextStr_sz);
                 strcat(tempBuffer, ";");
@@ -959,7 +944,7 @@ bool Logger::deSerializeDbg(void) {
             }
             PRINTOUT("L=", d_str, "Stat=", queFile_status);
         }
-        deSerializeReadingsClose(true);  // Delete serial file
+        deszReadClose(true);  // Delete serial file
     }
     return true;
 }
