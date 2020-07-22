@@ -72,7 +72,8 @@ class AOSongAM2315 : public Sensor {
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong
      * AM2315.  Use -1 if the sensor is continuously powered.
-     * @param measurementsToAverage The number of measurements to average.
+     * @param measurementsToAverage The number of measurements to average;
+     * optional with default value of 1.
      */
     explicit AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
     /**

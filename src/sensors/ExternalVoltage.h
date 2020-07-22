@@ -86,7 +86,7 @@
 /// measurement.
 #define EXT_VOLT_MEASUREMENT_TIME_MS 0
 
-/// Variable number; VOLT is stored in sensorValues[0].
+/// Variable number; voltage is stored in sensorValues[0].
 #define EXT_VOLT_VAR_NUM 0
 #ifdef MS_USE_ADS1015
 /// Decimals places in string representation; voltage should have 1.
@@ -96,7 +96,13 @@
 #define EXT_VOLT_RESOLUTION 4
 #endif
 
-// The main class for the external votlage monitor
+/// The assumed address fo the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+
+/**
+ * @brief The main class for the external votlage monitor
+ sensor
+ */
 class ExternalVoltage : public Sensor {
  public:
     /**
@@ -115,7 +121,7 @@ class ExternalVoltage : public Sensor {
      * @param measurementsToAverage The number of measurements to average
      */
     ExternalVoltage(int8_t powerPin, uint8_t adsChannel, float gain = 1,
-                    uint8_t i2cAddress            = 0x48,
+                    uint8_t i2cAddress            = ADS1115_ADDRESS,
                     uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the External Voltage object

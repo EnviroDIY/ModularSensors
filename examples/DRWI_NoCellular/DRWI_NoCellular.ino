@@ -70,7 +70,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [modem_settings] */
+/** End [processor_sensor] */
 
 
 // ==========================================================================

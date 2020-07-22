@@ -17,9 +17,9 @@
  * @copydetails ApogeeSQ212
  *
  * @defgroup sq212_group AOSong AM2315
- * Classes for the Apogee SQ212 quantum light sensor.
+ * Classes for the @ref sq212_page
  *
- * @copydetails ApogeeSQ212
+ * @copydoc sq212_page
  */
 
 // Header Guards
@@ -40,6 +40,7 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_numReturnedValues; the SQ212 can report 2 values.
 #define SQ212_NUM_VARIABLES 2
 // Using the warm-up time of the ADS1115
@@ -72,29 +73,19 @@
 #endif
 
 /**
+ * @brief The calibration factor between output in volts and PAR
+ * (microeinsteinPerSquareMeterPerSecond) 1 µmol mˉ² sˉ¹ per mV (reciprocal of
+ * sensitivity)
+ */
+#ifndef SQ212_CALIBRATION_FACTOR
+#define SQ212_CALIBRATION_FACTOR 1
+#endif
+
+/// The assumed address fo the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+
+/**
  * @brief The main class for the Apogee SQ-212 sensor
- *
- * The Apogee SQ-212 Quantum Light sensor measures photosynthetically active
- * radiation (PAR) and is typically defined as total radiation across a range of
- * 400 to 700 nm. PAR is often expressed as photosynthetic photon flux density
- * (PPFD): photon flux in units of micromoles per square meter per second (μmol
- * m-2 s-1, equal to microEinsteins per square meter per second) summed from 400
- * to 700 nm.
- *
- * Technical specifications for the Apogee SQ-212 can be found at:
- * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
- *
- * Required power supply: 5-24 V DC with a nominal current draw of 300 μA
- *
- * Timing:
- *     - Response time: < 1ms
- *     - Resample time: max of ADC (860/sec)
- *
- * For photosynthetically active radiation (PAR):
- *   @copydetails ApogeeSQ212_PAR
- *
- * For raw voltage as reported by ADS1x15:
- *   @copydetails ApogeeSQ212_Voltage
  *
  * @ingroup sq212_group
  *
@@ -108,13 +99,15 @@ class ApogeeSQ212 : public Sensor {
      *
      * @param powerPin The pin on the mcu controlling power to the Apogee
      * SQ-212.  Use -1 if the sensor is continuously powered.
-     * @param adsChannel The ACS channel the Apogee SQ-212 is connected to
-     * (0-3).
+     * @param adsChannel The analog data channel the Apogee SQ-212 is
+     * connected to _on the TI ADS1115_ (0-3).
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
-     * @param measurementsToAverage
+     * @param measurementsToAverage The number of measurements to average;
+     * optional with default value of 1.
      */
-    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel, uint8_t i2cAddress = 0x48,
+    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
+                uint8_t i2cAddress            = ADS1115_ADDRESS,
                 uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ApogeeSQ212 object - no action needed
@@ -144,16 +137,9 @@ class ApogeeSQ212 : public Sensor {
  * @brief The variable class used for photosynthetically active radiation (PAR)
  * measured by an Apogee SQ-212.
  *
- *   - Range is 0 to 2500 µmol m-2 s-1
- *   - Accuracy is ± 0.5%
- *   - Resolution:
- *     - 16-bit ADC: 0.3125 µmol m-2 s-1 (ADS1115)
- *     - 12-bit ADC: 5 µmol m-2 s-1 (ADS1015)
- *   - Reported as microeinsteins per square meter per second
- *   - Result stored in sensorValues[0]
- *   - Default variable code is radiationIncomingPAR
- *
  * @ingroup sq212_group
+ *
+ * @see sq212_page
  */
 class ApogeeSQ212_PAR : public Variable {
  public:
@@ -192,19 +178,9 @@ class ApogeeSQ212_PAR : public Variable {
 /**
  * @brief The variable class used for raw voltage measured by an Apogee SQ-212.
  *
- *   - Range is 0 to 3.6V [when ADC is powered at 3.3V]
- *   - Accuracy is ± 0.5%
- *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
- *     - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
- *   - Resolution [assuming the ADC is powered at 3.3V with inbuilt gain set to
- *     1 (0-4.096V)]:
- *     - 16-bit ADC: 0.125 mV (ADS1115)
- *     - 12-bit ADC: 2 mV (ADS1015)
- *   - Reported as volts
- *   - Result stored in sensorValues[1]
- *   - Default variable code is SQ212Voltage
- *
  * @ingroup sq212_group
+ *
+ * @see sq212_page
  */
 class ApogeeSQ212_Voltage : public Variable {
  public:

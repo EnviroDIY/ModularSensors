@@ -816,7 +816,7 @@ class loggerModem {
  */
 
 /**
- * @brief The variable class used for RSSI measured by a modem.
+ * @brief The Variable sub-class used for the RSSI measured by a modem.
  *
  * The value is in decibelMiliWatts and has resolution of 1 dBm.
  *
@@ -845,8 +845,8 @@ class Modem_RSSI : public Variable {
 
 
 /**
- * @brief The variable class used for percent of maximum signal measured by a
- * modem.
+ * @brief The Variable sub-class used for the percent of maximum signal measured
+ * by a modem.
  *
  * The value is in units of percent and has resolution of 1 percent.
  *
@@ -877,7 +877,7 @@ class Modem_SignalPercent : public Variable {
 
 
 /**
- * @brief The variable class used for battery charge state measured by a
+ * @brief The Variable sub-class used for the battery charge state measured by a
  * modem.
  *
  * Whether or not this value is meaningful depends on the specific modem
@@ -911,8 +911,8 @@ class Modem_BatteryState : public Variable {
 
 
 /**
- * @brief The variable class used for battery charge percent measured by a
- * modem.
+ * @brief The Variable sub-class used for the battery charge percent measured by
+ * a modem.
  *
  * Whether or not this value is meaningful depends on the specific modem
  * subclass and the wiring of the logger setup.
@@ -946,7 +946,8 @@ class Modem_BatteryPercent : public Variable {
 
 
 /**
- * @brief The variable class used for battery voltage measured by a modem.
+ * @brief The Variable sub-class used for the battery voltage measured by a
+ * modem.
  *
  * Whether or not this value is meaningful depends on the specific modem
  * subclass and the wiring of the logger setup.
@@ -980,7 +981,8 @@ class Modem_BatteryVoltage : public Variable {
 
 
 /**
- * @brief The variable class used for chip temperature as measured by the modem.
+ * @brief The Variable sub-class used for the @link chip temperature as measured
+ * by the modem.
  *
  * Whether or not this value is meaningful depends on the specific modem
  * subclass.

@@ -68,7 +68,7 @@ class Variable {
      * vocabulary
      * @param varUnit The unit of the variable per the unit controlled
      * vocabulary
-     * @param varCode A custom code fo the variable
+     * @param varCode A custom code of the variable
      * @param uuid A universally uniqe identifier for the variable
      */
     Variable(Sensor* parentSense, const uint8_t sensorVarNum,

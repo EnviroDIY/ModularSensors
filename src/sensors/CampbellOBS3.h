@@ -81,7 +81,13 @@
 #define OBS3_VOLT_RESOLUTION 4
 #endif
 
-// The main class for the Campbell OBS3
+/// The assumed address fo the ADS1115, 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+
+/**
+ * @brief The main class for the Campbell OBS3
+ sensor
+ */
 class CampbellOBS3 : public Sensor {
  public:
     // The constructor - need the power pin, the ADS1X15 data channel, and the
@@ -101,7 +107,8 @@ class CampbellOBS3 : public Sensor {
      * @param measurementsToAverage The number of measurements to average.
      */
     CampbellOBS3(int8_t powerPin, uint8_t adsChannel, float x2_coeff_A,
-                 float x1_coeff_B, float x0_coeff_C, uint8_t i2cAddress = 0x48,
+                 float x1_coeff_B, float x0_coeff_C,
+                 uint8_t i2cAddress            = ADS1115_ADDRESS,
                  uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Campbell OBS3 object

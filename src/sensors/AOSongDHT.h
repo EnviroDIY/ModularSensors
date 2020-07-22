@@ -12,13 +12,10 @@
  *
  * This file is dependent on the Adafruit DHT Library.
  *
- * @copydetails AOSongDHT
- *
  * @defgroup dht_group AOSong DHT
- * Classes for the AOSong DHT digital-output relative
- * humidity & temperature sensors.
+ * Classes for the @ref dht_page
  *
- * @copydetails AOSongDHT
+ * @copydoc dht_page
  */
 
 // Header Guards
@@ -86,26 +83,9 @@ typedef enum DHTtype {
  * @brief The main class for the AOSong digital-output relative humidity &
  * temperature sensors/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).
  *
- * Documentation for the sensor can be found at:
- * http://www.aosong.com/en/products/details.asp?id=117
- *
- * Timing:
- *     - warms up in 1.7sec
- *     - stable on completion of warm up
- *     - measurements take 2s to complete
- *
- * For Relative Humidity:
- *   @copydetails AOSongDHT_Humidity
- *
- * For Temperature:
- *   @copydetails AOSongDHT_Temp
- *
- * Heat index is calculated from temperature and humidity.
- *   @copydetails AOSongDHT_HI
- *
  * @ingroup dht_group
  *
- * @see dht_page
+ * @see @ref dht_page
  */
 class AOSongDHT : public Sensor {
  public:
@@ -118,7 +98,8 @@ class AOSongDHT : public Sensor {
      * @param dataPin The pin on the mcu receiving data from the AOSong DHT
      * @param type The type of DHT.  Possible values are DHT11, DHT21, AM2301,
      * DHT22, or AM2302.
-     * @param measurementsToAverage The number of measurements to average.
+     * @param measurementsToAverage The number of measurements to average;
+     * optional with default value of 1.
      */
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type,
               uint8_t measurementsToAverage = 1);
@@ -151,14 +132,9 @@ class AOSongDHT : public Sensor {
 /**
  * @brief The variable class used for humidity measured by an AOSong DHT.
  *
- *   - Resolution is 0.1 % RH
- *   - Accuracy is ± 2 % RH
- *   - Range is 0 to 100 % RH
- *   - Reported as percent RH
- *   - Result stored in sensorValues[0]
- *   - Default variable code is DHTHumidity
- *
  * @ingroup dht_group
+ *
+ * @see @ref dht_page
  */
 class AOSongDHT_Humidity : public Variable {
  public:
@@ -195,14 +171,9 @@ class AOSongDHT_Humidity : public Variable {
 /**
  * @brief The variable class used for temperature measured by an AOSong DHT.
  *
- *   - Resolution is 0.1°C
- *   - Accuracy is ±0.5°C
- *   - Range is -40°C to +80°C
- *   - Reported as degrees Celsius
- *   - Result stored in sensorValues[1]
- *   - Default variable code is DHTTemp
- *
  * @ingroup dht_group
+ *
+ * @see @ref dht_page
  */
 class AOSongDHT_Temp : public Variable {
  public:
@@ -240,13 +211,9 @@ class AOSongDHT_Temp : public Variable {
  * @brief The variable class used for heat index calculated from measurements
  * made by an AOSong DHT.
  *
- *   - Heat index is calculated within the Adafruit library from the measured
- * temperature and humidity.
- *   - Reported as degrees celsius
- *   - Result stored in sensorValues[2]
- *   - Default variable code is heatIndex
- *
  * @ingroup dht_group
+ *
+ * @see @ref dht_page
  */
 class AOSongDHT_HI : public Variable {
  public:

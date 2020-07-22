@@ -42,6 +42,9 @@ ___
   - [Sensors and Measured Variables](#sensors-and-measured-variables)
     - [The processor as a sensor](#the-processor-as-a-sensor)
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
+    - [AOSong AM2315](#aosong-am2315)
+    - [AOSong DHT](#aosong-dht)
+    - [Apogee SQ-212](#apogee-sq-212)
     - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
     - [Maxim DS18 one wire temperature sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS503 pressure and temperature sensor](#measurement-specialties-ms503-pressure-and-temperature-sensor)
@@ -76,6 +79,7 @@ ___
   - [Arduino Loop Function](#arduino-loop-function)
     - [A Typical Loop](#a-typical-loop)
     - [A Complex Loop](#a-complex-loop)
+
 [//]: # ( End GitHub Only )
 
 
@@ -88,7 +92,7 @@ The top few lines of the examples set defines of buffer sizes and yields needed 
 That IDE read any defines within the top few lines and applies them as build flags for the processor.
 This is _not_ standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino defines )
+[//]: # ( @menusnip{defines} )
 
 If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini.
 This is standard behaviour for C++.
@@ -108,7 +112,7 @@ ___
 
 Next, include the libraries needed for every program using ModularSensors.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino includes )
+[//]: # ( @menusnip{includes} )
 ___
 
 [//]: # ( @section menu_logger_and_modem_settings Logger Settings )
@@ -143,7 +147,7 @@ AltSoftSerial can only be used on one set of pins on each board so only one AltS
 Not all AVR boards are supported by AltSoftSerial.
 See the [processor compatibility](@ref processor_compatibility) page for more information on which pins are used on supported boards.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino altsoftserial )
+[//]: # ( @menusnip{altsoftserial} )
 
 
 [//]: # ( @paragraph menu_neoswserial NeoSWSerial )
@@ -155,7 +159,7 @@ Each instance requires two pins, one for data in and another for data out.
 If you only want to use the serial line for incoming or outgoing data, set the other pin to -1.
 Not all AVR boards are supported by NeoSWSerial.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino neoswserial )
+[//]: # ( @menusnip{neoswserial} )
 
 When using NeoSWSerial we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](@ref menu_setup_serial_interrupts).
 
@@ -172,7 +176,7 @@ Accepting its poor quality, you can use as many instances of SoftwareSerial as y
 Each instance requires two pins, one for data in and another for data out.
 If you only want to use the serial line for incoming or outgoing data, set the other pin to -1.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino softwareserial )
+[//]: # ( @menusnip{softwareserial} )
 
 When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](@ref menu_setup_serial_interrupts).
 
@@ -187,7 +191,7 @@ But, the Arduino core doesn't make use of all of them, so we have to assign them
 This section of code assigns SERCOM's 1 and 2 to act as Serial2 and Serial3 on pins 10/11 and 5/2 respectively.
 These pin selections are based on the Adafruit Feather M0.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino serial_ports_SAMD )
+[//]: # ( @menusnip{serial_ports_SAMD} )
 
 In addition to creating the extra SERCOM ports here, the pins must be set up as the proper pin peripherals after the serial ports are begun.
 This is shown in the [SAMD Pin Peripherals section](@ref menu_setup_pin_periph) of the setup function.
@@ -203,7 +207,7 @@ NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have
 Here we set options for the logging and dataLogger object.
 This includes setting the time zone (daylight savings time is **NOT** applied) and setting all of the input and output pins related to the logger.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino logging_options )
+[//]: # ( @menusnip{logging_options} )
 ___
 
 
@@ -246,7 +250,7 @@ To create a DigiXBeeCellularTransparent object we need to know
 @note  The u-blox based Digi XBee's (3G global and LTE-M global) may be more stable used in bypass mode (below).
 The Telit based Digi XBees (LTE Cat1 both Verizon and AT&T) can only use this mode.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino xbee_cell_transparent )
+[//]: # ( @menusnip{xbee_cell_transparent} )
 
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
@@ -270,7 +274,7 @@ To create a DigiXBeeLTEBypass object we need to know
 
 Pins that do not apply should be set as -1.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino xbee3_ltem_bypass )
+[//]: # ( @menusnip{xbee3_ltem_bypass} )
 
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
@@ -296,7 +300,7 @@ Pins that do not apply should be set as -1.
 
 @see @ref xbees_3g_bypass
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino xbee_3g_bypass )
+[//]: # ( @menusnip{xbee_3g_bypass} )
 
 
 [//]: # ( @subsection menu_xbee_wifi Digi XBee S6B Wifi )
@@ -317,7 +321,7 @@ Pins that do not apply should be set as -1.
 
 @see @ref xbees_s6b
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino xbee_wifi )
+[//]: # ( @menusnip{xbee_wifi} )
 
 
 [//]: # ( @subsection menu_esp Espressif ESP8266 )
@@ -335,7 +339,7 @@ To create a EspressifESP8266 object we need to know
 
 Pins that do not apply should be set as -1.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino esp8266 )
+[//]: # ( @menusnip{esp8266} )
 
 Because the ESP8266's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
 You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(@ref menu_setup_esp) part of the setup function below.
@@ -357,7 +361,7 @@ To create a QuectelBG96 object we need to know
 
 Pins that do not apply should be set as -1.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino bg96 )
+[//]: # ( @menusnip{bg96} )
 
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
 Code to invert the pin levels is in the [Skywire Pin Inversions](@ref menu_setup_skywire) part of the setup function below.
@@ -379,7 +383,7 @@ To create a SequansMonarch object we need to know
 
 Pins that do not apply should be set as -1.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino monarch )
+[//]: # ( @menusnip{monarch} )
 
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
 Code to invert the pin levels is in the [Skywire Pin Inversions](@ref menu_setup_skywire) part of the setup function below.
@@ -410,7 +414,7 @@ See the  section for a 2GBee R6.
 
 @see @ref sim800_page
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino sim800 )
+[//]: # ( @menusnip{sim800} )
 
 
 [//]: # ( @subsection menu_sim7000 SIMCom SIM7000 )
@@ -429,7 +433,7 @@ Pins that do not apply should be set as -1.
 
 @see @ref sim7000_page
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino sim7000 )
+[//]: # ( @menusnip{sim7000} )
 
 
 [//]: # ( @subsection menu_gprsbee Sodaq GPRSBee )
@@ -447,7 +451,7 @@ The `PWRKEY` is held `LOW` as long as the SIM800 is powered (as mentioned above)
 
 @see @ref gprsbee_page
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino gprsbee )
+[//]: # ( @menusnip{gprsbee} )
 
 
 [//]: # ( @subsection menu_ubeer410 u-blox SARA R410M )
@@ -464,7 +468,7 @@ To create a SodaqUBeeR410M object we need to know
 
 Pins that do not apply should be set as -1.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino sara_r410m )
+[//]: # ( @menusnip{sara_r410m} )
 
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
@@ -488,7 +492,7 @@ Pins that do not apply should be set as -1.
 
 @see @ref ubee_2g
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino sara_u201 )
+[//]: # ( @menusnip{sara_u201} )
 
 
 [//]: # ( @subsection menu_modem_vars Modem Measured Variables )
@@ -500,7 +504,7 @@ The second and third arguments (the UUID and the variable code) included here ar
 Note that here we create the variables for anything measured by _any_ of the modems, but most modems are not capable of measuring all of the values.
 Some modem-measured values may be meaningless depending on the board configuration - often the battery parameters returned by a cellular component have little meaning because the module is downstream of a voltage regulator.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino modem_variables )
+[//]: # ( @menusnip{modem_variables} )
 
 ___
 
@@ -514,7 +518,7 @@ Set options and create the objects for using the processor as a sensor to report
 
 @see @ref processor_sensor_page
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino processor_sensor )
+[//]: # ( @menusnip{processor_sensor} )
 ___
 
 [//]: # ( @subsection menu_ds3231 Maxim DS3231 RTC as a sensor )
@@ -526,8 +530,47 @@ As above, we create both the sensor and the variables measured by it.
 
 @see @ref ds3231_page
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino ds3231 )
+[//]: # ( @menusnip{ds3231} )
 ___
+
+[//]: # ( @subsection menu_am2315 AOSong AM2315 )
+### AOSong AM2315
+
+Here is the code for the AOSong AM2315 temperature and humidity sensor.
+This is an I2C sensor with only one possible address so the only argument required for the constructor is the pin on the MCU controlling power to the AM2315 (AM2315Power).
+The number of readings to average from the sensor is optional, but can be supplied as the second argument for the constructor if desired.
+
+@see @ref am2315_page
+
+[//]: # ( @menusnip{am2315} )
+___
+
+[//]: # ( @subsection menu_dht AOSong DHT )
+### AOSong DHT
+
+Here is the code for the AOSong DHT temperature and humidity sensor.
+To create the DHT sensor we need the power pin, the data pin, and the DHT type.
+The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
+
+@see @ref dht_page
+
+[//]: # ( @menusnip{dht} )
+___
+
+[//]: # ( @subsection menu_sq212 Apogee SQ-212 )
+### Apogee SQ-212
+
+Here is the code for the Apogee SQ-212 quantum light sensor.
+The SQ-212 is not directly connected to the MCU, but rather to an TI ADS1115 that communicates with the MCU.
+The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
+If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
+
+@see @ref sq212_page
+
+[//]: # ( @menusnip{dht} )
+___
+
 
 [//]: # ( @subsection menu_bme280 Bosch BME280 environmental sensor )
 ### Bosch BME280 environmental sensor
@@ -535,7 +578,7 @@ ___
 Set options for the Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 Create the #Sensor object and all of the #Variable objects.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino bme280 )
+[//]: # ( @menusnip{bme280} )
 ___
 
 [//]: # ( @subsection menu_ds18 Maxim DS18 one wire temperature sensor )
@@ -544,7 +587,7 @@ ___
 Set options for the Maxim DS18 One Wire Temperature Sensor
 Create the #Sensor object and all of the #Variable objects.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino ds18 )
+[//]: # ( @menusnip{ds18} )
 ___
 
 [//]: # ( @subsection menu_ms5803  Measurement Specialties MS503 pressure and temperature sensor )
@@ -553,7 +596,7 @@ ___
 Set options for the Measurement Specialties MS503 pressure and temperature sensor.
 Create the #Sensor object and all of the #Variable objects.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino ms5803 )
+[//]: # ( @menusnip{ms5803} )
 ___
 
 [//]: # ( @section menu_calc_vars Calculated Variables )
@@ -562,7 +605,7 @@ ___
 Create new #Variable objects calculated from the measured variables.
 For these calculate variables, we must not only supply a function for the calculation, but also all of the metadata about the variable - like the name of the variable and its units.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino calculated_variables )
+[//]: # ( @menusnip{calculated_variables} )
 ___
 
 [//]: # ( @section menu_create_objs Creating the array, logger, publishers )
@@ -574,7 +617,7 @@ ___
 Create a #VariableArray containing all of the #Variable objects that we are logging the values of.
 Since we've created all of the variables above, we only need to call them by name here.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino variable_arrays )
+[//]: # ( @menusnip{variable_arrays} )
 ___
 
 [//]: # ( @subsection menu_logger_obj The Logger Object )
@@ -582,7 +625,7 @@ ___
 
 Now that we've created the array, we can actually create the #Logger object.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino loggers )
+[//]: # ( @menusnip{loggers} )
 ___
 
 [//]: # ( @subsection menu_data_publisher Data Publisher )
@@ -597,7 +640,7 @@ To publish data to the Monitor My Watershed / EnviroDIY Data Sharing Portal firs
 Then you must register your site.
 After registering your site, a sampling feature and registration token for that site should be visible on the site page.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino monitormw )
+[//]: # ( @menusnip{monitormw} )
 ___
 
 [//]: # ( @subsubsection menu_dh_publisher DreamHost )
@@ -606,7 +649,7 @@ ___
 It is extrmemly unlikely you will use this.
 You should ignore this section.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino dreamhost )
+[//]: # ( @menusnip{dreamhost} )
 ___
 
 [//]: # ( @subsubsection menu_thingspeak_publisher ThingSpeak )
@@ -616,7 +659,7 @@ After you have set up channels on ThingSpeak, you can use this code to publish y
 
 Keep in mind that the order of variables in the VariableArray is **crucial** when publishing to ThingSpeak.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino dreamhost )
+[//]: # ( @menusnip{dreamhost} )
 ___
 
 [//]: # ( @section menu_working Extra Working Functions )
@@ -626,7 +669,7 @@ Here we're creating a few extra functions on the global scope.
 The flash function is used at board start up just to give an indication that the board has restarted.
 The battery function calls the #ProcessorStats sensor to check the battery level before attempting to log or publish data.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino working_functions )
+[//]: # ( @menusnip{working_functions} )
 ___
 
 [//]: # ( @section menu_setup Arduino Setup Function )
@@ -657,7 +700,7 @@ Next we wait for the USB debugging port to initialize.
 This only applies to SAMD and 32U4 boards that have built-in USB support.
 This code should not be used for deployed loggers; it's only for using a USB for debugging.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_wait )
+[//]: # ( @menusnip{setup_wait} )
 
 [//]: # ( @subsection menu_setup_prints Printing a Hello )
 ### Printing a Hello
@@ -665,7 +708,7 @@ This code should not be used for deployed loggers; it's only for using a USB for
 Next we print a message out to the debugging port.
 This is also just for debugging - it's very helpful when connected to the logger via USB to see a clear indication that the board is starting
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_prints )
+[//]: # ( @menusnip{setup_prints} )
 
 [//]: # ( @subsection menu_setup_serial_interrupts Serial Interrupts )
 ### Serial Interrupts
@@ -693,7 +736,7 @@ For SoftwareSerial with External interrupts we use:
 Every serial port setup and used in the program must be "begun" in the setup function.
 This section calls the begin functions for all of the various ports defined in the [Extra Serial Ports](@ref menu_serial_ports) section
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_serial_begins )
+[//]: # ( @menusnip{setup_serial_begins} )
 
 [//]: # ( @subsection menu_setup_pin_periph SAMD Pin Peripherals )
 ### SAMD Pin Peripherals
@@ -702,7 +745,7 @@ After beginning all of the serial ports, we need to set the pin peripheral setti
 These were created in the [Extra Serial Ports](@ref menu_samd_serial_ports) section above.
 This does not need to be done for an AVR board (like the Mayfly).
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_samd_pins )
+[//]: # ( @menusnip{setup_samd_pins} )
 
 [//]: # ( @subsection menu_setup_flash Flash the LEDs )
 ### Flash the LEDs
@@ -710,7 +753,7 @@ This does not need to be done for an AVR board (like the Mayfly).
 Like printing debugging information to the serial port, flashing the board LED's is a very helpful indication that the board just restarted.
 Here we set the pin modes for the LED pins and flash them back and forth using the greenredflash() function we created back in the [working functions](@ref menu_working) section.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_flashing_led )
+[//]: # ( @menusnip{setup_flashing_led} )
 
 [//]: # ( @subsection menu_setup_logger Begin the Logger )
 ### Begin the Logger
@@ -722,7 +765,7 @@ The values are set with the ```Logger::``` prefix because they are static variab
 Here we also tie the logger and modem together and set all the logger pins.
 Then we finally run the logger's begin function.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_logger )
+[//]: # ( @menusnip{setup_logger} )
 
 [//]: # ( @subsection menu_setup_sensors Setup the Sensors )
 ### Setup the Sensors
@@ -733,7 +776,7 @@ To prevent a low power restart loop, we put a battery voltage condition on the s
 This prevents a solar powered board whose battery has died from continuously restarting as soon as it gains any power on sunrise.
 Without the condition the board would boot with power, try to power hungry sensors, brown out, and restart over and over.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_sesors )
+[//]: # ( @menusnip{setup_sesors} )
 
 [//]: # ( @subsection menu_setup_modem Custom Modem Setup )
 ### Custom Modem Setup
@@ -747,7 +790,7 @@ You should only use the one chunk that applies to your specific modem configurat
 This chunk of code reduces the baud rate of the ESP8266 from its default of 115200 to 9600.
 This is only needed for 8MHz boards (like the Mayfly) that cannot communicate at 115200 baud.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_esp )
+[//]: # ( @menusnip{setup_esp} )
 
 [//]: # ( @subsubsection menu_setup_skywire Skywire Pin Inversions )
 #### Skywire Pin Inversions
@@ -755,7 +798,7 @@ This is only needed for 8MHz boards (like the Mayfly) that cannot communicate at
 This chunk of code reduces the baud rate of the ESP8266 from its default of 115200 to 9600.
 This is only needed for 8MHz boards (like the Mayfly) that cannot communicate at 115200 baud.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_skywire )
+[//]: # ( @menusnip{setup_skywire} )
 
 [//]: # ( @subsubsection menu_setup_xbeec_carrier XBee Cellular Carrier )
 #### XBee Cellular Carrier
@@ -763,7 +806,7 @@ This is only needed for 8MHz boards (like the Mayfly) that cannot communicate at
 This chunk of code sets the carrier profile and network technology for a Digi XBee or XBee3.
 You should change the lines with the ```CP``` and ```N#``` commands to the proper number to match your SIM card.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_xbeec_carrier )
+[//]: # ( @menusnip{setup_xbeec_carrier} )
 
 [//]: # ( @subsubsection setup_r4_carrrier SARA R4 Cellular Carrier )
 #### SARA R4 Cellular Carrier
@@ -771,7 +814,7 @@ You should change the lines with the ```CP``` and ```N#``` commands to the prope
 This chunk of code sets the carrier profile and network technology for a u-blox SARA R4 or N4 module, including a Sodaq R410 UBee or a Digi XBee3 LTE-M in bypass mode..
 You should change the lines with the ```UMNOPROF``` and ```URAT``` commands to the proper number to match your SIM card.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_r4_carrrier )
+[//]: # ( @menusnip{setup_r4_carrrier} )
 
 [//]: # ( @subsection menu_setup_rtc Sync the Real Time Clock )
 ### Sync the Real Time Clock
@@ -784,7 +827,7 @@ Unlike the sensor setup, we have an additional check for "sanity" of the clock t
 To be considered "sane" the clock has to set somewhere between 2020 and 2025.
 It's a broad range, but it will automatically flag values like Jan 1, 2000 - which are the default start value of the clock on power up.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_clock )
+[//]: # ( @menusnip{setup_clock} )
 
 [//]: # ( @subsection menu_setup_file Setup a File on the SD card )
 ### Setup File on the SD card
@@ -793,7 +836,7 @@ We're getting close to the end of the setup function!
 This section verifies that the SD card is communicating with the MCU and sets up a file on it for saved data.
 Like with the sensors and the modem, we check for battery level before attempting to communicate with the SD card.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_file )
+[//]: # ( @menusnip{setup_file} )
 
 [//]: # ( @subsection menu_setup_sleep Sleep until the First Data Collection Time )
 ### Sleep until the First Data Collection Time
@@ -801,7 +844,7 @@ Like with the sensors and the modem, we check for battery level before attemptin
 We're finally fished with setup!
 This chunk puts the system into low power deep sleep until the next logging interval.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino setup_sleep )
+[//]: # ( @menusnip{setup_sleep} )
 
 [//]: # ( @subsection menu_setup_done Setup Complete )
 ### Setup Complete
@@ -833,7 +876,7 @@ Every time the logger wakes we check the battery voltage and do 1 of three thing
 The modem the biggest power user of the whole system.
 3.  At full power, do everything.
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino simple_loop )
+[//]: # ( @menusnip{simple_loop} )
 
 [//]: # ( @subsection menu_complex_loop A Complex Loop )
 ### A Complex Loop
@@ -858,7 +901,7 @@ This allows you to use ```checkMarkedInterval()``` to check if an action should 
 
 All together, this gives:
 
-[//]: # ( @snippet{lineno} menu_a_la_carte.ino complex_loop )
+[//]: # ( @menusnip{complex_loop} )
 
 [//]: # ( @todo fix links )
 

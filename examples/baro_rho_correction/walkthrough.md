@@ -15,7 +15,7 @@ ___
     - [Library Includes](#library-includes)
   - [Logger and Modem Settings](#logger-and-modem-settings)
     - [Logging Options](#logging-options)
-    - [Wifi/Cellular Modem Options](#wificellular-modem-settings)
+    - [Wifi/Cellular Modem Options](#wificellular-modem-options)
   - [Sensors and Measured Variables](#sensors-and-measured-variables)
     - [The processor as a sensor](#the-processor-as-a-sensor)
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
@@ -33,6 +33,7 @@ ___
   - [Extra Working Functions](#extra-working-functions)
   - [Arduino Setup Function](#arduino-setup-function)
   - [Arduino Loop Function](#arduino-loop-function)
+
 [//]: # ( End GitHub Only )
 
 
@@ -87,7 +88,7 @@ ___
 Now set up the modem and the internet connection options.
 This examples is using a Sodaq GPRSBee R6 or R7.
 
-[//]: # ( @snippet{lineno} baro_rho_correction.ino modem_settings )
+[//]: # ( @snippet{lineno} baro_rho_correction.ino gprsbee )
 ___
 
 [//]: # ( @section baro_rho_sensors_and_vars Sensors and Measured Variables )

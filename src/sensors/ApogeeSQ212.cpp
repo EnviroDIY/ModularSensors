@@ -88,9 +88,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
             // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
-            calibResult = 1 * adcVoltage *
-                1000;  // in units of μmol m-2 s-1
-                       // (microeinsteinPerSquareMeterPerSecond)
+            calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
             MS_DBG(F("  calibResult:"), calibResult);
         } else {
             // set invalid voltages back to -9999

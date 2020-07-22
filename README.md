@@ -1,6 +1,7 @@
 [//]: # ( @mainpage ModularSensors )
 # ModularSensors
 ___
+
 [//]: # ( @section mainpage_intro An Introduction )
 ## An Introduction
 
@@ -32,6 +33,7 @@ There is extensive documentation available in the [ModularSensors github pages](
   - [Contributing](#contributing)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
+
 [//]: # ( End GitHub Only )
 
 [//]: # ( @section mainpage_supported_sensors Supported Sensors )
@@ -89,6 +91,7 @@ The currently supported services are the [Monitor My Watershed data portal](http
 
 - [Monitor My Watershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
 - [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Functions)
+
 [//]: # ( @todo Page on Data Endpoints )
 
 
@@ -112,7 +115,6 @@ For information common to all modems and for tables of the proper class, baud ra
 - u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://envirodiy.github.io/ModularSensors/ubee_page.html)
 
 
-
 [//]: # ( @section mainpage_contributing Contributing )
 ## Contributing
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
@@ -122,7 +124,6 @@ If you would like to directly help with the coding development of the library, t
 Please _take time to familiarize yourself with the [terminology, classes and data structures](https://envirodiy.github.io/ModularSensors/library_terminology.html) this library uses_.
 This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.
 There is _extensive_ documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
-
 
 
 [//]: # ( @section mainpage_license License )
