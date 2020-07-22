@@ -1227,8 +1227,8 @@ Variable* teros11VWC =
 /** Start [i2c_rain] */
 #include <sensors/RainCounterI2C.h>
 
-const uint8_t RainCounterI2CAddress =
-    0x08;                            // I2C Address for external tip counter
+const uint8_t RainCounterI2CAddress = 0x08;
+// I2C Address for EnviroDIY external tip counter is 0x08 by default
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 
 // Create a Rain Counter sensor object
@@ -1240,6 +1240,38 @@ Variable* tbi2cTips =
 Variable* tbi2cDepth =
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [i2c_rain] */
+
+
+// ==========================================================================
+//    Tally I2C Event Counter for rain or wind reed-switch sensors
+// ==========================================================================
+/** Start [i2c_wind_tally] */
+#include <sensors/TallyCounterI2C.h>
+
+const int8_t TallyPower = -1;  // Power pin (-1 if unconnected)
+// NorthernWidget Tally I2CPower is -1 by default because it is often deployed
+// with power always on, but Tally also has a super capacitor that enables it
+// to be self powered between readings/recharge as described at
+// https://github.com/NorthernWidget-Skunkworks/Project-Tally
+
+const uint8_t TallyCounterI2CAddress = 0x33;
+// NorthernWidget Tally I2C address is 0x33 by default
+
+// Create a Tally Counter sensor object
+TallyCounterI2C tallyi2c(TallyPower, TallyCounterI2CAddress);
+
+// Create variable pointers for the Tally event counter
+Variable* tallyEvents =
+    new TallyCounterI2C_Events(&tallyi2c,
+        "12345678-abcd-1234-ef00-1234567890ab");
+
+// For  Wind Speed, create a Calculated Variable that converts, similar to:
+    // period = loggingInterval * 60.0;    // in seconds
+    // frequency = tallyEventCount/period; // average event frequency in Hz
+    // tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h
+    // // 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
+    // // web: Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R
+/** End [i2c_wind_tally] */
 
 
 // ==========================================================================
