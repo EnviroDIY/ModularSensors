@@ -656,7 +656,6 @@ void Logger::setFileAccessTime(File* fileToStamp) {
 }
 
 
-
 // const char* delim_char        = ",";
 #define DELIM_CHAR2 ','
 
@@ -762,8 +761,7 @@ bool Logger::deszReadStart() {
     return true;
 }
 
-
-bool Logger::deszLine() {
+bool Logger::deszLine(File* filep) {
     char* errCheck;
     /* Scan through one line. Expect format
       <ascii Digits>,   representing integer STATUS
@@ -779,7 +777,7 @@ bool Logger::deszLine() {
             nextStr_sz
     */
 
-    uint16_t num_char = deszReadFile.fgets(deslzFile_line, QUEFILE_MAX_LINE);
+    uint16_t num_char = filep->fgets(deslzFile_line, QUEFILE_MAX_LINE);
     char*    orig_nextChar;
 
     if (0 == num_char) return false;
@@ -925,7 +923,7 @@ bool Logger::deszDbg(void) {
         String d_str(80);
         serialCnt = 0;
         deszReadStart();
-        while (deszLine()) {
+        while (deszReadLine()) {
             d_str = formatDateTime_ISO8601(queFile_epochTime) + ';';
             // next_token = find_chars_or_comment(queFile_nextChar,
             // DELIM_CHAR2);

@@ -132,14 +132,21 @@ void publishDataQuedToRemotes(void);
 // bool serzRead(void);
 bool serzReadLine(void);
 // void serzReadFn(void);
-// virtual bool serzQueFn(char* instance);
+// bool serzQueFn(char* instance);
 void serzQueCloseFile(bool action);
 
+// Uses READINGS.TXT
 bool deszReadStart();
+#define deszReadLine() deszLine(&deszReadFile)
 bool deszReadClose(bool deleteFile = false);
-bool deszCleanup(bool debug = false);
 
-bool deszLine(void);
+
+/* 
+bool deszQuedCleanup(bool debug = false);
+*/
+// does the work
+bool deszLine(File* filep);
+
 
 bool deszDbg(void);
 void setFileAccessTime(File* fileToStamp);

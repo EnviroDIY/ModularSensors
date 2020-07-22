@@ -446,7 +446,7 @@ void Logger::publishDataQuedToRemotes(void) {
                 // useQue = true;
                 deszReadStart();
                 MS_START_DEBUG_TIMER;
-                while ((dslStatus = deszLine())) {
+                while ((dslStatus = deszReadLine())) {
                     rspCode = dataPublishers[i]->publishData();
 
                     watchDogTimer.resetWatchDog();
