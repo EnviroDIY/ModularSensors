@@ -147,7 +147,7 @@ void loop() {
     DBG(F("Waiting for network registration"));
     while (!gsmModem.isNetworkConnected()) {
         int csq = gsmModem.getSignalQuality();
-        DBG("\nSignal quality:", csq);
+        DBG("Signal quality:", csq);
         delay(250);
     }
 
