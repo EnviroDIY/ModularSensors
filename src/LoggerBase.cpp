@@ -512,7 +512,7 @@ void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
 }
 
-void Logger::postLogLine(char rspParam) {
+void Logger::postLogLine(int16_t rspParam) {
 // If debug ...keep record
 #if 0
     if (0 == postsLogHndl.print(getNowEpochT0())) {
@@ -526,7 +526,8 @@ void Logger::postLogLine(char rspParam) {
     postsLogHndl.print(tempBuffer);
 #endif
     postsLogHndl.print(F(","));
-    postsLogHndl.print(rspParam);
+    itoa(rspParam, tempBuffer, 10);
+    postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(","));
     postsLogHndl.print(deszq_line);
 }

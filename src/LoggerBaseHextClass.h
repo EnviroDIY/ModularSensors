@@ -154,7 +154,7 @@ bool deszLine(File* filep);
 
 void setFileAccessTime(File* fileToStamp);
 bool deszDbg(void);
-void postLogLine(char rspParam);
+void postLogLine(int16_t rspParam);
 
 // The SD card and file
 #if 0  // defined BOARD_SDQ_QSPI_FLASH
