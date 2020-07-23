@@ -1313,8 +1313,8 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& acculevelSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial&  acculevelSerial = altSoftSerial;  // For software serial
-NeoSWSerial& acculevelSerial = neoSSerial1;  // For software serial
+AltSoftSerial&  acculevelSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& acculevelSerial = neoSSerial1;  // For software serial
 #endif
 
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
@@ -1351,8 +1351,8 @@ Variable* acculevHeight = new KellerAcculevel_Height(
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& nanolevelSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& nanolevelSerial = altSoftSerial;  // For software serial
-NeoSWSerial& nanolevelSerial = neoSSerial1;  // For software serial
+AltSoftSerial& nanolevelSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& nanolevelSerial = neoSSerial1;  // For software serial
 #endif
 
 byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
@@ -1390,8 +1390,8 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y504modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y504modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y504modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y504modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y504modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y504ModbusAddress = 0x04;  // The modbus address of the Y504
@@ -1430,8 +1430,8 @@ Variable* y504Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y510modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y510modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y510modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y510modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y510modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y510ModbusAddress = 0x0B;  // The modbus address of the Y510
@@ -1467,8 +1467,8 @@ Variable* y510Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y511modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y511modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y511modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y511modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y511modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y511ModbusAddress = 0x1A;  // The modbus address of the Y511
@@ -1504,8 +1504,8 @@ Variable* y511Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y514modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y514modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y514modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y514modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y514modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y514ModbusAddress = 0x14;  // The modbus address of the Y514
@@ -1542,8 +1542,8 @@ Variable* y514Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y520modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y520modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y520modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y520modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y520modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y520ModbusAddress = 0x20;  // The modbus address of the Y520
@@ -1579,8 +1579,8 @@ Variable* y520Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y532modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y532modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y532modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y532modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y532modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y532ModbusAddress = 0x32;  // The modbus address of the Y532
@@ -1618,8 +1618,8 @@ Variable* y532Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y550modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y550modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y550modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y550modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y550modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y550ModbusAddress = 0x50;  // The modbus address of the Y550
@@ -1658,8 +1658,8 @@ Variable* y550Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y4000modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y4000modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y4000modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y4000modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y4000modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
@@ -1973,22 +1973,21 @@ void setup() {
 #endif
     /** End [setup_softserial] */
 
-    /** Start [setup_serial_begins] */
-    // Start the serial connection with the modem
-    modemSerial.begin(modemBaud);
+/** Start [setup_serial_begins] */
+// Start the serial connection with the modem
+modemSerial.begin(modemBaud);
 
-    // Start the stream for the modbus sensors; all currently supported modbus
-    // sensors use 9600 baud
+// Start the stream for the modbus sensors;
+// all currently supported modbus sensors use 9600 baud
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
     Serial2.begin(9600);  // Use hardware serial if possible
 #else
-    // altSoftSerial.begin(9600);  // For software serial
-    neoSSerial1.begin(9600);  // For software serial
+    altSoftSerial.begin(9600);  // For software serial
+    // neoSSerial1.begin(9600);  // For software serial
 #endif
 
-    // Start the SoftwareSerial stream for the sonar; it will always be at 9600
-    // baud
-    sonarSerial.begin(9600);
+// Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
+sonarSerial.begin(9600);
 /** End [setup_serial_begins] */
 
 // Assign pins SERCOM functionality for SAMD boards
@@ -2004,7 +2003,7 @@ void setup() {
     pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
 #endif
 #endif
-    /** End [setup_samd_pins] */
+/** End [setup_samd_pins] */
 
     /** Start [setup_flashing_led] */
     // Set up pins for the LED's
@@ -2227,6 +2226,12 @@ void loop() {
         // return a signal strength reading.
         if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
 
+        // Start the stream for the modbus sensors, if your
+        // RS485 adapter "steals" current from data pins when powered off,
+        // & you stop modbus serial connection with digitalWrite(5, LOW), below.
+// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        altSoftSerial.begin(9600);
+
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
         // values, and turing them back off.
@@ -2235,6 +2240,12 @@ void loop() {
         varArray.completeUpdate();
 
         dataLogger.watchDogTimer.resetWatchDog();
+
+        // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
+        // on sleep, because Modbus Stop bit leaves these pins HIGH.
+// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        digitalWrite(5, LOW);   // Reset AltSoftSerial Tx pin to LOW
+        digitalWrite(6, LOW);   // Reset AltSoftSerial Rx pin to LOW
 
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
@@ -2247,6 +2258,7 @@ void loop() {
             if (modem.connectInternet()) {
                 dataLogger.watchDogTimer.resetWatchDog();
                 // Publish data to remotes
+                Serial.println(F("Modem connected to internet."));
                 dataLogger.publishDataToRemotes();
 
                 // Sync the clock at midnight
@@ -2281,8 +2293,20 @@ void loop() {
         Logger::isLoggingNow = false;
     }
 
+    // Start the stream for the modbus sensors, if your
+    // RS485 adapter "steals" current from data pins when powered off,
+    // & you stop modbus serial connection with digitalWrite(5, LOW), below.
+// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+    altSoftSerial.begin(9600);
+
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) dataLogger.testingMode();
+
+    // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
+    // on sleep, because Modbus Stop bit leaves these pins HIGH.
+// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+    digitalWrite(5, LOW);   // Reset AltSoftSerial Tx pin to LOW
+    digitalWrite(6, LOW);   // Reset AltSoftSerial Rx pin to LOW
 
     // Call the processor sleep
     dataLogger.systemSleep();
