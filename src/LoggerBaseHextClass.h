@@ -102,55 +102,59 @@ const char* _LoggerId_buf = NULL;
 // Serializing/Deserialing through READINGS.TXT
 // ===================================================================== //
 public:
-bool     deszReadNext(void);
-long     queFile_epochTime = 0;  // Marked Epoch Time
-char*    queFile_nextChar;
-uint16_t nextStr_sz;
+bool     deszqNextCh(void);
+long     deszq_epochTime = 0;  // Marked Epoch Time
+char*    deszq_nextChar;
+uint16_t deszq_nextCharSz;
 
 private:
-long queFile_status = 0;  // Bit wise status of reading
-
+long     deszq_status    = 0;  // Bit wise status of reading
+uint16_t deszLinesRead   = 0;
+uint16_t deszLinesUnsent = 0;
+#define QUEFILE_MAX_LINE 100
+char deszq_line[QUEFILE_MAX_LINE] = "";
 
 // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
-File        deszReadFile;
-const char* readingsFn_str = "READINGS.TXT";
+// deserialize Readings Delayed
+File        deszRdelFile;
+const char* deszRdelFn_str = "RDELAY.TXT";
 
 File        postsLogHndl;                    // Record all POSTS when enabled
 const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
 
-File        quedFileHndl;            // Save for que - keep to 8.3
-const char* quedFileFn_str = "QUE";  // begin of name
+// queued for reliable delivery
+File serzQuedFile;  // Save for que - keep to 8.3
 #define FN_BUFFER_SZ 13
-char quedFn_str[FN_BUFFER_SZ] = "";
-
-uint16_t deszLinesRead   = 0;
-uint16_t deszLinesUnsent = 0;
-#define QUEFILE_MAX_LINE 100
-char deslzFile_line[QUEFILE_MAX_LINE] = "";
+char        serzQuedFn[FN_BUFFER_SZ] = "";
+const char* quedFileFn_str           = "QUE";  // begin of name
 
 void publishDataQuedToRemotes(void);
-// bool serzRead(void);
-bool serzReadLine(void);
-// void serzReadFn(void);
-// bool serzQueFn(char* instance);
-void serzQueCloseFile(bool action);
 
-// Uses READINGS.TXT
-bool deszReadStart();
-#define deszReadLine() deszLine(&deszReadFile)
-bool deszReadClose(bool deleteFile = false);
+// perform a serialize to RdelFile
+bool serzRdel_Line(void);
 
 
-/* 
+// Uses deszRdelFn_str, File deszRdelFile
+bool deszRdelStart();
+#define deszRdelLine() deszLine(&deszRdelFile)
+bool deszRdelClose(bool deleteFile = false);
+
+// Uses quedFileFn_str, File  serzQuedFile
+bool serzQuedStart(char uniqueId);
+#define deszQuedLine() deszLine(&serzQuedFile)
+void serzQuedCloseFile(bool action);
+// void deszQuedStart();
+
+/*
 bool deszQuedCleanup(bool debug = false);
 */
 // does the work
 bool deszLine(File* filep);
 
 
-bool deszDbg(void);
 void setFileAccessTime(File* fileToStamp);
-
+bool deszDbg(void);
+void postLogLine(char rspParam);
 
 // The SD card and file
 #if 0  // defined BOARD_SDQ_QSPI_FLASH

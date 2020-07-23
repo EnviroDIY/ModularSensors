@@ -246,7 +246,7 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
     // Fill the body - format is per MMW requirements
     MS_START_DEBUG_TIMER;
     strcat(txBuffer, timestampTag);
-    _baseLogger->formatDateTime_ISO8601(_baseLogger->queFile_epochTime)
+    _baseLogger->formatDateTime_ISO8601(_baseLogger->deszq_epochTime)
         .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
     strcat(txBuffer, tempBuffer);
     txBuffer[strlen(txBuffer)] = '"';
@@ -259,8 +259,8 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
         strcat(txBuffer, tempBuffer);
         txBuffer[strlen(txBuffer)] = '"';
         txBuffer[strlen(txBuffer)] = ':';
-        strncat(txBuffer, _baseLogger->queFile_nextChar,
-                _baseLogger->nextStr_sz);
+        strncat(txBuffer, _baseLogger->deszq_nextChar,
+                _baseLogger->deszq_nextCharSz);
         //_baseLogger-> getValueStringAtI(i).toCharArray(tempBuffer, 37);
         // strcat(txBuffer, tempBuffer);
         if (i + 1 != _baseLogger->getArrayVarCount()) {
@@ -268,7 +268,7 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
         } else {
             txBuffer[strlen(txBuffer)] = '}';
         }
-        if (!_baseLogger->deszReadNext()) break;
+        if (!_baseLogger->deszqNextCh()) break;
     }
     MS_DBG(F("Filled from SD in "), MS_PRINT_DEBUG_TIMER, F("ms"));
 }
