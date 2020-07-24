@@ -338,8 +338,8 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     // Process the HTTP response
     int16_t responseCode = 0;
     if (RESPONSE_UNINIT == did_respond) {
-        // 503 Service Unavailable ~ couldn't connect
-        responseCode = 503;
+        // 901 Outside HTTP Status, No Connection to server
+        responseCode = HTTPSTATUS_NC_901;
     } else if (did_respond >= REQUIRED_MIN_RSP_SZ) {
         char responseCode_char[4];
         for (uint8_t i = 0; i < 3; i++) {
@@ -348,7 +348,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         responseCode = atoi(responseCode_char);
     } else {
         // 504 Gateway Timeout
-        responseCode = 504;
+        responseCode = HTTPSTATUS_GT_504;
     }
     tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
     MS_DBG(F("Rsp:'"), tempBuffer, F("'"));

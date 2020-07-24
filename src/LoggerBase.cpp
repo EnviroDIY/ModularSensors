@@ -455,7 +455,7 @@ void Logger::publishDataQuedToRemotes(void) {
                     postLogLine(rspCode);
 
 #if 1
-                    if (201 != rspCode) {
+                    if (HTTPSTATUS_CREATED_201 != rspCode) {
 #define DESLZ_STATUS_UNACK '1'
                         deszq_line[0] = DESLZ_STATUS_UNACK;
                         // Add to que

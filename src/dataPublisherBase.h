@@ -332,5 +332,17 @@ class dataPublisher {
         return useQueDataSource;  // Default for not supported.
     }
 };
+/*
+ * HTTP STATUS Codes that are used by Modular Sensors
+ * Placed at the end of the file, to facilitate mergein code
+ * https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+ */
+
+#define HTTPSTATUS_CREATED_201 201
+// Server Error indicating a Gateway Timeout.
+// Also supplied if the server didn't respond to a POST
+#define HTTPSTATUS_GT_504 504
+// This is an internaly created error, indicating No Connection with server
+#define HTTPSTATUS_NC_901 901
 
 #endif  // SRC_DATAPUBLISHERBASE_H_
