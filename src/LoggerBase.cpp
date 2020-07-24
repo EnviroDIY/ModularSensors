@@ -424,7 +424,7 @@ void Logger::publishDataQuedToRemotes(void) {
     bool    dslStatus = false;
     bool    retVal    = false;
     // MS_DBG(F("Pub Data Qued"));
-    MS_DBG(F("publishDataQuedToRemotes from"), deszRdelFn_str);
+    MS_DBG(F("publishDataQuedToRemotes from"), serzRdelFn_str);
 
     // Open debug file
     retVal = postsLogHndl.open(postsLogFn_str, (O_WRITE | O_CREAT | O_AT_END));
@@ -436,7 +436,7 @@ void Logger::publishDataQuedToRemotes(void) {
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
             // open the qued file for serialized readings
-            // (char*)quedFileFn_str
+            // (char*)serzQuedFn_str
 
 
             // dataPublishers[i]->publishData(_logModem->getClient());
@@ -454,10 +454,12 @@ void Logger::publishDataQuedToRemotes(void) {
                     // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
                     postLogLine(rspCode);
 
-#if 1
                     if (HTTPSTATUS_CREATED_201 != rspCode) {
 #define DESLZ_STATUS_UNACK '1'
-                        deszq_line[0] = DESLZ_STATUS_UNACK;
+#define DESLZ_STATUS_POS 0
+                        if (++deszq_line[0] > '8') {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_UNACK;
+                        }
                         // Add to que
                         // MS_DBG(F("publishDataQuedToRemotes qued"),
                         // deszq_line);
@@ -465,8 +467,20 @@ void Logger::publishDataQuedToRemotes(void) {
                         if (0 == retVal) {
                             PRINTOUT(F("publishDataQuedToRemote 0 printed"));
                         }
+                        /*TODO njh process
+                        if (HTTPSTATUS_NC_901 == rspCode) {
+                            MS_DBG(F("publishDataQuedToRemotes abort this
+                        servers POST " "attempts"));
+
+                        However, will also have to cleanup/copy lines from
+                        serzQuedFile to before deszRdelClose
+
+                        break;
+
+                        }
+
+                        */
                     }
-#endif  // #if x
                 }
                 deszRdelClose(true);
                 serzQuedCloseFile(false);
@@ -477,11 +491,11 @@ void Logger::publishDataQuedToRemotes(void) {
 
                 MS_DBG(F("publishDataQuedToRemotes"), deszLinesRead,
                        F("lines in"), MS_PRINT_DEBUG_TIMER, F("ms"));
-#define HTTP_STATUS_SUCCESS_CREATED 201
-                if (HTTP_STATUS_SUCCESS_CREATED == rspCode) {
+
+                if (HTTPSTATUS_CREATED_201 == rspCode) {
                     start = millis();
                     MS_DBG(F("publishDataQuedToRemotes from"), serzQuedFn);
-#if 0
+#if 1
                     // Do retrys through publisher
                     if (!serzQuedFile.open(serzQuedFn, O_RDWR)) {
                         PRINTOUT(F("serzQuedFile.open err"), serzQuedFn);
@@ -493,8 +507,9 @@ void Logger::publishDataQuedToRemotes(void) {
                         rspCode = dataPublishers[i]->publishData();
                         watchDogTimer.resetWatchDog();
                         postLogLine(rspCode);
-                        if (201 != rspCode) break;
+                        if (HTTPSTATUS_CREATED_201 != rspCode) break;
                     }
+                    // deszQuedCloseFile() is serzQuedCloseFile(true)
                     serzQuedCloseFile(true);
 #endif  // #if x
                 } else {

@@ -644,6 +644,7 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 
 // ===================================================================== //
 // Serialize/deserialize functions
+// see class headers
 // ===================================================================== //
 
 // This update the timestamp on a file
@@ -655,18 +656,23 @@ void Logger::setFileAccessTime(File* fileToStamp) {
                            markedDt.minute(), markedDt.second());
 }
 
-
-// const char* delim_char        = ",";
 #define DELIM_CHAR2 ','
 
-#if 1
 bool Logger::serzQuedStart(char uniqueId) {
-    strcpy(serzQuedFn, quedFileFn_str);
+    strcpy(serzQuedFn, serzQuedFn_str);
     strncat(serzQuedFn, &uniqueId, 1);
     strcat(serzQuedFn, ".TXT");
-    return serzQuedFile.open(serzQuedFn, (O_WRITE | O_CREAT | O_AT_END));
+    if (!initializeSDCard()) {
+        PRINTOUT(F("serzQuedStart; !SDcard "));
+        return false;
+    }
+    if (!serzQuedFile.open(serzQuedFn, (O_WRITE | O_CREAT | O_AT_END))) {
+        PRINTOUT(F("serzQuedStart open err"));
+        return false;
+    }
+    return true;
 }
-#endif
+
 void Logger::serzQuedCloseFile(bool flush) {
     /* This closes the file, removing the sent messages
      The algorithim is, rename to a temporary file,
@@ -698,7 +704,7 @@ void Logger::serzQuedCloseFile(bool flush) {
             return;
         }
 
-        /* TODO: njh copy lines */
+        /*  copy lines from one file to the enxt */
         uint16_t num_char;
         uint16_t num_lines = 0;
         while ((num_char = serzQuedFile.fgets(deszq_line, QUEFILE_MAX_LINE))) {
@@ -723,24 +729,26 @@ For serialize, create ASCII CSV records of the form
 status,<marked epoch time> n*[<,values>]
 */
 bool Logger::serzRdel_Line() {
-    if (!initializeSDCard()) return false;
-
-    if (deszRdelFile.open(deszRdelFn_str, (O_WRITE | O_CREAT | O_AT_END))) {
+    if (!initializeSDCard()) {
+        PRINTOUT(F("serzRdel_Line !SDcard"));
+        return false;
+    }
+    if (serzRdelFile.open(serzRdelFn_str, (O_WRITE | O_CREAT | O_AT_END))) {
         uint16_t outputSz;
         // String csvString(Logger::markedEpochTime);
-        outputSz = deszRdelFile.print("0,");  // Start READINGS_STATUS
-        outputSz += deszRdelFile.print(Logger::markedEpochTime);
+        outputSz = serzRdelFile.print("0,");  // Start READINGS_STATUS
+        outputSz += serzRdelFile.print(Logger::markedEpochTime);
         for (uint8_t i = 0; i < getArrayVarCount(); i++) {
             // csvString += ',';
-            outputSz += deszRdelFile.print(',' + getValueStringAtI(i));
+            outputSz += serzRdelFile.print(',' + getValueStringAtI(i));
         }
-        outputSz += deszRdelFile.println();
-        // setFileAccessTime(deszRdelFile);
-        deszRdelFile.close();
-        MS_DBG(F("serzRdel_Line on"), deszRdelFn_str, F(" at "),
+        outputSz += serzRdelFile.println();
+        // setFileAccessTime(serzRdelFile);
+        serzRdelFile.close();
+        MS_DBG(F("serzRdel_Line on"), serzRdelFn_str, F(" at "),
                markedEpochTime, F(" size="), outputSz);
     } else {
-        PRINTOUT(F("serzRdel_Line; No file"), deszRdelFn_str);
+        PRINTOUT(F("serzRdel_Line; No file"), serzRdelFn_str);
         return false;
     }
     return true;
@@ -768,14 +776,30 @@ bool Logger::deszRdelStart() {
 
     deszq_nextChar = deszq_line;
     // Open - RD & WR. WR needed to be able to delete when complete.
-    if (!deszRdelFile.open(deszRdelFn_str, O_RDWR)) {
-        PRINTOUT(F("deszRdelinsStart; No file "), deszRdelFn_str);
+    if (!serzRdelFile.open(serzRdelFn_str, O_RDWR)) {
+        PRINTOUT(F("deszRdelinsStart; No file "), serzRdelFn_str);
         return false;
     }
 
     return true;
 }
+bool Logger::deszQuedStart() {
+    if (!initializeSDCard()) {
+        PRINTOUT(F("deszQuedStart; !SDcard "));
+        return false;
+    }
+    deszLinesRead = deszLinesUnsent = 0;
 
+    deszq_nextChar = deszq_line;
+    // Open - RD & WR. WR needed to be able to delete when complete.
+    // Expect serzQuedFn to be setup in serzQuedStar
+    if (!serzQuedFile.open(serzQuedFn, O_RDWR)) {
+        PRINTOUT(F("deszQuedStart; No file "));
+        return false;
+    }
+
+    return true;
+}
 bool Logger::deszLine(File* filep) {
     char* errCheck;
     /* Scan through one line. Expect format
@@ -911,14 +935,14 @@ bool Logger::desCleanup(bool debug) {
 bool Logger::deszRdelClose(bool deleteFile) {
     bool retVal = false;
     if (!deleteFile) {
-        if (!(retVal = deszRdelFile.close())) {
-            PRINTOUT(F("deSRC Close1 Failed "), deszRdelFn_str);
+        if (!(retVal = serzRdelFile.close())) {
+            PRINTOUT(F("deSRC Close1 Failed "), serzRdelFn_str);
         }
     } else {
-        if (!(retVal = deszRdelFile.remove())) {
-            PRINTOUT(F("deSRC Remove Failed "), deszRdelFn_str);
-            if (!(retVal = deszRdelFile.close())) {
-                PRINTOUT(F("deSRC Close2 Failed "), deszRdelFn_str);
+        if (!(retVal = serzRdelFile.remove())) {
+            PRINTOUT(F("deSRC Remove Failed "), serzRdelFn_str);
+            if (!(retVal = serzRdelFile.close())) {
+                PRINTOUT(F("deSRC Close2 Failed "), serzRdelFn_str);
             }
         }
     }

@@ -99,7 +99,11 @@ const char* _samplingFeature;
 const char* _LoggerId_buf = NULL;
 
 // ===================================================================== //
-// Serializing/Deserialing through READINGS.TXT
+/* Serializing/Deserialing
+  A common set of functions that operate on files
+  serzRdelFn_str
+  serzQuedFn
+*/
 // ===================================================================== //
 public:
 bool     deszqNextCh(void);
@@ -115,43 +119,42 @@ uint16_t deszLinesUnsent = 0;
 char deszq_line[QUEFILE_MAX_LINE] = "";
 
 // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
-// deserialize Readings Delayed
-File        deszRdelFile;
-const char* deszRdelFn_str = "RDELAY.TXT";
-
 File        postsLogHndl;                    // Record all POSTS when enabled
 const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
 
-// queued for reliable delivery
-File serzQuedFile;  // Save for que - keep to 8.3
+// que Readings DELAYed (RDEL) ~ serialize/deserialize
+File        serzRdelFile;
+const char* serzRdelFn_str = "RDELAY.TXT";
+
+// QUEueD for reliable delivery
+// first POST didn't suceed to serialize/deserialize
+// Potentially multiple versions of files based on dataPublisher[]
+File serzQuedFile;
 #define FN_BUFFER_SZ 13
 char        serzQuedFn[FN_BUFFER_SZ] = "";
-const char* quedFileFn_str           = "QUE";  // begin of name
+const char* serzQuedFn_str           = "QUE";  // begin of name, keep 8.3
 
 void publishDataQuedToRemotes(void);
 
 // perform a serialize to RdelFile
 bool serzRdel_Line(void);
-
-
-// Uses deszRdelFn_str, File deszRdelFile
+// Uses serzRdelFn_str, File serzRdelFile
 bool deszRdelStart();
-#define deszRdelLine() deszLine(&deszRdelFile)
+#define deszRdelLine() deszLine(&serzRdelFile)
 bool deszRdelClose(bool deleteFile = false);
 
-// Uses quedFileFn_str, File  serzQuedFile
-bool serzQuedStart(char uniqueId);
+// Uses serzQuedFn_str, File  serzQuedFile
+bool serzQuedStart(char uniqueId); //Use 1st, & sets filename
+bool deszQuedStart(void);
 #define deszQuedLine() deszLine(&serzQuedFile)
 void serzQuedCloseFile(bool action);
-// void deszQuedStart();
-
 /*
 bool deszQuedCleanup(bool debug = false);
 */
-// does the work
+// This does the work
 bool deszLine(File* filep);
 
-
+// Utility resources
 void setFileAccessTime(File* fileToStamp);
 bool deszDbg(void);
 void postLogLine(int16_t rspParam);
