@@ -704,17 +704,26 @@ void Logger::serzQuedCloseFile(bool flush) {
             return;
         }
 
-        /*  copy lines from one file to the enxt */
-        uint16_t num_char;
-        uint16_t num_lines = 0;
-        while ((num_char = serzQuedFile.fgets(deszq_line, QUEFILE_MAX_LINE))) {
-            retVal = tempFile.write(deszq_line, num_char);
-            if (retVal != num_char) {
-                PRINTOUT(F("serzQuedCloseFile tempFile write err"), num_char);
-                break;
-            }
 
-            num_lines++;
+        /*  copy lines from one file to the enxt */
+        uint16_t num_char  = sizeof(deszq_line);
+        uint16_t num_lines = 0;
+        // First write out the recently attemtpted
+        retVal = tempFile.write(deszq_line, num_char);
+        if (retVal != num_char) {
+            PRINTOUT(F("serzQuedCloseFile tempFile write1 err"), num_char);
+        } else {
+            while (
+                (num_char = serzQuedFile.fgets(deszq_line, QUEFILE_MAX_LINE))) {
+                retVal = tempFile.write(deszq_line, num_char);
+                if (retVal != num_char) {
+                    PRINTOUT(F("serzQuedCloseFile tempFile write2 err"),
+                             num_char);
+                    break;
+                }
+
+                num_lines++;
+            }
         }
         MS_DBG(F("serzQuedCloseFile wrote "), num_lines);
         tempFile.close();

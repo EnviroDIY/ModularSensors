@@ -456,6 +456,7 @@ void Logger::publishDataQuedToRemotes(void) {
 
                     if (HTTPSTATUS_CREATED_201 != rspCode) {
 #define DESLZ_STATUS_UNACK '1'
+#define DESLZ_STATUS_MAX '8'
 #define DESLZ_STATUS_POS 0
                         if (++deszq_line[0] > '8') {
                             deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_UNACK;
@@ -498,19 +499,26 @@ void Logger::publishDataQuedToRemotes(void) {
 #if 1
                     // Do retrys through publisher
                     if (!serzQuedFile.open(serzQuedFn, O_RDWR)) {
+                        // Could be that there are no retrys.
                         PRINTOUT(F("serzQuedFile.open err"), serzQuedFn);
-                        break;
+                        // break; ??
+                    } else {
+                        deszQuedStart();
+                        while ((dslStatus = deszQuedLine())) {
+                            // setup for publisher to call deszqNextCh()
+                            rspCode = dataPublishers[i]->publishData();
+                            watchDogTimer.resetWatchDog();
+                            postLogLine(rspCode);
+                            if (HTTPSTATUS_CREATED_201 != rspCode) break;
+                        }
+                        // increment status of number attempts
+                        if (deszq_line[DESLZ_STATUS_POS]-- >=
+                            DESLZ_STATUS_MAX) {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_MAX;
+                        }
+                        // deszQuedCloseFile() is serzQuedCloseFile(true)
+                        serzQuedCloseFile(true);
                     }
-                    deszQuedStart();
-                    while ((dslStatus = deszQuedLine())) {
-                        // setup for publisher to call deszqNextCh()
-                        rspCode = dataPublishers[i]->publishData();
-                        watchDogTimer.resetWatchDog();
-                        postLogLine(rspCode);
-                        if (HTTPSTATUS_CREATED_201 != rspCode) break;
-                    }
-                    // deszQuedCloseFile() is serzQuedCloseFile(true)
-                    serzQuedCloseFile(true);
 #endif  // #if x
                 } else {
                     MS_DBG(F("publishDataQuedToRemotes drop retrys. rspCode"),
