@@ -918,13 +918,14 @@ void setup() {
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
+    dataLogger.serzBegin();
 #if defined UseModem_Module
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
     EnviroDIYPOST.setQued(true);
-    dataLogger.setSendEveryX(7);  // Assumes a 2minute update
-    dataLogger.setSendOffset(3);  // delay Minutes
+    dataLogger.setSendEveryX(2);  // Assumes a 2minute update
+    dataLogger.setSendOffset(1);  // delay Minutes, assumes 2min interval
 #endif                            // UseModem_Module
 
 // Sync the clock  and we have battery to spare
@@ -977,7 +978,6 @@ void setup() {
     dataLogger.createLogFile(true);  // true = write a new header
     dataLogger.turnOffSDcard(
         true);  // true = wait for internal housekeeping after write
-
 
     MS_DBG(F("\n\nSetup Complete ****"));
 }

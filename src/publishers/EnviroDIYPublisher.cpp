@@ -87,11 +87,19 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
         jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
         jsonLength += 2;   //  ":
-        jsonLength += _baseLogger->getValueStringAtI(i).length();
-        if (i + 1 != _baseLogger->getArrayVarCount()) {
-            jsonLength += 1;  // ,
+        if (!useQueDataSource) {
+            // Actively calculate the length
+            jsonLength += _baseLogger->getValueStringAtI(i).length();
+            if (i + 1 != _baseLogger->getArrayVarCount()) {
+                jsonLength += 1;  // ,
+            }
         }
     }
+    if (useQueDataSource) {
+        // Get precalculated length
+        jsonLength += _baseLogger->deszq_timeVariant_sz;
+    }
+
     jsonLength += 1;  // }
     return jsonLength;
 }
@@ -244,6 +252,7 @@ void EnviroDIYPublisher::mmwPostDataArray(char* tempBuffer) {
 }
 void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
     // Fill the body - format is per MMW requirements
+    //  MS_DBG(F("Filling from Que"));
     MS_START_DEBUG_TIMER;
     strcat(txBuffer, timestampTag);
     _baseLogger->formatDateTime_ISO8601(_baseLogger->deszq_epochTime)
@@ -268,9 +277,10 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
         } else {
             txBuffer[strlen(txBuffer)] = '}';
         }
+        // Read the Next Stored character of SD
         if (!_baseLogger->deszqNextCh()) break;
     }
-    MS_DBG(F("Filled from SD in "), MS_PRINT_DEBUG_TIMER, F("ms"));
+    MS_DBG(F("Filled from SD QUE in "), MS_PRINT_DEBUG_TIMER, F("ms"));
 }
 // This utilizes an attached modem to make a TCP connection to the
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
@@ -318,12 +328,12 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
             did_respond = _outClient->available();
             elapsed_ms  = millis() - start;
         }
-        MS_DBG(F("Rsp avl "), did_respond, F("in mS "), elapsed_ms);
+        MS_DBG(F("Rsp avl,"), did_respond, F("bytes in"), elapsed_ms, F("mS"));
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
         did_respond = _outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
-        MS_DBG(F("Rsp read "), did_respond);
+        MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms, F("mS"));
         // Close the TCP/IP connection
         // MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;

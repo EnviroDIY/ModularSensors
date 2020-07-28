@@ -111,13 +111,19 @@ long     deszq_epochTime = 0;  // Marked Epoch Time
 char*    deszq_nextChar;
 uint16_t deszq_nextCharSz;
 
+// Calculated length of timeVariant data fields as ASCII+ delimiter, except for
+// last data field
+uint16_t deszq_timeVariant_sz;
+
 private:
-long     deszq_status    = 0;  // Bit wise status of reading
+#define sd1_Err(s) sd1_card_fatfs.errorPrint(F(s))
+uint16_t deszq_status    = 0;  // Bit wise status of reading
 uint16_t deszLinesRead   = 0;
 uint16_t deszLinesUnsent = 0;
 #define QUEFILE_MAX_LINE 100
 char deszq_line[QUEFILE_MAX_LINE] = "";
 
+// Qu SdFat/sd1_card_fatfs connects to Physical pins or File/logFile or
 // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
 File        postsLogHndl;                    // Record all POSTS when enabled
 const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
@@ -144,10 +150,10 @@ bool deszRdelStart();
 bool deszRdelClose(bool deleteFile = false);
 
 // Uses serzQuedFn_str, File  serzQuedFile
-bool serzQuedStart(char uniqueId); //Use 1st, & sets filename
+bool serzQuedStart(char uniqueId);  // Use 1st, & sets filename
 bool deszQuedStart(void);
 #define deszQuedLine() deszLine(&serzQuedFile)
-void serzQuedCloseFile(bool action);
+bool serzQuedCloseFile(bool action);
 /*
 bool deszQuedCleanup(bool debug = false);
 */
@@ -158,7 +164,10 @@ bool deszLine(File* filep);
 void setFileAccessTime(File* fileToStamp);
 bool deszDbg(void);
 void postLogLine(int16_t rspParam);
+bool listFile(File* filep, char* fn_str, char* uid);
 
+public:
+bool serzBegin(void);
 // The SD card and file
 #if 0  // defined BOARD_SDQ_QSPI_FLASH
        // This can be on the Adafruit Express options
