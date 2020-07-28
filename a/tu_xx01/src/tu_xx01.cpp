@@ -918,13 +918,13 @@ void setup() {
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
-    dataLogger.serzBegin();
+    // dataLogger.serzBegin(); //Data walkthrough on card
 #if defined UseModem_Module
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
     EnviroDIYPOST.setQued(true);
-    dataLogger.setSendEveryX(2);  // Assumes a 2minute update
+    dataLogger.setSendEveryX(8);  // Assumes a 2minute update
     dataLogger.setSendOffset(1);  // delay Minutes, assumes 2min interval
 #endif                            // UseModem_Module
 

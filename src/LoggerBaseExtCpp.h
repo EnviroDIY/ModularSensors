@@ -743,7 +743,9 @@ bool Logger::serzQuedCloseFile(bool flush) {
                 num_lines++;
             }
         }
-        MS_DBG(F("seQCF wrote "), num_lines);
+        MS_DBG(F("seQCF wrote unsent records"), num_lines);
+        desz_pending_records = num_lines;
+
         retBool = tgtoutFile.close();
         if (!retBool) {
             sd1_Err("seQCF tgtoutFile.close1 err");
@@ -822,7 +824,6 @@ deszLine()  to populate
     deszq_epochTime &
 
 */
-
 
 bool Logger::deszRdelStart() {
     deszLinesRead = deszLinesUnsent = 0;
@@ -952,45 +953,6 @@ bool Logger::deszqNextCh(void) {
     return true;
 }
 
-#define BUF_MIN_FN_SZ 13
-
-#if 0
-bool Logger::desCleanup(bool debug) {
-    // Posting the data has failed, and there is still data not sent.
-    uint16_t num_char;
-    bool     retVal = false;
-    // Todo find right filename - may already exist
-    retVal = logFile.rename("del00.txt");
-    File tempFile;
-    if ((retVal = tempFile.open(serializeFn_str, (O_WRITE | O_CREAT)))) {
-        // copy to same file name
-        while ((num_char = update ... reader_fn(deszq_line, QUEFILE_MAX_LINE))) {
-            if ((retVal = logFile.write(deszq_line, num_char))) {
-                PRINTOUT(F("desCleanup wr err'"), deszq_line,
-                         F("'"));
-                break;
-            }
-            deszLinesUnsent++;
-        }
-        if (debug) {
-            char bufTemp[BUF_MIN_FN_SZ];
-            logFile.getName(bufTemp, BUF_MIN_FN_SZ);
-            PRINTOUT(F("desCleanup leaving on SD'"), bufTemp);
-            logFile.close();
-        } else {
-            logFile.remove();
-        }
-
-        tempFile.close();
-    }
-
-
-    deszLinesUnsent++;
-    return true;
-}
-#endif  //
-
-
 bool Logger::deszRdelClose(bool deleteFile) {
     bool retVal = false;
 
@@ -1103,7 +1065,8 @@ bool Logger::listFile(File* filep, char* fn_str, char* uid) {
     return true;
 }
 
-
+/* This tests all the primitives used to access the SD card.
+ */
 bool Logger::serzBegin(void) {
     bool dslStat_bool;
 

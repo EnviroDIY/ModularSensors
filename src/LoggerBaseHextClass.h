@@ -122,7 +122,7 @@ uint16_t deszLinesRead   = 0;
 uint16_t deszLinesUnsent = 0;
 #define QUEFILE_MAX_LINE 100
 char deszq_line[QUEFILE_MAX_LINE] = "";
-
+uint16_t desz_pending_records =0;
 // Qu SdFat/sd1_card_fatfs connects to Physical pins or File/logFile or
 // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
 File        postsLogHndl;                    // Record all POSTS when enabled

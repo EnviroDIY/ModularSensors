@@ -467,6 +467,8 @@ void Logger::publishDataQuedToRemotes(void) {
                         if (0 >= retVal) {
                             PRINTOUT(F("pubDQTR serzQuedFil err"), retVal);
                         }
+                        desz_pending_records++;  // TODO: njh per publisher
+
                         /*TODO njh process
                         if (HTTPSTATUS_NC_901 == rspCode) {
                             MS_DBG(F("pubDQTR abort this
@@ -490,12 +492,12 @@ void Logger::publishDataQuedToRemotes(void) {
                 //        F("publishDataQuedToRemote serzQuedFile.close err"));
 
                 MS_DBG(F("pubDQTR"), deszLinesRead, F("lines in"),
-                       MS_PRINT_DEBUG_TIMER, F("ms"));
+                       MS_PRINT_DEBUG_TIMER, F("ms. Total outstanding"),
+                       desz_pending_records);
 
                 if (HTTPSTATUS_CREATED_201 == rspCode) {
                     start = millis();
                     MS_DBG(F("pubDQTR from"), serzQuedFn);
-#if 1
                     // Do retrys through publisher - if file exists
                     if (sd1_card_fatfs.exists(serzQuedFn)) {
                         uint8_t num_posted = 0;
@@ -523,7 +525,6 @@ void Logger::publishDataQuedToRemotes(void) {
                             serzQuedCloseFile(false);
                         }
                     }
-#endif  // #if x
                 } else {
                     MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
                 }
