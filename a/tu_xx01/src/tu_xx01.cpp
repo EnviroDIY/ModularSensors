@@ -84,6 +84,8 @@ const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
 int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
+uint8_t collectReadings = COLLECT_READINGS_DEF;
+uint8_t sendOffset_min = SEND_OFFSET_MIN_DEF;
 
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -924,9 +926,10 @@ void setup() {
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
     EnviroDIYPOST.setQued(true);
-    dataLogger.setSendEveryX(8);  // Assumes a 2minute update
-    dataLogger.setSendOffset(1);  // delay Minutes, assumes 2min interval
-#endif                            // UseModem_Module
+    dataLogger.setSendEveryX(collectReadings);
+    dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
+
+#endif  // UseModem_Module
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST

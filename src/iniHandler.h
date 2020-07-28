@@ -27,8 +27,10 @@ const char LOGGING_INTERVAL_MULTIPLIER_pm[] EDIY_PROGMEM =
 const char BATTERY_TYPE_pm[] EDIY_PROGMEM = "BATTERY_TYPE";
 const char LIION_TYPE_pm[] EDIY_PROGMEM =
     "LIION_TYPE";  // FUT Supersede with BATTERY_TYPE
-const char TIME_ZONE_pm[] EDIY_PROGMEM       = "TIME_ZONE";
-const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM = "GEOGRAPHICAL_ID";
+const char TIME_ZONE_pm[] EDIY_PROGMEM        = "TIME_ZONE";
+const char COLLECT_READINGS_pm[] EDIY_PROGMEM = "COLLECT_READINGS";
+const char SEND_OFFSET_MIN_pm[] EDIY_PROGMEM  = "SEND_OFFSET_MIN";
+const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM  = "GEOGRAPHICAL_ID";
 
 const char NETWORK_pm[] EDIY_PROGMEM = "NETWORK";
 const char apn_pm[] EDIY_PROGMEM     = "apn";
@@ -293,6 +295,42 @@ static int inihUnhandledFn(const char* section, const char* name,
                     F("COMMON Set TimeZone error; (range -12 : +12) read:"));
             }
             SerialStd.println(time_zone_local);
+
+
+        } else if (strcmp_P(name, COLLECT_READINGS_pm) == 0) {
+            // convert  str to num with error checking
+            long collect_reaings_local = strtol(value, &endptr, 10);
+            if ((collect_reaings_local <= 30) && (collect_reaings_local >= 0) &&
+                (errno != ERANGE)) {
+                SerialStd.print(F("COMMON Set COLLECT_READINGS;"));
+                collectReadings = (uint8_t)collect_reaings_local;
+#if 0   // defined USE_PS_EEPROM
+                epc.app.msc.s.colllectReadings = colllectReadings;
+#endif  // USE_PS_EEPROM
+            } else {
+                SerialStd.print(F(
+                    "COMMON Set COLLECT_READINGS error; (range 0 : 30) read:"));
+            }
+            SerialStd.println(collect_reaings_local);
+
+
+        } else if (strcmp_P(name, SEND_OFFSET_MIN_pm) == 0) {
+            // convert  str to num with error checking
+            long send_offset_min_local = strtol(value, &endptr, 10);
+            if ((send_offset_min_local <= 30) && (send_offset_min_local >= 0) &&
+                (errno != ERANGE)) {
+                SerialStd.print(F("COMMON Set SEND_OFFSET_MIN ; "));
+                sendOffset_min = send_offset_min_local;
+#if 0   // defined USE_PS_EEPROM
+                epc.app.msc.s.sendOffset_min = sendOffset_min;
+#endif  // USE_PS_EEPROM
+            } else {
+                SerialStd.print(F(
+                    "COMMON Set SEND_OFFSET_MIN error; (range 0 : 30) read:"));
+            }
+            SerialStd.println(send_offset_min_local);
+
+
         } else if (strcmp_P(name, GEOGRAPHICAL_ID_pm) == 0) {
             SerialStd.print(F("GEOGRAPHICAL_ID:"));
             SerialStd.println(value);

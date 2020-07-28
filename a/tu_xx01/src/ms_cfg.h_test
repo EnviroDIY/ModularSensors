@@ -24,9 +24,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define AnalogProcEC_ACT 1
 //#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
-#define Insitu_TrollSdi12_UUID 1
+//#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
-#define KellerAcculevel_ACT 1
+//#define KellerAcculevel_ACT 1
 //#define KellerNanolevel_ACT 1
 //#define ASONG_AM23XX_UUID 1
 
@@ -61,10 +61,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 // ** How frequently (in minutes) to log data **
 // For two Loggers defined logger2Mult with the faster loggers timeout and the
-// multiplier to the slower loggger
-// #define  loggingInterval_Fast_MIN (1)
-// #define logger2Mult 5 ~Not working for mayfly
-
+// multiplier to the slower loggger #define  loggingInterval_Fast_MIN (1)
+// #define
+// logger2Mult 5 //Not working for mayfly
 // How frequently (in minutes) to log data
 #if defined logger2Mult
 #define loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN * logger2Mult)
@@ -81,9 +80,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define SEND_OFFSET_MIN_DEF 0
 
 // Instructions: define only one  _Module
-//#define DigiXBeeWifi_Module 1
+#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
+//#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant
@@ -100,13 +99,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Required for TinyGsmClient.h
 #define TINY_GSM_MODEM_XBEE
 
-// The APN for the gprs connection, unnecessary for WiFi
-#define APN_CDEF "hologram"
-
-// The WiFi access point
-#define WIFIID_CDEF "xxx"
-// NULL for none, or  password for connecting to WiFi,
-#define WIFIPWD_CDEF "yyy"
+#define APN_CDEF \
+    "hologram"  // The APN for the gprs connection, unnecessary for WiFi
+//#define WIFIID_CDEF  "NameSsid"  // The WiFi access point, unnecessary for
+// gprs #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for
+// connecting to WiFi, unnecessary for gprs
+#define WIFIID_CDEF "xxx"  // The WiFi access point, unnecessary for gprs
+#define WIFIPWD_CDEF \
+    "yyy"  // NULL for none, or  password for connecting to WiFi, unnecessary
+           // for gprs
 
 #endif  // Modules
 // end of _Module
