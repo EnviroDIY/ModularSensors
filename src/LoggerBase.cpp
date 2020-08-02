@@ -442,6 +442,13 @@ void Logger::publishDataQuedToRemotes(void) {
             // dataPublishers[i]->publishData(_logModem->getClient());
             // Need to manage filenames[i]
 
+            /* TODO njh check power availability
+            ps_Lbatt_status_t Lbatt_status;
+            Lbatt_status =
+            mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
+            if (no power) break out for loop;
+            */
+
             if (dataPublishers[i]->setQued(true, ('0' + i))) {
                 serzQuedStart((char)('0' + i));
                 deszRdelStart();

@@ -285,7 +285,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             long time_zone_local = strtol(value, &endptr, 10);
             if ((time_zone_local < 13) && (time_zone_local > -13) &&
                 (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set TimeZone ; "));
+                SerialStd.print(F("COMMON Set TimeZone: "));
                 timeZone = time_zone_local;
 #if defined USE_PS_EEPROM
                 epc.app.msc.s.time_zone = timeZone;
@@ -302,7 +302,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             long collect_reaings_local = strtol(value, &endptr, 10);
             if ((collect_reaings_local <= 30) && (collect_reaings_local >= 0) &&
                 (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set COLLECT_READINGS;"));
+                SerialStd.print(F("COMMON Set COLLECT_READINGS: "));
                 collectReadings = (uint8_t)collect_reaings_local;
 #if 0   // defined USE_PS_EEPROM
                 epc.app.msc.s.colllectReadings = colllectReadings;
@@ -319,7 +319,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             long send_offset_min_local = strtol(value, &endptr, 10);
             if ((send_offset_min_local <= 30) && (send_offset_min_local >= 0) &&
                 (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set SEND_OFFSET_MIN ; "));
+                SerialStd.print(F("COMMON Set SEND_OFFSET_MIN: "));
                 sendOffset_min = send_offset_min_local;
 #if 0   // defined USE_PS_EEPROM
                 epc.app.msc.s.sendOffset_min = sendOffset_min;
