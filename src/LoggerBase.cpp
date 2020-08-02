@@ -503,7 +503,7 @@ void Logger::publishDataQuedToRemotes(void) {
                        desz_pending_records);
 
                 if (HTTPSTATUS_CREATED_201 == rspCode) {
-                    start = millis();
+                    MS_RESET_DEBUG_TIMER;
                     MS_DBG(F("pubDQTR from"), serzQuedFn);
                     // Do retrys through publisher - if file exists
                     if (sd1_card_fatfs.exists(serzQuedFn)) {

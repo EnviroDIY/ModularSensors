@@ -85,7 +85,7 @@ int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 uint8_t collectReadings = COLLECT_READINGS_DEF;
-uint8_t sendOffset_min = SEND_OFFSET_MIN_DEF;
+uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
 
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -502,8 +502,9 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
                          VoltReadsToAvg);
 // ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr,
 // VoltReadsToAvg); special Vcc 3.3V
-ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr,
-                         VoltReadsToAvg);
+// ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0,
+// ADSi2c_addr,
+//                         VoltReadsToAvg);
 // ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0,
 // ADSi2c_addr, VoltReadsToAvg);
 
@@ -606,15 +607,16 @@ Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined AnalogProcEC_ACT
+    //Do Analog processing measurements.
+    new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
+#endif  // AnalogProcEC_ACT
 #if defined(ExternalVoltage_Volt0_UUID)
     new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
 #endif
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
-#if defined AnalogProcEC_ACT
-    new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
-#endif  // AnalogProcEC_ACT
 #if defined Decagon_CTD_UUID
     // new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
