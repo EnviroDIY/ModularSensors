@@ -82,8 +82,8 @@ class DreamHostPublisher : public dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
+                       uint8_t sendOffset = 0);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -95,8 +95,8 @@ class DreamHostPublisher : public dataPublisher {
      * enable publishing data at a time slightly delayed from when it is
      * collected
      */
-    DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, const char* dhUrl, uint8_t sendEveryX = 1,
+                       uint8_t sendOffset = 0);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -170,10 +170,10 @@ class DreamHostPublisher : public dataPublisher {
     // The return is the http status code of the response.
     // int16_t postDataDreamHost(void);
     /**
-     * @copydoc dataPublisher::publishData(Client* _outClient)
+     * @copydoc dataPublisher::publishData(Client* outClient)
      * @return **int16_t** The http status code of the response.
      */
-    int16_t publishData(Client* _outClient) override;
+    int16_t publishData(Client* outClient) override;
 
  protected:
     // portions of the GET request

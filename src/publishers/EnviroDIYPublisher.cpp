@@ -167,8 +167,7 @@ void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
-void EnviroDIYPublisher::begin(Logger&     baseLogger,
-                               const char* registrationToken,
+void EnviroDIYPublisher::begin(Logger& baseLogger, const char* registrationToken,
                                const char* samplingFeatureUUID) {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger);
@@ -181,7 +180,7 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 // over that connection.
 // The return is the http status code of the response.
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
-int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
+int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
@@ -191,7 +190,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
-    if (_outClient->connect(enviroDIYHost, enviroDIYPort)) {
+    if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
@@ -202,36 +201,36 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         // add the rest of the HTTP POST headers to the outgoing buffer
         // before adding each line/chunk to the outgoing buffer, we make sure
         // there is space for that line, sending out buffer if not
-        if (bufferFree() < 28) printTxBuffer(_outClient);
+        if (bufferFree() < 28) printTxBuffer(outClient);
         strcat(txBuffer, hostHeader);
         strcat(txBuffer, enviroDIYHost);
 
-        if (bufferFree() < 47) printTxBuffer(_outClient);
+        if (bufferFree() < 47) printTxBuffer(outClient);
         strcat(txBuffer, tokenHeader);
         strcat(txBuffer, _registrationToken);
 
-        // if (bufferFree() < 27) printTxBuffer(_outClient);
+        // if (bufferFree() < 27) printTxBuffer(outClient);
         // strcat(txBuffer, cacheHeader);
 
-        // if (bufferFree() < 21) printTxBuffer(_outClient);
+        // if (bufferFree() < 21) printTxBuffer(outClient);
         // strcat(txBuffer, connectionHeader);
 
-        if (bufferFree() < 26) printTxBuffer(_outClient);
+        if (bufferFree() < 26) printTxBuffer(outClient);
         strcat(txBuffer, contentLengthHeader);
         itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
         strcat(txBuffer, tempBuffer);
 
-        if (bufferFree() < 42) printTxBuffer(_outClient);
+        if (bufferFree() < 42) printTxBuffer(outClient);
         strcat(txBuffer, contentTypeHeader);
 
         // put the start of the JSON into the outgoing response_buffer
-        if (bufferFree() < 21) printTxBuffer(_outClient);
+        if (bufferFree() < 21) printTxBuffer(outClient);
         strcat(txBuffer, samplingFeatureTag);
 
-        if (bufferFree() < 36) printTxBuffer(_outClient);
+        if (bufferFree() < 36) printTxBuffer(outClient);
         strcat(txBuffer, _baseLogger->getSamplingFeatureUUID());
 
-        if (bufferFree() < 42) printTxBuffer(_outClient);
+        if (bufferFree() < 42) printTxBuffer(outClient);
         strcat(txBuffer, timestampTag);
         _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime)
             .toCharArray(tempBuffer, 37);
@@ -241,7 +240,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
             // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(_outClient);
+            if (bufferFree() < 47) printTxBuffer(outClient);
 
             txBuffer[strlen(txBuffer)] = '"';
             _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
@@ -258,23 +257,23 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         }
 
         // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(_outClient, true);
+        printTxBuffer(outClient, true);
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && _outClient->available() < 12) {
+        while ((millis() - start) < 10000L && outClient->available() < 12) {
             delay(10);
         }
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = _outClient->readBytes(tempBuffer, 12);
+        did_respond = outClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
-        _outClient->stop();
+        outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
@@ -285,9 +284,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     int16_t responseCode = 0;
     if (did_respond > 0) {
         char responseCode_char[4];
-        for (uint8_t i = 0; i < 3; i++) {
-            responseCode_char[i] = tempBuffer[i + 9];
-        }
+        for (uint8_t i = 0; i < 3; i++) { responseCode_char[i] = tempBuffer[i + 9]; }
         responseCode = atoi(responseCode_char);
     } else {
         responseCode = 504;
