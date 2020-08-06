@@ -102,8 +102,8 @@ class Logger {
      * logged.  This is NOT an array of variables, but an object of the variable
      * array class.
      */
-    Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
-           int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
+    Logger(const char* loggerID, uint16_t loggingIntervalMinutes, int8_t SDCardSSPin,
+           int8_t mcuWakePin, VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
      *
@@ -300,8 +300,8 @@ class Logger {
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.
      */
-    void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
-                       int8_t SDCardPowerPin, int8_t buttonPin, int8_t ledPin);
+    void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin, int8_t SDCardPowerPin,
+                       int8_t buttonPin, int8_t ledPin);
 
  protected:
     // Initialization variables
@@ -462,8 +462,7 @@ class Logger {
      * @brief Use the attahed loggerModem to synchronize the real-time clock
      * with NIST time servers.
      *
-     * @return **true** Indicates clock synchronization was successful
-     * @return **false** Clock was not successfully synchronized
+     * @return **bool** True if clock synchronization was successful
      */
     bool syncRTC();
 
@@ -646,27 +645,27 @@ class Logger {
      * clock to the given time.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
-     * @return **true** The input timestamp passes sanity checks and the clock
-     * has been set.
-     * @return **false** Either the input timestamp fails sanity range checking
-     * or the clock was not set successfully.
+     * @return **bool** True if the input timestamp passes sanity checks **and** the
+     * clock has been successfully set.
      */
     bool setRTClock(uint32_t UTCEpochSeconds);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
-     * @return **true** Current time on the RTC passes sanity range checking
-     * @return **false** Current time on the RTC is obvioiusly incorrect
+     * To be sane the clock  must be between 2020 and 2025.
+     *
+     * @return **bool** True if the current time on the RTC passes sanity range checking
      */
     static bool isRTCSane(void);
     /**
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
      *
+     * To be sane the clock  must be between 2020 and 2025.
+     *
      * @param epochTime The epoch time to be checked.
-     * @return **true** The given time passes sanity range checking.
-     * @return **false** The given time does not pass sanity range checking.
+     * @return **bool** True if the given time passes sanity range checking.
      */
     static bool isRTCSane(uint32_t epochTime);
 
@@ -685,10 +684,8 @@ class Logger {
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
      *
-     * @return **true** The current time on the RTC is an even interval of the
+     * @return **bool** True if the current time on the RTC is an even interval of the
      * logging rate.
-     * @return **false** The current time on the RTC is NOT an even interval of
-     * the logging rate.
      */
     bool checkInterval(void);
 
@@ -701,9 +698,7 @@ class Logger {
      * printing, etc) have the same timestamp even though the update routine may
      * take several (or many) seconds.
      *
-     * @return **true** The marked time is an even interval of the
-     * logging rate.
-     * @return **false** The marked time is NOT an even interval of the
+     * @return **bool** True if the marked time is an even interval of the
      * logging rate.
      */
     bool checkMarkedInterval(void);
@@ -830,8 +825,7 @@ class Logger {
      * @param filename The name of the file to create
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **true** The file was successfully created.
-     * @return **false** The file was NOT sucessfully created.
+     * @return **bool** True if the file was successfully created.
      */
     bool createLogFile(String& filename, bool writeDefaultHeader = false);
     /**
@@ -845,8 +839,7 @@ class Logger {
      *
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **true** The file was successfully created.
-     * @return **false** The file was NOT sucessfully created.
+     * @return **bool** True if the file was successfully created.
      */
     bool createLogFile(bool writeDefaultHeader = false);
 
@@ -860,10 +853,8 @@ class Logger {
      *
      * @param filename The name of the file to write to
      * @param rec The line to be written to the file
-     * @return **true** The file was successfully accessed or created and data
+     * @return **bool** True if the file was successfully accessed or created _and_ data
      * appended to it.
-     * @return **false** The file could not be accessed or data could not be
-     * written to it.
      */
     bool logToSD(String& filename, String& rec);
     /**
@@ -875,10 +866,8 @@ class Logger {
      * modified and accessed timestamps of the file to the current time.
      *
      * @param rec The line to be written to the file
-     * @return **true** The file was successfully accessed or created and data
+     * @return **bool** True if the file was successfully accessed or created _and_ data
      * appended to it.
-     * @return **false** The file could not be accessed or data could not be
-     * written to it.
      */
     bool logToSD(String& rec);
     /**
@@ -890,10 +879,8 @@ class Logger {
      * attempt to create the file and add a header to it.  Set the modified and
      * accessed timestamps of the file to the current time.
      *
-     * @return **true** The file was successfully accessed or created and data
+     * @return **bool** True if the file was successfully accessed or created _and_ data
      * appended to it.
-     * @return **false** The file could not be accessed or data could not be
-     * written to it.
      */
     bool logToSD(void);
 
@@ -918,8 +905,7 @@ class Logger {
      * We run this check before every communication with the SD card to prevent
      * hanging.
      *
-     * @return **true** The SD card is ready
-     * @return **false** The SD card is not available to be written to
+     * @return **bool** True if the SD card is ready
      */
     bool initializeSDCard(void);
 
@@ -947,8 +933,7 @@ class Logger {
      * @param createFile True to create the file if it did not already exist
      * @param writeDefaultHeader True to add a header to the file if it is
      * created
-     * @return **true** If a file was successfully opened or created.
-     * @return **false** If the file was NOT successfully opened or created.
+     * @return **bool** True if a file was successfully opened or created.
      */
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
 

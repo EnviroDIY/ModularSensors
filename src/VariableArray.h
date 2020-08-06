@@ -72,8 +72,7 @@ class VariableArray {
      * @param uuids An array of UUID's.  These are linked 1-to-1 with the
      * variables by array position.
      */
-    VariableArray(uint8_t variableCount, Variable* variableList[],
-                  const char* uuids[]);
+    VariableArray(uint8_t variableCount, Variable* variableList[], const char* uuids[]);
     /**
      * @brief Destroy the Variable Array object - no action taken.
      */
@@ -109,8 +108,7 @@ class VariableArray {
      * @param uuids An array of UUID's.  These are linked 1-to-1 with the
      * variables by array position.
      */
-    void begin(uint8_t variableCount, Variable* variableList[],
-               const char* uuids[]);
+    void begin(uint8_t variableCount, Variable* variableList[], const char* uuids[]);
     /**
      * @brief Begins the VariableArray.  Checks the validity of all UUID and
      * outputs the results.
@@ -173,8 +171,7 @@ class VariableArray {
      * respond to its setup command, the command is called 5 times in attempt to
      * make a connection.  If all sensors are set up successfully, returns true.
      *
-     * @return **true** Indicates all sensors have been set up successfully.
-     * @return **false** One or more sensor setup steps failed.
+     * @return **bool** True indicates all sensors have been set up successfully.
      */
     bool setupSensors(void);
 
@@ -191,8 +188,7 @@ class VariableArray {
      * Runs the wake sensor function for each unique sensor.  Repeatedly checks
      * each sensor's readiness state to optimize timing.
      *
-     * @return **true** All wake functions were run successfully
-     * @return **false** One or more wake functions returned false.
+     * @return **bool** True if all wake functions were run successfully.
      */
     bool sensorsWake(void);
 
@@ -201,8 +197,7 @@ class VariableArray {
      *
      * Runs the sleep sensor function for each unique sensor.
      *
-     * @return **true** All sleep functions were run successfully.
-     * @return **false** One or more sleep functions returned false.
+     * @return **bool** True if all sleep functions were run successfully.
      */
     bool sensorsSleep(void);
 
@@ -219,9 +214,7 @@ class VariableArray {
      * overall success.  Does NOT return any values.  Repeatedly checks each
      * sensor's readiness state to optimize timing.
      *
-     * @return **true** All steps of the update succeeded
-     * @return **false** At least one step of updating all of the sensors
-     * failed.
+     * @return **bool** True if all steps of the update succeeded.
      */
     bool updateAllSensors(void);
 
@@ -235,9 +228,7 @@ class VariableArray {
      * values.  Repeatedly checks each sensor's readiness state to optimize
      * timing.
      *
-     * @return **true** All steps of the update succeeded
-     * @return **false** At least one step of updating all of the sensors
-     * failed.
+     * @return **bool** True if all steps of the update succeeded.
      */
     bool completeUpdate(void);
 
