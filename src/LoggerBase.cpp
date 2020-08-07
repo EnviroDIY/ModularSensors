@@ -499,9 +499,9 @@ void Logger::publishDataQuedToRemotes(void) {
                 //    PRINTOUT(
                 //        F("publishDataQuedToRemote serzQuedFile.close err"));
 
-                MS_DBG(F("pubDQTR"), deszLinesRead, F("lines in"),
-                       MS_PRINT_DEBUG_TIMER, F("ms. Total outstanding"),
-                       desz_pending_records);
+                PRINTOUT(F("pubDQTR"), deszLinesRead, F("lines in"),
+                         MS_PRINT_DEBUG_TIMER, F("ms. Total outstanding"),
+                         desz_pending_records);
 
                 if (HTTPSTATUS_CREATED_201 == rspCode) {
                     MS_RESET_DEBUG_TIMER;
