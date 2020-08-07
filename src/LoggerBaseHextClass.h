@@ -121,12 +121,17 @@ uint16_t deszq_status    = 0;  // Bit wise status of reading
 uint16_t deszLinesRead   = 0;
 uint16_t deszLinesUnsent = 0;
 #define QUEFILE_MAX_LINE 100
-char deszq_line[QUEFILE_MAX_LINE] = "";
-uint16_t desz_pending_records =0;
+char     deszq_line[QUEFILE_MAX_LINE] = "";
+uint16_t desz_pending_records         = 0;
+
 // Qu SdFat/sd1_card_fatfs connects to Physical pins or File/logFile or
 // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
+
+#if defined MS_LOGGERBASE_POSTS
 File        postsLogHndl;                    // Record all POSTS when enabled
 const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
+
+#endif  // MS_LOGGERBASE_POSTS
 
 // que Readings DELAYed (RDEL) ~ serialize/deserialize
 File        serzRdelFile;

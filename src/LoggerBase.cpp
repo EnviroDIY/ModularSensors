@@ -427,13 +427,14 @@ void Logger::publishDataQuedToRemotes(void) {
     MS_DBG(F("pubDQTR from"), serzRdelFn_str);
 
     // Open debug file
+#if defined MS_LOGGERBASE_POSTS
     retVal = postsLogHndl.open(postsLogFn_str, (O_WRITE | O_CREAT | O_AT_END));
     if (!retVal) PRINTOUT(F("pubDQTR postsLogHndl.open err"), postsLogFn_str);
-
+#endif  // MS_LOGGERBASE_POSTS
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] != NULL) {
             _dataPubInstance = i;
-            PRINTOUT(F("\nSending data to ["), i, F("]"),
+            PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
             // open the qued file for serialized readings
             // (char*)serzQuedFn_str
@@ -449,7 +450,7 @@ void Logger::publishDataQuedToRemotes(void) {
             if (no power) break out for loop;
             */
 
-            if (dataPublishers[i]->setQued(true, ('0' + i))) {
+            if (dataPublishers[i]->getQued()) {
                 serzQuedStart((char)('0' + i));
                 deszRdelStart();
                 MS_START_DEBUG_TIMER;
@@ -539,7 +540,9 @@ void Logger::publishDataQuedToRemotes(void) {
         }
     }
 
+#if defined MS_LOGGERBASE_POSTS
     postsLogHndl.close();
+#endif  // MS_LOGGERBASE_POSTS
 }
 
 void Logger::sendDataToRemotes(void) {

@@ -242,11 +242,27 @@ class EnviroDIYPublisher : public dataPublisher {
     const char* _registrationToken;
 
  protected:
+    /**
+     * @brief This constructs a POST header for MMW 
+     *
+     * @param tempBuffer - place for the POST.
+     */
     void mmwPostHeader(char* tempBuffer);
+
+    /**
+     * @brief This constructs a POST body EnviroDIY
+     *
+     * @param tempBuffer - place for the POST.
+     */
     void mmwPostDataArray(char* tempBuffer);
     void mmwPostDataQued(char* tempBuffer);
 
  public:
+    /**
+     * @brief This routes subsequent POST construction 
+     *
+     * @param state - true for Qued, false for standard
+     */
     bool setQued(bool state, char uniqueId = '0') override {
         PRINTOUT(F("EnviroyDIYPublisher setQued "), state);
         return useQueDataSource = state;

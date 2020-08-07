@@ -1014,6 +1014,7 @@ bool Logger::deszDbg(void) {
 
 void Logger::postLogLine(int16_t rspParam) {
 // If debug ...keep record
+#if defined MS_LOGGERBASE_POSTS
 #if 0
     if (0 == postsLogHndl.print(getNowEpochT0())) {
         PRINTOUT(F("publishDataQuedToRemote postsLog err"));
@@ -1030,6 +1031,7 @@ void Logger::postLogLine(int16_t rspParam) {
     postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(","));
     postsLogHndl.print(deszq_line);
+#endif  //#if defined MS_LOGGERBASE_POSTS
 }
 
 /*

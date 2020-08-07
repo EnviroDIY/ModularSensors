@@ -522,7 +522,12 @@ class Logger {
      * @brief An array of all of the attached data publishers
      */
     dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
+
+    /**
+     * @brief Active instance of the attached data publishers
+     */
     uint8_t        _dataPubInstance;
+
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //
@@ -725,11 +730,7 @@ class Logger {
     const uint8_t CIA_NEW_READING   = 0x01;
     const uint8_t CIA_POST_READINGS = 0x02;
 
-    /*typedef enum {
-        CIA_NOACTION      = 0x0,
-        CIA_NEW_READING   = 0x01,
-        CIA_POST_READINGS = 0x02,
-    } checkIntervalAct; */
+
     /**
      * @brief Check if the MARKED time is an even interval of the logging
      * rate - That is the value saved in the static variable
