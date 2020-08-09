@@ -168,7 +168,7 @@ bool deszLine(File* filep);
 // Utility resources
 void setFileAccessTime(File* fileToStamp);
 bool deszDbg(void);
-void postLogLine(int16_t rspParam);
+void postLogLine(uint8_t instance, int16_t rspParam);
 bool listFile(File* filep, char* fn_str, char* uid);
 
 public:

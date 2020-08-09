@@ -300,13 +300,10 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     uint16_t bufferSz = bufferFree();
     if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(_outClient);
 
-#if !defined TIMER_MMW_POST_TIMEOUT_MSEC
-#define TIMER_MMW_POST_TIMEOUT_MSEC 10000L
-#endif  // TIMER_MMW_POST_TIMEOUT_MSEC
 #define REQUIRED_MIN_RSP_SZ 12
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    MS_DBG(F("Connecting client. Timer (mS)"), TIMER_MMW_POST_TIMEOUT_MSEC);
+    MS_DBG(F("Connecting client. Timer (mS)"));
     MS_START_DEBUG_TIMER;
     if (_outClient->connect(enviroDIYHost, enviroDIYPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
@@ -325,7 +322,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         gatewayStart_ms = millis();
 
         did_respond = 0;
-        while ((elapsed_ms < TIMER_MMW_POST_TIMEOUT_MSEC) &&
+        while ((elapsed_ms < _timerPostTimeout_ms) &&
                (did_respond < REQUIRED_MIN_RSP_SZ)) {
             delay(10);  // mS delay to poll
             did_respond = _outClient->available();
@@ -337,13 +334,14 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
         did_respond = _outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
-        MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms, F("mS"));
+        // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
+        // F("mS"));
         // Close the TCP/IP connection
         // MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
         _outClient->stop();
-        MS_DBG(F("Client waited"), elapsed_ms, F("ms. Stopped after"),
-               MS_PRINT_DEBUG_TIMER, F("ms"));
+        MS_DBG(F("Client waited"), elapsed_ms, F("mS for"), did_respond,
+               F("bytes. Stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
                    "Portal --"));
@@ -364,10 +362,12 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         // 504 Gateway Timeout
         responseCode = HTTPSTATUS_GT_504;
     }
+    _timerPost_ms = (uint16_t)elapsed_ms;
+
     tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
     MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
     PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
-             F("mS Timeout"), TIMER_MMW_POST_TIMEOUT_MSEC);
+             F("mS Timeout"), _timerPostTimeout_ms);
     // PRINTOUT(responseCode);
 
     return responseCode;

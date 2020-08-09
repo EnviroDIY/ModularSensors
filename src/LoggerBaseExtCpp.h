@@ -1012,7 +1012,7 @@ bool Logger::deszDbg(void) {
     return true;
 }
 
-void Logger::postLogLine(int16_t rspParam) {
+void Logger::postLogLine(uint8_t instance, int16_t rspParam) {
 // If debug ...keep record
 #if defined MS_LOGGERBASE_POSTS
 #if 0
@@ -1028,6 +1028,9 @@ void Logger::postLogLine(int16_t rspParam) {
 #endif
     postsLogHndl.print(F(","));
     itoa(rspParam, tempBuffer, 10);
+    postsLogHndl.print(tempBuffer);
+    postsLogHndl.print(F(","));
+    itoa(dataPublishers[instance]->getTimerPost_mS(), tempBuffer, 10);
     postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(","));
     postsLogHndl.print(deszq_line);

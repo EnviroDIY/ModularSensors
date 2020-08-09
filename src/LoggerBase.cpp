@@ -450,7 +450,7 @@ void Logger::publishDataQuedToRemotes(void) {
             if (no power) break out for loop;
             */
 
-            if (dataPublishers[i]->getQued()) {
+            if (dataPublishers[i]->getQuedStatus()) {
                 serzQuedStart((char)('0' + i));
                 deszRdelStart();
                 // MS_START_DEBUG_TIMER;
@@ -461,7 +461,7 @@ void Logger::publishDataQuedToRemotes(void) {
                     watchDogTimer.resetWatchDog();
                     // MS_DBG(F("Rsp"), rspCode, F(", in"),
                     // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
-                    postLogLine(rspCode);
+                    postLogLine(i, rspCode);
 
                     if (HTTPSTATUS_CREATED_201 != rspCode) {
 #define DESLZ_STATUS_UNACK '1'
@@ -515,7 +515,7 @@ void Logger::publishDataQuedToRemotes(void) {
                             // setup for publisher to call deszqNextCh()
                             rspCode = dataPublishers[i]->publishData();
                             watchDogTimer.resetWatchDog();
-                            postLogLine(rspCode);
+                            postLogLine(i, rspCode);
                             if (HTTPSTATUS_CREATED_201 != rspCode) break;
                             num_posted++;
                         }

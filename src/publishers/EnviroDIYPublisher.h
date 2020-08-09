@@ -243,7 +243,7 @@ class EnviroDIYPublisher : public dataPublisher {
 
  protected:
     /**
-     * @brief This constructs a POST header for MMW 
+     * @brief This constructs a POST header for MMW
      *
      * @param tempBuffer - place for the POST.
      */
@@ -259,17 +259,27 @@ class EnviroDIYPublisher : public dataPublisher {
 
  public:
     /**
-     * @brief This routes subsequent POST construction 
+     * @brief This routes subsequent POST construction
      *
      * @param state - true for Qued, false for standard
      */
-    bool setQued(bool state, char uniqueId = '0') override {
+    bool setQuedState(bool state, char uniqueId = '0') override {
         PRINTOUT(F("EnviroyDIYPublisher setQued "), state);
         return useQueDataSource = state;
     }
-    bool getQued() override {
-        PRINTOUT(F("EnviroyDIYPublisher getQued "), useQueDataSource);
+    bool getQuedStatus() override {
+        PRINTOUT(F("EnviroyDIYPublisher gQS "), useQueDataSource);
         return useQueDataSource;
+    }
+
+    uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
+        MS_DBG(F("gTP check"), tpt_ms);
+        return _timerPostTimeout_ms = tpt_ms;  // Default for not supported.
+    }
+
+    uint16_t getTimerPost_mS() {
+        MS_DBG(F("gTP check"), _timerPost_ms);
+        return _timerPost_ms;  // Default for not supported.
     }
 };
 

@@ -608,7 +608,7 @@ Variable* variableList[] = {
                                     ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
 #if defined AnalogProcEC_ACT
-    //Do Analog processing measurements.
+    // Do Analog processing measurements.
     new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
 #if defined(ExternalVoltage_Volt0_UUID)
@@ -927,7 +927,9 @@ void setup() {
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
-    EnviroDIYPOST.setQued(true);
+    EnviroDIYPOST.setQuedState(true);
+#define TIMER_MMW_POST_TIMEOUT_MSEC 7000L
+    EnviroDIYPOST.setTimerPostTimeout_mS(TIMER_MMW_POST_TIMEOUT_MSEC);
     dataLogger.setSendEveryX(collectReadings);
     dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
 

@@ -54,7 +54,7 @@ bool KellerParent::setup(void) {
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
 #ifdef MS_KELLERPARENT_DEBUG_DEEP
-    sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
+    _ksensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
 #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power
