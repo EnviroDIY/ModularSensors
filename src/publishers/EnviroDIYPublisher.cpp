@@ -295,7 +295,8 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     // int16_t  msg_sz                     = calculateJsonSize();
     // MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
     // Following is record specific - start with space in buffer
-    uint16_t bufferSz = bufferFree();
+    uint32_t elapsed_ms = 0;
+    uint16_t bufferSz   = bufferFree();
     if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(_outClient);
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
@@ -316,19 +317,20 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
 
 // Poll for a response from the server with timeout
 #if !defined TIMER_MMW_POST_TIMEOUT_MSEC
-#define TIMER_MMW_POST_TIMEOUT_MSEC 5000L
+#define TIMER_MMW_POST_TIMEOUT_MSEC 7000L
 #endif  // TIMER_MMW_POST_TIMEOUT_MSEC
 #define REQUIRED_MIN_RSP_SZ 12
-        uint32_t start      = millis();
-        uint32_t elapsed_ms = 0;
-        did_respond         = 0;
+        uint32_t gatewayStart_ms = millis();
+
+        did_respond = 0;
         while ((elapsed_ms < TIMER_MMW_POST_TIMEOUT_MSEC) &&
                (did_respond < REQUIRED_MIN_RSP_SZ)) {
             delay(10);  // mS delay to poll
             did_respond = _outClient->available();
-            elapsed_ms  = millis() - start;
+            elapsed_ms  = millis() - gatewayStart_ms;
         }
-        MS_DBG(F("Rsp avl,"), did_respond, F("bytes in"), elapsed_ms, F("mS"));
+        // MS_DBG(F("Rsp avl,"), did_respond, F("bytes in"), elapsed_ms,
+        // F("mS"));
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
@@ -362,7 +364,8 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     }
     tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
     MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
-    PRINTOUT(F("-- Response Code --"), responseCode);
+    PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
+             F("mS"));
     // PRINTOUT(responseCode);
 
     return responseCode;

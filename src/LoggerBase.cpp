@@ -453,7 +453,8 @@ void Logger::publishDataQuedToRemotes(void) {
             if (dataPublishers[i]->getQued()) {
                 serzQuedStart((char)('0' + i));
                 deszRdelStart();
-                MS_START_DEBUG_TIMER;
+                // MS_START_DEBUG_TIMER;
+                uint32_t tmrGateway_ms = millis();
                 while ((dslStatus = deszRdelLine())) {
                     rspCode = dataPublishers[i]->publishData();
 
@@ -500,11 +501,11 @@ void Logger::publishDataQuedToRemotes(void) {
                 //        F("publishDataQuedToRemote serzQuedFile.close err"));
 
                 PRINTOUT(F("pubDQTR"), deszLinesRead, F("lines in"),
-                         MS_PRINT_DEBUG_TIMER, F("ms. Total outstanding"),
+                         tmrGateway_ms - millis(), F("ms. Total outstanding"),
                          desz_pending_records);
 
                 if (HTTPSTATUS_CREATED_201 == rspCode) {
-                    MS_RESET_DEBUG_TIMER;
+                    MS_START_DEBUG_TIMER;
                     MS_DBG(F("pubDQTR from"), serzQuedFn);
                     // Do retrys through publisher - if file exists
                     if (sd1_card_fatfs.exists(serzQuedFn)) {
