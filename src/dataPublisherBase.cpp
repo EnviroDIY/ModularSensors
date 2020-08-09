@@ -109,7 +109,8 @@ void dataPublisher::printTxBuffer(Stream* stream, bool addNewLine) {
     emptyTxBuffer();
 }
 
-int16_t dataPublisher::storAndPublish() { // superseded ~ put in LoggerBaseExtCpp.h
+int16_t
+dataPublisher::storAndPublish() {  // superseded ~ put in LoggerBaseExtCpp.h
     // Determine if file already exists
     if (NULL == _baseLogger) return 0;
     MS_DBG(F("logger "), _baseLogger->_loggerID, F("+"),
@@ -130,7 +131,7 @@ int16_t dataPublisher::storAndPublish() { // superseded ~ put in LoggerBaseExtCp
     } else {
         // Create and then open the file in write mode
         if (queFileH.open(charFileName, O_CREAT | O_WRITE | O_AT_END)) {
-            MS_DBG(F("Created new file:"), filename);
+            MS_DBG(F("Created new file:"), charFileName);
             // Set creation date time
             ;
             ;

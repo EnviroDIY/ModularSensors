@@ -296,11 +296,17 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     // MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
     // Following is record specific - start with space in buffer
     uint32_t elapsed_ms = 0;
-    uint16_t bufferSz   = bufferFree();
+    uint32_t gatewayStart_ms;
+    uint16_t bufferSz = bufferFree();
     if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(_outClient);
 
+#if !defined TIMER_MMW_POST_TIMEOUT_MSEC
+#define TIMER_MMW_POST_TIMEOUT_MSEC 10000L
+#endif  // TIMER_MMW_POST_TIMEOUT_MSEC
+#define REQUIRED_MIN_RSP_SZ 12
+
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    MS_DBG(F("Connecting client"));
+    MS_DBG(F("Connecting client. Timer (mS)"), TIMER_MMW_POST_TIMEOUT_MSEC);
     MS_START_DEBUG_TIMER;
     if (_outClient->connect(enviroDIYHost, enviroDIYPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
@@ -315,12 +321,8 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(_outClient, true);
 
-// Poll for a response from the server with timeout
-#if !defined TIMER_MMW_POST_TIMEOUT_MSEC
-#define TIMER_MMW_POST_TIMEOUT_MSEC 7000L
-#endif  // TIMER_MMW_POST_TIMEOUT_MSEC
-#define REQUIRED_MIN_RSP_SZ 12
-        uint32_t gatewayStart_ms = millis();
+        // Poll for a response from the server with timeout
+        gatewayStart_ms = millis();
 
         did_respond = 0;
         while ((elapsed_ms < TIMER_MMW_POST_TIMEOUT_MSEC) &&
@@ -365,7 +367,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
     MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
     PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
-             F("mS"));
+             F("mS Timeout"), TIMER_MMW_POST_TIMEOUT_MSEC);
     // PRINTOUT(responseCode);
 
     return responseCode;

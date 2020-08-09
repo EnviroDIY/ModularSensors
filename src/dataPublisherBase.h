@@ -303,6 +303,12 @@ class dataPublisher {
      */
     uint8_t _sendOffset;
 
+    /**
+     * @brief TimerPost (ms); How long to wait for a response to a POST before
+     * declaring a timeout
+     */
+    // uint8_t _timerPost_mS;
+
     // Basic chunks of HTTP
     /**
      * @brief the text "GET "
