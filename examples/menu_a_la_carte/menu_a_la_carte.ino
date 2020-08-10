@@ -1330,7 +1330,7 @@ Variable* nanolevHeight =
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
-/** Start [Y504] */
+/** Start [y504] */
 #include <sensors/YosemitechY504.h>
 
 // Create a reference to the serial port for modbus
@@ -1364,13 +1364,13 @@ Variable* y504DOmgL = new YosemitechY504_DOmgL(&y504,
                                                "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y504Temp  = new YosemitechY504_Temp(&y504,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y504] */
+/** End [y504] */
 
 
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
-/** Start [Y510] */
+/** Start [y510] */
 #include <sensors/YosemitechY510.h>
 
 // Create a reference to the serial port for modbus
@@ -1401,13 +1401,13 @@ Variable* y510Turb =
     new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y510Temp = new YosemitechY510_Temp(&y510,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y510] */
+/** End [y510] */
 
 
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
-/** Start [Y511] */
+/** Start [y511] */
 #include <sensors/YosemitechY511.h>
 
 // Create a reference to the serial port for modbus
@@ -1438,13 +1438,13 @@ Variable* y511Turb =
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y511Temp = new YosemitechY511_Temp(&y511,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y511] */
+/** End [y511] */
 
 
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
-/** Start [Y514] */
+/** Start [y514] */
 #include <sensors/YosemitechY514.h>
 
 // Create a reference to the serial port for modbus
@@ -1476,13 +1476,13 @@ Variable* y514Chloro =
     new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y514Temp = new YosemitechY514_Temp(&y514,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y514] */
+/** End [y514] */
 
 
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
-/** Start [Y520] */
+/** Start [y520] */
 #include <sensors/YosemitechY520.h>
 
 // Create a reference to the serial port for modbus
@@ -1513,13 +1513,13 @@ Variable* y520Cond = new YosemitechY520_Cond(&y520,
                                              "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y520Temp = new YosemitechY520_Temp(&y520,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y520] */
+/** End [y520] */
 
 
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
-/** Start [Y532] */
+/** Start [y532] */
 #include <sensors/YosemitechY532.h>
 
 // Create a reference to the serial port for modbus
@@ -1551,13 +1551,51 @@ Variable* y532Voltage =
 Variable* y532pH = new YosemitechY532_pH(&y532, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y532Temp = new YosemitechY532_Temp(&y532,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y532] */
+/** End [y532] */
+
+
+// ==========================================================================
+//  Yosemitech Y533 Oxidation Reduction Potential (ORP)
+// ==========================================================================
+/** Start [y533] */
+#include <sensors/YosemitechY533.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& y533modbusSerial = Serial2;  // Use hardware serial if possible
+#else
+// AltSoftSerial& y533modbusSerial = altSoftSerial;  // For software serial
+NeoSWSerial& y533modbusSerial = neoSSerial1;  // For software serial
+#endif
+
+byte         y533ModbusAddress = 0x32;            // The modbus address of the Y533
+const int8_t y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y533SensorPower = A3;               // Sensor power pin
+const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t y533NumberReadings =
+    1;  // The manufacturer actually doesn't mention averaging for this one
+
+// Create a Yosemitech Y533 pH sensor object
+YosemitechY533 y533(y533ModbusAddress, y533modbusSerial, y533AdapterPower,
+                    y533SensorPower, y533EnablePin, y533NumberReadings);
+
+// Create pH, electrical potential, and temperature variable pointers for the
+// Y533
+Variable* y533Voltage =
+    new YosemitechY533_Voltage(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y533pH = new YosemitechY533_pH(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y533Temp = new YosemitechY533_Temp(&y533,
+                                             "12345678-abcd-1234-ef00-1234567890ab");
+/** End [y533] */
 
 
 // ==========================================================================
 //  Yosemitech Y550 COD Sensor with Wiper
 // ==========================================================================
-/** Start [Y550] */
+/** Start [y550] */
 #include <sensors/YosemitechY550.h>
 
 // Create a reference to the serial port for modbus
@@ -1590,14 +1628,14 @@ Variable* y550Turbid =
     new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y550Temp = new YosemitechY550_Temp(&y550,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y550] */
+/** End [y550] */
 
 
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
 // ==========================================================================
-/** Start [Y4000] */
+/** Start [y4000] */
 #include <sensors/YosemitechY4000.h>
 
 // Create a reference to the serial port for modbus
@@ -1640,7 +1678,7 @@ Variable* y4000Chloro =
     new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y4000BGA = new YosemitechY4000_BGA(&y4000,
                                              "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y4000] */
+/** End [y4000] */
 
 
 // ==========================================================================

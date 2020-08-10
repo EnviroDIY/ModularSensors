@@ -15,22 +15,60 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * These devices output very high "resolution" (32bits) so the resolutions are
- * based on their accuracy, not the resolution of the sensor.
+ * @defgroup y520_group Yosemitech Y520 Conductivity %Sensor
+ * Classes for the @ref y520_page
  *
- * For Conductivity:
- *     Resolution is 0.1 µS/cm
- *     Accuracy is ± 1 % Full Scale
- *     Range is 1 µS/cm to 200 mS/cm
+ * @copydoc y520_page
  *
- * For Temperature:
- *     Resolution is 0.1 °C
- *     Accuracy is ± 0.2°C
- *     Range is 0°C to + 50°C
- *
- * Time before sensor responds after power - 1200 ms
- * Time between "StartMeasurement" command and stable reading - 10sec
+ * @ingroup yosemitech_group
  */
+/* clang-format off */
+/**
+ * @page y520_page Yosemitech Y520 Conductivity %Sensor
+ *
+ * @tableofcontents
+ *
+ * @section y520_datasheet Sensor Datasheet
+ * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity_UserManual-v1.1.pdf)
+ * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity-v1.8_ModbusInstructions.pdf)
+ *
+ * @section y520_sensor The y520 Sensor
+ * @ctor_doc{YosemitechY520, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
+ * @subsection y520_timing Sensor Timing
+ * - Time before sensor responds after power - 1200 ms
+ * - Time between "StartMeasurement" command and stable reading - 10sec
+ *
+ * @section y520_cond Conductivity Output
+ * @variabledoc{YosemitechY520,Cond}
+ *   - Range is 1 µS/cm to 200 mS/cm
+ *   - Accuracy is ± 1 % Full Scale
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.1 µS/cm
+ *   - Reported as microsiemens per centimeter (µS/cm)
+ *   - Default variable code is Y520Cond
+ *
+ * @section y520_temp Temperature Output
+ * @variabledoc{YosemitechY520,Temp}
+ *   - Range is 0°C to + 50°C
+ *   - Accuracy is ± 0.2°C
+ *   - Result stored in sensorValues[1]
+ *   - Resolution is 0.1 °C
+ *   - Reported as degrees Celsius (°C)
+ *   - Default variable code is Y520Temp
+ *
+ * The reported resolution (32 bit) gives far more precision than is significant
+ * based on the specified accuracy of the sensor, so the resolutions kept in the
+ * string representation of the variable values is based on the accuracy not the
+ * maximum reported resolution of the sensor.
+ *
+ *
+ * ___
+ * @section y520_examples Example Code
+ * The Yosemitech Y520 conductivity sensor is used in the @menulink{y520} example.
+ *
+ * @menusnip{y520}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_YOSEMITECHY520_H_
@@ -40,14 +78,17 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_numReturnedValues; the Y520 can report 2 values.
 #define Y520_NUM_VARIABLES 2
 /// Sensor::_warmUpTime_ms; the Y520 warms up in 1600ms.
 #define Y520_WARM_UP_TIME_MS 1600
 /// Sensor::_stabilizationTime_ms; the Y520 is stable after 10000ms.
 #define Y520_STABILIZATION_TIME_MS 10000
-/// Sensor::_measurementTime_ms; the Y520 takes 2700ms to complete a
-/// measurement.
+/**
+ * @brief Sensor::_measurementTime_ms; the Y520 takes 2700ms to complete a
+ * measurement.
+ */
 #define Y520_MEASUREMENT_TIME_MS 2700
 
 /// Decimals places in string representation; conductivity should have 1.
@@ -60,45 +101,78 @@
 /// Variable number; temperature is stored in sensorValues[1].
 #define Y520_TEMP_VAR_NUM 1
 
-// The main class for the Decagon Y520
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for the
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_page).
+ *
+ * @ingroup y520_group
+ */
+/* clang-format on */
 class YosemitechY520 : public YosemitechParent {
  public:
     // Constructors with overloads
+    /**
+     * @brief Construct a new Yosemitech Y520 object.
+     *
+     * @param modbusAddress The modbus address of the sensor.
+     * @param stream An Arduino data stream for modbus communication
+     * @param powerPin A pin on the mcu controlling power to the sensor.
+     * Defaults to -1.
+     * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
+     * Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
+     * adapter.  Defaults to -1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor.  Defaults to 1.
+     */
     YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
-                           enablePin, measurementsToAverage, Y520,
-                           "YosemitechY520", Y520_NUM_VARIABLES,
-                           Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS,
-                           Y520_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                           measurementsToAverage, Y520, "YosemitechY520",
+                           Y520_NUM_VARIABLES, Y520_WARM_UP_TIME_MS,
+                           Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc YosemitechY520::YosemitechY520
+     */
     YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
-                           enablePin, measurementsToAverage, Y520,
-                           "YosemitechY520", Y520_NUM_VARIABLES,
-                           Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS,
-                           Y520_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                           measurementsToAverage, Y520, "YosemitechY520",
+                           Y520_NUM_VARIABLES, Y520_WARM_UP_TIME_MS,
+                           Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS) {}
+    /**
+     * @brief Destroy the Yosemitech Y520 object
+     */
     ~YosemitechY520() {}
 };
 
 
-// Defines the Conductivity
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [conductivity output](@ref y520_cond) from a
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_page).
+ *
+ * @ingroup y520_group
+ */
+/* clang-format on */
 class YosemitechY520_Cond : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY520_Cond object.
      *
-     * @param parentSense The parent YosemitechY520 providing the result values.
+     * @param parentSense The parent YosemitechY520 providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y520Cond
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of Y520Cond
      */
-    explicit YosemitechY520_Cond(YosemitechY520* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "Y520Cond")
+    explicit YosemitechY520_Cond(YosemitechY520* parentSense, const char* uuid = "",
+                                 const char* varCode = "Y520Cond")
         : Variable(parentSense, (const uint8_t)Y520_COND_VAR_NUM,
                    (uint8_t)Y520_COND_RESOLUTION, "specificConductance",
                    "microsiemenPerCentimeter", varCode, uuid) {}
@@ -109,9 +183,8 @@ class YosemitechY520_Cond : public Variable {
      * used.
      */
     YosemitechY520_Cond()
-        : Variable((const uint8_t)Y520_COND_VAR_NUM,
-                   (uint8_t)Y520_COND_RESOLUTION, "specificConductance",
-                   "microsiemenPerCentimeter", "Y520Cond") {}
+        : Variable((const uint8_t)Y520_COND_VAR_NUM, (uint8_t)Y520_COND_RESOLUTION,
+                   "specificConductance", "microsiemenPerCentimeter", "Y520Cond") {}
     /**
      * @brief Destroy the YosemitechY520_Cond object - no action needed.
      */
@@ -119,24 +192,32 @@ class YosemitechY520_Cond : public Variable {
 };
 
 
-// Defines the Temperature Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref y520_temp) from a
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_page).
+ *
+ * @ingroup y520_group
+ */
+/* clang-format on */
 class YosemitechY520_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY520_Temp object.
      *
-     * @param parentSense The parent YosemitechY520 providing the result values.
+     * @param parentSense The parent YosemitechY520 providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y520Temp
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of Y520Temp
      */
-    explicit YosemitechY520_Temp(YosemitechY520* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "Y520Temp")
+    explicit YosemitechY520_Temp(YosemitechY520* parentSense, const char* uuid = "",
+                                 const char* varCode = "Y520Temp")
         : Variable(parentSense, (const uint8_t)Y520_TEMP_VAR_NUM,
-                   (uint8_t)Y520_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)Y520_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY520_Temp object.
      *
@@ -144,9 +225,8 @@ class YosemitechY520_Temp : public Variable {
      * used.
      */
     YosemitechY520_Temp()
-        : Variable((const uint8_t)Y520_TEMP_VAR_NUM,
-                   (uint8_t)Y520_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "Y520Temp") {}
+        : Variable((const uint8_t)Y520_TEMP_VAR_NUM, (uint8_t)Y520_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "Y520Temp") {}
     /**
      * @brief Destroy the YosemitechY520_Temp object - no action needed.
      */

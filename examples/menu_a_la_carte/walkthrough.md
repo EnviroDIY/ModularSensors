@@ -51,6 +51,15 @@ ___
     - [Meter ECH2O soil moisture sensor](#meter-ech2o-soil-moisture-sensor)
     - [Meter Hydros 21](#meter-hydros-21)
     - [Meter Teros 11](#meter-teros-11)
+    - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
+    - [Yosemitech Y510 Yosemitech Y510 turbidity sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
+    - [Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
+    - [Yosemitech Y514 Yosemitech Y514 chlorophyll sensor](#yosemitech-y514-yosemitech-y514-chlorophyll-sensor)
+    - [Yosemitech Y520 Yosemitech Y520 conductivity sensor](#yosemitech-y520-yosemitech-y520-conductivity-sensor)
+    - [Yosemitech Y532 Yosemitech Y532 pH sensor](#yosemitech-y532-yosemitech-y532-ph-sensor)
+    - [Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor](#yosemitech-y533-yosemitech-y533-oxidation-reduction-potential-orp-sensor)
+    - [Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor with wiper](#yosemitech-y550-yosemitech-y550-carbon-oxygen-demand-cod-sensor-with-wiper)
+    - [Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde](#yosemitech-y4000-yosemitech-y4000-multi-parameter-sonde)
     - [Zebra Tech D-Opto dissolved oxygen sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
   - [Calculated Variables](#calculated-variables)
   - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
@@ -644,7 +653,7 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
-[//]: # ( @subsection menu_teros11 Meter Teros 11 soil moisture sensor )
+[//]: # ( @subsection menu_teros Meter Teros 11 soil moisture sensor )
 ### Meter Teros 11
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
@@ -653,7 +662,151 @@ The data pin must be a pin that supports pin-change interrupts.
 
 @see @ref teros_page
 
-[//]: # ( @menusnip{teros11} )
+[//]: # ( @menusnip{teros} )
+___
+
+
+[//]: # ( @subsection menu_y504 Yosemitech Y504 dissolved oxygen sensor )
+### Yosemitech Y504 Dissolved Oxygen Sensor
+
+This is the code for the Yosemitech Y504 dissolved oxygen sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y504_page
+
+[//]: # ( @menusnip{504} )
+___
+
+
+[//]: # ( @subsection menu_y510 Yosemitech Y510 turbidity sensor )
+### Yosemitech Y510 Yosemitech Y510 turbidity sensor
+
+This is the code for the Yosemitech Y510 Yosemitech Y510 turbidity sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y510_page
+
+[//]: # ( @menusnip{510} )
+___
+
+
+[//]: # ( @subsection menu_y511 Yosemitech Y511 turbidity sensor with wiper)
+### Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper
+
+This is the code for the Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y511_page
+
+[//]: # ( @menusnip{511} )
+___
+
+
+[//]: # ( @subsection menu_y514 Yosemitech Y514 chlorophyll sensor)
+### Yosemitech Y514 Yosemitech Y514 chlorophyll sensor
+
+This is the code for the Yosemitech Y514 Yosemitech Y514 chlorophyll sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y514_page
+
+[//]: # ( @menusnip{514} )
+___
+
+
+[//]: # ( @subsection menu_y520 Yosemitech Y520 conductivity sensor)
+### Yosemitech Y520 Yosemitech Y520 conductivity sensor
+
+This is the code for the Yosemitech Y520 Yosemitech Y520 conductivity sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y520_page
+
+[//]: # ( @menusnip{520} )
+___
+
+
+[//]: # ( @subsection menu_y532 Yosemitech Y532 pH sensor)
+### Yosemitech Y532 Yosemitech Y532 pH sensor
+
+This is the code for the Yosemitech Y532 Yosemitech Y532 pH sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y532_page
+
+[//]: # ( @menusnip{532} )
+___
+
+
+[//]: # ( @subsection menu_y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor)
+### Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor
+
+This is the code for the Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y533_page
+
+[//]: # ( @menusnip{533} )
+___
+
+
+[//]: # ( @subsection menu_y550 Yosemitech Y550 carbon oxygen demand (COD) sensor with wiper)
+### Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor with wiper
+
+This is the code for the Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y550_page
+
+[//]: # ( @menusnip{550} )
+___
+
+
+[//]: # ( @subsection menu_y4000 Yosemitech Y4000 multi-parameter sonde)
+### Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde
+
+This is the code for the Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y4000_page
+
+[//]: # ( @menusnip{4000} )
 ___
 
 

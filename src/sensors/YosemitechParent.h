@@ -11,7 +11,97 @@
  * Documentation for the Yosemitech Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY
  * Yosemitech library at: https://github.com/EnviroDIY/YosemitechModbus
+ *
+ * @defgroup yosemitech_group Yosemitech Sensors
+ * Classes for the @ref yosemitech_page
+ *
+ * @copydoc yosemitech_page
  */
+/* clang-format off */
+/**
+ * @page yosemitech_page Yosemitech Sensors
+ *
+ * @tableofcontents
+ *
+ * This library currently supports the following [Yosemitech](http://www.yosemitech.com/en/) sensors:
+ * - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
+ *     - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO_UserManual-v1.1.pdf)
+ *     - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y505-DO_UserManual-v1.2.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO-v6.2_ModbusInstructions.pdf)
+ *     - @subpage y504_page "Class Documentation"
+ * - [Y510-B Optical Turbidity Sensor](http://www.yosemitech.com/en/product-17.html)
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_UserManual-v1.1.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_1.7-ModbusInstruction-en.pdf)
+ *     - @subpage y510_page "Class Documentation"
+ * - [Y511-A Optical Turbidity Sensor with Wiper](http://www.yosemitech.com/en/product-16.html)
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper_UserManual-v1.1.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper-v1.7_ModbusInstructions.pdf)
+ *     - @subpage y511_page "Class Documentation"
+ * - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
+ *     - [Y514 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper_UserManual-v1.0.pdf)
+ *     - [Y515 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y515-Chlorophyll_UserManual-v1.0_en.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper-v1.6_ModbusInstructions.pdf)
+ *     - @subpage y514_page "Class Documentation"
+ * - [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity_UserManual-v1.1.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity-v1.8_ModbusInstructions.pdf)
+ *     - @subpage y520_page "Class Documentation"
+ * - Y532-A Digital pH Sensor
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
+ *     - @subpage y532_page "Class Documentation"
+ * - Y533 ORP Sensor
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
+ *     - @subpage y533_page "Class Documentation"
+ * - [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf)
+ *     - @subpage y550_page "Class Documentation"
+ * - [Y4000 Multiparameter Sonde](http://www.yosemitech.com/en/product-20.html)
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
+ *     - @subpage y4000_page "Class Documentation"
+ *
+ * All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.
+ * (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)
+ * They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).
+ * To interface with them, you will need an RS485-to-TTL adapter.
+ * The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".
+ * The red wire from the sensor should connect to the 5-12V power supply and the black to ground.
+ * The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.
+ * The red wire from the sensor _does not_ connect to the Vcc of the adapter.
+ * The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.
+ * If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.
+ * While this library supports an external enable pin, _we have had very bad luck with most of them and recommend against them_.
+ * Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.
+ * There are a number of RS485-to-TTL adapters available.
+ * When shopping for one, be mindful of the logic level of the TTL output by the adapter.
+ * The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.
+ * This will _fry_ any board like the Mayfly that uses 3.3V logic.
+ * You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
+ *
+ * The sensor constructor requires as input: the sensor modbus address, a stream instance for data (ie, ```Serial```), and one or two power pins.
+ * The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+ * (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+ * For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.
+ * Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)"
+ * for more information about what streams can be used along with this library.
+ * In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+ * AltSoftSerial and HardwareSerial work fine.
+ * Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
+ * If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
+ * If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
+ * If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
+ * Both pins _cannot_ be shared pins.
+ *
+ * By default, this library cuts power to the sensors between readings, causing them to lose track of their brushing interval.
+ * The library manually activates the brushes as part of the "wake" command.
+ * There are currently no other ways to set the brushing interval in this library.
+ *
+ * The lower level details of the communication with the sensors is managed by the
+ * [EnviroDIY Yosemitech library](https://github.com/EnviroDIY/YosemitechModbus)
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_YOSEMITECHPARENT_H_
@@ -37,27 +127,66 @@
 #include "SensorBase.h"
 #include <YosemitechModbus.h>
 
-// The main class for the Yosemitech Sensors
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for all the [Yosemitech sensors](@ref yosemitech_page)
+ *
+ * @ingroup yosemitech_group
+ */
+/* clang-format on */
 class YosemitechParent : public Sensor {
  public:
+    /**
+     * @brief Construct a new Yosemitech Parent object.  This is only intended to be
+     * used within this library.
+     *
+     * @param modbusAddress The modbus address of the sensor.
+     * @param stream An Arduino data stream for modbus communication
+     * @param powerPin A pin on the mcu controlling power to the sensor.
+     * Defaults to -1.
+     * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
+     * Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
+     * adapter.  Defaults to -1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor.  Defaults to 1.
+     * @param model The model of Yosemitech sensor.
+     * @param sensName The name of the sensor.  Defaults to "SDI12-Sensor".
+     * @param numVariables The number of variable results returned by the sensor.
+     * Defaults to 2.
+     * @param warmUpTime_ms The time in ms between when the sensor is powered on
+     * and when it is ready to receive a wake command.  Defaults to 1500.
+     * @param stabilizationTime_ms The time in ms between when the sensor
+     * receives a wake command and when it is able to return stable values.
+     * Defaults to 20,000 (20s).
+     * @param measurementTime_ms The time in ms between when a measurement is
+     * started and when the result value is available.  Defaults to 2000.
+     */
     YosemitechParent(byte modbusAddress, Stream* stream, int8_t powerPin,
                      int8_t powerPin2, int8_t enablePin = -1,
-                     uint8_t         measurementsToAverage = 1,
-                     yosemitechModel model                 = UNKNOWN,
-                     const char*     sensName = "Yosemitech-Sensor",
+                     uint8_t measurementsToAverage = 1, yosemitechModel model = UNKNOWN,
+                     const char* sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
                      uint32_t measurementTime_ms   = 2000);
+    /**
+     * @copydoc YosemitechParent::YosemitechParent
+     */
     YosemitechParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                      int8_t powerPin2, int8_t enablePin = -1,
-                     uint8_t         measurementsToAverage = 1,
-                     yosemitechModel model                 = UNKNOWN,
-                     const char*     sensName = "Yosemitech-Sensor",
+                     uint8_t measurementsToAverage = 1, yosemitechModel model = UNKNOWN,
+                     const char* sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
                      uint32_t measurementTime_ms   = 2000);
+    /**
+     * @brief Destroy the Yosemitech Parent object - no action taken
+     */
     virtual ~YosemitechParent();
 
+    /**
+     * @copydoc Sensor::getSensorLocation()
+     */
     String getSensorLocation(void) override;
 
     /**
@@ -69,17 +198,38 @@ class YosemitechParent : public Sensor {
      * updates the #_sensorStatus.  No sensor power is required. This will
      * always return true.
      *
-     * @return **true** The setup was successful
-     * @return **false** Some part of the setup failed
+     * @return **bool** True if the setup was successful.
      */
     bool setup(void) override;
+    /**
+     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
+     * sensor in the proper state to begin a measurement.
+     *
+     * Verifies that the power is on and updates the #_sensorStatus. This also
+     * sets the #_millisSensorActivated timestamp.
+     *
+     * @note This does NOT include any wait for sensor readiness.
+     *
+     * @return **bool** True if the wake function completed successfully.
+     */
     bool wake(void) override;
+    /**
+     * @brief Puts the sensor to sleep, if necessary.
+     *
+     * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
+     * This does NOT power down the sensor!
+     *
+     * @return **bool** True if the sleep function completed successfully.
+     */
     bool sleep(void) override;
 
     // Override these to use two power pins
     void powerUp(void) override;
     void powerDown(void) override;
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
 
  private:

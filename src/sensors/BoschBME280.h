@@ -67,7 +67,7 @@
  * bme280timingTest.ino
  *   - measurements take 1100ms to complete
  *      - 1.0 s according to datasheet, but slightly better stdev when 1.1 s
- *    - For details on BME280 stabilization time updates, include testing sketch and
+ *   - For details on BME280 stabilization time updates, include testing sketch and
  * link to data in Google Sheet, see:
  * https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9
  *

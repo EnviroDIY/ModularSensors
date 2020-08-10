@@ -16,27 +16,69 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * These devices output very high "resolution" (32bits) so the resolutions are
- * based on their accuracy, not the resolution of the sensor.
+ * @defgroup y533_group Yosemitech Y533 ORP %Sensor
+ * Classes for the @ref y533_page
  *
- * For pH:
- *     Resolution is 0.01 pH units
- *     Accuracy is ±0.1 pH
- *     Range is 2-12 pH
+ * @copydoc y533_page
  *
- * For Temperature:
- *     Resolution is 0.1 °C
- *     Accuracy is ± 0.2°C
- *     Range is 0°C to + 50°C
- *
- * For ORP/Voltage:
- *     Resolution is 1 mV
- *     Accuracy is ± 20 mV
- *     Range is -999 ~ 999 mV
- *
- * Time before sensor responds after power - 500ms
- * Time between "StartMeasurement" command and stable reading - 4.5sec
+ * @ingroup yosemitech_group
  */
+/* clang-format off */
+/**
+ * @page y533_page Yosemitech Y533 ORP %Sensor
+ *
+ * @tableofcontents
+ *
+ * @section y533_datasheet Sensor Datasheet
+ * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
+ * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
+ *
+ * @section y533_sensor The y533 Sensor
+ * @ctor_doc{YosemitechY533, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
+ * @subsection y533_timing Sensor Timing
+ * - Time before sensor responds after power - 500ms
+ * - Time between "StartMeasurement" command and stable reading - 4.5sec
+ *
+ * @section y533_ph pH Output
+ * @variabledoc{YosemitechY533,pH}
+ *   - Range is 2-12 pH
+ *   - Accuracy is ±0.1 pH
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.01 pH units
+ *   - Reported as dimensionless pH units
+ *   - Default variable code is Y533pH
+ *
+ * @section y533_temp Temperature Output
+ * @variabledoc{YosemitechY533,Temp}
+ *   - Range is 0°C to + 50°C
+ *   - Accuracy is ± 0.2°C
+ *   - Result stored in sensorValues[1]
+ *   - Resolution is 0.1 °C
+ *   - Reported as degrees Celsius (°C)
+ *   - Default variable code is Y533Temp
+ *
+ * @section y533_volt Voltage Output
+ * @variabledoc{YosemitechY533,Voltage}
+ *   - Range is -999 ~ 999 mV
+ *   - Accuracy is ± 20 mV
+ *   - Result stored in sensorValues[2]
+ *   - Resolution is 1 mV
+ *   - Reported as millivolts (mV)
+ *   - Default variable code is Y533Potential
+ *
+ * The reported resolution (32 bit) gives far more precision than is significant
+ * based on the specified accuracy of the sensor, so the resolutions kept in the
+ * string representation of the variable values is based on the accuracy not the
+ * maximum reported resolution of the sensor.
+ *
+ *
+ * ___
+ * @section y533_examples Example Code
+ * The Yosemitech Y533 ORP sensor is used in the @menulink{y533} example.
+ *
+ * @menusnip{y533}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_YOSEMITECHY533_H_
@@ -46,14 +88,17 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_numReturnedValues; the Y533 can report 3 values.
 #define Y533_NUM_VARIABLES 3
 /// Sensor::_warmUpTime_ms; the Y533 warms up in 500ms.
 #define Y533_WARM_UP_TIME_MS 500
 /// Sensor::_stabilizationTime_ms; the Y533 is stable after 4500ms.
 #define Y533_STABILIZATION_TIME_MS 4500
-/// Sensor::_measurementTime_ms; the Y533 takes 1800ms to complete a
-/// measurement.
+/**
+ * @brief Sensor::_measurementTime_ms; the Y533 takes 1800ms to complete a
+ * measurement.
+ */
 #define Y533_MEASUREMENT_TIME_MS 1800
 
 /// Decimals places in string representation; pH should have 2.
@@ -71,45 +116,78 @@
 /// Variable number; voltage is stored in sensorValues[2].
 #define Y533_VOLT_VAR_NUM 2
 
-// The main class for the Decagon Y533
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for the
+ * [Yosemitech Y533 ORP sensor](@ref y533_page).
+ *
+ * @ingroup y533_group
+ */
+/* clang-format on */
 class YosemitechY533 : public YosemitechParent {
  public:
     // Constructors with overloads
+    /**
+     * @brief Construct a new Yosemitech Y533 object.
+     *
+     * @param modbusAddress The modbus address of the sensor.
+     * @param stream An Arduino data stream for modbus communication
+     * @param powerPin A pin on the mcu controlling power to the sensor.
+     * Defaults to -1.
+     * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
+     * Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
+     * adapter.  Defaults to -1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor.  Defaults to 1.
+     */
     YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
-                           enablePin, measurementsToAverage, Y533,
-                           "YosemitechY533", Y533_NUM_VARIABLES,
-                           Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
-                           Y533_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                           measurementsToAverage, Y533, "YosemitechY533",
+                           Y533_NUM_VARIABLES, Y533_WARM_UP_TIME_MS,
+                           Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc YosemitechY533::YosemitechY533
+     */
     YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
-                           enablePin, measurementsToAverage, Y533,
-                           "YosemitechY533", Y533_NUM_VARIABLES,
-                           Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
-                           Y533_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
+                           measurementsToAverage, Y533, "YosemitechY533",
+                           Y533_NUM_VARIABLES, Y533_WARM_UP_TIME_MS,
+                           Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS) {}
+    /**
+     * @brief Destroy the Yosemitech Y533 object
+     */
     ~YosemitechY533() {}
 };
 
 
-// Defines the pH Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [pH output](@ref y533_ph)
+ * from a [Yosemitech Y533 ORP sensor](@ref y533_page).
+ *
+ * @ingroup y533_group
+ */
+/* clang-format on */
 class YosemitechY533_pH : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY533_pH object.
      *
-     * @param parentSense The parent YosemitechY533 providing the result values.
+     * @param parentSense The parent YosemitechY533 providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y533pH
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y533pH".
      */
-    explicit YosemitechY533_pH(YosemitechY533* parentSense,
-                               const char*     uuid    = "",
-                               const char*     varCode = "Y533pH")
+    explicit YosemitechY533_pH(YosemitechY533* parentSense, const char* uuid = "",
+                               const char* varCode = "Y533pH")
         : Variable(parentSense, (const uint8_t)Y533_PH_VAR_NUM,
                    (uint8_t)Y533_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     /**
@@ -119,8 +197,8 @@ class YosemitechY533_pH : public Variable {
      * used.
      */
     YosemitechY533_pH()
-        : Variable((const uint8_t)Y533_PH_VAR_NUM, (uint8_t)Y533_PH_RESOLUTION,
-                   "pH", "pH", "Y533pH") {}
+        : Variable((const uint8_t)Y533_PH_VAR_NUM, (uint8_t)Y533_PH_RESOLUTION, "pH",
+                   "pH", "Y533pH") {}
     /**
      * @brief Destroy the YosemitechY533_pH object - no action needed.
      */
@@ -128,24 +206,32 @@ class YosemitechY533_pH : public Variable {
 };
 
 
-// Defines the Temperature Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref y533_temp) from a
+ * [Yosemitech Y533 ORP sensor](@ref y533_page).
+ *
+ * @ingroup y533_group
+ */
+/* clang-format on */
 class YosemitechY533_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY533_Temp object.
      *
-     * @param parentSense The parent YosemitechY533 providing the result values.
+     * @param parentSense The parent YosemitechY533 providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y533Temp
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y533Temp".
      */
-    explicit YosemitechY533_Temp(YosemitechY533* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "Y533Temp")
+    explicit YosemitechY533_Temp(YosemitechY533* parentSense, const char* uuid = "",
+                                 const char* varCode = "Y533Temp")
         : Variable(parentSense, (const uint8_t)Y533_TEMP_VAR_NUM,
-                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY533_Temp object.
      *
@@ -153,9 +239,8 @@ class YosemitechY533_Temp : public Variable {
      * used.
      */
     YosemitechY533_Temp()
-        : Variable((const uint8_t)Y533_TEMP_VAR_NUM,
-                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "Y533Temp") {}
+        : Variable((const uint8_t)Y533_TEMP_VAR_NUM, (uint8_t)Y533_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "Y533Temp") {}
     /**
      * @brief Destroy the YosemitechY533_Temp object - no action needed.
      */
@@ -163,24 +248,32 @@ class YosemitechY533_Temp : public Variable {
 };
 
 
-// Defines the Electrode Electrical Potential
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [electrode electrical potential output](@ref y533_volt) from a
+ * [Yosemitech Y533 ORP sensor](@ref y533_page).
+ *
+ * @ingroup y533_group
+ */
+/* clang-format on */
 class YosemitechY533_Voltage : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY533_Voltage object.
      *
-     * @param parentSense The parent YosemitechY533 providing the result values.
+     * @param parentSense The parent YosemitechY533 providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y533Potential
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y533Potential".
      */
-    explicit YosemitechY533_Voltage(YosemitechY533* parentSense,
-                                    const char*     uuid    = "",
-                                    const char*     varCode = "Y533Potential")
+    explicit YosemitechY533_Voltage(YosemitechY533* parentSense, const char* uuid = "",
+                                    const char* varCode = "Y533Potential")
         : Variable(parentSense, (const uint8_t)Y533_VOLT_VAR_NUM,
-                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt",
-                   varCode, uuid) {}
+                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new YosemitechY533_Voltage object.
      *
@@ -188,9 +281,8 @@ class YosemitechY533_Voltage : public Variable {
      * used.
      */
     YosemitechY533_Voltage()
-        : Variable((const uint8_t)Y533_VOLT_VAR_NUM,
-                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt",
-                   "Y533Potential") {}
+        : Variable((const uint8_t)Y533_VOLT_VAR_NUM, (uint8_t)Y533_VOLT_RESOLUTION,
+                   "voltage", "millivolt", "Y533Potential") {}
     /**
      * @brief Destroy the YosemitechY533_Voltage object - no action needed.
      */
