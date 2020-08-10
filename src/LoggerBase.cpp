@@ -502,7 +502,7 @@ void Logger::publishDataQuedToRemotes(void) {
                 //        F("publishDataQuedToRemote serzQuedFile.close err"));
 
                 PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
-                         (millis() - tmrGateway_ms) / 1000,
+                         ((float)(millis() - tmrGateway_ms)) / 1000,
                          F("sec. Queued readings="), desz_pending_records);
 
                 if (HTTPSTATUS_CREATED_201 == rspCode) {
