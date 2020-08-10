@@ -33,25 +33,11 @@
  * [Teros series](https://www.metergroup.com/environment/products/teros-12/).
  * __This page is for the Teros series.__
  *
- * Both series of sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the
- * [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).
+ * Both series of sensors operate as sub-classes of the SDI12Sensors class.
  * They require a 3.5-12V power supply, which can be turned off between measurements.
  * While contrary to the manual, they will run with power as low as 3.3V.
  * On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.
  * On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
- *
- * The SDI-12 protocol specifies that all new devices should come from the manufacturer with a pre-programmed address of "0".
- * For Meter brand sensors, you *must* change the sensor address before you can begin to use it.
- * If you want to use more than one SDI-12 sensor, you must ensure that each sensor has a different address.
- * To find or change the SDI-12 address of your sensor, load and run the
- * [sdi12_address_change](https://github.com/EnviroDIY/ModularSensors/blob/master/tools/sdi12_address_change/sdi12_address_change.ino)
- * program from the [tools](https://github.com/EnviroDIY/ModularSensors/tree/master/tools) directory or the
- * [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change)
- * example within the SDI-12 library.
- *
- * Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.
- * This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor,
- * no interrupts (or tips) will be registered during SDI12 communication.
  *
  * @section teros_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses for the Meter
@@ -194,6 +180,8 @@ class MeterTeros11 : public SDI12Sensors {
      * average.  The data pin must be a pin that supports pin-change interrupts.
      *
      * @param SDI12address The SDI-12 address of the sensor
+     * @warning The SDI-12 address **must** be changed from the factory programmed value
+     * of "0" before the sensor can be used with ModularSensors!
      * @param powerPin The pin on the mcu controlling power to the ECH2O.  Use -1 if
      * the sensor is continuously powered.
      * - Requires a 3.5-12V power supply, which can be turned off between measurements

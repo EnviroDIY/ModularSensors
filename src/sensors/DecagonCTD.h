@@ -31,23 +31,9 @@
  *
  * @note Meter Environmental was formerly known as Decagon Devices and sold the a very similar sensor to the current Hydros 21 as the CTD-10.
  *
- * The Hydros 21 communicates using the [SDI-12 protocol](http://www.sdi-12.org/) (and the
- * [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).
+ * The Hydros 21 is implemented as a sub-classes of the SDI12Sensors class.
  * It requires a 3.5-12V power supply, which can be turned off between measurements.
  * While contrary to the manual, they will run with power as low as 3.3V.
- *
- * The SDI-12 protocol specifies that all new devices should come from the manufacturer with a pre-programmed address of "0".
- * For Meter brand sensors, you *must* change the sensor address before you can begin to use it.
- * If you want to use more than one SDI-12 sensor, you must ensure that each sensor has a different address.
- * To find or change the SDI-12 address of your sensor, load and run the
- * [sdi12_address_change](https://github.com/EnviroDIY/ModularSensors/blob/master/tools/sdi12_address_change/sdi12_address_change.ino)
- * program from the [tools](https://github.com/EnviroDIY/ModularSensors/tree/master/tools) directory or the
- * [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change)
- * example within the SDI-12 library.
- *
- * Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.
- * This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor,
- * no interrupts (or tips) will be registered during SDI12 communication.
  *
  * @section hydros21_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses for the Hydros 21 can be found at:
@@ -163,6 +149,8 @@ class DecagonCTD : public SDI12Sensors {
      * average.  The data pin must be a pin that supports pin-change interrupts.
      *
      * @param SDI12address The SDI-12 address of the sensor
+     * @warning The SDI-12 address **must** be changed from the factory programmed value
+     * of "0" before the sensor can be used with ModularSensors!
      * @param powerPin The pin on the mcu controlling power to the Hydros 21.  Use
      * -1 if the sensor is continuously powered.
      * - Requires a 3.5-12V power supply, which can be turned off between measurements

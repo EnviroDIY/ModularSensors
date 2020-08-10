@@ -12,7 +12,6 @@
  *
  * This depends on the SDI12Sensors parent class.
  *
- *
  * @defgroup dopto_group Zebra-Tech D-Opto
  * Classes for the @ref dopto_page
  *
@@ -28,25 +27,11 @@
  *
  * @section dopto_intro Introduction
  *
- * The [Zebra-Tech D-Opto](http://www.zebra-tech.co.nz/d-opto-sensor/) sensor communicates with the board using the
- * [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).
+ * The [Zebra-Tech D-Opto](http://www.zebra-tech.co.nz/d-opto-sensor/) sensor is implemented as a sub-classes of the SDI12Sensors class.
  * It require an 8-12V power supply, which can be turned off between measurements.
  * The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech.
  * You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run.
  * At the Stroud Center, we use [Pololu 9V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
- *
- * The SDI-12 protocol specifies that all new devices should come from the manufacturer with a pre-programmed address of "0".
- * If it is your only SDI-12 sensor, it is not necessary to change the address of the D-Opto.
- * If you want to use more than one SDI-12 sensor, you must ensure that each sensor has a different address.
- * To find or change the SDI-12 address of your sensor, load and run the
- * [sdi12_address_change](https://github.com/EnviroDIY/ModularSensors/blob/master/tools/sdi12_address_change/sdi12_address_change.ino)
- * program from the [tools](https://github.com/EnviroDIY/ModularSensors/tree/master/tools) directory or the
- * [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change)
- * example within the SDI-12 library.
- *
- * Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.
- * This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor,
- * no interrupts (or tips) will be registered during SDI12 communication.
  *
  * @section dopto_datasheet Sensor Datasheet
  * The manual for this sensor is available at:

@@ -21,7 +21,25 @@
 /**
  * @page sdi12_page SDI-12 Sensors
  *
- * @tableofcontents
+ * SDI-12 is a common single-wire data protocol in environmental sensors.
+ * The details of the communication are managed by the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12).
+ * In short, data is transferred between a master and a slave on a single wire at 1200 baud.
+ * The number of possible SDI-12 commands is fairly limited, focused only on taking measurements and collecting data.
+ * The voltage range for the data communication and the sensors wake and sleep timings are also limited by the protocol.
+ *
+ * The SDI-12 protocol specifies that all new devices should come from the manufacturer with a pre-programmed address of "0".
+ * For Meter brand sensors, you *must* change the sensor address before you can begin to use it.
+ * For other sensors, the address may be left at 0 if you are only using a single sensor.
+ * If you want to use more than one SDI-12 sensor, you must ensure that each sensor has a different address.
+ * To find or change the SDI-12 address of your sensor, load and run the
+ * [sdi12_address_change](https://github.com/EnviroDIY/ModularSensors/blob/master/tools/sdi12_address_change/sdi12_address_change.ino)
+ * program from the [tools](https://github.com/EnviroDIY/ModularSensors/tree/master/tools) directory or the
+ * [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change)
+ * example within the SDI-12 library.
+ *
+ * Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.
+ * This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor,
+ * no interrupts (or tips) will be registered during SDI12 communication.
  *
  */
 /* clang-format on */
@@ -57,8 +75,8 @@
 class SDI12Sensors : public Sensor {
  public:
     /**
-     * @brief Construct a new SDI 12 Sensors.  This is only intended to be used within
-     * this library.
+     * @brief Construct a new SDI 12 Sensors object.  This is only intended to be used
+     * within this library.
      *
      * @param SDI12address The SDI-12 address of the sensor.
      * @param powerPin A pin on the mcu controlling power to the sensor.
