@@ -8,15 +8,59 @@
  * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
  * class along with the variable subclass AtlasScientificRTD_Temp.
  *
- * These are used for any sensor attached to an Atlas EZO RTD circuit.
+ * These are used for any sensor attached to an [Atlas EZO RTD
+ * circuit](https://www.atlas-scientific.com/temperature.html).
  *
  * @copydetails AtlasScientificRTD
  *
- * @defgroup atlas_rtd_group Atlas Scientific RTD circuit
- * Classes for the Atlas EZO RTD circuit
+ * @defgroup atlas_rtd_group Atlas Scientific RTD Circuit
+ * Classes for the [Atlas EZO RTD circuit](@ref atlas_rtd_page).
  *
- * @copydetails AtlasScientificRTD
+ * @copydoc atlas_rtd_page
+ *
+ * @ingroup atlas_group
  */
+/* clang-format off */
+/**
+ * @page atlas_rtd_page Atlas Scientific EZO-RTD Temperature Circuit and Probes
+ *
+ * @tableofcontents
+ *
+ * @section atlas_rtd_datasheet Sensor Datasheet
+ *
+ * Documentation on the probe is found here:
+ * https://www.atlas-scientific.com/probes/dissolved-oxygen-probe/
+ *
+ * Documentation on the measurement circuit is found here:
+ * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
+ *
+ * @section atlas_rtd_sensor The Atlas RTD Sensor
+ * @ctor_doc{AtlasScientificRTD, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
+ * @subsection atlas_rtd_timing Sensor Timing
+ *   - warms up in 740ms
+ *      - 731-735 in tests
+ *   - stable at completion of warm up
+ *   - measurements take 650ms to complete
+ *      - Manual says measurement takes 600 ms, but in SRGD tests, didn't get a
+ * result until after 643 ms; AG got results as soon as 393ms.
+ *
+ * ___
+ * @section atlas_rtd_temp Temperature Output
+ * @variabledoc{AtlasScientificRTD,Temp}
+ *   - Accuracy is ± (0.10°C + 0.0017 x °C)
+ *   - Range is -126.000 °C − 1254 °C
+ *   - Resolution is 0.001 °C
+ *   - Reported as degrees Celsius (°C)
+ *   - Result stored in sensorValues[0]
+ *   - Default variable code is AtlasTemp
+ *
+ * ___
+ * @section atlas_rtd_examples Example Code
+ * The Atlas RTD sensor is used in the @menulink{atlas_rtd} example.
+ *
+ * @menusnip{atlas_rtd}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_ATLASSCIENTIFICRTD_H_
@@ -32,15 +76,23 @@
 #define ATLAS_RTD_I2C_ADDR 0x66
 
 // Sensor Specific Defines
-/// Sensor::_numReturnedValues; the Atlas EZO temperature circuit can report 1
-/// value.
+/**
+ * @brief Sensor::_numReturnedValues; the Atlas EZO temperature circuit can
+ * report 1 value.
+ */
 #define ATLAS_RTD_NUM_VARIABLES 1
 
-/// Sensor::_warmUpTime_ms; the Atlas EZO temperature circuit warms up in 740ms
-/// (731-735 in tests).
+/**
+ * @brief Sensor::_warmUpTime_ms; the Atlas EZO temperature circuit warms up in
+ * 740ms
+ *
+ * 731-735 in tests
+ */
 #define ATLAS_RTD_WARM_UP_TIME_MS 740
-/// Sensor::_stabilizationTime_ms; the Atlas EZO temperature circuit is stable
-/// 0ms after warm-up.
+/**
+ * @brief Sensor::_stabilizationTime_ms; the Atlas EZO temperature circuit is
+ * stable 0ms after warm-up.
+ */
 #define ATLAS_RTD_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the Atlas EZO temperature circuit takes
@@ -56,21 +108,14 @@
 /// Variable number; RTD is stored in sensorValues[0].
 #define ATLAS_RTD_VAR_NUM 0
 
+/* clang-format off */
 /**
- * @brief The main class for the Atlas Scientific RTD temperature sensor - used
- * for any sensor attached to an Atlas EZO RTD circuit.
+ * @brief The Sensor sub-class for the
+ * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_page).
  *
- * Timing:
- *     - warms up in 740ms
- *     - stable at completion of warm up
- *     - measurements take 650ms to complete
- *
- * For temperature:
- *   @copydetails AtlasScientificRTD_Temp
- *
- * @ingroup atlas_group
  * @ingroup atlas_rtd_group
  */
+/* clang-format on */
 class AtlasScientificRTD : public AtlasParent {
  public:
     /**
@@ -78,9 +123,16 @@ class AtlasScientificRTD : public AtlasParent {
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas
      * circuit.  Use -1 if the sensor is continuously powered.
-     * @param i2cAddressHex The I2C address of the Atlas circuit.  Defaults to
-     * 0x66.
-     * @param measurementsToAverage The number of measurements to average
+     * - Requires a 3.3V and 5V power supply
+     * @param i2cAddressHex The I2C address of the Atlas circuit; optional with
+     * the Atlas-supplied default address of 0x66.
+     * @param measurementsToAverage The number of measurements to average;
+     * optional with default value of 1.
+     *@warning **You must isolate the data lines of all Atlas circuits from the
+     *main I2C bus if you wish to turn off their power!**  If you do not isolate
+     *them from your main I2C bus and you turn off power to the circuits between
+     *measurements the I2C lines will be pulled down to ground causing the I2C
+     *bus (and thus your logger) to crash.
      */
     explicit AtlasScientificRTD(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
@@ -96,31 +148,26 @@ class AtlasScientificRTD : public AtlasParent {
     ~AtlasScientificRTD() {}
 };
 
+/* clang-format off */
 /**
- * @brief The variable class used for temperature measured by an Atlas
- * Scientific RTD temperature sensor.
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref atlas_rtd_temp) from an
+ * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_page).
  *
- *   - Accuracy is ± (0.10°C + 0.0017 x °C)
- *   - Range is -126.000 °C − 1254 °C
- *   - Resolution is 0.001 °C
- *   - Reported as degrees Celsius
- *   - Result stored in sensorValues[0]
- *   - Default variable code is AtlasTemp
- *
- * @ingroup atlas_group
  * @ingroup atlas_rtd_group
  */
+/* clang-format on */
 class AtlasScientificRTD_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificRTD_Temp object.
      *
-     * @param parentSense The parent AtlasScientificRTD providing the result
+     * @param[in] parentSense The parent AtlasScientificRTD providing the result
      * values.
-     * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is AtlasTemp
+     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param[in] varCode A short code to help identify the variable in files;
+     * optional with a default value of AtlasTemp
      */
     explicit AtlasScientificRTD_Temp(AtlasScientificRTD* parentSense,
                                      const char*         uuid    = "",
