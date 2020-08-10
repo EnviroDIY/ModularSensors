@@ -263,11 +263,11 @@ class BoschBME280_Temp : public Variable {
     /**
      * @brief Construct a new BoschBME280_Temp object.
      *
-     * @param[in] parentSense The parent BoschBME280 providing the result
+     * @param parentSense The parent BoschBME280 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "BoschBME280Temp".
      */
     explicit BoschBME280_Temp(BoschBME280* parentSense, const char* uuid = "",
@@ -304,11 +304,11 @@ class BoschBME280_Humidity : public Variable {
     /**
      * @brief Construct a new BoschBME280_Humidity object.
      *
-     * @param[in] parentSense The parent BoschBME280 providing the result
+     * @param parentSense The parent BoschBME280 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of BoschBME280Humidity
      */
     explicit BoschBME280_Humidity(BoschBME280* parentSense, const char* uuid = "",
@@ -346,11 +346,11 @@ class BoschBME280_Pressure : public Variable {
     /**
      * @brief Construct a new BoschBME280_Pressure object.
      *
-     * @param[in] parentSense The parent BoschBME280 providing the result
+     * @param parentSense The parent BoschBME280 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of BoschBME280Pressure
      */
     explicit BoschBME280_Pressure(BoschBME280* parentSense, const char* uuid = "",
@@ -384,11 +384,11 @@ class BoschBME280_Altitude : public Variable {
     /**
      * @brief Construct a new BoschBME280_Altitude object.
      *
-     * @param[in] parentSense The parent BoschBME280 providing the result
+     * @param parentSense The parent BoschBME280 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of BoschBME280Altitude
      */
     explicit BoschBME280_Altitude(BoschBME280* parentSense, const char* uuid = "",

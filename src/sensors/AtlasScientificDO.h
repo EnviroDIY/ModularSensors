@@ -197,11 +197,11 @@ class AtlasScientificDO_DOmgL : public Variable {
     /**
      * @brief Construct a new AtlasScientificDO_DOmgL object.
      *
-     * @param[in] parentSense The parent AtlasScientificDO providing the result
+     * @param parentSense The parent AtlasScientificDO providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasDOmgL".
      */
     explicit AtlasScientificDO_DOmgL(AtlasScientificDO* parentSense,
@@ -239,11 +239,11 @@ class AtlasScientificDO_DOpct : public Variable {
     /**
      * @brief Construct a new AtlasScientificDO_DOpct object.
      *
-     * @param[in] parentSense The parent AtlasScientificDO providing the result
+     * @param parentSense The parent AtlasScientificDO providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlasDOpct
      */
     explicit AtlasScientificDO_DOpct(AtlasScientificDO* parentSense,

@@ -254,16 +254,15 @@ class ApogeeSQ212_PAR : public Variable {
     /**
      * @brief Construct a new ApogeeSQ212_PAR object.
      *
-     * @param[in] parentSense The parent ApogeeSQ212 providing the result
+     * @param parentSense The parent ApogeeSQ212 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "radiationIncomingPAR".
      */
-    explicit ApogeeSQ212_PAR(
-        ApogeeSQ212* parentSense, const char* uuid = "",
-        const char* varCode = "photosyntheticallyActiveRadiation")
+    explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense, const char* uuid = "",
+                             const char* varCode = "photosyntheticallyActiveRadiation")
         : Variable(parentSense, (const uint8_t)SQ212_PAR_VAR_NUM,
                    (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
                    "microeinsteinPerSquareMeterPerSecond", varCode, uuid) {}
@@ -273,9 +272,8 @@ class ApogeeSQ212_PAR : public Variable {
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_PAR()
-        : Variable((const uint8_t)SQ212_PAR_VAR_NUM,
-                   (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
-                   "microeinsteinPerSquareMeterPerSecond",
+        : Variable((const uint8_t)SQ212_PAR_VAR_NUM, (uint8_t)SQ212_PAR_RESOLUTION,
+                   "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
                    "photosyntheticallyActiveRadiation") {}
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
@@ -298,28 +296,25 @@ class ApogeeSQ212_Voltage : public Variable {
     /**
      * @brief Construct a new ApogeeSQ212_Voltage object.
      *
-     * @param[in] parentSense The parent ApogeeSQ212 providing the result
+     * @param parentSense The parent ApogeeSQ212 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "SQ212Voltage".
      */
-    explicit ApogeeSQ212_Voltage(ApogeeSQ212* parentSense,
-                                 const char*  uuid    = "",
-                                 const char*  varCode = "SQ212Voltage")
+    explicit ApogeeSQ212_Voltage(ApogeeSQ212* parentSense, const char* uuid = "",
+                                 const char* varCode = "SQ212Voltage")
         : Variable(parentSense, (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt", varCode,
-                   uuid) {}
+                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt", varCode, uuid) {}
     /**
      * @brief Construct a new ApogeeSQ212_Voltage object.
      *
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_Voltage()
-        : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt",
-                   "SQ212Voltage") {}
+        : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM, (uint8_t)SQ212_VOLT_RESOLUTION,
+                   "voltage", "volt", "SQ212Voltage") {}
     /**
      * @brief Destroy the ApogeeSQ212_Voltage object - no action needed.
      */

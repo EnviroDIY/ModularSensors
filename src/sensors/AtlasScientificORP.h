@@ -127,12 +127,11 @@ class AtlasScientificORP : public AtlasParent {
      *bus (and thus your logger) to crash.
      */
     explicit AtlasScientificORP(int8_t  powerPin,
-                                uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+                                uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1)
         : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                       "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                      ATLAS_ORP_WARM_UP_TIME_MS,
-                      ATLAS_ORP_STABILIZATION_TIME_MS,
+                      ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
                       ATLAS_ORP_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the Atlas Scientific ORP object
@@ -155,19 +154,19 @@ class AtlasScientificORP_Potential : public Variable {
     /**
      * @brief Construct a new AtlasScientificORP_Potential object.
      *
-     * @param[in] parentSense The parent AtlasScientificORP providing the result
+     * @param parentSense The parent AtlasScientificORP providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlasORP
      */
     explicit AtlasScientificORP_Potential(AtlasScientificORP* parentSense,
-                                          const char*         uuid = "",
-                                          const char* varCode      = "AtlasORP")
+                                          const char*         uuid    = "",
+                                          const char*         varCode = "AtlasORP")
         : Variable(parentSense, (const uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
-                   "millivolt", varCode, uuid) {}
+                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential", "millivolt",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificORP_Potential object.
      *
@@ -175,9 +174,8 @@ class AtlasScientificORP_Potential : public Variable {
      * used.
      */
     AtlasScientificORP_Potential()
-        : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
-                   "millivolt", "AtlasORP") {}
+        : Variable((const uint8_t)ATLAS_ORP_VAR_NUM, (uint8_t)ATLAS_ORP_RESOLUTION,
+                   "reductionPotential", "millivolt", "AtlasORP") {}
     /**
      * @brief Destroy the AtlasScientificORP_Potential() object - no action
      * needed.

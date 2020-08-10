@@ -160,11 +160,11 @@ class AtlasScientificpH_pH : public Variable {
     /**
      * @brief Construct a new AtlasScientificpH_pH object.
      *
-     * @param[in] parentSense The parent AtlasScientificpH providing the result
+     * @param parentSense The parent AtlasScientificpH providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlaspH
      */
     explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense, const char* uuid = "",

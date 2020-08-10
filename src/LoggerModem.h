@@ -811,10 +811,10 @@ class Modem_RSSI : public Variable {
     /**
      * @brief Construct a new Modem_RSSI object.
      *
-     * @param[in] parentModem The parent modem providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "RSSI".
      */
     explicit Modem_RSSI(loggerModem* parentModem, const char* uuid = "",
@@ -841,10 +841,10 @@ class Modem_SignalPercent : public Variable {
     /**
      * @brief Construct a new Modem_SignalPercent object.
      *
-     * @param[in] parentModem The parent modem providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "signalPercent".
      */
     explicit Modem_SignalPercent(loggerModem* parentModem, const char* uuid = "",
@@ -875,10 +875,10 @@ class Modem_BatteryState : public Variable {
     /**
      * @brief Construct a new Modem_BatteryState object.
      *
-     * @param[in] parentModem The parent modem providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatteryCS".
      */
     explicit Modem_BatteryState(loggerModem* parentModem, const char* uuid = "",
@@ -909,10 +909,10 @@ class Modem_BatteryPercent : public Variable {
     /**
      * @brief Construct a new Modem_BatteryPercent object.
      *
-     * @param[in] parentModem The parent modem providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatteryPct".
      */
     explicit Modem_BatteryPercent(loggerModem* parentModem, const char* uuid = "",
@@ -943,10 +943,10 @@ class Modem_BatteryVoltage : public Variable {
     /**
      * @brief Construct a new Modem_BatteryVoltage object.
      *
-     * @param[in] parentModem The parent modem providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatterymV".
      */
     explicit Modem_BatteryVoltage(loggerModem* parentModem, const char* uuid = "",
@@ -977,10 +977,10 @@ class Modem_Temp : public Variable {
     /**
      * @brief Construct a new Modem_Temp object.
      *
-     * @param[in] parentModem The parent modem providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentModem The parent modem providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemTemp".
      */
     explicit Modem_Temp(loggerModem* parentModem, const char* uuid = "",

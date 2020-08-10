@@ -46,8 +46,12 @@ ___
     - [AOSong DHT](#aosong-dht)
     - [Apogee SQ-212](#apogee-sq-212)
     - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
-    - [Maxim DS18 one wire temperature sensor](#maxim-ds18-one-wire-temperature-sensor)
-    - [Measurement Specialties MS503 pressure and temperature sensor](#measurement-specialties-ms503-pressure-and-temperature-sensor)
+    - [Campbell OBS3+ analog turbidity sensor](#campbell-obs3-analog-turbidity-sensor)
+    - [Decagon ES2 conductivity and temperature sensor](#decagon-es2-conductivity-and-temperature-sensor)
+    - [Meter ECH2O soil moisture sensor](#meter-ech2o-soil-moisture-sensor)
+    - [Meter Hydros 21](#meter-hydros-21)
+    - [Meter Teros 11](#meter-teros-11)
+    - [Zebra Tech D-Opto dissolved oxygen sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
   - [Calculated Variables](#calculated-variables)
   - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
     - [The variable array](#the-variable-array)
@@ -549,7 +553,7 @@ ___
 ### AOSong DHT
 
 Here is the code for the AOSong DHT temperature and humidity sensor.
-To create the DHT sensor we need the power pin, the data pin, and the DHT type.
+To create the DHT Sensor we need the power pin, the data pin, and the DHT type.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
 @see @ref dht_page
@@ -575,29 +579,96 @@ ___
 [//]: # ( @subsection menu_bme280 Bosch BME280 environmental sensor )
 ### Bosch BME280 environmental sensor
 
-Set options for the Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
-Create the #Sensor object and all of the #Variable objects.
+Here is the code for the Bosch BME280 environmental sensor.
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
+
+@see @ref bme280_page
 
 [//]: # ( @menusnip{bme280} )
 ___
 
-[//]: # ( @subsection menu_ds18 Maxim DS18 one wire temperature sensor )
-### Maxim DS18 one wire temperature sensor
 
-Set options for the Maxim DS18 One Wire Temperature Sensor
-Create the #Sensor object and all of the #Variable objects.
+[//]: # ( @subsection menu_obs3 Campbell OBS3+ analog turbidity sensor )
+### Campbell OBS3+ analog turbidity sensor
 
-[//]: # ( @menusnip{ds18} )
+This is the code for the Campbell OBS3+.
+The Arduino pin controlling power on/off, analog data channel _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.
+A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.
+If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+Do NOT forget that if you want to give a number of measurements to average, that comes _after_ the i2c address in the constructor!
+
+Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
+
+@see @ref obs3_page
+
+[//]: # ( @menusnip{obs3} )
 ___
 
-[//]: # ( @subsection menu_ms5803  Measurement Specialties MS503 pressure and temperature sensor )
-###  Measurement Specialties MS503 pressure and temperature sensor
 
-Set options for the Measurement Specialties MS503 pressure and temperature sensor.
-Create the #Sensor object and all of the #Variable objects.
+[//]: # ( @subsection menu_es2 Decagon ES2 conductivity and temperature sensor )
+### Decagon ES2 conductivity and temperature sensor
 
-[//]: # ( @menusnip{ms5803} )
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref es2_page
+
+[//]: # ( @menusnip{es2} )
 ___
+
+
+[//]: # ( @subsection menu_fivetm Meter ECH2O soil moisture sensor )
+### Meter ECH2O soil moisture sensor
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref fivetm_page
+
+[//]: # ( @menusnip{fivetm} )
+___
+
+
+[//]: # ( @subsection menu_hydros21 Meter Teros 11 soil moisture sensor )
+### Meter Hydros 21
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref hydros21_page
+
+[//]: # ( @menusnip{hydros21} )
+___
+
+
+[//]: # ( @subsection menu_teros11 Meter Teros 11 soil moisture sensor )
+### Meter Teros 11
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref teros_page
+
+[//]: # ( @menusnip{teros11} )
+___
+
+
+[//]: # ( @subsection menu_dopto Zebra Tech D-Opto dissolved oxygen sensor )
+### Zebra Tech D-Opto dissolved oxygen sensor
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref dopto_page
+
+[//]: # ( @menusnip{dopto} )
+___
+
 
 [//]: # ( @section menu_calc_vars Calculated Variables )
 ## Calculated Variables

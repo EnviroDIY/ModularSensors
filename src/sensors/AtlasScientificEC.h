@@ -234,11 +234,11 @@ class AtlasScientificEC_Cond : public Variable {
     /**
      * @brief Construct a new AtlasScientificEC_Cond object.
      *
-     * @param[in] parentSense The parent AtlasScientificEC providing the result
+     * @param parentSense The parent AtlasScientificEC providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlasCond
      */
     explicit AtlasScientificEC_Cond(AtlasScientificEC* parentSense,
@@ -276,11 +276,11 @@ class AtlasScientificEC_TDS : public Variable {
     /**
      * @brief Construct a new AtlasScientificEC_TDS object.
      *
-     * @param[in] parentSense The parent AtlasScientificEC providing the result
+     * @param parentSense The parent AtlasScientificEC providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlasTDS
      */
     explicit AtlasScientificEC_TDS(AtlasScientificEC* parentSense,
@@ -318,11 +318,11 @@ class AtlasScientificEC_Salinity : public Variable {
     /**
      * @brief Construct a new AtlasScientificEC_Salinity object.
      *
-     * @param[in] parentSense The parent AtlasScientificEC providing the result
+     * @param parentSense The parent AtlasScientificEC providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlasSalinity
      */
     explicit AtlasScientificEC_Salinity(AtlasScientificEC* parentSense,
@@ -362,11 +362,11 @@ class AtlasScientificEC_SpecificGravity : public Variable {
     /**
      * @brief Construct a new AtlasScientificEC_SpecificGravity object.
      *
-     * @param[in] parentSense The parent AtlasScientificEC providing the result
+     * @param parentSense The parent AtlasScientificEC providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlasSpecGravity
      */
     explicit AtlasScientificEC_SpecificGravity(AtlasScientificEC* parentSense,

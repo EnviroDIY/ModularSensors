@@ -182,11 +182,11 @@ class AtlasScientificCO2_CO2 : public Variable {
     /**
      * @brief Construct a new AtlasScientificCO2_CO2 object.
      *
-     * @param[in] parentSense The parent AtlasScientificCO2 providing the result
+     * @param parentSense The parent AtlasScientificCO2 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasCO2ppm".
      */
     explicit AtlasScientificCO2_CO2(AtlasScientificCO2* parentSense,
@@ -225,11 +225,11 @@ class AtlasScientificCO2_Temp : public Variable {
     /**
      * @brief Construct a new AtlasScientificCO2_Temp object.
      *
-     * @param[in] parentSense The parent AtlasScientificCO2 providing the result
+     * @param parentSense The parent AtlasScientificCO2 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasCO2Temp".
      */
     explicit AtlasScientificCO2_Temp(AtlasScientificCO2* parentSense,

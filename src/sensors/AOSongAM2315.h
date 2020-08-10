@@ -183,11 +183,11 @@ class AOSongAM2315_Humidity : public Variable {
     /**
      * @brief Construct a new AOSongAM2315_Humidity object.
      *
-     * @param[in] parentSense The parent AOSongAM2315 providing the result
+     * @param parentSense The parent AOSongAM2315 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AM2315Humidity".
      */
     explicit AOSongAM2315_Humidity(AOSongAM2315* parentSense, const char* uuid = "",
@@ -225,11 +225,11 @@ class AOSongAM2315_Temp : public Variable {
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
      *
-     * @param[in] parentSense The parent AOSongAM2315 providing the result
+     * @param parentSense The parent AOSongAM2315 providing the result
      * values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AM2315Temp".
      */
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",

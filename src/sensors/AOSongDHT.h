@@ -217,17 +217,17 @@ class AOSongDHT_Humidity : public Variable {
     /**
      * @brief Construct a new AOSongDHT_Humidity object.
      *
-     * @param[in] parentSense The parent AOSongDHT providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentSense The parent AOSongDHT providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "DHTHumidity".
      */
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
                                 const char* varCode = "DHTHumidity")
         : Variable(parentSense, (const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                   (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", varCode, uuid) {}
+                   (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity", "percent",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new AOSongDHT_Humidity object.
      *
@@ -235,8 +235,8 @@ class AOSongDHT_Humidity : public Variable {
      */
     AOSongDHT_Humidity()
         : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                   (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", "DHTHumidity") {}
+                   (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity", "percent",
+                   "DHTHumidity") {}
     /**
      * @brief Destroy the AOSongDHT_Humidity object - no action needed.
      */
@@ -258,10 +258,10 @@ class AOSongDHT_Temp : public Variable {
     /**
      * @brief Construct a new AOSongDHT_Temp object.
      *
-     * @param[in] parentSense The parent AOSongDHT providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentSense The parent AOSongDHT providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "DHTTemp".
      */
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
@@ -275,9 +275,8 @@ class AOSongDHT_Temp : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_Temp()
-        : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
-                   (uint8_t)DHT_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   "DHTTemp") {}
+        : Variable((const uint8_t)DHT_TEMP_VAR_NUM, (uint8_t)DHT_TEMP_RESOLUTION,
+                   "temperature", "degreeCelsius", "DHTTemp") {}
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
@@ -299,17 +298,17 @@ class AOSongDHT_HI : public Variable {
     /**
      * @brief Construct a new AOSongDHT_HI object.
      *
-     * @param[in] parentSense The parent AOSongDHT providing the result values.
-     * @param[in] uuid A universally unique identifier (UUID or GUID) for the
+     * @param parentSense The parent AOSongDHT providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
-     * @param[in] varCode A short code to help identify the variable in files;
+     * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "DHTHI".
      */
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
                           const char* varCode = "DHTHI")
         : Variable(parentSense, (const uint8_t)DHT_HI_VAR_NUM,
-                   (uint8_t)DHT_HI_RESOLUTION, "heatIndex", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)DHT_HI_RESOLUTION, "heatIndex", "degreeCelsius", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new AOSongDHT_HI object.
      *
