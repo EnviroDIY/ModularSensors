@@ -420,9 +420,10 @@ void Logger::publishDataToRemotes(void) {
 void Logger::publishDataQuedToRemotes(void) {
     // Assumes that there is an internet connection
     // bool    useQue = false;
-    int16_t rspCode;
-    bool    dslStatus = false;
-    bool    retVal    = false;
+    int16_t  rspCode;
+    uint32_t tmrGateway_ms;
+    bool     dslStatus = false;
+    bool     retVal    = false;
     // MS_DBG(F("Pub Data Qued"));
     MS_DBG(F("pubDQTR from"), serzRdelFn_str);
 
@@ -454,7 +455,7 @@ void Logger::publishDataQuedToRemotes(void) {
                 serzQuedStart((char)('0' + i));
                 deszRdelStart();
                 // MS_START_DEBUG_TIMER;
-                uint32_t tmrGateway_ms = millis();
+                tmrGateway_ms = millis();
                 while ((dslStatus = deszRdelLine())) {
                     rspCode = dataPublishers[i]->publishData();
 
@@ -500,9 +501,9 @@ void Logger::publishDataQuedToRemotes(void) {
                 //    PRINTOUT(
                 //        F("publishDataQuedToRemote serzQuedFile.close err"));
 
-                PRINTOUT(F("pubDQTR"), deszLinesRead, F("lines in"),
-                         tmrGateway_ms - millis(), F("ms. Total outstanding"),
-                         desz_pending_records);
+                PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
+                         (millis() - tmrGateway_ms) / 1000,
+                         F("sec. Queued readings="), desz_pending_records);
 
                 if (HTTPSTATUS_CREATED_201 == rspCode) {
                     MS_START_DEBUG_TIMER;

@@ -1,5 +1,6 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - tgt standalone testing MMW interface
+ms_cfg.h_test  - ModularSensors Configuration - tgt standalone testing MMW
+interface
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -77,8 +78,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Maximum logging setting allowed
 #define loggingInterval_MAX_CDEF_MIN 6 * 60
 
-#define COLLECT_READINGS_DEF 1
-#define SEND_OFFSET_MIN_DEF 0
 
 // Instructions: define only one  _Module
 #define DigiXBeeWifi_Module 1
@@ -107,8 +106,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define WIFIID_CDEF "xxx"
 // NULL for none, or  password for connecting to WiFi,
 #define WIFIPWD_CDEF "yyy"
-
+#define MMW_TIMER_POST_TIMEOUT_MS_DEF 7000L
+#define COLLECT_READINGS_DEF 1
+#define SEND_OFFSET_MIN_DEF 0
 #endif  // Modules
+
 // end of _Module
 
 // This might need revisiting

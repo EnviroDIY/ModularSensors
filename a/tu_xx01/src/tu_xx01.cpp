@@ -84,9 +84,11 @@ const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
 int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-uint8_t collectReadings = COLLECT_READINGS_DEF;
-uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
-
+#if defined UseModem_Module
+uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+uint8_t     collectReadings     = COLLECT_READINGS_DEF;
+uint8_t     sendOffset_min      = SEND_OFFSET_MIN_DEF;
+#endif  // UseModem_Module
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -928,8 +930,7 @@ void setup() {
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
     EnviroDIYPOST.setQuedState(true);
-#define TIMER_MMW_POST_TIMEOUT_MSEC 7000L
-    EnviroDIYPOST.setTimerPostTimeout_mS(TIMER_MMW_POST_TIMEOUT_MSEC);
+    EnviroDIYPOST.setTimerPostTimeout_mS(timerPostTimeout_ms);
     dataLogger.setSendEveryX(collectReadings);
     dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
 
