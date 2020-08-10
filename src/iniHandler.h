@@ -27,10 +27,13 @@ const char LOGGING_INTERVAL_MULTIPLIER_pm[] EDIY_PROGMEM =
 const char BATTERY_TYPE_pm[] EDIY_PROGMEM = "BATTERY_TYPE";
 const char LIION_TYPE_pm[] EDIY_PROGMEM =
     "LIION_TYPE";  // FUT Supersede with BATTERY_TYPE
-const char TIME_ZONE_pm[] EDIY_PROGMEM        = "TIME_ZONE";
-const char COLLECT_READINGS_pm[] EDIY_PROGMEM = "COLLECT_READINGS";
-const char SEND_OFFSET_MIN_pm[] EDIY_PROGMEM  = "SEND_OFFSET_MIN";
-const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM  = "GEOGRAPHICAL_ID";
+const char TIME_ZONE_pm[] EDIY_PROGMEM          = "TIME_ZONE";
+const char TIMER_POST_TOUT_MS_pm[] EDIY_PROGMEM = "TIMER_POST_TOUT_MS";
+const char TIMER_POST_PACE_MS_pm[] EDIY_PROGMEM = "TIMER_POST_PACE_MS";
+const char POST_MAX_NUM_pm[] EDIY_PROGMEM       = "POST_MAX_NUM";
+const char COLLECT_READINGS_pm[] EDIY_PROGMEM   = "COLLECT_READINGS";
+const char SEND_OFFSET_MIN_pm[] EDIY_PROGMEM    = "SEND_OFFSET_MIN";
+const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM    = "GEOGRAPHICAL_ID";
 
 const char NETWORK_pm[] EDIY_PROGMEM = "NETWORK";
 const char apn_pm[] EDIY_PROGMEM     = "apn";
@@ -99,6 +102,8 @@ static int inihUnhandledFn(const char* section, const char* name,
 #if RAM_REPORT_LEVEL > 1
     bool ram_track = true;
 #endif
+    char* endptr;
+    errno = 0;
 // MS_DBG(F("inih "),section," ",name," ",value);
 #if defined USE_PS_Provider
     if (strcmp_P(section, PROVIDER_pm) == 0) {
@@ -182,8 +187,7 @@ static int inihUnhandledFn(const char* section, const char* name,
     } else
 #endif                                            // USE_PS_Provider
         if (strcmp_P(section, COMMON_pm) == 0) {  // [COMMON] processing
-        char* endptr;
-        errno = 0;
+
         if (strcmp_P(name, LOGGER_ID_pm) == 0) {
             SerialStd.print(F("COMMON LoggerId Set: "));
             SerialStd.println(value);
@@ -297,40 +301,6 @@ static int inihUnhandledFn(const char* section, const char* name,
             SerialStd.println(time_zone_local);
 
 
-        } else if (strcmp_P(name, COLLECT_READINGS_pm) == 0) {
-            // convert  str to num with error checking
-            long collect_reaings_local = strtol(value, &endptr, 10);
-            if ((collect_reaings_local <= 30) && (collect_reaings_local >= 0) &&
-                (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set COLLECT_READINGS: "));
-                collectReadings = (uint8_t)collect_reaings_local;
-#if 0   // defined USE_PS_EEPROM
-                epc.app.msc.s.colllectReadings = colllectReadings;
-#endif  // USE_PS_EEPROM
-            } else {
-                SerialStd.print(F(
-                    "COMMON Set COLLECT_READINGS error; (range 0 : 30) read:"));
-            }
-            SerialStd.println(collect_reaings_local);
-
-
-        } else if (strcmp_P(name, SEND_OFFSET_MIN_pm) == 0) {
-            // convert  str to num with error checking
-            long send_offset_min_local = strtol(value, &endptr, 10);
-            if ((send_offset_min_local <= 30) && (send_offset_min_local >= 0) &&
-                (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set SEND_OFFSET_MIN: "));
-                sendOffset_min = send_offset_min_local;
-#if 0   // defined USE_PS_EEPROM
-                epc.app.msc.s.sendOffset_min = sendOffset_min;
-#endif  // USE_PS_EEPROM
-            } else {
-                SerialStd.print(F(
-                    "COMMON Set SEND_OFFSET_MIN error; (range 0 : 30) read:"));
-            }
-            SerialStd.println(send_offset_min_local);
-
-
         } else if (strcmp_P(name, GEOGRAPHICAL_ID_pm) == 0) {
             SerialStd.print(F("GEOGRAPHICAL_ID:"));
             SerialStd.println(value);
@@ -392,6 +362,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             SerialStd.println(value);
         }
     } else if (strcmp_P(section, NETWORK_pm) == 0) {
+        // NETWORK PARTS
 #if defined DigiXBeeCellularTransparent_Module
         if (strcmp_P(name, apn_pm) == 0) {
             SerialStd.print(F("NETWORK APN was '"));
@@ -403,6 +374,7 @@ static int inihUnhandledFn(const char* section, const char* name,
 
         } else
 #endif  // DigiXBeeCellularTransparent_Module
+
 #if defined DigiXBeeWifi_Module
             if (strcmp_P(name, WiFiId_pm) == 0) {
             SerialStd.print(F("NETWORK WiFiId: was '"));
@@ -411,6 +383,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             SerialStd.print(F("' now '"));
             SerialStd.print(modemPhy.getWiFiId());
             SerialStd.println("'");
+
         } else if (strcmp_P(name, WiFiPwd_pm) == 0) {
             SerialStd.print(F("NETWORK WiFiPwd: was '"));
             SerialStd.print(modemPhy.getWiFiPwd());
@@ -418,8 +391,91 @@ static int inihUnhandledFn(const char* section, const char* name,
             SerialStd.print(F("' now '"));
             SerialStd.print(modemPhy.getWiFiPwd());
             SerialStd.println("'");
+
         } else
 #endif  // DigiXBeeWifi_Module
+            if (strcmp_P(name, TIMER_POST_TOUT_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostTimeout_local = strtol(value, &endptr, 10);
+            if ((timerPostTimeout_local <= 30000) &&
+                (timerPostTimeout_local >= 100) && (errno != ERANGE)) {
+                SerialStd.print(F("COMMON Set TIMER_POST_TOUT_MS : "));
+                timerPostTimeout_ms = timerPostTimeout_local;
+#if 0   // defined USE_PS_EEPROM
+                epc.app.msc.s.timerPostTimeout_ms = timerPostTimeout_local;
+#endif  // USE_PS_EEPROM
+            } else {
+                SerialStd.print(F("COMMON Set TIMER_POST_TOUT_MS error; (range "
+                                  "100 : 30000) read:"));
+            }
+            SerialStd.println(timerPostTimeout_local);
+
+        } else if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostPacing_local = strtol(value, &endptr, 10);
+            if ((timerPostPacing_local <= 5000) &&
+                (timerPostPacing_local >= 0) && (errno != ERANGE)) {
+                SerialStd.print(F("COMMON Set TIMER_POST_PACE_MS: "));
+                timerPostPacing_ms = timerPostPacing_local;
+#if 0   // defined USE_PS_EEPROM
+                epc.app.msc.s.timerPostPacing_ms = timerPostPacing_local;
+#endif  // USE_PS_EEPROM
+            } else {
+                SerialStd.print(F("COMMON Set TIMER_POST_PACE_MS error; (range "
+                                  "0 : 5000) read:"));
+            }
+            SerialStd.println(timerPostPacing_local);
+
+        } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
+            // convert  str to num with error checking
+            long postMax_num_local = strtol(value, &endptr, 10);
+            if ((postMax_num_local <= 50) && (postMax_num_local >= 0) &&
+                (errno != ERANGE)) {
+                SerialStd.print(F("COMMON Set POST_MAX_NUM: "));
+                postMax_num = (uint8_t)postMax_num_local;
+#if 0   // defined USE_PS_EEPROM
+                epc.app.msc.s.postMax_num = postMax_num_local;
+#endif  // USE_PS_EEPROM
+            } else {
+                SerialStd.print(
+                    F("COMMON Set POST_MAX_NUM error; (range 0 : 50) read:"));
+            }
+            SerialStd.println(postMax_num_local);
+
+        } else if (strcmp_P(name, COLLECT_READINGS_pm) == 0) {
+            // convert  str to num with error checking
+            long collect_readings_local = strtol(value, &endptr, 10);
+            if ((collect_readings_local <= 30) &&
+                (collect_readings_local >= 0) && (errno != ERANGE)) {
+                SerialStd.print(F("COMMON Set COLLECT_READINGS: "));
+                collectReadings = (uint8_t)collect_readings_local;
+#if 0   // defined USE_PS_EEPROM
+                epc.app.msc.s.colllectReadings = colllectReadings;
+#endif  // USE_PS_EEPROM
+            } else {
+                SerialStd.print(F(
+                    "COMMON Set COLLECT_READINGS error; (range 0 : 30) read:"));
+            }
+            SerialStd.println(collect_readings_local);
+
+
+        } else if (strcmp_P(name, SEND_OFFSET_MIN_pm) == 0) {
+            // convert  str to num with error checking
+            long send_offset_min_local = strtol(value, &endptr, 10);
+            if ((send_offset_min_local <= 30) && (send_offset_min_local >= 0) &&
+                (errno != ERANGE)) {
+                SerialStd.print(F("COMMON Set SEND_OFFSET_MIN: "));
+                sendOffset_min = send_offset_min_local;
+#if 0   // defined USE_PS_EEPROM
+                epc.app.msc.s.sendOffset_min = sendOffset_min;
+#endif  // USE_PS_EEPROM
+            } else {
+                SerialStd.print(F(
+                    "COMMON Set SEND_OFFSET_MIN error; (range 0 : 30) read:"));
+            }
+            SerialStd.println(send_offset_min_local);
+        } else
+
         {
             SerialStd.print(F("NETWORK tbd "));
             SerialStd.print(name);

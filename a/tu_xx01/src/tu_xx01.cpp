@@ -86,6 +86,9 @@ int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 
 #if defined UseModem_Module
 uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
+uint8_t     postMax_num         = 0;  // Future 0,5-50
+//Common
 uint8_t     collectReadings     = COLLECT_READINGS_DEF;
 uint8_t     sendOffset_min      = SEND_OFFSET_MIN_DEF;
 #endif  // UseModem_Module
