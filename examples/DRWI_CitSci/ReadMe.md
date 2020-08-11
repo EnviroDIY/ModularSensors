@@ -1,9 +1,11 @@
 [//]: # ( @page drwi_2g_example DRWI CitSci 2G Sites )
 # ModularSensors DRWI 2G Sites
 
-This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This should be used at all sites with cellular 2G service.
+This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
+This should be used at all sites with cellular 2G service.
 
-Before programming your board with this example, you must register your site and sensors at http://data.envirodiy.org/.  Stroud can provide directions for registering your site if you need assistance.
+Before programming your board with this example, you must register your site and sensors at http://data.envirodiy.org/.
+Stroud can provide directions for registering your site if you need assistance.
 
 _______
 
@@ -15,8 +17,10 @@ _______
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
-    - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.  Without this, the program won't compile or send data.
-- Download logging_to_EnviroDIY.ino and put it into the src directory of your project.  Delete main.cpp in that folder.
+    - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
+Without this, the program won't compile or send data.
+- Download logging_to_EnviroDIY.ino and put it into the src directory of your project.
+Delete main.cpp in that folder.
 
 [//]: # ( @subsection drwi_2g_logger_id Set the logger ID )
 ## Set the logger ID
@@ -30,7 +34,8 @@ const char *LoggerID = "XXXX";
 [//]: # ( @subsection drwi_2g_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
 ## Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
-- Change _**all**_ of the the ```0.000E+00``` and ```1.000E+00``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
+- Change _**all**_ of the the ```0.000E+00``` and ```1.000E+00``` values in this section of code to the values on that calibration sheet.
+Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
     - The sketch will not compile if these values are not entered properly.
     - Do not change any values except those that are ```0.000E+00``` and ```1.000E+00```!
 
