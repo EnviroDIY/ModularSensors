@@ -18,6 +18,8 @@
  * Classes for the [Apogee SQ-212 quantum light sensor](@ref sq212_page).
  *
  * @copydoc sq212_page
+ *
+ * @ingroup analog_group
  */
 /* clang-format off */
 /**
@@ -41,19 +43,8 @@
  * between measurements.
  *
  * To convert the sensor's analog signal to a high resolution digital signal,
- * the sensor must be attached to an analog-to-digital converter. Within
- * ModularSensors, the ADD of choice is the 16-bit TI ADS1115 ADD converter or
- * the very similar ADS1113 or ADS1114. The TI ADS1115 ADD communicates with the
- * main processor via I2C. In the majority of break-out boards, and on the
- * Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address
- * pin to ground. Up to four of these ADD's be used by changing the address
- * value by changing the connection of the address pin on the ADS1x15. The
- * ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the
- * ADS is powered with 3.3V - powering it at any other level may negatively
- * affect the ADS measurement range settings. The 12 bit TI ADS1015 (also
- * ADS1013 or ADS1014) converter can also be used, if necessary. To use the
- * ADS1015, you must compile with the build flag ```-D MS_USE_ADS1015```. Note
- * that changing the ADS for the SQ-212 will affect _all_ sensors using the ADS.
+ * the sensor must be attached to an analog-to-digital converter. See the
+ * [ADS1115 page](@ref ads1x15_page) for details on the conversion.
  *
  * The calibration factor this library uses to convert from raw voltage to PAR
  * is that specified by Apogee for the SQ-212: 1 µmol mˉ² sˉ¹ per mV (reciprocal
@@ -61,9 +52,6 @@
  * compiling with the build flag ```-D SQ212_CALIBRATION_FACTOR=x``` where x is
  * the calibration factor. This allows you to adjust the calibration or change
  * to another Apogee sensor (e.g. SQ-215 or SQ225) as needed.
- *
- * Communication with the ADS1x15 depends on the
- * [soligen2010 fork of the Adafruit ADS1015 library](https://github.com/soligen2010/Adafruit_ADS1X15).
  *
  * @section sq212_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Apogee

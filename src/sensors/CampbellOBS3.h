@@ -15,6 +15,8 @@
  * Classes for the @ref obs3_page
  *
  * @copydoc obs3_page
+ *
+ * @ingroup analog_group
  */
 /* clang-format off */
 /**
@@ -25,6 +27,8 @@
  * @tableofcontents
  *
  * @section obs3_intro Introduction
+ *
+ * @warning This sensor is no longer manufactured.
  *
  * The OBS-3+ puts out a simple analog signal between 0 and 2.5V.  When the sensor is
  * purchased, included in the packaging is a calibration certificate to use to
@@ -37,20 +41,8 @@
  * wires.  Each range has a separate calibrations.
  *
  * Before applying any turbidity calibration, the analog output from the OBS3+
- * must be converted into a high resolution digital signal.  To do this,
- * the sensor must be attached to an analog-to-digital converter. Within
- * ModularSensors, the ADD of choice is the 16-bit TI ADS1115 ADD converter or
- * the very similar ADS1113 or ADS1114. The TI ADS1115 ADD communicates with the
- * main processor via I2C. In the majority of break-out boards, and on the
- * Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address
- * pin to ground. Up to four of these ADD's be used by changing the address
- * value by changing the connection of the address pin on the ADS1x15. The
- * ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the
- * ADS is powered with 3.3V - powering it at any other level may negatively
- * affect the ADS measurement range settings. The 12 bit TI ADS1015 (also
- * ADS1013 or ADS1014) converter can also be used, if necessary. To use the
- * ADS1015, you must compile with the build flag ```-D MS_USE_ADS1015```. Note
- * that changing the ADS for the OBS3+ will affect _all_ sensors using the ADS.
+ * must be converted into a high resolution digital signal.  See the
+ * [ADS1115 page](@ref ads1x15_page) for details on the conversion.
  *
  * @section obs3_datasheet Sensor Datasheet
  * [Basic Concepts](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Basics.pdf)

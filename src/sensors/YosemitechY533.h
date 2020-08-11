@@ -16,7 +16,7 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * @defgroup y533_group Yosemitech Y533 ORP %Sensor
+ * @defgroup y533_group Yosemitech Y533 ORP Sensor
  * Classes for the @ref y533_page
  *
  * @copydoc y533_page

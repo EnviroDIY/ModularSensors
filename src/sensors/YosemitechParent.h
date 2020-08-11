@@ -13,7 +13,7 @@
  * Yosemitech library at: https://github.com/EnviroDIY/YosemitechModbus
  *
  * @defgroup yosemitech_group Yosemitech Sensors
- * Classes for the @ref yosemitech_page
+ * The Sensor and Variable objects for all @ref yosemitech_page
  *
  * @copydoc yosemitech_page
  */

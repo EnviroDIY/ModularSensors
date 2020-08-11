@@ -1016,7 +1016,7 @@ Variable* es2Temp = new DecagonES2_Temp(&es2, "12345678-abcd-1234-ef00-123456789
 // ==========================================================================
 //  External Voltage via TI ADS1115
 // ==========================================================================
-/** Start [ads1x1x] */
+/** Start [ext_volt] */
 #include <sensors/ExternalVoltage.h>
 
 const int8_t  ADSPower       = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -1032,7 +1032,7 @@ ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
 // Create a voltage variable pointer
 Variable* extvoltV = new ExternalVoltage_Volt(&extvolt,
                                               "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ads1x1x] */
+/** End [ext_volt] */
 
 
 // ==========================================================================

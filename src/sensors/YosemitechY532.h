@@ -16,7 +16,7 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * @defgroup y532_group Yosemitech Y532 pH %Sensor
+ * @defgroup y532_group Yosemitech Y532 pH Sensor
  * Classes for the @ref y532_page
  *
  * @copydoc y532_page

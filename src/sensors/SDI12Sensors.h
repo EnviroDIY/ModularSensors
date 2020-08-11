@@ -13,7 +13,7 @@
  * http://www.sdi-12.org/
  *
  * @defgroup sdi12_group SDI-12 Sensors
- * Classes for all @ref sdi12_group
+ * The Sensor and Variable objects for all @ref sdi12_group
  *
  * @copydoc sdi12_page
  */

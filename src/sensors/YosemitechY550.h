@@ -16,7 +16,7 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * @defgroup y550_group Yosemitech Y550 UV245/COD %Sensor
+ * @defgroup y550_group Yosemitech Y550 UV245/COD Sensor
  * Classes for the @ref y550_page
  *
  * @copydoc y550_page

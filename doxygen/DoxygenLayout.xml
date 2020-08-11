@@ -117,7 +117,7 @@
         <tab type="user" url="@ref ms5803_page" title="Measurement Specialties MS5803"/>
         <tab type="user" url="@ref meter_soil_page" title="Meter Soil Moisture Sensors"/>
         <tab type="user" url="@ref hydros21_page" title="Meter Hydros 21"/>
-        <tab type="user" url="@ref ads1115_page" title="TI ADS1115"/>
+        <tab type="user" url="@ref ads1x15_page" title="TI ADS1115"/>
         <tab type="user" url="@ref ina219_page" title="TI INA219"/>
         <tab type="user" url="@ref yosemitech_page" title="Yosemitech Environmental Sensors"/>
         <tab type="user" url="@ref dopto_page" title="ZebraTech D-Opto"/>

@@ -48,6 +48,7 @@ ___
     - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
     - [Campbell OBS3+ analog turbidity sensor](#campbell-obs3-analog-turbidity-sensor)
     - [Decagon ES2 conductivity and temperature sensor](#decagon-es2-conductivity-and-temperature-sensor)
+    - [External voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Meter ECH2O soil moisture sensor](#meter-ech2o-soil-moisture-sensor)
     - [Meter Hydros 21](#meter-hydros-21)
     - [Meter Teros 11](#meter-teros-11)
@@ -627,6 +628,20 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
+[//]: # ( @subsection menu_ext_volt External voltage via TI ADS1x15 )
+### External voltage via TI ADS1x15
+
+The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
+If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.
+If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.
+The number of measurements to average, if more than one is desired, goes as the fifth argument.
+
+@see @ref ext_volt_page
+
+[//]: # ( @menusnip{ext_volt} )
+___
+
+
 [//]: # ( @subsection menu_fivetm Meter ECH2O soil moisture sensor )
 ### Meter ECH2O soil moisture sensor
 
@@ -678,7 +693,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y504_page
 
-[//]: # ( @menusnip{504} )
+[//]: # ( @menusnip{y504} )
 ___
 
 
@@ -694,7 +709,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y510_page
 
-[//]: # ( @menusnip{510} )
+[//]: # ( @menusnip{y510} )
 ___
 
 
@@ -710,7 +725,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y511_page
 
-[//]: # ( @menusnip{511} )
+[//]: # ( @menusnip{y511} )
 ___
 
 
@@ -726,7 +741,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y514_page
 
-[//]: # ( @menusnip{514} )
+[//]: # ( @menusnip{y514} )
 ___
 
 
@@ -742,7 +757,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y520_page
 
-[//]: # ( @menusnip{520} )
+[//]: # ( @menusnip{y520} )
 ___
 
 
@@ -758,7 +773,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y532_page
 
-[//]: # ( @menusnip{532} )
+[//]: # ( @menusnip{y532} )
 ___
 
 
@@ -774,7 +789,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y533_page
 
-[//]: # ( @menusnip{533} )
+[//]: # ( @menusnip{y533} )
 ___
 
 
@@ -790,7 +805,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y550_page
 
-[//]: # ( @menusnip{550} )
+[//]: # ( @menusnip{y550} )
 ___
 
 
@@ -806,7 +821,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 
 @see @ref y4000_page
 
-[//]: # ( @menusnip{4000} )
+[//]: # ( @menusnip{y4000} )
 ___
 
 

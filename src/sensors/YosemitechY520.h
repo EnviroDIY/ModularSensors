@@ -15,7 +15,7 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * @defgroup y520_group Yosemitech Y520 Conductivity %Sensor
+ * @defgroup y520_group Yosemitech Y520 Conductivity Sensor
  * Classes for the @ref y520_page
  *
  * @copydoc y520_page

@@ -15,7 +15,7 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * @defgroup y514_group Yosemitech Y514 Chlorophyll %Sensor
+ * @defgroup y514_group Yosemitech Y514 Chlorophyll Sensor
  * Classes for the @ref y514_page
  *
  * @copydoc y514_page
