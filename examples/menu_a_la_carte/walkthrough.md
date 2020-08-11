@@ -50,6 +50,9 @@ ___
     - [Decagon ES2 conductivity and temperature sensor](#decagon-es2-conductivity-and-temperature-sensor)
     - [External voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
+    - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
+    - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
+    - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
     - [Meter ECH2O soil moisture sensor](#meter-ech2o-soil-moisture-sensor)
     - [Meter Hydros 21](#meter-hydros-21)
     - [Meter Teros 11](#meter-teros-11)
@@ -595,6 +598,7 @@ ___
 
 Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
+Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803.
 
 @see @ref bme280_page
 
@@ -655,6 +659,44 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 @see @ref mpl115a2_page
 
 [//]: # ( @menusnip{mpl115a2} )
+___
+
+
+[//]: # ( @subsection menu_sonar Maxbotix HRXL Ultrasonic Range Finder )
+### Maxbotix HRXL Ultrasonic Range Finder
+
+The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.
+(Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref sonar_page
+
+[//]: # ( @menusnip{sonar} )
+___
+
+
+[//]: # ( @subsection menu_ds18 Maxim DS18 One Wire Temperature Sensor )
+### Maxim DS18 One Wire Temperature Sensor
+
+The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor, though the address can be omitted if only one sensor is used.
+The OneWire address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0}.
+To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.
+The sensor address is programmed at the factory and cannot be changed.
+
+@see @ref ds18_page
+
+[//]: # ( @menusnip{ds18} )
+___
+
+
+[//]: # ( @subsection menu_ms5803 Measurement Specialties MS5803-14BA Pressure Sensor )
+### Measurement Specialties MS5803-14BA Pressure Sensor
+
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
+Keep in mind that the possible I2C addresses of the MS5803 match those of the BME280.
+
+@see @ref ms5803_page
+
+[//]: # ( @menusnip{ms5803} )
 ___
 
 

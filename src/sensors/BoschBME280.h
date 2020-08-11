@@ -52,6 +52,10 @@
  * The [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library)
  * is used internally for communication with the BME280.
  *
+ * @warning The I2C addresses used by the BME280 are the same as those of the
+ * MS5803!  If you are also using one of those sensors, make sure that the
+ * address for that sensor does not conflict with the address of this sensor.
+ *
  * @section bme280_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/
@@ -189,12 +193,14 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Construct a new Bosch BME280 object
      *
-     * @param powerPin The pin on the mcu controlling power to the BME280.
-     * Use -1 if the sensor is continuously powered.
-     * - Requires a 1.7 - 3.6V power source
-     * @param i2cAddressHex The I2C address of the BME280; default value is
-     * 0x76.
-     * @param measurementsToAverage The number of measurements to average
+     * @param powerPin The pin on the mcu controlling power to the BME280.  Use
+     * -1 if it is continuously powered.
+     * - The BME280 requires a 1.7 - 3.6V power source
+     * @param i2cAddressHex The I2C address of the BME280; must be either 0x76
+     * or 0x77.  The default value is 0x76.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     explicit BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76,
                          uint8_t measurementsToAverage = 1);

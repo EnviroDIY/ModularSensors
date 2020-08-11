@@ -1066,7 +1066,7 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 // ==========================================================================
 //  Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
-/** Start [sonar] */
+/** Start [maxbotics] */
 #include <sensors/MaxBotixSonar.h>
 
 // Create a reference to the serial port for the sonar
@@ -1095,7 +1095,7 @@ MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger,
 // Create an ultrasonic range variable pointer
 Variable* sonar1Range =
     new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [sonar] */
+/** End [maxbotics] */
 
 
 // ==========================================================================
