@@ -256,6 +256,68 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
                 if (1 < ui_scan.length() ) break;
             }
 #endif
+            MS_DBG(F("Get IP number"));
+            String xbeeRsp;
+            bool   AllocatedIpSuccess = false;
+// Checkfor IP allocation
+#define MDM_IP_STR_MIN_LEN 7
+#define MDM_LP_IPMAX 16
+            gsmModem.sendAT(F("MY"));  // Request IP #
+            gsmModem.waitResponse(1000, xbeeRsp);
+            MS_DBG(F("Flush rsp "), xbeeRsp);
+            for (int mdm_lp = 1; mdm_lp <= MDM_LP_IPMAX; mdm_lp++) {
+                xbeeRsp = "";
+                delay(mdm_lp * 500);
+                gsmModem.sendAT(F("MY"));  // Request IP #
+                gsmModem.waitResponse(1000, xbeeRsp);
+                PRINTOUT(F("mdmIP["), mdm_lp, "/", MDM_LP_IPMAX, F("] '"),
+                         xbeeRsp, "'=", xbeeRsp.length());
+                if (0 != xbeeRsp.compareTo("0.0.0.0") &&
+                    (xbeeRsp.length() > MDM_IP_STR_MIN_LEN)) {
+                    AllocatedIpSuccess = true;
+                    break;
+                }
+            }
+            if (!AllocatedIpSuccess) {
+                PRINTOUT(
+                    F("XbeeLTE not received IP# -hope it works next time"));
+                // delay(1000);
+                // NVIC_SystemReset();
+                success = false;
+            } else {
+                // success &= AllocatedIpSuccess;
+                PRINTOUT(F("XbeeWLTE IP# ["), xbeeRsp, F("]"));
+                /*
+
+                xbeeRsp = "";
+                // Display DNS allocation
+                bool DnsIpSuccess = false;
+                uint8_t index              = 0;
+#define MDM_LP_DNSMAX 11
+                for (int mdm_lp = 1; mdm_lp <= MDM_LP_DNSMAX; mdm_lp++) {
+                    delay(mdm_lp * 500);
+                    gsmModem.sendAT(F("NS"));  // Request DNS #
+                    index &= gsmModem.waitResponse(1000, xbeeRsp);
+                    MS_DBG(F("mdmDNS["), mdm_lp, "/", MDM_LP_DNSMAX, F("] '"),
+                           xbeeRsp, "'");
+                    if (0 != xbeeRsp.compareTo("0.0.0.0") &&
+                        (xbeeRsp.length() > MDM_IP_STR_MIN_LEN)) {
+                        DnsIpSuccess = true;
+                        break;
+                    }
+                    xbeeRsp = "";
+                }
+
+                if (false == DnsIpSuccess) {
+                    success = false;
+                    PRINTOUT(F(
+                        "XbeeWifi init test FAILED - hope it works next time"));
+                } else {
+                    PRINTOUT(F("XbeeWifi init test PASSED"));
+                }
+
+                */
+            }
             success = true;  // Not sure why need to force this
         } else {
             success = false;

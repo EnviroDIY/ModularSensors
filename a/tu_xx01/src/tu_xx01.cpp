@@ -84,7 +84,14 @@ const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
 int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
+#if defined UseModem_Module
+uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
+uint8_t     postMax_num         = 0;  // Future 0,5-50
+//Common
+uint8_t     collectReadings     = COLLECT_READINGS_DEF;
+uint8_t     sendOffset_min      = SEND_OFFSET_MIN_DEF;
+#endif  // UseModem_Module
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -500,8 +507,9 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
                          VoltReadsToAvg);
 // ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr,
 // VoltReadsToAvg); special Vcc 3.3V
-ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0, ADSi2c_addr,
-                         VoltReadsToAvg);
+// ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0,
+// ADSi2c_addr,
+//                         VoltReadsToAvg);
 // ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0,
 // ADSi2c_addr, VoltReadsToAvg);
 
@@ -604,15 +612,16 @@ Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined AnalogProcEC_ACT
+    // Do Analog processing measurements.
+    new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
+#endif  // AnalogProcEC_ACT
 #if defined(ExternalVoltage_Volt0_UUID)
     new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
 #endif
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
-#if defined AnalogProcEC_ACT
-    new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
-#endif  // AnalogProcEC_ACT
 #if defined Decagon_CTD_UUID
     // new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
     CTDDepthInCalc,
@@ -846,8 +855,8 @@ void setup() {
             SerialStd.print(F(": BatteryLow-Sleep60sec, BatV="));
             SerialStd.println(mcuBoard.getBatteryVm1(false));
 #endif  //(CHECK_SLEEP_POWER)
-            // delay(59000); //60Seconds
-            // if(_mcuWakePin >= 0){systemSleep();}
+        // delay(59000); //60Seconds
+        // if(_mcuWakePin >= 0){systemSleep();}
             dataLogger.systemSleep(1);
             delay(1000);  // debug
             SerialStd.println(F("----Wakeup"));
@@ -922,6 +931,11 @@ void setup() {
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
+    EnviroDIYPOST.setQuedState(true);
+    EnviroDIYPOST.setTimerPostTimeout_mS(timerPostTimeout_ms);
+    dataLogger.setSendEveryX(collectReadings);
+    dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
+
 #endif  // UseModem_Module
 
 // Sync the clock  and we have battery to spare
@@ -974,7 +988,6 @@ void setup() {
     dataLogger.createLogFile(true);  // true = write a new header
     dataLogger.turnOffSDcard(
         true);  // true = wait for internal housekeeping after write
-
 
     MS_DBG(F("\n\nSetup Complete ****"));
 }

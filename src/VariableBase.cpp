@@ -398,7 +398,6 @@ float Variable::getValue(bool updateValue) {
     } else {
         if (updateValue) parentSensor->update();
         return _currentValue;
-        MS_DBG(F("setVarUUID cp "), newUUID);
     }
 }
 

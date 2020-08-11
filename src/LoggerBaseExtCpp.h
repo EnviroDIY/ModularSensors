@@ -487,8 +487,8 @@ int8_t Logger::inihParseFile(ini_handler_atl485 handler_fn) {
 #endif
 
     /* Scan through stream line by line */
-#define reader_fn(line1, max_line1) logFile.fgets(line1, max_line1)
-    while (reader_fn(line, max_line) != 0) {
+#define readerLog_fn(line1, max_line1) logFile.fgets(line1, max_line1)
+    while (readerLog_fn(line, max_line) != 0) {
 #if INI_ALLOW_REALLOC && !INI_USE_STACK
         offset = strlen(line);
         while (offset == max_line - 1 && line[offset - 1] != '\n') {
@@ -500,7 +500,7 @@ int8_t Logger::inihParseFile(ini_handler_atl485 handler_fn) {
                 return -2;
             }
             line = new_line;
-            if (reader_fn(line + offset, max_line - offset) == NULL) break;
+            if (readerLog_fn(line + offset, max_line - offset) == NULL) break;
             if (max_line >= INI_MAX_LINE) break;
             offset += strlen(line + offset);
         }
@@ -641,3 +641,575 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 #endif  // USE_RTCLIB
 
 // End parse.ini
+
+// ===================================================================== //
+// Serialize/deserialize functions
+// see class headers
+// ===================================================================== //
+
+// This update the timestamp on a file
+void Logger::setFileAccessTime(File* fileToStamp) {
+    DateTime markedDt(Logger::markedEpochTime);
+
+    fileToStamp->timestamp((T_WRITE | T_ACCESS), markedDt.year(),
+                           markedDt.month(), markedDt.date(), markedDt.hour(),
+                           markedDt.minute(), markedDt.second());
+}
+
+#define DELIM_CHAR2 ','
+#define SERZQUED_OFLAGS
+bool Logger::serzQuedStart(char uniqueId) {
+    strcpy(serzQuedFn, serzQuedFn_str);
+    strncat(serzQuedFn, &uniqueId, 1);
+    strcat(serzQuedFn, ".TXT");
+
+    if (!serzQuedFile.open(serzQuedFn, (O_WRITE | O_CREAT | O_AT_END))) {
+        PRINTOUT(F("serzQuedStart open err"));
+        return false;
+    } else {
+        MS_DBG(F("serzQuedStart open"), serzQuedFn);
+    }
+    return true;
+}
+
+bool Logger::serzQuedCloseFile(bool flush) {
+    /* This closes the file, removing the sent messages
+     The algorithim is, rename to a temporary file,
+     copy unsent lines to the new file.
+     Assumes serzQuedFile points incoming file
+    */
+    bool    retBool;
+    int16_t retNum;
+    File    tgtoutFile;
+#define TEMP_BASE_FN_STR "DEL01.TXT"
+    const char* tempFn = TEMP_BASE_FN_STR;
+
+    if (flush) {
+        // Check if exists and delete
+        if (sd1_card_fatfs.exists(tempFn)) {
+            if (!sd1_card_fatfs.remove(tempFn)) {
+                PRINTOUT(F("seQCF remove1 err"), serzQuedFn);
+                sd1_Err("seQCF err6 remove");
+            }
+        }
+        // rename to temp file so can copy to same Name
+        retBool = serzQuedFile.rename(tempFn);
+        if (!retBool) {
+            PRINTOUT(F("seQCF rename1 err"), tempFn);
+            // sd1_Err("seQCF rename2");
+            return false;
+        } else {
+            MS_DBG(F("seQCF rename "), serzQuedFn, F("to"), tempFn);
+        }
+        // or sd1_card_fatfs.rename()
+        /*serzQuedFile.close();
+        retBool = tempFile.open(tempFn, O_READ);
+        if (!retBool) {
+            PRINTOUT(F("seQCF open1 err"), tempFn);
+            // sd1_Err("seQCF rename2");
+            return false;
+        }*/
+
+        retBool = tgtoutFile.open(serzQuedFn, (O_WRITE | O_CREAT));
+        if (!retBool) {
+            PRINTOUT(F("seQCF open2 err"), serzQuedFn);
+            // sd1_Err("seQCF open4");
+            return false;
+        }
+
+        /*  copy lines from tempFile to tgtoutFile */
+        int16_t  num_char  = strlen(deszq_line);
+        uint16_t num_lines = 1;
+        // First write out the recently attemtpted
+        MS_DBG(F("First:"), deszq_line, F(":"));
+        retNum = tgtoutFile.write(deszq_line, num_char);
+        if (retNum != num_char) {
+            PRINTOUT(F("seQCF tgtoutFile write1 err"), num_char);
+            // sd1_Err("seQCF write2");
+        } else {
+            MS_DBG(F("seQCF cpy lines across"));
+            while (0 < (num_char = serzQuedFile.fgets(deszq_line,
+                                                      QUEFILE_MAX_LINE))) {
+                retNum = tgtoutFile.write(deszq_line, num_char);
+                // Squelch last char LF
+                deszq_line[sizeof(deszq_line) - 1] = 0;
+                MS_DBG(deszq_line);
+                if (retNum != num_char) {
+                    PRINTOUT(F("seQCF tgtoutFile write3 err"), num_char,
+                             retNum);
+                    // sd1_Err("seQCF write4");
+                    break;
+                }
+                num_lines++;
+            }
+        }
+        MS_DBG(F("seQCF wrote unsent records"), num_lines);
+        desz_pending_records = num_lines;
+
+        retBool = tgtoutFile.close();
+        if (!retBool) {
+            sd1_Err("seQCF tgtoutFile.close1 err");
+            return false;
+        }
+    }
+    retBool = serzQuedFile.close();
+    if (!retBool) {
+        sd1_Err("seQCF serzQuedFile.close2 err");
+        return false;
+    }
+#if 0
+#define TEMPBUF2_SZ QUEFILE_MAX_LINE
+    char tempBuffer[TEMPBUF2_SZ] = "";
+    // tgtoutFile.getName(tempBuffer, TEMPBUF_SZ);
+    // MS_DBG(F("seQCF closing"), tempBuffer, flush, F("top:"));
+    // tgtoutFile.rewind();
+
+    retBool = serzQuedFile.open(serzQuedFn, O_READ);
+    if (!retBool) {
+        // sd1_Err("seQCF serzQuedFile.open2");
+        PRINTOUT(F("seQCF serzQuedFile.open2 err"), serzQuedFn);
+        return false;
+    }
+    for (uint8_t flp = 0; flp < 5; flp++) {
+        tempBuffer[0] = 0;
+        retNum        = serzQuedFile.fgets(tempBuffer, TEMPBUF2_SZ);
+        PRINTOUT(flp, F("]"), retNum, (":"), tempBuffer);
+        if (0 >= retNum) {
+            if (0 == retNum) break;  // Normal
+            sd1_Err("seQCF fgets list");
+            break;
+        }
+    }
+    retBool = serzQuedFile.close();
+#endif  // if x Debug
+    if (!retBool) { PRINTOUT(F("seQCF err close serzQuedFile")); }
+    return retBool;
+}
+
+/*
+For serialize, create ASCII CSV records of the form
+status,<marked epoch time> n*[<,values>]
+*/
+#define RDEL_OFLAG (O_WRITE | O_CREAT | O_AT_END)
+bool Logger::serzRdel_Line() {
+    if (serzRdelFile.open(serzRdelFn_str, RDEL_OFLAG)) {
+        uint16_t outputSz;
+        // String csvString(Logger::markedEpochTime);
+        outputSz = serzRdelFile.print("0,");  // Start READINGS_STATUS
+        outputSz += serzRdelFile.print(Logger::markedEpochTime);
+        for (uint8_t i = 0; i < getArrayVarCount(); i++) {
+            // csvString += ',';
+            outputSz += serzRdelFile.print(',' + getValueStringAtI(i));
+        }
+        outputSz += serzRdelFile.println();
+        // setFileAccessTime(serzRdelFile);
+        serzRdelFile.close();
+        MS_DBG(F("serzRdel_Line on"), serzRdelFn_str, F(" at "),
+               markedEpochTime, F(" size="), outputSz);
+    } else {
+        PRINTOUT(F("serzRdel_Line; No file"), serzRdelFn_str);
+        return false;
+    }
+    return true;
+}  // Logger::serzLine
+
+
+/* Deserializer functions
+
+For deserialize, read  ASCII CSV records of the form
+<marked epoch time> n*[<,values>]
+
+deszRdelStart()   ~ to open file
+deszLine()  to populate
+    deszq_epochTime &
+
+*/
+
+bool Logger::deszRdelStart() {
+    deszLinesRead = deszLinesUnsent = 0;
+
+    deszq_nextChar = deszq_line;
+    // Open - RD & WR. WR needed to be able to delete when complete.
+    if (!serzRdelFile.open(serzRdelFn_str, (O_RDWR | O_CREAT))) {
+        PRINTOUT(F("deRS; No file "), serzRdelFn_str);
+        return false;
+    } else {
+        MS_DBG(F("deRS open RDWR"), serzRdelFn_str);
+    }
+    return true;
+}
+
+bool Logger::deszQuedStart() {
+    deszLinesRead = deszLinesUnsent = 0;
+
+    deszq_nextChar = deszq_line;
+    // Open - RD & WR. WR needed to be able to delete when complete.
+    // Expect serzQuedFn to be setup in serzQuedStart
+    if (!serzQuedFile.open(serzQuedFn, O_RDWR)) {
+        // This could be that there aren;t any Qued readings
+        MS_DBG(F("deQS; No file "), serzQuedFn);
+        // sd1_card_fatfs.ls();
+        return false;
+    } else {
+        MS_DBG(F("deQS open READ"), serzQuedFn);
+    }
+
+    return true;
+}
+bool Logger::deszLine(File* filep) {
+    char* errCheck;
+    /* Scan through one line. Expect format
+      <ascii Digits>,   representing integer STATUS
+      <ascii Digitis>, represnting inteeger marked Epoch Time
+      .... <ascii Digits> representing reading values
+
+    Not renetrant, assumption: there is only deserialize going on at a time.
+    Uses
+    char    deszq_line[],
+    uint8_t deszq_status
+    long    deszq_epochTime
+    char   *deszq_nextChar
+            deszq_nextCharSz
+    */
+
+    uint16_t num_char = filep->fgets(deszq_line, QUEFILE_MAX_LINE);
+    char*    orig_nextChar;
+
+    if (0 == num_char) return false;
+    deszLinesRead++;
+    // First is the Status of record
+    deszq_status = strtol(deszq_line, &errCheck, 10);
+    if (errCheck == deszq_line) {
+        PRINTOUT(F("deszLine Status err'"), deszq_line, F("'"));
+        return false;  // EIO;
+    }
+    // Find next DELIM and go past it
+    deszq_nextChar = 1 + strchrnul(deszq_line, DELIM_CHAR2);
+    if (deszq_nextChar == deszq_line) {
+        PRINTOUT(F("deszLine epoch start not found"), deszq_line, F("'"));
+        deszq_nextCharSz = 0;
+        return false;
+    }
+    // Second is the epochTime,
+    deszq_epochTime = strtol(deszq_nextChar, &errCheck, 10);
+    if (errCheck == deszq_line) {
+        PRINTOUT(F("deszLine Epoch err'"), deszq_line, F("'"));
+        return false;  // EIO;
+    }
+    // Find next DELIM and go past it
+    orig_nextChar  = deszq_nextChar;
+    deszq_nextChar = 1 + strchrnul(deszq_nextChar, DELIM_CHAR2);
+    if (orig_nextChar == deszq_nextChar) {
+        PRINTOUT(F("deszLine readung start not found"), deszq_line, F("'"));
+        deszq_nextCharSz = 0;
+        return false;
+    }
+    // Find sz of this field
+    char* nextCharEnd = strchrnul(deszq_nextChar, DELIM_CHAR2);
+    deszq_nextCharSz  = nextCharEnd - deszq_nextChar;
+
+    deszq_timeVariant_sz = strlen(deszq_nextChar) - 1;
+    MS_DBG(F("TimeVariant sz"), deszq_timeVariant_sz, F(":"), deszq_nextChar,
+           F(":"));
+    return true;
+}
+
+bool Logger::deszqNextCh(void) {
+    char* deszq_old = deszq_nextChar;
+    // Find next DELIM and go past it
+    deszq_nextChar = 1 + strchrnul(deszq_nextChar, DELIM_CHAR2);
+    if ((deszq_old == deszq_nextChar)) {
+        deszq_nextCharSz = 0;
+        PRINTOUT(F("deszqNextCh 1error:"), deszq_nextChar, F("'"));
+        return false;
+    }
+    /* Find sz of this field
+        either
+    <value>,[..]
+    <value><CR><LF>EOL
+    EOF
+    */
+    char* nextCharEnd = strchr(deszq_nextChar, DELIM_CHAR2);
+    deszq_nextCharSz  = strlen(deszq_nextChar);
+    if ((0 == deszq_nextCharSz)) {
+        // Found end of line
+        MS_DEEP_DBG(F("dSRN unexpected EOL "));
+        return false;
+    } else if (NULL == nextCharEnd) {
+        // Found <value>EOF ~ nextSr_sz is valid
+        deszq_nextCharSz -= 1;  // take off turds <LF>
+        MS_DEEP_DBG(F("dSRN info "), deszq_nextCharSz, " '", deszq_nextChar,
+                    "'");
+        // return true
+    } else {
+        // expect to have found <value>,[..]
+        // if found ,, then invalid and finish
+        deszq_nextCharSz = nextCharEnd - deszq_nextChar;
+        if (0 == deszq_nextCharSz) {
+            MS_DEEP_DBG(F("dSRN unexpected 0 bytes "));
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Logger::deszRdelClose(bool deleteFile) {
+    bool retVal = false;
+
+    if (!(retVal = serzRdelFile.close())) {
+        PRINTOUT(F("deSRC close err"), serzRdelFn_str);
+        sd1_Err("serzBegin err close");
+    } else {
+        MS_DBG(F("deSRC closed"), serzRdelFn_str);
+    }
+    if (deleteFile) {
+        // if (!(retVal = serzRdelFile.remove())) {
+        if (!(retVal = sd1_card_fatfs.remove(serzRdelFn_str))) {
+            PRINTOUT(F("deSRC remove err"), serzRdelFn_str);
+            sd1_Err("serzBegin err remove");
+        }
+        MS_DBG(F("deSRC removed"), serzRdelFn_str);
+    }
+
+    return retVal;
+}
+
+/* Prototyping des example
+ */
+
+uint16_t serialCnt = 0;
+// SdFat    sdfat_phy;
+// SdFile   rootDir;
+bool Logger::deszDbg(void) {
+    // char* next_token;
+#define TEMPBUF_SZ 37
+    char tempBuffer[TEMPBUF_SZ] = "";
+    if (++serialCnt >= SERIALIZE_sendEveryX_NUM) {
+        String d_str(80);
+        serialCnt = 0;
+        deszRdelStart();
+        while (deszRdelLine()) {
+            d_str = formatDateTime_ISO8601(deszq_epochTime) + ';';
+            // next_token = find_chars_or_comment(deszq_nextChar,
+            // DELIM_CHAR2);
+            tempBuffer[0] = 0;
+            strncat(tempBuffer, deszq_nextChar, deszq_nextCharSz);
+            strcat(tempBuffer, ";");
+            // PRINTOUT("Sn=", tempBuffer);
+            d_str.concat(tempBuffer);
+            // getline
+            while (deszqNextCh()) {
+                tempBuffer[0] = 0;
+                strncat(tempBuffer, deszq_nextChar, deszq_nextCharSz);
+                strcat(tempBuffer, ";");
+                d_str.concat(tempBuffer);
+                // PRINTOUT("t='", tempBuffer, F("'"));
+            }
+            PRINTOUT("L=", d_str, "Stat=", deszq_status);
+        }
+        deszRdelClose(true);  // Delete serial file
+    }
+    return true;
+}
+
+void Logger::postLogLine(uint8_t instance, int16_t rspParam) {
+// If debug ...keep record
+#if defined MS_LOGGERBASE_POSTS
+#if 0
+    if (0 == postsLogHndl.print(getNowEpochT0())) {
+        PRINTOUT(F("publishDataQuedToRemote postsLog err"));
+    }
+#else
+
+    char tempBuffer[TEMP_BUFFER_SZ];
+    formatDateTime_ISO8601(getNowEpochT0())
+        .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
+    postsLogHndl.print(tempBuffer);
+#endif
+    postsLogHndl.print(F(","));
+    itoa(rspParam, tempBuffer, 10);
+    postsLogHndl.print(tempBuffer);
+    postsLogHndl.print(F(","));
+    itoa(dataPublishers[instance]->getTimerPost_mS(), tempBuffer, 10);
+    postsLogHndl.print(tempBuffer);
+    postsLogHndl.print(F(","));
+    postsLogHndl.print(deszq_line);
+#endif  //#if defined MS_LOGGERBASE_POSTS
+}
+
+/*
+Cleanup if necessary
+*/
+
+bool Logger::listFile(File* filep, char* fn_str, char* uid) {
+    char    loc_line[QUEFILE_MAX_LINE];
+    int16_t num_char;
+    int16_t num_cnt = 0;
+
+    if (!filep->open(fn_str, O_READ)) {
+        PRINTOUT(F("listFile; No file "), fn_str);
+        sd1_Err("listFile: no file2");
+        return false;
+    } else {
+        MS_DBG(F("listFile"), fn_str, uid, F("<beg>"));
+    }
+
+    while (0 < (num_char = filep->fgets(loc_line, QUEFILE_MAX_LINE))) {
+        PRINTOUT(++num_cnt, loc_line);
+    }
+    if (0 > num_char) {
+        PRINTOUT(F("listFile err"), num_char);
+        sd1_Err("listFile err2");
+    }
+    if (!filep->close()) {
+        PRINTOUT(F("listFile; close err "), fn_str);
+        sd1_Err("listFile close err2");
+        return false;
+    }
+    MS_DBG(F("listFile"), uid, F("<end>"));
+    return true;
+}
+
+/* This tests all the primitives used to access the SD card.
+ */
+bool Logger::serzBegin(void) {
+    bool dslStat_bool;
+
+    MS_DBG(F("serzBegin list1---"));
+    if (!sd1_card_fatfs.ls()) {
+        // MS_DBG(F("serzBegin ls err"));
+        sd1_Err("serzBegin err ls");
+    } else {
+        MS_DBG(F("---1Complete"));
+    }
+
+    // Test  RDELAY.TXT
+    serzRdelFile.open(serzRdelFn_str, RDEL_OFLAG);
+    serzRdelFile.println(F("1,1595653100,1,4.730,-38"));
+    serzRdelFile.println(F("1,1595653200,2,4.730,-38"));
+    serzRdelFile.close();
+
+    serzRdelFile.open(serzRdelFn_str, RDEL_OFLAG);
+    serzRdelFile.println(F("1,1595653300,3,4.730,-38"));
+    serzRdelFile.println(F("1,1595653400,4,4.730,-38"));
+    serzRdelFile.close();
+
+    PRINTOUT(F("serzBegin list2---"));
+    if (!sd1_card_fatfs.ls()) {
+        // MS_DBG(F("serzBegin ls err"));
+        sd1_Err("serzBegin err ls");
+    } else {
+        PRINTOUT(F("---2Complete"));
+    }
+    listFile(&serzRdelFile, (char*)serzRdelFn_str, (char*)"1");
+
+
+    deszRdelStart();
+    int16_t cnt_num = 0;
+    while (0 < (dslStat_bool = deszRdelLine())) {
+        PRINTOUT(++cnt_num, F("] "), dslStat_bool, deszq_line);
+    }
+
+    deszRdelClose(true);  // Test for delete
+    PRINTOUT(F("serzBegin list3---"));
+    if (!sd1_card_fatfs.ls()) {
+        // MS_DBG(F("serzBegin ls err"));
+        sd1_Err("serzBegin err ls");
+    } else {
+        PRINTOUT(F("---3Complete"));
+    }
+
+// Test QUED algorithims ~ use QUE7.txt
+#define QUE_TST '7'
+#define TESTQ_FN_STR "QUE7.TXT"
+    MS_DBG(F("TESTQ START"));
+    if (sd1_card_fatfs.exists(TESTQ_FN_STR)) {
+        // PRINTOUT(F("serzBegin removing "), TESTQ_FN_STR);
+        if (!sd1_card_fatfs.remove(TESTQ_FN_STR)) {
+            PRINTOUT(F("serzBegin err remove"), TESTQ_FN_STR);
+            sd1_Err("serzBegin remove");
+        }
+    } else {
+        MS_DBG(F("serzBegin no "), TESTQ_FN_STR);
+    }
+    // Test1 ** QUED new file name & update
+    MS_DBG(F("TESTQ1"));
+    serzQuedStart((char)(QUE_TST));
+    serzQuedFile.println(F("1,1595654100,1,4.7,-38"));
+    serzQuedFile.println(F("1,1595654200,2,4.7,-38"));
+    serzQuedCloseFile(false);
+
+
+    // Test2 ** QUED file update
+    MS_DBG(F("TESTQ2"));
+    if (!serzQuedFile.open(serzQuedFn, (O_WRITE | O_AT_END))) {
+        // Could be that there are no retrys.
+        PRINTOUT(F("serzQuedFile.open err"), serzQuedFn);
+        sd1_Err("serzQuedFile.open err2");
+        return false;
+    } else {
+        PRINTOUT(F("Testq2 Opened"), serzQuedFn);
+    }
+    serzQuedFile.println(F("1,1595654300,3,4.7,-38"));
+    serzQuedFile.println(F("1,1595654400,4,4.7,-38"));
+    if (!serzQuedCloseFile(false)) return false;
+
+    PRINTOUT(F("serzBegin list4---"));
+    if (!sd1_card_fatfs.ls()) {
+        // MS_DBG(F("serzBegin ls err"));
+        sd1_Err("serzBegin err4 ls");
+        return false;
+    } else {
+        PRINTOUT(F("---4Complete"));
+    }
+    listFile(&serzQuedFile, serzQuedFn, (char*)"2");
+
+    // Test3 ** QUED file rollover
+    MS_DBG(F("TESTQ3"));
+    if (!deszQuedStart()) return false;
+
+    dslStat_bool = deszQuedLine();
+    MS_DBG(F("1: deszq_line"), dslStat_bool, deszq_line);
+    if (!dslStat_bool) return false;
+    dslStat_bool = deszQuedLine();
+    MS_DBG(F("2: deszq_line"), dslStat_bool, deszq_line);
+    if (!dslStat_bool) return false;
+    // only the 1: should be dropped
+    dslStat_bool = serzQuedCloseFile(true);
+    PRINTOUT(F("serzBegin list5---"));
+    if (!sd1_card_fatfs.ls()) {
+        // MS_DBG(F("serzBegin ls err"));
+        sd1_Err("serzBegin err5 ls");
+        return false;
+    } else {
+        PRINTOUT(F("---5Complete"));
+    }
+    listFile(&serzQuedFile, serzQuedFn, (char*)"3");
+    if (!dslStat_bool) return false;
+
+    if (sd1_card_fatfs.exists(serzQuedFn)) {
+        PRINTOUT(F("serzBegin removing "), serzQuedFn);
+        if (!sd1_card_fatfs.remove(serzQuedFn)) {
+            PRINTOUT(F("serzBegin err remove"), serzQuedFn);
+            sd1_Err("serzBegin err6 remove");
+        }
+    } else {
+        PRINTOUT(F("serzBegin no "), TEMP_BASE_FN_STR);
+    }
+
+    // Cleanup
+
+    MS_DBG(F("TESTQ CLEANUP"));
+    if (sd1_card_fatfs.exists(TEMP_BASE_FN_STR)) {
+        PRINTOUT(F("serzBegin removing "), TEMP_BASE_FN_STR);
+        if (!sd1_card_fatfs.remove(TEMP_BASE_FN_STR)) {
+            PRINTOUT(F("serzBegin err remove"), TEMP_BASE_FN_STR);
+            sd1_Err("serzBegin err6 remove");
+        }
+    } else {
+        MS_DBG(F("serzBegin no "), TEMP_BASE_FN_STR);
+    } /* */
+    MS_DBG(F("TESTQ END END END \n\n"));
+    return true;
+}
+// End LoggerBaseExtCpp.h

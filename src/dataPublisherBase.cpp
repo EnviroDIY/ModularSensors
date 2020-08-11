@@ -109,6 +109,46 @@ void dataPublisher::printTxBuffer(Stream* stream, bool addNewLine) {
     emptyTxBuffer();
 }
 
+int16_t
+dataPublisher::storAndPublish() {  // superseded ~ put in LoggerBaseExtCpp.h
+    // Determine if file already exists
+    if (NULL == _baseLogger) return 0;
+    MS_DBG(F("logger "), _baseLogger->_loggerID, F("+"),
+           _baseLogger->_dataPubInstance);
+    String queFileName = String(_baseLogger->_loggerID) +
+        String('0' + _baseLogger->_dataPubInstance);
+
+    // Write to file
+    File    queFileH;
+    uint8_t fileNameLength = queFileName.length() + 1;
+    char    charFileName[fileNameLength];
+    queFileName.toCharArray(charFileName, fileNameLength);
+
+    if (queFileH.open(charFileName, O_WRITE | O_AT_END)) {
+        MS_DBG(F("Opened existing file:"), queFileName);
+        // Set access date time
+        // setFileTimestamp(logFile, T_ACCESS);
+    } else {
+        // Create and then open the file in write mode
+        if (queFileH.open(charFileName, O_CREAT | O_WRITE | O_AT_END)) {
+            MS_DBG(F("Created new file:"), charFileName);
+            // Set creation date time
+            ;
+            ;
+            // setFileTimestamp(logFile, T_CREATE);
+            // If internet
+
+            // Publish 'x' records, with 'y' delay,  and power available between
+            // each record
+        } else {
+            // error processing
+        }
+    }
+    _baseLogger->printSensorDataCSV(&queFileH);
+    queFileH.close();
+    publishData();
+    return 1;
+}
 
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData() {

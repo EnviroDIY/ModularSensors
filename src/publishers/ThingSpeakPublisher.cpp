@@ -144,7 +144,7 @@ int16_t ThingSpeakPublisher::publishData(Client* _outClient) {
     strcat(topicBuffer, _thingSpeakChannelKey);
     MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
 
-    emptyTxBuffer();
+    emptyTxBuffer();  // TODO: njh check, seems wrong
 
     _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime)
         .toCharArray(tempBuffer, 26);

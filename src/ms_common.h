@@ -120,8 +120,10 @@ typedef struct {
     uint16_t logging_interval_min;
     int8_t   time_zone;  //-12,0 to +11?
     uint8_t  battery_type;
-    uint8_t  logger_id[MSC_LOGGER_ID_SZ];
-    uint8_t  geolocation_id[MSC_GEOLOCATION_ID_SZ];
+    // uint8_t  colllectReadings;
+    // uint8_t  sendOffset_min;
+    uint8_t logger_id[MSC_LOGGER_ID_SZ];
+    uint8_t geolocation_id[MSC_GEOLOCATION_ID_SZ];
 } msc01_t;
 #define MSC_ACTIVE msc01_t
 typedef struct {

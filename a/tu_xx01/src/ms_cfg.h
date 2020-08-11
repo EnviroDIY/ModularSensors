@@ -61,8 +61,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 // ** How frequently (in minutes) to log data **
 // For two Loggers defined logger2Mult with the faster loggers timeout and the
-// multiplier to the slower loggger #define  loggingInterval_Fast_MIN (1) #define
-//logger2Mult 5 //Not working for mayfly
+// multiplier to the slower loggger
+// #define  loggingInterval_Fast_MIN (1)
+// #define logger2Mult 5 ~Not working for mayfly
+
 // How frequently (in minutes) to log data
 #if defined logger2Mult
 #define loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN * logger2Mult)
@@ -96,17 +98,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Required for TinyGsmClient.h
 #define TINY_GSM_MODEM_XBEE
 
-#define APN_CDEF \
-    "hologram"  // The APN for the gprs connection, unnecessary for WiFi
-//#define WIFIID_CDEF  "NameSsid"  // The WiFi access point, unnecessary for
-//gprs #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting
-//to WiFi, unnecessary for gprs
-#define WIFIID_CDEF "xxx"  // The WiFi access point, unnecessary for gprs
-#define WIFIPWD_CDEF \
-    "yyy"  // NULL for none, or  password for connecting to WiFi, unnecessary
-           // for gprs
+// The APN for the gprs connection, unnecessary for WiFi
+#define APN_CDEF "hologram"
 
+// The WiFi access point
+#define WIFIID_CDEF "xxx"
+// NULL for none, or  password for connecting to WiFi,
+#define WIFIPWD_CDEF "yyy"
+#define MMW_TIMER_POST_TIMEOUT_MS_DEF 9000L
+#define COLLECT_READINGS_DEF 1
+#define SEND_OFFSET_MIN_DEF 0
 #endif  // Modules
+
 // end of _Module
 
 // This might need revisiting
@@ -210,10 +213,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_Batt_UUID "Batt_UUID"
 #endif  // ProcessorStats_ACT
 
-//#define ExternalVoltage_ACT 1
+#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
+// AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
-#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
+//#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
 #endif  // ExternalVoltage_ACT
 
 #endif  // ms_cfg_h

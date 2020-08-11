@@ -15,14 +15,20 @@
 
 // Debugging Statement
 // #define MS_ENVIRODIYPUBLISHER_DEBUG
+// #define MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
 
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
+#ifdef MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "EnviroDIYPublisher"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "dataPublisherBase.h"
 
 
@@ -234,6 +240,47 @@ class EnviroDIYPublisher : public dataPublisher {
  private:
     // Tokens and UUID's for EnviroDIY
     const char* _registrationToken;
+
+ protected:
+    /**
+     * @brief This constructs a POST header for MMW
+     *
+     * @param tempBuffer - place for the POST.
+     */
+    void mmwPostHeader(char* tempBuffer);
+
+    /**
+     * @brief This constructs a POST body EnviroDIY
+     *
+     * @param tempBuffer - place for the POST.
+     */
+    void mmwPostDataArray(char* tempBuffer);
+    void mmwPostDataQued(char* tempBuffer);
+
+ public:
+    /**
+     * @brief This routes subsequent POST construction
+     *
+     * @param state - true for Qued, false for standard
+     */
+    bool setQuedState(bool state, char uniqueId = '0') override {
+        PRINTOUT(F("EnviroyDIYPublisher setQued "), state);
+        return useQueDataSource = state;
+    }
+    bool getQuedStatus() override {
+        PRINTOUT(F("EnviroyDIYPublisher gQS "), useQueDataSource);
+        return useQueDataSource;
+    }
+
+    uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
+        MS_DBG(F("gTP check"), tpt_ms);
+        return _timerPostTimeout_ms = tpt_ms;  // Default for not supported.
+    }
+
+    uint16_t getTimerPost_mS() {
+        MS_DBG(F("gTP check"), _timerPost_ms);
+        return _timerPost_ms;  // Default for not supported.
+    }
 };
 
 #endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

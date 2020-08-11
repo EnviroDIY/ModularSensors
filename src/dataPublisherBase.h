@@ -224,7 +224,7 @@ class dataPublisher {
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData();
-
+    virtual int16_t storAndPublish();
     /**
      * @brief Retained for backwards compatibility.
      *
@@ -303,6 +303,12 @@ class dataPublisher {
      */
     uint8_t _sendOffset;
 
+    /**
+     * @brief TimerPost (ms); How long to wait for a response to a POST before
+     * declaring a timeout
+     */
+    // uint8_t _timerPost_mS;
+
     // Basic chunks of HTTP
     /**
      * @brief the text "GET "
@@ -320,6 +326,44 @@ class dataPublisher {
      * @brief the text "\r\nHost: "
      */
     static const char* hostHeader;
+
+ public:
+    bool useQueDataSource = false;
+    bool virtual setQuedState(bool state, char uniqueId = '0') {
+        PRINTOUT(F("dataPublisherBase setQued check"), useQueDataSource);
+        return useQueDataSource;  // Default not updated.
+    }
+    bool virtual getQuedStatus() {
+        PRINTOUT(F("dataPublisherBase gQS check"), useQueDataSource);
+        return useQueDataSource;  // Default for not supported.
+    }
+
+#if !defined TIMER_MMW_POST_TIMEOUT_DEF_MSEC
+#define TIMER_MMW_POST_TIMEOUT_DEF_MSEC 10000L
+#endif  // TIMER_MMW_POST_TIMEOUT_DEF_MSEC
+    uint16_t _timerPostTimeout_ms = TIMER_MMW_POST_TIMEOUT_DEF_MSEC;
+    uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
+        MS_DBG(F("sTPT rejected "), tpt_ms);
+        return _timerPostTimeout_ms;  // Default not updated.
+    }
+
+    uint16_t _timerPost_ms = 0;
+    uint16_t virtual getTimerPost_mS() {
+        MS_DBG(F("gTP check"), _timerPost_ms);
+        return _timerPost_ms;
+    }
 };
+/*
+ * HTTP STATUS Codes that are used by Modular Sensors
+ * Placed at the end of the file, to facilitate mergein code
+ * https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+ */
+
+#define HTTPSTATUS_CREATED_201 201
+// Server Error indicating a Gateway Timeout.
+// Also supplied if the server didn't respond to a POST
+#define HTTPSTATUS_GT_504 504
+// This is an internaly created error, indicating No Connection with server
+#define HTTPSTATUS_NC_901 901
 
 #endif  // SRC_DATAPUBLISHERBASE_H_
