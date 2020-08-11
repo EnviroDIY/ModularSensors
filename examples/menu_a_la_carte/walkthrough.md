@@ -44,30 +44,30 @@ ___
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
     - [AOSong AM2315](#aosong-am2315)
     - [AOSong DHT](#aosong-dht)
-    - [Apogee SQ-212](#apogee-sq-212)
-    - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
-    - [Campbell OBS3+ analog turbidity sensor](#campbell-obs3-analog-turbidity-sensor)
-    - [Decagon ES2 conductivity and temperature sensor](#decagon-es2-conductivity-and-temperature-sensor)
-    - [External voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
+    - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor)
+    - [Bosch BME280 Environmental Sensor](#bosch-bme280-environmental-sensor)
+    - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
+    - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
+    - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
-    - [Meter ECH2O soil moisture sensor](#meter-ech2o-soil-moisture-sensor)
-    - [Meter Hydros 21](#meter-hydros-21)
-    - [Meter Teros 11](#meter-teros-11)
+    - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
+    - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
+    - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
     - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
     - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
     - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
-    - [Yosemitech Y510 Yosemitech Y510 turbidity sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
-    - [Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
-    - [Yosemitech Y514 Yosemitech Y514 chlorophyll sensor](#yosemitech-y514-yosemitech-y514-chlorophyll-sensor)
-    - [Yosemitech Y520 Yosemitech Y520 conductivity sensor](#yosemitech-y520-yosemitech-y520-conductivity-sensor)
-    - [Yosemitech Y532 Yosemitech Y532 pH sensor](#yosemitech-y532-yosemitech-y532-ph-sensor)
-    - [Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor](#yosemitech-y533-yosemitech-y533-oxidation-reduction-potential-orp-sensor)
-    - [Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor with wiper](#yosemitech-y550-yosemitech-y550-carbon-oxygen-demand-cod-sensor-with-wiper)
-    - [Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde](#yosemitech-y4000-yosemitech-y4000-multi-parameter-sonde)
-    - [Zebra Tech D-Opto dissolved oxygen sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
+    - [Yosemitech Y510 Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
+    - [Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
+    - [Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor](#yosemitech-y514-yosemitech-y514-chlorophyll-sensor)
+    - [Yosemitech Y520 Yosemitech Y520 Conductivity Sensor](#yosemitech-y520-yosemitech-y520-conductivity-sensor)
+    - [Yosemitech Y532 Yosemitech Y532 pH Sensor](#yosemitech-y532-yosemitech-y532-ph-sensor)
+    - [Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor](#yosemitech-y533-yosemitech-y533-oxidation-reduction-potential-orp-sensor)
+    - [Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper](#yosemitech-y550-yosemitech-y550-carbon-oxygen-demand-cod-sensor-with-wiper)
+    - [Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde](#yosemitech-y4000-yosemitech-y4000-multi-parameter-sonde)
+    - [Zebra Tech D-Opto Dissolved Oxygen Sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
   - [Calculated Variables](#calculated-variables)
   - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
     - [The variable array](#the-variable-array)
@@ -578,10 +578,10 @@ The number of readings to average from the sensor is optional, but can be suppli
 [//]: # ( @menusnip{dht} )
 ___
 
-[//]: # ( @subsection menu_sq212 Apogee SQ-212 )
-### Apogee SQ-212
+[//]: # ( @subsection menu_sq212 Apogee SQ-212 Quantum Light Sensor )
+### Apogee SQ-212 Quantum Light Sensor
 
-Here is the code for the Apogee SQ-212 quantum light sensor.
+Here is the code for the Apogee SQ-212 Quantum Light Sensor.
 The SQ-212 is not directly connected to the MCU, but rather to an TI ADS1115 that communicates with the MCU.
 The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
@@ -593,8 +593,8 @@ The number of readings to average from the sensor is optional, but can be suppli
 ___
 
 
-[//]: # ( @subsection menu_bme280 Bosch BME280 environmental sensor )
-### Bosch BME280 environmental sensor
+[//]: # ( @subsection menu_bme280 Bosch BME280 Environmental Sensor )
+### Bosch BME280 Environmental Sensor
 
 Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
@@ -606,8 +606,8 @@ Keep in mind that the possible I2C addresses of the BME280 match those of the MS
 ___
 
 
-[//]: # ( @subsection menu_obs3 Campbell OBS3+ analog turbidity sensor )
-### Campbell OBS3+ analog turbidity sensor
+[//]: # ( @subsection menu_obs3 Campbell OBS3+ Analog Turbidity Sensor )
+### Campbell OBS3+ Analog Turbidity Sensor
 
 This is the code for the Campbell OBS3+.
 The Arduino pin controlling power on/off, analog data channel _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.
@@ -623,8 +623,8 @@ Note that to access both the high and low range returns, two instances must be c
 ___
 
 
-[//]: # ( @subsection menu_es2 Decagon ES2 conductivity and temperature sensor )
-### Decagon ES2 conductivity and temperature sensor
+[//]: # ( @subsection menu_es2 Decagon ES2 Conductivity and Temperature Sensor )
+### Decagon ES2 Conductivity and Temperature Sensor
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
 Optionally, you can include a number of distinct readings to average.
@@ -636,8 +636,8 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
-[//]: # ( @subsection menu_ext_volt External voltage via TI ADS1x15 )
-### External voltage via TI ADS1x15
+[//]: # ( @subsection menu_ext_volt External Voltage via TI ADS1x15 )
+### External Voltage via TI ADS1x15
 
 The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
 If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.
@@ -700,8 +700,8 @@ Keep in mind that the possible I2C addresses of the MS5803 match those of the BM
 ___
 
 
-[//]: # ( @subsection menu_fivetm Meter ECH2O soil moisture sensor )
-### Meter ECH2O soil moisture sensor
+[//]: # ( @subsection menu_fivetm Meter ECH2O Soil Moisture Sensor )
+### Meter ECH2O Soil Moisture Sensor
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
 Optionally, you can include a number of distinct readings to average.
@@ -713,8 +713,8 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
-[//]: # ( @subsection menu_hydros21 Meter Teros 11 soil moisture sensor )
-### Meter Hydros 21
+[//]: # ( @subsection menu_hydros21 Meter Hydros 21 Conductivity, Temperature, and Depth Sensor )
+### Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
 Optionally, you can include a number of distinct readings to average.
@@ -726,8 +726,8 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
-[//]: # ( @subsection menu_teros Meter Teros 11 soil moisture sensor )
-### Meter Teros 11
+[//]: # ( @subsection menu_teros Meter Teros 11 Soil Moisture Sensor )
+### Meter Teros 11 Soil Moisture Sensor
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
 Optionally, you can include a number of distinct readings to average.
@@ -779,7 +779,7 @@ Both pins _cannot_ be shared pins.
 ___
 
 
-[//]: # ( @subsection menu_y504 Yosemitech Y504 dissolved oxygen sensor )
+[//]: # ( @subsection menu_y504 Yosemitech Y504 Dissolved Oxygen Sensor )
 ### Yosemitech Y504 Dissolved Oxygen Sensor
 
 This is the code for the Yosemitech Y504 dissolved oxygen sensor.
@@ -795,8 +795,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y510 Yosemitech Y510 turbidity sensor )
-### Yosemitech Y510 Yosemitech Y510 turbidity sensor
+[//]: # ( @subsection menu_y510 Yosemitech Y510 Turbidity Sensor )
+### Yosemitech Y510 Yosemitech Y510 Turbidity Sensor
 
 This is the code for the Yosemitech Y510 Yosemitech Y510 turbidity sensor.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -811,8 +811,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y511 Yosemitech Y511 turbidity sensor with wiper)
-### Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper
+[//]: # ( @subsection menu_y511 Yosemitech Y511 Turbidity Sensor with Wiper )
+### Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper
 
 This is the code for the Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -827,8 +827,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y514 Yosemitech Y514 chlorophyll sensor)
-### Yosemitech Y514 Yosemitech Y514 chlorophyll sensor
+[//]: # ( @subsection menu_y514 Yosemitech Y514 Chlorophyll Sensor )
+### Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor
 
 This is the code for the Yosemitech Y514 Yosemitech Y514 chlorophyll sensor.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -843,8 +843,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y520 Yosemitech Y520 conductivity sensor)
-### Yosemitech Y520 Yosemitech Y520 conductivity sensor
+[//]: # ( @subsection menu_y520 Yosemitech Y520 Conductivity Sensor )
+### Yosemitech Y520 Yosemitech Y520 Conductivity Sensor
 
 This is the code for the Yosemitech Y520 Yosemitech Y520 conductivity sensor.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -859,8 +859,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y532 Yosemitech Y532 pH sensor)
-### Yosemitech Y532 Yosemitech Y532 pH sensor
+[//]: # ( @subsection menu_y532 Yosemitech Y532 pH Sensor )
+### Yosemitech Y532 Yosemitech Y532 pH Sensor
 
 This is the code for the Yosemitech Y532 Yosemitech Y532 pH sensor.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -875,8 +875,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor)
-### Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor
+[//]: # ( @subsection menu_y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor )
+### Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor
 
 This is the code for the Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -891,8 +891,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y550 Yosemitech Y550 carbon oxygen demand (COD) sensor with wiper)
-### Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor with wiper
+[//]: # ( @subsection menu_y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper )
+### Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper
 
 This is the code for the Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -907,8 +907,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y4000 Yosemitech Y4000 multi-parameter sonde)
-### Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde
+[//]: # ( @subsection menu_y4000 Yosemitech Y4000 Multi-Parameter Sonde )
+### Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde
 
 This is the code for the Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
@@ -923,8 +923,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_dopto Zebra Tech D-Opto dissolved oxygen sensor )
-### Zebra Tech D-Opto dissolved oxygen sensor
+[//]: # ( @subsection menu_dopto Zebra Tech D-Opto Dissolved Oxygen Sensor )
+### Zebra Tech D-Opto Dissolved Oxygen Sensor
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
 Optionally, you can include a number of distinct readings to average.
