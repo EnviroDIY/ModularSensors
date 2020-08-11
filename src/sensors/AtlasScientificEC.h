@@ -196,7 +196,7 @@ class AtlasScientificEC : public AtlasParent {
      *bus (and thus your logger) to crash.
      */
     explicit AtlasScientificEC(int8_t  powerPin,
-                               uint8_t i2cAddressHex         = ATLAS_COND_I2C_ADDR,
+                               uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
                                uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Atlas Scientific EC object
@@ -250,8 +250,9 @@ class AtlasScientificEC_Cond : public Variable {
      * used.
      */
     AtlasScientificEC_Cond()
-        : Variable((const uint8_t)ATLAS_COND_VAR_NUM, (uint8_t)ATLAS_COND_RESOLUTION,
-                   "electricalConductivity", "microsiemenPerCentimeter", "AtlasCond") {}
+        : Variable((const uint8_t)ATLAS_COND_VAR_NUM,
+                   (uint8_t)ATLAS_COND_RESOLUTION, "electricalConductivity",
+                   "microsiemenPerCentimeter", "AtlasCond") {}
     /**
      * @brief Destroy the AtlasScientificEC_Cond object - no action needed.
      */
@@ -292,8 +293,9 @@ class AtlasScientificEC_TDS : public Variable {
      * used.
      */
     AtlasScientificEC_TDS()
-        : Variable((const uint8_t)ATLAS_TDS_VAR_NUM, (uint8_t)ATLAS_TDS_RESOLUTION,
-                   "solidsTotalDissolved", "partPerMillion", "AtlasTDS") {}
+        : Variable((const uint8_t)ATLAS_TDS_VAR_NUM,
+                   (uint8_t)ATLAS_TDS_RESOLUTION, "solidsTotalDissolved",
+                   "partPerMillion", "AtlasTDS") {}
     /**
      * @brief Destroy the AtlasScientificEC_TDS object - no action needed.
      */
@@ -322,8 +324,8 @@ class AtlasScientificEC_Salinity : public Variable {
      * optional with a default value of AtlasSalinity
      */
     explicit AtlasScientificEC_Salinity(AtlasScientificEC* parentSense,
-                                        const char*        uuid    = "",
-                                        const char*        varCode = "AtlasSalinity")
+                                        const char*        uuid = "",
+                                        const char* varCode = "AtlasSalinity")
         : Variable(parentSense, (const uint8_t)ATLAS_SALINITY_VAR_NUM,
                    (uint8_t)ATLAS_SALINITY_RESOLUTION, "salinity",
                    "practicalSalinityUnit", varCode, uuid) {}
@@ -365,12 +367,12 @@ class AtlasScientificEC_SpecificGravity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlasSpecGravity
      */
-    explicit AtlasScientificEC_SpecificGravity(AtlasScientificEC* parentSense,
-                                               const char*        uuid = "",
-                                               const char* varCode = "AtlasSpecGravity")
+    explicit AtlasScientificEC_SpecificGravity(
+        AtlasScientificEC* parentSense, const char* uuid = "",
+        const char* varCode = "AtlasSpecGravity")
         : Variable(parentSense, (const uint8_t)ATLAS_SG_VAR_NUM,
-                   (uint8_t)ATLAS_SG_RESOLUTION, "specificGravity", "dimensionless",
-                   varCode, uuid) {}
+                   (uint8_t)ATLAS_SG_RESOLUTION, "specificGravity",
+                   "dimensionless", varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificEC_SpecificGravity object.
      *
@@ -378,8 +380,9 @@ class AtlasScientificEC_SpecificGravity : public Variable {
      * used.
      */
     AtlasScientificEC_SpecificGravity()
-        : Variable((const uint8_t)ATLAS_SG_VAR_NUM, (uint8_t)ATLAS_SG_RESOLUTION,
-                   "specificGravity", "dimensionless", "AtlasSpecGravity") {}
+        : Variable((const uint8_t)ATLAS_SG_VAR_NUM,
+                   (uint8_t)ATLAS_SG_RESOLUTION, "specificGravity",
+                   "dimensionless", "AtlasSpecGravity") {}
     /**
      * @brief Destroy the AtlasScientificEC_SpecificGravity() object - no action
      * needed.

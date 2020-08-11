@@ -163,7 +163,7 @@ class AtlasScientificDO : public AtlasParent {
      *bus (and thus your logger) to crash.
      */
     explicit AtlasScientificDO(int8_t  powerPin,
-                               uint8_t i2cAddressHex         = ATLAS_DO_I2C_ADDR,
+                               uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
                                uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Atlas Scientific DO object
@@ -217,8 +217,9 @@ class AtlasScientificDO_DOmgL : public Variable {
      * used.
      */
     AtlasScientificDO_DOmgL()
-        : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM, (uint8_t)ATLAS_DOMGL_RESOLUTION,
-                   "oxygenDissolved", "milligramPerLiter", "AtlasDOmgL") {}
+        : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                   (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
+                   "milligramPerLiter", "AtlasDOmgL") {}
     /**
      * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
      */
@@ -251,7 +252,8 @@ class AtlasScientificDO_DOpct : public Variable {
                                      const char*        varCode = "AtlasDOpct")
         : Variable(parentSense, (const uint8_t)ATLAS_DOPCT_VAR_NUM,
                    (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent", varCode, uuid) {}
+                   "oxygenDissolvedPercentOfSaturation", "percent", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new AtlasScientificDO_DOpct object.
      *
@@ -259,8 +261,10 @@ class AtlasScientificDO_DOpct : public Variable {
      * used.
      */
     AtlasScientificDO_DOpct()
-        : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM, (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent", "AtlasDOpct") {}
+        : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                   (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent",
+                   "AtlasDOpct") {}
     /**
      * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
      */

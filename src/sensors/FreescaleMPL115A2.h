@@ -131,8 +131,8 @@ class MPL115A2 : public Sensor {
      *
      * @note It is only possible to connect *one* MPL115A2 at a time!
      *
-     * @param powerPin The pin on the mcu controlling power to the MPL115A2.  Use -1 if
-     * the sensor is continuously powered.
+     * @param powerPin The pin on the mcu controlling power to the MPL115A2. Use
+     * -1 if the sensor is continuously powered.
      * - Requires a 2.375 - 5.5V power source
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
@@ -149,7 +149,7 @@ class MPL115A2 : public Sensor {
      *
      * This begins the Wire library (sets pin modes for I2C), reads coefficients
      * from the MPL115A2, and updates the #_sensorStatus.  The sensor must be
-     * powered for setup. This doesn't return anything to indicate failure or
+     * powered for setup.  This doesn't return anything to indicate failure or
      * success, we just have to hope it worked.
      *
      * @return **bool** True if the setup was successful.
@@ -194,8 +194,8 @@ class MPL115A2_Temp : public Variable {
     explicit MPL115A2_Temp(MPL115A2* parentSense, const char* uuid = "",
                            const char* varCode = "MPL115A2_Temp")
         : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new MPL115A2_Temp object.
      *
@@ -203,8 +203,8 @@ class MPL115A2_Temp : public Variable {
      */
     MPL115A2_Temp()
         : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   "MPL115A2_Temp") {}
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "MPL115A2_Temp") {}
     /**
      * @brief Destroy the MPL115A2_Temp object - no action needed.
      */

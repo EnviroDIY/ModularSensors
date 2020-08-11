@@ -136,17 +136,20 @@ class DecagonES2 : public SDI12Sensors {
     /**
      * @brief Construct a new Decagon ES2 object.
      *
-     * The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and
-     * the Arduino pin sending and receiving data are required for the sensor
-     * constructor.  Optionally, you can include a number of distinct readings to
-     * average.  The data pin must be a pin that supports pin-change interrupts.
+     * The SDI-12 address of the sensor, the Arduino pin controlling power
+     * on/off, and the Arduino pin sending and receiving data are required for
+     * the sensor constructor.  Optionally, you can include a number of distinct
+     * readings to average.  The data pin must be a pin that supports pin-change
+     * interrupts.
      *
      * @param SDI12address The SDI-12 address of the sensor
-     * @warning The SDI-12 address **must** be changed from the factory programmed value
-     * of "0" before the sensor can be used with ModularSensors!
+     * @warning The SDI-12 address **must** be changed from the factory
+     * programmed value of "0" before the sensor can be used with
+     * ModularSensors!
      * @param powerPin The pin on the mcu controlling power to the ES2.  Use
      * -1 if the sensor is continuously powered.
-     * - Requires a 3.5-12V power supply, which can be turned off between measurements
+     * - Requires a 3.5-12V power supply, which can be turned off between
+     * measurements
      * @param dataPin The pin on the mcu receiving data from the ES2.
      * @param measurementsToAverage The number of measurements to average.
      */
@@ -210,8 +213,9 @@ class DecagonES2_Cond : public Variable {
      * @note This must be tied with a parent DecagonES2 before it can be used.
      */
     DecagonES2_Cond()
-        : Variable((const uint8_t)ES2_COND_VAR_NUM, (uint8_t)ES2_COND_RESOLUTION,
-                   "specificConductance", "microsiemenPerCentimeter", "ES2Cond") {}
+        : Variable((const uint8_t)ES2_COND_VAR_NUM,
+                   (uint8_t)ES2_COND_RESOLUTION, "specificConductance",
+                   "microsiemenPerCentimeter", "ES2Cond") {}
     /**
      * @brief Destroy the DecagonES2_Cond object - no action needed.
      */
@@ -249,8 +253,9 @@ class DecagonES2_Temp : public Variable {
      * @note This must be tied with a parent DecagonES2 before it can be used.
      */
     DecagonES2_Temp()
-        : Variable((const uint8_t)ES2_TEMP_VAR_NUM, (uint8_t)ES2_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "ES2Temp") {}
+        : Variable((const uint8_t)ES2_TEMP_VAR_NUM,
+                   (uint8_t)ES2_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                   "ES2Temp") {}
     /**
      * @brief Destroy the DecagonES2_Temp object - no action needed.
      */

@@ -1,17 +1,16 @@
 #include <Arduino.h>
 #include <EnableInterrupt.h>
 
-int8_t interruptPin = 10;
+int8_t   interruptPin     = 10;
 uint32_t numberInterrupts = 0;
 
 
-void pinInterrupt()
-{
+void pinInterrupt() {
     numberInterrupts++;
 }
 
 
-void setup(){
+void setup() {
     Serial.begin(115200);
     pinMode(interruptPin, INPUT_PULLUP);
     enableInterrupt(interruptPin, pinInterrupt, CHANGE);

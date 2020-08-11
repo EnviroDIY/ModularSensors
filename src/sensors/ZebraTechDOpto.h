@@ -144,39 +144,44 @@ class ZebraTechDOpto : public SDI12Sensors {
     /**
      * @brief Construct a new Zebra-Tech DOpto object.
      *
-     * The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and
-     * the Arduino pin sending and receiving data are required for the sensor
-     * constructor.  Optionally, you can include a number of distinct readings to
-     * average.  The data pin must be a pin that supports pin-change interrupts.
+     * The SDI-12 address of the sensor, the Arduino pin controlling power
+     * on/off, and the Arduino pin sending and receiving data are required for
+     * the sensor constructor.  Optionally, you can include a number of distinct
+     * readings to average.  The data pin must be a pin that supports pin-change
+     * interrupts.
      *
      * @param SDI12address The SDI-12 address of the sensor
      * @param powerPin The pin on the mcu controlling power to the D-Opto.  Use
      * -1 if the sensor is continuously powered.
-     * - Requires a 8-12V power supply, which can be turned off between measurements
+     * - Requires a 8-12V power supply, which can be turned off between
+     * measurements
      * @param dataPin The pin on the mcu receiving data from the D-Opto.
      * @param measurementsToAverage The number of measurements to average.
      */
     ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin,
                    uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES, DOPTO_WARM_UP_TIME_MS,
-                       DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS) {}
+                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
+                       DOPTO_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc ZebraTechDOpto::ZebraTechDOpto
      */
     ZebraTechDOpto(char* SDI12address, int8_t powerPin, int8_t dataPin,
                    uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES, DOPTO_WARM_UP_TIME_MS,
-                       DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS) {}
+                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
+                       DOPTO_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc ZebraTechDOpto::ZebraTechDOpto
      */
     ZebraTechDOpto(int SDI12address, int8_t powerPin, int8_t dataPin,
                    uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES, DOPTO_WARM_UP_TIME_MS,
-                       DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS) {}
+                       "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
+                       DOPTO_MEASUREMENT_TIME_MS) {}
     // Destructor
     /**
      * @brief Destroy the Zebra-Tech DOpto object
@@ -206,11 +211,12 @@ class ZebraTechDOpto_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "DOtempC".
      */
-    explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense, const char* uuid = "",
-                                 const char* varCode = "DOtempC")
+    explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "DOtempC")
         : Variable(parentSense, (const uint8_t)DOPTO_TEMP_VAR_NUM,
-                   (uint8_t)DOPTO_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)DOPTO_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new ZebraTechDOpto_Temp object.
      *
@@ -218,8 +224,9 @@ class ZebraTechDOpto_Temp : public Variable {
      * used.
      */
     ZebraTechDOpto_Temp()
-        : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM, (uint8_t)DOPTO_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "DOtempC") {}
+        : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
+                   (uint8_t)DOPTO_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "DOtempC") {}
     /**
      * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
      */
@@ -248,11 +255,13 @@ class ZebraTechDOpto_DOpct : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of DOpercent
      */
-    explicit ZebraTechDOpto_DOpct(ZebraTechDOpto* parentSense, const char* uuid = "",
-                                  const char* varCode = "DOpercent")
+    explicit ZebraTechDOpto_DOpct(ZebraTechDOpto* parentSense,
+                                  const char*     uuid    = "",
+                                  const char*     varCode = "DOpercent")
         : Variable(parentSense, (const uint8_t)DOPTO_DOPCT_VAR_NUM,
                    (uint8_t)DOPTO_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent", varCode, uuid) {}
+                   "oxygenDissolvedPercentOfSaturation", "percent", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new ZebraTechDOpto_DOpct object.
      *
@@ -260,8 +269,10 @@ class ZebraTechDOpto_DOpct : public Variable {
      * used.
      */
     ZebraTechDOpto_DOpct()
-        : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM, (uint8_t)DOPTO_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent", "DOpercent") {}
+        : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
+                   (uint8_t)DOPTO_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent",
+                   "DOpercent") {}
     /**
      * @brief Destroy the ZebraTechDOpto_DOpct object - no action needed.
      */
@@ -290,8 +301,9 @@ class ZebraTechDOpto_DOmgL : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "DOppm".
      */
-    explicit ZebraTechDOpto_DOmgL(ZebraTechDOpto* parentSense, const char* uuid = "",
-                                  const char* varCode = "DOppm")
+    explicit ZebraTechDOpto_DOmgL(ZebraTechDOpto* parentSense,
+                                  const char*     uuid    = "",
+                                  const char*     varCode = "DOppm")
         : Variable(parentSense, (const uint8_t)DOPTO_DOMGL_VAR_NUM,
                    (uint8_t)DOPTO_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", varCode, uuid) {}
@@ -302,8 +314,9 @@ class ZebraTechDOpto_DOmgL : public Variable {
      * used.
      */
     ZebraTechDOpto_DOmgL()
-        : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM, (uint8_t)DOPTO_DOMGL_RESOLUTION,
-                   "oxygenDissolved", "milligramPerLiter", "DOppm") {}
+        : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
+                   (uint8_t)DOPTO_DOMGL_RESOLUTION, "oxygenDissolved",
+                   "milligramPerLiter", "DOppm") {}
     /**
      * @brief Destroy the ZebraTechDOpto_DOmgL object - no action needed.
      */

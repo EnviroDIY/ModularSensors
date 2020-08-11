@@ -109,7 +109,8 @@ void ThingSpeakPublisher::begin(Logger& baseLogger, Client* inClient,
     setChannelKey(thingSpeakChannelKey);
     dataPublisher::begin(baseLogger, inClient);
 }
-void ThingSpeakPublisher::begin(Logger& baseLogger, const char* thingSpeakMQTTKey,
+void ThingSpeakPublisher::begin(Logger&     baseLogger,
+                                const char* thingSpeakMQTTKey,
                                 const char* thingSpeakChannelID,
                                 const char* thingSpeakChannelKey) {
     setMQTTKey(thingSpeakMQTTKey);

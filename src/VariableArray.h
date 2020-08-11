@@ -72,7 +72,8 @@ class VariableArray {
      * @param uuids An array of UUID's.  These are linked 1-to-1 with the
      * variables by array position.
      */
-    VariableArray(uint8_t variableCount, Variable* variableList[], const char* uuids[]);
+    VariableArray(uint8_t variableCount, Variable* variableList[],
+                  const char* uuids[]);
     /**
      * @brief Destroy the Variable Array object - no action taken.
      */
@@ -92,7 +93,7 @@ class VariableArray {
      * @param variableCount The number of variables in the array.  Supercedes
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects. Supercedes
+     * pointers may be to calculated or measured variable objects.  Supercedes
      * any value given in the constructor.
      */
     void begin(uint8_t variableCount, Variable* variableList[]);
@@ -103,12 +104,13 @@ class VariableArray {
      * @param variableCount The number of variables in the array.  Supercedes
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects. Supercedes
+     * pointers may be to calculated or measured variable objects.  Supercedes
      * any value given in the constructor.
      * @param uuids An array of UUID's.  These are linked 1-to-1 with the
      * variables by array position.
      */
-    void begin(uint8_t variableCount, Variable* variableList[], const char* uuids[]);
+    void begin(uint8_t variableCount, Variable* variableList[],
+               const char* uuids[]);
     /**
      * @brief Begins the VariableArray.  Checks the validity of all UUID and
      * outputs the results.
@@ -167,11 +169,12 @@ class VariableArray {
      *
      * This sets up all of the variables in the array and their respective
      * sensors by running all of their setup() functions.  A single sensor
-     * attached to may variables is only set up one time. If a sensor doesn't
+     * attached to may variables is only set up one time.  If a sensor doesn't
      * respond to its setup command, the command is called 5 times in attempt to
      * make a connection.  If all sensors are set up successfully, returns true.
      *
-     * @return **bool** True indicates all sensors have been set up successfully.
+     * @return **bool** True indicates all sensors have been set up
+     * successfully.
      */
     bool setupSensors(void);
 

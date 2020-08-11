@@ -157,8 +157,8 @@ class AOSongAM2315 : public Sensor {
      * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
      * required.
      *
-     * @return **bool** True if the setup was successful.  For the AOSong AM2315 the
-     * result will always be true.
+     * @return **bool** True if the setup was successful.  For the AOSong AM2315
+     * the result will always be true.
      */
     bool setup(void) override;
 
@@ -190,11 +190,12 @@ class AOSongAM2315_Humidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AM2315Humidity".
      */
-    explicit AOSongAM2315_Humidity(AOSongAM2315* parentSense, const char* uuid = "",
-                                   const char* varCode = "AM2315Humidity")
+    explicit AOSongAM2315_Humidity(AOSongAM2315* parentSense,
+                                   const char*   uuid    = "",
+                                   const char*   varCode = "AM2315Humidity")
         : Variable(parentSense, (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity", "percent",
-                   varCode, uuid) {}
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
+                   "percent", varCode, uuid) {}
     /**
      * @brief Construct a new AOSongAM2315_Humidity object.
      *
@@ -202,8 +203,8 @@ class AOSongAM2315_Humidity : public Variable {
      */
     AOSongAM2315_Humidity()
         : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity", "percent",
-                   "AM2315Humidity") {}
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
+                   "percent", "AM2315Humidity") {}
     /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
@@ -235,16 +236,17 @@ class AOSongAM2315_Temp : public Variable {
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
                                const char* varCode = "AM2315Temp")
         : Variable(parentSense, (const uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
      *
      * @note This must be tied with a parent AOSongAM2315 before it can be used.
      */
     AOSongAM2315_Temp()
-        : Variable((const uint8_t)AM2315_TEMP_VAR_NUM, (uint8_t)AM2315_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "AM2315Temp") {}
+        : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
+                   (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "AM2315Temp") {}
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */

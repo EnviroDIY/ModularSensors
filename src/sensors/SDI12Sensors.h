@@ -75,8 +75,8 @@
 class SDI12Sensors : public Sensor {
  public:
     /**
-     * @brief Construct a new SDI 12 Sensors object.  This is only intended to be used
-     * within this library.
+     * @brief Construct a new SDI 12 Sensors object.  This is only intended to
+     * be used within this library.
      *
      * @param SDI12address The SDI-12 address of the sensor.
      * @param powerPin A pin on the mcu controlling power to the sensor.
@@ -100,7 +100,8 @@ class SDI12Sensors : public Sensor {
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+                 uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms   = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
@@ -108,7 +109,8 @@ class SDI12Sensors : public Sensor {
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+                 uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms   = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
@@ -116,7 +118,8 @@ class SDI12Sensors : public Sensor {
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+                 uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms   = 0);
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */
@@ -185,7 +188,8 @@ class SDI12Sensors : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed successfully.
+     * @return **bool** True if the start measurement function completed
+     * successfully.
      */
     bool startSingleMeasurement(void) override;
     /**
@@ -198,14 +202,16 @@ class SDI12Sensors : public Sensor {
      * @brief Send the SDI-12 'acknowledge active' command [address][!] to a
      * sensor and confirm that the correct sensor responded.
      *
-     * @return **bool** True if the correct SDI-12 sensor replied to the command.
+     * @return **bool** True if the correct SDI-12 sensor replied to the
+     * command.
      */
     bool requestSensorAcknowledgement(void);
     /**
      * @brief Send the SDI-12 'info' command [address][I][!] to a sensor and
      * parse the result into the vendor, model, version, and serial number.
      *
-     * @return **bool** True if all expected information fields returned by the sensor.
+     * @return **bool** True if all expected information fields returned by the
+     * sensor.
      */
     bool getSensorInfo(void);
     /**

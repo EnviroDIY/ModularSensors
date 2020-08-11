@@ -244,11 +244,12 @@ class CampbellOBS3_Turbidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of OBS3Turbidity
      */
-    explicit CampbellOBS3_Turbidity(CampbellOBS3* parentSense, const char* uuid = "",
-                                    const char* varCode = "OBS3Turbidity")
+    explicit CampbellOBS3_Turbidity(CampbellOBS3* parentSense,
+                                    const char*   uuid    = "",
+                                    const char*   varCode = "OBS3Turbidity")
         : Variable(parentSense, (const uint8_t)OBS3_TURB_VAR_NUM,
-                   (uint8_t)OBS3_RESOLUTION, "turbidity", "nephelometricTurbidityUnit",
-                   varCode, uuid) {}
+                   (uint8_t)OBS3_RESOLUTION, "turbidity",
+                   "nephelometricTurbidityUnit", varCode, uuid) {}
     /**
      * @brief Construct a new CampbellOBS3_Turbidity object.
      *
@@ -256,7 +257,8 @@ class CampbellOBS3_Turbidity : public Variable {
      */
     CampbellOBS3_Turbidity()
         : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
-                   "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity") {}
+                   "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity") {
+    }
     ~CampbellOBS3_Turbidity() {}
 };
 
@@ -284,18 +286,21 @@ class CampbellOBS3_Voltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of OBS3Voltage
      */
-    explicit CampbellOBS3_Voltage(CampbellOBS3* parentSense, const char* uuid = "",
-                                  const char* varCode = "OBS3Voltage")
+    explicit CampbellOBS3_Voltage(CampbellOBS3* parentSense,
+                                  const char*   uuid    = "",
+                                  const char*   varCode = "OBS3Voltage")
         : Variable(parentSense, (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
-                   (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt", varCode, uuid) {}
+                   (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new CampbellOBS3_Voltage object.
      *
      * @note This must be tied with a parent CampbellOBS3 before it can be used.
      */
     CampbellOBS3_Voltage()
-        : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM, (uint8_t)OBS3_VOLT_RESOLUTION,
-                   "voltage", "volt", "OBS3Voltage") {}
+        : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                   (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt",
+                   "OBS3Voltage") {}
     /**
      * @brief Destroy the CampbellOBS3_Voltage object - no action needed.
      */

@@ -137,28 +137,30 @@ class YosemitechY550 : public YosemitechParent {
      * Defaults to -1.
      * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
      * Defaults to -1.
-     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
-     * adapter.  Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the
+     * RS485 adapter.  Defaults to -1.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor.  Defaults to 1.
      */
     YosemitechY550(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y550, "YosemitechY550",
-                           Y550_NUM_VARIABLES, Y550_WARM_UP_TIME_MS,
-                           Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y550,
+                           "YosemitechY550", Y550_NUM_VARIABLES,
+                           Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS,
+                           Y550_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc YosemitechY550::YosemitechY550
      */
     YosemitechY550(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y550, "YosemitechY550",
-                           Y550_NUM_VARIABLES, Y550_WARM_UP_TIME_MS,
-                           Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y550,
+                           "YosemitechY550", Y550_NUM_VARIABLES,
+                           Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS,
+                           Y550_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the Yosemitech Y550 object
      */
@@ -187,11 +189,12 @@ class YosemitechY550_COD : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y550COD".
      */
-    explicit YosemitechY550_COD(YosemitechY550* parentSense, const char* uuid = "",
-                                const char* varCode = "Y550COD")
+    explicit YosemitechY550_COD(YosemitechY550* parentSense,
+                                const char*     uuid    = "",
+                                const char*     varCode = "Y550COD")
         : Variable(parentSense, (const uint8_t)Y550_COD_VAR_NUM,
-                   (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter", varCode,
-                   uuid) {}
+                   (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY550_COD object.
      *
@@ -199,8 +202,9 @@ class YosemitechY550_COD : public Variable {
      * used.
      */
     YosemitechY550_COD()
-        : Variable((const uint8_t)Y550_COD_VAR_NUM, (uint8_t)Y550_COD_RESOLUTION, "COD",
-                   "milligramPerLiter", "Y550COD") {}
+        : Variable((const uint8_t)Y550_COD_VAR_NUM,
+                   (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter",
+                   "Y550COD") {}
     /**
      * @brief Destroy the YosemitechY550_COD object - no action needed.
      */
@@ -229,11 +233,12 @@ class YosemitechY550_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y550Temp".
      */
-    explicit YosemitechY550_Temp(YosemitechY550* parentSense, const char* uuid = "",
-                                 const char* varCode = "Y550Temp")
+    explicit YosemitechY550_Temp(YosemitechY550* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y550Temp")
         : Variable(parentSense, (const uint8_t)Y550_TEMP_VAR_NUM,
-                   (uint8_t)Y550_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)Y550_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY550_Temp object.
      *
@@ -241,8 +246,9 @@ class YosemitechY550_Temp : public Variable {
      * used.
      */
     YosemitechY550_Temp()
-        : Variable((const uint8_t)Y550_TEMP_VAR_NUM, (uint8_t)Y550_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "Y550Temp") {}
+        : Variable((const uint8_t)Y550_TEMP_VAR_NUM,
+                   (uint8_t)Y550_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y550Temp") {}
     /**
      * @brief Destroy the YosemitechY550_Temp object - no action needed.
      */
@@ -284,8 +290,9 @@ class YosemitechY550_Turbidity : public Variable {
      * used.
      */
     YosemitechY550_Turbidity()
-        : Variable((const uint8_t)Y550_TURB_VAR_NUM, (uint8_t)Y550_TURB_RESOLUTION,
-                   "turbidity", "nephelometricTurbidityUnit", "Y550Turbidity") {}
+        : Variable((const uint8_t)Y550_TURB_VAR_NUM,
+                   (uint8_t)Y550_TURB_RESOLUTION, "turbidity",
+                   "nephelometricTurbidityUnit", "Y550Turbidity") {}
     /**
      * @brief Destroy the YosemitechY550_Turbidity object - no action needed.
      */

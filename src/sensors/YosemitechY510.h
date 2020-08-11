@@ -121,28 +121,30 @@ class YosemitechY510 : public YosemitechParent {
      * Defaults to -1.
      * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
      * Defaults to -1.
-     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
-     * adapter.  Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the
+     * RS485 adapter.  Defaults to -1.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor.  Defaults to 1.
      */
     YosemitechY510(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y510, "YosemitechY510",
-                           Y510_NUM_VARIABLES, Y510_WARM_UP_TIME_MS,
-                           Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y510,
+                           "YosemitechY510", Y510_NUM_VARIABLES,
+                           Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS,
+                           Y510_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc YosemitechY510::YosemitechY510
      */
     YosemitechY510(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y510, "YosemitechY510",
-                           Y510_NUM_VARIABLES, Y510_WARM_UP_TIME_MS,
-                           Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y510,
+                           "YosemitechY510", Y510_NUM_VARIABLES,
+                           Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS,
+                           Y510_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the Yosemitech Y510 object
      */
@@ -184,8 +186,9 @@ class YosemitechY510_Turbidity : public Variable {
      * used.
      */
     YosemitechY510_Turbidity()
-        : Variable((const uint8_t)Y510_TURB_VAR_NUM, (uint8_t)Y510_TURB_RESOLUTION,
-                   "turbidity", "nephelometricTurbidityUnit", "Y510Turbidity") {}
+        : Variable((const uint8_t)Y510_TURB_VAR_NUM,
+                   (uint8_t)Y510_TURB_RESOLUTION, "turbidity",
+                   "nephelometricTurbidityUnit", "Y510Turbidity") {}
     /**
      * @brief Destroy the YosemitechY510_Turbidity object - no action needed.
      */
@@ -214,11 +217,12 @@ class YosemitechY510_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y510Temp".
      */
-    explicit YosemitechY510_Temp(YosemitechY510* parentSense, const char* uuid = "",
-                                 const char* varCode = "Y510Temp")
+    explicit YosemitechY510_Temp(YosemitechY510* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y510Temp")
         : Variable(parentSense, (const uint8_t)Y510_TEMP_VAR_NUM,
-                   (uint8_t)Y510_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)Y510_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY510_Temp object.
      *
@@ -226,8 +230,9 @@ class YosemitechY510_Temp : public Variable {
      * used.
      */
     YosemitechY510_Temp()
-        : Variable((const uint8_t)Y510_TEMP_VAR_NUM, (uint8_t)Y510_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "Y510Temp") {}
+        : Variable((const uint8_t)Y510_TEMP_VAR_NUM,
+                   (uint8_t)Y510_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y510Temp") {}
     /**
      * @brief Destroy the YosemitechY510_Temp object - no action needed.
      */

@@ -32,25 +32,25 @@
  * sensor](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/)
  * measures [photosynthetically active radiation
  * (PAR)](https://en.wikipedia.org/wiki/Photosynthetically_active_radiation) -
- * typically defined as total radiation across a range of 400 to 700 nm. PAR is
+ * typically defined as total radiation across a range of 400 to 700 nm.  PAR is
  * often expressed as photosynthetic photon flux density (PPFD): photon flux in
  * units of micromoles per square meter per second (μmol m-2 s-1, equal to
- * microEinsteins per square meter per second) summed from 400 to 700 nm. The
+ * microEinsteins per square meter per second) summed from 400 to 700 nm.  The
  * raw output from the sensor is a simple analog signal which must be converted
  * to a digital signal and then multiplied by a calibration factor to get the
  * final PAR value.  The PAR sensor requires a 5-24 V DC power source with a
- * nominal current draw of 300 μA. The power supply to the sensor can be stopped
+ * nominal current draw of 300 μA.  The power supply to the sensor can be stopped
  * between measurements.
  *
  * To convert the sensor's analog signal to a high resolution digital signal,
- * the sensor must be attached to an analog-to-digital converter. See the
+ * the sensor must be attached to an analog-to-digital converter.  See the
  * [ADS1115 page](@ref ads1x15_page) for details on the conversion.
  *
  * The calibration factor this library uses to convert from raw voltage to PAR
  * is that specified by Apogee for the SQ-212: 1 µmol mˉ² sˉ¹ per mV (reciprocal
- * of sensitivity). If needed, this calibration factor can be modified by
+ * of sensitivity).  If needed, this calibration factor can be modified by
  * compiling with the build flag ```-D SQ212_CALIBRATION_FACTOR=x``` where x is
- * the calibration factor. This allows you to adjust the calibration or change
+ * the calibration factor.  This allows you to adjust the calibration or change
  * to another Apogee sensor (e.g. SQ-215 or SQ225) as needed.
  *
  * @section sq212_datasheet Sensor Datasheet
@@ -249,8 +249,9 @@ class ApogeeSQ212_PAR : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "radiationIncomingPAR".
      */
-    explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense, const char* uuid = "",
-                             const char* varCode = "photosyntheticallyActiveRadiation")
+    explicit ApogeeSQ212_PAR(
+        ApogeeSQ212* parentSense, const char* uuid = "",
+        const char* varCode = "photosyntheticallyActiveRadiation")
         : Variable(parentSense, (const uint8_t)SQ212_PAR_VAR_NUM,
                    (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
                    "microeinsteinPerSquareMeterPerSecond", varCode, uuid) {}
@@ -260,8 +261,9 @@ class ApogeeSQ212_PAR : public Variable {
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_PAR()
-        : Variable((const uint8_t)SQ212_PAR_VAR_NUM, (uint8_t)SQ212_PAR_RESOLUTION,
-                   "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
+        : Variable((const uint8_t)SQ212_PAR_VAR_NUM,
+                   (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
+                   "microeinsteinPerSquareMeterPerSecond",
                    "photosyntheticallyActiveRadiation") {}
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
@@ -291,18 +293,21 @@ class ApogeeSQ212_Voltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "SQ212Voltage".
      */
-    explicit ApogeeSQ212_Voltage(ApogeeSQ212* parentSense, const char* uuid = "",
-                                 const char* varCode = "SQ212Voltage")
+    explicit ApogeeSQ212_Voltage(ApogeeSQ212* parentSense,
+                                 const char*  uuid    = "",
+                                 const char*  varCode = "SQ212Voltage")
         : Variable(parentSense, (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt", varCode, uuid) {}
+                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new ApogeeSQ212_Voltage object.
      *
      * @note This must be tied with a parent ApogeeSQ212 before it can be used.
      */
     ApogeeSQ212_Voltage()
-        : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM, (uint8_t)SQ212_VOLT_RESOLUTION,
-                   "voltage", "volt", "SQ212Voltage") {}
+        : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
+                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt",
+                   "SQ212Voltage") {}
     /**
      * @brief Destroy the ApogeeSQ212_Voltage object - no action needed.
      */

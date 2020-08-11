@@ -21,8 +21,6 @@
 /**
  * @page yosemitech_page Yosemitech Sensors
  *
- * @tableofcontents
- *
  * This library currently supports the following [Yosemitech](http://www.yosemitech.com/en/) sensors:
  * - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
  *     - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO_UserManual-v1.1.pdf)
@@ -137,8 +135,8 @@
 class YosemitechParent : public Sensor {
  public:
     /**
-     * @brief Construct a new Yosemitech Parent object.  This is only intended to be
-     * used within this library.
+     * @brief Construct a new Yosemitech Parent object.  This is only intended
+     * to be used within this library.
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication
@@ -146,14 +144,14 @@ class YosemitechParent : public Sensor {
      * Defaults to -1.
      * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
      * Defaults to -1.
-     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
-     * adapter.  Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the
+     * RS485 adapter.  Defaults to -1.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor.  Defaults to 1.
      * @param model The model of Yosemitech sensor.
      * @param sensName The name of the sensor.  Defaults to "SDI12-Sensor".
-     * @param numVariables The number of variable results returned by the sensor.
-     * Defaults to 2.
+     * @param numVariables The number of variable results returned by the
+     * sensor. Defaults to 2.
      * @param warmUpTime_ms The time in ms between when the sensor is powered on
      * and when it is ready to receive a wake command.  Defaults to 1500.
      * @param stabilizationTime_ms The time in ms between when the sensor
@@ -164,8 +162,9 @@ class YosemitechParent : public Sensor {
      */
     YosemitechParent(byte modbusAddress, Stream* stream, int8_t powerPin,
                      int8_t powerPin2, int8_t enablePin = -1,
-                     uint8_t measurementsToAverage = 1, yosemitechModel model = UNKNOWN,
-                     const char* sensName = "Yosemitech-Sensor",
+                     uint8_t         measurementsToAverage = 1,
+                     yosemitechModel model                 = UNKNOWN,
+                     const char*     sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
                      uint32_t measurementTime_ms   = 2000);
@@ -174,8 +173,9 @@ class YosemitechParent : public Sensor {
      */
     YosemitechParent(byte modbusAddress, Stream& stream, int8_t powerPin,
                      int8_t powerPin2, int8_t enablePin = -1,
-                     uint8_t measurementsToAverage = 1, yosemitechModel model = UNKNOWN,
-                     const char* sensName = "Yosemitech-Sensor",
+                     uint8_t         measurementsToAverage = 1,
+                     yosemitechModel model                 = UNKNOWN,
+                     const char*     sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
                      uint32_t measurementTime_ms   = 2000);
@@ -195,7 +195,7 @@ class YosemitechParent : public Sensor {
      *
      * This sets pin modes on the #_powerPin, adapter power, and adapter
      * enable pins.  It also sets the expected stream timeout for modbus and
-     * updates the #_sensorStatus.  No sensor power is required. This will
+     * updates the #_sensorStatus.   No sensor power is required.  This will
      * always return true.
      *
      * @return **bool** True if the setup was successful.
@@ -205,7 +205,7 @@ class YosemitechParent : public Sensor {
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
      *
-     * Verifies that the power is on and updates the #_sensorStatus. This also
+     * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
      * @note This does NOT include any wait for sensor readiness.

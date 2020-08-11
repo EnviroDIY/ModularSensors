@@ -180,7 +180,8 @@ class loggerModem {
      *
      * @deprecated use modemWake()
      *
-     * @return **bool** True if wake was sucessful, modem should be ready to communicate
+     * @return **bool** True if wake was sucessful, modem should be ready to
+     * communicate
      */
     bool wake(void) {
         return modemWake();
@@ -201,7 +202,8 @@ class loggerModem {
     /**
      * @brief Request that the modem enter its lowest possible power state.
      *
-     * @return **bool** True if the modem has sucessfully entered low power state
+     * @return **bool** True if the modem has sucessfully entered low power
+     * state
      */
     virtual bool modemSleep(void);
     /**
@@ -212,8 +214,8 @@ class loggerModem {
      * This allows the modem to shut down all connections cleanly and do any
      * necessary internal housekeeping before stopping power.
      *
-     * @return **bool** True if the modem has sucessfully entered low power state _and_
-     * then powered off
+     * @return **bool** True if the modem has sucessfully entered low power
+     * state _and_ then powered off
      */
     virtual bool modemSleepPowerDown(void);
     /**@}*/
@@ -289,9 +291,9 @@ class loggerModem {
      * @param maxConnectionTime The maximum length of time in milliseconds to
      * wait for network registration and data sconnection.  Defaults to 50,000ms
      * (50s).
-     * @return **bool** True if EPS or GPRS data connection has been established.  False
-     * if the modem wasunresponsive, unable to register with the cellular network, or
-     * unable to establish a EPS or GPRS connection.
+     * @return **bool** True if EPS or GPRS data connection has been
+     * established.  False if the modem wasunresponsive, unable to register with
+     * the cellular network, or unable to establish a EPS or GPRS connection.
      */
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     /**
@@ -506,7 +508,8 @@ class loggerModem {
     /**
      * @brief Check whether there is an active internet connection available.
      *
-     * @return **bool** True if there is an active data connection to the internet.
+     * @return **bool** True if there is an active data connection to the
+     * internet.
      */
     virtual bool isInternetAvailable(void) = 0;
     /**
@@ -514,7 +517,8 @@ class loggerModem {
      * specific module, as opposed to the parts of setup that are common to all
      * modem modules.
      *
-     * @return **bool** True if the unique part of the sleep function ran sucessfully.
+     * @return **bool** True if the unique part of the sleep function ran
+     * sucessfully.
      */
     virtual bool modemSleepFxn(void) = 0;
     /**
@@ -522,8 +526,8 @@ class loggerModem {
      * a specific module, as opposed to the parts of setup that are common to
      * all modem modules.
      *
-     * @return **bool** True if the unique part of the wake function ran sucessfully -
-     * does _NOT_ indicate that the modem is now responsive.
+     * @return **bool** True if the unique part of the wake function ran
+     * sucessfully - does _NOT_ indicate that the modem is now responsive.
      */
     virtual bool modemWakeFxn(void) = 0;
     /**
@@ -541,7 +545,7 @@ class loggerModem {
      * @brief Check if the modem was awake using all possible means.
      *
      * If possible, we always want to check if the modem was awake before
-     * attempting to wake it up. Most cellular modules are woken and put to
+     * attempting to wake it up.  Most cellular modules are woken and put to
      * sleep by identical pulses on a sleep or "power" pin.  We don't want to
      * accidently pulse an already on modem to off.
      *
@@ -819,8 +823,8 @@ class Modem_RSSI : public Variable {
      */
     explicit Modem_RSSI(loggerModem* parentModem, const char* uuid = "",
                         const char* varCode = "RSSI")
-        : Variable(&parentModem->getModemRSSI, (uint8_t)MODEM_RSSI_RESOLUTION, &*"RSSI",
-                   &*"decibelMiliWatt", varCode, uuid) {}
+        : Variable(&parentModem->getModemRSSI, (uint8_t)MODEM_RSSI_RESOLUTION,
+                   &*"RSSI", &*"decibelMiliWatt", varCode, uuid) {}
     /**
      * @brief Destroy the Modem_RSSI object - no action needed.
      */
@@ -847,8 +851,9 @@ class Modem_SignalPercent : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "signalPercent".
      */
-    explicit Modem_SignalPercent(loggerModem* parentModem, const char* uuid = "",
-                                 const char* varCode = "signalPercent")
+    explicit Modem_SignalPercent(loggerModem* parentModem,
+                                 const char*  uuid    = "",
+                                 const char*  varCode = "signalPercent")
         : Variable(&parentModem->getModemSignalPercent,
                    (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION, &*"signalPercent",
                    &*"percent", varCode, uuid) {}
@@ -884,8 +889,8 @@ class Modem_BatteryState : public Variable {
     explicit Modem_BatteryState(loggerModem* parentModem, const char* uuid = "",
                                 const char* varCode = "modemBatteryCS")
         : Variable(&parentModem->getModemBatteryChargeState,
-                   (uint8_t)MODEM_BATTERY_STATE_RESOLUTION, &*"batteryChargeState",
-                   &*"number", varCode, uuid) {}
+                   (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
+                   &*"batteryChargeState", &*"number", varCode, uuid) {}
     /**
      * @brief Destroy the Modem_BatteryState object - no action needed.
      */
@@ -915,11 +920,12 @@ class Modem_BatteryPercent : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatteryPct".
      */
-    explicit Modem_BatteryPercent(loggerModem* parentModem, const char* uuid = "",
-                                  const char* varCode = "modemBatteryPct")
+    explicit Modem_BatteryPercent(loggerModem* parentModem,
+                                  const char*  uuid    = "",
+                                  const char*  varCode = "modemBatteryPct")
         : Variable(&parentModem->getModemBatteryChargePercent,
-                   (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION, &*"batteryVoltage",
-                   &*"percent", varCode, uuid) {}
+                   (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
+                   &*"batteryVoltage", &*"percent", varCode, uuid) {}
     /**
      * @brief Destroy the Modem_BatteryPercent object - no action needed.
      */
@@ -949,8 +955,9 @@ class Modem_BatteryVoltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatterymV".
      */
-    explicit Modem_BatteryVoltage(loggerModem* parentModem, const char* uuid = "",
-                                  const char* varCode = "modemBatterymV")
+    explicit Modem_BatteryVoltage(loggerModem* parentModem,
+                                  const char*  uuid    = "",
+                                  const char*  varCode = "modemBatterymV")
         : Variable(&parentModem->getModemBatteryVoltage,
                    (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION, &*"batteryVoltage",
                    &*"millivolt", varCode, uuid) {}

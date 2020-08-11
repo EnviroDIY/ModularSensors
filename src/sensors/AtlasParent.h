@@ -48,16 +48,16 @@
  *     - @subpage atlas_rtd_page "Class Documentation"
  *
  * The chips have operating voltages between 3.3V and 5V; power can be stopped
- * between measurements. The probes and sensors can (and should) be calibrated
- * using sketches provided by Atlas Scientific on their website. Atlas
+ * between measurements.  The probes and sensors can (and should) be calibrated
+ * using sketches provided by Atlas Scientific on their website.  Atlas
  * Scientific recommends that you integrate their sensor chips into a board, so
  * you can buy one from them or make your own (example:
  * https://github.com/acgold/Atlas-Scientific-Carrier-Board).
  *
  * The code in ModularSensors _**requires the Atlas Sensors to communicate over
- * I2C**_. Atlas scientific sensors are shipped with probes and sensor chips
- * that communicate using UART by default. Data sheets, found on the Atlas
- * Scientific website, show how to manually switch the chips to I2C. Before
+ * I2C**_.  Atlas scientific sensors are shipped with probes and sensor chips
+ * that communicate using UART by default.  Data sheets, found on the Atlas
+ * Scientific website, show how to manually switch the chips to I2C.  Before
  * deploying your Atlas chip chip and sensor, I recommend locking the protocol
  * (plock) to I2C so the sensors do not accidentally switch back to UART mode.
  * Legacy chips and EZO chips that do not support I2C are not supported.
@@ -120,7 +120,8 @@ class AtlasParent : public Sensor {
                 uint8_t       measurementsToAverage = 1,
                 const char*   sensorName            = "AtlasSensor",
                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+                uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms   = 0);
     /**
      * @brief Destroy the Atlas Parent object - no action needed
      */
@@ -168,7 +169,8 @@ class AtlasParent : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed successfully.
+     * @return **bool** True if the start measurement function completed
+     * successfully.
      */
     bool startSingleMeasurement(void) override;
     /**
@@ -195,8 +197,8 @@ class AtlasParent : public Sensor {
      * unavailable.
      *
      * @param timeout The maximum amout of time to wait in ms.
-     * @return **bool** True processing completed and a status code was returned within
-     * the wait period.
+     * @return **bool** True processing completed and a status code was returned
+     * within the wait period.
      */
     bool waitForProcessing(uint32_t timeout = 1000L);
 };

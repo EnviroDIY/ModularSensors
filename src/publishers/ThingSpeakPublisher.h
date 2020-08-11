@@ -97,8 +97,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    ThingSpeakPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
-                        uint8_t sendOffset = 0);
+    ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -113,8 +113,8 @@ class ThingSpeakPublisher : public dataPublisher {
      */
     ThingSpeakPublisher(Logger& baseLogger, const char* thingSpeakMQTTKey,
                         const char* thingSpeakChannelID,
-                        const char* thingSpeakChannelKey, uint8_t sendEveryX = 1,
-                        uint8_t sendOffset = 0);
+                        const char* thingSpeakChannelKey,
+                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -132,9 +132,10 @@ class ThingSpeakPublisher : public dataPublisher {
      * collected
      */
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                        const char* thingSpeakMQTTKey, const char* thingSpeakChannelID,
-                        const char* thingSpeakChannelKey, uint8_t sendEveryX = 1,
-                        uint8_t sendOffset = 0);
+                        const char* thingSpeakMQTTKey,
+                        const char* thingSpeakChannelID,
+                        const char* thingSpeakChannelKey,
+                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     /**
      * @brief Destroy the ThingSpeak Publisher object
@@ -184,8 +185,9 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param thingSpeakChannelID The numeric channel id for your channel
      * @param thingSpeakChannelKey The write API key for your channel
      */
-    void begin(Logger& baseLogger, Client* inClient, const char* thingSpeakMQTTKey,
-               const char* thingSpeakChannelID, const char* thingSpeakChannelKey);
+    void begin(Logger& baseLogger, Client* inClient,
+               const char* thingSpeakMQTTKey, const char* thingSpeakChannelID,
+               const char* thingSpeakChannelKey);
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
      * @param thingSpeakMQTTKey Your MQTT API Key from Account > MyProfile.
@@ -193,7 +195,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param thingSpeakChannelKey The write API key for your channel
      */
     void begin(Logger& baseLogger, const char* thingSpeakMQTTKey,
-               const char* thingSpeakChannelID, const char* thingSpeakChannelKey);
+               const char* thingSpeakChannelID,
+               const char* thingSpeakChannelKey);
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);

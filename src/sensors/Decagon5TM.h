@@ -7,8 +7,8 @@
  * @brief Contains the Decagon5TM subclass of the SDI12Sensors class along with
  * the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and Decagon5TM_VWC.
  *
- * These are used for the Meter ECH20 or the discontinued Decagon Devices 5TM Soil
- * Moisture probe.
+ * These are used for the Meter ECH20 or the discontinued Decagon Devices 5TM
+ * Soil Moisture probe.
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
  * class.
@@ -161,17 +161,20 @@ class Decagon5TM : public SDI12Sensors {
     /**
      * @brief Construct a new Decagon 5TM object.
      *
-     * The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and
-     * the Arduino pin sending and receiving data are required for the sensor
-     * constructor.  Optionally, you can include a number of distinct readings to
-     * average.  The data pin must be a pin that supports pin-change interrupts.
+     * The SDI-12 address of the sensor, the Arduino pin controlling power
+     * on/off, and the Arduino pin sending and receiving data are required for
+     * the sensor constructor.  Optionally, you can include a number of distinct
+     * readings to average.  The data pin must be a pin that supports pin-change
+     * interrupts.
      *
      * @param SDI12address The SDI-12 address of the sensor
-     * @warning The SDI-12 address **must** be changed from the factory programmed value
-     * of "0" before the sensor can be used with ModularSensors!
-     * @param powerPin The pin on the mcu controlling power to the ECH2O.  Use -1 if
-     * the sensor is continuously powered.
-     * - Requires a 3.5-12V power supply, which can be turned off between measurements
+     * @warning The SDI-12 address **must** be changed from the factory
+     * programmed value of "0" before the sensor can be used with
+     * ModularSensors!
+     * @param powerPin The pin on the mcu controlling power to the ECH2O.  Use
+     * -1 if the sensor is continuously powered.
+     * - Requires a 3.5-12V power supply, which can be turned off between
+     * measurements
      * @param dataPin The pin on the mcu receiving data from the ECH2O.
      * @param measurementsToAverage The number of measurements to average.
      */
@@ -232,8 +235,9 @@ class Decagon5TM_Ea : public Variable {
      */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = "SoilEa")
-        : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
-                   "permittivity", "faradPerMeter", varCode, uuid) {}
+        : Variable(parentSense, (const uint8_t)TM_EA_VAR_NUM,
+                   (uint8_t)TM_EA_RESOLUTION, "permittivity", "faradPerMeter",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new Decagon5TM_Ea object.
      *
@@ -272,8 +276,8 @@ class Decagon5TM_Temp : public Variable {
     explicit Decagon5TM_Temp(Decagon5TM* parentSense, const char* uuid = "",
                              const char* varCode = "SoilTemp")
         : Variable(parentSense, (const uint8_t)TM_TEMP_VAR_NUM,
-                   (uint8_t)TM_TEMP_RESOLUTION, "temperature", "degreeCelsius", varCode,
-                   uuid) {}
+                   (uint8_t)TM_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new Decagon5TM_Temp object.
      *
@@ -312,8 +316,8 @@ class Decagon5TM_VWC : public Variable {
     explicit Decagon5TM_VWC(Decagon5TM* parentSense, const char* uuid = "",
                             const char* varCode = "SoilVWC")
         : Variable(parentSense, (const uint8_t)TM_VWC_VAR_NUM,
-                   (uint8_t)TM_VWC_RESOLUTION, "volumetricWaterContent", "percent",
-                   varCode, uuid) {}
+                   (uint8_t)TM_VWC_RESOLUTION, "volumetricWaterContent",
+                   "percent", varCode, uuid) {}
     /**
      * @brief Construct a new Decagon5TM_VWC object.
      *

@@ -167,7 +167,8 @@ void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
-void EnviroDIYPublisher::begin(Logger& baseLogger, const char* registrationToken,
+void EnviroDIYPublisher::begin(Logger&     baseLogger,
+                               const char* registrationToken,
                                const char* samplingFeatureUUID) {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger);
@@ -284,7 +285,9 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     int16_t responseCode = 0;
     if (did_respond > 0) {
         char responseCode_char[4];
-        for (uint8_t i = 0; i < 3; i++) { responseCode_char[i] = tempBuffer[i + 9]; }
+        for (uint8_t i = 0; i < 3; i++) {
+            responseCode_char[i] = tempBuffer[i + 9];
+        }
         responseCode = atoi(responseCode_char);
     } else {
         responseCode = 504;

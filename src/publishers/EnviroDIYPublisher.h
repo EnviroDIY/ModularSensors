@@ -82,8 +82,8 @@ class EnviroDIYPublisher : public dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    EnviroDIYPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
      * @brief Construct a new EnviroDIY Publisher object
      *
@@ -119,8 +119,9 @@ class EnviroDIYPublisher : public dataPublisher {
      * collected
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                       const char* registrationToken, const char* samplingFeatureUUID,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                       const char* registrationToken,
+                       const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
+                       uint8_t sendOffset = 0);
     // Destructor
     /**
      * @brief Destroy the EnviroDIY Publisher object
@@ -180,8 +181,8 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      */
-    void begin(Logger& baseLogger, Client* inClient, const char* registrationToken,
-               const char* samplingFeatureUUID);
+    void begin(Logger& baseLogger, Client* inClient,
+               const char* registrationToken, const char* samplingFeatureUUID);
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
      * @param registrationToken The registration token for the site on the

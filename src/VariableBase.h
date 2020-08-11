@@ -71,9 +71,9 @@ class Variable {
      * @param varCode A custom code of the variable
      * @param uuid A universally unique identifier for the variable
      */
-    Variable(Sensor* parentSense, const uint8_t sensorVarNum, uint8_t decimalResolution,
-             const char* varName, const char* varUnit, const char* varCode,
-             const char* uuid);
+    Variable(Sensor* parentSense, const uint8_t sensorVarNum,
+             uint8_t decimalResolution, const char* varName,
+             const char* varUnit, const char* varCode, const char* uuid);
     /**
      * @brief Construct a new Variable objectfor a measured variable - that is,
      * one whose values are updated by a sensor - but do not tie it to a
@@ -92,8 +92,8 @@ class Variable {
      * vocabulary
      * @param varCode A custom code for the variable
      */
-    Variable(const uint8_t sensorVarNum, uint8_t decimalResolution, const char* varName,
-             const char* varUnit, const char* varCode);
+    Variable(const uint8_t sensorVarNum, uint8_t decimalResolution,
+             const char* varName, const char* varUnit, const char* varCode);
 
     /**
      * @brief Construct a new Variable object for a calculated variable - that
@@ -145,7 +145,8 @@ class Variable {
      * any value supplied in the constructor.
      * @return Variable A pointer to the variable object
      */
-    Variable* begin(Sensor* parentSense, const char* uuid, const char* customVarCode);
+    Variable* begin(Sensor* parentSense, const char* uuid,
+                    const char* customVarCode);
     /**
      * @brief Begin for the Variable object
      *
@@ -182,8 +183,9 @@ class Variable {
      * Supercedes any value supplied in the constructor.
      * @return Variable A pointer to the variable object
      */
-    Variable* begin(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
-                    const char* varUnit, const char* varCode, const char* uuid);
+    Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
+                    const char* varName, const char* varUnit,
+                    const char* varCode, const char* uuid);
     /**
      * @brief Begin for the Variable object
      *
@@ -199,8 +201,9 @@ class Variable {
      * supplied in the constructor.
      * @return Variable A pointer to the variable object
      */
-    Variable* begin(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
-                    const char* varUnit, const char* varCode);
+    Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
+                    const char* varName, const char* varUnit,
+                    const char* varCode);
 
     // This sets up the variable (generally attaching it to its parent)
     // bool setup(void);
@@ -325,8 +328,8 @@ class Variable {
      *
      * @return **bool** True if the UUID is correctly formatted.
      *
-     * @note This only checks the _format_ of the UUID.  It does not in any way indicate
-     * that the value of the UUID is correct.
+     * @note This only checks the _format_ of the UUID.  It does not in any way
+     * indicate that the value of the UUID is correct.
      */
     bool checkUUIDFormat(void);
 

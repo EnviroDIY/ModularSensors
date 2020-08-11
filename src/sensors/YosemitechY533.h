@@ -136,28 +136,30 @@ class YosemitechY533 : public YosemitechParent {
      * Defaults to -1.
      * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
      * Defaults to -1.
-     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
-     * adapter.  Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the
+     * RS485 adapter.  Defaults to -1.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor.  Defaults to 1.
      */
     YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y533, "YosemitechY533",
-                           Y533_NUM_VARIABLES, Y533_WARM_UP_TIME_MS,
-                           Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y533,
+                           "YosemitechY533", Y533_NUM_VARIABLES,
+                           Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
+                           Y533_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc YosemitechY533::YosemitechY533
      */
     YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y533, "YosemitechY533",
-                           Y533_NUM_VARIABLES, Y533_WARM_UP_TIME_MS,
-                           Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y533,
+                           "YosemitechY533", Y533_NUM_VARIABLES,
+                           Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
+                           Y533_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the Yosemitech Y533 object
      */
@@ -186,8 +188,9 @@ class YosemitechY533_pH : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y533pH".
      */
-    explicit YosemitechY533_pH(YosemitechY533* parentSense, const char* uuid = "",
-                               const char* varCode = "Y533pH")
+    explicit YosemitechY533_pH(YosemitechY533* parentSense,
+                               const char*     uuid    = "",
+                               const char*     varCode = "Y533pH")
         : Variable(parentSense, (const uint8_t)Y533_PH_VAR_NUM,
                    (uint8_t)Y533_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     /**
@@ -197,8 +200,8 @@ class YosemitechY533_pH : public Variable {
      * used.
      */
     YosemitechY533_pH()
-        : Variable((const uint8_t)Y533_PH_VAR_NUM, (uint8_t)Y533_PH_RESOLUTION, "pH",
-                   "pH", "Y533pH") {}
+        : Variable((const uint8_t)Y533_PH_VAR_NUM, (uint8_t)Y533_PH_RESOLUTION,
+                   "pH", "pH", "Y533pH") {}
     /**
      * @brief Destroy the YosemitechY533_pH object - no action needed.
      */
@@ -227,11 +230,12 @@ class YosemitechY533_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y533Temp".
      */
-    explicit YosemitechY533_Temp(YosemitechY533* parentSense, const char* uuid = "",
-                                 const char* varCode = "Y533Temp")
+    explicit YosemitechY533_Temp(YosemitechY533* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y533Temp")
         : Variable(parentSense, (const uint8_t)Y533_TEMP_VAR_NUM,
-                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY533_Temp object.
      *
@@ -239,8 +243,9 @@ class YosemitechY533_Temp : public Variable {
      * used.
      */
     YosemitechY533_Temp()
-        : Variable((const uint8_t)Y533_TEMP_VAR_NUM, (uint8_t)Y533_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "Y533Temp") {}
+        : Variable((const uint8_t)Y533_TEMP_VAR_NUM,
+                   (uint8_t)Y533_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y533Temp") {}
     /**
      * @brief Destroy the YosemitechY533_Temp object - no action needed.
      */
@@ -269,11 +274,12 @@ class YosemitechY533_Voltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y533Potential".
      */
-    explicit YosemitechY533_Voltage(YosemitechY533* parentSense, const char* uuid = "",
-                                    const char* varCode = "Y533Potential")
+    explicit YosemitechY533_Voltage(YosemitechY533* parentSense,
+                                    const char*     uuid    = "",
+                                    const char*     varCode = "Y533Potential")
         : Variable(parentSense, (const uint8_t)Y533_VOLT_VAR_NUM,
-                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt", varCode,
-                   uuid) {}
+                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY533_Voltage object.
      *
@@ -281,8 +287,9 @@ class YosemitechY533_Voltage : public Variable {
      * used.
      */
     YosemitechY533_Voltage()
-        : Variable((const uint8_t)Y533_VOLT_VAR_NUM, (uint8_t)Y533_VOLT_RESOLUTION,
-                   "voltage", "millivolt", "Y533Potential") {}
+        : Variable((const uint8_t)Y533_VOLT_VAR_NUM,
+                   (uint8_t)Y533_VOLT_RESOLUTION, "voltage", "millivolt",
+                   "Y533Potential") {}
     /**
      * @brief Destroy the YosemitechY533_Voltage object - no action needed.
      */

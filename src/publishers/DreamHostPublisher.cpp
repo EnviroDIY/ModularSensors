@@ -66,8 +66,8 @@ void DreamHostPublisher::printSensorDataDreamHost(Stream* stream) {
     stream->print(loggerTag);
     stream->print(_baseLogger->getLoggerID());
     stream->print(timestampTagDH);
-    stream->print(
-        String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+    stream->print(String(Logger::markedEpochTime -
+                         946684800));  // Correct time from epoch to y2k
 
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         stream->print('&');
@@ -185,7 +185,9 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
     int16_t responseCode = 0;
     if (did_respond > 0) {
         char responseCode_char[4];
-        for (uint8_t i = 0; i < 3; i++) { responseCode_char[i] = tempBuffer[i + 9]; }
+        for (uint8_t i = 0; i < 3; i++) {
+            responseCode_char[i] = tempBuffer[i + 9];
+        }
         responseCode = atoi(responseCode_char);
     } else {
         responseCode = 504;

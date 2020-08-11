@@ -143,17 +143,20 @@ class DecagonCTD : public SDI12Sensors {
     /**
      * @brief Construct a new Decagon CTD object.
      *
-     * The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and
-     * the Arduino pin sending and receiving data are required for the sensor
-     * constructor.  Optionally, you can include a number of distinct readings to
-     * average.  The data pin must be a pin that supports pin-change interrupts.
+     * The SDI-12 address of the sensor, the Arduino pin controlling power
+     * on/off, and the Arduino pin sending and receiving data are required for
+     * the sensor constructor.  Optionally, you can include a number of distinct
+     * readings to average.  The data pin must be a pin that supports pin-change
+     * interrupts.
      *
      * @param SDI12address The SDI-12 address of the sensor
-     * @warning The SDI-12 address **must** be changed from the factory programmed value
-     * of "0" before the sensor can be used with ModularSensors!
-     * @param powerPin The pin on the mcu controlling power to the Hydros 21.  Use
-     * -1 if the sensor is continuously powered.
-     * - Requires a 3.5-12V power supply, which can be turned off between measurements
+     * @warning The SDI-12 address **must** be changed from the factory
+     * programmed value of "0" before the sensor can be used with
+     * ModularSensors!
+     * @param powerPin The pin on the mcu controlling power to the Hydros 21.
+     * Use -1 if the sensor is continuously powered.
+     * - Requires a 3.5-12V power supply, which can be turned off between
+     * measurements
      * @param dataPin The pin on the mcu receiving data from the Hydros 21.
      * @param measurementsToAverage The number of measurements to average.
      */
@@ -218,8 +221,9 @@ class DecagonCTD_Cond : public Variable {
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Cond()
-        : Variable((const uint8_t)CTD_COND_VAR_NUM, (uint8_t)CTD_COND_RESOLUTION,
-                   "specificConductance", "microsiemenPerCentimeter", "CTDcond") {}
+        : Variable((const uint8_t)CTD_COND_VAR_NUM,
+                   (uint8_t)CTD_COND_RESOLUTION, "specificConductance",
+                   "microsiemenPerCentimeter", "CTDcond") {}
     /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
@@ -258,8 +262,9 @@ class DecagonCTD_Temp : public Variable {
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Temp()
-        : Variable((const uint8_t)CTD_TEMP_VAR_NUM, (uint8_t)CTD_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "CTDtemp") {}
+        : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
+                   (uint8_t)CTD_TEMP_RESOLUTION, "temperature", "degreeCelsius",
+                   "CTDtemp") {}
     /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
@@ -290,16 +295,17 @@ class DecagonCTD_Depth : public Variable {
     explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
                               const char* varCode = "CTDdepth")
         : Variable(parentSense, (const uint8_t)CTD_DEPTH_VAR_NUM,
-                   (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter", varCode,
-                   uuid) {}
+                   (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter",
+                   varCode, uuid) {}
     /**
      * @brief Construct a new DecagonCTD_Depth object.
      *
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Depth()
-        : Variable((const uint8_t)CTD_DEPTH_VAR_NUM, (uint8_t)CTD_DEPTH_RESOLUTION,
-                   "waterDepth", "millimeter", "CTDdepth") {}
+        : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,
+                   (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter",
+                   "CTDdepth") {}
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.
      */

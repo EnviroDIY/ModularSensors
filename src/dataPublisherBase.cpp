@@ -35,8 +35,8 @@ dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX,
     _inClient   = NULL;
     // MS_DBG(F("dataPublisher object created"));
 }
-dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX,
-                             uint8_t sendOffset) {
+dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
+                             uint8_t sendEveryX, uint8_t sendOffset) {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
     _sendEveryX = sendEveryX;

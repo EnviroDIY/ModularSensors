@@ -144,28 +144,30 @@ class YosemitechY504 : public YosemitechParent {
      * Defaults to -1.
      * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
      * Defaults to -1.
-     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
-     * adapter.  Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the
+     * RS485 adapter.  Defaults to -1.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor.  Defaults to 1.
      */
     YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y504, "YosemitechY504",
-                           Y504_NUM_VARIABLES, Y504_WARM_UP_TIME_MS,
-                           Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y504,
+                           "YosemitechY504", Y504_NUM_VARIABLES,
+                           Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS,
+                           Y504_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc YosemitechY504::YosemitechY504
      */
     YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t powerPin2 = -1, int8_t enablePin = -1,
                    uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y504, "YosemitechY504",
-                           Y504_NUM_VARIABLES, Y504_WARM_UP_TIME_MS,
-                           Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y504,
+                           "YosemitechY504", Y504_NUM_VARIABLES,
+                           Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS,
+                           Y504_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the Yosemitech Y504 object
      */
@@ -194,11 +196,13 @@ class YosemitechY504_DOpct : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of Y504DOpct
      */
-    explicit YosemitechY504_DOpct(YosemitechY504* parentSense, const char* uuid = "",
-                                  const char* varCode = "Y504DOpct")
+    explicit YosemitechY504_DOpct(YosemitechY504* parentSense,
+                                  const char*     uuid    = "",
+                                  const char*     varCode = "Y504DOpct")
         : Variable(parentSense, (const uint8_t)Y504_DOPCT_VAR_NUM,
-                   (uint8_t)Y504_DOPCT_RESOLUTION, "oxygenDissolvedPercentOfSaturation",
-                   "percent", varCode, uuid) {}
+                   (uint8_t)Y504_DOPCT_RESOLUTION,
+                   "oxygenDissolvedPercentOfSaturation", "percent", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new YosemitechY504_DOpct object.
      *
@@ -206,8 +210,9 @@ class YosemitechY504_DOpct : public Variable {
      * used.
      */
     YosemitechY504_DOpct()
-        : Variable((const uint8_t)Y504_DOPCT_VAR_NUM, (uint8_t)Y504_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct") {}
+        : Variable(
+              (const uint8_t)Y504_DOPCT_VAR_NUM, (uint8_t)Y504_DOPCT_RESOLUTION,
+              "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct") {}
     /**
      * @brief Destroy the YosemitechY504_DOpct object - no action needed.
      */
@@ -236,11 +241,12 @@ class YosemitechY504_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y504Temp".
      */
-    explicit YosemitechY504_Temp(YosemitechY504* parentSense, const char* uuid = "",
-                                 const char* varCode = "Y504Temp")
+    explicit YosemitechY504_Temp(YosemitechY504* parentSense,
+                                 const char*     uuid    = "",
+                                 const char*     varCode = "Y504Temp")
         : Variable(parentSense, (const uint8_t)Y504_TEMP_VAR_NUM,
-                   (uint8_t)Y504_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)Y504_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY504_Temp object.
      *
@@ -248,8 +254,9 @@ class YosemitechY504_Temp : public Variable {
      * used.
      */
     YosemitechY504_Temp()
-        : Variable((const uint8_t)Y504_TEMP_VAR_NUM, (uint8_t)Y504_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "Y504Temp") {}
+        : Variable((const uint8_t)Y504_TEMP_VAR_NUM,
+                   (uint8_t)Y504_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y504Temp") {}
     /**
      * @brief Destroy the YosemitechY504_Temp object - no action needed.
      */
@@ -278,8 +285,9 @@ class YosemitechY504_DOmgL : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y504DOmgL".
      */
-    explicit YosemitechY504_DOmgL(YosemitechY504* parentSense, const char* uuid = "",
-                                  const char* varCode = "Y504DOmgL")
+    explicit YosemitechY504_DOmgL(YosemitechY504* parentSense,
+                                  const char*     uuid    = "",
+                                  const char*     varCode = "Y504DOmgL")
         : Variable(parentSense, (const uint8_t)Y504_DOMGL_VAR_NUM,
                    (uint8_t)Y504_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", varCode, uuid) {}
@@ -290,8 +298,9 @@ class YosemitechY504_DOmgL : public Variable {
      * used.
      */
     YosemitechY504_DOmgL()
-        : Variable((const uint8_t)Y504_DOMGL_VAR_NUM, (uint8_t)Y504_DOMGL_RESOLUTION,
-                   "oxygenDissolved", "milligramPerLiter", "Y504DOmgL") {}
+        : Variable((const uint8_t)Y504_DOMGL_VAR_NUM,
+                   (uint8_t)Y504_DOMGL_RESOLUTION, "oxygenDissolved",
+                   "milligramPerLiter", "Y504DOmgL") {}
     /**
      * @brief Destroy the YosemitechY504_DOmgL object - no action needed.
      */

@@ -135,11 +135,12 @@ class AtlasScientificRTD : public AtlasParent {
      *bus (and thus your logger) to crash.
      */
     explicit AtlasScientificRTD(int8_t  powerPin,
-                                uint8_t i2cAddressHex         = ATLAS_RTD_I2C_ADDR,
+                                uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1)
         : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                       "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
-                      ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
+                      ATLAS_RTD_WARM_UP_TIME_MS,
+                      ATLAS_RTD_STABILIZATION_TIME_MS,
                       ATLAS_RTD_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the Atlas Scientific RTD object
@@ -172,8 +173,8 @@ class AtlasScientificRTD_Temp : public Variable {
                                      const char*         uuid    = "",
                                      const char*         varCode = "AtlasTemp")
         : Variable(parentSense, (const uint8_t)ATLAS_RTD_VAR_NUM,
-                   (uint8_t)ATLAS_RTD_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)ATLAS_RTD_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificRTD_Temp object.
      *
@@ -181,8 +182,9 @@ class AtlasScientificRTD_Temp : public Variable {
      * used.
      */
     AtlasScientificRTD_Temp()
-        : Variable((const uint8_t)ATLAS_RTD_VAR_NUM, (uint8_t)ATLAS_RTD_RESOLUTION,
-                   "temperature", "degreeCelsius", "AtlasTemp") {}
+        : Variable((const uint8_t)ATLAS_RTD_VAR_NUM,
+                   (uint8_t)ATLAS_RTD_RESOLUTION, "temperature",
+                   "degreeCelsius", "AtlasTemp") {}
     /**
      * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.
      */

@@ -31,21 +31,21 @@
  * > and wearables where size and low power consumption are key design parameters.
  * > The unit combines high linearity and high accuracy sensors and is perfectly
  * > feasible for low current consumption, long-term stability and high EMC
- * > robustness. The humidity sensor offers an extremely fast response time and
+ * > robustness.  The humidity sensor offers an extremely fast response time and
  * > therefore supports performance requirements for emerging applications such as
  * > context awareness, and high accuracy over a wide temperature range.
  *
  * Although this sensor has the option of either I2C or SPI communication, this
- * library only supports I2C. The default I2C address varies by manufacturer and
- * is either 0x77 or 0x76. The Adafruit and Sparkfun defaults are both 0x77 and
+ * library only supports I2C.  The default I2C address varies by manufacturer and
+ * is either 0x77 or 0x76.  The Adafruit and Sparkfun defaults are both 0x77 and
  * Seeed/Grove default is 0x76, though all can be changed by physical
  * modification of the sensor, if necessary (by cutting the board connection for
- * the manufacturer default and soldering the optional address jumpers). To
+ * the manufacturer default and soldering the optional address jumpers).  To
  * connect two of these sensors to your system, you must ensure they are
- * soldered so as to have different I2C addresses. No more than two can be
- * attached. This module is likely to also work with the
+ * soldered so as to have different I2C addresses.  No more than two can be
+ * attached.  This module is likely to also work with the
  * [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280),
- * though it has not been tested on it. These sensors should be attached to
+ * though it has not been tested on it.  These sensors should be attached to
  * a 1.7-3.6V power source and the power supply to the sensor can be stopped
  * between measurements.
  *
@@ -207,7 +207,7 @@ class BoschBME280 : public Sensor {
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
      *
-     * Verifies that the power is on and updates the #_sensorStatus. This also
+     * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
      * @note This does NOT include any wait for sensor readiness.
@@ -273,16 +273,17 @@ class BoschBME280_Temp : public Variable {
     explicit BoschBME280_Temp(BoschBME280* parentSense, const char* uuid = "",
                               const char* varCode = "BoschBME280Temp")
         : Variable(parentSense, (const uint8_t)BME280_TEMP_VAR_NUM,
-                   (uint8_t)BME280_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)BME280_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new BoschBME280_Temp object.
      *
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Temp()
-        : Variable((const uint8_t)BME280_TEMP_VAR_NUM, (uint8_t)BME280_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "BoschBME280Temp") {}
+        : Variable((const uint8_t)BME280_TEMP_VAR_NUM,
+                   (uint8_t)BME280_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "BoschBME280Temp") {}
     /**
      * @brief Destroy the BoschBME280_Temp object - no action needed.
      */
@@ -311,11 +312,12 @@ class BoschBME280_Humidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of BoschBME280Humidity
      */
-    explicit BoschBME280_Humidity(BoschBME280* parentSense, const char* uuid = "",
-                                  const char* varCode = "BoschBME280Humidity")
+    explicit BoschBME280_Humidity(BoschBME280* parentSense,
+                                  const char*  uuid    = "",
+                                  const char*  varCode = "BoschBME280Humidity")
         : Variable(parentSense, (const uint8_t)BME280_HUMIDITY_VAR_NUM,
-                   (uint8_t)BME280_HUMIDITY_RESOLUTION, "relativeHumidity", "percent",
-                   varCode, uuid) {}
+                   (uint8_t)BME280_HUMIDITY_RESOLUTION, "relativeHumidity",
+                   "percent", varCode, uuid) {}
     /**
      * @brief Construct a new BoschBME280_Humidity object.
      *
@@ -323,8 +325,8 @@ class BoschBME280_Humidity : public Variable {
      */
     BoschBME280_Humidity()
         : Variable((const uint8_t)BME280_HUMIDITY_VAR_NUM,
-                   (uint8_t)BME280_HUMIDITY_RESOLUTION, "relativeHumidity", "percent",
-                   "BoschBME280Humidity") {}
+                   (uint8_t)BME280_HUMIDITY_RESOLUTION, "relativeHumidity",
+                   "percent", "BoschBME280Humidity") {}
     /**
      * @brief Destroy the BoschBME280_Humidity object - no action needed.
      */
@@ -353,11 +355,12 @@ class BoschBME280_Pressure : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of BoschBME280Pressure
      */
-    explicit BoschBME280_Pressure(BoschBME280* parentSense, const char* uuid = "",
-                                  const char* varCode = "BoschBME280Pressure")
+    explicit BoschBME280_Pressure(BoschBME280* parentSense,
+                                  const char*  uuid    = "",
+                                  const char*  varCode = "BoschBME280Pressure")
         : Variable(parentSense, (const uint8_t)BME280_PRESSURE_VAR_NUM,
-                   (uint8_t)BME280_PRESSURE_RESOLUTION, "barometricPressure", "pascal",
-                   varCode, uuid) {}
+                   (uint8_t)BME280_PRESSURE_RESOLUTION, "barometricPressure",
+                   "pascal", varCode, uuid) {}
     /**
      * @brief Construct a new BoschBME280_Pressure object.
      *
@@ -365,8 +368,8 @@ class BoschBME280_Pressure : public Variable {
      */
     BoschBME280_Pressure()
         : Variable((const uint8_t)BME280_PRESSURE_VAR_NUM,
-                   (uint8_t)BME280_PRESSURE_RESOLUTION, "barometricPressure", "pascal",
-                   "BoschBME280Pressure") {}
+                   (uint8_t)BME280_PRESSURE_RESOLUTION, "barometricPressure",
+                   "pascal", "BoschBME280Pressure") {}
 };
 
 
@@ -391,11 +394,12 @@ class BoschBME280_Altitude : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of BoschBME280Altitude
      */
-    explicit BoschBME280_Altitude(BoschBME280* parentSense, const char* uuid = "",
-                                  const char* varCode = "BoschBME280Altitude")
+    explicit BoschBME280_Altitude(BoschBME280* parentSense,
+                                  const char*  uuid    = "",
+                                  const char*  varCode = "BoschBME280Altitude")
         : Variable(parentSense, (const uint8_t)BME280_ALTITUDE_VAR_NUM,
-                   (uint8_t)BME280_ALTITUDE_RESOLUTION, "heightAboveSeaFloor", "meter",
-                   varCode, uuid) {}
+                   (uint8_t)BME280_ALTITUDE_RESOLUTION, "heightAboveSeaFloor",
+                   "meter", varCode, uuid) {}
     /**
      * @brief Construct a new BoschBME280_Altitude object.
      *
@@ -403,8 +407,8 @@ class BoschBME280_Altitude : public Variable {
      */
     BoschBME280_Altitude()
         : Variable((const uint8_t)BME280_ALTITUDE_VAR_NUM,
-                   (uint8_t)BME280_ALTITUDE_RESOLUTION, "heightAboveSeaFloor", "meter",
-                   "BoschBME280Altitude") {}
+                   (uint8_t)BME280_ALTITUDE_RESOLUTION, "heightAboveSeaFloor",
+                   "meter", "BoschBME280Altitude") {}
 };
 
 

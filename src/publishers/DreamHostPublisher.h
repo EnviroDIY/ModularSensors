@@ -82,8 +82,8 @@ class DreamHostPublisher : public dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, Client* inClient,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -95,8 +95,8 @@ class DreamHostPublisher : public dataPublisher {
      * enable publishing data at a time slightly delayed from when it is
      * collected
      */
-    DreamHostPublisher(Logger& baseLogger, const char* dhUrl, uint8_t sendEveryX = 1,
-                       uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
      * @brief Construct a new DreamHost Publisher object
      *

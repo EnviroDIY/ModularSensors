@@ -102,8 +102,8 @@ class Logger {
      * logged.  This is NOT an array of variables, but an object of the variable
      * array class.
      */
-    Logger(const char* loggerID, uint16_t loggingIntervalMinutes, int8_t SDCardSSPin,
-           int8_t mcuWakePin, VariableArray* inputArray);
+    Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
+           int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
      *
@@ -300,8 +300,8 @@ class Logger {
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.
      */
-    void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin, int8_t SDCardPowerPin,
-                       int8_t buttonPin, int8_t ledPin);
+    void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
+                       int8_t SDCardPowerPin, int8_t buttonPin, int8_t ledPin);
 
  protected:
     // Initialization variables
@@ -645,8 +645,8 @@ class Logger {
      * clock to the given time.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
-     * @return **bool** True if the input timestamp passes sanity checks **and** the
-     * clock has been successfully set.
+     * @return **bool** True if the input timestamp passes sanity checks **and**
+     * the clock has been successfully set.
      */
     bool setRTClock(uint32_t UTCEpochSeconds);
 
@@ -655,7 +655,8 @@ class Logger {
      *
      * To be sane the clock  must be between 2020 and 2025.
      *
-     * @return **bool** True if the current time on the RTC passes sanity range checking
+     * @return **bool** True if the current time on the RTC passes sanity range
+     * checking
      */
     static bool isRTCSane(void);
     /**
@@ -684,8 +685,8 @@ class Logger {
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
      *
-     * @return **bool** True if the current time on the RTC is an even interval of the
-     * logging rate.
+     * @return **bool** True if the current time on the RTC is an even interval
+     * of the logging rate.
      */
     bool checkInterval(void);
 
@@ -819,7 +820,7 @@ class Logger {
      *
      * The filename will be the value specified in the function.  If desired, a
      * header will also be written to the file based on the variable information
-     * from the variable array. This can be used to force a logger to create a
+     * from the variable array.  This can be used to force a logger to create a
      * file with a secondary file name.
      *
      * @param filename The name of the file to create
@@ -853,8 +854,8 @@ class Logger {
      *
      * @param filename The name of the file to write to
      * @param rec The line to be written to the file
-     * @return **bool** True if the file was successfully accessed or created _and_ data
-     * appended to it.
+     * @return **bool** True if the file was successfully accessed or created
+     * _and_ data appended to it.
      */
     bool logToSD(String& filename, String& rec);
     /**
@@ -866,8 +867,8 @@ class Logger {
      * modified and accessed timestamps of the file to the current time.
      *
      * @param rec The line to be written to the file
-     * @return **bool** True if the file was successfully accessed or created _and_ data
-     * appended to it.
+     * @return **bool** True if the file was successfully accessed or created
+     * _and_ data appended to it.
      */
     bool logToSD(String& rec);
     /**
@@ -879,8 +880,8 @@ class Logger {
      * attempt to create the file and add a header to it.  Set the modified and
      * accessed timestamps of the file to the current time.
      *
-     * @return **bool** True if the file was successfully accessed or created _and_ data
-     * appended to it.
+     * @return **bool** True if the file was successfully accessed or created
+     * _and_ data appended to it.
      */
     bool logToSD(void);
 
@@ -986,7 +987,7 @@ class Logger {
      * constructor.
      * @param inputArray A variableArray object instance providing data to be
      * logged.  This is NOT an array of variables, but an object of the variable
-     * array class. Supplying a variableArray object here will override any
+     * array class.  Supplying a variableArray object here will override any
      * value given in the constructor.
      */
     virtual void begin(const char* loggerID, uint16_t loggingIntervalMinutes,
@@ -1000,7 +1001,7 @@ class Logger {
      *
      * @param inputArray A variableArray object instance providing data to be
      * logged.  This is NOT an array of variables, but an object of the variable
-     * array class. Supplying a variableArray object here will override any
+     * array class.  Supplying a variableArray object here will override any
      * value given in the constructor.
      */
     virtual void begin(VariableArray* inputArray);

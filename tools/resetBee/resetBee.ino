@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
-void setup()
-{
+void setup() {
     Serial.begin(9600);
     Serial1.begin(9600);
     pinMode(23, OUTPUT);
@@ -17,14 +16,7 @@ void setup()
     Serial1.print("ATCN\r");
 }
 
-void loop()
-{
-    while (Serial.available())
-    {
-        Serial1.write(Serial.read());
-    }
-    while (Serial1.available())
-    {
-        Serial.write(Serial1.read());
-    }
+void loop() {
+    while (Serial.available()) { Serial1.write(Serial.read()); }
+    while (Serial1.available()) { Serial.write(Serial1.read()); }
 }

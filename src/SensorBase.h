@@ -68,9 +68,10 @@ class Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor.  Defaults to 1.
      */
-    Sensor(const char* sensorName = "Unknown", const uint8_t numReturnedVars = 1,
-           uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
-           uint32_t measurementTime_ms = 0, int8_t powerPin = -1, int8_t dataPin = -1,
+    Sensor(const char*   sensorName      = "Unknown",
+           const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
+           uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
+           int8_t powerPin = -1, int8_t dataPin = -1,
            uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Sensor object - no action taken.
@@ -206,7 +207,8 @@ class Sensor {
      * used.  To work with many sensors together, use the VariableArray class
      * which optimizes the timing and waits for many sensors working together.
      *
-     * @return **bool** True if all steps of the sensor update completed successfully.
+     * @return **bool** True if all steps of the sensor update completed
+     * successfully.
      */
     virtual bool update(void);
 
@@ -230,7 +232,7 @@ class Sensor {
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
      *
-     * Verifies that the power is on and updates the #_sensorStatus. This also
+     * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
      * @note This does NOT include any wait for sensor readiness.
@@ -258,7 +260,8 @@ class Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **bool** True if the start measurement function completed successfully.
+     * @return **bool** True if the start measurement function completed
+     * successfully.
      */
     virtual bool startSingleMeasurement(void);
 
@@ -305,7 +308,8 @@ class Sensor {
      * @param resultNumber The position of the result within the result array.
      * @param resultValue The value of the result.
      */
-    void verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue);
+    void verifyAndAddMeasurementResult(uint8_t resultNumber,
+                                       int16_t resultValue);
     /**
      * @brief Average the results of all measurements by dividing the sum of
      * all measurements by the number of measurements taken.
@@ -340,8 +344,8 @@ class Sensor {
      * receiving power and being ready to respond to logger commands.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **bool** True indicates that enough time has passed that the sensor
-     * should be ready to respond to commands.
+     * @return **bool** True indicates that enough time has passed that the
+     * sensor should be ready to respond to commands.
      *
      * @note A true response does _NOT_ indicate that the sensor will respond to
      * commands, merely that the specified time for wake has passed.
@@ -358,11 +362,12 @@ class Sensor {
      * being awoken/activated and being ready to output stable values.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **bool** True indicates that enough time has passed that the sensor
-     * should have stabilized.
+     * @return **bool** True indicates that enough time has passed that the
+     * sensor should have stabilized.
      *
-     * @note A true response does _NOT_ indicate that the sensor is now giving stable
-     * values, merely that the specified time for sensor stabilization has passed.
+     * @note A true response does _NOT_ indicate that the sensor is now giving
+     * stable values, merely that the specified time for sensor stabilization
+     * has passed.
      */
     virtual bool isStable(bool debug = false);
     /**
@@ -377,11 +382,12 @@ class Sensor {
      * is expected to be complete.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **bool** True indicates that enough time has passed the measurement
-     * should have completed
+     * @return **bool** True indicates that enough time has passed the
+     * measurement should have completed
      *
-     * @note A true response does _NOT_ indicate that the sensor will now sucessfully
-     * report a result, merely that the specified time for a measurement has passed.
+     * @note A true response does _NOT_ indicate that the sensor will now
+     * sucessfully report a result, merely that the specified time for a
+     * measurement has passed.
      */
     virtual bool isMeasurementComplete(bool debug = false);
     /**
@@ -467,7 +473,7 @@ class Sensor {
      * when the startSingleMeasurement() function was run.
      *
      * The #_millisMeasurementRequested value is set in the
-     * startSingleMeasurement() function. It *may* be unset in the
+     * startSingleMeasurement() function.  It *may* be unset in the
      * addSingleMeasurementResult() function.
      */
     uint32_t _millisMeasurementRequested;

@@ -227,28 +227,30 @@ class YosemitechY4000 : public YosemitechParent {
      * Defaults to -1.
      * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
      * Defaults to -1.
-     * @param enablePin A pin on the mcu controlling the direction enable on the RS485
-     * adapter.  Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the
+     * RS485 adapter.  Defaults to -1.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor.  Defaults to 1.
      */
     YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y4000, "YosemitechY4000",
-                           Y4000_NUM_VARIABLES, Y4000_WARM_UP_TIME_MS,
-                           Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y4000,
+                           "YosemitechY4000", Y4000_NUM_VARIABLES,
+                           Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS,
+                           Y4000_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc YosemitechY4000::YosemitechY4000
      */
     YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
-        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin,
-                           measurementsToAverage, Y4000, "YosemitechY4000",
-                           Y4000_NUM_VARIABLES, Y4000_WARM_UP_TIME_MS,
-                           Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS) {}
+        : YosemitechParent(modbusAddress, stream, powerPin, powerPin2,
+                           enablePin, measurementsToAverage, Y4000,
+                           "YosemitechY4000", Y4000_NUM_VARIABLES,
+                           Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS,
+                           Y4000_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the Yosemitech Y4000 object
      */
@@ -277,8 +279,9 @@ class YosemitechY4000_DOmgL : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y4000DOmgL".
      */
-    explicit YosemitechY4000_DOmgL(YosemitechY4000* parentSense, const char* uuid = "",
-                                   const char* varCode = "Y4000DOmgL")
+    explicit YosemitechY4000_DOmgL(YosemitechY4000* parentSense,
+                                   const char*      uuid    = "",
+                                   const char*      varCode = "Y4000DOmgL")
         : Variable(parentSense, (const uint8_t)Y4000_DOMGL_VAR_NUM,
                    (uint8_t)Y4000_DOMGL_RESOLUTION, "oxygenDissolved",
                    "milligramPerLiter", varCode, uuid) {}
@@ -289,8 +292,9 @@ class YosemitechY4000_DOmgL : public Variable {
      * used.
      */
     YosemitechY4000_DOmgL()
-        : Variable((const uint8_t)Y4000_DOMGL_VAR_NUM, (uint8_t)Y4000_DOMGL_RESOLUTION,
-                   "oxygenDissolved", "milligramPerLiter", "Y4000DOmgL") {}
+        : Variable((const uint8_t)Y4000_DOMGL_VAR_NUM,
+                   (uint8_t)Y4000_DOMGL_RESOLUTION, "oxygenDissolved",
+                   "milligramPerLiter", "Y4000DOmgL") {}
     /**
      * @brief Destroy the YosemitechY4000_DOmgL object - no action needed.
      */
@@ -319,8 +323,8 @@ class YosemitechY4000_Turbidity : public Variable {
      * optional with a default value of "Y4000Turbidity".
      */
     explicit YosemitechY4000_Turbidity(YosemitechY4000* parentSense,
-                                       const char*      uuid    = "",
-                                       const char*      varCode = "Y4000Turbidity")
+                                       const char*      uuid = "",
+                                       const char* varCode   = "Y4000Turbidity")
         : Variable(parentSense, (const uint8_t)Y4000_TURB_VAR_NUM,
                    (uint8_t)Y4000_TURB_RESOLUTION, "turbidity",
                    "nephelometricTurbidityUnit", varCode, uuid) {}
@@ -331,8 +335,9 @@ class YosemitechY4000_Turbidity : public Variable {
      * used.
      */
     YosemitechY4000_Turbidity()
-        : Variable((const uint8_t)Y4000_TURB_VAR_NUM, (uint8_t)Y4000_TURB_RESOLUTION,
-                   "turbidity", "nephelometricTurbidityUnit", "Y4000Turbidity") {}
+        : Variable((const uint8_t)Y4000_TURB_VAR_NUM,
+                   (uint8_t)Y4000_TURB_RESOLUTION, "turbidity",
+                   "nephelometricTurbidityUnit", "Y4000Turbidity") {}
     /**
      * @brief Destroy the YosemitechY4000_Turbidity object - no action needed.
      */
@@ -360,8 +365,9 @@ class YosemitechY4000_Cond : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y4000Cond".
      */
-    explicit YosemitechY4000_Cond(YosemitechY4000* parentSense, const char* uuid = "",
-                                  const char* varCode = "Y4000Cond")
+    explicit YosemitechY4000_Cond(YosemitechY4000* parentSense,
+                                  const char*      uuid    = "",
+                                  const char*      varCode = "Y4000Cond")
         : Variable(parentSense, (const uint8_t)Y4000_COND_VAR_NUM,
                    (uint8_t)Y4000_COND_RESOLUTION, "specificConductance",
                    "microsiemenPerCentimeter", varCode, uuid) {}
@@ -372,8 +378,9 @@ class YosemitechY4000_Cond : public Variable {
      * used.
      */
     YosemitechY4000_Cond()
-        : Variable((const uint8_t)Y4000_COND_VAR_NUM, (uint8_t)Y4000_COND_RESOLUTION,
-                   "specificConductance", "microsiemenPerCentimeter", "Y4000Cond") {}
+        : Variable((const uint8_t)Y4000_COND_VAR_NUM,
+                   (uint8_t)Y4000_COND_RESOLUTION, "specificConductance",
+                   "microsiemenPerCentimeter", "Y4000Cond") {}
     /**
      * @brief Destroy the YosemitechY4000_Cond object - no action needed.
      */
@@ -401,8 +408,9 @@ class YosemitechY4000_pH : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y4000pH".
      */
-    explicit YosemitechY4000_pH(YosemitechY4000* parentSense, const char* uuid = "",
-                                const char* varCode = "Y4000pH")
+    explicit YosemitechY4000_pH(YosemitechY4000* parentSense,
+                                const char*      uuid    = "",
+                                const char*      varCode = "Y4000pH")
         : Variable(parentSense, (const uint8_t)Y4000_PH_VAR_NUM,
                    (uint8_t)Y4000_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     /**
@@ -412,8 +420,8 @@ class YosemitechY4000_pH : public Variable {
      * used.
      */
     YosemitechY4000_pH()
-        : Variable((const uint8_t)Y4000_PH_VAR_NUM, (uint8_t)Y4000_PH_RESOLUTION, "pH",
-                   "pH", "Y4000pH") {}
+        : Variable((const uint8_t)Y4000_PH_VAR_NUM,
+                   (uint8_t)Y4000_PH_RESOLUTION, "pH", "pH", "Y4000pH") {}
     /**
      * @brief Destroy the YosemitechY4000_pH object - no action needed.
      */
@@ -441,11 +449,12 @@ class YosemitechY4000_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y4000Temp".
      */
-    explicit YosemitechY4000_Temp(YosemitechY4000* parentSense, const char* uuid = "",
-                                  const char* varCode = "Y4000Temp")
+    explicit YosemitechY4000_Temp(YosemitechY4000* parentSense,
+                                  const char*      uuid    = "",
+                                  const char*      varCode = "Y4000Temp")
         : Variable(parentSense, (const uint8_t)Y4000_TEMP_VAR_NUM,
-                   (uint8_t)Y4000_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)Y4000_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_Temp object.
      *
@@ -453,8 +462,9 @@ class YosemitechY4000_Temp : public Variable {
      * used.
      */
     YosemitechY4000_Temp()
-        : Variable((const uint8_t)Y4000_TEMP_VAR_NUM, (uint8_t)Y4000_TEMP_RESOLUTION,
-                   "temperature", "degreeCelsius", "Y4000Temp") {}
+        : Variable((const uint8_t)Y4000_TEMP_VAR_NUM,
+                   (uint8_t)Y4000_TEMP_RESOLUTION, "temperature",
+                   "degreeCelsius", "Y4000Temp") {}
     /**
      * @brief Destroy the YosemitechY4000_Temp object - no action needed.
      */
@@ -482,10 +492,12 @@ class YosemitechY4000_ORP : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y4000Potential".
      */
-    explicit YosemitechY4000_ORP(YosemitechY4000* parentSense, const char* uuid = "",
-                                 const char* varCode = "Y4000Potential")
+    explicit YosemitechY4000_ORP(YosemitechY4000* parentSense,
+                                 const char*      uuid    = "",
+                                 const char*      varCode = "Y4000Potential")
         : Variable(parentSense, (const uint8_t)Y4000_ORP_VAR_NUM,
-                   (uint8_t)Y4000_ORP_RESOLUTION, "ORP", "millivolt", varCode, uuid) {}
+                   (uint8_t)Y4000_ORP_RESOLUTION, "ORP", "millivolt", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_ORP object.
      *
@@ -493,8 +505,9 @@ class YosemitechY4000_ORP : public Variable {
      * used.
      */
     YosemitechY4000_ORP()
-        : Variable((const uint8_t)Y4000_ORP_VAR_NUM, (uint8_t)Y4000_ORP_RESOLUTION,
-                   "ORP", "millivolt", "Y4000Potential") {}
+        : Variable((const uint8_t)Y4000_ORP_VAR_NUM,
+                   (uint8_t)Y4000_ORP_RESOLUTION, "ORP", "millivolt",
+                   "Y4000Potential") {}
     /**
      * @brief Destroy the YosemitechY4000_ORP object - no action needed.
      */
@@ -523,8 +536,8 @@ class YosemitechY4000_Chlorophyll : public Variable {
      * optional with a default value of "Y4000Chloro".
      */
     explicit YosemitechY4000_Chlorophyll(YosemitechY4000* parentSense,
-                                         const char*      uuid    = "",
-                                         const char*      varCode = "Y4000Chloro")
+                                         const char*      uuid = "",
+                                         const char* varCode   = "Y4000Chloro")
         : Variable(parentSense, (const uint8_t)Y4000_CHLORO_VAR_NUM,
                    (uint8_t)Y4000_CHLORO_RESOLUTION, "chlorophyllFluorescence",
                    "microgramPerLiter", varCode, uuid) {}
@@ -566,12 +579,13 @@ class YosemitechY4000_BGA : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of Y4000BGA
      */
-    explicit YosemitechY4000_BGA(YosemitechY4000* parentSense, const char* uuid = "",
-                                 const char* varCode = "Y4000BGA")
+    explicit YosemitechY4000_BGA(YosemitechY4000* parentSense,
+                                 const char*      uuid    = "",
+                                 const char*      varCode = "Y4000BGA")
         : Variable(parentSense, (const uint8_t)Y4000_BGA_VAR_NUM,
                    (uint8_t)Y4000_BGA_RESOLUTION,
-                   "blueGreenAlgaeCyanobacteriaPhycocyanin", "microgramPerLiter",
-                   varCode, uuid) {}
+                   "blueGreenAlgaeCyanobacteriaPhycocyanin",
+                   "microgramPerLiter", varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_BGA object.
      *
@@ -579,9 +593,10 @@ class YosemitechY4000_BGA : public Variable {
      * used.
      */
     YosemitechY4000_BGA()
-        : Variable((const uint8_t)Y4000_BGA_VAR_NUM, (uint8_t)Y4000_BGA_RESOLUTION,
-                   "blueGreenAlgaeCyanobacteriaPhycocyanin", "microgramPerLiter",
-                   "Y4000BGA") {}
+        : Variable((const uint8_t)Y4000_BGA_VAR_NUM,
+                   (uint8_t)Y4000_BGA_RESOLUTION,
+                   "blueGreenAlgaeCyanobacteriaPhycocyanin",
+                   "microgramPerLiter", "Y4000BGA") {}
     /**
      * @brief Destroy the YosemitechY4000_BGA object - no action needed.
      */

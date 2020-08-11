@@ -10,8 +10,9 @@
  * @brief This file contains the ExternalVoltage sensor subclass and the
  * ExternalVoltage_Volt variable subclass.
  *
- * These are used for any voltage measureable on a TI ADS1115 or ADS1015.  There is a
- * multiplier allowed for a voltage divider between the raw voltage and the ADS.
+ * These are used for any voltage measureable on a TI ADS1115 or ADS1015.  There
+ * is a multiplier allowed for a voltage divider between the raw voltage and the
+ * ADS.
  *
  * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  *
@@ -49,16 +50,16 @@
  * the build flag ```-DMS_USE_ADS1015```.
  *
  * In the majority of break-out boards, and on the Mayfly, the I2C address of the
- * ADS1x15 is set as 0x48 by tying the address pin to ground. Up to four of these ADD's
+ * ADS1x15 is set as 0x48 by tying the address pin to ground.  Up to four of these ADD's
  * be used by changing the address value by changing the connection of the address pin
- * on the ADS1x15. The ADS1x15 requires an input voltage of 2.0-5.5V, but *this library
+ * on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but *this library
  * always assumes the ADS is powered with 3.3V*.
  *
  * Communication with the ADS1x15 depends on the
  * [soligen2010 fork of the Adafruit ADS1015 library](https://github.com/soligen2010/Adafruit_ADS1X15).
  *
  * @note We do *not* use the Adafruit library! The soligen2010 fork corrects some errors
- * in the Adafruit library. Until those corrections are pulled into the main library, we
+ * in the Adafruit library.  Until those corrections are pulled into the main library, we
  * use the fork instead.
  *
  * @section ads1x15_specs Specifications
@@ -78,7 +79,7 @@
  *     - without voltage divider:  0.125 mV
  *   - 12-bit ADC:
  *     - without voltage divider:  2 mV
- *   @note 1 bit of resolution is lost in single-ended reading. The maximum possible
+ *   @note 1 bit of resolution is lost in single-ended reading.  The maximum possible
  * resolution is over the differential range from negative to positive full scale, a
  * single ended reading is only over the range from 0 to positive full scale).
  *
@@ -106,7 +107,7 @@
  * If you are working with an EnviroDIY Mayfly, the easiest voltage divider to connect
  * is the Grove voltage divider sold by seeed studio.  The grove voltage divider is a
  * simple voltage divider designed to measure high external voltages on a low voltage
- * ADC. This module employs a variable gain via two pairs of voltage dividers, and a
+ * ADC.  This module employs a variable gain via two pairs of voltage dividers, and a
  * unity gain amplification to reduce output impedance of the module.
  *
  * @section ext_volt_datasheet Sensor Datasheet
@@ -274,10 +275,12 @@ class ExternalVoltage_Volt : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of extVoltage
      */
-    explicit ExternalVoltage_Volt(ExternalVoltage* parentSense, const char* uuid = "",
-                                  const char* varCode = "extVoltage")
+    explicit ExternalVoltage_Volt(ExternalVoltage* parentSense,
+                                  const char*      uuid    = "",
+                                  const char*      varCode = "extVoltage")
         : Variable(parentSense, (const uint8_t)EXT_VOLT_VAR_NUM,
-                   (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt", varCode, uuid) {}
+                   (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new ExternalVoltage_Volt object.
      *
@@ -285,8 +288,9 @@ class ExternalVoltage_Volt : public Variable {
      * used.
      */
     ExternalVoltage_Volt()
-        : Variable((const uint8_t)EXT_VOLT_VAR_NUM, (uint8_t)EXT_VOLT_RESOLUTION,
-                   "voltage", "volt", "extVoltage") {}
+        : Variable((const uint8_t)EXT_VOLT_VAR_NUM,
+                   (uint8_t)EXT_VOLT_RESOLUTION, "voltage", "volt",
+                   "extVoltage") {}
     /**
      * @brief Destroy the ExternalVoltage_Volt object - no action needed.
      */

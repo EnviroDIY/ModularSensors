@@ -131,7 +131,7 @@ class AtlasScientificpH : public AtlasParent {
      *bus (and thus your logger) to crash.
      */
     explicit AtlasScientificpH(int8_t  powerPin,
-                               uint8_t i2cAddressHex         = ATLAS_PH_I2C_ADDR,
+                               uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
                                uint8_t measurementsToAverage = 1)
         : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                       "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
@@ -167,8 +167,9 @@ class AtlasScientificpH_pH : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of AtlaspH
      */
-    explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense, const char* uuid = "",
-                                  const char* varCode = "AtlaspH")
+    explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
+                                  const char*        uuid    = "",
+                                  const char*        varCode = "AtlaspH")
         : Variable(parentSense, (const uint8_t)ATLAS_PH_VAR_NUM,
                    (uint8_t)ATLAS_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
     /**
@@ -178,8 +179,8 @@ class AtlasScientificpH_pH : public Variable {
      * used.
      */
     AtlasScientificpH_pH()
-        : Variable((const uint8_t)ATLAS_PH_VAR_NUM, (uint8_t)ATLAS_PH_RESOLUTION, "pH",
-                   "pH", "AtlaspH") {}
+        : Variable((const uint8_t)ATLAS_PH_VAR_NUM,
+                   (uint8_t)ATLAS_PH_RESOLUTION, "pH", "pH", "AtlaspH") {}
     /**
      * @brief Destroy the AtlasScientificpH_pH object - no action needed.
      */
