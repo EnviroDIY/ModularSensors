@@ -61,12 +61,13 @@ class Sensor {
      * Defaults to 0.
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 0.
-     * @param powerPin A pin on the mcu controlling power to the sensor.
+     * @param powerPin The pin on the mcu controlling power to the sensor.
+     * Use -1 if it is continuously powered.
+     * @param dataPin The pin on the mcu receiving data from the sensor.
      * Defaults to -1.
-     * @param dataPin A pin on the mcu receiving data from the sensor.  Defaults
-     * to -1.
      * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor.  Defaults to 1.
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     Sensor(const char*   sensorName      = "Unknown",
            const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,

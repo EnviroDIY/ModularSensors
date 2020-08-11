@@ -166,15 +166,16 @@ class AOSongDHT : public Sensor {
      * pin, and the sensor type
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong DHT.
-     * Use -1 if the sensor is continuously powered.
-     * - Requires a 3.3 - 6V power source
+     * Use -1 if it is continuously powered.
+     * - The DHT requires a 3.3 - 6V power source
      * @param dataPin The pin on the mcu receiving data from the AOSong DHT
      * @param type The type of DHT.  Possible values are DHT11, DHT21, AM2301,
      * DHT22, or AM2302.
      * - NOTE:  The DHT type should be entered without quotation
      * marks since the values are members of an enum rather than a string.
-     * @param measurementsToAverage The number of measurements to average;
-     * optional with default value of 1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type,
               uint8_t measurementsToAverage = 1);

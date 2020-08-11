@@ -131,10 +131,11 @@ class AOSongAM2315 : public Sensor {
      * @note It is only possible to connect *one* AM2315 at a time!
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong
-     * AM2315.  Use -1 if the sensor is continuously powered.
-     * - Requires a 3.3 - 5.5V power source
-     * @param measurementsToAverage The number of measurements to average;
-     * optional with default value of 1.
+     * AM2315.  Use -1 if it is continuously powered.
+     * - The AM2315 requires a 3.3 - 5.5V power source
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     explicit AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
     /**

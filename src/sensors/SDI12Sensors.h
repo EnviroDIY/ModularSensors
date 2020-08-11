@@ -79,12 +79,13 @@ class SDI12Sensors : public Sensor {
      * be used within this library.
      *
      * @param SDI12address The SDI-12 address of the sensor.
-     * @param powerPin A pin on the mcu controlling power to the sensor.
-     * Defaults to -1.
-     * @param dataPin A pin on the mcu receiving data from the sensor.  Defaults
-     * to -1.
+     * @param powerPin The pin on the mcu controlling power to the sensor.  Use
+     * -1 if it is continuously powered.
+     * @param dataPin The pin on the mcu connected to the data line of the
+     * SDI-12 circuit.
      * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor.  Defaults to 1.
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      * @param sensorName The name of the sensor.  Defaults to "SDI12-Sensor".
      * @param numReturnedVars The number of variable results returned by the
      * sensor.  Defaults to 1.

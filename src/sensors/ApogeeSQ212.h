@@ -188,15 +188,16 @@ class ApogeeSQ212 : public Sensor {
      * data channel on the ADS1x15
      *
      * @param powerPin The pin on the mcu controlling power to the Apogee
-     * SQ-212.  Use -1 if the sensor is continuously powered.
+     * SQ-212.  Use -1 if it is continuously powered.
      *   - The SQ-212 requires 3.3 to 24 V DC; current draw 10 µA
      *   - The ADS1115 requires 2.0-5.5V but is assumed to be powered at 3.3V
      * @param adsChannel The analog data channel the Apogee SQ-212 is
      * connected to _on the TI ADS1115_ (0-3).
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
-     * @param measurementsToAverage The number of measurements to average;
-     * optional with default value of 1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      * @note  The ADS is expected to be either continuously powered or have
      * its power controlled by the same pin as the SQ-212.  This library does
      * not support any other configuration.

@@ -172,11 +172,14 @@ class Decagon5TM : public SDI12Sensors {
      * programmed value of "0" before the sensor can be used with
      * ModularSensors!
      * @param powerPin The pin on the mcu controlling power to the ECH2O.  Use
-     * -1 if the sensor is continuously powered.
-     * - Requires a 3.5-12V power supply, which can be turned off between
-     * measurements
-     * @param dataPin The pin on the mcu receiving data from the ECH2O.
-     * @param measurementsToAverage The number of measurements to average.
+     * -1 if it is continuously powered.
+     * - The ECH2O requires a 3.5-12V power supply, which can be turned off
+     * between measurements
+     * @param dataPin The pin on the mcu connected to the data line of the
+     * SDI-12 circuit.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)

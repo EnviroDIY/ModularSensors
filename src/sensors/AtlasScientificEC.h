@@ -182,18 +182,19 @@ class AtlasScientificEC : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific EC object
      *
-     * @param powerPin The pin on the mcu controlling powering to the Atlas
-     * circuit.  Use -1 if the sensor is continuously powered.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas EC
+     * circuit.  Use -1 if it is continuously powered.
      * - Requires a 3.3V and 5V power supply
      * @param i2cAddressHex The I2C address of the Atlas circuit; optional with
      * the Atlas-supplied default address of 0x64.
-     * @param measurementsToAverage The number of measurements to average;
-     * optional with default value of 1.
-     *@warning **You must isolate the data lines of all Atlas circuits from the
-     *main I2C bus if you wish to turn off their power!**  If you do not isolate
-     *them from your main I2C bus and you turn off power to the circuits between
-     *measurements the I2C lines will be pulled down to ground causing the I2C
-     *bus (and thus your logger) to crash.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
      */
     explicit AtlasScientificEC(int8_t  powerPin,
                                uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,

@@ -101,10 +101,11 @@ class AtlasParent : public Sensor {
      * @brief Construct a new Atlas Parent object
      *
      * @param powerPin The pin on the mcu controlling power to the Atlas
-     * circuit.  Use -1 if the sensor is continuously powered.
+     * circuit.  Use -1 if it is continuously powered.
      * @param i2cAddressHex The I2C address of the Atlas circuit
-     * @param measurementsToAverage The number of measurements to average;
-     * optional with default value of 1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      *@param sensorName The name of the sensor, defaults to AtlasSensor.
      * @param numReturnedVars The number of results returned by the sensor.
      * Defaults to 1.

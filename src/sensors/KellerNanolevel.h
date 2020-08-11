@@ -100,7 +100,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Keller sensor](@ref nanolevel_page)
+ * [Keller nanolevel sensor](@ref nanolevel_page)
  *
  * @ingroup nanolevel_group
  */
@@ -112,15 +112,21 @@ class KellerNanolevel : public KellerParent {
      * @brief Construct a new Keller Nanolevel
      *
      * @param modbusAddress The modbus address of the sensor.
-     * @param stream An Arduino data stream for modbus communication
-     * @param powerPin A pin on the mcu controlling power to the sensor.
-     * Defaults to -1.
-     * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
-     * Defaults to -1.
-     * @param enablePin A pin on the mcu controlling the direction enable on the
-     * RS485 adapter.  Defaults to -1.
+     * @param stream An Arduino data stream for modbus communication.  See
+     * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
+     * for more information on what streams can be used.
+     * @param powerPin The pin on the mcu controlling power to the Nanolevel.
+     * Use -1 if it is continuously powered.
+     * - The Nanolevel requires a 9-28 VDC power supply.
+     * @param powerPin2 The pin on the mcu controlling power to the RS485
+     * adapter, if it is different from that used to power the sensor.  Use -1
+     * or omit if not applicable.
+     * @param enablePin The pin on the mcu controlling the direction enable on
+     * the RS485 adapter, if necessary; use -1 or omit if not applicable.  An
+     * RS485 adapter with integrated flow control is strongly recommended.
      * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor.  Defaults to 1.
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     KellerNanolevel(byte modbusAddress, Stream* stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,

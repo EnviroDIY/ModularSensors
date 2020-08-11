@@ -152,11 +152,14 @@ class ZebraTechDOpto : public SDI12Sensors {
      *
      * @param SDI12address The SDI-12 address of the sensor
      * @param powerPin The pin on the mcu controlling power to the D-Opto.  Use
-     * -1 if the sensor is continuously powered.
-     * - Requires a 8-12V power supply, which can be turned off between
-     * measurements
-     * @param dataPin The pin on the mcu receiving data from the D-Opto.
-     * @param measurementsToAverage The number of measurements to average.
+     * -1 if it is continuously powered.
+     * - The D-Opto requires a 8-12V power supply, which can be turned off
+     * between measurements
+     * @param dataPin The pin on the mcu connected to the data line of the
+     * SDI-12 circuit.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin,
                    uint8_t measurementsToAverage = 1)

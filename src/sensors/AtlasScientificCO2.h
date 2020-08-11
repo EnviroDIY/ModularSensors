@@ -134,13 +134,14 @@ class AtlasScientificCO2 : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific CO2 object
      *
-     * @param powerPin The pin on the mcu controlling powering to the Atlas
-     * circuit.  Use -1 if the sensor is continuously powered.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas CO2
+     * circuit.  Use -1 if it is continuously powered.
      * - Requires a 3.3V and 5V power supply
      * @param i2cAddressHex The I2C address of the Atlas circuit; optional with
      * the Atlas-supplied default address of 0x69.
-     * @param measurementsToAverage The number of measurements to average;
-     * optional with default value of 1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      * @warning **You must isolate the data lines of all Atlas circuits from the
      * main I2C bus if you wish to turn off their power!**  If you do not
      * isolate them from your main I2C bus and you turn off power to the
