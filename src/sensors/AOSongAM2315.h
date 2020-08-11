@@ -128,7 +128,7 @@ class AOSongAM2315 : public Sensor {
      * Because this is I2C and has only 1 possible address (0xB8), we only need
      * the power pin.
      *
-     * @note It is only possible to connect ONE AM2315 at a time!
+     * @note It is only possible to connect *one* AM2315 at a time!
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong
      * AM2315.  Use -1 if the sensor is continuously powered.

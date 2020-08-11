@@ -49,6 +49,7 @@ ___
     - [Campbell OBS3+ analog turbidity sensor](#campbell-obs3-analog-turbidity-sensor)
     - [Decagon ES2 conductivity and temperature sensor](#decagon-es2-conductivity-and-temperature-sensor)
     - [External voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
+    - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
     - [Meter ECH2O soil moisture sensor](#meter-ech2o-soil-moisture-sensor)
     - [Meter Hydros 21](#meter-hydros-21)
     - [Meter Teros 11](#meter-teros-11)
@@ -456,7 +457,8 @@ Pins that do not apply should be set as -1.
 This code is for the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800.
 To create a Sodaq2GBeeR6 object we need to know
 - the serial object name,
-- the MCU pin controlling modem power, (**NOTE:**  On the GPRSBee R6 and R7 the pin labeled as ON/OFF in Sodaq's diagrams is tied to _both_ the SIM800 power supply and the (inverted) SIM800 `PWRKEY`.  You should enter this pin as the power pin.)
+- the MCU pin controlling modem power, (**NOTE:**  On the GPRSBee R6 and R7 the pin labeled as ON/OFF in Sodaq's diagrams is tied to _both_ the SIM800 power supply and the (inverted) SIM800 `PWRKEY`.
+You should enter this pin as the power pin.)
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
@@ -639,6 +641,18 @@ The number of measurements to average, if more than one is desired, goes as the 
 @see @ref ext_volt_page
 
 [//]: # ( @menusnip{ext_volt} )
+___
+
+
+[//]: # ( @subsection menu_mpl115a2 Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer )
+### Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer
+
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average.
+Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.
+
+@see @ref mpl115a2_page
+
+[//]: # ( @menusnip{mpl115a2} )
 ___
 
 
@@ -1113,7 +1127,8 @@ Every time the logger wakes we check the battery voltage and do 1 of three thing
 1. If the battery is very low, go immediately back to sleep and hope the sun comes back out
 2. If the battery is at a moderate level, attempt to collect data from sensors, but do not attempt to publish data.
 The modem the biggest power user of the whole system.
-3.  At full power, do everything.
+3.
+At full power, do everything.
 
 [//]: # ( @menusnip{simple_loop} )
 
@@ -1134,7 +1149,8 @@ This allows you to use ```checkMarkedInterval()``` to check if an action should 
   - Immediately after running ```updateAllSensors()```, put sensors to sleep to save power with ```sensorsSleep()```.
   - Power down all of your sensors with ```sensorsPowerDown()```.
 - Or:
-  - Do a full update loop of all sensors, including powering them with ```completeUpdate()```.  (This combines the previous 5 functions.)
+  - Do a full update loop of all sensors, including powering them with ```completeUpdate()```.
+(This combines the previous 5 functions.)
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 
