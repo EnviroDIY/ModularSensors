@@ -927,7 +927,6 @@ void setup() {
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
-    // dataLogger.serzBegin(); //Data walkthrough on card
 #if defined UseModem_Module
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.registration_token,
