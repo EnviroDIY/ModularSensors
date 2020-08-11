@@ -20,6 +20,8 @@
  * Classes for the @ref acculevel_page
  *
  * @copydoc acculevel_page
+ *
+ * @ingroup keller_group
  */
 /* clang-format off */
 /**

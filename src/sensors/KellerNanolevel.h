@@ -15,6 +15,8 @@
  * Classes for the @ref nanolevel_page
  *
  * @copydoc nanolevel_page
+ *
+ * @ingroup keller_group
  */
 /* clang-format off */
 /**
