@@ -165,7 +165,7 @@ class MPL115A2 : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
- protected:
+ private:
     Adafruit_MPL115A2 mpl115a2_internal;
     uint8_t           _i2cAddressHex;
 };

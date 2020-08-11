@@ -124,7 +124,7 @@ class loggerModem {
     /**
      * @brief Set an LED to turn on (pin will be `HIGH`) when the modem is on.
      *
-     * @param modemLEDPin the digital pin number for the LED
+     * @param modemLEDPin The digital pin number for the LED
      */
     void setModemLED(int8_t modemLEDPin);
 

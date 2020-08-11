@@ -53,6 +53,8 @@ ___
     - [Meter ECH2O soil moisture sensor](#meter-ech2o-soil-moisture-sensor)
     - [Meter Hydros 21](#meter-hydros-21)
     - [Meter Teros 11](#meter-teros-11)
+    - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
+    - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
     - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
     - [Yosemitech Y510 Yosemitech Y510 turbidity sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
     - [Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
@@ -692,6 +694,46 @@ The data pin must be a pin that supports pin-change interrupts.
 @see @ref teros_page
 
 [//]: # ( @menusnip{teros} )
+___
+
+
+[//]: # ( @subsection menu_nanolevel Keller Nanolevel Level Transmitter )
+### Keller Nanolevel Level Transmitter
+
+The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
+If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
+If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
+If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
+Both pins _cannot_ be shared pins.
+
+@see @ref nanolevel_page
+
+[//]: # ( @menusnip{nanolevel} )
+___
+
+
+[//]: # ( @subsection menu_acculevel Keller Acculevel High Accuracy Submersible Level Transmitter )
+### Keller Acculevel High Accuracy Submersible Level Transmitter
+
+The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
+If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
+If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
+If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
+Both pins _cannot_ be shared pins.
+
+@see @ref acculevel_page
+
+[//]: # ( @menusnip{acculevel} )
 ___
 
 

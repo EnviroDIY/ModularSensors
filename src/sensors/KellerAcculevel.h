@@ -10,15 +10,66 @@
  * variable subclasses.
  *
  * These are for Keller Series 30, Class 5, Group 20 sensors using Modbus
- * communication, that are Software version 5.20-12.28 and later (i.e. made
+ * communication, that are software version 5.20-12.28 and later (i.e. made
  * after the 2012 in the 28th week).
  *
  * Only tested on the Acculevel.
  *
- * Documentation for the Keller Protocol commands and responses, along with
- * information about the various variables, can be found in the EnviroDIY
- * KellerModbus library at: https://github.com/EnviroDIY/KellerModbus
+ *
+ * @defgroup acculevel_group Keller Acculevel
+ * Classes for the @ref acculevel_page
+ *
+ * @copydoc acculevel_page
  */
+/* clang-format off */
+/**
+ * @page acculevel_page Keller Acculevel
+ *
+ * @tableofcontents
+ *
+ * @section acculevel_datasheet Sensor Datasheet
+ * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
+ * [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
+ *
+ * @section acculevel_sensor the Keller Acculevel Sensor
+ * @ctor_doc{KellerAcculevel, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
+ * @subsection acculevel_timing Sensor Timing
+ *
+ * @section acculevel_pressure Pressure Output
+ * @variabledoc{KellerAcculevel,Pressure}
+ *   - Range is 0 to 11 bar
+ *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.002%
+ *   - Reported as millibar (mb)
+ *   - Default variable code is kellerAccuPress
+ *
+ * @section acculevel_temp Temperature Output
+ * @variabledoc{KellerAcculevel,Temp}
+ *   - Range is -10°C to 60°C
+ *   - Accuracy is not specified in the sensor datasheet
+ *   - Result stored in sensorValues[1]
+ *   - Resolution is 0.01°C
+ *   - Reported as degrees Celsius (°C)
+ *   - Default variable code is kellerAccuTemp
+ *
+ * @section acculevel_height Height Output
+ * @variabledoc{KellerAcculevel,Height}
+ *   - Range is 0 to 900 feet
+ *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *   - Result stored in sensorValues[2]
+ *   - Resolution is 0.002%
+ *   - Reported as meters (m)
+ *   - Default variable code is kellerAccuHeight
+ *
+ * @ingroup keller_group
+ * ___
+ * @section acculevel_examples Example Code
+ * The Keller Acculevel is used in the @menulink{acculevel} example.
+ *
+ * @menusnip{acculevel}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_KELLERACCULEVEL_H_
@@ -28,12 +79,15 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_warmUpTime_ms; the Acculevel warms up in 500ms.
 #define ACCULEVEL_WARM_UP_TIME_MS 500
 /// Sensor::_stabilizationTime_ms; the Acculevel is stable after 5000ms.
 #define ACCULEVEL_STABILIZATION_TIME_MS 5000
-/// Sensor::_measurementTime_ms; the Acculevel takes 1500ms to complete a
-/// measurement.
+/**
+ * @brief Sensor::_measurementTime_ms; the Acculevel takes 1500ms to complete a
+ * measurement.
+ */
 #define ACCULEVEL_MEASUREMENT_TIME_MS 1500
 
 /// Decimals places in string representation; pressure should have 5.
@@ -46,10 +100,31 @@
 #define ACCULEVEL_HEIGHT_RESOLUTION 4
 
 
-// The main class for the Keller Sensors
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for the
+ * [Keller Acculevel sensor](@ref acculevel_page).
+ *
+ * @ingroup acculevel_group
+ */
+/* clang-format on */
 class KellerAcculevel : public KellerParent {
  public:
     // Constructors with overloads
+    /**
+     * @brief Construct a new Keller Acculevel
+     *
+     * @param modbusAddress The modbus address of the sensor.
+     * @param stream An Arduino data stream for modbus communication
+     * @param powerPin A pin on the mcu controlling power to the sensor.
+     * Defaults to -1.
+     * @param powerPin2 A pin on the mcu controlling power to the RS485 adapter.
+     * Defaults to -1.
+     * @param enablePin A pin on the mcu controlling the direction enable on the
+     * RS485 adapter.  Defaults to -1.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor.  Defaults to 1.
+     */
     KellerAcculevel(byte modbusAddress, Stream* stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
@@ -58,6 +133,9 @@ class KellerAcculevel : public KellerParent {
               measurementsToAverage, Acculevel_kellerModel, "KellerAcculevel",
               KELLER_NUM_VARIABLES, ACCULEVEL_WARM_UP_TIME_MS,
               ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc KellerAcculevel::KellerAcculevel
+     */
     KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
@@ -71,7 +149,15 @@ class KellerAcculevel : public KellerParent {
 };
 
 
-// Defines the PressureGauge (vented & barometricPressure corrected) variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [gauge pressure (vented and barometric pressure corrected) output](@ref acculevel_pressure)
+ * from a [Keller Acculevel](@ref acculevel_page).
+ *
+ * @ingroup acculevel_group
+ */
+/* clang-format on */
 class KellerAcculevel_Pressure : public Variable {
  public:
     /**
@@ -80,9 +166,9 @@ class KellerAcculevel_Pressure : public Variable {
      * @param parentSense The parent KellerAcculevel providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is kellerAccuPress
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "kellerAccuPress".
      */
     explicit KellerAcculevel_Pressure(KellerAcculevel* parentSense,
                                       const char*      uuid = "",
@@ -107,7 +193,15 @@ class KellerAcculevel_Pressure : public Variable {
 };
 
 
-// Defines the Temperature Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref acculevel_temp) from a
+ * [Keller Acculevel](@ref acculevel_page).
+ *
+ * @ingroup acculevel_group
+ */
+/* clang-format on */
 class KellerAcculevel_Temp : public Variable {
  public:
     /**
@@ -116,9 +210,9 @@ class KellerAcculevel_Temp : public Variable {
      * @param parentSense The parent KellerAcculevel providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is kellerAccuTemp
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "kellerAccuTemp".
      */
     explicit KellerAcculevel_Temp(KellerAcculevel* parentSense,
                                   const char*      uuid    = "",
@@ -142,8 +236,16 @@ class KellerAcculevel_Temp : public Variable {
     ~KellerAcculevel_Temp() {}
 };
 
-// Defines the gageHeight (Water level with regard to an arbitrary gage datum)
-// Variable
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [gauge height (water level with regard to an arbitrary gage datum) output](@ref acculevel_height)
+ * from a [Keller Acculevel](@ref acculevel_page).
+ *
+ * @ingroup acculevel_group
+ */
+/* clang-format on */
 class KellerAcculevel_Height : public Variable {
  public:
     /**
@@ -152,9 +254,9 @@ class KellerAcculevel_Height : public Variable {
      * @param parentSense The parent KellerAcculevel providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is kellerAccuHeight
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "kellerAccuHeight".
      */
     explicit KellerAcculevel_Height(KellerAcculevel* parentSense,
                                     const char*      uuid = "",

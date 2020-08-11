@@ -172,7 +172,7 @@ class Logger {
      * @brief Set the universally unique identifier (UUID or GUID) of the
      * sampling feature.
      *
-     * @param samplingFeatureUUID a pointer to the sampling feature UUID
+     * @param samplingFeatureUUID A pointer to the sampling feature UUID
      */
     void setSamplingFeatureUUID(const char* samplingFeatureUUID);
     /**
