@@ -19,6 +19,8 @@
  * Classes for the @ref bme280_page.
  *
  * @copydoc bme280_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

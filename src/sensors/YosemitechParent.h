@@ -16,6 +16,8 @@
  * The Sensor and Variable objects for all @ref yosemitech_page
  *
  * @copydoc yosemitech_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

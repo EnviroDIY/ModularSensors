@@ -136,7 +136,6 @@ class ThingSpeakPublisher : public dataPublisher {
                         const char* thingSpeakChannelID,
                         const char* thingSpeakChannelKey,
                         uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    // Destructor
     /**
      * @brief Destroy the ThingSpeak Publisher object
      */

@@ -177,7 +177,6 @@ class DecagonES2 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
-    // Destructor
     /**
      * @brief Destroy the Decagon ES2 object
      */

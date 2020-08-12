@@ -21,6 +21,8 @@
  * Classes for the @ref ms5803_page
  *
  * @copydoc ms5803_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

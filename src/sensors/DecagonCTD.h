@@ -185,7 +185,6 @@ class DecagonCTD : public SDI12Sensors {
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS) {}
 
-    // Destructor
     /**
      * @brief Destroy the Decagon CTD object
      */

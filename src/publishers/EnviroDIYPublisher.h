@@ -122,7 +122,6 @@ class EnviroDIYPublisher : public dataPublisher {
                        const char* registrationToken,
                        const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
                        uint8_t sendOffset = 0);
-    // Destructor
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */

@@ -17,6 +17,8 @@
  * humidity and temperature sensor.
  *
  * @copydoc dht_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

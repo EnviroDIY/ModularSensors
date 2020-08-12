@@ -218,7 +218,6 @@ class MeterTeros11 : public SDI12Sensors {
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS,
                        TEROS11_MEASUREMENT_TIME_MS) {}
-    // Destructor
     /**
      * @brief Destroy the Meter Teros 11 object
      */

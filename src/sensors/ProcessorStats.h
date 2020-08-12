@@ -14,6 +14,8 @@
  * Classes for the @ref processor_sensor_page
  *
  * @copydoc processor_sensor_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

@@ -202,7 +202,6 @@ class Decagon5TM : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS) {}
-    // Destructor
     /**
      * @brief Destroy the Decagon 5TM object
      */

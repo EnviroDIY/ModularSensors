@@ -113,7 +113,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    // Destructor
     /**
      * @brief Destroy the DreamHost Publisher object
      */

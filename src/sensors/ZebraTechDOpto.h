@@ -185,7 +185,6 @@ class ZebraTechDOpto : public SDI12Sensors {
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
                        DOPTO_MEASUREMENT_TIME_MS) {}
-    // Destructor
     /**
      * @brief Destroy the Zebra-Tech DOpto object
      */

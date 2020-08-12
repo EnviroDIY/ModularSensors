@@ -18,6 +18,8 @@
  * Classes for the @ref i2c_rain_page
  *
  * @copydoc i2c_rain_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

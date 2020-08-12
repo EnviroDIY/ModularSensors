@@ -21,6 +21,8 @@
  *
  * @copydoc ads1x15_page
  *
+ * @ingroup the_sensors
+ *
  * @defgroup ext_volt_group TI ADS1x15 External Voltage Sensor
  * Classes for simple [external analog voltage measurements](@ref ext_volt_page)
  *

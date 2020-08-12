@@ -22,8 +22,6 @@
 /**
  * @page obs3_page Campbell OBS3+
  *
- * @warning This sensor is no longer manufactured!
- *
  * @tableofcontents
  *
  * @section obs3_intro Introduction

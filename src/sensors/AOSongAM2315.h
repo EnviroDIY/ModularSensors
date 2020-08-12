@@ -17,6 +17,8 @@
  * capacitive humidity and temperature sensor.
  *
  * @copydoc am2315_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

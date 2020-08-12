@@ -16,6 +16,8 @@
  * Classes for the @ref ds3231_page
  *
  * @copydoc ds3231_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

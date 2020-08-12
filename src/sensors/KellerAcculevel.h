@@ -64,7 +64,7 @@
  *   - Reported as meters (m)
  *   - Default variable code is kellerAccuHeight
  *
- * @ingroup keller_group
+ *
  * ___
  * @section acculevel_examples Example Code
  * The Keller Acculevel is used in the @menulink{acculevel} example.

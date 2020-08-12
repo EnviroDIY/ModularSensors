@@ -17,6 +17,8 @@
  * Classes for the @ref mpl115a2_page
  *
  * @copydoc mpl115a2_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

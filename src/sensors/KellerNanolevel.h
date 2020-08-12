@@ -59,7 +59,7 @@
  *   - Reported as meters (m)
  *   - Default variable code is kellerNanoHeight
  *
- * @ingroup keller_group
+ *
  * ___
  * @section nanolevel_examples Example Code
  * The Keller Nanolevel is used in the @menulink{nanolevel} example.

@@ -13,6 +13,8 @@
  * Classes for the @ref maxbotics_page
  *
  * @copydoc maxbotics_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

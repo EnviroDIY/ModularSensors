@@ -7,6 +7,11 @@
  * @brief Contains the Sensor class.
  *
  * @copydetails Sensor
+ *
+ * @defgroup the_sensors Supported Sensors
+ * All implemented Sensor classes
+ *
+ * @copydetails Sensor
  */
 
 // Header Guards

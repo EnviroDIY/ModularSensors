@@ -16,6 +16,8 @@
  * [Atlas EZO circuits](@ref atlas_page).
  *
  * @copydoc atlas_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

@@ -17,6 +17,8 @@
  * Classes for the @ref ina219_page
  *
  * @copydoc ina219_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

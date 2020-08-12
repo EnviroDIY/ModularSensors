@@ -18,6 +18,8 @@
  * The Sensor and Variable objects for all @ref keller_page
  *
  * @copydoc keller_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**

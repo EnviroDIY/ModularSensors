@@ -17,6 +17,8 @@
  * Classes for the @ref ds18_page
  *
  * @copydoc ds18_page
+ *
+ * @ingroup the_sensors
  */
 /* clang-format off */
 /**
