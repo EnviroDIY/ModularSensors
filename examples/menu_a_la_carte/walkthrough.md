@@ -50,14 +50,16 @@ ___
     - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
+    - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
+    - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
     - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
     - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
     - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
-    - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
-    - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
+    - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
+    - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
     - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
     - [Yosemitech Y510 Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
     - [Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
@@ -662,15 +664,55 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 ___
 
 
-[//]: # ( @subsection menu_sonar Maxbotix HRXL Ultrasonic Range Finder )
+[//]: # ( @subsection menu_nanolevel Keller Nanolevel Level Transmitter )
+### Keller Nanolevel Level Transmitter
+
+The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
+If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
+If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
+If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
+Both pins _cannot_ be shared pins.
+
+@see @ref nanolevel_page
+
+[//]: # ( @menusnip{nanolevel} )
+___
+
+
+[//]: # ( @subsection menu_acculevel Keller Acculevel High Accuracy Submersible Level Transmitter )
+### Keller Acculevel High Accuracy Submersible Level Transmitter
+
+The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
+If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
+If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
+If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
+Both pins _cannot_ be shared pins.
+
+@see @ref acculevel_page
+
+[//]: # ( @menusnip{acculevel} )
+___
+
+
+[//]: # ( @subsection menu_maxbotics Maxbotix HRXL Ultrasonic Range Finder )
 ### Maxbotix HRXL Ultrasonic Range Finder
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.
 (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref sonar_page
+@see @ref maxbotics_page
 
-[//]: # ( @menusnip{sonar} )
+[//]: # ( @menusnip{maxbotics} )
 ___
 
 
@@ -739,43 +781,32 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
-[//]: # ( @subsection menu_nanolevel Keller Nanolevel Level Transmitter )
-### Keller Nanolevel Level Transmitter
+[//]: # ( @subsection menu_i2c_rain Trinket-Based Tipping Bucket Rain Gauge )
+### Trinket-Based Tipping Bucket Rain Gauge
 
-The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
-In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
-AltSoftSerial and HardwareSerial work fine.
-Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
-If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
-If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
-If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
-Both pins _cannot_ be shared pins.
+This is for use with a simple external I2C tipping bucket counter based on the [Adafriut Trinket](https://www.adafruit.com/product/1501).
+All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).
+Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.
+Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
+Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
 
-@see @ref nanolevel_page
+@see @ref i2c_rain_page
 
-[//]: # ( @menusnip{nanolevel} )
+[//]: # ( @menusnip{i2c_rain} )
 ___
 
 
-[//]: # ( @subsection menu_acculevel Keller Acculevel High Accuracy Submersible Level Transmitter )
-### Keller Acculevel High Accuracy Submersible Level Transmitter
+[//]: # ( @subsection menu_ina219 TI INA219 High Side Current Sensor )
+### TI INA219 High Side Current Sensor
 
-The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
-In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
-AltSoftSerial and HardwareSerial work fine.
-Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
-If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
-If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
-If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
-Both pins _cannot_ be shared pins.
+This is the code for the TI INA219 high side current and voltage sensor.
+The Arduino pin controlling power on/off is all that is required for the constructor.
+If your INA219 is not at the standard address of 0x40, you can enter its actual address as the fourth argument.
+The number of measurements to average, if more than one is desired, goes as the fifth argument.
 
-@see @ref acculevel_page
+@see @ref ina219_page
 
-[//]: # ( @menusnip{acculevel} )
+[//]: # ( @menusnip{ina219} )
 ___
 
 
