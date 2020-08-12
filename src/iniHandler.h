@@ -272,7 +272,7 @@ static int inihUnhandledFn(const char* section, const char* name,
                    0) {  // Supersed by BATTERY_TYPE if exists
             // convert  str to num with error checking
             long batLiionType = strtoul(value, &endptr, 10);
-            if ((batLiionType < PSLR_NUM) && (batLiionType > 0) &&
+            if ((batLiionType < PSLR_NUM) && (batLiionType >= 0) &&
                 (errno != ERANGE)) {
                 mcuBoard.setBatteryType((ps_liion_rating_t)batLiionType);
 #if defined USE_PS_EEPROM
