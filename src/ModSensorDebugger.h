@@ -141,7 +141,7 @@ static void MS_DBG(T head, Args... tail) {
  *
  * The name of the header file calling the print command is appended to the end
  * of the text.
- * */
+ */
 #define MS_DBG(...)
 /**
  * @brief Initializes a variable called start with the current processor millis.

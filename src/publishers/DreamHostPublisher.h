@@ -163,13 +163,18 @@ class DreamHostPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, const char* dhUrl);
 
-    // This utilizes an attached modem to make a TCP connection to the
-    // DreamHost URL and then streams out a get request
-    // over that connection.
-    // The return is the http status code of the response.
     // int16_t postDataDreamHost(void);
     /**
-     * @copydoc dataPublisher::publishData(Client* outClient)
+     * @brief Utilizes an attached modem to make a TCP connection to the
+     * DreamHost URL and then stream out a get request over that connection.
+     *
+     * This depends on an internet connection already having been made and a
+     * client being available.
+     *
+     * @param outClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     *
      * @return **int16_t** The http status code of the response.
      */
     int16_t publishData(Client* outClient) override;
