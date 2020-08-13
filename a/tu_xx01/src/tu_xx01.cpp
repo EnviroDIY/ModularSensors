@@ -73,8 +73,9 @@ const char git_branch[] = ".";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 // const char *LoggerID = "TU001";
-const char* LoggerID        = LOGGERID_DEF_STR;
-const char* configIniID_def = configIniID_DEF_STR;
+const char* LoggerID          = LOGGERID_DEF_STR;
+const char* configIniID_def   = configIniID_DEF_STR;
+const char* configDescription = CONFIGURATION_DESCRIPTION_STR;
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 
@@ -88,9 +89,9 @@ int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
 uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
 uint8_t     postMax_num         = 0;  // Future 0,5-50
-//Common
-uint8_t     collectReadings     = COLLECT_READINGS_DEF;
-uint8_t     sendOffset_min      = SEND_OFFSET_MIN_DEF;
+// Common
+uint8_t collectReadings = COLLECT_READINGS_DEF;
+uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
 #endif  // UseModem_Module
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -821,6 +822,9 @@ void setup() {
     Serial.print(build_ref);
     Serial.print(" ");
     Serial.println(git_branch);
+
+    Serial.print(F("Name: "));
+    Serial.println(configDescription);
 
     Serial.print(F("ModularSensors version "));
     Serial.println(MODULAR_SENSORS_VERSION);
