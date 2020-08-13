@@ -15,18 +15,12 @@
 /* clang-format off */
 /**
  * @defgroup dopto_group Zebra-Tech D-Opto
- * Classes for the @ref dopto_page
+ * Classes for the Zebra-Tech D-Opto digital dissolved oxygen sensor.
  *
  * @ingroup sdi12_group
  *
- * @copydoc dopto_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page dopto_page Zebra-Tech D-Opto
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section dopto_intro Introduction
  *
@@ -136,7 +130,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_page).
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
  *
  * @ingroup dopto_group
  */
@@ -199,7 +193,7 @@ class ZebraTechDOpto : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref dopto_temp) from a
- * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_page).
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
  *
  * @ingroup dopto_group
  */
@@ -243,7 +237,7 @@ class ZebraTechDOpto_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen percent saturation output](@ref dopto_dopercent)
- * from a [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_page).
+ * from a [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
  *
  * @ingroup dopto_group
  */
@@ -289,7 +283,7 @@ class ZebraTechDOpto_DOpct : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen concentration output](@ref dopto_domgl) from a
- * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_page).
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
  *
  * @ingroup dopto_group
  */

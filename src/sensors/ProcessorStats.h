@@ -13,18 +13,12 @@
 /* clang-format off */
 /**
  * @defgroup processor_group Processor Metadata
- * Classes for the @ref processor_sensor_page
+ * Classes for the using the processor as a sensor.
  *
  * @ingroup the_sensors
  *
- * @copydoc processor_sensor_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page processor_sensor_page Processor Metadata
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section processor_intro Introduction
  *

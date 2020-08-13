@@ -7,7 +7,7 @@
  * @brief Contains the YosemitechY520 sensor subclass and the variable
  * subclasses YosemitechY520_Cond and YosemitechY520_Temp.
  *
- * These are for the Yosemitech Y520 4-pole Conductivity sensor.
+ * These are for the Yosemitech Y520 4-pole conductivity sensor.
  *
  * This depends on the YosemitechParent super class.
  *
@@ -17,19 +17,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y520_group Yosemitech Y520 Conductivity %Sensor
- * Classes for the @ref y520_page
+ * @defgroup y520_group Yosemitech Y520
+ * Classes for the Yosemitech Y520 4-pole conductivity sensor.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y520_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y520_page Yosemitech Y520 Conductivity %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y520_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity_UserManual-v1.1.pdf)
@@ -108,7 +102,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_page).
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_group).
  *
  * @ingroup y520_group
  */
@@ -165,7 +159,7 @@ class YosemitechY520 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [conductivity output](@ref y520_cond) from a
- * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_page).
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_group).
  *
  * @ingroup y520_group
  */
@@ -209,7 +203,7 @@ class YosemitechY520_Cond : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y520_temp) from a
- * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_page).
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_group).
  *
  * @ingroup y520_group
  */

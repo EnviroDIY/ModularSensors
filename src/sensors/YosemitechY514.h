@@ -7,7 +7,7 @@
  * @brief Contains the YosemitechY514 sensor subclass and the variable
  * subclasses YosemitechY514_Chlorophyll and YosemitechY514_Temp.
  *
- * These are for the Yosemitech Y514 Chlorophyll Sensor with Wiper.
+ * These are for the Yosemitech Y514 chlorophyll sensor with wiper.
  *
  * This depends on the YosemitechParent super class.
  *
@@ -17,19 +17,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y514_group Yosemitech Y514 Chlorophyll %Sensor
- * Classes for the @ref y514_page
+ * @defgroup y514_group Yosemitech Y514
+ * Classes for the Yosemitech Y514 chlorophyll sensor with wiper.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y514_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y514_page Yosemitech Y514 Chlorophyll %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y514_datasheet Sensor Datasheet
  * - [Y514 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper_UserManual-v1.0.pdf)
@@ -112,7 +106,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y514 sensor](@ref y514_page).
+ * [Yosemitech Y514 sensor](@ref y514_group).
  *
  * @ingroup y514_group
  */
@@ -169,7 +163,7 @@ class YosemitechY514 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [chlorophyll concentration output](@ref y514_chloro) from a
- * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref y514_page).
+ * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref y514_group).
  *
  * @ingroup y514_group
  */
@@ -214,7 +208,7 @@ class YosemitechY514_Chlorophyll : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y514_temp) from a
- * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref y514_page).
+ * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref y514_group).
  *
  * @ingroup y514_group
  */

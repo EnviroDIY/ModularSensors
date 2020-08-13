@@ -17,19 +17,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y510_group Yosemitech Y510 Turbidity
- * Classes for the @ref y510_page
+ * @defgroup y510_group Yosemitech Y510
+ * Classes for the Yosemitech Y510 turbidity sensor.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y510_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y510_page Yosemitech Y510 Turbidity
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y510_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_UserManual-v1.1.pdf)
@@ -107,7 +101,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y510-B optical turbidity sensor](@ref y510_page).
+ * [Yosemitech Y510-B optical turbidity sensor](@ref y510_group).
  *
  * @ingroup y510_group
  */
@@ -164,7 +158,7 @@ class YosemitechY510 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [turbidity output](@ref y510_turb) from a
- * [Yosemitech Y510-B optical turbidity sensor](@ref y510_page).
+ * [Yosemitech Y510-B optical turbidity sensor](@ref y510_group).
  *
  * @ingroup y510_group
  */
@@ -208,7 +202,7 @@ class YosemitechY510_Turbidity : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y510_temp) from a
- * [Yosemitech Y510-B optical turbidity sensor](@ref y510_page).
+ * [Yosemitech Y510-B optical turbidity sensor](@ref y510_group).
  *
  * @ingroup y510_group
  */

@@ -14,19 +14,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_do_group Atlas Scientific EZO-DO Dissolved Oxygen Circuit and Probe
- * Classes for the [Atlas EZO DO circuit](@ref atlas_do_page).
+ * @defgroup atlas_do_group Atlas EZO-DO
+ * Classes for the Atlas Scientific EZO-DO dissolved oxygen circuit and probe.
  *
  * @ingroup atlas_group
  *
- * @copydoc atlas_do_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page atlas_do_page Atlas Scientific EZO-DO Dissolved Oxygen Circuit and Probe
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation.
  *
@@ -142,7 +136,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_page).
+ * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_group).
  *
  * @ingroup atlas_do_group
  */
@@ -191,7 +185,7 @@ class AtlasScientificDO : public AtlasParent {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen concentration output](@ref atlas_do_concentration) from an
- * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_page).
+ * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_group).
  *
  * @ingroup atlas_do_group
  */
@@ -234,7 +228,7 @@ class AtlasScientificDO_DOmgL : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen percent of saturation output](@ref atlas_do_percent) from an
- * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_page).
+ * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_group).
  *
  * @ingroup atlas_do_group
  */

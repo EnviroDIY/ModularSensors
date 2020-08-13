@@ -14,20 +14,14 @@
  */
 /* clang-format off */
 /**
- * @defgroup am2315_group AOSong AM2315 Encased I2C Temperature and Humidity %Sensor
- * Classes for the [AOSong AM2315](@ref am2315_page) encased I2C
- * capacitive humidity and temperature sensor.
+ * @defgroup am2315_group AOSong AM2315
+ * Classes for the AOSong AM2315 encased I2C capacitive humidity and
+ * temperature sensor.
  *
  * @ingroup the_sensors
  *
- * @copydoc am2315_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page am2315_page AOSong AM2315 Encased I2C Temperature and Humidity %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section am2315_notes Quick Notes
  * - Applies to both the AOSong AM2315 and CM2311 capacitive relative humidity
@@ -120,7 +114,7 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the [AOSong AM2315](@ref am2315_page).
+ * @brief The Sensor sub-class for the [AOSong AM2315](@ref am2315_group).
  *
  * @ingroup am2315_group
  */
@@ -179,7 +173,7 @@ class AOSongAM2315 : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [relative humidity output](@ref am2315_humidity) from an
- * [AOSong AM2315](@ref am2315_page).
+ * [AOSong AM2315](@ref am2315_group).
  *
  * @ingroup am2315_group
  */
@@ -222,7 +216,7 @@ class AOSongAM2315_Humidity : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref am2315_temperature) from an
- * [AOSong AM2315](@ref am2315_page).
+ * [AOSong AM2315](@ref am2315_group).
  *
  * @ingroup am2315_group
  */

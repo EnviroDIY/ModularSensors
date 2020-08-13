@@ -15,19 +15,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_rtd_group Atlas Scientific EZO-RTD Temperature Circuit and Probes
- * Classes for the [Atlas EZO RTD circuit](@ref atlas_rtd_page).
+ * @defgroup atlas_rtd_group Atlas Scientific EZO-RTD
+ * Classes for the Atlas Scientific EZO-RTD temperature circuit and probes.
  *
  * @ingroup atlas_group
  *
- * @copydoc atlas_rtd_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page atlas_rtd_page Atlas Scientific EZO-RTD Temperature Circuit and Probes
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section atlas_rtd_datasheet Sensor Datasheet
  *
@@ -114,7 +108,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_page).
+ * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_group).
  *
  * @ingroup atlas_rtd_group
  */
@@ -156,7 +150,7 @@ class AtlasScientificRTD : public AtlasParent {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref atlas_rtd_temp) from an
- * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_page).
+ * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_group).
  *
  * @ingroup atlas_rtd_group
  */

@@ -8,7 +8,7 @@
  * subclasses YosemitechY550_COD, YosemitechY550_Temp, and
  * YosemitechY550_Turbidity.
  *
- * These are for the Yosemitech Y550 COD Sensor with Wiper.
+ * These are for the Yosemitech Y550 COD sensor with wiper.
  *
  * This depends on the YosemitechParent super class.
  *
@@ -18,19 +18,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y550_group Yosemitech Y550 UV245/COD %Sensor
- * Classes for the @ref y550_page
+ * @defgroup y550_group Yosemitech Y550 UV245/COD Sensor
+ * Classes for the Yosemitech Y550 UV245/COD sensor with wiper.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y550_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y550_page Yosemitech Y550 UV245/COD %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y550_datasheet Sensor Datasheet
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf)
@@ -123,7 +117,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_page).
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
  *
  * @ingroup y550_group
  */
@@ -180,7 +174,7 @@ class YosemitechY550 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [carbon oxygen demand (COD) output](@ref y550_cod) from a
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_page).
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
  *
  * @ingroup y550_group
  */
@@ -224,7 +218,7 @@ class YosemitechY550_COD : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y550_temp) from a
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_page).
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
  *
  * @ingroup y550_group
  */
@@ -268,7 +262,7 @@ class YosemitechY550_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [turbidity output](@ref y550_turb) from a
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_page).
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
  *
  * @ingroup y550_group
  */

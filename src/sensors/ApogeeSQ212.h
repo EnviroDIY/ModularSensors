@@ -10,25 +10,19 @@
  * @brief Contains the ApogeeSQ212 sensor subclass and the variable subclasses
  * ApogeeSQ212_PAR and ApogeeSQ212_Voltage.
  *
- * These are used for the Apogee SQ-212 Quantum Light sensor.
+ * These are used for the Apogee SQ-212 quantum light sensor.
  *
  * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
  */
 /* clang-format off */
 /**
- * @defgroup sq212_group Apogee SQ-212 Quantum Light %Sensor
- * Classes for the [Apogee SQ-212 quantum light sensor](@ref sq212_page).
+ * @defgroup sq212_group Apogee SQ-212
+ * Classes for the Apogee SQ-212 quantum light sensor.
  *
  * @ingroup analog_group
  *
- * @copydoc sq212_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page sq212_page Apogee SQ-212 Quantum Light %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section sq212_intro Introduction
  * The [Apogee SQ-212 quantum light
@@ -47,7 +41,7 @@
  *
  * To convert the sensor's analog signal to a high resolution digital signal,
  * the sensor must be attached to an analog-to-digital converter.  See the
- * [ADS1115 page](@ref ads1x15_page) for details on the conversion.
+ * [ADS1115](@ref ads1x15_group) for details on the conversion.
  *
  * The calibration factor this library uses to convert from raw voltage to PAR
  * is that specified by Apogee for the SQ-212: 1 µmol mˉ² sˉ¹ per mV (reciprocal
@@ -180,7 +174,7 @@
 #define ADS1115_ADDRESS 0x48
 
 /**
- * @brief The Sensor sub-class for the [Apogee SQ-212](@ref sq212_page) sensor
+ * @brief The Sensor sub-class for the [Apogee SQ-212](@ref sq212_group) sensor
  *
  * @ingroup sq212_group
  */
@@ -236,7 +230,7 @@ class ApogeeSQ212 : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [photosynthetically active radiation (PAR) output](@ref sq212_par)
- * from an [Apogee SQ-212](@ref sq212_page).
+ * from an [Apogee SQ-212](@ref sq212_group).
  *
  * @ingroup sq212_group
  */
@@ -280,7 +274,7 @@ class ApogeeSQ212_PAR : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [raw voltage output](@ref sq212_voltage) from an
- * [Apogee SQ-212](@ref sq212_page).
+ * [Apogee SQ-212](@ref sq212_group).
  *
  * @ingroup sq212_group
  */

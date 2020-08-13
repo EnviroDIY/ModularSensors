@@ -19,29 +19,13 @@
 /* clang-format off */
 /**
  * @defgroup analog_group Analog Sensors via TI ADS1x15
- * The Sensor and Variable objects for all @ref ads1x15_page
+ * The Sensor and Variable objects for all analog sensors requiring
+ * analog-to-digital conversion by TI ADS1x15.
  *
  * @ingroup the_sensors
  *
- * @copydoc ads1x15_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @defgroup ext_volt_group TI ADS1x15 External Voltage Sensor
- * Classes for simple [external analog voltage measurements](@ref ext_volt_page)
- *
- * @ingroup analog_group
- *
- * @copydoc ext_volt_page
- */
-/* clang-format on */
-/* clang-format off */
-
-/**
- * @page ads1x15_page Analog Sensors measured via TI ADS1x15
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section ads1x15_intro Introduction
  *
@@ -97,26 +81,35 @@
  * [ADS1115 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS101x-Analog-to-Digital-Converter.pdf)
  * [ADS1015 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS111x-Analog-to-Digital-Converter.pdf)
  */
+/* clang-format on */
+/* clang-format off */
 /**
- * @page ext_volt_page TI ADS1x15 External Voltage Sensor
+ * @defgroup ext_volt_group TI ADS1x15 External Voltage Sensor
+ * Classes for simple external analog voltage measurements.
+ *
+ * @ingroup analog_group
  *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section ext_volt_intro Introduction
  *
- * Analog data output is supported in ModularSensors by way of the [TI ADS1115](@ref ads1x15_page).
+ * Analog data output is supported in ModularSensors by way of the
+ * Texas Instruments ADS1115.
  *
- * The External Voltage module is used for any case where the voltage itself is the
- * desired value (as for an external battery).  It can also be used in combination with
- * a [calculated variable](@ref calc_var_page) to support any other analog sensor not
- * explicity supported by ModularSensors.  To increase the range available for voltage
- * measurements, this module supports the use of a voltage divider.
+ * The External Voltage module is used for any case where the voltage itself is
+ * the desired value (as for an external battery).  It can also be used in
+ * combination with a [calculated variable](@ref calc_var_page) to support any
+ * other analog sensor not explicity supported by ModularSensors.  To increase
+ * the range available for voltage measurements, this module supports the use of
+ * a voltage divider.
  *
- * If you are working with an EnviroDIY Mayfly, the easiest voltage divider to connect
- * is the Grove voltage divider sold by seeed studio.  The grove voltage divider is a
- * simple voltage divider designed to measure high external voltages on a low voltage
- * ADC.  This module employs a variable gain via two pairs of voltage dividers, and a
- * unity gain amplification to reduce output impedance of the module.
+ * If you are working with an EnviroDIY Mayfly, the easiest voltage divider to
+ * connect is the Grove voltage divider sold by seeed studio.  The grove voltage
+ * divider is a simple voltage divider designed to measure high external
+ * voltages on a low voltage ADC.  This module employs a variable gain via two
+ * pairs of voltage dividers, and a unity gain amplification to reduce output
+ * impedance of the module.
  *
  * @section ext_volt_datasheet Sensor Datasheet
  * @see ads1x15_datasheet
@@ -157,7 +150,8 @@
  *
  * ___
  * @section ext_volt_examples Example Code
- * The TI ADS1X15 external voltage sensor is used in the @menulink{ext_volt} example.
+ * The TI ADS1X15 external voltage sensor is used in the @menulink{ext_volt}
+ * example.
  *
  * @menusnip{ext_volt}
  */
@@ -214,7 +208,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [external votlage as measured by TI ADS1115 or ADS1015](@ref ext_volt_page).
+ * [external votlage as measured by TI ADS1115 or ADS1015](@ref ext_volt_group).
  *
  * @ingroup ext_volt_group
  */
@@ -268,7 +262,7 @@ class ExternalVoltage : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [voltage output](@ref ext_volt_volt) from a
- * [TI ADS1115 or ADS1015](@ref ext_volt_page).
+ * [TI ADS1115 or ADS1015](@ref ext_volt_group).
  *
  * @ingroup ext_volt_group
  */

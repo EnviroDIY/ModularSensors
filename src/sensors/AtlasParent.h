@@ -14,43 +14,36 @@
 /* clang-format off */
 /**
  * @defgroup atlas_group Atlas Scientific EZO Circuits
- * The Sensor and Variable objects for all
- * [Atlas EZO circuits](@ref atlas_page).
+ * The Sensor and Variable objects for all Atlas EZO circuits.
  *
  * @ingroup the_sensors
  *
- * @copydoc atlas_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page atlas_page Atlas Scientific EZO Environmental %Sensors
  *
  * This library currently supports the following Atlas Scientific sensors:
  *
  * - [EZO-CO2 Embedded NDIR CO2 Sensor](https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_CO2_Datasheet.pdf)
- *     - @subpage atlas_co2_page "Class Documentation"
+ *     - [Class Documentation](@ref atlas_co2_group)
  * - [EZO-DO Dissolved Oxygen Circuit and Probe](https://www.atlas-scientific.com/dissolved-oxygen.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_EZO_Datasheet.pdf)
  *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_probe.pdf)
- *     - @subpage atlas_do_page "Class Documentation"
+ *     - [Class Documentation](@ref atlas_do_group)
  * - [EZO-EC Conductivity Circuit and Probes](https://www.atlas-scientific.com/conductivity.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf)
  *     - [K0.1 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf)
  *     - [K1.0 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf)
  *     - [K10 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf)
- *     - @subpage atlas_cond_page "Class Documentation"
+ *     - [Class Documentation](@ref atlas_cond_group)
  * - [EZO-ORP Oxidation/Reduction Potential Circuit and Probes](https://www.atlas-scientific.com/orp.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_ORP_EZO_datasheet.pdf)
- *     - @subpage atlas_orp_page "Class Documentation"
+ *     - [Class Documentation](@ref atlas_orp_group)
  * - [EZO-pH Circuit and Probe](https://www.atlas-scientific.com/ph.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_pH_EZO_Datasheet.pdf)
- *     - @subpage atlas_ph_page "Class Documentation"
+ *     - [Class Documentation](@ref atlas_ph_group)
  * - [EZO-RTD Temperature Circuit and Probes](https://www.atlas-scientific.com/temperature.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_RTD_Datasheet.pdf)
  *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_PT-1000-probe.pdf)
- *     - @subpage atlas_rtd_page "Class Documentation"
+ *     - [Class Documentation](@ref atlas_rtd_group)
  *
  * The chips have operating voltages between 3.3V and 5V; power can be stopped
  * between measurements.  The probes and sensors can (and should) be calibrated
@@ -94,7 +87,7 @@
 #include <Wire.h>
 
 /**
- * @brief A parent class for [Atlas EZO circuits and sensors](@ref atlas_page)
+ * @brief A parent class for Atlas EZO circuits and sensors
  *
  * This contains the main I2C functionality for all Atlas EZO circuits.
  *

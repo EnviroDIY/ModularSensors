@@ -18,18 +18,12 @@
 /* clang-format off */
 /**
  * @defgroup acculevel_group Keller Acculevel
- * Classes for the @ref acculevel_page
+ * Classes for the Keller Acculevel.
  *
  * @ingroup keller_group
  *
- * @copydoc acculevel_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page acculevel_page Keller Acculevel
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * These are for Keller Series 30, Class 5, Group 20 sensors using Modbus
  * communication, that are software version 5.20-12.28 and later (i.e. made
@@ -113,7 +107,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Keller Acculevel sensor](@ref acculevel_page).
+ * [Keller Acculevel sensor](@ref acculevel_group).
  *
  * @ingroup acculevel_group
  */
@@ -169,7 +163,7 @@ class KellerAcculevel : public KellerParent {
 /**
  * @brief The Variable sub-class used for the
  * [gauge pressure (vented and barometric pressure corrected) output](@ref acculevel_pressure)
- * from a [Keller Acculevel](@ref acculevel_page).
+ * from a [Keller Acculevel](@ref acculevel_group).
  *
  * @ingroup acculevel_group
  */
@@ -213,7 +207,7 @@ class KellerAcculevel_Pressure : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref acculevel_temp) from a
- * [Keller Acculevel](@ref acculevel_page).
+ * [Keller Acculevel](@ref acculevel_group).
  *
  * @ingroup acculevel_group
  */
@@ -257,7 +251,7 @@ class KellerAcculevel_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [gauge height (water level with regard to an arbitrary gage datum) output](@ref acculevel_height)
- * from a [Keller Acculevel](@ref acculevel_page).
+ * from a [Keller Acculevel](@ref acculevel_group).
  *
  * @ingroup acculevel_group
  */

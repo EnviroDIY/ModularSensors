@@ -18,18 +18,12 @@
 /* clang-format off */
 /**
  * @defgroup bme280_group Bosch BME280
- * Classes for the @ref bme280_page.
+ * Classes for the Bosch BME280 environmental sensor.
  *
  * @ingroup the_sensors
  *
- * @copydoc bme280_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page bme280_page Bosch BME280
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section bme280_intro Introduction
  * > The BME280 is a humidity sensor especially developed for mobile applications
@@ -188,7 +182,7 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the [Bosch BME280](@ref bme280_page).
+ * @brief The Sensor sub-class for the [Bosch BME280](@ref bme280_group).
  *
  * @ingroup bme280_group
  */
@@ -264,7 +258,7 @@ class BoschBME280 : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref bme280_temp)
- * from a [Bosch BME280](@ref bme280_page).
+ * from a [Bosch BME280](@ref bme280_group).
  *
  * @ingroup bme280_group
  */
@@ -306,7 +300,7 @@ class BoschBME280_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [relative humidity output](@ref bme280_humidity) from a
- * [Bosch BME280](@ref bme280_page).
+ * [Bosch BME280](@ref bme280_group).
  *
  * @ingroup bme280_group
  */
@@ -349,7 +343,7 @@ class BoschBME280_Humidity : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [atmospheric pressure output](@ref bme280_pressure) from a
- * [Bosch BME280](@ref bme280_page).
+ * [Bosch BME280](@ref bme280_group).
  *
  * @ingroup bme280_group
  */
@@ -388,7 +382,7 @@ class BoschBME280_Pressure : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [altitude](@ref bme280_altitude) calculated from the measurements
- * made by a [Bosch BME280](@ref bme280_page).
+ * made by a [Bosch BME280](@ref bme280_group).
  *
  * @ingroup bme280_group
  */

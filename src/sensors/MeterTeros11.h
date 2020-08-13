@@ -15,19 +15,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup teros_group Meter Teros
- * Classes for the @ref teros_page
+ * @defgroup teros_group Meter Teros 11
+ * Classes for the Meter Teros 11 soil moisture probe.
  *
  * @ingroup sdi12_group
  *
- * @copydoc teros_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page teros_page Meter Teros
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section teros_intro Introduction
  *
@@ -168,7 +162,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Meter Teros 11 sensor](@ref teros_page)
+ * [Meter Teros 11 sensor](@ref teros_group)
  *
  * @ingroup teros_group
  */
@@ -240,7 +234,7 @@ class MeterTeros11 : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [apparent dielectric permittivity (εa, matric potential)](@ref teros11_ea)
- * from a [Meter Teros soil moisture/water content sensor](@ref teros_page).
+ * from a [Meter Teros soil moisture/water content sensor](@ref teros_group).
  *
  * @ingroup teros_group
  */
@@ -282,7 +276,7 @@ class MeterTeros11_Ea : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref teros11_temp) output from a
- * [Teros soil moisture/water content sensor](@ref teros_page).
+ * [Teros soil moisture/water content sensor](@ref teros_group).
  *
  * @ingroup teros_group
  */
@@ -324,7 +318,7 @@ class MeterTeros11_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [volumetric water content](@ref teros11_vwc) output from a
- * [Teros soil moisture/water content sensor](@ref teros_page).
+ * [Teros soil moisture/water content sensor](@ref teros_group).
  *
  * @ingroup teros_group
  */

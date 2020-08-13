@@ -17,26 +17,20 @@
 /* clang-format off */
 /**
  * @defgroup keller_group Keller Water Level Sensors
- * The Sensor and Variable objects for all @ref keller_page
+ * The Sensor and Variable objects for all Keller water level sensors.
  *
  * @ingroup the_sensors
  *
- * @copydoc keller_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page keller_page Keller Water Level Sensors
  *
  * This library currently supports the following Keller pressure and water level sensors:
  * - [Acculevel](https://www.kelleramerica.com/submersible-level-transmitters/acculevel-high-accuracy-submersible-level-transmitter.html)
  *     - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  *     - [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
- *     - @subpage acculevel_page "Class Documentation"
+ *     - [Class Documentation](@ref acculevel_group)
  * - [Nanolevel](https://www.kelleramerica.com/submersible-level-transmitters/nanolevel-ceramic-capacitive-level-transmitter.html)
  *     - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  *     - [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
- *     - @subpage nanolevel_page "Class Documentation"
+ *     - [Class Documentation](@ref nanolevel_group)
  * - Any Keller Series 30, Class 5, Group 20 sensors that are software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *
  * These sensors communicate via Modbus RTU over RS485 at 9600 baud.
@@ -116,7 +110,8 @@
 #define KELLER_HEIGHT_VAR_NUM 2
 
 /**
- * @brief The Sensor sub-class for all @ref keller_page
+ * @brief The Sensor sub-class for all
+ * [Keller water level sensors](@ref keller_group).
  *
  * @ingroup keller_group
  */

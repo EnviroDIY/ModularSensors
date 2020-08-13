@@ -20,18 +20,12 @@
 /* clang-format off */
 /**
  * @defgroup ms5803_group Measurement Specialties MS5803
- * Classes for the @ref ms5803_page
+ * Classes for the Measurement Specialties MS5803 digital preassure sensor.
  *
  * @ingroup the_sensors
  *
- * @copydoc ms5803_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page ms5803_page Measurement Specialties MS5803
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section ms5803_intro Introduction
  *
@@ -153,7 +147,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Measurement Specialties MS5803 sensor](@ref ms5803_page).
+ * [Measurement Specialties MS5803 sensor](@ref ms5803_group).
  *
  * @ingroup ms5803_group
  */
@@ -218,7 +212,7 @@ class MeaSpecMS5803 : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref ms5803_temp) from a
- * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_page).
+ * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_group).
  *
  * @ingroup ms5803_group
  */
@@ -262,7 +256,7 @@ class MeaSpecMS5803_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [pressure output](@ref ms5803_pressure) from a
- * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_page).
+ * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_group).
  *
  * @ingroup ms5803_group
  */

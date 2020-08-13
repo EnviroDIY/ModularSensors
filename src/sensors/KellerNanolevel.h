@@ -14,18 +14,12 @@
 /* clang-format off */
 /**
  * @defgroup nanolevel_group Keller Nanolevel
- * Classes for the @ref nanolevel_page
+ * Classes for the Keller Nanolevel capacitive level sensor.
  *
  * @ingroup keller_group
  *
- * @copydoc nanolevel_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page nanolevel_page Keller Nanolevel
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * These are for Keller Nanolevel capacitive level sensors.
  *
@@ -105,7 +99,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Keller nanolevel sensor](@ref nanolevel_page)
+ * [Keller nanolevel sensor](@ref nanolevel_group)
  *
  * @ingroup nanolevel_group
  */
@@ -161,7 +155,7 @@ class KellerNanolevel : public KellerParent {
 /**
  * @brief The Variable sub-class used for the
  * [gauge pressure (vented and barometric pressure corrected) output](@ref nanolevel_pressure)
- * from a [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_page).
+ * from a [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
  *
  * @ingroup nanolevel_group
  */
@@ -205,7 +199,7 @@ class KellerNanolevel_Pressure : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref nanolevel_temp) from a
- * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_page).
+ * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
  *
  * @ingroup nanolevel_group
  */
@@ -249,7 +243,7 @@ class KellerNanolevel_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [gauge height (water level with regard to an arbitrary gage datum) output](@ref nanolevel_height) from a
- * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_page).
+ * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
  *
  * @ingroup nanolevel_group
  */

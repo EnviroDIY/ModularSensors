@@ -16,18 +16,12 @@
 /* clang-format off */
 /**
  * @defgroup ina219_group TI INA219
- * Classes for the @ref ina219_page
+ * Classes for the TI INA219 current and voltage sensor.
  *
  * @ingroup the_sensors
  *
- * @copydoc ina219_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page ina219_page TI INA219
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section ina219_intro Intruduction
  *
@@ -154,7 +148,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [TexasInstruments INA219 sensor](@ref ina219_page).
+ * [TexasInstruments INA219 sensor](@ref ina219_group).
  *
  * @ingroup ina219_group
  */
@@ -223,7 +217,7 @@ class TIINA219 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [current output](@ref ina219_current) from a [TI INA219 power and current monitor](@ref ina219_page).
+ * [current output](@ref ina219_current) from a [TI INA219 power and current monitor](@ref ina219_group).
  *
  * @ingroup ina219_group
  */
@@ -263,7 +257,7 @@ class TIINA219_Current : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [bus voltage output](@ref ina219_volt) from a [TI INA219 power and current monitor](@ref ina219_page).
+ * [bus voltage output](@ref ina219_volt) from a [TI INA219 power and current monitor](@ref ina219_group).
  *
  * @ingroup ina219_group
  */
@@ -304,7 +298,7 @@ class TIINA219_Volt : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [power use output](@ref ina219_power) calculated from the voltage
- * and current measured by a [TI INA219 power and current monitor](@ref ina219_page).
+ * and current measured by a [TI INA219 power and current monitor](@ref ina219_group).
  *
  * @ingroup ina219_group
  */

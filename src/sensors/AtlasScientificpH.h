@@ -14,19 +14,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_pH_group Atlas Scientific EZO-pH Circuit and Probe
- * Classes for the [Atlas EZO pH circuit](@ref atlas_ph_page).
+ * @defgroup atlas_pH_group Atlas EZO-pH
+ * Classes for the Atlas Scientific EZO-pH circuit and probe.
  *
  * @ingroup atlas_group
  *
- * @copydoc atlas_ph_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page atlas_ph_page Atlas Scientific EZO-pH Circuit and Probe
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section atlas_ph_datasheet Sensor Datasheet
  * Documentation on the probe and measurement circuit are found here:
@@ -108,7 +102,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific pH sensor](@ref atlas_ph_page).
+ * [Atlas Scientific pH sensor](@ref atlas_ph_group).
  *
  * @note Be careful not to confuse the similar variable and sensor object names!
  *
@@ -152,7 +146,7 @@ class AtlasScientificpH : public AtlasParent {
 /**
  * @brief The Variable sub-class used for the
  * [pH output](@ref atlas_ph_ph) from an
- * [Atlas Scientific EZO pH circuit](@ref atlas_ph_page).
+ * [Atlas Scientific EZO pH circuit](@ref atlas_ph_group).
  *
  * @note Be careful not to mix the similar variable and sensor object names!
  *

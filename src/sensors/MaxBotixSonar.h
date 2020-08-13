@@ -12,18 +12,12 @@
 /* clang-format off */
 /**
  * @defgroup maxbotics_group MaxBotix MaxSonar
- * Classes for the @ref maxbotics_page
+ * Classes for the MaxBotix MaxSonar ultrasonic range finders.
  *
  * @ingroup the_sensors
  *
- * @copydoc maxbotics_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page maxbotics_page MaxBotix MaxSonar
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section maxbotics_intro Introduction
  *
@@ -90,7 +84,7 @@
  * - [MaxTemp Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HR-MaxTemp-Datasheet.pdf)
  * - [Wiring Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-MaxSonar-MB7954-Datasheet-ConnectWire.pdf)
  *
- * @section maxbotics_sensor The MaxBotix MaxSonar %Sensor
+ * @section maxbotics_sensor The MaxBotix MaxSonar Sensor
  * @ctor_doc{MaxBotixSonar, Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage}
  * @subsection maxbotics_timing Sensor Timing
  * - Warm up time to completion of header:  160ms
@@ -146,7 +140,8 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the @ref maxbotics_page ultrasonic range finder.
+ * @brief The Sensor sub-class for the
+ * [MaxBotix ultrasonic range finders](@ref maxbotics_group).
  *
  * @ingroup maxbotics_group
  */
@@ -227,7 +222,7 @@ class MaxBotixSonar : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [range output](@ref maxbotix_range) from a
- * [MaxBotix HRXL-MaxSonar ultrasonic range finder](@ref maxbotics_page).
+ * [MaxBotix HRXL-MaxSonar ultrasonic range finder](@ref maxbotics_group).
  *
  * @ingroup maxbotics_group
  */

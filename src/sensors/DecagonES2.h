@@ -16,18 +16,12 @@
 /* clang-format off */
 /**
  * @defgroup es2_group Decagon ES-2
- * Classes for the @ref es2_page
+ * Classes for the Decagon ES-2 conductivity and temperature sensor.
  *
  * @ingroup sdi12_group
  *
- * @copydoc es2_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page es2_page Decagon ES-2
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section es2_intro Introduction
  *
@@ -118,11 +112,9 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the [Decagon ES-2 sensor](@ref es2_page)
+ * @brief The Sensor sub-class for the [Decagon ES-2 sensor](@ref es2_group)
  *
  * @ingroup es2_group
- *
- * @see @ref es2_page
  */
 /* clang-format on */
 class DecagonES2 : public SDI12Sensors {
@@ -183,7 +175,7 @@ class DecagonES2 : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [conductivity output](@ref es2_cond) from a
- * [Decagon ES-2 electrical conductivity sensor](@ref es2_page).
+ * [Decagon ES-2 electrical conductivity sensor](@ref es2_group).
  *
  * @ingroup es2_group
  */
@@ -223,7 +215,7 @@ class DecagonES2_Cond : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref es2_temp) from a
- * [Decagon ES-2 electrical conductivity sensor](@ref es2_page).
+ * [Decagon ES-2 electrical conductivity sensor](@ref es2_group).
  *
  * @ingroup es2_group
  */

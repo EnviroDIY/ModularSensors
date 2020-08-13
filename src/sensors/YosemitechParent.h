@@ -15,55 +15,49 @@
 /* clang-format off */
 /**
  * @defgroup yosemitech_group Yosemitech Sensors
- * The Sensor and Variable objects for all @ref yosemitech_page
+ * The Sensor and Variable objects for all Yosemitech sensors.
  *
  * @ingroup the_sensors
  *
- * @copydoc yosemitech_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page yosemitech_page Yosemitech Sensors
  *
  * This library currently supports the following [Yosemitech](http://www.yosemitech.com/en/) sensors:
  * - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
  *     - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO_UserManual-v1.1.pdf)
  *     - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y505-DO_UserManual-v1.2.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO-v6.2_ModbusInstructions.pdf)
- *     - @subpage y504_page "Class Documentation"
+ *     - [Class Documentation](@ref y504_group)
  * - [Y510-B Optical Turbidity Sensor](http://www.yosemitech.com/en/product-17.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_UserManual-v1.1.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_1.7-ModbusInstruction-en.pdf)
- *     - @subpage y510_page "Class Documentation"
+ *     - [Class Documentation](@ref y510_group)
  * - [Y511-A Optical Turbidity Sensor with Wiper](http://www.yosemitech.com/en/product-16.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper_UserManual-v1.1.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper-v1.7_ModbusInstructions.pdf)
- *     - @subpage y511_page "Class Documentation"
+ *     - [Class Documentation](@ref y511_group)
  * - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
  *     - [Y514 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper_UserManual-v1.0.pdf)
  *     - [Y515 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y515-Chlorophyll_UserManual-v1.0_en.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper-v1.6_ModbusInstructions.pdf)
- *     - @subpage y514_page "Class Documentation"
+ *     - [Class Documentation](@ref y514_group)
  * - [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity_UserManual-v1.1.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity-v1.8_ModbusInstructions.pdf)
- *     - @subpage y520_page "Class Documentation"
+ *     - [Class Documentation](@ref y520_group)
  * - Y532-A Digital pH Sensor
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
- *     - @subpage y532_page "Class Documentation"
+ *     - [Class Documentation](@ref y532_group)
  * - Y533 ORP Sensor
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
- *     - @subpage y533_page "Class Documentation"
+ *     - [Class Documentation](@ref y533_group)
  * - [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf)
- *     - @subpage y550_page "Class Documentation"
+ *     - [Class Documentation](@ref y550_group)
  * - [Y4000 Multiparameter Sonde](http://www.yosemitech.com/en/product-20.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
- *     - @subpage y4000_page "Class Documentation"
+ *     - [Class Documentation](@ref y4000_group)
  *
  * All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.
  * (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)
@@ -132,7 +126,7 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for all the [Yosemitech sensors](@ref yosemitech_page)
+ * @brief The Sensor sub-class for all the [Yosemitech sensors](@ref yosemitech_group)
  *
  * @ingroup yosemitech_group
  */

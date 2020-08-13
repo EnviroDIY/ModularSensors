@@ -15,18 +15,13 @@
 /* clang-format off */
 /**
  * @defgroup ds3231_group Maxim DS3231 RTC
- * Classes for the @ref ds3231_page
+ * Classes for the Maxim DS3231 high-precision, temperature-corrected
+ * real-time clock.
  *
  * @ingroup the_sensors
  *
- * @copydoc ds3231_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page ds3231_page Maxim DS3231 RTC
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section ds3231_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS3231-Real-Time-Clock.pdf)
@@ -101,8 +96,8 @@
 
 
 /**
- * @brief The Sensor sub-class for the @ref ds3231_page when used as a
- * low-accuracy temperature sensor
+ * @brief The Sensor sub-class for the [Maxim DS3231](@ref ds3231_group) when
+ * used as a low-accuracy temperature sensor
  *
  * Only need a sleep and wake since these DON'T use the default of powering up
  * and down
@@ -165,7 +160,7 @@ class MaximDS3231 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref ds3231_temp) from a [DS3231](@ref ds3231_page).
+ * [temperature output](@ref ds3231_temp) from a [DS3231](@ref ds3231_group).
  *
  * @ingroup ds3231_group
  */

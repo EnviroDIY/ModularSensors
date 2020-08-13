@@ -16,19 +16,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup i2c_rain_group I2C Tipping Bucket Counter
- * Classes for the @ref i2c_rain_page
+ * @defgroup i2c_rain_group Trinket Tipping Bucket
+ * Classes for the Trinket-based I2C tipping bucket rain counter
  *
  * @ingroup the_sensors
  *
- * @copydoc i2c_rain_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page i2c_rain_page I2C Tipping Bucket Counter
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section i2c_rain_intro Introduction
  *
@@ -125,7 +119,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Arduino-based external tipping bucket counter](@ref i2c_rain_page).
+ * [Arduino-based external tipping bucket counter](@ref i2c_rain_group).
  *
  * @ingroup i2c_rain_group
  */
@@ -180,8 +174,9 @@ class RainCounterI2C : public Sensor {
 
 /**
  * @brief The Variable sub-class used for the
- * [total tip count output](@ref i2c_rain_tips) from an Arduino-based I2C
- * tipping bucket counter - gives the number of tips since last reading.
+ * [total tip count output](@ref i2c_rain_tips) from an
+ * [Adafruit Trinket based I2C tipping bucket counter](@ref i2c_rain_group)
+ * - gives the number of tips since last reading.
  *
  * @ingroup i2c_rain_group
  */
@@ -221,8 +216,9 @@ class RainCounterI2C_Tips : public Variable {
 
 /**
  * @brief The Variable sub-class used for the
- * [depth of rain output](@ref i2c_rain_depth) from an Arduino-based I2C
- * tipping bucket counter - gives the number of mm since the last reading.
+ * [depth of rain output](@ref i2c_rain_depth) from an
+ * [Adafruit Trinket based I2C tipping bucket counter](@ref i2c_rain_group)
+ * - gives the number of mm since the last reading.
  *
  * @ingroup i2c_rain_group
  */

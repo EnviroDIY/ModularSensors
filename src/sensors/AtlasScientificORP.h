@@ -14,19 +14,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_orp_group Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes
- * Classes for the [Atlas EZO ORP circuit](@ref atlas_orp_page).
+ * @defgroup atlas_orp_group Atlas EZO-ORP
+ * Classes for the Atlas Scientific EZO-ORP oxidation/reduction potential circuit and probes.
  *
  * @ingroup atlas_group
  *
- * @copydoc atlas_orp_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page atlas_orp_page Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section atlas_orp_datasheet Sensor Datasheet
  * Documentation on the circuit is available here:
@@ -106,7 +100,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific ORP (oxidation/reduction potential) sensor](@ref atlas_orp_page).
+ * [Atlas Scientific ORP (oxidation/reduction potential) sensor](@ref atlas_orp_group).
  *
  * @ingroup atlas_orp_group
  */
@@ -149,7 +143,7 @@ class AtlasScientificORP : public AtlasParent {
 /**
  * @brief The Variable sub-class used for the
  * [oxidation/reduction potential output](@ref atlas_orp_orp) from an
- * [Atlas Scientific EZO-ORP circuit](@ref atlas_orp_page).
+ * [Atlas Scientific EZO-ORP circuit](@ref atlas_orp_group).
  *
  * @ingroup atlas_orp_group
  */

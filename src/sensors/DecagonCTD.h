@@ -17,18 +17,12 @@
 /* clang-format off */
 /**
  * @defgroup hydros21_group Meter Hydros 21
- * Classes for the @ref hydros21_page
+ * Classes for the Meter Hydros 21 conductivity, temperature, and depth sensor.
  *
  * @ingroup sdi12_group
  *
- * @copydoc hydros21_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page hydros21_page Meter Hydros 21
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section hydros21_intro Introduction
  *
@@ -137,7 +131,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Decagon CTD sensor](hydros21_page)
+ * [Meter Hydros 21 conductivity, temperature, and depth sensor](hydros21_group)
  *
  * @ingroup hydros21_group
  */
@@ -201,7 +195,7 @@ class DecagonCTD : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [conductivity output](hydros21_cond) from a
- * [Meter Hydros 21 3-in-1 water level sensor.](hydros21_page)
+ * [Meter Hydros 21 3-in-1 water level sensor.](hydros21_group)
  *
  * @ingroup hydros21_group
  */
@@ -242,7 +236,7 @@ class DecagonCTD_Cond : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature Output](hydros21_temp) from a
- * [Meter Hydros 21 3-in-1 water level sensor.](hydros21_page)
+ * [Meter Hydros 21 3-in-1 water level sensor.](hydros21_group)
  *
  * @ingroup hydros21_group
  */
@@ -283,7 +277,7 @@ class DecagonCTD_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [depth output](hydros21_depth) from a
- * [Meter Hydros 21 3-in-1 water level sensor.](hydros21_page)
+ * [Meter Hydros 21 3-in-1 water level sensor.](hydros21_group)
  *
  * @ingroup hydros21_group
  */

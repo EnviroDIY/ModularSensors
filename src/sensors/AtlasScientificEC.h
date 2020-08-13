@@ -16,19 +16,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_cond_group Atlas Scientific EZO-EC Conductivity Circuit and Probes
- * Classes for the [Atlas EZO conductivity circuit.](@ref atlas_cond_page)
+ * @defgroup atlas_cond_group Atlas EZO-EC
+ * Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.
  *
  * @ingroup atlas_group
  *
- * @copydoc atlas_cond_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page atlas_cond_page Atlas Scientific EZO-EC Conductivity Circuit and Probes
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS,
  * salinity, and specific gravity
@@ -172,7 +166,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific conductivity circuit and sensor](@ref atlas_cond_page).
+ * [Atlas Scientific conductivity circuit and sensor](@ref atlas_cond_group).
  *
  * @ingroup atlas_cond_group
  */
@@ -221,7 +215,7 @@ class AtlasScientificEC : public AtlasParent {
 /**
  * @brief The Variable sub-class used for the
  * [conductivity output](@ref atlas_cond_cond) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_page).
+ * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
  *
  * @ingroup atlas_cond_group
  */
@@ -264,7 +258,7 @@ class AtlasScientificEC_Cond : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [total dissolved solids output](@ref atlas_cond_tds) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_page).
+ * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
  *
  * @ingroup atlas_cond_group
  */
@@ -307,7 +301,7 @@ class AtlasScientificEC_TDS : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [salinity output](@ref atlas_cond_salinity) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_page).
+ * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
  *
  * @ingroup atlas_cond_group
  */
@@ -351,7 +345,7 @@ class AtlasScientificEC_Salinity : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [specific gravity output](@ref atlas_cond_sg) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_page).
+ * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
  *
  * @ingroup atlas_cond_group
  */

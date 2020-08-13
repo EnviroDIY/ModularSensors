@@ -16,18 +16,12 @@
 /* clang-format off */
 /**
  * @defgroup fivetm_group Meter ECH2O (5TM)
- * Classes for the @ref fivetm_page
+ * Classes for the Meter ECH2O (5TM) soil moisture sensor.
  *
  * @ingroup sdi12_group
  *
- * @copydoc fivetm_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page fivetm_page Meter ECH2O (5TM)
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section fivetm_intro Introduction
  *
@@ -154,7 +148,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Meter ECH2O soil moisture sensors](@ref fivetm_page).
+ * [Meter ECH2O soil moisture sensors](@ref fivetm_group).
  *
  * These were formerly sold as the Decagon 5TM.
  *
@@ -225,7 +219,7 @@ class Decagon5TM : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [apparent dielectric permittivity (εa, matric potential) output](@ref fivetm_ea)
- * from a [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_page).
+ * from a [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_group).
  *
  * @ingroup fivetm_group
  */
@@ -265,7 +259,7 @@ class Decagon5TM_Ea : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref fivetm_temp) output from a
- * [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_page).
+ * [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_group).
  *
  * @ingroup fivetm_group
  */
@@ -305,7 +299,7 @@ class Decagon5TM_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [volumetric water content](@ref fivetm_vwc) output from a
- * [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_page).
+ * [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_group).
  *
  * @ingroup fivetm_group
  */

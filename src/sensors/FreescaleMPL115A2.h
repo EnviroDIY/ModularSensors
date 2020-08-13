@@ -16,18 +16,12 @@
 /* clang-format off */
 /**
  * @defgroup mpl115a2_group Freescale Semiconductor MPL115A2
- * Classes for the @ref mpl115a2_page
+ * Classes for the Freescale Semiconductor MPL115A2 digital barometer.
  *
  * @ingroup the_sensors
  *
- * @copydoc mpl115a2_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page mpl115a2_page Freescale Semiconductor MPL115A2
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section mpl115a2_intro Introduction
  *
@@ -126,7 +120,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Freescale Semiconductor MPL115A2 sensor](@ref mpl115a2_page).
+ * [Freescale Semiconductor MPL115A2 sensor](@ref mpl115a2_group).
  *
  * @ingroup mpl115a2_group
  */
@@ -183,7 +177,7 @@ class MPL115A2 : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref mpl115a2_temp) from a
- * [Freescale Semiconductor MPL115A2](@ref mpl115a2_page).
+ * [Freescale Semiconductor MPL115A2](@ref mpl115a2_group).
  *
  * @ingroup mpl115a2_group
  */
@@ -224,7 +218,7 @@ class MPL115A2_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [pressure output](@ref mpl115a2_pressure) from a
- * [Freescale Semiconductor MPL115A2](@ref mpl115a2_page).
+ * [Freescale Semiconductor MPL115A2](@ref mpl115a2_group).
  *
  * @ingroup mpl115a2_group
  */

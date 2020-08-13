@@ -15,19 +15,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup ds18_group Maxim DS18 Temperature Sensors
- * Classes for the @ref ds18_page
+ * @defgroup ds18_group Maxim DS18
+ * Classes for the Maxim DS18 one-wire temperature sensors.
  *
  * @ingroup the_sensors
  *
- * @copydoc ds18_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page ds18_page Maxim DS18 Temperature Sensors
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section ds18_intro Introduction
  *
@@ -135,7 +129,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [DS18 one-wire temperature sensors](@ref ds18_page).
+ * [DS18 one-wire temperature sensors](@ref ds18_group).
  *
  * @ingroup ds18_group
  */
@@ -241,7 +235,7 @@ class MaximDS18 : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref ds18_temp) from a
- * [Maxim one-wire temperature sensor](@ref ds18_page).
+ * [Maxim one-wire temperature sensor](@ref ds18_group).
  *
  * @ingroup ds18_group
  */

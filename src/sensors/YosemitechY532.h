@@ -18,19 +18,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y532_group Yosemitech Y532 pH %Sensor
- * Classes for the @ref y532_page
+ * @defgroup y532_group Yosemitech Y532
+ * Classes for the Yosemitech Y532 pH sensor.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y532_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y532_page Yosemitech Y532 pH %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y532_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
@@ -122,7 +116,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y532-A digital pH sensor](@ref y532_page).
+ * [Yosemitech Y532-A digital pH sensor](@ref y532_group).
  *
  * @ingroup y532_group
  */
@@ -179,7 +173,7 @@ class YosemitechY532 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [pH output](@ref y532_ph)
- * from a  [Yosemitech Y532-A digital pH sensor](@ref y532_page).
+ * from a  [Yosemitech Y532-A digital pH sensor](@ref y532_group).
  *
  * @ingroup y532_group
  */
@@ -221,7 +215,7 @@ class YosemitechY532_pH : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y532_temp) from a
- * [Yosemitech Y532-A digital pH sensor](@ref y532_page).
+ * [Yosemitech Y532-A digital pH sensor](@ref y532_group).
  *
  * @ingroup y532_group
  */
@@ -265,7 +259,7 @@ class YosemitechY532_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [electrode electrical potential output](@ref y532_volt) from a
- * [Yosemitech Y532-A digital pH sensor](@ref y532_page).
+ * [Yosemitech Y532-A digital pH sensor](@ref y532_group).
  *
  * @ingroup y532_group
  */

@@ -18,19 +18,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y533_group Yosemitech Y533 ORP %Sensor
- * Classes for the @ref y533_page
+ * @defgroup y533_group Yosemitech Y533
+ * Classes for the Yosemitech Y533 oxidation/reduction potential (ORP) sensor.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y533_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y533_page Yosemitech Y533 ORP %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y533_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
@@ -122,7 +116,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y533 ORP sensor](@ref y533_page).
+ * [Yosemitech Y533 ORP sensor](@ref y533_group).
  *
  * @ingroup y533_group
  */
@@ -179,7 +173,7 @@ class YosemitechY533 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [pH output](@ref y533_ph)
- * from a [Yosemitech Y533 ORP sensor](@ref y533_page).
+ * from a [Yosemitech Y533 ORP sensor](@ref y533_group).
  *
  * @ingroup y533_group
  */
@@ -221,7 +215,7 @@ class YosemitechY533_pH : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y533_temp) from a
- * [Yosemitech Y533 ORP sensor](@ref y533_page).
+ * [Yosemitech Y533 ORP sensor](@ref y533_group).
  *
  * @ingroup y533_group
  */
@@ -265,7 +259,7 @@ class YosemitechY533_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [electrode electrical potential output](@ref y533_volt) from a
- * [Yosemitech Y533 ORP sensor](@ref y533_page).
+ * [Yosemitech Y533 ORP sensor](@ref y533_group).
  *
  * @ingroup y533_group
  */

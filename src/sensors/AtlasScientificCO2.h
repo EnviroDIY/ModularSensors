@@ -15,19 +15,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_co2_group Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor
- * Classes for the [Atlas EZO CO2 circuit](@ref atlas_co2_page).
+ * @defgroup atlas_co2_group Atlas EZO-CO2
+ * Classes for the Atlas Scientific EZO-CO2 embedded NDIR CO2 circuit and sensor.
  *
  * @ingroup atlas_group
  *
- * @copydoc atlas_co2_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page atlas_co2_page Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section atlas_co2_datasheet Sensor Datasheet
  * Documentation on the CO2 circuit and probe is available here:
@@ -125,7 +119,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific gaseous CO2 and temperature sensor](@ref atlas_co2_page)
+ * [Atlas Scientific gaseous CO2 and temperature sensor](@ref atlas_co2_group)
  *  - used for any sensor attached to an
  * [Atlas EZO CO2 circuit](https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/).
  *
@@ -176,7 +170,7 @@ class AtlasScientificCO2 : public AtlasParent {
 /**
  * @brief The Variable sub-class used for the
  * [CO2 concentration output](@ref atlas_co2_co2) from an
- * [Atlas Scientific CO2 circuit](@ref atlas_co2_page).
+ * [Atlas Scientific CO2 circuit](@ref atlas_co2_group).
  *
  * @ingroup atlas_co2_group
  */
@@ -219,7 +213,7 @@ class AtlasScientificCO2_CO2 : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref atlas_co2_temp) from an
- * [Atlas Scientific CO2 circuit](@ref atlas_co2_page).
+ * [Atlas Scientific CO2 circuit](@ref atlas_co2_group).
  *
  *
  * @ingroup atlas_co2_group

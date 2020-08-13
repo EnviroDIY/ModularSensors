@@ -10,7 +10,7 @@
  * YosemitechY4000_Cond, YosemitechY4000_pH, YosemitechY4000_Temp,
  * YosemitechY4000_ORP, YosemitechY4000_Chlorophyll, and YosemitechY4000_BGA.
  *
- * These are for the Yosemitech Y4000 MultiParameter Sonde.
+ * These are for the Yosemitech Y4000 multi-parameter sonde.
  *
  * This depends on the YosemitechParent super class.
  *
@@ -23,19 +23,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y4000_group Yosemitech Y4000 Multi-Parameter Sonde
- * Classes for the @ref y4000_page
+ * @defgroup y4000_group Yosemitech Y4000 Sonde
+ * Classes for the Yosemitech Y4000 multi-parameter sonde.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y4000_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y4000_page Yosemitech Y4000 Multi-Parameter Sonde
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y4000_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf)
@@ -214,7 +208,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */
@@ -271,7 +265,7 @@ class YosemitechY4000 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen concentration output](@ref y4000_domgl) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */
@@ -314,7 +308,7 @@ class YosemitechY4000_DOmgL : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [turbidity output](@ref y4000_turb) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */
@@ -357,7 +351,7 @@ class YosemitechY4000_Turbidity : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [conductivity output](@ref y4000_cond) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */
@@ -400,7 +394,7 @@ class YosemitechY4000_Cond : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [pH output](@ref y4000_ph)
- * from a [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * from a [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */
@@ -441,7 +435,7 @@ class YosemitechY4000_pH : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y4000_temp) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */
@@ -484,7 +478,7 @@ class YosemitechY4000_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [electrode electrical potential output](@ref y4000_orp) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */
@@ -527,7 +521,7 @@ class YosemitechY4000_ORP : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [chlorophyll concentration output](@ref y4000_chloro) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page)
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group)
  *
  * @ingroup y4000_group
  */
@@ -571,7 +565,7 @@ class YosemitechY4000_Chlorophyll : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [blue green algae (BGA) concentration output](@ref y4000_bga) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_page).
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
  *
  * @ingroup y4000_group
  */

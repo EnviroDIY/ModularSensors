@@ -14,18 +14,12 @@
 /* clang-format off */
 /**
  * @defgroup obs3_group Campbell OBS3+
- * Classes for the @ref obs3_page
+ * Classes for the Campbell OBS3+ analog turbidity sensor.
  *
  * @ingroup analog_group
  *
- * @copydoc obs3_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page obs3_page Campbell OBS3+
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section obs3_intro Introduction
  *
@@ -44,7 +38,7 @@
  *
  * Before applying any turbidity calibration, the analog output from the OBS3+
  * must be converted into a high resolution digital signal.  See the
- * [ADS1115 page](@ref ads1x15_page) for details on the conversion.
+ * [ADS1115 page](@ref ads1x15_group) for details on the conversion.
  *
  * @section obs3_datasheet Sensor Datasheet
  * [Basic Concepts](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Basics.pdf)
@@ -163,7 +157,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Campbell OBS3 analog turbidity sensor](@ref obs3_page).
+ * [Campbell OBS3 analog turbidity sensor](@ref obs3_group).
  *
  * Low and high range are treated as completely independent, so only 2
  * "variables" are measured by each sensor - one for the raw voltage and another
@@ -231,7 +225,7 @@ class CampbellOBS3 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [turbidity output](@ref obs3_turbidity) from a [Campbell OBS3+](@ref obs3_page).
+ * [turbidity output](@ref obs3_turbidity) from a [Campbell OBS3+](@ref obs3_group).
  *
  * @ingroup obs3_group
  */
@@ -271,7 +265,7 @@ class CampbellOBS3_Turbidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [raw voltage output](@ref obs3_voltage) from a [Campbell OBS3+](@ref obs3_page).
+ * [raw voltage output](@ref obs3_voltage) from a [Campbell OBS3+](@ref obs3_group).
  *
  * This could be helpful if the calibration equation was typed incorrectly.
  *

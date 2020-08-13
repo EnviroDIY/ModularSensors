@@ -8,7 +8,7 @@
  * subclasses YosemitechY504_DOpct, YosemitechY504_Temp, and
  * YosemitechY504_DOmgL.
  *
- * These are for the Yosemitech Y502-A or Y504-A optical Dissolved Oxygen
+ * These are for the Yosemitech Y502-A or Y504-A optical dissolved oxygen
  * sensor.
  *
  * This depends on the YosemitechParent super class.
@@ -20,18 +20,13 @@
 /* clang-format off */
 /**
  * @defgroup y504_group Yosemitech Y504 Dissolved Oxygen
- * Classes for the @ref y504_page
+ * Classes for the Yosemitech Y502-A or Y504-A optical dissolved oxygen
+ * sensor.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y504_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y504_page Yosemitech Y504 Dissolved Oxygen
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y504_datasheet Sensor Datasheet
  * - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO_UserManual-v1.1.pdf)
@@ -130,7 +125,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensors](@ref y504_page).
+ * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensors](@ref y504_group).
  *
  * @ingroup y504_group
  */
@@ -187,7 +182,7 @@ class YosemitechY504 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen percent saturation output](@ref y504_dopercent) from a
- * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref y504_page).
+ * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref y504_group).
  *
  * @ingroup y504_group
  */
@@ -232,7 +227,7 @@ class YosemitechY504_DOpct : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y504_temp) from a
- * [Yosemitech Y504 optical dissolved oxygen sensor](@ref y504_page).
+ * [Yosemitech Y504 optical dissolved oxygen sensor](@ref y504_group).
  *
  * @ingroup y504_group
  */
@@ -276,7 +271,7 @@ class YosemitechY504_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen concentration output](@ref y504_domgl) from a
- * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref y504_page).
+ * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref y504_group).
  *
  * @ingroup y504_group
  */

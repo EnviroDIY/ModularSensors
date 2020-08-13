@@ -15,16 +15,10 @@
 /* clang-format off */
 /**
  * @defgroup sdi12_group SDI-12 Sensors
- * The Sensor and Variable objects for all @ref sdi12_group
+ * The Sensor and Variable objects for all SDI-12 Sensors
  *
  * @ingroup the_sensors
  *
- * @copydoc sdi12_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page sdi12_page SDI-12 Sensors
  *
  * SDI-12 is a common single-wire data protocol in environmental sensors.
  * The details of the communication are managed by the

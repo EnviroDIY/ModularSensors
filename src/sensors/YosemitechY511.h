@@ -17,19 +17,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup y511_group Yosemitech Y511 Wipered Turbidity
- * Classes for the @ref y511_page
+ * @defgroup y511_group Yosemitech Y511
+ * Classes for the Yosemitech Y511 wipered turbidity sensor.
  *
  * @ingroup yosemitech_group
  *
- * @copydoc y511_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page y511_page Yosemitech Y511 Wipered Turbidity
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section y511_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper_UserManual-v1.1.pdf)
@@ -120,7 +114,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_page).
+ * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_group).
  *
  * @ingroup y511_group
  */
@@ -177,7 +171,7 @@ class YosemitechY511 : public YosemitechParent {
 /**
  * @brief The Variable sub-class used for the
  * [turbidity output](@ref y511_turb) from a
- * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_page).
+ * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_group).
  *
  * @ingroup y511_group
  */
@@ -221,7 +215,7 @@ class YosemitechY511_Turbidity : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref y511_temp) from a
- * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_page).
+ * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_group).
  *
  * @ingroup y511_group
  */

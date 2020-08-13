@@ -14,20 +14,14 @@
  */
 /* clang-format off */
 /**
- * @defgroup dht_group AOSong DHT Digital-Output Relative Humidity and Temperature %Sensor
- * Classes for the [AOSong DHT](@ref dht_page) digital-output relative
- * humidity and temperature sensor.
+ * @defgroup dht_group AOSong DHT
+ * Classes for the AOSong DHT digital-output relative humidity and temperature
+ * sensor.
  *
  * @ingroup the_sensors
  *
- * @copydoc dht_page
- */
-/* clang-format on */
-/* clang-format off */
-/**
- * @page dht_page AOSong DHT Digital-Output Relative Humidity and Temperature %Sensor
- *
  * @tableofcontents
+ * @m_footernavigation
  *
  * @section dht_notes Quick Notes
  * - Applies to AOSong modules:
@@ -159,7 +153,7 @@ typedef enum DHTtype {
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [AOSong digital-output relative humidity and temperature sensor modules](@ref dht_page).
+ * [AOSong digital-output relative humidity and temperature sensor modules](@ref dht_group).
  *
  * @ingroup dht_group
  */
@@ -213,7 +207,7 @@ class AOSongDHT : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [humidity output](@ref dht_humidity) from an [AOSong DHT](@ref dht_page).
+ * [humidity output](@ref dht_humidity) from an [AOSong DHT](@ref dht_group).
  *
  * @ingroup dht_group
  */
@@ -254,7 +248,7 @@ class AOSongDHT_Humidity : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref dht_temperature) from an
- * [AOSong DHT](@ref dht_page).
+ * [AOSong DHT](@ref dht_group).
  *
  * @ingroup dht_group
  */
@@ -295,7 +289,7 @@ class AOSongDHT_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [heat index output](@ref dht_hi) calculated from measurements made
- * by an [AOSong DHT](@ref dht_page).
+ * by an [AOSong DHT](@ref dht_group).
  *
  * @ingroup dht_group
  */
