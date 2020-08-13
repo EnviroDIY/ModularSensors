@@ -134,7 +134,7 @@
             </tab>
         </tab>
 
-        <tab type="pages" visible="no" title="Other Reading" intro="Here are links to detailed information about the various supported sensors and modems as well as how to deal with some common issues with the ModularSensors library."/>
+        <tab type="pages" visible="yes" title="Other Reading" intro="Here are links to detailed information about the various supported sensors and modems as well as how to deal with some common issues with the ModularSensors library."/>
     </navindex>
 
     <!-- Layout definition for a class page -->
