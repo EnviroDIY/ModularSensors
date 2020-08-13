@@ -17,9 +17,9 @@
  * The Sensor and Variable objects for all
  * [Atlas EZO circuits](@ref atlas_page).
  *
- * @copydoc atlas_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc atlas_page
  */
 /* clang-format on */
 /* clang-format off */

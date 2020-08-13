@@ -20,9 +20,9 @@
  * @defgroup y520_group Yosemitech Y520 Conductivity %Sensor
  * Classes for the @ref y520_page
  *
- * @copydoc y520_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y520_page
  */
 /* clang-format on */
 /* clang-format off */

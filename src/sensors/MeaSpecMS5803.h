@@ -22,9 +22,9 @@
  * @defgroup ms5803_group Measurement Specialties MS5803
  * Classes for the @ref ms5803_page
  *
- * @copydoc ms5803_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc ms5803_page
  */
 /* clang-format on */
 /* clang-format off */

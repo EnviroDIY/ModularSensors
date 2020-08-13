@@ -20,9 +20,9 @@
  * @defgroup y514_group Yosemitech Y514 Chlorophyll %Sensor
  * Classes for the @ref y514_page
  *
- * @copydoc y514_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y514_page
  */
 /* clang-format on */
 /* clang-format off */

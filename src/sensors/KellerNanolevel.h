@@ -16,9 +16,9 @@
  * @defgroup nanolevel_group Keller Nanolevel
  * Classes for the @ref nanolevel_page
  *
- * @copydoc nanolevel_page
- *
  * @ingroup keller_group
+ *
+ * @copydoc nanolevel_page
  */
 /* clang-format on */
 /* clang-format off */

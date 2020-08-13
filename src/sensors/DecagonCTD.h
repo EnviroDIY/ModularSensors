@@ -19,9 +19,9 @@
  * @defgroup hydros21_group Meter Hydros 21
  * Classes for the @ref hydros21_page
  *
- * @copydoc hydros21_page
- *
  * @ingroup sdi12_group
+ *
+ * @copydoc hydros21_page
  */
 /* clang-format on */
 /* clang-format off */

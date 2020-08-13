@@ -17,9 +17,9 @@
  * @defgroup atlas_do_group Atlas Scientific EZO-DO Dissolved Oxygen Circuit and Probe
  * Classes for the [Atlas EZO DO circuit](@ref atlas_do_page).
  *
- * @copydoc atlas_do_page
- *
  * @ingroup atlas_group
+ *
+ * @copydoc atlas_do_page
  */
 /* clang-format on */
 /* clang-format off */

@@ -15,9 +15,9 @@
  * @defgroup processor_group Processor Metadata
  * Classes for the @ref processor_sensor_page
  *
- * @copydoc processor_sensor_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc processor_sensor_page
  */
 /* clang-format on */
 /* clang-format off */

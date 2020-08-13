@@ -18,9 +18,9 @@
  * @defgroup atlas_rtd_group Atlas Scientific EZO-RTD Temperature Circuit and Probes
  * Classes for the [Atlas EZO RTD circuit](@ref atlas_rtd_page).
  *
- * @copydoc atlas_rtd_page
- *
  * @ingroup atlas_group
+ *
+ * @copydoc atlas_rtd_page
  */
 /* clang-format on */
 /* clang-format off */

@@ -21,9 +21,9 @@
  * @defgroup y532_group Yosemitech Y532 pH %Sensor
  * Classes for the @ref y532_page
  *
- * @copydoc y532_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y532_page
  */
 /* clang-format on */
 /* clang-format off */

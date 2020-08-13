@@ -18,9 +18,9 @@
  * @defgroup mpl115a2_group Freescale Semiconductor MPL115A2
  * Classes for the @ref mpl115a2_page
  *
- * @copydoc mpl115a2_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc mpl115a2_page
  */
 /* clang-format on */
 /* clang-format off */

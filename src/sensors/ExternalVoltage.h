@@ -21,9 +21,9 @@
  * @defgroup analog_group Analog Sensors via TI ADS1x15
  * The Sensor and Variable objects for all @ref ads1x15_page
  *
- * @copydoc ads1x15_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc ads1x15_page
  */
 /* clang-format on */
 /* clang-format off */
@@ -31,9 +31,9 @@
  * @defgroup ext_volt_group TI ADS1x15 External Voltage Sensor
  * Classes for simple [external analog voltage measurements](@ref ext_volt_page)
  *
- * @copydoc ext_volt_page
- *
  * @ingroup analog_group
+ *
+ * @copydoc ext_volt_page
  */
 /* clang-format on */
 /* clang-format off */

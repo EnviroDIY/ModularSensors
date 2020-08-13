@@ -17,9 +17,9 @@
  * @defgroup ds3231_group Maxim DS3231 RTC
  * Classes for the @ref ds3231_page
  *
- * @copydoc ds3231_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc ds3231_page
  */
 /* clang-format on */
 /* clang-format off */

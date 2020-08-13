@@ -22,9 +22,9 @@
  * @defgroup y504_group Yosemitech Y504 Dissolved Oxygen
  * Classes for the @ref y504_page
  *
- * @copydoc y504_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y504_page
  */
 /* clang-format on */
 /* clang-format off */

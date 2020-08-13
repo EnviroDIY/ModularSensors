@@ -19,9 +19,9 @@
  * @defgroup i2c_rain_group I2C Tipping Bucket Counter
  * Classes for the @ref i2c_rain_page
  *
- * @copydoc i2c_rain_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc i2c_rain_page
  */
 /* clang-format on */
 /* clang-format off */

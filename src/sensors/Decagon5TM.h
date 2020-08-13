@@ -18,9 +18,9 @@
  * @defgroup fivetm_group Meter ECH2O (5TM)
  * Classes for the @ref fivetm_page
  *
- * @copydoc fivetm_page
- *
  * @ingroup sdi12_group
+ *
+ * @copydoc fivetm_page
  */
 /* clang-format on */
 /* clang-format off */

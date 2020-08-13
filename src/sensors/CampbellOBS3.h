@@ -16,9 +16,9 @@
  * @defgroup obs3_group Campbell OBS3+
  * Classes for the @ref obs3_page
  *
- * @copydoc obs3_page
- *
  * @ingroup analog_group
+ *
+ * @copydoc obs3_page
  */
 /* clang-format on */
 /* clang-format off */

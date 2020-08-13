@@ -17,9 +17,9 @@
  * @defgroup dopto_group Zebra-Tech D-Opto
  * Classes for the @ref dopto_page
  *
- * @copydoc dopto_page
- *
  * @ingroup sdi12_group
+ *
+ * @copydoc dopto_page
  */
 /* clang-format on */
 /* clang-format off */

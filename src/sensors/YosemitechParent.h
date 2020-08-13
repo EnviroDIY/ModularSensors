@@ -17,9 +17,9 @@
  * @defgroup yosemitech_group Yosemitech Sensors
  * The Sensor and Variable objects for all @ref yosemitech_page
  *
- * @copydoc yosemitech_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc yosemitech_page
  */
 /* clang-format on */
 /* clang-format off */

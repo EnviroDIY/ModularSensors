@@ -20,9 +20,9 @@
  * @defgroup acculevel_group Keller Acculevel
  * Classes for the @ref acculevel_page
  *
- * @copydoc acculevel_page
- *
  * @ingroup keller_group
+ *
+ * @copydoc acculevel_page
  */
 /* clang-format on */
 /* clang-format off */

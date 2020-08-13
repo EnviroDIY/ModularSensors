@@ -19,9 +19,9 @@
  * @defgroup atlas_cond_group Atlas Scientific EZO-EC Conductivity Circuit and Probes
  * Classes for the [Atlas EZO conductivity circuit.](@ref atlas_cond_page)
  *
- * @copydoc atlas_cond_page
- *
  * @ingroup atlas_group
+ *
+ * @copydoc atlas_cond_page
  */
 /* clang-format on */
 /* clang-format off */

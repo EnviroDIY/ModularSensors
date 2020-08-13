@@ -18,9 +18,9 @@
  * @defgroup atlas_co2_group Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor
  * Classes for the [Atlas EZO CO2 circuit](@ref atlas_co2_page).
  *
- * @copydoc atlas_co2_page
- *
  * @ingroup atlas_group
+ *
+ * @copydoc atlas_co2_page
  */
 /* clang-format on */
 /* clang-format off */

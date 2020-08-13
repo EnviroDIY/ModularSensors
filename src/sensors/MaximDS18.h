@@ -18,9 +18,9 @@
  * @defgroup ds18_group Maxim DS18 Temperature Sensors
  * Classes for the @ref ds18_page
  *
- * @copydoc ds18_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc ds18_page
  */
 /* clang-format on */
 /* clang-format off */

@@ -20,9 +20,9 @@
  * @defgroup y510_group Yosemitech Y510 Turbidity
  * Classes for the @ref y510_page
  *
- * @copydoc y510_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y510_page
  */
 /* clang-format on */
 /* clang-format off */

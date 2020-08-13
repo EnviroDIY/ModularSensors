@@ -17,9 +17,9 @@
  * @defgroup sdi12_group SDI-12 Sensors
  * The Sensor and Variable objects for all @ref sdi12_group
  *
- * @copydoc sdi12_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc sdi12_page
  */
 /* clang-format on */
 /* clang-format off */

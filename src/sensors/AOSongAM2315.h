@@ -14,13 +14,13 @@
  */
 /* clang-format off */
 /**
- * @defgroup am2315_group AOSong AM2315
+ * @defgroup am2315_group AOSong AM2315 Encased I2C Temperature and Humidity %Sensor
  * Classes for the [AOSong AM2315](@ref am2315_page) encased I2C
  * capacitive humidity and temperature sensor.
  *
- * @copydoc am2315_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc am2315_page
  */
 /* clang-format on */
 /* clang-format off */

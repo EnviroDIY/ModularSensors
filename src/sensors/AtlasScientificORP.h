@@ -17,9 +17,9 @@
  * @defgroup atlas_orp_group Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes
  * Classes for the [Atlas EZO ORP circuit](@ref atlas_orp_page).
  *
- * @copydoc atlas_orp_page
- *
  * @ingroup atlas_group
+ *
+ * @copydoc atlas_orp_page
  */
 /* clang-format on */
 /* clang-format off */

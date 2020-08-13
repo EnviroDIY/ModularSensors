@@ -20,9 +20,9 @@
  * @defgroup bme280_group Bosch BME280
  * Classes for the @ref bme280_page.
  *
- * @copydoc bme280_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc bme280_page
  */
 /* clang-format on */
 /* clang-format off */

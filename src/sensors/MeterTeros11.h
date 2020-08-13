@@ -18,9 +18,9 @@
  * @defgroup teros_group Meter Teros
  * Classes for the @ref teros_page
  *
- * @copydoc teros_page
- *
  * @ingroup sdi12_group
+ *
+ * @copydoc teros_page
  */
 /* clang-format on */
 /* clang-format off */

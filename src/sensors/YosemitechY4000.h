@@ -26,9 +26,9 @@
  * @defgroup y4000_group Yosemitech Y4000 Multi-Parameter Sonde
  * Classes for the @ref y4000_page
  *
- * @copydoc y4000_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y4000_page
  */
 /* clang-format on */
 /* clang-format off */

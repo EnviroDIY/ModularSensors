@@ -19,9 +19,9 @@
  * @defgroup sq212_group Apogee SQ-212 Quantum Light %Sensor
  * Classes for the [Apogee SQ-212 quantum light sensor](@ref sq212_page).
  *
- * @copydoc sq212_page
- *
  * @ingroup analog_group
+ *
+ * @copydoc sq212_page
  */
 /* clang-format on */
 /* clang-format off */

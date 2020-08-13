@@ -21,9 +21,9 @@
  * @defgroup y533_group Yosemitech Y533 ORP %Sensor
  * Classes for the @ref y533_page
  *
- * @copydoc y533_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y533_page
  */
 /* clang-format on */
 /* clang-format off */

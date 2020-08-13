@@ -20,9 +20,9 @@
  * @defgroup y511_group Yosemitech Y511 Wipered Turbidity
  * Classes for the @ref y511_page
  *
- * @copydoc y511_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y511_page
  */
 /* clang-format on */
 /* clang-format off */

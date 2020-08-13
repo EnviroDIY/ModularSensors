@@ -18,9 +18,9 @@
  * @defgroup ina219_group TI INA219
  * Classes for the @ref ina219_page
  *
- * @copydoc ina219_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc ina219_page
  */
 /* clang-format on */
 /* clang-format off */

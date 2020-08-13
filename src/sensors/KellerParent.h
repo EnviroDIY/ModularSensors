@@ -19,9 +19,9 @@
  * @defgroup keller_group Keller Water Level Sensors
  * The Sensor and Variable objects for all @ref keller_page
  *
- * @copydoc keller_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc keller_page
  */
 /* clang-format on */
 /* clang-format off */

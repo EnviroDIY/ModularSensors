@@ -18,9 +18,9 @@
  * @defgroup es2_group Decagon ES-2
  * Classes for the @ref es2_page
  *
- * @copydoc es2_page
- *
  * @ingroup sdi12_group
+ *
+ * @copydoc es2_page
  */
 /* clang-format on */
 /* clang-format off */

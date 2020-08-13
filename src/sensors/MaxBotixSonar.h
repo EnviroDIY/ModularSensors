@@ -14,9 +14,9 @@
  * @defgroup maxbotics_group MaxBotix MaxSonar
  * Classes for the @ref maxbotics_page
  *
- * @copydoc maxbotics_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc maxbotics_page
  */
 /* clang-format on */
 /* clang-format off */

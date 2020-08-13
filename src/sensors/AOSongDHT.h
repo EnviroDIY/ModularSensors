@@ -18,9 +18,9 @@
  * Classes for the [AOSong DHT](@ref dht_page) digital-output relative
  * humidity and temperature sensor.
  *
- * @copydoc dht_page
- *
  * @ingroup the_sensors
+ *
+ * @copydoc dht_page
  */
 /* clang-format on */
 /* clang-format off */

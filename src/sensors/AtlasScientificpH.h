@@ -17,9 +17,9 @@
  * @defgroup atlas_pH_group Atlas Scientific EZO-pH Circuit and Probe
  * Classes for the [Atlas EZO pH circuit](@ref atlas_ph_page).
  *
- * @copydoc atlas_ph_page
- *
  * @ingroup atlas_group
+ *
+ * @copydoc atlas_ph_page
  */
 /* clang-format on */
 /* clang-format off */

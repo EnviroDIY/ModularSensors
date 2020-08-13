@@ -21,9 +21,9 @@
  * @defgroup y550_group Yosemitech Y550 UV245/COD %Sensor
  * Classes for the @ref y550_page
  *
- * @copydoc y550_page
- *
  * @ingroup yosemitech_group
+ *
+ * @copydoc y550_page
  */
 /* clang-format on */
 /* clang-format off */
