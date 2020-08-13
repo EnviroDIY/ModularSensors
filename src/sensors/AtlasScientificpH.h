@@ -11,14 +11,17 @@
  * These are used for any sensor attached to an Atlas EZO pH circuit.
  *
  * @copydetails AtlasScientificpH
- *
- * @defgroup atlas_pH_group Atlas Scientific pH circuit
+ */
+/* clang-format off */
+/**
+ * @defgroup atlas_pH_group Atlas Scientific EZO-pH Circuit and Probe
  * Classes for the [Atlas EZO pH circuit](@ref atlas_ph_page).
  *
  * @copydoc atlas_ph_page
  *
  * @ingroup atlas_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page atlas_ph_page Atlas Scientific EZO-pH Circuit and Probe

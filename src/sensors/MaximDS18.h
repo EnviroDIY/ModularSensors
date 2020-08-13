@@ -12,7 +12,9 @@
  *
  * This depends on Dallas Temperature library, which itself is dependent on the
  * OneWire library.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup ds18_group Maxim DS18 Temperature Sensors
  * Classes for the @ref ds18_page
  *
@@ -20,6 +22,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page ds18_page Maxim DS18 Temperature Sensors

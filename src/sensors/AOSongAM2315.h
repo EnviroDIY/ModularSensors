@@ -11,7 +11,9 @@
  * sensor.
  *
  * This file is dependent on the Adafruit AM2315 Library.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup am2315_group AOSong AM2315
  * Classes for the [AOSong AM2315](@ref am2315_page) encased I2C
  * capacitive humidity and temperature sensor.
@@ -20,6 +22,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page am2315_page AOSong AM2315 Encased I2C Temperature and Humidity %Sensor
@@ -31,7 +34,7 @@
  * and temperature sensors
  * - Depends on the [Adafruit AM2315 Library](https://github.com/adafruit/Adafruit_AM2315).
  * - Communicate via I2C
- *  - only one address possible, 0xB8
+ *   - only one address possible, 0xB8
  * - **Only 1 can be connected to a system at a time**
  * - Requires a 3.3 - 5.5V power source
  *
@@ -69,7 +72,7 @@
  * @section am2315_examples Example Code
  *
  * The AM2315 is used in the
- * [double logger](https://envirodiy.github.io/ModularSensors/double_log_walkthrough.html#double_log_am2315)
+ * [double logger](@ref double_log_am2315)
  * and @menulink{am2315} example
  *
  * @menusnip{am2315}

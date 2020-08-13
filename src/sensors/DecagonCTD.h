@@ -13,7 +13,9 @@
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
  * class.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup hydros21_group Meter Hydros 21
  * Classes for the @ref hydros21_page
  *
@@ -21,6 +23,7 @@
  *
  * @ingroup sdi12_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page hydros21_page Meter Hydros 21
@@ -29,15 +32,17 @@
  *
  * @section hydros21_intro Introduction
  *
- * @note Meter Environmental was formerly known as Decagon Devices and sold the a very similar sensor to the current Hydros 21 as the CTD-10.
+ * @note Meter Environmental was formerly known as Decagon Devices and sold the
+ * a very similar sensor to the current Hydros 21 as the CTD-10.
  *
  * The Hydros 21 is implemented as a sub-classes of the SDI12Sensors class.
- * It requires a 3.5-12V power supply, which can be turned off between measurements.
- * While contrary to the manual, they will run with power as low as 3.3V.
+ * It requires a 3.5-12V power supply, which can be turned off between
+ * measurements. While contrary to the manual, they will run with power as low
+ * as 3.3V.
  *
  * @section hydros21_datasheet Sensor Datasheet
- * Documentation for the SDI-12 Protocol commands and responses for the Hydros 21 can be found at:
- * http://library.metergroup.com/Manuals/13869_CTD_Web.pdf
+ * Documentation for the SDI-12 Protocol commands and responses for the Hydros
+ * 21 can be found at: http://library.metergroup.com/Manuals/13869_CTD_Web.pdf
  *
  * @section hydros21_sensor The Meter Hydros 21 (CTD) Sensor
  * @ctor_doc{DecagonCTD, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}

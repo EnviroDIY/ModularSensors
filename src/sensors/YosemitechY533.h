@@ -15,14 +15,17 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
- * @defgroup y533_group Yosemitech Y533 ORP Sensor
+ */
+/* clang-format off */
+/**
+ * @defgroup y533_group Yosemitech Y533 ORP %Sensor
  * Classes for the @ref y533_page
  *
  * @copydoc y533_page
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y533_page Yosemitech Y533 ORP %Sensor

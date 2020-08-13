@@ -14,8 +14,9 @@
  * after the 2012 in the 28th week).
  *
  * Only tested on the Acculevel.
- *
- *
+ */
+/* clang-format off */
+/**
  * @defgroup acculevel_group Keller Acculevel
  * Classes for the @ref acculevel_page
  *
@@ -23,17 +24,24 @@
  *
  * @ingroup keller_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page acculevel_page Keller Acculevel
  *
  * @tableofcontents
  *
+ * These are for Keller Series 30, Class 5, Group 20 sensors using Modbus
+ * communication, that are software version 5.20-12.28 and later (i.e. made
+ * after the 2012 in the 28th week).
+ *
+ * Only tested on the Acculevel.
+ *
  * @section acculevel_datasheet Sensor Datasheet
  * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  * [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
  *
- * @section acculevel_sensor the Keller Acculevel Sensor
+ * @section acculevel_sensor The Keller Acculevel Sensor
  * @ctor_doc{KellerAcculevel, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection acculevel_timing Sensor Timing
  *

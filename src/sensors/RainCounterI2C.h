@@ -13,7 +13,9 @@
  *
  * The tip counter works on an Adafruit Trinket.  Documentation for it can be
  * found at: https://github.com/EnviroDIY/TippingBucketRainCounter
- *
+ */
+/* clang-format off */
+/**
  * @defgroup i2c_rain_group I2C Tipping Bucket Counter
  * Classes for the @ref i2c_rain_page
  *
@@ -21,6 +23,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page i2c_rain_page I2C Tipping Bucket Counter

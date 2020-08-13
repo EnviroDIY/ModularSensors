@@ -12,7 +12,9 @@
  *
  * This depends on the
  * [Adafruit INA219 Library](https://github.com/adafruit/Adafruit_INA219)
- *
+ */
+/* clang-format off */
+/**
  * @defgroup ina219_group TI INA219
  * Classes for the @ref ina219_page
  *
@@ -20,6 +22,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page ina219_page TI INA219

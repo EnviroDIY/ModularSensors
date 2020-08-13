@@ -7,12 +7,15 @@
  * @brief Contains the Sensor class.
  *
  * @copydetails Sensor
- *
+ */
+/* clang-format off */
+/**
  * @defgroup the_sensors Supported Sensors
  * All implemented Sensor classes
  *
  * @copydetails Sensor
  */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORBASE_H_

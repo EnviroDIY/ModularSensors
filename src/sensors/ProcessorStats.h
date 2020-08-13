@@ -9,7 +9,9 @@
  * ProcessorStats_SampleNumber.
  *
  * These are for metadata on the processor functionality.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup processor_group Processor Metadata
  * Classes for the @ref processor_sensor_page
  *
@@ -17,6 +19,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page processor_sensor_page Processor Metadata
@@ -49,7 +52,8 @@
  * other sensors.
  *
  * @section processor_battery Battery Voltage
- * This is the voltage as measured on the battery attached to the MCU using the inbuilt ADC, if applicable.
+ * This is the voltage as measured on the battery attached to the MCU using the
+ * inbuilt ADC, if applicable.
  * @variabledoc{ProcessorStats,Battery}
  * - Range is assumed to be 0 to 5V
  * - Accuracy is processor dependent

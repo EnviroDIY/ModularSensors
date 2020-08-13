@@ -14,7 +14,9 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
+ */
+/* clang-format off */
+/**
  * @defgroup y511_group Yosemitech Y511 Wipered Turbidity
  * Classes for the @ref y511_page
  *
@@ -22,6 +24,7 @@
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y511_page Yosemitech Y511 Wipered Turbidity
@@ -64,7 +67,8 @@
  *
  * ___
  * @section y511_examples Example Code
- * The Yosemitech Y511 wipered turbidity sensor is used in the @menulink{y511} example.
+ * The Yosemitech Y511 wipered turbidity sensor is used in the @menulink{y511}
+ * example.
  *
  * @menusnip{y511}
  */

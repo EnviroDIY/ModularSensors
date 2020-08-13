@@ -8,7 +8,9 @@
  * variable subclass.
  *
  * These are for the MaxBotix HRXL-MaxSonar ultrasonic range finders.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup maxbotics_group MaxBotix MaxSonar
  * Classes for the @ref maxbotics_page
  *
@@ -16,6 +18,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page maxbotics_page MaxBotix MaxSonar

@@ -16,7 +16,9 @@
  * modified for ModularSensors based on a fork from the
  * https://github.com/NorthernWidget/MS5803 library, which itself expanded on
  * https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
- *
+ */
+/* clang-format off */
+/**
  * @defgroup ms5803_group Measurement Specialties MS5803
  * Classes for the @ref ms5803_page
  *
@@ -24,6 +26,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page ms5803_page Measurement Specialties MS5803

@@ -11,8 +11,10 @@
  * sensors/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).
  *
  * This file is dependent on the Adafruit DHT Library.
- *
- * @defgroup dht_group AOSong DHT
+ */
+/* clang-format off */
+/**
+ * @defgroup dht_group AOSong DHT Digital-Output Relative Humidity and Temperature %Sensor
  * Classes for the [AOSong DHT](@ref dht_page) digital-output relative
  * humidity and temperature sensor.
  *
@@ -20,6 +22,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page dht_page AOSong DHT Digital-Output Relative Humidity and Temperature %Sensor

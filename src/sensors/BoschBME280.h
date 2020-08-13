@@ -14,7 +14,9 @@
  * library](https://github.com/adafruit/Adafruit_BME280_Library).
  *
  * @copydetails BoschBME280
- *
+ */
+/* clang-format off */
+/**
  * @defgroup bme280_group Bosch BME280
  * Classes for the @ref bme280_page.
  *
@@ -22,6 +24,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page bme280_page Bosch BME280
@@ -38,9 +41,9 @@
  * > context awareness, and high accuracy over a wide temperature range.
  *
  * Although this sensor has the option of either I2C or SPI communication, this
- * library only supports I2C.  The default I2C address varies by manufacturer and
- * is either 0x77 or 0x76.  The Adafruit and Sparkfun defaults are both 0x77 and
- * Seeed/Grove default is 0x76, though all can be changed by physical
+ * library only supports I2C.  The default I2C address varies by manufacturer
+ * and is either 0x77 or 0x76.  The Adafruit and Sparkfun defaults are both 0x77
+ * and Seeed/Grove default is 0x76, though all can be changed by physical
  * modification of the sensor, if necessary (by cutting the board connection for
  * the manufacturer default and soldering the optional address jumpers).  To
  * connect two of these sensors to your system, you must ensure they are

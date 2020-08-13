@@ -16,7 +16,9 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
+ */
+/* clang-format off */
+/**
  * @defgroup y504_group Yosemitech Y504 Dissolved Oxygen
  * Classes for the @ref y504_page
  *
@@ -24,6 +26,7 @@
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y504_page Yosemitech Y504 Dissolved Oxygen

@@ -13,7 +13,9 @@
  * Documentation for the Keller Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY
  * KellerModbus library at: https://github.com/EnviroDIY/KellerModbus
- *
+ */
+/* clang-format off */
+/**
  * @defgroup keller_group Keller Water Level Sensors
  * The Sensor and Variable objects for all @ref keller_page
  *
@@ -21,6 +23,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page keller_page Keller Water Level Sensors
@@ -37,40 +40,43 @@
  * - Any Keller Series 30, Class 5, Group 20 sensors that are software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *
  * These sensors communicate via Modbus RTU over RS485 at 9600 baud.
- * More documentation for our implementation of the Keller Modbus communication commands
- * and responses, along with information about the various variables, can be found in
- * the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus).
+ * More documentation for our implementation of the Keller Modbus communication
+ * commands and responses, along with information about the various variables,
+ * can be found in the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus).
  *
- * Sensors ship with default slave addresses set to 0x01, which can be set by the user.
+ * Sensors ship with default slave addresses set to 0x01, which can be set by
+ * the user.
  *
- * The Keller sensors expect an input voltage of 9-28 VDC, so they also require a
- * voltage booster and an RS485 to TTL Serial converter with logic level shifting from
- * the higher output voltage to the 3.3V or 5V of the Arduino data logging board.
+ * The Keller sensors expect an input voltage of 9-28 VDC, so they also require
+ * a voltage booster and an RS485 to TTL Serial converter with logic level
+ * shifting from the higher output voltage to the 3.3V or 5V of the Arduino data
+ * logging board.
  *
  * Digital communication with Keller sensors configured for SDI12 communication
  * protocols are not supported by this library.
  *
- * The sensor constructors require as input: the sensor modbus address,  a stream
- * instance for data (ie, ```Serial```), and one or two power pins.  The Arduino pin
- * controlling the receive and data enable on your RS485-to-TTL adapter and the number
- * of readings to average are optional.  (Use -1 for the second power pin and -1 for the
- * enable pin if these don't apply and you want to average more than one reading.)
- * Please see the section "[Notes on Arduino Streams and Software
- * Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more
- * information about what streams can be used along with this library.  In tests on these
- * sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors,
- * because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.  Up to two
- * power pins are provided so that the RS485 adapter, the sensor and/or an external
- * power relay can be controlled separately.  If the power to everything is controlled by
- * the same pin, use -1 for the second power pin or omit the argument.  If they are
- * controlled by different pins _and no other sensors are dependent on power from either
- * pin_ then the order of the pins doesn't matter.  If the RS485 adapter, sensor, or
- * relay are controlled by different pins _and any other sensors are controlled by the
- * same pins_ you should put the shared pin first and the un-shared pin second.  Both
- * pins _cannot_ be shared pins.
+ * The sensor constructors require as input: the sensor modbus address,  a
+ * stream instance for data (ie, ```Serial```), and one or two power pins.  The
+ * Arduino pin controlling the receive and data enable on your RS485-to-TTL
+ * adapter and the number of readings to average are optional.  (Use -1 for the
+ * second power pin and -1 for the enable pin if these don't apply and you want
+ * to average more than one reading.) Please see the section
+ * "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)"
+ * for more information about what streams can be used along with this library.
+ * In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to
+ * communicate with these sensors, because it isn't stable enough. AltSoftSerial
+ * and HardwareSerial work fine.  Up to two power pins are provided so that the
+ * RS485 adapter, the sensor and/or an external power relay can be controlled
+ * separately.  If the power to everything is controlled by the same pin, use -1
+ * for the second power pin or omit the argument.  If they are controlled by
+ * different pins _and no other sensors are dependent on power from either pin_
+ * then the order of the pins doesn't matter.  If the RS485 adapter, sensor, or
+ * relay are controlled by different pins _and any other sensors are controlled
+ * by the same pins_ you should put the shared pin first and the un-shared pin
+ * second.  Both pins _cannot_ be shared pins.
  *
- * The lower level details of the communication with the sensors is managed by the
- * [EnviroDIY Keller library](https://github.com/EnviroDIY/KellerModbus)
+ * The lower level details of the communication with the sensors is managed by
+ * the [EnviroDIY Keller library](https://github.com/EnviroDIY/KellerModbus)
  */
 /* clang-format on */
 

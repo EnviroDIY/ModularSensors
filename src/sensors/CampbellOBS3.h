@@ -10,7 +10,9 @@
  * These are used for the Campbell Scientific OBS-3+.
  *
  * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup obs3_group Campbell OBS3+
  * Classes for the @ref obs3_page
  *
@@ -18,6 +20,7 @@
  *
  * @ingroup analog_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page obs3_page Campbell OBS3+
@@ -28,11 +31,12 @@
  *
  * @warning This sensor is no longer manufactured.
  *
- * The OBS-3+ puts out a simple analog signal between 0 and 2.5V.  When the sensor is
- * purchased, included in the packaging is a calibration certificate to use to
- * convert the voltage into turbidity.
+ * The OBS-3+ puts out a simple analog signal between 0 and 2.5V.  When the
+ * sensor is purchased, included in the packaging is a calibration certificate
+ * to use to convert the voltage into turbidity.
  *
- * @note The 5V and 4-20mA versions of the OBS3+ are _not_ supported by this library.
+ * @note The 5V and 4-20mA versions of the OBS3+ are _not_ supported by this
+ * library.
  *
  * The OBS3+ supports two different turbidity ranges.  The low and high range
  * signals are read independently of each other - the signals are on different

@@ -11,7 +11,9 @@
  * boards.
  *
  * This depends on the EnviroDIY DS3231 library.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup ds3231_group Maxim DS3231 RTC
  * Classes for the @ref ds3231_page
  *
@@ -19,6 +21,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page ds3231_page Maxim DS3231 RTC

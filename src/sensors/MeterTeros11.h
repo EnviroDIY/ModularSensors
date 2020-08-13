@@ -12,7 +12,9 @@
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
  * class.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup teros_group Meter Teros
  * Classes for the @ref teros_page
  *
@@ -20,6 +22,7 @@
  *
  * @ingroup sdi12_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page teros_page Meter Teros
@@ -34,10 +37,12 @@
  * __This page is for the Teros series.__
  *
  * Both series of sensors operate as sub-classes of the SDI12Sensors class.
- * They require a 3.5-12V power supply, which can be turned off between measurements.
- * While contrary to the manual, they will run with power as low as 3.3V.
- * On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.
- * On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
+ * They require a 3.5-12V power supply, which can be turned off between
+ * measurements. While contrary to the manual, they will run with power as low
+ * as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip,
+ * data to the ring, and ground to the sleeve. On the bare-wire version, the
+ * power is connected to the _white_ cable, data to _red_, and ground to the
+ * unshielded cable.
  *
  * @section teros_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses for the Meter

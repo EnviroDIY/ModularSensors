@@ -14,14 +14,17 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
- * @defgroup y520_group Yosemitech Y520 Conductivity Sensor
+ */
+/* clang-format off */
+/**
+ * @defgroup y520_group Yosemitech Y520 Conductivity %Sensor
  * Classes for the @ref y520_page
  *
  * @copydoc y520_page
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y520_page Yosemitech Y520 Conductivity %Sensor
@@ -64,7 +67,8 @@
  *
  * ___
  * @section y520_examples Example Code
- * The Yosemitech Y520 conductivity sensor is used in the @menulink{y520} example.
+ * The Yosemitech Y520 conductivity sensor is used in the @menulink{y520}
+ * example.
  *
  * @menusnip{y520}
  */

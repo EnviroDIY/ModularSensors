@@ -14,7 +14,9 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
+ */
+/* clang-format off */
+/**
  * @defgroup y510_group Yosemitech Y510 Turbidity
  * Classes for the @ref y510_page
  *
@@ -22,6 +24,7 @@
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y510_page Yosemitech Y510 Turbidity

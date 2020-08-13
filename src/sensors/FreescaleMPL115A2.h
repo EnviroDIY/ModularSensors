@@ -12,7 +12,9 @@
  * Barometer.
  *
  * This depends on the https://github.com/adafruit/Adafruit_MPL115A2 library
- *
+ */
+/* clang-format off */
+/**
  * @defgroup mpl115a2_group Freescale Semiconductor MPL115A2
  * Classes for the @ref mpl115a2_page
  *
@@ -20,6 +22,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page mpl115a2_page Freescale Semiconductor MPL115A2
@@ -28,12 +31,13 @@
  *
  * @section mpl115a2_intro Introduction
  *
- * The Freescale Semiconductor MPL115A2 is a low-cost, low-power absolute pressure
- * sensor with a digital I2C output.  It is optimized for barometric measurements.
- * Because this sensor can have only one I2C address (0x60), it is only possible to
- * connect one of these sensors to your system.  This sensor should be attached to
- * a 2.375-5.5V power source and the power supply to the sensor can be stopped between
- * measurements.  Communication with the MPL115A2 is managed by the
+ * The Freescale Semiconductor MPL115A2 is a low-cost, low-power absolute
+ * pressure sensor with a digital I2C output.  It is optimized for barometric
+ * measurements. Because this sensor can have only one I2C address (0x60), it is
+ * only possible to connect one of these sensors to your system.  This sensor
+ * should be attached to a 2.375-5.5V power source and the power supply to the
+ * sensor can be stopped between measurements.  Communication with the MPL115A2
+ * is managed by the
  * [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2).
  *
  * @section mpl115a2_datasheet Sensor Datasheet
@@ -69,7 +73,8 @@
  *
  * ___
  * @section mpl115a2_examples Example Code
- * The Freescale Semiconductor MPL115A2 is used in the @menulink{mpl115a2} example.
+ * The Freescale Semiconductor MPL115A2 is used in the @menulink{mpl115a2}
+ * example.
  *
  * @menusnip{mpl115a2}
  */

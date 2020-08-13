@@ -12,17 +12,9 @@
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
  * class.
- *
- * For Specific Conductance:
- *   - Resolution is 0.001 mS/cm = 1 µS/cm
- *   - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
- *   - Range is 0 – 120 mS/cm (bulk)
- *
- * For Temperature:
- *   - Resolution is 0.1°C
- *   - Accuracy is ±1°C
- *   - Range is -40°C to +50°C
- *
+ */
+/* clang-format off */
+/**
  * @defgroup es2_group Decagon ES-2
  * Classes for the @ref es2_page
  *
@@ -30,6 +22,7 @@
  *
  * @ingroup sdi12_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page es2_page Decagon ES-2
@@ -40,11 +33,13 @@
  *
  * @warning This sensor is no longer manufactured!
  *
- * If you still have one of these sensors, it is implemented as a sub-classes of the SDI12Sensors class.
- * It requires a 3.5-12V power supply, which can be turned off between measurements.
- * While contrary to the manual, they will run with power as low as 3.3V.
- * On the version with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.
- * On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
+ * If you still have one of these sensors, it is implemented as a sub-classes of
+ * the SDI12Sensors class. It requires a 3.5-12V power supply, which can be
+ * turned off between measurements. While contrary to the manual, they will run
+ * with power as low as 3.3V. On the version with a stereo cable, the power is
+ * connected to the tip, data to the ring, and ground to the sleeve. On the
+ * bare-wire version, the power is connected to the _white_ cable, data to
+ * _red_, and ground to the unshielded cable.
  *
  * @section es2_datasheet Sensor Datasheet
  * [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf)

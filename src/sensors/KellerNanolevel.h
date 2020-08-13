@@ -10,7 +10,9 @@
  * variable subclasses.
  *
  * These are for Keller Nanolevel capacitive level sensors.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup nanolevel_group Keller Nanolevel
  * Classes for the @ref nanolevel_page
  *
@@ -18,17 +20,20 @@
  *
  * @ingroup keller_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page nanolevel_page Keller Nanolevel
  *
  * @tableofcontents
  *
+ * These are for Keller Nanolevel capacitive level sensors.
+ *
  * @section nanolevel_datasheet Sensor Datasheet
  * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  * [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
  *
- * @section nanolevel_sensor the Keller Nanolevel Sensor
+ * @section nanolevel_sensor The Keller Nanolevel Sensor
  * @ctor_doc{KellerNanolevel, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection nanolevel_timing Sensor Timing
  *

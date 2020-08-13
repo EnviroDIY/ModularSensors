@@ -11,7 +11,9 @@
  * These are for the ZebraTech D-Opto digital dissolved oxygen sensor.
  *
  * This depends on the SDI12Sensors parent class.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup dopto_group Zebra-Tech D-Opto
  * Classes for the @ref dopto_page
  *
@@ -19,6 +21,7 @@
  *
  * @ingroup sdi12_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page dopto_page Zebra-Tech D-Opto

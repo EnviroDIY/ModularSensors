@@ -11,14 +11,17 @@
  * These are used for any sensor attached to an Atlas EZO ORP circuit.
  *
  * @copydetails AtlasScientificORP
- *
- * @defgroup atlas_orp_group Atlas Scientific ORP circuit
+ */
+/* clang-format off */
+/**
+ * @defgroup atlas_orp_group Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes
  * Classes for the [Atlas EZO ORP circuit](@ref atlas_orp_page).
  *
  * @copydoc atlas_orp_page
  *
  * @ingroup atlas_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page atlas_orp_page Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes

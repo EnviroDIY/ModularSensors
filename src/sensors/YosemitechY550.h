@@ -15,14 +15,17 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
- * @defgroup y550_group Yosemitech Y550 UV245/COD Sensor
+ */
+/* clang-format off */
+/**
+ * @defgroup y550_group Yosemitech Y550 UV245/COD %Sensor
  * Classes for the @ref y550_page
  *
  * @copydoc y550_page
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y550_page Yosemitech Y550 UV245/COD %Sensor

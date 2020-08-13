@@ -12,14 +12,17 @@
  * These are used for any sensor attached to an Atlas EZO CO2 circuit.
  *
  * @note This has a long (10s) stabilization time!
- *
- * @defgroup atlas_co2_group Atlas Scientific CO2 circuit
+ */
+/* clang-format off */
+/**
+ * @defgroup atlas_co2_group Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor
  * Classes for the [Atlas EZO CO2 circuit](@ref atlas_co2_page).
  *
  * @copydoc atlas_co2_page
  *
  * @ingroup atlas_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page atlas_co2_page Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor

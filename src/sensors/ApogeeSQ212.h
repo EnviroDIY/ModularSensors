@@ -13,14 +13,17 @@
  * These are used for the Apogee SQ-212 Quantum Light sensor.
  *
  * This depends on the soligen2010 fork of the Adafruit ADS1015 library.
- *
- * @defgroup sq212_group Apogee SQ-212
+ */
+/* clang-format off */
+/**
+ * @defgroup sq212_group Apogee SQ-212 Quantum Light %Sensor
  * Classes for the [Apogee SQ-212 quantum light sensor](@ref sq212_page).
  *
  * @copydoc sq212_page
  *
  * @ingroup analog_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page sq212_page Apogee SQ-212 Quantum Light %Sensor
@@ -39,8 +42,8 @@
  * raw output from the sensor is a simple analog signal which must be converted
  * to a digital signal and then multiplied by a calibration factor to get the
  * final PAR value.  The PAR sensor requires a 5-24 V DC power source with a
- * nominal current draw of 300 μA.  The power supply to the sensor can be stopped
- * between measurements.
+ * nominal current draw of 300 μA.  The power supply to the sensor can be
+ * stopped between measurements.
  *
  * To convert the sensor's analog signal to a high resolution digital signal,
  * the sensor must be attached to an analog-to-digital converter.  See the

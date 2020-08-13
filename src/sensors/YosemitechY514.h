@@ -14,14 +14,17 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
- * @defgroup y514_group Yosemitech Y514 Chlorophyll Sensor
+ */
+/* clang-format off */
+/**
+ * @defgroup y514_group Yosemitech Y514 Chlorophyll %Sensor
  * Classes for the @ref y514_page
  *
  * @copydoc y514_page
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y514_page Yosemitech Y514 Chlorophyll %Sensor
@@ -65,7 +68,8 @@
  *
  * ___
  * @section y514_examples Example Code
- * The Yosemitech Y514 chlorophyll sensor is used in the @menulink{y514} example.
+ * The Yosemitech Y514 chlorophyll sensor is used in the @menulink{y514}
+ * example.
  *
  * @menusnip{y514}
  */

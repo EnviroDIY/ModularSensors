@@ -20,17 +20,20 @@
  *
  * More detailed infromation on each variable can be found in the documentation
  * for the individual sensor probes
- *
- * @defgroup y4000_group Y4000 Sonde
+ */
+/* clang-format off */
+/**
+ * @defgroup y4000_group Yosemitech Y4000 Multi-Parameter Sonde
  * Classes for the @ref y4000_page
  *
  * @copydoc y4000_page
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
- * @page y4000_page Y4000 Sonde
+ * @page y4000_page Yosemitech Y4000 Multi-Parameter Sonde
  *
  * @tableofcontents
  *
@@ -43,7 +46,8 @@
  * @subsection y4000_timing Sensor Timing
  * - Time before sensor responds after power - 275-300ms (use 350 for safety)
  * - Time between "StartMeasurement" command and stable reading depends on the
- * indindividual sensor probes, with the Y520 conductivity sensor taking the longest.
+ * indindividual sensor probes, with the Y520 conductivity sensor taking the
+ * longest.
  *
  * @section y4000_domgl Dissolved Oxygen Concentration Output
  * @variabledoc{YosemitechY4000,DOmgL}

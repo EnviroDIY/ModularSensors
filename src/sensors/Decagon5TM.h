@@ -12,7 +12,9 @@
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
  * class.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup fivetm_group Meter ECH2O (5TM)
  * Classes for the @ref fivetm_page
  *
@@ -20,6 +22,7 @@
  *
  * @ingroup sdi12_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page fivetm_page Meter ECH2O (5TM)
@@ -33,13 +36,16 @@
  * [Teros series](https://www.metergroup.com/environment/products/teros-12/).
  * __This page is for the ECH2O series.__
  *
- * @note Meter Environmental was formerly known as Decagon Devices and sold the a very similar sensor to the current EC-5 sensor as the 5TM.
+ * @note Meter Environmental was formerly known as Decagon Devices and sold the
+ * a very similar sensor to the current EC-5 sensor as the 5TM.
  *
  * Both series of sensors operate as sub-classes of the SDI12Sensors class.
- * They require a 3.5-12V power supply, which can be turned off between measurements.
- * While contrary to the manual, they will run with power as low as 3.3V.
- * On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.
- * On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
+ * They require a 3.5-12V power supply, which can be turned off between
+ * measurements. While contrary to the manual, they will run with power as low
+ * as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip,
+ * data to the ring, and ground to the sleeve. On the bare-wire version, the
+ * power is connected to the _white_ cable, data to _red_, and ground to the
+ * unshielded cable.
  *
  * @section fivetm_datasheet Sensor Datasheet
  * [Datasheet](http://publications.metergroup.com/Manuals/20431_EC-5_Manual_Web.pdf)

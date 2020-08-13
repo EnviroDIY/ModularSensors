@@ -10,7 +10,9 @@
  *
  * This depends on the Arduino core Wire library.  It does *not* use the Atlas
  * Arduino library.
- *
+ */
+/* clang-format off */
+/**
  * @defgroup atlas_group Atlas Scientific EZO Circuits
  * The Sensor and Variable objects for all
  * [Atlas EZO circuits](@ref atlas_page).
@@ -19,6 +21,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page atlas_page Atlas Scientific EZO Environmental %Sensors

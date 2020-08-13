@@ -11,17 +11,20 @@
  *
  * These are used for any sensor attached to an [Atlas EZO DO
  * circuit](https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/).
- *
- * @defgroup atlas_do_group Atlas Scientific DO circuit
+ */
+/* clang-format off */
+/**
+ * @defgroup atlas_do_group Atlas Scientific EZO-DO Dissolved Oxygen Circuit and Probe
  * Classes for the [Atlas EZO DO circuit](@ref atlas_do_page).
  *
  * @copydoc atlas_do_page
  *
  * @ingroup atlas_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
- * @page atlas_do_page EZO-DO Dissolved Oxygen Circuit and Probe
+ * @page atlas_do_page Atlas Scientific EZO-DO Dissolved Oxygen Circuit and Probe
  *
  * @tableofcontents
  *

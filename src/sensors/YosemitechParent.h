@@ -11,7 +11,9 @@
  * Documentation for the Yosemitech Protocol commands and responses, along with
  * information about the various variables, can be found in the EnviroDIY
  * Yosemitech library at: https://github.com/EnviroDIY/YosemitechModbus
- *
+ */
+/* clang-format off */
+/**
  * @defgroup yosemitech_group Yosemitech Sensors
  * The Sensor and Variable objects for all @ref yosemitech_page
  *
@@ -19,6 +21,7 @@
  *
  * @ingroup the_sensors
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page yosemitech_page Yosemitech Sensors

@@ -15,14 +15,17 @@
  * Documentation for the Modbus Protocol commands and responses can be found
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
- *
- * @defgroup y532_group Yosemitech Y532 pH Sensor
+ */
+/* clang-format off */
+/**
+ * @defgroup y532_group Yosemitech Y532 pH %Sensor
  * Classes for the @ref y532_page
  *
  * @copydoc y532_page
  *
  * @ingroup yosemitech_group
  */
+/* clang-format on */
 /* clang-format off */
 /**
  * @page y532_page Yosemitech Y532 pH %Sensor
