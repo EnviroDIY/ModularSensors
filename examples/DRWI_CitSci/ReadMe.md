@@ -102,3 +102,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 [//]: # ( @subsection drwi_2g_upload Upload! )
 ## Upload!
 - Test everything at home **before** deploying out in the wild!
+
+_______
+
+[//]: # ( @section drwi_2g_full The Complete Example Code: )

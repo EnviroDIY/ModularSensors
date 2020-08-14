@@ -48,3 +48,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 [//]: # ( @subsection thingspeak_upload Upload! )
 ## Upload!
 - Test everything at home **before** deploying out in the wild!
+
+_______
+
+[//]: # ( @section thingspeak_full The Complete Example Code: )
