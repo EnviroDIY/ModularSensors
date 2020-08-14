@@ -648,12 +648,16 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 // ===================================================================== //
 
 // This update the timestamp on a file
-void Logger::setFileAccessTime(File* fileToStamp) {
+void Logger::setFileTimeStampMet(File fileToStamp, uint8_t stampFlag) {
     DateTime markedDt(Logger::markedEpochTime);
 
-    fileToStamp->timestamp((T_WRITE | T_ACCESS), markedDt.year(),
-                           markedDt.month(), markedDt.date(), markedDt.hour(),
-                           markedDt.minute(), markedDt.second());
+    bool crStat = fileToStamp.timestamp(
+        stampFlag, markedDt.year(), markedDt.month(), markedDt.date(),
+        markedDt.hour(), markedDt.minute(), markedDt.second());
+    if (!crStat)
+        PRINTOUT(F("sFTSMet err for "), markedDt.year(), markedDt.month(),
+                 markedDt.date(), markedDt.hour(), markedDt.minute(),
+                 markedDt.second());
 }
 
 #define DELIM_CHAR2 ','
@@ -1010,6 +1014,50 @@ bool Logger::deszDbg(void) {
         deszRdelClose(true);  // Delete serial file
     }
     return true;
+}
+
+bool Logger::postLogOpen(const char* postLogNam_str) {
+    // Generate the file name from logger ID and date
+    String fileName = String(postLogNam_str);
+
+    // Create rotating log of 4 chars - start YYYY_MM_DD
+    String nameTemp = formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+
+    // Drop middle _ and get YYMM
+    fileName += nameTemp.substring(2, 4) + nameTemp.substring(5, 7);
+
+    fileName += ".log";
+    MS_DBG(F("PLO postLog file"), fileName);
+
+    // Convert the string filename to a character file name for SdFat
+    uint8_t fileNameLength = fileName.length() + 1;
+    char    charFileName[fileNameLength];
+    fileName.toCharArray(charFileName, fileNameLength);
+
+    // Attempt to open an existing file
+    bool retVal = postsLogHndl.open(charFileName, (O_WRITE | O_AT_END));
+    if (!retVal) {
+        retVal = postsLogHndl.open(charFileName,
+                                   (O_CREAT | O_WRITE | O_AT_END));
+        if (!retVal) {
+            PRINTOUT(F("logPLO err opening"), charFileName);
+
+        } else {
+            setFileTimeStampMet(postsLogHndl, T_CREATE);
+            MS_DBG(F("logPLO new file"), charFileName);
+        }
+    }
+    return retVal;
+}
+
+void        Logger::postLogClose() {
+#if defined MS_LOGGERBASE_POSTS
+
+    setFileTimeStampMet(postsLogHndl, (T_WRITE));  //| T_ACCESS
+    postsLogHndl.close();
+
+
+#endif  // MS_LOGGERBASE_POSTS
 }
 
 void Logger::postLogLine(uint8_t instance, int16_t rspParam) {

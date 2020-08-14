@@ -128,8 +128,8 @@ uint16_t desz_pending_records         = 0;
 // keep to LFN - capitals  https://en.wikipedia.org/wiki/8.3_filename
 
 #if defined MS_LOGGERBASE_POSTS
-File        postsLogHndl;                    // Record all POSTS when enabled
-const char* postsLogFn_str = "POSTLOG.TXT";  // Not more than 8.3
+File        postsLogHndl;            // Record all POSTS when enabled
+const char* postsLogFn_str = "DBG";  // Not more than 8.3 total
 
 #endif  // MS_LOGGERBASE_POSTS
 
@@ -166,9 +166,11 @@ bool deszQuedCleanup(bool debug = false);
 bool deszLine(File* filep);
 
 // Utility resources
-void setFileAccessTime(File* fileToStamp);
+void setFileTimeStampMet(File fileToStamp, uint8_t stampFlag);
 bool deszDbg(void);
+bool postLogOpen(const char* postsLogNm_str);
 void postLogLine(uint8_t instance, int16_t rspParam);
+void postLogClose();
 bool listFile(File* filep, char* fn_str, char* uid);
 
 public:
