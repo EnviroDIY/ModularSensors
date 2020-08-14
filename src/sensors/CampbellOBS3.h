@@ -38,7 +38,7 @@
  *
  * Before applying any turbidity calibration, the analog output from the OBS3+
  * must be converted into a high resolution digital signal.  See the
- * [ADS1115 page](@ref ads1x15_group) for details on the conversion.
+ * [ADS1115 page](@ref analog_group) for details on the conversion.
  *
  * @section obs3_datasheet Sensor Datasheet
  * [Basic Concepts](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Basics.pdf)

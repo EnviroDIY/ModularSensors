@@ -41,7 +41,7 @@
  *
  * To convert the sensor's analog signal to a high resolution digital signal,
  * the sensor must be attached to an analog-to-digital converter.  See the
- * [ADS1115](@ref ads1x15_group) for details on the conversion.
+ * [ADS1115](@ref analog_group) for details on the conversion.
  *
  * The calibration factor this library uses to convert from raw voltage to PAR
  * is that specified by Apogee for the SQ-212: 1 µmol mˉ² sˉ¹ per mV (reciprocal

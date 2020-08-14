@@ -539,7 +539,7 @@ ___
 
 Set options and create the objects for using the processor as a sensor to report battery level, processor free ram, and sample number.
 
-@see @ref processor_sensor_page
+@see @ref processor_sensor_group
 
 [//]: # ( @menusnip{processor_sensor} )
 ___
@@ -551,7 +551,7 @@ In addition to the time, we can also use the required DS3231 real time clock to 
 This temperature is _not_ equivalent to an environmental temperature measurement and should only be used to as a diagnostic.
 As above, we create both the sensor and the variables measured by it.
 
-@see @ref ds3231_page
+@see @ref ds3231_group
 
 [//]: # ( @menusnip{ds3231} )
 ___
@@ -563,7 +563,7 @@ Here is the code for the AOSong AM2315 temperature and humidity sensor.
 This is an I2C sensor with only one possible address so the only argument required for the constructor is the pin on the MCU controlling power to the AM2315 (AM2315Power).
 The number of readings to average from the sensor is optional, but can be supplied as the second argument for the constructor if desired.
 
-@see @ref am2315_page
+@see @ref am2315_group
 
 [//]: # ( @menusnip{am2315} )
 ___
@@ -575,7 +575,7 @@ Here is the code for the AOSong DHT temperature and humidity sensor.
 To create the DHT Sensor we need the power pin, the data pin, and the DHT type.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
-@see @ref dht_page
+@see @ref dht_group
 
 [//]: # ( @menusnip{dht} )
 ___
@@ -589,7 +589,7 @@ The Arduino pin controlling power on/off and the analog data channel _on the TI 
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
-@see @ref sq212_page
+@see @ref sq212_group
 
 [//]: # ( @menusnip{dht} )
 ___
@@ -602,7 +602,7 @@ Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
 Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803.
 
-@see @ref bme280_page
+@see @ref bme280_group
 
 [//]: # ( @menusnip{bme280} )
 ___
@@ -619,7 +619,7 @@ Do NOT forget that if you want to give a number of measurements to average, that
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
-@see @ref obs3_page
+@see @ref obs3_group
 
 [//]: # ( @menusnip{obs3} )
 ___
@@ -632,7 +632,7 @@ The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and 
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
 
-@see @ref es2_page
+@see @ref es2_group
 
 [//]: # ( @menusnip{es2} )
 ___
@@ -646,7 +646,7 @@ If using a voltage divider to increase the measurable voltage range, enter the g
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.
 The number of measurements to average, if more than one is desired, goes as the fifth argument.
 
-@see @ref ext_volt_page
+@see @ref ext_volt_group
 
 [//]: # ( @menusnip{ext_volt} )
 ___
@@ -658,7 +658,7 @@ ___
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average.
 Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.
 
-@see @ref mpl115a2_page
+@see @ref mpl115a2_group
 
 [//]: # ( @menusnip{mpl115a2} )
 ___
@@ -678,7 +678,7 @@ If they are controlled by different pins _and no other sensors are dependent on 
 If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
 Both pins _cannot_ be shared pins.
 
-@see @ref nanolevel_page
+@see @ref nanolevel_group
 
 [//]: # ( @menusnip{nanolevel} )
 ___
@@ -698,7 +698,7 @@ If they are controlled by different pins _and no other sensors are dependent on 
 If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
 Both pins _cannot_ be shared pins.
 
-@see @ref acculevel_page
+@see @ref acculevel_group
 
 [//]: # ( @menusnip{acculevel} )
 ___
@@ -710,7 +710,7 @@ ___
 The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.
 (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref maxbotics_page
+@see @ref maxbotics_group
 
 [//]: # ( @menusnip{maxbotics} )
 ___
@@ -724,7 +724,7 @@ The OneWire address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39
 To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.
 The sensor address is programmed at the factory and cannot be changed.
 
-@see @ref ds18_page
+@see @ref ds18_group
 
 [//]: # ( @menusnip{ds18} )
 ___
@@ -736,7 +736,7 @@ ___
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
 Keep in mind that the possible I2C addresses of the MS5803 match those of the BME280.
 
-@see @ref ms5803_page
+@see @ref ms5803_group
 
 [//]: # ( @menusnip{ms5803} )
 ___
@@ -749,7 +749,7 @@ The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and 
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
 
-@see @ref fivetm_page
+@see @ref fivetm_group
 
 [//]: # ( @menusnip{fivetm} )
 ___
@@ -762,7 +762,7 @@ The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and 
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
 
-@see @ref hydros21_page
+@see @ref hydros21_group
 
 [//]: # ( @menusnip{hydros21} )
 ___
@@ -775,7 +775,7 @@ The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and 
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
 
-@see @ref teros_page
+@see @ref teros_group
 
 [//]: # ( @menusnip{teros} )
 ___
@@ -790,7 +790,7 @@ Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.
 Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
 Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
 
-@see @ref i2c_rain_page
+@see @ref i2c_rain_group
 
 [//]: # ( @menusnip{i2c_rain} )
 ___
@@ -804,7 +804,7 @@ The Arduino pin controlling power on/off is all that is required for the constru
 If your INA219 is not at the standard address of 0x40, you can enter its actual address as the fourth argument.
 The number of measurements to average, if more than one is desired, goes as the fifth argument.
 
-@see @ref ina219_page
+@see @ref ina219_group
 
 [//]: # ( @menusnip{ina219} )
 ___
@@ -820,7 +820,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y504_page
+@see @ref y504_group
 
 [//]: # ( @menusnip{y504} )
 ___
@@ -836,7 +836,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y510_page
+@see @ref y510_group
 
 [//]: # ( @menusnip{y510} )
 ___
@@ -852,7 +852,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y511_page
+@see @ref y511_group
 
 [//]: # ( @menusnip{y511} )
 ___
@@ -868,7 +868,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y514_page
+@see @ref y514_group
 
 [//]: # ( @menusnip{y514} )
 ___
@@ -884,7 +884,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y520_page
+@see @ref y520_group
 
 [//]: # ( @menusnip{y520} )
 ___
@@ -900,7 +900,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y532_page
+@see @ref y532_group
 
 [//]: # ( @menusnip{y532} )
 ___
@@ -916,7 +916,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y533_page
+@see @ref y533_group
 
 [//]: # ( @menusnip{y533} )
 ___
@@ -932,7 +932,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y550_page
+@see @ref y550_group
 
 [//]: # ( @menusnip{y550} )
 ___
@@ -948,7 +948,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 Yosemitech strongly recommends averaging 10 readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref y4000_page
+@see @ref y4000_group
 
 [//]: # ( @menusnip{y4000} )
 ___
@@ -961,7 +961,7 @@ The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and 
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
 
-@see @ref dopto_page
+@see @ref dopto_group
 
 [//]: # ( @menusnip{dopto} )
 ___

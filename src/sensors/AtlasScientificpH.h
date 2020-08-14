@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_pH_group Atlas EZO-pH
+ * @defgroup atlas_ph_group Atlas EZO-pH
  * Classes for the Atlas Scientific EZO-pH circuit and probe.
  *
  * @ingroup atlas_group
@@ -106,7 +106,7 @@
  *
  * @note Be careful not to confuse the similar variable and sensor object names!
  *
- * @ingroup atlas_pH_group
+ * @ingroup atlas_ph_group
  */
 /* clang-format on */
 class AtlasScientificpH : public AtlasParent {
@@ -150,7 +150,7 @@ class AtlasScientificpH : public AtlasParent {
  *
  * @note Be careful not to mix the similar variable and sensor object names!
  *
- * @ingroup atlas_pH_group
+ * @ingroup atlas_ph_group
  */
 /* clang-format on */
 class AtlasScientificpH_pH : public Variable {
