@@ -91,3 +91,8 @@ docs/envirodiy.html
 docs/footer.html
 docs/header_archive.html
 docs/header.html
+runDoxygen.bat
+docs/mcss-doxy-output.log
+docs/mcss-output.log
+docs/mcss.log
+docs/mcssDoxygenOutput.log

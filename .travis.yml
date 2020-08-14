@@ -81,6 +81,11 @@ jobs:
         - sudo apt-get -y install graphviz
         - sudo apt-get -y install flex
         - sudo apt-get -y install bison
+        - sudo apt-get -y install texlive-base
+        - sudo apt-get -y install texlive-latex-extra
+        - sudo apt-get -y install texlive-fonts-extra
+        - sudo apt-get -y install texlive-fonts-recommended
+        - pip3 install jinja2 Pygments
       install:
         - cd $TRAVIS_BUILD_DIR
         - chmod +x travis/copy-doc-sources.sh
