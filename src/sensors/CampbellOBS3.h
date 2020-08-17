@@ -60,7 +60,6 @@
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  *
  * @section obs3_turbidity Turbidity Output
- * @variabledoc{CampbellOBS3,Turbidity}
  *   - Range: (depends on sediment size, particle shape, and reflectivity)
  *     - Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
  *     - Mud: 5000 to 10,000 mg L–1
@@ -75,9 +74,9 @@
  *     - 12-bit ADC, Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
  *   - Reported as Nephelometric Turbidity Units (NTU)
  *   - Default variable code is OBS3Turbidity
+ * @variabledoc{obs3_turbidity,CampbellOBS3,Turbidity,OBS3Turbidity}
  *
  * @section obs3_voltage Voltage Output
- * @variabledoc{CampbellOBS3,Voltage}
  *   - Range is 0 to 2.5V
  *   - Accuracy:
  *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
@@ -88,6 +87,7 @@
  *     - 12-bit ADC: 2 mV
  *   - Reported as volts (V)
  *   - Default variable code is OBS3Voltage
+ * @variabledoc{obs3_voltage,CampbellOBS3,Voltage,OBS3Voltage}
  *
  * ___
  * @section obs3_examples Example Code

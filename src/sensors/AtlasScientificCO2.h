@@ -38,23 +38,23 @@
  *
  * ___
  * @section atlas_co2_co2 Carbon Dioxide Output
- * @variabledoc{AtlasScientificCO2,CO2}
  *   - Resolution is 1 ppm
  *   - Accuracy is ± 3% or ± 30 ppm
  *   - Range is 0 − 10000 ppm
  *   - Reported as parts per million (ppm)
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasCO2ppm
+ * @variabledoc{atlas_co2_co2,AtlasScientificCO2,CO2,AtlasCO2ppm}
  *
  * ___
  * @section atlas_co2_temp Temperature Output
- * @variabledoc{AtlasScientificCO2,Temp}
  *   - Resolution is 1°C
  *   - Accuracy is not reported on the sensor datasheet
  *   - Range is -20°C to +50°C
  *   - Reported as degrees Celsius (°C)
  *   - Result stored in sensorValues[1]
  *   - Default variable code is AtlasCO2Temp
+ * @variabledoc{atlas_co2_temp,AtlasScientificCO2,Temp,AtlasCO2Temp}
  *
  * @note According to the probe datasheet, the temperature measurement is only
  * intended to be used to verify that the sensor is in equilibrium with its

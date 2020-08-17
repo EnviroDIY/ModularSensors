@@ -44,76 +44,76 @@
  * longest.
  *
  * @section y4000_domgl Dissolved Oxygen Concentration Output
- * @variabledoc{YosemitechY4000,DOmgL}
  *   - Range is 0-20mg/L or 0-200% Air Saturation
  *   - Accuracy is ± 0.3 mg/L
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.01 mg/L
  *   - Reported as milligrams per liter (mg/L)
  *   - Default variable code is Y4000DOmgL
+ * @variabledoc{y4000_domgl,YosemitechY4000,DOmgL,Y4000DOmgL}
  *
  * @section y4000_turb Turbidity Output
- * @variabledoc{YosemitechY4000,Turbidity}
  *   - Range is 0.1~1000 NTU
  *   - Accuracy is ＜5% or 0.3NTU
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.01 NTU
  *   - Reported as Nephelometric Turbidity Units (NTU)
  *   - Default variable code is Y4000Turbidity
+ * @variabledoc{y4000_turb,YosemitechY4000,Turbidity,Y4000Turbidity}
  *
  * @section y4000_cond Conductivity Output
- * @variabledoc{YosemitechY4000,Cond}
  *   - Range is 1 µS/cm to 200 mS/cm
  *   - Accuracy is ± 1 % Full Scale
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.1 µS/cm
  *   - Reported as microsiemens per centimeter (µS/cm)
  *   - Default variable code is Y4000Cond
+ * @variabledoc{y4000_cond,YosemitechY4000,Cond,Y4000Cond}
  *
  * @section y4000_ph pH Output
- * @variabledoc{YosemitechY4000,pH}
  *   - Range is 2 to 12 pH units
  *   - Accuracy is ± 0.1 pH units
  *   - Result stored in sensorValues[3]
  *   - Resolution is 0.01 pH units
  *   - Reported as dimensionless pH units
  *   - Default variable code is Y4000pH
+ * @variabledoc{y4000_ph,YosemitechY4000,pH,Y4000pH}
  *
  * @section y4000_temp Temperature Output
- * @variabledoc{YosemitechY4000,Temp}
  *   - Range is 0°C to + 50°C
  *   - Accuracy is ± 0.2°C
  *   - Result stored in sensorValues[4]
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y4000Temp
+ * @variabledoc{y4000_temp,YosemitechY4000,Temp,Y4000Temp}
  *
  * @section y4000_orp ORP Output
- * @variabledoc{YosemitechY4000,ORP}
  *   - Range is -999 ~ 999 mV
  *   - Accuracy is ± 20 mV
  *   - Result stored in sensorValues[5]
  *   - Resolution is 1 mV
  *   - Reported as millivolts (mV)
  *   - Default variable code is Y4000Potential
+ * @variabledoc{y4000_orp,YosemitechY4000,ORP,Y4000Potential}
  *
  * @section y4000_bga BGA Output
- * @variabledoc{YosemitechY4000,BGA}
  *   - Range is 0 to 100 µg/L or 0 to 100 RFU
  *   - Accuracy is ±  0.04ug/L PC
  *   - Result stored in sensorValues[7]
  *   - Resolution is 0.01 µg/L / 0.01 RFU
  *   - Reported as micrograms per liter (µg/L)
  *   - Default variable code is Y4000BGA
+ * @variabledoc{y4000_bga,YosemitechY4000,BGA,Y4000BGA}
  *
  * @section y4000_chloro Chlorophyll Output
- * @variabledoc{YosemitechY4000,Chlorophyll}
  *   - Range is 0 to 400 µg/L or 0 to 100 RFU
  *   - Accuracy is ± 1 %
  *   - Result stored in sensorValues[6]
  *   - Resolution is 0.1 µg/L / 0.1 RFU
  *   - Reported as micrograms per liter (µg/L)
  *   - Default variable code is Y4000Chloro
+ * @variabledoc{y4000_chloro,YosemitechY4000,Chlorophyll,Y4000Chloro}
  *
  * The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the

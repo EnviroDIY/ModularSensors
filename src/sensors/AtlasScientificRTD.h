@@ -43,13 +43,13 @@
  *
  * ___
  * @section atlas_rtd_temp Temperature Output
- * @variabledoc{AtlasScientificRTD,Temp}
  *   - Accuracy is ± (0.10°C + 0.0017 x °C)
  *   - Range is -126.000 °C − 1254 °C
  *   - Resolution is 0.001 °C
  *   - Reported as degrees Celsius (°C)
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasTemp
+ * @variabledoc{atlas_rtd_temp,AtlasScientificRTD,Temp,AtlasTemp}
  *
  * ___
  * @section atlas_rtd_examples Example Code

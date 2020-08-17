@@ -46,22 +46,22 @@
  * - Maximum measurement duration: 250ms
  *
  * @section es2_cond Conductivity Output
- * @variabledoc{DecagonES2,Cond}
  *   - Range is 0 – 120 mS/cm (bulk)
  *   - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.001 mS/cm = 1 µS/cm
  *   - Reported as microsiemens per centimeter (µS/cm)
  *   - Default variable code is ES2Cond
+ * @variabledoc{es2_cond,DecagonES2,Cond,ES2Cond}
  *
  * @section es2_temp Temperature Output
- * @variabledoc{DecagonES2,Temp}
  *   - Range is -40°C to +50°C
  *   - Accuracy is ±1°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is ES2Temp
+ * @variabledoc{es2_temp,DecagonES2,Temp,ES2Temp}
  *
  *
  * ___

@@ -40,31 +40,31 @@
  * @subsection acculevel_timing Sensor Timing
  *
  * @section acculevel_pressure Pressure Output
- * @variabledoc{KellerAcculevel,Pressure}
  *   - Range is 0 to 11 bar
  *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.002%
  *   - Reported as millibar (mb)
  *   - Default variable code is kellerAccuPress
+ * @variabledoc{acculevel_pressure,KellerAcculevel,Pressure,kellerAccuPress}
  *
  * @section acculevel_temp Temperature Output
- * @variabledoc{KellerAcculevel,Temp}
  *   - Range is -10°C to 60°C
  *   - Accuracy is not specified in the sensor datasheet
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is kellerAccuTemp
+ * @variabledoc{acculevel_temp,KellerAcculevel,Temp,kellerAccuTemp}
  *
  * @section acculevel_height Height Output
- * @variabledoc{KellerAcculevel,Height}
  *   - Range is 0 to 900 feet
  *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.002%
  *   - Reported as meters (m)
  *   - Default variable code is kellerAccuHeight
+ * @variabledoc{acculevel_height,KellerAcculevel,Height,kellerAccuHeight}
  *
  *
  * ___

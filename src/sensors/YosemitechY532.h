@@ -37,31 +37,31 @@
  * - Time between "StartMeasurement" command and stable reading - 4.5sec
  *
  * @section y532_ph pH Output
- * @variabledoc{YosemitechY532,pH}
  *   - Range is 2 to 12 pH units
  *   - Accuracy is ± 0.1 pH units
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.01 pH units
  *   - Reported as dimensionless pH units
  *   - Default variable code is Y532pH
+ * @variabledoc{y532_ph,YosemitechY532,pH,Y532pH}
  *
  * @section y532_temp Temperature Output
- * @variabledoc{YosemitechY532,Temp}
  *   - Range is 0°C to + 50°C
  *   - Accuracy is ± 0.2°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y532Temp
+ * @variabledoc{y532_temp,YosemitechY532,Temp,Y532Temp}
  *
  * @section y532_volt Voltage Output
- * @variabledoc{YosemitechY532,Voltage}
  *   - Range is -999 ~ 999 mV
  *   - Accuracy is ± 20 mV
  *   - Result stored in sensorValues[2]
  *   - Resolution is 1mV
  *   - Reported as millivolts (mV)
  *   - Default variable code is Y532Potential
+ * @variabledoc{y532_volt,YosemitechY532,Voltage,Y532Potential}
  *
  * The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the

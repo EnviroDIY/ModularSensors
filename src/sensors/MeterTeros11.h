@@ -54,7 +54,6 @@
  * - Digital Output Voltage (logic high), 3.6 typical
  *
  * @section teros11_ea Ea Output
- * @variabledoc{MeterTeros11,Ea}
  *   - Range is 1 (air) to 80 (water)
  *   - Accuracy is:
  *     - 1–40 (soil range) , ±1 εa (unitless)
@@ -63,9 +62,9 @@
  *   - Resolution is 0.00001
  *   - Reported as farads per meter (F/m)
  *   - Default variable code is TerosSoilEa
+ * @variabledoc{teros11_ea,MeterTeros11,Ea,TerosSoilEa}
  *
  * @section teros11_temp Temperature Output
- * @variabledoc{MeterTeros11,Temp}
  *   - Range is -40°C to 60°C
  *   - Accuracy is:
  *     - ± 1°C, from -40°C to 0°C
@@ -74,9 +73,9 @@
  *   - Resolution is 0.1°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is TerosSoilTemp
+ * @variabledoc{teros11_temp,MeterTeros11,Temp,TerosSoilTemp}
  *
  * @section teros11_vwc VWC Output
- * @variabledoc{MeterTeros11,VWC}
  *   - Range is:
  *     - Mineral soil calibration: 0.00–0.70 m3/m3 (0 – 70% VWC)
  *     - Soilless media calibration: 0.0–1.0 m3/m3 (0 – 100% VWC)
@@ -89,6 +88,7 @@
  *   - Resolution is 0.001 m3/m3 (0.1% VWC) from 0 – 70% VWC
  *   - Reported as volumetric percent water content (%, m3/100m3)
  *   - Default variable code is TerosSoilVWC
+ * @variabledoc{teros11_vwc,MeterTeros11,VWC,TerosSoilVWC}
  *
  * ___
  * @section teros_examples Example Code

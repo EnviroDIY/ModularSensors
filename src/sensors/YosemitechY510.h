@@ -36,22 +36,22 @@
  * - Time between "StartMeasurement" command and stable reading - 22sec
  *
  * @section y510_turb Turbidity Output
- * @variabledoc{YosemitechY510,Turbidity}
  *   - Range is 0.1 to 1000 NTU
  *   - Accuracy is ± 5 % or 0.3 NTU
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.01 NTU
  *   - Reported as Nephelometric Turbidity Units (NTU)
  *   - Default variable code is Y510Turbidity
+ * @variabledoc{y510_turb,YosemitechY510,Turbidity,Y510Turbidity}
  *
  * @section y510_temp Temperature Output
- * @variabledoc{YosemitechY510,Temp}
  *   - Range is 0°C to + 50°C
  *   - Accuracy is ± 0.2°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y510Temp
+ * @variabledoc{y510_temp,YosemitechY510,Temp,Y510Temp}
  *
  * The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the

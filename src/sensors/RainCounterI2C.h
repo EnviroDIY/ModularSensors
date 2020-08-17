@@ -46,21 +46,21 @@
  * tips, so there is no need to wait for stability or measuring.
  *
  * @section i2c_rain_tips Tips Output
- * @variabledoc{RainCounterI2C,Tips}
  *   - Range and accuracy depend on the tipping bucket used
  *   - Result stored in sensorValues[0]
  *   - Resolution is 1 tip
  *   - Reported as dimensionless counts
  *   - Default variable code is RainCounterI2CTips
+ * @variabledoc{i2c_rain_tips,RainCounterI2C,Tips,RainCounterI2CTips}
  *
  * @section i2c_rain_depth Depth Output
- * @variabledoc{RainCounterI2C,Depth}
  *   - Range and accuracy depend on the tipping bucket used
  *   - Result stored in sensorValues[1]
  *   - Resolution is typically either 0.01" or 0.2mm of rainfall, depending on
  * if bucket is calibrated to English or metric units
  *   - Reported as millimeters (mm)
  *   - Default variable code is RainCounterI2CVol
+ * @variabledoc{i2c_rain_depth,RainCounterI2C,Depth,RainCounterI2CVol}
  *
  * ___
  * @section i2c_rain_examples Example Code

@@ -50,31 +50,31 @@
  * possibly colliding with and confusing other sensor results.
  *
  * @section dopto_temp Temperature Output
- * @variabledoc{ZebraTechDOpto,Temp}
  *   - Range is not specified in sensor datasheet
  *   - Accuracy is ± 0.1°C
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is DOtempC
+ * @variabledoc{dopto_temp,ZebraTechDOpto,Temp,DOtempC}
  *
  * @section dopto_dopercent Dissolved Oxygen Percent Saturation Output
- * @variabledoc{ZebraTechDOpto,DOpct}
  *   - Range is not specified in sensor datasheet
  *   - Accuracy is 1% of reading or 0.02PPM, whichever is greater
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.01% / 0.001 PPM
  *   - Reported as percent saturation (%)
  *   - Default variable code is DOpercent
+ * @variabledoc{dopto_dopercent,ZebraTechDOpto,DOpct,DOpercent}
  *
  * @section dopto_domgl Dissolved Oxygen Concentration Output
- * @variabledoc{ZebraTechDOpto,DOmgL}
  *   - Range is not specified in sensor datasheet
  *   - Accuracy is 1% of reading or 0.02PPM, whichever is greater
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.01% / 0.001 PPM
  *   - Reported as milligrams per liter (mg/L)
  *   - Default variable code is DOppm
+ * @variabledoc{dopto_domgl,ZebraTechDOpto,DOmgL,DOppm}
  *
  *
  * ___

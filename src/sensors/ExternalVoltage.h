@@ -127,7 +127,6 @@
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  *
  * @section ext_volt_volt Voltage Output
- * @variabledoc{ExternalVoltage,Volt}
  *   - Range:
  *     - without voltage divider:  0 - 3.6V [when ADC is powered at 3.3V]
  *     - 1/gain = 3x: 0.3 ~ 12.9V
@@ -147,6 +146,7 @@
  *   - Result stored in sensorvalues[0]
  *   - Reported as volts (V)
  *   - Default variable code is extVoltage
+ * @variabledoc{ext_volt_volt,ExternalVoltage,Volt,extVoltage}
  *
  * ___
  * @section ext_volt_examples Example Code

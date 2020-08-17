@@ -48,22 +48,22 @@
  * - Assume sensor is immediately stable
  *
  * @section mpl115a2_temp Temperature Output
- * @variabledoc{MPL115A2,Temp}
  *   - Range is -20°C to 85°C
  *   - Accuracy is not specified on the sensor datasheet
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is MPL115A2_Temp
+ * @variabledoc{mpl115a2_temp,MPL115A2,Temp,MPL115A2_Temp}
  *
  * @section mpl115a2_pressure Pressure Output
- * @variabledoc{MPL115A2,Pressure}
  *   - Range is 500-1150 hPa
  *   - Accuracy ±10 hPa
  *   - Result stored in sensorvalues[1]
  *   - Resolution is 1.5 hPa
  *   - Reported as kilopascal (kPa)
  *   - Default variable code is MPL115A2_Pressure
+ * @variabledoc{mpl115a2_pressure,MPL115A2,Pressure,MPL115A2_Pressure}
  *
  * ___
  * @section mpl115a2_examples Example Code

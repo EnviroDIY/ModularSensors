@@ -37,22 +37,22 @@
  * - Time between "StartMeasurement" command and stable reading - 8sec
  *
  * @section y514_chloro Chlorophyll Output
- * @variabledoc{YosemitechY514,Chlorophyll}
  *   - Range is 0 to 400 µg/L or 0 to 100 RFU
  *   - Accuracy is ± 1 %
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.1 µg/L / 0.1 RFU
  *   - Reported as micrograms per liter (µg/L)
  *   - Default variable code is Y514Chloro
+ * @variabledoc{y514_chloro,YosemitechY514,Chlorophyll,Y514Chloro}
  *
  * @section y514_temp Temperature Output
- * @variabledoc{YosemitechY514,Temp}
  *   - Range is 0°C to + 50°C
  *   - Accuracy is ± 0.2°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y514Temp
+ * @variabledoc{y514_temp,YosemitechY514,Temp,Y514Temp}
  *
  * The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the

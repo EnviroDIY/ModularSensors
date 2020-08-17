@@ -33,7 +33,6 @@
  * - A single temperature conversion takes 200ms.
  *
  * @section ds3231_temp Temperature Output
- * @variabledoc{MaximDS3231,Temp}
  *   - Range is -55°C to 125°C
  *   - Accuracy:
  *     - ± 3°C
@@ -42,6 +41,7 @@
  *     - 0.25°C (10 bit)
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is BoardTemp
+ * @variabledoc{ds3231_temp,MaximDS3231,Temp,BoardTemp}
  *
  * ___
  * @section ds3231_examples Example Code

@@ -38,13 +38,13 @@
  *
  * ___
  * @section atlas_orp_orp Oxidation/Reduction Potential Output
- * @variabledoc{AtlasScientificORP,Potential}
  *   - Accuracy is ± 1 mV
  *   - Range is -1019.9mV − 1019.9mV
  *   - Resolution is 0.1 mV
  *   - Reported as millivolts (mV)
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasORP
+ * @variabledoc{atlas_orp_orp,AtlasScientificORP,Potential,AtlasORP}
  *
  * ___
  * @section atlas_orp_examples Example Code

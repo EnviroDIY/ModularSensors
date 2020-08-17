@@ -40,31 +40,31 @@
  * - Time between "StartMeasurement" command and stable reading - 8sec
  *
  * @section y504_dopercent Dissolved Oxygen Percent Saturation Output
- * @variabledoc{YosemitechY504,DOpct}
  *   - Range is 0-20mg/L or 0-200% Saturation
  *   - Accuracy is ± 1 %
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.1%
  *   - Reported as percent saturation (%)
  *   - Default variable code is Y504DOpct
+ * @variabledoc{y504_dopercent,YosemitechY504,DOpct,Y504DOpct}
  *
  * @section y504_temp Temperature Output
- * @variabledoc{YosemitechY504,Temp}
  *   - Range is 0°C to + 50°C
  *   - Accuracy is ± 0.2°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y504Temp
+ * @variabledoc{y504_temp,YosemitechY504,Temp,Y504Temp}
  *
  * @section y504_domgl Dissolved Oxygen Concentration Output
- * @variabledoc{YosemitechY504,DOmgL}
  *   - Range is 0-20mg/L or 0-200% Saturation
  *   - Accuracy is ± 1 %
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.01 mg/L
  *   - Reported as milligrams per liter (mg/L)
  *   - Default variable code is Y504DOmgL
+ * @variabledoc{y504_domgl,YosemitechY504,DOmgL,Y504DOmgL}
  *
  * The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the

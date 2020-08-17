@@ -36,7 +36,6 @@
  * - Time between "StartMeasurement" command and stable reading - 22sec
  *
  * @section y550_cod COD Output
- * @variabledoc{YosemitechY550,COD}
  *   - Range is:
  *     - 0.75 to 370 mg/L COD (equiv. KHP)
  *     - 0.2 to 150 mg/L TOC (equiv. KHP)
@@ -45,24 +44,25 @@
  *   - Resolution is 0.01 mg/L COD
  *   - Reported as milligrams per liter (mg/L)
  *   - Default variable code is Y550COD
+ * @variabledoc{y550_cod,YosemitechY550,COD,Y550COD}
  *
  * @section y550_temp Temperature Output
- * @variabledoc{YosemitechY550,Temp}
  *   - Range is 5°C to + 45°C
  *   - Accuracy is ± 0.2°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y550Temp
+ * @variabledoc{y550_temp,YosemitechY550,Temp,Y550Temp}
  *
  * @section y550_turb Turbidity Output
- * @variabledoc{YosemitechY550,Turbidity}
  *   - Range is 0.1~1000 NTU
  *   - Accuracy is ＜5% or 0.3NTU
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.01 NTU
  *   - Reported as Nephelometric Turbidity Units (NTU)
  *   - Default variable code is Y550Turbidity
+ * @variabledoc{y550_turb,YosemitechY550,Turbidity,Y550Turbidity}
  *
  * The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the

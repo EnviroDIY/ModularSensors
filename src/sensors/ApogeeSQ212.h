@@ -67,7 +67,6 @@
  *
  * ___
  * @section sq212_par PAR Output
- * @variabledoc{ApogeeSQ212,PAR}
  * - Range is 0 to 2500 µmol m-2 s-1
  * - Accuracy is ± 0.5%
  * - Resolution:
@@ -76,11 +75,11 @@
  * - Reported as microeinsteins per square meter per second (µE m-2 s-1 or µmol m-2 s-1)
  * - Result stored in sensorValues[0]
  * - Default variable code is radiationIncomingPAR
+ * @variabledoc{sq212_par,ApogeeSQ212,PAR,radiationIncomingPAR}
  *
  * ___
  *
  * @section sq212_voltage Raw Voltage Output
- * @variabledoc{ApogeeSQ212,Voltage}
  * - Range is 0 to 3.6V [when ADC is powered at 3.3V]
  * - Accuracy is ± 0.5%
  *   - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset error)
@@ -92,6 +91,7 @@
  * - Reported as volts (V)
  * - Result stored in sensorValues[1]
  * - Default variable code is SQ212Voltage
+ * @variabledoc{sq212_voltage,ApogeeSQ212,Voltage,SQ212Voltage}
  *
  * ___
  * @section sq212_examples Example Code

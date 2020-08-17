@@ -67,16 +67,15 @@
  * - Assume sensor is immediately stable
  *
  * @section ms5803_temp Temperature Output
- * @variabledoc{MeaSpecMS5803,Temp}
  *   - Range is -40°C to +85°C
  *   - Accuracy is ±0.8°C
  *   - Result stored in sensorValues[0]
  *   - Resolution is <0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is MeaSpecMS5803Temp
+ * @variabledoc{ms5803_temp,MeaSpecMS5803,Temp,MeaSpecMS5803Temp}
  *
  * @section ms5803_pressure Pressure Output
- * @variabledoc{MeaSpecMS5803,Pressure}
  *   - Range is 0 to 14 bar
  *   - Accuracy between 0 and +40°C is:
  *      - 14ba: ±20mbar
@@ -92,6 +91,7 @@
  *      - 1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012
  *   - Reported as millibar (mb)
  *   - Default variable code is MeaSpecMS5803Pressure
+ * @variabledoc{ms5803_pressure,MeaSpecMS5803,Pressure,MeaSpecMS5803Pressure}
  *
  * ___
  * @section ms5803_examples Example Code

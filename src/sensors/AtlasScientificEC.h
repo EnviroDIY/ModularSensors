@@ -47,43 +47,43 @@
  *
  * ___
  * @section atlas_cond_cond Specific Conductance Output
- * @variabledoc{AtlasScientificEC,Cond}
  *   - Accuracy is ± 2%
  *   - Range is 0.07 − 500,000+ μS/cm
  *   - Resolution is 3 decimal places
  *   - Reported in microsiemens per centimeter
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasCond
+ * @variabledoc{atlas_cond_cond,AtlasScientificEC,Cond,AtlasCond}
  *
  * ___
  * @section atlas_cond_tds Total Dissolved Solids Output
- * @variabledoc{AtlasScientificEC,TDS}
  *   - Accuracy is ± 2%
  *   - Range is 0.07 − 500,000+ μS/cm
  *   - Resolution is 3 decimal places
  *   - Reported in parts per million
  *   - Result stored in sensorValues[1]
  *   - Default variable code is AtlasTDS
+ * @variabledoc{atlas_cond_tds,AtlasScientificEC,TDS,AtlasTDS}
  *
  * ___
  * @section atlas_cond_salinity Salinity Output
- * @variabledoc{AtlasScientificEC,Salinity}
  *   - Accuracy is ± 2%
  *   - Range is 0.07 − 500,000+ μS/cm
  *   - Resolution is 3 decimal places
  *   - Reported in practical salinity units
  *   - Result stored in sensorValues[2]
  *   - Default variable code is AtlasSalinity
+ * @variabledoc{atlas_cond_salinity,AtlasScientificEC,Salinity,AtlasSalinity}
  *
  * ___
  * @section atlas_cond_sg Specific Gravity Output
- * @variabledoc{AtlasScientificEC,SpecificGravity}
  *   - Accuracy is ± 2%
  *   - Range is 0.07 − 500,000+ μS/cm
  *   - Resolution is 3 decimal places
  *   - Reported value is dimensionless
  *   - Result stored in sensorValues[3]
  *   - Default variable code is AtlasSpecGravity
+ * @variabledoc{atlas_cond_sg,AtlasScientificEC,SpecificGravity,AtlasSpecGravity}
  *
  * ___
  * @section atlas_cond_examples Example Code

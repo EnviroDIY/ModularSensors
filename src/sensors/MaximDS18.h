@@ -72,7 +72,6 @@
  * - Reset time is < 480 µs
  *
  * @section ds18_temp Temperature Output
- * @variabledoc{MaximDS18,Temp}
  *   - Range is -55°C to 125°C
  *   - Accuracy:
  *     - ± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20
@@ -83,6 +82,7 @@
  *     - 0.5°C for DS18S20 (9-bit)
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is DS18Temp
+ * @variabledoc{ds18_temp,MaximDS18,Temp,DS18Temp}
  *
  * ___
  * @section ds18_examples Example Code

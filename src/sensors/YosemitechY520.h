@@ -36,22 +36,22 @@
  * - Time between "StartMeasurement" command and stable reading - 10sec
  *
  * @section y520_cond Conductivity Output
- * @variabledoc{YosemitechY520,Cond}
  *   - Range is 1 µS/cm to 200 mS/cm
  *   - Accuracy is ± 1 % Full Scale
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.1 µS/cm
  *   - Reported as microsiemens per centimeter (µS/cm)
  *   - Default variable code is Y520Cond
+ * @variabledoc{y520_cond,YosemitechY520,Cond,Y520Cond}
  *
  * @section y520_temp Temperature Output
- * @variabledoc{YosemitechY520,Temp}
  *   - Range is 0°C to + 50°C
  *   - Accuracy is ± 0.2°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y520Temp
+ * @variabledoc{y520_temp,YosemitechY520,Temp,Y520Temp}
  *
  * The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the

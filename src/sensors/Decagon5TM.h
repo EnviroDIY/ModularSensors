@@ -51,7 +51,6 @@
  * - Maximum measurement duration: 200ms
  *
  * @section fivetm_ea Ea Output
- * @variabledoc{Decagon5TM,Ea}
  *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)
  *   - Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
  *   - Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
@@ -59,18 +58,18 @@
  *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
  *   - Reported as farads per meter (F/m)
  *   - Default variable code is SoilEa
+ * @variabledoc{fivetm_ea,Decagon5TM,Ea,SoilEa}
  *
  * @section fivetm_temp Temp Output
- * @variabledoc{Decagon5TM,Temp}
  *   - Range is - 40°C to + 50°C
  *   - Accuracy is ± 1°C
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.1°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is SoilTemp
+ * @variabledoc{fivetm_temp,Decagon5TM,Temp,SoilTemp}
  *
  * @section fivetm_vwc VWC Output
- * @variabledoc{Decagon5TM,VWC}
  *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)
  *   - Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
  *   - Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
@@ -78,6 +77,7 @@
  *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
  *   - Reported as volumetric percent water content (%, m3/100m3)
  *   - Default variable code is SoilVWC
+ * @variabledoc{fivetm_vwc,Decagon5TM,VWC,SoilVWC}
  *
  * ___
  * @section fivetm_examples Example Code

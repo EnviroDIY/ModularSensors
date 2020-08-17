@@ -75,25 +75,24 @@
  * https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9
  *
  * @section bme280_temp Temperature Output
- * @variabledoc{BoschBME280,Temp}
  *   - Range is -40°C to +85°C
  *   - Accuracy is ±0.5°C
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is BoschBME280Temp
+ * @variabledoc{bme280_temp,BoschBME280,Temp,BoschBME280Temp}
  *
  * @section bme280_humidity Humidity Output
- * @variabledoc{BoschBME280,Humidity}
  *   - Resolution is 0.008 % RH (16 bit)
  *   - Accuracy is ± 3 % RH
  *   - Range is 0 to 100% RH
  *   - Reported as percent relative humidity (% RH)
  *   - Result stored in sensorValues[1]
  *   - Default variable code is BoschBME280Humidity
+ * @variabledoc{bme280_humidity,BoschBME280,Humidity,BoschBME280Humidity}
  *
  * @section bme280_pressure Pressure Output
- * @variabledoc{BoschBME280,Pressure}
  *   - Range is 300 to 1100 hPa
  *   - Absolute accuracy is ±1 hPa
  *   - Relative accuracy is ±0.12 hPa
@@ -101,13 +100,14 @@
  *   - Resolution is 0.18hPa
  *   - Reported as pascals (Pa)
  *   - Default variable code is BoschBME280Pressure
+ * @variabledoc{bme280_pressure,BoschBME280,Pressure,BoschBME280Pressure}
  *
  * @section bme280_altitude Altitude Output
- * @variabledoc{BoschBME280,Altitude}
  *   - Result stored in sensorValues[3]
  *   - Resolution is 1m
  *   - Reported as meters (m)
  *   - Default variable code is BoschBME280Altitude
+ * @variabledoc{bme280_altitude,BoschBME280,Altitude,BoschBME280Altitude}
  * ___
  * @section bme280_examples Example Code
  * The BME280 is used in the @menulink{bme280} example.

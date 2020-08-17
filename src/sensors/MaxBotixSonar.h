@@ -90,13 +90,13 @@
  * - Warm up time to completion of header:  160ms
  *
  * @section maxbotix_range Range Output
- * @variabledoc{MaxBotixSonar,Range}
  *   - Range is 300 to 5000mm or 500 to 9999mm, depending on model
  *   - Accuracy is ±1%
  *   - Result stored in sensorValues[0]
  *   - Resolution is 1mm
  *   - Reported as millimeters (mm)
  *   - Default variable code is SonarRange
+ * @variabledoc{maxbotix_range,MaxBotixSonar,Range,SonarRange}
  *
  * ___
  * @section maxbotics_examples Example Code

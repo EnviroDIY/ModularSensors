@@ -32,31 +32,31 @@
  * @subsection nanolevel_timing Sensor Timing
  *
  * @section nanolevel_pressure Pressure Output
- * @variabledoc{KellerNanolevel,Pressure}
  *   - Range is 0 to 300mbar
  *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.002%
  *   - Reported as millibar (mb)
  *   - Default variable code is kellerNanoPress
+ * @variabledoc{nanolevel_pressure,KellerNanolevel,Pressure,kellerNanoPress}
  *
  * @section nanolevel_temp Temperature Output
- * @variabledoc{KellerNanolevel,Temp}
  *   - Range is 10°C to 50°C
  *   - Accuracy is not specified in the sensor datasheet
  *   - Result stored in sensorValues[1]
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is kellerNanoTemp
+ * @variabledoc{nanolevel_temp,KellerNanolevel,Temp,kellerNanoTemp}
  *
  * @section nanolevel_height Height Output
- * @variabledoc{KellerNanolevel,Height}
  *   - Range is 0 to 120 inches
  *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.002%
  *   - Reported as meters (m)
  *   - Default variable code is kellerNanoHeight
+ * @variabledoc{nanolevel_height,KellerNanolevel,Height,kellerNanoHeight}
  *
  *
  * ___

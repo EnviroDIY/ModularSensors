@@ -48,7 +48,6 @@
  * @section processor_battery Battery Voltage
  * This is the voltage as measured on the battery attached to the MCU using the
  * inbuilt ADC, if applicable.
- * @variabledoc{ProcessorStats,Battery}
  * - Range is assumed to be 0 to 5V
  * - Accuracy is processor dependent
  * - Result stored in sensorValues[0]
@@ -56,18 +55,19 @@
  *   - 0-5V with a 10bit ADC
  * - Reported as volts (V)
  * - Default variable code is batteryVoltage
+ * @variabledoc{processor_battery,ProcessorStats,Battery,batteryVoltage}
  *
  * @section processor_ram Free RAM
  * This is the amount of free space on the processor when running the program.
  * This is just a diagnostic value.  This number _**should always remain the
  * same for a single logger program**_.  If this number is not constant over
  * time, there is a memory leak and something wrong with your logging program.
- * @variabledoc{ProcessorStats,FreeRam}
  * - Range is 0 to full RAM available on processor
  * - Result stored in sensorValues[1]
  * - Resolution is 1 bit
  * - Reported in bits
  * - Default variable code is freeSRAM
+ * @variabledoc{processor_ram,ProcessorStats,FreeRam,freeSRAM}
  *
  * @section processor_sampno Sample Number
  * This is a board diagnostic.  It is _**roughly**_ the number of samples
@@ -75,10 +75,10 @@
  * increments up by one every time the addSingleMeasurementResult() function is
  * called for the processor sensor.  It is intended only as a rough diagnostic
  * to show when the processor restarts.
- * @variabledoc{ProcessorStats,SampleNumber}
  * - Result stored in sensorValues[2]
  * - Reported as a dimensionless sequence number
  * - Default variable code is SampNum
+ * @variabledoc{processor_sampno,SampleNumber,FreeRam,SampNum}
 
  * ___
  * @section processor_sensor_examples Example Code

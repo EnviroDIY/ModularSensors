@@ -44,23 +44,23 @@
  *
  * ___
  * @section am2315_temperature Temperature Output
- * @variabledoc{AOSongAM2315,Temp}
  * - Range is -40°C to +125°C
  * - Accuracy is ±0.1°C
  * - Result stored in sensorValues[1]
  * - Resolution is 0.1°C (16 bit)
  * - Reported as degrees Celsius
  * - Default variable code is AM2315Temp
+ * @variabledoc{am2315_temperature,AOSongAM2315,Temp,AM2315Temp}
  *
  * ___
  * @section am2315_humidity Relative Humidity Output
- * @variabledoc{AOSongAM2315,Humidity}
  * - Range is 0 to 100% RH
  * - Accuracy is ± 2 % RH at 25°C
  * - Result stored in sensorValues[0]
  * - Resolution is 0.1 % RH (16 bit)
  * - Reported as percent relative humidity
  * - Default variable code is AM2315Humidity
+ * @variabledoc{am2315_humidity,AOSongAM2315,Humidity,AM2315Humidity}
  *
  * ___
  * @section am2315_examples Example Code
