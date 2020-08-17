@@ -1111,6 +1111,84 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 
 
 // ==========================================================================
+//  Keller Acculevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+/** Start [acculevel] */
+#include <sensors/KellerAcculevel.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& acculevelSerial = Serial2;  // Use hardware serial if possible
+#else
+AltSoftSerial&  acculevelSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& acculevelSerial = neoSSerial1;  // For software serial
+#endif
+
+byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
+const int8_t alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                               // (-1 if unconnected)
+const int8_t  acculevelPower = A3;             // Sensor power pin
+const int8_t  al485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t acculevelNumberReadings = 5;
+// The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Acculevel sensor object
+KellerAcculevel acculevel(acculevelModbusAddress, acculevelSerial,
+                          alAdapterPower, acculevelPower, al485EnablePin,
+                          acculevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Acculevel
+Variable* acculevPress = new KellerAcculevel_Pressure(
+    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* acculevTemp = new KellerAcculevel_Temp(
+    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* acculevHeight = new KellerAcculevel_Height(
+    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [acculevel] */
+
+
+// ==========================================================================
+//  Keller Nanolevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+/** Start [nanolevel] */
+#include <sensors/KellerNanolevel.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& nanolevelSerial = Serial2;  // Use hardware serial if possible
+#else
+AltSoftSerial& nanolevelSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& nanolevelSerial = neoSSerial1;  // For software serial
+#endif
+
+byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+const int8_t nlAdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                               // (-1 if unconnected)
+const int8_t  nanolevelPower = A3;             // Sensor power pin
+const int8_t  nl485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t nanolevelNumberReadings = 5;
+// The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+KellerNanolevel nanolevel(nanolevelModbusAddress, nanolevelSerial,
+                          nlAdapterPower, nanolevelPower, nl485EnablePin,
+                          nanolevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+Variable* nanolevPress = new KellerNanolevel_Pressure(
+    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* nanolevTemp = new KellerNanolevel_Temp(
+    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* nanolevHeight = new KellerNanolevel_Height(
+    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [nanolevel] */
+
+
+// ==========================================================================
 //  Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 /** Start [sonar] */
@@ -1299,83 +1377,6 @@ Variable* inaVolt  = new TIINA219_Volt(&ina219,
 Variable* inaPower = new TIINA219_Power(&ina219,
                                         "12345678-abcd-1234-ef00-1234567890ab");
 /** End [ina219] */
-
-
-// ==========================================================================
-//  Keller Acculevel High Accuracy Submersible Level Transmitter
-// ==========================================================================
-/** Start [acculevel] */
-#include <sensors/KellerAcculevel.h>
-
-// Create a reference to the serial port for modbus
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial& acculevelSerial = Serial2;  // Use hardware serial if possible
-#else
-AltSoftSerial&  acculevelSerial = altSoftSerial;  // For software serial
-// NeoSWSerial& acculevelSerial = neoSSerial1;  // For software serial
-#endif
-
-byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-const int8_t alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
-                                               // (-1 if unconnected)
-const int8_t  acculevelPower = A3;             // Sensor power pin
-const int8_t  al485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t acculevelNumberReadings = 5;
-// The manufacturer recommends taking and averaging a few readings
-
-// Create a Keller Acculevel sensor object
-KellerAcculevel acculevel(acculevelModbusAddress, acculevelSerial,
-                          alAdapterPower, acculevelPower, al485EnablePin,
-                          acculevelNumberReadings);
-
-// Create pressure, temperature, and height variable pointers for the Acculevel
-Variable* acculevPress = new KellerAcculevel_Pressure(
-    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* acculevTemp = new KellerAcculevel_Temp(
-    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* acculevHeight = new KellerAcculevel_Height(
-    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [acculevel] */
-
-// ==========================================================================
-//  Keller Nanolevel High Accuracy Submersible Level Transmitter
-// ==========================================================================
-/** Start [nanolevel] */
-#include <sensors/KellerNanolevel.h>
-
-// Create a reference to the serial port for modbus
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial& nanolevelSerial = Serial2;  // Use hardware serial if possible
-#else
-AltSoftSerial& nanolevelSerial = altSoftSerial;  // For software serial
-// NeoSWSerial& nanolevelSerial = neoSSerial1;  // For software serial
-#endif
-
-byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
-const int8_t nlAdapterPower = sensorPowerPin;  // RS485 adapter power pin
-                                               // (-1 if unconnected)
-const int8_t  nanolevelPower = A3;             // Sensor power pin
-const int8_t  nl485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t nanolevelNumberReadings = 5;
-// The manufacturer recommends taking and averaging a few readings
-
-// Create a Keller Nanolevel sensor object
-KellerNanolevel nanolevel(nanolevelModbusAddress, nanolevelSerial,
-                          nlAdapterPower, nanolevelPower, nl485EnablePin,
-                          nanolevelNumberReadings);
-
-// Create pressure, temperature, and height variable pointers for the Nanolevel
-Variable* nanolevPress = new KellerNanolevel_Pressure(
-    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* nanolevTemp = new KellerNanolevel_Temp(
-    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* nanolevHeight = new KellerNanolevel_Height(
-    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [nanolevel] */
 
 
 // ==========================================================================
