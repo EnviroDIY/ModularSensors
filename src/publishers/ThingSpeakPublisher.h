@@ -53,7 +53,6 @@ class ThingSpeakPublisher : public dataPublisher {
     /**
      * @brief Construct a new ThingSpeak Publisher object with no members
      * initialized.
-     *
      */
     ThingSpeakPublisher();
     /**

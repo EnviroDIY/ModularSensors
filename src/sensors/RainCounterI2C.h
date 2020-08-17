@@ -134,8 +134,8 @@ class RainCounterI2C : public Sensor {
      *
      * @param i2cAddressHex The I2C address of the Trinket; can be any number
      * between 0x40 and 0x4F.  The default value is 0x08.
-     * @param rainPerTip The depth of rain from a single tip.  Most likely is
-     * either 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
+     * @param rainPerTip The depth of rain from a single tip; most likely either
+     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
      * default value is 0.2.
      */
     explicit RainCounterI2C(uint8_t i2cAddressHex = 0x08,

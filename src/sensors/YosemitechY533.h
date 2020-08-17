@@ -131,14 +131,15 @@ class YosemitechY533 : public YosemitechParent {
      * @param stream An Arduino data stream for modbus communication.  See
      * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
      * for more information on what streams can be used.
-     * @param powerPin The pin on the mcu controlling power to the sensor.
-     * Defaults to -1.
+     * @param powerPin The pin on the mcu controlling power to the Y533.
+     * Use -1 if it is continuously powered.
      * @param powerPin2 The pin on the mcu controlling power to the RS485
      * adapter, if it is different from that used to power the sensor.  Use -1
      * or omit if not applicable.
      * @param enablePin The pin on the mcu controlling the direction enable on
-     * the RS485 adapter, if necessary; use -1 or omit if not applicable.  An
-     * RS485 adapter with integrated flow control is strongly recommended.
+     * the RS485 adapter, if necessary; use -1 or omit if not applicable.
+     * @note An RS485 adapter with integrated flow control is strongly
+     * recommended.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.

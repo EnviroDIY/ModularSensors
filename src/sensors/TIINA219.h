@@ -158,10 +158,10 @@ class TIINA219 : public Sensor {
     /**
      * @brief Construct a new TI INA219 object
      *
-     * @param powerPin The pin on the mcu controlling power to the INA219. Use
-     * -1 if it is continuously powered.
-     * - The INA219 requires input voltage of 3.0-5.5V, which can be turned
-     * off between measurements
+     * @param powerPin The pin on the mcu controlling power to the INA219.
+     * Use -1 if it is continuously powered.
+     * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
+     * between measurements.
      * @param i2cAddressHex The I2C address of the BME280; can be any number
      * between 0x40 and 0x4F.  The default value is 0x40.
      * @param measurementsToAverage The number of measurements to take and

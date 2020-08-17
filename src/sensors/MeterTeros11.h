@@ -179,12 +179,12 @@ class MeterTeros11 : public SDI12Sensors {
      * readings to average.  The data pin must be a pin that supports pin-change
      * interrupts.
      *
-     * @param SDI12address The SDI-12 address of the sensor
+     * @param SDI12address The SDI-12 address of the Teros 11.
      * @warning The SDI-12 address **must** be changed from the factory
-     * programmed value of "0" before the sensor can be used with
+     * programmed value of "0" before the Teros 11 can be used with
      * ModularSensors!
-     * @param powerPin The pin on the mcu controlling power to the Teros 11. Use
-     * -1 if it is continuously powered.
+     * @param powerPin The pin on the mcu controlling power to the Teros 11
+     * Use -1 if it is continuously powered.
      * - The Teros 11 requires a 3.5-12V power supply, which can be turned off
      * between measurements
      * @param dataPin The pin on the mcu connected to the data line of the

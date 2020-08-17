@@ -141,9 +141,9 @@ class MaximDS18 : public Sensor {
      *
      * Use this version for more than one sensor attached to the OneWire bus.
      *
-     * @param OneWireAddress The address of the sensor.  Should be an array of 8
-     * values.  To get the address
-     * of your sensor, plug a single sensor into your device and run the
+     * @param OneWireAddress The unique address of the sensor.  Should be an
+     * array of 8 values.  To get the address of your sensor, plug a single
+     * sensor into your device and run the
      * [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino)
      * example or the
      * [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde)

@@ -66,8 +66,7 @@
  * @subsection bme280_timing Sensor Timing
  *   - warm up is 100ms
  *   - stable after 4000ms
- *      - 0.5 s for good numbers, but optimal at 4 s based on tests using
- * bme280timingTest.ino
+ *      - 0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino
  *   - measurements take 1100ms to complete
  *      - 1.0 s according to datasheet, but slightly better stdev when 1.1 s
  *   - For details on BME280 stabilization time updates, include testing sketch and
@@ -192,8 +191,8 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Construct a new Bosch BME280 object
      *
-     * @param powerPin The pin on the mcu controlling power to the BME280.  Use
-     * -1 if it is continuously powered.
+     * @param powerPin The pin on the mcu controlling power to the BME280
+     * Use -1 if it is continuously powered.
      * - The BME280 requires a 1.7 - 3.6V power source
      * @param i2cAddressHex The I2C address of the BME280; must be either 0x76
      * or 0x77.  The default value is 0x76.

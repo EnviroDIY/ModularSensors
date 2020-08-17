@@ -132,8 +132,8 @@ class MPL115A2 : public Sensor {
      *
      * @note It is only possible to connect *one* MPL115A2 at a time!
      *
-     * @param powerPin The pin on the mcu controlling power to the MPL115A2. Use
-     * -1 if it is continuously powered.
+     * @param powerPin The pin on the mcu controlling power to the MPL115A2
+     * Use -1 if it is continuously powered.
      * - The MPL115A2 requires a 2.375 - 5.5V power source
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a

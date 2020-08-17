@@ -147,9 +147,9 @@ class ZebraTechDOpto : public SDI12Sensors {
      * readings to average.  The data pin must be a pin that supports pin-change
      * interrupts.
      *
-     * @param SDI12address The SDI-12 address of the sensor
-     * @param powerPin The pin on the mcu controlling power to the D-Opto.  Use
-     * -1 if it is continuously powered.
+     * @param SDI12address The SDI-12 address of the DOpto.
+     * @param powerPin The pin on the mcu controlling power to the D-Opto
+     * Use -1 if it is continuously powered.
      * - The D-Opto requires a 8-12V power supply, which can be turned off
      * between measurements
      * @param dataPin The pin on the mcu connected to the data line of the

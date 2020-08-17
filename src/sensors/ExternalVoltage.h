@@ -222,9 +222,9 @@ class ExternalVoltage : public Sensor {
      * The gain value, I2C address, and number of measurements to average are
      * optional.  If nothing is given a 1x gain is used.
      *
-     * @param powerPin  The pin on the mcu controlling power to the sensor.  Use
-     * -1 if it is continuously powered.
-     * @param adsChannel The ACS channel of interest (0-3).
+     * @param powerPin The pin on the mcu controlling power to the sensor
+     * Use -1 if it is continuously powered.
+     * @param adsChannel The ADS channel of interest (0-3).
      * @param gain The gain multiplier, if a voltage divider is used.
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)

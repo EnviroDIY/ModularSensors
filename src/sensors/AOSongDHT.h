@@ -170,8 +170,8 @@ class AOSongDHT : public Sensor {
      * @param dataPin The pin on the mcu receiving data from the AOSong DHT
      * @param type The type of DHT.  Possible values are DHT11, DHT21, AM2301,
      * DHT22, or AM2302.
-     * - NOTE:  The DHT type should be entered without quotation
-     * marks since the values are members of an enum rather than a string.
+     * - NOTE:  The DHT type should be entered _without quotation marks_ since
+     * the values are members of an enum rather than a string.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.

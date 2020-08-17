@@ -169,7 +169,6 @@ class ProcessorStats : public Sensor {
     explicit ProcessorStats(const char* version);
     /**
      * @brief Destroy the Processor Stats object
-     *
      */
     ~ProcessorStats();
 

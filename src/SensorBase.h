@@ -69,7 +69,7 @@ class Sensor {
      * Defaults to 0.
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 0.
-     * @param powerPin The pin on the mcu controlling power to the sensor.
+     * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
      * @param dataPin The pin on the mcu receiving data from the sensor.
      * Defaults to -1.

@@ -157,15 +157,15 @@ class MeaSpecMS5803 : public Sensor {
     /**
      * @brief Construct a new MeaSpecMS5803
      *
-     * @param powerPin The pin on the mcu controlling power to the BME280.  Use
-     * -1 if it is continuously powered.
+     * @param powerPin The pin on the mcu controlling power to the MS5803
+     * Use -1 if it is continuously powered.
      * - The MS5803 requires a 1.7 - 3.6V power source
      * @param i2cAddressHex The I2C address of the MS5803; must be either 0x76
      * or 0x77.  The default value is 0x76.
      * @param maxPressure The maximum pressure of the specific MS5803 in bar.
      * The sensors are maufactured with maximum pressures of 1.1 bar, 1.3 bar, 5
-     * bar, 7 bar, 14 bar, and 30 bar. Use "1" for the 1.1 bar module and "2"
-     * for the 1.3 bar module.
+     * bar, 7 bar, 14 bar, and 30 bar.
+     * @note Use "1" for the 1.1 bar module and "2" for the 1.3 bar module.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.

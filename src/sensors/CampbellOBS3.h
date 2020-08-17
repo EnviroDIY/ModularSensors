@@ -175,8 +175,8 @@ class CampbellOBS3 : public Sensor {
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
      * ADS1X15 data channel, and the calibration info
      *
-     * @param powerPin  The pin on the mcu controlling power to the Apogee
-     * SQ-212.  Use -1 if it is continuously powered.
+     * @param powerPin The pin on the mcu controlling power to the OBS3+
+     * Use -1 if it is continuously powered.
      * - The ADS1x15 requires an input voltage of 2.0-5.5V, but this library
      * assumes the ADS is powered with 3.3V.
      * - The OBS-3 itself requires a 5-15V power supply, which can be turned off

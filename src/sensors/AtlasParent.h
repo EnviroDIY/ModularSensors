@@ -104,7 +104,7 @@ class AtlasParent : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     *@param sensorName The name of the sensor, defaults to AtlasSensor.
+     * @param sensorName The name of the sensor, defaults to AtlasSensor.
      * @param numReturnedVars The number of results returned by the sensor.
      * Defaults to 1.
      * @param warmUpTime_ms The time needed from the when a sensor has power
