@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_LT5  - ModularSensors Configuration - tgt _CTD10 _LT5 _EC
+ms_cfg.h_LT5  - ModularSensors Configuration - tgt _LT5 Acculevel /LTE
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard

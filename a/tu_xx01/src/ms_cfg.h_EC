@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_EC  - ModularSensors Configuration - tgt _test_LT5 _EC
+ms_cfg.h_EC  - ModularSensors Configuration - tgt relative _EC
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard

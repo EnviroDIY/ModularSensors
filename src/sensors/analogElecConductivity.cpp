@@ -1,8 +1,10 @@
-/*
- *analogElecConductivity.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file analogElecConductivity.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library
  *
- * see .h
+ * * @brief This encapsulates an Electrical Conductivity sensors using an anlog
+ *input and onboard ADC and ADC ref.
  */
 
 #include "analogElecConductivity.h"
@@ -90,7 +92,7 @@
 #error BOARD Unknown
 #endif
 
-// For Mayfly version because the battery resistor depends on it
+// For Mayfly version; the battery resistor depends on it
 analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin,
                                                uint8_t measurementsToAverage)
     : Sensor("analogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
@@ -122,19 +124,12 @@ String analogElecConductivity::getSensorLocation(void) {
     return BOARD;
 }
 
-/************ ***********************
- * readEC
- *
- * SensorV-- adcPin/Ra --- R1 ---- Sensorconnector&Wire  -- Rwater --- Groond
- * R1 series resistance ~ 500ohms
- * Rwater - Resistenace of Water
- * Ra - Resistance of applied Source - possibly uP Digital Pin
- *
- * Returns microSiemens the inverse of resistance
- *
- * https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino
- * http://www.reagecon.com/pdf/technicalpapers/Effect_of_Temperature_TSP-07_Issue3.pdf
- */
+
+float analogElecConductivity::readEC() {
+    return readEC(_EcAdcPin);
+}
+
+
 float analogElecConductivity::readEC(uint8_t analogPinNum) {
     uint32_t sensorEC_adc;
     // float sensorEC_V= 0;
@@ -211,6 +206,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     return EC25_uScm;
 }
 
+
 bool analogElecConductivity::addSingleMeasurementResult(void) {
     float sensorEC_uScm = -9999;
 
@@ -233,11 +229,4 @@ bool analogElecConductivity::addSingleMeasurementResult(void) {
 
     // Return true when finished
     return true;
-}
-
-// void analogElecConductivity::setWaterTemperature(float  WaterTemperature_C) {
-//    _WaterTemperature_C = WaterTemperature_C;
-//}
-void analogElecConductivity::setWaterTemperature(float* ptrWaterTemperature_C) {
-    _ptrWaterTemperature_C = ptrWaterTemperature_C;
 }

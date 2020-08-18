@@ -333,7 +333,8 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = _outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
+        tempBuffer[0] = 0;
+        did_respond   = _outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
         // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
         // F("mS"));
         // Close the TCP/IP connection
@@ -354,6 +355,11 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         responseCode = HTTPSTATUS_NC_901;
     } else if (did_respond >= REQUIRED_MIN_RSP_SZ) {
         char responseCode_char[4];
+        // Put in monitor check on actual size received
+        if ((did_respond + 5) >= TEMP_BUFFER_SZ) {
+            PRINTOUT(F(" -- Gateway Timeout warning buffer sz small"),
+                     did_respond, TEMP_BUFFER_SZ);
+        }
         for (uint8_t i = 0; i < 3; i++) {
             responseCode_char[i] = tempBuffer[i + 9];
         }

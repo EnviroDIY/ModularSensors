@@ -282,7 +282,9 @@ DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // ==========================================================================
 #include <sensors/InsituTrollSdi12.h>
 
-const char*   ITROLLSDI12address   = "1";  // The SDI-12 Address of the ITROLL
+// const char*   ITROLLSDI12address   = "1";  // The SDI-12 Address of the
+// ITROLL
+const char*   ITROLLSDI12address   = "0";  // The SDI-12 Address of the ITROLL
 const uint8_t ITROLLNumberReadings = 2;    // The number of readings to average
 const int8_t  IT_SDI12Power =
     sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)

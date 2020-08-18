@@ -1,16 +1,28 @@
-/*
- *analogElecConductivity.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file analogElecConductivity.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library
+ * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>
  *
  *
- *This sensor encapsulates sensors using an anlog input and onboard ADC and ADC
- *ref. EC from IEC probe, requires ADC_PIN, Source Resistance, Applied Voltage,
- *water temperature. Requires switched power pin The water Temperature must be
- *suplied seperately for a calculation.
+ * @brief This encapsulates an Electrical Conductivity sensors using an anlog
+ *input and onboard ADC and ADC ref.
  *
- *  To use, must switch power to series resistor  499R, then measurement from
- *anlog pin A[0-7] and then sensor
+ * EC from IEC probe, requires ADC_PIN, Source Resistance, Applied
+ * Voltage, water temperature.
  *
+ * Requires switched power pin. The water Temperature (if used) must be suplied
+ * seperately for a calculation.
+ *
+ * To use, must switch power to series resistor [default 499R], then measurement
+ * from anlog pin A[0-7] and then sensor
+ *
+ *  SensorV-- adcPin/Ra --- R1 ---- Sensorconnector&Wire  -- Rwater --- Groond
+ * R1 series resistance ~ 500ohms
+ * Rwater - Resistenace of Water
+ * Ra - Resistance of applied Source - possibly uP Digital Pin
+ *
+ * Returns microSiemens the inverse of resistance
  * Parts & Wiring for Mayfly
  *  Mayfly 0.5b or later
  *  Sensor  AC Power Cord 12t with male IEC 320-C8 connector.
@@ -31,11 +43,14 @@
  *  (better to be ratio meteric))
  *  Range of 0-3V3 with 10bit ADC - resolution of 0.003
  *
+ * https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino
+ * http://www.reagecon.com/pdf/technicalpapers/Effect_of_Temperature_TSP-07_Issue3.pdf
+ *
  */
 
 // Header Guards
-#ifndef analogElecConductivity_h
-#define analogElecConductivity_h
+#ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
+#define SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG
 #define MS_DEBUGGING_STD "analogElecConductivity"
@@ -75,23 +90,82 @@
 #define ProcAdcDef_Reference AR_DEFAULT
 #endif  // ProcAdcDef_Reference
 
+/**
+ * @brief Class for the analog Electrical Conductivity monitor
+ *
+ */
 class analogElecConductivity : public Sensor {
  public:
-    // Need to know the  Mayfly version because the battery resistor depends on
-    // it
+    /**
+     * @brief Construct a new analogElecConductivity object.
+     *
+     * @param powerPin The port pin providing power to the EC probe.
+     * Needs to be switched, and assumed to be same V as the dataPin's ADC.
+     *
+     * @param dataPin The adc port pin to read the voltage from the EC probe.
+     *
+     * @param measurementsToAverage The number of measurements to average;
+     * optional with default value of 1.
+     */
     analogElecConductivity(int8_t powerPin, int8_t dataPin,
                            uint8_t measurementsToAverage = 1);
+
+    /**
+     * @brief Destroy the analogElecConductivity object - no action needed.
+     */
     ~analogElecConductivity();
 
+    /**
+     * @brief Report the sensor info.
+     *
+     * @return **String** Text describing how the sensor is attached to the mcu.
+     */
     String getSensorLocation(void) override;
 
+    /**
+     * @copydoc Sensor::addSingleMeasurementResult()
+     */
     bool addSingleMeasurementResult(void) override;
     // void set_active_sensors(uint8_t sensors_mask);
     // uint8_t which_sensors_active(void);
     // void setWaterTemperature(float  WaterTemperature_C);
-    void setWaterTemperature(float* WaterTemperature_C);
-    // void setEc_k(int8_t powerPin, int8_t adcPin, float
-    // sourceResistance_ohms,float  appliedV_V, uint8_t probeType);
+
+    /**
+     * @brief Set where to find (a pointer) WaterTemperature for internal
+     * calculations. The reference needs to be updated before every calculation,
+     * (if temperature has changed)
+     *
+     * @return none
+     */
+    void setWaterTemperature(float* ptrWaterTemperature_C) {
+        _ptrWaterTemperature_C = ptrWaterTemperature_C;
+    }
+
+    /**
+     * @brief Set EC constants for internal calculations.
+     * Needs to be set at startup if different from defaults
+     *
+     * @param sourceResistance_ohms series R used in calculations for EC
+     *
+     * other possible K, not specified yet:
+     *    float  appliedV_V,
+     *    uint8_t probeType
+     *
+     * @return none
+     */
+    void setEC_k(float sourceResistance_ohms) {
+        Rseries_ohms = sourceResistance_ohms;
+    }
+
+    /**
+     * @brief reads the calculated EC from an analog pin.
+     *
+     * @param analogPinNum (optional) Analog Port, or if not supplied the
+     * internal portNumber.
+     *
+     * @return EC value
+     */
+    float readEC(void);
     float readEC(uint8_t analogPinNum);
 
  private:
@@ -105,7 +179,7 @@ class analogElecConductivity : public Sensor {
 #if !defined RSERIES_OHMS_DEF
 #define RSERIES_OHMS_DEF 499
 #endif  // RSERIES_OHMS_DEF
-    const float Rseries_ohms =
+    float Rseries_ohms =
         RSERIES_OHMS_DEF;  // that is R1 + any series port resistance
 #if !defined TEMPERATURECOEF_DEF
 #define TEMPERATURECOEF_DEF 0.019
@@ -123,20 +197,50 @@ class analogElecConductivity : public Sensor {
     const float sensorEC_Konst = SENSOREC_KONST_DEF;
 };
 
-// For the battery supplying power to the processor
+/**
+ * @brief The variable class used for electricalConductivity measured using an
+ * analog pin connected to electrodes submerged in the medium
+ *
+ * - Units are uScm,
+ * - Range: low 100's when open air,
+ *   for short circuit: a high number
+ * - Accuracy: needs determining for each combination of ADC. ADC_REF, and
+ * series R. its designed as a very simple relative EC measurement
+ *
+ */
 class analogElecConductivity_EC : public Variable {
  public:
-    analogElecConductivity_EC(Sensor* parentSense, const char* uuid = "",
-                              const char* varCode = "anlgEc")
+    /**
+     * @brief Construct a new  analogElecConductivity_EC object.
+     *
+     * @param parentSense The parent analogElecConductivity providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable.  Default is an empty string.
+     * @param varCode A short code to help identify the variable in files.
+     * Default is anlgEc
+     */
+    analogElecConductivity_EC(analogElecConductivity* parentSense,
+                              const char*             uuid    = "",
+                              const char*             varCode = "anlgEc")
         : Variable(parentSense,
                    (const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                    (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
                    "electricalConductivity", "uScm", varCode, uuid) {}
+
+    /**
+     * @brief Construct a new analogElecConductivity_EC object.
+     *
+     * @note This must be tied with a parent BoschBME280 before it can be used.
+     */
     analogElecConductivity_EC()
         : Variable((const uint8_t)ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                    (uint8_t)ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
                    "ElectricalConductivity", "uScm", "anlgEc") {}
+    /**
+     * @brief Destroy the analogElecConductivity_EC object - no action needed.
+     */
     ~analogElecConductivity_EC() {}
 };
 
-#endif  // analogElecConductivity
+#endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
