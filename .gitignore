@@ -53,6 +53,7 @@ Temporary Items
 .pio
 .pioenvs
 .piolibdeps
+.pio
 .pio/libdeps
 .pio/build
 .pio/*
@@ -68,6 +69,7 @@ include/readme.txt
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode
+.history
 
 # Other
 compile_tests/
@@ -76,3 +78,21 @@ YosemitechDO/
 LongTermLogger/
 barometric_correction/
 3G_Test/
+LocalDoxyfile
+DoxygenOutput.log
+Doxyfile-mcss
+__pycache__/
+custom_*.css
+socialize_*.css
+docs/custom_search.css
+docs/custom_tabs_archive.css
+docs/custom_tabs.css
+docs/envirodiy.html
+docs/footer.html
+docs/header_archive.html
+docs/header.html
+runDoxygen.bat
+docs/mcss-doxy-output.log
+docs/mcss-output.log
+docs/mcss.log
+docs/mcssDoxygenOutput.log
