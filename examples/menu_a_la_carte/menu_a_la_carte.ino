@@ -217,7 +217,9 @@ const long modemBaud = 9600;  // All XBee's use 9600 by default
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 // The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter
-const int8_t modemVccPin    = A5;  // MCU pin controlling modem power
+// For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md
+const int8_t modemVccPin    = -1;  // MCU pin controlling modem power
+    // Option: modemVccPin = A5, if Mayfly SJ7 is connected to the ASSOC pin
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
@@ -2021,7 +2023,7 @@ void setup() {
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
     Serial2.begin(9600);  // Use hardware serial if possible
 #else
-    altSoftSerial.begin(9600);  // For software serial
+    altSoftSerial.begin(9600);  // For all modbus serial streams or other serial
 
     // neoSSerial1.begin(9600);  // For software serial
 #endif
@@ -2191,11 +2193,11 @@ void setup() {
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(
-            true);  // true = wait for card to settle after power up
-        dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(
-            true);  // true = wait for internal housekeeping after write
+        dataLogger.turnOnSDcard(true);
+            // true = wait for card to settle after power up
+        dataLogger.createLogFile(true); // true = write a new header
+        dataLogger.turnOffSDcard(true);
+            // true = wait for internal housekeeping after write
     }
     /** End [setup_file] */
 
@@ -2267,10 +2269,10 @@ void loop() {
         // return a signal strength reading.
         if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
 
-        // Start the stream for the modbus sensors, if your
-        // RS485 adapter "steals" current from data pins when powered off,
-        // & you stop modbus serial connection with digitalWrite(5, LOW), below.
-        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        // Start the stream for the modbus sensors, if your RS485 adapter bleeds
+        // current from data pins when powered off & you stop modbus serial
+        // connection with digitalWrite(5, LOW), below.
+// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
 
         // Do a complete update on the variable array.
@@ -2334,14 +2336,16 @@ void loop() {
         Logger::isLoggingNow = false;
     }
 
-    // Start the stream for the modbus sensors, if your
-    // RS485 adapter "steals" current from data pins when powered off,
-    // & you stop modbus serial connection with digitalWrite(5, LOW), below.
-    // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
-    altSoftSerial.begin(9600);
-
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) dataLogger.testingMode();
+    if (Logger::startTesting) {
+        // Start the stream for the modbus sensors, if your RS485 adapter bleeds
+        // current from data pins when powered off & you stop modbus serial
+        // connection with digitalWrite(5, LOW), below.
+// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        altSoftSerial.begin(9600);
+
+        dataLogger.testingMode();
+    }
 
     // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
     // on sleep, because Modbus Stop bit leaves these pins HIGH.
