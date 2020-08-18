@@ -68,7 +68,7 @@ For some generalized information about attaching sensors to an Arduino style boa
     - Meter ECH2O 5TM
     - Meter Teros 11
 - [Meter Environmental Hydros 21 (formerly Decagon Devices CTD-10): conductivity, temperature & depth](https://envirodiy.github.io/ModularSensors/hydros21_page.html)
-- [TI ADS1115: external voltage with support for divided current ](https://envirodiy.github.io/ModularSensors/ads1115_page.html)
+- [TI ADS1115: external voltage with support for divided current](https://envirodiy.github.io/ModularSensors/ads1x15_page.html)
 - [TI INA219: current, voltage, and power draw](https://envirodiy.github.io/ModularSensors/ina219_page.html)
 - [Yosemitech: water quality sensors](https://envirodiy.github.io/ModularSensors/yosemitech_page.html)
     - Y502-A or Y504-A: Optical DO and Temperature

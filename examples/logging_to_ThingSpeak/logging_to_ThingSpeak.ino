@@ -115,8 +115,7 @@ const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
 // Create the loggerModem object
 EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin, wifiId, wifiPwd,
-                          espSleepRqPin, espStatusPin  // Optional arguments
-);
+                          espSleepRqPin, espStatusPin);
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
 /** End [esp8266] */

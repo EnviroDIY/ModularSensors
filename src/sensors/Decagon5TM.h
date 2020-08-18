@@ -7,25 +7,85 @@
  * @brief Contains the Decagon5TM subclass of the SDI12Sensors class along with
  * the variable subclasses Decagon5TM_Ea, Decagon5TM_Temp, and Decagon5TM_VWC.
  *
- * These are used for the discontinued Decagon Devices 5TM Soil Moisture probe.
+ * These are used for the Meter ECH20 or the discontinued Decagon Devices 5TM
+ * Soil Moisture probe.
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
  * class.
- *
- * For Ea and VWC:
- *     Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
- *     Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
- *     Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
- *     Range is 0 – 1 m3/m3 (0 – 100% VWC)
- *
- * For Temperature:
- *     Resolution is 0.1°C
- *     Accuracy is ± 1°C
- *     Range is - 40°C to + 50°C
- *
- * Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
- * Maximum measurement duration: 200ms
  */
+/* clang-format off */
+/**
+ * @defgroup fivetm_group Meter ECH2O (5TM)
+ * Classes for the Meter ECH2O (5TM) soil moisture sensor.
+ *
+ * @ingroup sdi12_group
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section fivetm_intro Introduction
+ *
+ * Meter Environmental makes two series of soil moisture sensors, the
+ * [ECH2O series](https://www.metergroup.com/environment/products/?product_category=9525) and the
+ * [Teros series](https://www.metergroup.com/environment/products/teros-12/).
+ * __This page is for the ECH2O series.__
+ *
+ * @note Meter Environmental was formerly known as Decagon Devices and sold the
+ * a very similar sensor to the current EC-5 sensor as the 5TM.
+ *
+ * Both series of sensors operate as sub-classes of the SDI12Sensors class.
+ * They require a 3.5-12V power supply, which can be turned off between
+ * measurements. While contrary to the manual, they will run with power as low
+ * as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip,
+ * data to the ring, and ground to the sleeve. On the bare-wire version, the
+ * power is connected to the _white_ cable, data to _red_, and ground to the
+ * unshielded cable.
+ *
+ * @section fivetm_datasheet Sensor Datasheet
+ * [Datasheet](http://publications.metergroup.com/Manuals/20431_EC-5_Manual_Web.pdf)
+ *
+ * @section fivetm_sensor The ECH2O (5TM) Sensor
+ * @ctor_doc{Decagon5TM, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
+ * @subsection fivetm_timing Sensor Timing
+ * - Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
+ * - Maximum measurement duration: 200ms
+ *
+ * @section fivetm_ea Ea Output
+ *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)
+ *   - Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+ *   - Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
+ *   - Reported as farads per meter (F/m)
+ *   - Default variable code is SoilEa
+ * @variabledoc{fivetm_ea,Decagon5TM,Ea,SoilEa}
+ *
+ * @section fivetm_temp Temp Output
+ *   - Range is - 40°C to + 50°C
+ *   - Accuracy is ± 1°C
+ *   - Result stored in sensorValues[1]
+ *   - Resolution is 0.1°C
+ *   - Reported as degrees Celsius (°C)
+ *   - Default variable code is SoilTemp
+ * @variabledoc{fivetm_temp,Decagon5TM,Temp,SoilTemp}
+ *
+ * @section fivetm_vwc VWC Output
+ *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)
+ *   - Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+ *   - Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
+ *   - Reported as volumetric percent water content (%, m3/100m3)
+ *   - Default variable code is SoilVWC
+ * @variabledoc{fivetm_vwc,Decagon5TM,VWC,SoilVWC}
+ *
+ * ___
+ * @section fivetm_examples Example Code
+ * The Meter ECH2O (5TM) is used in the @menulink{fivetm} example.
+ *
+ * @menusnip{fivetm}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_DECAGON5TM_H_
@@ -45,6 +105,7 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_numReturnedValues; the 5TM can report 3 values.
 #define TM_NUM_VARIABLES 3
 /// Sensor::_warmUpTime_ms; the 5TM warms up in 200ms.
@@ -54,44 +115,96 @@
 /// Sensor::_measurementTime_ms; the 5TM takes 200ms to complete a measurement.
 #define TM_MEASUREMENT_TIME_MS 200
 
-/// Decimals places in string representation; EA should have 5.
+/**
+ * @brief Decimals places in string representation; EA should have 5.
+ *
+ * 4 are reported, adding extra digit to resolution to allow the proper number
+ * of significant figures for averaging
+ */
 #define TM_EA_RESOLUTION 5
-// adding extra digit to resolution for averaging
 /// Variable number; EA is stored in sensorValues[0].
 #define TM_EA_VAR_NUM 0
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @brief Decimals places in string representation; temperature should have 2.
+ *
+ * 1 is reported, adding extra digit to resolution to allow the proper number
+ * of significant figures for averaging
+ */
 #define TM_TEMP_RESOLUTION 2
-// adding extra digit to resolution for averaging
 /// Variable number; temperature is stored in sensorValues[1].
 #define TM_TEMP_VAR_NUM 1
 
-/// Decimals places in string representation; VWC should have 3.
+/**
+ * @brief Decimals places in string representation; VWC should have 3.
+ *
+ * 2 are reported, adding extra digit to resolution to allow the proper number
+ * of significant figures for averaging
+ */
 #define TM_VWC_RESOLUTION 3
-// adding extra digit to resolution for averaging
 /// Variable number; VWC is stored in sensorValues[2].
 #define TM_VWC_VAR_NUM 2
 
-// The main class for the Decagon 5TM
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for the
+ * [Meter ECH2O soil moisture sensors](@ref fivetm_group).
+ *
+ * These were formerly sold as the Decagon 5TM.
+ *
+ * @ingroup fivetm_group
+ */
+/* clang-format on */
 class Decagon5TM : public SDI12Sensors {
  public:
     // Constructors with overloads
+    /**
+     * @brief Construct a new Decagon 5TM object.
+     *
+     * The SDI-12 address of the sensor, the Arduino pin controlling power
+     * on/off, and the Arduino pin sending and receiving data are required for
+     * the sensor constructor.  Optionally, you can include a number of distinct
+     * readings to average.  The data pin must be a pin that supports pin-change
+     * interrupts.
+     *
+     * @param SDI12address The SDI-12 address of the ECH2O.
+     * @warning The SDI-12 address **must** be changed from the factory
+     * programmed value of "0" before the ECH2O can be used with
+     * ModularSensors!
+     * @param powerPin The pin on the mcu controlling power to the ECH2O
+     * Use -1 if it is continuously powered.
+     * - The ECH2O requires a 3.5-12V power supply, which can be turned off
+     * between measurements
+     * @param dataPin The pin on the mcu connected to the data line of the
+     * SDI-12 circuit.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
     Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc Decagon5TM::Decagon5TM
+     */
     Decagon5TM(char* SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc Decagon5TM::Decagon5TM
+     */
     Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS) {}
-    // Destructor
+    /**
+     * @brief Destroy the Decagon 5TM object
+     */
     ~Decagon5TM() {}
 
     /**
@@ -102,6 +215,15 @@ class Decagon5TM : public SDI12Sensors {
 
 
 // Defines the Ea/Matric Potential Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [apparent dielectric permittivity (εa, matric potential) output](@ref fivetm_ea)
+ * from a [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_group).
+ *
+ * @ingroup fivetm_group
+ */
+/* clang-format on */
 class Decagon5TM_Ea : public Variable {
  public:
     /**
@@ -109,9 +231,9 @@ class Decagon5TM_Ea : public Variable {
      *
      * @param parentSense The parent Decagon5TM providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is SoilEa.
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "SoilEa".
      */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = "SoilEa")
@@ -133,7 +255,15 @@ class Decagon5TM_Ea : public Variable {
 };
 
 
-// Defines the Temperature Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref fivetm_temp) output from a
+ * [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_group).
+ *
+ * @ingroup fivetm_group
+ */
+/* clang-format on */
 class Decagon5TM_Temp : public Variable {
  public:
     /**
@@ -141,9 +271,9 @@ class Decagon5TM_Temp : public Variable {
      *
      * @param parentSense The parent Decagon5TM providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is SoilTemp.
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "SoilTemp".
      */
     explicit Decagon5TM_Temp(Decagon5TM* parentSense, const char* uuid = "",
                              const char* varCode = "SoilTemp")
@@ -165,7 +295,15 @@ class Decagon5TM_Temp : public Variable {
 };
 
 
-// Defines the Volumetric Water Content Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [volumetric water content](@ref fivetm_vwc) output from a
+ * [Meter ECH20 or Decagon 5TM soil moisture probe](@ref fivetm_group).
+ *
+ * @ingroup fivetm_group
+ */
+/* clang-format on */
 class Decagon5TM_VWC : public Variable {
  public:
     /**
@@ -173,9 +311,9 @@ class Decagon5TM_VWC : public Variable {
      *
      * @param parentSense The parent Decagon5TM providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is SoilVWC.
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "SoilVWC".
      */
     explicit Decagon5TM_VWC(Decagon5TM* parentSense, const char* uuid = "",
                             const char* varCode = "SoilVWC")

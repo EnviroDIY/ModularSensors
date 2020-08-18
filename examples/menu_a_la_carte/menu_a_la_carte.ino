@@ -107,7 +107,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
 /** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
-// communication. The "core" code for most boards defines one or more UART
+// communication.  The "core" code for most boards defines one or more UART
 // (Serial) ports with the SERCOMs and uses others for I2C and SPI.  We can
 // create new UART ports on any available SERCOM.  The table below shows
 // definitions for select boards.
@@ -402,7 +402,8 @@ const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
 // Create the modem object
 EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin, wifiId, wifiPwd,
-                          espSleepRqPin, espStatusPin  // Optional arguments
+                          espSleepRqPin,
+                          espStatusPin  // Optional arguments
 );
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
@@ -999,57 +1000,9 @@ Variable* obs3VoltHigh =
 
 
 // ==========================================================================
-//  Decagon 5TM Soil Moisture Sensor
-// ==========================================================================
-/** Start [5tm] */
-#include <sensors/Decagon5TM.h>
-
-const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
-const int8_t TMPower        = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t TMData         = 7;               // The SDI12 data pin
-
-// Create a Decagon 5TM sensor object
-Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
-
-// Create the matric potential, volumetric water content, and temperature
-// variable pointers for the 5TM
-Variable* fivetmEa = new Decagon5TM_Ea(&fivetm,
-                                       "12345678-abcd-1234-ef00-1234567890ab");
-Variable* fivetmVWC =
-    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* fivetmTemp =
-    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [5tm] */
-
-
-// ==========================================================================
-//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
-// ==========================================================================
-/** Start [decagon_ctd] */
-#include <sensors/DecagonCTD.h>
-
-const char*   CTDSDI12address   = "1";    // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;      // The number of readings to average
-const int8_t  CTDPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  CTDData  = 7;               // The SDI12 data pin
-
-// Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
-
-// Create conductivity, temperature, and depth variable pointers for the CTD
-Variable* ctdCond = new DecagonCTD_Cond(&ctd,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ctdTemp = new DecagonCTD_Temp(&ctd,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ctdDepth =
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [decagon_ctd] */
-
-
-// ==========================================================================
 //  Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
-/** Start [decagon_es2] */
+/** Start [es2] */
 #include <sensors/DecagonES2.h>
 
 const char*   ES2SDI12address = "3";      // The SDI-12 Address of the ES2
@@ -1065,13 +1018,13 @@ Variable* es2Cond = new DecagonES2_Cond(&es2,
                                         "12345678-abcd-1234-ef00-1234567890ab");
 Variable* es2Temp = new DecagonES2_Temp(&es2,
                                         "12345678-abcd-1234-ef00-1234567890ab");
-/** End [decagon_es2] */
+/** End [es2] */
 
 
 // ==========================================================================
 //  External Voltage via TI ADS1115
 // ==========================================================================
-/** Start [ads1x1x] */
+/** Start [ext_volt] */
 #include <sensors/ExternalVoltage.h>
 
 const int8_t  ADSPower       = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -1087,7 +1040,7 @@ ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
 // Create a voltage variable pointer
 Variable* extvoltV =
     new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ads1x1x] */
+/** End [ext_volt] */
 
 
 // ==========================================================================
@@ -1111,9 +1064,86 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 
 
 // ==========================================================================
+//  Keller Acculevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+/** Start [acculevel] */
+#include <sensors/KellerAcculevel.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& acculevelSerial = Serial2;  // Use hardware serial if possible
+#else
+// AltSoftSerial&  acculevelSerial = altSoftSerial;  // For software serial
+NeoSWSerial& acculevelSerial = neoSSerial1;  // For software serial
+#endif
+
+byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
+const int8_t alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                               // (-1 if unconnected)
+const int8_t  acculevelPower = A3;             // Sensor power pin
+const int8_t  al485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t acculevelNumberReadings = 5;
+// The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Acculevel sensor object
+KellerAcculevel acculevel(acculevelModbusAddress, acculevelSerial,
+                          alAdapterPower, acculevelPower, al485EnablePin,
+                          acculevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Acculevel
+Variable* acculevPress = new KellerAcculevel_Pressure(
+    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* acculevTemp = new KellerAcculevel_Temp(
+    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* acculevHeight = new KellerAcculevel_Height(
+    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [acculevel] */
+
+// ==========================================================================
+//  Keller Nanolevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+/** Start [nanolevel] */
+#include <sensors/KellerNanolevel.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& nanolevelSerial = Serial2;  // Use hardware serial if possible
+#else
+// AltSoftSerial& nanolevelSerial = altSoftSerial;  // For software serial
+NeoSWSerial& nanolevelSerial = neoSSerial1;  // For software serial
+#endif
+
+byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+const int8_t nlAdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                               // (-1 if unconnected)
+const int8_t  nanolevelPower = A3;             // Sensor power pin
+const int8_t  nl485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t nanolevelNumberReadings = 5;
+// The manufacturer recommends taking and averaging a few readings
+
+// Create a Keller Nanolevel sensor object
+KellerNanolevel nanolevel(nanolevelModbusAddress, nanolevelSerial,
+                          nlAdapterPower, nanolevelPower, nl485EnablePin,
+                          nanolevelNumberReadings);
+
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+Variable* nanolevPress = new KellerNanolevel_Pressure(
+    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* nanolevTemp = new KellerNanolevel_Temp(
+    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* nanolevHeight = new KellerNanolevel_Height(
+    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [nanolevel] */
+
+
+// ==========================================================================
 //  Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
-/** Start [sonar] */
+/** Start [maxbotics] */
 #include <sensors/MaxBotixSonar.h>
 
 // Create a reference to the serial port for the sonar
@@ -1142,7 +1172,7 @@ MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger,
 // Create an ultrasonic range variable pointer
 Variable* sonar1Range =
     new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [sonar] */
+/** End [maxbotics] */
 
 
 // ==========================================================================
@@ -1198,9 +1228,57 @@ Variable* ms5803Temp =
 
 
 // ==========================================================================
+//  Meter ECH2O Soil Moisture Sensor
+// ==========================================================================
+/** Start [fivetm] */
+#include <sensors/Decagon5TM.h>
+
+const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
+const int8_t TMPower        = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t TMData         = 7;               // The SDI12 data pin
+
+// Create a Decagon 5TM sensor object
+Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
+
+// Create the matric potential, volumetric water content, and temperature
+// variable pointers for the 5TM
+Variable* fivetmEa = new Decagon5TM_Ea(&fivetm,
+                                       "12345678-abcd-1234-ef00-1234567890ab");
+Variable* fivetmVWC =
+    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* fivetmTemp =
+    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [fivetm] */
+
+
+// ==========================================================================
+//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+/** Start [hydros21] */
+#include <sensors/DecagonCTD.h>
+
+const char*   CTDSDI12address   = "1";    // The SDI-12 Address of the CTD
+const uint8_t CTDNumberReadings = 6;      // The number of readings to average
+const int8_t  CTDPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  CTDData  = 7;               // The SDI12 data pin
+
+// Create a Decagon CTD sensor object
+DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
+
+// Create conductivity, temperature, and depth variable pointers for the CTD
+Variable* ctdCond = new DecagonCTD_Cond(&ctd,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ctdTemp = new DecagonCTD_Temp(&ctd,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ctdDepth =
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [hydros21] */
+
+
+// ==========================================================================
 //  Meter Teros 11 Soil Moisture Sensor
 // ==========================================================================
-/** Start [teros11] */
+/** Start [teros] */
 #include <sensors/MeterTeros11.h>
 
 const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
@@ -1220,7 +1298,7 @@ Variable* teros11Temp =
     new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* teros11VWC =
     new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [teros11] */
+/** End [teros] */
 
 
 // ==========================================================================
@@ -1263,16 +1341,15 @@ const uint8_t TallyCounterI2CAddress = 0x33;
 TallyCounterI2C tallyi2c(TallyPower, TallyCounterI2CAddress);
 
 // Create variable pointers for the Tally event counter
-Variable* tallyEvents =
-    new TallyCounterI2C_Events(&tallyi2c,
-        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* tallyEvents = new TallyCounterI2C_Events(
+    &tallyi2c, "12345678-abcd-1234-ef00-1234567890ab");
 
 // For  Wind Speed, create a Calculated Variable that converts, similar to:
-    // period = loggingInterval * 60.0;    // in seconds
-    // frequency = tallyEventCount/period; // average event frequency in Hz
-    // tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h
-    // // 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
-    // // web: Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R
+// period = loggingInterval * 60.0;    // in seconds
+// frequency = tallyEventCount/period; // average event frequency in Hz
+// tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h
+// // 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
+// // web: Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R
 /** End [i2c_wind_tally] */
 
 
@@ -1302,86 +1379,9 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 
 
 // ==========================================================================
-//  Keller Acculevel High Accuracy Submersible Level Transmitter
-// ==========================================================================
-/** Start [acculevel] */
-#include <sensors/KellerAcculevel.h>
-
-// Create a reference to the serial port for modbus
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial& acculevelSerial = Serial2;  // Use hardware serial if possible
-#else
-AltSoftSerial&  acculevelSerial = altSoftSerial;  // For software serial
-// NeoSWSerial& acculevelSerial = neoSSerial1;  // For software serial
-#endif
-
-byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-const int8_t alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
-                                               // (-1 if unconnected)
-const int8_t  acculevelPower = A3;             // Sensor power pin
-const int8_t  al485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t acculevelNumberReadings = 5;
-// The manufacturer recommends taking and averaging a few readings
-
-// Create a Keller Acculevel sensor object
-KellerAcculevel acculevel(acculevelModbusAddress, acculevelSerial,
-                          alAdapterPower, acculevelPower, al485EnablePin,
-                          acculevelNumberReadings);
-
-// Create pressure, temperature, and height variable pointers for the Acculevel
-Variable* acculevPress = new KellerAcculevel_Pressure(
-    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* acculevTemp = new KellerAcculevel_Temp(
-    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* acculevHeight = new KellerAcculevel_Height(
-    &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [acculevel] */
-
-// ==========================================================================
-//  Keller Nanolevel High Accuracy Submersible Level Transmitter
-// ==========================================================================
-/** Start [nanolevel] */
-#include <sensors/KellerNanolevel.h>
-
-// Create a reference to the serial port for modbus
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial& nanolevelSerial = Serial2;  // Use hardware serial if possible
-#else
-AltSoftSerial& nanolevelSerial = altSoftSerial;  // For software serial
-// NeoSWSerial& nanolevelSerial = neoSSerial1;  // For software serial
-#endif
-
-byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
-const int8_t nlAdapterPower = sensorPowerPin;  // RS485 adapter power pin
-                                               // (-1 if unconnected)
-const int8_t  nanolevelPower = A3;             // Sensor power pin
-const int8_t  nl485EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t nanolevelNumberReadings = 5;
-// The manufacturer recommends taking and averaging a few readings
-
-// Create a Keller Nanolevel sensor object
-KellerNanolevel nanolevel(nanolevelModbusAddress, nanolevelSerial,
-                          nlAdapterPower, nanolevelPower, nl485EnablePin,
-                          nanolevelNumberReadings);
-
-// Create pressure, temperature, and height variable pointers for the Nanolevel
-Variable* nanolevPress = new KellerNanolevel_Pressure(
-    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* nanolevTemp = new KellerNanolevel_Temp(
-    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* nanolevHeight = new KellerNanolevel_Height(
-    &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [nanolevel] */
-
-
-// ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
-/** Start [Y504] */
+/** Start [y504] */
 #include <sensors/YosemitechY504.h>
 
 // Create a reference to the serial port for modbus
@@ -1415,13 +1415,13 @@ Variable* y504DOmgL =
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y504Temp =
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y504] */
+/** End [y504] */
 
 
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
-/** Start [Y510] */
+/** Start [y510] */
 #include <sensors/YosemitechY510.h>
 
 // Create a reference to the serial port for modbus
@@ -1452,13 +1452,13 @@ Variable* y510Turb =
     new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y510Temp =
     new YosemitechY510_Temp(&y510, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y510] */
+/** End [y510] */
 
 
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
-/** Start [Y511] */
+/** Start [y511] */
 #include <sensors/YosemitechY511.h>
 
 // Create a reference to the serial port for modbus
@@ -1489,13 +1489,13 @@ Variable* y511Turb =
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y511Temp =
     new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y511] */
+/** End [y511] */
 
 
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
-/** Start [Y514] */
+/** Start [y514] */
 #include <sensors/YosemitechY514.h>
 
 // Create a reference to the serial port for modbus
@@ -1527,13 +1527,13 @@ Variable* y514Chloro = new YosemitechY514_Chlorophyll(
     &y514, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y514Temp =
     new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y514] */
+/** End [y514] */
 
 
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
-/** Start [Y520] */
+/** Start [y520] */
 #include <sensors/YosemitechY520.h>
 
 // Create a reference to the serial port for modbus
@@ -1564,13 +1564,13 @@ Variable* y520Cond =
     new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y520Temp =
     new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y520] */
+/** End [y520] */
 
 
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
-/** Start [Y532] */
+/** Start [y532] */
 #include <sensors/YosemitechY532.h>
 
 // Create a reference to the serial port for modbus
@@ -1603,13 +1603,52 @@ Variable* y532pH =
     new YosemitechY532_pH(&y532, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y532Temp =
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y532] */
+/** End [y532] */
+
+
+// ==========================================================================
+//  Yosemitech Y533 Oxidation Reduction Potential (ORP)
+// ==========================================================================
+/** Start [y533] */
+#include <sensors/YosemitechY533.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& y533modbusSerial = Serial2;  // Use hardware serial if possible
+#else
+// AltSoftSerial& y533modbusSerial = altSoftSerial;  // For software serial
+NeoSWSerial&   y533modbusSerial = neoSSerial1;    // For software serial
+#endif
+
+byte         y533ModbusAddress = 0x32;  // The modbus address of the Y533
+const int8_t y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y533SensorPower = A3;               // Sensor power pin
+const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t y533NumberReadings =
+    1;  // The manufacturer actually doesn't mention averaging for this one
+
+// Create a Yosemitech Y533 pH sensor object
+YosemitechY533 y533(y533ModbusAddress, y533modbusSerial, y533AdapterPower,
+                    y533SensorPower, y533EnablePin, y533NumberReadings);
+
+// Create pH, electrical potential, and temperature variable pointers for the
+// Y533
+Variable* y533Voltage =
+    new YosemitechY533_Voltage(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y533pH =
+    new YosemitechY533_pH(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y533Temp =
+    new YosemitechY533_Temp(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [y533] */
 
 
 // ==========================================================================
 //  Yosemitech Y550 COD Sensor with Wiper
 // ==========================================================================
-/** Start [Y550] */
+/** Start [y550] */
 #include <sensors/YosemitechY550.h>
 
 // Create a reference to the serial port for modbus
@@ -1642,14 +1681,14 @@ Variable* y550Turbid =
     new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y550Temp =
     new YosemitechY550_Temp(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y550] */
+/** End [y550] */
 
 
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
 // ==========================================================================
-/** Start [Y4000] */
+/** Start [y4000] */
 #include <sensors/YosemitechY4000.h>
 
 // Create a reference to the serial port for modbus
@@ -1692,7 +1731,7 @@ Variable* y4000Chloro = new YosemitechY4000_Chlorophyll(
     &y4000, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y4000BGA =
     new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y4000] */
+/** End [y4000] */
 
 
 // ==========================================================================
@@ -1973,9 +2012,9 @@ void setup() {
 #endif
     /** End [setup_softserial] */
 
-/** Start [setup_serial_begins] */
-// Start the serial connection with the modem
-modemSerial.begin(modemBaud);
+    /** Start [setup_serial_begins] */
+    // Start the serial connection with the modem
+    modemSerial.begin(modemBaud);
 
 // Start the stream for the modbus sensors;
 // all currently supported modbus sensors use 9600 baud
@@ -1983,11 +2022,13 @@ modemSerial.begin(modemBaud);
     Serial2.begin(9600);  // Use hardware serial if possible
 #else
     altSoftSerial.begin(9600);  // For software serial
+
     // neoSSerial1.begin(9600);  // For software serial
 #endif
 
-// Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
-sonarSerial.begin(9600);
+    // Start the SoftwareSerial stream for the sonar; it will always be at 9600
+    // baud
+    sonarSerial.begin(9600);
 /** End [setup_serial_begins] */
 
 // Assign pins SERCOM functionality for SAMD boards
@@ -2003,7 +2044,7 @@ sonarSerial.begin(9600);
     pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
 #endif
 #endif
-/** End [setup_samd_pins] */
+    /** End [setup_samd_pins] */
 
     /** Start [setup_flashing_led] */
     // Set up pins for the LED's
@@ -2229,7 +2270,7 @@ void loop() {
         // Start the stream for the modbus sensors, if your
         // RS485 adapter "steals" current from data pins when powered off,
         // & you stop modbus serial connection with digitalWrite(5, LOW), below.
-// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
 
         // Do a complete update on the variable array.
@@ -2243,9 +2284,9 @@ void loop() {
 
         // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
         // on sleep, because Modbus Stop bit leaves these pins HIGH.
-// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
-        digitalWrite(5, LOW);   // Reset AltSoftSerial Tx pin to LOW
-        digitalWrite(6, LOW);   // Reset AltSoftSerial Rx pin to LOW
+        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
+        digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
 
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
@@ -2296,7 +2337,7 @@ void loop() {
     // Start the stream for the modbus sensors, if your
     // RS485 adapter "steals" current from data pins when powered off,
     // & you stop modbus serial connection with digitalWrite(5, LOW), below.
-// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+    // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
     altSoftSerial.begin(9600);
 
     // Check if it was instead the testing interrupt that woke us up
@@ -2304,9 +2345,9 @@ void loop() {
 
     // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
     // on sleep, because Modbus Stop bit leaves these pins HIGH.
-// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
-    digitalWrite(5, LOW);   // Reset AltSoftSerial Tx pin to LOW
-    digitalWrite(6, LOW);   // Reset AltSoftSerial Rx pin to LOW
+    // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+    digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
+    digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
 
     // Call the processor sleep
     dataLogger.systemSleep();

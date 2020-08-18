@@ -10,14 +10,63 @@
  *
  * This depends on the Arduino core Wire library.  It does *not* use the Atlas
  * Arduino library.
- *
- * @copydetails AtlasParent
- *
+ */
+/* clang-format off */
+/**
  * @defgroup atlas_group Atlas Scientific EZO Circuits
  * The Sensor and Variable objects for all Atlas EZO circuits.
  *
- * @copydetails AtlasParent
+ * @ingroup the_sensors
+ *
+ *
+ * This library currently supports the following Atlas Scientific sensors:
+ *
+ * - [EZO-CO2 Embedded NDIR CO2 Sensor](https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/)
+ *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_CO2_Datasheet.pdf)
+ *     - [Class Documentation](@ref atlas_co2_group)
+ * - [EZO-DO Dissolved Oxygen Circuit and Probe](https://www.atlas-scientific.com/dissolved-oxygen.html)
+ *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_EZO_Datasheet.pdf)
+ *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_probe.pdf)
+ *     - [Class Documentation](@ref atlas_do_group)
+ * - [EZO-EC Conductivity Circuit and Probes](https://www.atlas-scientific.com/conductivity.html)
+ *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf)
+ *     - [K0.1 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf)
+ *     - [K1.0 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf)
+ *     - [K10 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf)
+ *     - [Class Documentation](@ref atlas_cond_group)
+ * - [EZO-ORP Oxidation/Reduction Potential Circuit and Probes](https://www.atlas-scientific.com/orp.html)
+ *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_ORP_EZO_datasheet.pdf)
+ *     - [Class Documentation](@ref atlas_orp_group)
+ * - [EZO-pH Circuit and Probe](https://www.atlas-scientific.com/ph.html)
+ *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_pH_EZO_Datasheet.pdf)
+ *     - [Class Documentation](@ref atlas_ph_group)
+ * - [EZO-RTD Temperature Circuit and Probes](https://www.atlas-scientific.com/temperature.html)
+ *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_RTD_Datasheet.pdf)
+ *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_PT-1000-probe.pdf)
+ *     - [Class Documentation](@ref atlas_rtd_group)
+ *
+ * The chips have operating voltages between 3.3V and 5V; power can be stopped
+ * between measurements.  The probes and sensors can (and should) be calibrated
+ * using sketches provided by Atlas Scientific on their website.  Atlas
+ * Scientific recommends that you integrate their sensor chips into a board, so
+ * you can buy one from them or make your own (example:
+ * https://github.com/acgold/Atlas-Scientific-Carrier-Board).
+ *
+ * The code in ModularSensors _**requires the Atlas Sensors to communicate over
+ * I2C**_.  Atlas scientific sensors are shipped with probes and sensor chips
+ * that communicate using UART by default.  Data sheets, found on the Atlas
+ * Scientific website, show how to manually switch the chips to I2C.  Before
+ * deploying your Atlas chip chip and sensor, I recommend locking the protocol
+ * (plock) to I2C so the sensors do not accidentally switch back to UART mode.
+ * Legacy chips and EZO chips that do not support I2C are not supported.
+ *
+ * @warning **You must isolate the data lines of all Atlas circuits from the
+ * main I2C bus if you wish to turn off their power!**  If you do not isolate
+ * them from your main I2C bus and you turn off power to the circuits between
+ * measurements the I2C lines will be pulled down to ground causing the I2C bus
+ * (and thus your logger) to crash.
  */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_ATLASPARENT_H_
@@ -38,13 +87,11 @@
 #include <Wire.h>
 
 /**
- * @brief A parent class for Atlas sensors
+ * @brief A parent class for Atlas EZO circuits and sensors
  *
  * This contains the main I2C functionality for all Atlas EZO circuits.
  *
  * @ingroup atlas_group
- *
- * @see atlas_page
  */
 class AtlasParent : public Sensor {
  public:
@@ -52,9 +99,11 @@ class AtlasParent : public Sensor {
      * @brief Construct a new Atlas Parent object
      *
      * @param powerPin The pin on the mcu controlling power to the Atlas
-     * circuit.  Use -1 if the sensor is continuously powered.
+     * circuit.  Use -1 if it is continuously powered.
      * @param i2cAddressHex The I2C address of the Atlas circuit
-     * @param measurementsToAverage The number of measurements to average
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      * @param sensorName The name of the sensor, defaults to AtlasSensor.
      * @param numReturnedVars The number of results returned by the sensor.
      * Defaults to 1.
@@ -92,8 +141,7 @@ class AtlasParent : public Sensor {
      * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
      * required.
      *
-     * @return **true** The setup was successful
-     * @return **false** Some part of the setup failed
+     * @return **bool** True if the setup was successful.
      */
     bool setup(void) override;
 
@@ -108,8 +156,7 @@ class AtlasParent : public Sensor {
      * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
      * This does NOT power down the sensor!
      *
-     * @return **true** The sleep function completed successfully.
-     * @return **false** Sleep did not complete successfully.
+     * @return **bool** True if the sleep function completed successfully.
      */
     bool sleep(void) override;
 
@@ -121,8 +168,7 @@ class AtlasParent : public Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **true** The start measurement function completed successfully.
-     * @return **false** The start measurement function did not complete
+     * @return **bool** True if the start measurement function completed
      * successfully.
      */
     bool startSingleMeasurement(void) override;
@@ -150,9 +196,8 @@ class AtlasParent : public Sensor {
      * unavailable.
      *
      * @param timeout The maximum amout of time to wait in ms.
-     * @return **true** Processing completed and a status code was returned.
-     * @return **false** The expected status code did not come within the wait
-     * period.
+     * @return **bool** True processing completed and a status code was returned
+     * within the wait period.
      */
     bool waitForProcessing(uint32_t timeout = 1000L);
 };

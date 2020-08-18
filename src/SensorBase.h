@@ -8,6 +8,14 @@
  *
  * @copydetails Sensor
  */
+/* clang-format off */
+/**
+ * @defgroup the_sensors Supported Sensors
+ * All implemented Sensor classes
+ *
+ * @copydetails Sensor
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORBASE_H_
@@ -61,12 +69,13 @@ class Sensor {
      * Defaults to 0.
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 0.
-     * @param powerPin A pin on the mcu controlling power to the sensor.
+     * @param powerPin The pin on the mcu controlling power to the sensor
+     * Use -1 if it is continuously powered.
+     * @param dataPin The pin on the mcu receiving data from the sensor.
      * Defaults to -1.
-     * @param dataPin A pin on the mcu receiving data from the sensor.  Defaults
-     * to -1.
      * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor.  Defaults to 1.
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
      */
     Sensor(const char*   sensorName      = "Unknown",
            const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
@@ -186,8 +195,7 @@ class Sensor {
      * This sets the pin modes of the _powerPin and _dataPin, updates
      * #_sensorStatus, and returns true.
      *
-     * @return **true** The setup was successful
-     * @return **false** Some part of the setup failed
+     * @return **bool** True if the setup was successful.
      */
     virtual bool setup(void);
 
@@ -208,8 +216,8 @@ class Sensor {
      * used.  To work with many sensors together, use the VariableArray class
      * which optimizes the timing and waits for many sensors working together.
      *
-     * @return **true** All steps of the sensor update completed successfully
-     * @return **false** One or more of the update steps failed.
+     * @return **bool** True if all steps of the sensor update completed
+     * successfully.
      */
     virtual bool update(void);
 
@@ -233,13 +241,12 @@ class Sensor {
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
      *
-     * Verifies that the power is on and updates the #_sensorStatus. This also
+     * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
      * @note This does NOT include any wait for sensor readiness.
      *
-     * @return **true** The wake function completed successfully.
-     * @return **false** Wake did not complete successfully.
+     * @return **bool** True if the wake function completed successfully.
      */
     virtual bool wake(void);
     /**
@@ -249,8 +256,7 @@ class Sensor {
      *
      * @note This does NOT power down the sensor!
      *
-     * @return **true** The sleep function completed successfully.
-     * @return **false** Sleep did not complete successfully.
+     * @return **bool** True if the sleep function completed successfully.
      */
     virtual bool sleep(void);
 
@@ -263,8 +269,7 @@ class Sensor {
      * @note This function does NOT include any waiting for the sensor to be
      * warmed up or stable!
      *
-     * @return **true** The start measurement function completed successfully.
-     * @return **false** The start measurement function did not complete
+     * @return **bool** True if the start measurement function completed
      * successfully.
      */
     virtual bool startSingleMeasurement(void);
@@ -281,8 +286,7 @@ class Sensor {
      * @note This function does NOT include any waiting for the sensor complete
      * a measurement.
      *
-     * @return **true** The function completed successfully.
-     * @return **false** The function did not complete successfully.
+     * @return **bool** True if the function completed successfully.
      */
     virtual bool addSingleMeasurementResult(void) = 0;
 
@@ -341,9 +345,7 @@ class Sensor {
      * @brief Check if the #_powerPin is currently high.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **true** Indicates the #_powerPin is currently `HIGH`
-     * @return **false** Indicates the #_powerPin is currently not high (ie,
-     * it's low)
+     * @return **bool** True indicates the #_powerPin is currently `HIGH`.
      */
     bool checkPowerOn(bool debug = false);
     /**
@@ -351,9 +353,11 @@ class Sensor {
      * receiving power and being ready to respond to logger commands.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **true** Indicates that enough time has passed
-     * @return **false** Indicates that the sensor is not yet ready to respond
-     * to commands
+     * @return **bool** True indicates that enough time has passed that the
+     * sensor should be ready to respond to commands.
+     *
+     * @note A true response does _NOT_ indicate that the sensor will respond to
+     * commands, merely that the specified time for wake has passed.
      */
     virtual bool isWarmedUp(bool debug = false);
     /**
@@ -367,8 +371,12 @@ class Sensor {
      * being awoken/activated and being ready to output stable values.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **true** Indicates that enough time has passed
-     * @return **false** Indicates that the sensor has not yet stabilized
+     * @return **bool** True indicates that enough time has passed that the
+     * sensor should have stabilized.
+     *
+     * @note A true response does _NOT_ indicate that the sensor is now giving
+     * stable values, merely that the specified time for sensor stabilization
+     * has passed.
      */
     virtual bool isStable(bool debug = false);
     /**
@@ -383,9 +391,12 @@ class Sensor {
      * is expected to be complete.
      *
      * @param debug True to output the result to the debugging Serial
-     * @return **true** Indicates that enough time has passed
-     * @return **false** Indicates that the measurement is not expected to have
-     * completed
+     * @return **bool** True indicates that enough time has passed the
+     * measurement should have completed
+     *
+     * @note A true response does _NOT_ indicate that the sensor will now
+     * sucessfully report a result, merely that the specified time for a
+     * measurement has passed.
      */
     virtual bool isMeasurementComplete(bool debug = false);
     /**
@@ -471,7 +482,7 @@ class Sensor {
      * when the startSingleMeasurement() function was run.
      *
      * The #_millisMeasurementRequested value is set in the
-     * startSingleMeasurement() function. It *may* be unset in the
+     * startSingleMeasurement() function.  It *may* be unset in the
      * addSingleMeasurementResult() function.
      */
     uint32_t _millisMeasurementRequested;

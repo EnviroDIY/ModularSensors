@@ -160,7 +160,7 @@ class SodaqUBeeR410M : public loggerModem {
      * @note The SARA R410N DOES NOT save baud rate to non-volatile memory.
      * After every power loss, the module will return to the default baud rate
      * of 115200.  This library attempts to compensate by sending a baud rate
-     * change command in the wake function. Because of this, 8MHz boards, LIKE
+     * change command in the wake function.  Because of this, 8MHz boards, LIKE
      * THE MAYFLY, *MUST* use a HardwareSerial instance as modemSerial.  This
      * requirement does not exist for 16MHz (and faster) boards.  For those, any
      * Stream instance may be used.

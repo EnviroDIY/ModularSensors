@@ -44,10 +44,32 @@ ___
     - [Maxim DS3231 RTC as a sensor](#maxim-ds3231-rtc-as-a-sensor)
     - [AOSong AM2315](#aosong-am2315)
     - [AOSong DHT](#aosong-dht)
-    - [Apogee SQ-212](#apogee-sq-212)
-    - [Bosch BME280 environmental sensor](#bosch-bme280-environmental-sensor)
-    - [Maxim DS18 one wire temperature sensor](#maxim-ds18-one-wire-temperature-sensor)
-    - [Measurement Specialties MS503 pressure and temperature sensor](#measurement-specialties-ms503-pressure-and-temperature-sensor)
+    - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor)
+    - [Bosch BME280 Environmental Sensor](#bosch-bme280-environmental-sensor)
+    - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
+    - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
+    - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
+    - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
+    - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
+    - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
+    - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
+    - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
+    - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
+    - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
+    - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
+    - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
+    - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
+    - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
+    - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
+    - [Yosemitech Y510 Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
+    - [Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
+    - [Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor](#yosemitech-y514-yosemitech-y514-chlorophyll-sensor)
+    - [Yosemitech Y520 Yosemitech Y520 Conductivity Sensor](#yosemitech-y520-yosemitech-y520-conductivity-sensor)
+    - [Yosemitech Y532 Yosemitech Y532 pH Sensor](#yosemitech-y532-yosemitech-y532-ph-sensor)
+    - [Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor](#yosemitech-y533-yosemitech-y533-oxidation-reduction-potential-orp-sensor)
+    - [Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper](#yosemitech-y550-yosemitech-y550-carbon-oxygen-demand-cod-sensor-with-wiper)
+    - [Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde](#yosemitech-y4000-yosemitech-y4000-multi-parameter-sonde)
+    - [Zebra Tech D-Opto Dissolved Oxygen Sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
   - [Calculated Variables](#calculated-variables)
   - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
     - [The variable array](#the-variable-array)
@@ -442,7 +464,8 @@ Pins that do not apply should be set as -1.
 This code is for the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800.
 To create a Sodaq2GBeeR6 object we need to know
 - the serial object name,
-- the MCU pin controlling modem power, (**NOTE:**  On the GPRSBee R6 and R7 the pin labeled as ON/OFF in Sodaq's diagrams is tied to _both_ the SIM800 power supply and the (inverted) SIM800 `PWRKEY`.  You should enter this pin as the power pin.)
+- the MCU pin controlling modem power, (**NOTE:**  On the GPRSBee R6 and R7 the pin labeled as ON/OFF in Sodaq's diagrams is tied to _both_ the SIM800 power supply and the (inverted) SIM800 `PWRKEY`.
+You should enter this pin as the power pin.)
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
@@ -516,7 +539,7 @@ ___
 
 Set options and create the objects for using the processor as a sensor to report battery level, processor free ram, and sample number.
 
-@see @ref processor_sensor_page
+@see @ref processor_sensor_group
 
 [//]: # ( @menusnip{processor_sensor} )
 ___
@@ -528,7 +551,7 @@ In addition to the time, we can also use the required DS3231 real time clock to 
 This temperature is _not_ equivalent to an environmental temperature measurement and should only be used to as a diagnostic.
 As above, we create both the sensor and the variables measured by it.
 
-@see @ref ds3231_page
+@see @ref ds3231_group
 
 [//]: # ( @menusnip{ds3231} )
 ___
@@ -540,7 +563,7 @@ Here is the code for the AOSong AM2315 temperature and humidity sensor.
 This is an I2C sensor with only one possible address so the only argument required for the constructor is the pin on the MCU controlling power to the AM2315 (AM2315Power).
 The number of readings to average from the sensor is optional, but can be supplied as the second argument for the constructor if desired.
 
-@see @ref am2315_page
+@see @ref am2315_group
 
 [//]: # ( @menusnip{am2315} )
 ___
@@ -549,55 +572,400 @@ ___
 ### AOSong DHT
 
 Here is the code for the AOSong DHT temperature and humidity sensor.
-To create the DHT sensor we need the power pin, the data pin, and the DHT type.
+To create the DHT Sensor we need the power pin, the data pin, and the DHT type.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
-@see @ref dht_page
+@see @ref dht_group
 
 [//]: # ( @menusnip{dht} )
 ___
 
-[//]: # ( @subsection menu_sq212 Apogee SQ-212 )
-### Apogee SQ-212
+[//]: # ( @subsection menu_sq212 Apogee SQ-212 Quantum Light Sensor )
+### Apogee SQ-212 Quantum Light Sensor
 
-Here is the code for the Apogee SQ-212 quantum light sensor.
+Here is the code for the Apogee SQ-212 Quantum Light Sensor.
 The SQ-212 is not directly connected to the MCU, but rather to an TI ADS1115 that communicates with the MCU.
 The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
-@see @ref sq212_page
+@see @ref sq212_group
 
 [//]: # ( @menusnip{dht} )
 ___
 
 
-[//]: # ( @subsection menu_bme280 Bosch BME280 environmental sensor )
-### Bosch BME280 environmental sensor
+[//]: # ( @subsection menu_bme280 Bosch BME280 Environmental Sensor )
+### Bosch BME280 Environmental Sensor
 
-Set options for the Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
-Create the #Sensor object and all of the #Variable objects.
+Here is the code for the Bosch BME280 environmental sensor.
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
+Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803.
+
+@see @ref bme280_group
 
 [//]: # ( @menusnip{bme280} )
 ___
 
-[//]: # ( @subsection menu_ds18 Maxim DS18 one wire temperature sensor )
-### Maxim DS18 one wire temperature sensor
 
-Set options for the Maxim DS18 One Wire Temperature Sensor
-Create the #Sensor object and all of the #Variable objects.
+[//]: # ( @subsection menu_obs3 Campbell OBS3+ Analog Turbidity Sensor )
+### Campbell OBS3+ Analog Turbidity Sensor
+
+This is the code for the Campbell OBS3+.
+The Arduino pin controlling power on/off, analog data channel _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.
+A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.
+If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+Do NOT forget that if you want to give a number of measurements to average, that comes _after_ the i2c address in the constructor!
+
+Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
+
+@see @ref obs3_group
+
+[//]: # ( @menusnip{obs3} )
+___
+
+
+[//]: # ( @subsection menu_es2 Decagon ES2 Conductivity and Temperature Sensor )
+### Decagon ES2 Conductivity and Temperature Sensor
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref es2_group
+
+[//]: # ( @menusnip{es2} )
+___
+
+
+[//]: # ( @subsection menu_ext_volt External Voltage via TI ADS1x15 )
+### External Voltage via TI ADS1x15
+
+The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
+If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.
+If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.
+The number of measurements to average, if more than one is desired, goes as the fifth argument.
+
+@see @ref ext_volt_group
+
+[//]: # ( @menusnip{ext_volt} )
+___
+
+
+[//]: # ( @subsection menu_mpl115a2 Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer )
+### Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer
+
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average.
+Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.
+
+@see @ref mpl115a2_group
+
+[//]: # ( @menusnip{mpl115a2} )
+___
+
+
+[//]: # ( @subsection menu_nanolevel Keller Nanolevel Level Transmitter )
+### Keller Nanolevel Level Transmitter
+
+The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
+If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
+If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
+If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
+Both pins _cannot_ be shared pins.
+
+@see @ref nanolevel_group
+
+[//]: # ( @menusnip{nanolevel} )
+___
+
+
+[//]: # ( @subsection menu_acculevel Keller Acculevel High Accuracy Submersible Level Transmitter )
+### Keller Acculevel High Accuracy Submersible Level Transmitter
+
+The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
+If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
+If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
+If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
+Both pins _cannot_ be shared pins.
+
+@see @ref acculevel_group
+
+[//]: # ( @menusnip{acculevel} )
+___
+
+
+[//]: # ( @subsection menu_maxbotics Maxbotix HRXL Ultrasonic Range Finder )
+### Maxbotix HRXL Ultrasonic Range Finder
+
+The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.
+(Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref maxbotics_group
+
+[//]: # ( @menusnip{maxbotics} )
+___
+
+
+[//]: # ( @subsection menu_ds18 Maxim DS18 One Wire Temperature Sensor )
+### Maxim DS18 One Wire Temperature Sensor
+
+The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor, though the address can be omitted if only one sensor is used.
+The OneWire address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0}.
+To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.
+The sensor address is programmed at the factory and cannot be changed.
+
+@see @ref ds18_group
 
 [//]: # ( @menusnip{ds18} )
 ___
 
-[//]: # ( @subsection menu_ms5803  Measurement Specialties MS503 pressure and temperature sensor )
-###  Measurement Specialties MS503 pressure and temperature sensor
 
-Set options for the Measurement Specialties MS503 pressure and temperature sensor.
-Create the #Sensor object and all of the #Variable objects.
+[//]: # ( @subsection menu_ms5803 Measurement Specialties MS5803-14BA Pressure Sensor )
+### Measurement Specialties MS5803-14BA Pressure Sensor
+
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
+Keep in mind that the possible I2C addresses of the MS5803 match those of the BME280.
+
+@see @ref ms5803_group
 
 [//]: # ( @menusnip{ms5803} )
 ___
+
+
+[//]: # ( @subsection menu_fivetm Meter ECH2O Soil Moisture Sensor )
+### Meter ECH2O Soil Moisture Sensor
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref fivetm_group
+
+[//]: # ( @menusnip{fivetm} )
+___
+
+
+[//]: # ( @subsection menu_hydros21 Meter Hydros 21 Conductivity, Temperature, and Depth Sensor )
+### Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref hydros21_group
+
+[//]: # ( @menusnip{hydros21} )
+___
+
+
+[//]: # ( @subsection menu_teros Meter Teros 11 Soil Moisture Sensor )
+### Meter Teros 11 Soil Moisture Sensor
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref teros_group
+
+[//]: # ( @menusnip{teros} )
+___
+
+
+[//]: # ( @subsection menu_i2c_rain Trinket-Based Tipping Bucket Rain Gauge )
+### Trinket-Based Tipping Bucket Rain Gauge
+
+This is for use with a simple external I2C tipping bucket counter based on the [Adafriut Trinket](https://www.adafruit.com/product/1501).
+All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).
+Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.
+Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
+Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
+
+@see @ref i2c_rain_group
+
+[//]: # ( @menusnip{i2c_rain} )
+___
+
+
+[//]: # ( @subsection menu_ina219 TI INA219 High Side Current Sensor )
+### TI INA219 High Side Current Sensor
+
+This is the code for the TI INA219 high side current and voltage sensor.
+The Arduino pin controlling power on/off is all that is required for the constructor.
+If your INA219 is not at the standard address of 0x40, you can enter its actual address as the fourth argument.
+The number of measurements to average, if more than one is desired, goes as the fifth argument.
+
+@see @ref ina219_group
+
+[//]: # ( @menusnip{ina219} )
+___
+
+
+[//]: # ( @subsection menu_y504 Yosemitech Y504 Dissolved Oxygen Sensor )
+### Yosemitech Y504 Dissolved Oxygen Sensor
+
+This is the code for the Yosemitech Y504 dissolved oxygen sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y504_group
+
+[//]: # ( @menusnip{y504} )
+___
+
+
+[//]: # ( @subsection menu_y510 Yosemitech Y510 Turbidity Sensor )
+### Yosemitech Y510 Yosemitech Y510 Turbidity Sensor
+
+This is the code for the Yosemitech Y510 Yosemitech Y510 turbidity sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y510_group
+
+[//]: # ( @menusnip{y510} )
+___
+
+
+[//]: # ( @subsection menu_y511 Yosemitech Y511 Turbidity Sensor with Wiper )
+### Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper
+
+This is the code for the Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y511_group
+
+[//]: # ( @menusnip{y511} )
+___
+
+
+[//]: # ( @subsection menu_y514 Yosemitech Y514 Chlorophyll Sensor )
+### Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor
+
+This is the code for the Yosemitech Y514 Yosemitech Y514 chlorophyll sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y514_group
+
+[//]: # ( @menusnip{y514} )
+___
+
+
+[//]: # ( @subsection menu_y520 Yosemitech Y520 Conductivity Sensor )
+### Yosemitech Y520 Yosemitech Y520 Conductivity Sensor
+
+This is the code for the Yosemitech Y520 Yosemitech Y520 conductivity sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y520_group
+
+[//]: # ( @menusnip{y520} )
+___
+
+
+[//]: # ( @subsection menu_y532 Yosemitech Y532 pH Sensor )
+### Yosemitech Y532 Yosemitech Y532 pH Sensor
+
+This is the code for the Yosemitech Y532 Yosemitech Y532 pH sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y532_group
+
+[//]: # ( @menusnip{y532} )
+___
+
+
+[//]: # ( @subsection menu_y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor )
+### Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor
+
+This is the code for the Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y533_group
+
+[//]: # ( @menusnip{y533} )
+___
+
+
+[//]: # ( @subsection menu_y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper )
+### Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper
+
+This is the code for the Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y550_group
+
+[//]: # ( @menusnip{y550} )
+___
+
+
+[//]: # ( @subsection menu_y4000 Yosemitech Y4000 Multi-Parameter Sonde )
+### Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde
+
+This is the code for the Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.
+The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
+Yosemitech strongly recommends averaging 10 readings for each measurement.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref y4000_group
+
+[//]: # ( @menusnip{y4000} )
+___
+
+
+[//]: # ( @subsection menu_dopto Zebra Tech D-Opto Dissolved Oxygen Sensor )
+### Zebra Tech D-Opto Dissolved Oxygen Sensor
+
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
+Optionally, you can include a number of distinct readings to average.
+The data pin must be a pin that supports pin-change interrupts.
+
+@see @ref dopto_group
+
+[//]: # ( @menusnip{dopto} )
+___
+
 
 [//]: # ( @section menu_calc_vars Calculated Variables )
 ## Calculated Variables
@@ -874,7 +1242,8 @@ Every time the logger wakes we check the battery voltage and do 1 of three thing
 1. If the battery is very low, go immediately back to sleep and hope the sun comes back out
 2. If the battery is at a moderate level, attempt to collect data from sensors, but do not attempt to publish data.
 The modem the biggest power user of the whole system.
-3.  At full power, do everything.
+3.
+At full power, do everything.
 
 [//]: # ( @menusnip{simple_loop} )
 
@@ -895,7 +1264,8 @@ This allows you to use ```checkMarkedInterval()``` to check if an action should 
   - Immediately after running ```updateAllSensors()```, put sensors to sleep to save power with ```sensorsSleep()```.
   - Power down all of your sensors with ```sensorsPowerDown()```.
 - Or:
-  - Do a full update loop of all sensors, including powering them with ```completeUpdate()```.  (This combines the previous 5 functions.)
+  - Do a full update loop of all sensors, including powering them with ```completeUpdate()```.
+(This combines the previous 5 functions.)
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 

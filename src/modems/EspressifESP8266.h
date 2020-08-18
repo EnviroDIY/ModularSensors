@@ -209,7 +209,6 @@ class EspressifESP8266 : public loggerModem {
      * between the MCU and the ESP8266.
      *
      * We need to keep the pointer to the stream for tossing junk on boot.
-     *
      */
     Stream* _modemStream;
 

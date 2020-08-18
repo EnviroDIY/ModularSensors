@@ -11,21 +11,35 @@
  * These are for the ZebraTech D-Opto digital dissolved oxygen sensor.
  *
  * This depends on the SDI12Sensors parent class.
+ */
+/* clang-format off */
+/**
+ * @defgroup dopto_group Zebra-Tech D-Opto
+ * Classes for the Zebra-Tech D-Opto digital dissolved oxygen sensor.
  *
+ * @ingroup sdi12_group
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section dopto_intro Introduction
+ *
+ * The [Zebra-Tech D-Opto](http://www.zebra-tech.co.nz/d-opto-sensor/) sensor is implemented as a sub-classes of the SDI12Sensors class.
+ * It require an 8-12V power supply, which can be turned off between measurements.
+ * The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech.
+ * You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run.
+ * At the Stroud Center, we use [Pololu 9V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
+ *
+ * @section dopto_datasheet Sensor Datasheet
  * The manual for this sensor is available at:
  * www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf
  *
- * For Dissolved Oxygen:
- *     Accuracy is 1% of reading or 0.02PPM, whichever is greater
- *     Resolution is 0.01% / 0.001 PPM
- *
- * For Temperature:
- *     Accuracy is ± 0.1°C
- *     Resolution is 0.01°C
- *
- * Maximum warm-up time in SDI-12 mode: ~250ms
- * Excitiation time before measurement: ~5225ms
- * Maximum measurement duration: ~110ms
+ * @section dopto_sensor The D-Opto Sensor
+ * @ctor_doc{ZebraTechDOpto, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
+ * @subsection dopto_timing Sensor Timing
+ * - Maximum warm-up time in SDI-12 mode: ~250ms
+ * - Excitiation time before measurement: ~5225ms
+ * - Maximum measurement duration: ~110ms
  *
  * Obnoxiously, the sensor will not take a "concurrent" measurement and leave
  * the sensor powered on, so we must wait entire ~5200ms exitation time and the
@@ -33,9 +47,43 @@
  * There is the ability to do a non-concurrent measurement and leave the
  * sensor powered on, in which case the re-measurement takes ~110ms, but doing
  * it that way the sensor would send an interruption when it was finished,
- * possibly colliding with and confusing other sensor results
+ * possibly colliding with and confusing other sensor results.
  *
+ * @section dopto_temp Temperature Output
+ *   - Range is not specified in sensor datasheet
+ *   - Accuracy is ± 0.1°C
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.01°C
+ *   - Reported as degrees Celsius (°C)
+ *   - Default variable code is DOtempC
+ * @variabledoc{dopto_temp,ZebraTechDOpto,Temp,DOtempC}
+ *
+ * @section dopto_dopercent Dissolved Oxygen Percent Saturation Output
+ *   - Range is not specified in sensor datasheet
+ *   - Accuracy is 1% of reading or 0.02PPM, whichever is greater
+ *   - Result stored in sensorValues[1]
+ *   - Resolution is 0.01% / 0.001 PPM
+ *   - Reported as percent saturation (%)
+ *   - Default variable code is DOpercent
+ * @variabledoc{dopto_dopercent,ZebraTechDOpto,DOpct,DOpercent}
+ *
+ * @section dopto_domgl Dissolved Oxygen Concentration Output
+ *   - Range is not specified in sensor datasheet
+ *   - Accuracy is 1% of reading or 0.02PPM, whichever is greater
+ *   - Result stored in sensorValues[2]
+ *   - Resolution is 0.01% / 0.001 PPM
+ *   - Reported as milligrams per liter (mg/L)
+ *   - Default variable code is DOppm
+ * @variabledoc{dopto_domgl,ZebraTechDOpto,DOmgL,DOppm}
+ *
+ *
+ * ___
+ * @section dopto_examples Example Code
+ * The Zebra-Tech D-Opto is used in the @menulink{dopto} example.
+ *
+ * @menusnip{dopto}
  */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_ZEBRATECHDOPTO_H_
@@ -45,14 +93,17 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_numReturnedValues; the D-Opto can report 3 values.
 #define DOPTO_NUM_VARIABLES 3
 /// Sensor::_warmUpTime_ms; the D-Opto warms up in 275ms.
 #define DOPTO_WARM_UP_TIME_MS 275
 /// Sensor::_stabilizationTime_ms; the D-Opto is stable after 0ms.
 #define DOPTO_STABILIZATION_TIME_MS 0
-/// Sensor::_measurementTime_ms; the D-Opto takes 5335ms to complete a
-/// measurement.
+/**
+ * @brief Sensor::_measurementTime_ms; the D-Opto takes 5335ms to complete a
+ * measurement.
+ */
 #define DOPTO_MEASUREMENT_TIME_MS 5335
 
 /// Decimals places in string representation; temperature should have 2.
@@ -60,55 +111,104 @@
 /// Variable number; temperature is stored in sensorValues[0].
 #define DOPTO_TEMP_VAR_NUM 0
 
-/// Decimals places in string representation; dissolved oxygen percent should
-/// have 2.
+/**
+ * @brief Decimals places in string representation; dissolved oxygen percent
+ * should have 2.
+ */
 #define DOPTO_DOPCT_RESOLUTION 2
 /// Variable number; dissolved oxygen percent is stored in sensorValues[1]
 #define DOPTO_DOPCT_VAR_NUM 1
 
-/// Decimals places in string representation; dissolved oxygen concentration
-/// should have 3.
+/**
+ * @brief Decimals places in string representation; dissolved oxygen
+ * concentration should have 3.
+ */
 #define DOPTO_DOMGL_RESOLUTION 3
 /// Variable number; dissolved oxygen concentration is stored in sensorValues[2]
 #define DOPTO_DOMGL_VAR_NUM 2
 
-// The main class for the D-Opto
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for the
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ *
+ * @ingroup dopto_group
+ */
+/* clang-format on */
 class ZebraTechDOpto : public SDI12Sensors {
  public:
     // Constructors with overloads
+    /**
+     * @brief Construct a new Zebra-Tech DOpto object.
+     *
+     * The SDI-12 address of the sensor, the Arduino pin controlling power
+     * on/off, and the Arduino pin sending and receiving data are required for
+     * the sensor constructor.  Optionally, you can include a number of distinct
+     * readings to average.  The data pin must be a pin that supports pin-change
+     * interrupts.
+     *
+     * @param SDI12address The SDI-12 address of the DOpto.
+     * @param powerPin The pin on the mcu controlling power to the D-Opto
+     * Use -1 if it is continuously powered.
+     * - The D-Opto requires a 8-12V power supply, which can be turned off
+     * between measurements
+     * @param dataPin The pin on the mcu connected to the data line of the
+     * SDI-12 circuit.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
     ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin,
                    uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
                        DOPTO_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc ZebraTechDOpto::ZebraTechDOpto
+     */
     ZebraTechDOpto(char* SDI12address, int8_t powerPin, int8_t dataPin,
                    uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
                        DOPTO_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc ZebraTechDOpto::ZebraTechDOpto
+     */
     ZebraTechDOpto(int SDI12address, int8_t powerPin, int8_t dataPin,
                    uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
                        DOPTO_MEASUREMENT_TIME_MS) {}
+    /**
+     * @brief Destroy the Zebra-Tech DOpto object
+     */
     ~ZebraTechDOpto() {}
 };
 
 
-// Defines the Temperature Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref dopto_temp) from a
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ *
+ * @ingroup dopto_group
+ */
+/* clang-format on */
 class ZebraTechDOpto_Temp : public Variable {
  public:
     /**
      * @brief Construct a new ZebraTechDOpto_Temp object.
      *
-     * @param parentSense The parent ZebraTechDOpto providing the result values.
+     * @param parentSense The parent ZebraTechDOpto providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is DOtempC
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "DOtempC".
      */
     explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense,
                                  const char*     uuid    = "",
@@ -133,17 +233,26 @@ class ZebraTechDOpto_Temp : public Variable {
 };
 
 
-// Defines the Dissolved Oxygen Percent Saturation
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [dissolved oxygen percent saturation output](@ref dopto_dopercent)
+ * from a [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ *
+ * @ingroup dopto_group
+ */
+/* clang-format on */
 class ZebraTechDOpto_DOpct : public Variable {
  public:
     /**
      * @brief Construct a new ZebraTechDOpto_DOpct object.
      *
-     * @param parentSense The parent ZebraTechDOpto providing the result values.
+     * @param parentSense The parent ZebraTechDOpto providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is DOpercent
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of DOpercent
      */
     explicit ZebraTechDOpto_DOpct(ZebraTechDOpto* parentSense,
                                   const char*     uuid    = "",
@@ -170,17 +279,26 @@ class ZebraTechDOpto_DOpct : public Variable {
 };
 
 
-// Defines the Dissolved Oxygen Concentration
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [dissolved oxygen concentration output](@ref dopto_domgl) from a
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ *
+ * @ingroup dopto_group
+ */
+/* clang-format on */
 class ZebraTechDOpto_DOmgL : public Variable {
  public:
     /**
      * @brief Construct a new ZebraTechDOpto_DOmgL object.
      *
-     * @param parentSense The parent ZebraTechDOpto providing the result values.
+     * @param parentSense The parent ZebraTechDOpto providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is DOppm
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "DOppm".
      */
     explicit ZebraTechDOpto_DOmgL(ZebraTechDOpto* parentSense,
                                   const char*     uuid    = "",
