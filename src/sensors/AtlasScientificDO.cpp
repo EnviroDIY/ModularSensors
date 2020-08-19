@@ -1,14 +1,11 @@
-/*
- * AtlasScientificDO.cpp
- * This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file AtlasScientificDO.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
- *
- * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation
- *     Accuracy is ± 0.05 mg/L
- *     Range is 0.01 − 100+ mg/L (0.1 − 400+ % saturation)
- *     Resolution is 0.01 mg/L or 0.1 % saturation
+ * @brief Implements the AtlasScientificCO2 class.
  */
 
 // Included Dependencies
@@ -16,73 +13,67 @@
 
 // Constructors
 #if defined MS_ATLAS_SOFTWAREWIRE
-AtlasScientificDO::AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
+AtlasScientificDO::AtlasScientificDO(SoftwareWire* theI2C, int8_t powerPin,
                                      uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(theI2C, powerPin,
-                i2cAddressHex, measurementsToAverage,
-                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
-                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                ATLAS_DO_MEASUREMENT_TIME_MS)
-{}
-AtlasScientificDO::AtlasScientificDO(int8_t powerPin, int8_t dataPin, int8_t clockPin,
-                                     uint8_t i2cAddressHex,
+    : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+                  "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                  ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
+                  ATLAS_DO_MEASUREMENT_TIME_MS) {}
+AtlasScientificDO::AtlasScientificDO(int8_t powerPin, int8_t dataPin,
+                                     int8_t clockPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(powerPin, dataPin, clockPin,
-                i2cAddressHex, measurementsToAverage,
-                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
-                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                ATLAS_DO_MEASUREMENT_TIME_MS)
-{}
+    : AtlasParent(
+          powerPin, dataPin, clockPin, i2cAddressHex, measurementsToAverage,
+          "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES, ATLAS_DO_WARM_UP_TIME_MS,
+          ATLAS_DO_STABILIZATION_TIME_MS, ATLAS_DO_MEASUREMENT_TIME_MS) {}
 #else
-AtlasScientificDO::AtlasScientificDO(TwoWire *theI2C, int8_t powerPin,
+AtlasScientificDO::AtlasScientificDO(TwoWire* theI2C, int8_t powerPin,
                                      uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(theI2C, powerPin,
-                i2cAddressHex, measurementsToAverage,
-                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
-                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                ATLAS_DO_MEASUREMENT_TIME_MS)
-{}
-AtlasScientificDO::AtlasScientificDO(int8_t powerPin,
-                                     uint8_t i2cAddressHex,
+    : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+                  "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                  ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
+                  ATLAS_DO_MEASUREMENT_TIME_MS) {}
+AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(powerPin,
-                i2cAddressHex, measurementsToAverage,
-                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
-                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                ATLAS_DO_MEASUREMENT_TIME_MS)
-{}
+    : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                  "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                  ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
+                  ATLAS_DO_MEASUREMENT_TIME_MS) {}
 #endif
 // Destructor
-AtlasScientificDO::~AtlasScientificDO(){}
+AtlasScientificDO::~AtlasScientificDO() {}
 
 
 // Setup
-bool AtlasScientificDO::setup()
-{
-    bool success = Sensor::setup();  // this will set pin modes and the setup status bit
+bool AtlasScientificDO::setup() {
+    bool success =
+        Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
     // We want to turn on all possible measurement parameters
     bool wasOn = checkPowerOn();
-    if (!wasOn) {powerUp();}
+    if (!wasOn) { powerUp(); }
     waitForWarmUp();
 
-    MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 concentration"));
+    MS_DBG(F("Asking"), getSensorNameAndLocation(),
+           F("to report O2 concentration"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t *)"O,mg,1", 6);  // Enable concentration in mg/L
+    success &= _i2c->write((const uint8_t*)"O,mg,1",
+                           6);  // Enable concentration in mg/L
     success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
-    MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 % saturation"));
+    MS_DBG(F("Asking"), getSensorNameAndLocation(),
+           F("to report O2 % saturation"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t *)"O,%,1", 5);  // Enable percent saturation
+    success &= _i2c->write((const uint8_t*)"O,%,1",
+                           5);  // Enable percent saturation
     success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
-    if (!success)
-    {
+    if (!success) {
         // Set the status error bit (bit 7)
         _sensorStatus |= 0b10000000;
         // UN-set the set-up bit (bit 0) since setup failed!
@@ -90,7 +81,7 @@ bool AtlasScientificDO::setup()
     }
 
     // Turn the power back off it it had been turned on
-    if (!wasOn) {powerDown();}
+    if (!wasOn) { powerDown(); }
 
     return success;
 }

@@ -1,103 +1,292 @@
-/*
- * AtlasScientificORP.h
- * This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file AtlasScientificORP.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>
  *
- * Initial developement for Atlas Sensors was done by Adam Gold
- * Files were edited by Sara Damiano
+ * @brief Contains the AtlasScientificRTD subclass of the AtlasParent sensor
+ * class along with the variable subclass AtlasScientificORP_Potential.
  *
- * The output from the Atlas Scientifc ORP is the temperature in degrees C.
- *     Accuracy is ± 1 mV
- *     Range is -1019.9mV − 1019.9mV
- *     Resolution is 0.1 mV
+ * These are used for any sensor attached to an Atlas EZO ORP circuit.
+ *
+ * @copydetails AtlasScientificORP
  */
+/* clang-format off */
+/**
+ * @defgroup atlas_orp_group Atlas EZO-ORP
+ * Classes for the Atlas Scientific EZO-ORP oxidation/reduction potential circuit and probes.
+ *
+ * @ingroup atlas_group
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section atlas_orp_datasheet Sensor Datasheet
+ * Documentation on the circuit is available here:
+ * https://www.atlas-scientific.com/circuits/ezo-orp-circuit/
+ *
+ * @section atlas_orp_sensor The Atlas ORP Sensor
+ * @ctor_doc{AtlasScientificORP, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
+ * @subsection atlas_orp_timing Sensor Timing
+ *   - warms up in 850ms
+ *      - 846 in SRGD tests
+ *   - stable at completion of warm up
+ *   - measurements take 1580ms to complete
+ *      - Manual says measurement takes 900 ms, but in SRGD tests, no result was
+ * available until after 1577 ms.
+ * @subsection atlas_orp_flags Build flags
+ * - `-D MS_ATLAS_SOFTWAREWIRE`
+ *      - switches from using hardware I2C to software I2C
+ * @warning Either all or none of the Atlas sensors can be using software I2C.
+ * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
+ *
+ * ___
+ * @section atlas_orp_orp Oxidation/Reduction Potential Output
+ *   - Accuracy is ± 1 mV
+ *   - Range is -1019.9mV − 1019.9mV
+ *   - Resolution is 0.1 mV
+ *   - Reported as millivolts (mV)
+ *   - Result stored in sensorValues[0]
+ *   - Default variable code is AtlasORP
+ * @variabledoc{atlas_orp_orp,AtlasScientificORP,Potential,AtlasORP}
+ *
+ * ___
+ * @section atlas_orp_examples Example Code
+ * The Atlas ORP sensor is used in the @menulink{atlas_orp} example.
+ *
+ * @menusnip{atlas_orp}
+ */
+/* clang-format on */
 
 // Header Guards
-#ifndef AtlasScientificORP_h
-#define AtlasScientificORP_h
+#ifndef SRC_SENSORS_ATLASSCIENTIFICORP_H_
+#define SRC_SENSORS_ATLASSCIENTIFICORP_H_
 
 // Included Dependencies
 #include "sensors/AtlasParent.h"
 
-// I2C address
-#define ATLAS_ORP_I2C_ADDR 0x62  // 98
+
+/**
+ * @brief Default I2C address is 0x62 (98)
+ */
+#define ATLAS_ORP_I2C_ADDR 0x62
 
 // Sensor Specific Defines
+
+/// Sensor::_numReturnedValues; the Atlas EZO ORP circuit can report 1 value.
 #define ATLAS_ORP_NUM_VARIABLES 1
 
-#define ATLAS_ORP_WARM_UP_TIME_MS 850  // 846 in SRGD tests
+/**
+ * @brief Sensor::_warmUpTime_ms; the Atlas EZO ORP circuit warms up in 850ms
+ *
+ * 846 in SRGD tests
+ */
+#define ATLAS_ORP_WARM_UP_TIME_MS 850
+/**
+ * @brief Sensor::_stabilizationTime_ms; the Atlas EZO ORP circuit is stable 0ms
+ * after warm-up.
+ */
 #define ATLAS_ORP_STABILIZATION_TIME_MS 0
-// NOTE:  Manual says measurement takes 900 ms, but in SRGD tests, no result was
-// available until 1577 ms
+/**
+ * @brief Sensor::_measurementTime_ms; the Atlas EZO ORP circuit takes
+ * 1580ms to complete a measurement.
+ *
+ * @note  Manual says measurement takes 900 ms, but in SRGD tests, no result was
+ * available until after 1577 ms.
+ */
 #define ATLAS_ORP_MEASUREMENT_TIME_MS 1580
 
+/// Decimals places in string representation; ORP should have 1.
 #define ATLAS_ORP_RESOLUTION 1
+/// Variable number; ORP is stored in sensorValues[0].
 #define ATLAS_ORP_VAR_NUM 0
 
-// The main class for the Atlas Scientific ORP temperature sensor
-class AtlasScientificORP : public AtlasParent
-{
-public:
-    #if defined MS_ATLAS_SOFTWAREWIRE
-    AtlasScientificORP(SoftwareWire *theI2C, int8_t powerPin,
-                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for the
+ * [Atlas Scientific ORP (oxidation/reduction potential) sensor](@ref atlas_orp_group).
+ *
+ * @ingroup atlas_orp_group
+ */
+/* clang-format on */
+class AtlasScientificORP : public AtlasParent {
+ public:
+#if defined MS_ATLAS_SOFTWAREWIRE
+    /**
+     * @brief Construct a new Atlas Scientific ORP object using a *software* I2C
+     * instance.
+     *
+     * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
+     * instance for I2C communication.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas ORP
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x62.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificORP(SoftwareWire* theI2C, int8_t powerPin,
+                       uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(theI2C, powerPin,
-                   i2cAddressHex, measurementsToAverage,
-                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
-                   ATLAS_ORP_MEASUREMENT_TIME_MS)
-    {}
+        : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                      ATLAS_ORP_WARM_UP_TIME_MS,
+                      ATLAS_ORP_STABILIZATION_TIME_MS,
+                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+    /**
+     * @brief Construct a new Atlas Scientific ORP object, also creating a
+     * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
+     * communication with that object.
+     *
+     * Currently only
+     * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
+     * supported.
+     *
+     * @note Unless there are address conflicts between I2C devices, you should
+     * not create a new I2C instance.
+     *
+     * @param powerPin The pin on the mcu controlling powering to the Atlas ORP
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param dataPin The pin on the mcu that will be used for I2C data (SDA).
+     * Must be a valid pin number.
+     * @param clockPin The pin on the mcu that will be used for the I2C clock
+     * (SCL).  Must be a valid pin number.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x62.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
     AtlasScientificORP(int8_t powerPin, int8_t dataPin, int8_t clockPin,
-                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+                       uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin, dataPin, clockPin,
-                   i2cAddressHex, measurementsToAverage,
-                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
-                   ATLAS_ORP_MEASUREMENT_TIME_MS)
-    {}
-    #else
-    AtlasScientificORP(TwoWire *theI2C, int8_t powerPin,
-                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                      ATLAS_ORP_WARM_UP_TIME_MS,
+                      ATLAS_ORP_STABILIZATION_TIME_MS,
+                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+#else
+    /**
+     * @brief Construct a new Atlas Scientific ORP object using a secondary
+     * *hardware* I2C instance.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas ORP
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x62.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificORP(TwoWire* theI2C, int8_t powerPin,
+                       uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(theI2C, powerPin,
-                   i2cAddressHex, measurementsToAverage,
-                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
-                   ATLAS_ORP_MEASUREMENT_TIME_MS)
-    {}
-    AtlasScientificORP(int8_t powerPin,
-                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
-                       uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin,
-                   i2cAddressHex, measurementsToAverage,
-                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
-                   ATLAS_ORP_MEASUREMENT_TIME_MS)
-    {}
-    #endif
-    ~AtlasScientificORP(){}
+        : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                      ATLAS_ORP_WARM_UP_TIME_MS,
+                      ATLAS_ORP_STABILIZATION_TIME_MS,
+                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+    /**
+     * @brief Construct a new Atlas Scientific ORP object using the primary
+     * hardware I2C instance.
+     *
+     * @param powerPin The pin on the mcu controlling powering to the Atlas ORP
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x62.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    explicit AtlasScientificORP(int8_t  powerPin,
+                                uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+                                uint8_t measurementsToAverage = 1)
+        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                      ATLAS_ORP_WARM_UP_TIME_MS,
+                      ATLAS_ORP_STABILIZATION_TIME_MS,
+                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+#endif
+    /**
+     * @brief Destroy the Atlas Scientific ORP object
+     */
+    ~AtlasScientificORP() {}
 };
 
-// The class for the oxidation/reduction potential Variable
-class AtlasScientificORP_Potential : public Variable
-{
-public:
-    AtlasScientificORP_Potential(Sensor *parentSense,
-                                 const char *uuid = "",
-                                 const char *varCode = "AtlasORP")
-      : Variable(parentSense,
-                 (const uint8_t)ATLAS_ORP_VAR_NUM,
-                 (uint8_t)ATLAS_ORP_RESOLUTION,
-                 "reductionPotential", "millivolt",
-                 varCode, uuid)
-    {}
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [oxidation/reduction potential output](@ref atlas_orp_orp) from an
+ * [Atlas Scientific EZO-ORP circuit](@ref atlas_orp_group).
+ *
+ * @ingroup atlas_orp_group
+ */
+/* clang-format on */
+class AtlasScientificORP_Potential : public Variable {
+ public:
+    /**
+     * @brief Construct a new AtlasScientificORP_Potential object.
+     *
+     * @param parentSense The parent AtlasScientificORP providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of AtlasORP
+     */
+    explicit AtlasScientificORP_Potential(AtlasScientificORP* parentSense,
+                                          const char*         uuid = "",
+                                          const char* varCode      = "AtlasORP")
+        : Variable(parentSense, (const uint8_t)ATLAS_ORP_VAR_NUM,
+                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
+                   "millivolt", varCode, uuid) {}
+    /**
+     * @brief Construct a new AtlasScientificORP_Potential object.
+     *
+     * @note This must be tied with a parent AtlasScientificORP before it can be
+     * used.
+     */
     AtlasScientificORP_Potential()
-      : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
-                 (uint8_t)ATLAS_ORP_RESOLUTION,
-                 "reductionPotential", "millivolt", "AtlasORP")
-    {}
-    ~AtlasScientificORP_Potential(){}
+        : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
+                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
+                   "millivolt", "AtlasORP") {}
+    /**
+     * @brief Destroy the AtlasScientificORP_Potential() object - no action
+     * needed.
+     */
+    ~AtlasScientificORP_Potential() {}
 };
 
-#endif  // Header Guard
+#endif  // SRC_SENSORS_ATLASSCIENTIFICORP_H_

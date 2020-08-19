@@ -32,24 +32,24 @@
 #include <SoftwareWire.h>  // Testato's Software I2C
 
 
-const int8_t softwareSDA = 5;     // data in pin
-const int8_t softwareSCL = 4;     // data out pin
+const int8_t softwareSDA = 5;  // data in pin
+const int8_t softwareSCL = 4;  // data out pin
 SoftwareWire softWire(5, 4);
 
-template<typename THEWIRE>
-THEWIRE createWire(int8_t sda = -1, int8_t scl = -1){
-  return THEWIRE(sda, scl);
+template <typename THEWIRE>
+THEWIRE createWire(int8_t sda = -1, int8_t scl = -1) {
+    return THEWIRE(sda, scl);
 }
-template<>
-TwoWire createWire<TwoWire>(int8_t sda, int8_t scl){
-  return Wire;
+template <>
+TwoWire createWire<TwoWire>(int8_t sda, int8_t scl) {
+    return Wire;
 }
 
 
-template<typename THEWIRE>
-void startWire(THEWIRE i2c){
-  i2c.begin();
-  // i2c.printStatus(Serial);
+template <typename THEWIRE>
+void startWire(THEWIRE i2c) {
+    i2c.begin();
+    // i2c.printStatus(Serial);
 }
 
 
@@ -57,68 +57,57 @@ void startWire(THEWIRE i2c){
 // {
 //   THEWIRE i2c = createWire<THEWIRE>(sda, scl);
 //   i2c.begin();
-template<typename THEWIRE>
-void scan(THEWIRE i2c){
+template <typename THEWIRE>
+void scan(THEWIRE i2c) {
+    byte error, address;
+    int  nDevices;
 
-  byte error, address;
-  int nDevices;
+    nDevices = 0;
+    for (address = 1; address < 127; address++) {
+        // The i2c_scanner uses the return value of
+        // the Write.endTransmisstion to see if
+        // a device did acknowledge to the address.
+        i2c.beginTransmission(address);
+        error = i2c.endTransmission();
 
-  nDevices = 0;
-  for(address = 1; address < 127; address++ )
-  {
-    // The i2c_scanner uses the return value of
-    // the Write.endTransmisstion to see if
-    // a device did acknowledge to the address.
-    i2c.beginTransmission(address);
-    error = i2c.endTransmission();
+        if (error == 0) {
+            Serial.print("    I2C device found at address 0x");
+            if (address < 16) Serial.print("0");
+            Serial.print(address, HEX);
+            Serial.println("  !");
 
-    if (error == 0)
-    {
-      Serial.print("    I2C device found at address 0x");
-      if (address<16)
-        Serial.print("0");
-      Serial.print(address,HEX);
-      Serial.println("  !");
-
-      nDevices++;
+            nDevices++;
+        } else if (error == 4) {
+            Serial.print("    Unknown error at address 0x");
+            if (address < 16) Serial.print("0");
+            Serial.println(address, HEX);
+        }
     }
-    else if (error==4)
-    {
-      Serial.print("    Unknown error at address 0x");
-      if (address<16)
-        Serial.print("0");
-      Serial.println(address,HEX);
-    }
-  }
-  if (nDevices == 0)
-    Serial.println("No I2C devices found");
-
+    if (nDevices == 0) Serial.println("No I2C devices found");
 }
 
 
-void setup()
-{
-  pinMode(22, OUTPUT);
+void setup() {
+    pinMode(22, OUTPUT);
 
-  Serial.begin(115200);
-  while (!Serial);             // Leonardo: wait for serial monitor
-  Serial.println("\nI2C Scanner");
-  digitalWrite(22, HIGH);
+    Serial.begin(115200);
+    while (!Serial)
+        ;  // Leonardo: wait for serial monitor
+    Serial.println("\nI2C Scanner");
+    digitalWrite(22, HIGH);
 }
 
 
-void loop()
-{
+void loop() {
+    Serial.println("Hardware I2C Objects:");
+    scan<TwoWire>(Wire);
+    Serial.print("Software I2C Objects on SDA=:");
+    Serial.print(softwareSDA);
+    Serial.print(", SCL=");
+    Serial.print(softwareSCL);
+    Serial.println(":");
+    scan<SoftwareWire>(softWire);
+    Serial.println();
 
-  Serial.println("Hardware I2C Objects:");
-  scan<TwoWire>(Wire);
-  Serial.print("Software I2C Objects on SDA=:");
-  Serial.print(softwareSDA);
-  Serial.print(", SCL=");
-  Serial.print(softwareSCL);
-  Serial.println(":");
-  scan<SoftwareWire>(softWire);
-  Serial.println();
-
-  delay(5000);           // wait 5 seconds for next scan
+    delay(5000);  // wait 5 seconds for next scan
 }

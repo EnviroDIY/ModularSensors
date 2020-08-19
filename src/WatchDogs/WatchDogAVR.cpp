@@ -1,12 +1,11 @@
-/*
- *WatchDogAVR.cpp
-
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file WatchDogAVR.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the watchdog timer
-*/
+ * @brief Implements the extendedWatchDogAVR class.
+ */
 
 #include "WatchDogAVR.h"
 
@@ -20,97 +19,95 @@
 
 volatile uint32_t extendedWatchDogAVR::_barksUntilReset = 0;
 
-extendedWatchDogAVR::extendedWatchDogAVR(){}
-extendedWatchDogAVR::~extendedWatchDogAVR()
-{
+extendedWatchDogAVR::extendedWatchDogAVR() {}
+extendedWatchDogAVR::~extendedWatchDogAVR() {
     disableWatchDog();
 }
 
 
-
 // One-time initialization of watchdog timer.
-void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s)
-{
-    _resetTime_s = resetTime_s;
-    extendedWatchDogAVR::_barksUntilReset = _resetTime_s/8;
-    MS_DBG(F("Watch-dog timeout is set for"),
-           _resetTime_s,
+void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s) {
+    _resetTime_s                          = resetTime_s;
+    extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
+    MS_DBG(F("Watch-dog timeout is set for"), _resetTime_s,
            F("sec with the interrupt firing"),
-           extendedWatchDogAVR::_barksUntilReset,
-           F("times before the reset."));
+           extendedWatchDogAVR::_barksUntilReset, F("times before the reset."));
 }
 
 
-void extendedWatchDogAVR::enableWatchDog()
-{
+void extendedWatchDogAVR::enableWatchDog() {
     MS_DBG(F("Enabling watch dog..."));
 
-    cli();                              // disable interrupts
+    cli();  // disable interrupts
 
-    MCUSR = 0;                          // reset status register flags
+    MCUSR = 0;  // reset status register flags
 
-                                     // Put timer in interrupt-only mode:
-    WDTCSR |= 0b00011000;            // Set WDCE (5th from left) and WDE (4th from left) to enter config mode,
-                                     // using bitwise OR assignment (leaves other bits unchanged).
-    WDTCSR =  0b01000000 | 0b100001; // set WDIE (interrupt enable...7th from left, on left side of bar)
-                                     // clr WDE (reset enable...4th from left)
-                                     // and set delay interval (right side of bar) to 8 seconds,
-                                     // using bitwise OR operator.
+    // Put timer in interrupt-only mode:
+    // WDTCSR - Watchdog Timer Control Register
+    WDTCSR |= 0b00011000;  // Set Bit 4 – WDCE: Watchdog Change Enable
+                           // Set Bit 3 – WDE: Watchdog System Reset Enable
+    // bitwise OR assignment (leaves other bits unchanged)
+    // Need to set the change and reset enables before changing the prescaler
 
-    sei();                              // re-enable interrupts
-    //wdt_reset();                      // this is not needed...timer starts without it
+    WDTCSR = 0b01100001;  // Set Bit 6 – WDIE: Watchdog Interrupt Enable
+                          // Unset Bit 4 – WDCE: Watchdog Change Enable
+                          // Unset Bit 3 – WDE: Watchdog System Reset Enable
+                          // Set Bit 5 - WDP[3] and Bit 0 – WDP[0]:
+    // Watchdog Timer Prescalers 3 and 0 - 1024K cycles = 8.0s
+    // bitwise OR assignment (leaves other bits unchanged)
+
+    sei();  // re-enable interrupts
+    // wdt_reset();  // this is not needed...timer starts without it
 
     // delay interval patterns:
-    //  16 ms:     0b000000
-    //  500 ms:    0b000101
-    //  1 second:  0b000110
-    //  2 seconds: 0b000111
-    //  4 seconds: 0b100000
-    //  8 seconds: 0b100001
+    //  16 ms:     0bxx0xx000
+    //  500 ms:    0bxx0xx101
+    //  1 second:  0bxx0xx110
+    //  2 seconds: 0bxx0xx111
+    //  4 seconds: 0bxx1xx000
+    //  8 seconds: 0bxx1xx001
 
-    extendedWatchDogAVR::_barksUntilReset = _resetTime_s/8;
+    extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
     MS_DBG(F("The watch dog is enabled in interrupt-only mode."));
-    MS_DBG(F("The interrupt will fire"),
-           extendedWatchDogAVR::_barksUntilReset,
+    MS_DBG(F("The interrupt will fire"), extendedWatchDogAVR::_barksUntilReset,
            F("times before the system resets."));
 }
 
 
-void extendedWatchDogAVR::disableWatchDog()
-{
+void extendedWatchDogAVR::disableWatchDog() {
     // Disable the watchdog
     wdt_disable();
 }
 
 
-void extendedWatchDogAVR::resetWatchDog()
-{
-    extendedWatchDogAVR::_barksUntilReset = _resetTime_s/8;
+void extendedWatchDogAVR::resetWatchDog() {
+    extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
     // Reset the watchdog.
     wdt_reset();
 }
 
 
-ISR(WDT_vect)  // ISR for watchdog early warning
-{
-    extendedWatchDogAVR::_barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
-    // MS_DBG(F("\nWatchdog interrupt!"), extendedWatchDogAVR::_barksUntilReset);
-    if (extendedWatchDogAVR::_barksUntilReset<=0)
-    {
+/**
+ * @brief ISR for watchdog early warning
+ */
+ISR(WDT_vect) {
+    extendedWatchDogAVR::_barksUntilReset--;  // Increament down the counter,
+                                              // makes multi cycle WDT possible
+    // MS_DBG(F("\nWatchdog interrupt!"),
+    // extendedWatchDogAVR::_barksUntilReset);
+    if (extendedWatchDogAVR::_barksUntilReset <= 0) {
+        MCUSR = 0;  // reset flags
 
-      MCUSR = 0;                          // reset flags
+        // Put timer in reset-only mode:
+        WDTCSR |= 0b00011000;  // Enter config mode.
+        WDTCSR = 0b00001000 |
+            0b000000;  // clr WDIE (interrupt enable...7th from left)
+                       // set WDE (reset enable...4th from left), and set delay
+                       // interval reset system in 16 ms... unless wdt_disable()
+                       // in loop() is reached first
 
-                                          // Put timer in reset-only mode:
-      WDTCSR |= 0b00011000;               // Enter config mode.
-      WDTCSR =  0b00001000 | 0b000000;    // clr WDIE (interrupt enable...7th from left)
-                                          // set WDE (reset enable...4th from left), and set delay interval
-                                          // reset system in 16 ms...
-                                          // unless wdt_disable() in loop() is reached first
-
-      //wdt_reset(); // not needed
-    }
-    else
-    {
+        // wdt_reset();  // not needed
+    } else {
         wdt_reset();  // start timer again (still in interrupt-only mode)
     }
 }

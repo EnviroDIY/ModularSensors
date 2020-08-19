@@ -1,69 +1,55 @@
-/*
- *RainCounterI2C.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file RainCounterI2C.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Written By: Bobby Schulz <schu3119@umn.edu>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for an external tip counter, used to measure rainfall via a tipping bucket
- *rain gauge
- *
- *Documentation for the sensor can be found at:
- *https://github.com/EnviroDIY/TippingBucketRainCounter
- *
- * For Rainfall:
- *  Accuracy and resolution are dependent on the sensor used
- *  Standard resolution is 0.01" or 0.2mm of rainfall (depending on if sensor is set to english or metric)
- *
- * Assume sensor is immediately stable
-*/
+ * @brief Implements the RainCounterI2C class.
+ */
 
 #include "RainCounterI2C.h"
 
 
-// The constructor - because this is I2C, only need the power pin and
-// rain per event if a non-standard value is used
+// The constructors
 #if defined MS_RAIN_SOFTWAREWIRE
-RainCounterI2C::RainCounterI2C(SoftwareWire *theI2C,
-                               uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
-              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              -1, -1, 1)
-{
-    _i2cAddressHex = i2cAddressHex;
-    _i2c = theI2C;
+RainCounterI2C::RainCounterI2C(SoftwareWire* theI2C, uint8_t i2cAddressHex,
+                               float rainPerTip)
+    : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
+             BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
+             1) {
+    _i2cAddressHex      = i2cAddressHex;
+    _i2c                = theI2C;
     createdSoftwareWire = false;
-    _rainPerTip = rainPerTip;
+    _rainPerTip         = rainPerTip;
 }
 RainCounterI2C::RainCounterI2C(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                                uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
-              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              -1, dataPin, 1)
-{
-    _i2cAddressHex = i2cAddressHex;
-    _i2c = new SoftwareWire(dataPin, clockPin);
+    : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
+             BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1,
+             dataPin, 1) {
+    _i2cAddressHex      = i2cAddressHex;
+    _i2c                = new SoftwareWire(dataPin, clockPin);
     createdSoftwareWire = true;
-    _rainPerTip = rainPerTip;
+    _rainPerTip         = rainPerTip;
 }
 #else
-RainCounterI2C::RainCounterI2C(TwoWire *theI2C,
-                               uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
-              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              -1, -1, 1)
-{
+RainCounterI2C::RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex,
+                               float rainPerTip)
+    : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
+             BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
+             1) {
     _i2cAddressHex = i2cAddressHex;
-    _i2c = theI2C;
-    _rainPerTip = rainPerTip;
+    _i2c           = theI2C;
+    _rainPerTip    = rainPerTip;
 }
 RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
-              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              -1, -1, 1)
-{
+    : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
+             BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
+             1) {
     _i2cAddressHex = i2cAddressHex;
-    _i2c = &Wire;
-    _rainPerTip = rainPerTip;
+    _i2c           = &Wire;
+    _rainPerTip    = rainPerTip;
 }
 #endif
 
@@ -72,31 +58,28 @@ RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
 #if defined MS_RAIN_SOFTWAREWIRE
 // If we created a new SoftwareWire instance, we need to destroy it or
 // there will be a memory leak
-RainCounterI2C::~RainCounterI2C()
-{
+RainCounterI2C::~RainCounterI2C() {
     if (createdSoftwareWire) delete _i2c;
 }
 #else
-RainCounterI2C::~RainCounterI2C(){}
+RainCounterI2C::~RainCounterI2C() {}
 #endif
 
 
-String RainCounterI2C::getSensorLocation(void)
-{
-    #if defined MS_RAIN_SOFTWAREWIRE
+String      RainCounterI2C::getSensorLocation(void) {
+#if defined MS_RAIN_SOFTWAREWIRE
     String address = F("SoftwareWire");
-    if (_dataPin >=0) address +=_dataPin;
+    if (_dataPin >= 0) address += _dataPin;
     address += F("_0x");
-    #else
+#else
     String address = F("I2C_0x");
-    #endif
+#endif
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool RainCounterI2C::setup(void)
-{
+bool RainCounterI2C::setup(void) {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -110,35 +93,31 @@ bool RainCounterI2C::setup(void)
 }
 
 
-bool RainCounterI2C::addSingleMeasurementResult(void)
-{
-    //intialize values
-    uint8_t Byte1 = 0;  // Low byte of data
-    uint8_t Byte2 = 0;  // High byte of data
-
-    float rain = -9999;  // Number of mm of rain
+bool RainCounterI2C::addSingleMeasurementResult(void) {
+    // intialize values
+    float   rain = -9999;  // Number of mm of rain
     int16_t tips = -9999;  // Number of tip events
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
-    if (_i2c->requestFrom(int(_i2cAddressHex), 2))
-    {
+    if (_i2c->requestFrom(int(_i2cAddressHex), 2)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        Byte1 = _i2c->read();
-        Byte2 = _i2c->read();
+        uint8_t Byte1 = _i2c->read();  // Low byte of data
+        uint8_t Byte2 = _i2c->read();  // High byte of data
 
         tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
-        rain = float(tips) * _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
+        rain = static_cast<float>(tips) *
+            _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 
-        if (tips < 0) tips = -9999;  // If negetive value results, return failure
-        if (rain < 0) rain = -9999;  // If negetive value results, return failure
+        if (tips < 0)
+            tips = -9999;  // If negetive value results, return failure
+        if (rain < 0)
+            rain = -9999;  // If negetive value results, return failure
 
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);
-    }
-    else
-    {
+    } else {
         MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
     }
 

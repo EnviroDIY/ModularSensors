@@ -1,15 +1,17 @@
-/*
- *VariableArray.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file VariableArray.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ * @brief Contains the VariableArray class.
  *
- *This file is for the variable array class.
-*/
+ * @copydetails VariableArray
+ */
 
 // Header Guards
-#ifndef VariableArray_h
-#define VariableArray_h
+#ifndef SRC_VARIABLEARRAY_H_
+#define SRC_VARIABLEARRAY_H_
 
 // Debugging Statement
 // #define MS_VARIABLEARRAY_DEBUG
@@ -30,14 +32,51 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Defines another class for interfacing with a list of pointers to sensor instances
-class VariableArray
-{
-public:
+
+/**
+ * @brief The variable array class defines the logic for iterating through many
+ * variable objects.
+ *
+ * This takes advantage of various time stamps within the Sensor class to
+ * optimize the timing of communications with many sensors.
+ *
+ * In general, the order of the variables in the variable list or array should
+ * not matter.  The library attempts to minimize sensor on time as much as
+ * possible by requesting data from the each sensor as soon as it is able to
+ * report a result, regardless of its position in the array.  The only place the
+ * order of the variables will be reflected is in the order of the data columns
+ * in data saved by a logger or when sending data to ThingSpeak.
+ *
+ */
+class VariableArray {
+ public:
     // Constructors
+    /**
+     * @brief Construct a new Variable Array object
+     */
     VariableArray();
-    VariableArray(uint8_t variableCount, Variable *variableList[]);
-    VariableArray(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
+    /**
+     * @brief Construct a new Variable Array object
+     *
+     * @param variableCount The number of variables in the array
+     * @param variableList An array of pointers to variable objects.  The
+     * pointers may be to calculated or measured variable objects.
+     */
+    VariableArray(uint8_t variableCount, Variable* variableList[]);
+    /**
+     * @brief Construct a new Variable Array object
+     *
+     * @param variableCount The number of variables in the array
+     * @param variableList An array of pointers to variable objects.  The
+     * pointers may be to calculated or measured variable objects.
+     * @param uuids An array of UUID's.  These are linked 1-to-1 with the
+     * variables by array position.
+     */
+    VariableArray(uint8_t variableCount, Variable* variableList[],
+                  const char* uuids[]);
+    /**
+     * @brief Destroy the Variable Array object - no action taken.
+     */
     ~VariableArray();
 
     // "Begins" the VariableArray - attaches the number and array of variables
@@ -47,78 +86,211 @@ public:
     // guarantee that the variables and their pointers in the array will
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
-    void begin(uint8_t variableCount, Variable *variableList[]);
-    void begin(uint8_t variableCount, Variable *variableList[], const char *uuids[]);
+    /**
+     * @brief Begins the VariableArray.  Suppiles a variable array, checks the
+     * validity of all UUID and outputs the results.
+     *
+     * @param variableCount The number of variables in the array.  Supercedes
+     * any value given in the constructor.
+     * @param variableList An array of pointers to variable objects.  The
+     * pointers may be to calculated or measured variable objects.  Supercedes
+     * any value given in the constructor.
+     */
+    void begin(uint8_t variableCount, Variable* variableList[]);
+    /**
+     * @brief Begins the VariableArray.  Suppiles a variable array and UUIDs,
+     * checks the validity of all UUID and outputs the results.
+     *
+     * @param variableCount The number of variables in the array.  Supercedes
+     * any value given in the constructor.
+     * @param variableList An array of pointers to variable objects.  The
+     * pointers may be to calculated or measured variable objects.  Supercedes
+     * any value given in the constructor.
+     * @param uuids An array of UUID's.  These are linked 1-to-1 with the
+     * variables by array position.
+     */
+    void begin(uint8_t variableCount, Variable* variableList[],
+               const char* uuids[]);
+    /**
+     * @brief Begins the VariableArray.  Checks the validity of all UUID and
+     * outputs the results.
+     */
     void begin();
 
-    // Leave the internal variable list public
-    Variable **arrayOfVars;
+    /**
+     * @brief Pointer to the array of variable pointers.
+     */
+    Variable** arrayOfVars;
 
     // Functions to return information about the list
 
-    // This just returns the number of variables (as input in the constructor)
-    uint8_t getVariableCount(void){return _variableCount;}
+    /**
+     * @brief Get the count of variables in the variable array
+     *
+     * @return **uint8_t** the number of variables
+     */
+    uint8_t getVariableCount(void) {
+        return _variableCount;
+    }
 
-    // This counts and returns the number of calculated variables
+    /**
+     * @brief Get the number of calculated variables
+     *
+     * @return **uint8_t** The number of calculated (ie, not measured by a
+     * sensor) variables
+     */
     uint8_t getCalculatedVariableCount(void);
 
     // This counts and returns the number of sensors
+    /**
+     * @brief Get the number of sensors associated with the variables in the
+     * array.
+     *
+     * This will often be different from the number of variables because many
+     * sensors can return multiple variables.
+     *
+     * @return **uint8_t** The number of sensors
+     */
     uint8_t getSensorCount(void);
 
-    // This matches UUID's from an array of pointers to the variable array
-    void matchUUIDs(const char *uuids[]);
+    /**
+     * @brief Match UUID's from the given variables in the variable array.
+     *
+     * This over-writes all UUID's previously assigned to every variable.  The
+     * match is 1-to-1 based on array position.
+     *
+     * @param uuids An array of UUID's
+     */
+    void matchUUIDs(const char* uuids[]);
 
     // Public functions for interfacing with a list of sensors
-    // This sets up all of the sensors in the list
+    /**
+     * @brief Set up all of the sensors in the tied to variables in the array.
+     *
+     * This sets up all of the variables in the array and their respective
+     * sensors by running all of their setup() functions.  A single sensor
+     * attached to may variables is only set up one time.  If a sensor doesn't
+     * respond to its setup command, the command is called 5 times in attempt to
+     * make a connection.  If all sensors are set up successfully, returns true.
+     *
+     * @return **bool** True indicates all sensors have been set up
+     * successfully.
+     */
     bool setupSensors(void);
 
-    // This gives power to each sensor
+    /**
+     * @brief Power up each sensor.
+     *
+     * Runs the powerUp sensor function for each unique sensor.
+     */
     void sensorsPowerUp(void);
 
-    // This verifies sensors have power and sends a wake command, if necesary
+    /**
+     * @brief Wake up each sensor.
+     *
+     * Runs the wake sensor function for each unique sensor.  Repeatedly checks
+     * each sensor's readiness state to optimize timing.
+     *
+     * @return **bool** True if all wake functions were run successfully.
+     */
     bool sensorsWake(void);
 
-    // This sends sensors a sleep command, but does not power them down
+    /**
+     * @brief Put all sensors to sleep
+     *
+     * Runs the sleep sensor function for each unique sensor.
+     *
+     * @return **bool** True if all sleep functions were run successfully.
+     */
     bool sensorsSleep(void);
 
-    // This cuts sensor power
+    /**
+     * @brief Cut power to all sensors.
+     * Runs the powerDown sensor function for each unique sensor.
+     */
     void sensorsPowerDown(void);
 
-    // This function updates the values for any connected sensors.
+    /**
+     * @brief Update the values for all connected sensors.
+     *
+     * Does not power or wake/sleep sensors.  Returns a boolean indication the
+     * overall success.  Does NOT return any values.  Repeatedly checks each
+     * sensor's readiness state to optimize timing.
+     *
+     * @return **bool** True if all steps of the update succeeded.
+     */
     bool updateAllSensors(void);
 
     // This function powers, wakes, updates values, sleeps and powers down.
+
+    /**
+     * @brief Update the values for all connected sensors including powering
+     * them and waking and putting them to sleep.
+     *
+     * Returns a boolean indication the overall success.  Does NOT return any
+     * values.  Repeatedly checks each sensor's readiness state to optimize
+     * timing.
+     *
+     * @return **bool** True if all steps of the update succeeded.
+     */
     bool completeUpdate(void);
 
-    // This function prints out the results for any connected sensors to a stream
-    void printSensorData(Stream *stream = &Serial);
+    /**
+     * @brief Print out the results for all connected sensors to a stream
+     *
+     * This prints current sensor values along with meta-data to a stream
+     * (either hardware or software serial).  By default, it will print to the
+     * first Serial port.  Note that the input is a pointer to a stream instance
+     * - to use a hardware serial instance you must use an ampersand before the
+     * serial name (ie, &Serial1).
+     *
+     * @param stream An Arduino Stream instance
+     */
+    void printSensorData(Stream* stream = &Serial);
 
-protected:
+ protected:
+    /**
+     * @brief The count of variables in the array
+     */
     uint8_t _variableCount;
+    /**
+     * @brief The count of unique sensors tied to variables in the array
+     */
     uint8_t _sensorCount;
+    /**
+     * @brief The maximum number of samples to average of an single sensor.
+     */
     uint8_t _maxSamplestoAverage;
 
-private:
-    bool isLastVarFromSensor(int arrayIndex);
+ private:
+    bool    isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
-    bool checkVariableUUIDs(void);
+    bool    checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    template<typename T>
-    void prettyPrintArray(T arrayToPrint[])
-    {
+    /**
+     * @brief Prints out the contents of an array with even spaces and commas
+     * between the members
+     *
+     * @tparam T Any printable type
+     * @param arrayToPrint The array of values to print.
+     */
+    template <typename T>
+    void prettyPrintArray(T arrayToPrint[]) {
         DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
-        for (uint8_t i = 0; i < _variableCount; i++)
-        {
+        for (uint8_t i = 0; i < _variableCount; i++) {
             DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
             DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
         }
         DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
-    #define prettyPrintArray(...)
+/**
+ * @brief Prints out the contents of an array with even spaces and commas
+ * between the members
+ */
+#define prettyPrintArray(...)
 #endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
-
 };
 
-#endif  // Header Guard
+#endif  // SRC_VARIABLEARRAY_H_
