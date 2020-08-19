@@ -1,30 +1,16 @@
-/*
- *TallyCounterI2C.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
- *Copyright 2020 Stroud Water Research Center (per LICENSE.md)
+/**
+ * @file TallyCounterI2C.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for NorthernWidget's Tally external event counter
- *It is used to measure windspeed or rainfall, and dependent on Tally_Library
- *
- *Documentation for the sensor can be found at:
- * https://github.com/NorthernWidget-Skunkworks/Project-Tally​
- * https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C
- *
- * For Wind Speed:
- *  Accuracy and resolution are dependent on the sensor used:
- *  Inspeed WS2R Version II Reed Switch Anemometer
- *    https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
- *
- * Assume sensor is immediately stable
-*/
+ * @brief Implements the TallyCounterI2C sensor subclass.
+ */
 
 #include "TallyCounterI2C.h"
 
 
-// The constructor - because this is I2C, only need the power pin and address
-// measurementsToAverage = 1, b/c Tally counts all events over interval
+// The constructor
 TallyCounterI2C::TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex)
      : Sensor("TallyCounterI2C", TALLY_NUM_VARIABLES, TALLY_WARM_UP_TIME_MS,
               TALLY_STABILIZATION_TIME_MS, TALLY_MEASUREMENT_TIME_MS, powerPin,
