@@ -44,6 +44,11 @@
  *   - stable at completion of warm up
  *   - measurements take 600ms to complete (only ~555 measurement time in tests,
  * but we wait the full 600ms recommended by manual)
+ * @subsection atlas_cond_flags Build flags
+ * - `-D MS_ATLAS_SOFTWAREWIRE`
+ *      - switches from using hardware I2C to software I2C
+ * @warning Either all or none of the Atlas sensors can be using software I2C.
+ * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
  *
  * ___
  * @section atlas_cond_cond Specific Conductance Output
@@ -173,8 +178,93 @@
 /* clang-format on */
 class AtlasScientificEC : public AtlasParent {
  public:
+#if defined MS_ATLAS_SOFTWAREWIRE
     /**
-     * @brief Construct a new Atlas Scientific EC object
+     * @brief Construct a new Atlas Scientific EC object using a *software* I2C
+     * instance.
+     *
+     * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
+     * instance for I2C communication.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas EC
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x64.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificEC(SoftwareWire* theI2C, int8_t powerPin,
+                      uint8_t i2cAddressHex         = ATLAS_COND_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new Atlas Scientific EC object, also creating a
+     * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
+     * communication with that object.
+     *
+     * Currently only
+     * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
+     * supported.
+     *
+     * @note Unless there are address conflicts between I2C devices, you should
+     * not create a new I2C instance.
+     *
+     * @param powerPin The pin on the mcu controlling powering to the Atlas EC
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param dataPin The pin on the mcu that will be used for I2C data (SDA).
+     * Must be a valid pin number.
+     * @param clockPin The pin on the mcu that will be used for the I2C clock
+     * (SCL).  Must be a valid pin number.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x64.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificEC(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                      uint8_t i2cAddressHex         = ATLAS_COND_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1);
+#else
+    /**
+     * @brief Construct a new Atlas Scientific EC object using a secondary
+     * *hardware* I2C instance.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas EC
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x64.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificEC(TwoWire* theI2C, int8_t powerPin,
+                      uint8_t i2cAddressHex         = ATLAS_COND_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new Atlas Scientific EC object using the primary
+     * hardware I2C instance.
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas EC
      * circuit.  Use -1 if it is continuously powered.
@@ -193,6 +283,7 @@ class AtlasScientificEC : public AtlasParent {
     explicit AtlasScientificEC(int8_t  powerPin,
                                uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
                                uint8_t measurementsToAverage = 1);
+#endif
     /**
      * @brief Destroy the Atlas Scientific EC object
      */

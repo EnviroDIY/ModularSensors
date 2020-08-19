@@ -4,7 +4,7 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com> with help from Beth
  * Fisher, Evan Host and Bobby Schulz.
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Heavliy edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the MeaSpecMS5803 semsor subclass and the variable subclasses
  * MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.
@@ -47,6 +47,9 @@
  * sensors, make sure that the address for that sensor does not conflict with
  * the address of this sensor.
  *
+ * @note Neither secondary hardware nor software I2C is supported for the MS5803.
+ * Only the primary hardware I2C defined in the Arduino core can be used.
+ *
  * The lower level communication between the mcu and the MS5803 is handled by the
  * [Northern Widget MS5803 library](https://github.com/NorthernWidget/MS5803).
  *
@@ -64,7 +67,7 @@
  * @subsection ms5803_timing Sensor Timing
  * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
  * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
- * - Assume sensor is immediately stable
+ * - We assume the sensor is immediately stable.
  *
  * @section ms5803_temp Temperature Output
  *   - Range is -40°C to +85°C
@@ -155,7 +158,11 @@
 class MeaSpecMS5803 : public Sensor {
  public:
     /**
-     * @brief Construct a new MeaSpecMS5803
+     * @brief Construct a new MeaSpecMS5803 object.
+     *
+     * @note Neither secondary hardware nor software I2C is supported for the
+     * MS5803. Only the primary hardware I2C defined in the Arduino core can be
+     * used.
      *
      * @param powerPin The pin on the mcu controlling power to the MS5803
      * Use -1 if it is continuously powered.
@@ -202,8 +209,17 @@ class MeaSpecMS5803 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    MS5803  MS5803_internal;
+    /**
+     * @brief Private internal reference to the MS5803 object.
+     */
+    MS5803 MS5803_internal;
+    /**
+     * @brief The I2C address of the MS5803.
+     */
     uint8_t _i2cAddressHex;
+    /**
+     * @brief Maximum pressure supported by the MS5803.
+     */
     int16_t _maxPressure;
 };
 

@@ -36,6 +36,9 @@
  * Commuincation between the INA219 and the mcu is managed by the
  * [Adafruit INA219 Library](https://github.com/adafruit/Adafruit_INA219)
  *
+ * @note Software I2C is *not* supported for the INA219.
+ * A secondary hardware I2C on a SAMD board is supported.
+ *
  * @section ina219_datasheet Sensor Datasheet
  *
  * Documentation for the sensor can be found at:
@@ -158,6 +161,27 @@ class TIINA219 : public Sensor {
     /**
      * @brief Construct a new TI INA219 object
      *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling power to the INA219.
+     * Use -1 if it is continuously powered.
+     * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
+     * between measurements.
+     * @param i2cAddressHex The I2C address of the BME280; can be any number
+     * between 0x40 and 0x4F.  The default value is 0x40.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    TIINA219(TwoWire* theI2C, int8_t powerPin,
+             uint8_t i2cAddressHex         = INA219_ADDRESS_BASE,
+             uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new TI INA219 object
+     *
      * @param powerPin The pin on the mcu controlling power to the INA219.
      * Use -1 if it is continuously powered.
      * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
@@ -209,8 +233,18 @@ class TIINA219 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Private reference to the internal INA219 object.
+     */
     Adafruit_INA219 ina219_phy;
-    uint8_t         _i2cAddressHex;
+    /**
+     * @brief The I2C address of the INA219.
+     */
+    uint8_t _i2cAddressHex;  // Hardware slave address
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;
 };
 
 

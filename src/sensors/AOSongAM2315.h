@@ -29,8 +29,11 @@
  * - Depends on the [Adafruit AM2315 Library](https://github.com/adafruit/Adafruit_AM2315).
  * - Communicate via I2C
  *   - only one address possible, 0xB8
- * - **Only 1 can be connected to a system at a time**
+ * - **Only 1 can be connected to a single I2C bus at a time**
  * - Requires a 3.3 - 5.5V power source
+ *
+ * @note Software I2C is *not* supported for the AM2315.
+ * A secondary hardware I2C on a SAMD board is supported.
  *
  * @section am2315_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-AM2315-Product-Manual.pdf)
@@ -89,6 +92,7 @@
 #undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include <Adafruit_AM2315.h>
 
 // Sensor Specific Defines
 
@@ -122,12 +126,35 @@
 class AOSongAM2315 : public Sensor {
  public:
     /**
-     * @brief Construct a new AOSongAM2315 object
+     * @brief Construct a new AOSongAM2315 object using a secondary *hardware*
+     * I2C instance.
+     *
+     * @note It is only possible to connect *one* AM2315 at a time on a single
+     * I2C bus.  Software I2C is also not supported.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling power to the AOSong
+     * AM2315.  Use -1 if it is continuously powered.
+     * - The AM2315 requires a 3.3 - 5.5V power source
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AOSongAM2315(TwoWire* theI2C, int8_t powerPin,
+                 uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new AOSongAM2315 object using the primary hardware I2C
+     * instance.
      *
      * Because this is I2C and has only 1 possible address (0xB8), we only need
      * the power pin.
      *
-     * @note It is only possible to connect *one* AM2315 at a time!
+     * @note It is only possible to connect *one* AM2315 at a time on a single
+     * I2C bus.  Software I2C is also not supported.
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong
      * AM2315.  Use -1 if it is continuously powered.
@@ -166,6 +193,12 @@ class AOSongAM2315 : public Sensor {
      * @copydoc Sensor::addSingleMeasurementResult()
      */
     bool addSingleMeasurementResult(void) override;
+
+ private:
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;
 };
 
 

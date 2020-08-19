@@ -13,6 +13,10 @@
  *
  * The tip counter works on an Adafruit Trinket.  Documentation for it can be
  * found at: https://github.com/EnviroDIY/TippingBucketRainCounter
+ *
+ * This depends on Testato's
+ * [SoftwareWire](https://github.com/Testato/SoftwareWire) library if software
+ * I2C is needed.
  */
 /* clang-format off */
 /**
@@ -44,6 +48,12 @@
  * @subsection i2c_rain_timing Sensor Timing
  * - Readings transferred from the tipping bucket to the logger are from past
  * tips, so there is no need to wait for stability or measuring.
+ * @subsection i2c_rain_flags Build flags
+ * - `-D MS_RAIN_SOFTWAREWIRE`
+ *      - switches from using hardware I2C to software I2C
+ * @warning Either all or none your attached tipping bucket counters may use software I2C.
+ * Using some with software I2C and others with hardware I2C is not supported.
+ * Though, honestly, having more than one attached seems pretty unlikely anyway.
  *
  * @section i2c_rain_tips Tips Output
  *   - Range and accuracy depend on the tipping bucket used
@@ -89,6 +99,10 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
+#if defined MS_RAIN_SOFTWAREWIRE
+#include <SoftwareWire.h>  // Testato's SoftwareWire
+#endif
+
 // Sensor Specific Defines
 
 /// Sensor::_numReturnedValues; the tipping bucket counter can report 2 values.
@@ -126,11 +140,62 @@
 /* clang-format on */
 class RainCounterI2C : public Sensor {
  public:
-    // The constructor - all arguments are optional
-    // Address of I2C device is 0x08 by default
-    // Depth of rain per tip event in mm is 0.2mm by default
+#if defined MS_RAIN_SOFTWAREWIRE
     /**
-     * @brief Construct a new Rain Counter I2C object
+     * @brief Construct a new Rain Counter I2C object using a *software* I2C
+     * instance.
+     *
+     * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
+     * instance for I2C communication.
+     * @param i2cAddressHex The I2C address of the Trinket; can be any number
+     * between 0x40 and 0x4F.  The default value is 0x08.
+     * @param rainPerTip The depth of rain from a single tip; most likely either
+     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
+     * default value is 0.2.
+     */
+    RainCounterI2C(SoftwareWire* theI2C, uint8_t i2cAddressHex = 0x08,
+                   float rainPerTip = 0.2);
+    /**
+     * @brief Construct a new Rain Counter I2C object, also creating a
+     * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
+     * communication with that object.
+     *
+     * @note Unless there are address conflicts between I2C devices, you should
+     * not create a new I2C instance.
+     *
+     * @param dataPin The pin on the mcu that will be used for I2C data (SDA).
+     * Must be a valid pin number.
+     * @param clockPin The pin on the mcu that will be used for the I2C clock
+     * (SCL).  Must be a valid pin number.
+     * @param i2cAddressHex The I2C address of the Trinket; can be any number
+     * between 0x40 and 0x4F.  The default value is 0x08.
+     * @param rainPerTip The depth of rain from a single tip; most likely either
+     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
+     * default value is 0.2.
+     */
+    RainCounterI2C(int8_t dataPin, int8_t clockPin,
+                   uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
+#else
+    /**
+     * @brief Construct a new Rain Counter I2C object using a secondary
+     * *hardware* I2C instance.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param i2cAddressHex The I2C address of the Trinket; can be any number
+     * between 0x40 and 0x4F.  The default value is 0x08.
+     * @param rainPerTip The depth of rain from a single tip; most likely either
+     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
+     * default value is 0.2.
+     */
+    RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex = 0x08,
+                   float rainPerTip = 0.2);
+    /**
+     * @brief Construct a new Rain Counter I2C object using the primary
+     * hardware I2C instance.
      *
      * @param i2cAddressHex The I2C address of the Trinket; can be any number
      * between 0x40 and 0x4F.  The default value is 0x08.
@@ -140,8 +205,10 @@ class RainCounterI2C : public Sensor {
      */
     explicit RainCounterI2C(uint8_t i2cAddressHex = 0x08,
                             float   rainPerTip    = 0.2);
+#endif
     /**
-     * @brief Destroy the Rain Counter I2C object
+     * @brief Destroy the Rain Counter I2C object.  Also destroy the software
+     * I2C instance if one was created.
      */
     ~RainCounterI2C();
 
@@ -149,9 +216,8 @@ class RainCounterI2C : public Sensor {
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
-     * This sets the #_powerPin mode, begins the Wire library (sets pin levels
-     * and modes for I2C), and updates the #_sensorStatus.  No sensor power is
-     * required.
+     * This begins the Wire library (sets pin levels and modes for I2C) and
+     * updates the #_sensorStatus.  No sensor power is required.
      *
      * @return **bool** True if the setup was successful.
      */
@@ -167,8 +233,31 @@ class RainCounterI2C : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    float   _rainPerTip;
+    /**
+     * @brief The depth of rain per tip.
+     */
+    float _rainPerTip;
+    /**
+     * @brief The I2C address of the Trinket counter.
+     */
     uint8_t _i2cAddressHex;
+#if defined MS_RAIN_SOFTWAREWIRE
+    /**
+     * @brief An internal reference to the SoftwareWire instance.
+     */
+    SoftwareWire* _i2c;  // Software Wire
+    /**
+     * @brief A flag denoting whether a new SoftwareWire instance was created.
+     * If it was created, it must be destroyed in the destructor to avoid a
+     * memory leak.
+     */
+    bool createdSoftwareWire;
+#else
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;  // Hardware Wire
+#endif
 };
 
 

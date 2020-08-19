@@ -49,6 +49,7 @@ install:
   - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
   - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
   - pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
+  - pio lib -g install SoftwareWire
   - pio update
 script:
   - platformio ci --project-conf="travis/platformio.ini"

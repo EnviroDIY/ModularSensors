@@ -55,6 +55,9 @@
  * MS5803!  If you are also using one of those sensors, make sure that the
  * address for that sensor does not conflict with the address of this sensor.
  *
+ * @note Software I2C is *not* supported for the BME280.
+ * A secondary hardware I2C on a SAMD board is supported.
+ *
  * @section bme280_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/
@@ -189,7 +192,30 @@
 class BoschBME280 : public Sensor {
  public:
     /**
-     * @brief Construct a new Bosch BME280 object
+     * @brief Construct a new Bosch BME280 object using a secondary *hardware*
+     * I2C instance.
+     *
+     * @note Software I2C is *not* supported for the BME280.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling power to the BME280
+     * Use -1 if it is continuously powered.
+     * - The BME280 requires a 1.7 - 3.6V power source
+     * @param i2cAddressHex The I2C address of the BME280; must be either 0x76
+     * or 0x77.  The default value is 0x76.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    BoschBME280(TwoWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex = 0x76,
+                uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new Bosch BME280 object using the primary hardware I2C
+     * instance.
      *
      * @param powerPin The pin on the mcu controlling power to the BME280
      * Use -1 if it is continuously powered.
@@ -241,15 +267,19 @@ class BoschBME280 : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
- protected:
+ private:
     /**
      * @brief Internal reference the the Adafruit BME object
      */
     Adafruit_BME280 bme_internal;
     /**
-     * @brief The I2C address of the BME280
+     * @brief The I2C address of the BME280.
      */
     uint8_t _i2cAddressHex;
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;
 };
 
 

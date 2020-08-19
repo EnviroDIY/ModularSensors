@@ -28,11 +28,14 @@
  * The Freescale Semiconductor MPL115A2 is a low-cost, low-power absolute
  * pressure sensor with a digital I2C output.  It is optimized for barometric
  * measurements. Because this sensor can have only one I2C address (0x60), it is
- * only possible to connect one of these sensors to your system.  This sensor
+ * only possible to connect one of these sensors to a single I2C bus.  This sensor
  * should be attached to a 2.375-5.5V power source and the power supply to the
  * sensor can be stopped between measurements.  Communication with the MPL115A2
  * is managed by the
  * [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2).
+ *
+ * @note Software I2C is *not* supported for the AM2315.
+ * A secondary hardware I2C on a SAMD board is supported.
  *
  * @section mpl115a2_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
@@ -45,7 +48,7 @@
  * @ctor_doc{MPL115A2, int8_t powerPin, uint8_t measurementsToAverage}
  * @subsection mpl115a2_timing Sensor Timing
  * - Sensor takes about 1.6 ms to respond
- * - Assume sensor is immediately stable
+ * - We assume the sensor is immediately stable.
  *
  * @section mpl115a2_temp Temperature Output
  *   - Range is -20°C to 85°C
@@ -128,9 +131,31 @@
 class MPL115A2 : public Sensor {
  public:
     /**
-     * @brief Construct a new MPL115A2
+     * @brief Construct a new MPL115A2 using a secondary *hardware* I2C
+     * instance.
      *
-     * @note It is only possible to connect *one* MPL115A2 at a time!
+     * @note It is only possible to connect *one* MPL115A2 at a time on a single
+     * I2C bus.  Software I2C is also not supported.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling power to the MPL115A2
+     * Use -1 if it is continuously powered.
+     * - The MPL115A2 requires a 2.375 - 5.5V power source
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    MPL115A2(TwoWire* theI2C, int8_t powerPin,
+             uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new MPL115A2 using the primary hardware I2C instance.
+     *
+     * @note It is only possible to connect *one* MPL115A2 at a time on a single
+     * I2C bus.  Software I2C is also not supported.
      *
      * @param powerPin The pin on the mcu controlling power to the MPL115A2
      * Use -1 if it is continuously powered.
@@ -168,8 +193,18 @@ class MPL115A2 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Private reference to the internal MPL115A2 object.
+     */
     Adafruit_MPL115A2 mpl115a2_internal;
-    uint8_t           _i2cAddressHex;
+    /**
+     * @brief The I2C address of the MPL115A2.
+     */
+    uint8_t _i2cAddressHex;
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;
 };
 
 

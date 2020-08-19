@@ -18,7 +18,7 @@
  *  https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
  *
  * Assume sensor is immediately stable
-*/
+ */
 
 // Header Guards
 #ifndef SRC_SENSORS_TallyCounterI2C_H_
@@ -48,11 +48,9 @@
 #define TALLY_EVENTS_VAR_NUM 0
 
 
-
-
 // The main class for the NorthernWidgetTally external event counter
 class TallyCounterI2C : public Sensor {
-public:
+ public:
     explicit TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex = 0x33);
     ~TallyCounterI2C();
     // Address of I2C device is 0x33 by default
@@ -63,25 +61,33 @@ public:
     bool   setup(void) override;
     String getSensorLocation(void) override;
 
-    bool   addSingleMeasurementResult(void) override;
-protected:
+    bool addSingleMeasurementResult(void) override;
+
+ private:
+    /**
+     * @brief Private reference to the internal Tally counter object.
+     */
     Tally_I2C counter_internal;
-    uint8_t   _i2cAddressHex;
+    /**
+     * @brief The I2C address of the Tally counter.
+     */
+    uint8_t _i2cAddressHex;
 };
 
 // Defines the Event varible, shows the number of Events since last read
 class TallyCounterI2C_Events : public Variable {
-public:
-    explicit TallyCounterI2C_Events(TallyCounterI2C* parentSense,  const char* uuid = "",
-                                    const char* varCode = "TallyCounterI2CEvents")
+ public:
+    explicit TallyCounterI2C_Events(
+        TallyCounterI2C* parentSense, const char* uuid = "",
+        const char* varCode = "TallyCounterI2CEvents")
         : Variable(parentSense, (const uint8_t)TALLY_EVENTS_VAR_NUM,
-                  (uint8_t)TALLY_EVENTS_RESOLUTION,
-                  "counter", "event", varCode, uuid) {}
+                   (uint8_t)TALLY_EVENTS_RESOLUTION, "counter", "event",
+                   varCode, uuid) {}
     TallyCounterI2C_Events()
-      : Variable((const uint8_t)TALLY_EVENTS_VAR_NUM,
-                 (uint8_t)TALLY_EVENTS_RESOLUTION, "counter",
-                 "event", "TallyCounterI2CEvents") {}
-    ~TallyCounterI2C_Events(){}
+        : Variable((const uint8_t)TALLY_EVENTS_VAR_NUM,
+                   (uint8_t)TALLY_EVENTS_RESOLUTION, "counter", "event",
+                   "TallyCounterI2CEvents") {}
+    ~TallyCounterI2C_Events() {}
 };
 
-#endif // SRC_SENSORS_TallyCounterI2C_H_
+#endif  // SRC_SENSORS_TallyCounterI2C_H_

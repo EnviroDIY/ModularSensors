@@ -173,7 +173,11 @@ class CampbellOBS3 : public Sensor {
     // calibration info
     /**
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
-     * ADS1X15 data channel, and the calibration info
+     * ADS1X15 data channel, and the calibration info.
+     *
+     * @note ModularSensors only supports connecting the ADS1x15 to the primary
+     * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
+     * a secondary hardware or software I2C instance is *not* supported!
      *
      * @param powerPin The pin on the mcu controlling power to the OBS3+
      * Use -1 if it is continuously powered.

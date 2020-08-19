@@ -33,6 +33,11 @@
  *   - warms up in 850ms
  *   - not stable until **10s** after warm-up
  *   - measurements take 900ms to complete
+ * @subsection atlas_co2_flags Build flags
+ * - `-D MS_ATLAS_SOFTWAREWIRE`
+ *      - switches from using hardware I2C to software I2C
+ * @warning Either all or none of the Atlas sensors can be using software I2C.
+ * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
  *
  * @note This has a long (10s) stabilization time!
  *
@@ -128,8 +133,93 @@
 /* clang-format on */
 class AtlasScientificCO2 : public AtlasParent {
  public:
+#if defined MS_ATLAS_SOFTWAREWIRE
     /**
-     * @brief Construct a new Atlas Scientific CO2 object
+     * @brief Construct a new Atlas Scientific CO2 object using a *software*
+     * I2C instance.
+     *
+     * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
+     * instance for I2C communication.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas CO2
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x69.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificCO2(SoftwareWire* theI2C, int8_t powerPin,
+                       uint8_t i2cAddressHex         = ATLAS_CO2_I2C_ADDR,
+                       uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new Atlas Scientific CO2 object, also creating a
+     * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
+     * communication with that object.
+     *
+     * Currently only
+     * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
+     * supported.
+     *
+     * @note Unless there are address conflicts between I2C devices, you should
+     * not create a new I2C instance.
+     *
+     * @param powerPin The pin on the mcu controlling powering to the Atlas CO2
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param dataPin The pin on the mcu that will be used for I2C data (SDA).
+     * Must be a valid pin number.
+     * @param clockPin The pin on the mcu that will be used for the I2C clock
+     * (SCL).  Must be a valid pin number.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x69.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificCO2(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                       uint8_t i2cAddressHex         = ATLAS_CO2_I2C_ADDR,
+                       uint8_t measurementsToAverage = 1);
+#else
+    /**
+     * @brief Construct a new Atlas Scientific CO2 object using a secondary
+     * *hardware* I2C instance.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling powering to the Atlas CO2
+     * circuit.  Use -1 if it is continuously powered.
+     * - Requires a 3.3V and 5V power supply
+     * @warning **You must isolate the data lines of all Atlas circuits from the
+     * main I2C bus if you wish to turn off their power!**  If you do not
+     * isolate them from your main I2C bus and you turn off power to the
+     * circuits between measurements the I2C lines will be pulled down to ground
+     * causing the I2C bus (and thus your logger) to crash.
+     * @param i2cAddressHex The I2C address of the Atlas circuit;
+     * optional with the Atlas-supplied default address of 0x69.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AtlasScientificCO2(TwoWire* theI2C, int8_t powerPin,
+                       uint8_t i2cAddressHex         = ATLAS_CO2_I2C_ADDR,
+                       uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new Atlas Scientific CO2 object using the primary
+     * hardware I2C instance.
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas CO2
      * circuit.  Use -1 if it is continuously powered.
@@ -148,8 +238,10 @@ class AtlasScientificCO2 : public AtlasParent {
     explicit AtlasScientificCO2(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_CO2_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1);
+#endif
     /**
-     * @brief Destroy the Atlas Scientific CO2 object - no action needed.
+     * @brief Destroy the Atlas Scientific CO2 object.  Also destroy the
+     * software I2C instance if one was created.
      */
     ~AtlasScientificCO2();
 
@@ -214,7 +306,6 @@ class AtlasScientificCO2_CO2 : public Variable {
  * @brief The Variable sub-class used for the
  * [temperature output](@ref atlas_co2_temp) from an
  * [Atlas Scientific CO2 circuit](@ref atlas_co2_group).
- *
  *
  * @ingroup atlas_co2_group
  */

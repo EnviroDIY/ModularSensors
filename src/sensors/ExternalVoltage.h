@@ -47,6 +47,9 @@
  * on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but *this library
  * always assumes the ADS is powered with 3.3V*.
  *
+ * @note ModularSensors only supports connecting the ADS1x15 to primary hardware I2C instance.
+ * Connecting the ADS to a secondary hardware or software I2C instance is *not* supported!
+ *
  * Communication with the ADS1x15 depends on the
  * [soligen2010 fork of the Adafruit ADS1015 library](https://github.com/soligen2010/Adafruit_ADS1X15).
  *
@@ -217,10 +220,14 @@ class ExternalVoltage : public Sensor {
  public:
     /**
      * @brief Construct a new External Voltage object - need the power pin and
-     * the data channel on the ADS1x15
+     * the data channel on the ADS1x15.
      *
      * The gain value, I2C address, and number of measurements to average are
      * optional.  If nothing is given a 1x gain is used.
+     *
+     * @note ModularSensors only supports connecting the ADS1x15 to the primary
+     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
+     * a secondary hardware or software I2C instance is *not* supported!
      *
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
