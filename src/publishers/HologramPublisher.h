@@ -1,16 +1,16 @@
-/*
- *HologramPublisher.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+/**
+ * @file HologramPublisher.h
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
- *
- *This file is for the EnviroDIY logging functions - ie, sending JSON data to
- * http://data.enviroDIY.org
-*/
+ * @brief Contains the HologramPublisher subclass of dataPublisher for
+ * publishing data to the Hologram API
+ */
 
 // Header Guards
-#ifndef HologramPublisher_h
-#define HologramPublisher_h
+#ifndef SRC_PUBLISHERS_HOLOGRAMPUBLISHER_H_
+#define SRC_PUBLISHERS_HOLOGRAMPUBLISHER_H_
 
 // Debugging Statement
 // #define MS_HOLOGRAMPUBLISHER_DEBUG
@@ -28,10 +28,12 @@
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
-class HologramPublisher : public dataPublisher
-{
-public:
+class HologramPublisher : public dataPublisher {
+ public:
     // Constructors
+    /**
+     * @brief Construct a new Hologram Publisher object with no members set.
+     */
     HologramPublisher();
     HologramPublisher(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
@@ -84,23 +86,23 @@ public:
 protected:
 
     // portions of the POST request
-    static const char *postEndpoint;
-    static const char *hologramHost;
-    static const int hologramPort;
-    static const char *authHeader;
-    // static const char *cacheHeader;
-    // static const char *connectionHeader;
-    static const char *contentLengthHeader;
-    static const char *contentTypeHeader;
+    static const char* postEndpoint;  ///< The endpoint
+    static const char* hologramHost;  ///< The host name
+    static const int   hologramPort;  ///< The host port
+    static const char* authHeader;    ///< The authorization header text
+    // static const char *cacheHeader;  ///< The cache header text
+    // static const char *connectionHeader;  ///< The keep alive header text
+    static const char* contentLengthHeader;  ///< The content length header text
+    static const char* contentTypeHeader;    ///< The content type header text
 
     // portions of the JSON
-    static const char *deviceIdTag;
-    static const char *bodyTag;
-    static const char *deviceId;
+    static const char* deviceIdTag; ///< The Hologram device ID tag
+    static const char* bodyTag;     ///< The Hologram body content tag
+    static const char* deviceId;    ///< The Hologram device ID
 
-private:
+ private:
     // Tokens and UUID's for EnviroDIY
-    const char *_registrationToken;
+    const char* _registrationToken;
 };
 
-#endif  // Header Guard
+#endif  // SRC_PUBLISHERS_HOLOGRAMPUBLISHER_H_
