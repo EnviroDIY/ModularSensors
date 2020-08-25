@@ -73,8 +73,9 @@ const char git_branch[] = ".";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 // const char *LoggerID = "TU001";
-const char* LoggerID        = LOGGERID_DEF_STR;
-const char* configIniID_def = configIniID_DEF_STR;
+const char* LoggerID          = LOGGERID_DEF_STR;
+const char* configIniID_def   = configIniID_DEF_STR;
+const char* configDescription = CONFIGURATION_DESCRIPTION_STR;
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 
@@ -88,9 +89,9 @@ int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
 uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
 uint8_t     postMax_num         = 0;  // Future 0,5-50
-//Common
-uint8_t     collectReadings     = COLLECT_READINGS_DEF;
-uint8_t     sendOffset_min      = SEND_OFFSET_MIN_DEF;
+// Common
+uint8_t collectReadings = COLLECT_READINGS_DEF;
+uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
 #endif  // UseModem_Module
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -281,7 +282,7 @@ DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // ==========================================================================
 #include <sensors/InsituTrollSdi12.h>
 
-const char*   ITROLLSDI12address   = "1";  // The SDI-12 Address of the ITROLL
+const char*   ITROLLSDI12address   = "1";  // SDI12 Address ITROLL
 const uint8_t ITROLLNumberReadings = 2;    // The number of readings to average
 const int8_t  IT_SDI12Power =
     sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
@@ -707,13 +708,13 @@ const char* registrationToken =
     registrationToken_UUID;  // Device registration token
 const char* samplingFeature = samplingFeature_UUID;  // Sampling feature UUID
 
-#if defined UseModem_Module
+#if defined UseModem_PushData
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 // EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient,
 // registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15, 0);
-#endif  // UseModem_Module
+#endif  // UseModem_PushData
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -817,10 +818,13 @@ void setup() {
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Build: "));
+    Serial.print(F("\n---Boot. Sw Build: "));
     Serial.print(build_ref);
     Serial.print(" ");
     Serial.println(git_branch);
+
+    Serial.print(F("Sw Name: "));
+    Serial.println(configDescription);
 
     Serial.print(F("ModularSensors version "));
     Serial.println(MODULAR_SENSORS_VERSION);
@@ -904,6 +908,10 @@ void setup() {
     Logger::setRTCTimeZone(0);
 
 #ifdef UseModem_Module
+#if !defined UseModem_PushData
+    const char None_STR[] = "None";
+    dataLogger.setSamplingFeatureUUID(None_STR);
+#endif  // UseModem_PushData
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     // modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
@@ -927,7 +935,7 @@ void setup() {
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
-#if defined UseModem_Module
+#if defined UseModem_PushData
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
@@ -936,7 +944,7 @@ void setup() {
     dataLogger.setSendEveryX(collectReadings);
     dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
 
-#endif  // UseModem_Module
+#endif  // UseModem_PushData
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST

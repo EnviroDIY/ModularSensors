@@ -429,9 +429,9 @@ void Logger::publishDataQuedToRemotes(void) {
 
     // Open debug file
 #if defined MS_LOGGERBASE_POSTS
-    retVal = postsLogHndl.open(postsLogFn_str, (O_WRITE | O_CREAT | O_AT_END));
-    if (!retVal) PRINTOUT(F("pubDQTR postsLogHndl.open err"), postsLogFn_str);
+    retVal = postLogOpen(postsLogFn_str);
 #endif  // MS_LOGGERBASE_POSTS
+
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] != NULL) {
             _dataPubInstance = i;
@@ -506,8 +506,7 @@ void Logger::publishDataQuedToRemotes(void) {
                          F("sec. Queued readings="), desz_pending_records);
 
                 if (HTTPSTATUS_CREATED_201 == rspCode) {
-                    MS_START_DEBUG_TIMER;
-                    MS_DBG(F("pubDQTR from"), serzQuedFn);
+                    MS_DBG(F("pubDQTR retry from"), serzQuedFn);
                     // Do retrys through publisher - if file exists
                     if (sd1_card_fatfs.exists(serzQuedFn)) {
                         uint8_t num_posted = 0;
@@ -541,10 +540,7 @@ void Logger::publishDataQuedToRemotes(void) {
             }
         }
     }
-
-#if defined MS_LOGGERBASE_POSTS
-    postsLogHndl.close();
-#endif  // MS_LOGGERBASE_POSTS
+    postLogClose();
 }
 
 void Logger::sendDataToRemotes(void) {

@@ -1,6 +1,6 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - tgt standalone testing MMW
-interface
+ms_cfg.h_test  - ModularSensors Configuration - testing MMW/WiFi
+
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -39,6 +39,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
+#define CONFIGURATION_DESCRIPTION_STR "tu_test basic WiFi"
+
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1
 #define USE_PS_HW_BOOT 1

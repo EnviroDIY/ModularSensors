@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_LT5  - ModularSensors Configuration - tgt _LT5 Acculevel / WiFi
+ms_cfg.h_LT5_lte  - ModularSensors Configuration - tgt _LT5 Acculevel /LTE
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -38,7 +38,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "tu_LT5 LT500,Acculevel WiFi"
+#define CONFIGURATION_DESCRIPTION_STR "tu_LT5_lte LT500,Acculevel"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1
@@ -81,9 +81,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // Instructions: define only one  _Module
-#define DigiXBeeWifi_Module 1
+//#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
+#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant
