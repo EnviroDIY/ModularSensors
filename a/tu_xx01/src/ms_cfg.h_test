@@ -1,6 +1,6 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - tgt standalone testing MMW
-interface
+ms_cfg.h_test  - ModularSensors Configuration - testing MMW/WiFi
+
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
