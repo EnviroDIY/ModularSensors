@@ -282,9 +282,7 @@ DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // ==========================================================================
 #include <sensors/InsituTrollSdi12.h>
 
-// const char*   ITROLLSDI12address   = "1";  // The SDI-12 Address of the
-// ITROLL
-const char*   ITROLLSDI12address   = "0";  // The SDI-12 Address of the ITROLL
+const char*   ITROLLSDI12address   = "1";  // SDI12 Address ITROLL
 const uint8_t ITROLLNumberReadings = 2;    // The number of readings to average
 const int8_t  IT_SDI12Power =
     sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
@@ -710,13 +708,13 @@ const char* registrationToken =
     registrationToken_UUID;  // Device registration token
 const char* samplingFeature = samplingFeature_UUID;  // Sampling feature UUID
 
-#if defined UseModem_Module
+#if defined UseModem_PushData
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 // EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient,
 // registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15, 0);
-#endif  // UseModem_Module
+#endif  // UseModem_PushData
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -820,12 +818,12 @@ void setup() {
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Build: "));
+    Serial.print(F("\n---Boot. Sw Build: "));
     Serial.print(build_ref);
     Serial.print(" ");
     Serial.println(git_branch);
 
-    Serial.print(F("Name: "));
+    Serial.print(F("Sw Name: "));
     Serial.println(configDescription);
 
     Serial.print(F("ModularSensors version "));
@@ -910,6 +908,10 @@ void setup() {
     Logger::setRTCTimeZone(0);
 
 #ifdef UseModem_Module
+#if !defined UseModem_PushData
+    const char None_STR[] = "None";
+    dataLogger.setSamplingFeatureUUID(None_STR);
+#endif  // UseModem_PushData
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     // modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
@@ -933,7 +935,7 @@ void setup() {
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
-#if defined UseModem_Module
+#if defined UseModem_PushData
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.registration_token,
                         ps_ram.app.provider.s.sampling_feature);
@@ -942,7 +944,7 @@ void setup() {
     dataLogger.setSendEveryX(collectReadings);
     dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
 
-#endif  // UseModem_Module
+#endif  // UseModem_PushData
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
