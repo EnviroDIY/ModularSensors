@@ -608,6 +608,7 @@ void Logger::setPs_cache(persistent_store_t* ps_ram) {
 }
 
 extern const String build_ref;
+extern const char*  configDescription;
 void                Logger::printFileHeaderExtra(Stream* stream) {
     if (NULL == ps_cache) return;
     stream->print(F("Location: "));
@@ -618,9 +619,11 @@ void                Logger::printFileHeaderExtra(Stream* stream) {
     stream->println(ps_cache->app.msc.s.time_zone);
     stream->print(F("  BatteryType: "));
     stream->println(ps_cache->app.msc.s.battery_type);
-    stream->print(F("Sw Build: "));
-    stream->print(build_ref);
-    stream->print(F(" ModularSensors vers "));
+    stream->print(F("Sw Name: "));
+    stream->print(configDescription);
+    stream->print(F(". Sw Build: "));
+    stream->println(build_ref);
+    stream->print(F("ModularSensors vers "));
     stream->println(MODULAR_SENSORS_VERSION);
 #if defined USE_PS_HW_BOOT
     stream->print(F("Board: "));
@@ -1017,6 +1020,8 @@ bool Logger::deszDbg(void) {
 }
 
 bool Logger::postLogOpen(const char* postLogNam_str) {
+    bool retVal = false;
+#if defined MS_LOGGERBASE_POSTS
     // Generate the file name from logger ID and date
     String fileName = String(postLogNam_str);
 
@@ -1035,7 +1040,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
     fileName.toCharArray(charFileName, fileNameLength);
 
     // Attempt to open an existing file
-    bool retVal = postsLogHndl.open(charFileName, (O_WRITE | O_AT_END));
+    retVal = postsLogHndl.open(charFileName, (O_WRITE | O_AT_END));
     if (!retVal) {
         retVal = postsLogHndl.open(charFileName,
                                    (O_CREAT | O_WRITE | O_AT_END));
@@ -1047,6 +1052,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
             MS_DBG(F("logPLO new file"), charFileName);
         }
     }
+#endif  // MS_LOGGERBASE_POSTS
     return retVal;
 }
 
