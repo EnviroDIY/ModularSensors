@@ -137,7 +137,7 @@ void UbidotsPublisher::printSensorDataJSON(Stream *stream)
         stream->print(F("\":{'value':"));
         stream->print(_baseLogger->getValueStringAtI(i));
         stream->print(",'timestamp':");
-        stream->print(Logger::markedEpochTime);
+        stream->print(Logger::markedEpochTimeUTC);
         stream->print(F("000}"));  //Convert microseconds to milliseconds for ubidots
         if (i + 1 != _baseLogger->getArrayVarCount())
         {
@@ -264,7 +264,7 @@ int16_t UbidotsPublisher::publishData(Client *_outClient)
             strcat(txBuffer,"timestamp");
             txBuffer[strlen(txBuffer)] = '"';
             txBuffer[strlen(txBuffer)] = ':';
-            ltoa((Logger::markedEpochTime), tempBuffer, 10);  // BASE 10
+            ltoa((Logger::markedEpochTimeUTC), tempBuffer, 10);  // BASE 10
             strcat(txBuffer, tempBuffer);
             strcat(txBuffer,"000");
             if (i + 1 != _baseLogger->getArrayVarCount())

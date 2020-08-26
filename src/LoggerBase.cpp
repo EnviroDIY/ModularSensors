@@ -27,7 +27,8 @@ int8_t Logger::_loggerTimeZone = 0;
 // Initialize the static time adjustment
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
-uint32_t Logger::markedEpochTime = 0;
+uint32_t Logger::markedEpochTime    = 0;
+uint32_t Logger::markedEpochTimeUTC = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -594,7 +595,9 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // sensor was updated, just a single marked time.  By custom, this should be
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
-    Logger::markedEpochTime = getNowEpoch();
+    Logger::markedEpochTime    = getNowEpoch();
+    Logger::markedEpochTimeUTC = markedEpochTime
+                                 - ((uint32_t)_loggerRTCOffset) * 3600;
 }
 
 
