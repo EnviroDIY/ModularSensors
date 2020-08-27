@@ -2,6 +2,7 @@
  * @file HologramPublisher.cpp
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Dan Nowacki <dnowacki@usgs.gov>
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the HologramPublisher class.
@@ -21,22 +22,29 @@ const char* HologramPublisher::postEndpoint = "/api/1/csr/data/";
 const char* HologramPublisher::hologramHost = "cloudsocket.hologram.io";
 const int   HologramPublisher::hologramPort = 9999;
 const char* HologramPublisher::authHeader = "\r\nAuthorization: Basic ";
+//
+//
+//
 const char* HologramPublisher::contentLengthHeader = "\r\nContent-Length: ";
-const char* HologramPublisher::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
+const char* HologramPublisher::contentTypeHeader =
+                                "\r\nContent-Type: application/json\r\n\r\n";
 
 const char* HologramPublisher::deviceIdTag = "{\"deviceid\":";
 const char* HologramPublisher::bodyTag = ",\"body\":\"";
-const char* HologramPublisher::deviceId = "xxxxxx"; // enter 6-digit Hologram device ID here
+const char* HologramPublisher::deviceId = "xxxxxx";
+    // enter 6-digit Hologram device ID here
 
 
 // Constructors
 HologramPublisher::HologramPublisher() : dataPublisher() {
     // MS_DBG(F("dataPublisher object created"));
+    _registrationToken = NULL;
 }
 HologramPublisher::HologramPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                      uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     // MS_DBG(F("dataPublisher object created"));
+    _registrationToken = NULL;
 }
 HologramPublisher::HologramPublisher(Logger& baseLogger, Client* inClient,
                                      uint8_t sendEveryX, uint8_t sendOffset)
@@ -72,8 +80,7 @@ void HologramPublisher::setToken(const char* registrationToken) {
 
 
 // Calculates how long the JSON will be
-uint16_t HologramPublisher::calculateJsonSize()
-{
+uint16_t HologramPublisher::calculateJsonSize() {
     uint16_t jsonLength = 12;  // {"deviceid":
     jsonLength += 6;           // six-digit device ID
     jsonLength += 10;          // ","body":"
@@ -114,8 +121,7 @@ uint16_t HologramPublisher::calculatePostSize()
 
 
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
-void HologramPublisher::printSensorDataJSON(Stream *stream)
-{
+void HologramPublisher::printSensorDataJSON(Stream* stream) {
     stream->print(deviceIdTag);
     stream->print(deviceId);
     stream->print(bodyTag);
@@ -136,8 +142,7 @@ void HologramPublisher::printSensorDataJSON(Stream *stream)
 
 // This prints a fully structured post request for EnviroDIY to the
 // specified stream.
-void HologramPublisher::printEnviroDIYRequest(Stream *stream)
-{
+void HologramPublisher::printEnviroDIYRequest(Stream* stream) {
     // Stream the HTTP headers for the post request
     stream->print(postHeader);
     stream->print(postEndpoint);
@@ -160,16 +165,14 @@ void HologramPublisher::printEnviroDIYRequest(Stream *stream)
 // A way to begin with everything already set
 void HologramPublisher::begin(Logger& baseLogger, Client* inClient,
                                const char* registrationToken,
-                               const char* samplingFeatureUUID)
-{
+                               const char* samplingFeatureUUID) {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger, inClient);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 void HologramPublisher::begin(Logger&      baseLogger,
                                const char* registrationToken,
-                               const char* samplingFeatureUUID)
-{
+                               const char* samplingFeatureUUID) {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
@@ -181,8 +184,7 @@ void HologramPublisher::begin(Logger&      baseLogger,
 // over that connection.
 // The return is the http status code of the response.
 // int16_t HologramPublisher::postDataEnviroDIY(void)
-int16_t HologramPublisher::publishData(Client* outClient)
-{
+int16_t HologramPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
