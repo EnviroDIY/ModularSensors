@@ -35,11 +35,13 @@ const char* UbidotsPublisher::payload = "{";
 // Constructors
 UbidotsPublisher::UbidotsPublisher()  : dataPublisher() {
     // MS_DBG(F("dataPublisher object created"));
+    _authentificationToken = NULL;
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                    uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     // MS_DBG(F("dataPublisher object created"));
+    _authentificationToken = NULL;
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    uint8_t sendEveryX, uint8_t sendOffset)
