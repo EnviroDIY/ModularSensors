@@ -87,9 +87,12 @@ public:
      * @brief Construct a new Ubidots Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param authentificationToken The authentication token for the device
-     * that is automatically set by the Ubdots portal.
-     * @param deviceID The device code selected by the user to be recognizable.
+     * @param authentificationToken The authentication token from Ubdots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
+     * @param deviceID The device API Label from Ubidots, derived from the
+     * user-specified device name.
      * @param sendEveryX Currently unimplemented, intended for future use to
      * enable caching and bulk publishing
      * @param sendOffset Currently unimplemented, intended for future use to
@@ -106,9 +109,12 @@ public:
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param authentificationToken The authentication token for the device
-     * that is automatically set by the Ubdots portal.
-     * @param deviceID The device code selected by the user to be recognizable.
+     * @param authentificationToken The authentication token from Ubdots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
+     * @param deviceID The device API Label from Ubidots, derived from the
+     * user-specified device name.
      * @param sendEveryX Currently unimplemented, intended for future use to
      * enable caching and bulk publishing
      * @param sendOffset Currently unimplemented, intended for future use to
@@ -133,8 +139,10 @@ public:
     /**
      * @brief Set the device authentication token
      *
-     * @param authentificationToken The authentication token for the device
-     * that is automatically set by the Ubdots portal.
+     * @param authentificationToken The authentication token from Ubdots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
      */
     void setToken(const char* authentificationToken);
 
@@ -172,17 +180,23 @@ public:
     // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param authentificationToken The authentication token for the device
-     * that is automatically set by the Ubdots portal.
-     * @param deviceID The device code selected by the user to be recognizable.
+     * @param authentificationToken The authentication token from Ubdots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
+     * @param deviceID The device API Label from Ubidots, derived from the
+     * user-specified device name.
      */
     void begin(Logger& baseLogger, Client* inClient,
                const char* authentificationToken, const char* deviceID);
     /**
     * @copydoc dataPublisher::begin(Logger& baseLogger)
-    * @param authentificationToken The authentication token for the device
-    * that is automatically set by the Ubdots portal.
-    * @param deviceID The device code selected by the user to be recognizable.
+    * @param authentificationToken The authentication token from Ubdots, either
+    * the Organization's Integration Token (under Users > Organization menu,
+    * visible by Admin only) OR the STEM User's Device Token (under the
+    * specific device's setup panel).
+    * @param deviceID The device API Label from Ubidots, derived from the
+    * user-specified device name.
     */
     void begin(Logger& baseLogger, const char* authentificationToken,
               const char* deviceID);

@@ -12,7 +12,7 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for the Ubidots API.
 // ============================================================================
 
 // Constant values for post requests

@@ -253,8 +253,12 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 //    A Publisher to Ubidots
 // ==========================================================================
-const char *authentificationToken = "BBFF-3SW5GCgLEF4DVUpYRNMylqFyXAFUDA";   // Device registration token
-const char *deviceID = "GSI_River1";     // Device API ID used on unbidots (no spaces or special characters)
+const char *authentificationToken = "BBFF-3SW5GCgLEF4DVUpYRNMylqFyXAFUDA";
+    // Organization's Integration Token (find under Users > Organization menu,
+    // visible by Admin only) OR ...
+    // STEM User's Device Token (find under the specific device's setup panel)
+const char *deviceID = "GSI_River1";     // Device API Label from Ubidots
+    // (find under the specific device's setup; no spaces or special characters)
 
 #include <publishers/UbidotsPublisher.h>
 UbidotsPublisher UbidotsPOST(dataLogger, &modem.gsmClient, authentificationToken, deviceID);
