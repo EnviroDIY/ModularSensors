@@ -724,33 +724,36 @@ bool Logger::serzQuedCloseFile(bool flush) {
             return false;
         }
 
-        /*  copy lines from tempFile to tgtoutFile */
+        /* There may be 0, or more of unsent records to copy from tempFile to
+        tgtoutFile How to determine if 0 */
         int16_t  num_char  = strlen(deszq_line);
-        uint16_t num_lines = 1;
+        uint16_t num_lines = 0;
         // First write out the recently attemtpted
-        MS_DBG(F("First:"), deszq_line, F(":"));
-        retNum = tgtoutFile.write(deszq_line, num_char);
-        if (retNum != num_char) {
-            PRINTOUT(F("seQCF tgtoutFile write1 err"), num_char);
-            // sd1_Err("seQCF write2");
-        } else {
-            MS_DBG(F("seQCF cpy lines across"));
-            while (0 < (num_char = serzQuedFile.fgets(deszq_line,
-                                                      QUEFILE_MAX_LINE))) {
-                retNum = tgtoutFile.write(deszq_line, num_char);
-                // Squelch last char LF
-                deszq_line[sizeof(deszq_line) - 1] = 0;
-                MS_DBG(deszq_line);
-                if (retNum != num_char) {
-                    PRINTOUT(F("seQCF tgtoutFile write3 err"), num_char,
-                             retNum);
-                    // sd1_Err("seQCF write4");
-                    break;
+        MS_DBG(F("First("), num_char, F("):"), deszq_line, F(":"));
+        if (num_char) {  // Test could be min size, but this unknown
+            retNum = tgtoutFile.write(deszq_line, num_char);
+            if (retNum != num_char) {
+                PRINTOUT(F("seQCF tgtoutFile write1 err"), num_char);
+                // sd1_Err("seQCF write2");
+            } else {
+                MS_DBG(F("seQCF cpy lines across"));
+                while (0 < (num_char = serzQuedFile.fgets(deszq_line,
+                                                          QUEFILE_MAX_LINE))) {
+                    retNum = tgtoutFile.write(deszq_line, num_char);
+                    // Squelch last char LF
+                    deszq_line[sizeof(deszq_line) - 1] = 0;
+                    MS_DBG(deszq_line);
+                    if (retNum != num_char) {
+                        PRINTOUT(F("seQCF tgtoutFile write3 err"), num_char,
+                                 retNum);
+                        // sd1_Err("seQCF write4");
+                        break;
+                    }
+                    num_lines++;
                 }
-                num_lines++;
             }
         }
-        MS_DBG(F("seQCF wrote unsent records"), num_lines);
+        PRINTOUT(F("seQCF Que for next pass unsent records"), num_lines);
         desz_pending_records = num_lines;
 
         retBool = tgtoutFile.close();

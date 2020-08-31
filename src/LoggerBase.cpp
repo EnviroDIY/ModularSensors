@@ -518,6 +518,7 @@ void Logger::publishDataQuedToRemotes(void) {
                             postLogLine(i, rspCode);
                             if (HTTPSTATUS_CREATED_201 != rspCode) break;
                             num_posted++;
+                            deszq_line[0] = 0;  // Show completed
                         }
 // increment status of number attempts
 #if 0
