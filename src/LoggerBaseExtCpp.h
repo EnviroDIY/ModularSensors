@@ -652,15 +652,19 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 
 // This update the timestamp on a file
 void Logger::setFileTimeStampMet(File fileToStamp, uint8_t stampFlag) {
-    DateTime markedDt(Logger::markedEpochTime);
+    DateTime markedDt(Logger::markedEpochTime - EPOCH_TIME_OFF);
 
     bool crStat = fileToStamp.timestamp(
         stampFlag, markedDt.year(), markedDt.month(), markedDt.date(),
         markedDt.hour(), markedDt.minute(), markedDt.second());
-    if (!crStat)
+    if (!crStat) {
+        //#define BUFNAM_SZ 15
+        // char bufferName[BUFNAM_SZ];
+        // fileToStamp.getName(bufferName, BUFNAM_SZ);
         PRINTOUT(F("sFTSMet err for "), markedDt.year(), markedDt.month(),
                  markedDt.date(), markedDt.hour(), markedDt.minute(),
                  markedDt.second());
+    }
 }
 
 #define DELIM_CHAR2 ','
