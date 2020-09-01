@@ -2429,10 +2429,7 @@ body > header > nav.m-navbar-cover:target {
 body > header > nav.m-navbar-landing #m-navbar-brand.m-navbar-brand-hidden {
   visibility: hidden;
 }
-body
-  > header
-  > nav.m-navbar-landing:target
-  #m-navbar-brand.m-navbar-brand-hidden {
+body > header > nav.m-navbar-landing:target #m-navbar-brand.m-navbar-brand-hidden {
   visibility: visible;
 }
 body > header > nav {
@@ -2495,12 +2492,21 @@ body > header > nav #m-navbar-collapse li a {
   line-height: 1.5rem;
   margin-left: -0.25rem;
   padding-left: 0.75rem;
-  border-width: 0 0 0 0.25rem;
+  border-width: 0 1px 1px 1px;
   width: 100%;
+}
+body > header > nav #m-navbar-collapse li ol {
+  border-color: #ddd;
 }
 body > header > nav #m-navbar-collapse li a#m-navbar-current {
   color: #ffffff;
-  border-color: #ffffff;
+  background-color: #000000;
+  border-color: #000000;
+}
+body > header > nav #m-navbar-collapse li ol li a#m-navbar-current {
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #ddd;
 }
 body > header > nav ol {
   list-style-type: none;
@@ -2658,14 +2664,15 @@ article h1 {
 article h1 .m-breadcrumb {
   color: #bdbdbd;
   font-weight: normal;
+  font-size: 16px;
 }
 article h1 .m-breadcrumb a {
-  color: #000000;
+  color: #26a9e0;
 }
 article h1 .m-breadcrumb a:hover,
 article h1 a:focus,
 article h1 a:active {
-  color: #000000;
+  color: #26a9e0;
 }
 article > header h1 {
   font-size: 2rem;
@@ -2941,16 +2948,8 @@ article section:last-child {
 .m-container-inflatable section:target section > .m-frame,
 .m-container-inflatable section:target section > .m-block,
 .m-container-inflatable section:target section > pre,
-.m-container-inflatable
-  section:target
-  section
-  > .m-code-figure
-  > pre:first-child,
-.m-container-inflatable
-  section:target
-  section
-  > .m-console-figure
-  > pre:first-child,
+.m-container-inflatable section:target section > .m-code-figure > pre:first-child,
+.m-container-inflatable section:target section > .m-console-figure > pre:first-child,
 .m-container-inflatable section:target [class*="m-center-"] > .m-note,
 .m-container-inflatable section:target [class*="m-center-"] > .m-frame,
 .m-container-inflatable section:target [class*="m-center-"] > .m-block,
@@ -3018,34 +3017,13 @@ article section:last-child {
 .m-container-inflatable section:target > .m-console-figure::before,
 .m-container-inflatable section:target section > .m-code-figure::before,
 .m-container-inflatable section:target section > .m-console-figure::before,
-.m-container-inflatable
-  section:target
-  [class*="m-center-"]
-  > .m-code-figure::before,
-.m-container-inflatable
-  section:target
-  [class*="m-center-"]
-  > .m-console-figure::before,
-.m-container-inflatable
-  section:target
-  [class*="m-left-"]
-  > .m-code-figure::before,
-.m-container-inflatable
-  section:target
-  [class*="m-left-"]
-  > .m-console-figure::before,
-.m-container-inflatable
-  section:target
-  [class*="m-right-"]
-  > .m-code-figure::before,
-.m-container-inflatable
-  section:target
-  [class*="m-right-"]
-  > .m-console-figure::before,
-.m-container-inflatable
-  section:target
-  .m-container-inflate
-  > .m-code-figure::before,
+.m-container-inflatable section:target [class*="m-center-"] > .m-code-figure::before,
+.m-container-inflatable section:target [class*="m-center-"] > .m-console-figure::before,
+.m-container-inflatable section:target [class*="m-left-"] > .m-code-figure::before,
+.m-container-inflatable section:target [class*="m-left-"] > .m-console-figure::before,
+.m-container-inflatable section:target [class*="m-right-"] > .m-code-figure::before,
+.m-container-inflatable section:target [class*="m-right-"] > .m-console-figure::before,
+.m-container-inflatable section:target .m-container-inflate > .m-code-figure::before,
 .m-container-inflatable
   section:target
   .m-container-inflate
@@ -3111,22 +3089,10 @@ article section:last-child {
     border-left-width: 0;
     padding-left: 1rem;
   }
-  .m-container-inflatable
-    section:target
-    .m-center-s
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-center-s
-    > figure.m-console-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-s
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-s
-    > figure.m-console-figure::before {
+  .m-container-inflatable section:target .m-center-s > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-center-s > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-console-figure::before {
     border-top-left-radius: 0.1rem;
     border-bottom-left-radius: 0.1rem;
     border-left-width: 0.125rem;
@@ -3184,22 +3150,10 @@ article section:last-child {
     border-left-width: 0;
     padding-left: 1rem;
   }
-  .m-container-inflatable
-    section:target
-    .m-center-m
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-center-m
-    > figure.m-console-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-m
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-m
-    > figure.m-console-figure::before {
+  .m-container-inflatable section:target .m-center-m > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-center-m > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-console-figure::before {
     border-top-left-radius: 0.1rem;
     border-bottom-left-radius: 0.1rem;
     border-left-width: 0.125rem;
@@ -3257,22 +3211,10 @@ article section:last-child {
     border-left-width: 0;
     padding-left: 1rem;
   }
-  .m-container-inflatable
-    section:target
-    .m-center-l
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-center-l
-    > figure.m-console-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-l
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-l
-    > figure.m-console-figure::before {
+  .m-container-inflatable section:target .m-center-l > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-center-l > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-console-figure::before {
     border-top-left-radius: 0.1rem;
     border-bottom-left-radius: 0.1rem;
     border-left-width: 0.125rem;
@@ -3281,10 +3223,7 @@ article section:last-child {
 .m-container-inflatable section:target > figure.m-code-figure::before,
 .m-container-inflatable section:target > figure.m-console-figure::before,
 .m-container-inflatable section:target section > figure.m-code-figure::before,
-.m-container-inflatable
-  section:target
-  section
-  > figure.m-console-figure::before,
+.m-container-inflatable section:target section > figure.m-console-figure::before,
 .m-container-inflatable
   section:target
   [class*="m-center-"]
@@ -3320,77 +3259,38 @@ article section:last-child {
   border-left-color: #ddd;
 }
 @media screen and (min-width: 576px) {
-  .m-container-inflatable
-    section:target
-    .m-center-s
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-s
-    > figure.m-code-figure::before {
+  .m-container-inflatable section:target .m-center-s > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-code-figure::before {
     border-color: #f7f7f7;
   }
-  .m-container-inflatable
-    section:target
-    .m-center-s
-    > figure.m-console-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-s
-    > figure.m-console-figure::before {
+  .m-container-inflatable section:target .m-center-s > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-console-figure::before {
     border-color: #f7f7f7;
   }
 }
 @media screen and (min-width: 768px) {
-  .m-container-inflatable
-    section:target
-    .m-center-m
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-m
-    > figure.m-code-figure::before {
+  .m-container-inflatable section:target .m-center-m > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-code-figure::before {
     border-color: #f7f7f7;
   }
-  .m-container-inflatable
-    section:target
-    .m-center-m
-    > figure.m-console-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-m
-    > figure.m-console-figure::before {
+  .m-container-inflatable section:target .m-center-m > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-console-figure::before {
     border-color: #f7f7f7;
   }
 }
 @media screen and (min-width: 992px) {
-  .m-container-inflatable
-    section:target
-    .m-center-l
-    > figure.m-code-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-l
-    > figure.m-code-figure::before {
+  .m-container-inflatable section:target .m-center-l > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-code-figure::before {
     border-color: #f7f7f7;
   }
-  .m-container-inflatable
-    section:target
-    .m-center-l
-    > figure.m-console-figure::before,
-  .m-container-inflatable
-    section:target
-    .m-right-l
-    > figure.m-console-figure::before {
+  .m-container-inflatable section:target .m-center-l > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-console-figure::before {
     border-color: #f7f7f7;
   }
 }
 .m-container-inflatable section:target pre,
 .m-container-inflatable section:target figure.m-code-figure > pre:first-child,
-.m-container-inflatable
-  section:target
-  figure.m-console-figure
-  > pre:first-child {
+.m-container-inflatable section:target figure.m-console-figure > pre:first-child {
   border-color: #ddd;
 }
 .m-container-inflatable section:target .m-note.m-default {

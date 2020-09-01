@@ -107,7 +107,7 @@ jobs:
         token: $GH_REPO_TOKEN
         edge: true # opt in to dpl v2
         keep_history: false
-        local_dir: $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen/html
+        local_dir: $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen/m.css
         project_name: ModularSensors
 
     - name: "Check Single Sensor Example"

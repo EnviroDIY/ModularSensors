@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.25.2
-
 This sketch is an example of logging data to an SD card
 
 DISCLAIMER:
@@ -96,9 +94,8 @@ const uint8_t TallyCounterI2CAddress = 0x33;
 TallyCounterI2C tallyi2c(TallyPower, TallyCounterI2CAddress);
 
 // Create variable pointers for the Tally event counter
-Variable *tallyEvents =
-    new TallyCounterI2C_Events(&tallyi2c,
-        "12345678-abcd-1234-efgh-1234567890ab");
+Variable* tallyEvents = new TallyCounterI2C_Events(
+    &tallyi2c, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -111,17 +108,17 @@ Variable *tallyEvents =
 // variable->getValue()
 
 float calculateWindSpeed(void) {
-    float tallyWindSpeed = -9999;  // Always safest to start with a bad value
-    float period = -9999;  // seconds between gettting event counts
-    float frequency = -9999;  // average event frequency in Hz
+    float tallyWindSpeed  = -9999;  // Always safest to start with a bad value
+    float period          = -9999;  // seconds between gettting event counts
+    float frequency       = -9999;  // average event frequency in Hz
     float tallyEventCount = tallyEvents->getValue();
     if (tallyEventCount != -9999)  // make sure both inputs are good
     {
-        period = loggingInterval * 60.0;    // in seconds
-        frequency = tallyEventCount/period; // average event frequency in Hz
+        period    = loggingInterval * 60.0;    // in seconds
+        frequency = tallyEventCount / period;  // average event frequency in Hz
         tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h,
         // 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
-    	// https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
+        // https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
     }
     return tallyWindSpeed;
 }
@@ -130,18 +127,18 @@ float calculateWindSpeed(void) {
 // The number of digits after the decimal place
 const uint8_t calculatedVarResolution = 3;
 // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *calculatedVarName = "windSpeed";
+const char* calculatedVarName = "windSpeed";
 // This must be a value from http://vocabulary.odm2.org/units/
-const char *calculatedVarUnit = "KilometerPerHour";
+const char* calculatedVarUnit = "KilometerPerHour";
 // A short code for the variable
-const char *calculatedVarCode = "TallyWindSpeed";
+const char* calculatedVarCode = "TallyWindSpeed";
 // The (optional) universallly unique identifier
-const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";
+const char* calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";
 
 // Create a calculated variable pointer and return a variable pointer to it
-Variable *calculatedWindSpeed = new Variable(
-    calculateWindSpeed, calculatedVarResolution, calculatedVarName,
-    calculatedVarUnit, calculatedVarCode, calculatedVarUUID);
+Variable* calculatedWindSpeed =
+    new Variable(calculateWindSpeed, calculatedVarResolution, calculatedVarName,
+                 calculatedVarUnit, calculatedVarCode, calculatedVarUUID);
 
 
 // ==========================================================================
@@ -182,15 +179,15 @@ Logger dataLogger;
 
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 

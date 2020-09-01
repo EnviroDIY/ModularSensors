@@ -63,6 +63,7 @@ Temporary Items
 lib/readme.txt
 include/readme.txt
 /platformio.ini
+.sconsign.dblite
 
 # VSCode
 .vscode/.browse.c_cpp.db*
@@ -78,21 +79,12 @@ YosemitechDO/
 LongTermLogger/
 barometric_correction/
 3G_Test/
-LocalDoxyfile
-DoxygenOutput.log
-Doxyfile-mcss
+
 __pycache__/
-custom_*.css
-socialize_*.css
-docs/custom_search.css
-docs/custom_tabs_archive.css
-docs/custom_tabs.css
-docs/envirodiy.html
-docs/footer.html
-docs/header_archive.html
-docs/header.html
+docs/LocalDoxyfile
 runDoxygen.bat
+docs/examples/*
+docs/doxygenOutput.log
 docs/mcss-doxy-output.log
-docs/mcss-output.log
 docs/mcss.log
-docs/mcssDoxygenOutput.log
+doygen-run.log
