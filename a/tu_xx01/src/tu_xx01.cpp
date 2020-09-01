@@ -250,6 +250,30 @@ DigiXBeeWifi modemXBWF(&modemSerHw, modemVccPin, modemStatusPin,
 DigiXBeeWifi modemPhy = modemXBWF;
 #endif  // DigiXBeeWifi_Module
 
+// ==========================================================================
+// Units conversion functions
+// ==========================================================================
+#define SENSOR_T_DEFAULT_F -0.009999
+float convertDegCtoF(float tempInput) {  // Simple deg C to deg F conversion
+    if (-9999 == tempInput) return SENSOR_T_DEFAULT_F;
+    if (SENSOR_T_DEFAULT_F == tempInput) return SENSOR_T_DEFAULT_F;
+    return tempInput * 1.8 + 32;
+}
+
+float convertMmtoIn(float mmInput) {  // Simple millimeters to inches conversion
+    if (-9999 == mmInput) return SENSOR_T_DEFAULT_F;
+    if (SENSOR_T_DEFAULT_F == mmInput) return SENSOR_T_DEFAULT_F;
+    return mmInput / 25.4;
+}
+float convert_mtoFt(float mInput) {  // meters to feet conversion
+    if (-9999 == mInput) return SENSOR_T_DEFAULT_F;
+    if (SENSOR_T_DEFAULT_F == mInput) return SENSOR_T_DEFAULT_F;
+
+#define meter_to_feet 3.28084
+    //   (1000 * mInput) / (25.4 * 12);
+    return (meter_to_feet * mInput);
+}
+
 #if 0
 // ==========================================================================
 //    Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
@@ -390,6 +414,31 @@ KellerAcculevel acculevel_snsr(acculevelModbusAddress, modbusSerial,
 // KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *acculevHeight = new KellerAcculevel_Height(&acculevel,
 // "12345678-abcd-1234-efgh-1234567890ab");
+
+#if KellerAcculevel_DepthUnits > 1
+// Create a depth variable pointer for the KellerAcculevel
+Variable* kAcculevelDepth_m = new KellerAcculevel_Height(&acculevel_snsr,
+                                                         "NotUsed");
+
+float kAcculevelDepth_worker(void) {  // Convert depth KA
+    // Get new reading
+    float depth_m  = kAcculevelDepth_m->getValue(true);
+    float depth_ft = convert_mtoFt(depth_m);
+    MS_DEEP_DBG(F("Acculevel ft"), depth_ft, F("from m"), depth_m);
+    return depth_ft;
+}
+
+// Setup the object that does the operation
+Variable* KAcculevelHeightFt_var =
+    new Variable(kAcculevelDepth_worker,  // function that does the calculation
+                 3,                       // resolution
+                 "Acculevel Depth",       // var name. This must be a value from
+                                     // http://vocabulary.odm2.org/variablename/
+                 "Feet",  // var unit. This must be a value from This must be a
+                          // value from http://vocabulary.odm2.org/units/
+                 "waterDepth",  // var code
+                 KellerXxlevel_Height_UUID);
+#endif  // KellerAcculevel_DepthUnits
 #endif  // KellerAcculevel_ACT
 
 
@@ -518,21 +567,7 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt,
 // "12345678-abcd-1234-ef00-1234567890ab");
 #endif  // ExternalVoltage_ACT
-// ==========================================================================
-// Units conversion functions
-// ==========================================================================
-#define SENSOR_T_DEFAULT_F -0.009999
-float convertDegCtoF(float tempInput) {  // Simple deg C to deg F conversion
-    if (-9999 == tempInput) return SENSOR_T_DEFAULT_F;
-    if (SENSOR_T_DEFAULT_F == tempInput) return SENSOR_T_DEFAULT_F;
-    return tempInput * 1.8 + 32;
-}
 
-float convertMmtoIn(float mmInput) {  // Simple millimeters to inches conversion
-    if (-9999 == mmInput) return SENSOR_T_DEFAULT_F;
-    if (SENSOR_T_DEFAULT_F == mmInput) return SENSOR_T_DEFAULT_F;
-    return mmInput / 25.4;
-}
 // ==========================================================================
 // Creating Variable objects for those values for which we're reporting in
 // converted units, via calculated variables Based on baro_rho_correction.ino
@@ -634,20 +669,21 @@ Variable* variableList[] = {
     new InsituTrollSdi12_Temp(&itrollPhy, ITROLL_TEMP_UUID),
 #endif  // Insitu_TrollSdi12_UUID
 #if defined KellerAcculevel_ACT
-    // new KellerAcculevel_Pressure(&acculevel,
-    // "12345678-abcd-1234-ef00-1234567890ab"),
+    // new KellerAcculevel_Pressure(&acculevel, "UUID"),
     new KellerAcculevel_Temp(&acculevel_snsr, KellerXxlevel_Temp_UUID),
+#if KellerAcculevel_DepthUnits > 1
+    KAcculevelHeightFt_var,
+#else
     new KellerAcculevel_Height(&acculevel_snsr, KellerXxlevel_Height_UUID),
+#endif  // KellerAcculevel_DepthUnits
 #endif  // KellerAcculevel_ACT
 #if defined KellerNanolevel_ACT
-    //   new KellerNanolevel_Pressure(&nanolevel_snsr,
-    //   "12345678-abcd-1234-efgh-1234567890ab"),
+    //   new KellerNanolevel_Pressure(&nanolevel_snsr, "UUID"),
     new KellerNanolevel_Temp(&nanolevel_snsr, KellerXxlevel_Temp_UUID),
     new KellerNanolevel_Height(&nanolevel_snsr, KellerXxlevel_Height_UUID),
 #endif  // SENSOR_CONFIG_KELLER_NANOLEVEL
 #if defined InsituLTrs485_ACT
-    //   new insituLevelTroll_Pressure(&InsituLT_snsr,
-    //   "12345678-abcd-1234-efgh-1234567890ab"),
+    //   new insituLevelTroll_Pressure(&InsituLT_snsr, "UUID"),
     new InsituLevelTroll_Temp(&InsituLT_snsr, InsituLTrs485_Temp_UUID),
     new InsituLevelTroll_Height(&InsituLT_snsr, InsituLTrs485_Height_UUID),
 #endif  // SENSOR_CONFIG_KELLER_NANOLEVEL
