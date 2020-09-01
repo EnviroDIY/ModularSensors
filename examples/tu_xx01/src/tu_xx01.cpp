@@ -669,13 +669,13 @@ Variable* variableList[] = {
     new InsituTrollSdi12_Temp(&itrollPhy, ITROLL_TEMP_UUID),
 #endif  // Insitu_TrollSdi12_UUID
 #if defined KellerAcculevel_ACT
-    // new KellerAcculevel_Pressure(&acculevel, "UUID"),
-    new KellerAcculevel_Temp(&acculevel_snsr, KellerXxlevel_Temp_UUID),
+// new KellerAcculevel_Pressure(&acculevel, "UUID"),
 #if KellerAcculevel_DepthUnits > 1
     KAcculevelHeightFt_var,
 #else
     new KellerAcculevel_Height(&acculevel_snsr, KellerXxlevel_Height_UUID),
 #endif  // KellerAcculevel_DepthUnits
+    new KellerAcculevel_Temp(&acculevel_snsr, KellerXxlevel_Temp_UUID),
 #endif  // KellerAcculevel_ACT
 #if defined KellerNanolevel_ACT
     //   new KellerNanolevel_Pressure(&nanolevel_snsr, "UUID"),
