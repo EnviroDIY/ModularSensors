@@ -422,7 +422,7 @@ Variable* kAcculevelDepth_m = new KellerAcculevel_Height(&acculevel_snsr,
 
 float kAcculevelDepth_worker(void) {  // Convert depth KA
     // Get new reading
-    float depth_m  = kAcculevelDepth_m->getValue(true);
+    float depth_m  = kAcculevelDepth_m->getValue(false);
     float depth_ft = convert_mtoFt(depth_m);
     MS_DEEP_DBG(F("Acculevel ft"), depth_ft, F("from m"), depth_m);
     return depth_ft;
@@ -432,11 +432,11 @@ float kAcculevelDepth_worker(void) {  // Convert depth KA
 Variable* KAcculevelHeightFt_var =
     new Variable(kAcculevelDepth_worker,  // function that does the calculation
                  3,                       // resolution
-                 "Acculevel Depth",       // var name. This must be a value from
-                                     // http://vocabulary.odm2.org/variablename/
-                 "Feet",  // var unit. This must be a value from This must be a
+                 "waterDepth",            // var name. This must be a value from
+                                // http://vocabulary.odm2.org/variablename/
+                 "feet",  // var unit. This must be a value from This must be a
                           // value from http://vocabulary.odm2.org/units/
-                 "waterDepth",  // var code
+                 "kellerAccuDepth",  // var code
                  KellerXxlevel_Height_UUID);
 #endif  // KellerAcculevel_DepthUnits
 #endif  // KellerAcculevel_ACT
@@ -1050,23 +1050,24 @@ void loop() {
         dataLogger.systemSleep();
     }
     // If battery low, log data but don't send it over the modemPhy
+    // clang-format off
     else
 #if defined UseModem_PushData
         if (PS_LBATT_LOW_STATUS >= Lbatt_status)
 #endif  // UseModem_PushData
-    {
+        {
 #if defined UseModem_PushData
-        PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
+            PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
                  F(" LogOnly. V too low batteryV="),
                  mcuBoard.getBatteryVm1(false), F(" Lbatt="), Lbatt_status);
 #else
         PRINTOUT(F("Collect readings & log. batteryV="),
                  mcuBoard.getBatteryVm1(false), F(" status="), Lbatt_status);
 #endif  // UseModem_PushData
-        dataLogger.logData();
-    }
+            dataLogger.logData();
+        }
 #if defined UseModem_PushData
-    // If the battery is good, send the data to the world
+        // If the battery is good, send the data to the world
     else {
         PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
                  F(" log&Pub V_batt"), mcuBoard.getBatteryVm1(false),
@@ -1074,4 +1075,5 @@ void loop() {
         dataLogger.logDataAndPublish();
     }
 #endif  // UseModem_PushData
+    // clang-format on
 }
