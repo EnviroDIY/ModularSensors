@@ -27,6 +27,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
 #define KellerAcculevel_ACT 1
+// KellerAcculevel units can be 1 (meter) 2 (feet)
+#define KellerAcculevel_DepthUnits 2
+
 //#define KellerNanolevel_ACT 1
 //#define ASONG_AM23XX_UUID 1
 
