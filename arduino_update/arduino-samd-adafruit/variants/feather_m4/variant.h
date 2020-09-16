@@ -18,7 +18,7 @@
 
 #ifndef _VARIANT_FEATHER_M4_
 #define _VARIANT_FEATHER_M4_
-// 2019Apr04 Updated for 3*Serial/SERCOM options
+// 2020Sept15 Updated for 3*Serial/SERCOM options
 
 // The definitions here needs a SAMD core >=1.6.10
 #define ARDUINO_SAMD_VARIANT_COMPLIANCE 10610
@@ -31,9 +31,9 @@
 #define VARIANT_MAINOSC		(32768ul)
 
 /** Master clock frequency */
-#define VARIANT_MCK			  (120000000ul)
+#define VARIANT_MCK        (F_CPU)
 
-#define VARIANT_GCLK0_FREQ (120000000UL)
+#define VARIANT_GCLK0_FREQ (F_CPU)
 #define VARIANT_GCLK1_FREQ (48000000UL)
 #define VARIANT_GCLK2_FREQ (100000000UL)
 
@@ -58,9 +58,9 @@ extern "C"
  *----------------------------------------------------------------------------*/
 
 // Number of pins defined in PinDescription array
-#define PINS_COUNT           (40u) //was (40u)
-#define NUM_DIGITAL_PINS     (20u)  // Changes depending on 
-#define NUM_ANALOG_INPUTS    (6u)   // Changes depending on 
+#define PINS_COUNT           (40u)
+#define NUM_DIGITAL_PINS     (20u)
+#define NUM_ANALOG_INPUTS    (6u)
 #define NUM_ANALOG_OUTPUTS   (1u)
 #define analogInputToDigitalPin(p)  ((p < 6u) ? (p) + 14u : -1)
 
@@ -83,12 +83,13 @@ extern "C"
 
 // LEDs
 #define PIN_LED_13           (13u)
-#define PIN_LED_RXL          (26u)
-#define PIN_LED_TXL          (27u)
+#define PIN_LED_RXL          (25u)
+#define PIN_LED_TXL          (26u)
 #define PIN_LED              PIN_LED_13
 #define PIN_LED2             PIN_LED_RXL
 #define PIN_LED3             PIN_LED_TXL
 #define LED_BUILTIN          PIN_LED_13
+#define PIN_NEOPIXEL         (8)
 
 /*
  * Analog pins
@@ -142,7 +143,7 @@ SERCOM5 Serial1/Bee (DO/D1)   Available        EDBG/Serial5
 QSPI     Yes                     no                no                 
 */
 //RS485 sypport - ideally Should be in SERCOM.h
-#define UART_TX_TE_PAD_0_2 0x3
+#define UART_TX_TE_PAD_0_2 0x3 // Only for UART with TX on PAD0, TE on PAD2
 
 // Serial1/Sercom5 FeatherM4express Pins Rx/D1 Tx/D0
 #define PIN_SERIAL1_RX       (0ul)
@@ -201,6 +202,10 @@ static const uint8_t SCK  = PIN_SPI_SCK ;
 #define PIN_WIRE_SCL         (22u)
 #define PERIPH_WIRE          sercom2
 #define WIRE_IT_HANDLER      SERCOM2_Handler
+#define WIRE_IT_HANDLER_0    SERCOM2_0_Handler
+#define WIRE_IT_HANDLER_1    SERCOM2_1_Handler
+#define WIRE_IT_HANDLER_2    SERCOM2_2_Handler
+#define WIRE_IT_HANDLER_3    SERCOM2_3_Handler
 
 static const uint8_t SDA = PIN_WIRE_SDA;
 static const uint8_t SCL = PIN_WIRE_SCL;
@@ -220,10 +225,15 @@ static const uint8_t SCL = PIN_WIRE_SCL;
 #define I2S_DEVICE          0
 #define I2S_CLOCK_GENERATOR 3
 
-#define PIN_I2S_SDO          (5u)
-#define PIN_I2S_SDI          PIN_SPI_MOSI
-#define PIN_I2S_SCK          PIN_A2
-#define PIN_I2S_FS           PIN_SPI_MISO
+#define PIN_I2S_SDO          (11u)
+#define PIN_I2S_SDI          (12u)
+#define PIN_I2S_SCK          PIN_SERIAL1_TX
+#define PIN_I2S_FS           (10u)
+#define PIN_I2S_MCK          PIN_SERIAL1_RX
+
+// On-board QSPI Flash
+#define EXTERNAL_FLASH_DEVICES   GD25Q16C
+#define EXTERNAL_FLASH_USE_QSPI
 
 //QSPI Pins
 #define PIN_QSPI_SCK    (34u)
@@ -233,8 +243,10 @@ static const uint8_t SCL = PIN_WIRE_SCL;
 #define PIN_QSPI_IO2    (38u)
 #define PIN_QSPI_IO3    (39u)
 
-//TODO: meaningful value for this
-#define VARIANT_QSPI_BAUD_DEFAULT 5000000
+#if !defined(VARIANT_QSPI_BAUD_DEFAULT)
+  // TODO: meaningful value for this
+  #define VARIANT_QSPI_BAUD_DEFAULT 5000000
+#endif
 
 #ifdef __cplusplus
 }

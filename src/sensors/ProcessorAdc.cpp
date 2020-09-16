@@ -10,6 +10,7 @@
 
 #include "processorAdc.h"
 #include "ms_cfg.h"
+
 //#include <Adafruit_ADS1015.h>
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define BOARD "EnviroDIY Mayfly"
@@ -128,6 +129,7 @@ bool processorAdc::addSingleMeasurementResult(void) {
 #endif                                          // ARDUINO_ARCH_AVR
         uint8_t useAdcChannel = _adcChannel;
 #if defined ARD_ANALOLG_EXTENSION_PINS
+#include <WVariant.h>
         if ((thisVariantNumPins + ARD_DIGITAL_EXTENSION_PINS) < _adcChannel) {
             // ARD_COMMON_PIN on SAMD51
             if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {

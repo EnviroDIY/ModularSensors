@@ -29,7 +29,6 @@
 //TC2 IOSET 2
 //TC3 IOSET 1
 //TC4 IOSET 1
-
 const PinDescription g_APinDescription[]=
 {
   // 0..13 - Digital pins
@@ -96,7 +95,7 @@ const PinDescription g_APinDescription[]=
 /*18*/{ PORTA, 04, PIO_SERCOM_ALT, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E),  ADC_Channel4, TC0_CH0, TC0_CH0, EXTERNAL_INT_NONE }, // TX: SERCOM0/PAD[2]
 #else
   { PORTA,  4, PIO_ANALOG, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel4, TC0_CH0, TC0_CH0, EXTERNAL_INT_6 },
-#endif //SERIAL2_EN
+#endif //SERIAL4_EN
 #if  defined(SERIAL2_TE_CNTL) || defined(SERIAL2_TE_HALF_DUPLEX) || defined(SERIAL2_RTS_CTS)
 /*19*/{ PORTA,  06, PIO_SERCOM_ALT, (PIN_ATTR_ANALOG|PIN_ATTR_PWM_E), ADC_Channel6, TC1_CH0, TC1_CH0, EXTERNAL_INT_10 },
 #else
@@ -144,7 +143,6 @@ const PinDescription g_APinDescription[]=
   { PORTA, 9, PIO_COM, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE },
   { PORTA, 10, PIO_COM, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE },
   { PORTA, 11, PIO_COM, PIN_ATTR_NONE, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER, EXTERNAL_INT_NONE },
-
 } ;
 
 const void* g_apTCInstances[TCC_INST_NUM+TC_INST_NUM]={ TCC0, TCC1, TCC2, TCC3, TCC4, TC0, TC1, TC2, TC3, TC4, TC5 } ;
@@ -214,27 +212,28 @@ Uart Serial2( &sercom0, PIN_SERIAL2_RX, PIN_SERIAL2_TX, PAD_SERIAL2_RX, PAD_SERI
 #endif //SERIAL2_TE_CNTL
 //Uart Serial2(&sercom0, 40, 41, SERCOM_RX_PAD_1, UART_TX_TE_PAD_0_2); //RS485 Half Duplex 2pin ??
 
+
 // Hand over the interrupts of the sercom port
-void SERCOM0_0_Handler()
+void SERCOM0_0_Handler() //DRE:0
 {
   Serial2.IrqHandler();
 }
-void SERCOM0_1_Handler()
+void SERCOM0_1_Handler() //TXC:1
 {
   Serial2.IrqHandler();
 }
-void SERCOM0_2_Handler()
+void SERCOM0_2_Handler() //RXC:2
 {
   Serial2.IrqHandler();
 }
-void SERCOM0_3_Handler()
+void SERCOM0_3_Handler() //RXS:3 CTSIC:4 RXBRK:5 ERROR:7
 {
   Serial2.IrqHandler();
 }
 #endif //SERIAL2_EN
 
 #ifdef SERIAL3_EN
-/* TESTED for half duplex
+/* TESTED for full duplex
  FeatherM4express Serial3 allocated SERCOM3 with custom variant.cpp
  SERCOM3 is undefinied in std variant.cpp on Feather M4 express
  Function FeatherM4Pin [PinDescriptionindex] cpuPin Port Sercom#
@@ -265,7 +264,7 @@ void SERCOM3_3_Handler()
 #endif //SERIAL3_EN
 
 #ifdef SERIAL4_EN
-/* TESTED for half duplex
+/* TESTED for Full duplex. Not tested for Half duplex 
  FeatherM4express - Set up UART using SERCOM4
  FeatherM4express Serial4 allocated SERCOM4 with custom variant.cpp
  SERCOM4 is undefinied invariant.cpp on Feather  M4 express,

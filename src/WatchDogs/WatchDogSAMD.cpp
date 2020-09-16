@@ -86,11 +86,19 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
 
 #endif
 
+#if defined(__SAMD51__)
+    // Set up the watch dog control parameters
+    WDT->CTRLA.bit.WEN = 0;       // Disable window mode
+    waitForWDTBitSync();         // ?? Needed here ??
+    WDT->CTRLA.bit.ALWAYSON = 0;  // NOT always on!
+    waitForWDTBitSync();         // ?? Needed here ??
+#else
     // Set up the watch dog control parameters
     WDT->CTRL.bit.WEN = 0;       // Disable window mode
     waitForWDTBitSync();         // ?? Needed here ??
     WDT->CTRL.bit.ALWAYSON = 0;  // NOT always on!
     waitForWDTBitSync();         // ?? Needed here ??
+#endif 
 
     WDT->CONFIG.bit.PER =
         0xB;  // Period = 16384 clockcycles @ 1024hz = 16 seconds
@@ -114,10 +122,6 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
     reset is generated prior to the Early Warning interrupt. Thus, the Early
     Warning interrupt will never be generated.*/
 }
-
-void extendedWatchDogSAMD::enableWatchDog() {
-  MS_DBG(F("Enabling watch dog..."));
-  resetWatchDog();
 
 void extendedWatchDogSAMD::enableWatchDog() {
     MS_DBG(F("Enabling watch dog..."));

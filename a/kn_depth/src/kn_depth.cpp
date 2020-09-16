@@ -90,6 +90,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 const char *sketchName = __FILE__; //"xxx.cpp";
 const char build_date[] = __DATE__ " " __TIME__;
 //Windows processing of PIO_SRC_REV drops the "" making it a variable, which then can't be found!!!
+
+// The name of this file
+extern const String build_ref = __FILE__ " " __DATE__ " " __TIME__ " ";
 //Encoded as hex to make it come through
 #ifdef PIO_SRC_REV
 const char git_branch[] = PIO_SRC_REV;
@@ -102,10 +105,21 @@ const char git_branch[] = "wip";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID_def = LOGGERID_DEF_STR;
 const char *configIniID_def = configIniID_DEF_STR;  
+const char* configDescription = CONFIGURATION_DESCRIPTION_STR;
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
+
+#if 1 //defined UseModem_Module
+uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
+uint8_t     postMax_num         = 0;  // Future 0,5-50
+// Common
+uint8_t collectReadings = COLLECT_READINGS_DEF;
+uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
+#endif  // UseModem_Module
+
 uint32_t sysStartTime_epochTzSec=1;
 bool nistSyncRtc = true; //true no battery. NIST sync RTC is required
 static int loggingMultiplierCnt=0;
