@@ -420,7 +420,7 @@ void Logger::publishDataToRemotes(void) {
 void Logger::publishDataQuedToRemotes(void) {
     // Assumes that there is an internet connection
     // bool    useQue = false;
-    int16_t  rspCode;
+    int16_t  rspCode=0;
     uint32_t tmrGateway_ms;
     bool     dslStatus = false;
     bool     retVal    = false;

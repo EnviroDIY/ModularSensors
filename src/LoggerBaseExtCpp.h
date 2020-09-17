@@ -838,21 +838,28 @@ deszLine()  to populate
     deszq_epochTime &
 
 */
-#if !defined ARDUINO_ARCH_AVR
-/** \ingroup avr_string
-    \fn char *strchrnul(const char *s, int c)
 
-    The strchrnul() function is like strchr() except that if \p c is not
-    found in \p s, then it returns a pointer to the null byte at the end
-    of \p s, rather than \c NULL. (Glibc, GNU extension.)
+/* Find fixed delimeter
+ * behave as strchrnul() if goes past end of string
+ */
+char* Logger::deszFind(const char* in_line, char caller_id) {
+    char* retResult = strchr(in_line, DELIM_CHAR2);
+    if (NULL != retResult) return retResult;
+    MS_DBG(F("deszFind NULL found on "), caller_id);
+    // For NULL return pointer as per strchrnul
+    // should only occur on last search
+    return (char*)(in_line + strlen(in_line));
 
-    \return The strchrnul() function returns a pointer to the matched
-    character, or a pointer to the null byte at the end of \p s (i.e.,
-    \c s+strlen(s)) if the character is not found.	*/
-char *strchrnul(const char *in, int delim_char) {
-#warning - needs code
+    /*    The strchrnul() function is like strchr() except that if \p c is not
+        found in \p s, then it returns a pointer to the null byte at the end
+        of \p s, rather than \c NULL. (Glibc, GNU extension.)
+
+        \return The strchrnul() function returns a pointer to the matched
+        character, or a pointer to the null byte at the end of \p s (i.e.,
+        \c s+strlen(s)) if the character is not found.
+    //char *strchrnul(const char *in, int delim_char) */
 }
-#endif //ARDUINO_ARCH_AVR
+
 
 bool Logger::deszRdelStart() {
     deszLinesRead = deszLinesUnsent = 0;
@@ -913,7 +920,7 @@ bool Logger::deszLine(File* filep) {
         return false;  // EIO;
     }
     // Find next DELIM and go past it
-    deszq_nextChar = 1 + strchrnul(deszq_line, DELIM_CHAR2);
+    deszq_nextChar = 1 + deszFind(deszq_line, '1');
     if (deszq_nextChar == deszq_line) {
         PRINTOUT(F("deszLine epoch start not found"), deszq_line, F("'"));
         deszq_nextCharSz = 0;
@@ -927,14 +934,14 @@ bool Logger::deszLine(File* filep) {
     }
     // Find next DELIM and go past it
     orig_nextChar  = deszq_nextChar;
-    deszq_nextChar = 1 + strchrnul(deszq_nextChar, DELIM_CHAR2);
+    deszq_nextChar = 1 + deszFind(deszq_nextChar, '2');
     if (orig_nextChar == deszq_nextChar) {
         PRINTOUT(F("deszLine readung start not found"), deszq_line, F("'"));
         deszq_nextCharSz = 0;
         return false;
     }
     // Find sz of this field
-    char* nextCharEnd = strchrnul(deszq_nextChar, DELIM_CHAR2);
+    char* nextCharEnd = deszFind(deszq_nextChar, '3');
     deszq_nextCharSz  = nextCharEnd - deszq_nextChar;
 
     deszq_timeVariant_sz = strlen(deszq_nextChar) - 1;
@@ -946,7 +953,7 @@ bool Logger::deszLine(File* filep) {
 bool Logger::deszqNextCh(void) {
     char* deszq_old = deszq_nextChar;
     // Find next DELIM and go past it
-    deszq_nextChar = 1 + strchrnul(deszq_nextChar, DELIM_CHAR2);
+    deszq_nextChar = 1 + deszFind(deszq_nextChar, 'L');
     if ((deszq_old == deszq_nextChar)) {
         deszq_nextCharSz = 0;
         PRINTOUT(F("deszqNextCh 1error:"), deszq_nextChar, F("'"));

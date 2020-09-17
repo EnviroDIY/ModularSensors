@@ -150,7 +150,8 @@ void publishDataQuedToRemotes(void);
 // perform a serialize to RdelFile
 bool serzRdel_Line(void);
 // Uses serzRdelFn_str, File serzRdelFile
-bool deszRdelStart();
+bool  deszRdelStart();
+char* deszFind(const char* in_line, char caller_id);
 #define deszRdelLine() deszLine(&serzRdelFile)
 bool deszRdelClose(bool deleteFile = false);
 
