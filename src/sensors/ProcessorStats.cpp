@@ -106,7 +106,8 @@ ProcessorStats::ProcessorStats(const char* version)
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \
     defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
     _batteryPin        = 9;
-#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(WIO_TERMINAL) || defined(adafruit_pygamer_advance_m4)
+#warning need to check WIO TERMINAL
     _batteryPin = A6;  // 20;  //Dedicated PB01 V_DIV
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || \
     defined(ARDUINO_AVR_SODAQ_NDOGO)
@@ -154,17 +155,20 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     analogReference(AR_DEFAULT);
 #endif  // ARDUINO_ARCH_AVR
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
-        // Get the battery voltage
-        float rawBattery    = analogRead(_batteryPin);
-        sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+    if (_usebatExt) {  // defined MS_VBAT_EXT
+        sensorValue_battery = _batteryExt_V;
+    } else {
+        if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
+            // Get the battery voltage
+            float rawBattery    = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        }
+        if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") == 0) {
+            // Get the battery voltage
+            float rawBattery    = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+        }
     }
-    if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") == 0) {
-        // Get the battery voltage
-        float rawBattery    = analogRead(_batteryPin);
-        sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
-    }
-
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \
     defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) ||                               \
     defined(ADAFRUIT_FEATHER_M4_EXPRESS)
@@ -240,6 +244,10 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     return true;
 }
 
+void ProcessorStats::setBatteryV(float newReading) {
+    _batteryExt_V = newReading;
+    _usebatExt    = true;
+}
 void ProcessorStats::setBatteryType(ps_liion_rating_t LiionType) {
     _liion_type = LiionType;
 }

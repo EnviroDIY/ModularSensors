@@ -41,6 +41,10 @@
 #define BOARD "Feather M0 Express"
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define BOARD "Feather M4 Express"
+#elif defined(adafruit_pygamer_advance_m4)
+#define BOARD "adafruit_pygamer_advance_m4"
+#elif defined(WIO_TERMINAL)
+#define BOARD "WIO TERMINAL"
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
 #define BOARD "Mega Adk"

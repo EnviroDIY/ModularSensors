@@ -169,6 +169,7 @@ class ProcessorStats : public Sensor {
     ps_Lbatt_status_t
          isBatteryStatusAbove(bool         newBattReading = false,
                               ps_pwr_req_t status_req     = PS_PWR_USEABLE_REQ);
+    void setBatteryV(float newReading);
     void setBatteryType(ps_liion_rating_t LiionType);
     void printBatteryThresholds(void);
     /* Get Battery voltage
@@ -193,6 +194,9 @@ class ProcessorStats : public Sensor {
     // float getBatteryVm2b(bool newBattReading);//snap load voltage
     // float getBatteryVm2diff(bool newBattReading); //getDifference in measured
     // batteryV using internal reference
+
+    float _batteryExt_V = 0;
+    bool  _usebatExt    = false;
 
 #define PS_TYPES 4
 #define PS_LPBATT_TBL_NUM (PS_TYPES + 1)

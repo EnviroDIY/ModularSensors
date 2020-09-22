@@ -1,0 +1,15 @@
+millisDelay	KEYWORD1
+start	KEYWORD2
+stop	KEYWORD2
+repeat	KEYWORD2
+restart	KEYWORD2
+finish	KEYWORD2
+justFinished	KEYWORD2
+isRunning	KEYWORD2
+getStartTime	KEYWORD2
+remaining	KEYWORD2
+delay	KEYWORD2
+
+
+
+	
