@@ -208,7 +208,7 @@ class TIINA219 : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
- protected:
+ private:
     Adafruit_INA219 ina219_phy;
     uint8_t         _i2cAddressHex;
 };

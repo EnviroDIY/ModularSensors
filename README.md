@@ -1,6 +1,7 @@
 [//]: # ( @mainpage ModularSensors )
 # ModularSensors
 ___
+
 [//]: # ( @section mainpage_intro An Introduction )
 ## An Introduction
 

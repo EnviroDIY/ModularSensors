@@ -288,7 +288,7 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
 // The return is the http status code of the response.
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
 
-int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
+int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     char tempBuffer[TEMP_BUFFER_SZ] = "";
 #define RESPONSE_UNINIT 0xFFFE
     uint16_t did_respond = RESPONSE_UNINIT;
@@ -298,14 +298,14 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
     uint32_t elapsed_ms = 0;
     uint32_t gatewayStart_ms;
     uint16_t bufferSz = bufferFree();
-    if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(_outClient);
+    if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(outClient);
 
 #define REQUIRED_MIN_RSP_SZ 12
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client. Timer (mS)"));
     MS_START_DEBUG_TIMER;
-    if (_outClient->connect(enviroDIYHost, enviroDIYPort)) {
+    if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
         mmwPostHeader(tempBuffer);
@@ -316,7 +316,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         }
         MS_DEEP_DBG(F("SZEND "), bufferFree());
         // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(_outClient, true);
+        printTxBuffer(outClient, true);
 
         // Poll for a response from the server with timeout
         gatewayStart_ms = millis();
@@ -325,7 +325,7 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         while ((elapsed_ms < _timerPostTimeout_ms) &&
                (did_respond < REQUIRED_MIN_RSP_SZ)) {
             delay(10);  // mS delay to poll
-            did_respond = _outClient->available();
+            did_respond = outClient->available();
             elapsed_ms  = millis() - gatewayStart_ms;
         }
         // MS_DBG(F("Rsp avl,"), did_respond, F("bytes in"), elapsed_ms,
@@ -334,13 +334,13 @@ int16_t EnviroDIYPublisher::publishData(Client* _outClient) {
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
         tempBuffer[0] = 0;
-        did_respond   = _outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
+        did_respond   = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
         // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
         // F("mS"));
         // Close the TCP/IP connection
         // MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
-        _outClient->stop();
+        outClient->stop();
         MS_DBG(F("Client waited"), elapsed_ms, F("mS for"), did_respond,
                F("bytes. Stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
