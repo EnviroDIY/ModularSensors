@@ -335,10 +335,6 @@ class Variable {
      */
     bool checkUUIDFormat(void);
 
-    /* atl extension */
-    void setVarUUID_atl(const char* newUUID, bool copyUid = false,
-                        uint8_t uuidSize = UUIDE_CLOUD_ID_SZ);
-
     /**
      * @brief Get current value of the variable as a float
      *
@@ -382,9 +378,14 @@ class Variable {
     const char* _varUnit;
     const char* _varCode;
     const char* _uuid;
-    // const char *_UUID;
+
+    /* atl_extension */
     char* _UUID_buf_atl = NULL;
-    // static const char* VAR_BASE_UNKNOWN;
+
+ public:
+    /* atl_extension */
+    void setVarUUID_atl(const char* newUUID, bool copyUid = false,
+                        uint8_t uuidSize = UUIDE_CLOUD_ID_SZ);
 };
 
 #endif  // SRC_VARIABLEBASE_H_

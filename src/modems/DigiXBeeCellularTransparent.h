@@ -99,9 +99,6 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     void disconnectInternet(void) override;
 
     uint32_t getNISTTime(void) override;
-    uint32_t getNISTTimeOrig(void);
-    uint32_t getTimeNTP(void);
-    uint32_t getTimeCellTower(void);
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(uint8_t& chargeState, int8_t& percent,
@@ -123,10 +120,6 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      */
     TinyGsmClient gsmClient;
 
-    // Az Extensions
-    void   setApn(const char* APN, bool copyId = false);
-    String getApn(void);
-
  protected:
     bool isInternetAvailable(void) override;
     bool modemWakeFxn(void) override;
@@ -147,6 +140,13 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     const char* _apn;
     // Az extension
     char* _apn_buf = NULL;  // Pointer to updated buffer
+ public:
+    // Az Extensions
+    void   setApn(const char* APN, bool copyId = false);
+    String getApn(void);
+    uint32_t getNISTTimeOrig(void);
+    uint32_t getTimeNTP(void);
+    uint32_t getTimeCellTower(void);
 };
 
 #endif  // SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_

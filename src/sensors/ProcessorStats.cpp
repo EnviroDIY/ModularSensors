@@ -41,6 +41,10 @@
 #define BOARD "Feather M0 Express"
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define BOARD "Feather M4 Express"
+#elif defined(WIO_TERMINAL)
+#define BOARD WIO_TERMINAL "
+#elif defined(adafruit_pygamer_advance_m4)
+#define BOARD "adafruit_pygamer_advance_m4"
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
 #define BOARD "Mega Adk"
@@ -97,8 +101,9 @@ ProcessorStats::ProcessorStats(const char* version)
     : Sensor(BOARD, PROCESSOR_NUM_VARIABLES, PROCESSOR_WARM_UP_TIME_MS,
              PROCESSOR_STABILIZATION_TIME_MS, PROCESSOR_MEASUREMENT_TIME_MS, -1,
              -1, 1) {
-    _version    = version;
-    sampNum     = 0;
+    _version = version;
+    sampNum  = 0;
+
     _liion_type = PSLR_0500mA;
 
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
@@ -106,7 +111,8 @@ ProcessorStats::ProcessorStats(const char* version)
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \
     defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
     _batteryPin        = 9;
-#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(WIO_TERMINAL) || defined(adafruit_pygamer_advance_m4)
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(WIO_TERMINAL) || \
+    defined(adafruit_pygamer_advance_m4)
 #warning need to check WIO TERMINAL
     _batteryPin = A6;  // 20;  //Dedicated PB01 V_DIV
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || \
@@ -118,7 +124,7 @@ ProcessorStats::ProcessorStats(const char* version)
     else
         _batteryPin = 33;
 #else
-#error No board defined
+#warning No board defined
     _batteryPin = -1;
 #endif
 }
@@ -202,7 +208,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
            F("):"), sensorValue_battery);
 
 #else
-    sensorValue_battery = -9999;
+    sensorValue_battery  = -9999;
 
 #endif
 

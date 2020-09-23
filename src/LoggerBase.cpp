@@ -416,134 +416,6 @@ void Logger::publishDataToRemotes(void) {
         }
     }
 }
-#define TEMP_BUFFER_SZ 37
-void Logger::publishDataQuedToRemotes(void) {
-    // Assumes that there is an internet connection
-    // bool    useQue = false;
-    int16_t  rspCode=0;
-    uint32_t tmrGateway_ms;
-    bool     dslStatus = false;
-    bool     retVal    = false;
-    // MS_DBG(F("Pub Data Qued"));
-    MS_DBG(F("pubDQTR from"), serzRdelFn_str);
-
-    // Open debug file
-#if defined MS_LOGGERBASE_POSTS
-    retVal = postLogOpen(postsLogFn_str);
-#endif  // MS_LOGGERBASE_POSTS
-
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        if (dataPublishers[i] != NULL) {
-            _dataPubInstance = i;
-            PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
-                     dataPublishers[i]->getEndpoint());
-            // open the qued file for serialized readings
-            // (char*)serzQuedFn_str
-
-
-            // dataPublishers[i]->publishData(_logModem->getClient());
-            // Need to manage filenames[i]
-
-            /* TODO njh check power availability
-            ps_Lbatt_status_t Lbatt_status;
-            Lbatt_status =
-            mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
-            if (no power) break out for loop;
-            */
-
-            if (dataPublishers[i]->getQuedStatus()) {
-                serzQuedStart((char)('0' + i));
-                deszRdelStart();
-                // MS_START_DEBUG_TIMER;
-                tmrGateway_ms = millis();
-                while ((dslStatus = deszRdelLine())) {
-                    rspCode = dataPublishers[i]->publishData();
-
-                    watchDogTimer.resetWatchDog();
-                    // MS_DBG(F("Rsp"), rspCode, F(", in"),
-                    // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
-                    postLogLine(i, rspCode);
-
-                    if (HTTPSTATUS_CREATED_201 != rspCode) {
-#define DESLZ_STATUS_UNACK '1'
-#define DESLZ_STATUS_MAX '8'
-#define DESLZ_STATUS_POS 0
-#if 0
-                        if (++deszq_line[0] > '8') {
-                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_UNACK;
-                        }
-#endif  // if x
-                        retVal = serzQuedFile.print(deszq_line);
-                        if (0 >= retVal) {
-                            PRINTOUT(F("pubDQTR serzQuedFil err"), retVal);
-                        }
-                        desz_pending_records++;  // TODO: njh per publisher
-
-                        /*TODO njh process
-                        if (HTTPSTATUS_NC_901 == rspCode) {
-                            MS_DBG(F("pubDQTR abort this
-                        servers POST " "attempts"));
-
-                        However, will also have to cleanup/copy lines from
-                        serzQuedFile to before deszRdelClose
-
-                        break;
-
-                        }
-
-                        */
-                    }
-                }  // while reading line
-                deszRdelClose(true);
-                serzQuedCloseFile(false);
-                // retVal = serzQuedFile.close();
-                // if (!retVal)
-                //    PRINTOUT(
-                //        F("publishDataQuedToRemote serzQuedFile.close err"));
-
-                PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
-                         ((float)(millis() - tmrGateway_ms)) / 1000,
-                         F("sec. Queued readings="), desz_pending_records);
-
-                if (HTTPSTATUS_CREATED_201 == rspCode) {
-                    MS_DBG(F("pubDQTR retry from"), serzQuedFn);
-                    // Do retrys through publisher - if file exists
-                    if (sd1_card_fatfs.exists(serzQuedFn)) {
-                        uint8_t num_posted = 0;
-                        deszQuedStart();
-                        while ((dslStatus = deszQuedLine())) {
-                            // setup for publisher to call deszqNextCh()
-                            rspCode = dataPublishers[i]->publishData();
-                            watchDogTimer.resetWatchDog();
-                            postLogLine(i, rspCode);
-                            if (HTTPSTATUS_CREATED_201 != rspCode) break;
-                            num_posted++;
-                            deszq_line[0] = 0;  // Show completed
-                        }
-// increment status of number attempts
-#if 0
-                        if (deszq_line[DESLZ_STATUS_POS]++ >=
-                            DESLZ_STATUS_MAX) {
-                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_MAX;
-                        }
-#endif  // if z
-        // deszQuedCloseFile() is serzQuedCloseFile(true)
-                        if (num_posted) {
-                            // At least one POST was accepted
-                            serzQuedCloseFile(true);
-                        } else {
-                            serzQuedCloseFile(false);
-                        }
-                    }
-                } else {
-                    MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
-                }
-            }
-        }
-    }
-    postLogClose();
-}
-
 void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
 }
@@ -645,9 +517,9 @@ uint32_t Logger::getNowEpochT0(void) {
         PRINTOUT(F("Bad time "), currentEpochTime, " ",
                  formatDateTime_ISO8601(currentEpochTime).substring(0, 10),
                  " Setting to ",
-                 formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+                 formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
-        currentEpochTime = EPOCH_TIME_20200101_SECS;
+        currentEpochTime = EPOCH_TIME_LOWER_SANITY_SECS;
         setNowEpochT0(currentEpochTime);
     }
 
@@ -826,8 +698,8 @@ bool Logger::isRTCSane(void) {
     return isRTCSane(curRTC);
 }
 bool Logger::isRTCSane(uint32_t epochTime) {
-    if (epochTime < EPOCH_TIME_20200101_SECS || /*Before January 1, 2020*/
-        epochTime > EPOCH_TIME_20250101_SECS)   /*After January 1, 2025*/
+    if (epochTime < EPOCH_TIME_LOWER_SANITY_SECS || /*bad before <date>*/
+        epochTime > EPOCH_TIME_UPPER_SANITY_SECS)   /*bad after <date>*/
     {
         return false;
     } else {
@@ -1892,7 +1764,8 @@ void Logger::begin() {
 #endif  // ARDUINO_ARCH_SAMD
 
     // Print out the current time
-    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
+    PRINTOUT(F("Current RTC time is:"),
+             formatDateTime_ISO8601(getNowEpochTz()));
 
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
@@ -2074,5 +1947,134 @@ void Logger::logDataAndPublish(void) {
     // Call the processor sleep
     systemSleep();
 }
+
+#define TEMP_BUFFER_SZ 37
+void Logger::publishDataQuedToRemotes(void) {
+    // Assumes that there is an internet connection
+    // bool    useQue = false;
+    int16_t  rspCode = 0;
+    uint32_t tmrGateway_ms;
+    bool     dslStatus = false;
+    bool     retVal    = false;
+    // MS_DBG(F("Pub Data Qued"));
+    MS_DBG(F("pubDQTR from"), serzRdelFn_str);
+
+    // Open debug file
+#if defined MS_LOGGERBASE_POSTS
+    retVal = postLogOpen(postsLogFn_str);
+#endif  // MS_LOGGERBASE_POSTS
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != NULL) {
+            _dataPubInstance = i;
+            PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+            // open the qued file for serialized readings
+            // (char*)serzQuedFn_str
+
+
+            // dataPublishers[i]->publishData(_logModem->getClient());
+            // Need to manage filenames[i]
+
+            /* TODO njh check power availability
+            ps_Lbatt_status_t Lbatt_status;
+            Lbatt_status =
+            mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
+            if (no power) break out for loop;
+            */
+
+            if (dataPublishers[i]->getQuedStatus()) {
+                serzQuedStart((char)('0' + i));
+                deszRdelStart();
+                // MS_START_DEBUG_TIMER;
+                tmrGateway_ms = millis();
+                while ((dslStatus = deszRdelLine())) {
+                    rspCode = dataPublishers[i]->publishData();
+
+                    watchDogTimer.resetWatchDog();
+                    // MS_DBG(F("Rsp"), rspCode, F(", in"),
+                    // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
+                    postLogLine(i, rspCode);
+
+                    if (HTTPSTATUS_CREATED_201 != rspCode) {
+#define DESLZ_STATUS_UNACK '1'
+#define DESLZ_STATUS_MAX '8'
+#define DESLZ_STATUS_POS 0
+#if 0
+                        if (++deszq_line[0] > '8') {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_UNACK;
+                        }
+#endif  // if x
+                        retVal = serzQuedFile.print(deszq_line);
+                        if (0 >= retVal) {
+                            PRINTOUT(F("pubDQTR serzQuedFil err"), retVal);
+                        }
+                        desz_pending_records++;  // TODO: njh per publisher
+
+                        /*TODO njh process
+                        if (HTTPSTATUS_NC_901 == rspCode) {
+                            MS_DBG(F("pubDQTR abort this
+                        servers POST " "attempts"));
+
+                        However, will also have to cleanup/copy lines from
+                        serzQuedFile to before deszRdelClose
+
+                        break;
+
+                        }
+
+                        */
+                    }
+                }  // while reading line
+                deszRdelClose(true);
+                serzQuedCloseFile(false);
+                // retVal = serzQuedFile.close();
+                // if (!retVal)
+                //    PRINTOUT(
+                //        F("publishDataQuedToRemote serzQuedFile.close err"));
+
+                PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
+                         ((float)(millis() - tmrGateway_ms)) / 1000,
+                         F("sec. Queued readings="), desz_pending_records);
+
+                if (HTTPSTATUS_CREATED_201 == rspCode) {
+                    MS_DBG(F("pubDQTR retry from"), serzQuedFn);
+                    // Do retrys through publisher - if file exists
+                    if (sd1_card_fatfs.exists(serzQuedFn)) {
+                        uint8_t num_posted = 0;
+                        deszQuedStart();
+                        while ((dslStatus = deszQuedLine())) {
+                            // setup for publisher to call deszqNextCh()
+                            rspCode = dataPublishers[i]->publishData();
+                            watchDogTimer.resetWatchDog();
+                            postLogLine(i, rspCode);
+                            if (HTTPSTATUS_CREATED_201 != rspCode) break;
+                            num_posted++;
+                            deszq_line[0] = 0;  // Show completed
+                        }
+// increment status of number attempts
+#if 0
+                        if (deszq_line[DESLZ_STATUS_POS]++ >=
+                            DESLZ_STATUS_MAX) {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_MAX;
+                        }
+#endif  // if z
+        // deszQuedCloseFile() is serzQuedCloseFile(true)
+                        if (num_posted) {
+                            // At least one POST was accepted
+                            serzQuedCloseFile(true);
+                        } else {
+                            serzQuedCloseFile(false);
+                        }
+                    }
+                } else {
+                    MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
+                }
+            }
+        }
+    }
+    postLogClose();
+}
+
 #include "LoggerBaseExtCpp.h"
 // End of LoggerBase.cpp

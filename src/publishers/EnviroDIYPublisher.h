@@ -15,12 +15,12 @@
 
 // Debugging Statement
 // #define MS_ENVIRODIYPUBLISHER_DEBUG
-// #define MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
 
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
+// #define MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP "EnviroDIYPublisher"
 #endif
@@ -29,6 +29,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
+#undef MS_ENVIRODIYPUBLISHER_DEBUG_DEEP
 #include "dataPublisherBase.h"
 
 

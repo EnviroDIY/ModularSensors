@@ -224,7 +224,7 @@ class dataPublisher {
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData();
-    virtual int16_t storAndPublish();
+
     /**
      * @brief Retained for backwards compatibility.
      *
@@ -303,12 +303,6 @@ class dataPublisher {
      */
     uint8_t _sendOffset;
 
-    /**
-     * @brief TimerPost (ms); How long to wait for a response to a POST before
-     * declaring a timeout
-     */
-    // uint8_t _timerPost_mS;
-
     // Basic chunks of HTTP
     /**
      * @brief the text "GET "
@@ -327,7 +321,17 @@ class dataPublisher {
      */
     static const char* hostHeader;
 
+    /* atl_extension */
+
+    /**
+     * @brief TimerPost (ms); How long to wait for a response to a POST before
+     * declaring a timeout
+     */
+    // uint8_t _timerPost_mS;
+
  public:
+    virtual int16_t storAndPublish();
+
     bool useQueDataSource = false;
     bool virtual setQuedState(bool state, char uniqueId = '0') {
         PRINTOUT(F("dataPublisherBase setQued check"), useQueDataSource);
@@ -353,6 +357,8 @@ class dataPublisher {
         return _timerPost_ms;
     }
 };
+
+/* atl_extension */
 /*
  * HTTP STATUS Codes that are used by Modular Sensors
  * Placed at the end of the file, to facilitate mergein code

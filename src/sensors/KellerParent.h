@@ -196,6 +196,21 @@ class KellerParent : public Sensor {
      * @copydoc Sensor::addSingleMeasurementResult()
      */
     bool addSingleMeasurementResult(void) override;
+
+ private:
+    keller      _ksensor;
+    kellerModel _model;
+    byte        _modbusAddress;
+    Stream*     _stream;
+    int8_t      _RS485EnablePin;
+    int8_t      _powerPin2;
+
+    /* atl_extension */
+    void (*_pinPowerMngFn)(bool) = nullptr;
+    uint8_t _txPin               = -1;
+    uint8_t _rxPin               = -1;
+
+ public:
     void registerPinPowerMng(void (*fn)(bool));
     // Pins that need to be managed during power On and Off events
     void registerSerialPins(uint8_t txPin, uint8_t rxPin);
@@ -206,17 +221,6 @@ class KellerParent : public Sensor {
     void stopDebugging(void) {
         _ksensor.stopDebugging();
     }
-
- private:
-    keller      _ksensor;
-    kellerModel _model;
-    byte        _modbusAddress;
-    Stream*     _stream;
-    int8_t      _RS485EnablePin;
-    int8_t      _powerPin2;
-    void (*_pinPowerMngFn)(bool) = nullptr;
-    uint8_t _txPin               = -1;
-    uint8_t _rxPin               = -1;
 };
 
 #endif  // SRC_SENSORS_KELLERPARENT_H_

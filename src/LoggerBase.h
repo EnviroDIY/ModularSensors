@@ -62,8 +62,7 @@
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
 // timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
 // epoch beginning 1970-jan-01 00:00:00.
-#define EPOCH_TIME_20200101_SECS 1577836800
-#define EPOCH_TIME_20250101_SECS 1735689600
+
 
 #include <SdFat.h>  // To communicate with the SD card
 #if defined BOARD_SDQ_QSPI_FLASH
@@ -522,11 +521,6 @@ class Logger {
      */
     dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
 
-    /**
-     * @brief Active instance of the attached data publishers
-     */
-    uint8_t        _dataPubInstance;
-
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //
@@ -616,10 +610,6 @@ class Logger {
     static RTCZero zero_sleep_rtc;
 #endif
 
-    static uint32_t getNowEpochT0(void);  // Get Epoch standard UST
-    static uint32_t getNowEpochTz(void);  // Get Epoch with time zone offset
-    static void     setNowEpochT0(uint32_t ts);  // Set Epoch with standard UST
-    // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
     /**
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
@@ -640,9 +630,6 @@ class Logger {
      * @param ts The number of seconds since 1970.
      */
     static void setNowEpoch(uint32_t ts);
-
-    static DateTime dtFromEpochT0(uint32_t epochTime);
-    static DateTime dtFromEpochTz(uint32_t epochTime);
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
@@ -698,7 +685,8 @@ class Logger {
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
      *
-     * To be sane the clock  must be between 2020 and 2025. This is less than 5yrs in the field
+     * To be sane the clock  must be between 2020 and
+     * EPOCH_TIME_UPPER_SANITY_SECS.
      *
      * @param epochTime The epoch time to be checked.
      * @return **bool** True if the given time passes sanity range checking.
@@ -723,7 +711,7 @@ class Logger {
      * @return **bool** True if the current time on the RTC is an even interval
      * of the logging rate.
      */
-    uint8_t checkInterval(void);
+    uint8_t       checkInterval(void); /* atl_extension */
     const uint8_t CIA_NOACTION      = 0x0;
     const uint8_t CIA_NEW_READING   = 0x01;
     const uint8_t CIA_POST_READINGS = 0x02;
@@ -780,7 +768,7 @@ class Logger {
      *
      * @note This DOES NOT sleep or wake the sensors!!
      */
-    void systemSleep(uint8_t sleep_min = 0);
+    void systemSleep(uint8_t sleep_min = 0); /* atl_extension */
 
 #if defined(ARDUINO_ARCH_SAMD)
     /**
@@ -1089,6 +1077,37 @@ class Logger {
      */
     static volatile bool startTesting;
 
+    /* atl_extension */
+ protected:
+    /**
+     * @brief Active instance of the attached data publishers
+     */
+    uint8_t _dataPubInstance;
+
+ public:
+    /**
+     * @brief Get Epoch Time with no offsets
+     */
+    static uint32_t getNowEpochT0(void);
+    /**
+     * @brief Get Epoch time with zone offset
+     */
+    static uint32_t getNowEpochTz(void);
+    /**
+     * @brief Set Epoch time with no offsets
+     */
+    static void setNowEpochT0(uint32_t ts);  // Set Epoch with standard UST
+    // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
+    /**
+     * @brief DateTime from epoch time
+     */
+    static DateTime dtFromEpochT0(uint32_t epochTime);
+    /**
+     * @brief DateTime from epoch time with local time zone offset
+     */
+    static DateTime dtFromEpochTz(uint32_t epochTime);
+
+ public:
 #include "LoggerBaseHextClass.h"
 };
 

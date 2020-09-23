@@ -101,6 +101,7 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
     }
 
     jsonLength += 1;  // }
+
     return jsonLength;
 }
 
@@ -182,7 +183,103 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 
+
+// This utilizes an attached modem to make a TCP connection to the
+// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
+// over that connection.
+// The return is the http status code of the response.
+// int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
+int16_t EnviroDIYPublisher::publishData(Client* outClient) {
+    // Create a buffer for the portions of the request and response
+#define REQUIRED_MIN_RSP_SZ 12
 #define TEMP_BUFFER_SZ 37
+#define RESPONSE_UNINIT 0xFFFE
+    char     tempBuffer[TEMP_BUFFER_SZ] = "";
+    uint16_t did_respond                = RESPONSE_UNINIT;
+
+    // Following is record specific - start with space in buffer
+    uint32_t elapsed_ms = 0;
+    uint32_t gatewayStart_ms;
+    uint16_t bufferSz = bufferFree();
+    if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(outClient);
+
+    // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
+    MS_DBG(F("Connecting client. Timer (mS)"));
+    MS_START_DEBUG_TIMER;
+    if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
+
+        mmwPostHeader(tempBuffer);
+        if (useQueDataSource) {
+            mmwPostDataQued(tempBuffer);
+        } else {
+            mmwPostDataArray(tempBuffer);
+        }
+        MS_DEEP_DBG(F("SZEND "), bufferFree());
+        // Send out the finished request (or the last unsent section of it)
+        printTxBuffer(outClient, true);
+
+        // Poll for a response from the server with timeout
+        gatewayStart_ms = millis();
+
+        did_respond = 0;
+        while ((elapsed_ms < _timerPostTimeout_ms) &&
+               (did_respond < REQUIRED_MIN_RSP_SZ)) {
+            delay(10);  // mS delay to poll
+            did_respond = outClient->available();
+            elapsed_ms  = millis() - gatewayStart_ms;
+        }
+        // MS_DBG(F("Rsp avl,"), did_respond, F("bytes in"), elapsed_ms,
+        // F("mS"));
+        // Read only the first 12 characters of the response
+        // We're only reading as far as the http code, anything beyond that
+        // we don't care about.
+        tempBuffer[0] = 0;
+        did_respond   = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
+        // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
+        // F("mS"));
+        // Close the TCP/IP connection
+        // MS_DBG(F("Stopping client"));
+        MS_RESET_DEBUG_TIMER;
+        outClient->stop();
+        MS_DBG(F("Client waited"), elapsed_ms, F("mS for"), did_respond,
+               F("bytes. Stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
+    } else {
+        PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
+                   "Portal --"));
+    }
+
+    // Process the HTTP response
+    int16_t responseCode = 0;
+    if (RESPONSE_UNINIT == did_respond) {
+        // 901 Outside HTTP Status, No Connection to server
+        responseCode = HTTPSTATUS_NC_901;
+    } else if (did_respond >= REQUIRED_MIN_RSP_SZ) {
+        char responseCode_char[4];
+        // Put in monitor check on actual size received
+        if ((did_respond + 5) >= TEMP_BUFFER_SZ) {
+            PRINTOUT(F(" -- Gateway Timeout warning buffer sz small"),
+                     did_respond, TEMP_BUFFER_SZ);
+        }
+        for (uint8_t i = 0; i < 3; i++) {
+            responseCode_char[i] = tempBuffer[i + 9];
+        }
+        responseCode = atoi(responseCode_char);
+    } else {
+        // 504 Gateway Timeout
+        responseCode = HTTPSTATUS_GT_504;
+    }
+    _timerPost_ms = (uint16_t)elapsed_ms;
+
+    tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
+    MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
+    PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
+             F("mS Timeout"), _timerPostTimeout_ms);
+    // PRINTOUT(responseCode);
+
+    return responseCode;
+}
+
 void EnviroDIYPublisher::mmwPostHeader(char* tempBuffer) {
     // char tempBuffer[TEMP_BUFFER_SZ] = "";
     // copy the initial post header into the tx buffer
@@ -281,100 +378,4 @@ void EnviroDIYPublisher::mmwPostDataQued(char* tempBuffer) {
         if (!_baseLogger->deszqNextCh()) break;
     }
     MS_DBG(F("Filled from SD QUE in "), MS_PRINT_DEBUG_TIMER, F("ms"));
-}
-// This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
-// over that connection.
-// The return is the http status code of the response.
-// int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
-
-int16_t EnviroDIYPublisher::publishData(Client* outClient) {
-    char tempBuffer[TEMP_BUFFER_SZ] = "";
-#define RESPONSE_UNINIT 0xFFFE
-    uint16_t did_respond = RESPONSE_UNINIT;
-    // int16_t  msg_sz                     = calculateJsonSize();
-    // MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
-    // Following is record specific - start with space in buffer
-    uint32_t elapsed_ms = 0;
-    uint32_t gatewayStart_ms;
-    uint16_t bufferSz = bufferFree();
-    if (bufferSz < (MS_SEND_BUFFER_SIZE - 50)) printTxBuffer(outClient);
-
-#define REQUIRED_MIN_RSP_SZ 12
-
-    // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    MS_DBG(F("Connecting client. Timer (mS)"));
-    MS_START_DEBUG_TIMER;
-    if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
-        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-
-        mmwPostHeader(tempBuffer);
-        if (useQueDataSource) {
-            mmwPostDataQued(tempBuffer);
-        } else {
-            mmwPostDataArray(tempBuffer);
-        }
-        MS_DEEP_DBG(F("SZEND "), bufferFree());
-        // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(outClient, true);
-
-        // Poll for a response from the server with timeout
-        gatewayStart_ms = millis();
-
-        did_respond = 0;
-        while ((elapsed_ms < _timerPostTimeout_ms) &&
-               (did_respond < REQUIRED_MIN_RSP_SZ)) {
-            delay(10);  // mS delay to poll
-            did_respond = outClient->available();
-            elapsed_ms  = millis() - gatewayStart_ms;
-        }
-        // MS_DBG(F("Rsp avl,"), did_respond, F("bytes in"), elapsed_ms,
-        // F("mS"));
-        // Read only the first 12 characters of the response
-        // We're only reading as far as the http code, anything beyond that
-        // we don't care about.
-        tempBuffer[0] = 0;
-        did_respond   = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
-        // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
-        // F("mS"));
-        // Close the TCP/IP connection
-        // MS_DBG(F("Stopping client"));
-        MS_RESET_DEBUG_TIMER;
-        outClient->stop();
-        MS_DBG(F("Client waited"), elapsed_ms, F("mS for"), did_respond,
-               F("bytes. Stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-    } else {
-        PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
-                   "Portal --"));
-    }
-
-    // Process the HTTP response
-    int16_t responseCode = 0;
-    if (RESPONSE_UNINIT == did_respond) {
-        // 901 Outside HTTP Status, No Connection to server
-        responseCode = HTTPSTATUS_NC_901;
-    } else if (did_respond >= REQUIRED_MIN_RSP_SZ) {
-        char responseCode_char[4];
-        // Put in monitor check on actual size received
-        if ((did_respond + 5) >= TEMP_BUFFER_SZ) {
-            PRINTOUT(F(" -- Gateway Timeout warning buffer sz small"),
-                     did_respond, TEMP_BUFFER_SZ);
-        }
-        for (uint8_t i = 0; i < 3; i++) {
-            responseCode_char[i] = tempBuffer[i + 9];
-        }
-        responseCode = atoi(responseCode_char);
-    } else {
-        // 504 Gateway Timeout
-        responseCode = HTTPSTATUS_GT_504;
-    }
-    _timerPost_ms = (uint16_t)elapsed_ms;
-
-    tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
-    MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
-    PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
-             F("mS Timeout"), _timerPostTimeout_ms);
-    // PRINTOUT(responseCode);
-
-    return responseCode;
 }

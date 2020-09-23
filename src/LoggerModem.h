@@ -377,16 +377,6 @@ class loggerModem {
     virtual bool updateModemMetadata(void);
     /**@}*/
 
-// By default modem metadata won't be polled. Call this to enable.
-#define POLL_MODEM_META_DATA_ON 0x80
-    void pollModemMetadata(uint8_t status = POLL_MODEM_META_DATA_ON);
-#if not defined SENSOR_DEFAULT_I
-#define SENSOR_DEFAULT_I -1
-#endif  // SENSOR_DEFAULT
-#if not defined SENSOR_DEFAULT_F
-#define SENSOR_DEFAULT_F -0.0099
-#endif  // SENSOR_DEFAULT
-
     /**
      * @anchor modem_static_functions
      * @name Functions to return the current value of static member variables
@@ -735,7 +725,6 @@ class loggerModem {
     // NOTE:  These must be static so that the modem variables can call the
     // member functions that return them.  (Non-static member functions cannot
     // be called without an object.)
-    static bool _pollModemMetaData;
     /**
      * @anchor modem_static_variables
      * @name Static member variables used to hold modem metadata
@@ -797,7 +786,43 @@ class loggerModem {
 
     // modemType gsmModem;
     // modemClientType gsmClient;
+
+    /* atl_extension */
+
+ protected:
+    /**
+     * @brief poll the modem management data
+     *
+     * Set in the init() portion of the #modemSetup().
+     */
+    static bool _pollModemMetaData;
+
+ public:
+// By default modem metadata won't be polled. Call this to enable.
+#define POLL_MODEM_META_DATA_ON 0x80
+    void pollModemMetadata(uint8_t status = POLL_MODEM_META_DATA_ON);
+
+#if not defined SENSOR_DEFAULT_I
+#define SENSOR_DEFAULT_I -1
+// old standard -9999
+#endif  // SENSOR_DEFAULT
+
+#if not defined SENSOR_DEFAULT_F
+#define SENSOR_DEFAULT_F -0.0099
+// old standard -9999
+#endif  // SENSOR_DEFAULT
 };
+
+    /* atl_extension */
+
+// Acceptable epoch time range from NIST
+// before Jan 1, 2020  most likely an error
+#define EPOCH_LOWER_RANGE_SEC 1577836800
+#define EPOCH_TIME_LOWER_SANITY_SECS EPOCH_LOWER_RANGE_SEC
+// after Jan 1, 2030, most likely an error
+#define EPOCH_UPPER_RANGE_SEC 1893456000
+#define EPOCH_TIME_UPPER_SANITY_SECS EPOCH_UPPER_RANGE_SEC
+
 
 // typedef float (loggerModem::_*loggerGetValueFxn)(void);
 

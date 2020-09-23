@@ -123,6 +123,7 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s) {
     Warning interrupt will never be generated.*/
 }
 
+
 void extendedWatchDogSAMD::enableWatchDog() {
     MS_DBG(F("Enabling watch dog..."));
     resetWatchDog();
@@ -187,9 +188,9 @@ void WDT_Handler(void) {
 #else
         while (WDT->STATUS.bit.SYNCBUSY) {}
 #endif
-    // Clear Early Warning (EW) Interrupt Flag
-    WDT->INTFLAG.bit.EW = 1;
-  }
+        // Clear Early Warning (EW) Interrupt Flag
+        WDT->INTFLAG.bit.EW = 1;
+    }
 }
 
 #endif

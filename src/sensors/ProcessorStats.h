@@ -142,6 +142,7 @@
 /// Sample number is stored in sensorValues[2]
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
 
+    /* atl_extension */
 #define ProcessorStatsDef_Resolution 10
 #define ProcAdc_Max ((1 << ProcessorStatsDef_Resolution) - 1)
 
@@ -229,6 +230,15 @@ class ProcessorStats : public Sensor {
      */
     bool addSingleMeasurementResult(void) override;
 
+ private:
+    const char* _version;
+    int8_t      _batteryPin;
+    int16_t     sampNum;
+
+    /* atl_extension */
+    float       LiIonBatt_V = -999.0;
+
+ public:
     /* Battery Usage Level definitions
      * LiIon (and any battery) has a charge and internal resistance.
      * For the Logger there are different types of loads that need to be mapped
@@ -321,11 +331,6 @@ class ProcessorStats : public Sensor {
 #define PS_LBATT_HEAVY_V 4.0
 #define PS_LBATT_HYSTERESIS 0.05
 #endif
- private:
-    const char* _version;
-    int8_t      _batteryPin;
-    int16_t     sampNum;
-    float       LiIonBatt_V = -999.0;
 };
 
 
