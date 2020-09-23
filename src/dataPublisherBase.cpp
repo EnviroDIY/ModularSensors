@@ -160,8 +160,8 @@ int16_t dataPublisher::publishData() {
     }
 }
 // Duplicates for backwards compatibility
-int16_t dataPublisher::sendData(Client* _outClient) {
-    return publishData(_outClient);
+int16_t dataPublisher::sendData(Client* outClient) {
+    return publishData(outClient);
 }
 int16_t dataPublisher::sendData() {
     return publishData();

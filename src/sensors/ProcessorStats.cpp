@@ -202,7 +202,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
            F("):"), sensorValue_battery);
 
 #else
-    sensorValue_battery  = -9999;
+    sensorValue_battery = -9999;
 
 #endif
 

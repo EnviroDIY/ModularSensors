@@ -7,8 +7,6 @@
  * @brief Implements the MaximDS18 class.
  */
 
-
-
  #if defined (ARDUINO_AVR_ENVIRODIY_MAYFLY)
 
 #include <Sodaq_DS3231.h>
@@ -59,6 +57,7 @@ bool MaximDS3231::startSingleMeasurement(void) {
     #warning could add alieas for rtc.convertTemperature(false)
     rtc.getTemperature();
     #endif
+
     return true;
 }
 

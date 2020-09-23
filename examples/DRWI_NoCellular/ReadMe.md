@@ -1,9 +1,13 @@
 [//]: # ( @page drwi_no_cell_example DRWI CitSci Sites without Live Data )
 # ModularSensors for DRWI sites with no Cellular Service
 
-This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.
+This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
+This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.
 
-Before using this example, you must register a site and sensors at the data portal (http://data.envirodiy.org/).  After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.  You will need to copy all of those UUID values into your sketch to replace the ```12345678-abcd-1234-ef00-1234567890ab``` place holders in this example.  __You should register even if your logger will not be sending live data.__  This ensures that the data file your logger writes will be ready to immediately upload to the portal.
+Before using this example, you must register a site and sensors at the data portal (http://data.envirodiy.org/).
+After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.
+You will need to copy all of those UUID values into your sketch to replace the `12345678-abcd-1234-ef00-1234567890ab` place holders in this example.
+__You should register even if your logger will not be sending live data.__  This ensures that the data file your logger writes will be ready to immediately upload to the portal.
 
 _______
 
@@ -15,8 +19,10 @@ _______
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
-    - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.  Without this, the program won't compile or send data.
-- Download logging_to_EnviroDIY.ino and put it into the src directory of your project.  Delete main.cpp in that folder.
+    - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.
+Without this, the program won't compile or send data.
+- Download logging_to_EnviroDIY.ino and put it into the src directory of your project.
+Delete main.cpp in that folder.
 
 [//]: # ( @subsection drwi_no_cell_logger_id Set the logger ID )
 ## Set the logger ID
@@ -30,9 +36,10 @@ const char *LoggerID = "XXXX";
 [//]: # ( @subsection drwi_no_cell_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
 ## Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
-- Change _**all**_ of the the ```0.000E+00``` and ```1.000E+00``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
+- Change _**all**_ of the the `0.000E+00` and `0.000E+00` values in this section of code to the values on that calibration sheet.
+Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
     - The sketch will not compile if these values are not entered properly.
-    - Do not change any values except those that are ```0.000E+00``` and ```1.000E+00```!
+    - Do not change any values except those that are `0.000E+00` and `0.000E+00`!
 
 ```cpp
 // ==========================================================================
@@ -95,3 +102,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 [//]: # ( @subsection drwi_no_cell_upload Upload! )
 ## Upload!
 - Test everything at home **before** deploying out in the wild!
+
+_______
+
+[//]: # ( @section drwi_no_cell_full The Complete Example Code: )

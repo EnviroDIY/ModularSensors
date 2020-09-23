@@ -70,7 +70,7 @@
  * @brief The loggerModem::_max_atresponse_time_ms.
  *
  * The serial response time is not documented for the XBee so we allow a long
- * (15s) buffer. It is probably much less than this, except possibly in bypass
+ * (15s) buffer.  It is probably much less than this, except possibly in bypass
  * mode.
  */
 #define XBEE_ATRESPONSE_TIME_MS 15000L
@@ -94,8 +94,8 @@
  * @brief The parent class for all Digi XBee and XBee3 wifi and cellular
  * modules.
  *
- * All of the various cellular XBee's and XBee3's are supported. The wifi S6B is
- * also supported.
+ * All of the various cellular XBee's and XBee3's are supported.  The wifi S6B
+ * is also supported.
  *
  * #### Pin and timing information for the XBees
  *

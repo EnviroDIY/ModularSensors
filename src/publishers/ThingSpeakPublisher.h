@@ -53,7 +53,6 @@ class ThingSpeakPublisher : public dataPublisher {
     /**
      * @brief Construct a new ThingSpeak Publisher object with no members
      * initialized.
-     *
      */
     ThingSpeakPublisher();
     /**
@@ -136,7 +135,6 @@ class ThingSpeakPublisher : public dataPublisher {
                         const char* thingSpeakChannelID,
                         const char* thingSpeakChannelKey,
                         uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    // Destructor
     /**
      * @brief Destroy the ThingSpeak Publisher object
      */
@@ -200,7 +198,7 @@ class ThingSpeakPublisher : public dataPublisher {
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);
-    int16_t publishData(Client* _outClient) override;
+    int16_t publishData(Client* outClient) override;
 
  protected:
     /**

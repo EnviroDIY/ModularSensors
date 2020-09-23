@@ -6,13 +6,13 @@ ___
 
 Check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/getting_started.html) section of the documentation!
 
-This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly. 
-This version of the ModularSensors library is a rugged solar powered wireless data logger, that:
-* Based in the riparian corridor
-* Polls local physical sensors readings
-* Supports 12V/Modbus interface through Wingboard 
-* Stores the readings  to a SD memory card;
+This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly.
+The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
+* Retrieve data from many physical sensors;
+* Save that data to a SD memory card;
 * Transmit that data wirelessly to a web server; and
+* Based in the riparian corridor
+* Supports 12V/Modbus interface through Wingboard 
 * powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
 ## New for this fork   
 * ONLY applies to ModularSensors\a\.. directories (Mayfly and other ARM SAMDx boards)   
@@ -86,6 +86,7 @@ There is extensive documentation available in the [ModularSensors github pages](
   - [Contributing](#contributing)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
+
 [//]: # ( End GitHub Only )
 
 [//]: # ( @section mainpage_supported_sensors Supported Sensors )
@@ -120,7 +121,7 @@ For some generalized information about attaching sensors to an Arduino style boa
     - Meter ECH2O 5TM
     - Meter Teros 11
 - [Meter Environmental Hydros 21 (formerly Decagon Devices CTD-10): conductivity, temperature & depth](https://envirodiy.github.io/ModularSensors/hydros21_page.html)
-- [TI ADS1115: external voltage with support for divided current ](https://envirodiy.github.io/ModularSensors/ads1115_page.html)
+- [TI ADS1115: external voltage with support for divided current](https://envirodiy.github.io/ModularSensors/ads1x15_page.html)
 - [TI INA219: current, voltage, and power draw](https://envirodiy.github.io/ModularSensors/ina219_page.html)
 - [Yosemitech: water quality sensors](https://envirodiy.github.io/ModularSensors/yosemitech_page.html)
     - Y502-A or Y504-A: Optical DO and Temperature
@@ -143,6 +144,7 @@ The currently supported services are the [Monitor My Watershed data portal](http
 
 - [Monitor My Watershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
 - [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Functions)
+
 [//]: # ( @todo Page on Data Endpoints )
 
 
@@ -164,7 +166,6 @@ For information common to all modems and for tables of the proper class, baud ra
 - [SIM800](https://envirodiy.github.io/ModularSensors/sim800_page.html), including the [Sodaq GPRSBee](https://envirodiy.github.io/ModularSensors/gprsbee_page.html)
 - u-blox LTE-M R4 and N4 series, including the [Sodaq uBee](https://envirodiy.github.io/ModularSensors/ubee_page.html)
 - u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://envirodiy.github.io/ModularSensors/ubee_page.html)
-
 
 
 [//]: # ( @section mainpage_contributing Contributing )
@@ -191,7 +192,21 @@ Hardware designs shared are released, unless otherwise indicated, under the [CER
 
 [//]: # ( @section mainpage_acknowledgments Acknowledgments )
 ## Acknowledgments
-See https://github.com/EnviroDIY/ModularSensors#acknowledgments   
+[EnviroDIY](http://envirodiy.org/)™ is presented by the Stroud Water Research Center, with contributions from a community of enthusiasts sharing do-it-yourself ideas for environmental science and monitoring.
+
+[Sara Damiano](https://github.com/SRGDamia1) is the primary developer of the EnviroDIY ModularSensors library, with input from many [other contributors](https://github.com/EnviroDIY/ModularSensors/graphs/contributors).
+
+This project has benefited from the support from the following funders:
+
+* William Penn Foundation
+* US Environmental Protection Agency (EPA)
+* National Science Foundation, awards [EAR-0724971](http://www.nsf.gov/awardsearch/showAward?AWD_ID=0724971), [EAR-1331856](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1331856), [ACI-1339834](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1339834)
+* Stroud Water Research Center endowment
+
+Other Contributors
 [Beth Fisher](https://github.com/fisherba) for sharing/helping with her vision of ModularSensors.   
 [Anthony Aufdenkampe](https://github.com/aufdenkampe) for releasing the Modbus Interface/WingBoard, and making it possible to access a class of +12V Modbus Industrial Sensors.   
-[Sara Damiano](https://github.com/SRGDamia1) for being the "Class maestro" of ModularSensors :).   
+
+ Acknowledgements for this fork
+[Neil Hancock] is solely responsible for its content. 
+

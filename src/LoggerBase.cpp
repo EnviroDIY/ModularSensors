@@ -548,12 +548,12 @@ void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
 }
 
+
 // ===================================================================== //
 // Public functions to access the clock in proper format and time zone
 // ===================================================================== //
 
-// Sets the static timezone that the data will be logged in - this must be
-// set
+// Sets the static timezone that the data will be logged in - this must be set
 void Logger::setLoggerTimeZone(int8_t timeZone) {
     _loggerTimeZone = timeZone;
 // Some helpful prints for debugging
@@ -694,6 +694,7 @@ void Logger::setNowEpoch(uint32_t ts) {
 void Logger::setNowEpochT0(uint32_t ts) {
     zero_sleep_rtc.setEpoch(ts);
 }
+
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -839,9 +840,9 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
 // for updating the sensors - even though the routines to update the sensors
 // and to output the data may take several seconds.
-// It is not currently possible to output the instantaneous time an
-// individual sensor was updated, just a single marked time.  By custom,
-// this should be called before updating the sensors, not after.
+// It is not currently possible to output the instantaneous time an individual
+// sensor was updated, just a single marked time.  By custom, this should be
+// called before updating the sensors, not after.
 void Logger::markTime(void) {
     Logger::markedEpochTimeTz = getNowEpochTz();
 }
@@ -972,8 +973,7 @@ uint8_t Logger::checkInterval(void) {
 }
 
 
-// This checks to see if the MARKED time is an even interval of the logging
-// rate
+// This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval(void) {
     bool retval;
     MS_DBG(F("Marked Time:"), Logger::markedEpochTimeTz,
@@ -1110,7 +1110,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     bool restoreUSBDevice = false;
     // if (SERIAL_PORT_USBVIRTUAL)
     // {
-    // 	USBDevice.standby();
+    //     USBDevice.standby();
     // }
     // else
     // {
@@ -1122,7 +1122,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     // Disable systick interrupt:  See
     // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
     SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
-// Now go to sleep
+    // Now go to sleep
 #if defined(MS_LOGGERBASE_DEBUG) || defined(MS_LOGGERBASE_SLEEP_DEBUG)
     // Maintens MS_DEBUGGING_STD output, but current is 13mA/SAMD51
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -1164,8 +1164,9 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     // to the processor registers
     noInterrupts();
 
-    // Disable the processor ADC (must be disabled before it will power
-    // down) ADCSRA = ADC Control and Status Register A ADEN = ADC Enable
+    // Disable the processor ADC (must be disabled before it will power down)
+    // ADCSRA = ADC Control and Status Register A
+    // ADEN = ADC Enable
     ADCSRA &= ~_BV(ADEN);
 
 // turn off the brown-out detector, if possible
@@ -1365,8 +1366,8 @@ void Logger::printFileHeader(Stream* stream) {
 }
 
 
-// This prints a comma separated list of volues of sensor data - including
-// the time -  out over an Arduino stream
+// This prints a comma separated list of volues of sensor data - including the
+// time -  out over an Arduino stream
 void Logger::printSensorDataCSV(Stream* stream) {
     String csvString = "";
     dtFromEpochT0(Logger::markedEpochTimeTz).addToString(csvString);
@@ -1379,8 +1380,7 @@ void Logger::printSensorDataCSV(Stream* stream) {
     stream->println();
 }
 
-// Protected helper function - This checks if the SD card is available and
-// ready
+// Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void) {
     bool retVal = true;
     // If we don't know the slave select of the sd card, we can't use it
@@ -1417,8 +1417,8 @@ void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag) {
 }
 
 
-// Protected helper function - This opens or creates a file, converting a
-// string file name to a character file name
+// Protected helper function - This opens or creates a file, converting a string
+// file name to a character file name
 bool Logger::openFile(String& filename, bool createFile,
                       bool writeDefaultHeader) {
     // Initialise the SD card
@@ -1478,10 +1478,10 @@ bool Logger::openFile(String& filename, bool createFile,
 // These functions create a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the
-// function. If specified, it will also write a header to the file based on
-// the sensors in the group. This can be used to force a logger to create a
-// file with a secondary file name.
+// setFileName(String)/setFileName(void) or can be specified in the function. If
+// specified, it will also write a header to the file based on the sensors in
+// the group. This can be used to force a logger to create a file with a
+// secondary file name.
 bool Logger::createLogFile(String& filename, bool writeDefaultHeader) {
     // Attempt to create and open a file
     if (openFile(filename, true, writeDefaultHeader)) {
@@ -1504,24 +1504,21 @@ bool Logger::createLogFile(bool writeDefaultHeader) {
 // These functions write a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the
-// function. If the file does not already exist, the file will be created.
-// This can be used to force a logger to write to a file with a secondary
-// file name.
+// setFileName(String)/setFileName(void) or can be specified in the function. If
+// the file does not already exist, the file will be created. This can be used
+// to force a logger to write to a file with a secondary file name.
 bool Logger::logToSD(String& filename, String& rec) {
     // First attempt to open the file without creating a new one
     if (!openFile(filename, false, false)) {
         // Next try to create the file, bail if we couldn't create it
-        // This will not attempt to generate a new file name or add a
-        // header!
+        // This will not attempt to generate a new file name or add a header!
         if (!openFile(filename, true, false)) {
             PRINTOUT(F("Unable to write to SD card!"));
             return false;
         }
     }
 
-    // If we could successfully open or create the file, write the data to
-    // it
+    // If we could successfully open or create the file, write the data to it
     logFile.println(rec);
     // Echo the line to the serial port
     PRINTOUT(F("\n \\/---- Line Saved to"), filename, F("----\\/"));
@@ -1541,9 +1538,8 @@ bool Logger::logToSD(String& rec) {
     if (_fileName == "") generateAutoFileName();
     return logToSD(_fileName, rec);
 }
-// NOTE:  This is structured differently than the version with a string
-// input record.  This is to avoid the creation/passing of very long
-// strings.
+// NOTE:  This is structured differently than the version with a string input
+// record.  This is to avoid the creation/passing of very long strings.
 bool Logger::logToSD(void) {
     // Get a new file name if the name is blank
     if (_fileName == "") generateAutoFileName();
@@ -1551,8 +1547,7 @@ bool Logger::logToSD(void) {
     // First attempt to open the file without creating a new one
     if (!openFile(_fileName, false, false)) {
         // Next try to create a new file, bail if we couldn't create it
-        // Generate a filename with the current date, if the file name isn't
-        // set
+        // Generate a filename with the current date, if the file name isn't set
         if (_fileName == "") generateAutoFileName();
         // Do add a default header to the new file!
         if (!openFile(_fileName, true, true)) {
@@ -1661,10 +1656,10 @@ void Logger::testingMode() {
         // needed only for the wifi XBee.  Update metadata will also ask the
         // module for current signal quality using the underlying TinyGSM
         // getSignalQuality() function, but for the WiFi XBee it will not
-        // actually measure anything except by explicitly making a
-        // connection, which getModemSignalQuality() does.  For all of the
-        // other modules, getModemSignalQuality() is just a straigh
-        // pass-through to getSignalQuality().
+        // actually measure anything except by explicitly making a connection,
+        // which getModemSignalQuality() does.  For all of the other modules,
+        // getModemSignalQuality() is just a straigh pass-through to
+        // getSignalQuality().
         _logModem->updateModemMetadata();
 
         watchDogTimer.resetWatchDog();
@@ -1731,8 +1726,8 @@ void Logger::begin() {
     MS_DBG(F("Logger is set to record at"), _loggingIntervalMinutes,
            F("minute intervals."));
 
-    MS_DBG(F("Setting up a watch-dog timer to fire after 5 minutes of "
-             "inactivity"));
+    MS_DBG(F(
+        "Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
     // watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
     watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
     // Enable the watchdog
@@ -1897,8 +1892,7 @@ void Logger::begin() {
 #endif  // ARDUINO_ARCH_SAMD
 
     // Print out the current time
-    PRINTOUT(F("Current RTC time is:"),
-             formatDateTime_ISO8601(getNowEpochTz()));
+    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
 
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
@@ -1925,8 +1919,8 @@ void Logger::logData(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is
-    // an even interval of the logging interval
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -1938,9 +1932,8 @@ void Logger::logData(void) {
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
-        // TODO(SRGDamia1):  Decide how much delay is needed between turning
-        // on the card and writing to it.  Could we turn it on just before
-        // writing?
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
 
         // Do a complete sensor update
@@ -1974,8 +1967,8 @@ void Logger::logDataAndPublish(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is
-    // an even interval of the logging interval
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
     uint8_t cia_val = checkInterval();
     if (cia_val) {
         // Flag to notify that we're in already awake and logging a point
@@ -1988,9 +1981,8 @@ void Logger::logDataAndPublish(void) {
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
-        // TODO(SRGDamia1):  Decide how much delay is needed between turning
-        // on the card and writing to it.  Could we turn it on just before
-        // writing?
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
         if (cia_val & CIA_NEW_READING) {
             // Do a complete update on the variable array.
@@ -2060,11 +2052,11 @@ void Logger::logDataAndPublish(void) {
         }
 
 
-        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec
-        // has passed for internal SD card housekeeping before cutting power
-        // It seems very unlikely based on my testing that less than one
-        // second would be taken up in publishing data to remotes Cut power
-        // from the SD card - without additional housekeeping wait
+        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
+        // passed for internal SD card housekeeping before cutting power It
+        // seems very unlikely based on my testing that less than one second
+        // would be taken up in publishing data to remotes
+        // Cut power from the SD card - without additional housekeeping wait
         turnOffSDcard(false);
 
         // Turn off the LED

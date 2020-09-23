@@ -8,3 +8,7 @@ The settings for other data portals were removed from the example.
 The modem settings were left unchanged because the sketch will test successfully without modem connection (wait patiently, it takes a few minutes).
 
 This is the example you should use to deploy a logger with a modem to stream live data to the Monitor My Watershed data portal.
+
+_______
+
+[//]: # ( @section logging_to_MMW_full The Complete Example Code: )

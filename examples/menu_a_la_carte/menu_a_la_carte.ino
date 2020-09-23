@@ -107,7 +107,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
 /** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
-// communication. The "core" code for most boards defines one or more UART
+// communication.  The "core" code for most boards defines one or more UART
 // (Serial) ports with the SERCOMs and uses others for I2C and SPI.  We can
 // create new UART ports on any available SERCOM.  The table below shows
 // definitions for select boards.
@@ -402,7 +402,8 @@ const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
 // Create the modem object
 EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin, wifiId, wifiPwd,
-                          espSleepRqPin, espStatusPin  // Optional arguments
+                          espSleepRqPin,
+                          espStatusPin  // Optional arguments
 );
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
@@ -777,9 +778,11 @@ const uint8_t SQ212ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 // Create an Apogee SQ212 sensor object
 ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel, SQ212ADSi2c_addr);
 
-// Create a PAR variable pointer for the SQ212
+// Create PAR and raw voltage variable pointers for the SQ212
 Variable* sq212PAR =
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* sq212voltage =
+    new ApogeeSQ212_Voltage(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [sq212] */
 
 
@@ -997,57 +1000,9 @@ Variable* obs3VoltHigh =
 
 
 // ==========================================================================
-//  Decagon 5TM Soil Moisture Sensor
-// ==========================================================================
-/** Start [5tm] */
-#include <sensors/Decagon5TM.h>
-
-const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
-const int8_t TMPower        = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t TMData         = 7;               // The SDI12 data pin
-
-// Create a Decagon 5TM sensor object
-Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
-
-// Create the matric potential, volumetric water content, and temperature
-// variable pointers for the 5TM
-Variable* fivetmEa = new Decagon5TM_Ea(&fivetm,
-                                       "12345678-abcd-1234-ef00-1234567890ab");
-Variable* fivetmVWC =
-    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* fivetmTemp =
-    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [5tm] */
-
-
-// ==========================================================================
-//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
-// ==========================================================================
-/** Start [decagon_ctd] */
-#include <sensors/DecagonCTD.h>
-
-const char*   CTDSDI12address   = "1";    // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;      // The number of readings to average
-const int8_t  CTDPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  CTDData  = 7;               // The SDI12 data pin
-
-// Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
-
-// Create conductivity, temperature, and depth variable pointers for the CTD
-Variable* ctdCond = new DecagonCTD_Cond(&ctd,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ctdTemp = new DecagonCTD_Temp(&ctd,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ctdDepth =
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [decagon_ctd] */
-
-
-// ==========================================================================
 //  Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
-/** Start [decagon_es2] */
+/** Start [es2] */
 #include <sensors/DecagonES2.h>
 
 const char*   ES2SDI12address = "3";      // The SDI-12 Address of the ES2
@@ -1063,13 +1018,13 @@ Variable* es2Cond = new DecagonES2_Cond(&es2,
                                         "12345678-abcd-1234-ef00-1234567890ab");
 Variable* es2Temp = new DecagonES2_Temp(&es2,
                                         "12345678-abcd-1234-ef00-1234567890ab");
-/** End [decagon_es2] */
+/** End [es2] */
 
 
 // ==========================================================================
 //  External Voltage via TI ADS1115
 // ==========================================================================
-/** Start [ads1x1x] */
+/** Start [ext_volt] */
 #include <sensors/ExternalVoltage.h>
 
 const int8_t  ADSPower       = sensorPowerPin;  // Power pin (-1 if unconnected)
@@ -1085,7 +1040,7 @@ ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
 // Create a voltage variable pointer
 Variable* extvoltV =
     new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ads1x1x] */
+/** End [ext_volt] */
 
 
 // ==========================================================================
@@ -1106,165 +1061,6 @@ Variable* mplPress =
 Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
                                       "12345678-abcd-1234-ef00-1234567890ab");
 /** End [mpl115a2] */
-
-
-// ==========================================================================
-//  Maxbotix HRXL Ultrasonic Range Finder
-// ==========================================================================
-/** Start [sonar] */
-#include <sensors/MaxBotixSonar.h>
-
-// Create a reference to the serial port for the sonar
-// A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
-// A Maxbotix sonar using the trigger may be able to share but YMMV
-// Extra hardware and software serial ports are created in the "Settings for
-// Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial& sonarSerial = Serial3;  // Use hardware serial if possible
-#else
-// AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial
-NeoSWSerial& sonarSerial = neoSSerial1;  // For software serial
-// SoftwareSerial_ExtInts& sonarSerial = softSerial1;  // For software serial
-#endif
-
-const int8_t SonarPower =
-    sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger =
-    -1;  // Trigger pin (a unique negative number if unconnected)
-const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
-
-// Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger,
-                     sonar1NumberReadings);
-
-// Create an ultrasonic range variable pointer
-Variable* sonar1Range =
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [sonar] */
-
-
-// ==========================================================================
-//  Maxim DS18 One Wire Temperature Sensor
-// ==========================================================================
-/** Start [ds18] */
-#include <sensors/MaximDS18.h>
-
-// OneWire Address [array of 8 hex characters]
-// If only using a single sensor on the OneWire bus, you may omit the address
-DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA,
-                                 0x81, 0x16, 0x03, 0x0C};
-const int8_t  OneWirePower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  OneWireBus   = A0;  // OneWire Bus Pin (-1 if unconnected)
-const int8_t  ds18NumberReadings = 3;
-
-// Create a Maxim DS18 sensor objects (use this form for a known address)
-MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus, ds18NumberReadings);
-
-// Create a Maxim DS18 sensor object (use this form for a single sensor on bus
-// with an unknown address)
-// MaximDS18 ds18(OneWirePower, OneWireBus);
-
-// Create a temperature variable pointer for the DS18
-Variable* ds18Temp = new MaximDS18_Temp(&ds18,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ds18] */
-
-
-// ==========================================================================
-//  Measurement Specialties MS5803-14BA pressure sensor
-// ==========================================================================
-/** Start [ms5803] */
-#include <sensors/MeaSpecMS5803.h>
-
-const int8_t  MS5803Power = sensorPowerPin;  // Power pin (-1 if unconnected)
-const uint8_t MS5803i2c_addr =
-    0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
-const int16_t MS5803maxPressure =
-    14;  // The maximum pressure measurable by the specific MS5803 model
-const uint8_t MS5803ReadingsToAvg = 1;
-
-// Create a MeaSpec MS5803 pressure and temperature sensor object
-MeaSpecMS5803 ms5803(MS5803Power, MS5803i2c_addr, MS5803maxPressure,
-                     MS5803ReadingsToAvg);
-
-// Create pressure and temperature variable pointers for the MS5803
-Variable* ms5803Press =
-    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ms5803Temp =
-    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ms5803] */
-
-
-// ==========================================================================
-//  Meter Teros 11 Soil Moisture Sensor
-// ==========================================================================
-/** Start [teros11] */
-#include <sensors/MeterTeros11.h>
-
-const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
-const int8_t  terosPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  terosData  = 7;               // The SDI12 data pin
-const uint8_t teros11NumberReadings = 3;    // The number of readings to average
-
-// Create a METER TEROS 11 sensor object
-MeterTeros11 teros11(*teros11SDI12address, terosPower, terosData,
-                     teros11NumberReadings);
-
-// Create the matric potential, volumetric water content, and temperature
-// variable pointers for the Teros 11
-Variable* teros11Ea =
-    new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* teros11Temp =
-    new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* teros11VWC =
-    new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [teros11] */
-
-
-// ==========================================================================
-//  External I2C Rain Tipping Bucket Counter
-// ==========================================================================
-/** Start [i2c_rain] */
-#include <sensors/RainCounterI2C.h>
-
-const uint8_t RainCounterI2CAddress =
-    0x08;                            // I2C Address for external tip counter
-const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
-
-// Create a Rain Counter sensor object
-RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
-
-// Create number of tips and rain depth variable pointers for the tipping bucket
-Variable* tbi2cTips =
-    new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* tbi2cDepth =
-    new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [i2c_rain] */
-
-
-// ==========================================================================
-//  TI INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
-// ==========================================================================
-/** Start [ina219] */
-#include <sensors/TIINA219.h>
-
-const int8_t INA219Power    = sensorPowerPin;  // Power pin (-1 if unconnected)
-uint8_t      INA219i2c_addr = 0x40;            // 1000000 (Board A0+A1=GND)
-// The INA219 can have one of 16 addresses, depending on the connections of A0
-// and A1
-const uint8_t INA219ReadingsToAvg = 1;
-
-// Create an INA219 sensor object
-TIINA219 ina219(INA219Power, INA219i2c_addr, INA219ReadingsToAvg);
-
-// Create current, voltage, and power variable pointers for the INA219
-Variable* inaCurrent =
-    new TIINA219_Current(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* inaVolt  = new TIINA219_Volt(&ina219,
-                                      "12345678-abcd-1234-ef00-1234567890ab");
-Variable* inaPower = new TIINA219_Power(&ina219,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ina219] */
 
 
 // ==========================================================================
@@ -1345,9 +1141,216 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 
 
 // ==========================================================================
+//  Maxbotix HRXL Ultrasonic Range Finder
+// ==========================================================================
+/** Start [maxbotics] */
+#include <sensors/MaxBotixSonar.h>
+
+// Create a reference to the serial port for the sonar
+// A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
+// A Maxbotix sonar using the trigger may be able to share but YMMV
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& sonarSerial = Serial3;  // Use hardware serial if possible
+#else
+// AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial
+NeoSWSerial& sonarSerial = neoSSerial1;  // For software serial
+// SoftwareSerial_ExtInts& sonarSerial = softSerial1;  // For software serial
+#endif
+
+const int8_t SonarPower =
+    sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
+const int8_t Sonar1Trigger =
+    -1;  // Trigger pin (a unique negative number if unconnected)
+const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
+
+// Create a MaxBotix Sonar sensor object
+MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger,
+                     sonar1NumberReadings);
+
+// Create an ultrasonic range variable pointer
+Variable* sonar1Range =
+    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [maxbotics] */
+
+
+// ==========================================================================
+//  Maxim DS18 One Wire Temperature Sensor
+// ==========================================================================
+/** Start [ds18] */
+#include <sensors/MaximDS18.h>
+
+// OneWire Address [array of 8 hex characters]
+// If only using a single sensor on the OneWire bus, you may omit the address
+DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA,
+                                 0x81, 0x16, 0x03, 0x0C};
+const int8_t  OneWirePower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  OneWireBus   = A0;  // OneWire Bus Pin (-1 if unconnected)
+const int8_t  ds18NumberReadings = 3;
+
+// Create a Maxim DS18 sensor objects (use this form for a known address)
+MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus, ds18NumberReadings);
+
+// Create a Maxim DS18 sensor object (use this form for a single sensor on bus
+// with an unknown address)
+// MaximDS18 ds18(OneWirePower, OneWireBus);
+
+// Create a temperature variable pointer for the DS18
+Variable* ds18Temp = new MaximDS18_Temp(&ds18,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ds18] */
+
+
+// ==========================================================================
+//  Measurement Specialties MS5803-14BA pressure sensor
+// ==========================================================================
+/** Start [ms5803] */
+#include <sensors/MeaSpecMS5803.h>
+
+const int8_t  MS5803Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const uint8_t MS5803i2c_addr =
+    0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
+const int16_t MS5803maxPressure =
+    14;  // The maximum pressure measurable by the specific MS5803 model
+const uint8_t MS5803ReadingsToAvg = 1;
+
+// Create a MeaSpec MS5803 pressure and temperature sensor object
+MeaSpecMS5803 ms5803(MS5803Power, MS5803i2c_addr, MS5803maxPressure,
+                     MS5803ReadingsToAvg);
+
+// Create pressure and temperature variable pointers for the MS5803
+Variable* ms5803Press =
+    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ms5803Temp =
+    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ms5803] */
+
+
+// ==========================================================================
+//  Meter ECH2O Soil Moisture Sensor
+// ==========================================================================
+/** Start [fivetm] */
+#include <sensors/Decagon5TM.h>
+
+const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
+const int8_t TMPower        = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t TMData         = 7;               // The SDI12 data pin
+
+// Create a Decagon 5TM sensor object
+Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
+
+// Create the matric potential, volumetric water content, and temperature
+// variable pointers for the 5TM
+Variable* fivetmEa = new Decagon5TM_Ea(&fivetm,
+                                       "12345678-abcd-1234-ef00-1234567890ab");
+Variable* fivetmVWC =
+    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* fivetmTemp =
+    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [fivetm] */
+
+
+// ==========================================================================
+//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+/** Start [hydros21] */
+#include <sensors/DecagonCTD.h>
+
+const char*   CTDSDI12address   = "1";    // The SDI-12 Address of the CTD
+const uint8_t CTDNumberReadings = 6;      // The number of readings to average
+const int8_t  CTDPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  CTDData  = 7;               // The SDI12 data pin
+
+// Create a Decagon CTD sensor object
+DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
+
+// Create conductivity, temperature, and depth variable pointers for the CTD
+Variable* ctdCond = new DecagonCTD_Cond(&ctd,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ctdTemp = new DecagonCTD_Temp(&ctd,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ctdDepth =
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [hydros21] */
+
+
+// ==========================================================================
+//  Meter Teros 11 Soil Moisture Sensor
+// ==========================================================================
+/** Start [teros] */
+#include <sensors/MeterTeros11.h>
+
+const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
+const int8_t  terosPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  terosData  = 7;               // The SDI12 data pin
+const uint8_t teros11NumberReadings = 3;    // The number of readings to average
+
+// Create a METER TEROS 11 sensor object
+MeterTeros11 teros11(*teros11SDI12address, terosPower, terosData,
+                     teros11NumberReadings);
+
+// Create the matric potential, volumetric water content, and temperature
+// variable pointers for the Teros 11
+Variable* teros11Ea =
+    new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* teros11Temp =
+    new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* teros11VWC =
+    new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [teros] */
+
+
+// ==========================================================================
+//  External I2C Rain Tipping Bucket Counter
+// ==========================================================================
+/** Start [i2c_rain] */
+#include <sensors/RainCounterI2C.h>
+
+const uint8_t RainCounterI2CAddress =
+    0x08;                            // I2C Address for external tip counter
+const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+
+// Create a Rain Counter sensor object
+RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+
+// Create number of tips and rain depth variable pointers for the tipping bucket
+Variable* tbi2cTips =
+    new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* tbi2cDepth =
+    new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [i2c_rain] */
+
+
+// ==========================================================================
+//  TI INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
+// ==========================================================================
+/** Start [ina219] */
+#include <sensors/TIINA219.h>
+
+const int8_t INA219Power    = sensorPowerPin;  // Power pin (-1 if unconnected)
+uint8_t      INA219i2c_addr = 0x40;            // 1000000 (Board A0+A1=GND)
+// The INA219 can have one of 16 addresses, depending on the connections of A0
+// and A1
+const uint8_t INA219ReadingsToAvg = 1;
+
+// Create an INA219 sensor object
+TIINA219 ina219(INA219Power, INA219i2c_addr, INA219ReadingsToAvg);
+
+// Create current, voltage, and power variable pointers for the INA219
+Variable* inaCurrent =
+    new TIINA219_Current(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* inaVolt  = new TIINA219_Volt(&ina219,
+                                      "12345678-abcd-1234-ef00-1234567890ab");
+Variable* inaPower = new TIINA219_Power(&ina219,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ina219] */
+
+
+// ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
-/** Start [Y504] */
+/** Start [y504] */
 #include <sensors/YosemitechY504.h>
 
 // Create a reference to the serial port for modbus
@@ -1381,13 +1384,13 @@ Variable* y504DOmgL =
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y504Temp =
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y504] */
+/** End [y504] */
 
 
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
-/** Start [Y510] */
+/** Start [y510] */
 #include <sensors/YosemitechY510.h>
 
 // Create a reference to the serial port for modbus
@@ -1418,13 +1421,13 @@ Variable* y510Turb =
     new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y510Temp =
     new YosemitechY510_Temp(&y510, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y510] */
+/** End [y510] */
 
 
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
-/** Start [Y511] */
+/** Start [y511] */
 #include <sensors/YosemitechY511.h>
 
 // Create a reference to the serial port for modbus
@@ -1455,13 +1458,13 @@ Variable* y511Turb =
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y511Temp =
     new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y511] */
+/** End [y511] */
 
 
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
-/** Start [Y514] */
+/** Start [y514] */
 #include <sensors/YosemitechY514.h>
 
 // Create a reference to the serial port for modbus
@@ -1493,13 +1496,13 @@ Variable* y514Chloro = new YosemitechY514_Chlorophyll(
     &y514, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y514Temp =
     new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y514] */
+/** End [y514] */
 
 
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
-/** Start [Y520] */
+/** Start [y520] */
 #include <sensors/YosemitechY520.h>
 
 // Create a reference to the serial port for modbus
@@ -1530,13 +1533,13 @@ Variable* y520Cond =
     new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y520Temp =
     new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y520] */
+/** End [y520] */
 
 
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
-/** Start [Y532] */
+/** Start [y532] */
 #include <sensors/YosemitechY532.h>
 
 // Create a reference to the serial port for modbus
@@ -1569,13 +1572,52 @@ Variable* y532pH =
     new YosemitechY532_pH(&y532, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y532Temp =
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y532] */
+/** End [y532] */
+
+
+// ==========================================================================
+//  Yosemitech Y533 Oxidation Reduction Potential (ORP)
+// ==========================================================================
+/** Start [y533] */
+#include <sensors/YosemitechY533.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for
+// Additional Serial Ports" section
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+HardwareSerial& y533modbusSerial = Serial2;  // Use hardware serial if possible
+#else
+// AltSoftSerial& y533modbusSerial = altSoftSerial;  // For software serial
+NeoSWSerial& y533modbusSerial = neoSSerial1;  // For software serial
+#endif
+
+byte         y533ModbusAddress = 0x32;  // The modbus address of the Y533
+const int8_t y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y533SensorPower = A3;               // Sensor power pin
+const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t y533NumberReadings =
+    1;  // The manufacturer actually doesn't mention averaging for this one
+
+// Create a Yosemitech Y533 pH sensor object
+YosemitechY533 y533(y533ModbusAddress, y533modbusSerial, y533AdapterPower,
+                    y533SensorPower, y533EnablePin, y533NumberReadings);
+
+// Create pH, electrical potential, and temperature variable pointers for the
+// Y533
+Variable* y533Voltage =
+    new YosemitechY533_Voltage(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y533pH =
+    new YosemitechY533_pH(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y533Temp =
+    new YosemitechY533_Temp(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [y533] */
 
 
 // ==========================================================================
 //  Yosemitech Y550 COD Sensor with Wiper
 // ==========================================================================
-/** Start [Y550] */
+/** Start [y550] */
 #include <sensors/YosemitechY550.h>
 
 // Create a reference to the serial port for modbus
@@ -1608,14 +1650,14 @@ Variable* y550Turbid =
     new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y550Temp =
     new YosemitechY550_Temp(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y550] */
+/** End [y550] */
 
 
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
 // ==========================================================================
-/** Start [Y4000] */
+/** Start [y4000] */
 #include <sensors/YosemitechY4000.h>
 
 // Create a reference to the serial port for modbus
@@ -1658,7 +1700,7 @@ Variable* y4000Chloro = new YosemitechY4000_Chlorophyll(
     &y4000, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y4000BGA =
     new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [Y4000] */
+/** End [y4000] */
 
 
 // ==========================================================================

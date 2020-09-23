@@ -128,7 +128,6 @@ class EnviroDIYPublisher : public dataPublisher {
                        const char* registrationToken,
                        const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
                        uint8_t sendOffset = 0);
-    // Destructor
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */
@@ -199,16 +198,21 @@ class EnviroDIYPublisher : public dataPublisher {
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
 
-    // This utilizes an attached modem to make a TCP connection to the
-    // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
-    // over that connection.
-    // The return is the http status code of the response.
     // int16_t postDataEnviroDIY(void);
     /**
-     * @copydoc dataPublisher::publishData(Client* _outClient)
+     * @brief Utilize an attached modem to open a a TCP connection to the
+     * EnviroDIY/ODM2DataSharingPortal and then stream out a post request over
+     * that connection.
+     *
+     * This depends on an internet connection already having been made and a
+     * client being available.
+     *
+     * @param outClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
      * @return **int16_t** The http status code of the response.
      */
-    int16_t publishData(Client* _outClient) override;
+    int16_t publishData(Client* outClient) override;
 
  protected:
     /**

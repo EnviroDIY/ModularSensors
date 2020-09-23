@@ -261,6 +261,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
     return success;
 }
 
+
 void DigiXBeeWifi::disconnectInternet(void) {
     // Wifi XBee doesn't like to disconnect AT ALL, so we're doing nothing
     // If you do disconnect, you must power cycle before you can reconnect

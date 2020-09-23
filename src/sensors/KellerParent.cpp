@@ -69,6 +69,7 @@ void KellerParent::registerPinPowerMng(void (*fn)(bool)) {
     _pinPowerMngFn = fn;
 }
 
+
 // This turns on sensor power
 void KellerParent::powerUp(void) {
     if (_powerPin >= 0) {
