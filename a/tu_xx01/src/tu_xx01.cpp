@@ -8,6 +8,7 @@ Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
+  Copyright (c) 2020, Neil Hancock
   Copyright (c) 2020, Trout Unlimited, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
@@ -562,10 +563,78 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 //                         VoltReadsToAvg);
 // ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0,
 // ADSi2c_addr, VoltReadsToAvg);
+#define USE_EXT_BATTERY_ADC
+#if defined USE_EXT_BATTERY_ADC
+// Create a capability to read the battery Voltage asynchronously,
+// and have that voltage used on logging event
+Variable* kBatteryVoltage_V = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
+float     batteryLion_V;
 
-// Create a voltage variable pointer
-// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt,
-// "12345678-abcd-1234-ef00-1234567890ab");
+float kBatteryVoltage_worker(void) {  // get the Battery Reading
+    // Get new reading
+    batteryLion_V = kBatteryVoltage_V->getValue(true);
+    // float depth_ft = convert_mtoFt(depth_m);
+    MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
+    return batteryLion_V;
+}
+float getBatteryVoltage_V(void) {
+    return batteryLion_V;
+}
+// Setup the object that does the operation
+Variable* kBatteryVoltage_var =
+    new Variable(getBatteryVoltage_V,  // function that does the calculation
+                 2,                    // resolution
+                 "batteryVoltage",     // var name. This must be a value from
+                                    // http://vocabulary.odm2.org/variablename/
+                 "volts",  // var unit. This must be a value from This must be a
+                           // value from http://vocabulary.odm2.org/units/
+                 "extVolt0",  // var code
+                 ExternalVoltage_Volt0_UUID);
+#endif  // USE_EXT_BATTERY_ADC
+#endif  // ExternalVoltage_ACT
+
+#if defined USE_EXT_BATTERY_ADC
+#define mcuBoardExtBattery() mcuBoard.setBatteryV(kBatteryVoltage_worker());
+#else
+#define mcuBoardExtBattery()
+#endif  // USE_EXT_BATTERY_ADC
+#if defined(ProcVolt_ACT)
+// ==========================================================================
+//    External Voltage  ProcessorAdc
+// ==========================================================================
+#include <sensors/processorAdc.h>
+see kn_depth.cpp
+
+    const int8_t procVoltPower =
+    -1;  // eMcpA_SwVbatOut_pinnum;  //Requires VbtSw Pin to switch power on and
+         // off (-1 if unconnected)
+// B031 has expanded channels - Assume PCB default. Opts for 8more ADC Pins.
+// J5 B031rev2  - which is ArduinioFramework PIN_A5 (Feather M4E pin 10). No Mux
+const int8_t procVoltChan0 =
+    ARD_ANLAOG_MULTIPLEX_PIN;  // PIN_EXT_ANALOG(01);  // B031r2 J2Pin2
+                               // MC74VHC4051PinX1 MUX to PIN_A5
+// const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
+// const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
+// const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
+// const float procVoltDividerGain = 30.3; //  pwr_mon 1M/33K* measuredAdc(V)
+// or 30.3 15.15
+const float procVoltDividerGain =
+    6.0;  //  for ext 1M/200k = 66 measuredAdc(V wrt 3.3V)
+const uint8_t procVoltReadsToAvg = 1;  // Only read one sample
+
+// Create an External Voltage sensor object
+// processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain,
+// procVoltReadsToAvg); processorAdc procVolt1(procVoltPower, procVoltChan1,
+// procVoltDividerGain, procVoltReadsToAvg);
+
+
+const int8_t sensor_Vbatt_PIN = PIN_EXT_ANALOG(B031_AEM_VBATT_PIN);
+const int8_t sensor_V3V6_PIN  = PIN_EXT_ANALOG(B031_AEM_V3V6_PIN);
+processorAdc sensor_batt_V(procVoltPower, sensor_Vbatt_PIN, procVoltDividerGain,
+                           procVoltReadsToAvg);
+processorAdc sensor_V3v6_V(procVoltPower, sensor_V3V6_PIN, procVoltDividerGain,
+                           procVoltReadsToAvg);
+
 #endif  // ExternalVoltage_ACT
 
 // ==========================================================================
@@ -653,7 +722,7 @@ Variable* variableList[] = {
     new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
 #if defined(ExternalVoltage_Volt0_UUID)
-    new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
+// kBatteryVoltage_var,
 #endif
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
@@ -877,6 +946,7 @@ void setup() {
 
     // A vital check on power availability
     do {
+        mcuBoardExtBattery();
         LiBattPower_Unseable =
             ((PS_LBATT_UNUSEABLE_STATUS ==
               mcuBoard.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ))
@@ -902,8 +972,7 @@ void setup() {
             SerialStd.println(F("----Wakeup"));
         }
     } while (LiBattPower_Unseable);
-    SerialStd.print(F("Good BatV="));
-    SerialStd.println(mcuBoard.getBatteryVm1(false));
+    PRINTOUT(F("Good BatV="), batteryLion_V);
 
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
@@ -1043,6 +1112,7 @@ void setup() {
 
 void loop() {
     ps_Lbatt_status_t Lbatt_status;
+    mcuBoardExtBattery();
     Lbatt_status = mcuBoard.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ);
     if (PS_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
         PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="),

@@ -142,7 +142,7 @@
 /// Sample number is stored in sensorValues[2]
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
 
-    /* atl_extension */
+/* atl_extension */
 #define ProcessorStatsDef_Resolution 10
 #define ProcAdc_Max ((1 << ProcessorStatsDef_Resolution) - 1)
 
@@ -236,7 +236,7 @@ class ProcessorStats : public Sensor {
     int16_t     sampNum;
 
     /* atl_extension */
-    float       LiIonBatt_V = -999.0;
+    float LiIonBatt_V = -999.0;
 
  public:
     /* Battery Usage Level definitions
@@ -285,6 +285,7 @@ class ProcessorStats : public Sensor {
     // float getBatteryVm2diff(bool newBattReading); //getDifference in measured
     // batteryV using internal reference
 
+    /* atl_extension */
     float _batteryExt_V = 0;
     bool  _usebatExt    = false;
 

@@ -132,7 +132,7 @@ bool processorAdc::addSingleMeasurementResult(void) {
         analogReference(ProcAdcDef_Reference);  // VDDANA = 3V3
 #endif                                          // ARDUINO_ARCH_AVR
         uint8_t useAdcChannel = _adcChannel;
-        uint8_t adcPort = _adcChannel;
+        uint8_t adcPort       = _adcChannel;
 #if defined ARD_ANALOLG_EXTENSION_PINS
 #include <WVariant.h>
         if ((thisVariantNumPins + ARD_DIGITAL_EXTENSION_PINS) < _adcChannel) {
@@ -156,7 +156,9 @@ bool processorAdc::addSingleMeasurementResult(void) {
         uint32_t rawAdc = analogRead(adcPort);
         MS_DBG(F("  1stpass_adc("), rawAdc);
         rawAdc = analogRead(adcPort);
+#if defined ARD_ANALOLG_EXTENSION_PINS
         digitalWrite(useAdcChannel, 0);
+#endif  // ARD_ANALOLG_EXTENSION_PINS
 #define PROCADC_REF_V 3.3
 #define PROCADC_RANGE_MIN_V -0.3
         adcVoltage = (PROCADC_REF_V / ProcAdc_Max) * (float)rawAdc;
