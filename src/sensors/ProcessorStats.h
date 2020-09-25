@@ -169,7 +169,8 @@ typedef enum {
     PSLR_UNDEF,
 } ps_liion_rating_t;
 #define PSLR_LIION PSLR_0500mA
-#define PLSR_BAT_TYPE_DEF PSLR_0500mA
+// Default should be all to allow it to power up until set by user
+#define PLSR_BAT_TYPE_DEF PSLR_ALL
 typedef enum {
     PS_PWR_STATUS_REQ = 0,  // 0 returns status
     // Order of following important and should map to ps_Lbatt_status_t

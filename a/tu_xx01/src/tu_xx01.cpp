@@ -598,44 +598,27 @@ Variable* kBatteryVoltage_var =
 #else
 #define mcuBoardExtBattery()
 #endif  // USE_EXT_BATTERY_ADC
-#if defined(ProcVolt_ACT)
+#if defined ProcVolt_ACT
 // ==========================================================================
-//    External Voltage  ProcessorAdc
+//    Internal  ProcessorAdc
 // ==========================================================================
 #include <sensors/processorAdc.h>
-see kn_depth.cpp
-
-    const int8_t procVoltPower =
-    -1;  // eMcpA_SwVbatOut_pinnum;  //Requires VbtSw Pin to switch power on and
-         // off (-1 if unconnected)
-// B031 has expanded channels - Assume PCB default. Opts for 8more ADC Pins.
-// J5 B031rev2  - which is ArduinioFramework PIN_A5 (Feather M4E pin 10). No Mux
-const int8_t procVoltChan0 =
-    ARD_ANLAOG_MULTIPLEX_PIN;  // PIN_EXT_ANALOG(01);  // B031r2 J2Pin2
-                               // MC74VHC4051PinX1 MUX to PIN_A5
-// const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
-// const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
-// const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
-// const float procVoltDividerGain = 30.3; //  pwr_mon 1M/33K* measuredAdc(V)
-// or 30.3 15.15
-const float procVoltDividerGain =
-    6.0;  //  for ext 1M/200k = 66 measuredAdc(V wrt 3.3V)
+const int8_t  procVoltPower      = -1;
 const uint8_t procVoltReadsToAvg = 1;  // Only read one sample
 
-// Create an External Voltage sensor object
-// processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain,
-// procVoltReadsToAvg); processorAdc procVolt1(procVoltPower, procVoltChan1,
-// procVoltDividerGain, procVoltReadsToAvg);
-
-
-const int8_t sensor_Vbatt_PIN = PIN_EXT_ANALOG(B031_AEM_VBATT_PIN);
-const int8_t sensor_V3V6_PIN  = PIN_EXT_ANALOG(B031_AEM_V3V6_PIN);
+#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
+// Only support Mayfly rev5 10M/2.7M &  10bit ADC (3.3Vcc / 1023)
+const int8_t sensor_Vbatt_PIN    = A6;
+const float  procVoltDividerGain = 4.7;
+#else
+#error define other processors ADC pins here
+#endif  //
 processorAdc sensor_batt_V(procVoltPower, sensor_Vbatt_PIN, procVoltDividerGain,
                            procVoltReadsToAvg);
-processorAdc sensor_V3v6_V(procVoltPower, sensor_V3V6_PIN, procVoltDividerGain,
-                           procVoltReadsToAvg);
+// processorAdc sensor_V3v6_V(procVoltPower, sensor_V3V6_PIN,
+// procVoltDividerGain, procVoltReadsToAvg);
 
-#endif  // ExternalVoltage_ACT
+#endif  // ProcVolt_ACT
 
 // ==========================================================================
 // Creating Variable objects for those values for which we're reporting in
@@ -717,6 +700,9 @@ Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined ProcVolt_ACT
+    new processorAdc_Volt(&sensor_batt_V, ProcVolt0_UUID),
+#endif  // ProcVolt_ACT
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
     new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
