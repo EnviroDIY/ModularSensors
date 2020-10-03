@@ -1,5 +1,6 @@
 
-/* Status: Problem including the WIO Stack - its going to be reworked
+/* Status: Problem including the WIO Stack - its going to be reworked same as BT.
+Possibly try with rpcBT
 
  Name:		wioTerm_logger.cpp  from wioTerm_ntp.ino
  Sensors:
