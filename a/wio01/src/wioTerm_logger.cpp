@@ -1,6 +1,7 @@
 
-/*
- Name:		wioTerm_ntp.ino
+/* Status: Problem including the WIO Stack - its going to be reworked
+
+ Name:		wioTerm_logger.cpp  from wioTerm_ntp.ino
  Sensors:
  Version:   2.0.0nh
  Created:	9/7/2020 04:30:00 PM

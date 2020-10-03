@@ -513,7 +513,7 @@ uint32_t Logger::getNowEpochT0(void) {
         // PRINTOUT(F("The current clock timestamp is not valid!"),
         // formatDateTime_ISO8601(currentEpochTime).substring(0, 10),"
         // Setting to
-        // ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        // ",formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
         PRINTOUT(F("Bad time "), currentEpochTime, " ",
                  formatDateTime_ISO8601(currentEpochTime).substring(0, 10),
                  " Setting to ",
@@ -550,8 +550,8 @@ uint32_t Logger::getNowEpochT0(void) {
     if (!isRTCSane(currentEpochTime)) {
         PRINTOUT(F("Bad time, resetting clock."), currentEpochTime, " ",
                  formatDateTime_ISO8601(currentEpochTime), " Setting to ",
-                 formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
-        currentEpochTime = EPOCH_TIME_20200101_SECS;
+                 formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
+        currentEpochTime = EPOCH_TIME_LOWER_SANITY_SECS;
         setNowEpochT0(currentEpochTime);
     }
     return currentEpochTime;

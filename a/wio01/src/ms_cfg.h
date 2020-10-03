@@ -44,7 +44,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 
-
 //The following is expected to be steered by PlatformIo.ini [env:xxx]
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define PROFILE_NAME PROFILE01_MAYFLY_AVR
@@ -80,6 +79,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
+#define CONFIGURATION_DESCRIPTION_STR "descriptor mayfly"
+
 #define USE_MS_SD_INI 1
 
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
@@ -194,6 +195,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   //This is hardcode to mean things in ProcessorStats !!!!
   #define HwVersion_DEF "r1"
   #define HwName_DEF "FeatherM4express"
+  #define CONFIGURATION_DESCRIPTION_STR "descriptor M4"
+
 #define HwFeatherWing_B031ALL 1
   //The FEATHER_M4_EXPRESS has 1 neoPixel + RedLED
   #define NUM_NEOPIXELS 1
@@ -475,6 +478,7 @@ variant.h: has pin definitions
 #define AutonomoName_DEF "Autonomo"
 #define HwVersion_DEF AutonomoRev_DEF
 #define HwName_DEF AutonomoName_DEF
+#define CONFIGURATION_DESCRIPTION_STR "tu_Pwr Monitor autoM0"
 
 #define USE_MS_SD_INI 1
 /*nh debug cable to Autonomo Serial
@@ -587,6 +591,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 //For Adafruit Feather M0 (not Feather M0 Express?)
 #define HwVersion_DEF "r1"
 #define HwName_DEF "FeatherM0"
+#define CONFIGURATION_DESCRIPTION_STR "descriptorM0"
 
 #define USE_MS_SD_INI 1
 /*nh debug cable to B031r1 Serial?
@@ -702,6 +707,12 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 
 /* Put defintions that need to be avaialbe 
 */
+#if 1//defined(DigiXBeeWifi_Module) || defined(DigiXBeeCellularTransparent_Module)
+
+#define MMW_TIMER_POST_TIMEOUT_MS_DEF 9000L
+#define COLLECT_READINGS_DEF 1
+#define SEND_OFFSET_MIN_DEF 0
+#endif  // Modules
 
 #if !defined modemVccPin_DEF
 #define modemVccPin_DEF -2

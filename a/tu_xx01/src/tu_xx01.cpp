@@ -551,7 +551,7 @@ const int8_t ADSChannel3 = 3;  // The ADS channel of interest
 const float  dividerGain =
     2;  //  Default 1/gain for grove voltage divider is 10x  assumes Rev001
 const uint8_t ADSi2c_addr    = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1;     // Only read one sample
+const uint8_t VoltReadsToAvg = 2;     // Only read one sample
 
 // Create an External Voltage sensor object
 ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
@@ -569,10 +569,13 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 // and have that voltage used on logging event
 Variable* kBatteryVoltage_V = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
 float     batteryLion_V;
-
+// This has bee calculated from the ADS1115 input impedance type 6Mohms in
+// parrallel 1Mohms
+#define FUDGE_ADC_IMPEDANCE 1.035
+//#define FUDGE_ADC_IMPEDANCE 1.0
 float kBatteryVoltage_worker(void) {  // get the Battery Reading
     // Get new reading
-    batteryLion_V = kBatteryVoltage_V->getValue(true);
+    batteryLion_V = kBatteryVoltage_V->getValue(true) * FUDGE_ADC_IMPEDANCE;
     // float depth_ft = convert_mtoFt(depth_m);
     MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
     return batteryLion_V;
