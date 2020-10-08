@@ -98,7 +98,8 @@
 
 // For Mayfly version; the battery resistor depends on it
 analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin,
-                                               uint8_t measurementsToAverage)
+                                               uint8_t measurementsToAverage,
+                                               float   Rseries_ohms)
     : Sensor("analogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
@@ -108,6 +109,7 @@ analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin,
     _EcPowerPin            = powerPin;
     _EcAdcPin              = dataPin;
     _ptrWaterTemperature_C = NULL;
+    _Rseries_ohms          = Rseries_ohms;
     /* #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) ||
      defined(ARDUINO_AVR_SODAQ_MBILI) _EcAdcPin = A6; #elif
      defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) ||
@@ -188,7 +190,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
         sensorEC_adc =
             1;  // Prevent underflow, can never be EC_SENSOR_ADC_RANGE
 
-    Rwater_ohms = Rseries_ohms /
+    Rwater_ohms = _Rseries_ohms /
         (((float)EC_SENSOR_ADC_RANGE / (float)sensorEC_adc) - 1);
 
     /* The Rwater is an absolute value, but is based on a defined size of the
