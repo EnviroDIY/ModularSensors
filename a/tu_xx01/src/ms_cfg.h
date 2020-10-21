@@ -1,5 +1,6 @@
 /*****************************************************************************
-ms_cfg.h_EC  - ModularSensors Configuration - tgt relative _EC
+ms_cfg.h_test  - ModularSensors Configuration - testing MMW/WiFi
+
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -21,9 +22,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //**************************************************************************
 // This configuration is for a standard Mayfly0.bb
 // Sensors Used - two std to begin then
-#define AnalogProcEC_ACT 1
+//#define AnalogProcEC_ACT 1
 #define MAYFLY_VBAT 1
-#define ENVIRODIY_MAYFLY_TEMPERATURE 1
+//#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
@@ -42,7 +43,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "tu_EC01 Electrical Conductivity"
+#define CONFIGURATION_DESCRIPTION_STR "tu_test basic WiFi"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1
@@ -100,7 +101,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // sync Time Normally enable both of the following. In standalone, disable
 // UseModem_PushData.
 #define UseModem_Module 1
-//#define UseModem_PushData 1
+#define UseModem_PushData 1
 // Required for TinyGsmClient.h
 #define TINY_GSM_MODEM_XBEE
 
@@ -209,7 +210,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // ENVIRODIY_MAYFLY_TEMPERATURE
 
 #if defined UseModem_Module
-//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
+#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #endif  // UseModem_Module
 

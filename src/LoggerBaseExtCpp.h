@@ -1,6 +1,8 @@
 //
 // Private function extensions
 //
+#define TEMP_BUFFER_SZ 37
+
 #if defined USE_USB_MSC_SD1
 //--------------------------------------------------------------------+
 // SD Card callbacks
@@ -644,6 +646,256 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 #endif  // USE_RTCLIB
 
 // End parse.ini
+
+// ===================================================================== //
+// Reliable Delivery functions
+// see class headers
+// ===================================================================== //
+
+// This is a one-and-done to log data
+void Logger::logDataAndPubReliably(void) {
+    // Reset the watchdog
+    watchDogTimer.resetWatchDog();
+
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
+    uint8_t cia_val = checkInterval();
+    if (cia_val) {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::isLoggingNow = true;
+        // Reset the watchdog
+        watchDogTimer.resetWatchDog();
+
+        // Print a line to show new reading
+        PRINTOUT(F("------------------------------------------"));
+        // Turn on the LED to show we're taking a reading
+        alertOn();
+        // Power up the SD Card
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
+        turnOnSDcard(false);
+        if (cia_val & CIA_NEW_READING) {
+            // Do a complete update on the variable array.
+            // This this includes powering all of the sensors, getting
+            // updated values, and turing them back off. NOTE:  The wake
+            // function for each sensor should force sensor setup to run if
+            // the sensor was not previously set up.
+            MS_DBG(F("Running a complete sensor update..."));
+            watchDogTimer.resetWatchDog();
+            _internalArray->completeUpdate();
+            watchDogTimer.resetWatchDog();
+
+            // Create a csv data record and save it to the log file
+            logToSD();
+
+            serzRdel_Line();  // Start Que
+        }
+        if (cia_val & CIA_POST_READINGS) {
+            if (_logModem != NULL) {
+                MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+                if (_logModem->modemWake()) {
+                    // Connect to the network
+                    watchDogTimer.resetWatchDog();
+                    MS_DBG(F("Connecting to the Internet..."));
+                    if (_logModem->connectInternet()) {
+                        // Publish data to remotes
+                        watchDogTimer.resetWatchDog();
+                        // publishDataToRemotes();
+                        publishDataQuedToRemotes();
+                        watchDogTimer.resetWatchDog();
+
+// Sync the clock at midnight
+#define NIST_SYNC_DAY 86400
+#define NIST_SYNC_HR 3600
+#define NIST_SYNC_RATE NIST_SYNC_HR
+#if 0
+                syncTimeCheck_normalized = Logger::markedEpochTime/logIntvl_sec;
+                syncTimeCheck_remainder = syncTimeCheck_normalized %(NIST_SYNC_RATE/logIntvl_sec);
+                MS_DBG(F("SyncTimeCheck "),syncTimeCheck_remainder," Rate",logIntvl_sec," Time",Logger::markedEpochTime);
+                if (Logger::markedEpochTime != 0 && syncTimeCheck_remainder == 0)
+#endif
+                        if ((Logger::markedEpochTime != 0 &&
+                             Logger::markedEpochTime % 86400 == 43200) ||
+                            !isRTCSane(Logger::markedEpochTime)) {
+                            // Sync the clock at noon
+                            MS_DBG(F("Running a daily clock sync..."));
+                            setRTClock(_logModem->getNISTTime());
+                            watchDogTimer.resetWatchDog();
+                        }
+
+                        // Update the modem metadata
+                        MS_DBG(F("Updating modem metadata..."));
+                        _logModem->updateModemMetadata();
+
+                        // Disconnect from the network
+                        MS_DBG(F("Disconnecting from the Internet..."));
+                        _logModem->disconnectInternet();
+                    } else {
+                        MS_DBG(F("Could not connect to the internet!"));
+                        watchDogTimer.resetWatchDog();
+                    }
+                }
+                // Turn the modem off
+                _logModem->modemSleepPowerDown();
+            } else
+                MS_DBG(F("No _logModem "));
+        }
+
+
+        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
+        // passed for internal SD card housekeeping before cutting power It
+        // seems very unlikely based on my testing that less than one second
+        // would be taken up in publishing data to remotes
+        // Cut power from the SD card - without additional housekeeping wait
+        turnOffSDcard(false);
+
+        // Turn off the LED
+        alertOff();
+        // Print a line to show reading ended
+        PRINTOUT(F("------------------------------------------\n"));
+
+        // Unset flag
+        Logger::isLoggingNow = false;
+    }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) testingMode();
+
+    // Call the processor sleep
+    systemSleep();
+}
+
+void Logger::publishDataQuedToRemotes(void) {
+    // Assumes that there is an internet connection
+    // bool    useQue = false;
+    int16_t  rspCode = 0;
+    uint32_t tmrGateway_ms;
+    bool     dslStatus = false;
+    bool     retVal    = false;
+    // MS_DBG(F("Pub Data Qued"));
+    MS_DBG(F("pubDQTR from"), serzRdelFn_str);
+
+    // Open debug file
+#if defined MS_LOGGERBASE_POSTS
+    retVal = postLogOpen(postsLogFn_str);
+#endif  // MS_LOGGERBASE_POSTS
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != NULL) {
+            _dataPubInstance = i;
+            PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+            // open the qued file for serialized readings
+            // (char*)serzQuedFn_str
+
+
+            // dataPublishers[i]->publishData(_logModem->getClient());
+            // Need to manage filenames[i]
+
+            /* TODO njh check power availability
+            ps_Lbatt_status_t Lbatt_status;
+            Lbatt_status =
+            mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
+            if (no power) break out for loop;
+            */
+
+            if (dataPublishers[i]->getQuedStatus()) {
+                serzQuedStart((char)('0' + i));
+                deszRdelStart();
+                // MS_START_DEBUG_TIMER;
+                tmrGateway_ms = millis();
+                while ((dslStatus = deszRdelLine())) {
+                    rspCode = dataPublishers[i]->publishData();
+
+                    watchDogTimer.resetWatchDog();
+                    // MS_DBG(F("Rsp"), rspCode, F(", in"),
+                    // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
+                    postLogLine(i, rspCode);
+
+                    if (HTTPSTATUS_CREATED_201 != rspCode) {
+#define DESLZ_STATUS_UNACK '1'
+#define DESLZ_STATUS_MAX '8'
+#define DESLZ_STATUS_POS 0
+#if 0
+                        if (++deszq_line[0] > '8') {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_UNACK;
+                        }
+#endif  // if x
+                        retVal = serzQuedFile.print(deszq_line);
+                        if (0 >= retVal) {
+                            PRINTOUT(F("pubDQTR serzQuedFil err"), retVal);
+                        }
+                        desz_pending_records++;  // TODO: njh per publisher
+
+                        /*TODO njh process
+                        if (HTTPSTATUS_NC_901 == rspCode) {
+                            MS_DBG(F("pubDQTR abort this
+                        servers POST " "attempts"));
+
+                        However, will also have to cleanup/copy lines from
+                        serzQuedFile to before deszRdelClose
+
+                        break;
+
+                        }
+
+                        */
+                    }
+                    /* ToDo: njh Need test for LiIon battery on transmitting
+                     * some number X of readings
+                     * Lbatt_status = mcuBoard.isBatteryStatusAbove(true,
+                     * PS_PWR_MEDIUM_REQ);
+                     */
+                }  // while reading line
+                deszRdelClose(true);
+                serzQuedCloseFile(false);
+                // retVal = serzQuedFile.close();
+                // if (!retVal)
+                //    PRINTOUT(
+                //        F("publishDataQuedToRemote serzQuedFile.close err"));
+
+                PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
+                         ((float)(millis() - tmrGateway_ms)) / 1000,
+                         F("sec. Queued readings="), desz_pending_records);
+
+                if (HTTPSTATUS_CREATED_201 == rspCode) {
+                    MS_DBG(F("pubDQTR retry from"), serzQuedFn);
+                    // Do retrys through publisher - if file exists
+                    if (sd1_card_fatfs.exists(serzQuedFn)) {
+                        uint8_t num_posted = 0;
+                        deszQuedStart();
+                        while ((dslStatus = deszQuedLine())) {
+                            // setup for publisher to call deszqNextCh()
+                            rspCode = dataPublishers[i]->publishData();
+                            watchDogTimer.resetWatchDog();
+                            postLogLine(i, rspCode);
+                            if (HTTPSTATUS_CREATED_201 != rspCode) break;
+                            num_posted++;
+                            deszq_line[0] = 0;  // Show completed
+                        }
+// increment status of number attempts
+#if 0
+                        if (deszq_line[DESLZ_STATUS_POS]++ >=
+                            DESLZ_STATUS_MAX) {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_MAX;
+                        }
+#endif  // if z
+        // deszQuedCloseFile() is serzQuedCloseFile(true)
+                        if (num_posted) {
+                            // At least one POST was accepted
+                            serzQuedCloseFile(true);
+                        } else {
+                            serzQuedCloseFile(false);
+                        }
+                    }
+                } else {
+                    MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
+                }
+            }
+        }
+    }
+    postLogClose();
+}
 
 // ===================================================================== //
 // Serialize/deserialize functions
@@ -1295,4 +1547,5 @@ bool Logger::serzBegin(void) {
     MS_DBG(F("TESTQ END END END \n\n"));
     return true;
 }
+
 // End LoggerBaseExtCpp.h

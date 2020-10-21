@@ -1043,29 +1043,39 @@ void setup() {
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
-    while ((PS_LBATT_UNUSEABLE_STATUS ==
-            mcuBoard.isBatteryStatusAbove(true, PS_PWR_LOW_REQ))) {
-        MS_DBG(F("Not enough power to sync with NIST "),
-               mcuBoard.getBatteryVm1(false), F("Need"), PS_PWR_LOW_REQ);
-        dataLogger.systemSleep();
-    }
+    mcuBoardExtBattery();
+#define LiIon_BAT_REQ PS_PWR_MEDIUM_REQ
+    MS_DBG(F("Check power to sync with NIST "), mcuBoard.getBatteryVm1(false),
+           F("Req"), LiIon_BAT_REQ, F("Got"),
+           mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ));
+    if ((PS_LBATT_UNUSEABLE_STATUS !=
+         mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ))) {
+        MS_DBG(F("Sync with NIST as have enough power"));
+
 #if defined DigiXBeeWifi_Module
-    // For the WiFi module, it may not be configured if no nscfg.ini file
-    // present,
-    // this supports the standalone logger, but need to get time at
-    // factory/ms_cfg.ini present
-    uint8_t cmp_result = modemPhy.getWiFiId().compareTo(wifiId_def);
-    // MS_DBG(F("cmp_result="),cmp_result,"
-    // ",modemPhy.getWiFiId(),"/",wifiId_def);
-    if (!(cmp_result == 0)) {
-        SerialStd.print(F("Sync with NIST over WiFi network "));
-        SerialStd.println(modemPhy.getWiFiId());
-        dataLogger.syncRTC();  // Will also set up the modemPhy
-    }
+        // For the WiFi module, it may not be configured if no nscfg.ini file
+        // present,
+        // this supports the standalone logger, but need to get time at
+        // factory/ms_cfg.ini present
+        uint8_t cmp_result = modemPhy.getWiFiId().compareTo(wifiId_def);
+        // MS_DBG(F("cmp_result="),cmp_result,"
+        // ",modemPhy.getWiFiId(),"/",wifiId_def);
+        if (!(cmp_result == 0)) {
+            SerialStd.print(F("Sync with NIST over WiFi network "));
+            SerialStd.println(modemPhy.getWiFiId());
+            dataLogger.syncRTC();  // Will also set up the modemPhy
+        }
 #else
-    MS_DBG(F("Sync with NIST "));
-    dataLogger.syncRTC();  // Will also set up the modemPhy
+        MS_DBG(F("Sync with NIST "));
+        dataLogger.syncRTC();  // Will also set up the modemPhy
 #endif  // DigiXBeeWifi_Module
+        MS_DBG(F("Set modem to sleep"));
+        modemPhy.disconnectInternet();
+        modemPhy.modemSleepPowerDown();
+    } else {
+        MS_DBG(F("Skipped sync with NIST as not enough power "),
+               mcuBoard.getBatteryVm1(false), F("Need"), LiIon_BAT_REQ);
+    }
 #endif  // UseModem_Module
     // List start time, if RTC invalid will also be initialized
     PRINTOUT(F("Time "),
@@ -1113,7 +1123,7 @@ void loop() {
     // clang-format off
     else
 #if defined UseModem_PushData
-        if (PS_LBATT_LOW_STATUS >= Lbatt_status)
+        if (PS_LBATT_MEDIUM_STATUS > Lbatt_status)
 #endif  // UseModem_PushData
         {
 #if defined UseModem_PushData
@@ -1132,7 +1142,7 @@ void loop() {
         PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
                  F(" log&Pub V_batt"), mcuBoard.getBatteryVm1(false),
                  F(" Lbatt="), Lbatt_status);
-        dataLogger.logDataAndPublish();
+        dataLogger.logDataAndPubReliably();
     }
 #endif  // UseModem_PushData
     // clang-format on

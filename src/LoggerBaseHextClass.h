@@ -106,13 +106,14 @@ const char* _LoggerId_buf = NULL;
 */
 // ===================================================================== //
 public:
+void     logDataAndPubReliably(void);
 bool     deszqNextCh(void);
 long     deszq_epochTime = 0;  // Marked Epoch Time
 char*    deszq_nextChar;
 uint16_t deszq_nextCharSz;
 
-// Calculated length of timeVariant data fields as ASCII+ delimiter, except for
-// last data field
+// Calculated length of timeVariant data fields as ASCII+ delimiter, except
+// for last data field
 uint16_t deszq_timeVariant_sz;
 
 private:

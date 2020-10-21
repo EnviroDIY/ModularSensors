@@ -183,11 +183,11 @@ typedef enum {
 typedef enum {
     PS_LBATT_UNUSEABLE_STATUS = 0,  // 0 PS_LBATT_REQUEST_STATUS,
     // Order of following important and should maps to  ps_pwr_req_t
-    PS_LBATT_BARELYUSEABLE_STATUS,  // 1 returns status if above 1, or else 0
-    PS_LBATT_LOW_STATUS,            // 2 returns status if above 2, or else 0
-    PS_LBATT_MEDIUM_STATUS,         // 3 returns status if above 3, or else 0
-    PS_LBATT_HEAVY_STATUS,          // 4 returns status if above 4, or else 0
-                                    // End of regular STATUS
+    PS_LBATT_BARELYUSEABLE_STATUS,  // 1 ret status if >0, or 0 eg low W sensor
+    PS_LBATT_LOW_STATUS,  // 2 returns status if >1, or else 0 eg high W sensor
+    PS_LBATT_MEDIUM_STATUS,  // 3 returns status if >2, or else 0 eg power WiFi
+    PS_LBATT_HEAVY_STATUS,   // 4 ret status if >3, or else 0 eg powering
+                             // Cell Phone End
 } ps_Lbatt_status_t;
 
 // The main class for the Processor
@@ -305,9 +305,11 @@ class ProcessorStats : public Sensor {
         // actual/Mayfly uP Measures - one Mayfly non-linear mapping
         //  3.70/3.33 3.80/3.38  3.90/3.59 3.95/3.654
         //  4.00/3.79 4.05/3.87 4.10/3.96 4.15/4.09 4.20/4.12
+        // USE Low  Med  Heavy Hyst see PS_LBATT_xx
+        // 1    2    3    4
         {0.1, 0.2, 0.3, 0.4, 0.05},      // 0 All readings return OK
-        {3.5, 3.6, 3.7, 3.75, 0.04},     // 1 PSLR_0500mA
-        {3.5, 3.6, 3.3, 3.7, 0.03},      // 2 PSLR_1000mA
+        {3.5, 3.6, 3.85, 4.00, 0.04},    // 1 PSLR_0500mA
+        {3.5, 3.6, 3.7, 3.8, 0.03},      // 2 PSLR_?000mA Uncalibrated
         {3.35, 3.38, 3.42, 3.46, 0.03},  // 3 PLSR_LiSi18
         {2.4, 2.5, 2.60, 2.7, 0.03},     // 4 fut Test 3*D to 2.4 to 4.8V
     // There could possibly be a MAYFLY off the ExternalVoltage ADS1115, it
