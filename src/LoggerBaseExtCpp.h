@@ -250,6 +250,10 @@ void Logger::setLoggerId(const char* newLoggerId, bool copyId,
     }
 }
 
+void Logger::setBatHandler(bool (*bat_handler_atl)(lb_pwr_req_t)) {
+    _bat_handler_atl = bat_handler_atl;
+}
+
 // ===================================================================== //
 // Parse an ini file for customization
 // ===================================================================== //
@@ -657,9 +661,27 @@ void Logger::logDataAndPubReliably(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+
+    // Assuming we were woken up by the clock, check if the current time is
+    // an even interval of the logging interval
     uint8_t cia_val = checkInterval();
+    if (NULL != _bat_handler_atl) {
+        _bat_handler_atl(LB_PWR_USEABLE_REQ);  // Measures battery
+        if (!_bat_handler_atl(LB_PWR_SENSOR_USE_REQ)) {
+            // Squash any activity
+            MS_DBG(F("logDataAndPubReliably - all cancelled"));
+            cia_val = 0;
+        }
+        if (!_bat_handler_atl(LB_PWR_MODEM_USE_REQ)) {
+            if (CIA_POST_READINGS & cia_val) {
+                // Change publish attempt to saving for next publish attempt
+                cia_val &= CIA_POST_READINGS;
+                cia_val |= CIA_RLB_READINGS;  //
+                MS_DBG(F("logDataAndPubReliably - tx cancelled"));
+            }
+        }
+    }
+
     if (cia_val) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -701,7 +723,7 @@ void Logger::logDataAndPubReliably(void) {
                         // Publish data to remotes
                         watchDogTimer.resetWatchDog();
                         // publishDataToRemotes();
-                        publishDataQuedToRemotes();
+                        publishDataQuedToRemotes(true);
                         watchDogTimer.resetWatchDog();
 
 // Sync the clock at midnight
@@ -739,6 +761,10 @@ void Logger::logDataAndPubReliably(void) {
                 _logModem->modemSleepPowerDown();
             } else
                 MS_DBG(F("No _logModem "));
+        } else if (cia_val & CIA_RLB_READINGS) {
+            // Values not transmitted,  save readings for later transmission
+            MS_DBG(F("logDataAndPubReliably - store readings"));
+            publishDataQuedToRemotes(false);
         }
 
 
@@ -765,7 +791,7 @@ void Logger::logDataAndPubReliably(void) {
     systemSleep();
 }
 
-void Logger::publishDataQuedToRemotes(void) {
+void Logger::publishDataQuedToRemotes(bool internetPresent) {
     // Assumes that there is an internet connection
     // bool    useQue = false;
     int16_t  rspCode = 0;
@@ -805,7 +831,11 @@ void Logger::publishDataQuedToRemotes(void) {
                 // MS_START_DEBUG_TIMER;
                 tmrGateway_ms = millis();
                 while ((dslStatus = deszRdelLine())) {
-                    rspCode = dataPublishers[i]->publishData();
+                    if (internetPresent) {
+                        rspCode = dataPublishers[i]->publishData();
+                    } else {
+                        rspCode = HTTPSTATUS_NC_902;
+                    }
 
                     watchDogTimer.resetWatchDog();
                     // MS_DBG(F("Rsp"), rspCode, F(", in"),
@@ -841,11 +871,6 @@ void Logger::publishDataQuedToRemotes(void) {
 
                         */
                     }
-                    /* ToDo: njh Need test for LiIon battery on transmitting
-                     * some number X of readings
-                     * Lbatt_status = mcuBoard.isBatteryStatusAbove(true,
-                     * PS_PWR_MEDIUM_REQ);
-                     */
                 }  // while reading line
                 deszRdelClose(true);
                 serzQuedCloseFile(false);
@@ -862,16 +887,34 @@ void Logger::publishDataQuedToRemotes(void) {
                     MS_DBG(F("pubDQTR retry from"), serzQuedFn);
                     // Do retrys through publisher - if file exists
                     if (sd1_card_fatfs.exists(serzQuedFn)) {
-                        uint8_t num_posted = 0;
+                        uint16_t tot_posted           = 0;
+                        uint16_t cnt_for_pwr_analysis = 1;
                         deszQuedStart();
-                        while ((dslStatus = deszQuedLine())) {
+                        while ((dslStatus = deszQuedLine()) &&
+                               cnt_for_pwr_analysis) {
                             // setup for publisher to call deszqNextCh()
                             rspCode = dataPublishers[i]->publishData();
                             watchDogTimer.resetWatchDog();
                             postLogLine(i, rspCode);
                             if (HTTPSTATUS_CREATED_201 != rspCode) break;
-                            num_posted++;
+                            tot_posted++;
+
                             deszq_line[0] = 0;  // Show completed
+
+                            // Check for enough battery power
+#define POST_MAX_READINGS 10
+                            if (cnt_for_pwr_analysis++ > POST_MAX_READINGS) {
+                                cnt_for_pwr_analysis = 1;
+                                if (NULL != _bat_handler_atl) {
+                                    // Measure  battery
+                                    _bat_handler_atl(LB_PWR_USEABLE_REQ);
+                                    if (!_bat_handler_atl(
+                                            LB_PWR_MODEM_USE_REQ)) {
+                                        // stop transmission
+                                        cnt_for_pwr_analysis = 0;
+                                    }
+                                }
+                            }
                         }
 // increment status of number attempts
 #if 0
@@ -881,7 +924,7 @@ void Logger::publishDataQuedToRemotes(void) {
                         }
 #endif  // if z
         // deszQuedCloseFile() is serzQuedCloseFile(true)
-                        if (num_posted) {
+                        if (tot_posted) {
                             // At least one POST was accepted
                             serzQuedCloseFile(true);
                         } else {

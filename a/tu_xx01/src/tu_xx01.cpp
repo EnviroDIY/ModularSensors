@@ -837,6 +837,61 @@ float getBatteryVoltage() {
     return mcuBoard.sensorValues[0];
 }
 
+/**
+ * @brief Check if battery can provide power for action to be performed.
+ *
+ * @param reqBatState  On of ps_Lbatt_status_t
+ *   LB_PWR_USEABLE_REQ forces a battery voltage reading
+ *   all other requests use this reading
+ *
+ *   Customized per type of sensor configuration
+ *
+ * @return **bool *** True if power available, else false
+ */
+ps_Lbatt_status_t Lbatt_status = PS_LBATT_UNUSEABLE_STATUS;
+
+bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
+    bool retResult = true;
+
+    switch (reqBatState) {
+        case LB_PWR_USEABLE_REQ: mcuBoardExtBattery();  // Read battery votlage
+        default:
+            // Check battery status
+            Lbatt_status = mcuBoard.isBatteryStatusAbove(true,
+                                                         PS_PWR_USEABLE_REQ);
+            if (PS_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
+                PRINTOUT(F("---All  CANCELLED--Lbatt_V="));
+                retResult = false;
+            }
+            MS_DBG(F(" isBatteryChargeGoodEnoughU "), retResult,
+                   mcuBoard.getBatteryVm1(false), F("V status"), Lbatt_status,
+                   reqBatState);
+            break;
+
+        case LB_PWR_SENSOR_USE_REQ:
+
+// heavy power sensors ~ use PS_PWR_LOWSTATUS
+#if 0
+            if (PS_LBATT_LOW_STATUS >= Lbatt_status) {
+                retResult = false;
+                PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="))                         ;
+            }
+#endif
+
+            MS_DBG(F(" isBatteryChargeGoodEnouSnsr"), retResult);
+            break;
+
+        case LB_PWR_MODEM_USE_REQ:
+            // WiFi PS_LBATT_MEDIUM_STATUS
+            // Cell (PS_LBATT_HEAVYSTATUS
+            if (PS_LBATT_MEDIUM_STATUS > Lbatt_status) { retResult = false; }
+            MS_DBG(F(" isBatteryChargeGoodEnoughTx"), retResult);
+            // modem sensors PS_PWR_LOW_REQ
+            break;
+    }
+    return retResult;
+}
+
 // ==========================================================================
 // Manages the Modbus Physical Pins.
 // Pins pulled high when powered off will cause a ghost power leakage.
@@ -1101,7 +1156,7 @@ void setup() {
     dataLogger.createLogFile(true);  // true = write a new header
     dataLogger.turnOffSDcard(
         true);  // true = wait for internal housekeeping after write
-
+    dataLogger.setBatHandler(&isBatteryChargeGoodEnough);
     MS_DBG(F("\n\nSetup Complete ****"));
 }
 
@@ -1110,6 +1165,10 @@ void setup() {
 // Main loop function
 // ==========================================================================
 
+void loop() {
+    dataLogger.logDataAndPubReliably();
+}
+#if 0
 void loop() {
     ps_Lbatt_status_t Lbatt_status;
     mcuBoardExtBattery();
@@ -1147,3 +1206,4 @@ void loop() {
 #endif  // UseModem_PushData
     // clang-format on
 }
+#endif  // 0

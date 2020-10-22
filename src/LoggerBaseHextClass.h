@@ -10,6 +10,9 @@
 void setLoggerId(const char* newLoggerId, bool copyId = false,
                  uint8_t LoggerIdSize = NEW_LOGGERID_MAX_SIZE);
 
+bat_handler_atl _bat_handler_atl = NULL;
+
+void setBatHandler(bool (*bat_handler_atl)(lb_pwr_req_t reqBatState));
 
 void setSendEveryX(uint8_t param) {
     _sendEveryX_num = param;
@@ -98,6 +101,26 @@ const char* _registrationToken;
 const char* _samplingFeature;
 const char* _LoggerId_buf = NULL;
 
+public:
+/**
+ * @brief Process queued readings to send to remote if internet available.
+ *
+ * If previously registered, it will determine if battery power is available
+ * It uses an algorithim to reliably deliver the readings.
+ *
+ */
+void logDataAndPubReliably(void);
+
+/**
+ * @brief Process queued readings to send to remote if internet available.
+ *
+ * @param internetPresent  true if an internet connection is present.
+ *   For false store the readings for later transmission
+ *
+ *   Customized per type of sensor configuration
+ */
+void publishDataQuedToRemotes(bool internetPresent);
+
 // ===================================================================== //
 /* Serializing/Deserialing
   A common set of functions that operate on files
@@ -106,7 +129,6 @@ const char* _LoggerId_buf = NULL;
 */
 // ===================================================================== //
 public:
-void     logDataAndPubReliably(void);
 bool     deszqNextCh(void);
 long     deszq_epochTime = 0;  // Marked Epoch Time
 char*    deszq_nextChar;
@@ -146,7 +168,6 @@ File serzQuedFile;
 char        serzQuedFn[FN_BUFFER_SZ] = "";
 const char* serzQuedFn_str           = "QUE";  // begin of name, keep 8.3
 
-void publishDataQuedToRemotes(void);
 
 // perform a serialize to RdelFile
 bool serzRdel_Line(void);

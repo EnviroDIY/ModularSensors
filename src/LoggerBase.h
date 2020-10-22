@@ -73,6 +73,13 @@
 #endif  // USE_TINYUSB
 typedef int (*ini_handler_atl485)(const char* section, const char* name,
                                   const char* value);
+typedef enum {
+    LB_PWR_USEABLE_REQ = 0,
+    LB_PWR_SENSOR_USE_REQ,
+    LB_PWR_MODEM_USE_REQ,
+    LB_PWR_END
+} lb_pwr_req_t;
+typedef bool (*bat_handler_atl)(lb_pwr_req_t reqBatState);
 // The largest number of variables from a single sensor
 
 /**
@@ -715,7 +722,7 @@ class Logger {
     const uint8_t CIA_NOACTION      = 0x0;
     const uint8_t CIA_NEW_READING   = 0x01;
     const uint8_t CIA_POST_READINGS = 0x02;
-
+    const uint8_t CIA_RLB_READINGS  = 0x04;
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -

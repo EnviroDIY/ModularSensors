@@ -371,5 +371,7 @@ class dataPublisher {
 #define HTTPSTATUS_GT_504 504
 // This is an internaly created error, indicating No Connection with server
 #define HTTPSTATUS_NC_901 901
+// internal error, not enough power to connect with server
+#define HTTPSTATUS_NC_902 902
 
 #endif  // SRC_DATAPUBLISHERBASE_H_
