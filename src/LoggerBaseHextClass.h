@@ -14,8 +14,20 @@ bat_handler_atl _bat_handler_atl = NULL;
 
 void setBatHandler(bool (*bat_handler_atl)(lb_pwr_req_t reqBatState));
 
-void setSendEveryX(uint8_t param) {
-    _sendEveryX_num = param;
+#if !defined SERIALIZE_POST_MAX_READINGS
+#define SERIALIZE_POST_MAX_READINGS 20
+#endif  // SERIALIZE_POST_MAX_READINGS
+uint16_t _sendAtOneTimeMaxX_num = SERIALIZE_POST_MAX_READINGS;
+void     setSendEveryX(
+        uint8_t  sendEveryX_num,
+        uint16_t sendAtOneTimeMaxX_num = SERIALIZE_POST_MAX_READINGS) {
+    _sendEveryX_num = sendEveryX_num;
+    // Check range, if too small set to max
+    if (sendAtOneTimeMaxX_num > 3) {
+        _sendAtOneTimeMaxX_num = sendAtOneTimeMaxX_num;
+    } else {
+        _sendAtOneTimeMaxX_num = -1;  // Max
+    }
 }
 uint8_t getSendEveryX(void) {
     return _sendEveryX_num;

@@ -902,8 +902,8 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
                             deszq_line[0] = 0;  // Show completed
 
                             // Check for enough battery power
-#define POST_MAX_READINGS 10
-                            if (cnt_for_pwr_analysis++ >= POST_MAX_READINGS) {
+                            if (cnt_for_pwr_analysis++ >=
+                                _sendAtOneTimeMaxX_num) {
                                 cnt_for_pwr_analysis = 1;
                                 if (NULL != _bat_handler_atl) {
                                     // Measure  battery
