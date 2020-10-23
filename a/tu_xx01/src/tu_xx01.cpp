@@ -883,8 +883,8 @@ bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
 
         case LB_PWR_MODEM_USE_REQ:
             // WiFi PS_LBATT_MEDIUM_STATUS
-            // Cell (PS_LBATT_HEAVYSTATUS
-            if (PS_LBATT_MEDIUM_STATUS > Lbatt_status) { retResult = false; }
+            // Cell (PS_LBATT_HEAVY_STATUS
+            if (PS_LBATT_HEAVY_STATUS > Lbatt_status) { retResult = false; }
             MS_DBG(F(" isBatteryChargeGoodEnoughTx"), retResult);
             // modem sensors PS_PWR_LOW_REQ
             break;

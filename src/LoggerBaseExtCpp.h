@@ -675,7 +675,7 @@ void Logger::logDataAndPubReliably(void) {
         if (!_bat_handler_atl(LB_PWR_MODEM_USE_REQ)) {
             if (CIA_POST_READINGS & cia_val) {
                 // Change publish attempt to saving for next publish attempt
-                cia_val &= CIA_POST_READINGS;
+                cia_val &= ~CIA_POST_READINGS;
                 cia_val |= CIA_RLB_READINGS;  //
                 MS_DBG(F("logDataAndPubReliably - tx cancelled"));
             }
@@ -799,7 +799,7 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
     bool     dslStatus = false;
     bool     retVal    = false;
     // MS_DBG(F("Pub Data Qued"));
-    MS_DBG(F("pubDQTR from"), serzRdelFn_str);
+    MS_DBG(F("pubDQTR from"), serzRdelFn_str, internetPresent);
 
     // Open debug file
 #if defined MS_LOGGERBASE_POSTS
