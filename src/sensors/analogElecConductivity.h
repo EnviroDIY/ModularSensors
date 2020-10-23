@@ -2,6 +2,7 @@
  * @file analogElecConductivity.h
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library
+ * @copyright 2020 Neil Hancock
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>
  *
  *

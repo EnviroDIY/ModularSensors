@@ -2,6 +2,7 @@
  * @file analogElecConductivity.cpp
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library
+ * @copyright 2020 Neil Hancock
  *
  * * @brief This encapsulates an Electrical Conductivity sensors using an anlog
  *input and onboard ADC and ADC ref.
@@ -199,7 +200,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
      */
     EC_uScm = 1000000 / (Rwater_ohms * sensorEC_Konst);
 
-    //*************Compensating For Temperaure********************//
+    //*************Compensating For Temperature********************//
     if (NULL != _ptrWaterTemperature_C) {
         EC25_uScm = EC_uScm /
             (1 + TemperatureCoef * (*_ptrWaterTemperature_C - 25.0));
