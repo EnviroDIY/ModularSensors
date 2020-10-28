@@ -137,11 +137,9 @@ class PaleoTerraRedox : public Sensor {
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
-     * @param i2cAddressHex The I2C address of the Trinket; can be any number
-     * between 0x40 and 0x4F.  The default value is 0x08.
-     * @param rainPerTip The depth of rain from a single tip; most likely either
-     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
-     * default value is 0.2.
+     * @param powerPin The pin on the mcu controlling power to the PaleoTerra
+     * redox sensor.  Use -1 if it is continuously powered.
+     * @param i2cAddressHex The I2C address of the redox probe.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
@@ -157,15 +155,13 @@ class PaleoTerraRedox : public Sensor {
      * @note Unless there are address conflicts between I2C devices, you should
      * not create a new I2C instance.
      *
+     * @param powerPin The pin on the mcu controlling power to the PaleoTerra
+     * redox sensor.  Use -1 if it is continuously powered.
      * @param dataPin The pin on the mcu that will be used for I2C data (SDA).
      * Must be a valid pin number.
      * @param clockPin The pin on the mcu that will be used for the I2C clock
      * (SCL).  Must be a valid pin number.
-     * @param i2cAddressHex The I2C address of the Trinket; can be any number
-     * between 0x40 and 0x4F.  The default value is 0x08.
-     * @param rainPerTip The depth of rain from a single tip; most likely either
-     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
-     * default value is 0.2.
+     * @param i2cAddressHex The I2C address of the redox probe.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
@@ -183,11 +179,9 @@ class PaleoTerraRedox : public Sensor {
      * used.  For an AVR board, there is only one I2C instance possible and this
      * form of the constructor should not be used.  For a SAMD board, this can
      * be used if a secondary I2C port is created on one of the extra SERCOMs.
-     * @param i2cAddressHex The I2C address of the Trinket; can be any number
-     * between 0x40 and 0x4F.  The default value is 0x08.
-     * @param rainPerTip The depth of rain from a single tip; most likely either
-     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
-     * default value is 0.2.
+     * @param powerPin The pin on the mcu controlling power to the PaleoTerra
+     * redox sensor.  Use -1 if it is continuously powered.
+     * @param i2cAddressHex The I2C address of the redox probe.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
@@ -199,11 +193,9 @@ class PaleoTerraRedox : public Sensor {
      * @brief Construct a new PaleoTerra Redox object using the primary hardware
      * I2C instance.
      *
-     * @param i2cAddressHex The I2C address of the Trinket; can be any number
-     * between 0x40 and 0x4F.  The default value is 0x08.
-     * @param rainPerTip The depth of rain from a single tip; most likely either
-     * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
-     * default value is 0.2.
+     * @param powerPin The pin on the mcu controlling power to the PaleoTerra
+     * redox sensor.  Use -1 if it is continuously powered.
+     * @param i2cAddressHex The I2C address of the redox probe.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
