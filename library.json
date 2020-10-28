@@ -254,6 +254,15 @@
       "authors": ["Bobby Schulz", "Andrew Wickert", "Chad Sandell", "Sara Damiano"]
     },
     {
+      "name": "Tally_Library_I2C",
+      "version": "https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C",
+      "version_note": "Uses `Dev_I2C` feature branch",
+      "note": "An Arduino library for interfacing to the Project Tally Event counter from NorthernWidget.",
+      "authors": ["Bobby Schulz", "Anthony Aufdenkampe"],
+      "frameworks": "arduino",
+      "platforms": "atmelavr, atmelsam"
+    },
+    {
       "name": "SensorModbusMaster",
       "library id": "1824",
       "url": "https://github.com/EnviroDIY/SensorModbusMaster.git",
