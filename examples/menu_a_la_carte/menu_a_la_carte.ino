@@ -104,6 +104,8 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 /** End [softwareserial] */
 #endif  // End software serial for avr boards
 
+
+/** Start [softwarewire] */
 // A software I2C (Wire) instance using Testato's SoftwareWire
 // To use SoftwareWire, you must also set a define for the sensor you want to
 // use Software I2C for, ie:
@@ -121,6 +123,8 @@ const int8_t softwareSDA = 5;
 const int8_t softwareSCL = 4;
 SoftwareWire softI2C(softwareSDA, softwareSCL);
 #endif
+/** End [softwarewire] */
+
 
 /** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
@@ -235,8 +239,9 @@ const long modemBaud = 9600;  // All XBee's use 9600 by default
 // NOTE:  Use -1 for pins that do not apply
 // The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter
 // For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md
-const int8_t modemVccPin    = -1;  // MCU pin controlling modem power
-    // Option: modemVccPin = A5, if Mayfly SJ7 is connected to the ASSOC pin
+const int8_t modemVccPin = -1;     // MCU pin controlling modem power
+                                   // Option: modemVccPin = A5, if Mayfly SJ7 is
+                                   // connected to the ASSOC pin
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
@@ -396,7 +401,7 @@ HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
-// the AT+UART_CUR or AT+UART_DEF commandy.
+// the AT+UART_CUR or AT+UART_DEF command.
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -700,7 +705,7 @@ Variable* modemBatteryState = new Modem_BatteryState(
 Variable* modemBatteryPct = new Modem_BatteryPercent(
     &modem, "12345678-abcd-1234-ef00-1234567890ab", "modemBatteryPct");
 Variable* modemBatteryVoltage = new Modem_BatteryVoltage(
-    &modem, "12345678-abcd-1234-ef00-1234567890aa b", "modemBatterymV");
+    &modem, "12345678-abcd-1234-ef00-1234567890ab", "modemBatterymV");
 Variable* modemTemperature =
     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab", "modemTemp");
 /** End [modem_variables] */
@@ -821,7 +826,7 @@ uint8_t      AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
 #ifdef MS_ATLAS_SOFTWAREWIRE
 // AtlasScientificCO2 atlasCO2(AtlasCO2Power, softwareSDA, softwareSCL,
 //                             AtlasCO2i2c_addr);
-AtlasScientificCO2 atlasCO2(&softI2C, I2CPower, AtlasCO2i2c_addr);
+AtlasScientificCO2 atlasCO2(&softI2C, AtlasCO2Power, AtlasCO2i2c_addr);
 #else
 // AtlasScientificCO2 atlasCO2(AtlasCO2Power, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(AtlasCO2Power);
@@ -1357,13 +1362,38 @@ Variable* teros11VWC =
 
 
 // ==========================================================================
+//  PaleoTerra Redox Sensors
+// ==========================================================================
+/** Start [paleoterra] */
+#include <sensors/PaleoTerraRedox.h>
+
+int8_t paleoTerraPower = sensorPowerPin;  // Pin to switch RS485 adapter power
+                                          // on and off (-1 if unconnected)
+uint8_t paleoI2CAddress = 0x68;           // the I2C address of the redox sensor
+
+// Create the PaleoTerra sensor object
+#ifdef MS_PALEOTERRA_SOFTWAREWIRE
+PaleoTerraRedox ptRedox(&softI2C, paleoTerraPower, paleoI2CAddress);
+// PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,
+// paleoI2CAddress);
+#else
+PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
+#endif
+
+// Create the voltage variable for the redox sensor
+Variable* ptVolt =
+    new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [paleoterra] */
+
+
+// ==========================================================================
 //  External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 /** Start [i2c_rain] */
 #include <sensors/RainCounterI2C.h>
 
 const uint8_t RainCounterI2CAddress = 0x08;
-// I2C Address for EnviroDIY external tip counter is 0x08 by default
+// I2C Address for EnviroDIY external tip counter; 0x08 by default
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 
 // Create a Rain Counter sensor object
@@ -1372,7 +1402,7 @@ RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
 // RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,
 //                      depthPerTipEvent);
 #else
-RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C  tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #endif
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
@@ -1409,8 +1439,8 @@ Variable* tallyEvents = new TallyCounterI2C_Events(
 // period = loggingInterval * 60.0;    // in seconds
 // frequency = tallyEventCount/period; // average event frequency in Hz
 // tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h
-// // 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
-// // web: Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R
+// 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
+// web: Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R
 /** End [i2c_wind_tally] */
 
 
@@ -1451,7 +1481,7 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y504modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y504modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial&  y504modbusSerial = altSoftSerial;  // For software serial
 // NeoSWSerial& y504modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1649,8 +1679,8 @@ const int8_t y532AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
 const int8_t  y532SensorPower = A3;               // Sensor power pin
 const int8_t  y532EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y532NumberReadings =
-    1;  // The manufacturer actually doesn't mention averaging for this one
+const uint8_t y532NumberReadings = 1;
+// The manufacturer actually doesn't mention averaging for this one
 
 // Create a Yosemitech Y532 pH sensor object
 YosemitechY532 y532(y532ModbusAddress, y532modbusSerial, y532AdapterPower,
@@ -2053,6 +2083,7 @@ void setup() {
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
+    Serial.println();
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
@@ -2252,10 +2283,10 @@ void setup() {
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);
-            // true = wait for card to settle after power up
-        dataLogger.createLogFile(true); // true = write a new header
+        // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
         dataLogger.turnOffSDcard(true);
-            // true = wait for internal housekeeping after write
+        // true = wait for internal housekeeping after write
     }
     /** End [setup_file] */
 
@@ -2330,7 +2361,7 @@ void loop() {
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
-// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
 
         // Do a complete update on the variable array.
@@ -2399,7 +2430,7 @@ void loop() {
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
-// https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
 
         dataLogger.testingMode();

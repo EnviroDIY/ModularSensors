@@ -53,6 +53,7 @@
  *   - Reported in percent saturation
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasDOmgL
+ *
  * @variabledoc{atlas_do_concentration,AtlasScientificDO,DOmgL,AtlasDOmgL}
  *
  * ___
@@ -63,6 +64,7 @@
  *   - Reported in percent saturation
  *   - Result stored in sensorValues[1]
  *   - Default variable code is AtlasDOpct
+ *
  * @variabledoc{atlas_do_percent,AtlasScientificDO,DOpct,AtlasDOpct}
  *
  * ___

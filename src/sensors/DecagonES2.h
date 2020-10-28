@@ -52,6 +52,7 @@
  *   - Resolution is 0.001 mS/cm = 1 µS/cm
  *   - Reported as microsiemens per centimeter (µS/cm)
  *   - Default variable code is ES2Cond
+ *
  * @variabledoc{es2_cond,DecagonES2,Cond,ES2Cond}
  *
  * @section es2_temp Temperature Output
@@ -61,6 +62,7 @@
  *   - Resolution is 0.1°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is ES2Temp
+ *
  * @variabledoc{es2_temp,DecagonES2,Temp,ES2Temp}
  *
  *

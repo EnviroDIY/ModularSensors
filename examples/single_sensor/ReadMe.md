@@ -1,4 +1,4 @@
-[//]: # ( @page example_single_sensor Single %Sensor Example )
+[//]: # ( @page example_single_sensor Single Sensor Example )
 # Using ModularSensors to Communicate with a Single Sensor
 
 This somewhat trivial example show making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port.

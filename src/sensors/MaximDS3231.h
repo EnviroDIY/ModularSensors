@@ -23,6 +23,22 @@
  * @tableofcontents
  * @m_footernavigation
  *
+ * @section ds3231_intro Introduction
+ *
+ * The I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html)
+ * real time clock (RTC) is absolutely required for time-keeping on all AVR boards.
+ * This library also makes use of of the DS3231 for its on-board temperature
+ * sensor.
+ * This temperature is _not_ equivalent to an environmental temperature
+ * measurement and should only be used to as a diagnostic. Internally, the DS3231
+ * uses the temperature it measures to compensate for temperature variation in the
+ * crystal speed. This improves the timekeeping accuracy and reduces time drift.
+ *
+ * The DS3231 requires a 3.3V power supply and most breakouts or boards that
+ * integrate the DS3231 (including the Mayfly) use a coin battery to supply the
+ * clock. Using separate power supply for the clock prevents the time from
+ * resetting if the main board loses power.
+ *
  * @section ds3231_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS3231-Real-Time-Clock.pdf)
  *
@@ -41,6 +57,7 @@
  *     - 0.25°C (10 bit)
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is BoardTemp
+ *
  * @variabledoc{ds3231_temp,MaximDS3231,Temp,BoardTemp}
  *
  * ___
@@ -103,7 +120,6 @@
  * and down
  *
  * @ingroup ds3231_group
- *
  */
 class MaximDS3231 : public Sensor {
  public:

@@ -49,6 +49,7 @@
  *   - Reported as millivolts (mV)
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasORP
+ *
  * @variabledoc{atlas_orp_orp,AtlasScientificORP,Potential,AtlasORP}
  *
  * ___

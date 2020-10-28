@@ -57,6 +57,7 @@
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is MPL115A2_Temp
+ *
  * @variabledoc{mpl115a2_temp,MPL115A2,Temp,MPL115A2_Temp}
  *
  * @section mpl115a2_pressure Pressure Output
@@ -66,6 +67,7 @@
  *   - Resolution is 1.5 hPa
  *   - Reported as kilopascal (kPa)
  *   - Default variable code is MPL115A2_Pressure
+ *
  * @variabledoc{mpl115a2_pressure,MPL115A2,Pressure,MPL115A2_Pressure}
  *
  * ___

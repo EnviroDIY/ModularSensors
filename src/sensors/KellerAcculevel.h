@@ -46,6 +46,7 @@
  *   - Resolution is 0.002%
  *   - Reported as millibar (mb)
  *   - Default variable code is kellerAccuPress
+ *
  * @variabledoc{acculevel_pressure,KellerAcculevel,Pressure,kellerAccuPress}
  *
  * @section acculevel_temp Temperature Output
@@ -55,6 +56,7 @@
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is kellerAccuTemp
+ *
  * @variabledoc{acculevel_temp,KellerAcculevel,Temp,kellerAccuTemp}
  *
  * @section acculevel_height Height Output
@@ -63,7 +65,8 @@
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.002%
  *   - Reported as meters (m)
- *   - Default variable code is kellerAccuHeight
+ *   - Default variable code is kellerAccuHeigh
+ *
  * @variabledoc{acculevel_height,KellerAcculevel,Height,kellerAccuHeight}
  *
  *

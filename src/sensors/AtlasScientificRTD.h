@@ -54,6 +54,7 @@
  *   - Reported as degrees Celsius (°C)
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasTemp
+ *
  * @variabledoc{atlas_rtd_temp,AtlasScientificRTD,Temp,AtlasTemp}
  *
  * ___

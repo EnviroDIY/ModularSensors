@@ -30,8 +30,8 @@
  * [Teros series](https://www.metergroup.com/environment/products/teros-12/).
  * __This page is for the ECH2O series.__
  *
- * @note Meter Environmental was formerly known as Decagon Devices and sold the
- * a very similar sensor to the current EC-5 sensor as the 5TM.
+ * @note Meter Environmental was formerly known as Decagon Devices and sold a
+ * very similar sensor to the current EC-5 sensor as the 5TM.
  *
  * Both series of sensors operate as sub-classes of the SDI12Sensors class.
  * They require a 3.5-12V power supply, which can be turned off between
@@ -52,12 +52,13 @@
  *
  * @section fivetm_ea Ea Output
  *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)
- *   - Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
- *   - Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
+ *   - Accuracy for generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+ *   - Accuracy for medium-specific calibration: ± 0.02 m3/m3 (± 2% VWC)
  *   - Result stored in sensorValues[0]
  *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
  *   - Reported as farads per meter (F/m)
  *   - Default variable code is SoilEa
+ *
  * @variabledoc{fivetm_ea,Decagon5TM,Ea,SoilEa}
  *
  * @section fivetm_temp Temp Output
@@ -67,6 +68,7 @@
  *   - Resolution is 0.1°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is SoilTemp
+ *
  * @variabledoc{fivetm_temp,Decagon5TM,Temp,SoilTemp}
  *
  * @section fivetm_vwc VWC Output
@@ -77,6 +79,7 @@
  *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
  *   - Reported as volumetric percent water content (%, m3/100m3)
  *   - Default variable code is SoilVWC
+ *
  * @variabledoc{fivetm_vwc,Decagon5TM,VWC,SoilVWC}
  *
  * ___

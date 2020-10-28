@@ -42,6 +42,7 @@
  *   - Resolution is 0.01 NTU
  *   - Reported as Nephelometric Turbidity Units (NTU)
  *   - Default variable code is Y511Turbidity
+ *
  * @variabledoc{y511_turb,YosemitechY511,Turbidity,Y511Turbidity}
  *
  * @section y511_temp Temperature Output
@@ -51,6 +52,7 @@
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y511Temp
+ *
  * @variabledoc{y511_temp,YosemitechY511,Temp,Y511Temp}
  *
  * The reported resolution (32 bit) gives far more precision than is significant

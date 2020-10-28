@@ -64,6 +64,7 @@
  *     - 0.1mA using +/-0.4 Amp range
  *   - Reported as milliamps (mA)
  *   - Default variable code is TIINA219Amp
+ *
  * @variabledoc{ina219_current,TIINA219,Current,TIINA219Amp}
  *
  * @section ina219_volt Voltage Output
@@ -73,6 +74,7 @@
  *   - Resolution is 0.001V
  *   - Reported as volts (V)
  *   - Default variable code is TIINA219Volt
+ *
  * @variabledoc{ina219_volt,TIINA219,Volt,TIINA219Volt}
  *
  * @section ina219_power Power Output
@@ -80,6 +82,7 @@
  *   - Resolution is 0.01mW
  *   - Reported as milliwatts (mW)
  *   - Default variable code is TIINA219Power
+ *
  * @variabledoc{ina219_power,TIINA219,Power,TIINA219Power}
  *
  * ___

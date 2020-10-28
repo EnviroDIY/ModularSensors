@@ -49,6 +49,8 @@ class Sensor;
  * returning a float which is the value for that variable.
  *
  * Variables are expected to be grouped together into VariableArrays.
+ *
+ * @ingroup base_classes
  */
 class Variable {
  public:

@@ -74,6 +74,7 @@
  *     - 12-bit ADC, Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
  *   - Reported as Nephelometric Turbidity Units (NTU)
  *   - Default variable code is OBS3Turbidity
+ *
  * @variabledoc{obs3_turbidity,CampbellOBS3,Turbidity,OBS3Turbidity}
  *
  * @section obs3_voltage Voltage Output
@@ -87,6 +88,7 @@
  *     - 12-bit ADC: 2 mV
  *   - Reported as volts (V)
  *   - Default variable code is OBS3Voltage
+ *
  * @variabledoc{obs3_voltage,CampbellOBS3,Voltage,OBS3Voltage}
  *
  * ___

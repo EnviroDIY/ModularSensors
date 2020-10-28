@@ -55,6 +55,7 @@
  *   - 0-5V with a 10bit ADC
  * - Reported as volts (V)
  * - Default variable code is batteryVoltage
+ *
  * @variabledoc{processor_battery,ProcessorStats,Battery,batteryVoltage}
  *
  * @section processor_ram Free RAM
@@ -67,6 +68,7 @@
  * - Resolution is 1 bit
  * - Reported in bits
  * - Default variable code is freeSRAM
+ *
  * @variabledoc{processor_ram,ProcessorStats,FreeRam,freeSRAM}
  *
  * @section processor_sampno Sample Number
@@ -78,6 +80,7 @@
  * - Result stored in sensorValues[2]
  * - Reported as a dimensionless sequence number
  * - Default variable code is SampNum
+ *
  * @variabledoc{processor_sampno,ProcessorStats,SampleNumber,SampNum}
 
  * ___

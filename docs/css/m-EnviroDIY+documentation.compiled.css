@@ -4115,8 +4115,8 @@ ul.m-doc li.m-doc-expansible > a:first-child:before, ul.m-doc li.m-doc-collapsib
   width: 0.4rem;
   font-weight: bold;
 }
-ul.m-doc li.m-doc-expansible > a:first-child:before { content: '⊕'; }
-ul.m-doc li.m-doc-collapsible > a:first-child:before { content: '⊖'; }
+ul.m-doc li.m-doc-expansible > a:first-child:before { content: '+'; }
+ul.m-doc li.m-doc-collapsible > a:first-child:before { content: '-'; }
 h1 .m-doc-template, h1 .m-doc-include {
   font-size: 1.3rem;
   font-weight: normal;
@@ -4248,7 +4248,7 @@ a.m-doc-search-icon:focus svg, a.m-doc-search-icon:hover svg, a.m-doc-search-ico
   float: right;
 }
 .m-doc-search-content {
-  background-color: #000000;
+  background-color: #ffffff;
   border-radius: 0px;
   padding: 1rem;
 }

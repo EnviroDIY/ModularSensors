@@ -149,6 +149,7 @@
  *   - Result stored in sensorvalues[0]
  *   - Reported as volts (V)
  *   - Default variable code is extVoltage
+ *
  * @variabledoc{ext_volt_volt,ExternalVoltage,Volt,extVoltage}
  *
  * ___

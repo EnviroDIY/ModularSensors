@@ -82,6 +82,7 @@
  *     - 0.5°C for DS18S20 (9-bit)
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is DS18Temp
+ *
  * @variabledoc{ds18_temp,MaximDS18,Temp,DS18Temp}
  *
  * ___

@@ -58,6 +58,7 @@
  *   - Reported in microsiemens per centimeter
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasCond
+ *
  * @variabledoc{atlas_cond_cond,AtlasScientificEC,Cond,AtlasCond}
  *
  * ___
@@ -68,6 +69,7 @@
  *   - Reported in parts per million
  *   - Result stored in sensorValues[1]
  *   - Default variable code is AtlasTDS
+ *
  * @variabledoc{atlas_cond_tds,AtlasScientificEC,TDS,AtlasTDS}
  *
  * ___
@@ -78,6 +80,7 @@
  *   - Reported in practical salinity units
  *   - Result stored in sensorValues[2]
  *   - Default variable code is AtlasSalinity
+ *
  * @variabledoc{atlas_cond_salinity,AtlasScientificEC,Salinity,AtlasSalinity}
  *
  * ___
@@ -88,6 +91,7 @@
  *   - Reported value is dimensionless
  *   - Result stored in sensorValues[3]
  *   - Default variable code is AtlasSpecGravity
+ *
  * @variabledoc{atlas_cond_sg,AtlasScientificEC,SpecificGravity,AtlasSpecGravity}
  *
  * ___

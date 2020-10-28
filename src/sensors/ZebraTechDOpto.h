@@ -56,6 +56,7 @@
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is DOtempC
+ *
  * @variabledoc{dopto_temp,ZebraTechDOpto,Temp,DOtempC}
  *
  * @section dopto_dopercent Dissolved Oxygen Percent Saturation Output
@@ -65,6 +66,7 @@
  *   - Resolution is 0.01% / 0.001 PPM
  *   - Reported as percent saturation (%)
  *   - Default variable code is DOpercent
+ *
  * @variabledoc{dopto_dopercent,ZebraTechDOpto,DOpct,DOpercent}
  *
  * @section dopto_domgl Dissolved Oxygen Concentration Output
@@ -74,6 +76,7 @@
  *   - Resolution is 0.01% / 0.001 PPM
  *   - Reported as milligrams per liter (mg/L)
  *   - Default variable code is DOppm
+ *
  * @variabledoc{dopto_domgl,ZebraTechDOpto,DOmgL,DOppm}
  *
  *

@@ -88,6 +88,8 @@
  * functions to turn the modem on and off and some error checking.
  *
  * TinyGSM is available here:  https://github.com/vshymanskyy/TinyGSM
+ *
+ * @ingroup base_classes
  */
 class loggerModem {
  public:

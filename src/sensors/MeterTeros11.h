@@ -62,6 +62,7 @@
  *   - Resolution is 0.00001
  *   - Reported as farads per meter (F/m)
  *   - Default variable code is TerosSoilEa
+ *
  * @variabledoc{teros11_ea,MeterTeros11,Ea,TerosSoilEa}
  *
  * @section teros11_temp Temperature Output
@@ -73,6 +74,7 @@
  *   - Resolution is 0.1°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is TerosSoilTemp
+ *
  * @variabledoc{teros11_temp,MeterTeros11,Temp,TerosSoilTemp}
  *
  * @section teros11_vwc VWC Output
@@ -88,6 +90,7 @@
  *   - Resolution is 0.001 m3/m3 (0.1% VWC) from 0 – 70% VWC
  *   - Reported as volumetric percent water content (%, m3/100m3)
  *   - Default variable code is TerosSoilVWC
+ *
  * @variabledoc{teros11_vwc,MeterTeros11,VWC,TerosSoilVWC}
  *
  * ___

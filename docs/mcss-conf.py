@@ -60,7 +60,7 @@ LINKS_NAVBAR1 = [
     ),
     ("Modules", "modules", []),
     ("Classes", "annotated", [],),
-    ("Files", "files", [],),
+    ("Source Files", "files", [],),
     (
         "Examples",
         "page_the_examples",
@@ -108,7 +108,7 @@ LINKS_NAVBAR1 = [
         #     ),
         # ],
     ),
-    ("Pages", "pages", [],),
+    ("More", "pages", [],),
 ]
 LINKS_NAVBAR2 = []
 VERSION_LABELS = True

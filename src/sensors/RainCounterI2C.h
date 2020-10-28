@@ -61,6 +61,7 @@
  *   - Resolution is 1 tip
  *   - Reported as dimensionless counts
  *   - Default variable code is RainCounterI2CTips
+ *
  * @variabledoc{i2c_rain_tips,RainCounterI2C,Tips,RainCounterI2CTips}
  *
  * @section i2c_rain_depth Depth Output
@@ -70,6 +71,7 @@
  * if bucket is calibrated to English or metric units
  *   - Reported as millimeters (mm)
  *   - Default variable code is RainCounterI2CVol
+ *
  * @variabledoc{i2c_rain_depth,RainCounterI2C,Depth,RainCounterI2CVol}
  *
  * ___

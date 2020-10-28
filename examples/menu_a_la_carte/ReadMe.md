@@ -34,6 +34,7 @@ ___
         - [AltSoftSerial](#altsoftserial)
         - [NeoSWSerial](#neoswserial)
         - [SoftwareSerial with External Interrupts](#softwareserial-with-external-interrupts)
+        - [Software I2C/Wire](#software-i2cwire)
       - [SAMD Boards](#samd-boards)
     - [Logging Options](#logging-options)
   - [Wifi/Cellular Modem Options](#wificellular-modem-options)
@@ -56,30 +57,41 @@ ___
     - [AOSong AM2315](#aosong-am2315)
     - [AOSong DHT](#aosong-dht)
     - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor)
+    - [Atlas Scientific EZO Circuits](#atlas-scientific-ezo-circuits)
+      - [Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor](#atlas-scientific-ezo-co2-embedded-ndir-carbon-dioxide-sensor)
+      - [Atlas Scientific EZO-DO Dissolved Oxygen Sensor](#atlas-scientific-ezo-do-dissolved-oxygen-sensor)
+      - [Atlas Scientific EZO-EC Conductivity Sensor](#atlas-scientific-ezo-ec-conductivity-sensor)
+      - [Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor](#atlas-scientific-ezo-orp-oxidationreduction-potential-sensor)
+      - [Atlas Scientific EZO-pH Sensor](#atlas-scientific-ezo-ph-sensor)
+      - [Atlas Scientific EZO-RTD Temperature Sensor](#atlas-scientific-ezo-rtd-temperature-sensor)
     - [Bosch BME280 Environmental Sensor](#bosch-bme280-environmental-sensor)
     - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
     - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
-    - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
-    - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
+    - [Keller RS485/Modbus Water Level Sensors](#keller-rs485modbus-water-level-sensors)
+      - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
+      - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
-    - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
-    - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
-    - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
+    - [Meter SDI-12 Sensors](#meter-sdi-12-sensors)
+      - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
+      - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
+      - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
+    - [PaleoTerra Redox Sensors](#paleoterra-redox-sensors)
     - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
     - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
-    - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
-    - [Yosemitech Y510 Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
-    - [Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
-    - [Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor](#yosemitech-y514-yosemitech-y514-chlorophyll-sensor)
-    - [Yosemitech Y520 Yosemitech Y520 Conductivity Sensor](#yosemitech-y520-yosemitech-y520-conductivity-sensor)
-    - [Yosemitech Y532 Yosemitech Y532 pH Sensor](#yosemitech-y532-yosemitech-y532-ph-sensor)
-    - [Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor](#yosemitech-y533-yosemitech-y533-oxidation-reduction-potential-orp-sensor)
-    - [Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper](#yosemitech-y550-yosemitech-y550-carbon-oxygen-demand-cod-sensor-with-wiper)
-    - [Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde](#yosemitech-y4000-yosemitech-y4000-multi-parameter-sonde)
+    - [Yosemitech RS485/Modbus Environmental Sensors](#yosemitech-rs485modbus-environmental-sensors)
+      - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
+      - [Yosemitech Y510 Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
+      - [Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper](#yosemitech-y511-yosemitech-y511-turbidity-sensor-with-wiper)
+      - [Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor](#yosemitech-y514-yosemitech-y514-chlorophyll-sensor)
+      - [Yosemitech Y520 Yosemitech Y520 Conductivity Sensor](#yosemitech-y520-yosemitech-y520-conductivity-sensor)
+      - [Yosemitech Y532 Yosemitech Y532 pH Sensor](#yosemitech-y532-yosemitech-y532-ph-sensor)
+      - [Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor](#yosemitech-y533-yosemitech-y533-oxidation-reduction-potential-orp-sensor)
+      - [Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper](#yosemitech-y550-yosemitech-y550-carbon-oxygen-demand-cod-sensor-with-wiper)
+      - [Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde](#yosemitech-y4000-yosemitech-y4000-multi-parameter-sonde)
     - [Zebra Tech D-Opto Dissolved Oxygen Sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
   - [Calculated Variables](#calculated-variables)
   - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
@@ -214,6 +226,15 @@ If you only want to use the serial line for incoming or outgoing data, set the o
 [//]: # ( @menusnip{softwareserial} )
 
 When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](@ref menu_setup_serial_interrupts).
+
+
+[//]: # ( @paragraph menu_softwarewire Software I2C/Wire )
+##### Software I2C/Wire
+
+This creates a software I2C (wire) instance that can be shared between multiple sensors.
+Only Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library is supported.
+
+[//]: # ( @menusnip{softwarewire} )
 
 ---
 
@@ -552,6 +573,12 @@ ___
 
 Set options and create the objects for using the processor as a sensor to report battery level, processor free ram, and sample number.
 
+The processor can return the number of "samples" it has taken, the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers).
+The version of the board is required as input (ie, for a EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").
+Use a blank value (ie, "") for un-versioned boards.
+Please note that while you can opt to average more than one sample, it really makes no sense to do so for the processor.
+The number of "samples" taken will increase by one for each time another processor "measurement" is taken so averaging multiple measurements from the processor will result in the number of samples increasing by more than one with each loop.
+
 @see @ref processor_sensor_group
 
 [//]: # ( @menusnip{processor_sensor} )
@@ -608,12 +635,97 @@ The number of readings to average from the sensor is optional, but can be suppli
 ___
 
 
+[//]: # ( @subsection menu_atlas_sensors Atlas Scientific EZO Circuits )
+### Atlas Scientific EZO Circuits
+
+The next several sections are for Atlas Scientific EZO circuts and sensors.
+The sensor class constructors for each are nearly identical, except for the class name.
+In the most common setup, with hardware I2C, the only required argument for the constructor is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
+
+@warning **You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!**
+If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.
+
+The default I2C addresses for the circuits are:
+- CO2: 0x69 (105)
+- DO: 0x61 (97)
+- EC (conductivity): 0x64 (100)
+- ORP (redox): 0x62 (98)
+- pH: 0x63 (99)
+- RTD (temperature): 0x66 (102)
+All of the circuits can be re-addressed to any other 8 bit number if desired.
+To use multiple circuits of the same type, re-address them.
+
+If for some reason you want or need to use software I2C, compile with the build flag `-D MS_ATLAS_SOFTWAREWIRE`.
+The constructors for the software I2C implementation requires either the SCL and SDA pin numbers or a reference to the I2C object as arguments.
+You must use Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library for software I2C.
+See the [software wire](@ref menu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
+
+@warning Either all or none of the Atlas sensors can be using software I2C.
+Using some Altas sensors with software I2C and others with hardware I2C is not supported.
+
+@see @ref atlas_group
+
+
+[//]: # ( @subsubsection menu_atlas_co2 Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor )
+#### Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
+
+@see @ref atlas_co2_group
+
+[//]: # ( @menusnip{atlas_co2} )
+___
+
+
+[//]: # ( @subsubsection menu_atlas_do Atlas Scientific EZO-DO Dissolved Oxygen Sensor )
+#### Atlas Scientific EZO-DO Dissolved Oxygen Sensor
+
+@see @ref atlas_do_group
+
+[//]: # ( @menusnip{atlas_do} )
+___
+
+
+[//]: # ( @subsubsection menu_atlas_ec Atlas Scientific EZO-EC Conductivity Sensor )
+#### Atlas Scientific EZO-EC Conductivity Sensor
+
+@see @ref atlas_cond_group
+
+[//]: # ( @menusnip{atlas_ec} )
+___
+
+
+[//]: # ( @subsubsection menu_atlas_orp Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor )
+#### Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
+
+@see @ref atlas_orp_group
+
+[//]: # ( @menusnip{atlas_orp} )
+___
+
+
+[//]: # ( @subsubsection menu_atlas_ph Atlas Scientific EZO-pH Sensor )
+#### Atlas Scientific EZO-pH Sensor
+
+@see @ref atlas_ph_group
+
+[//]: # ( @menusnip{atlas_ph} )
+___
+
+
+[//]: # ( @subsubsection menu_atlas_rtd Atlas Scientific EZO-RTD Temperature Sensor )
+#### Atlas Scientific EZO-RTD Temperature Sensor
+
+@see @ref atlas_rtd_group
+
+[//]: # ( @menusnip{atlas_rtd} )
+___
+
+
 [//]: # ( @subsection menu_bme280 Bosch BME280 Environmental Sensor )
 ### Bosch BME280 Environmental Sensor
 
 Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
-Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803.
+Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803; when using those sensors together, make sure they are set to opposite addresses.
 
 @see @ref bme280_group
 
@@ -677,9 +789,11 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 ___
 
 
-[//]: # ( @subsection menu_nanolevel Keller Nanolevel Level Transmitter )
-### Keller Nanolevel Level Transmitter
+[//]: # ( @subsection menu_keller_sensors Keller RS485/Modbus Water Level Sensors )
+### Keller RS485/Modbus Water Level Sensors
 
+The next two sections are for Keller RS485/Modbus water level sensors.
+The sensor class constructors for each are nearly identical, except for the class name.
 The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
@@ -690,6 +804,12 @@ If the power to everything is controlled by the same pin, use -1 for the second 
 If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
 If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
 Both pins _cannot_ be shared pins.
+
+@see @ref keller_group
+
+
+[//]: # ( @subsubsection menu_nanolevel Keller Nanolevel Level Transmitter )
+#### Keller Nanolevel Level Transmitter
 
 @see @ref nanolevel_group
 
@@ -697,19 +817,8 @@ Both pins _cannot_ be shared pins.
 ___
 
 
-[//]: # ( @subsection menu_acculevel Keller Acculevel High Accuracy Submersible Level Transmitter )
-### Keller Acculevel High Accuracy Submersible Level Transmitter
-
-The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
-In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
-AltSoftSerial and HardwareSerial work fine.
-Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
-If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
-If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
-If the RS485 adapter, sensor, or relay are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.
-Both pins _cannot_ be shared pins.
+[//]: # ( @subsubsection menu_acculevel Keller Acculevel High Accuracy Submersible Level Transmitter )
+#### Keller Acculevel High Accuracy Submersible Level Transmitter
 
 @see @ref acculevel_group
 
@@ -755,12 +864,17 @@ Keep in mind that the possible I2C addresses of the MS5803 match those of the BM
 ___
 
 
-[//]: # ( @subsection menu_fivetm Meter ECH2O Soil Moisture Sensor )
-### Meter ECH2O Soil Moisture Sensor
+[//]: # ( @subsection menu_meter_sensors Meter SDI-12 Sensors )
+### Meter SDI-12 Sensors
 
+The next few sections are for Meter SDI-12 sensors.
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
+
+
+[//]: # ( @subsubsection menu_fivetm Meter ECH2O Soil Moisture Sensor )
+#### Meter ECH2O Soil Moisture Sensor
 
 @see @ref fivetm_group
 
@@ -768,12 +882,8 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
-[//]: # ( @subsection menu_hydros21 Meter Hydros 21 Conductivity, Temperature, and Depth Sensor )
-### Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
-
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
-Optionally, you can include a number of distinct readings to average.
-The data pin must be a pin that supports pin-change interrupts.
+[//]: # ( @subsubsection menu_hydros21 Meter Hydros 21 Conductivity, Temperature, and Depth Sensor )
+#### Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 
 @see @ref hydros21_group
 
@@ -781,16 +891,34 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
-[//]: # ( @subsection menu_teros Meter Teros 11 Soil Moisture Sensor )
-### Meter Teros 11 Soil Moisture Sensor
-
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.
-Optionally, you can include a number of distinct readings to average.
-The data pin must be a pin that supports pin-change interrupts.
+[//]: # ( @subsubsection menu_teros Meter Teros 11 Soil Moisture Sensor )
+#### Meter Teros 11 Soil Moisture Sensor
 
 @see @ref teros_group
 
 [//]: # ( @menusnip{teros} )
+___
+
+
+[//]: # ( @subsection menu_pt_redox PaleoTerra Redox Sensors )
+### PaleoTerra Redox Sensors
+
+Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library for software I2C.
+
+To use software I2C, compile with the build flag `-D MS_PALEOTERRA_SOFTWAREWIRE`.
+See the [software wire](@ref menu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
+
+The constructors for the software I2C implementation requires either the SCL and SDA pin numbers or a reference to the I2C object as arguments.
+All variants of the constructor require the Arduino power pin.
+The I2C address can be given if it the sensor is not set to the default of 0x68.
+A number of readings to average can also be given.
+
+@warning Either all or none your attached redox may use software I2C.
+Using some with software I2C and others with hardware I2C is not supported.
+
+@see @ref pt_redox_group
+
+[//]: # ( @menusnip{pt_redox} )
 ___
 
 
@@ -823,15 +951,22 @@ The number of measurements to average, if more than one is desired, goes as the 
 ___
 
 
-[//]: # ( @subsection menu_y504 Yosemitech Y504 Dissolved Oxygen Sensor )
-### Yosemitech Y504 Dissolved Oxygen Sensor
+[//]: # ( @subsection menu_yosemitech_sensors Yosemitech RS485/Modbus Environmental Sensors )
+### Yosemitech RS485/Modbus Environmental Sensors
 
-This is the code for the Yosemitech Y504 dissolved oxygen sensor.
+The next several sections are for Yosemitech brand sensors.
+The sensor class constructors for each are nearly identical, except for the class name.
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
+For most of the sensors, Yosemitech strongly recommends averaging multiple (in most cases 10) readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+
+@see @ref yosemitech_group
+
+
+[//]: # ( @subsubsection menu_y504 Yosemitech Y504 Dissolved Oxygen Sensor )
+#### Yosemitech Y504 Dissolved Oxygen Sensor
 
 @see @ref y504_group
 
@@ -839,15 +974,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y510 Yosemitech Y510 Turbidity Sensor )
-### Yosemitech Y510 Yosemitech Y510 Turbidity Sensor
-
-This is the code for the Yosemitech Y510 Yosemitech Y510 turbidity sensor.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y510 Yosemitech Y510 Turbidity Sensor )
+#### Yosemitech Y510 Yosemitech Y510 Turbidity Sensor
 
 @see @ref y510_group
 
@@ -855,15 +983,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y511 Yosemitech Y511 Turbidity Sensor with Wiper )
-### Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper
-
-This is the code for the Yosemitech Y511 Yosemitech Y511 turbidity sensor with wiper.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y511 Yosemitech Y511 Turbidity Sensor with Wiper )
+#### Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper
 
 @see @ref y511_group
 
@@ -871,15 +992,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y514 Yosemitech Y514 Chlorophyll Sensor )
-### Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor
-
-This is the code for the Yosemitech Y514 Yosemitech Y514 chlorophyll sensor.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y514 Yosemitech Y514 Chlorophyll Sensor )
+#### Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor
 
 @see @ref y514_group
 
@@ -887,15 +1001,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y520 Yosemitech Y520 Conductivity Sensor )
-### Yosemitech Y520 Yosemitech Y520 Conductivity Sensor
-
-This is the code for the Yosemitech Y520 Yosemitech Y520 conductivity sensor.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y520 Yosemitech Y520 Conductivity Sensor )
+#### Yosemitech Y520 Yosemitech Y520 Conductivity Sensor
 
 @see @ref y520_group
 
@@ -903,15 +1010,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y532 Yosemitech Y532 pH Sensor )
-### Yosemitech Y532 Yosemitech Y532 pH Sensor
-
-This is the code for the Yosemitech Y532 Yosemitech Y532 pH sensor.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y532 Yosemitech Y532 pH Sensor )
+#### Yosemitech Y532 Yosemitech Y532 pH Sensor
 
 @see @ref y532_group
 
@@ -919,15 +1019,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor )
-### Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor
-
-This is the code for the Yosemitech Y533 Yosemitech Y533 oxidation reduction potential (ORP) sensor.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor )
+#### Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor
 
 @see @ref y533_group
 
@@ -935,15 +1028,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper )
-### Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper
-
-This is the code for the Yosemitech Y550 Yosemitech Y550 carbon oxygen demand (COD) sensor.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper )
+#### Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper
 
 @see @ref y550_group
 
@@ -951,15 +1037,8 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 ___
 
 
-[//]: # ( @subsection menu_y4000 Yosemitech Y4000 Multi-Parameter Sonde )
-### Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde
-
-This is the code for the Yosemitech Y4000 Yosemitech Y4000 multi-parameter sonde.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
-The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
-Yosemitech strongly recommends averaging 10 readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+[//]: # ( @subsubsection menu_y4000 Yosemitech Y4000 Multi-Parameter Sonde )
+#### Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde
 
 @see @ref y4000_group
 

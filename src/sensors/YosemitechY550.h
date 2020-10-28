@@ -44,6 +44,7 @@
  *   - Resolution is 0.01 mg/L COD
  *   - Reported as milligrams per liter (mg/L)
  *   - Default variable code is Y550COD
+ *
  * @variabledoc{y550_cod,YosemitechY550,COD,Y550COD}
  *
  * @section y550_temp Temperature Output
@@ -53,6 +54,7 @@
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y550Temp
+ *
  * @variabledoc{y550_temp,YosemitechY550,Temp,Y550Temp}
  *
  * @section y550_turb Turbidity Output
@@ -62,6 +64,7 @@
  *   - Resolution is 0.01 NTU
  *   - Reported as Nephelometric Turbidity Units (NTU)
  *   - Default variable code is Y550Turbidity
+ *
  * @variabledoc{y550_turb,YosemitechY550,Turbidity,Y550Turbidity}
  *
  * The reported resolution (32 bit) gives far more precision than is significant

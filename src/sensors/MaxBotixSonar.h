@@ -96,6 +96,7 @@
  *   - Resolution is 1mm
  *   - Reported as millimeters (mm)
  *   - Default variable code is SonarRange
+ *
  * @variabledoc{maxbotix_range,MaxBotixSonar,Range,SonarRange}
  *
  * ___

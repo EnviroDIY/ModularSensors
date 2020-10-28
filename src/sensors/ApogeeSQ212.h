@@ -75,6 +75,7 @@
  * - Reported as microeinsteins per square meter per second (µE m-2 s-1 or µmol m-2 s-1)
  * - Result stored in sensorValues[0]
  * - Default variable code is radiationIncomingPAR
+ *
  * @variabledoc{sq212_par,ApogeeSQ212,PAR,radiationIncomingPAR}
  *
  * ___
@@ -91,6 +92,7 @@
  * - Reported as volts (V)
  * - Result stored in sensorValues[1]
  * - Default variable code is SQ212Voltage
+ *
  * @variabledoc{sq212_voltage,ApogeeSQ212,Voltage,SQ212Voltage}
  *
  * ___

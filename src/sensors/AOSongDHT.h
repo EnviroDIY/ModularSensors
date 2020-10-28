@@ -59,6 +59,7 @@
  * - Reported as percent relative humidity (% RH)
  * - Result stored in sensorValues[0]
  * - Default variable code is DHTHumidity
+ *
  * @variabledoc{dht_humidity,AOSongDHT,Humidity,DHTHumidity}
  *
  * ___
@@ -69,6 +70,7 @@
  * - Reported as degrees Celsius (°C)
  * - Result stored in sensorValues[1]
  * - Default variable code is DHTTemp
+ *
  * @variabledoc{dht_temperature,AOSongDHT,Temp,DHTTemp}
  *
  * ___
@@ -78,6 +80,7 @@
  * - Reported as degrees Celsius (°C)
  * - Result stored in sensorValues[2]
  * - Default variable code is heatIndex
+ *
  * @variabledoc{dht_hi,AOSongDHT,HI,heatIndex}
  *
  * ___

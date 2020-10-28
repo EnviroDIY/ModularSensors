@@ -49,6 +49,7 @@
  *   - Reported as dimensionless pH units
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlaspH
+ *
  * @variabledoc{atlas_ph_ph,AtlasScientificpH,pH,AtlaspH}
  *
  * @note Be careful not to mix the similar variable and sensor object names!

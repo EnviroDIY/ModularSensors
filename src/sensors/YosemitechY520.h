@@ -42,6 +42,7 @@
  *   - Resolution is 0.1 µS/cm
  *   - Reported as microsiemens per centimeter (µS/cm)
  *   - Default variable code is Y520Cond
+ *
  * @variabledoc{y520_cond,YosemitechY520,Cond,Y520Cond}
  *
  * @section y520_temp Temperature Output
@@ -51,6 +52,7 @@
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y520Temp
+ *
  * @variabledoc{y520_temp,YosemitechY520,Temp,Y520Temp}
  *
  * The reported resolution (32 bit) gives far more precision than is significant

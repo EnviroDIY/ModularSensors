@@ -53,6 +53,7 @@
  * - Resolution is 0.1°C (16 bit)
  * - Reported as degrees Celsius
  * - Default variable code is AM2315Temp
+ *
  * @variabledoc{am2315_temperature,AOSongAM2315,Temp,AM2315Temp}
  *
  * ___
@@ -63,6 +64,7 @@
  * - Resolution is 0.1 % RH (16 bit)
  * - Reported as percent relative humidity
  * - Default variable code is AM2315Humidity
+ *
  * @variabledoc{am2315_humidity,AOSongAM2315,Humidity,AM2315Humidity}
  *
  * ___

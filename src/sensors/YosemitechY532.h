@@ -43,6 +43,7 @@
  *   - Resolution is 0.01 pH units
  *   - Reported as dimensionless pH units
  *   - Default variable code is Y532pH
+ *
  * @variabledoc{y532_ph,YosemitechY532,pH,Y532pH}
  *
  * @section y532_temp Temperature Output
@@ -52,6 +53,7 @@
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y532Temp
+ *
  * @variabledoc{y532_temp,YosemitechY532,Temp,Y532Temp}
  *
  * @section y532_volt Voltage Output
@@ -61,6 +63,7 @@
  *   - Resolution is 1mV
  *   - Reported as millivolts (mV)
  *   - Default variable code is Y532Potential
+ *
  * @variabledoc{y532_volt,YosemitechY532,Voltage,Y532Potential}
  *
  * The reported resolution (32 bit) gives far more precision than is significant

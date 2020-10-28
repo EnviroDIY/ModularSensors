@@ -83,6 +83,7 @@
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is BoschBME280Temp
+ *
  * @variabledoc{bme280_temp,BoschBME280,Temp,BoschBME280Temp}
  *
  * @section bme280_humidity Humidity Output
@@ -92,6 +93,7 @@
  *   - Reported as percent relative humidity (% RH)
  *   - Result stored in sensorValues[1]
  *   - Default variable code is BoschBME280Humidity
+ *
  * @variabledoc{bme280_humidity,BoschBME280,Humidity,BoschBME280Humidity}
  *
  * @section bme280_pressure Pressure Output
@@ -102,6 +104,7 @@
  *   - Resolution is 0.18hPa
  *   - Reported as pascals (Pa)
  *   - Default variable code is BoschBME280Pressure
+ *
  * @variabledoc{bme280_pressure,BoschBME280,Pressure,BoschBME280Pressure}
  *
  * @section bme280_altitude Altitude Output
@@ -109,6 +112,7 @@
  *   - Resolution is 1m
  *   - Reported as meters (m)
  *   - Default variable code is BoschBME280Altitude
+ *
  * @variabledoc{bme280_altitude,BoschBME280,Altitude,BoschBME280Altitude}
  * ___
  * @section bme280_examples Example Code

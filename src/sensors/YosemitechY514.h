@@ -43,6 +43,7 @@
  *   - Resolution is 0.1 µg/L / 0.1 RFU
  *   - Reported as micrograms per liter (µg/L)
  *   - Default variable code is Y514Chloro
+ *
  * @variabledoc{y514_chloro,YosemitechY514,Chlorophyll,Y514Chloro}
  *
  * @section y514_temp Temperature Output
@@ -52,6 +53,7 @@
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y514Temp
+ *
  * @variabledoc{y514_temp,YosemitechY514,Temp,Y514Temp}
  *
  * The reported resolution (32 bit) gives far more precision than is significant

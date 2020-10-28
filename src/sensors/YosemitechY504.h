@@ -46,6 +46,7 @@
  *   - Resolution is 0.1%
  *   - Reported as percent saturation (%)
  *   - Default variable code is Y504DOpct
+ *
  * @variabledoc{y504_dopercent,YosemitechY504,DOpct,Y504DOpct}
  *
  * @section y504_temp Temperature Output
@@ -55,6 +56,7 @@
  *   - Resolution is 0.1 °C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is Y504Temp
+ *
  * @variabledoc{y504_temp,YosemitechY504,Temp,Y504Temp}
  *
  * @section y504_domgl Dissolved Oxygen Concentration Output
@@ -64,6 +66,7 @@
  *   - Resolution is 0.01 mg/L
  *   - Reported as milligrams per liter (mg/L)
  *   - Default variable code is Y504DOmgL
+ *
  * @variabledoc{y504_domgl,YosemitechY504,DOmgL,Y504DOmgL}
  *
  * The reported resolution (32 bit) gives far more precision than is significant

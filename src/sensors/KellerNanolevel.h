@@ -38,6 +38,7 @@
  *   - Resolution is 0.002%
  *   - Reported as millibar (mb)
  *   - Default variable code is kellerNanoPress
+ *
  * @variabledoc{nanolevel_pressure,KellerNanolevel,Pressure,kellerNanoPress}
  *
  * @section nanolevel_temp Temperature Output
@@ -47,6 +48,7 @@
  *   - Resolution is 0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is kellerNanoTemp
+ *
  * @variabledoc{nanolevel_temp,KellerNanolevel,Temp,kellerNanoTemp}
  *
  * @section nanolevel_height Height Output
@@ -55,7 +57,8 @@
  *   - Result stored in sensorValues[2]
  *   - Resolution is 0.002%
  *   - Reported as meters (m)
- *   - Default variable code is kellerNanoHeight
+ *   - Default variable code is kellerNanoHeigh
+ *
  * @variabledoc{nanolevel_height,KellerNanolevel,Height,kellerNanoHeight}
  *
  *

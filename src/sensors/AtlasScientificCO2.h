@@ -49,6 +49,7 @@
  *   - Reported as parts per million (ppm)
  *   - Result stored in sensorValues[0]
  *   - Default variable code is AtlasCO2ppm
+ *
  * @variabledoc{atlas_co2_co2,AtlasScientificCO2,CO2,AtlasCO2ppm}
  *
  * ___
@@ -59,6 +60,7 @@
  *   - Reported as degrees Celsius (°C)
  *   - Result stored in sensorValues[1]
  *   - Default variable code is AtlasCO2Temp
+ *
  * @variabledoc{atlas_co2_temp,AtlasScientificCO2,Temp,AtlasCO2Temp}
  *
  * @note According to the probe datasheet, the temperature measurement is only

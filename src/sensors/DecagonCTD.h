@@ -51,6 +51,7 @@
  *   - Resolution is 0.001 mS/cm = 1 µS/cm
  *   - Reported as microsiemens per centimeter (µS/cm)
  *   - Default variable code is CTDcond
+ *
  * @variabledoc{hydros21_cond,DecagonCTD,Cond,CTDcond}
  *
  * @section hydros21_temp Temperature Output
@@ -60,6 +61,7 @@
  *   - Resolution is 0.1°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is CTDtemp
+ *
  * @variabledoc{hydros21_temp,DecagonCTD,Temp,CTDtemp}
  *
  * @section hydros21_depth Depth Output
@@ -69,6 +71,7 @@
  *   - Resolution is 2 mm
  *   - Reported as millimeters (mm)
  *   - Default variable code is CTDdepth
+ *
  * @variabledoc{hydros21_depth,DecagonCTD,Depth,CTDdepth}
  *
  *

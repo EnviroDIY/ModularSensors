@@ -76,6 +76,8 @@ class dataPublisher;  // Forward declaration
  *
  * In this library, all loggers are Arduino-style small processor circuit
  * boards.
+ *
+ * @ingroup base_classes
  */
 class Logger {
     /**

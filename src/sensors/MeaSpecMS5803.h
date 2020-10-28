@@ -76,6 +76,7 @@
  *   - Resolution is <0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is MeaSpecMS5803Temp
+ *
  * @variabledoc{ms5803_temp,MeaSpecMS5803,Temp,MeaSpecMS5803Temp}
  *
  * @section ms5803_pressure Pressure Output
@@ -94,6 +95,7 @@
  *      - 1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012
  *   - Reported as millibar (mb)
  *   - Default variable code is MeaSpecMS5803Pressure
+ *
  * @variabledoc{ms5803_pressure,MeaSpecMS5803,Pressure,MeaSpecMS5803Pressure}
  *
  * ___

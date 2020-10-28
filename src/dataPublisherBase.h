@@ -52,6 +52,8 @@
  * A dataPublisher is a abstract concept.  It is something that "watches" the
  * logger for new data and correctly formats and sends that data to some online
  * web service.
+ *
+ * @ingroup base_classes
  */
 class dataPublisher {
  public:

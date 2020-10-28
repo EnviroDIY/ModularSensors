@@ -7,7 +7,7 @@
  * Heavliy edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the PaleoTerraRedox semsor subclass and the variable subclass
- * PaleoTerraRedox_Volt..
+ * PaleoTerraRedox_Volt.
  *
  * These are for the PaleoTerra redox sensors.
  *
@@ -43,7 +43,7 @@
  * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
  * - We assume the sensor is immediately stable.
  * @subsection pt_redox_flags Build flags
- * - `-D MS_PALEOTERRAREDOX_DEBUG`
+ * - `-D MS_PALEOTERRA_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none your attached redox may use software I2C.
  * Using some with software I2C and others with hardware I2C is not supported.
@@ -55,13 +55,14 @@
  *   - Resolution is <0.01°C
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is PTRVoltage
+ *
  * @variabledoc{pt_redox_volt,PaleoTerraRedox,Volt,PTRVoltage}
  *
  * ___
  * @section pt_redox_examples Example Code
- * The PaleoTerra Redox is used in the @menulink{ms5803} example.
+ * The PaleoTerra Redox is used in the @menulink{pt_redox} example.
  *
- * @menusnip{ms5803}
+ * @menusnip{pt_redox}
  */
 /* clang-format on */
 
@@ -274,8 +275,8 @@ class PaleoTerraRedox_Volt : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "PTRVoltage".
      */
-    PaleoTerraRedox_Volt(Sensor* parentSense, const char* uuid = "",
-                         const char* varCode = "PTRVoltage")
+    explicit PaleoTerraRedox_Volt(Sensor* parentSense, const char* uuid = "",
+                                  const char* varCode = "PTRVoltage")
         : Variable(parentSense, (const uint8_t)PTR_VOLT_VAR_NUM,
                    (uint8_t)PTR_VOLT_RESOLUTION, "Voltage", "mV", varCode,
                    uuid) {}

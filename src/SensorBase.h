@@ -53,6 +53,8 @@ class Variable;  // Forward declaration
  * state.  The may need to be asked to begin a single reading or they may
  * continuously return data.  They _**must**_ be capable of returning the value
  * of their readings to a logger of some type.
+ *
+ * @ingroup base_classes
  */
 class Sensor {
  public:
