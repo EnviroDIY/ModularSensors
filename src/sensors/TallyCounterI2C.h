@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup tallyCounterI2C_group Tally Counter I2C
+ * @defgroup tally_group Tally Counter I2C
  * Classes for the Tally Counter I2C external event counter.
  *
  * @ingroup the_sensors
@@ -25,30 +25,39 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section tallyCounterI2C_intro Introduction
- * > The Tally is a minimal ultra low power digital event counter, designed to
- * > be a counterpart to a traditional data logger to measure and average rapid
+ * @section tally_intro Introduction
+ * Northern Widget's Tally is
+ * > a minimal ultra low power digital event counter, designed to be a
+ * > counterpart to a traditional data logger to measure and average rapid
  * > events like an anemometer reading.
+ * It communicates over I2C at either 3.3 or 5V.
  *
  * The [Tally_Library]
  * (https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C)
  * is used internally for communication with the Tally.
  *
+ * @warning Northern Widget considers this sensor to be one of their "bleeding edge"
+ * sensors.  As such, it is subject to change at any time.  This library may not
+ * be updated immediately to reflect changes on the part of Northern Widget.
  *
- * @section tallyCounterI2C_datasheet Sensor Datasheet
+ * As an event counter, the Tally is expected to be continuously powered (at 3.3V or 5V).
+ * It does have a large on-board capacitor which can act as a battery to ride out power
+ * shortages, but that shouldn't be expected to perform as a long-term solution.
+ *
+ * @section tally_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * - https://github.com/NorthernWidget-Skunkworks/Project-Tally​
  * - https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C
  *
  *
- * @section tallyCounterI2C_sensor The Tally Counter Sensor
+ * @section tally_sensor The Tally Counter Sensor
  * @ctor_doc{TallyCounterI2C, int8_t I2CPower, uint8_t i2cAddressHex}
- * @subsection tallyCounterI2C_timing Sensor Timing
+ * @subsection tally_timing Sensor Timing
  * - Readings transferred from the reed-switch counting device (i.e. anemometer
  * or tipping bucket) to the logger are from past events, so there is no need
  * to wait for stability or measuring.
  *
- * @section tallyCounterI2C_events Events Output
+ * @section tally_events Events Output
  *   - Range and accuracy depend on the sensor used
  *     - For wind, we often use [Inspeed WS2R Version II Reed Switch Anemometer]
  *  (https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm)
@@ -56,7 +65,8 @@
  *   - Resolution is 1 event
  *   - Reported as dimensionless counts
  *   - Default variable code is TallyCounterI2CEvents
- * @variabledoc{tallyCounterI2C_events,TallyCounterI2,TallyCounterI2CEvents}
+ *
+ * @variabledoc{tally_events,TallyCounterI2,Events,TallyCounterI2CEvents}
  */
 /* clang-format on */
 
@@ -98,9 +108,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Tally Counter I2C](@ref tallyCounterI2C_group).
+ * [Tally Counter I2C](@ref tally_group).
  *
- * @ingroup tallyCounterI2C_group
+ * @ingroup tally_group
  */
 /* clang-format on */
 class TallyCounterI2C : public Sensor {
@@ -109,47 +119,30 @@ class TallyCounterI2C : public Sensor {
      * @brief Construct a new Tally Counter I2C object using the primary
      * hardware I2C instance.
      *
-     * @param powerPin The pin on the mcu controlling power to TallyCounterI2C.
-     * - The default is to use -1 for continuous power because a counting
-     * device must always be on. However, the Tally also has a super capacitor
-     * that will keep it running even while powered down while the logger is
-     * in sleep during the interval between measurements.
-     * - The Tally Counter I2C can use either a 3.3V or 5V power source.
      * @param i2cAddressHex The I2C address of the Tally Counter I2C is 0x33
      * by default.
-     * @param measurementsToAverage The number of measurements to take and
-     * average must be 1 for a counting device. This is a non-optional default.
+     * @note The event counter should be continuously powered.  It has extremely
+     * low power draw.
+     * @note There is no option for averaging measurements; that option does not
+     * make sense in an event counter.
      */
-   explicit TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex = 0x33);
-   /**
-    * @brief Destroy the Bosch BME280 object
-    */
+    explicit TallyCounterI2C(uint8_t i2cAddressHex = 0x33);
+    /**
+     * @brief Destroy the Tally Counter object
+     */
     ~TallyCounterI2C();
 
-    /**
-     * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
-     * sensor in the proper state to begin a measurement.
-     *
-     * Verifies that the power is on and updates the #_sensorStatus.  This also
-     * sets the #_millisSensorActivated timestamp.
-     *
-     * @note This does NOT include any wait for sensor readiness.
-     *
-     * @return **bool** True if the wake function completed successfully.
-     */
-    bool   wake(void) override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
      *
-     * This begins the Wire library (sets pin modes for I2C),
-     * and updates the #_sensorStatus.
-     * The Tally
-      must be powered for setup.
+     * This begins the Wire library (sets pin modes for I2C) and updates the
+     * #_sensorStatus. It also engages sleep mode on the Tally counter and
+     * clears the counter memory. The Tally must be powered for setup.
      *
      * @return **bool** True if the setup was successful.
      */
-    bool   setup(void) override;
+    bool setup(void) override;
     /**
      * @copydoc Sensor::getSensorLocation()
      */
@@ -176,45 +169,44 @@ class TallyCounterI2C : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [events output](@ref tallyCounterI2C_events)
- * from a [[Tally Counter I2C](@ref tallyCounterI2C_group).
+ * [events output](@ref tallyCounterI2C_events) from a
+ * [Tally Counter I2C](@ref tally_group) - shows the number of
+ * events since last read.
  *
- * @ingroup tallyCounterI2C_group
+ * @ingroup tally_group
  */
 /* clang-format on */
-
-// Defines the Event varible, shows the number of Events since last read
 class TallyCounterI2C_Events : public Variable {
  public:
-     /**
-      * @brief Construct a new TallyCounterI2C_Events object.
-      *
-      * @param parentSense The parent TallyCounterI2C providing the result
-      * values.
-      * @param uuid A universally unique identifier (UUID or GUID) for the
-      * variable; optional with the default value of an empty string.
-      * @param varCode A short code to help identify the variable in files;
-      * optional with a default value of "TallyCounterI2CEvents".
-      */
-    explicit TallyCounterI2C_Events(TallyCounterI2C* parentSense,
-                                const char* uuid = "",
-                                const char* varCode = "TallyCounterI2CEvents")
+    /**
+     * @brief Construct a new TallyCounterI2C_Events object.
+     *
+     * @param parentSense The parent TallyCounterI2C providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "TallyCounterI2CEvents".
+     */
+    explicit TallyCounterI2C_Events(
+        TallyCounterI2C* parentSense, const char* uuid = "",
+        const char* varCode = "TallyCounterI2CEvents")
         : Variable(parentSense, (const uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, "counter", "event",
                    varCode, uuid) {}
-   /**
-    * @brief Construct a new TallyCounterI2C_Events object.
-    *
-    * @note This must be tied with a parent TallyCounterI2C before it can be
-    * used.
-    */
+    /**
+     * @brief Construct a new TallyCounterI2C_Events object.
+     *
+     * @note This must be tied with a parent TallyCounterI2C before it can be
+     * used.
+     */
     TallyCounterI2C_Events()
         : Variable((const uint8_t)TALLY_EVENTS_VAR_NUM,
                    (uint8_t)TALLY_EVENTS_RESOLUTION, "counter", "event",
                    "TallyCounterI2CEvents") {}
-   /**
-    * @brief Destroy the BoschBME280_Temp object - no action needed.
-    */
+    /**
+     * @brief Destroy the BoschBME280_Temp object - no action needed.
+     */
     ~TallyCounterI2C_Events() {}
 };
 

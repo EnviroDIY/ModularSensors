@@ -11,14 +11,14 @@
 
 
 // The constructor
-TallyCounterI2C::TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex)
-     : Sensor("TallyCounterI2C", TALLY_NUM_VARIABLES, TALLY_WARM_UP_TIME_MS,
-              TALLY_STABILIZATION_TIME_MS, TALLY_MEASUREMENT_TIME_MS, powerPin,
-              -1, 1) {
-    _i2cAddressHex  = i2cAddressHex;
+TallyCounterI2C::TallyCounterI2C(uint8_t i2cAddressHex)
+    : Sensor("TallyCounterI2C", TALLY_NUM_VARIABLES, TALLY_WARM_UP_TIME_MS,
+             TALLY_STABILIZATION_TIME_MS, TALLY_MEASUREMENT_TIME_MS, -1, -1,
+             1) {
+    _i2cAddressHex = i2cAddressHex;
 }
 // Destructor
-TallyCounterI2C::~TallyCounterI2C(){}
+TallyCounterI2C::~TallyCounterI2C() {}
 
 
 String TallyCounterI2C::getSensorLocation(void) {
@@ -41,12 +41,13 @@ bool TallyCounterI2C::setup(void) {
     // Make 5 attempts
     uint8_t ntries  = 0;
     bool    success = false;
-    uint8_t Stat    = false; //Used to test for connectivity to Tally device
+    uint8_t Stat    = false;  // Used to test for connectivity to Tally device
     while (!success && ntries < 5) {
         Stat = counter_internal.begin();
-        counter_internal.Sleep();  //Engage auto-sleep mode between event counts
-        counter_internal.Clear();  //Clear count to ensure valid first reading
-        if(Stat == 0) success = true;
+        counter_internal.Sleep();  // Engage auto-sleep mode between event
+                                   // counts
+        counter_internal.Clear();  // Clear count to ensure valid first reading
+        if (Stat == 0) success = true;
         ntries++;
     }
     if (!success) {
@@ -61,16 +62,6 @@ bool TallyCounterI2C::setup(void) {
     if (!wasOn) { powerDown(); }
 
     return retVal;
-}
-
-
-bool TallyCounterI2C::wake(void) {
-    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
-    // and status bits.  If it returns false, there's no reason to go on.
-    if (!Sensor::wake()) return false;
-
-
-    return true;
 }
 
 
@@ -100,10 +91,11 @@ bool TallyCounterI2C::addSingleMeasurementResult(void) {
             success = true;
         }
 
-        //Clear count value
+        // Clear count value
         counter_internal.Clear();
 
-        if (events < 0) events = -9999;  // If negetive value results, return failure
+        if (events < 0)
+            events = -9999;  // If negetive value results, return failure
 
         MS_DBG(F("  Events:"), events);
 

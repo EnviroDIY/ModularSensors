@@ -80,6 +80,7 @@ ___
       - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
       - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
     - [PaleoTerra Redox Sensors](#paleoterra-redox-sensors)
+    - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
     - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
     - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
     - [Yosemitech RS485/Modbus Environmental Sensors](#yosemitech-rs485modbus-environmental-sensors)
@@ -919,6 +920,24 @@ Using some with software I2C and others with hardware I2C is not supported.
 @see @ref pt_redox_group
 
 [//]: # ( @menusnip{pt_redox} )
+___
+
+
+[//]: # ( @subsection menu_tally Northern Widget Tally Event Counter )
+### Northern Widget Tally Event Counter
+
+This is for use with Northern Widget's Tally event counter
+
+@warning Northern Widget considers this sensor to be one of their "bleeding edge" sensors.
+As such, it is subject to change at any time.
+This library may not be updated immediately to reflect changes on the part of Northern Widget.
+
+The only option for the constructor is an optional setting for the I2C address, if the counter is not set at the default of 0x33.
+The counter should be continuously powered.
+
+@see @ref tally_group
+
+[//]: # ( @menusnip{i2c_wind_tally} )
 ___
 
 
