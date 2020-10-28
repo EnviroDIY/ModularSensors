@@ -1,4 +1,4 @@
-[//]: # ( @page thingspeak_example ThingSpeak Example )
+[//]: # ( @page example_thingspeak ThingSpeak Example )
 # Using ModularSensors to save data to an SD card and send data to ThingSpeak
 
 This shows the use of a "ThingSpeak logger" object.

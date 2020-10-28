@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 fileDir = os.path.dirname(os.path.realpath("__file__"))
 # print("Program Directory: {}".format(fileDir))
-relative_dir = "../../Arduino-SDI-12Doxygen/xml/"
+relative_dir = "../../ModularSensorsDoxygen/xml/"
 abs_file_path = os.path.join(fileDir, relative_dir)
 abs_file_path = os.path.abspath(os.path.realpath(abs_file_path))
 # print("XML Directory: {}".format(fileDir))
@@ -28,8 +28,11 @@ read_mes = [
     "../../ModularSensorsDoxygen/xml/simple_logging_LearnEnviroDIY_8ino-example.xml",
     "../../ModularSensorsDoxygen/xml/single_sensor_8ino-example.xml",
 ]
-all_files = [f for f in os.listdir(abs_file_path) if os.path.isfile(
-    os.path.join(abs_file_path, f))]
+all_files = [
+    f
+    for f in os.listdir(abs_file_path)
+    if os.path.isfile(os.path.join(abs_file_path, f))
+]
 
 for filename in all_files:
     # print(filename)
@@ -52,7 +55,7 @@ for filename in all_files:
                     # print("problem!")
                     needs_to_be_fixed = True
                     dox_loc = section_id.find(".dox_")
-                    section_suffix = section_id[dox_loc + 6:]
+                    section_suffix = section_id[dox_loc + 6 :]
                     # print(section_suffix)
                     corrected_id = compound_id + "_" + section_suffix
                     # print(corrected_id)
@@ -60,8 +63,12 @@ for filename in all_files:
 
     if needs_to_be_fixed:
         tree.write(os.path.join(abs_file_path, filename + "_fixed"))
-        os.rename(os.path.join(abs_file_path, filename),
-                  os.path.join(abs_file_path, filename + "_original"))
-        os.rename(os.path.join(abs_file_path, filename + "_fixed"),
-                  os.path.join(abs_file_path, filename))
+        os.rename(
+            os.path.join(abs_file_path, filename),
+            os.path.join(abs_file_path, filename + "_original"),
+        )
+        os.rename(
+            os.path.join(abs_file_path, filename + "_fixed"),
+            os.path.join(abs_file_path, filename),
+        )
     # print()

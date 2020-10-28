@@ -57,7 +57,7 @@
  * @note The normal `Vin` pin of the Bee socket (pin 1) is used for voltage
  * reference only.
  *
- * @see @ref gprsbee_page
+ * @see @ref page_gprsbee
  */
 class Sodaq2GBeeR6 : public SIMComSIM800 {
  public:

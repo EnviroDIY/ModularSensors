@@ -12,7 +12,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup processor_group Processor Metadata
+ * @defgroup processor_sensor_group Processor Metadata
  * Classes for the using the processor as a sensor.
  *
  * @ingroup the_sensors
@@ -78,7 +78,7 @@
  * - Result stored in sensorValues[2]
  * - Reported as a dimensionless sequence number
  * - Default variable code is SampNum
- * @variabledoc{processor_sampno,SampleNumber,FreeRam,SampNum}
+ * @variabledoc{processor_sampno,ProcessorStats,SampleNumber,SampNum}
 
  * ___
  * @section processor_sensor_examples Example Code
@@ -149,7 +149,7 @@
 /**
  * @brief The main class to use the main processor (MCU) as a sensor.
  *
- * @ingroup processor_group
+ * @ingroup processor_sensor_group
  */
 class ProcessorStats : public Sensor {
  public:
@@ -196,7 +196,7 @@ class ProcessorStats : public Sensor {
  * [battery voltage output](@ref processor_battery) measured by the processor's
  * on-board ADC.
  *
- * @ingroup processor_group
+ * @ingroup processor_sensor_group
  */
 class ProcessorStats_Battery : public Variable {
  public:
@@ -242,7 +242,7 @@ class ProcessorStats_Battery : public Variable {
  * same for a single logger program**_.  If this number is not constant over
  * time, there is a memory leak and something wrong with your logging program.
  *
- * @ingroup processor_group
+ * @ingroup processor_sensor_group
  */
 class ProcessorStats_FreeRam : public Variable {
  public:
@@ -292,7 +292,7 @@ class ProcessorStats_FreeRam : public Variable {
  * called for the processor sensor.  It is intended only as a rough diagnostic
  * to show when the processor restarts.
  *
- * @ingroup processor_group
+ * @ingroup processor_sensor_group
  */
 class ProcessorStats_SampleNumber : public Variable {
  public:

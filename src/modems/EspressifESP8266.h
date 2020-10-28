@@ -140,7 +140,7 @@
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  *
- * @see @ref esp8266_page
+ * @see @ref page_esp8266
  */
 class EspressifESP8266 : public loggerModem {
  public:

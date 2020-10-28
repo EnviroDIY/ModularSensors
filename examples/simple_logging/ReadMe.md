@@ -1,4 +1,4 @@
-[//]: # ( @page simple_logging_example Simple Logging Example )
+[//]: # ( @page example_simple_logging Simple Logging Example )
 # Using ModularSensors to save data to an SD card
 
 This shows the simplest use of a "logger" object.

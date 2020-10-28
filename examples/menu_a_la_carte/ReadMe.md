@@ -1,4 +1,4 @@
-[//]: # ( @page menu_example A la carte Example )
+[//]: # ( @page example_menu A la carte Example )
 # Example showing all possible functionality
 
 This shows most of the functionality of the library at once.

@@ -39,38 +39,38 @@ There is extensive documentation available in the [ModularSensors github pages](
 [//]: # ( @section mainpage_supported_sensors Supported Sensors )
 ## Supported Sensors
 
-For some generalized information about attaching sensors to an Arduino style board, see the [Sensor Notes page](https://envirodiy.github.io/ModularSensors/sensor_notes_page.html)
+For some generalized information about attaching sensors to an Arduino style board, see the [Sensor Notes page](https://envirodiy.github.io/ModularSensors/page_sensor_notes.html)
 
-- [Processor Metrics: battery voltage, free RAM, sample count](https://envirodiy.github.io/ModularSensors/processor_sensor_page.html)
-- [Maxim DS3231: real time clock](https://envirodiy.github.io/ModularSensors/ds3231_page.html)
-- [AOSong AM2315: humidity & temperature](https://envirodiy.github.io/ModularSensors/am2315_page.html)
-- [AOSong DHT: humidity & temperature](https://envirodiy.github.io/ModularSensors/dht_page.html)
-- [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://envirodiy.github.io/ModularSensors/sq212_page.html)
-- [Atlas Scientific EZO Sensors](https://envirodiy.github.io/ModularSensors/atlas_page.html)
+- [Processor Metrics: battery voltage, free RAM, sample count](https://envirodiy.github.io/ModularSensors/page_processor_sensor.html)
+- [Maxim DS3231: real time clock](https://envirodiy.github.io/ModularSensors/page_ds3231.html)
+- [AOSong AM2315: humidity & temperature](https://envirodiy.github.io/ModularSensors/page_am2315.html)
+- [AOSong DHT: humidity & temperature](https://envirodiy.github.io/ModularSensors/page_dht.html)
+- [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://envirodiy.github.io/ModularSensors/page_sq212.html)
+- [Atlas Scientific EZO Sensors](https://envirodiy.github.io/ModularSensors/page_atlas.html)
     - EZO-CO2: Carbon Dioxide and Temperature
     - EZO-DO: Dissolved Oxygen
     - EZO-EC: Conductivity, Total Dissolved Solids, Salinity, and Specific Gravity
     - EZO-ORP: Oxidation/Reduction Potential
     - EZO-pH: pH
     - EZO-RTD: Temperature
-- [Bosch BME280: barometric pressure, humidity & temperature](https://envirodiy.github.io/ModularSensors/bme280_page.html)
-- [Campbell Scientific OBS-3+: turbidity, via TI ADS1115](https://envirodiy.github.io/ModularSensors/obs3_page.html)
-- [Decagon Devices ES-2: conductivity ](https://envirodiy.github.io/ModularSensors/es2_page.html)
-- [Freescale Semiconductor MPL115A2: barometric pressure and temperature](https://envirodiy.github.io/ModularSensors/mpl115a2_page.html)
-- [External Arduino I2C Rain Tipping Bucket Counter: rainfall totals](https://envirodiy.github.io/ModularSensors/i2c_rain_page.html)
-- [Keller Submersible Level Transmitters: pressure and temperature](https://envirodiy.github.io/ModularSensors/keller_page.html)
+- [Bosch BME280: barometric pressure, humidity & temperature](https://envirodiy.github.io/ModularSensors/page_bme280.html)
+- [Campbell Scientific OBS-3+: turbidity, via TI ADS1115](https://envirodiy.github.io/ModularSensors/page_obs3.html)
+- [Decagon Devices ES-2: conductivity ](https://envirodiy.github.io/ModularSensors/page_es2.html)
+- [Freescale Semiconductor MPL115A2: barometric pressure and temperature](https://envirodiy.github.io/ModularSensors/page_mpl115a2.html)
+- [External Arduino I2C Rain Tipping Bucket Counter: rainfall totals](https://envirodiy.github.io/ModularSensors/page_i2c_rain.html)
+- [Keller Submersible Level Transmitters: pressure and temperature](https://envirodiy.github.io/ModularSensors/page_keller.html)
     - Acculevel
     - Nanolevel
-- [MaxBotix MaxSonar: water level](https://envirodiy.github.io/ModularSensors/maxbotics_page.html)
-- [Maxim DS18: temperature](https://envirodiy.github.io/ModularSensors/ds18_page.html)
-- [Measurement Specialties MS5803: pressure and temperature](https://envirodiy.github.io/ModularSensors/ms5803_page.html)
-- [Meter Environmental Soil Moisture Probes: soil Ea and volumetric water content](https://envirodiy.github.io/ModularSensors/meter_soil_page.html)
+- [MaxBotix MaxSonar: water level](https://envirodiy.github.io/ModularSensors/page_maxbotics.html)
+- [Maxim DS18: temperature](https://envirodiy.github.io/ModularSensors/page_ds18.html)
+- [Measurement Specialties MS5803: pressure and temperature](https://envirodiy.github.io/ModularSensors/page_ms5803.html)
+- [Meter Environmental Soil Moisture Probes: soil Ea and volumetric water content](https://envirodiy.github.io/ModularSensors/page_meter_soil.html)
     - Meter ECH2O 5TM
     - Meter Teros 11
-- [Meter Environmental Hydros 21 (formerly Decagon Devices CTD-10): conductivity, temperature & depth](https://envirodiy.github.io/ModularSensors/hydros21_page.html)
-- [TI ADS1115: external voltage with support for divided current](https://envirodiy.github.io/ModularSensors/ads1x15_page.html)
-- [TI INA219: current, voltage, and power draw](https://envirodiy.github.io/ModularSensors/ina219_page.html)
-- [Yosemitech: water quality sensors](https://envirodiy.github.io/ModularSensors/yosemitech_page.html)
+- [Meter Environmental Hydros 21 (formerly Decagon Devices CTD-10): conductivity, temperature & depth](https://envirodiy.github.io/ModularSensors/page_hydros21.html)
+- [TI ADS1115: external voltage with support for divided current](https://envirodiy.github.io/ModularSensors/page_ads1x15.html)
+- [TI INA219: current, voltage, and power draw](https://envirodiy.github.io/ModularSensors/page_ina219.html)
+- [Yosemitech: water quality sensors](https://envirodiy.github.io/ModularSensors/page_yosemitech.html)
     - Y502-A or Y504-A: Optical DO and Temperature
     - Y510-B: Optical Turbidity and Temperature
     - Y511-A: Optical Turbidity and Temperature
@@ -80,7 +80,7 @@ For some generalized information about attaching sensors to an Arduino style boa
     - Y533: ORP, pH, and Temperature
     - Y550-B: UV254/COD, Turbidity, and Temperature
     - Y4000 Multiparameter Sonde
-- [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/dopto_page.html)
+- [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/page_dopto.html)
 
 
 [//]: # ( @section mainpage_data_receivers Data Endpoints )
@@ -98,7 +98,7 @@ The currently supported services are the [Monitor My Watershed data portal](http
 [//]: # ( @section mainpage_modems Supported Cellular/Wifi Modules )
 ## Supported Cellular/Wifi Modules:
 
-For information common to all modems and for tables of the proper class, baud rate, and pins to uses, see the [Modem Notes page](https://envirodiy.github.io/ModularSensors/modem_notes_page.html).
+For information common to all modems and for tables of the proper class, baud rate, and pins to uses, see the [Modem Notes page](https://envirodiy.github.io/ModularSensors/page_modem_notes.html).
 
 - [Digi XBee](https://envirodiy.github.io/ModularSensors/digi_xbees.html)
     - Digi XBee® 3 Cellular LTE-M/NB-IoT
@@ -106,13 +106,13 @@ For information common to all modems and for tables of the proper class, baud ra
     - Digi XBee® Cellular 3G
     - Digi XBee® Cellular LTE Cat 1 (Verizon)
     - Digi XBee® Wi-Fi (S6B)
-- [ESP8266](https://envirodiy.github.io/ModularSensors/esp8266_page.html)
-- [QuectelBG96](https://envirodiy.github.io/ModularSensors/bg96_page.html)
-- [Sequans Monarch](https://envirodiy.github.io/ModularSensors/monarch_page.html)
-- [SIM7000](https://envirodiy.github.io/ModularSensors/sim7000_page.html)
-- [SIM800](https://envirodiy.github.io/ModularSensors/sim800_page.html), including the [Sodaq GPRSBee](https://envirodiy.github.io/ModularSensors/gprsbee_page.html)
-- u-blox LTE-M R4 and N4 series, including the [Sodaq uBee](https://envirodiy.github.io/ModularSensors/ubee_page.html)
-- u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://envirodiy.github.io/ModularSensors/ubee_page.html)
+- [ESP8266](https://envirodiy.github.io/ModularSensors/page_esp8266.html)
+- [QuectelBG96](https://envirodiy.github.io/ModularSensors/page_bg96.html)
+- [Sequans Monarch](https://envirodiy.github.io/ModularSensors/page_monarch.html)
+- [SIM7000](https://envirodiy.github.io/ModularSensors/page_sim7000.html)
+- [SIM800](https://envirodiy.github.io/ModularSensors/page_sim800.html), including the [Sodaq GPRSBee](https://envirodiy.github.io/ModularSensors/page_gprsbee.html)
+- u-blox LTE-M R4 and N4 series, including the [Sodaq uBee](https://envirodiy.github.io/ModularSensors/page_ubee.html)
+- u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://envirodiy.github.io/ModularSensors/page_ubee.html)
 
 
 [//]: # ( @section mainpage_contributing Contributing )

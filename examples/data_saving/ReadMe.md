@@ -1,4 +1,4 @@
-[//]: # ( @page data_saving_example Data Saving Example )
+[//]: # ( @page example_data_saving Data Saving Example )
 # Using ModularSensors to Record data from Many Variables but Only Send a Portion to the EnviroDIY Data Portal
 
 This is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.

@@ -51,7 +51,7 @@ PROJECT_BRIEF          = "An Arduino library to give environmental sensors a com
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = ColorText.png
+PROJECT_LOGO           = ModularSensors_ubuntu_264x55.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -170,7 +170,7 @@ FULL_PATH_NAMES        = YES
 # will be relative from the directory where doxygen is started.
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
-STRIP_FROM_PATH        =
+STRIP_FROM_PATH        = ../src
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
 # path mentioned in the documentation of a class, which tells the reader which
@@ -195,7 +195,7 @@ SHORT_NAMES            = NO
 # description.)
 # The default value is: NO.
 
-JAVADOC_AUTOBRIEF      = YES
+JAVADOC_AUTOBRIEF      = NO
 
 # If the JAVADOC_BANNER tag is set to YES then doxygen will interpret a line
 # such as
@@ -265,8 +265,8 @@ ALIASES                = "license=@par License:\n" \
                          "environment=@par Development Environment:\n" \
                          "platform=@par Hardware Platform:\n" \
                          "menulink{1}=[menu a la carte](@ref menu_\1)" \
-                         "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^" \
-                         "variabledoc{2}=\1_\2(\1* parentSense, const char* uuid, const char* varCode) \n @copydetails \1_\2::\1_\2 ^^ ^^" \
+                         "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ " \
+                         "variabledoc{4}=\2_\3(\2* parentSense, const char* uuid, const char* varCode) \n @copydetails \2_\3::\2_\3 ^^ ^^ " \
                          "ctor_doc{2}=\1(\2) \n \n @copydetails \1::\1" \
                          "ctor_doc{3}=\1(\2, \3) \n \n @copydetails \1::\1" \
                          "ctor_doc{4}=\1(\2, \3, \4) \n \n @copydetails \1::\1" \
@@ -278,18 +278,18 @@ ALIASES                = "license=@par License:\n" \
                          "ctor_doc{10}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10) \n \n @copydetails \1::\1" \
                          "ctor_doc{11}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11) \n \n @copydetails \1::\1" \
                          "ctor_doc{12}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11, \12) \n \n @copydetails \1::\1" \
-                         "m_div{1}=" \
-                         "m_enddiv=" \
-                         "m_span{1}=" \
-                         "m_endspan=" \
-                         "m_class{1}=" \
-                         "m_footernavigation=" \
-                         "m_examplenavigation{2} =" \
-                         "m_keywords{1}=" \
-                         "m_keyword{3}=" \
-                         "m_enum_values_as_keywords=" \
-                         "m_since{2}=" \
-                         "m_deprecated_since{2}="
+                         "m_div{1}=@xmlonly<mcss:div xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
+                         "m_enddiv=@xmlonly</mcss:div>@endxmlonly" \
+                         "m_span{1}=@xmlonly<mcss:span xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
+                         "m_endspan=@xmlonly</mcss:span>@endxmlonly" \
+                         "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly" \
+                         "m_footernavigation=@xmlonly<mcss:footernavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" />@endxmlonly" \
+                         "m_examplenavigation{2}=@xmlonly<mcss:examplenavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:page=\"\1\" mcss:prefix=\"\2\" />@endxmlonly" \
+                         "m_keywords{1}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keywords=\"\1\" />@endxmlonly" \
+                         "m_keyword{3}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keyword=\"\1\" mcss:title=\"\2\" mcss:suffix-length=\"\3\" />@endxmlonly" \
+                         "m_enum_values_as_keywords=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:enum-values-as-keywords=\"true\" />@endxmlonly" \
+                         "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since v\1.\2\"" \
+                         "m_deprecated_since{2}=@since deprecated in v\1.\2 @deprecated"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
@@ -414,7 +414,7 @@ IDL_PROPERTY_SUPPORT   = YES
 # all members of a group must be documented explicitly.
 # The default value is: NO.
 
-DISTRIBUTE_GROUP_DOC   = NO
+DISTRIBUTE_GROUP_DOC   = YES
 
 # If one adds a struct or class to a group and this option is enabled, then also
 # any nested class or struct is added to the same group. By default this option
@@ -852,7 +852,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # messages should be written. If left blank the output is written to standard
 # error (stderr).
 
-WARN_LOGFILE           = DoxygenOutput.log
+WARN_LOGFILE           = doxygenOutput.log
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
@@ -866,9 +866,7 @@ WARN_LOGFILE           = DoxygenOutput.log
 
 INPUT                  = ../README.md \
                          ../src \
-                         ../examples \
                          ../docs \
-                         ../tools \
                          ../../ModularSensors.wiki
 
 # This tag can be used to specify the character encoding of the source files
@@ -929,7 +927,8 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = ../examples/logger_test \
+EXCLUDE                = ../src/ReadMe.md \
+                         ../examples/logger_test \
                          ../examples/logger_test_nonew \
                          ../examples/YosemitechDO \
                          ../../ModularSensors.wiki/Class-Functionality \
@@ -981,7 +980,8 @@ EXAMPLE_PATTERNS       = * \
                          *.md \
                          *.markdown \
                          *.dox \
-                         *.doc
+                         *.doc \
+                         *.ini
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be
 # searched for input files to be used with the \include or \dontinclude commands
@@ -2079,7 +2079,7 @@ MAN_LINKS              = NO
 # captures the structure of the code including all documentation.
 # The default value is: NO.
 
-GENERATE_XML           = NO
+GENERATE_XML           = YES
 
 # The XML_OUTPUT tag is used to specify where the XML pages will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
@@ -2096,7 +2096,7 @@ XML_OUTPUT             = xml
 # The default value is: YES.
 # This tag requires that the tag GENERATE_XML is set to YES.
 
-XML_PROGRAMLISTING     = YES
+XML_PROGRAMLISTING     = NO
 
 # If the XML_NS_MEMB_FILE_SCOPE tag is set to YES, doxygen will include
 # namespace members in file scope as well, matching the HTML output.

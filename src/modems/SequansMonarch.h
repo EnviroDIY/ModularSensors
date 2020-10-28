@@ -151,7 +151,7 @@
  *
  * @copydetails #VZM20Q_DISCONNECT_TIME_MS
  *
- * @see @ref monarch_page
+ * @see @ref page_monarch
  */
 class SequansMonarch : public loggerModem {
  public:

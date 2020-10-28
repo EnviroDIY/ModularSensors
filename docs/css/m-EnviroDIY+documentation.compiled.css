@@ -344,7 +344,7 @@ html {
 }
 body {
   font-family: 'Roboto', sans-serif;
-  font-size: 1rem;
+  font-size: 14px;
   line-height: normal;
   color: #000000;
 }
@@ -483,7 +483,7 @@ code.m-console {
 }
 pre {
   padding: 0.5rem 1rem;
-  border-radius: 0.1rem;
+  border-radius: 0px;
   overflow-x: auto;
   margin-top: 0;
 }
@@ -706,14 +706,17 @@ dl.m-footnote dd span.m-footnote a {
   background-color: #ffffff;
 }
 .m-note {
-  border-radius: 0.1rem;
+  border-radius: 0px;
   padding: 1rem;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-frame {
   background-color: #e8e8e8;
   border-style: solid;
   border-width: 0.125rem;
-  border-radius: 0.1rem;
+  border-radius: 0px;
   border-color: #ddd;
   padding: 0.875rem;
 }
@@ -721,9 +724,21 @@ dl.m-footnote dd span.m-footnote a {
   border-style: solid;
   border-width: 0.0625rem;
   border-left-width: 0.25rem;
-  border-radius: 0.1rem;
+  border-radius: 0px;
   border-color: #ddd;
   padding: 0.9375rem 0.9375rem 0.9375rem 0.75rem;
+}
+.m-block.hr {
+  width: 75%;
+  border-width: 0.0625rem;
+  border-style: solid;
+  border-color: #92d050;
+}
+.m-block.m-row.hr {
+  width: 75%;
+  border-width: 0.0625rem;
+  border-style: solid;
+  border-color: #92d050;
 }
 .m-block.m-badge::after {
   content: " ";
@@ -740,7 +755,7 @@ dl.m-footnote dd span.m-footnote a {
 .m-block.m-badge img {
   width: 4rem;
   height: 4rem;
-  border-radius: 2rem;
+  border-radius: 0.5rem;
   float: left;
 }
 div.m-button {
@@ -748,7 +763,7 @@ div.m-button {
 }
 div.m-button a {
   display: inline-block;
-  border-radius: 0.1rem;
+  border-radius: 0.5rem;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   padding-left: 1.5rem;
@@ -769,7 +784,7 @@ div.m-button a .m-small:last-child {
   font-size: 0.854rem;
 }
 .m-label {
-  border-radius: 0.1rem;
+  border-radius: 0.5rem;
   font-size: 75%;
   font-weight: normal;
   padding: 0.125rem 0.25rem;
@@ -795,6 +810,7 @@ div.m-scroll > table.m-table:last-child {
 table.m-table:not(.m-flat) tbody tr:hover {
   background-color: #ddd;
 }
+table.m-table tr,
 table.m-table th,
 table.m-table td {
   vertical-align: top;
@@ -805,17 +821,41 @@ table.m-table td {
   border-bottom-width: 0;
   border-color: #ddd;
 }
+table.m-table tr:first-child th,
+table.m-table tr:first-child td {
+  vertical-align: top;
+  border-style: solid;
+  border-top-width: 0.0625rem;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-bottom-width: 0;
+  border-color: #ddd;
+}
+table.m-table tr:last-child th,
+table.m-table tr:last-child td {
+  vertical-align: top;
+  border-style: solid;
+  border-top-width: 0.0625rem;
+  border-bottom-width: 0.0625rem;
+  border-left-width: 0;
+  border-right-width: 0;
+  border-color: #ddd;
+}
 table.m-table caption {
   padding-bottom: 0.5rem;
 }
 table.m-table thead tr:first-child th,
 table.m-table thead tr:first-child td {
   border-top-width: 0.125rem;
+  border-left-width: 0;
+  border-right-width: 0;
 }
 table.m-table thead th,
 table.m-table thead td {
   border-bottom-width: 0.125rem;
   vertical-align: bottom;
+  border-left-width: 0;
+  border-right-width: 0;
 }
 table.m-table tfoot th,
 table.m-table tfoot td {
@@ -848,7 +888,9 @@ table.m-table th.m-danger,
 table.m-table td.m-info,
 table.m-table th.m-info,
 table.m-table td.m-dim,
-table.m-table th.m-dim {
+table.m-table th.m-dim,
+table.m-table td.m-type,
+table.m-table th.m-type {
   padding-left: 0.4375rem;
   padding-right: 0.4375rem;
   border-left-width: 0.0625rem;
@@ -866,7 +908,9 @@ table.m-table.m-big th.m-danger,
 table.m-table.m-big td.m-info,
 table.m-table.m-big th.m-info,
 table.m-table.m-big td.m-dim,
-table.m-table.m-big th.m-dim {
+table.m-table.m-big th.m-dim,
+table.m-table.m-big td.m-type,
+table.m-table.m-big th.m-type {
   padding-left: 0.9375rem;
   padding-right: 0.9375rem;
   border-left-width: 0.0625rem;
@@ -898,7 +942,11 @@ table.m-table th.m-info,
 table.m-table tr.m-dim td,
 table.m-table td.m-dim,
 table.m-table tr.m-dim th,
-table.m-table th.m-dim {
+table.m-table th.m-dim,
+table.m-table tr.m-type td,
+table.m-table td.m-type,
+table.m-table tr.m-type th,
+table.m-table th.m-type {
   border-color: #e8e8e8;
 }
 .m-note pre,
@@ -944,7 +992,13 @@ table.m-table tr.m-dim code,
 table.m-table td.m-dim pre,
 table.m-table td.m-dim code,
 table.m-table th.m-dim pre,
-table.m-table th.m-dim code {
+table.m-table th.m-dim code,
+table.m-table tr.m-type pre,
+table.m-table tr.m-type code,
+table.m-table td.m-type pre,
+table.m-table td.m-type code,
+table.m-table th.m-type pre,
+table.m-table th.m-type code {
   background-color: rgba(251, 240, 236, 0.5);
 }
 img.m-image,
@@ -961,7 +1015,7 @@ svg.m-image,
 div.m-image img,
 div.m-image svg {
   max-width: 100%;
-  border-radius: 0.1rem;
+  border-radius: 0px;
 }
 div.m-image.m-fullwidth img,
 div.m-image.m-fullwidth svg {
@@ -989,7 +1043,7 @@ figure.m-figure:before {
   z-index: -1;
   border-style: solid;
   border-width: 0.125rem;
-  border-radius: 0.1rem;
+  border-radius: 0px;
   border-color: #ddd;
 }
 figure.m-figure.m-flat:before {
@@ -1013,14 +1067,14 @@ figure.m-figure svg {
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0;
-  border-top-left-radius: 0.1rem;
-  border-top-right-radius: 0.1rem;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
   max-width: 100%;
 }
 figure.m-figure.m-flat img,
 figure.m-figure.m-flat svg {
-  border-bottom-left-radius: 0.1rem;
-  border-bottom-right-radius: 0.1rem;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 figure.m-figure a img,
 figure.m-figure a svg {
@@ -1063,7 +1117,7 @@ figure.m-figure.m-fullwidth:after {
   z-index: -1;
   border-style: solid;
   border-width: 0.125rem;
-  border-radius: 0.1rem;
+  border-radius: 0px;
 }
 .m-code-figure:before {
   border-color: #f7f7f7;
@@ -1400,7 +1454,7 @@ pre.m-code span.hll {
   vertical-align: -0.05rem;
   margin-left: 0.2rem;
   margin-right: 0.1rem;
-  border-radius: 0.1rem;
+  border-radius: 0px;
 }
 div.m-math {
   overflow-x: auto;
@@ -1491,7 +1545,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
   color: #26a9e0;
 }
 .m-block.m-primary {
-  border-left-color: #cb4b16;
+  border-left-color: #31708f;
 }
 .m-block.m-primary h3,
 .m-block.m-primary h4,
@@ -1503,10 +1557,10 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-primary h6 a,
 .m-text.m-primary,
 .m-label.m-flat.m-primary {
-  color: #cb4b16;
+  color: #31708f;
 }
 .m-block.m-success {
-  border-left-color: #31c25d;
+  border-left-color: #9ad36a;
 }
 .m-block.m-success h3,
 .m-block.m-success h4,
@@ -1518,10 +1572,10 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-success h6 a,
 .m-text.m-success,
 .m-label.m-flat.m-success {
-  color: #31c25d;
+  color: #9ad36a;
 }
 .m-block.m-warning {
-  border-left-color: #c7cf2f;
+  border-left-color: #f9cf79;
 }
 .m-block.m-warning h3,
 .m-block.m-warning h4,
@@ -1533,7 +1587,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-warning h6 a,
 .m-text.m-warning,
 .m-label.m-flat.m-warning {
-  color: #c7cf2f;
+  color: #f9cf79;
 }
 .m-block.m-danger {
   border-left-color: #f60000;
@@ -1551,7 +1605,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
   color: #f60000;
 }
 .m-block.m-info {
-  border-left-color: #92d050;
+  border-left-color: #31708f;
 }
 .m-block.m-info h3,
 .m-block.m-info h4,
@@ -1563,10 +1617,134 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-info h6 a,
 .m-text.m-info,
 .m-label.m-flat.m-info {
-  color: #92d050;
+  color: #31708f;
+}
+.m-block.m-type h3,
+.m-block.m-type h4,
+.m-block.m-type h5,
+.m-block.m-type h6,
+.m-block.m-type h3 a,
+.m-block.m-type h4 a,
+.m-block.m-type h5 a,
+.m-block.m-type h6 a,
+.m-text.m-type,
+.m-label.m-flat.m-type {
+  color: #9ad36a;
 }
 .m-block.m-dim {
   border-left-color: #bdbdbd;
+}
+span.m-default {
+  color: #000000;
+  background-color: transparent;
+}
+span.m-default a {
+  color: var(--default-link-color);
+  background-color: transparent;
+}
+span.m-default a:hover,
+span.m-default a:focus,
+span.m-default a:active {
+  color: #26a9e0;
+  background-color: transparent;
+}
+span.m-primary {
+  color: #31708f;
+  background-color: transparent;
+}
+span.m-primary a {
+  color: var(--primary-link-color);
+  background-color: transparent;
+}
+span.m-primary a:hover,
+span.m-primary a:focus,
+span.m-primary a:active {
+  color: #31708f;
+  background-color: transparent;
+}
+span.m-success {
+  color: #9ad36a;
+  background-color: transparent;
+}
+span.m-success a {
+  color: var(--success-link-color);
+  background-color: transparent;
+}
+span.m-success a:hover,
+span.m-success a:focus,
+span.m-success a:active {
+  color: #9ad36a;
+  background-color: transparent;
+}
+span.m-warning {
+  color: #f9cf79;
+  background-color: transparent;
+}
+span.m-warning a {
+  color: var(--warning-link-color);
+  background-color: transparent;
+}
+span.m-warning a:hover,
+span.m-warning a:focus,
+span.m-warning a:active {
+  color: #f9cf79;
+  background-color: transparent;
+}
+span.m-danger {
+  color: #f60000;
+  background-color: transparent;
+}
+span.m-danger a {
+  color: var(--danger-link-color);
+  background-color: transparent;
+}
+span.m-danger a:hover,
+span.m-danger a:focus,
+span.m-danger a:active {
+  color: #f60000;
+  background-color: transparent;
+}
+span.m-info {
+  color: #31708f;
+  background-color: transparent;
+}
+span.m-info a {
+  color: var(--info-link-color);
+  background-color: transparent;
+}
+span.m-info a:hover,
+span.m-info a:focus,
+span.m-info a:active {
+  color: #67cce0;
+  background-color: transparent;
+}
+span.m-type {
+  color: #9ad36a;
+  background-color: transparent;
+}
+span.m-type a {
+  color: var(--type-link-color);
+  background-color: transparent;
+}
+span.m-type a:hover,
+span.m-type a:focus,
+span.m-type a:active {
+  color: #9ad36a;
+  background-color: transparent;
+}
+span.m-dim {
+  color: #bdbdbd;
+  background-color: transparent;
+}
+span.m-dim a {
+  color: #c0c0c0;
+  background-color: transparent;
+}
+span.m-dim a:hover,
+span.m-dim a:focus,
+span.m-dim a:active {
+  color: #949494;
+  background-color: transparent;
 }
 .m-block.m-dim,
 .m-text.m-dim,
@@ -1584,6 +1762,21 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-text.m-dim a:focus,
 .m-text.m-dim a:active {
   color: #949494;
+}
+.m-block.m-type {
+  border-left-color: #9ad36a;
+}
+.m-block.m-type h3,
+.m-block.m-type h4,
+.m-block.m-type h5,
+.m-block.m-type h6,
+.m-block.m-type h3 a,
+.m-block.m-type h4 a,
+.m-block.m-type h5 a,
+.m-block.m-type h6 a,
+.m-text.m-type,
+.m-label.m-flat.m-type {
+  color: #9ad36a;
 }
 .m-block.m-flat {
   border-color: transparent;
@@ -1606,7 +1799,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-default h6 a:hover,
 .m-block.m-default h6 a:focus,
 .m-block.m-default h6 a:active {
-  color: #cb4b16;
+  color: #26a9e0;
 }
 .m-block.m-primary h3 a:hover,
 .m-block.m-primary h3 a:focus,
@@ -1620,7 +1813,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-primary h6 a:hover,
 .m-block.m-primary h6 a:focus,
 .m-block.m-primary h6 a:active {
-  color: #000000;
+  color: #31708f;
 }
 .m-block.m-success h3 a:hover,
 .m-block.m-success h3 a:focus,
@@ -1634,7 +1827,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-success h6 a:hover,
 .m-block.m-success h6 a:focus,
 .m-block.m-success h6 a:active {
-  color: #dcf6e3;
+  color: #9ad36a;
 }
 .m-block.m-warning h3 a:hover,
 .m-block.m-warning h3 a:focus,
@@ -1648,7 +1841,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-warning h6 a:hover,
 .m-block.m-warning h6 a:focus,
 .m-block.m-warning h6 a:active {
-  color: #f6f6dc;
+  color: #f9cf79;
 }
 .m-block.m-danger h3 a:hover,
 .m-block.m-danger h3 a:focus,
@@ -1662,7 +1855,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-danger h6 a:hover,
 .m-block.m-danger h6 a:focus,
 .m-block.m-danger h6 a:active {
-  color: #f6dddc;
+  color: #f60000;
 }
 .m-block.m-info h3 a:hover,
 .m-block.m-info h3 a:focus,
@@ -1676,7 +1869,21 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-info h6 a:hover,
 .m-block.m-info h6 a:focus,
 .m-block.m-info h6 a:active {
-  color: #c6ddf2;
+  color: #67cce0;
+}
+.m-block.m-type h3 a:hover,
+.m-block.m-type h3 a:focus,
+.m-block.m-type h3 a:active,
+.m-block.m-type h4 a:hover,
+.m-block.m-type h4 a:focus,
+.m-block.m-type h4 a:active,
+.m-block.m-type h5 a:hover,
+.m-block.m-type h5 a:focus,
+.m-block.m-type h5 a:active,
+.m-block.m-type h6 a:hover,
+.m-block.m-type h6 a:focus,
+.m-block.m-type h6 a:active {
+  color: #9ad36a;
 }
 div.m-button a,
 .m-label {
@@ -1693,74 +1900,98 @@ div.m-button.m-default a:active {
 div.m-button.m-default a,
 .m-label:not(.m-flat).m-default {
   background-color: #000000;
+  color: #000000;
 }
 div.m-button.m-primary a,
 .m-label:not(.m-flat).m-primary {
-  background-color: #cb4b16;
+  background-color: #31708f;
+  color: #67cce0;
 }
 div.m-button.m-success a,
 .m-label:not(.m-flat).m-success {
-  background-color: #31c25d;
+  background-color: #9ad36a;
+  color: #3c763d;
 }
 div.m-button.m-warning a,
 .m-label:not(.m-flat).m-warning {
-  background-color: #c7cf2f;
+  background-color: #f9cf79;
+  color: #8a6d3b;
 }
 div.m-button.m-danger a,
 .m-label:not(.m-flat).m-danger {
   background-color: #f60000;
+  color: #920000;
 }
 div.m-button.m-info a,
 .m-label:not(.m-flat).m-info {
-  background-color: #92d050;
+  background-color: #31708f;
+  color: #81bcda;
 }
 div.m-button.m-dim a,
 .m-label:not(.m-flat).m-dim {
   background-color: #bdbdbd;
+  color: #7c7c7c;
+}
+div.m-button.m-type a,
+.m-label:not(.m-flat).m-type {
+  background-color: #9ad36a;
+  color: #3c763d;
 }
 div.m-button.m-default a:hover,
 div.m-button.m-default a:focus,
 div.m-button.m-default a:active {
-  background-color: #cb4b16;
+  background-color: #26a9e0;
 }
 div.m-button.m-primary a:hover,
 div.m-button.m-primary a:focus,
 div.m-button.m-primary a:active {
-  background-color: #000000;
+  background-color: #31708f;
 }
 div.m-button.m-success a:hover,
 div.m-button.m-success a:focus,
 div.m-button.m-success a:active {
-  background-color: #dcf6e3;
+  background-color: #9ad36a;
 }
 div.m-button.m-warning a:hover,
 div.m-button.m-warning a:focus,
 div.m-button.m-warning a:active {
-  background-color: #f6f6dc;
+  background-color: #f9cf79;
 }
 div.m-button.m-danger a:hover,
 div.m-button.m-danger a:focus,
 div.m-button.m-danger a:active {
-  background-color: #f6dddc;
+  background-color: #f60000;
 }
 div.m-button.m-info a:hover,
 div.m-button.m-info a:focus,
 div.m-button.m-info a:active {
-  background-color: #c6ddf2;
+  background-color: #67cce0;
 }
 div.m-button.m-dim a:hover,
 div.m-button.m-dim a:focus,
 div.m-button.m-dim a:active {
   background-color: #c0c0c0;
 }
+div.m-button.m-type a:hover,
+div.m-button.m-type a:focus,
+div.m-button.m-type a:active {
+  background-color: #9ad36a;
+}
 .m-note.m-default {
-  background-color: #e8e8e8;
+  background-color: transparent;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-note.m-default,
 table.m-table tr.m-default td,
 table.m-table td.m-default,
 table.m-table tr.m-default th,
-table.m-table th.m-default {
+table.m-table th.m-default,
+table.m-table tr.m-default strong,
+table.m-table strong.m-default,
+table.m-table tr.m-default em,
+table.m-table em.m-default {
   color: #000000;
 }
 .m-note.m-default a:hover,
@@ -1778,29 +2009,39 @@ table.m-table tr.m-default td a:active,
 table.m-table td.m-default a:active,
 table.m-table tr.m-default th a:active,
 table.m-table th.m-default a:active {
-  color: #cb4b16;
+  color: #26a9e0;
+}
+.m-note.m-primary {
+  border-color: #31708f;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-note.m-primary a,
 table.m-table tr.m-primary td a,
 table.m-table td.m-primary a,
 table.m-table tr.m-primary th a,
 table.m-table th.m-primary a {
-  color: #ea7944;
+  color: #26a9e0;
 }
 .m-note.m-primary,
 table.m-table tr.m-primary td,
 table.m-table td.m-primary,
 table.m-table tr.m-primary th,
-table.m-table th.m-primary {
-  background-color: #ef9069;
-  color: #fbe4d9;
+table.m-table th.m-primary,
+table.m-table tr.m-primary strong,
+table.m-table strong.m-primary,
+table.m-table tr.m-primary em,
+table.m-table em.m-primary {
+  background-color: transparent;
+  color: #67cce0;
 }
 .m-note.m-primary a,
 table.m-table tr.m-primary td a,
 table.m-table td.m-primary a,
 table.m-table tr.m-primary th a,
 table.m-table th.m-primary a {
-  color: #782f0d;
+  color: #31708f;
 }
 .m-note.m-primary a:hover,
 table.m-table tr.m-primary td a:hover,
@@ -1817,22 +2058,32 @@ table.m-table tr.m-primary td a:active,
 table.m-table td.m-primary a:active,
 table.m-table tr.m-primary th a:active,
 table.m-table th.m-primary a:active {
-  color: #2f1205;
+  color: #31708f;
+}
+.m-note.m-success {
+  border-color: #9ad36a;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-note.m-success,
 table.m-table tr.m-success td,
 table.m-table td.m-success,
 table.m-table tr.m-success th,
-table.m-table th.m-success {
-  background-color: #4dd376;
-  color: #f4fcf6;
+table.m-table th.m-success,
+table.m-table tr.m-success strong,
+table.m-table strong.m-success,
+table.m-table tr.m-success em,
+table.m-table em.m-success {
+  background-color: transparent;
+  color: #3c763d;
 }
 .m-note.m-success a,
 table.m-table tr.m-success td a,
 table.m-table td.m-success a,
 table.m-table tr.m-success th a,
 table.m-table th.m-success a {
-  color: #c5f2d1;
+  color: #9ad36a;
 }
 .m-note.m-success a:hover,
 table.m-table tr.m-success td a:hover,
@@ -1849,22 +2100,32 @@ table.m-table tr.m-success td a:active,
 table.m-table td.m-success a:active,
 table.m-table tr.m-success th a:active,
 table.m-table th.m-success a:active {
-  color: #dcf6e3;
+  color: #9ad36a;
+}
+.m-note.m-warning {
+  border-color: #f9cf79;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-note.m-warning,
 table.m-table tr.m-warning td,
 table.m-table td.m-warning,
 table.m-table tr.m-warning th,
-table.m-table th.m-warning {
-  background-color: #d1d34d;
-  color: #fcfcf4;
+table.m-table th.m-warning,
+table.m-table tr.m-warning strong,
+table.m-table strong.m-warning,
+table.m-table tr.m-warning em,
+table.m-table em.m-warning {
+  background-color: transparent;
+  color: #8a6d3b;
 }
 .m-note.m-warning a,
 table.m-table tr.m-warning td a,
 table.m-table td.m-warning a,
 table.m-table tr.m-warning th a,
 table.m-table th.m-warning a {
-  color: #f0f1c7;
+  color: #f9cf79;
 }
 .m-note.m-warning a:hover,
 table.m-table tr.m-warning td a:hover,
@@ -1881,22 +2142,32 @@ table.m-table tr.m-warning td a:active,
 table.m-table td.m-warning a:active,
 table.m-table tr.m-warning th a:active,
 table.m-table th.m-warning a:active {
-  color: #f6f6dc;
+  color: #f9cf79;
+}
+.m-note.m-danger {
+  border-color: #f60000;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-note.m-danger,
 table.m-table tr.m-danger td,
 table.m-table td.m-danger,
 table.m-table tr.m-danger th,
-table.m-table th.m-danger {
-  background-color: #e23e3e;
-  color: #fdf3f3;
+table.m-table th.m-danger,
+table.m-table tr.m-danger strong,
+table.m-table strong.m-danger,
+table.m-table tr.m-danger em,
+table.m-table em.m-danger {
+  background-color: transparent;
+  color: #920000;
 }
 .m-note.m-danger a,
 table.m-table tr.m-danger td a,
 table.m-table td.m-danger a,
 table.m-table tr.m-danger th a,
 table.m-table th.m-danger a {
-  color: #f2c7c6;
+  color: #f60000;
 }
 .m-note.m-danger a:hover,
 table.m-table tr.m-danger td a:hover,
@@ -1913,22 +2184,32 @@ table.m-table tr.m-danger td a:active,
 table.m-table td.m-danger a:active,
 table.m-table tr.m-danger th a:active,
 table.m-table th.m-danger a:active {
-  color: #f6dddc;
+  color: #f60000;
+}
+.m-note.m-info {
+  border-color: #31708f;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-note.m-info,
 table.m-table tr.m-info td,
 table.m-table td.m-info,
 table.m-table tr.m-info th,
-table.m-table th.m-info {
-  background-color: #4c93d3;
-  color: #f4f8fc;
+table.m-table th.m-info,
+table.m-table tr.m-info strong,
+table.m-table strong.m-info,
+table.m-table tr.m-info em,
+table.m-table em.m-info {
+  background-color: transparent;
+  color: #81bcda;
 }
 .m-note.m-info a,
 table.m-table tr.m-info td a,
 table.m-table td.m-info a,
 table.m-table tr.m-info th a,
 table.m-table th.m-info a {
-  color: #c6ddf2;
+  color: #67cce0;
 }
 .m-note.m-info a:hover,
 table.m-table tr.m-info td a:hover,
@@ -1945,14 +2226,24 @@ table.m-table tr.m-info td a:active,
 table.m-table td.m-info a:active,
 table.m-table tr.m-info th a:active,
 table.m-table th.m-info a:active {
-  color: #dbeaf7;
+  color: #67cce0;
+}
+.m-note.m-dim {
+  border-color: #bdbdbd;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
 }
 .m-note.m-dim,
 table.m-table tr.m-dim td,
 table.m-table td.m-dim,
 table.m-table tr.m-dim th,
-table.m-table th.m-dim {
-  background-color: #f1f1f1;
+table.m-table th.m-dim,
+table.m-table tr.m-dim strong,
+table.m-table strong.m-dim,
+table.m-table tr.m-dim em,
+table.m-table em.m-dim {
+  background-color: transparent;
   color: #7c7c7c;
 }
 .m-note.m-dim a,
@@ -1979,44 +2270,92 @@ table.m-table tr.m-dim th a:active,
 table.m-table th.m-dim a:active {
   color: #949494;
 }
+.m-note.m-type {
+  border-color: #9ad36a;
+  border-width: 2px;
+  border-style: solid;
+  padding-top: 0;
+}
+.m-note.m-type,
+table.m-table tr.m-type td,
+table.m-table td.m-type,
+table.m-table tr.m-type th,
+table.m-table th.m-type,
+table.m-table tr.m-type strong,
+table.m-table strong.m-type,
+table.m-table tr.m-type em,
+table.m-table em.m-type {
+  background-color: transparent;
+  color: #3c763d;
+}
+.m-note.m-type a,
+table.m-table tr.m-type td a,
+table.m-table td.m-type a,
+table.m-table tr.m-type th a,
+table.m-table th.m-type a {
+  color: #9ad36a;
+}
+.m-note.m-type a:hover,
+table.m-table tr.m-type td a:hover,
+table.m-table td.m-type a:hover,
+table.m-table tr.m-type th a:hover,
+table.m-table th.m-type a:hover,
+.m-note.m-type a:focus,
+table.m-table tr.m-type td a:focus,
+table.m-table td.m-type a:focus,
+table.m-table tr.m-type th a:focus,
+table.m-table th.m-type a:focus,
+.m-note.m-type a:active,
+table.m-table tr.m-type td a:active,
+table.m-table td.m-type a:active,
+table.m-table tr.m-type th a:active,
+table.m-table th.m-type a:active {
+  color: #9ad36a;
+}
 figure.m-figure.m-default:before {
-  border-color: #e8e8e8;
+  border-color: transparent;
 }
 figure.m-figure.m-default figcaption {
   color: #000000;
 }
 figure.m-figure.m-primary:before {
-  border-color: #ef9069;
+  border-color: transparent;
 }
 figure.m-figure.m-primary figcaption {
-  color: #cb4b16;
+  color: #31708f;
 }
 figure.m-figure.m-success:before {
-  border-color: #4dd376;
+  border-color: transparent;
 }
 figure.m-figure.m-success figcaption {
-  color: #31c25d;
+  color: #9ad36a;
 }
 figure.m-figure.m-warning:before {
-  border-color: #d1d34d;
+  border-color: transparent;
 }
 figure.m-figure.m-warning figcaption {
-  color: #c7cf2f;
+  color: #f9cf79;
 }
 figure.m-figure.m-danger:before {
-  border-color: #e23e3e;
+  border-color: transparent;
 }
 figure.m-figure.m-danger figcaption {
   color: #f60000;
 }
 figure.m-figure.m-info:before {
-  border-color: #4c93d3;
+  border-color: transparent;
 }
 figure.m-figure.m-info figcaption {
-  color: #92d050;
+  color: #31708f;
+}
+figure.m-figure.m-type:before {
+  border-color: transparent;
+}
+figure.m-figure.m-type figcaption {
+  color: #9ad36a;
 }
 figure.m-figure.m-dim:before {
-  border-color: #f1f1f1;
+  border-color: transparent;
 }
 figure.m-figure.m-dim {
   color: #bdbdbd;
@@ -2069,14 +2408,14 @@ div.m-plot svg .m-bar.m-primary,
 .m-graph.m-primary g.m-node:not(.m-flat) polygon,
 .m-graph.m-primary g.m-edge text,
 .m-graph.m-primary g.m-node.m-flat text {
-  fill: #cb4b16;
+  fill: #31708f;
 }
 .m-graph.m-primary g.m-edge polygon,
 .m-graph.m-primary g.m-edge path,
 .m-graph.m-primary g.m-node ellipse,
 .m-graph.m-primary g.m-node polygon,
 .m-graph.m-primary g.m-node polyline {
-  stroke: #cb4b16;
+  stroke: #31708f;
 }
 .m-math.m-success,
 .m-math g.m-success,
@@ -2087,14 +2426,14 @@ div.m-plot svg .m-bar.m-success,
 .m-graph.m-success g.m-node:not(.m-flat) polygon,
 .m-graph.m-success g.m-edge text,
 .m-graph.m-success g.m-node.m-flat text {
-  fill: #31c25d;
+  fill: #9ad36a;
 }
 .m-graph.m-success g.m-edge polygon,
 .m-graph.m-success g.m-edge path,
 .m-graph.m-success g.m-node ellipse,
 .m-graph.m-success g.m-node polygon,
 .m-graph.m-success g.m-node polyline {
-  stroke: #31c25d;
+  stroke: #9ad36a;
 }
 .m-math.m-warning,
 .m-math g.m-warning,
@@ -2105,14 +2444,14 @@ div.m-plot svg .m-bar.m-warning,
 .m-graph.m-warning g.m-node:not(.m-flat) polygon,
 .m-graph.m-warning g.m-edge text,
 .m-graph.m-warning g.m-node.m-flat text {
-  fill: #c7cf2f;
+  fill: #f9cf79;
 }
 .m-graph.m-warning g.m-edge polygon,
 .m-graph.m-warning g.m-edge path,
 .m-graph.m-warning g.m-node ellipse,
 .m-graph.m-warning g.m-node polygon,
 .m-graph.m-warning g.m-node polyline {
-  stroke: #c7cf2f;
+  stroke: #f9cf79;
 }
 .m-math.m-danger,
 .m-math g.m-danger,
@@ -2141,14 +2480,14 @@ div.m-plot svg .m-bar.m-info,
 .m-graph.m-info g.m-node:not(.m-flat) polygon,
 .m-graph.m-info g.m-edge text,
 .m-graph.m-info g.m-node.m-flat text {
-  fill: #92d050;
+  fill: #31708f;
 }
 .m-graph.m-info g.m-edge polygon,
 .m-graph.m-info g.m-edge path,
 .m-graph.m-info g.m-node ellipse,
 .m-graph.m-info g.m-node polygon,
 .m-graph.m-info g.m-node polyline {
-  stroke: #92d050;
+  stroke: #31708f;
 }
 .m-math.m-dim,
 .m-math g.m-dim,
@@ -2167,6 +2506,24 @@ div.m-plot svg .m-bar.m-dim,
 .m-graph.m-dim g.m-node polygon,
 .m-graph.m-dim g.m-node polyline {
   stroke: #bdbdbd;
+}
+.m-math.m-type,
+.m-math g.m-type,
+.m-math rect.m-type,
+div.m-plot svg .m-bar.m-type,
+.m-graph.m-type g.m-edge polygon,
+.m-graph.m-type g.m-node:not(.m-flat) ellipse,
+.m-graph.m-type g.m-node:not(.m-flat) polygon,
+.m-graph.m-type g.m-edge text,
+.m-graph.m-type g.m-node.m-flat text {
+  fill: #9ad36a;
+}
+.m-graph.m-type g.m-edge polygon,
+.m-graph.m-type g.m-edge path,
+.m-graph.m-type g.m-node ellipse,
+.m-graph.m-type g.m-node polygon,
+.m-graph.m-type g.m-node polyline {
+  stroke: #9ad36a;
 }
 .m-graph g.m-edge.m-default polygon,
 .m-graph g.m-node.m-default:not(.m-flat) ellipse,
@@ -2187,42 +2544,42 @@ div.m-plot svg .m-bar.m-dim,
 .m-graph g.m-node.m-primary:not(.m-flat) polygon,
 .m-graph g.m-edge.m-primary text,
 .m-graph g.m-node.m-primary.m-flat text {
-  fill: #cb4b16;
+  fill: #31708f;
 }
 .m-graph g.m-edge.m-primary polygon,
 .m-graph g.m-edge.m-primary path,
 .m-graph g.m-node.m-primary ellipse,
 .m-graph g.m-node.m-primary polygon,
 .m-graph g.m-node.m-primary polyline {
-  stroke: #cb4b16;
+  stroke: #31708f;
 }
 .m-graph g.m-edge.m-success polygon,
 .m-graph g.m-node.m-success:not(.m-flat) ellipse,
 .m-graph g.m-node.m-success:not(.m-flat) polygon,
 .m-graph g.m-edge.m-success text,
 .m-graph g.m-node.m-success.m-flat text {
-  fill: #31c25d;
+  fill: #9ad36a;
 }
 .m-graph g.m-edge.m-success polygon,
 .m-graph g.m-edge.m-success path,
 .m-graph g.m-node.m-success ellipse,
 .m-graph g.m-node.m-success polygon,
 .m-graph g.m-node.m-success polyline {
-  stroke: #31c25d;
+  stroke: #9ad36a;
 }
 .m-graph g.m-edge.m-warning polygon,
 .m-graph g.m-node.m-warning:not(.m-flat) ellipse,
 .m-graph g.m-node.m-warning:not(.m-flat) polygon,
 .m-graph g.m-edge.m-warning text,
 .m-graph g.m-node.m-warning.m-flat text {
-  fill: #c7cf2f;
+  fill: #f9cf79;
 }
 .m-graph g.m-edge.m-warning polygon,
 .m-graph g.m-edge.m-warning path,
 .m-graph g.m-node.m-warning ellipse,
 .m-graph g.m-node.m-warning polygon,
 .m-graph g.m-node.m-warning polyline {
-  stroke: #c7cf2f;
+  stroke: #f9cf79;
 }
 .m-graph g.m-edge.m-danger polygon,
 .m-graph g.m-node.m-danger:not(.m-flat) ellipse,
@@ -2243,14 +2600,14 @@ div.m-plot svg .m-bar.m-dim,
 .m-graph g.m-node.m-info:not(.m-flat) polygon,
 .m-graph g.m-edge.m-info text,
 .m-graph g.m-node.m-info.m-flat text {
-  fill: #92d050;
+  fill: #31708f;
 }
 .m-graph g.m-edge.m-info polygon,
 .m-graph g.m-edge.m-info path,
 .m-graph g.m-node.m-info ellipse,
 .m-graph g.m-node.m-info polygon,
 .m-graph g.m-node.m-info polyline {
-  stroke: #92d050;
+  stroke: #31708f;
 }
 .m-graph g.m-edge.m-dim polygon,
 .m-graph g.m-node.m-dim:not(.m-flat) ellipse,
@@ -2265,6 +2622,20 @@ div.m-plot svg .m-bar.m-dim,
 .m-graph g.m-node.m-dim polygon,
 .m-graph g.m-node.m-dim polyline {
   stroke: #bdbdbd;
+}
+.m-graph g.m-edge.m-type polygon,
+.m-graph g.m-node.m-type:not(.m-flat) ellipse,
+.m-graph g.m-node.m-type:not(.m-flat) polygon,
+.m-graph g.m-edge.m-type text,
+.m-graph g.m-node.m-type.m-flat text {
+  fill: #9ad36a;
+}
+.m-graph g.m-edge.m-type polygon,
+.m-graph g.m-edge.m-type path,
+.m-graph g.m-node.m-type ellipse,
+.m-graph g.m-node.m-type polygon,
+.m-graph g.m-node.m-type polyline {
+  stroke: #9ad36a;
 }
 p,
 ul,
@@ -2429,7 +2800,10 @@ body > header > nav.m-navbar-cover:target {
 body > header > nav.m-navbar-landing #m-navbar-brand.m-navbar-brand-hidden {
   visibility: hidden;
 }
-body > header > nav.m-navbar-landing:target #m-navbar-brand.m-navbar-brand-hidden {
+body
+  > header
+  > nav.m-navbar-landing:target
+  #m-navbar-brand.m-navbar-brand-hidden {
   visibility: visible;
 }
 body > header > nav {
@@ -2674,6 +3048,22 @@ article h1 a:focus,
 article h1 a:active {
   color: #26a9e0;
 }
+article hr {
+  width: 75%;
+  border-width: 2px 0 0 0 ;
+  border-style: solid;
+  border-color: #92d050;
+  margin: auto;
+}
+article section hr {
+  width: 50%;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #ddd;
+  margin: auto;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
 article > header h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -2754,13 +3144,6 @@ article > footer p {
   font-style: italic;
   font-size: 0.85rem;
   text-indent: 0;
-}
-article section:target {
-  margin-left: -1rem;
-  border-left-style: solid;
-  border-left-width: 0.25rem;
-  padding-left: 0.75rem;
-  border-color: #000000;
 }
 article h1 a,
 article > header h1 a,
@@ -2948,8 +3331,16 @@ article section:last-child {
 .m-container-inflatable section:target section > .m-frame,
 .m-container-inflatable section:target section > .m-block,
 .m-container-inflatable section:target section > pre,
-.m-container-inflatable section:target section > .m-code-figure > pre:first-child,
-.m-container-inflatable section:target section > .m-console-figure > pre:first-child,
+.m-container-inflatable
+  section:target
+  section
+  > .m-code-figure
+  > pre:first-child,
+.m-container-inflatable
+  section:target
+  section
+  > .m-console-figure
+  > pre:first-child,
 .m-container-inflatable section:target [class*="m-center-"] > .m-note,
 .m-container-inflatable section:target [class*="m-center-"] > .m-frame,
 .m-container-inflatable section:target [class*="m-center-"] > .m-block,
@@ -3017,13 +3408,34 @@ article section:last-child {
 .m-container-inflatable section:target > .m-console-figure::before,
 .m-container-inflatable section:target section > .m-code-figure::before,
 .m-container-inflatable section:target section > .m-console-figure::before,
-.m-container-inflatable section:target [class*="m-center-"] > .m-code-figure::before,
-.m-container-inflatable section:target [class*="m-center-"] > .m-console-figure::before,
-.m-container-inflatable section:target [class*="m-left-"] > .m-code-figure::before,
-.m-container-inflatable section:target [class*="m-left-"] > .m-console-figure::before,
-.m-container-inflatable section:target [class*="m-right-"] > .m-code-figure::before,
-.m-container-inflatable section:target [class*="m-right-"] > .m-console-figure::before,
-.m-container-inflatable section:target .m-container-inflate > .m-code-figure::before,
+.m-container-inflatable
+  section:target
+  [class*="m-center-"]
+  > .m-code-figure::before,
+.m-container-inflatable
+  section:target
+  [class*="m-center-"]
+  > .m-console-figure::before,
+.m-container-inflatable
+  section:target
+  [class*="m-left-"]
+  > .m-code-figure::before,
+.m-container-inflatable
+  section:target
+  [class*="m-left-"]
+  > .m-console-figure::before,
+.m-container-inflatable
+  section:target
+  [class*="m-right-"]
+  > .m-code-figure::before,
+.m-container-inflatable
+  section:target
+  [class*="m-right-"]
+  > .m-console-figure::before,
+.m-container-inflatable
+  section:target
+  .m-container-inflate
+  > .m-code-figure::before,
 .m-container-inflatable
   section:target
   .m-container-inflate
@@ -3061,19 +3473,19 @@ article section:last-child {
     > figure.m-console-figure
     > pre:first-child {
     border-left-width: 0;
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     padding-left: 1rem;
   }
   .m-container-inflatable section:target .m-center-s > .m-block,
   .m-container-inflatable section:target .m-right-s > .m-block {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
   .m-container-inflatable section:target .m-center-s > .m-frame,
   .m-container-inflatable section:target .m-right-s > .m-frame {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border-left-width: 0.125rem;
     padding-left: 0.875rem;
   }
@@ -3083,18 +3495,30 @@ article section:last-child {
   }
   .m-container-inflatable section:target .m-right-s > .m-note,
   .m-container-inflatable section:target .m-right-s > pre {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     margin-left: 0;
     border-left-width: 0;
     padding-left: 1rem;
   }
-  .m-container-inflatable section:target .m-center-s > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-center-s > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-s > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-s > figure.m-console-figure::before {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+  .m-container-inflatable
+    section:target
+    .m-center-s
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-center-s
+    > figure.m-console-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-s
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-s
+    > figure.m-console-figure::before {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border-left-width: 0.125rem;
   }
 }
@@ -3122,19 +3546,19 @@ article section:last-child {
     > figure.m-console-figure
     > pre:first-child {
     border-left-width: 0;
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     padding-left: 1rem;
   }
   .m-container-inflatable section:target .m-center-m > .m-block,
   .m-container-inflatable section:target .m-right-m > .m-block {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
   .m-container-inflatable section:target .m-center-m > .m-frame,
   .m-container-inflatable section:target .m-right-m > .m-frame {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border-left-width: 0.125rem;
     padding-left: 0.875rem;
   }
@@ -3144,18 +3568,30 @@ article section:last-child {
   }
   .m-container-inflatable section:target .m-right-m > .m-note,
   .m-container-inflatable section:target .m-right-m > pre {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     margin-left: 0;
     border-left-width: 0;
     padding-left: 1rem;
   }
-  .m-container-inflatable section:target .m-center-m > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-center-m > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-m > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-m > figure.m-console-figure::before {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+  .m-container-inflatable
+    section:target
+    .m-center-m
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-center-m
+    > figure.m-console-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-m
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-m
+    > figure.m-console-figure::before {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border-left-width: 0.125rem;
   }
 }
@@ -3183,19 +3619,19 @@ article section:last-child {
     > figure.m-console-figure
     > pre:first-child {
     border-left-width: 0;
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     padding-left: 1rem;
   }
   .m-container-inflatable section:target .m-center-l > .m-block,
   .m-container-inflatable section:target .m-right-l > .m-block {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
   .m-container-inflatable section:target .m-center-l > .m-frame,
   .m-container-inflatable section:target .m-right-l > .m-frame {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border-left-width: 0.125rem;
     padding-left: 0.875rem;
   }
@@ -3205,25 +3641,40 @@ article section:last-child {
   }
   .m-container-inflatable section:target .m-right-l > .m-note,
   .m-container-inflatable section:target .m-right-l > pre {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     margin-left: 0;
     border-left-width: 0;
     padding-left: 1rem;
   }
-  .m-container-inflatable section:target .m-center-l > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-center-l > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-l > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-l > figure.m-console-figure::before {
-    border-top-left-radius: 0.1rem;
-    border-bottom-left-radius: 0.1rem;
+  .m-container-inflatable
+    section:target
+    .m-center-l
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-center-l
+    > figure.m-console-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-l
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-l
+    > figure.m-console-figure::before {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border-left-width: 0.125rem;
   }
 }
 .m-container-inflatable section:target > figure.m-code-figure::before,
 .m-container-inflatable section:target > figure.m-console-figure::before,
 .m-container-inflatable section:target section > figure.m-code-figure::before,
-.m-container-inflatable section:target section > figure.m-console-figure::before,
+.m-container-inflatable
+  section:target
+  section
+  > figure.m-console-figure::before,
 .m-container-inflatable
   section:target
   [class*="m-center-"]
@@ -3259,57 +3710,96 @@ article section:last-child {
   border-left-color: #ddd;
 }
 @media screen and (min-width: 576px) {
-  .m-container-inflatable section:target .m-center-s > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-s > figure.m-code-figure::before {
+  .m-container-inflatable
+    section:target
+    .m-center-s
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-s
+    > figure.m-code-figure::before {
     border-color: #f7f7f7;
   }
-  .m-container-inflatable section:target .m-center-s > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-s > figure.m-console-figure::before {
+  .m-container-inflatable
+    section:target
+    .m-center-s
+    > figure.m-console-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-s
+    > figure.m-console-figure::before {
     border-color: #f7f7f7;
   }
 }
 @media screen and (min-width: 768px) {
-  .m-container-inflatable section:target .m-center-m > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-m > figure.m-code-figure::before {
+  .m-container-inflatable
+    section:target
+    .m-center-m
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-m
+    > figure.m-code-figure::before {
     border-color: #f7f7f7;
   }
-  .m-container-inflatable section:target .m-center-m > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-m > figure.m-console-figure::before {
+  .m-container-inflatable
+    section:target
+    .m-center-m
+    > figure.m-console-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-m
+    > figure.m-console-figure::before {
     border-color: #f7f7f7;
   }
 }
 @media screen and (min-width: 992px) {
-  .m-container-inflatable section:target .m-center-l > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-l > figure.m-code-figure::before {
+  .m-container-inflatable
+    section:target
+    .m-center-l
+    > figure.m-code-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-l
+    > figure.m-code-figure::before {
     border-color: #f7f7f7;
   }
-  .m-container-inflatable section:target .m-center-l > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-l > figure.m-console-figure::before {
+  .m-container-inflatable
+    section:target
+    .m-center-l
+    > figure.m-console-figure::before,
+  .m-container-inflatable
+    section:target
+    .m-right-l
+    > figure.m-console-figure::before {
     border-color: #f7f7f7;
   }
 }
 .m-container-inflatable section:target pre,
 .m-container-inflatable section:target figure.m-code-figure > pre:first-child,
-.m-container-inflatable section:target figure.m-console-figure > pre:first-child {
+.m-container-inflatable
+  section:target
+  figure.m-console-figure
+  > pre:first-child {
   border-color: #ddd;
 }
 .m-container-inflatable section:target .m-note.m-default {
   border-color: #ddd;
 }
 .m-container-inflatable section:target .m-note.m-primary {
-  border-color: #cb4b16;
+  border-color: #31708f;
 }
 .m-container-inflatable section:target .m-note.m-success {
-  border-color: #31c25d;
+  border-color: #9ad36a;
 }
 .m-container-inflatable section:target .m-note.m-warning {
-  border-color: #c7cf2f;
+  border-color: #f9cf79;
 }
 .m-container-inflatable section:target .m-note.m-danger {
   border-color: #f60000;
 }
 .m-container-inflatable section:target .m-note.m-info {
-  border-color: #92d050;
+  border-color: #31708f;
 }
 .m-container-inflatable section:target .m-note.m-dim {
   border-color: #bdbdbd;
@@ -3557,7 +4047,7 @@ ul.m-doc li.m-doc-collapsible > a:first-child:active {
 a.m-doc-self,
 ul.m-doc li.m-doc-expansible > a:first-child:before,
 ul.m-doc li.m-doc-collapsible > a:first-child:before {
-  color: #000000;
+  color: #26a9e0;
 }
 a.m-doc-self:hover, a.m-doc-self:focus, a.m-doc-self:active,
 ul.m-doc li.m-doc-expansible > a:first-child:hover::before,
@@ -3566,13 +4056,15 @@ ul.m-doc li.m-doc-expansible > a:first-child:active::before,
 ul.m-doc li.m-doc-collapsible > a:first-child:hover::before,
 ul.m-doc li.m-doc-collapsible > a:first-child:focus::before,
 ul.m-doc li.m-doc-collapsible > a:first-child:active::before {
-  color: #000000;
+  color: #26a9e0;
 }
 h3 a.m-doc-external {
   font-weight: normal;
 }
 span.m-doc-wrap-bumper {
   margin-right: -1rem;
+  display: inline-block;
+  vertical-align: text-top;
 }
 span.m-doc-wrap {
   padding-left: 1rem;
@@ -3628,6 +4120,7 @@ ul.m-doc li.m-doc-collapsible > a:first-child:before { content: '⊖'; }
 h1 .m-doc-template, h1 .m-doc-include {
   font-size: 1.3rem;
   font-weight: normal;
+  float: right;
 }
 h1 .m-doc-include:last-child {
   margin-bottom: -0.5rem;
@@ -3676,7 +4169,7 @@ article section.m-doc-details > div::before {
   z-index: -1;
   border-style: solid;
   border-width: 0.125rem;
-  border-radius: 0.1rem;
+  border-radius: 0px;
   border-color: #f7f7f7;
 }
 article section.m-doc-details > div > h3:first-child {
@@ -3684,8 +4177,8 @@ article section.m-doc-details > div > h3:first-child {
   margin: -1rem -1rem 1rem -1rem;
   padding: 0.5rem 1rem;
   background-color: #f7f7f7;
-  border-top-left-radius: 0.1rem;
-  border-top-right-radius: 0.1rem;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -3756,7 +4249,7 @@ a.m-doc-search-icon:focus svg, a.m-doc-search-icon:hover svg, a.m-doc-search-ico
 }
 .m-doc-search-content {
   background-color: #000000;
-  border-radius: 0.1rem;
+  border-radius: 0px;
   padding: 1rem;
 }
 .m-doc-search input {
@@ -3765,8 +4258,8 @@ a.m-doc-search-icon:focus svg, a.m-doc-search-icon:hover svg, a.m-doc-search-ico
   font-size: 1.2rem;
   border-width: 0;
   color: #000000;
-  background-color: #e8e8e8;
-  border-radius: 0.1rem;
+  background-color: transparent;
+  border-radius: 0px;
   margin-bottom: 1rem;
   padding: 0 1rem;
 }
@@ -3806,10 +4299,10 @@ a.m-doc-search-icon:focus svg, a.m-doc-search-icon:hover svg, a.m-doc-search-ico
   margin-right: -0.75rem;
 }
 .m-doc-search ul#search-results li#search-current a {
-  background-color: #e8e8e8;
+  background-color: transparent;
 }
 .m-doc-search ul#search-results li#search-current.m-doc-search-copied a {
-  background-color: #4dd376;
+  background-color: transparent;
 }
 .m-doc-search-typed {
   color: #26a9e0;

@@ -81,10 +81,10 @@ barometric_correction/
 3G_Test/
 
 __pycache__/
-docs/LocalDoxyfile
 runDoxygen.bat
 docs/examples/*
-docs/doxygenOutput.log
-docs/mcss-doxy-output.log
-docs/mcss.log
+doxygenOutput.log
 doygen-run.log
+mcss-doxy-output.log
+mcss.log
+docs/examples.dox_x

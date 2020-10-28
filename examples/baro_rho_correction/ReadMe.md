@@ -1,4 +1,4 @@
-[//]: # ( @page baro_rho_example Barometric Pressure Correction )
+[//]: # ( @page example_baro_rho Barometric Pressure Correction )
 # Using ModularSensors to Calculate Results based on Measured Values
 
 This example demonstrates how to work with calculated variables and calculates water depth by correcting the total pressure measured by a MeaSpec MS5803 with the atmospheric pressure measured by a Bosch BME280 environmental sensor and the temperature measured by a Maxim DS18 temperature probe.

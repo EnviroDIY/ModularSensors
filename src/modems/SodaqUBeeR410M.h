@@ -125,7 +125,7 @@
  *
  * @copydetails #R410M_DISCONNECT_TIME_MS
  *
- * @see @ref ubee_page
+ * @see @ref page_ubee
  */
 class SodaqUBeeR410M : public loggerModem {
  public:

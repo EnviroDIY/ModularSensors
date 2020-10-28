@@ -1,4 +1,4 @@
-[//]: # ( @page drwi_lte_example DRWI CitSci LTE Sites )
+[//]: # ( @page example_drwi_lte DRWI CitSci LTE Sites )
 # Examples using the Modular Sensors Library for DRWI Sites
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.

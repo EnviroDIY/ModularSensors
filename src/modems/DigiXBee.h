@@ -117,7 +117,7 @@
  * @note The ZigBee, 900mHZ, and other radio-based XBee's are not
  * supported.
  *
- * @see @ref digi_xbees
+ * @see @ref page_digi_xbees
  */
 class DigiXBee : public loggerModem {
  public:

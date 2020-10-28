@@ -125,7 +125,7 @@
  *
  * @copydetails #U201_DISCONNECT_TIME_MS
  *
- * @see @ref ubee_page
+ * @see @ref page_ubee
  */
 class SodaqUBeeU201 : public loggerModem {
  public:

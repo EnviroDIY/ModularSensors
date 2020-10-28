@@ -1,4 +1,4 @@
-[//]: # ( @page learn_envirodiy_example Learn EnviroDIY Example )
+[//]: # ( @page example_learn_envirodiy Learn EnviroDIY Example )
 # Using ModularSensors to save data to an SD card
 
 This shows the simplest use of a "logger" object.

@@ -46,14 +46,14 @@ for filename in read_mes:
             out_file.write("/**\n")
             if out_name != "examples.dox":
                 # out_file.write(
-                #     "@example{{lineno}} {} @m_examplenavigation{{examples_page,{}/}} @m_footernavigation \n\n".format(
+                #     "@example{{lineno}} {} @m_examplenavigation{{page_the_examples,{}/}} @m_footernavigation \n\n".format(
                 #         filename.replace("..\\examples\\", "").replace(
                 #             "\\ReadMe.md", ".ino"
                 #         ), out_dir
                 #     )
                 # )
                 out_file.write(
-                    "@example{{lineno}} {} @m_examplenavigation{{examples_page,}} @m_footernavigation \n\n".format(
+                    "@example{{lineno}} {} @m_examplenavigation{{page_the_examples,}} @m_footernavigation \n\n".format(
                         filename.replace("../examples/", "").replace(
                             "/ReadMe.md", ".ino"
                         )

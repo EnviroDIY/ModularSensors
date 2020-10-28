@@ -125,7 +125,7 @@
  *
  * @copydetails #BG96_WAKE_LEVEL
  *
- * @see @ref bg96_page
+ * @see @ref page_bg96
  */
 class QuectelBG96 : public loggerModem {
  public:

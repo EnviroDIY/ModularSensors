@@ -127,7 +127,7 @@
  *
  * @copydetails #SIM800_STATUS_LEVEL
  *
- * @see @ref sim800_page
+ * @see @ref page_sim800
  */
 class SIMComSIM800 : public loggerModem {
  public:

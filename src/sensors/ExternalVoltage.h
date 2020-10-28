@@ -102,7 +102,7 @@
  *
  * The External Voltage module is used for any case where the voltage itself is
  * the desired value (as for an external battery).  It can also be used in
- * combination with a [calculated variable](@ref calc_var_page) to support any
+ * combination with a [calculated variable](@ref page_calc_var) to support any
  * other analog sensor not explicity supported by ModularSensors.  To increase
  * the range available for voltage measurements, this module supports the use of
  * a voltage divider.
