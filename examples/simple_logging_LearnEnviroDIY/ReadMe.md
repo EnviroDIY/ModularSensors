@@ -11,4 +11,26 @@ This is the example you should use to deploy a logger somewhere where you don't 
 
 _______
 
-[//]: # ( @section simple_logging_diy_full The Complete Example Code: )
+[//]: # ( @section example_learn_envirodiy_walk Walking Through the Code )
+# Walking Through the Code
+
+_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
+- [Using ModularSensors to save data to an SD card](#using-modularsensors-to-save-data-to-an-sd-card)
+- [Walking Through the Code](#walking-through-the-code)
+  - [PlatformIO Configuration](#platformio-configuration)
+  - [The Complete Code](#the-complete-code)
+
+[//]: # ( End GitHub Only )
+
+
+[//]: # ( @section example_learn_envirodiy_pio PlatformIO Configuration )
+## PlatformIO Configuration
+
+[//]: # ( @include{lineno} simple_logging_Learn_EnviroDIY/platformio.ini )
+
+[//]: # ( @section example_learn_envirodiy_code The Complete Code )
+## The Complete Code

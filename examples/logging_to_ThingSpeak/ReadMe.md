@@ -51,4 +51,30 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 _______
 
-[//]: # ( @section thingspeak_full The Complete Example Code: )
+[//]: # ( @section example_thingspeak_walk Walking Through the Code )
+# Walking Through the Code
+
+_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
+- [Using ModularSensors to save data to an SD card and send data to ThingSpeak](#using-modularsensors-to-save-data-to-an-sd-card-and-send-data-to-thingspeak)
+  - [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Modify the Example](#modify-the-example)
+  - [Upload!](#upload)
+- [Walking Through the Code](#walking-through-the-code)
+  - [PlatformIO Configuration](#platformio-configuration)
+  - [The Complete Code](#the-complete-code)
+
+[//]: # ( End GitHub Only )
+
+
+[//]: # ( @section example_thingspeak_pio PlatformIO Configuration )
+## PlatformIO Configuration
+
+[//]: # ( @include{lineno} logging_to_ThingSpeak/platformio.ini )
+
+[//]: # ( @section example_thingspeak_code The Complete Code )
+## The Complete Code

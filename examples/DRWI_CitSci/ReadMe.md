@@ -105,4 +105,32 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 _______
 
-[//]: # ( @section drwi_2g_full The Complete Example Code: )
+[//]: # ( @section example_drwi_2g_walk Walking Through the Code )
+# Walking Through the Code
+
+_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
+- [ModularSensors DRWI 2G Sites](#modularsensors-drwi-2g-sites)
+  - [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Set the logger ID](#set-the-logger-id)
+  - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
+  - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+  - [Upload!](#upload)
+- [Walking Through the Code](#walking-through-the-code)
+  - [PlatformIO Configuration](#platformio-configuration)
+  - [The Complete Code](#the-complete-code)
+
+[//]: # ( End GitHub Only )
+
+
+[//]: # ( @section example_drwi_2g_pio PlatformIO Configuration )
+## PlatformIO Configuration
+
+[//]: # ( @include{lineno} DRWI_CitSci/platformio.ini )
+
+[//]: # ( @section example_drwi_2g_code The Complete Code )
+## The Complete Code

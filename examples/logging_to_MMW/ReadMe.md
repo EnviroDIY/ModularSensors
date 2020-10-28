@@ -11,4 +11,26 @@ This is the example you should use to deploy a logger with a modem to stream liv
 
 _______
 
-[//]: # ( @section logging_to_MMW_full The Complete Example Code: )
+[//]: # ( @section example_mmw_walk Walking Through the Code )
+# Walking Through the Code
+
+_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
+- [Using ModularSensors to log data to Monitor My Watershed/EnviroDIY](#using-modularsensors-to-log-data-to-monitor-my-watershedenvirodiy)
+- [Walking Through the Code](#walking-through-the-code)
+  - [PlatformIO Configuration](#platformio-configuration)
+  - [The Complete Code](#the-complete-code)
+
+[//]: # ( End GitHub Only )
+
+
+[//]: # ( @section example_mmw_pio PlatformIO Configuration )
+## PlatformIO Configuration
+
+[//]: # ( @include{lineno} logging_to_MMW/platformio.ini )
+
+[//]: # ( @section example_mmw_code The Complete Code )
+## The Complete Code

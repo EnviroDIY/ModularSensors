@@ -6,4 +6,26 @@ This showcases both how to use two different logging instances and how to use so
 
 _______
 
-[//]: # ( @section double_logger_full The Complete Example Code: )
+[//]: # ( @section example_double_log_walk Walking Through the Code )
+# Walking Through the Code
+
+_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
+- [Using ModularSensors to Record data from Two Different Groups of Sensors at Two Different Time Intervals](#using-modularsensors-to-record-data-from-two-different-groups-of-sensors-at-two-different-time-intervals)
+- [Walking Through the Code](#walking-through-the-code)
+  - [PlatformIO Configuration](#platformio-configuration)
+  - [The Complete Code](#the-complete-code)
+
+[//]: # ( End GitHub Only )
+
+
+[//]: # ( @section example_double_log_pio PlatformIO Configuration )
+## PlatformIO Configuration
+
+[//]: # ( @include{lineno} double_logger/platformio.ini )
+
+[//]: # ( @section example_double_log_code The Complete Code )
+## The Complete Code
