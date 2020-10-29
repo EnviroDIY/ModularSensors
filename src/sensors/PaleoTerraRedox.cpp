@@ -139,8 +139,9 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
             res += res2 * 4;
             res += res3 * 0.015625;
         }
-    } else
+    } else {
         MS_DBG(F("Sensor is not currently measuring!\n"));
+    }
 
     // ADD FAILURE CONDITIONS!!
     if (isnan(res))

@@ -40,10 +40,17 @@
  * sensors.  As such, it is subject to change at any time.  This library may not
  * be updated immediately to reflect changes on the part of Northern Widget.
  *
- * As an event counter, the Tally is expected to be continuously powered (at 3.3V or 5V).
+ * @warning As an event counter, the Tally should be continuously powered (at 3.3V or 5V).
  * It does have a large on-board capacitor which can act as a battery to ride out power
  * shortages, but that shouldn't be expected to perform as a long-term solution.
- *
+ * If you do chose to switch the power for the Tally counter, be very conscious
+ * of the fact that the library is designed to run power this (and all other) sensors
+ * for the very minimum amount of time possible to get a reading.
+ * This means the capacitor will be running at a very low duty cycle;
+ * likely less than 1% if the sensors are only powered a few seconds every few minutes.
+ * A super-capacitor is *NOT* an instantly charged battery and will not keep the counter
+ * powered at too low a duty cycle.
+ *  *
  * @section tally_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * - https://github.com/NorthernWidget-Skunkworks/Project-Tally​
@@ -105,6 +112,9 @@
 /// Variable number; events is stored in sensorValues[0].
 #define TALLY_EVENTS_VAR_NUM 0
 
+/// The default address of the Tally
+#define TALLY_ADDRESS_BASE 0x33
+
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -119,6 +129,20 @@ class TallyCounterI2C : public Sensor {
      * @brief Construct a new Tally Counter I2C object using the primary
      * hardware I2C instance.
      *
+     * @param powerPin The pin on the mcu controlling power to TallyCounterI2C.
+     * - The default is to use -1 for continuous power because a counting
+     * device must always be on. However, the Tally also has a super capacitor
+     * that will keep it running even while powered down while the logger is
+     * in sleep during the interval between measurements.
+     * - The Tally Counter I2C can use either a 3.3V or 5V power source.
+     * @warning If you do chose to switch the power for the Tally counter, be
+     * very conscious of the fact that the library is designed to run power this
+     * (and all other) sensors for the very minimum amount of time possible to
+     * get a reading.  This means the capacitor will be running at a very low
+     * duty cycle; likely less than 1% if the sensors are only powered a few
+     * seconds every few minutes. A super-capacitor is *NOT* an instantly
+     * charged battery and will not keep the counter powered at too low a duty
+     * cycle.
      * @param i2cAddressHex The I2C address of the Tally Counter I2C is 0x33
      * by default.
      * @note The event counter should be continuously powered.  It has extremely
@@ -126,7 +150,8 @@ class TallyCounterI2C : public Sensor {
      * @note There is no option for averaging measurements; that option does not
      * make sense in an event counter.
      */
-    explicit TallyCounterI2C(uint8_t i2cAddressHex = 0x33);
+    TallyCounterI2C(int8_t  powerPin      = -1,
+                    uint8_t i2cAddressHex = TALLY_ADDRESS_BASE);
     /**
      * @brief Destroy the Tally Counter object
      */

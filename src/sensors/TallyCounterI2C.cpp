@@ -11,10 +11,10 @@
 
 
 // The constructor
-TallyCounterI2C::TallyCounterI2C(uint8_t i2cAddressHex)
+TallyCounterI2C::TallyCounterI2C(int8_t powerPin, uint8_t i2cAddressHex)
     : Sensor("TallyCounterI2C", TALLY_NUM_VARIABLES, TALLY_WARM_UP_TIME_MS,
-             TALLY_STABILIZATION_TIME_MS, TALLY_MEASUREMENT_TIME_MS, -1, -1,
-             1) {
+             TALLY_STABILIZATION_TIME_MS, TALLY_MEASUREMENT_TIME_MS, powerPin,
+             -1, 1) {
     _i2cAddressHex = i2cAddressHex;
 }
 // Destructor
