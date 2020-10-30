@@ -3,6 +3,7 @@
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the TallyCounterI2C sensor subclass and variable subclasse
  * TallyCounterI2C_Events.
