@@ -50,7 +50,9 @@ install:
   - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
   - pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
   - pio lib -g install testato/SoftwareWire
+  - pio lib -g install vshymanskyy/StreamDebugger
   - pio update
+  - pio lib -g list
 script:
   - platformio ci --project-conf="travis/platformio.ini"
 
@@ -146,6 +148,29 @@ jobs:
       env:
         - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: 'Check Menu Example'
+    - name: 'Check Menu Example and Maybe Pack Dependencies'
       env:
         - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
+      after_success: |
+        echo "TRAVIS_BRANCH=$TRAVIS_BRANCH TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST"
+        if [[ ($TRAVIS_BRANCH == master) &&
+              ($TRAVIS_PULL_REQUEST == false) ]] ; then
+            pio lib -g uninstall adafruit/Adafruit GFX Library
+            pio lib -g uninstall adafruit/Adafruit NeoPixel
+            pio lib -g uninstall adafruit/Adafruit SSD1306
+            zip ModularSensors_dependencies.zip -r ~/.platformio/lib
+            zip -d -q ModularSensors_dependencies "*/.gitattributes" "*/.gitignore" "*/.gitmodules" "*/.github/*" "*.sh"  "*/Doxyfile" "*/.travis.yml"
+            zip -d -q ModularSensors_dependencies "*/EnviroDIY_ModularSensors/doc/*"
+            zip -d -q ModularSensors_dependencies "*/TinyGSM/extras/*"
+            zip -d -q ModularSensors_dependencies "*/YosemitechModbus/doc/*"
+            zip -d -q ModularSensors_dependencies "*/SdFat/extras/*"
+            zip -d -q ModularSensors_dependencies "*/doc/*.pdf"
+            git status
+            if [[ $is_changed > 0 ]]; then
+              git add -A;
+            fi
+            if [[ $is_changed > 0 ]]; then
+              git commit -m "Packaged dependencies (Travis build $TRAVIS_BUILD_NUMBER) [ci skip]";
+            fi
+            git push origin master
+        fi
