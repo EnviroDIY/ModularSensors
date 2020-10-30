@@ -31,12 +31,13 @@
     "url": "https://github.com/EnviroDIY/ModularSensors.git"
   },
   "export": {
-    "exclude": [
-      "doc/*",
-      "sensor_tests/*",
-      "compile_tests/*",
-      "travis/*",
-      "pioScripts/*"
+    "include": [
+      "LICENSE.md",
+      "library.json",
+      "library.properties",
+      "README.md",
+      "src/*",
+      "examples/*"
     ]
   },
   "examples": ["examples/*/*.ino"],

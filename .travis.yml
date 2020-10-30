@@ -12,11 +12,11 @@ branches:
 cache:
   pip: true
   directories:
-    - "~/.platformio"
+    - '~/.platformio'
     - $TRAVIS_BUILD_DIR/doxygen-src
 language: python
 python:
-  - "2.7"
+  - '2.7'
 install:
   # Remove the cloned repo to emulate a user library installation
   - git rm library.json
@@ -49,14 +49,14 @@ install:
   - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
   - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
   - pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
-  - pio lib -g install SoftwareWire
+  - pio lib -g install testato/SoftwareWire
   - pio update
 script:
   - platformio ci --project-conf="travis/platformio.ini"
 
 jobs:
   include:
-    - name: "Verify library JSON format"
+    - name: 'Verify library JSON format'
       language: node_js
       install: npm install -g jsonlint
       script: jsonlint -q library.json
@@ -68,11 +68,11 @@ jobs:
             sh trigger-travis.sh EnviroDIY Libraries $TRAVIS_ACCESS_TOKEN
         fi
 
-    - name: "Build Doxygen Documentation"
+    - name: 'Build Doxygen Documentation'
       if: branch = master AND type != pull_request
       language: python
       python:
-        - "3.7"
+        - '3.7'
       before_install:
         - git config --global user.email "sdamiano@stroudcenter.org"
         - git config --global user.name "SRGDamia1"
@@ -110,42 +110,42 @@ jobs:
         local_dir: $TRAVIS_BUILD_DIR/code_docs/ModularSensorsDoxygen/m.css
         project_name: ModularSensors
 
-    - name: "Check Single Sensor Example"
+    - name: 'Check Single Sensor Example'
       env:
         - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check Simple Logging Example"
+    - name: 'Check Simple Logging Example'
       env:
         - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check DRWI CitSci 2G Example"
+    - name: 'Check DRWI CitSci 2G Example'
       env:
         - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check DRWI CitSci LTE Example"
+    - name: 'Check DRWI CitSci LTE Example'
       env:
         - PLATFORMIO_CI_SRC=examples/DRWI_LTE/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check DRWI CitSci No Cellular Example"
+    - name: 'Check DRWI CitSci No Cellular Example'
       env:
         - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check Double Logger Example"
+    - name: 'Check Double Logger Example'
       env:
         - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check Baro Correction Example"
+    - name: 'Check Baro Correction Example'
       env:
         - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check Data Saving Example"
+    - name: 'Check Data Saving Example'
       env:
         - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check ThingSpeak Example"
+    - name: 'Check ThingSpeak Example'
       env:
         - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
 
-    - name: "Check Menu Example"
+    - name: 'Check Menu Example'
       env:
         - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/

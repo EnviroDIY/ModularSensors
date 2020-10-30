@@ -88,3 +88,4 @@ doygen-run.log
 mcss-doxy-output.log
 mcss.log
 docs/examples.dox_x
+platformio_extra_envs.ini
