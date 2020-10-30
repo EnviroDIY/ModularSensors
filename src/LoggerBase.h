@@ -1028,9 +1028,14 @@ class Logger {
     void logDataAndPublish(void);
 
     /**
-     * @brief The static "marked" epoch time.
+     * @brief The static "marked" epoch time for the local timezone.
      */
     static uint32_t markedEpochTime;
+
+    /**
+     * @brief The static "marked" epoch time for UTC.
+     */
+    static uint32_t markedEpochTimeUTC;
 
     // These are flag fariables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle

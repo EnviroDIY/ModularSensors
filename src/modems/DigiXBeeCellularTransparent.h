@@ -3,9 +3,12 @@
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Greg Cutrell <gcutrell@limno.com>
  *
  * @brief Contains the DigiXBeeCellularTransparent class for Digi Cellular
  * XBee's operating in transparent mode.
+ * Modified to allow for username and password required by some cell providers,
+ * such as Soracom (https://www.soracom.io)
  */
 
 // Header Guards
@@ -86,7 +89,8 @@ class DigiXBeeCellularTransparent : public DigiXBee {
     DigiXBeeCellularTransparent(Stream* modemStream, int8_t powerPin,
                                 int8_t statusPin, bool useCTSStatus,
                                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                                const char* apn);
+                                const char* apn,
+                                const char* user = NULL, const char* pwd = NULL);
     /**
      * @brief Destroy the Digi XBee Cellular Transparent object - no action
      * needed
@@ -138,6 +142,8 @@ class DigiXBeeCellularTransparent : public DigiXBee {
 
  private:
     const char* _apn;
+    const char* _user;
+    const char* _pwd;
 };
 
 #endif  // SRC_MODEMS_DIGIXBEECELLULARTRANSPARENT_H_
