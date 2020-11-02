@@ -9,6 +9,12 @@
  *
  * @copydetails dataPublisher
  */
+/**
+ * @defgroup the_publishers Supported Data Endpoints
+ * All implemented data endpoint (publisher) classes
+ *
+ * @copydetails dataPublisher
+ */
 
 // Header Guards
 #ifndef SRC_DATAPUBLISHERBASE_H_

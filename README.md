@@ -2,10 +2,10 @@
 # ModularSensors
 ___
 
-[//]: # ( @section mainpage_intro An Introduction )
-## An Introduction
+[//]: # ( @section mainpage_intro The EnviroDIY ModularSensors Library )
+## The EnviroDIY ModularSensors Library
 
-Check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/getting_started.html) section of the documentation!
+If you're new to EnviroDIY, I suggest you check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/getting_started.html) section of the documentation!
 
 This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly.
 The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
@@ -26,7 +26,7 @@ There is extensive documentation available in the [ModularSensors github pages](
 
 [//]: # ( Start GitHub Only )
 - [ModularSensors](#modularsensors)
-  - [An Introduction](#an-introduction)
+  - [The EnviroDIY ModularSensors Library](#the-envirodiy-modularsensors-library)
   - [Supported Sensors](#supported-sensors)
   - [Data Endpoints](#data-endpoints)
   - [Supported Cellular/Wifi Modules:](#supported-cellularwifi-modules)
@@ -91,6 +91,7 @@ The currently supported services are the [Monitor My Watershed data portal](http
 
 - [Monitor My Watershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
 - [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Functions)
+- [Ubidots IoT platform](https://ubidots.com)
 
 [//]: # ( @todo Page on Data Endpoints )
 

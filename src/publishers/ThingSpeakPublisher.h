@@ -46,6 +46,8 @@
 /**
  * @brief The ThingSpeakPublisher subclass of dataPublisher for publishing data
  * to ThingSpeak using the MQTT protocol.
+ *
+ * @ingroup the_publishers
  */
 class ThingSpeakPublisher : public dataPublisher {
  public:

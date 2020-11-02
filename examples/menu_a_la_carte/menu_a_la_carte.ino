@@ -1364,7 +1364,7 @@ Variable* teros11VWC =
 // ==========================================================================
 //  PaleoTerra Redox Sensors
 // ==========================================================================
-/** Start [paleoterra] */
+/** Start [pt_redox] */
 #include <sensors/PaleoTerraRedox.h>
 
 int8_t paleoTerraPower = sensorPowerPin;  // Pin to switch RS485 adapter power
@@ -1383,7 +1383,7 @@ PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
 // Create the voltage variable for the redox sensor
 Variable* ptVolt =
     new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [paleoterra] */
+/** End [pt_redox] */
 
 
 // ==========================================================================

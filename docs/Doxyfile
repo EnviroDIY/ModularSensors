@@ -267,17 +267,17 @@ ALIASES                = "license=@par License:\n" \
                          "menulink{1}=[menu a la carte](@ref menu_\1)" \
                          "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ " \
                          "variabledoc{4}=\2_\3(\2* parentSense, const char* uuid, const char* varCode) \n @copydetails \2_\3::\2_\3 ^^ ^^ " \
-                         "ctor_doc{2}=\1(\2) \n \n @copydetails \1::\1" \
-                         "ctor_doc{3}=\1(\2, \3) \n \n @copydetails \1::\1" \
-                         "ctor_doc{4}=\1(\2, \3, \4) \n \n @copydetails \1::\1" \
-                         "ctor_doc{5}=\1(\2, \3, \4, \5) \n \n @copydetails \1::\1" \
-                         "ctor_doc{6}=\1(\2, \3, \4, \5, \6) \n \n @copydetails \1::\1" \
-                         "ctor_doc{7}=\1(\2, \3, \4, \5, \6, \7) \n \n @copydetails \1::\1" \
-                         "ctor_doc{8}=\1(\2, \3, \4, \5, \6, \7, \8) \n \n @copydetails \1::\1" \
-                         "ctor_doc{9}=\1(\2, \3, \4, \5, \6, \7, \8, \9) \n \n @copydetails \1::\1" \
-                         "ctor_doc{10}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10) \n \n @copydetails \1::\1" \
-                         "ctor_doc{11}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11) \n \n @copydetails \1::\1" \
-                         "ctor_doc{12}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11, \12) \n \n @copydetails \1::\1" \
+                         "ctor_doc{2}=\1(\2) \n @copydetails \1::\1" \
+                         "ctor_doc{3}=\1(\2, \3) \n @copydetails \1::\1" \
+                         "ctor_doc{4}=\1(\2, \3, \4) \n @copydetails \1::\1" \
+                         "ctor_doc{5}=\1(\2, \3, \4, \5) \n @copydetails \1::\1" \
+                         "ctor_doc{6}=\1(\2, \3, \4, \5, \6) \n @copydetails \1::\1" \
+                         "ctor_doc{7}=\1(\2, \3, \4, \5, \6, \7) \n @copydetails \1::\1" \
+                         "ctor_doc{8}=\1(\2, \3, \4, \5, \6, \7, \8) \n @copydetails \1::\1" \
+                         "ctor_doc{9}=\1(\2, \3, \4, \5, \6, \7, \8, \9) \n @copydetails \1::\1" \
+                         "ctor_doc{10}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10) \n @copydetails \1::\1" \
+                         "ctor_doc{11}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11) \n @copydetails \1::\1" \
+                         "ctor_doc{12}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11, \12) \n @copydetails \1::\1" \
                          "m_div{1}=@xmlonly<mcss:div xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
                          "m_enddiv=@xmlonly</mcss:div>@endxmlonly" \
                          "m_span{1}=@xmlonly<mcss:span xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
@@ -852,7 +852,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # messages should be written. If left blank the output is written to standard
 # error (stderr).
 
-WARN_LOGFILE           = doxygenOutput.log
+WARN_LOGFILE           = output_doxygen.log
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
@@ -1203,7 +1203,7 @@ IGNORE_PREFIX          =
 # If the GENERATE_HTML tag is set to YES, doxygen will generate HTML output
 # The default value is: YES.
 
-GENERATE_HTML          = YES
+GENERATE_HTML          = NO
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of

@@ -74,7 +74,7 @@
  *   - Reported as dimensionless counts
  *   - Default variable code is TallyCounterI2CEvents
  *
- * @variabledoc{tally_events,TallyCounterI2,Events,TallyCounterI2CEvents}
+ * @variabledoc{tally_events,TallyCounterI2C,Events,TallyCounterI2CEvents}
  */
 /* clang-format on */
 
@@ -195,7 +195,7 @@ class TallyCounterI2C : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [events output](@ref tallyCounterI2C_events) from a
+ * [events output](@ref tally_events) from a
  * [Tally Counter I2C](@ref tally_group) - shows the number of
  * events since last read.
  *

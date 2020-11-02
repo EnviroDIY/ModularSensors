@@ -178,6 +178,7 @@ Among these are any sensors using RS232, RS485, RS422.
 Generally each serial variant (or sometimes each sensor) needs a dedicated serial "port" - its own connection to the processor.
 Most processors have built in dedicated wires for serial communication - "Hardware" serial.
 See the page on [Arduino streams](@ref page_arduino_streams) for much more detail about serial connections with Arduino processors.
+_______
 
 [//]: # ( @subsubsection menu_avr_serial_ports AVR Boards )
 #### AVR Boards

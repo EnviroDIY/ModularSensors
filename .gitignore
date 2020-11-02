@@ -83,9 +83,9 @@ barometric_correction/
 __pycache__/
 runDoxygen.bat
 docs/examples/*
-doxygenOutput.log
+output_doxygen.log
 doygen-run.log
 mcss-doxy-output.log
-mcss.log
+output_mcss.log
 docs/examples.dox_x
 platformio_extra_envs.ini

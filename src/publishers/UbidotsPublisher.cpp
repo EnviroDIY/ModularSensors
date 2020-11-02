@@ -1,9 +1,9 @@
 /**
-* @file UbidotsPublisher.cpp
-* @copyright 2020 Stroud Water Research Center
-* Part of the EnviroDIY ModularSensors library for Arduino
-* @author Greg Cutrell <gcutrell@limno.com>
-* @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @file UbidotsPublisher.cpp
+ * @copyright 2020 Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library for Arduino
+ * @author Greg Cutrell <gcutrell@limno.com>
+ * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Implements the UbidotsPublisher class.
  */
@@ -26,48 +26,48 @@ const char* UbidotsPublisher::tokenHeader  = "\r\nX-Auth-Token: ";
 //
 //
 const char* UbidotsPublisher::contentLengthHeader = "\r\nContent-Length: ";
-const char* UbidotsPublisher::contentTypeHeader   =
-                              "\r\nContent-Type: application/json\r\n\r\n";
+const char* UbidotsPublisher::contentTypeHeader =
+    "\r\nContent-Type: application/json\r\n\r\n";
 
 const char* UbidotsPublisher::payload = "{";
 
 
 // Constructors
-UbidotsPublisher::UbidotsPublisher()  : dataPublisher() {
+UbidotsPublisher::UbidotsPublisher() : dataPublisher() {
     // MS_DBG(F("dataPublisher object created"));
     _authentificationToken = NULL;
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                    uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     // MS_DBG(F("dataPublisher object created"));
     _authentificationToken = NULL;
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
     // MS_DBG(F("dataPublisher object created"));
 }
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authentificationToken,
-                                   const char* deviceID,
-                                   uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                   const char* deviceID, uint8_t sendEveryX,
+                                   uint8_t sendOffset)
+    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     setToken(authentificationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    const char* authentificationToken,
-                                   const char* deviceID,
-                                   uint8_t sendEveryX, uint8_t sendOffset)
+                                   const char* deviceID, uint8_t sendEveryX,
+                                   uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
     setToken(authentificationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
 }
 // Destructor
-UbidotsPublisher::~UbidotsPublisher(){}
+UbidotsPublisher::~UbidotsPublisher() {}
 
 
 void UbidotsPublisher::setToken(const char* authentificationToken) {
@@ -85,11 +85,12 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
     // jsonLength += 2;           //  ",
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         jsonLength += 1;  //  "
-        jsonLength += _baseLogger->getVarUUIDAtI(i).length();  // parameter ID length
-        jsonLength += 11;  //  ":{"value":
+        jsonLength +=
+            _baseLogger->getVarUUIDAtI(i).length();  // parameter ID length
+        jsonLength += 11;                            //  ":{"value":
         jsonLength += _baseLogger->getValueStringAtI(i).length();
-        jsonLength += 13;   // ,"timestamp":
-        jsonLength += 13;   //epoch time in milliseconds
+        jsonLength += 13;  // ,"timestamp":
+        jsonLength += 13;  // epoch time in milliseconds
         if (i + 1 != _baseLogger->getArrayVarCount()) {
             jsonLength += 2;  // ,
         }
@@ -111,7 +112,8 @@ void UbidotsPublisher::printSensorDataJSON(Stream* stream) {
         stream->print(_baseLogger->getValueStringAtI(i));
         stream->print(",'timestamp':");
         stream->print(Logger::markedEpochTimeUTC);
-        stream->print(F("000}"));  //Convert microseconds to milliseconds for ubidots
+        stream->print(
+            F("000}"));  // Convert microseconds to milliseconds for ubidots
         if (i + 1 != _baseLogger->getArrayVarCount()) { stream->print(','); }
     }
 
@@ -215,21 +217,21 @@ int16_t UbidotsPublisher::publishData(Client* outClient) {
             _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
             strcat(txBuffer, tempBuffer);
             txBuffer[strlen(txBuffer)] = '"';
-            strcat(txBuffer,":{");
+            strcat(txBuffer, ":{");
             txBuffer[strlen(txBuffer)] = '"';
-            strcat(txBuffer,"value");
+            strcat(txBuffer, "value");
             txBuffer[strlen(txBuffer)] = '"';
             txBuffer[strlen(txBuffer)] = ':';
             _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
             strcat(txBuffer, tempBuffer);
             txBuffer[strlen(txBuffer)] = ',';
             txBuffer[strlen(txBuffer)] = '"';
-            strcat(txBuffer,"timestamp");
+            strcat(txBuffer, "timestamp");
             txBuffer[strlen(txBuffer)] = '"';
             txBuffer[strlen(txBuffer)] = ':';
             ltoa((Logger::markedEpochTimeUTC), tempBuffer, 10);  // BASE 10
             strcat(txBuffer, tempBuffer);
-            strcat(txBuffer,"000");
+            strcat(txBuffer, "000");
             if (i + 1 != _baseLogger->getArrayVarCount()) {
                 txBuffer[strlen(txBuffer)] = '}';
                 txBuffer[strlen(txBuffer)] = ',';

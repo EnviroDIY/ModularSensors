@@ -7,7 +7,7 @@
  *
  * @brief Contains the UbidotsPublisher subclass of dataPublisher for
  * publishing data to the Ubidots IoT platform at https://ubidots.com
-*/
+ */
 
 // Header Guards
 #ifndef SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_
@@ -32,9 +32,11 @@
 /**
  * @brief The UbidotsPublisher subclass of dataPublisher for publishing data
  * to the Ubidots data portal at https://ubidots.com
+ *
+ * @ingroup the_publishers
  */
 class UbidotsPublisher : public dataPublisher {
-public:
+ public:
     // Constructors
     /**
      * @brief Construct a new Ubidots Publisher object with no members set.
@@ -61,28 +63,28 @@ public:
      * set-up function.
      */
     explicit UbidotsPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                     uint8_t sendOffset = 0);
+                              uint8_t sendOffset = 0);
     /**
-    * @brief Construct a new Ubidots Publisher object
-    *
-    * @param baseLogger The logger supplying the data to be published
-    * @param inClient An Arduino client instance to use to print data to.
-    * Allows the use of any type of client and multiple clients tied to a
-    * single TinyGSM modem instance
-    * @param sendEveryX Currently unimplemented, intended for future use to
-    * enable caching and bulk publishing
-    * @param sendOffset Currently unimplemented, intended for future use to
-    * enable publishing data at a time slightly delayed from when it is
-    * collected
-    *
-    * @note It is possible (though very unlikey) that using this constructor
-    * could cause errors if the compiler attempts to initialize the publisher
-    * instance before the logger instance.  If you suspect you are seeing that
-    * issue, use the null constructor and a populated begin(...) within your
-    * set-up function.
-    */
+     * @brief Construct a new Ubidots Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param sendEveryX Currently unimplemented, intended for future use to
+     * enable caching and bulk publishing
+     * @param sendOffset Currently unimplemented, intended for future use to
+     * enable publishing data at a time slightly delayed from when it is
+     * collected
+     *
+     * @note It is possible (though very unlikey) that using this constructor
+     * could cause errors if the compiler attempts to initialize the publisher
+     * instance before the logger instance.  If you suspect you are seeing that
+     * issue, use the null constructor and a populated begin(...) within your
+     * set-up function.
+     */
     UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -100,8 +102,8 @@ public:
      * collected
      */
     UbidotsPublisher(Logger& baseLogger, const char* authentificationToken,
-                    const char* deviceID,uint8_t sendEveryX = 1,
-                    uint8_t sendOffset = 0);
+                     const char* deviceID, uint8_t sendEveryX = 1,
+                     uint8_t sendOffset = 0);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -122,9 +124,8 @@ public:
      * collected
      */
     UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                    const char* authentificationToken,
-                    const char* deviceID, uint8_t sendEveryX = 1,
-                    uint8_t sendOffset = 0);
+                     const char* authentificationToken, const char* deviceID,
+                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */
@@ -190,16 +191,16 @@ public:
     void begin(Logger& baseLogger, Client* inClient,
                const char* authentificationToken, const char* deviceID);
     /**
-    * @copydoc dataPublisher::begin(Logger& baseLogger)
-    * @param authentificationToken The authentication token from Ubdots, either
-    * the Organization's Integration Token (under Users > Organization menu,
-    * visible by Admin only) OR the STEM User's Device Token (under the
-    * specific device's setup panel).
-    * @param deviceID The device API Label from Ubidots, derived from the
-    * user-specified device name.
-    */
+     * @copydoc dataPublisher::begin(Logger& baseLogger)
+     * @param authentificationToken The authentication token from Ubdots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
+     * @param deviceID The device API Label from Ubidots, derived from the
+     * user-specified device name.
+     */
     void begin(Logger& baseLogger, const char* authentificationToken,
-              const char* deviceID);
+               const char* deviceID);
 
     // Post Data to Ubidots
     /**
@@ -215,19 +216,19 @@ public:
      * single TinyGSM modem instance
      * @return **int16_t** The http status code of the response.
      */
-     int16_t publishData(Client* outClient) override;
+    int16_t publishData(Client* outClient) override;
 
-protected:
+ protected:
     /**
      * @anchor ubidots_post_vars
      * @name Portions of the POST request to Ubidots
      *
      * @{
      */
-    static const char* postEndpoint;   ///< The endpoint
-    static const char* ubidotsHost;    ///< The host name
-    static const int   ubidotsPort;    ///< The host port
-    static const char* tokenHeader;    ///< The token header text
+    static const char* postEndpoint;  ///< The endpoint
+    static const char* ubidotsHost;   ///< The host name
+    static const int   ubidotsPort;   ///< The host port
+    static const char* tokenHeader;   ///< The token header text
     // static const char *cacheHeader;  ///< The cache header text
     // static const char *connectionHeader;  ///< The keep alive header text
     static const char* contentLengthHeader;  ///< The content length header text
@@ -243,7 +244,7 @@ protected:
     static const char* payload;  ///< The JSON initial characters
     /**@}*/
 
-private:
+ private:
     // Tokens for Ubidots
     const char* _authentificationToken;
 };
