@@ -49,7 +49,7 @@ install:
   - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
   - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
   - pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
-  - pio lib -g install testato/SoftwareWire
+  - pio lib -g install https://github.com/Testato/SoftwareWire.git
   - pio lib -g install vshymanskyy/StreamDebugger
   - pio update
   - pio lib -g list
