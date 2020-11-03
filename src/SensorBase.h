@@ -85,6 +85,26 @@ class Sensor {
            int8_t powerPin = -1, int8_t dataPin = -1,
            uint8_t measurementsToAverage = 1);
     /**
+     * @brief Dis-allowed constructor for a new Sensor object from a copy of
+     * another Sensor object - the deleted copy constructor.
+     *
+     * The copy constructor is explicitly deleted.  Sensor objects should not
+     * (and here cannot) be copied to avoid confusion over which sensor object
+     * specific variables are tied to.
+     *
+     * @param copy_from_me The Sensor object to copy.
+     */
+    Sensor(const Sensor& copy_from_me) = delete;
+    /**
+     * @brief Dis-allowed assignment of one Sensor object to another - the
+     * deleted assignment operator.
+     *
+     * The assignment operator is explicitly deleted.  Sensor objects should not
+     * (and here cannot) be assigned to each other to avoid confusion over which
+     * sensor object specific variables are tied to.
+     */
+    Sensor& operator=(const Sensor& copy_from_me) = delete;
+    /**
      * @brief Destroy the Sensor object - no action taken.
      */
     virtual ~Sensor();
