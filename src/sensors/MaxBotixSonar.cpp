@@ -97,9 +97,8 @@ bool MaxBotixSonar::wake(void) {
 
 bool MaxBotixSonar::addSingleMeasurementResult(void) {
     // Initialize values
-    bool    success       = false;
-    uint8_t rangeAttempts = 0;
-    int16_t result        = -9999;
+    bool    success = false;
+    int16_t result  = -9999;
 
     // Clear anything out of the stream buffer
     uint8_t junkChars = _stream->available();
@@ -123,6 +122,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
     if (bitRead(_sensorStatus, 6)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
+        uint8_t rangeAttempts = 0;
         while (success == false && rangeAttempts < 25) {
             // If the sonar is running on a trigger, activating the trigger
             // should in theory happen within the startSingleMeasurement

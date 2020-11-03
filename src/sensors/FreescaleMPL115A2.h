@@ -200,10 +200,6 @@ class MPL115A2 : public Sensor {
      */
     Adafruit_MPL115A2 mpl115a2_internal;
     /**
-     * @brief The I2C address of the MPL115A2.
-     */
-    uint8_t _i2cAddressHex;
-    /**
      * @brief An internal reference to the hardware Wire instance.
      */
     TwoWire* _i2c;

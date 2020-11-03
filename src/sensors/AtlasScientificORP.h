@@ -175,9 +175,9 @@ class AtlasScientificORP : public AtlasParent {
     AtlasScientificORP(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                        uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                      ATLAS_ORP_WARM_UP_TIME_MS,
+        : AtlasParent(powerPin, dataPin, clockPin, i2cAddressHex,
+                      measurementsToAverage, "AtlasScientificORP",
+                      ATLAS_ORP_NUM_VARIABLES, ATLAS_ORP_WARM_UP_TIME_MS,
                       ATLAS_ORP_STABILIZATION_TIME_MS,
                       ATLAS_ORP_MEASUREMENT_TIME_MS) {}
 #else

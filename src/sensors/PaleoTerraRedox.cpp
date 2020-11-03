@@ -93,7 +93,8 @@ bool PaleoTerraRedox::setup(void) {
     // buffer.  In the case of the Wire library, that will never happen and
     // the timeout period is a useless delay.
     _i2c->setTimeout(0);
-    return Sensor::setup();  // this will set pin modes and the setup status bit
+    return Sensor::setup();  // this will set pin modes and the setup status
+                             // bit
 }
 
 
@@ -107,13 +108,14 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     byte i2c_status = -1;
     if (_millisMeasurementRequested > 0) {
         _i2c->beginTransmission(_i2cAddressHex);
-        _i2c->write(
-            B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
+        _i2c->write(B10001100);  // initiate conversion, One-Shot mode, 18
+                                 // bits, PGA x1
         i2c_status = _i2c->endTransmission();
 
         delay(300);
 
-        _i2c->requestFrom(int(_i2cAddressHex), 4);  // Get 4 bytes from device
+        _i2c->requestFrom(int(_i2cAddressHex),
+                          4);  // Get 4 bytes from device
         byte res1 = _i2c->read();
         byte res2 = _i2c->read();
         byte res3 = _i2c->read();
@@ -142,8 +144,8 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
 
     // ADD FAILURE CONDITIONS!!
     if (isnan(res))
-        res = -9999;  // list a failure if the sensor returns nan (not sure how
-                      // this would happen, keep to be safe)
+        res = -9999;  // list a failure if the sensor returns nan (not sure
+                      // how this would happen, keep to be safe)
     else if (res == 0 && i2c_status == 0 && config == 0)
         res = -9999;  // List a failure when the sensor is not connected
     // Store the results in the sensorValues array
