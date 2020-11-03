@@ -100,10 +100,7 @@ bool PaleoTerraRedox::setup(void) {
 bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     bool success = false;
 
-    byte res1   = 0;  // Data transfer values
-    byte res2   = 0;
-    byte res3   = 0;
-    byte config = 0;
+    byte config = 0;  // Data transfer values
 
     float res = 0;  // Calculated voltage in uV
 
@@ -117,10 +114,10 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
         delay(300);
 
         _i2c->requestFrom(int(_i2cAddressHex), 4);  // Get 4 bytes from device
-        res1   = _i2c->read();
-        res2   = _i2c->read();
-        res3   = _i2c->read();
-        config = _i2c->read();
+        byte res1 = _i2c->read();
+        byte res2 = _i2c->read();
+        byte res3 = _i2c->read();
+        config    = _i2c->read();
 
         res      = 0;
         int sign = bitRead(res1, 1);  // one but least significant bit

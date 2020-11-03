@@ -23,7 +23,7 @@ RainCounterI2C::RainCounterI2C(SoftwareWire* theI2C, uint8_t i2cAddressHex,
     createdSoftwareWire = false;
     _rainPerTip         = rainPerTip;
 }
-RainCounterI2C::RainCounterI2C(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+RainCounterI2C::RainCounterI2C(int8_t dataPin, int8_t clockPin,
                                uint8_t i2cAddressHex, float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1,
@@ -100,7 +100,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
-    if (_i2c->requestFrom(int(_i2cAddressHex), 2)) {
+    if (_i2c->requestFrom(static_cast<uint8_t>(_i2cAddressHex), 2)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         uint8_t Byte1 = _i2c->read();  // Low byte of data
