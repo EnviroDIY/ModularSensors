@@ -91,7 +91,7 @@ bool BoschBME280::wake(void) {
     //  - built-in IIR filter = off
     //  - sleep time between measurements = 0.5ms
     // TODO(SRGDamia1):  Figure out why this is necessary; setSampling should be
-    // enough this adds a bunch of small delays...
+    // enough and this adds a bunch of small delays...
     bme_internal.begin(_i2cAddressHex, _i2c);
 
     // When the Adafruit library is updated to remove the built-in delay after

@@ -100,7 +100,8 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
-    if (_i2c->requestFrom(static_cast<uint8_t>(_i2cAddressHex), 2)) {
+    if (_i2c->requestFrom(static_cast<uint8_t>(_i2cAddressHex),
+                          static_cast<uint8_t>(2))) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
         uint8_t Byte1 = _i2c->read();  // Low byte of data

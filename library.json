@@ -109,7 +109,7 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "~0.10.8",
+      "version": "~0.10.9",
       "note": "A small Arduino library for GPRS modules.",
       "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],
       "frameworks": "arduino",
@@ -172,7 +172,7 @@
       "owner": "adafruit",
       "library id": "166",
       "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
-      "version": "~2.1.1",
+      "version": "~2.1.2",
       "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
