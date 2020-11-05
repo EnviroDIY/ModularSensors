@@ -52,8 +52,8 @@
  * @section am2315_temperature Temperature Output
  * - Range is -40°C to +125°C
  * - Accuracy is ±0.1°C
- * - Result stored in sensorValues[1]
- * - Resolution is 0.1°C (16 bit)
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #AM2315_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1°C (16 bit) @m_span{m-dim}(@ref #AM2315_TEMP_RESOLUTION = 1)@m_endspan
  * - Reported as degrees Celsius
  * - Default variable code is AM2315Temp
  *
@@ -63,8 +63,8 @@
  * @section am2315_humidity Relative Humidity Output
  * - Range is 0 to 100% RH
  * - Accuracy is ± 2 % RH at 25°C
- * - Result stored in sensorValues[0]
- * - Resolution is 0.1 % RH (16 bit)
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #AM2315_HUMIDITY_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.1 % RH (16 bit) @m_span{m-dim}(@ref #AM2315_HUMIDITY_RESOLUTION = 1)@m_endspan
  * - Reported as percent relative humidity
  * - Default variable code is AM2315Humidity
  *

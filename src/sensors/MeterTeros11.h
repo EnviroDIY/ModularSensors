@@ -58,26 +58,26 @@
  * - Digital Output Voltage (logic high), 3.6 typical
  *
  * @section teros11_ea Ea Output
- *   - Range is 1 (air) to 80 (water)
- *   - Accuracy is:
+ * - Range is 1 (air) to 80 (water)
+ * - Accuracy is:
  *     - 1–40 (soil range) , ±1 εa (unitless)
  *     - 40–80, 15% of measurement
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.00001
- *   - Reported as farads per meter (F/m)
- *   - Default variable code is TerosSoilEa
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #TEROS11_EA_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.00001 @m_span{m-dim}(@ref #TEROS11_EA_RESOLUTION = 5)@m_endspan
+ * - Reported as farads per meter (F/m)
+ * - Default variable code is TerosSoilEa
  *
  * @variabledoc{teros11_ea,MeterTeros11,Ea,TerosSoilEa}
  *
  * @section teros11_temp Temperature Output
- *   - Range is -40°C to 60°C
- *   - Accuracy is:
+ * - Range is -40°C to 60°C
+ * - Accuracy is:
  *     - ± 1°C, from -40°C to 0°C
  *     - ± 0.5°C, from 0°C to + 60°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is TerosSoilTemp
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #TEROS11_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1°C @m_span{m-dim}(@ref #TEROS11_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is TerosSoilTemp
  *
  * @variabledoc{teros11_temp,MeterTeros11,Temp,TerosSoilTemp}
  *
@@ -90,8 +90,8 @@
  * that have solution electrical conductivity <8 dS/m
  *     - Medium specific calibration: ±0.01–0.02 m3/m3 (± 1-2% VWC)in any porous
  * medium
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.001 m3/m3 (0.1% VWC) from 0 – 70% VWC
+ *   - Result stored in sensorValues[2] @m_span{m-dim}(@ref #TEROS11_VWC_VAR_NUM = 2)@m_endspan
+ *   - Resolution is 0.001 m3/m3 (0.1% VWC) from 0 – 70% VWC @m_span{m-dim}(@ref #TEROS11_VWC_RESOLUTION = 3)@m_endspan
  *   - Reported as volumetric percent water content (%, m3/100m3)
  *   - Default variable code is TerosSoilVWC
  *

@@ -80,10 +80,11 @@
  *   - Accuracy:
  *     - ± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20
  *     - ± 2°C for DS1822 and MAX31820
- *   - Result stored in sensorValues[0]
+ *   - Result stored in sensorValues[0] @m_span{m-dim}(@ref #DS18_TEMP_VAR_NUM = 0)@m_endspan
  *   - Resolution:
  *     - 0.0625°C for DS18B20, DS1822, and MAX31820 (12-bit)
  *     - 0.5°C for DS18S20 (9-bit)
+ *     - @m_span{m-dim}@ref #DS18_TEMP_RESOLUTION = 4@m_endspan
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is DS18Temp
  *

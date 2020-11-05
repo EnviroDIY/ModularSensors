@@ -46,32 +46,32 @@
  *      - @m_span{m-dim}@ref #ACCULEVEL_MEASUREMENT_TIME_MS = 1500@m_endspan
  *
  * @section acculevel_pressure Pressure Output
- *   - Range is 0 to 11 bar
- *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.002%
- *   - Reported as millibar (mb)
- *   - Default variable code is kellerAccuPress
+ * - Range is 0 to 11 bar
+ * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #KELLER_PRESSURE_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.002% @m_span{m-dim}(@ref #ACCULEVEL_PRESSURE_RESOLUTION = 5)@m_endspan
+ * - Reported as millibar (mb)
+ * - Default variable code is kellerAccuPress
  *
  * @variabledoc{acculevel_pressure,KellerAcculevel,Pressure,kellerAccuPress}
  *
  * @section acculevel_temp Temperature Output
- *   - Range is -10°C to 60°C
- *   - Accuracy is not specified in the sensor datasheet
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is kellerAccuTemp
+ * - Range is -10°C to 60°C
+ * - Accuracy is not specified in the sensor datasheet
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #KELLER_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.01°C @m_span{m-dim}(@ref #ACCULEVEL_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is kellerAccuTemp
  *
  * @variabledoc{acculevel_temp,KellerAcculevel,Temp,kellerAccuTemp}
  *
  * @section acculevel_height Height Output
- *   - Range is 0 to 900 feet
- *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.002%
- *   - Reported as meters (m)
- *   - Default variable code is kellerAccuHeigh
+ * - Range is 0 to 900 feet
+ * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #KELLER_HEIGHT_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.002% @m_span{m-dim}(@ref #ACCULEVEL_HEIGHT_RESOLUTION = 4)@m_endspan
+ * - Reported as meters (m)
+ * - Default variable code is kellerAccuHeigh
  *
  * @variabledoc{acculevel_height,KellerAcculevel,Height,kellerAccuHeight}
  *

@@ -40,22 +40,22 @@
  *      - @m_span{m-dim}@ref #Y520_MEASUREMENT_TIME_MS = 2700@m_endspan
  *
  * @section y520_cond Conductivity Output
- *   - Range is 1 µS/cm to 200 mS/cm
- *   - Accuracy is ± 1 % Full Scale
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.1 µS/cm
- *   - Reported as microsiemens per centimeter (µS/cm)
- *   - Default variable code is Y520Cond
+ * - Range is 1 µS/cm to 200 mS/cm
+ * - Accuracy is ± 1 % Full Scale
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y520_COND_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.1 µS/cm @m_span{m-dim}(@ref #Y520_COND_RESOLUTION = 1)@m_endspan
+ * - Reported as microsiemens per centimeter (µS/cm)
+ * - Default variable code is Y520Cond
  *
  * @variabledoc{y520_cond,YosemitechY520,Cond,Y520Cond}
  *
  * @section y520_temp Temperature Output
- *   - Range is 0°C to + 50°C
- *   - Accuracy is ± 0.2°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1 °C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is Y520Temp
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y520_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1 °C @m_span{m-dim}(@ref #Y520_TEMP_RESOLUTION = 1)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is Y520Temp
  *
  * @variabledoc{y520_temp,YosemitechY520,Temp,Y520Temp}
  *

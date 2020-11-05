@@ -50,8 +50,8 @@
  * inbuilt ADC, if applicable.
  * - Range is assumed to be 0 to 5V
  * - Accuracy is processor dependent
- * - Result stored in sensorValues[0]
- * - Resolution is 0.005V
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #PROCESSOR_BATTERY_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.005V @m_span{m-dim}(@ref #PROCESSOR_BATTERY_RESOLUTION = 3)@m_endspan
  *   - 0-5V with a 10bit ADC
  * - Reported as volts (V)
  * - Default variable code is batteryVoltage
@@ -64,22 +64,23 @@
  * same for a single logger program**_.  If this number is not constant over
  * time, there is a memory leak and something wrong with your logging program.
  * - Range is 0 to full RAM available on processor
- * - Result stored in sensorValues[1]
- * - Resolution is 1 bit
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #PROCESSOR_RAM_VAR_NUM = 1)@m_endspan
+ * - Resolution is 1 bit @m_span{m-dim}(@ref #PROCESSOR_RAM_RESOLUTION = 0)@m_endspan
  * - Reported in bits
  * - Default variable code is freeSRAM
  *
  * @variabledoc{processor_ram,ProcessorStats,FreeRam,freeSRAM}
  *
  * @section processor_sampno Sample Number
- * This is a board diagnostic.  It is _**roughly**_ the number of samples
+ * @note This is a board diagnostic.  It is _**roughly**_ the number of samples
  * measured since the processor was last restarted.  This value simply
  * increments up by one every time the addSingleMeasurementResult() function is
  * called for the processor sensor.  It is intended only as a rough diagnostic
  * to show when the processor restarts.
- * - Result stored in sensorValues[2]
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #PROCESSOR_SAMPNUM_VAR_NUM = 2)@m_endspan
  * - Reported as a dimensionless sequence number
  * - Default variable code is SampNum
+ * - Resolution is 1 @m_span{m-dim}(@ref #PROCESSOR_SAMPNUM_RESOLUTION = 0)@m_endspan
  *
  * @variabledoc{processor_sampno,ProcessorStats,SampleNumber,SampNum}
 

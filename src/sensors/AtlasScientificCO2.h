@@ -46,23 +46,23 @@
  *
  * ___
  * @section atlas_co2_co2 Carbon Dioxide Output
- *   - Resolution is 1 ppm
- *   - Accuracy is ± 3% or ± 30 ppm
- *   - Range is 0 − 10000 ppm
- *   - Reported as parts per million (ppm)
- *   - Result stored in sensorValues[0]
- *   - Default variable code is AtlasCO2ppm
+ * - Resolution is 1 ppm @m_span{m-dim}(@ref #ATLAS_CO2_RESOLUTION = 1)@m_endspan
+ * - Accuracy is ± 3% or ± 30 ppm
+ * - Range is 0 − 10000 ppm
+ * - Reported as parts per million (ppm)
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_CO2_VAR_NUM = 0)@m_endspan
+ * - Default variable code is AtlasCO2ppm
  *
  * @variabledoc{atlas_co2_co2,AtlasScientificCO2,CO2,AtlasCO2ppm}
  *
  * ___
  * @section atlas_co2_temp Temperature Output
- *   - Resolution is 1°C
- *   - Accuracy is not reported on the sensor datasheet
- *   - Range is -20°C to +50°C
- *   - Reported as degrees Celsius (°C)
- *   - Result stored in sensorValues[1]
- *   - Default variable code is AtlasCO2Temp
+ * - Resolution is 1°C @m_span{m-dim}(@ref #ATLAS_CO2TEMP_RESOLUTION = 0)@m_endspan
+ * - Accuracy is not reported on the sensor datasheet
+ * - Range is -20°C to +50°C
+ * - Reported as degrees Celsius (°C)
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #ATLAS_CO2TEMP_VAR_NUM = 1)@m_endspan
+ * - Default variable code is AtlasCO2Temp
  *
  * @variabledoc{atlas_co2_temp,AtlasScientificCO2,Temp,AtlasCO2Temp}
  *

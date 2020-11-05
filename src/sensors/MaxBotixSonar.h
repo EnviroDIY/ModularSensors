@@ -95,12 +95,12 @@
  *      - @m_span{m-dim}@ref #HRXL_MEASUREMENT_TIME_MS = 166@m_endspan
  *
  * @section maxbotix_range Range Output
- *   - Range is 300 to 5000mm or 500 to 9999mm, depending on model
- *   - Accuracy is ±1%
- *   - Result stored in sensorValues[0]
- *   - Resolution is 1mm
- *   - Reported as millimeters (mm)
- *   - Default variable code is SonarRange
+ * - Range is 300 to 5000mm or 500 to 9999mm, depending on model
+ * - Accuracy is ±1%
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #HRXL_VAR_NUM = 0)@m_endspan
+ * - Resolution is 1mm @m_span{m-dim}(@ref #HRXL_RESOLUTION = 0)@m_endspan
+ * - Reported as millimeters (mm)
+ * - Default variable code is SonarRange
  *
  * @variabledoc{maxbotix_range,MaxBotixSonar,Range,SonarRange}
  *

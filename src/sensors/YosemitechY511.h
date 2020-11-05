@@ -40,22 +40,22 @@
  *      - @m_span{m-dim}@ref #Y511_MEASUREMENT_TIME_MS = 4000@m_endspan
  *
  * @section y511_turb Turbidity Output
- *   - Range is 0.1 to 1000 NTU
- *   - Accuracy is ± 5 % or 0.3 NTU
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.01 NTU
- *   - Reported as Nephelometric Turbidity Units (NTU)
- *   - Default variable code is Y511Turbidity
+ * - Range is 0.1 to 1000 NTU
+ * - Accuracy is ± 5 % or 0.3 NTU
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y511_TURB_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.01 NTU @m_span{m-dim}(@ref #Y511_TURB_RESOLUTION = 2)@m_endspan
+ * - Reported as Nephelometric Turbidity Units (NTU)
+ * - Default variable code is Y511Turbidity
  *
  * @variabledoc{y511_turb,YosemitechY511,Turbidity,Y511Turbidity}
  *
  * @section y511_temp Temperature Output
- *   - Range is 0°C to + 50°C
- *   - Accuracy is ± 0.2°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1 °C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is Y511Temp
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y511_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1 °C @m_span{m-dim}(@ref #Y511_TEMP_RESOLUTION = 1)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is Y511Temp
  *
  * @variabledoc{y511_temp,YosemitechY511,Temp,Y511Temp}
  *

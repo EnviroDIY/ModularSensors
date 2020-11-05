@@ -51,13 +51,12 @@
  * @warning Either all or none your attached redox may use software I2C.
  * Using some with software I2C and others with hardware I2C is not supported.
  *
- * @section pt_redox_volt Voltate Output
- *   - Range is -40°C to +85°C
- *   - Accuracy is ±0.8°C
- *   - Result stored in sensorValues[0]
- *   - Resolution is <0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is PTRVoltage
+ * @section pt_redox_volt Voltage Output
+ * - Accuracy is ±5mV
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #PTR_VOLT_VAR_NUM = 0)@m_endspan
+ * - Resolution is 1mV @m_span{m-dim}(@ref #PTR_VOLT_RESOLUTION = 1)@m_endspan
+ * - Reported as millivolts (mV)
+ * - Default variable code is PTRVoltage
  *
  * @variabledoc{pt_redox_volt,PaleoTerraRedox,Volt,PTRVoltage}
  *

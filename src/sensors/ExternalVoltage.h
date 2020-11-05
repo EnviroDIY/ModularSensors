@@ -143,14 +143,16 @@
  *     - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
  *   - Resolution:
  *     - 16-bit ADC:
+ *       - @m_span{m-dim}@ref #EXT_VOLT_RESOLUTION = 4@m_endspan
  *       - without voltage divider:  0.125 mV
  *       - 1/gain = 3x: 0.375 mV
  *       - 1/gain = 10x: 1.25 mV
  *     - 12-bit ADC:
+ *       - @m_span{m-dim}@ref #EXT_VOLT_RESOLUTION = 1@m_endspan
  *       - without voltage divider:  2 mV
  *       - 1/gain = 3x: 6 mV
  *       - 1/gain = 10x: 20 mV *
- *   - Result stored in sensorvalues[0]
+ *   - Result stored in sensorValues[0] @m_span{m-dim}(@ref #EXT_VOLT_VAR_NUM = 0)@m_endspan
  *   - Reported as volts (V)
  *   - Default variable code is extVoltage
  *

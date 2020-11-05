@@ -55,34 +55,34 @@
  *      - @m_span{m-dim}@ref #TM_MEASUREMENT_TIME_MS = 200@m_endspan
  *
  * @section fivetm_ea Ea Output
- *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)
- *   - Accuracy for generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
- *   - Accuracy for medium-specific calibration: ± 0.02 m3/m3 (± 2% VWC)
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
- *   - Reported as farads per meter (F/m)
- *   - Default variable code is SoilEa
+ * - Range is 0 – 1 m3/m3 (0 – 100% VWC)
+ * - Accuracy for generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+ * - Accuracy for medium-specific calibration: ± 0.02 m3/m3 (± 2% VWC)
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #TM_EA_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC @m_span{m-dim}(@ref #TM_EA_RESOLUTION = 5)@m_endspan
+ * - Reported as farads per meter (F/m)
+ * - Default variable code is SoilEa
  *
  * @variabledoc{fivetm_ea,Decagon5TM,Ea,SoilEa}
  *
  * @section fivetm_temp Temp Output
- *   - Range is - 40°C to + 50°C
- *   - Accuracy is ± 1°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is SoilTemp
+ * - Range is - 40°C to + 50°C
+ * - Accuracy is ± 1°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #TM_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1°C @m_span{m-dim}(@ref #TM_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is SoilTemp
  *
  * @variabledoc{fivetm_temp,Decagon5TM,Temp,SoilTemp}
  *
  * @section fivetm_vwc VWC Output
- *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)
- *   - Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
- *   - Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
- *   - Reported as volumetric percent water content (%, m3/100m3)
- *   - Default variable code is SoilVWC
+ * - Range is 0 – 1 m3/m3 (0 – 100% VWC)
+ * - Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+ * - Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #TM_VWC_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC @m_span{m-dim}(@ref #TM_VWC_RESOLUTION = 3)@m_endspan
+ * - Reported as volumetric percent water content (%, m3/100m3)
+ * - Default variable code is SoilVWC
  *
  * @variabledoc{fivetm_vwc,Decagon5TM,VWC,SoilVWC}
  *

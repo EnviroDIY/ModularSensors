@@ -41,22 +41,22 @@
  *      - @m_span{m-dim}@ref #Y514_MEASUREMENT_TIME_MS = 2000@m_endspan
  *
  * @section y514_chloro Chlorophyll Output
- *   - Range is 0 to 400 µg/L or 0 to 100 RFU
- *   - Accuracy is ± 1 %
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.1 µg/L / 0.1 RFU
- *   - Reported as micrograms per liter (µg/L)
- *   - Default variable code is Y514Chloro
+ * - Range is 0 to 400 µg/L or 0 to 100 RFU
+ * - Accuracy is ± 1 %
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y514_CHLORO_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.1 µg/L / 0.1 RFU @m_span{m-dim}(@ref #Y514_CHLORO_RESOLUTION = 1)@m_endspan
+ * - Reported as micrograms per liter (µg/L)
+ * - Default variable code is Y514Chloro
  *
  * @variabledoc{y514_chloro,YosemitechY514,Chlorophyll,Y514Chloro}
  *
  * @section y514_temp Temperature Output
- *   - Range is 0°C to + 50°C
- *   - Accuracy is ± 0.2°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1 °C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is Y514Temp
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y514_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1 °C @m_span{m-dim}(@ref #Y514_TEMP_RESOLUTION = 1)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is Y514Temp
  *
  * @variabledoc{y514_temp,YosemitechY514,Temp,Y514Temp}
  *

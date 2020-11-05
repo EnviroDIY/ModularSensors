@@ -56,32 +56,33 @@
  *
  * ___
  * @section dht_humidity Relative Humidity Output
- * - Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11
+ * - Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11 @m_span{m-dim}(@ref #DHT_HUMIDITY_RESOLUTION = 1)@m_endspan
  * - Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
  * - Range is 0 to 100 % RH
  * - Reported as percent relative humidity (% RH)
- * - Result stored in sensorValues[0]
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #DHT_HUMIDITY_VAR_NUM = 0)@m_endspan
  * - Default variable code is DHTHumidity
  *
  * @variabledoc{dht_humidity,AOSongDHT,Humidity,DHTHumidity}
  *
  * ___
  * @section dht_temperature Temperature Output
- * - Resolution is 0.1°C
+ * - Resolution is 0.1°C @m_span{m-dim}(@ref #DHT_TEMP_RESOLUTION = 1)@m_endspan
  * - Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
  * - Range is -40°C to +80°C
  * - Reported as degrees Celsius (°C)
- * - Result stored in sensorValues[1]
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #DHT_TEMP_VAR_NUM = 1)@m_endspan
  * - Default variable code is DHTTemp
  *
  * @variabledoc{dht_temperature,AOSongDHT,Temp,DHTTemp}
  *
  * ___
  * @section dht_hi Heat Index Output
+ * - Resolution is 0.1°C @m_span{m-dim}(@ref #DHT_HI_RESOLUTION = 1)@m_endspan
  * - Heat index is calculated within the Adafruit library from the measured
  * temperature and humidity.
  * - Reported as degrees Celsius (°C)
- * - Result stored in sensorValues[2]
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #DHT_HI_VAR_NUM = 2)@m_endspan
  * - Default variable code is heatIndex
  *
  * @variabledoc{dht_hi,AOSongDHT,HI,heatIndex}

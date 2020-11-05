@@ -40,34 +40,34 @@
  *      - @m_span{m-dim}@ref #Y550_MEASUREMENT_TIME_MS = 2000@m_endspan
  *
  * @section y550_cod COD Output
- *   - Range is:
+ * - Range is:
  *     - 0.75 to 370 mg/L COD (equiv. KHP)
  *     - 0.2 to 150 mg/L TOC (equiv. KHP)
- *   - Accuracy is not reported on sensor datasheet
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.01 mg/L COD
- *   - Reported as milligrams per liter (mg/L)
- *   - Default variable code is Y550COD
+ * - Accuracy is not reported on sensor datasheet
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y550_COD_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.01 mg/L COD @m_span{m-dim}(@ref #Y550_COD_RESOLUTION = 2)@m_endspan
+ * - Reported as milligrams per liter (mg/L)
+ * - Default variable code is Y550COD
  *
  * @variabledoc{y550_cod,YosemitechY550,COD,Y550COD}
  *
  * @section y550_temp Temperature Output
- *   - Range is 5°C to + 45°C
- *   - Accuracy is ± 0.2°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1 °C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is Y550Temp
+ * - Range is 5°C to + 45°C
+ * - Accuracy is ± 0.2°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y550_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.01 °C @m_span{m-dim}(@ref #Y550_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is Y550Temp
  *
  * @variabledoc{y550_temp,YosemitechY550,Temp,Y550Temp}
  *
  * @section y550_turb Turbidity Output
- *   - Range is 0.1~1000 NTU
- *   - Accuracy is ＜5% or 0.3NTU
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.01 NTU
- *   - Reported as Nephelometric Turbidity Units (NTU)
- *   - Default variable code is Y550Turbidity
+ * - Range is 0.1~1000 NTU
+ * - Accuracy is ＜5% or 0.3NTU
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #Y550_TURB_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.01 NTU @m_span{m-dim}(@ref #Y550_TURB_RESOLUTION = 2)@m_endspan
+ * - Reported as Nephelometric Turbidity Units (NTU)
+ * - Default variable code is Y550Turbidity
  *
  * @variabledoc{y550_turb,YosemitechY550,Turbidity,Y550Turbidity}
  *

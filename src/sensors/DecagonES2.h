@@ -50,22 +50,22 @@
  *      - @m_span{m-dim}@ref #ES2_MEASUREMENT_TIME_MS = 250@m_endspan
  *
  * @section es2_cond Conductivity Output
- *   - Range is 0 – 120 mS/cm (bulk)
- *   - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.001 mS/cm = 1 µS/cm
- *   - Reported as microsiemens per centimeter (µS/cm)
- *   - Default variable code is ES2Cond
+ * - Range is 0 – 120 mS/cm (bulk)
+ * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ES2_COND_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.001 mS/cm = 1 µS/cm @m_span{m-dim}(@ref #ES2_COND_RESOLUTION = 1)@m_endspan
+ * - Reported as microsiemens per centimeter (µS/cm)
+ * - Default variable code is ES2Cond
  *
  * @variabledoc{es2_cond,DecagonES2,Cond,ES2Cond}
  *
  * @section es2_temp Temperature Output
- *   - Range is -40°C to +50°C
- *   - Accuracy is ±1°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is ES2Temp
+ * - Range is -40°C to +50°C
+ * - Accuracy is ±1°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #ES2_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1°C @m_span{m-dim}(@ref #ES2_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is ES2Temp
  *
  * @variabledoc{es2_temp,DecagonES2,Temp,ES2Temp}
  *

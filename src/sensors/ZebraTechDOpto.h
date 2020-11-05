@@ -54,32 +54,32 @@
  * possibly colliding with and confusing other sensor results.
  *
  * @section dopto_temp Temperature Output
- *   - Range is not specified in sensor datasheet
- *   - Accuracy is ± 0.1°C
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is DOtempC
+ * - Range is not specified in sensor datasheet
+ * - Accuracy is ± 0.1°C
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #DOPTO_TEMP_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.01°C @m_span{m-dim}(@ref #DOPTO_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is DOtempC
  *
  * @variabledoc{dopto_temp,ZebraTechDOpto,Temp,DOtempC}
  *
  * @section dopto_dopercent Dissolved Oxygen Percent Saturation Output
- *   - Range is not specified in sensor datasheet
- *   - Accuracy is 1% of reading or 0.02PPM, whichever is greater
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.01% / 0.001 PPM
- *   - Reported as percent saturation (%)
- *   - Default variable code is DOpercent
+ * - Range is not specified in sensor datasheet
+ * - Accuracy is 1% of reading or 0.02PPM, whichever is greater
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #DOPTO_DOPCT_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.01% / 0.001 PPM @m_span{m-dim}(@ref #DOPTO_DOPCT_RESOLUTION = 2)@m_endspan
+ * - Reported as percent saturation (%)
+ * - Default variable code is DOpercent
  *
  * @variabledoc{dopto_dopercent,ZebraTechDOpto,DOpct,DOpercent}
  *
  * @section dopto_domgl Dissolved Oxygen Concentration Output
- *   - Range is not specified in sensor datasheet
- *   - Accuracy is 1% of reading or 0.02PPM, whichever is greater
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.01% / 0.001 PPM
- *   - Reported as milligrams per liter (mg/L)
- *   - Default variable code is DOppm
+ * - Range is not specified in sensor datasheet
+ * - Accuracy is 1% of reading or 0.02PPM, whichever is greater
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #DOPTO_DOMGL_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.01% / 0.001 PPM @m_span{m-dim}(@ref #DOPTO_DOMGL_RESOLUTION = 3)@m_endspan
+ * - Reported as milligrams per liter (mg/L)
+ * - Default variable code is DOppm
  *
  * @variabledoc{dopto_domgl,ZebraTechDOpto,DOmgL,DOppm}
  *

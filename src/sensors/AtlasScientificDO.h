@@ -50,23 +50,23 @@
  *
  * ___
  * @section atlas_do_concentration Dissolved Oxygen Concentration Output
- *   - Accuracy is ± 0.05 mg/L
- *   - Range is 0.01 − 100+ mg/L
- *   - Resolution is 0.01 mg/L
+ * - Accuracy is ± 0.05 mg/L
+ * - Range is 0.01 − 100+ mg/L
+ * - Resolution is 0.01 mg/L @m_span{m-dim}(@ref #ATLAS_DOMGL_RESOLUTION = 2)@m_endspan
  *   - Reported in percent saturation
- *   - Result stored in sensorValues[0]
- *   - Default variable code is AtlasDOmgL
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_DOMGL_VAR_NUM = 0)@m_endspan
+ * - Default variable code is AtlasDOmgL
  *
  * @variabledoc{atlas_do_concentration,AtlasScientificDO,DOmgL,AtlasDOmgL}
  *
  * ___
  * @section atlas_do_percent Percent Oxygen Saturation Output
- *   - Accuracy is ± 0.05 mg/L
- *   - Range is 0.1 − 400+ % saturation
- *   - Resolution is 0.1 % saturation
+ * - Accuracy is ± 0.05 mg/L
+ * - Range is 0.1 − 400+ % saturation
+ * - Resolution is 0.1 % saturation @m_span{m-dim}(@ref #ATLAS_DOPCT_RESOLUTION = 1)@m_endspan
  *   - Reported in percent saturation
- *   - Result stored in sensorValues[1]
- *   - Default variable code is AtlasDOpct
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #ATLAS_DOPCT_VAR_NUM = 1)@m_endspan
+ * - Default variable code is AtlasDOpct
  *
  * @variabledoc{atlas_do_percent,AtlasScientificDO,DOpct,AtlasDOpct}
  *

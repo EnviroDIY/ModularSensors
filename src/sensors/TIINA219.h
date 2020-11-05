@@ -58,33 +58,33 @@
  *      - @m_span{m-dim}@ref #INA219_STABILIZATION_TIME_MS = 4000@m_endspan
  *
  * @section ina219_current Current Output
- *   - Range is between +/-0.4 Amps and +/-3.2 Amps
- *   - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
+ * - Range is between +/-0.4 Amps and +/-3.2 Amps
+ * - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
  * unknown)
- *   - Result stored in sensorValues[0]
- *   - Resolution is 12-bit
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #INA219_CURRENT_MA_VAR_NUM = 0)@m_endspan
+ * - Resolution is 12-bit @m_span{m-dim}(@ref #INA219_CURRENT_MA_RESOLUTION = 4)@m_endspan
  *     - 0.8mA using +/-3.2 Amp range
  *     - 0.1mA using +/-0.4 Amp range
- *   - Reported as milliamps (mA)
- *   - Default variable code is TIINA219Amp
+ * - Reported as milliamps (mA)
+ * - Default variable code is TIINA219Amp
  *
  * @variabledoc{ina219_current,TIINA219,Current,TIINA219Amp}
  *
  * @section ina219_volt Voltage Output
- *   - Range is 0 to 26V
- *   - Accuracy is ±4mV (1 LSB step size)
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.001V
- *   - Reported as volts (V)
- *   - Default variable code is TIINA219Volt
+ * - Range is 0 to 26V
+ * - Accuracy is ±4mV (1 LSB step size)
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #INA219_BUS_VOLTAGE_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.001V @m_span{m-dim}(@ref #INA219_BUS_VOLTAGE_RESOLUTION = 4)@m_endspan
+ * - Reported as volts (V)
+ * - Default variable code is TIINA219Volt
  *
  * @variabledoc{ina219_volt,TIINA219,Volt,TIINA219Volt}
  *
  * @section ina219_power Power Output
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.01mW
- *   - Reported as milliwatts (mW)
- *   - Default variable code is TIINA219Power
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #INA219_POWER_MW_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.01mW @m_span{m-dim}(@ref #INA219_POWER_MW_RESOLUTION = 2)@m_endspan
+ * - Reported as milliwatts (mW)
+ * - Default variable code is TIINA219Power
  *
  * @variabledoc{ina219_power,TIINA219,Power,TIINA219Power}
  *

@@ -66,13 +66,13 @@
  * to wait for stability or measuring.
  *
  * @section tally_events Events Output
- *   - Range and accuracy depend on the sensor used
+ * - Range and accuracy depend on the sensor used
  *     - For wind, we often use [Inspeed WS2R Version II Reed Switch Anemometer]
  *  (https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm)
- *   - Result stored in sensorValues[0]
- *   - Resolution is 1 event
- *   - Reported as dimensionless counts
- *   - Default variable code is TallyCounterI2CEvents
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #TALLY_EVENTS_VAR_NUM = 0)@m_endspan
+ * - Resolution is 1 event @m_span{m-dim}(@ref #TALLY_EVENTS_RESOLUTION = 0)@m_endspan
+ * - Reported as dimensionless counts
+ * - Default variable code is TallyCounterI2CEvents
  *
  * @variabledoc{tally_events,TallyCounterI2C,Events,TallyCounterI2CEvents}
  */

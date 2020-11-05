@@ -80,41 +80,41 @@
  * https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9
  *
  * @section bme280_temp Temperature Output
- *   - Range is -40°C to +85°C
- *   - Accuracy is ±0.5°C
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is BoschBME280Temp
+ * - Range is -40°C to +85°C
+ * - Accuracy is ±0.5°C
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #BME280_TEMP_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.01°C @m_span{m-dim}(@ref #BME280_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is BoschBME280Temp
  *
  * @variabledoc{bme280_temp,BoschBME280,Temp,BoschBME280Temp}
  *
  * @section bme280_humidity Humidity Output
- *   - Resolution is 0.008 % RH (16 bit)
- *   - Accuracy is ± 3 % RH
- *   - Range is 0 to 100% RH
- *   - Reported as percent relative humidity (% RH)
- *   - Result stored in sensorValues[1]
- *   - Default variable code is BoschBME280Humidity
+ * - Resolution is 0.008 % RH (16 bit) @m_span{m-dim}(@ref #BME280_HUMIDITY_RESOLUTION = 3)@m_endspan
+ * - Accuracy is ± 3 % RH
+ * - Range is 0 to 100% RH
+ * - Reported as percent relative humidity (% RH)
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #BME280_HUMIDITY_VAR_NUM = 1)@m_endspan
+ * - Default variable code is BoschBME280Humidity
  *
  * @variabledoc{bme280_humidity,BoschBME280,Humidity,BoschBME280Humidity}
  *
  * @section bme280_pressure Pressure Output
- *   - Range is 300 to 1100 hPa
+ * - Range is 300 to 1100 hPa
  *   - Absolute accuracy is ±1 hPa
  *   - Relative accuracy is ±0.12 hPa
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.18hPa
- *   - Reported as pascals (Pa)
- *   - Default variable code is BoschBME280Pressure
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #BME280_PRESSURE_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.18hPa @m_span{m-dim}(@ref #BME280_PRESSURE_RESOLUTION = 2)@m_endspan
+ * - Reported as pascals (Pa)
+ * - Default variable code is BoschBME280Pressure
  *
  * @variabledoc{bme280_pressure,BoschBME280,Pressure,BoschBME280Pressure}
  *
  * @section bme280_altitude Altitude Output
- *   - Result stored in sensorValues[3]
- *   - Resolution is 1m
- *   - Reported as meters (m)
- *   - Default variable code is BoschBME280Altitude
+ * - Result stored in sensorValues[3] @m_span{m-dim}(@ref #BME280_ALTITUDE_VAR_NUM = 3)@m_endspan
+ * - Resolution is 1m @m_span{m-dim}(@ref #BME280_ALTITUDE_RESOLUTION = 0)@m_endspan
+ * - Reported as meters (m)
+ * - Default variable code is BoschBME280Altitude
  *
  * @variabledoc{bme280_altitude,BoschBME280,Altitude,BoschBME280Altitude}
  * ___

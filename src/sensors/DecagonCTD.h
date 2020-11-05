@@ -49,32 +49,32 @@
  *      - @m_span{m-dim}@ref #CTD_MEASUREMENT_TIME_MS = 500@m_endspan
  *
  * @section hydros21_cond Conductivity Output
- *   - Range is 0 – 120 mS/cm (bulk)
- *   - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.001 mS/cm = 1 µS/cm
- *   - Reported as microsiemens per centimeter (µS/cm)
- *   - Default variable code is CTDcond
+ * - Range is 0 – 120 mS/cm (bulk)
+ * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #CTD_COND_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.001 mS/cm = 1 µS/cm @m_span{m-dim}(@ref #CTD_COND_RESOLUTION = 1)@m_endspan
+ * - Reported as microsiemens per centimeter (µS/cm)
+ * - Default variable code is CTDcond
  *
  * @variabledoc{hydros21_cond,DecagonCTD,Cond,CTDcond}
  *
  * @section hydros21_temp Temperature Output
- *   - Range is -11°C to +49°C
- *   - Accuracy is ±1°C
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.1°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is CTDtemp
+ * - Range is -11°C to +49°C
+ * - Accuracy is ±1°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #CTD_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1°C @m_span{m-dim}(@ref #CTD_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is CTDtemp
  *
  * @variabledoc{hydros21_temp,DecagonCTD,Temp,CTDtemp}
  *
  * @section hydros21_depth Depth Output
- *   - Range is 0 to 5 m or 0 to 10 m, depending on model
- *   - Accuracy is ±0.05% of full scale
- *   - Result stored in sensorValues[2]
- *   - Resolution is 2 mm
- *   - Reported as millimeters (mm)
- *   - Default variable code is CTDdepth
+ * - Range is 0 to 5 m or 0 to 10 m, depending on model
+ * - Accuracy is ±0.05% of full scale
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #CTD_DEPTH_VAR_NUM = 0)@m_endspan
+ * - Resolution is 2 mm @m_span{m-dim}(@ref #CTD_DEPTH_RESOLUTION = 1)@m_endspan
+ * - Reported as millimeters (mm)
+ * - Default variable code is CTDdepth
  *
  * @variabledoc{hydros21_depth,DecagonCTD,Depth,CTDdepth}
  *

@@ -73,12 +73,12 @@
  *      - @m_span{m-dim}@ref #MS5803_STABILIZATION_TIME_MS = 0@m_endspan
  *
  * @section ms5803_temp Temperature Output
- *   - Range is -40°C to +85°C
- *   - Accuracy is ±0.8°C
- *   - Result stored in sensorValues[0]
- *   - Resolution is <0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is MeaSpecMS5803Temp
+ * - Range is -40°C to +85°C
+ * - Accuracy is ±0.8°C
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #MS5803_TEMP_VAR_NUM = 0)@m_endspan
+ * - Resolution is <0.01°C @m_span{m-dim}(@ref #MS5803_TEMP_RESOLUTION = 2)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is MeaSpecMS5803Temp
  *
  * @variabledoc{ms5803_temp,MeaSpecMS5803,Temp,MeaSpecMS5803Temp}
  *
@@ -91,11 +91,12 @@
  *   - Long term stability is:
  *      - 14ba: -20 mbar/yr
  *      - 2ba: -1 mbar/yr
- *   - Result stored in sensorValues[1]
+ *   - Result stored in sensorValues[1] @m_span{m-dim}(@ref #MS5803_PRESSURE_VAR_NUM = 1)@m_endspan
  *   - Resolution is: (at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively))
  *      - 14ba: 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
  *      - 2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024
  *      - 1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012
+ *      - @m_span{m-dim}@ref #MS5803_PRESSURE_RESOLUTION = 3@m_endspan
  *   - Reported as millibar (mb)
  *   - Default variable code is MeaSpecMS5803Pressure
  *

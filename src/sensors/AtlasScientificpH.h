@@ -46,12 +46,12 @@
  *
  * ___
  * @section atlas_ph_ph pH Output
- *   - Accuracy is ± 0.002
- *   - Range is 0.001 − 14.000
- *   - Resolution is 0.001
- *   - Reported as dimensionless pH units
- *   - Result stored in sensorValues[0]
- *   - Default variable code is AtlaspH
+ * - Accuracy is ± 0.002
+ * - Range is 0.001 − 14.000
+ * - Resolution is 0.001 @m_span{m-dim}(@ref #ATLAS_PH_RESOLUTION = 3)@m_endspan
+ * - Reported as dimensionless pH units
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_PH_VAR_NUM = 0)@m_endspan
+ * - Default variable code is AtlaspH
  *
  * @variabledoc{atlas_ph_ph,AtlasScientificpH,pH,AtlaspH}
  *

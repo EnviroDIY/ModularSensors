@@ -76,8 +76,9 @@
  * - Resolution:
  *   - 16-bit ADC: 0.3125 µmol m-2 s-1 (ADS1115)
  *   - 12-bit ADC: 5 µmol m-2 s-1 (ADS1015)
+ *   - @m_span{m-dim}@ref #SQ212_PAR_RESOLUTION = 0@m_endspan
  * - Reported as microeinsteins per square meter per second (µE m-2 s-1 or µmol m-2 s-1)
- * - Result stored in sensorValues[0]
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #SQ212_PAR_VAR_NUM = 0)@m_endspan
  * - Default variable code is radiationIncomingPAR
  *
  * @variabledoc{sq212_par,ApogeeSQ212,PAR,radiationIncomingPAR}
@@ -92,9 +93,11 @@
  * - Resolution [assuming the ADC is powered at 3.3V with inbuilt gain set to 1
  * (0-4.096V)]:
  *   - 16-bit ADC: 0.125 mV (ADS1115)
+ *     - @m_span{m-dim}@ref #SQ212_VOLT_RESOLUTION = 4@m_endspan
  *   - 12-bit ADC: 2 mV (ADS1015)
+ *     - @m_span{m-dim}@ref #SQ212_VOLT_RESOLUTION = 0@m_endspan
  * - Reported as volts (V)
- * - Result stored in sensorValues[1]
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #SQ212_VOLTAGE_VAR_NUM = 1)@m_endspan
  * - Default variable code is SQ212Voltage
  *
  * @variabledoc{sq212_voltage,ApogeeSQ212,Voltage,SQ212Voltage}

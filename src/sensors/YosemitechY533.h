@@ -41,32 +41,32 @@
  *      - @m_span{m-dim}@ref #Y533_MEASUREMENT_TIME_MS = 1800@m_endspan
  *
  * @section y533_ph pH Output
- *   - Range is 2-12 pH
- *   - Accuracy is ±0.1 pH
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.01 pH units
- *   - Reported as dimensionless pH units
- *   - Default variable code is Y533pH
+ * - Range is 2-12 pH
+ * - Accuracy is ±0.1 pH
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y533_PH_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.01 pH units @m_span{m-dim}(@ref #Y533_PH_RESOLUTION = 2)@m_endspan
+ * - Reported as dimensionless pH units
+ * - Default variable code is Y533pH
  *
  * @variabledoc{y533_ph,YosemitechY533,pH,Y533pH}
  *
  * @section y533_temp Temperature Output
- *   - Range is 0°C to + 50°C
- *   - Accuracy is ± 0.2°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1 °C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is Y533Temp
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y533_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1 °C @m_span{m-dim}(@ref #Y533_TEMP_RESOLUTION = 1)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is Y533Temp
  *
  * @variabledoc{y533_temp,YosemitechY533,Temp,Y533Temp}
  *
  * @section y533_volt Voltage Output
- *   - Range is -999 ~ 999 mV
- *   - Accuracy is ± 20 mV
- *   - Result stored in sensorValues[2]
- *   - Resolution is 1 mV
- *   - Reported as millivolts (mV)
- *   - Default variable code is Y533Potential
+ * - Range is -999 ~ 999 mV
+ * - Accuracy is ± 20 mV
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #Y533_VOLT_VAR_NUM = 2)@m_endspan
+ * - Resolution is 1 mV @m_span{m-dim}(@ref #Y533_VOLT_RESOLUTION = 0)@m_endspan
+ * - Reported as millivolts (mV)
+ * - Default variable code is Y533Potential
  *
  * @variabledoc{y533_volt,YosemitechY533,Voltage,Y533Potential}
  *

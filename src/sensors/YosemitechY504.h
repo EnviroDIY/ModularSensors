@@ -44,32 +44,32 @@
  *      - @m_span{m-dim}@ref #Y504_MEASUREMENT_TIME_MS = 1700@m_endspan
  *
  * @section y504_dopercent Dissolved Oxygen Percent Saturation Output
- *   - Range is 0-20mg/L or 0-200% Saturation
- *   - Accuracy is ± 1 %
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.1%
- *   - Reported as percent saturation (%)
- *   - Default variable code is Y504DOpct
+ * - Range is 0-20mg/L or 0-200% Saturation
+ * - Accuracy is ± 1 %
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y504_DOPCT_VAR_NUM = 0)@m_endspan
+ * - Resolution is 0.1% @m_span{m-dim}(@ref #Y504_DOPCT_RESOLUTION = 1)@m_endspan
+ * - Reported as percent saturation (%)
+ * - Default variable code is Y504DOpct
  *
  * @variabledoc{y504_dopercent,YosemitechY504,DOpct,Y504DOpct}
  *
  * @section y504_temp Temperature Output
- *   - Range is 0°C to + 50°C
- *   - Accuracy is ± 0.2°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1 °C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is Y504Temp
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y504_TEMP_VAR_NUM = 1)@m_endspan
+ * - Resolution is 0.1 °C @m_span{m-dim}(@ref #Y504_TEMP_RESOLUTION = 1)@m_endspan
+ * - Reported as degrees Celsius (°C)
+ * - Default variable code is Y504Temp
  *
  * @variabledoc{y504_temp,YosemitechY504,Temp,Y504Temp}
  *
  * @section y504_domgl Dissolved Oxygen Concentration Output
- *   - Range is 0-20mg/L or 0-200% Saturation
- *   - Accuracy is ± 1 %
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.01 mg/L
- *   - Reported as milligrams per liter (mg/L)
- *   - Default variable code is Y504DOmgL
+ * - Range is 0-20mg/L or 0-200% Saturation
+ * - Accuracy is ± 1 %
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #Y504_DOMGL_VAR_NUM = 2)@m_endspan
+ * - Resolution is 0.01 mg/L @m_span{m-dim}(@ref #Y504_DOMGL_RESOLUTION = 2)@m_endspan
+ * - Reported as milligrams per liter (mg/L)
+ * - Default variable code is Y504DOmgL
  *
  * @variabledoc{y504_domgl,YosemitechY504,DOmgL,Y504DOmgL}
  *

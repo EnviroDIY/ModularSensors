@@ -26,9 +26,9 @@
  *
  * The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS,
  * salinity, and specific gravity
- *   - Accuracy is ± 2%
- *   - Range is 0.07 − 500,000+ μS/cm
- *   - Resolution is 3 decimal places
+ * - Accuracy is ± 2%
+ * - Range is 0.07 − 500,000+ μS/cm
+ * - Resolution is 3 decimal places @m_span{m-dim}(@ref #ATLAS_COND_RESOLUTION = 3)@m_endspan
  *
  * @section atlas_cond_datasheet Sensor Datasheet
  *   - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf)
@@ -55,45 +55,45 @@
  *
  * ___
  * @section atlas_cond_cond Specific Conductance Output
- *   - Accuracy is ± 2%
- *   - Range is 0.07 − 500,000+ μS/cm
- *   - Resolution is 3 decimal places
+ * - Accuracy is ± 2%
+ * - Range is 0.07 − 500,000+ μS/cm
+ * - Resolution is 3 decimal places @m_span{m-dim}(@ref #ATLAS_COND_RESOLUTION = 3)@m_endspan
  *   - Reported in microsiemens per centimeter
- *   - Result stored in sensorValues[0]
- *   - Default variable code is AtlasCond
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_COND_VAR_NUM = 0)@m_endspan
+ * - Default variable code is AtlasCond
  *
  * @variabledoc{atlas_cond_cond,AtlasScientificEC,Cond,AtlasCond}
  *
  * ___
  * @section atlas_cond_tds Total Dissolved Solids Output
- *   - Accuracy is ± 2%
- *   - Range is 0.07 − 500,000+ μS/cm
- *   - Resolution is 3 decimal places
+ * - Accuracy is ± 2%
+ * - Range is 0.07 − 500,000+ μS/cm
+ * - Resolution is 3 decimal places @m_span{m-dim}(@ref #ATLAS_TDS_RESOLUTION = 3)@m_endspan
  *   - Reported in parts per million
- *   - Result stored in sensorValues[1]
- *   - Default variable code is AtlasTDS
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #ATLAS_TDS_VAR_NUM = 1)@m_endspan
+ * - Default variable code is AtlasTDS
  *
  * @variabledoc{atlas_cond_tds,AtlasScientificEC,TDS,AtlasTDS}
  *
  * ___
  * @section atlas_cond_salinity Salinity Output
- *   - Accuracy is ± 2%
- *   - Range is 0.07 − 500,000+ μS/cm
- *   - Resolution is 3 decimal places
+ * - Accuracy is ± 2%
+ * - Range is 0.07 − 500,000+ μS/cm
+ * - Resolution is 3 decimal places @m_span{m-dim}(@ref #ATLAS_SALINITY_RESOLUTION = 3)@m_endspan
  *   - Reported in practical salinity units
- *   - Result stored in sensorValues[2]
- *   - Default variable code is AtlasSalinity
+ * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #ATLAS_SALINITY_VAR_NUM = 2)@m_endspan
+ * - Default variable code is AtlasSalinity
  *
  * @variabledoc{atlas_cond_salinity,AtlasScientificEC,Salinity,AtlasSalinity}
  *
  * ___
  * @section atlas_cond_sg Specific Gravity Output
- *   - Accuracy is ± 2%
- *   - Range is 0.07 − 500,000+ μS/cm
- *   - Resolution is 3 decimal places
+ * - Accuracy is ± 2%
+ * - Range is 0.07 − 500,000+ μS/cm
+ * - Resolution is 3 decimal places @m_span{m-dim}(@ref #ATLAS_SG_RESOLUTION = 3)@m_endspan
  *   - Reported value is dimensionless
- *   - Result stored in sensorValues[3]
- *   - Default variable code is AtlasSpecGravity
+ * - Result stored in sensorValues[3] @m_span{m-dim}(@ref #ATLAS_SG_VAR_NUM = 3)@m_endspan
+ * - Default variable code is AtlasSpecGravity
  *
  * @variabledoc{atlas_cond_sg,AtlasScientificEC,SpecificGravity,AtlasSpecGravity}
  *

@@ -56,21 +56,21 @@
  * Though, honestly, having more than one attached seems pretty unlikely anyway.
  *
  * @section i2c_rain_tips Tips Output
- *   - Range and accuracy depend on the tipping bucket used
- *   - Result stored in sensorValues[0]
- *   - Resolution is 1 tip
- *   - Reported as dimensionless counts
- *   - Default variable code is RainCounterI2CTips
+ * - Range and accuracy depend on the tipping bucket used
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #BUCKET_RAIN_VAR_NUM = 0)@m_endspan
+ * - Resolution is 1 tip @m_span{m-dim}(@ref #BUCKET_TIPS_RESOLUTION = 0)@m_endspan
+ * - Reported as dimensionless counts
+ * - Default variable code is RainCounterI2CTips
  *
  * @variabledoc{i2c_rain_tips,RainCounterI2C,Tips,RainCounterI2CTips}
  *
  * @section i2c_rain_depth Depth Output
- *   - Range and accuracy depend on the tipping bucket used
- *   - Result stored in sensorValues[1]
- *   - Resolution is typically either 0.01" or 0.2mm of rainfall, depending on
- * if bucket is calibrated to English or metric units
- *   - Reported as millimeters (mm)
- *   - Default variable code is RainCounterI2CVol
+ * - Range and accuracy depend on the tipping bucket used
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #BUCKET_TIPS_VAR_NUM = 1)@m_endspan
+ * - Resolution is typically either 0.01" or 0.2mm of rainfall, depending on
+ * if bucket is calibrated to English or metric units @m_span{m-dim}(@ref #BUCKET_RAIN_RESOLUTION = 2)@m_endspan
+ * - Reported as millimeters (mm)
+ * - Default variable code is RainCounterI2CVol
  *
  * @variabledoc{i2c_rain_depth,RainCounterI2C,Depth,RainCounterI2CVol}
  *

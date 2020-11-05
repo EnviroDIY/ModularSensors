@@ -64,34 +64,38 @@
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  *
  * @section obs3_turbidity Turbidity Output
- *   - Range: (depends on sediment size, particle shape, and reflectivity)
+ * - Range: (depends on sediment size, particle shape, and reflectivity)
  *     - Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
  *     - Mud: 5000 to 10,000 mg L–1
  *     - Sand: 50,000 to 100,000 mg L–1
- *   - Accuracy: (whichever is larger)
+ * - Accuracy: (whichever is larger)
  *     - Turbidity: 2% of reading or 0.5 NTU
  *     - Mud: 2% of reading or 1 mg L–1
  *     - Sand: 4% of reading or 10 mg L–1
- *   - Result stored in sensorValues[0]
- *   - Resolution:
+ * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #OBS3_TURB_VAR_NUM = 0)@m_endspan
+ * - Resolution:
  *     - 16-bit ADC, Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5 NTU
+ *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 1)@m_endspan
  *     - 12-bit ADC, Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
- *   - Reported as Nephelometric Turbidity Units (NTU)
- *   - Default variable code is OBS3Turbidity
+ *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 5)@m_endspan
+ * - Reported as Nephelometric Turbidity Units (NTU)
+ * - Default variable code is OBS3Turbidity
  *
  * @variabledoc{obs3_turbidity,CampbellOBS3,Turbidity,OBS3Turbidity}
  *
  * @section obs3_voltage Voltage Output
- *   - Range is 0 to 2.5V
- *   - Accuracy:
+ * - Range is 0 to 2.5V
+ * - Accuracy:
  *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
+ *       - @m_span{m-dim}(@ref #OBS3_VOLT_RESOLUTION = 4)@m_endspan
  *     - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
- *   - Result stored in sensorValues[1]
- *   - Resolution:
+ *       - @m_span{m-dim}(@ref #OBS3_VOLT_RESOLUTION = 1)@m_endspan
+ * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #OBS3_VOLTAGE_VAR_NUM = 1)@m_endspan
+ * - Resolution:
  *     - 16-bit ADC: 0.125 mV
  *     - 12-bit ADC: 2 mV
- *   - Reported as volts (V)
- *   - Default variable code is OBS3Voltage
+ * - Reported as volts (V)
+ * - Default variable code is OBS3Voltage
  *
  * @variabledoc{obs3_voltage,CampbellOBS3,Voltage,OBS3Voltage}
  *

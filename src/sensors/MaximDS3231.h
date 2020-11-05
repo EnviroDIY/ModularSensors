@@ -55,9 +55,10 @@
  *   - Range is -55°C to 125°C
  *   - Accuracy:
  *     - ± 3°C
- *   - Result stored in sensorValues[0]
+ *   - Result stored in sensorValues[0] @m_span{m-dim}(@ref #DS3231_TEMP_VAR_NUM = 0)@m_endspan
  *   - Resolution:
  *     - 0.25°C (10 bit)
+ *     - @m_span{m-dim}@ref #DS3231_TEMP_RESOLUTION = 2@m_endspan
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is BoardTemp
  *
