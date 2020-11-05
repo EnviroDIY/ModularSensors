@@ -32,8 +32,12 @@
  * @section y550_sensor The Yosemitech Y550 UV245/COD Sensor
  * @ctor_doc{YosemitechY550, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y550_timing Sensor Timing
- * - Time before sensor responds after power - 500ms
- * - Time between "StartMeasurement" command and stable reading - 22sec
+ * - Time before sensor responds after power - 1500ms
+ *      - @m_span{m-dim}@ref #Y550_WARM_UP_TIME_MS = 1500@m_endspan
+ * - Time between "StartMeasurement" command and stable reading - 2sec
+ *      - @m_span{m-dim}@ref #Y550_STABILIZATION_TIME_MS = 2000@m_endspan
+ * - Measurements take about 2000 ms to complete.
+ *      - @m_span{m-dim}@ref #Y550_MEASUREMENT_TIME_MS = 2000@m_endspan
  *
  * @section y550_cod COD Output
  *   - Range is:

@@ -36,8 +36,12 @@
  * @section y504_sensor The Yosemitech Y504 Dissolved Oxygen Sensor
  * @ctor_doc{YosemitechY504, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y504_timing Sensor Timing
- * - Time before sensor responds after power - 275-300ms (use 350 for safety)
+ * - Time before sensor responds after power - 375ms
+ *      - @m_span{m-dim}@ref #Y504_WARM_UP_TIME_MS = 375@m_endspan
  * - Time between "StartMeasurement" command and stable reading - 8sec
+ *      - @m_span{m-dim}@ref #Y504_STABILIZATION_TIME_MS = 8000@m_endspan
+ * - Measurements take about 1700 ms to complete.
+ *      - @m_span{m-dim}@ref #Y504_MEASUREMENT_TIME_MS = 1700@m_endspan
  *
  * @section y504_dopercent Dissolved Oxygen Percent Saturation Output
  *   - Range is 0-20mg/L or 0-200% Saturation
@@ -201,7 +205,7 @@ class YosemitechY504_DOpct : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y504DOpct
+     * optional with a default value of "Y504DOpct".
      */
     explicit YosemitechY504_DOpct(YosemitechY504* parentSense,
                                   const char*     uuid    = "",

@@ -38,8 +38,12 @@
  * @ctor_doc{ZebraTechDOpto, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
  * @subsection dopto_timing Sensor Timing
  * - Maximum warm-up time in SDI-12 mode: ~250ms
+ *      - @m_span{m-dim}@ref #DOPTO_WARM_UP_TIME_MS = 275@m_endspan
+ * - Assume stability at warm-up
+ *      - @m_span{m-dim}@ref #DOPTO_STABILIZATION_TIME_MS = 0@m_endspan
  * - Excitiation time before measurement: ~5225ms
  * - Maximum measurement duration: ~110ms
+ *      - @m_span{m-dim}@ref #DOPTO_MEASUREMENT_TIME_MS = 5335@m_endspan
  *
  * Obnoxiously, the sensor will not take a "concurrent" measurement and leave
  * the sensor powered on, so we must wait entire ~5200ms exitation time and the
@@ -255,7 +259,7 @@ class ZebraTechDOpto_DOpct : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of DOpercent
+     * optional with a default value of "DOpercent".
      */
     explicit ZebraTechDOpto_DOpct(ZebraTechDOpto* parentSense,
                                   const char*     uuid    = "",

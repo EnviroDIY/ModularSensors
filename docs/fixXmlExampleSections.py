@@ -12,22 +12,6 @@ abs_file_path = os.path.join(fileDir, relative_dir)
 abs_file_path = os.path.abspath(os.path.realpath(abs_file_path))
 # print("XML Directory: {}".format(fileDir))
 
-output_file = "examples.dox"
-read_mes = [
-    # "../../ModularSensorsDoxygen/xml_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/baro_rho_correction_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/data_saving_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/double_logger_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/DRWI_CitSci_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/DRWI_LTE_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/DRWI_NoCellular_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/logging_to_MMW_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/logging_to_ThingSpeak_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/menu_a_la_carte_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/simple_logging_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/simple_logging_LearnEnviroDIY_8ino-example.xml",
-    "../../ModularSensorsDoxygen/xml/single_sensor_8ino-example.xml",
-]
 all_files = [
     f
     for f in os.listdir(abs_file_path)

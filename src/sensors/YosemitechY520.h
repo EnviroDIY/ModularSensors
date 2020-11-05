@@ -32,8 +32,12 @@
  * @section y520_sensor The y520 Sensor
  * @ctor_doc{YosemitechY520, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y520_timing Sensor Timing
- * - Time before sensor responds after power - 1200 ms
+ * - Time before sensor responds after power - 1600 ms
+ *      - @m_span{m-dim}@ref #Y520_WARM_UP_TIME_MS = 1600@m_endspan
  * - Time between "StartMeasurement" command and stable reading - 10sec
+ *      - @m_span{m-dim}@ref #Y520_STABILIZATION_TIME_MS = 10000@m_endspan
+ * - Measurements take about 2700 ms to complete.
+ *      - @m_span{m-dim}@ref #Y520_MEASUREMENT_TIME_MS = 2700@m_endspan
  *
  * @section y520_cond Conductivity Output
  *   - Range is 1 µS/cm to 200 mS/cm
@@ -177,7 +181,7 @@ class YosemitechY520_Cond : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y520Cond
+     * optional with a default value of "Y520Cond".
      */
     explicit YosemitechY520_Cond(YosemitechY520* parentSense,
                                  const char*     uuid    = "",
@@ -221,7 +225,7 @@ class YosemitechY520_Temp : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y520Temp
+     * optional with a default value of "Y520Temp".
      */
     explicit YosemitechY520_Temp(YosemitechY520* parentSense,
                                  const char*     uuid    = "",

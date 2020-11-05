@@ -68,8 +68,12 @@
  * @section ds18_sensor The DS18 Sensor
  * @ctor_doc{MaximDS18, DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
  * @subsection ds18_timing Sensor Timing
- * - Max time to take reading at 12-bit: 750ms
  * - Reset time is < 480 µs
+ *      - @m_span{m-dim}@ref #DS18_WARM_UP_TIME_MS = 2@m_endspan
+ * - We assume the sensor is immediately stable.
+ *      - @m_span{m-dim}@ref #DS18_STABILIZATION_TIME_MS = 0@m_endspan
+ * - Max time to take reading at 12-bit: 750ms
+ *      - @m_span{m-dim}@ref #DS18_MEASUREMENT_TIME_MS = 750@m_endspan
  *
  * @section ds18_temp Temperature Output
  *   - Range is -55°C to 125°C

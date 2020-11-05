@@ -88,6 +88,11 @@
  * @ctor_doc{MaxBotixSonar, Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage}
  * @subsection maxbotics_timing Sensor Timing
  * - Warm up time to completion of header:  160ms
+ *      - @m_span{m-dim}@ref #HRXL_WARM_UP_TIME_MS = 500@m_endspan
+ * - We assume the sensor is immediately stable.
+ *      - @m_span{m-dim}@ref #HRXL_STABILIZATION_TIME_MS = 0@m_endspan
+ * - Measurements take about 166 ms to complete.
+ *      - @m_span{m-dim}@ref #HRXL_MEASUREMENT_TIME_MS = 166@m_endspan
  *
  * @section maxbotix_range Range Output
  *   - Range is 300 to 5000mm or 500 to 9999mm, depending on model
@@ -238,7 +243,7 @@ class MaxBotixSonar_Range : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of SonarRange
+     * optional with a default value of "SonarRange".
      */
     explicit MaxBotixSonar_Range(MaxBotixSonar* parentSense,
                                  const char*    uuid    = "",

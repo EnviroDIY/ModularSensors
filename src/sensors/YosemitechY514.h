@@ -33,8 +33,12 @@
  * @section y514_sensor The y514 Sensor
  * @ctor_doc{YosemitechY514, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y514_timing Sensor Timing
- * - Time before sensor responds after power - 1.2 seconds
+ * - Time before sensor responds after power - 1.3 seconds
+ *      - @m_span{m-dim}@ref #Y514_WARM_UP_TIME_MS = 1300@m_endspan
  * - Time between "StartMeasurement" command and stable reading - 8sec
+ *      - @m_span{m-dim}@ref #Y514_STABILIZATION_TIME_MS = 8000@m_endspan
+ * - Measurements take about 2000 ms to complete.
+ *      - @m_span{m-dim}@ref #Y514_MEASUREMENT_TIME_MS = 2000@m_endspan
  *
  * @section y514_chloro Chlorophyll Output
  *   - Range is 0 to 400 µg/L or 0 to 100 RFU
@@ -226,7 +230,7 @@ class YosemitechY514_Temp : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y514Temp
+     * optional with a default value of "Y514Temp".
      */
     explicit YosemitechY514_Temp(YosemitechY514* parentSense,
                                  const char*     uuid    = "",

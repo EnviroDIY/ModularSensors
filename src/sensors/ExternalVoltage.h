@@ -123,8 +123,12 @@
  * @ctor_doc{ExternalVoltage, int8_t powerPin, uint8_t adsChannel, float gain, uint8_t i2cAddress, uint8_t measurementsToAverage}
  * @subsection ext_volt_timing Sensor Timing
  * The timing used for simple external voltage measurements is that of the ADS1x15.
- * - Response time: < 1ms
+ * - Warm up time is 2ms
+ *      - @m_span{m-dim}@ref #EXT_VOLT_WARM_UP_TIME_MS = 2@m_endspan
+ * - Response time (of the ADC): < 1ms
+ *      - @m_span{m-dim}@ref #EXT_VOLT_STABILIZATION_TIME_MS = 0@m_endspan
  * - Resample time: max of ADC (860/sec)
+ *      - @m_span{m-dim}@ref #EXT_VOLT_MEASUREMENT_TIME_MS = 0@m_endspan
  * @subsection ext_volt_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
@@ -191,8 +195,9 @@
  */
 #define EXT_VOLT_STABILIZATION_TIME_MS 0
 /**
- * @brief Sensor::_measurementTime_ms; the ADS1115 takes 0ms to complete a
- * measurement.
+ * @brief Sensor::_measurementTime_ms; the ADS1115 completes 860 conversions per
+ * second, but the wait for the conversion to complete is built into the
+ * underlying library, so we do not need to wait further here.
  */
 #define EXT_VOLT_MEASUREMENT_TIME_MS 0
 
@@ -285,7 +290,7 @@ class ExternalVoltage_Volt : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of extVoltage
+     * optional with a default value of "extVoltage".
      */
     explicit ExternalVoltage_Volt(ExternalVoltage* parentSense,
                                   const char*      uuid    = "",

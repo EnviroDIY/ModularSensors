@@ -38,6 +38,12 @@
  * @section acculevel_sensor The Keller Acculevel Sensor
  * @ctor_doc{KellerAcculevel, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection acculevel_timing Sensor Timing
+ * - Sensor takes about 500 ms to respond.
+ *      - @m_span{m-dim}@ref #ACCULEVEL_WARM_UP_TIME_MS = 500@m_endspan
+ * - Stabilization takes about 5s.
+ *      - @m_span{m-dim}@ref #ACCULEVEL_STABILIZATION_TIME_MS = 5000@m_endspan
+ * - Measurements take about 1500 ms to complete.
+ *      - @m_span{m-dim}@ref #ACCULEVEL_MEASUREMENT_TIME_MS = 1500@m_endspan
  *
  * @section acculevel_pressure Pressure Output
  *   - Range is 0 to 11 bar

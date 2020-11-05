@@ -36,9 +36,12 @@
  * @ctor_doc{AtlasScientificDO, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
  * @subsection atlas_do_timing Sensor Timing
  *   - warms up in 745ms (737-739 in tests)
+ *      - @m_span{m-dim}@ref #ATLAS_DO_WARM_UP_TIME_MS = 745@m_endspan
  *   - stable at completion of warm up
+ *      - @m_span{m-dim}@ref #ATLAS_DO_STABILIZATION_TIME_MS = 0@m_endspan
  *   - measurements take 600ms to complete (only ~555 measurement time in tests,
  * but we wait the full 600ms recommended by manual)
+ *      - @m_span{m-dim}@ref #ATLAS_DO_MEASUREMENT_TIME_MS = 600@m_endspan
  * @subsection atlas_do_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
@@ -336,7 +339,7 @@ class AtlasScientificDO_DOpct : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlasDOpct
+     * optional with a default value of "AtlasDOpct".
      */
     explicit AtlasScientificDO_DOpct(AtlasScientificDO* parentSense,
                                      const char*        uuid    = "",

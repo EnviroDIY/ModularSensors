@@ -34,7 +34,11 @@
  * @ctor_doc{YosemitechY532, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y532_timing Sensor Timing
  * - Time before sensor responds after power - 500ms
+ *      - @m_span{m-dim}@ref #Y532_WARM_UP_TIME_MS = 500@m_endspan
  * - Time between "StartMeasurement" command and stable reading - 4.5sec
+ *      - @m_span{m-dim}@ref #Y532_STABILIZATION_TIME_MS = 4500@m_endspan
+ * - Measurements take about 1800 ms to complete.
+ *      - @m_span{m-dim}@ref #Y532_MEASUREMENT_TIME_MS = 1800@m_endspan
  *
  * @section y532_ph pH Output
  *   - Range is 2 to 12 pH units
@@ -192,7 +196,7 @@ class YosemitechY532_pH : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y532pH
+     * optional with a default value of "Y532pH".
      */
     explicit YosemitechY532_pH(YosemitechY532* parentSense,
                                const char*     uuid    = "",

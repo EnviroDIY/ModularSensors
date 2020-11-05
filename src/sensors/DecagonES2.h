@@ -42,8 +42,12 @@
  * @section es2_sensor The Decagon ES-2 Sensor
  * @ctor_doc{DecagonES2, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
  * @subsection es2_timing Sensor Timing
- * - Maximum warm-up time in SDI-12 mode: 250ms, assume stability at warm-up
+ * - Maximum warm-up time in SDI-12 mode: 250ms
+ *      - @m_span{m-dim}@ref #ES2_MEASUREMENT_TIME_MS = 250@m_endspan
+ * - Assume stability at warm-up
+ *      - @m_span{m-dim}@ref #ES2_STABILIZATION_TIME_MS = 0@m_endspan
  * - Maximum measurement duration: 250ms
+ *      - @m_span{m-dim}@ref #ES2_MEASUREMENT_TIME_MS = 250@m_endspan
  *
  * @section es2_cond Conductivity Output
  *   - Range is 0 – 120 mS/cm (bulk)

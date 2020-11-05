@@ -46,8 +46,12 @@
  * @section teros_sensor The Teros Sensor
  * @ctor_doc{MeterTeros11, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
  * @subsection teros_timing Sensor Timing
- * - Warm-up time in SDI-12 mode: 245ms typical, assume stability at warm-up
+ * - Warm-up time in SDI-12 mode: 245ms typical
+ *      - @m_span{m-dim}@ref #TEROS11_WARM_UP_TIME_MS = 250@m_endspan
+ * - We assume the sensor is immediately stable.
+ *      - @m_span{m-dim}@ref #TEROS11_STABILIZATION_TIME_MS = 0@m_endspan
  * - Measurement duration: 25 ms to 50 ms
+ *      - @m_span{m-dim}@ref #TEROS11_MEASUREMENT_TIME_MS = 50@m_endspan
  * @subsection teros_voltages Voltage Ranges
  * - Supply Voltage (VCC to GND), 4.0 to 15.0 VDC
  * - Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)

@@ -47,8 +47,12 @@
  * @section mpl115a2_sensor The MPL115A2 Sensor
  * @ctor_doc{MPL115A2, int8_t powerPin, uint8_t measurementsToAverage}
  * @subsection mpl115a2_timing Sensor Timing
- * - Sensor takes about 1.6 ms to respond
+ * - Sensor takes about 6 ms to respond.
+ *      - @m_span{m-dim}@ref #MPL115A2_WARM_UP_TIME_MS = 6@m_endspan
  * - We assume the sensor is immediately stable.
+ *      - @m_span{m-dim}@ref #MPL115A2_STABILIZATION_TIME_MS = 0@m_endspan
+ * - Measurements take about 3 ms to complete.
+ *      - @m_span{m-dim}@ref #MPL115A2_MEASUREMENT_TIME_MS = 3@m_endspan
  *
  * @section mpl115a2_temp Temperature Output
  *   - Range is -20°C to 85°C

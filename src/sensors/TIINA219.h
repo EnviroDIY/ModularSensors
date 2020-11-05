@@ -49,10 +49,13 @@
  * @ctor_doc{TIINA219, int8_t  powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage}
  * @subsection ina219_timing Sensor Timing
  * - The sensor warms up in 100ms
+ *      - @m_span{m-dim}@ref #INA219_WARM_UP_TIME_MS = 100@m_endspan
  * - A single ADC conversion takes >532 µs (586 µs typical) at 12 bit
  * resolution, but in tests waiting closer to 1.1s gave better data.
+ *      - @m_span{m-dim}@ref #INA219_MEASUREMENT_TIME_MS = 1100@m_endspan
  * - Stable numbers can be acheived after 500ms, but waiting up to 4s gave more
  * consistent numbers.
+ *      - @m_span{m-dim}@ref #INA219_STABILIZATION_TIME_MS = 4000@m_endspan
  *
  * @section ina219_current Current Output
  *   - Range is between +/-0.4 Amps and +/-3.2 Amps

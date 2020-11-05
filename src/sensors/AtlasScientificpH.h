@@ -30,11 +30,14 @@
  * @ctor_doc{AtlasScientificpH, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
  * @subsection atlas_ph_timing Sensor Timing
  *   - warms up in 850ms
- *      - 846 in SRGD Tests
+ *     - 846 in SRGD Tests
+ *      - @m_span{m-dim}@ref #ATLAS_PH_WARM_UP_TIME_MS = 850@m_endspan
  *   - stable at completion of warm up
+ *      - @m_span{m-dim}@ref #ATLAS_PH_STABILIZATION_TIME_MS = 0@m_endspan
  *   - measurements take 1660ms to complete
- *      - Manual says measurement takes 900 ms, but in SRGD tests, no result was
+ *     - Manual says measurement takes 900 ms, but in SRGD tests, no result was
  * available until after 1656 ms.
+ *      - @m_span{m-dim}@ref #ATLAS_PH_MEASUREMENT_TIME_MS = 1660@m_endspan
  * @subsection atlas_ph_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
@@ -268,7 +271,7 @@ class AtlasScientificpH_pH : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlaspH
+     * optional with a default value of "AtlaspH".
      */
     explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
                                   const char*        uuid    = "",

@@ -41,9 +41,12 @@
  * @ctor_doc{AtlasScientificEC, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
  * @subsection atlas_cond_timing Sensor Timing
  *   - warms up in 745ms (739-740 in tests)
+ *      - @m_span{m-dim}@ref #ATLAS_COND_WARM_UP_TIME_MS = 745@m_endspan
  *   - stable at completion of warm up
+ *      - @m_span{m-dim}@ref #ATLAS_COND_STABILIZATION_TIME_MS = 0@m_endspan
  *   - measurements take 600ms to complete (only ~555 measurement time in tests,
  * but we wait the full 600ms recommended by manual)
+ *      - @m_span{m-dim}@ref #ATLAS_COND_MEASUREMENT_TIME_MS = 600@m_endspan
  * @subsection atlas_cond_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
@@ -325,7 +328,7 @@ class AtlasScientificEC_Cond : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlasCond
+     * optional with a default value of "AtlasCond".
      */
     explicit AtlasScientificEC_Cond(AtlasScientificEC* parentSense,
                                     const char*        uuid    = "",
@@ -368,7 +371,7 @@ class AtlasScientificEC_TDS : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlasTDS
+     * optional with a default value of "AtlasTDS".
      */
     explicit AtlasScientificEC_TDS(AtlasScientificEC* parentSense,
                                    const char*        uuid    = "",
@@ -411,7 +414,7 @@ class AtlasScientificEC_Salinity : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlasSalinity
+     * optional with a default value of "AtlasSalinity".
      */
     explicit AtlasScientificEC_Salinity(AtlasScientificEC* parentSense,
                                         const char*        uuid = "",
@@ -455,7 +458,7 @@ class AtlasScientificEC_SpecificGravity : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlasSpecGravity
+     * optional with a default value of "AtlasSpecGravity".
      */
     explicit AtlasScientificEC_SpecificGravity(
         AtlasScientificEC* parentSense, const char* uuid = "",

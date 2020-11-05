@@ -31,10 +31,13 @@
  * @subsection atlas_orp_timing Sensor Timing
  *   - warms up in 850ms
  *      - 846 in SRGD tests
+ *      - @m_span{m-dim}@ref #ATLAS_ORP_WARM_UP_TIME_MS = 850@m_endspan
  *   - stable at completion of warm up
+ *      - @m_span{m-dim}@ref #ATLAS_ORP_STABILIZATION_TIME_MS = 0@m_endspan
  *   - measurements take 1580ms to complete
  *      - Manual says measurement takes 900 ms, but in SRGD tests, no result was
  * available until after 1577 ms.
+ *      - @m_span{m-dim}@ref #ATLAS_ORP_MEASUREMENT_TIME_MS = 1580@m_endspan
  * @subsection atlas_orp_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
@@ -265,7 +268,7 @@ class AtlasScientificORP_Potential : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlasORP
+     * optional with a default value of "AtlasORP".
      */
     explicit AtlasScientificORP_Potential(AtlasScientificORP* parentSense,
                                           const char*         uuid = "",

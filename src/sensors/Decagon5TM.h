@@ -47,8 +47,12 @@
  * @section fivetm_sensor The ECH2O (5TM) Sensor
  * @ctor_doc{Decagon5TM, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
  * @subsection fivetm_timing Sensor Timing
- * - Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
+ * - Maximum warm-up time in SDI-12 mode: 200ms
+ *      - @m_span{m-dim}@ref #TM_MEASUREMENT_TIME_MS = 200@m_endspan
+ * - Assume stability at warm-up
+ *      - @m_span{m-dim}@ref #TM_STABILIZATION_TIME_MS = 0@m_endspan
  * - Maximum measurement duration: 200ms
+ *      - @m_span{m-dim}@ref #TM_MEASUREMENT_TIME_MS = 200@m_endspan
  *
  * @section fivetm_ea Ea Output
  *   - Range is 0 – 1 m3/m3 (0 – 100% VWC)

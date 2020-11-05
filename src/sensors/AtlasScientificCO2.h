@@ -31,8 +31,11 @@
  * @ctor_doc{AtlasScientificCO2, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
  * @subsection atlas_co2_timing Sensor Timing
  *   - warms up in 850ms
+ *      - @m_span{m-dim}@ref #ATLAS_CO2_WARM_UP_TIME_MS = 850@m_endspan
  *   - not stable until **10s** after warm-up
+ *      - @m_span{m-dim}@ref #ATLAS_CO2_STABILIZATION_TIME_MS = 10000@m_endspan
  *   - measurements take 900ms to complete
+ *      - @m_span{m-dim}@ref #ATLAS_CO2_MEASUREMENT_TIME_MS = 900@m_endspan
  * @subsection atlas_co2_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C

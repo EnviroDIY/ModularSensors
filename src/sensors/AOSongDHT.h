@@ -48,8 +48,11 @@
  * @ctor_doc{AOSongDHT, int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage}
  * @subsection dht_timing Sensor Timing
  * - warms up in 1.7sec
+ *      - @m_span{m-dim}@ref #DHT_WARM_UP_TIME_MS = 1700@m_endspan
  * - stable on completion of warm up
+ *      - @m_span{m-dim}@ref #DHT_STABILIZATION_TIME_MS = 0@m_endspan
  * - measurements take 2s to complete
+ *      - @m_span{m-dim}@ref #DHT_MEASUREMENT_TIME_MS = 2000@m_endspan
  *
  * ___
  * @section dht_humidity Relative Humidity Output

@@ -38,10 +38,14 @@
  * @section y4000_sensor The Y4000 Sonde Sensor
  * @ctor_doc{YosemitechY4000, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y4000_timing Sensor Timing
- * - Time before sensor responds after power - 275-300ms (use 350 for safety)
+ * - Time before sensor responds after power - 1.6 seconds
+ *      - @m_span{m-dim}@ref #Y4000_WARM_UP_TIME_MS = 1600@m_endspan
  * - Time between "StartMeasurement" command and stable reading depends on the
  * indindividual sensor probes, with the Y520 conductivity sensor taking the
  * longest.
+ *      - @m_span{m-dim}@ref #Y4000_STABILIZATION_TIME_MS = 60000@m_endspan
+ * - Measurements take about 3000 ms to complete.
+ *      - @m_span{m-dim}@ref #Y4000_MEASUREMENT_TIME_MS = 3000@m_endspan
  *
  * @section y4000_domgl Dissolved Oxygen Concentration Output
  *   - Range is 0-20mg/L or 0-200% Air Saturation
@@ -589,7 +593,7 @@ class YosemitechY4000_BGA : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y4000BGA
+     * optional with a default value of "Y4000BGA".
      */
     explicit YosemitechY4000_BGA(YosemitechY4000* parentSense,
                                  const char*      uuid    = "",

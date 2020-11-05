@@ -67,7 +67,10 @@
  * @subsection ms5803_timing Sensor Timing
  * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
  * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+ *      - @m_span{m-dim}@ref #MS5803_WARM_UP_TIME_MS = 10@m_endspan
+ *      - @m_span{m-dim}@ref #MS5803_MEASUREMENT_TIME_MS = 10@m_endspan
  * - We assume the sensor is immediately stable.
+ *      - @m_span{m-dim}@ref #MS5803_STABILIZATION_TIME_MS = 0@m_endspan
  *
  * @section ms5803_temp Temperature Output
  *   - Range is -40°C to +85°C
@@ -245,7 +248,7 @@ class MeaSpecMS5803_Temp : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of MeaSpecMS5803Temp
+     * optional with a default value of "MeaSpecMS5803Temp".
      */
     explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
                                 const char*    uuid    = "",

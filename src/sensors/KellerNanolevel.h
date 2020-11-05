@@ -30,6 +30,12 @@
  * @section nanolevel_sensor The Keller Nanolevel Sensor
  * @ctor_doc{KellerNanolevel, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection nanolevel_timing Sensor Timing
+ * - Sensor takes about 500 ms to respond.
+ *      - @m_span{m-dim}@ref #NANOLEVEL_WARM_UP_TIME_MS = 500@m_endspan
+ * - Stabilization takes about 5s.
+ *      - @m_span{m-dim}@ref #NANOLEVEL_STABILIZATION_TIME_MS = 5000@m_endspan
+ * - Measurements take about 1500 ms to complete.
+ *      - @m_span{m-dim}@ref #NANOLEVEL_MEASUREMENT_TIME_MS = 1500@m_endspan
  *
  * @section nanolevel_pressure Pressure Output
  *   - Range is 0 to 300mbar
@@ -174,7 +180,7 @@ class KellerNanolevel_Pressure : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of kellerNanoPress
+     * optional with a default value of "kellerNanoPress".
      */
     explicit KellerNanolevel_Pressure(KellerNanolevel* parentSense,
                                       const char*      uuid = "",

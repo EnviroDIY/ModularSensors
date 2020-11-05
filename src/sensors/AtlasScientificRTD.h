@@ -36,10 +36,13 @@
  * @subsection atlas_rtd_timing Sensor Timing
  *   - warms up in 740ms
  *      - 731-735 in tests
+ *      - @m_span{m-dim}@ref #ATLAS_RTD_WARM_UP_TIME_MS = 740@m_endspan
  *   - stable at completion of warm up
+ *      - @m_span{m-dim}@ref #ATLAS_RTD_STABILIZATION_TIME_MS = 0@m_endspan
  *   - measurements take 650ms to complete
  *      - Manual says measurement takes 600 ms, but in SRGD tests, didn't get a
  * result until after 643 ms; AG got results as soon as 393ms.
+ *      - @m_span{m-dim}@ref #ATLAS_RTD_MEASUREMENT_TIME_MS = 650@m_endspan
  * @subsection atlas_rtd_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
@@ -272,7 +275,7 @@ class AtlasScientificRTD_Temp : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of AtlasTemp
+     * optional with a default value of "AtlasTemp".
      */
     explicit AtlasScientificRTD_Temp(AtlasScientificRTD* parentSense,
                                      const char*         uuid    = "",

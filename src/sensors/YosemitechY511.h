@@ -32,8 +32,12 @@
  * @section y511_sensor The Yosemitech Y511 Wipered Turbidity Sensor
  * @ctor_doc{YosemitechY511, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y511_timing Sensor Timing
- * - Time before sensor responds after power - 500ms
- * - Time between "StartMeasurement" command and stable reading - 22sec
+ * - Time before sensor responds after power - 500ms, but we must wait longer if activating the brush
+ *      - @m_span{m-dim}@ref #Y511_WARM_UP_TIME_MS = 8000@m_endspan
+ * - The combined warm up and stabilization must be >48s
+ *      - @m_span{m-dim}@ref #Y511_STABILIZATION_TIME_MS = 40000@m_endspan
+ * - Measurements take about 4000 ms to complete.
+ *      - @m_span{m-dim}@ref #Y511_MEASUREMENT_TIME_MS = 4000@m_endspan
  *
  * @section y511_turb Turbidity Output
  *   - Range is 0.1 to 1000 NTU

@@ -34,7 +34,11 @@
  * @ctor_doc{YosemitechY533, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y533_timing Sensor Timing
  * - Time before sensor responds after power - 500ms
+ *      - @m_span{m-dim}@ref #Y533_WARM_UP_TIME_MS = 500@m_endspan
  * - Time between "StartMeasurement" command and stable reading - 4.5sec
+ *      - @m_span{m-dim}@ref #Y533_STABILIZATION_TIME_MS = 4500@m_endspan
+ * - Measurements take about 1800 ms to complete.
+ *      - @m_span{m-dim}@ref #Y533_MEASUREMENT_TIME_MS = 1800@m_endspan
  *
  * @section y533_ph pH Output
  *   - Range is 2-12 pH

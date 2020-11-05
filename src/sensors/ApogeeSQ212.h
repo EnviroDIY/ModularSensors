@@ -57,8 +57,12 @@
  * @section sq212_sensor The SQ-212 Sensor
  * @ctor_doc{ApogeeSQ212, int8_t powerPin, uint8_t adsChannel, uint8_t i2cAddress, uint8_t measurementsToAverage}
  * @subsection sq212_timing Sensor Timing
+ * - Warm up time is unknown; using the 2ms for ADS to warm up
+ *      - @m_span{m-dim}@ref #SQ212_WARM_UP_TIME_MS = 2@m_endspan
  * - Response time (of the ADC): < 1ms
+ *      - @m_span{m-dim}@ref #SQ212_STABILIZATION_TIME_MS = 2@m_endspan
  * - Resample time: max of ADC (860/sec)
+ *      - @m_span{m-dim}@ref #SQ212_MEASUREMENT_TIME_MS = 2@m_endspan
  * @subsection sq212_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015

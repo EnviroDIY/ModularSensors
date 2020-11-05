@@ -53,8 +53,12 @@
  * @ctor_doc{CampbellOBS3, int8_t powerPin, uint8_t adsChannel, float x2_coeff_A, float x1_coeff_B, float x0_coeff_C, uint8_t i2cAddress, uint8_t measurementsToAverage}
  *
  * @subsection obs3_timing Sensor Timing
+ * - The ADS1x15 takes 2ms to warm up
+ *      - @m_span{m-dim}@ref #OBS3_WARM_UP_TIME_MS = 2@m_endspan
  * - Minimum stabilization time: 2s
+ *      - @m_span{m-dim}@ref #OBS3_STABILIZATION_TIME_MS = 2000@m_endspan
  * - Maximum data rate = 10Hz (100ms/sample)
+ *      - @m_span{m-dim}@ref #OBS3_MEASUREMENT_TIME_MS = 100@m_endspan
  * @subsection obs3_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
@@ -246,7 +250,7 @@ class CampbellOBS3_Turbidity : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of OBS3Turbidity
+     * optional with a default value of "OBS3Turbidity".
      */
     explicit CampbellOBS3_Turbidity(CampbellOBS3* parentSense,
                                     const char*   uuid    = "",
@@ -288,7 +292,7 @@ class CampbellOBS3_Voltage : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of OBS3Voltage
+     * optional with a default value of "OBS3Voltage".
      */
     explicit CampbellOBS3_Voltage(CampbellOBS3* parentSense,
                                   const char*   uuid    = "",

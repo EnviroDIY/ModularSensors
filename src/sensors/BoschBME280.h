@@ -68,9 +68,12 @@
  * @ctor_doc{BoschBME280, I2CPower, i2cAddressHex, measurementsToAverage}
  * @subsection bme280_timing Sensor Timing
  *   - warm up is 100ms
+ *      - @m_span{m-dim}@ref #BME280_WARM_UP_TIME_MS = 100@m_endspan
  *   - stable after 4000ms
  *      - 0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino
+ *      - @m_span{m-dim}@ref #BME280_STABILIZATION_TIME_MS = 4000@m_endspan
  *   - measurements take 1100ms to complete
+ *      - @m_span{m-dim}(@ref #BME280_MEASUREMENT_TIME_MS = 1100)@m_endspan
  *      - 1.0 s according to datasheet, but slightly better stdev when 1.1 s
  *   - For details on BME280 stabilization time updates, include testing sketch and
  * link to data in Google Sheet, see:
@@ -348,7 +351,7 @@ class BoschBME280_Humidity : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of BoschBME280Humidity
+     * optional with a default value of "BoschBME280Humidity".
      */
     explicit BoschBME280_Humidity(BoschBME280* parentSense,
                                   const char*  uuid    = "",
@@ -391,7 +394,7 @@ class BoschBME280_Pressure : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of BoschBME280Pressure
+     * optional with a default value of "BoschBME280Pressure".
      */
     explicit BoschBME280_Pressure(BoschBME280* parentSense,
                                   const char*  uuid    = "",
@@ -430,7 +433,7 @@ class BoschBME280_Altitude : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of BoschBME280Altitude
+     * optional with a default value of "BoschBME280Altitude".
      */
     explicit BoschBME280_Altitude(BoschBME280* parentSense,
                                   const char*  uuid    = "",

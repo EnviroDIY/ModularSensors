@@ -46,7 +46,10 @@
  * @ctor_doc{MaximDS3231, measurementsToAverage}
  * @subsection ds3231_timing Sensor Timing
  * - The RTC **must** be continuously powered
+ *      - @m_span{m-dim}@ref #DS3231_WARM_UP_TIME_MS = 0@m_endspan
+ *      - @m_span{m-dim}@ref #DS3231_STABILIZATION_TIME_MS = 0@m_endspan
  * - A single temperature conversion takes 200ms.
+ *      - @m_span{m-dim}@ref #DS3231_MEASUREMENT_TIME_MS = 200@m_endspan
  *
  * @section ds3231_temp Temperature Output
  *   - Range is -55°C to 125°C

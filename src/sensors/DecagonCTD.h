@@ -41,8 +41,12 @@
  * @section hydros21_sensor The Meter Hydros 21 (CTD) Sensor
  * @ctor_doc{DecagonCTD, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
  * @subsection hydros21_timing Sensor Timing
- * - Maximum warm-up time in SDI-12 mode: 500ms, assume stability at warm-up
+ * - Maximum warm-up time in SDI-12 mode: 500ms
+ *      - @m_span{m-dim}@ref #CTD_MEASUREMENT_TIME_MS = 500@m_endspan
+ * - Assume stability at warm-up
+ *      - @m_span{m-dim}@ref #CTD_STABILIZATION_TIME_MS = 0@m_endspan
  * - Maximum measurement duration: 500ms
+ *      - @m_span{m-dim}@ref #CTD_MEASUREMENT_TIME_MS = 500@m_endspan
  *
  * @section hydros21_cond Conductivity Output
  *   - Range is 0 – 120 mS/cm (bulk)

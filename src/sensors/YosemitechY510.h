@@ -33,7 +33,11 @@
  * @ctor_doc{YosemitechY510, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
  * @subsection y510_timing Sensor Timing
  * - Time before sensor responds after power - 500ms
+ *      - @m_span{m-dim}@ref #Y510_WARM_UP_TIME_MS = 500@m_endspan
  * - Time between "StartMeasurement" command and stable reading - 22sec
+ *      - @m_span{m-dim}@ref #Y510_STABILIZATION_TIME_MS = 22000@m_endspan
+ * - Measurements take about 1700 ms to complete.
+ *      - @m_span{m-dim}@ref #Y510_MEASUREMENT_TIME_MS = 1700@m_endspan
  *
  * @section y510_turb Turbidity Output
  *   - Range is 0.1 to 1000 NTU
@@ -176,7 +180,7 @@ class YosemitechY510_Turbidity : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y510Turbidity
+     * optional with a default value of "Y510Turbidity".
      */
     explicit YosemitechY510_Turbidity(YosemitechY510* parentSense,
                                       const char*     uuid    = "",

@@ -39,9 +39,12 @@
  * @section pt_redox_sensor The PaleoTerra Redox Sensor
  * @ctor_doc{PaleoTerraRedox, int8_t powerPin, uint8_t i2cAddressHex, int16_t maxPressure, uint8_t measurementsToAverage}
  * @subsection pt_redox_timing Sensor Timing
- * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
- * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+ * - We assume the sensor is almost immediately warmed up.
+ *      - @m_span{m-dim}@ref #PTR_WARM_UP_TIME_MS = 1@m_endspan
  * - We assume the sensor is immediately stable.
+ *      - @m_span{m-dim}@ref #PTR_STABILIZATION_TIME_MS = 0@m_endspan
+ * - Measurements take about 67 ms to complete.
+ *      - @m_span{m-dim}@ref #PTR_MEASUREMENT_TIME_MS = 67@m_endspan
  * @subsection pt_redox_flags Build flags
  * - `-D MS_PALEOTERRA_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C

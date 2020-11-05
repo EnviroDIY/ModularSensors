@@ -42,8 +42,11 @@
  * @ctor_doc{AOSongAM2315, int8_t powerPin, uint8_t measurementsToAverage}
  * @subsection am2315_timing Sensor Timing
  * - warm up estimated at 500ms
+ *      - @m_span{m-dim}@ref #AM2315_WARM_UP_TIME_MS = 500@m_endspan
  * - stabilization estimated at 500ms
+ *      - @m_span{m-dim}@ref #AM2315_STABILIZATION_TIME_MS = 500@m_endspan
  * - measurements take 2s to complete
+ *      -  @m_span{m-dim}@ref #AM2315_MEASUREMENT_TIME_MS = 2000@m_endspan
  *
  * ___
  * @section am2315_temperature Temperature Output
