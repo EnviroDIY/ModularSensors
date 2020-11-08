@@ -26,34 +26,12 @@
  * Documentation on the circuit is available here:
  * https://www.atlas-scientific.com/circuits/ezo-orp-circuit/
  *
- * @section atlas_orp_sensor The Atlas ORP Sensor
- * @ctor_doc{AtlasScientificORP, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
- * @subsection atlas_orp_timing Sensor Timing
- *   - warms up in 850ms
- *      - 846 in SRGD tests
- *      - @m_span{m-dim}@ref #ATLAS_ORP_WARM_UP_TIME_MS = 850@m_endspan
- *   - stable at completion of warm up
- *      - @m_span{m-dim}@ref #ATLAS_ORP_STABILIZATION_TIME_MS = 0@m_endspan
- *   - measurements take 1580ms to complete
- *      - Manual says measurement takes 900 ms, but in SRGD tests, no result was
- * available until after 1577 ms.
- *      - @m_span{m-dim}@ref #ATLAS_ORP_MEASUREMENT_TIME_MS = 1580@m_endspan
- * @subsection atlas_orp_flags Build flags
+ * @section atlas_orp_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
- * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
- *
- * ___
- * @section atlas_orp_orp Oxidation/Reduction Potential Output
- * - Accuracy is ± 1 mV
- * - Range is -1019.9mV − 1019.9mV
- * - Resolution is 0.1 mV @m_span{m-dim}(@ref #ATLAS_ORP_RESOLUTION = 1)@m_endspan
- * - Reported as millivolts (mV)
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_ORP_VAR_NUM = 0)@m_endspan
- * - Default variable code is AtlasORP
- *
- * @variabledoc{atlas_orp_orp,AtlasScientificORP,Potential,AtlasORP}
+ * Using some Altas sensors with software I2C and others with hardware I2C is
+ * not supported.
  *
  * ___
  * @section atlas_orp_examples Example Code
@@ -71,16 +49,23 @@
 #include "sensors/AtlasParent.h"
 
 
-/**
- * @brief Default I2C address is 0x62 (98)
- */
+// Sensor Specific Defines
+/** @ingroup atlas_orp_group */
+/**@{*/
+
+/// @brief Default I2C address is 0x62 (98)
 #define ATLAS_ORP_I2C_ADDR 0x62
 
-// Sensor Specific Defines
-
-/// Sensor::_numReturnedValues; the Atlas EZO ORP circuit can report 1 value.
+/// @brief Sensor::_numReturnedValues; the Atlas EZO ORP circuit can report 1
+/// value.
 #define ATLAS_ORP_NUM_VARIABLES 1
 
+/**
+ * @anchor atlas_orp_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for an Atlas ORP (redox) sensor
+ */
+/**@{*/
 /**
  * @brief Sensor::_warmUpTime_ms; the Atlas EZO ORP circuit warms up in 850ms
  *
@@ -89,22 +74,40 @@
 #define ATLAS_ORP_WARM_UP_TIME_MS 850
 /**
  * @brief Sensor::_stabilizationTime_ms; the Atlas EZO ORP circuit is stable 0ms
- * after warm-up.
+ * after warm-up (stable at completion of warm up).
  */
 #define ATLAS_ORP_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the Atlas EZO ORP circuit takes
  * 1580ms to complete a measurement.
  *
- * @note  Manual says measurement takes 900 ms, but in SRGD tests, no result was
+ * @note Manual says measurement takes 900 ms, but in SRGD tests, no result was
  * available until after 1577 ms.
  */
 #define ATLAS_ORP_MEASUREMENT_TIME_MS 1580
+/**@}*/
 
-/// Decimals places in string representation; ORP should have 1.
+/**
+ * @anchor atlas_orp_orp_defines
+ * @name ORP
+ * Defines for the ORP variable from an Atlas ORP (redox) sensor
+ * - Accuracy is ± 1 mV
+ * - Range is -1019.9mV − 1019.9mV
+ */
+/**@{*/
+/// @brief Decimals places in string representation; ORP should have 1 -
+/// resolution is 0.1 mV.
 #define ATLAS_ORP_RESOLUTION 1
-/// Variable number; ORP is stored in sensorValues[0].
+/// @brief Variable number; ORP is stored in sensorValues[0].
 #define ATLAS_ORP_VAR_NUM 0
+/// @brief Variable name; "reductionPotential"
+#define ATLAS_ORP_VAR_NAME "reductionPotential"
+/// @brief Variable unit name; "millivolt" (mV)
+#define ATLAS_ORP_UNIT_NAME "millivolt"
+/// @brief Default variable short code; "AtlasORP"
+#define ATLAS_ORP_DEFAULT_CODE "AtlasORP"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -120,6 +123,7 @@ class AtlasScientificORP : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific ORP object using a *software* I2C
      * instance.
+     * @ingroup atlas_orp_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -149,6 +153,7 @@ class AtlasScientificORP : public AtlasParent {
      * @brief Construct a new Atlas Scientific ORP object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
+     * @ingroup atlas_orp_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -187,6 +192,7 @@ class AtlasScientificORP : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific ORP object using a secondary
      * *hardware* I2C instance.
+     * @ingroup atlas_orp_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -218,6 +224,7 @@ class AtlasScientificORP : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific ORP object using the primary
      * hardware I2C instance.
+     * @ingroup atlas_orp_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas ORP
      * circuit.  Use -1 if it is continuously powered.
@@ -262,6 +269,7 @@ class AtlasScientificORP_Potential : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificORP_Potential object.
+     * @ingroup atlas_group
      *
      * @param parentSense The parent AtlasScientificORP providing the result
      * values.
@@ -270,12 +278,12 @@ class AtlasScientificORP_Potential : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasORP".
      */
-    explicit AtlasScientificORP_Potential(AtlasScientificORP* parentSense,
-                                          const char*         uuid = "",
-                                          const char* varCode      = "AtlasORP")
+    explicit AtlasScientificORP_Potential(
+        AtlasScientificORP* parentSense, const char* uuid = "",
+        const char* varCode = ATLAS_ORP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
-                   "millivolt", varCode, uuid) {}
+                   (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
+                   ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificORP_Potential object.
      *
@@ -284,13 +292,13 @@ class AtlasScientificORP_Potential : public Variable {
      */
     AtlasScientificORP_Potential()
         : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, "reductionPotential",
-                   "millivolt", "AtlasORP") {}
+                   (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
+                   ATLAS_ORP_UNIT_NAME, ATLAS_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificORP_Potential() object - no action
      * needed.
      */
     ~AtlasScientificORP_Potential() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICORP_H_

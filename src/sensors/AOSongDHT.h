@@ -44,49 +44,6 @@
  * @section dht_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-DHT22-Datasheet.pdf)
  *
- * @section dht_sensor The DHT Sensor
- * @ctor_doc{AOSongDHT, int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage}
- * @subsection dht_timing Sensor Timing
- * - warms up in 1.7sec
- *      - @m_span{m-dim}@ref #DHT_WARM_UP_TIME_MS = 1700@m_endspan
- * - stable on completion of warm up
- *      - @m_span{m-dim}@ref #DHT_STABILIZATION_TIME_MS = 0@m_endspan
- * - measurements take 2s to complete
- *      - @m_span{m-dim}@ref #DHT_MEASUREMENT_TIME_MS = 2000@m_endspan
- *
- * ___
- * @section dht_humidity Relative Humidity Output
- * - Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11 @m_span{m-dim}(@ref #DHT_HUMIDITY_RESOLUTION = 1)@m_endspan
- * - Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
- * - Range is 0 to 100 % RH
- * - Reported as percent relative humidity (% RH)
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #DHT_HUMIDITY_VAR_NUM = 0)@m_endspan
- * - Default variable code is DHTHumidity
- *
- * @variabledoc{dht_humidity,AOSongDHT,Humidity,DHTHumidity}
- *
- * ___
- * @section dht_temperature Temperature Output
- * - Resolution is 0.1°C @m_span{m-dim}(@ref #DHT_TEMP_RESOLUTION = 1)@m_endspan
- * - Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
- * - Range is -40°C to +80°C
- * - Reported as degrees Celsius (°C)
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #DHT_TEMP_VAR_NUM = 1)@m_endspan
- * - Default variable code is DHTTemp
- *
- * @variabledoc{dht_temperature,AOSongDHT,Temp,DHTTemp}
- *
- * ___
- * @section dht_hi Heat Index Output
- * - Resolution is 0.1°C @m_span{m-dim}(@ref #DHT_HI_RESOLUTION = 1)@m_endspan
- * - Heat index is calculated within the Adafruit library from the measured
- * temperature and humidity.
- * - Reported as degrees Celsius (°C)
- * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #DHT_HI_VAR_NUM = 2)@m_endspan
- * - Default variable code is heatIndex
- *
- * @variabledoc{dht_hi,AOSongDHT,HI,heatIndex}
- *
  * ___
  * @section dht_examples Example Code
  * The DHT is used in the @menulink{dht} example.
@@ -121,30 +78,90 @@
 #undef AM2302
 
 // Sensor Specific Defines
+/** @ingroup dht_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the DHT can report 3 values.
+/// @brief Sensor::_numReturnedValues; the DHT can report 3 values.
 #define DHT_NUM_VARIABLES 3
-/// Sensor::_warmUpTime_ms; DHT warms up in 1700ms.
+
+/**
+ * @anchor dht_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for an AOSong DHT
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; DHT warms up in 1700ms (1.7sec).
 #define DHT_WARM_UP_TIME_MS 1700
-/// Sensor::_stabilizationTime_ms; DHT is stable after 0ms.
+/// @brief Sensor::_stabilizationTime_ms; We assume the sensor is stable
+/// immediately after warm-up
 #define DHT_STABILIZATION_TIME_MS 0
-/// Sensor::_measurementTime_ms; DHT takes 2000ms to complete a measurement.
+/// @brief Sensor::_measurementTime_ms; DHT takes 2000ms (2s) to complete a
+/// measurement.
 #define DHT_MEASUREMENT_TIME_MS 2000
+/**@}*/
 
-/// Decimals places in string representation; humidity should have 1.
+/**
+ * @anchor dht_humidity_defines
+ * @name Humidity
+ * Defines for the humidity variable from an AOSong DHT
+ * - Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
+ * - Range is 0 to 100 % RH
+ */
+/**@{*/
+/// @brief Decimals places in string representation; humidity should have 1 (0.1
+/// % RH for DHT22 and 1 % RH for DHT11)
 #define DHT_HUMIDITY_RESOLUTION 1
-/// Variable number; humidity is stored in sensorValues[0].
+/// @brief Variable number; humidity is stored in sensorValues[0].
 #define DHT_HUMIDITY_VAR_NUM 0
+/// @brief Variable name; "relativeHumidity"
+#define DHT_HUMIDITY_VAR_NAME "relativeHumidity"
+/// @brief Variable unit name; "percent" (percent relative humidity or % RH)
+#define DHT_HUMIDITY_UNIT_NAME "percent"
+/// @brief Default variable short code; "DHTHumidity"
+#define DHT_HUMIDITY_DEFAULT_CODE "DHTHumidity"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 1.
+/**
+ * @anchor dht_temperature_defines
+ * @name Temperature
+ * Defines for the temperature variable from an AOSong DHT
+ * - Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
+ * - Range is -40°C to +80°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 1 -
+/// resolution is 0.1°C.
 #define DHT_TEMP_RESOLUTION 1
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Variable number; temperature is stored in sensorValues[1].
 #define DHT_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define DHT_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (degrees Celsius, °C)
+#define DHT_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "DHTTemp"
+#define DHT_TEMP_DEFAULT_CODE "DHTTemp"
+/**@}*/
 
-/// Decimals places in string representation; heat index should have 1.
+/**
+ * @anchor dht_hi_defines
+ * @name Heat Index
+ * Defines for the heat index variable from an AOSong DHT
+ * - Heat index is calculated within the Adafruit library from the measured
+ * temperature and humidity.
+ */
+/**@{*/
+/// @brief Decimals places in string representation; heat index should have 1 -
+/// resolution is 0.1°C
 #define DHT_HI_RESOLUTION 1
-/// Variable number; HI is stored in sensorValues[2].
+/// @brief Variable number; HI is stored in sensorValues[2].
 #define DHT_HI_VAR_NUM 2
+/// @brief Variable name; "heatIndex"
+#define DHT_HI_VAR_NAME "heatIndex"
+/// @brief Variable unit name; "degreeCelsius"
+#define DHT_HI_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "DHTHI"
+#define DHT_HI_DEFAULT_CODE "DHTHI"
+/**@}*/
 
 /**
  * @brief The possible types of DHT
@@ -170,6 +187,7 @@ class AOSongDHT : public Sensor {
     /**
      * @brief Construct a new AOSongDHT object - need the power pin, the data
      * pin, and the sensor type
+     * @ingroup dht_group
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong DHT.
      * Use -1 if it is continuously powered.
@@ -223,6 +241,7 @@ class AOSongDHT_Humidity : public Variable {
  public:
     /**
      * @brief Construct a new AOSongDHT_Humidity object.
+     * @ingroup dht_group
      *
      * @param parentSense The parent AOSongDHT providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -231,10 +250,10 @@ class AOSongDHT_Humidity : public Variable {
      * optional with a default value of "DHTHumidity".
      */
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
-                                const char* varCode = "DHTHumidity")
+                                const char* varCode = DHT_HUMIDITY_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                   (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", varCode, uuid) {}
+                   (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
+                   DHT_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AOSongDHT_Humidity object.
      *
@@ -242,8 +261,8 @@ class AOSongDHT_Humidity : public Variable {
      */
     AOSongDHT_Humidity()
         : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
-                   (uint8_t)DHT_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", "DHTHumidity") {}
+                   (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
+                   DHT_HUMIDITY_UNIT_NAME, DHT_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_Humidity object - no action needed.
      */
@@ -264,6 +283,7 @@ class AOSongDHT_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AOSongDHT_Temp object.
+     * @ingroup dht_group
      *
      * @param parentSense The parent AOSongDHT providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -272,10 +292,10 @@ class AOSongDHT_Temp : public Variable {
      * optional with a default value of "DHTTemp".
      */
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
-                            const char* varCode = "DHTTemp")
+                            const char* varCode = DHT_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)DHT_TEMP_VAR_NUM,
-                   (uint8_t)DHT_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)DHT_TEMP_RESOLUTION, DHT_TEMP_VAR_NAME,
+                   DHT_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AOSongDHT_Temp object.
      *
@@ -283,8 +303,8 @@ class AOSongDHT_Temp : public Variable {
      */
     AOSongDHT_Temp()
         : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
-                   (uint8_t)DHT_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   "DHTTemp") {}
+                   (uint8_t)DHT_TEMP_RESOLUTION, DHT_TEMP_VAR_NAME,
+                   DHT_TEMP_UNIT_NAME, DHT_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
@@ -305,6 +325,7 @@ class AOSongDHT_HI : public Variable {
  public:
     /**
      * @brief Construct a new AOSongDHT_HI object.
+     * @ingroup dht_group
      *
      * @param parentSense The parent AOSongDHT providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -313,10 +334,10 @@ class AOSongDHT_HI : public Variable {
      * optional with a default value of "DHTHI".
      */
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
-                          const char* varCode = "DHTHI")
+                          const char* varCode = DHT_HI_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)DHT_HI_VAR_NUM,
-                   (uint8_t)DHT_HI_RESOLUTION, "heatIndex", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)DHT_HI_RESOLUTION, DHT_HI_VAR_NAME,
+                   DHT_HI_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AOSongDHT_HI object.
      *
@@ -324,11 +345,11 @@ class AOSongDHT_HI : public Variable {
      */
     AOSongDHT_HI()
         : Variable((const uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
-                   "heatIndex", "degreeCelsius", "DHTHI") {}
+                   DHT_HI_VAR_NAME, DHT_HI_UNIT_NAME, DHT_HI_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.
      */
     ~AOSongDHT_HI() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_AOSONGDHT_H_

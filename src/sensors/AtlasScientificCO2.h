@@ -27,48 +27,18 @@
  * Documentation on the CO2 circuit and probe is available here:
  * https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/
  *
- * @section atlas_co2_sensor The Atlas CO2 Sensor
- * @ctor_doc{AtlasScientificCO2, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
- * @subsection atlas_co2_timing Sensor Timing
- *   - warms up in 850ms
- *      - @m_span{m-dim}@ref #ATLAS_CO2_WARM_UP_TIME_MS = 850@m_endspan
- *   - not stable until **10s** after warm-up
- *      - @m_span{m-dim}@ref #ATLAS_CO2_STABILIZATION_TIME_MS = 10000@m_endspan
- *   - measurements take 900ms to complete
- *      - @m_span{m-dim}@ref #ATLAS_CO2_MEASUREMENT_TIME_MS = 900@m_endspan
- * @subsection atlas_co2_flags Build flags
- * - `-D MS_ATLAS_SOFTWAREWIRE`
- *      - switches from using hardware I2C to software I2C
- * @warning Either all or none of the Atlas sensors can be using software I2C.
- * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
- *
  * @note This has a long (10s) stabilization time!
- *
- * ___
- * @section atlas_co2_co2 Carbon Dioxide Output
- * - Resolution is 1 ppm @m_span{m-dim}(@ref #ATLAS_CO2_RESOLUTION = 1)@m_endspan
- * - Accuracy is ± 3% or ± 30 ppm
- * - Range is 0 − 10000 ppm
- * - Reported as parts per million (ppm)
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_CO2_VAR_NUM = 0)@m_endspan
- * - Default variable code is AtlasCO2ppm
- *
- * @variabledoc{atlas_co2_co2,AtlasScientificCO2,CO2,AtlasCO2ppm}
- *
- * ___
- * @section atlas_co2_temp Temperature Output
- * - Resolution is 1°C @m_span{m-dim}(@ref #ATLAS_CO2TEMP_RESOLUTION = 0)@m_endspan
- * - Accuracy is not reported on the sensor datasheet
- * - Range is -20°C to +50°C
- * - Reported as degrees Celsius (°C)
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #ATLAS_CO2TEMP_VAR_NUM = 1)@m_endspan
- * - Default variable code is AtlasCO2Temp
- *
- * @variabledoc{atlas_co2_temp,AtlasScientificCO2,Temp,AtlasCO2Temp}
  *
  * @note According to the probe datasheet, the temperature measurement is only
  * intended to be used to verify that the sensor is in equilibrium with its
  * surroundings.
+ *
+ * @section atlas_co2_flags Build flags
+ * - `-D MS_ATLAS_SOFTWAREWIRE`
+ *      - switches from using hardware I2C to software I2C
+ * @warning Either all or none of the Atlas sensors can be using software I2C.
+ * Using some Altas sensors with software I2C and others with hardware I2C is
+ * not supported.
  *
  * ___
  * @section atlas_co2_examples Example Code
@@ -95,36 +65,75 @@
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
-/**
- * @brief Default I2C address is 0x69 (105)
- */
+// Sensor Specific Defines
+/** @ingroup atlas_co2_group */
+/**@{*/
+
+/// Default I2C address is 0x69 (105)
 #define ATLAS_CO2_I2C_ADDR 0x69  // 105
 
-// Sensor Specific Defines
-
-/// Sensor::_numReturnedValues; the Atlas CO2 sensor can report 2 values.
+/// @brief Sensor::_numReturnedValues; the Atlas CO2 sensor can report 2 values.
 #define ATLAS_CO2_NUM_VARIABLES 2
-/// @todo (SRGDamia1):  Test timing with sensor
 
-/// Sensor::_warmUpTime_ms; the Atlas CO2 sensor warms up in 850ms.
-#define ATLAS_CO2_WARM_UP_TIME_MS 850
-/// Sensor::_stabilizationTime_ms; the Atlas CO2 sensor is stable after 10000ms.
-#define ATLAS_CO2_STABILIZATION_TIME_MS 10000
 /**
- * @brief Sensor::_measurementTime_ms; the Atlas CO2 sensor takes 900ms to
- * complete a measurement.
+ * @anchor atlas_co2_timing_defines
+ * @name Sensor Timing
+ * @todo (SRGDamia1):  Test timing with sensor
+ * Defines for the sensor timing for an Atlas CO2 sensor
  */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the Atlas CO2 sensor warms up in 850ms.
+#define ATLAS_CO2_WARM_UP_TIME_MS 850
+/// @brief Sensor::_stabilizationTime_ms; the Atlas CO2 sensor is not stable
+/// until **10s** (10000ms) after warm-up.
+#define ATLAS_CO2_STABILIZATION_TIME_MS 10000
+/// @brief Sensor::_measurementTime_ms; the Atlas CO2 sensor takes 900ms to
+/// complete a measurement.
 #define ATLAS_CO2_MEASUREMENT_TIME_MS 900
+/**@}*/
 
-/// Decimals places in string representation; CO2 should have 1.
+/**
+ * @anchor atlas_co2_co2_defines
+ * @name CO2 Concentration
+ * Defines for the co2 variable from an Atlas CO2 sensor
+ * - Accuracy is ± 3% or ± 30 ppm
+ * - Range is 0 − 10000 ppm
+ */
+/**@{*/
+/// @brief Decimals places in string representation; CO2 should have 1 -
+/// resolution is 1 ppm.
 #define ATLAS_CO2_RESOLUTION 1
-/// Variable number; CO2 is stored in sensorValues[0].
+/// @brief Variable number; CO2 is stored in sensorValues[0].
 #define ATLAS_CO2_VAR_NUM 0
+/// @brief Variable name; "carbonDioxide"
+#define ATLAS_CO2_VAR_NAME "carbonDioxide"
+/// @brief Variable unit name; "partPerMillion" (ppm)
+#define ATLAS_CO2_UNIT_NAME "partPerMillion"
+/// @brief Default variable short code; "AtlasCO2ppm"
+#define ATLAS_CO2_DEFAULT_CODE "AtlasCO2ppm"
+/**@}*/
 
-/// Decimals places in string representation; CO2TEMP should have 0.
+/**
+ * @anchor atlas_co2_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from an Atlas CO2 sensor
+ * - Accuracy is not reported on the sensor datasheet
+ * - Range is -20°C to +50°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; CO2TEMP should have 0 -
+/// resolution is 1°C.
 #define ATLAS_CO2TEMP_RESOLUTION 0
-/// Variable number; CO2TEMP is stored in sensorValues[1].
+/// @brief Variable number; CO2TEMP is stored in sensorValues[1].
 #define ATLAS_CO2TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define ATLAS_CO2TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius"
+#define ATLAS_CO2TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "AtlasCO2Temp"
+#define ATLAS_CO2TEMP_DEFAULT_CODE "AtlasCO2Temp"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -142,6 +151,7 @@ class AtlasScientificCO2 : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific CO2 object using a *software*
      * I2C instance.
+     * @ingroup atlas_co2_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -166,6 +176,7 @@ class AtlasScientificCO2 : public AtlasParent {
      * @brief Construct a new Atlas Scientific CO2 object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
+     * @ingroup atlas_co2_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -199,6 +210,7 @@ class AtlasScientificCO2 : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific CO2 object using a secondary
      * *hardware* I2C instance.
+     * @ingroup atlas_co2_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -225,6 +237,7 @@ class AtlasScientificCO2 : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific CO2 object using the primary
      * hardware I2C instance.
+     * @ingroup atlas_co2_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas CO2
      * circuit.  Use -1 if it is continuously powered.
@@ -276,6 +289,7 @@ class AtlasScientificCO2_CO2 : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificCO2_CO2 object.
+     * @ingroup atlas_co2_group
      *
      * @param parentSense The parent AtlasScientificCO2 providing the result
      * values.
@@ -284,12 +298,12 @@ class AtlasScientificCO2_CO2 : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasCO2ppm".
      */
-    explicit AtlasScientificCO2_CO2(AtlasScientificCO2* parentSense,
-                                    const char*         uuid    = "",
-                                    const char*         varCode = "AtlasCO2ppm")
+    explicit AtlasScientificCO2_CO2(
+        AtlasScientificCO2* parentSense, const char* uuid = "",
+        const char* varCode = ATLAS_CO2_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ATLAS_CO2_VAR_NUM,
-                   (uint8_t)ATLAS_CO2_RESOLUTION, "carbonDioxide",
-                   "partPerMillion", varCode, uuid) {}
+                   (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
+                   ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificCO2_CO2 object.
      *
@@ -298,8 +312,8 @@ class AtlasScientificCO2_CO2 : public Variable {
      */
     AtlasScientificCO2_CO2()
         : Variable((const uint8_t)ATLAS_CO2_VAR_NUM,
-                   (uint8_t)ATLAS_CO2_RESOLUTION, "carbonDioxide",
-                   "partPerMillion", "AtlasCO2ppm") {}
+                   (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
+                   ATLAS_CO2_UNIT_NAME, ATLAS_CO2_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
      */
@@ -319,6 +333,7 @@ class AtlasScientificCO2_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificCO2_Temp object.
+     * @ingroup atlas_co2_group
      *
      * @param parentSense The parent AtlasScientificCO2 providing the result
      * values.
@@ -327,12 +342,12 @@ class AtlasScientificCO2_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasCO2Temp".
      */
-    explicit AtlasScientificCO2_Temp(AtlasScientificCO2* parentSense,
-                                     const char*         uuid = "",
-                                     const char* varCode      = "AtlasCO2Temp")
+    explicit AtlasScientificCO2_Temp(
+        AtlasScientificCO2* parentSense, const char* uuid = "",
+        const char* varCode = ATLAS_CO2TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
+                   ATLAS_CO2TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificCO2_Temp object.
      *
@@ -341,12 +356,12 @@ class AtlasScientificCO2_Temp : public Variable {
      */
     AtlasScientificCO2_Temp()
         : Variable((const uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "AtlasCO2Temp") {}
+                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
+                   ATLAS_CO2TEMP_UNIT_NAME, ATLAS_CO2TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_Temp object - no action needed.
      */
     ~AtlasScientificCO2_Temp() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICCO2_H_

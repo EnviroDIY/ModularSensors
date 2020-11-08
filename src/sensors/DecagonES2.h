@@ -39,37 +39,6 @@
  * [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf)
  * [Integrator's Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf)
  *
- * @section es2_sensor The Decagon ES-2 Sensor
- * @ctor_doc{DecagonES2, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
- * @subsection es2_timing Sensor Timing
- * - Maximum warm-up time in SDI-12 mode: 250ms
- *      - @m_span{m-dim}@ref #ES2_MEASUREMENT_TIME_MS = 250@m_endspan
- * - Assume stability at warm-up
- *      - @m_span{m-dim}@ref #ES2_STABILIZATION_TIME_MS = 0@m_endspan
- * - Maximum measurement duration: 250ms
- *      - @m_span{m-dim}@ref #ES2_MEASUREMENT_TIME_MS = 250@m_endspan
- *
- * @section es2_cond Conductivity Output
- * - Range is 0 – 120 mS/cm (bulk)
- * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ES2_COND_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.001 mS/cm = 1 µS/cm @m_span{m-dim}(@ref #ES2_COND_RESOLUTION = 1)@m_endspan
- * - Reported as microsiemens per centimeter (µS/cm)
- * - Default variable code is ES2Cond
- *
- * @variabledoc{es2_cond,DecagonES2,Cond,ES2Cond}
- *
- * @section es2_temp Temperature Output
- * - Range is -40°C to +50°C
- * - Accuracy is ±1°C
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #ES2_TEMP_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.1°C @m_span{m-dim}(@ref #ES2_TEMP_RESOLUTION = 2)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is ES2Temp
- *
- * @variabledoc{es2_temp,DecagonES2,Temp,ES2Temp}
- *
- *
  * ___
  * @section es2_examples Example Code
  * The Decagon ES-2 is used in the @menulink{es2} example.
@@ -86,35 +55,76 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+/** @ingroup es2_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the ES2 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the ES2 can report 2 values.
 #define ES2_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the ES2 warms up in 250ms.
-#define ES2_WARM_UP_TIME_MS 250
-/// Sensor::_stabilizationTime_ms; the ES2 is stable after 0ms.
-#define ES2_STABILIZATION_TIME_MS 0
-/// Sensor::_measurementTime_ms; the ES2 takes 250ms to complete a measurement.
-#define ES2_MEASUREMENT_TIME_MS 250
 
+/**
+ * @anchor es2_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Decagon ES-2
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; maximum warm-up time in SDI-12 mode: 250ms.
+#define ES2_WARM_UP_TIME_MS 250
+/// @brief Sensor::_stabilizationTime_ms; the ES2 is stable as soon as it warms
+/// up (0ms stabilization).
+#define ES2_STABILIZATION_TIME_MS 0
+/// @brief Sensor::_measurementTime_ms; maximum measurement duration: 250ms.
+#define ES2_MEASUREMENT_TIME_MS 250
+/**@}*/
+
+/**
+ * @anchor es2_cond_defines
+ * @name Conductivity
+ * Defines for the conductivity variable from a Decagon ES-2
+ * - Range is 0 – 120 mS/cm (bulk)
+ * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; conductivity should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
  */
 #define ES2_COND_RESOLUTION 1
-/// Variable number; conductivity is stored in sensorValues[0].
+/// @brief Variable number; conductivity is stored in sensorValues[0].
 #define ES2_COND_VAR_NUM 0
+/// @brief Variable name; "specificConductance"
+#define ES2_COND_VAR_NAME "specificConductance"
+/// @brief Variable unit name; "microsiemenPerCentimeter" (µS/cm)
+#define ES2_COND_UNIT_NAME "microsiemenPerCentimeter"
+/// @brief Default variable short code; "ES2Cond"
+#define ES2_COND_DEFAULT_CODE "ES2Cond"
+/**@}*/
 
+/**
+ * @anchor es2_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Decagon ES-2
+ * - Range is -40°C to +50°C
+ * - Accuracy is ±1°C
+ */
 /**
  * @brief Decimals places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging - resolution is 0.1°C
  */
 #define ES2_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Variable number; temperature is stored in sensorValues[1].
 #define ES2_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define ES2_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius"
+#define ES2_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "ES2Temp"
+#define ES2_TEMP_DEFAULT_CODE "ES2Temp"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -128,6 +138,7 @@ class DecagonES2 : public SDI12Sensors {
     // Constructors with overloads
     /**
      * @brief Construct a new Decagon ES2 object.
+     * @ingroup es2_group
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -156,6 +167,7 @@ class DecagonES2 : public SDI12Sensors {
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc DecagonES2::DecagonES2
+     * @ingroup es2_group
      */
     DecagonES2(char* SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
@@ -164,6 +176,7 @@ class DecagonES2 : public SDI12Sensors {
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc DecagonES2::DecagonES2
+     * @ingroup es2_group
      */
     DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
@@ -190,6 +203,7 @@ class DecagonES2_Cond : public Variable {
  public:
     /**
      * @brief Construct a new DecagonES2_Cond object.
+     * @ingroup es2_group
      *
      * @param parentSense The parent DecagonES2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -198,10 +212,10 @@ class DecagonES2_Cond : public Variable {
      * optional with a default value of "ES2Cond".
      */
     explicit DecagonES2_Cond(DecagonES2* parentSense, const char* uuid = "",
-                             const char* varCode = "ES2Cond")
+                             const char* varCode = ES2_COND_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ES2_COND_VAR_NUM,
-                   (uint8_t)ES2_COND_RESOLUTION, "specificConductance",
-                   "microsiemenPerCentimeter", varCode, uuid) {}
+                   (uint8_t)ES2_COND_RESOLUTION, ES2_COND_VAR_NAME,
+                   ES2_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonES2_Cond object.
      *
@@ -209,8 +223,8 @@ class DecagonES2_Cond : public Variable {
      */
     DecagonES2_Cond()
         : Variable((const uint8_t)ES2_COND_VAR_NUM,
-                   (uint8_t)ES2_COND_RESOLUTION, "specificConductance",
-                   "microsiemenPerCentimeter", "ES2Cond") {}
+                   (uint8_t)ES2_COND_RESOLUTION, ES2_COND_VAR_NAME,
+                   ES2_COND_UNIT_NAME, ES2_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonES2_Cond object - no action needed.
      */
@@ -230,6 +244,7 @@ class DecagonES2_Temp : public Variable {
  public:
     /**
      * @brief Construct a new DecagonES2_Temp object.
+     * @ingroup es2_group
      *
      * @param parentSense The parent DecagonES2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -238,10 +253,10 @@ class DecagonES2_Temp : public Variable {
      * optional with a default value of "ES2Temp".
      */
     explicit DecagonES2_Temp(DecagonES2* parentSense, const char* uuid = "",
-                             const char* varCode = "ES2Temp")
+                             const char* varCode = ES2_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ES2_TEMP_VAR_NUM,
-                   (uint8_t)ES2_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)ES2_TEMP_RESOLUTION, ES2_TEMP_VAR_NAME,
+                   ES2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonES2_Temp object.
      *
@@ -249,12 +264,12 @@ class DecagonES2_Temp : public Variable {
      */
     DecagonES2_Temp()
         : Variable((const uint8_t)ES2_TEMP_VAR_NUM,
-                   (uint8_t)ES2_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   "ES2Temp") {}
+                   (uint8_t)ES2_TEMP_RESOLUTION, ES2_TEMP_VAR_NAME,
+                   ES2_TEMP_UNIT_NAME, ES2_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonES2_Temp object - no action needed.
      */
     ~DecagonES2_Temp() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_DECAGONES2_H_

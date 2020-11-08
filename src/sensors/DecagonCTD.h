@@ -38,47 +38,6 @@
  * Documentation for the SDI-12 Protocol commands and responses for the Hydros
  * 21 can be found at: http://library.metergroup.com/Manuals/13869_CTD_Web.pdf
  *
- * @section hydros21_sensor The Meter Hydros 21 (CTD) Sensor
- * @ctor_doc{DecagonCTD, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
- * @subsection hydros21_timing Sensor Timing
- * - Maximum warm-up time in SDI-12 mode: 500ms
- *      - @m_span{m-dim}@ref #CTD_MEASUREMENT_TIME_MS = 500@m_endspan
- * - Assume stability at warm-up
- *      - @m_span{m-dim}@ref #CTD_STABILIZATION_TIME_MS = 0@m_endspan
- * - Maximum measurement duration: 500ms
- *      - @m_span{m-dim}@ref #CTD_MEASUREMENT_TIME_MS = 500@m_endspan
- *
- * @section hydros21_cond Conductivity Output
- * - Range is 0 – 120 mS/cm (bulk)
- * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
- * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #CTD_COND_VAR_NUM = 2)@m_endspan
- * - Resolution is 0.001 mS/cm = 1 µS/cm @m_span{m-dim}(@ref #CTD_COND_RESOLUTION = 1)@m_endspan
- * - Reported as microsiemens per centimeter (µS/cm)
- * - Default variable code is CTDcond
- *
- * @variabledoc{hydros21_cond,DecagonCTD,Cond,CTDcond}
- *
- * @section hydros21_temp Temperature Output
- * - Range is -11°C to +49°C
- * - Accuracy is ±1°C
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #CTD_TEMP_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.1°C @m_span{m-dim}(@ref #CTD_TEMP_RESOLUTION = 2)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is CTDtemp
- *
- * @variabledoc{hydros21_temp,DecagonCTD,Temp,CTDtemp}
- *
- * @section hydros21_depth Depth Output
- * - Range is 0 to 5 m or 0 to 10 m, depending on model
- * - Accuracy is ±0.05% of full scale
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #CTD_DEPTH_VAR_NUM = 0)@m_endspan
- * - Resolution is 2 mm @m_span{m-dim}(@ref #CTD_DEPTH_RESOLUTION = 1)@m_endspan
- * - Reported as millimeters (mm)
- * - Default variable code is CTDdepth
- *
- * @variabledoc{hydros21_depth,DecagonCTD,Depth,CTDdepth}
- *
- *
  * ___
  * @section hydros21_examples Example Code
  * The Meter Hydros21 is used in the @menulink{hydros21} example.
@@ -95,45 +54,100 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+/** @ingroup hydros21_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the CTD can report 3 values.
+/// @brief Sensor::_numReturnedValues; the CTD can report 3 values.
 #define CTD_NUM_VARIABLES 3
-/// Sensor::_warmUpTime_ms; the CTD warms up in 500ms.
-#define CTD_WARM_UP_TIME_MS 500
-/// Sensor::_stabilizationTime_ms; the CTD is stable after 0ms.
-#define CTD_STABILIZATION_TIME_MS 0
-/// Sensor::_measurementTime_ms; the CTD takes 500ms to complete a measurement.
-#define CTD_MEASUREMENT_TIME_MS 500
 
+/**
+ * @anchor hydros21_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Meter Hydros 21
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; maximum warm-up time in SDI-12 mode: 500ms
+#define CTD_WARM_UP_TIME_MS 500
+/// @brief Sensor::_stabilizationTime_ms; the CTD is stable as soon as it warms
+/// up (0ms stabilization).
+#define CTD_STABILIZATION_TIME_MS 0
+/// @brief Sensor::_measurementTime_ms; maximum measurement duration: 500ms.
+#define CTD_MEASUREMENT_TIME_MS 500
+/**@}*/
+
+/**
+ * @anchor hydros21_cond_defines
+ * @name Conductivity
+ * Defines for the conductivity variable from a Meter Hydros 21
+ * - Range is 0 – 120 mS/cm (bulk)
+ * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; conductivity should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
  */
 #define CTD_COND_RESOLUTION 1
-/// Variable number; conductivity is stored in sensorValues[2].
+/// @brief Variable number; conductivity is stored in sensorValues[2].
 #define CTD_COND_VAR_NUM 2
+/// @brief Variable name; "specificConductance"
+#define CTD_COND_VAR_NAME "specificConductance"
+/// @brief Variable unit name; "microsiemenPerCentimeter" (µS/cm)
+#define CTD_COND_UNIT_NAME "microsiemenPerCentimeter"
+/// @brief Default variable short code; "CTDcond"
+#define CTD_COND_DEFAULT_CODE "CTDcond"
+/**@}*/
 
+/**
+ * @anchor hydros21_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Meter Hydros 21
+ * - Range is -11°C to +49°C
+ * - Accuracy is ±1°C
+ */
 /**
  * @brief Decimals places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging  - resolution is 0.1°C
  */
 #define CTD_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Variable number; temperature is stored in sensorValues[1].
 #define CTD_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define CTD_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius"
+#define CTD_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "CTDtemp"
+#define CTD_TEMP_DEFAULT_CODE "CTDtemp"
+/**@}*/
 
+/**
+ * @anchor hydros21_depth_defines
+ * @name Water Depth
+ * Defines for the water depth variable from a Meter Hydros 21
+ * - Range is 0 to 5 m or 0 to 10 m, depending on model
+ * - Accuracy is ±0.05% of full scale
+ */
 /**
  * @brief Decimals places in string representation; depth should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging - resolution is 2 mm
  */
 #define CTD_DEPTH_RESOLUTION 1
-/// Variable number; depth is stored in sensorValues[0].
+/// @brief Variable number; depth is stored in sensorValues[0].
 #define CTD_DEPTH_VAR_NUM 0
+/// @brief Variable name; "waterDepth"
+#define CTD_DEPTH_VAR_NAME "waterDepth"
+/// @brief Variable unit name; "millimeter"
+#define CTD_DEPTH_UNIT_NAME "millimeter"
+/// @brief Default variable short code; "CTDdepth"
+#define CTD_DEPTH_DEFAULT_CODE "CTDdepth"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -148,6 +162,7 @@ class DecagonCTD : public SDI12Sensors {
     // Constructors with overloads
     /**
      * @brief Construct a new Decagon CTD object.
+     * @ingroup hydros21_group
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -176,6 +191,7 @@ class DecagonCTD : public SDI12Sensors {
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
+     * @ingroup hydros21_group
      */
     DecagonCTD(char* SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
@@ -184,6 +200,7 @@ class DecagonCTD : public SDI12Sensors {
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
+     * @ingroup hydros21_group
      */
     DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
@@ -211,6 +228,7 @@ class DecagonCTD_Cond : public Variable {
  public:
     /**
      * @brief Construct a new DecagonCTD_Cond object.
+     * @ingroup hydros21_group
      *
      * @param parentSense The parent DecagonCTD providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -219,10 +237,10 @@ class DecagonCTD_Cond : public Variable {
      * optional with a default value of "CTDcond".
      */
     explicit DecagonCTD_Cond(DecagonCTD* parentSense, const char* uuid = "",
-                             const char* varCode = "CTDcond")
+                             const char* varCode = CTD_COND_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)CTD_COND_VAR_NUM,
-                   (uint8_t)CTD_COND_RESOLUTION, "specificConductance",
-                   "microsiemenPerCentimeter", varCode, uuid) {}
+                   (uint8_t)CTD_COND_RESOLUTION, CTD_COND_VAR_NAME,
+                   CTD_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonCTD_Cond object.
      *
@@ -230,8 +248,8 @@ class DecagonCTD_Cond : public Variable {
      */
     DecagonCTD_Cond()
         : Variable((const uint8_t)CTD_COND_VAR_NUM,
-                   (uint8_t)CTD_COND_RESOLUTION, "specificConductance",
-                   "microsiemenPerCentimeter", "CTDcond") {}
+                   (uint8_t)CTD_COND_RESOLUTION, CTD_COND_VAR_NAME,
+                   CTD_COND_UNIT_NAME, CTD_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
@@ -252,6 +270,7 @@ class DecagonCTD_Temp : public Variable {
  public:
     /**
      * @brief Construct a new DecagonCTD_Temp object.
+     * @ingroup hydros21_group
      *
      * @param parentSense The parent DecagonCTD providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -260,10 +279,10 @@ class DecagonCTD_Temp : public Variable {
      * optional with a default value of "CTDtemp".
      */
     explicit DecagonCTD_Temp(DecagonCTD* parentSense, const char* uuid = "",
-                             const char* varCode = "CTDtemp")
+                             const char* varCode = CTD_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)CTD_TEMP_VAR_NUM,
-                   (uint8_t)CTD_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   varCode, uuid) {}
+                   (uint8_t)CTD_TEMP_RESOLUTION, CTD_TEMP_VAR_NAME,
+                   CTD_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonCTD_Temp object.
      *
@@ -271,8 +290,8 @@ class DecagonCTD_Temp : public Variable {
      */
     DecagonCTD_Temp()
         : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
-                   (uint8_t)CTD_TEMP_RESOLUTION, "temperature", "degreeCelsius",
-                   "CTDtemp") {}
+                   (uint8_t)CTD_TEMP_RESOLUTION, CTD_TEMP_VAR_NAME,
+                   CTD_TEMP_UNIT_NAME, CTD_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
@@ -293,6 +312,7 @@ class DecagonCTD_Depth : public Variable {
  public:
     /**
      * @brief Construct a new DecagonCTD_Depth object.
+     * @ingroup hydros21_group
      *
      * @param parentSense The parent DecagonCTD providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -301,10 +321,10 @@ class DecagonCTD_Depth : public Variable {
      * optional with a default value of "CTDdepth".
      */
     explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
-                              const char* varCode = "CTDdepth")
+                              const char* varCode = CTD_DEPTH_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)CTD_DEPTH_VAR_NUM,
-                   (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter",
-                   varCode, uuid) {}
+                   (uint8_t)CTD_DEPTH_RESOLUTION, CTD_DEPTH_VAR_NAME,
+                   CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonCTD_Depth object.
      *
@@ -312,12 +332,12 @@ class DecagonCTD_Depth : public Variable {
      */
     DecagonCTD_Depth()
         : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,
-                   (uint8_t)CTD_DEPTH_RESOLUTION, "waterDepth", "millimeter",
-                   "CTDdepth") {}
+                   (uint8_t)CTD_DEPTH_RESOLUTION, CTD_DEPTH_VAR_NAME,
+                   CTD_DEPTH_UNIT_NAME, CTD_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.
      */
     ~DecagonCTD_Depth() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_DECAGONCTD_H_

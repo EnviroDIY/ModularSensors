@@ -32,43 +32,11 @@
  * Documentation on the measurement circuit is found here:
  * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
  *
- * @section atlas_do_sensor The Atlas DO Sensor
- * @ctor_doc{AtlasScientificDO, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
- * @subsection atlas_do_timing Sensor Timing
- *   - warms up in 745ms (737-739 in tests)
- *      - @m_span{m-dim}@ref #ATLAS_DO_WARM_UP_TIME_MS = 745@m_endspan
- *   - stable at completion of warm up
- *      - @m_span{m-dim}@ref #ATLAS_DO_STABILIZATION_TIME_MS = 0@m_endspan
- *   - measurements take 600ms to complete (only ~555 measurement time in tests,
- * but we wait the full 600ms recommended by manual)
- *      - @m_span{m-dim}@ref #ATLAS_DO_MEASUREMENT_TIME_MS = 600@m_endspan
- * @subsection atlas_do_flags Build flags
+ * @section atlas_do_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
  * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
- *
- * ___
- * @section atlas_do_concentration Dissolved Oxygen Concentration Output
- * - Accuracy is ± 0.05 mg/L
- * - Range is 0.01 − 100+ mg/L
- * - Resolution is 0.01 mg/L @m_span{m-dim}(@ref #ATLAS_DOMGL_RESOLUTION = 2)@m_endspan
- *   - Reported in percent saturation
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_DOMGL_VAR_NUM = 0)@m_endspan
- * - Default variable code is AtlasDOmgL
- *
- * @variabledoc{atlas_do_concentration,AtlasScientificDO,DOmgL,AtlasDOmgL}
- *
- * ___
- * @section atlas_do_percent Percent Oxygen Saturation Output
- * - Accuracy is ± 0.05 mg/L
- * - Range is 0.1 − 400+ % saturation
- * - Resolution is 0.1 % saturation @m_span{m-dim}(@ref #ATLAS_DOPCT_RESOLUTION = 1)@m_endspan
- *   - Reported in percent saturation
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #ATLAS_DOPCT_VAR_NUM = 1)@m_endspan
- * - Default variable code is AtlasDOpct
- *
- * @variabledoc{atlas_do_percent,AtlasScientificDO,DOpct,AtlasDOpct}
  *
  * ___
  * @section atlas_do_examples Example Code
@@ -101,10 +69,19 @@
 #define ATLAS_DO_I2C_ADDR 0x61
 
 // Sensor Specific Defines
+/** @ingroup atlas_do_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Atlas DO sensor can report 2 values.
+/// @brief Sensor::_numReturnedValues; the Atlas DO sensor can report 2 values.
 #define ATLAS_DO_NUM_VARIABLES 2
 
+
+/**
+ * @anchor atlas_do_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for an Atlas DO sensor
+ */
+/**@{*/
 /**
  * @brief Sensor::_warmUpTime_ms; the Atlas DO sensor warms up in 745ms
  *
@@ -112,36 +89,63 @@
  */
 #define ATLAS_DO_WARM_UP_TIME_MS 745
 /**
- * @brief Sensor::_stabilizationTime_ms; the Atlas DO sensor is stable 0ms after
- * warm-up.
+ * @brief Sensor::_stabilizationTime_ms; the Atlas DO sensor is stable at
+ * completion of warm up (0ms after warm-up).
  */
 #define ATLAS_DO_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the Atlas DO sensor takes 600ms to
  * complete a measurement.
  *
- * 555 measurement time in tests, but keep the 600 recommended by manual
+ * only ~555 measurement time in tests, but keep the 600 recommended by manual
  */
 #define ATLAS_DO_MEASUREMENT_TIME_MS 600
+/**@}*/
 
 /**
- * @brief Decimals places in string representation; dissolved oxygen
- * concentration should have 2.
+ * @anchor atlas_do_conc_defines
+ * @name DO Concentration
+ * Defines for the dissolved oxygen concentration for an Atlas DO sensor
+ * - Accuracy is ± 0.05 mg/L
+ * - Range is 0.01 − 100+ mg/L
  */
+/**@{*/
+/// @brief Decimals places in string representation; dissolved oxygen
+/// concentration should have 2 - resolution is 0.01 mg/L.
 #define ATLAS_DOMGL_RESOLUTION 2
-/**
- * @brief Variable number; dissolved oxygen concentration is stored in
- * sensorValues[0].
- */
+/// @brief Variable number; dissolved oxygen concentration is stored in
+/// sensorValues[0].
 #define ATLAS_DOMGL_VAR_NUM 0
+/// @brief Variable name; "oxygenDissolved"
+#define ATLAS_DOMGL_VAR_NAME "oxygenDissolved"
+/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+#define ATLAS_DOMGL_UNIT_NAME "milligramPerLiter"
+/// @brief Default variable short code; "AtlasDOmgL"
+#define ATLAS_DOMGL_DEFAULT_CODE "AtlasDOmgL"
+/**@}*/
 
 /**
- * @brief Decimals places in string representation; dissolved oxygen percent
- * should have 1.
+ * @anchor atlas_do_pct_defines
+ * @name DO Percent Saturation
+ * Defines for the dissolved oxygen percent saturation for an Atlas DO sensor
+ * - Accuracy is ± 0.05 mg/L
+ * - Range is 0.1 − 400+ % saturation
  */
+/**@{*/
+/// @brief Decimals places in string representation; dissolved oxygen percent
+/// should have 1 - resolution is 0.1 % saturation.
 #define ATLAS_DOPCT_RESOLUTION 1
-/// Variable number; dissolved oxygen percent is stored in sensorValues[1]
+/// @brief Variable number; dissolved oxygen percent is stored in
+/// sensorValues[1]
 #define ATLAS_DOPCT_VAR_NUM 1
+/// @brief Variable name; "oxygenDissolvedPercentOfSaturation"
+#define ATLAS_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
+/// @brief Variable unit name; "percent" (percent saturation)
+#define ATLAS_DOPCT_UNIT_NAME "percent"
+/// @brief Default variable short code; "AtlasDOpct"
+#define ATLAS_DOPCT_DEFAULT_CODE "AtlasDOpct"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -157,6 +161,7 @@ class AtlasScientificDO : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific DO object using a *software* I2C
      * instance.
+     * @ingroup atlas_do_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -181,6 +186,7 @@ class AtlasScientificDO : public AtlasParent {
      * @brief Construct a new Atlas Scientific DO object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
+     * @ingroup atlas_do_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -214,6 +220,7 @@ class AtlasScientificDO : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific DO object using a secondary
      * *hardware* I2C instance.
+     * @ingroup atlas_do_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -240,6 +247,7 @@ class AtlasScientificDO : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific DO object using the primary
      * hardware I2C instance.
+     * @ingroup atlas_do_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas DO
      * circuit.  Use -1 if it is continuously powered.
@@ -290,6 +298,7 @@ class AtlasScientificDO_DOmgL : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificDO_DOmgL object.
+     * @ingroup atlas_do_group
      *
      * @param parentSense The parent AtlasScientificDO providing the result
      * values.
@@ -298,12 +307,12 @@ class AtlasScientificDO_DOmgL : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasDOmgL".
      */
-    explicit AtlasScientificDO_DOmgL(AtlasScientificDO* parentSense,
-                                     const char*        uuid    = "",
-                                     const char*        varCode = "AtlasDOmgL")
+    explicit AtlasScientificDO_DOmgL(
+        AtlasScientificDO* parentSense, const char* uuid = "",
+        const char* varCode = ATLAS_DOMGL_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ATLAS_DOMGL_VAR_NUM,
-                   (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
-                   "milligramPerLiter", varCode, uuid) {}
+                   (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
+                   ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificDO_DOmgL object.
      *
@@ -312,8 +321,8 @@ class AtlasScientificDO_DOmgL : public Variable {
      */
     AtlasScientificDO_DOmgL()
         : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
-                   (uint8_t)ATLAS_DOMGL_RESOLUTION, "oxygenDissolved",
-                   "milligramPerLiter", "AtlasDOmgL") {}
+                   (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
+                   ATLAS_DOMGL_UNIT_NAME, ATLAS_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
      */
@@ -333,6 +342,7 @@ class AtlasScientificDO_DOpct : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificDO_DOpct object.
+     * @ingroup atlas_do_group
      *
      * @param parentSense The parent AtlasScientificDO providing the result
      * values.
@@ -341,13 +351,12 @@ class AtlasScientificDO_DOpct : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasDOpct".
      */
-    explicit AtlasScientificDO_DOpct(AtlasScientificDO* parentSense,
-                                     const char*        uuid    = "",
-                                     const char*        varCode = "AtlasDOpct")
+    explicit AtlasScientificDO_DOpct(
+        AtlasScientificDO* parentSense, const char* uuid = "",
+        const char* varCode = ATLAS_DOPCT_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ATLAS_DOPCT_VAR_NUM,
-                   (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent", varCode,
-                   uuid) {}
+                   (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
+                   ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificDO_DOpct object.
      *
@@ -356,13 +365,12 @@ class AtlasScientificDO_DOpct : public Variable {
      */
     AtlasScientificDO_DOpct()
         : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
-                   (uint8_t)ATLAS_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent",
-                   "AtlasDOpct") {}
+                   (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
+                   ATLAS_DOPCT_UNIT_NAME, ATLAS_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
      */
     ~AtlasScientificDO_DOpct() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICDO_H_

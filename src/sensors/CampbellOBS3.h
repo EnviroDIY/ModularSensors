@@ -44,60 +44,14 @@
  * [Basic Concepts](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Basics.pdf)
  * [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Manual.pdf)
  *
- * @section obs3_sensor The OBS3+ Sensor
  * @note Low and high range are treated as completely independent, so only 2
  * "variables" are measured by each sensor - one for the raw voltage and another
  * for the calibrated turbidity.  To get both high and low range values, create
  * two sensor objects!
  *
- * @ctor_doc{CampbellOBS3, int8_t powerPin, uint8_t adsChannel, float x2_coeff_A, float x1_coeff_B, float x0_coeff_C, uint8_t i2cAddress, uint8_t measurementsToAverage}
- *
- * @subsection obs3_timing Sensor Timing
- * - The ADS1x15 takes 2ms to warm up
- *      - @m_span{m-dim}@ref #OBS3_WARM_UP_TIME_MS = 2@m_endspan
- * - Minimum stabilization time: 2s
- *      - @m_span{m-dim}@ref #OBS3_STABILIZATION_TIME_MS = 2000@m_endspan
- * - Maximum data rate = 10Hz (100ms/sample)
- *      - @m_span{m-dim}@ref #OBS3_MEASUREMENT_TIME_MS = 100@m_endspan
- * @subsection obs3_flags Build flags
+ * @section obs3_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
- *
- * @section obs3_turbidity Turbidity Output
- * - Range: (depends on sediment size, particle shape, and reflectivity)
- *     - Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
- *     - Mud: 5000 to 10,000 mg L–1
- *     - Sand: 50,000 to 100,000 mg L–1
- * - Accuracy: (whichever is larger)
- *     - Turbidity: 2% of reading or 0.5 NTU
- *     - Mud: 2% of reading or 1 mg L–1
- *     - Sand: 4% of reading or 10 mg L–1
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #OBS3_TURB_VAR_NUM = 0)@m_endspan
- * - Resolution:
- *     - 16-bit ADC, Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5 NTU
- *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 1)@m_endspan
- *     - 12-bit ADC, Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
- *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 5)@m_endspan
- * - Reported as Nephelometric Turbidity Units (NTU)
- * - Default variable code is OBS3Turbidity
- *
- * @variabledoc{obs3_turbidity,CampbellOBS3,Turbidity,OBS3Turbidity}
- *
- * @section obs3_voltage Voltage Output
- * - Range is 0 to 2.5V
- * - Accuracy:
- *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
- *       - @m_span{m-dim}(@ref #OBS3_VOLT_RESOLUTION = 4)@m_endspan
- *     - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
- *       - @m_span{m-dim}(@ref #OBS3_VOLT_RESOLUTION = 1)@m_endspan
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #OBS3_VOLTAGE_VAR_NUM = 1)@m_endspan
- * - Resolution:
- *     - 16-bit ADC: 0.125 mV
- *     - 12-bit ADC: 2 mV
- * - Reported as volts (V)
- * - Default variable code is OBS3Voltage
- *
- * @variabledoc{obs3_voltage,CampbellOBS3,Voltage,OBS3Voltage}
  *
  * ___
  * @section obs3_examples Example Code
@@ -125,6 +79,8 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+/** @ingroup obs3_group */
+/**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the OBS3 can report 2 values.
  *
@@ -134,34 +90,95 @@
  * two sensor objects!
  */
 #define OBS3_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the ADS1115 warms up in 2ms.
-#define OBS3_WARM_UP_TIME_MS 2
-/// Sensor::_stabilizationTime_ms; OBS3 is stable after 2000ms.
-#define OBS3_STABILIZATION_TIME_MS 2000
-/// Sensor::_measurementTime_ms; OBS3 takes 100ms to complete a measurement.
-#define OBS3_MEASUREMENT_TIME_MS 100
 
+/**
+ * @anchor obs3_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for an OBS3+
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the ADS1115 warms up in 2ms.
+#define OBS3_WARM_UP_TIME_MS 2
+/// @brief Sensor::_stabilizationTime_ms; minimum stabilization time fr the OBS3
+/// is 2s (2000ms).
+#define OBS3_STABILIZATION_TIME_MS 2000
+/// @brief Sensor::_measurementTime_ms; OBS3 takes 100ms to complete a
+/// measurement - Maximum data rate = 10Hz (100ms/sample).
+#define OBS3_MEASUREMENT_TIME_MS 100
+/**@}*/
+
+/**
+ * @anchor obs3_turbidity_defines
+ * @name Turbidity
+ * Defines for the turbidity variable from an OBS3+
+ * - Range: (depends on sediment size, particle shape, and reflectivity)
+ *     - Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
+ *     - Mud: 5000 to 10,000 mg L–1
+ *     - Sand: 50,000 to 100,000 mg L–1
+ * - Accuracy: (whichever is larger)
+ *     - Turbidity: 2% of reading or 0.5 NTU
+ *     - Mud: 2% of reading or 1 mg L–1
+ *     - Sand: 4% of reading or 10 mg L–1
+ *  - Resolution:
+ *     - 16-bit ADC, Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5
+ * NTU
+ *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 1)@m_endspan
+ *     - 12-bit ADC, Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
+ *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 5)@m_endspan
+ */
+/**@{*/
 /// Variable number; turbidity is stored in sensorValues[0].
 #define OBS3_TURB_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-/// Decimals places in string representation; turbidity should have 1.
+/// @brief Decimals places in string representation; turbidity should have 1.
 #define OBS3_RESOLUTION 1
 #else
-/// Decimals places in string representation; turbidity should have 5.
+/// @brief Decimals places in string representation; turbidity should have 5.
 #define OBS3_RESOLUTION 5
 #endif
+/// @brief Variable name; "turbidity"
+#define OBS3_TURB_VAR_NAME "turbidity"
+/// @brief Variable name; "nephelometricTurbidityUnit" (NTU)
+#define OBS3_TURB_UNIT_NAME "nephelometricTurbidityUnit"
+/// @brief Default variable short code; "OBS3Turbidity"
+#define OBS3_TURB_DEFAULT_CODE "OBS3Turbidity"
+/**@}*/
 
+/**
+ * @anchor obs3_voltage_defines
+ * @name Voltage
+ * Defines for the voltage variable from an OBS3+
+ * - Range is 0 to 2.5V
+ * - Accuracy:
+ *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
+ *       - @m_span{m-dim}(@ref #OBS3_VOLT_RESOLUTION = 4)@m_endspan
+ *     - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
+ *       - @m_span{m-dim}(@ref #OBS3_VOLT_RESOLUTION = 1)@m_endspan
+ */
+/**@{*/
 /// Variable number; voltage is stored in sensorValues[1].
 #define OBS3_VOLTAGE_VAR_NUM 1
+/// @brief Variable name; "voltage"
+#define OBS3_VOLTAGE_VAR_NAME "voltage"
+/// @brief Variable name; "voltage"
+#define OBS3_VOLTAGE_UNIT_NAME "volt"
+/// @brief Default variable short code; "OBS3Voltage"
+#define OBS3_VOLTAGE_DEFAULT_CODE "OBS3Voltage"
+
 #ifdef MS_USE_ADS1015
-/// Decimals places in string representation; voltage should have 1.
+/// @brief Decimals places in string representation; voltage should have 1.
+///  - Resolution:
+///     - 16-bit ADC: 0.125 mV
 #define OBS3_VOLT_RESOLUTION 1
 #else
-/// Decimals places in string representation; voltage should have 4.
+/// @brief Decimals places in string representation; voltage should have 4.
+///  - Resolution:
+///     - 12-bit ADC: 2 mV
 #define OBS3_VOLT_RESOLUTION 4
 #endif
+/**@}*/
 
-/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
+/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
 #define ADS1115_ADDRESS 0x48
 
 /* clang-format off */
@@ -184,6 +201,7 @@ class CampbellOBS3 : public Sensor {
     /**
      * @brief Construct a new Campbell OBS3 object - need the power pin, the
      * ADS1X15 data channel, and the calibration info.
+     * @ingroup obs3_group
      *
      * @note ModularSensors only supports connecting the ADS1x15 to the primary
      * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
@@ -248,6 +266,7 @@ class CampbellOBS3_Turbidity : public Variable {
  public:
     /**
      * @brief Construct a new CampbellOBS3_Turbidity object.
+     * @ingroup obs3_group
      *
      * @param parentSense The parent CampbellOBS3 providing the result
      * values.
@@ -256,12 +275,12 @@ class CampbellOBS3_Turbidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "OBS3Turbidity".
      */
-    explicit CampbellOBS3_Turbidity(CampbellOBS3* parentSense,
-                                    const char*   uuid    = "",
-                                    const char*   varCode = "OBS3Turbidity")
+    explicit CampbellOBS3_Turbidity(
+        CampbellOBS3* parentSense, const char* uuid = "",
+        const char* varCode = OBS3_TURB_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)OBS3_TURB_VAR_NUM,
-                   (uint8_t)OBS3_RESOLUTION, "turbidity",
-                   "nephelometricTurbidityUnit", varCode, uuid) {}
+                   (uint8_t)OBS3_RESOLUTION, OBS3_TURB_VAR_NAME,
+                   OBS3_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new CampbellOBS3_Turbidity object.
      *
@@ -269,8 +288,8 @@ class CampbellOBS3_Turbidity : public Variable {
      */
     CampbellOBS3_Turbidity()
         : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
-                   "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity") {
-    }
+                   OBS3_TURB_VAR_NUM, OBS3_TURB_UNIT_NAME,
+                   OBS3_TURB_DEFAULT_CODE) {}
     ~CampbellOBS3_Turbidity() {}
 };
 
@@ -290,6 +309,7 @@ class CampbellOBS3_Voltage : public Variable {
  public:
     /**
      * @brief Construct a new CampbellOBS3_Voltage object.
+     * @ingroup obs3_group
      *
      * @param parentSense The parent CampbellOBS3 providing the result
      * values.
@@ -298,12 +318,12 @@ class CampbellOBS3_Voltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "OBS3Voltage".
      */
-    explicit CampbellOBS3_Voltage(CampbellOBS3* parentSense,
-                                  const char*   uuid    = "",
-                                  const char*   varCode = "OBS3Voltage")
+    explicit CampbellOBS3_Voltage(
+        CampbellOBS3* parentSense, const char* uuid = "",
+        const char* varCode = OBS3_VOLTAGE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
-                   (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt", varCode,
-                   uuid) {}
+                   (uint8_t)OBS3_VOLT_RESOLUTION, OBS3_VOLTAGE_VAR_NAME,
+                   OBS3_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new CampbellOBS3_Voltage object.
      *
@@ -311,12 +331,12 @@ class CampbellOBS3_Voltage : public Variable {
      */
     CampbellOBS3_Voltage()
         : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
-                   (uint8_t)OBS3_VOLT_RESOLUTION, "voltage", "volt",
-                   "OBS3Voltage") {}
+                   (uint8_t)OBS3_VOLT_RESOLUTION, OBS3_VOLTAGE_VAR_NAME,
+                   OBS3_VOLTAGE_UNIT_NAME, OBS3_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the CampbellOBS3_Voltage object - no action needed.
      */
     ~CampbellOBS3_Voltage() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_CAMPBELLOBS3_H_

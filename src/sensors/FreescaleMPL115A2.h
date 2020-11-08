@@ -44,36 +44,6 @@
  * A copy of the datasheet is available here:
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf)
  *
- * @section mpl115a2_sensor The MPL115A2 Sensor
- * @ctor_doc{MPL115A2, int8_t powerPin, uint8_t measurementsToAverage}
- * @subsection mpl115a2_timing Sensor Timing
- * - Sensor takes about 6 ms to respond.
- *      - @m_span{m-dim}@ref #MPL115A2_WARM_UP_TIME_MS = 6@m_endspan
- * - We assume the sensor is immediately stable.
- *      - @m_span{m-dim}@ref #MPL115A2_STABILIZATION_TIME_MS = 0@m_endspan
- * - Measurements take about 3 ms to complete.
- *      - @m_span{m-dim}@ref #MPL115A2_MEASUREMENT_TIME_MS = 3@m_endspan
- *
- * @section mpl115a2_temp Temperature Output
- * - Range is -20°C to 85°C
- * - Accuracy is not specified on the sensor datasheet
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #MPL115A2_TEMP_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.01°C @m_span{m-dim}(@ref #MPL115A2_TEMP_RESOLUTION = 2)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is MPL115A2_Temp
- *
- * @variabledoc{mpl115a2_temp,MPL115A2,Temp,MPL115A2_Temp}
- *
- * @section mpl115a2_pressure Pressure Output
- * - Range is 500-1150 hPa
- * - Accuracy ±10 hPa
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #MPL115A2_PRESSURE_VAR_NUM = 1)@m_endspan
- * - Resolution is 1.5 hPa @m_span{m-dim}(@ref #MPL115A2_PRESSURE_RESOLUTION = 2)@m_endspan
- * - Reported as kilopascal (kPa)
- * - Default variable code is MPL115A2_Pressure
- *
- * @variabledoc{mpl115a2_pressure,MPL115A2,Pressure,MPL115A2_Pressure}
- *
  * ___
  * @section mpl115a2_examples Example Code
  * The Freescale Semiconductor MPL115A2 is used in the @menulink{mpl115a2}
@@ -102,28 +72,71 @@
 #include <Adafruit_MPL115A2.h>
 
 // Sensor Specific Defines
+/** @ingroup mpl115a2_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
 #define MPL115A2_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the MPL115A2 warms up in 6ms.
+
+/**
+ * @anchor mpl115a2_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Freescale MPL115A2
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the MPL115A2 takes about 6 ms to respond.
 #define MPL115A2_WARM_UP_TIME_MS 6
-/// Sensor::_stabilizationTime_ms; the MPL115A2 is stable after 0ms.
+/// @brief Sensor::_stabilizationTime_ms; the MPL115A2 is stable as soon as it
+/// warms up (0ms stabilization).
 #define MPL115A2_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the MPL115A2 takes 3ms to complete a
  * measurement.
  */
 #define MPL115A2_MEASUREMENT_TIME_MS 3
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @anchor mpl115a2_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Freescale MPL115A2
+ * - Range is -20°C to 85°C
+ * - Accuracy is not specified on the sensor datasheet
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is 0.01°C.
 #define MPL115A2_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[0].
+/// @brief Variable number; temperature is stored in sensorValues[0].
 #define MPL115A2_TEMP_VAR_NUM 0
+/// @brief Variable name; "temperature"
+#define MPL115A2_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius"
+#define MPL115A2_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "MPL115A2_Temp"
+#define MPL115A2_TEMP_DEFAULT_CODE "MPL115A2_Temp"
+/**@}*/
 
-/// Decimals places in string representation; pressure should have 2.
+/**
+ * @anchor mpl115a2_pressure_defines
+ * @name Pressure
+ * Defines for the pressure variable from a Freescale MPL115A2
+ * - Range is 500-1150 hPa
+ * - Accuracy ±10 hPa
+ */
+/**@{*/
+/// @brief Decimals places in string representation; pressure should have 2 -
+/// resolution is 1.5 hPa.
 #define MPL115A2_PRESSURE_RESOLUTION 2
-/// Variable number; pressure is stored in sensorValues[1].
+/// @brief Variable number; pressure is stored in sensorValues[1].
 #define MPL115A2_PRESSURE_VAR_NUM 1
+/// @brief Variable name; "atmosphericPressure"
+#define MPL115A2_PRESSURE_VAR_NAME "atmosphericPressure"
+/// @brief Variable unit name; "kilopascal" (kPa)
+#define MPL115A2_PRESSURE_UNIT_NAME "kilopascal"
+/// @brief Default variable short code; "MPL115A2_Pressure"
+#define MPL115A2_PRESSURE_DEFAULT_CODE "MPL115A2_Pressure"
+/**@}*/
 
 
 /* clang-format off */
@@ -139,6 +152,7 @@ class MPL115A2 : public Sensor {
     /**
      * @brief Construct a new MPL115A2 using a secondary *hardware* I2C
      * instance.
+     * @ingroup mpl115a2_group
      *
      * @note It is only possible to connect *one* MPL115A2 at a time on a single
      * I2C bus.  Software I2C is also not supported.
@@ -159,6 +173,7 @@ class MPL115A2 : public Sensor {
              uint8_t measurementsToAverage = 1);
     /**
      * @brief Construct a new MPL115A2 using the primary hardware I2C instance.
+     * @ingroup mpl115a2_group
      *
      * @note It is only possible to connect *one* MPL115A2 at a time on a single
      * I2C bus.  Software I2C is also not supported.
@@ -223,6 +238,7 @@ class MPL115A2_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MPL115A2_Temp object.
+     * @ingroup mpl115a2_group
      *
      * @param parentSense The parent MPL115A2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -231,10 +247,10 @@ class MPL115A2_Temp : public Variable {
      * optional with a default value of "MPL115A2_Temp".
      */
     explicit MPL115A2_Temp(MPL115A2* parentSense, const char* uuid = "",
-                           const char* varCode = "MPL115A2_Temp")
+                           const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
+                   MPL115A2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MPL115A2_Temp object.
      *
@@ -242,8 +258,8 @@ class MPL115A2_Temp : public Variable {
      */
     MPL115A2_Temp()
         : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "MPL115A2_Temp") {}
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
+                   MPL115A2_TEMP_UNIT_NAME, MPL115A2_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MPL115A2_Temp object - no action needed.
      */
@@ -264,6 +280,7 @@ class MPL115A2_Pressure : public Variable {
  public:
     /**
      * @brief Construct a new MPL115A2_Pressure object.
+     * @ingroup mpl115a2_group
      *
      * @param parentSense The parent MPL115A2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -271,11 +288,13 @@ class MPL115A2_Pressure : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "MPL115A2_Pressure".
      */
-    explicit MPL115A2_Pressure(MPL115A2* parentSense, const char* uuid = "",
-                               const char* varCode = "MPL115A2_Pressure")
+    explicit MPL115A2_Pressure(
+        MPL115A2* parentSense, const char* uuid = "",
+        const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION, "atmosphericPressure",
-                   "kilopascal", varCode, uuid) {}
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                   MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new MPL115A2_Pressure object.
      *
@@ -283,8 +302,9 @@ class MPL115A2_Pressure : public Variable {
      */
     MPL115A2_Pressure()
         : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION, "atmosphericPressure",
-                   "kilopascal", "MPL115A2_Pressure") {}
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                   MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
+                   MPL115A2_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MPL115A2_Pressure object - no action needed.
      */

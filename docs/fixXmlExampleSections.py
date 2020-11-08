@@ -15,11 +15,11 @@ abs_file_path = os.path.abspath(os.path.realpath(abs_file_path))
 all_files = [
     f
     for f in os.listdir(abs_file_path)
-    if os.path.isfile(os.path.join(abs_file_path, f))
+    if os.path.isfile(os.path.join(abs_file_path, f)) and f.endswith("8ino-example.xml")
 ]
 
 for filename in all_files:
-    # print(filename)
+    print(filename)
 
     tree = ET.parse(os.path.join(abs_file_path, filename))
     root = tree.getroot()

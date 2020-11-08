@@ -38,39 +38,6 @@
  * @section am2315_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-AM2315-Product-Manual.pdf)
  *
- * @section am2315_sensor The AM2315 Sensor
- * @ctor_doc{AOSongAM2315, int8_t powerPin, uint8_t measurementsToAverage}
- * @subsection am2315_timing Sensor Timing
- * - warm up estimated at 500ms
- *      - @m_span{m-dim}@ref #AM2315_WARM_UP_TIME_MS = 500@m_endspan
- * - stabilization estimated at 500ms
- *      - @m_span{m-dim}@ref #AM2315_STABILIZATION_TIME_MS = 500@m_endspan
- * - measurements take 2s to complete
- *      -  @m_span{m-dim}@ref #AM2315_MEASUREMENT_TIME_MS = 2000@m_endspan
- *
- * ___
- * @section am2315_temperature Temperature Output
- * - Range is -40°C to +125°C
- * - Accuracy is ±0.1°C
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #AM2315_TEMP_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.1°C (16 bit) @m_span{m-dim}(@ref #AM2315_TEMP_RESOLUTION = 1)@m_endspan
- * - Reported as degrees Celsius
- * - Default variable code is AM2315Temp
- *
- * @variabledoc{am2315_temperature,AOSongAM2315,Temp,AM2315Temp}
- *
- * ___
- * @section am2315_humidity Relative Humidity Output
- * - Range is 0 to 100% RH
- * - Accuracy is ± 2 % RH at 25°C
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #AM2315_HUMIDITY_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.1 % RH (16 bit) @m_span{m-dim}(@ref #AM2315_HUMIDITY_RESOLUTION = 1)@m_endspan
- * - Reported as percent relative humidity
- * - Default variable code is AM2315Humidity
- *
- * @variabledoc{am2315_humidity,AOSongAM2315,Humidity,AM2315Humidity}
- *
- * ___
  * @section am2315_examples Example Code
  *
  * The AM2315 is used in the
@@ -100,25 +67,69 @@
 #include <Adafruit_AM2315.h>
 
 // Sensor Specific Defines
+/** @ingroup am2315_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the AM2315 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the AM2315 can report 2 values.
 #define AM2315_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; AM2315 warms up in 500ms.
+
+/**
+ * @anchor am2315_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for an AOSong AM2315
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; AM2315 warms up in 500ms (estimated).
 #define AM2315_WARM_UP_TIME_MS 500
-/// Sensor::_stabilizationTime_ms; AM2315 is stable after 500ms.
+/// @brief Sensor::_stabilizationTime_ms; AM2315 is stable after 500ms
+/// (estimated).
 #define AM2315_STABILIZATION_TIME_MS 500
-/// Sensor::_measurementTime_ms; AM2315 takes 2000ms to complete a measurement.
+/// @brief Sensor::_measurementTime_ms; AM2315 takes 2000ms (2s) to complete a
+/// measurement.
 #define AM2315_MEASUREMENT_TIME_MS 2000
+/**@}*/
 
-/// Decimals places in string representation; humidity should have 1.
+/**
+ * @anchor am2315_humidity_defines
+ * @name Humidity
+ * Defines for the humidity variable from an AOSong AM2315
+ * - Range is 0 to 100% RH
+ * - Accuracy is ± 2 % RH at 25°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; humidity should have 1 (0.1
+/// % RH for the 16 bit sensor).
 #define AM2315_HUMIDITY_RESOLUTION 1
-/// Variable number; humidity is stored in sensorValues[0].
+/// @brief Variable number; humidity is stored in sensorValues[0].
 #define AM2315_HUMIDITY_VAR_NUM 0
+/// @brief Variable name; "relativeHumidity"
+#define AM2315_HUMIDITY_VAR_NAME "relativeHumidity"
+/// @brief Variable unit name; "percent" (percent relative humidity)
+#define AM2315_HUMIDITY_UNIT_NAME "percent"
+/// @brief Default variable short code; "AM2315Humidity"
+#define AM2315_HUMIDITY_DEFAULT_CODE "AM2315Humidity"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 1.
+/**
+ * @anchor am2315_temperature_defines
+ * @name Temperature
+ * Defines for the temperature variable from an AOSong AM2315
+ * - Range is -40°C to +125°C
+ * - Accuracy is ±0.1°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 1.
+/// (0.1°C for the 16 bit sensor)
 #define AM2315_TEMP_RESOLUTION 1
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Variable number; temperature is stored in sensorValues[1].
 #define AM2315_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define AM2315_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define AM2315_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "AM2315Temp"
+#define AM2315_TEMP_DEFAULT_CODE "AM2315Temp"
+/**@}*/
 
 
 /* clang-format off */
@@ -133,6 +144,7 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief Construct a new AOSongAM2315 object using a secondary *hardware*
      * I2C instance.
+     * @ingroup am2315_group
      *
      * @note It is only possible to connect *one* AM2315 at a time on a single
      * I2C bus.  Software I2C is also not supported.
@@ -154,6 +166,7 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief Construct a new AOSongAM2315 object using the primary hardware I2C
      * instance.
+     * @ingroup am2315_group
      *
      * Because this is I2C and has only 1 possible address (0xB8), we only need
      * the power pin.
@@ -220,6 +233,7 @@ class AOSongAM2315_Humidity : public Variable {
  public:
     /**
      * @brief Construct a new AOSongAM2315_Humidity object.
+     * @ingroup am2315_group
      *
      * @param parentSense The parent AOSongAM2315 providing the result
      * values.
@@ -228,12 +242,13 @@ class AOSongAM2315_Humidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AM2315Humidity".
      */
-    explicit AOSongAM2315_Humidity(AOSongAM2315* parentSense,
-                                   const char*   uuid    = "",
-                                   const char*   varCode = "AM2315Humidity")
+    explicit AOSongAM2315_Humidity(
+        AOSongAM2315* parentSense, const char* uuid = "",
+        const char* varCode = AM2315_HUMIDITY_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", varCode, uuid) {}
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                   AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new AOSongAM2315_Humidity object.
      *
@@ -241,8 +256,9 @@ class AOSongAM2315_Humidity : public Variable {
      */
     AOSongAM2315_Humidity()
         : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", "AM2315Humidity") {}
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                   AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME,
+                   AM2315_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
@@ -263,6 +279,7 @@ class AOSongAM2315_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
+     * @ingroup am2315_group
      *
      * @param parentSense The parent AOSongAM2315 providing the result
      * values.
@@ -272,10 +289,10 @@ class AOSongAM2315_Temp : public Variable {
      * optional with a default value of "AM2315Temp".
      */
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
-                               const char* varCode = "AM2315Temp")
+                               const char* varCode = AM2315_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
+                   AM2315_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
      *
@@ -283,12 +300,12 @@ class AOSongAM2315_Temp : public Variable {
      */
     AOSongAM2315_Temp()
         : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "AM2315Temp") {}
+                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
+                   AM2315_TEMP_UNIT_NAME, AM2315_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */
     ~AOSongAM2315_Temp() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_AOSONGAM2315_H_

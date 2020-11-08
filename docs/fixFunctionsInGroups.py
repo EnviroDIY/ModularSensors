@@ -23,7 +23,7 @@ all_group_files = [
 for filename in all_group_files:
     abs_in = os.path.join(abs_file_path, filename)
     abs_out = os.path.join(abs_file_path, filename + "_fixed")
-    # print("in: {}".format(abs_in))
+    print("{}".format(abs_in))
     # print("out: {}".format(abs_out))
     # with open(output_file, 'w+') as out_file:
     with open(abs_out, "w+") as out_file:
@@ -90,7 +90,7 @@ for filename in all_group_files:
 
     os.rename(
         os.path.join(abs_file_path, filename),
-        os.path.join(abs_file_path, filename + "_original2"),
+        os.path.join(abs_file_path, filename + "_original"),
     )
     os.rename(
         os.path.join(abs_file_path, filename + "_fixed"),

@@ -66,9 +66,11 @@
  * Most modules that can measure temperature measure to 0.1°C
  */
 #define MODEM_TEMPERATURE_RESOLUTION 1
-/// Decimals places in string representation; total active time should have 3.
+/// @brief Decimals places in string representation; total active time should
+/// have 3.
 #define MODEM_ACTIVATION_RESOLUTION 3
-/// Decimals places in string representation; total powered time should have 3.
+/// @brief Decimals places in string representation; total powered time should
+/// have 3.
 #define MODEM_POWERED_RESOLUTION 3
 
 /* ===========================================================================

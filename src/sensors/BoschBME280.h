@@ -64,60 +64,6 @@
  *
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf)
  *
- * @section bme280_sensor The BME280 Sensor
- * @ctor_doc{BoschBME280, I2CPower, i2cAddressHex, measurementsToAverage}
- * @subsection bme280_timing Sensor Timing
- *   - warm up is 100ms
- *      - @m_span{m-dim}@ref #BME280_WARM_UP_TIME_MS = 100@m_endspan
- *   - stable after 4000ms
- *      - 0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino
- *      - @m_span{m-dim}@ref #BME280_STABILIZATION_TIME_MS = 4000@m_endspan
- *   - measurements take 1100ms to complete
- *      - @m_span{m-dim}(@ref #BME280_MEASUREMENT_TIME_MS = 1100)@m_endspan
- *      - 1.0 s according to datasheet, but slightly better stdev when 1.1 s
- *   - For details on BME280 stabilization time updates, include testing sketch and
- * link to data in Google Sheet, see:
- * https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9
- *
- * @section bme280_temp Temperature Output
- * - Range is -40°C to +85°C
- * - Accuracy is ±0.5°C
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #BME280_TEMP_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.01°C @m_span{m-dim}(@ref #BME280_TEMP_RESOLUTION = 2)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is BoschBME280Temp
- *
- * @variabledoc{bme280_temp,BoschBME280,Temp,BoschBME280Temp}
- *
- * @section bme280_humidity Humidity Output
- * - Resolution is 0.008 % RH (16 bit) @m_span{m-dim}(@ref #BME280_HUMIDITY_RESOLUTION = 3)@m_endspan
- * - Accuracy is ± 3 % RH
- * - Range is 0 to 100% RH
- * - Reported as percent relative humidity (% RH)
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #BME280_HUMIDITY_VAR_NUM = 1)@m_endspan
- * - Default variable code is BoschBME280Humidity
- *
- * @variabledoc{bme280_humidity,BoschBME280,Humidity,BoschBME280Humidity}
- *
- * @section bme280_pressure Pressure Output
- * - Range is 300 to 1100 hPa
- *   - Absolute accuracy is ±1 hPa
- *   - Relative accuracy is ±0.12 hPa
- * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #BME280_PRESSURE_VAR_NUM = 2)@m_endspan
- * - Resolution is 0.18hPa @m_span{m-dim}(@ref #BME280_PRESSURE_RESOLUTION = 2)@m_endspan
- * - Reported as pascals (Pa)
- * - Default variable code is BoschBME280Pressure
- *
- * @variabledoc{bme280_pressure,BoschBME280,Pressure,BoschBME280Pressure}
- *
- * @section bme280_altitude Altitude Output
- * - Result stored in sensorValues[3] @m_span{m-dim}(@ref #BME280_ALTITUDE_VAR_NUM = 3)@m_endspan
- * - Resolution is 1m @m_span{m-dim}(@ref #BME280_ALTITUDE_RESOLUTION = 0)@m_endspan
- * - Reported as meters (m)
- * - Default variable code is BoschBME280Altitude
- *
- * @variabledoc{bme280_altitude,BoschBME280,Altitude,BoschBME280Altitude}
- * ___
  * @section bme280_examples Example Code
  * The BME280 is used in the @menulink{bme280} example.
  *
@@ -144,10 +90,19 @@
 #include <Adafruit_BME280.h>
 
 // Sensor Specific Defines
+/** @ingroup bme280_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the BME280 can report 4 values.
+/// @brief Sensor::_numReturnedValues; the BME280 can report 4 values.
 #define BME280_NUM_VARIABLES 4
-/// Sensor::_warmUpTime_ms; BME280 warms up in 100ms.
+
+/**
+ * @anchor bme280_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Bosch BME280
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; BME280 warms up in 100ms.
 #define BME280_WARM_UP_TIME_MS 100
 /**
  * @brief Sensor::_stabilizationTime_ms; BME280 is stable after 4000ms.
@@ -166,26 +121,90 @@
  * https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9
  */
 #define BME280_MEASUREMENT_TIME_MS 1100
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @anchor bme280_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Bosch BME280
+ * - Range is -40°C to +85°C
+ * - Accuracy is ±0.5°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is 0.01°C.
 #define BME280_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[0].
+/// @brief Variable number; temperature is stored in sensorValues[0].
 #define BME280_TEMP_VAR_NUM 0
+/// @brief Variable name; "temperature"
+#define BME280_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius"
+#define BME280_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "BoschBME280Temp"
+#define BME280_TEMP_DEFAULT_CODE "BoschBME280Temp"
+/**@}*/
 
-/// Decimals places in string representation; humidity should have 3.
+/**
+ * @anchor bme280_humidity_defines
+ * @name Humidity
+ * Defines for the humidity variable from a Bosch BME280
+ */
+/**@{*/
+/// @brief Decimals places in string representation; humidity should have 3-
+/// resolution is 0.008 % RH (16 bit).
 #define BME280_HUMIDITY_RESOLUTION 3
-/// Variable number; humidity is stored in sensorValues[1].
+/// @brief Variable number; humidity is stored in sensorValues[1].
 #define BME280_HUMIDITY_VAR_NUM 1
+/// @brief Variable name; "relativeHumidity"
+#define BME280_HUMIDITY_VAR_NAME "relativeHumidity"
+/// @brief Variable unit name; "percent" - percent relative humidity (% RH)
+#define BME280_HUMIDITY_UNIT_NAME "percent"
+/// @brief Default variable short code; "BoschBME280Humidity"
+#define BME280_HUMIDITY_DEFAULT_CODE "BoschBME280Humidity"
+/**@}*/
 
-/// Decimals places in string representation; barometric pressure should have 2.
+/**
+ * @anchor bme280_pressure_defines
+ * @name Barometric Pressure
+ * Defines for the barometric pressure variable from a Bosch BME280
+ * - Range is 300 to 1100 hPa
+ *   - Absolute accuracy is ±1 hPa
+ *   - Relative accuracy is ±0.12 hPa
+ */
+/// @brief Decimals places in string representation; barometric pressure should
+/// have 2.
 #define BME280_PRESSURE_RESOLUTION 2
-/// Variable number; PREbarometric pressureSSURE is stored in sensorValues[2].
+/// @brief Decimals places in string representation; barometric pressure should
+/// have 2 - resolution is 0.18hPa.
 #define BME280_PRESSURE_VAR_NUM 2
+/// @brief Decimals places in string representation; barometric pressure should
+/// have 2.
+#define BME280_PRESSURE_VAR_NAME "barometricPressure"
+/// @brief Variable unit name; "pascal" (Pa)
+#define BME280_PRESSURE_UNIT_NAME "pascal"
+/// @brief Default variable short code; "BoschBME280Pressure"
+#define BME280_PRESSURE_DEFAULT_CODE "BoschBME280Pressure"
+/**@}*/
 
-/// Decimals places in string representation; altitude should have 0.
+/**
+ * @anchor bme280_altitude_defines
+ * @name Altitude
+ * Defines for the altitude variable from a Bosch BME280
+ */
+/**@{*/
+/// @brief Decimals places in string representation; altitude should have 0 -
+/// resolution is 1m.
 #define BME280_ALTITUDE_RESOLUTION 0
-/// Variable number; altitude is stored in sensorValues[3].
+/// @brief Variable number; altitude is stored in sensorValues[3].
 #define BME280_ALTITUDE_VAR_NUM 3
+/// @brief Variable name; "heightAboveSeaFloor"
+#define BME280_ALTITUDE_VAR_NAME "heightAboveSeaFloor"
+/// @brief Variable unit name; "meter"
+#define BME280_ALTITUDE_UNIT_NAME "meter"
+/// @brief Default variable short code; "BoschBME280Altitude"
+#define BME280_ALTITUDE_DEFAULT_CODE "BoschBME280Altitude"
+/**@}*/
+
 /// The atmospheric pressure at sea level
 #define SEALEVELPRESSURE_HPA (1013.25)
 
@@ -201,6 +220,7 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Construct a new Bosch BME280 object using a secondary *hardware*
      * I2C instance.
+     * @ingroup bme280_group
      *
      * @note Software I2C is *not* supported for the BME280.
      *
@@ -223,6 +243,7 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Construct a new Bosch BME280 object using the primary hardware I2C
      * instance.
+     * @ingroup bme280_group
      *
      * @param powerPin The pin on the mcu controlling power to the BME280
      * Use -1 if it is continuously powered.
@@ -303,6 +324,7 @@ class BoschBME280_Temp : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Temp object.
+     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -312,10 +334,10 @@ class BoschBME280_Temp : public Variable {
      * optional with a default value of "BoschBME280Temp".
      */
     explicit BoschBME280_Temp(BoschBME280* parentSense, const char* uuid = "",
-                              const char* varCode = "BoschBME280Temp")
+                              const char* varCode = BME280_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)BME280_TEMP_VAR_NUM,
-                   (uint8_t)BME280_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)BME280_TEMP_RESOLUTION, BME280_TEMP_VAR_NAME,
+                   BME280_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new BoschBME280_Temp object.
      *
@@ -323,8 +345,8 @@ class BoschBME280_Temp : public Variable {
      */
     BoschBME280_Temp()
         : Variable((const uint8_t)BME280_TEMP_VAR_NUM,
-                   (uint8_t)BME280_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "BoschBME280Temp") {}
+                   (uint8_t)BME280_TEMP_RESOLUTION, BME280_TEMP_VAR_NAME,
+                   BME280_TEMP_UNIT_NAME, BME280_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBME280_Temp object - no action needed.
      */
@@ -345,6 +367,7 @@ class BoschBME280_Humidity : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Humidity object.
+     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -353,12 +376,13 @@ class BoschBME280_Humidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "BoschBME280Humidity".
      */
-    explicit BoschBME280_Humidity(BoschBME280* parentSense,
-                                  const char*  uuid    = "",
-                                  const char*  varCode = "BoschBME280Humidity")
+    explicit BoschBME280_Humidity(
+        BoschBME280* parentSense, const char* uuid = "",
+        const char* varCode = BME280_HUMIDITY_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)BME280_HUMIDITY_VAR_NUM,
-                   (uint8_t)BME280_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", varCode, uuid) {}
+                   (uint8_t)BME280_HUMIDITY_RESOLUTION,
+                   BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new BoschBME280_Humidity object.
      *
@@ -366,8 +390,9 @@ class BoschBME280_Humidity : public Variable {
      */
     BoschBME280_Humidity()
         : Variable((const uint8_t)BME280_HUMIDITY_VAR_NUM,
-                   (uint8_t)BME280_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", "BoschBME280Humidity") {}
+                   (uint8_t)BME280_HUMIDITY_RESOLUTION,
+                   BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME,
+                   BME280_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBME280_Humidity object - no action needed.
      */
@@ -388,6 +413,7 @@ class BoschBME280_Pressure : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Pressure object.
+     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -396,12 +422,13 @@ class BoschBME280_Pressure : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "BoschBME280Pressure".
      */
-    explicit BoschBME280_Pressure(BoschBME280* parentSense,
-                                  const char*  uuid    = "",
-                                  const char*  varCode = "BoschBME280Pressure")
+    explicit BoschBME280_Pressure(
+        BoschBME280* parentSense, const char* uuid = "",
+        const char* varCode = BME280_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)BME280_PRESSURE_VAR_NUM,
-                   (uint8_t)BME280_PRESSURE_RESOLUTION, "barometricPressure",
-                   "pascal", varCode, uuid) {}
+                   (uint8_t)BME280_PRESSURE_RESOLUTION,
+                   BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new BoschBME280_Pressure object.
      *
@@ -409,8 +436,9 @@ class BoschBME280_Pressure : public Variable {
      */
     BoschBME280_Pressure()
         : Variable((const uint8_t)BME280_PRESSURE_VAR_NUM,
-                   (uint8_t)BME280_PRESSURE_RESOLUTION, "barometricPressure",
-                   "pascal", "BoschBME280Pressure") {}
+                   (uint8_t)BME280_PRESSURE_RESOLUTION,
+                   BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME,
+                   BME280_PRESSURE_DEFAULT_CODE) {}
 };
 
 
@@ -427,6 +455,7 @@ class BoschBME280_Altitude : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Altitude object.
+     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -435,12 +464,13 @@ class BoschBME280_Altitude : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "BoschBME280Altitude".
      */
-    explicit BoschBME280_Altitude(BoschBME280* parentSense,
-                                  const char*  uuid    = "",
-                                  const char*  varCode = "BoschBME280Altitude")
+    explicit BoschBME280_Altitude(
+        BoschBME280* parentSense, const char* uuid = "",
+        const char* varCode = BME280_ALTITUDE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)BME280_ALTITUDE_VAR_NUM,
-                   (uint8_t)BME280_ALTITUDE_RESOLUTION, "heightAboveSeaFloor",
-                   "meter", varCode, uuid) {}
+                   (uint8_t)BME280_ALTITUDE_RESOLUTION,
+                   BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new BoschBME280_Altitude object.
      *
@@ -448,8 +478,9 @@ class BoschBME280_Altitude : public Variable {
      */
     BoschBME280_Altitude()
         : Variable((const uint8_t)BME280_ALTITUDE_VAR_NUM,
-                   (uint8_t)BME280_ALTITUDE_RESOLUTION, "heightAboveSeaFloor",
-                   "meter", "BoschBME280Altitude") {}
+                   (uint8_t)BME280_ALTITUDE_RESOLUTION,
+                   BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME,
+                   BME280_ALTITUDE_DEFAULT_CODE) {}
 };
 
 

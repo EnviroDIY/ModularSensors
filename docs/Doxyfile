@@ -277,19 +277,19 @@ ALIASES                = "license=@par License:\n" \
                          "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since v\1.\2\"" \
                          "m_deprecated_since{2}=@since deprecated in v\1.\2 @deprecated" \
                          "menulink{1}=[menu a la carte](@ref menu_\1)" \
-                         "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ "
-#                         "variabledoc{4}=@subsection \1_ctor Variable Constructor ^^ @m_span{m-doc-wrap}\2_\3@m_endspan(@m_span{m-dim}\2*@m_endspan @m_span{m-param}parentSense@m_endspan, @m_span{m-dim}const char*@m_endspan @m_span{m-param}uuid@m_endspan, @m_span{m-dim}const char*@m_endspan @m_span{m-param}varCode@m_endspan) \n @copydetails \2_\3::\2_\3" \
-#                         "ctor_doc{2}=\1(\2) \n @copydoc \1::\1" \
-#                         "ctor_doc{3}=\1(\2, \3) \n @copydoc \1::\1" \
-#                         "ctor_doc{4}=\1(\2, \3, \4) \n @copydoc \1::\1" \
-#                         "ctor_doc{5}=\1(\2, \3, \4, \5) \n @copydoc \1::\1" \
-#                         "ctor_doc{6}=\1(\2, \3, \4, \5, \6) \n @copydoc \1::\1" \
-#                         "ctor_doc{7}=\1(\2, \3, \4, \5, \6, \7) \n @copydoc \1::\1" \
-#                         "ctor_doc{8}=\1(\2, \3, \4, \5, \6, \7, \8) \n @copydoc \1::\1" \
-#                         "ctor_doc{9}=\1(\2, \3, \4, \5, \6, \7, \8, \9) \n @copydoc \1::\1" \
-#                         "ctor_doc{10}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10) \n @copydoc \1::\1" \
-#                         "ctor_doc{11}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11) \n @copydoc \1::\1" \
-#                         "ctor_doc{12}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11, \12) \n @copydoc \1::\1" \
+                         "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ " \
+                         "variabledoc{4}=@subsection \1_ctor \2_\3 Constructor ^^ @m_div{m-doc m-default}@m_span{m-doc-wrap}\2_\3@m_endspan(@m_span{m-dim}\2*@m_endspan @m_span{m-param}parentSense@m_endspan, @m_span{m-dim}const char*@m_endspan @m_span{m-param}uuid@m_endspan, @m_span{m-dim}const char*@m_endspan @m_span{m-param}varCode@m_endspan)@m_enddiv \n @copydetails \2_\3::\2_\3" \
+                         "ctor_doc{2}=\1(\2) \n @copydetails \1::\1" \
+                         "ctor_doc{3}=\1(\2, \3) \n @copydetails \1::\1" \
+                         "ctor_doc{4}=\1(\2, \3, \4) \n @copydetails \1::\1" \
+                         "ctor_doc{5}=\1(\2, \3, \4, \5) \n @copydetails \1::\1" \
+                         "ctor_doc{6}=\1(\2, \3, \4, \5, \6) \n @copydetails \1::\1" \
+                         "ctor_doc{7}=\1(\2, \3, \4, \5, \6, \7) \n @copydetails \1::\1" \
+                         "ctor_doc{8}=\1(\2, \3, \4, \5, \6, \7, \8) \n @copydetails \1::\1" \
+                         "ctor_doc{9}=\1(\2, \3, \4, \5, \6, \7, \8, \9) \n @copydetails \1::\1" \
+                         "ctor_doc{10}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10) \n @copydetails \1::\1" \
+                         "ctor_doc{11}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11) \n @copydetails \1::\1" \
+                         "ctor_doc{12}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11, \12) \n @copydetails \1::\1" \
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
@@ -451,7 +451,7 @@ INLINE_GROUPED_CLASSES = NO
 # Man pages) or section (for LaTeX and RTF).
 # The default value is: NO.
 
-INLINE_SIMPLE_STRUCTS  = NO
+INLINE_SIMPLE_STRUCTS  = YES
 
 # When TYPEDEF_HIDES_STRUCT tag is enabled, a typedef of a struct, union, or
 # enum is documented as struct, union, or enum with the name of the typedef. So
@@ -2103,7 +2103,7 @@ XML_PROGRAMLISTING     = NO
 # The default value is: NO.
 # This tag requires that the tag GENERATE_XML is set to YES.
 
-XML_NS_MEMB_FILE_SCOPE = NO
+XML_NS_MEMB_FILE_SCOPE = YES
 
 #---------------------------------------------------------------------------
 # Configuration options related to the DOCBOOK output

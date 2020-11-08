@@ -31,34 +31,11 @@
  * Documentation on the measurement circuit is found here:
  * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
  *
- * @section atlas_rtd_sensor The Atlas RTD Sensor
- * @ctor_doc{AtlasScientificRTD, int8_t powerPin, uint8_t i2cAddress, uint8_t measurementsToAverage}
- * @subsection atlas_rtd_timing Sensor Timing
- *   - warms up in 740ms
- *      - 731-735 in tests
- *      - @m_span{m-dim}@ref #ATLAS_RTD_WARM_UP_TIME_MS = 740@m_endspan
- *   - stable at completion of warm up
- *      - @m_span{m-dim}@ref #ATLAS_RTD_STABILIZATION_TIME_MS = 0@m_endspan
- *   - measurements take 650ms to complete
- *      - Manual says measurement takes 600 ms, but in SRGD tests, didn't get a
- * result until after 643 ms; AG got results as soon as 393ms.
- *      - @m_span{m-dim}@ref #ATLAS_RTD_MEASUREMENT_TIME_MS = 650@m_endspan
- * @subsection atlas_rtd_flags Build flags
+ * @section atlas_rtd_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
  * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
- *
- * ___
- * @section atlas_rtd_temp Temperature Output
- * - Accuracy is ± (0.10°C + 0.0017 x °C)
- * - Range is -126.000 °C − 1254 °C
- * - Resolution is 0.001 °C @m_span{m-dim}(@ref #ATLAS_RTD_RESOLUTION = 3)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #ATLAS_RTD_VAR_NUM = 0)@m_endspan
- * - Default variable code is AtlasTemp
- *
- * @variabledoc{atlas_rtd_temp,AtlasScientificRTD,Temp,AtlasTemp}
  *
  * ___
  * @section atlas_rtd_examples Example Code
@@ -82,12 +59,21 @@
 #define ATLAS_RTD_I2C_ADDR 0x66
 
 // Sensor Specific Defines
+/** @ingroup atlas_rtd_group */
+/**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the Atlas EZO temperature circuit can
  * report 1 value.
  */
 #define ATLAS_RTD_NUM_VARIABLES 1
 
+
+/**
+ * @anchor atlas_rtd_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for an Atlas RTD (temperature) sensor
+ */
+/**@{*/
 /**
  * @brief Sensor::_warmUpTime_ms; the Atlas EZO temperature circuit warms up in
  * 740ms
@@ -97,7 +83,7 @@
 #define ATLAS_RTD_WARM_UP_TIME_MS 740
 /**
  * @brief Sensor::_stabilizationTime_ms; the Atlas EZO temperature circuit is
- * stable 0ms after warm-up.
+ * stable 0ms after warm-up (stable at completion of warm up).
  */
 #define ATLAS_RTD_STABILIZATION_TIME_MS 0
 /**
@@ -108,11 +94,29 @@
  * result until after 643 ms; AG got results as soon as 393ms.
  */
 #define ATLAS_RTD_MEASUREMENT_TIME_MS 650
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 3.
+/**
+ * @anchor atlas_rtd_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from an Atlas RTD (temperature) sensor
+ * - Accuracy is ± (0.10°C + 0.0017 x °C)
+ * - Range is -126.000 °C − 125 °C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 3 -
+/// resolution is 0.001 °C.
 #define ATLAS_RTD_RESOLUTION 3
-/// Variable number; RTD is stored in sensorValues[0].
+/// @brief Variable number; RTD is stored in sensorValues[0].
 #define ATLAS_RTD_VAR_NUM 0
+/// @brief Variable name; "temperature"
+#define ATLAS_RTD_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius"
+#define ATLAS_RTD_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "AtlasTemp"
+#define ATLAS_RTD_DEFAULT_CODE "AtlasTemp"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -128,6 +132,7 @@ class AtlasScientificRTD : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific RTD object using a *software* I2C
      * instance.
+     * @ingroup atlas_rtd_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -157,6 +162,7 @@ class AtlasScientificRTD : public AtlasParent {
      * @brief Construct a new Atlas Scientific RTD object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
+     * @ingroup atlas_rtd_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -195,6 +201,7 @@ class AtlasScientificRTD : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific RTD object using a secondary
      * *hardware* I2C instance.
+     * @ingroup atlas_rtd_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -226,6 +233,7 @@ class AtlasScientificRTD : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific RTD object using the primary
      * hardware I2C instance.
+     * @ingroup atlas_rtd_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas RTD
      * (temperature) circuit.  Use -1 if it is continuously powered.
@@ -269,6 +277,7 @@ class AtlasScientificRTD_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificRTD_Temp object.
+     * @ingroup atlas_rtd_group
      *
      * @param parentSense The parent AtlasScientificRTD providing the result
      * values.
@@ -277,12 +286,12 @@ class AtlasScientificRTD_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AtlasTemp".
      */
-    explicit AtlasScientificRTD_Temp(AtlasScientificRTD* parentSense,
-                                     const char*         uuid    = "",
-                                     const char*         varCode = "AtlasTemp")
+    explicit AtlasScientificRTD_Temp(
+        AtlasScientificRTD* parentSense, const char* uuid = "",
+        const char* varCode = ATLAS_RTD_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ATLAS_RTD_VAR_NUM,
-                   (uint8_t)ATLAS_RTD_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)ATLAS_RTD_RESOLUTION, ATLAS_RTD_VAR_NAME,
+                   ATLAS_RTD_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificRTD_Temp object.
      *
@@ -291,12 +300,12 @@ class AtlasScientificRTD_Temp : public Variable {
      */
     AtlasScientificRTD_Temp()
         : Variable((const uint8_t)ATLAS_RTD_VAR_NUM,
-                   (uint8_t)ATLAS_RTD_RESOLUTION, "temperature",
-                   "degreeCelsius", "AtlasTemp") {}
+                   (uint8_t)ATLAS_RTD_RESOLUTION, ATLAS_RTD_VAR_NAME,
+                   ATLAS_RTD_UNIT_NAME, ATLAS_RTD_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.
      */
     ~AtlasScientificRTD_Temp() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICRTD_H_
