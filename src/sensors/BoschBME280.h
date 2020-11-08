@@ -138,7 +138,7 @@
 #define BME280_TEMP_VAR_NUM 0
 /// @brief Variable name; "temperature"
 #define BME280_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define BME280_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "BoschBME280Temp"
 #define BME280_TEMP_DEFAULT_CODE "BoschBME280Temp"

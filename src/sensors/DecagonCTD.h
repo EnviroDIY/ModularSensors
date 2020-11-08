@@ -118,7 +118,7 @@
 #define CTD_TEMP_VAR_NUM 1
 /// @brief Variable name; "temperature"
 #define CTD_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define CTD_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "CTDtemp"
 #define CTD_TEMP_DEFAULT_CODE "CTDtemp"

@@ -111,7 +111,7 @@
 #define MPL115A2_TEMP_VAR_NUM 0
 /// @brief Variable name; "temperature"
 #define MPL115A2_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define MPL115A2_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "MPL115A2_Temp"
 #define MPL115A2_TEMP_DEFAULT_CODE "MPL115A2_Temp"

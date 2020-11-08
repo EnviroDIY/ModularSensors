@@ -136,7 +136,7 @@
 #define TM_TEMP_VAR_NUM 1
 /// @brief Variable name; "temperature"
 #define TM_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define TM_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "SoilTemp"
 #define TM_TEMP_DEFAULT_CODE "SoilTemp"

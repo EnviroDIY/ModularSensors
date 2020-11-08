@@ -128,7 +128,7 @@
 #define ATLAS_CO2TEMP_VAR_NUM 1
 /// @brief Variable name; "temperature"
 #define ATLAS_CO2TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define ATLAS_CO2TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "AtlasCO2Temp"
 #define ATLAS_CO2TEMP_DEFAULT_CODE "AtlasCO2Temp"

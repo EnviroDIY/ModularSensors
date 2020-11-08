@@ -119,7 +119,7 @@
 #define ES2_TEMP_VAR_NUM 1
 /// @brief Variable name; "temperature"
 #define ES2_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define ES2_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "ES2Temp"
 #define ES2_TEMP_DEFAULT_CODE "ES2Temp"

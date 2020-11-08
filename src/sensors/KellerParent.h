@@ -99,15 +99,54 @@
 #include <KellerModbus.h>
 
 // Sensor Specific Defines
+/** @ingroup keller_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Keller level sensors can report 3 values.
+/// @brief Sensor::_numReturnedValues; the Keller level sensors can report 3
+/// values.
 #define KELLER_NUM_VARIABLES 3
+
+/**
+ * @anchor keller_pressure_defines
+ * @name Pressure
+ * Defines for the pressure variable from a Keller modbus sensor
+ */
+/**@{*/
 /// Variable number; pressure is stored in sensorValues[0].
 #define KELLER_PRESSURE_VAR_NUM 0
+/// @brief Variable name; "pressureGauge"
+#define KELLER_PRESSURE_VAR_NAME "pressureGauge"
+/// @brief Variable unit name; "millibar"
+#define KELLER_PRESSURE_UNIT_NAME "millibar"
+/**@}*/
+
+/**
+ * @anchor keller_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Keller modbus sensor
+ */
+/**@{*/
 /// Variable number; temperature is stored in sensorValues[1].
 #define KELLER_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define KELLER_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define KELLER_TEMP_UNIT_NAME "degreeCelsius"
+/**@}*/
+
+/**
+ * @anchor keller_height_defines
+ * @name Height
+ * Defines for the height variable from a Keller modbus sensor
+ */
+/**@{*/
 /// Variable number; height is stored in sensorValues[2].
 #define KELLER_HEIGHT_VAR_NUM 2
+/// @brief Variable name; "gaugeHeight"
+#define KELLER_HEIGHT_VAR_NAME "gaugeHeight"
+/// @brief Variable unit name; "meter"
+#define KELLER_HEIGHT_UNIT_NAME "meter"
+/**@}*/
 
 /**
  * @brief The Sensor sub-class for all
@@ -205,5 +244,5 @@ class KellerParent : public Sensor {
     int8_t      _RS485EnablePin;
     int8_t      _powerPin2;
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_

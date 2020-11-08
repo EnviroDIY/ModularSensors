@@ -157,7 +157,7 @@
 #define DHT_HI_VAR_NUM 2
 /// @brief Variable name; "heatIndex"
 #define DHT_HI_VAR_NAME "heatIndex"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define DHT_HI_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DHTHI"
 #define DHT_HI_DEFAULT_CODE "DHTHI"

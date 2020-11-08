@@ -160,7 +160,7 @@
 #define OBS3_VOLTAGE_VAR_NUM 1
 /// @brief Variable name; "voltage"
 #define OBS3_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable name; "voltage"
+/// @brief Variable unit name; "volt"
 #define OBS3_VOLTAGE_UNIT_NAME "volt"
 /// @brief Default variable short code; "OBS3Voltage"
 #define OBS3_VOLTAGE_DEFAULT_CODE "OBS3Voltage"

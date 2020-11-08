@@ -210,7 +210,7 @@
 #define EXT_VOLT_VAR_NUM 0
 /// @brief Variable name; "voltage"
 #define EXT_VOLT_VAR_NAME "voltage"
-/// @brief Variable name; "voltage"
+/// @brief Variable unit name; "volt"
 #define EXT_VOLT_UNIT_NAME "volt"
 /// @brief Default variable short code; "extVoltage"
 #define EXT_VOLT_DEFAULT_CODE "extVoltage"

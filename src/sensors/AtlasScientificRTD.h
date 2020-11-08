@@ -111,7 +111,7 @@
 #define ATLAS_RTD_VAR_NUM 0
 /// @brief Variable name; "temperature"
 #define ATLAS_RTD_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius"
+/// @brief Variable unit name; "degreeCelsius" (°C)
 #define ATLAS_RTD_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "AtlasTemp"
 #define ATLAS_RTD_DEFAULT_CODE "AtlasTemp"
