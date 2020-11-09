@@ -30,41 +30,10 @@
  * - [Y515 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y515-Chlorophyll_UserManual-v1.0_en.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper-v1.6_ModbusInstructions.pdf)
  *
- * @section y514_sensor The y514 Sensor
- * @ctor_doc{YosemitechY514, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
- * @subsection y514_timing Sensor Timing
- * - Time before sensor responds after power - 1.3 seconds
- *      - @m_span{m-dim}@ref #Y514_WARM_UP_TIME_MS = 1300@m_endspan
- * - Time between "StartMeasurement" command and stable reading - 8sec
- *      - @m_span{m-dim}@ref #Y514_STABILIZATION_TIME_MS = 8000@m_endspan
- * - Measurements take about 2000 ms to complete.
- *      - @m_span{m-dim}@ref #Y514_MEASUREMENT_TIME_MS = 2000@m_endspan
- *
- * @section y514_chloro Chlorophyll Output
- * - Range is 0 to 400 µg/L or 0 to 100 RFU
- * - Accuracy is ± 1 %
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y514_CHLORO_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.1 µg/L / 0.1 RFU @m_span{m-dim}(@ref #Y514_CHLORO_RESOLUTION = 1)@m_endspan
- * - Reported as micrograms per liter (µg/L)
- * - Default variable code is Y514Chloro
- *
- * @variabledoc{y514_chloro,YosemitechY514,Chlorophyll,Y514Chloro}
- *
- * @section y514_temp Temperature Output
- * - Range is 0°C to + 50°C
- * - Accuracy is ± 0.2°C
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y514_TEMP_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.1 °C @m_span{m-dim}(@ref #Y514_TEMP_RESOLUTION = 1)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is Y514Temp
- *
- * @variabledoc{y514_temp,YosemitechY514,Temp,Y514Temp}
- *
- * The reported resolution (32 bit) gives far more precision than is significant
+ * @note The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
- *
  *
  * ___
  * @section y514_examples Example Code
@@ -83,31 +52,73 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+/** @ingroup y514_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Y514 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the Y514 can report 2 values.
 #define Y514_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the Y514 warms up in 1300ms.
+
+/**
+ * @anchor y514_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Yosemitch Y514
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; time before sensor responds after power - 1.3
+/// seconds (1300ms).
 #define Y514_WARM_UP_TIME_MS 1300
-/// Sensor::_stabilizationTime_ms; the Y514 is stable after 8000ms.
+/// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
+/// command and stable reading - 8sec (8000ms).
 #define Y514_STABILIZATION_TIME_MS 8000
-/**
- * @brief Sensor::_measurementTime_ms; the Y514 takes 2000ms to complete a
- * measurement.
- */
+/// @brief Sensor::_measurementTime_ms; the Y514 takes ~2000ms to complete a
+/// measurement.
 #define Y514_MEASUREMENT_TIME_MS 2000
+/**@}*/
 
 /**
- * @brief Decimals places in string representation; chlorophyll concentration
- * should have 1.
+ * @anchor y514_chloro_defines
+ * @name Chlorophyll Concentration
+ * Defines for the chlorophyll concentration variable from a Yosemitch Y514
+ * - Range is 0 to 400 µg/L or 0 to 100 RFU
+ * - Accuracy is ± 1 %
  */
+/**@{*/
+///  @brief Decimals places in string representation; chlorophyll concentration
+///  should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y514_CHLORO_RESOLUTION 1
-/// Variable number; chlorophyll concentration is stored in sensorValues[0].
+/// @brief Variable number; chlorophyll concentration is stored in
+/// sensorValues[0].
 #define Y514_CHLORO_VAR_NUM 0
+/// @brief Variable number; chlorophyll concentration is stored in
+/// sensorValues[0].
+#define Y514_CHLORO_VAR_NAME "chlorophyllFluorescence"
+/// @brief Variable unit name; "microgramPerLiter" (µg/L)
+#define Y514_CHLORO_UNIT_NAME "microgramPerLiter"
+/// @brief Default variable short code; "Y514Chloro"
+#define Y514_CHLORO_DEFAULT_CODE "Y514Chloro"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 1.
+/**
+ * @anchor y514_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Yosemitch Y514
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 1 -
+/// resolution is 0.1°C.
 #define Y514_TEMP_RESOLUTION 1
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Variable number; temperature is stored in sensorValues[1].
 #define Y514_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define Y514_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define Y514_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "Y514Temp"
+#define Y514_TEMP_DEFAULT_CODE "Y514Temp"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -122,6 +133,7 @@ class YosemitechY514 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y514 object.
+     * @ingroup y514_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -179,6 +191,7 @@ class YosemitechY514_Chlorophyll : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY514_Chlorophyll object.
+     * @ingroup y514_group
      *
      * @param parentSense The parent YosemitechY514 providing the result
      * values.
@@ -187,12 +200,12 @@ class YosemitechY514_Chlorophyll : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y514Chloro".
      */
-    explicit YosemitechY514_Chlorophyll(YosemitechY514* parentSense,
-                                        const char*     uuid    = "",
-                                        const char*     varCode = "Y514Chloro")
+    explicit YosemitechY514_Chlorophyll(
+        YosemitechY514* parentSense, const char* uuid = "",
+        const char* varCode = Y514_CHLORO_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y514_CHLORO_VAR_NUM,
-                   (uint8_t)Y514_CHLORO_RESOLUTION, "chlorophyllFluorescence",
-                   "microgramPerLiter", varCode, uuid) {}
+                   (uint8_t)Y514_CHLORO_RESOLUTION, Y514_CHLORO_VAR_NAME,
+                   Y514_CHLORO_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY514_Chlorophyll object.
      *
@@ -201,8 +214,8 @@ class YosemitechY514_Chlorophyll : public Variable {
      */
     YosemitechY514_Chlorophyll()
         : Variable((const uint8_t)Y514_CHLORO_VAR_NUM,
-                   (uint8_t)Y514_CHLORO_RESOLUTION, "chlorophyllFluorescence",
-                   "microgramPerLiter", "Y514Chloro") {}
+                   (uint8_t)Y514_CHLORO_RESOLUTION, Y514_CHLORO_VAR_NAME,
+                   Y514_CHLORO_UNIT_NAME, Y514_CHLORO_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY514_Chlorophyll() object - no action
      * needed.
@@ -224,6 +237,7 @@ class YosemitechY514_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY514_Temp object.
+     * @ingroup y514_group
      *
      * @param parentSense The parent YosemitechY514 providing the result
      * values.
@@ -233,11 +247,11 @@ class YosemitechY514_Temp : public Variable {
      * optional with a default value of "Y514Temp".
      */
     explicit YosemitechY514_Temp(YosemitechY514* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "Y514Temp")
+                                 const char*     uuid = "",
+                                 const char* varCode  = Y514_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y514_TEMP_VAR_NUM,
-                   (uint8_t)Y514_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)Y514_TEMP_RESOLUTION, Y514_TEMP_VAR_NAME,
+                   Y514_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY514_Temp object.
      *
@@ -246,8 +260,8 @@ class YosemitechY514_Temp : public Variable {
      */
     YosemitechY514_Temp()
         : Variable((const uint8_t)Y514_TEMP_VAR_NUM,
-                   (uint8_t)Y514_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "Y514Temp") {}
+                   (uint8_t)Y514_TEMP_RESOLUTION, Y514_TEMP_VAR_NAME,
+                   Y514_TEMP_UNIT_NAME, Y514_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY514_Temp object - no action needed.
      */

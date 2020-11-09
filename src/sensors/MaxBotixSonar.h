@@ -84,26 +84,6 @@
  * - [MaxTemp Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HR-MaxTemp-Datasheet.pdf)
  * - [Wiring Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-MaxSonar-MB7954-Datasheet-ConnectWire.pdf)
  *
- * @section maxbotics_sensor The MaxBotix MaxSonar Sensor
- * @ctor_doc{MaxBotixSonar, Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage}
- * @subsection maxbotics_timing Sensor Timing
- * - Warm up time to completion of header:  160ms
- *      - @m_span{m-dim}@ref #HRXL_WARM_UP_TIME_MS = 500@m_endspan
- * - We assume the sensor is immediately stable.
- *      - @m_span{m-dim}@ref #HRXL_STABILIZATION_TIME_MS = 0@m_endspan
- * - Measurements take about 166 ms to complete.
- *      - @m_span{m-dim}@ref #HRXL_MEASUREMENT_TIME_MS = 166@m_endspan
- *
- * @section maxbotix_range Range Output
- * - Range is 300 to 5000mm or 500 to 9999mm, depending on model
- * - Accuracy is ±1%
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #HRXL_VAR_NUM = 0)@m_endspan
- * - Resolution is 1mm @m_span{m-dim}(@ref #HRXL_RESOLUTION = 0)@m_endspan
- * - Reported as millimeters (mm)
- * - Default variable code is SonarRange
- *
- * @variabledoc{maxbotix_range,MaxBotixSonar,Range,SonarRange}
- *
  * ___
  * @section maxbotics_examples Example Code
  * The MaxBotix MaxSonar is used in the @menulink{maxbotics} example.
@@ -130,19 +110,49 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+/** @ingroup maxbotics_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the HRXL can report 1 value.
+/// @brief Sensor::_numReturnedValues; the HRXL can report 1 value.
 #define HRXL_NUM_VARIABLES 1
-/// Sensor::_warmUpTime_ms; the HRXL warms up in 160ms.
+
+/**
+ * @anchor maxbotics_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Maxbotix HRXL ultrasonic range finder
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; warm up time to completion of header:  160ms.
 #define HRXL_WARM_UP_TIME_MS 160
-/// Sensor::_stabilizationTime_ms; the HRXL is stable after 0ms.
+/// @brief Sensor::_stabilizationTime_ms; the HRXL is stable as soon as it warms
+/// up (0ms stabilization).
 #define HRXL_STABILIZATION_TIME_MS 0
-/// Sensor::_measurementTime_ms; the HRXL takes 166ms to complete a measurement.
+/// @brief Sensor::_measurementTime_ms; the HRXL takes 166ms to complete a
+/// measurement.
 #define HRXL_MEASUREMENT_TIME_MS 166
-/// Decimals places in string representation; range should have 2.
+/**@}*/
+
+/**
+ * @anchor maxbotix_range_defines
+ * @name Range
+ * Defines for the range variable from a Maxbotix HRXL ultrasonic range finder
+ * - Range is 300 to 5000mm or 500 to 9999mm, depending on model
+ * - Accuracy is ±1%
+ */
+/**@{*/
+/// @brief Decimals places in string representation; range should have 0 -
+/// resolution is 1mm.
 #define HRXL_RESOLUTION 0
-/// Variable number; range is stored in sensorValues[0].
+/// @brief Variable number; range is stored in sensorValues[0].
 #define HRXL_VAR_NUM 0
+/// @brief Variable name; "distance"
+#define HRXL_VAR_NAME "distance"
+/// @brief Variable unit name; "millimeter"
+#define HRXL_UNIT_NAME "millimeter"
+/// @brief Default variable short code; "SonarRange"
+#define HRXL_DEFAULT_CODE "SonarRange"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -156,6 +166,7 @@ class MaxBotixSonar : public Sensor {
  public:
     /**
      * @brief Construct a new MaxBotix Sonar object
+     * @ingroup maxbotics_group
      *
      * @param stream An Arduino data stream for TTL or RS232 communication.  See
      * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
@@ -237,6 +248,7 @@ class MaxBotixSonar_Range : public Variable {
  public:
     /**
      * @brief Construct a new MaxBotixSonar_Range object.
+     * @ingroup maxbotics_group
      *
      * @param parentSense The parent MaxBotixSonar providing the result
      * values.
@@ -247,10 +259,10 @@ class MaxBotixSonar_Range : public Variable {
      */
     explicit MaxBotixSonar_Range(MaxBotixSonar* parentSense,
                                  const char*    uuid    = "",
-                                 const char*    varCode = "SonarRange")
+                                 const char*    varCode = HRXL_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)HRXL_VAR_NUM,
-                   (uint8_t)HRXL_RESOLUTION, "distance", "millimeter", varCode,
-                   uuid) {}
+                   (uint8_t)HRXL_RESOLUTION, HRXL_VAR_NAME, HRXL_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new MaxBotixSonar_Range object.
      *
@@ -259,11 +271,11 @@ class MaxBotixSonar_Range : public Variable {
      */
     MaxBotixSonar_Range()
         : Variable((const uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
-                   "distance", "millimeter", "SonarRange") {}
+                   HRXL_VAR_NAME, HRXL_UNIT_NAME, HRXL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MaxBotixSonar_Range object - no action needed.
      */
     ~MaxBotixSonar_Range() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_MAXBOTIXSONAR_H_

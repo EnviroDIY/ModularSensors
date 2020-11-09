@@ -29,53 +29,10 @@
  * @section y550_datasheet Sensor Datasheet
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf)
  *
- * @section y550_sensor The Yosemitech Y550 UV245/COD Sensor
- * @ctor_doc{YosemitechY550, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
- * @subsection y550_timing Sensor Timing
- * - Time before sensor responds after power - 1500ms
- *      - @m_span{m-dim}@ref #Y550_WARM_UP_TIME_MS = 1500@m_endspan
- * - Time between "StartMeasurement" command and stable reading - 2sec
- *      - @m_span{m-dim}@ref #Y550_STABILIZATION_TIME_MS = 2000@m_endspan
- * - Measurements take about 2000 ms to complete.
- *      - @m_span{m-dim}@ref #Y550_MEASUREMENT_TIME_MS = 2000@m_endspan
- *
- * @section y550_cod COD Output
- * - Range is:
- *     - 0.75 to 370 mg/L COD (equiv. KHP)
- *     - 0.2 to 150 mg/L TOC (equiv. KHP)
- * - Accuracy is not reported on sensor datasheet
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y550_COD_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.01 mg/L COD @m_span{m-dim}(@ref #Y550_COD_RESOLUTION = 2)@m_endspan
- * - Reported as milligrams per liter (mg/L)
- * - Default variable code is Y550COD
- *
- * @variabledoc{y550_cod,YosemitechY550,COD,Y550COD}
- *
- * @section y550_temp Temperature Output
- * - Range is 5°C to + 45°C
- * - Accuracy is ± 0.2°C
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y550_TEMP_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.01 °C @m_span{m-dim}(@ref #Y550_TEMP_RESOLUTION = 2)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is Y550Temp
- *
- * @variabledoc{y550_temp,YosemitechY550,Temp,Y550Temp}
- *
- * @section y550_turb Turbidity Output
- * - Range is 0.1~1000 NTU
- * - Accuracy is ＜5% or 0.3NTU
- * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #Y550_TURB_VAR_NUM = 2)@m_endspan
- * - Resolution is 0.01 NTU @m_span{m-dim}(@ref #Y550_TURB_RESOLUTION = 2)@m_endspan
- * - Reported as Nephelometric Turbidity Units (NTU)
- * - Default variable code is Y550Turbidity
- *
- * @variabledoc{y550_turb,YosemitechY550,Turbidity,Y550Turbidity}
- *
- * The reported resolution (32 bit) gives far more precision than is significant
+ * @note The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
- *
  *
  * ___
  * @section y550_examples Example Code
@@ -93,33 +50,94 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+/** @ingroup y550_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Y550 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the Y550 can report 2 values.
 #define Y550_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the Y550 warms up in 1500ms.
-#define Y550_WARM_UP_TIME_MS 1500
-/// Sensor::_stabilizationTime_ms; the Y550 is stable after 2000ms.
-#define Y550_STABILIZATION_TIME_MS 2000
+
 /**
- * @brief Sensor::_measurementTime_ms; the Y550 takes 2000ms to complete a
- * measurement.
+ * @anchor y550_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Yosemitch Y550
  */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
+/// 1500ms.
+#define Y550_WARM_UP_TIME_MS 1500
+/// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
+/// command and stable reading - 2sec.
+#define Y550_STABILIZATION_TIME_MS 2000
+/// @brief Sensor::_measurementTime_ms; the Y550 takes ~2000ms to complete a
+/// measurement.
 #define Y550_MEASUREMENT_TIME_MS 2000
+/**@}*/
 
-/// Decimals places in string representation; COD should have 2.
+/**
+ * @anchor y550_cod_defines
+ * @name Carbon Oxygen Demand
+ * Defines for the COD variable from a Yosemitch Y550
+ * - Range is:
+ *     - 0.75 to 370 mg/L COD (equiv. KHP)
+ *     - 0.2 to 150 mg/L TOC (equiv. KHP)
+ * - Accuracy is not reported on sensor datasheet
+ */
+/**@{*/
+/// @brief Decimals places in string representation; cod should have 2 -
+/// resolution is 0.01 mg/L COD.
 #define Y550_COD_RESOLUTION 2
-/// Variable number; COD is stored in sensorValues[0].
+/// @brief Variable number; COD is stored in sensorValues[0].
 #define Y550_COD_VAR_NUM 0
+/// @brief Variable name; "COD"
+#define Y550_COD_VAR_NAME "COD"
+/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+#define Y550_COD_UNIT_NAME "milligramPerLiter"
+/// @brief Default variable short code; "Y550COD"
+#define Y550_COD_DEFAULT_CODE "Y550COD"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @anchor y550_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Yosemitch Y550
+ * - Range is 5°C to + 45°C
+ * - Accuracy is ± 0.2°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is 0.01°C.
 #define Y550_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Variable number; temperature is stored in sensorValues[1].
 #define Y550_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define Y550_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define Y550_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "Y550Temp"
+#define Y550_TEMP_DEFAULT_CODE "Y550Temp"
+/**@}*/
 
-/// Decimals places in string representation; turbidity should have 2.
+/**
+ * @anchor y550_turb_defines
+ * @name Turbidity
+ * Defines for the turbidity variable from a Yosemitch Y550
+ * - Range is 0.1~1000 NTU
+ * - Accuracy is ＜5% or 0.3NTU
+ */
+/**@{*/
+/// @brief Decimals places in string representation; turbidity should have 2 -
+/// resolution is 0.01 NTU.
 #define Y550_TURB_RESOLUTION 2
-/// Variable number; turbidity is stored in sensorValues[2].
+/// @brief Variable number; turbidity is stored in sensorValues[2].
 #define Y550_TURB_VAR_NUM 2
+/// @brief Variable name; "turbidity"
+#define Y550_TURB_VAR_NAME "turbidity"
+/// @brief Variable unit name; "nephelometricTurbidityUnit" (NTU)
+#define Y550_TURB_UNIT_NAME "nephelometricTurbidityUnit"
+/// @brief Default variable short code; "Y550Turbidity"
+#define Y550_TURB_DEFAULT_CODE "Y550Turbidity"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -134,6 +152,7 @@ class YosemitechY550 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y550 object.
+     * @ingroup y550_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -191,6 +210,7 @@ class YosemitechY550_COD : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY550_COD object.
+     * @ingroup y550_group
      *
      * @param parentSense The parent YosemitechY550 providing the result
      * values.
@@ -201,10 +221,10 @@ class YosemitechY550_COD : public Variable {
      */
     explicit YosemitechY550_COD(YosemitechY550* parentSense,
                                 const char*     uuid    = "",
-                                const char*     varCode = "Y550COD")
+                                const char*     varCode = Y550_COD_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y550_COD_VAR_NUM,
-                   (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter",
-                   varCode, uuid) {}
+                   (uint8_t)Y550_COD_RESOLUTION, Y550_COD_VAR_NAME,
+                   Y550_COD_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY550_COD object.
      *
@@ -213,8 +233,8 @@ class YosemitechY550_COD : public Variable {
      */
     YosemitechY550_COD()
         : Variable((const uint8_t)Y550_COD_VAR_NUM,
-                   (uint8_t)Y550_COD_RESOLUTION, "COD", "milligramPerLiter",
-                   "Y550COD") {}
+                   (uint8_t)Y550_COD_RESOLUTION, Y550_COD_VAR_NAME,
+                   Y550_COD_UNIT_NAME, Y550_COD_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY550_COD object - no action needed.
      */
@@ -235,6 +255,7 @@ class YosemitechY550_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY550_Temp object.
+     * @ingroup y550_group
      *
      * @param parentSense The parent YosemitechY550 providing the result
      * values.
@@ -244,11 +265,11 @@ class YosemitechY550_Temp : public Variable {
      * optional with a default value of "Y550Temp".
      */
     explicit YosemitechY550_Temp(YosemitechY550* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "Y550Temp")
+                                 const char*     uuid = "",
+                                 const char* varCode  = Y550_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y550_TEMP_VAR_NUM,
-                   (uint8_t)Y550_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)Y550_TEMP_RESOLUTION, Y550_TEMP_VAR_NAME,
+                   Y550_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY550_Temp object.
      *
@@ -257,8 +278,8 @@ class YosemitechY550_Temp : public Variable {
      */
     YosemitechY550_Temp()
         : Variable((const uint8_t)Y550_TEMP_VAR_NUM,
-                   (uint8_t)Y550_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "Y550Temp") {}
+                   (uint8_t)Y550_TEMP_RESOLUTION, Y550_TEMP_VAR_NAME,
+                   Y550_TEMP_UNIT_NAME, Y550_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY550_Temp object - no action needed.
      */
@@ -279,6 +300,7 @@ class YosemitechY550_Turbidity : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY550_Turbidity object.
+     * @ingroup y550_group
      *
      * @param parentSense The parent YosemitechY550 providing the result
      * values.
@@ -287,12 +309,12 @@ class YosemitechY550_Turbidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y550Turbidity".
      */
-    explicit YosemitechY550_Turbidity(YosemitechY550* parentSense,
-                                      const char*     uuid    = "",
-                                      const char*     varCode = "Y550Turbidity")
+    explicit YosemitechY550_Turbidity(
+        YosemitechY550* parentSense, const char* uuid = "",
+        const char* varCode = Y550_TURB_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y550_TURB_VAR_NUM,
-                   (uint8_t)Y550_TURB_RESOLUTION, "turbidity",
-                   "nephelometricTurbidityUnit", varCode, uuid) {}
+                   (uint8_t)Y550_TURB_RESOLUTION, Y550_TURB_VAR_NAME,
+                   Y550_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY550_Turbidity object.
      *
@@ -301,12 +323,12 @@ class YosemitechY550_Turbidity : public Variable {
      */
     YosemitechY550_Turbidity()
         : Variable((const uint8_t)Y550_TURB_VAR_NUM,
-                   (uint8_t)Y550_TURB_RESOLUTION, "turbidity",
-                   "nephelometricTurbidityUnit", "Y550Turbidity") {}
+                   (uint8_t)Y550_TURB_RESOLUTION, Y550_TURB_VAR_NAME,
+                   Y550_TURB_UNIT_NAME, Y550_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY550_Turbidity object - no action needed.
      */
     ~YosemitechY550_Turbidity() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY550_H_

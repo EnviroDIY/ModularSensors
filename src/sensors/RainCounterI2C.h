@@ -43,36 +43,13 @@
  * - [Adafriut Trinket](https://www.adafruit.com/product/1501)
  * - [I2C Tipping Bucket Library](https://github.com/EnviroDIY/TippingBucketRainCounter)
  *
- * @section i2c_rain_sensor The i2c_rain Sensor
- * @ctor_doc{RainCounterI2C, uint8_t i2cAddressHex, float rainPerTip}
- * @subsection i2c_rain_timing Sensor Timing
- * - Readings transferred from the tipping bucket to the logger are from past
- * tips, so there is no need to wait for stability or measuring.
- * @subsection i2c_rain_flags Build flags
+ * @section i2c_rain_flags Build flags
  * - `-D MS_RAIN_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
- * @warning Either all or none your attached tipping bucket counters may use software I2C.
- * Using some with software I2C and others with hardware I2C is not supported.
- * Though, honestly, having more than one attached seems pretty unlikely anyway.
- *
- * @section i2c_rain_tips Tips Output
- * - Range and accuracy depend on the tipping bucket used
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #BUCKET_RAIN_VAR_NUM = 0)@m_endspan
- * - Resolution is 1 tip @m_span{m-dim}(@ref #BUCKET_TIPS_RESOLUTION = 0)@m_endspan
- * - Reported as dimensionless counts
- * - Default variable code is RainCounterI2CTips
- *
- * @variabledoc{i2c_rain_tips,RainCounterI2C,Tips,RainCounterI2CTips}
- *
- * @section i2c_rain_depth Depth Output
- * - Range and accuracy depend on the tipping bucket used
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #BUCKET_TIPS_VAR_NUM = 1)@m_endspan
- * - Resolution is typically either 0.01" or 0.2mm of rainfall, depending on
- * if bucket is calibrated to English or metric units @m_span{m-dim}(@ref #BUCKET_RAIN_RESOLUTION = 2)@m_endspan
- * - Reported as millimeters (mm)
- * - Default variable code is RainCounterI2CVol
- *
- * @variabledoc{i2c_rain_depth,RainCounterI2C,Depth,RainCounterI2CVol}
+ * @warning Either all or none your attached tipping bucket counters may use
+ * software I2C. Using some with software I2C and others with hardware I2C is
+ * not supported. Though, honestly, having more than one attached seems pretty
+ * unlikely anyway.
  *
  * ___
  * @section i2c_rain_examples Example Code
@@ -106,31 +83,75 @@
 #endif
 
 // Sensor Specific Defines
+/** @ingroup i2c_rain_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the tipping bucket counter can report 2 values.
+/// @brief Sensor::_numReturnedValues; the tipping bucket counter can report 2
+/// values.
 #define BUCKET_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the tipping bucket counter warms up in 0ms.
+
+/**
+ * @anchor i2c_rain_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Trinket-based tipping bucket counter
+ * - Readings transferred from the tipping bucket to the logger are from past
+ * tips, so there is no need to wait for stability or measuring.
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the tipping bucket counter warms up in 0ms.
 #define BUCKET_WARM_UP_TIME_MS 0
-/**
- * @brief Sensor::_stabilizationTime_ms; the tipping bucket counter is stable
- * after 0ms.
- */
+/// @brief Sensor::_stabilizationTime_ms; the tipping bucket counter is stable
+/// after 0ms.
 #define BUCKET_STABILIZATION_TIME_MS 0
-/**
- * @brief Sensor::_measurementTime_ms; the tipping bucket counter takes 0ms to
- * complete a measurement.
- */
+/// @brief Sensor::_measurementTime_ms; the tipping bucket counter takes 0ms to
+/// complete a measurement.
 #define BUCKET_MEASUREMENT_TIME_MS 0
+/**@}*/
 
-/// Decimals places in string representation; rain depth should have 2.
+/**
+ * @anchor i2c_rain_depth_defines
+ * @name Rain Depth
+ * Defines for rain depth variable from a Trinket-based tipping bucket counter
+ * - Range and accuracy depend on the tipping bucket used
+ */
+/**@{*/
+/**
+ * @brief Decimals places in string representation; rain depth should have 2.
+ *
+ * Resolution is typically either 0.01" or 0.2mm of rainfall, depending on
+ * if bucket is calibrated to English or metric units.
+ */
 #define BUCKET_RAIN_RESOLUTION 2
-/// Variable number; rain depth is stored in sensorValues[0].
+/// @brief Variable number; rain depth is stored in sensorValues[0].
 #define BUCKET_RAIN_VAR_NUM 0
+/// @brief Variable name; "precipitation"
+#define BUCKET_RAIN_VAR_NAME "precipitation"
+/// @brief Variable unit name; "millimeter"
+#define BUCKET_RAIN_UNIT_NAME "millimeter"
+/// @brief Default variable short code; "RainCounterI2CVol"
+#define BUCKET_RAIN_DEFAULT_CODE "RainCounterI2CVol"
+/**@}*/
 
-/// Decimals places in string representation; the number of tips should have 0.
+/**
+ * @anchor i2c_rain_tips_defines
+ * @name Tip Count
+ * Defines for tip count variable from a Trinket-based tipping bucket counter
+ * - Range and accuracy depend on the tipping bucket used.
+ */
+/**@{*/
+/// @brief Decimals places in string representation; the number of tips should
+/// have 0 - resolution is 1 tip.
 #define BUCKET_TIPS_RESOLUTION 0
-/// Variable number; the number of tips is stored in sensorValues[1].
+/// @brief Variable number; the number of tips is stored in sensorValues[1].
 #define BUCKET_TIPS_VAR_NUM 1
+/// @brief Variable name; "precipitation"
+#define BUCKET_TIPS_VAR_NAME "precipitation"
+/// @brief Variable unit name; "event"
+#define BUCKET_TIPS_UNIT_NAME "event"
+/// @brief Default variable short code; "RainCounterI2CTips"
+#define BUCKET_TIPS_DEFAULT_CODE "RainCounterI2CTips"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -146,6 +167,7 @@ class RainCounterI2C : public Sensor {
     /**
      * @brief Construct a new Rain Counter I2C object using a *software* I2C
      * instance.
+     * @ingroup i2c_rain_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -161,6 +183,7 @@ class RainCounterI2C : public Sensor {
      * @brief Construct a new Rain Counter I2C object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
+     * @ingroup i2c_rain_group
      *
      * @note Unless there are address conflicts between I2C devices, you should
      * not create a new I2C instance.
@@ -181,6 +204,7 @@ class RainCounterI2C : public Sensor {
     /**
      * @brief Construct a new Rain Counter I2C object using a secondary
      * *hardware* I2C instance.
+     * @ingroup i2c_rain_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -198,6 +222,7 @@ class RainCounterI2C : public Sensor {
     /**
      * @brief Construct a new Rain Counter I2C object using the primary
      * hardware I2C instance.
+     * @ingroup i2c_rain_group
      *
      * @param i2cAddressHex The I2C address of the Trinket; can be any number
      * between 0x40 and 0x4F.  The default value is 0x08.
@@ -275,6 +300,7 @@ class RainCounterI2C_Tips : public Variable {
  public:
     /**
      * @brief Construct a new RainCounterI2C_Tips object.
+     * @ingroup i2c_rain_group
      *
      * @param parentSense The parent RainCounterI2C providing the result
      * values.
@@ -284,11 +310,11 @@ class RainCounterI2C_Tips : public Variable {
      * optional with a default value of "RainCounterI2CTips".
      */
     explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "RainCounterI2CTips")
+                                 const char*     uuid = "",
+                                 const char* varCode = BUCKET_TIPS_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)BUCKET_TIPS_VAR_NUM,
-                   (uint8_t)BUCKET_TIPS_RESOLUTION, "precipitation", "event",
-                   varCode, uuid) {}
+                   (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
+                   BUCKET_TIPS_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new RainCounterI2C_Tips object.
      *
@@ -297,8 +323,8 @@ class RainCounterI2C_Tips : public Variable {
      */
     RainCounterI2C_Tips()
         : Variable((const uint8_t)BUCKET_TIPS_VAR_NUM,
-                   (uint8_t)BUCKET_TIPS_RESOLUTION, "precipitation", "event",
-                   "RainCounterI2CTips") {}
+                   (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
+                   BUCKET_TIPS_UNIT_NAME, BUCKET_TIPS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the RainCounterI2C_Tips object - no action needed.
      */
@@ -317,6 +343,7 @@ class RainCounterI2C_Depth : public Variable {
  public:
     /**
      * @brief Construct a new RainCounterI2C_Depth object.
+     * @ingroup i2c_rain_group
      *
      * @param parentSense The parent RainCounterI2C providing the result
      * values.
@@ -325,12 +352,12 @@ class RainCounterI2C_Depth : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "RainCounterI2CVol".
      */
-    explicit RainCounterI2C_Depth(RainCounterI2C* parentSense,
-                                  const char*     uuid    = "",
-                                  const char*     varCode = "RainCounterI2CVol")
+    explicit RainCounterI2C_Depth(
+        RainCounterI2C* parentSense, const char* uuid = "",
+        const char* varCode = BUCKET_RAIN_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)BUCKET_RAIN_VAR_NUM,
-                   (uint8_t)BUCKET_RAIN_RESOLUTION, "precipitation",
-                   "millimeter", varCode, uuid) {}
+                   (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
+                   BUCKET_RAIN_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new RainCounterI2C_Depth object.
      *
@@ -339,8 +366,8 @@ class RainCounterI2C_Depth : public Variable {
      */
     RainCounterI2C_Depth()
         : Variable((const uint8_t)BUCKET_RAIN_VAR_NUM,
-                   (uint8_t)BUCKET_RAIN_RESOLUTION, "precipitation",
-                   "millimeter", "RainCounterI2CVol") {}
+                   (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
+                   BUCKET_RAIN_UNIT_NAME, BUCKET_RAIN_DEFAULT_CODE) {}
     /**
      * @brief Destroy the RainCounterI2C_Depth object - no action needed.
      */

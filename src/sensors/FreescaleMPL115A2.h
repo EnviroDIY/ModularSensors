@@ -89,10 +89,8 @@
 /// @brief Sensor::_stabilizationTime_ms; the MPL115A2 is stable as soon as it
 /// warms up (0ms stabilization).
 #define MPL115A2_STABILIZATION_TIME_MS 0
-/**
- * @brief Sensor::_measurementTime_ms; the MPL115A2 takes 3ms to complete a
- * measurement.
- */
+/// @brief Sensor::_measurementTime_ms; the MPL115A2 takes 3ms to complete a
+/// measurement.
 #define MPL115A2_MEASUREMENT_TIME_MS 3
 /**@}*/
 

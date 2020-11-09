@@ -338,7 +338,7 @@ class AtlasScientificEC_Cond : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificEC_Cond object.
-     * @ingroup atlas_group
+     * @ingroup atlas_cond_group
      *
      * @param parentSense The parent AtlasScientificEC providing the result
      * values.

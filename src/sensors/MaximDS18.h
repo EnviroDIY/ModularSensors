@@ -65,31 +65,6 @@
  * - [DS1822 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-DatasheetsMaxim-DS1822-1-Wire-Temperature-Probe-Datasheet.pdf)
  * - [MAX31820 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-MAX31820-1-Wire-Temperature-Probe-Datasheet.pdf)
  *
- * @section ds18_sensor The DS18 Sensor
- * @ctor_doc{MaximDS18, DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
- * @subsection ds18_timing Sensor Timing
- * - Reset time is < 480 µs
- *      - @m_span{m-dim}@ref #DS18_WARM_UP_TIME_MS = 2@m_endspan
- * - We assume the sensor is immediately stable.
- *      - @m_span{m-dim}@ref #DS18_STABILIZATION_TIME_MS = 0@m_endspan
- * - Max time to take reading at 12-bit: 750ms
- *      - @m_span{m-dim}@ref #DS18_MEASUREMENT_TIME_MS = 750@m_endspan
- *
- * @section ds18_temp Temperature Output
- *   - Range is -55°C to 125°C
- *   - Accuracy:
- *     - ± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20
- *     - ± 2°C for DS1822 and MAX31820
- *   - Result stored in sensorValues[0] @m_span{m-dim}(@ref #DS18_TEMP_VAR_NUM = 0)@m_endspan
- *   - Resolution:
- *     - 0.0625°C for DS18B20, DS1822, and MAX31820 (12-bit)
- *     - 0.5°C for DS18S20 (9-bit)
- *     - @m_span{m-dim}@ref #DS18_TEMP_RESOLUTION = 4@m_endspan
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is DS18Temp
- *
- * @variabledoc{ds18_temp,MaximDS18,Temp,DS18Temp}
- *
  * ___
  * @section ds18_examples Example Code
  * The Maxim DS18 is used in the @menulink{ds18} example.
@@ -118,19 +93,56 @@
 #include <OneWire.h>
 
 // Sensor Specific Defines
+/** @ingroup ds18_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the DS18 can report 1 value.
+/// @brief Sensor::_numReturnedValues; the DS18 can report 1 value.
 #define DS18_NUM_VARIABLES 1
-/// Sensor::_warmUpTime_ms; the DS18 warms up in 2ms.
+
+/**
+ * @anchor ds18_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Maxim DS18
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the DS18 warms up in 2ms (reset time is < 480
+/// µs).
 #define DS18_WARM_UP_TIME_MS 2
-/// Sensor::_stabilizationTime_ms; the DS18 is stable after 0ms.
+/// @brief Sensor::_stabilizationTime_ms; the DS18 is stable as soon as it warms
+/// up (0ms stabilization).
 #define DS18_STABILIZATION_TIME_MS 0
-/// Sensor::_measurementTime_ms; the DS18 takes 750ms to complete a measurement.
+/// @brief Sensor::_measurementTime_ms; the DS18 takes 750ms to complete a
+/// measurement (at 12-bit: 750ms).
 #define DS18_MEASUREMENT_TIME_MS 750
-/// Variable number; temperature is stored in sensorValues[0].
-#define DS18_TEMP_VAR_NUM 0
-/// Decimals places in string representation; temperature should have 4.
+/**@}*/
+
+/**
+ * @anchor ds18_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from an Maxim DS18
+ *   - Range is -55°C to 125°C
+ *   - Accuracy:
+ *     - ± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20
+ *     - ± 2°C for DS1822 and MAX31820
+ *   - Resolution:
+ *     - 0.0625°C for DS18B20, DS1822, and MAX31820 (12-bit)
+ *     - 0.5°C for DS18S20 (9-bit)
+ *     - @m_span{m-dim}@ref #DS18_TEMP_RESOLUTION = 4@m_endspan
+ *   - Reported as degrees Celsius (°C)
+ *   - Default variable code is DS18Temp
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 4.
 #define DS18_TEMP_RESOLUTION 4
+/// @brief Variable number; temperature is stored in sensorValues[0].
+#define DS18_TEMP_VAR_NUM 0
+/// @brief Variable name; "temperature"
+#define DS18_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define DS18_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "DS18Temp"
+#define DS18_TEMP_DEFAULT_CODE "DS18Temp"
+/**@}*/
 
 /* clang-format off */
 /**
@@ -143,7 +155,8 @@
 class MaximDS18 : public Sensor {
  public:
     /**
-     * @brief Construct a new Maxim DS18
+     * @brief Construct a new Maxim DS18 with a known sensor address.
+     * @ingroup ds18_group
      *
      * Use this version for more than one sensor attached to the OneWire bus.
      *
@@ -167,7 +180,9 @@ class MaximDS18 : public Sensor {
     MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin,
               uint8_t measurementsToAverage = 1);
     /**
-     * @brief Construct a new Maxim DS18.
+     * @brief Construct a new Maxim DS18 for a single sensor with an unknown
+     * address.
+     * @ingroup ds18_group
      *
      * Use this version of the constructor when there is only one temperature
      * sensor attached to the OneWire bus and the address of that sensor is not
@@ -250,6 +265,7 @@ class MaximDS18_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MaximDS18_Temp object.
+     * @ingroup ds18_group
      *
      * @param parentSense The parent MaximDS18 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -258,10 +274,10 @@ class MaximDS18_Temp : public Variable {
      * optional with a default value of "DS18Temp".
      */
     explicit MaximDS18_Temp(MaximDS18* parentSense, const char* uuid = "",
-                            const char* varCode = "DS18Temp")
+                            const char* varCode = DS18_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)DS18_TEMP_VAR_NUM,
-                   (uint8_t)DS18_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)DS18_TEMP_RESOLUTION, DS18_TEMP_VAR_NAME,
+                   DS18_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MaximDS18_Temp object.
      *
@@ -269,12 +285,12 @@ class MaximDS18_Temp : public Variable {
      */
     MaximDS18_Temp()
         : Variable((const uint8_t)DS18_TEMP_VAR_NUM,
-                   (uint8_t)DS18_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "DS18Temp") {}
+                   (uint8_t)DS18_TEMP_RESOLUTION, DS18_TEMP_VAR_NAME,
+                   DS18_TEMP_UNIT_NAME, DS18_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MaximDS18_Temp object - no action needed.
      */
     ~MaximDS18_Temp() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_MAXIMDS18_H_

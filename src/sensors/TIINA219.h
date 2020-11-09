@@ -45,49 +45,6 @@
  * https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout and
  * http://www.ti.com/product/INA219
  *
- * @section ina219_sensor The INA219 Sensor
- * @ctor_doc{TIINA219, int8_t  powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage}
- * @subsection ina219_timing Sensor Timing
- * - The sensor warms up in 100ms
- *      - @m_span{m-dim}@ref #INA219_WARM_UP_TIME_MS = 100@m_endspan
- * - A single ADC conversion takes >532 µs (586 µs typical) at 12 bit
- * resolution, but in tests waiting closer to 1.1s gave better data.
- *      - @m_span{m-dim}@ref #INA219_MEASUREMENT_TIME_MS = 1100@m_endspan
- * - Stable numbers can be acheived after 500ms, but waiting up to 4s gave more
- * consistent numbers.
- *      - @m_span{m-dim}@ref #INA219_STABILIZATION_TIME_MS = 4000@m_endspan
- *
- * @section ina219_current Current Output
- * - Range is between +/-0.4 Amps and +/-3.2 Amps
- * - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
- * unknown)
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #INA219_CURRENT_MA_VAR_NUM = 0)@m_endspan
- * - Resolution is 12-bit @m_span{m-dim}(@ref #INA219_CURRENT_MA_RESOLUTION = 4)@m_endspan
- *     - 0.8mA using +/-3.2 Amp range
- *     - 0.1mA using +/-0.4 Amp range
- * - Reported as milliamps (mA)
- * - Default variable code is TIINA219Amp
- *
- * @variabledoc{ina219_current,TIINA219,Current,TIINA219Amp}
- *
- * @section ina219_volt Voltage Output
- * - Range is 0 to 26V
- * - Accuracy is ±4mV (1 LSB step size)
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #INA219_BUS_VOLTAGE_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.001V @m_span{m-dim}(@ref #INA219_BUS_VOLTAGE_RESOLUTION = 4)@m_endspan
- * - Reported as volts (V)
- * - Default variable code is TIINA219Volt
- *
- * @variabledoc{ina219_volt,TIINA219,Volt,TIINA219Volt}
- *
- * @section ina219_power Power Output
- * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #INA219_POWER_MW_VAR_NUM = 2)@m_endspan
- * - Resolution is 0.01mW @m_span{m-dim}(@ref #INA219_POWER_MW_RESOLUTION = 2)@m_endspan
- * - Reported as milliwatts (mW)
- * - Default variable code is TIINA219Power
- *
- * @variabledoc{ina219_power,TIINA219,Power,TIINA219Power}
- *
  * ___
  * @section ina219_examples Example Code
  * The TI INA219 is used in the @menulink{ina219} example.
@@ -115,43 +72,105 @@
 #include <Adafruit_INA219.h>
 
 // Sensor Specific Defines
+/** @ingroup ina219_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the INA219 can report 3 values.
+/// @brief Sensor::_numReturnedValues; the INA219 can report 3 values.
 #define INA219_NUM_VARIABLES 3
 
-/// Sensor::_warmUpTime_ms; the INA219 warms up in 100ms.
+/**
+ * @anchor ina219_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a TI INA219
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the INA219 warms up in 100ms.
 #define INA219_WARM_UP_TIME_MS 100
 /**
  * @brief Sensor::_stabilizationTime_ms; the INA219 is stable after 4000ms.
  *
- * 0.5 s for good numbers, but optimal at 4 s based on tests using
- * INA219timingTest.ino
+ * Stable numbers can be acheived after 500ms, but waiting up to 4s gave more
+ * consistent numbers based on tests using INA219timingTest.ino
  */
 #define INA219_STABILIZATION_TIME_MS 4000
 /**
  * @brief Sensor::_measurementTime_ms; the INA219 takes 1100ms to complete a
  * measurement.
  *
- * 1.0 s according to datasheet, but slightly better stdev when 1.1 s
+ * A single ADC conversion takes >532 µs (586 µs typical) at 12 bit resolution,
+ * but in tests waiting closer to 1.1s gave data with a slightly better standard
+ * deviation.
  */
 #define INA219_MEASUREMENT_TIME_MS 1100
+/**@}*/
 
-/// Decimals places in string representation; current should have 4.
-#define INA219_CURRENT_MA_RESOLUTION 4
-/// Variable number; current is stored in sensorValues[0].
+/**
+ * @anchor ina219_current_defines
+ * @name Current
+ * Defines for the current variable from a TI INA219
+ * - Range is between +/-0.4 Amps and +/-3.2 Amps
+ * - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
+ * unknown)
+ */
+/**@{*/
+/**
+ *  @brief Decimals places in string representation; current should have 1.
+ *  - resolution is 12-bit
+ *     - 0.8mA using +/-3.2 Amp range
+ *     - 0.1mA using +/-0.4 Amp range
+ */
+#define INA219_CURRENT_MA_RESOLUTION 1
+/// @brief Variable number; current is stored in sensorValues[0].
 #define INA219_CURRENT_MA_VAR_NUM 0
+/// @brief Variable name; "electricCurrent"
+#define INA219_CURRENT_MA_VAR_NAME "electricCurrent"
+/// @brief Variable unit name; "milliamp"
+#define INA219_CURRENT_MA_UNIT_NAME "milliamp"
+/// @brief Default variable short code; "TIINA219Amp"
+#define INA219_CURRENT_MA_DEFAULT_CODE "TIINA219Amp"
+/**@}*/
 
-/// Decimals places in string representation; bus voltage should have 4.
-#define INA219_BUS_VOLTAGE_RESOLUTION 4
-/// Variable number; bus voltage is stored in sensorValues[1].
+/**
+ * @anchor ina219_volt_defines
+ * @name Bus Voltage
+ * Defines for the bus voltage variable from a TI INA219
+ * - Range is 0 to 26V
+ * - Accuracy is ±4mV (1 LSB step size)
+ */
+/**@{*/
+/// @brief Decimals places in string representation; bus voltage should have 4 -
+/// resolution is 0.001V.
+#define INA219_BUS_VOLTAGE_RESOLUTION 3
+/// @brief Variable number; bus voltage is stored in sensorValues[1].
 #define INA219_BUS_VOLTAGE_VAR_NUM 1
+/// @brief Variable name; "voltage"
+#define INA219_BUS_VOLTAGE_VAR_NAME "voltage"
+/// @brief Variable unit name; "volt"
+#define INA219_BUS_VOLTAGE_UNIT_NAME "volt"
+/// @brief Default variable short code; "TIINA219Volt"
+#define INA219_BUS_VOLTAGE_DEFAULT_CODE "TIINA219Volt"
+/**@}*/
 
-/// Decimals places in string representation; power draw should have 2.
+/**
+ * @anchor ina219_power_defines
+ * @name Power
+ * Defines for the power variable from a TI INA219
+ */
+/**@{*/
+/// @brief Decimals places in string representation; power draw should have 2 -
+/// resolution is 0.01mW.
 #define INA219_POWER_MW_RESOLUTION 2
-/// Variable number; power draw is stored in sensorValues[2].
+/// @brief Variable number; power draw is stored in sensorValues[2].
 #define INA219_POWER_MW_VAR_NUM 2
+/// @brief Variable name; "electricPower"
+#define INA219_POWER_MW_VAR_NAME "electricPower"
+/// @brief Variable unit name; "milliwatt"
+#define INA219_POWER_MW_UNIT_NAME "milliwatt"
+/// @brief Default variable short code; "TIINA219Power"
+#define INA219_POWER_MW_DEFAULT_CODE "TIINA219Power"
+/**@}*/
 
-/// The default address of the INA219
+/// @brief The default address of the INA219
 #define INA219_ADDRESS_BASE 0x40
 
 /* clang-format off */
@@ -165,7 +184,9 @@
 class TIINA219 : public Sensor {
  public:
     /**
-     * @brief Construct a new TI INA219 object
+     * @brief Construct a new TI INA219 object using a secondary *hardware* I2C
+     * instance.
+     * @ingroup ina219_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -186,7 +207,9 @@ class TIINA219 : public Sensor {
              uint8_t i2cAddressHex         = INA219_ADDRESS_BASE,
              uint8_t measurementsToAverage = 1);
     /**
-     * @brief Construct a new TI INA219 object
+     * @brief Construct a new TI INA219 object using the default hardware I2C
+     * instance.
+     * @ingroup ina219_group
      *
      * @param powerPin The pin on the mcu controlling power to the INA219.
      * Use -1 if it is continuously powered.
@@ -266,6 +289,7 @@ class TIINA219_Current : public Variable {
  public:
     /**
      * @brief Construct a new TIINA219_Current object.
+     * @ingroup ina219_group
      *
      * @param parentSense The parent TIINA219 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -273,11 +297,13 @@ class TIINA219_Current : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "TIINA219Amp".
      */
-    explicit TIINA219_Current(TIINA219* parentSense, const char* uuid = "",
-                              const char* varCode = "TIINA219Amp")
+    explicit TIINA219_Current(
+        TIINA219* parentSense, const char* uuid = "",
+        const char* varCode = INA219_CURRENT_MA_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                   (uint8_t)INA219_CURRENT_MA_RESOLUTION, "electricCurrent",
-                   "milliamp", varCode, uuid) {}
+                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+                   INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new TIINA219_Current object.
      *
@@ -285,8 +311,9 @@ class TIINA219_Current : public Variable {
      */
     TIINA219_Current()
         : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                   (uint8_t)INA219_CURRENT_MA_RESOLUTION, "electricCurrent",
-                   "milliamp", "TIINA219Amp") {}
+                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+                   INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
+                   INA219_CURRENT_MA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TIINA219_Current object - no action needed.
      */
@@ -306,6 +333,7 @@ class TIINA219_Volt : public Variable {
  public:
     /**
      * @brief Construct a new TIINA219_Volt object.
+     * @ingroup ina219_group
      *
      * @param parentSense The parent TIINA219 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -313,10 +341,12 @@ class TIINA219_Volt : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "TIINA219Volt".
      */
-    explicit TIINA219_Volt(TIINA219* parentSense, const char* uuid = "",
-                           const char* varCode = "TIINA219Volt")
+    explicit TIINA219_Volt(
+        TIINA219* parentSense, const char* uuid = "",
+        const char* varCode = INA219_BUS_VOLTAGE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION, "voltage", "volt",
+                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+                   INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
                    varCode, uuid) {}
     /**
      * @brief Construct a new TIINA219_Volt object.
@@ -325,8 +355,9 @@ class TIINA219_Volt : public Variable {
      */
     TIINA219_Volt()
         : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION, "voltage", "volt",
-                   "TIINA219Volt") {}
+                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+                   INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
+                   INA219_BUS_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TIINA219_Volt object - no action needed.
      */
@@ -347,6 +378,7 @@ class TIINA219_Power : public Variable {
  public:
     /**
      * @brief Construct a new TIINA219_Power object.
+     * @ingroup ina219_group
      *
      * @param parentSense The parent TIINA219 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -355,10 +387,11 @@ class TIINA219_Power : public Variable {
      * optional with a default value of "TIINA219Power".
      */
     explicit TIINA219_Power(TIINA219* parentSense, const char* uuid = "",
-                            const char* varCode = "TIINA219Power")
+                            const char* varCode = INA219_POWER_MW_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)INA219_POWER_MW_VAR_NUM,
-                   (uint8_t)INA219_POWER_MW_RESOLUTION, "electricPower",
-                   "milliwatt", varCode, uuid) {}
+                   (uint8_t)INA219_POWER_MW_RESOLUTION,
+                   INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new TIINA219_Power object.
      *
@@ -366,12 +399,13 @@ class TIINA219_Power : public Variable {
      */
     TIINA219_Power()
         : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,
-                   (uint8_t)INA219_POWER_MW_RESOLUTION, "electricPower",
-                   "milliwatt", "TIINA219Power") {}
+                   (uint8_t)INA219_POWER_MW_RESOLUTION,
+                   INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME,
+                   INA219_POWER_MW_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TIINA219_Power object - no action needed.
      */
     ~TIINA219_Power() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_

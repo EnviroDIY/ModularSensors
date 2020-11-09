@@ -101,11 +101,11 @@
  * @name Temperature
  * Defines for the temperature variable from an Atlas RTD (temperature) sensor
  * - Accuracy is ± (0.10°C + 0.0017 x °C)
- * - Range is -126.000 °C − 125 °C
+ * - Range is -126°C − 125°C
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 3 -
-/// resolution is 0.001 °C.
+/// resolution is 0.001°C.
 #define ATLAS_RTD_RESOLUTION 3
 /// @brief Variable number; RTD is stored in sensorValues[0].
 #define ATLAS_RTD_VAR_NUM 0

@@ -33,51 +33,10 @@
  * - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y505-DO_UserManual-v1.2.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO-v6.2_ModbusInstructions.pdf)
  *
- * @section y504_sensor The Yosemitech Y504 Dissolved Oxygen Sensor
- * @ctor_doc{YosemitechY504, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
- * @subsection y504_timing Sensor Timing
- * - Time before sensor responds after power - 375ms
- *      - @m_span{m-dim}@ref #Y504_WARM_UP_TIME_MS = 375@m_endspan
- * - Time between "StartMeasurement" command and stable reading - 8sec
- *      - @m_span{m-dim}@ref #Y504_STABILIZATION_TIME_MS = 8000@m_endspan
- * - Measurements take about 1700 ms to complete.
- *      - @m_span{m-dim}@ref #Y504_MEASUREMENT_TIME_MS = 1700@m_endspan
- *
- * @section y504_dopercent Dissolved Oxygen Percent Saturation Output
- * - Range is 0-20mg/L or 0-200% Saturation
- * - Accuracy is ± 1 %
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #Y504_DOPCT_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.1% @m_span{m-dim}(@ref #Y504_DOPCT_RESOLUTION = 1)@m_endspan
- * - Reported as percent saturation (%)
- * - Default variable code is Y504DOpct
- *
- * @variabledoc{y504_dopercent,YosemitechY504,DOpct,Y504DOpct}
- *
- * @section y504_temp Temperature Output
- * - Range is 0°C to + 50°C
- * - Accuracy is ± 0.2°C
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #Y504_TEMP_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.1 °C @m_span{m-dim}(@ref #Y504_TEMP_RESOLUTION = 1)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is Y504Temp
- *
- * @variabledoc{y504_temp,YosemitechY504,Temp,Y504Temp}
- *
- * @section y504_domgl Dissolved Oxygen Concentration Output
- * - Range is 0-20mg/L or 0-200% Saturation
- * - Accuracy is ± 1 %
- * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #Y504_DOMGL_VAR_NUM = 2)@m_endspan
- * - Resolution is 0.01 mg/L @m_span{m-dim}(@ref #Y504_DOMGL_RESOLUTION = 2)@m_endspan
- * - Reported as milligrams per liter (mg/L)
- * - Default variable code is Y504DOmgL
- *
- * @variabledoc{y504_domgl,YosemitechY504,DOmgL,Y504DOmgL}
- *
- * The reported resolution (32 bit) gives far more precision than is significant
+ * @note The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
- *
  *
  * ___
  * @section y504_examples Example Code
@@ -95,39 +54,97 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+/** @ingroup y504_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Y504 can report 3 values.
+/// @brief Sensor::_numReturnedValues; the Y504 can report 3 values.
 #define Y504_NUM_VARIABLES 3
-/// Sensor::_warmUpTime_ms; the Y504 warms up in 375ms.
+
+/**
+ * @anchor y504_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Yosemitch Y504
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
+/// 375ms.
 #define Y504_WARM_UP_TIME_MS 375
-/// Sensor::_stabilizationTime_ms; the Y504 is stable after 8000ms.
+/// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
+/// command and stable reading - 8sec (8000ms).
 #define Y504_STABILIZATION_TIME_MS 8000
-/**
- * @brief Sensor::_measurementTime_ms; the Y504 takes 1700ms to complete a
- * measurement.
- */
+/// @brief Sensor::_measurementTime_ms; the Y504 takes ~1700ms to complete a
+/// measurement.
 #define Y504_MEASUREMENT_TIME_MS 1700
+/**@}*/
 
 /**
- * @brief Decimals places in string representation; dissolved oxygen percent
- * should have 1.
+ * @anchor y504_dopct_defines
+ * @name Dissolved Oxygen Percent Saturation
+ * Defines for the dissolved oxygen percent saturation variable from a Yosemitch
+ * Y504
+ * - Range is 0-20mg/L or 0-200% Saturation
+ * - Accuracy is ± 1 %
  */
+/**@{*/
+/// @brief Decimals places in string representation; dissolved oxygen percent
+/// should have 1 - resolution is 0.1%.
 #define Y504_DOPCT_RESOLUTION 1
-/// Variable number; dissolved oxygen percent is stored in sensorValues[0]
+/// @brief Variable number; dissolved oxygen percent is stored in
+/// sensorValues[0]
 #define Y504_DOPCT_VAR_NUM 0
-
-/// Decimals places in string representation; temperature should have 1.
-#define Y504_TEMP_RESOLUTION 1
-/// Variable number; temperature is stored in sensorValues[1].
-#define Y504_TEMP_VAR_NUM 1
+/// @brief Variable number; dissolved oxygen percent is stored in
+/// sensorValues[0]
+#define Y504_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
+/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+#define Y504_DOPCT_UNIT_NAME "percent"
+/// @brief Default variable short code; "Y504DOmgL"
+#define Y504_DOPCT_DEFAULT_CODE "Y504DOpct"
+/**@}*/
 
 /**
- * @brief Decimals places in string representation; dissolved oxygen
- * concentration should have 2.
+ * @anchor y504_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Yosemitch Y504
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
  */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 1 -
+/// resolution is 0.1°C.
+#define Y504_TEMP_RESOLUTION 1
+/// @brief Variable number; temperature is stored in sensorValues[1].
+#define Y504_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define Y504_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define Y504_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "Y504Temp"
+#define Y504_TEMP_DEFAULT_CODE "Y504Temp"
+/**@}*/
+
+/**
+ * @anchor y504_doconc_defines
+ * @name Dissolved Oxygen Concentration
+ * Defines for the dissolved oxygen concentration variable from a Yosemitch Y504
+ * - Range is 0-20mg/L or 0-200% Saturation
+ * - Accuracy is ± 1 %
+ */
+/**@{*/
+/// @brief Decimals places in string representation; dissolved oxygen
+/// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y504_DOMGL_RESOLUTION 2
-/// Variable number; dissolved oxygen concentration is stored in sensorValues[2]
+/// @brief Variable number; dissolved oxygen concentration is stored in
+/// sensorValues[2]
 #define Y504_DOMGL_VAR_NUM 2
+/// @brief Variable number; dissolved oxygen concentration is stored in
+/// sensorValues[2]
+#define Y504_DOMGL_VAR_NAME "oxygenDissolved"
+/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+#define Y504_DOMGL_UNIT_NAME "milligramPerLiter"
+/// @brief Default variable short code; "Y504DOmgL"
+#define Y504_DOMGL_DEFAULT_CODE "Y504DOmgL"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -142,6 +159,7 @@ class YosemitechY504 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y504 object.
+     * @ingroup y504_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -199,6 +217,7 @@ class YosemitechY504_DOpct : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY504_DOpct object.
+     * @ingroup y504_group
      *
      * @param parentSense The parent YosemitechY504 providing the result
      * values.
@@ -208,12 +227,11 @@ class YosemitechY504_DOpct : public Variable {
      * optional with a default value of "Y504DOpct".
      */
     explicit YosemitechY504_DOpct(YosemitechY504* parentSense,
-                                  const char*     uuid    = "",
-                                  const char*     varCode = "Y504DOpct")
+                                  const char*     uuid = "",
+                                  const char* varCode = Y504_DOPCT_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y504_DOPCT_VAR_NUM,
-                   (uint8_t)Y504_DOPCT_RESOLUTION,
-                   "oxygenDissolvedPercentOfSaturation", "percent", varCode,
-                   uuid) {}
+                   (uint8_t)Y504_DOPCT_RESOLUTION, Y504_DOPCT_VAR_NAME,
+                   Y504_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY504_DOpct object.
      *
@@ -221,9 +239,9 @@ class YosemitechY504_DOpct : public Variable {
      * used.
      */
     YosemitechY504_DOpct()
-        : Variable(
-              (const uint8_t)Y504_DOPCT_VAR_NUM, (uint8_t)Y504_DOPCT_RESOLUTION,
-              "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct") {}
+        : Variable((const uint8_t)Y504_DOPCT_VAR_NUM,
+                   (uint8_t)Y504_DOPCT_RESOLUTION, Y504_DOPCT_VAR_NAME,
+                   Y504_DOPCT_UNIT_NAME, Y504_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY504_DOpct object - no action needed.
      */
@@ -244,6 +262,7 @@ class YosemitechY504_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY504_Temp object.
+     * @ingroup y504_group
      *
      * @param parentSense The parent YosemitechY504 providing the result
      * values.
@@ -253,11 +272,11 @@ class YosemitechY504_Temp : public Variable {
      * optional with a default value of "Y504Temp".
      */
     explicit YosemitechY504_Temp(YosemitechY504* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "Y504Temp")
+                                 const char*     uuid = "",
+                                 const char* varCode  = Y504_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y504_TEMP_VAR_NUM,
-                   (uint8_t)Y504_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)Y504_TEMP_RESOLUTION, Y504_TEMP_VAR_NAME,
+                   Y504_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY504_Temp object.
      *
@@ -266,8 +285,8 @@ class YosemitechY504_Temp : public Variable {
      */
     YosemitechY504_Temp()
         : Variable((const uint8_t)Y504_TEMP_VAR_NUM,
-                   (uint8_t)Y504_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "Y504Temp") {}
+                   (uint8_t)Y504_TEMP_RESOLUTION, Y504_TEMP_VAR_NAME,
+                   Y504_TEMP_UNIT_NAME, Y504_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY504_Temp object - no action needed.
      */
@@ -288,6 +307,7 @@ class YosemitechY504_DOmgL : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY504_DOmgL object.
+     * @ingroup y504_group
      *
      * @param parentSense The parent YosemitechY504 providing the result
      * values.
@@ -297,11 +317,11 @@ class YosemitechY504_DOmgL : public Variable {
      * optional with a default value of "Y504DOmgL".
      */
     explicit YosemitechY504_DOmgL(YosemitechY504* parentSense,
-                                  const char*     uuid    = "",
-                                  const char*     varCode = "Y504DOmgL")
+                                  const char*     uuid = "",
+                                  const char* varCode = Y504_DOMGL_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y504_DOMGL_VAR_NUM,
-                   (uint8_t)Y504_DOMGL_RESOLUTION, "oxygenDissolved",
-                   "milligramPerLiter", varCode, uuid) {}
+                   (uint8_t)Y504_DOMGL_RESOLUTION, Y504_DOMGL_VAR_NAME,
+                   Y504_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY504_DOmgL object.
      *
@@ -310,12 +330,12 @@ class YosemitechY504_DOmgL : public Variable {
      */
     YosemitechY504_DOmgL()
         : Variable((const uint8_t)Y504_DOMGL_VAR_NUM,
-                   (uint8_t)Y504_DOMGL_RESOLUTION, "oxygenDissolved",
-                   "milligramPerLiter", "Y504DOmgL") {}
+                   (uint8_t)Y504_DOMGL_RESOLUTION, Y504_DOMGL_VAR_NAME,
+                   Y504_DOMGL_UNIT_NAME, Y504_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY504_DOmgL object - no action needed.
      */
     ~YosemitechY504_DOmgL() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY504_H_

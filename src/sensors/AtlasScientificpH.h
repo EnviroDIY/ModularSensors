@@ -105,7 +105,7 @@
 #define ATLAS_PH_VAR_NUM 0
 /// @brief Variable name; "pH"
 #define ATLAS_PH_VAR_NAME "pH"
-/// @brief Variable unit name; "pH"
+/// @brief Variable unit name; "pH" (dimensionless pH units)
 #define ATLAS_PH_UNIT_NAME "pH"
 /// @brief Default variable short code; "AtlaspH"
 #define ATLAS_PH_DEFAULT_CODE "AtlaspH"
@@ -273,7 +273,7 @@ class AtlasScientificpH_pH : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificpH_pH object.
-     * @ingroup atlas_group
+     * @ingroup atlas_ph_group
      *
      * @param parentSense The parent AtlasScientificpH providing the result
      * values.

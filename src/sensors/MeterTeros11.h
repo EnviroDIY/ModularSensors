@@ -43,59 +43,10 @@
  * Teros 11 can be found at:
  * http://publications.metergroup.com/Manuals/20587_TEROS11-12_Manual_Web.pdf
  *
- * @section teros_sensor The Teros Sensor
- * @ctor_doc{MeterTeros11, char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage}
- * @subsection teros_timing Sensor Timing
- * - Warm-up time in SDI-12 mode: 245ms typical
- *      - @m_span{m-dim}@ref #TEROS11_WARM_UP_TIME_MS = 250@m_endspan
- * - We assume the sensor is immediately stable.
- *      - @m_span{m-dim}@ref #TEROS11_STABILIZATION_TIME_MS = 0@m_endspan
- * - Measurement duration: 25 ms to 50 ms
- *      - @m_span{m-dim}@ref #TEROS11_MEASUREMENT_TIME_MS = 50@m_endspan
- * @subsection teros_voltages Voltage Ranges
+ * @section teros_voltages Voltage Ranges
  * - Supply Voltage (VCC to GND), 4.0 to 15.0 VDC
  * - Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)
  * - Digital Output Voltage (logic high), 3.6 typical
- *
- * @section teros11_ea Ea Output
- * - Range is 1 (air) to 80 (water)
- * - Accuracy is:
- *     - 1–40 (soil range) , ±1 εa (unitless)
- *     - 40–80, 15% of measurement
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #TEROS11_EA_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.00001 @m_span{m-dim}(@ref #TEROS11_EA_RESOLUTION = 5)@m_endspan
- * - Reported as farads per meter (F/m)
- * - Default variable code is TerosSoilEa
- *
- * @variabledoc{teros11_ea,MeterTeros11,Ea,TerosSoilEa}
- *
- * @section teros11_temp Temperature Output
- * - Range is -40°C to 60°C
- * - Accuracy is:
- *     - ± 1°C, from -40°C to 0°C
- *     - ± 0.5°C, from 0°C to + 60°C
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #TEROS11_TEMP_VAR_NUM = 1)@m_endspan
- * - Resolution is 0.1°C @m_span{m-dim}(@ref #TEROS11_TEMP_RESOLUTION = 2)@m_endspan
- * - Reported as degrees Celsius (°C)
- * - Default variable code is TerosSoilTemp
- *
- * @variabledoc{teros11_temp,MeterTeros11,Temp,TerosSoilTemp}
- *
- * @section teros11_vwc VWC Output
- *   - Range is:
- *     - Mineral soil calibration: 0.00–0.70 m3/m3 (0 – 70% VWC)
- *     - Soilless media calibration: 0.0–1.0 m3/m3 (0 – 100% VWC)
- *   - Accuracy is:
- *     - Generic calibration: ±0.03 m3/m3 (± 3% VWC) typical in mineral soils
- * that have solution electrical conductivity <8 dS/m
- *     - Medium specific calibration: ±0.01–0.02 m3/m3 (± 1-2% VWC)in any porous
- * medium
- *   - Result stored in sensorValues[2] @m_span{m-dim}(@ref #TEROS11_VWC_VAR_NUM = 2)@m_endspan
- *   - Resolution is 0.001 m3/m3 (0.1% VWC) from 0 – 70% VWC @m_span{m-dim}(@ref #TEROS11_VWC_RESOLUTION = 3)@m_endspan
- *   - Reported as volumetric percent water content (%, m3/100m3)
- *   - Default variable code is TerosSoilVWC
- *
- * @variabledoc{teros11_vwc,MeterTeros11,VWC,TerosSoilVWC}
  *
  * ___
  * @section teros_examples Example Code
@@ -123,48 +74,113 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
+/** @ingroup teros_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Teros 11 can report 3 values.
+/// @brief Sensor::_numReturnedValues; the Teros 11 can report 3 values.
 #define TEROS11_NUM_VARIABLES 3
-/// Sensor::_warmUpTime_ms; the Teros 11 warms up in 250ms.
-#define TEROS11_WARM_UP_TIME_MS 250
-/// Sensor::_stabilizationTime_ms; the Teros 11 is stable after 50ms.
-#define TEROS11_STABILIZATION_TIME_MS 50
-/**
- * @brief Sensor::_measurementTime_ms; the Teros 11 takes 50ms to complete a
- * measurement.
- */
-#define TEROS11_MEASUREMENT_TIME_MS 50
 
+/**
+ * @anchor teros_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Meter Teros 11
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the Teros 11 warm-up time in SDI-12 mode:
+/// 245ms typical
+#define TEROS11_WARM_UP_TIME_MS 250
+/// @brief Sensor::_stabilizationTime_ms; the Teros 11 is stable after 50ms.
+#define TEROS11_STABILIZATION_TIME_MS 50
+/// @brief Sensor::_measurementTime_ms; the Teros 11 takes25 ms to 50 ms to
+/// complete a measurement.
+#define TEROS11_MEASUREMENT_TIME_MS 50
+/**@}*/
+
+/**
+ * @anchor teros11_ea_defines
+ * @name EA
+ * Defines for the EA variable from a Meter Teros 11
+ * - Range is 1 (air) to 80 (water)
+ * - Accuracy is:
+ *     - 1–40 (soil range), ±1 εa (unitless)
+ *     - 40–80, 15% of measurement
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; EA should have 5.
  *
  * 4 are reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging - resolution is 0.00001
  */
 #define TEROS11_EA_RESOLUTION 5
-/// Variable number; EA is stored in sensorValues[0].
+/// @brief Variable number; EA is stored in sensorValues[0].
 #define TEROS11_EA_VAR_NUM 0
+/// @brief Variable name; "permittivity"
+#define TEROS11_EA_VAR_NAME "permittivity"
+/// @brief Variable unit name; "faradPerMeter" (F/m)
+#define TEROS11_EA_UNIT_NAME "faradPerMeter"
+/// @brief Default variable short code; "SoilEa"
+#define TEROS11_EA_DEFAULT_CODE "SoilEa"
+/**@}*/
 
+/**
+ * @anchor teros11_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Meter Teros 11
+ * - Range is -40°C to 60°C
+ * - Accuracy is:
+ *     - ± 1°C, from -40°C to 0°C
+ *     - ± 0.5°C, from 0°C to + 60°C
+ */
 /**
  * @brief Decimals places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging - resolution is 0.1°C
  */
 #define TEROS11_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Variable number; temperature is stored in sensorValues[1].
 #define TEROS11_TEMP_VAR_NUM 1
+/// @brief Variable name; "temperature"
+#define TEROS11_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define TEROS11_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "SoilTemp"
+#define TEROS11_TEMP_DEFAULT_CODE "SoilTemp"
+/**@}*/
 
+/**
+ * @anchor teros11_vwc_defines
+ * @name Volumetric Water Content
+ * Defines for the VWC variable from a Meter Teros 11
+ *   - Range is:
+ *     - Mineral soil calibration: 0.00–0.70 m3/m3 (0 – 70% VWC)
+ *     - Soilless media calibration: 0.0–1.0 m3/m3 (0 – 100% VWC)
+ *   - Accuracy is:
+ *     - Generic calibration: ±0.03 m3/m3 (± 3% VWC) typical in mineral soils
+ * that have solution electrical conductivity <8 dS/m
+ *     - Medium specific calibration: ±0.01–0.02 m3/m3 (± 1-2% VWC)in any porous
+ * medium
+ */
 /**
  * @brief Decimals places in string representation; VWC should have 3.
  *
  * 2 are reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging
+ * of significant figures for averaging - Resolution is 0.001 m3/m3 (0.1% VWC)
+ * from 0 – 70% VWC
  */
 #define TEROS11_VWC_RESOLUTION 3
-/// Variable number; VWC is stored in sensorValues[2].
+/// @brief Variable number; VWC is stored in sensorValues[2].
 #define TEROS11_VWC_VAR_NUM 2
+/// @brief Variable name; "volumetricWaterContent"
+#define TEROS11_VWC_VAR_NAME "volumetricWaterContent"
+/// @brief Variable unit name; "percent" - volumetric percent water content (%,
+/// m3/100m3)
+#define TEROS11_VWC_UNIT_NAME "percent"
+/// @brief Default variable short code; "SoilVWC"
+#define TEROS11_VWC_DEFAULT_CODE "SoilVWC"
+/**@}*/
+
 
 /* clang-format off */
 /**
@@ -179,6 +195,7 @@ class MeterTeros11 : public SDI12Sensors {
     // Constructors with overloads
     /**
      * @brief Construct a new Meter Teros 11 object.
+     * @ingroup teros_group
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -250,6 +267,7 @@ class MeterTeros11_Ea : public Variable {
  public:
     /**
      * @brief Construct a new MeterTeros11_Ea object.
+     * @ingroup teros_group
      *
      * @param parentSense The parent MeterTeros11 providing the result
      * values.
@@ -259,10 +277,10 @@ class MeterTeros11_Ea : public Variable {
      * optional with a default value of "SoilEa".
      */
     explicit MeterTeros11_Ea(MeterTeros11* parentSense, const char* uuid = "",
-                             const char* varCode = "TerosSoilEa")
+                             const char* varCode = TEROS11_EA_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)TEROS11_EA_VAR_NUM,
-                   (uint8_t)TEROS11_EA_RESOLUTION, "permittivity",
-                   "faradPerMeter", varCode, uuid) {}
+                   (uint8_t)TEROS11_EA_RESOLUTION, TEROS11_EA_VAR_NAME,
+                   TEROS11_EA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MeterTeros11_Ea object.
      *
@@ -270,8 +288,8 @@ class MeterTeros11_Ea : public Variable {
      */
     MeterTeros11_Ea()
         : Variable((const uint8_t)TEROS11_EA_VAR_NUM,
-                   (uint8_t)TEROS11_EA_RESOLUTION, "permittivity",
-                   "faradPerMeter", "SoilEa") {}
+                   (uint8_t)TEROS11_EA_RESOLUTION, TEROS11_EA_VAR_NAME,
+                   TEROS11_EA_UNIT_NAME, TEROS11_EA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterTeros11_Ea object - no action needed.
      */
@@ -292,6 +310,7 @@ class MeterTeros11_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MeterTeros11_Temp object.
+     * @ingroup teros_group
      *
      * @param parentSense The parent MeterTeros11 providing the result
      * values.
@@ -301,10 +320,10 @@ class MeterTeros11_Temp : public Variable {
      * optional with a default value of "SoilTemp".
      */
     explicit MeterTeros11_Temp(MeterTeros11* parentSense, const char* uuid = "",
-                               const char* varCode = "TerosSoilTemp")
+                               const char* varCode = TEROS11_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)TEROS11_TEMP_VAR_NUM,
-                   (uint8_t)TEROS11_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
+                   TEROS11_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MeterTeros11_Temp object.
      *
@@ -312,8 +331,8 @@ class MeterTeros11_Temp : public Variable {
      */
     MeterTeros11_Temp()
         : Variable((const uint8_t)TEROS11_TEMP_VAR_NUM,
-                   (uint8_t)TEROS11_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "SoilTemp") {}
+                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
+                   TEROS11_TEMP_UNIT_NAME, TEROS11_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterTeros11_Temp object - no action needed.
      */
@@ -334,6 +353,7 @@ class MeterTeros11_VWC : public Variable {
  public:
     /**
      * @brief Construct a new MeterTeros11_VWC object.
+     * @ingroup teros_group
      *
      * @param parentSense The parent MeterTeros11 providing the result
      * values.
@@ -343,10 +363,10 @@ class MeterTeros11_VWC : public Variable {
      * optional with a default value of "SoilVWC".
      */
     explicit MeterTeros11_VWC(MeterTeros11* parentSense, const char* uuid = "",
-                              const char* varCode = "TerosSoilVWC")
+                              const char* varCode = TEROS11_VWC_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)TEROS11_VWC_VAR_NUM,
-                   (uint8_t)TEROS11_VWC_RESOLUTION, "volumetricWaterContent",
-                   "percent", varCode, uuid) {}
+                   (uint8_t)TEROS11_VWC_RESOLUTION, TEROS11_VWC_VAR_NAME,
+                   TEROS11_VWC_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MeterTeros11_VWC object.
      *
@@ -354,12 +374,12 @@ class MeterTeros11_VWC : public Variable {
      */
     MeterTeros11_VWC()
         : Variable((const uint8_t)TEROS11_VWC_VAR_NUM,
-                   (uint8_t)TEROS11_VWC_RESOLUTION, "volumetricWaterContent",
-                   "percent", "SoilVWC") {}
+                   (uint8_t)TEROS11_VWC_RESOLUTION, TEROS11_VWC_VAR_NAME,
+                   TEROS11_VWC_UNIT_NAME, TEROS11_VWC_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterTeros11_VWC object - no action needed.
      */
     ~MeterTeros11_VWC() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_METERTEROS11_H_

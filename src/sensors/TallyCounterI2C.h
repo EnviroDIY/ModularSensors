@@ -51,30 +51,11 @@
  * likely less than 1% if the sensors are only powered a few seconds every few minutes.
  * A super-capacitor is *NOT* an instantly charged battery and will not keep the counter
  * powered at too low a duty cycle.
- *  *
+ *
  * @section tally_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * - https://github.com/NorthernWidget-Skunkworks/Project-Tally​
  * - https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C
- *
- *
- * @section tally_sensor The Tally Counter Sensor
- * @ctor_doc{TallyCounterI2C, int8_t I2CPower, uint8_t i2cAddressHex}
- * @subsection tally_timing Sensor Timing
- * - Readings transferred from the reed-switch counting device (i.e. anemometer
- * or tipping bucket) to the logger are from past events, so there is no need
- * to wait for stability or measuring.
- *
- * @section tally_events Events Output
- * - Range and accuracy depend on the sensor used
- *     - For wind, we often use [Inspeed WS2R Version II Reed Switch Anemometer]
- *  (https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm)
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #TALLY_EVENTS_VAR_NUM = 0)@m_endspan
- * - Resolution is 1 event @m_span{m-dim}(@ref #TALLY_EVENTS_RESOLUTION = 0)@m_endspan
- * - Reported as dimensionless counts
- * - Default variable code is TallyCounterI2CEvents
- *
- * @variabledoc{tally_events,TallyCounterI2C,Events,TallyCounterI2CEvents}
  */
 /* clang-format on */
 
@@ -98,22 +79,53 @@
 
 
 // Sensor Specific Defines
+/** @ingroup tally_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Tally can report 1 value.
+/// @brief Sensor::_numReturnedValues; the Tally can report 1 value.
 #define TALLY_NUM_VARIABLES 1
-/// Sensor::_warmUpTime_ms; Tally warms up in <10 ms.
+
+/**
+ * @anchor tally_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Northern Widget Tally event counter
+ * - Readings transferred from the reed-switch counting device (i.e. anemometer
+ * or tipping bucket) to the logger are from past events, so there is no need
+ * to wait for stability or measuring.
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; Tally warms up in <10 ms.
 #define TALLY_WARM_UP_TIME_MS 10
-/// Sensor::_stabilizationTime_ms; Tally is stable after <10ms.
+/// @brief Sensor::_stabilizationTime_ms; Tally is stable after <10ms.
 #define TALLY_STABILIZATION_TIME_MS 10
-/// Sensor::_measurementTime_ms; Tally takes <10ms to complete a measurement.
+/// @brief Sensor::_measurementTime_ms; Tally takes <10ms to complete a
+/// measurement.
 #define TALLY_MEASUREMENT_TIME_MS 10
+/**@}*/
 
-/// Decimals places in string representation; events are an integer should be 0.
+/**
+ * @anchor tally_events_defines
+ * @name Events
+ * Defines for the events variable from a Northern Widget Tally event counter
+ * - Range and accuracy depend on the sensor used
+ *     - For wind, we often use [Inspeed WS2R Version II Reed Switch Anemometer]
+ *  (https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm)
+ */
+/**@{*/
+/// @brief Decimals places in string representation; events are an integer
+/// should be 0 - resolution is 1 event.
 #define TALLY_EVENTS_RESOLUTION 0
-/// Variable number; events is stored in sensorValues[0].
+/// @brief Variable number; events is stored in sensorValues[0].
 #define TALLY_EVENTS_VAR_NUM 0
+/// @brief Variable name; "counter"
+#define TALLY_EVENTS_VAR_NAME "counter"
+/// @brief Variable unit name; "event"
+#define TALLY_EVENTS_UNIT_NAME "event"
+/// @brief Default variable short code; "TallyCounterI2CEvents"
+#define TALLY_EVENTS_DEFAULT_CODE "TallyCounterI2CEvents"
+/**@}*/
 
-/// The default address of the Tally
+/// @brief The default address of the Tally
 #define TALLY_ADDRESS_BASE 0x33
 
 /* clang-format off */
@@ -129,6 +141,7 @@ class TallyCounterI2C : public Sensor {
     /**
      * @brief Construct a new Tally Counter I2C object using the primary
      * hardware I2C instance.
+     * @ingroup tally_group
      *
      * @param powerPin The pin on the mcu controlling power to TallyCounterI2C.
      * - The default is to use -1 for continuous power because a counting
@@ -206,6 +219,7 @@ class TallyCounterI2C_Events : public Variable {
  public:
     /**
      * @brief Construct a new TallyCounterI2C_Events object.
+     * @ingroup tally_group
      *
      * @param parentSense The parent TallyCounterI2C providing the result
      * values.
@@ -216,10 +230,10 @@ class TallyCounterI2C_Events : public Variable {
      */
     explicit TallyCounterI2C_Events(
         TallyCounterI2C* parentSense, const char* uuid = "",
-        const char* varCode = "TallyCounterI2CEvents")
+        const char* varCode = TALLY_EVENTS_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)TALLY_EVENTS_VAR_NUM,
-                   (uint8_t)TALLY_EVENTS_RESOLUTION, "counter", "event",
-                   varCode, uuid) {}
+                   (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
+                   TALLY_EVENTS_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new TallyCounterI2C_Events object.
      *
@@ -228,12 +242,12 @@ class TallyCounterI2C_Events : public Variable {
      */
     TallyCounterI2C_Events()
         : Variable((const uint8_t)TALLY_EVENTS_VAR_NUM,
-                   (uint8_t)TALLY_EVENTS_RESOLUTION, "counter", "event",
-                   "TallyCounterI2CEvents") {}
+                   (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
+                   TALLY_EVENTS_UNIT_NAME, TALLY_EVENTS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBME280_Temp object - no action needed.
      */
     ~TallyCounterI2C_Events() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_TallyCounterI2C_H_

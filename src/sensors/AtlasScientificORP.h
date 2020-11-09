@@ -269,7 +269,7 @@ class AtlasScientificORP_Potential : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificORP_Potential object.
-     * @ingroup atlas_group
+     * @ingroup atlas_orp_group
      *
      * @param parentSense The parent AtlasScientificORP providing the result
      * values.

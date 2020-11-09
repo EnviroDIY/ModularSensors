@@ -39,51 +39,6 @@
  * - [Atmel ATmega16U4 32U4 Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet-Summary.pdf)
  * - [Atmel ATmega16U4 32U4 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet.pdf)
  *
- * @section processor_sensor The Processor as a Sensor
- * @ctor_doc{ProcessorStats, const char* version}
- * @subsection processor_sensor_timing Sensor Timing
- * - Timing variables do not apply to the processor in the same way they do to
- * other sensors.
- *
- * @section processor_battery Battery Voltage
- * This is the voltage as measured on the battery attached to the MCU using the
- * inbuilt ADC, if applicable.
- * - Range is assumed to be 0 to 5V
- * - Accuracy is processor dependent
- * - Result stored in sensorValues[0] @m_span{m-dim}(@ref #PROCESSOR_BATTERY_VAR_NUM = 0)@m_endspan
- * - Resolution is 0.005V @m_span{m-dim}(@ref #PROCESSOR_BATTERY_RESOLUTION = 3)@m_endspan
- *   - 0-5V with a 10bit ADC
- * - Reported as volts (V)
- * - Default variable code is batteryVoltage
- *
- * @variabledoc{processor_battery,ProcessorStats,Battery,batteryVoltage}
- *
- * @section processor_ram Free RAM
- * This is the amount of free space on the processor when running the program.
- * This is just a diagnostic value.  This number _**should always remain the
- * same for a single logger program**_.  If this number is not constant over
- * time, there is a memory leak and something wrong with your logging program.
- * - Range is 0 to full RAM available on processor
- * - Result stored in sensorValues[1] @m_span{m-dim}(@ref #PROCESSOR_RAM_VAR_NUM = 1)@m_endspan
- * - Resolution is 1 bit @m_span{m-dim}(@ref #PROCESSOR_RAM_RESOLUTION = 0)@m_endspan
- * - Reported in bits
- * - Default variable code is freeSRAM
- *
- * @variabledoc{processor_ram,ProcessorStats,FreeRam,freeSRAM}
- *
- * @section processor_sampno Sample Number
- * @note This is a board diagnostic.  It is _**roughly**_ the number of samples
- * measured since the processor was last restarted.  This value simply
- * increments up by one every time the addSingleMeasurementResult() function is
- * called for the processor sensor.  It is intended only as a rough diagnostic
- * to show when the processor restarts.
- * - Result stored in sensorValues[2] @m_span{m-dim}(@ref #PROCESSOR_SAMPNUM_VAR_NUM = 2)@m_endspan
- * - Reported as a dimensionless sequence number
- * - Default variable code is SampNum
- * - Resolution is 1 @m_span{m-dim}(@ref #PROCESSOR_SAMPNUM_RESOLUTION = 0)@m_endspan
- *
- * @variabledoc{processor_sampno,ProcessorStats,SampleNumber,SampNum}
-
  * ___
  * @section processor_sensor_examples Example Code
  * The processor is used as a sensor in all of the examples, including the
@@ -111,45 +66,113 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+/** @ingroup processor_sensor_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the processor can report 3 values.
+/// @brief Sensor::_numReturnedValues; the processor can report 3 values.
 #define PROCESSOR_NUM_VARIABLES 3
 
+
 /**
- * @brief Sensor::_warmUpTime_ms; the processor is never powered down - there is
- * no waiting for the processor to warmup.
+ * @anchor processor_sensor_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for the processor/mcu
+ * - Timing variables do not apply to the processor in the same way they do to
+ * other sensors.
  */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the processor is never powered down - there
+/// is no waiting for the processor to warmup.
 #define PROCESSOR_WARM_UP_TIME_MS 0
-/**
- * @brief Sensor::_stabilizationTime_ms; the processor is never powered down -
- * there is no waiting for the processor to stabilize.
- */
+/// @brief Sensor::_stabilizationTime_ms; the processor is never powered down -
+/// there is no waiting for the processor to stabilize.
 #define PROCESSOR_STABILIZATION_TIME_MS 0
-/**
- * @brief Sensor::_measurementTime_ms; the processor measurement times aren't
- * measurable
- */
+/// @brief Sensor::_measurementTime_ms; the processor measurement times aren't
+/// measurable.
 #define PROCESSOR_MEASUREMENT_TIME_MS 0
+/**@}*/
 
-/// Decimals places in string representation; battery voltage should have 3.
+/**
+ * @anchor processor_battery_defines
+ * @name Battery Voltage
+ * Defines for the battery voltage variable from the processor/mcu
+ * This is the voltage as measured on the battery attached to the MCU using the
+ * inbuilt ADC, if applicable.
+ * - Range is assumed to be 0 to 5V
+ * - Accuracy is processor dependent
+ */
+/**@{*/
+/**
+ * @brief Decimals places in string representation; battery voltage should
+ * have 3.
+ *
+ * The resolution is of the EnviroDIY Mayfly is 0.005V, we will use that
+ * resolution for all processors.
+ */
 #define PROCESSOR_BATTERY_RESOLUTION 3
-/// Battery voltage is stored in sensorValues[0]
+/// @brief Battery voltage is stored in sensorValues[0]
 #define PROCESSOR_BATTERY_VAR_NUM 0
+/// @brief Variable name; batteryVoltage
+#define PROCESSOR_BATTERY_VAR_NAME "batteryVoltage"
+/// @brief Variable unit name; "volt"
+#define PROCESSOR_BATTERY_UNIT_NAME "volt"
+/// @brief Default variable short code; "Battery"
+#define PROCESSOR_BATTERY_DEFAULT_CODE "Battery"
+/**@}*/
 
-/// Decimals places in string representation; RAM should have 0.
+/**
+ * @anchor processor_ram_defines
+ * @name Available RAM
+ * Defines for the RAM variable from the processor/mcu
+ * This is the amount of free space on the processor when running the program.
+ * This is just a diagnostic value.  This number _**should always remain the
+ * same for a single logger program**_.  If this number is not constant over
+ * time, there is a memory leak and something wrong with your logging program.
+ * - Range is 0 to full RAM available on processor
+ */
+/**@{*/
+/// @brief Decimals places in string representation; ram should have 0 -
+/// resolution is 1 bit.
 #define PROCESSOR_RAM_RESOLUTION 0
-/// Free RAM is stored in sensorValues[1]
+/// @brief Free RAM is stored in sensorValues[1]
 #define PROCESSOR_RAM_VAR_NUM 1
+/// @brief Variable name; freeSRAM
+#define PROCESSOR_RAM_VAR_NAME "freeSRAM"
+/// @brief Variable unit name; "Bit"
+#define PROCESSOR_RAM_UNIT_NAME "Bit"
+/// @brief Default variable short code; "FreeRam"
+#define PROCESSOR_RAM_DEFAULT_CODE "FreeRam"
+/**@}*/
 
-/// Decimals places in string representation; sample number should have 0.
+/**
+ * @anchor processor_sampno_defines
+ * @name Sample Number
+ * Defines for the sample number variable from the processor/mcu
+ *
+ * @note This is a board diagnostic.  It is _**roughly**_ the number of samples
+ * measured since the processor was last restarted.  This value simply
+ * increments up by one every time the addSingleMeasurementResult() function is
+ * called for the processor sensor.  It is intended only as a rough diagnostic
+ * to show when the processor restarts.
+ */
+/**@{*/
+/// @brief Decimals places in string representation; sample number should have
+/// 0 - resolution is 1.
 #define PROCESSOR_SAMPNUM_RESOLUTION 0
-/// Sample number is stored in sensorValues[2]
+/// @brief Sample number is stored in sensorValues[2]
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
+/// @brief Variable name; sequenceNumber
+#define PROCESSOR_SAMPNUM_VAR_NAME "sequenceNumber"
+/// @brief Variable unit name; "Dimensionless" (sequence number)
+#define PROCESSOR_SAMPNUM_UNIT_NAME "Dimensionless"
+/// @brief Default variable short code; "SampNum"
+#define PROCESSOR_SAMPNUM_DEFAULT_CODE "SampNum"
+/**@}*/
 
 
 // The main class for the Processor
-// Only need a sleep and wake since these DON'T use the default of powering up
-// and down
+// Only need a sleep and wake since these DON'T use the default of powering
+// up and down
 /**
  * @brief The main class to use the main processor (MCU) as a sensor.
  *
@@ -159,6 +182,7 @@ class ProcessorStats : public Sensor {
  public:
     /**
      * @brief Construct a new Processor Stats object
+     * @ingroup processor_sensor_group
      *
      * Need to know the Mayfly version because the battery resistor depends on
      * it
@@ -206,6 +230,7 @@ class ProcessorStats_Battery : public Variable {
  public:
     /**
      * @brief Construct a new ProcessorStats_Battery object.
+     * @ingroup processor_sensor_group
      *
      * @param parentSense The parent ProcessorStats providing the result
      * values.
@@ -214,12 +239,13 @@ class ProcessorStats_Battery : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "batteryVoltage".
      */
-    explicit ProcessorStats_Battery(ProcessorStats* parentSense,
-                                    const char*     uuid    = "",
-                                    const char*     varCode = "Battery")
+    explicit ProcessorStats_Battery(
+        ProcessorStats* parentSense, const char* uuid = "",
+        const char* varCode = PROCESSOR_BATTERY_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
-                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
-                   "volt", varCode, uuid) {}
+                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
+                   PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new ProcessorStats_Battery object.
      *
@@ -228,8 +254,9 @@ class ProcessorStats_Battery : public Variable {
      */
     ProcessorStats_Battery()
         : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
-                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION, "batteryVoltage",
-                   "volt", "Battery") {}
+                   (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
+                   PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
+                   PROCESSOR_BATTERY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ProcessorStats_Battery object - no action needed.
      */
@@ -252,7 +279,7 @@ class ProcessorStats_FreeRam : public Variable {
  public:
     /**
      * @brief Construct a new ProcessorStats_FreeRam object.
-     *
+     * @ingroup processor_sensor_group
      * @param parentSense The parent ProcessorStats providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -263,12 +290,12 @@ class ProcessorStats_FreeRam : public Variable {
      * change.  If it does change, that's a sign of a memory leak in your
      * program which will eventually cause your board to crash.
      */
-    explicit ProcessorStats_FreeRam(ProcessorStats* parentSense,
-                                    const char*     uuid    = "",
-                                    const char*     varCode = "FreeRam")
+    explicit ProcessorStats_FreeRam(
+        ProcessorStats* parentSense, const char* uuid = "",
+        const char* varCode = PROCESSOR_RAM_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)PROCESSOR_RAM_VAR_NUM,
-                   (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
-                   varCode, uuid) {}
+                   (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
+                   PROCESSOR_RAM_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new ProcessorStats_FreeRam object.
      *
@@ -277,8 +304,8 @@ class ProcessorStats_FreeRam : public Variable {
      */
     ProcessorStats_FreeRam()
         : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
-                   (uint8_t)PROCESSOR_RAM_RESOLUTION, "freeSRAM", "Bit",
-                   "FreeRam") {}
+                   (uint8_t)PROCESSOR_RAM_RESOLUTION, PROCESSOR_RAM_VAR_NAME,
+                   PROCESSOR_RAM_UNIT_NAME, PROCESSOR_RAM_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ProcessorStats_FreeRam object - no action needed.
      */
@@ -302,7 +329,7 @@ class ProcessorStats_SampleNumber : public Variable {
  public:
     /**
      * @brief Construct a new ProcessorStats_SampleNumber object.
-     *
+     * @ingroup processor_sensor_group
      * @param parentSense The parent ProcessorStats providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -310,12 +337,13 @@ class ProcessorStats_SampleNumber : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "SampNum".
      */
-    explicit ProcessorStats_SampleNumber(ProcessorStats* parentSense,
-                                         const char*     uuid    = "",
-                                         const char*     varCode = "SampNum")
+    explicit ProcessorStats_SampleNumber(
+        ProcessorStats* parentSense, const char* uuid = "",
+        const char* varCode = PROCESSOR_SAMPNUM_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
-                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
-                   "Dimensionless", varCode, uuid) {}
+                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
+                   PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new ProcessorStats_SampleNumber object.
      *
@@ -324,13 +352,14 @@ class ProcessorStats_SampleNumber : public Variable {
      */
     ProcessorStats_SampleNumber()
         : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
-                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION, "sequenceNumber",
-                   "Dimensionless", "SampNum") {}
+                   (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
+                   PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
+                   PROCESSOR_SAMPNUM_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ProcessorStats_SampleNumber() object - no action
      * needed.
      */
     ~ProcessorStats_SampleNumber() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_

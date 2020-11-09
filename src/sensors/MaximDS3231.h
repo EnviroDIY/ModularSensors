@@ -42,28 +42,6 @@
  * @section ds3231_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS3231-Real-Time-Clock.pdf)
  *
- * @section ds3231_sensor The DS3231 Sensor
- * @ctor_doc{MaximDS3231, measurementsToAverage}
- * @subsection ds3231_timing Sensor Timing
- * - The RTC **must** be continuously powered
- *      - @m_span{m-dim}@ref #DS3231_WARM_UP_TIME_MS = 0@m_endspan
- *      - @m_span{m-dim}@ref #DS3231_STABILIZATION_TIME_MS = 0@m_endspan
- * - A single temperature conversion takes 200ms.
- *      - @m_span{m-dim}@ref #DS3231_MEASUREMENT_TIME_MS = 200@m_endspan
- *
- * @section ds3231_temp Temperature Output
- *   - Range is -55°C to 125°C
- *   - Accuracy:
- *     - ± 3°C
- *   - Result stored in sensorValues[0] @m_span{m-dim}(@ref #DS3231_TEMP_VAR_NUM = 0)@m_endspan
- *   - Resolution:
- *     - 0.25°C (10 bit)
- *     - @m_span{m-dim}@ref #DS3231_TEMP_RESOLUTION = 2@m_endspan
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is BoardTemp
- *
- * @variabledoc{ds3231_temp,MaximDS3231,Temp,BoardTemp}
- *
  * ___
  * @section ds3231_examples Example Code
  * The Maxim DS3231 RTC is used in nearly all of the examples, including the
@@ -91,9 +69,18 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+/** @ingroup ds3231_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the DS3231 can report 1 value.
+/// @brief Sensor::_numReturnedValues; the DS3231 can report 1 value.
 #define DS3231_NUM_VARIABLES 1
+
+/**
+ * @anchor ds3231_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing for a Maxim DS18 RTC
+ */
+/**@{*/
 /**
  * @brief Sensor::_warmUpTime_ms; the DS3231 should never be powered off so
  * there is no warm-up time.
@@ -106,22 +93,38 @@
 #define DS3231_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the DS3231 takes 200ms to complete a
- * measurement.
+ * measurement - A single temperature conversion takes 200ms.
  */
 #define DS3231_MEASUREMENT_TIME_MS 200
-
-/// Decimals places in string representation; temperature should have 2.
-#define DS3231_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[0].
-#define DS3231_TEMP_VAR_NUM 0
-
+/**@}*/
 
 /**
- * @brief The Sensor sub-class for the [Maxim DS3231](@ref ds3231_group) when
- * used as a low-accuracy temperature sensor
+ * @anchor ds3231_temp_defines
+ * @name Temperature
+ * Defines for the temperature variable from a Maxim DS18 RTC
+ *   - Range is -55°C to 125°C
+ *   - Accuracy: ± 3°C
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is -0.25°C (10 bit).
+#define DS3231_TEMP_RESOLUTION 2
+/// @brief Variable number; temperature is stored in sensorValues[0].
+#define DS3231_TEMP_VAR_NUM 0
+/// @brief Variable name; "temperatureDatalogger"
+#define DS3231_TEMP_VAR_NAME "temperatureDatalogger"
+/// @brief Variable unit name; "degreeCelsius" (°C)
+#define DS3231_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "BoardTemp"
+#define DS3231_TEMP_DEFAULT_CODE "BoardTemp"
+/**@}*/
+
+/**
+ * @brief The Sensor sub-class for the [Maxim DS3231](@ref ds3231_group)
+ * when used as a low-accuracy temperature sensor
  *
- * Only need a sleep and wake since these DON'T use the default of powering up
- * and down
+ * Only need a sleep and wake since these DON'T use the default of powering
+ * up and down
  *
  * @ingroup ds3231_group
  */
@@ -129,6 +132,7 @@ class MaximDS3231 : public Sensor {
  public:
     /**
      * @brief Construct a new Maxim DS3231 object
+     * @ingroup ds3231_group
      *
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -189,6 +193,7 @@ class MaximDS3231_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MaximDS3231_Temp object.
+     * @ingroup ds3231_group
      *
      * @param parentSense The parent MaximDS3231 providing the result
      * values.
@@ -198,10 +203,10 @@ class MaximDS3231_Temp : public Variable {
      * optional with a default value of "BoardTemp".
      */
     explicit MaximDS3231_Temp(MaximDS3231* parentSense, const char* uuid = "",
-                              const char* varCode = "BoardTemp")
+                              const char* varCode = DS3231_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)DS3231_TEMP_VAR_NUM,
-                   (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
+                   DS3231_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MaximDS3231_Temp object.
      *
@@ -209,12 +214,12 @@ class MaximDS3231_Temp : public Variable {
      */
     MaximDS3231_Temp()
         : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
-                   (uint8_t)DS3231_TEMP_RESOLUTION, "temperatureDatalogger",
-                   "degreeCelsius", "BoardTemp") {}
+                   (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
+                   DS3231_TEMP_UNIT_NAME, DS3231_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MaximDS3231_Temp object - no action needed.
      */
     ~MaximDS3231_Temp() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_MAXIMDS3231_H_
