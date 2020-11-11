@@ -27,34 +27,6 @@ class Sensor;
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
-
-/**
- * @brief A simple struct for storing variable metadata information.
- */
-struct variableMetadata {
-    variableMetadata(uint8_t decimalResolution, const char* varName,
-                     const char* varUnit, const char* varCode);
-    /**
-     * @brief The resolution (in decimal places) of the value.
-     */
-    uint8_t decimalResolution;
-    /**
-     * @brief The name of the variable per the [ODM2 variable name controlled
-     * vocabulary](http://vocabulary.odm2.org/variablename/)
-     */
-    const char* varName;
-    /**
-     * @brief The unit of the variable per the [ODM2 unit
-     * controlledvocabulary](http://vocabulary.odm2.org/units/)
-     */
-    const char* varUnit;
-    /**
-     * @brief A custom code for the variable.  This can be any short text
-     * helping to identify the variable in files.
-     */
-    const char* varCode;
-};
-
 /**
  * @brief The variable class for a value and related metadata.
  *
@@ -121,30 +93,9 @@ class Variable {
      * variable.
      * @param uuid A universally unique identifier for the variable.
      */
-    Variable(Sensor* parentSense, const uint8_t sensorVarNum,
-             variableMetadata varMetadata, const char* uuid);
-    /**
-     * @brief Construct a new Variable object for a measured variable - that
-     * is, one whose values are updated by a sensor - but do not tie it to a
-     * specific sensor.
-     *
-     * @note This constructor is NOT inteneded to be used outside of this
-     * libraries.  It is intended to be used internally with sensors defined
-     * in this library.
-     *
-     * @param sensorVarNum The position in the sensor's value array of this
-     * variable's value.
-     * @param decimalResolution The resolution (in decimal places) of the
-     * value
-     * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary
-     * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary
-     * @param varCode A custom code for the variable.  This can be any short
-     * text helping to identify the variable in files.
-     */
     Variable(const uint8_t sensorVarNum, uint8_t decimalResolution,
              const char* varName, const char* varUnit, const char* varCode);
+
     /**
      * @brief Construct a new Variable objectfor a measured variable - that
      * is, one whose values are updated by a sensor.
@@ -157,24 +108,6 @@ class Variable {
      * variable's value.
      * @param varMetadata A variableMetadata object with the metadata about the
      * variable.
-     */
-    Variable(const uint8_t sensorVarNum, variableMetadata varMetadata);
-
-    /**
-     * @brief Construct a new Variable object for a calculated variable -
-     * that is, one whose value is calculated by the calcFxn which returns a
-     * float.
-     *
-     * @param calcFxn Any function returning a float value
-     * @param decimalResolution The resolution (in decimal places) of the
-     * value
-     * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary
-     * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary
-     * @param varCode A custom code for the variable.  This can be any short
-     * text helping to identify the variable in files.
-     * @param uuid A universally unique identifier for the variable.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
@@ -195,16 +128,6 @@ class Variable {
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode);
-    /**
-     * @brief Construct a new Variable object for a calculated variable -
-     * that is, one whose value is calculated by the calcFxn which returns a
-     * float.
-     *
-     * @param calcFxn Any function returning a float value.
-     * @param varMetadata A variableMetadata object with the metadata about the
-     * variable.
-     */
-    Variable(float (*calcFxn)(), variableMetadata varMetadata);
     /**
      * @brief Construct a new Variable object
      */
@@ -462,58 +385,6 @@ class Variable {
     const char* _varUnit;
     const char* _varCode;
     const char* _uuid;
-};
-
-
-/**
- * @brief A template class for creating variable class objects
- *
- * @param sensor_class_name The name of the class for the sensor to be used with
- * the variable
- * @param parentSense The Sensor object supplying values
- * @param sensorVarNum The position in the sensor's value array of this
- * variable's value.
- * @param varMetadata A variableMetadata object with the metadata about the
- * variable.
- */
-template <class sensor_class_name, const uint8_t sensorVarNum,
-          variableMetadata varMetadata>
-/**
- * @brief The Variable sub-class used for the
- * variable_class_name output from an sensor_class_name.
- */
-class sensorVariable : public Variable {
- public:
-    /**
-     * @brief Construct a new sensorVariable
-     * object.
-     *
-     * @param parentSense The parent sensor providing the result values.
-     * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable; optional with the default value of an empty string.
-     * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of varCode.
-     */
-    explicit sensorVariable(sensor_class_name* parentSense,
-                            const char*        uuid    = "",
-                            const char*        varCode = varCodeT)
-        : Variable(parentSense, (const uint8_t)sensorVarNum,
-                   (uint8_t)decimalResolution, varNameT, varUnitT, varCodeT,
-                   uuid) {}
-    /**
-     * @brief Construct a new sensorVariable object.
-     *
-     * @note This must be tied with a parent sensor_class_name before it
-     * can be used.
-     */
-    sensorVariable()
-        : Variable((const uint8_t)sensorVarNum, (uint8_t)decimalResolution,
-                   varNameT, varUnitT, &*varCodeT) {}
-    /**
-     * @brief Destroy the sensorVariable object
-     * - no action needed.
-     */
-    ~sensorVariable() {}
 };
 
 #endif  // SRC_VARIABLEBASE_H_
