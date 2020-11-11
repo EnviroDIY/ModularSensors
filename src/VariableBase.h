@@ -380,4 +380,61 @@ class Variable {
     const char* _uuid;
 };
 
+
+/**
+ * @brief Creates a variable class object with constructors and a destructor.
+ *
+ * @param sensor_class_name The name of the class for the sensor to be used with
+ * the variable
+ * @param variable_class_name The name of the variable to be appended to the
+ * sensor name for the full variable class name
+ * @param define_prefix The prefix to be added to all of the macros to create
+ * the macrovariables used in the class definition.
+ */
+#define MAKE_VARIABLE_CLASS(sensor_class_name, variable_class_name,            \
+                            define_prefix)                                     \
+    /**                                                                        \
+     * @brief The Variable sub-class used for the   variable_class_name output \
+     * from an sensor_class_name.                                              \
+     */                                                                        \
+    class sensor_class_name##_##variable_class_name : public Variable {        \
+     public:                                                                   \
+        /**                                                                    \
+         * @brief Construct a new sensor_class_name##_##variable_class_name    \
+         * object.                                                             \
+         *                                                                     \
+         * @param parentSense The parent sensor_class_name providing the       \
+         * result values.                                                      \
+         * @param uuid A universally unique identifier (UUID or GUID) for the  \
+         * variable; optional with the default value of an empty string.       \
+         * @param varCode A short code to help identify the variable in files; \
+         * optional with a default value of define_prefix##_DEFAULT_CODE.      \
+         */                                                                    \
+        explicit sensor_class_name##_##variable_class_name(                    \
+            sensor_class_name* parentSense, const char* uuid = "",             \
+            const char* varCode = define_prefix##_DEFAULT_CODE)                \
+            : Variable(parentSense, (const uint8_t)define_prefix##_VAR_NUM,    \
+                       (uint8_t)define_prefix##_RESOLUTION,                    \
+                       &*define_prefix##_VAR_NAME,                             \
+                       &*define_prefix##_UNIT_NAME, varCode, uuid) {}          \
+        /**                                                                    \
+         * @brief Construct a new sensor_class_name##_##variable_class_name    \
+         * object.                                                             \
+         *                                                                     \
+         * @note This must be tied with a parent sensor_class_name before it   \
+         * can be used.                                                        \
+         */                                                                    \
+        sensor_class_name##_##variable_class_name()                            \
+            : Variable((const uint8_t)define_prefix##_VAR_NUM,                 \
+                       (uint8_t)define_prefix##_RESOLUTION,                    \
+                       &*define_prefix##_VAR_NAME,                             \
+                       &*define_prefix##_UNIT_NAME,                            \
+                       &*define_prefix##_DEFAULT_CODE) {}                      \
+        /**                                                                    \
+         * @brief Destroy the sensor_class_name##_##variable_class_name object \
+         * - no action needed.                                                 \
+         */                                                                    \
+        ~sensor_class_name##_##variable_class_name() {}                        \
+    };
+
 #endif  // SRC_VARIABLEBASE_H_
