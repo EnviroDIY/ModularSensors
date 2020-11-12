@@ -2,6 +2,7 @@
  * @file analogElecConductivity.h
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library
+ * @copyright 2020 Neil Hancock
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>
  *
  *
@@ -90,6 +91,10 @@
 #define ProcAdcDef_Reference AR_DEFAULT
 #endif  // ProcAdcDef_Reference
 
+#if !defined RSERIES_OHMS_DEF
+#define RSERIES_OHMS_DEF 499
+#endif  // RSERIES_OHMS_DEF
+
 /**
  * @brief Class for the analog Electrical Conductivity monitor
  *
@@ -108,7 +113,8 @@ class analogElecConductivity : public Sensor {
      * optional with default value of 1.
      */
     analogElecConductivity(int8_t powerPin, int8_t dataPin,
-                           uint8_t measurementsToAverage = 1);
+                           uint8_t measurementsToAverage = 1,
+                           float   Rseries_ohms          = RSERIES_OHMS_DEF);
 
     /**
      * @brief Destroy the analogElecConductivity object - no action needed.
@@ -154,7 +160,7 @@ class analogElecConductivity : public Sensor {
      * @return none
      */
     void setEC_k(float sourceResistance_ohms) {
-        Rseries_ohms = sourceResistance_ohms;
+        _Rseries_ohms = sourceResistance_ohms;
     }
 
     /**
@@ -176,10 +182,8 @@ class analogElecConductivity : public Sensor {
     // float _WaterTemperature_C;
     float*      _ptrWaterTemperature_C;
     const float SensorV = 3.3;
-#if !defined RSERIES_OHMS_DEF
-#define RSERIES_OHMS_DEF 499
-#endif  // RSERIES_OHMS_DEF
-    float Rseries_ohms =
+
+    float _Rseries_ohms =
         RSERIES_OHMS_DEF;  // that is R1 + any series port resistance
 #if !defined TEMPERATURECOEF_DEF
 #define TEMPERATURECOEF_DEF 0.019

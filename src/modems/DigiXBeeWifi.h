@@ -109,12 +109,6 @@ class DigiXBeeWifi : public DigiXBee {
      */
     TinyGsmClient gsmClient;
 
-    // Az extension
-    void   setWiFiId(const char* WiFiId, bool copyId = false);
-    void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
-    String getWiFiId(void);
-    String getWiFiPwd(void);
-
  protected:
     bool isInternetAvailable(void) override;
     /**
@@ -124,8 +118,7 @@ class DigiXBeeWifi : public DigiXBee {
      * bypass), enables pin sleep, sets the DIO pins to the expected functions,
      * and reboots the modem to ensure all settings are applied.
      *
-     * @return true The extra setup succeeded.
-     * @return false The extra setup failed.
+     * @return **bool** True if the extra setup succeeded.
      */
     bool extraModemSetup(void) override;
     bool isModemAwake(void) override;
@@ -137,6 +130,14 @@ class DigiXBeeWifi : public DigiXBee {
     // Az extension
     char* _ssid_buf = NULL;
     char* _pwd_buf  = NULL;
+
+ public:
+    // Az extension
+    void   setWiFiId(const char* WiFiId, bool copyId = false);
+    void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
+    String getWiFiId(void);
+    String getWiFiPwd(void);
+
 };
 
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_

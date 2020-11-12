@@ -7,7 +7,12 @@
  * @brief Implements the MaximDS18 class.
  */
 
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #include <Sodaq_DS3231.h>
+#else
+#include <RTClib.h>  //was <Sodaq_DS3231.h>
+extern RTC_DS3231 rtc;  // was Sodaq_DS3231 rtc njh going to need revisiting
+#endif               // ARDUINO_ARCH_SAMD
 #include "MaximDS3231.h"
 
 // Only input is the number of readings to average
@@ -43,7 +48,12 @@ bool MaximDS3231::startSingleMeasurement(void) {
     // TODO(SRGDamia1):  Test how long the conversion takes, update DS3231 lib
     // accordingly!
     MS_DBG(F("Forcing new temperature reading by DS3231"));
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     rtc.convertTemperature(false);
+#else
+#warning could add alieas for rtc.convertTemperature(false)
+    rtc.getTemperature();
+#endif
 
     return true;
 }

@@ -1,6 +1,8 @@
 //
 // Private function extensions
 //
+#define TEMP_BUFFER_SZ 37
+
 #if defined USE_USB_MSC_SD1
 //--------------------------------------------------------------------+
 // SD Card callbacks
@@ -246,6 +248,10 @@ void Logger::setLoggerId(const char* newLoggerId, bool copyId,
         }
         MS_DBG(F("\nsetLoggerId cp "), _loggerID, " sz: ", LoggerIdSize);
     }
+}
+
+void Logger::setBatHandler(bool (*bat_handler_atl)(lb_pwr_req_t)) {
+    _bat_handler_atl = bat_handler_atl;
 }
 
 // ===================================================================== //
@@ -646,6 +652,295 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 // End parse.ini
 
 // ===================================================================== //
+// Reliable Delivery functions
+// see class headers
+// ===================================================================== //
+
+// This is a one-and-done to log data
+void Logger::logDataAndPubReliably(void) {
+    // Reset the watchdog
+    watchDogTimer.resetWatchDog();
+
+
+    // Assuming we were woken up by the clock, check if the current time is
+    // an even interval of the logging interval
+    uint8_t cia_val = checkInterval();
+    if (NULL != _bat_handler_atl) {
+        _bat_handler_atl(LB_PWR_USEABLE_REQ);  // Measures battery
+        if (!_bat_handler_atl(LB_PWR_SENSOR_USE_REQ)) {
+            // Squash any activity
+            MS_DBG(F("logDataAndPubReliably - all cancelled"));
+            cia_val = 0;
+        }
+        if (!_bat_handler_atl(LB_PWR_MODEM_USE_REQ)) {
+            if (CIA_POST_READINGS & cia_val) {
+                // Change publish attempt to saving for next publish attempt
+                cia_val &= ~CIA_POST_READINGS;
+                cia_val |= CIA_RLB_READINGS;  //
+                MS_DBG(F("logDataAndPubReliably - tx cancelled"));
+            }
+        }
+    }
+
+    if (cia_val) {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::isLoggingNow = true;
+        // Reset the watchdog
+        watchDogTimer.resetWatchDog();
+
+        // Print a line to show new reading
+        PRINTOUT(F("------------------------------------------"));
+        // Turn on the LED to show we're taking a reading
+        alertOn();
+        // Power up the SD Card
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
+        turnOnSDcard(false);
+        if (cia_val & CIA_NEW_READING) {
+            // Do a complete update on the variable array.
+            // This this includes powering all of the sensors, getting
+            // updated values, and turing them back off. NOTE:  The wake
+            // function for each sensor should force sensor setup to run if
+            // the sensor was not previously set up.
+            MS_DBG(F("Running a complete sensor update..."));
+            watchDogTimer.resetWatchDog();
+            _internalArray->completeUpdate();
+            watchDogTimer.resetWatchDog();
+
+            // Create a csv data record and save it to the log file
+            logToSD();
+
+            serzRdel_Line();  // Start Que
+        }
+        if (cia_val & CIA_POST_READINGS) {
+            if (_logModem != NULL) {
+                MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+                if (_logModem->modemWake()) {
+                    // Connect to the network
+                    watchDogTimer.resetWatchDog();
+                    MS_DBG(F("Connecting to the Internet..."));
+                    if (_logModem->connectInternet()) {
+                        // Publish data to remotes
+                        watchDogTimer.resetWatchDog();
+                        // publishDataToRemotes();
+                        publishDataQuedToRemotes(true);
+                        watchDogTimer.resetWatchDog();
+
+// Sync the clock at midnight
+#define NIST_SYNC_DAY 86400
+#define NIST_SYNC_HR 3600
+#define NIST_SYNC_RATE NIST_SYNC_HR
+#if 0
+                syncTimeCheck_normalized = Logger::markedEpochTime/logIntvl_sec;
+                syncTimeCheck_remainder = syncTimeCheck_normalized %(NIST_SYNC_RATE/logIntvl_sec);
+                MS_DBG(F("SyncTimeCheck "),syncTimeCheck_remainder," Rate",logIntvl_sec," Time",Logger::markedEpochTime);
+                if (Logger::markedEpochTime != 0 && syncTimeCheck_remainder == 0)
+#endif
+                        if ((Logger::markedEpochTime != 0 &&
+                             Logger::markedEpochTime % 86400 == 43200) ||
+                            !isRTCSane(Logger::markedEpochTime)) {
+                            // Sync the clock at noon
+                            MS_DBG(F("Running a daily clock sync..."));
+                            setRTClock(_logModem->getNISTTime());
+                            watchDogTimer.resetWatchDog();
+                        }
+
+                        // Update the modem metadata
+                        MS_DBG(F("Updating modem metadata..."));
+                        _logModem->updateModemMetadata();
+
+                        // Disconnect from the network
+                        MS_DBG(F("Disconnecting from the Internet..."));
+                        _logModem->disconnectInternet();
+                    } else {
+                        MS_DBG(F("Could not connect to the internet!"));
+                        watchDogTimer.resetWatchDog();
+                    }
+                }
+                // Turn the modem off
+                _logModem->modemSleepPowerDown();
+            } else
+                MS_DBG(F("No _logModem "));
+        } else if (cia_val & CIA_RLB_READINGS) {
+            // Values not transmitted,  save readings for later transmission
+            MS_DBG(F("logDataAndPubReliably - store readings"));
+            publishDataQuedToRemotes(false);
+        }
+
+
+        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
+        // passed for internal SD card housekeeping before cutting power It
+        // seems very unlikely based on my testing that less than one second
+        // would be taken up in publishing data to remotes
+        // Cut power from the SD card - without additional housekeeping wait
+        turnOffSDcard(false);
+
+        // Turn off the LED
+        alertOff();
+        // Print a line to show reading ended
+        PRINTOUT(F("------------------------------------------\n"));
+
+        // Unset flag
+        Logger::isLoggingNow = false;
+    }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) testingMode();
+
+    // Call the processor sleep
+    systemSleep();
+}
+
+void Logger::publishDataQuedToRemotes(bool internetPresent) {
+    // Assumes that there is an internet connection
+    // bool    useQue = false;
+    int16_t  rspCode = 0;
+    uint32_t tmrGateway_ms;
+    bool     dslStatus = false;
+    bool     retVal    = false;
+    // MS_DBG(F("Pub Data Qued"));
+    MS_DBG(F("pubDQTR from"), serzRdelFn_str, internetPresent);
+
+    // Open debug file
+#if defined MS_LOGGERBASE_POSTS
+    retVal = postLogOpen(postsLogFn_str);
+#endif  // MS_LOGGERBASE_POSTS
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != NULL) {
+            _dataPubInstance = i;
+            PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
+                     dataPublishers[i]->getEndpoint());
+            // open the qued file for serialized readings
+            // (char*)serzQuedFn_str
+
+
+            // dataPublishers[i]->publishData(_logModem->getClient());
+            // Need to manage filenames[i]
+
+            /* TODO njh check power availability
+            ps_Lbatt_status_t Lbatt_status;
+            Lbatt_status =
+            mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
+            if (no power) break out for loop;
+            */
+
+            if (dataPublishers[i]->getQuedStatus()) {
+                serzQuedStart((char)('0' + i));
+                deszRdelStart();
+                // MS_START_DEBUG_TIMER;
+                tmrGateway_ms = millis();
+                while ((dslStatus = deszRdelLine())) {
+                    if (internetPresent) {
+                        rspCode = dataPublishers[i]->publishData();
+                    } else {
+                        rspCode = HTTPSTATUS_NC_902;
+                    }
+
+                    watchDogTimer.resetWatchDog();
+                    // MS_DBG(F("Rsp"), rspCode, F(", in"),
+                    // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
+                    postLogLine(i, rspCode);
+
+                    if (HTTPSTATUS_CREATED_201 != rspCode) {
+#define DESLZ_STATUS_UNACK '1'
+#define DESLZ_STATUS_MAX '8'
+#define DESLZ_STATUS_POS 0
+#if 0
+                        if (++deszq_line[0] > '8') {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_UNACK;
+                        }
+#endif  // if x
+                        retVal = serzQuedFile.print(deszq_line);
+                        if (0 >= retVal) {
+                            PRINTOUT(F("pubDQTR serzQuedFil err"), retVal);
+                        }
+                        desz_pending_records++;  // TODO: njh per publisher
+
+                        /*TODO njh process
+                        if (HTTPSTATUS_NC_901 == rspCode) {
+                            MS_DBG(F("pubDQTR abort this
+                        servers POST " "attempts"));
+
+                        However, will also have to cleanup/copy lines from
+                        serzQuedFile to before deszRdelClose
+
+                        break;
+
+                        }
+
+                        */
+                    }
+                }  // while reading line
+                deszRdelClose(true);
+                serzQuedCloseFile(false);
+                // retVal = serzQuedFile.close();
+                // if (!retVal)
+                //    PRINTOUT(
+                //        F("publishDataQuedToRemote serzQuedFile.close err"));
+
+                PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
+                         ((float)(millis() - tmrGateway_ms)) / 1000,
+                         F("sec. Queued readings="), desz_pending_records);
+
+                if (HTTPSTATUS_CREATED_201 == rspCode) {
+                    MS_DBG(F("pubDQTR retry from"), serzQuedFn);
+                    // Do retrys through publisher - if file exists
+                    if (sd1_card_fatfs.exists(serzQuedFn)) {
+                        uint16_t tot_posted           = 0;
+                        uint16_t cnt_for_pwr_analysis = 1;
+                        deszQuedStart();
+                        while ((dslStatus = deszQuedLine()) &&
+                               cnt_for_pwr_analysis) {
+                            // setup for publisher to call deszqNextCh()
+                            rspCode = dataPublishers[i]->publishData();
+                            watchDogTimer.resetWatchDog();
+                            postLogLine(i, rspCode);
+                            if (HTTPSTATUS_CREATED_201 != rspCode) break;
+                            tot_posted++;
+
+                            deszq_line[0] = 0;  // Show completed
+
+                            // Check for enough battery power
+                            if (cnt_for_pwr_analysis++ >=
+                                _sendAtOneTimeMaxX_num) {
+                                cnt_for_pwr_analysis = 1;
+                                if (NULL != _bat_handler_atl) {
+                                    // Measure  battery
+                                    _bat_handler_atl(LB_PWR_USEABLE_REQ);
+                                    if (!_bat_handler_atl(
+                                            LB_PWR_MODEM_USE_REQ)) {
+                                        // stop transmission
+                                        cnt_for_pwr_analysis = 0;
+                                    }
+                                }
+                            }
+                        }
+// increment status of number attempts
+#if 0
+                        if (deszq_line[DESLZ_STATUS_POS]++ >=
+                            DESLZ_STATUS_MAX) {
+                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_MAX;
+                        }
+#endif  // if z
+        // deszQuedCloseFile() is serzQuedCloseFile(true)
+                        if (tot_posted) {
+                            // At least one POST was accepted
+                            serzQuedCloseFile(true);
+                        } else {
+                            serzQuedCloseFile(false);
+                        }
+                    }
+                } else {
+                    MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
+                }
+            }
+        }
+    }
+    postLogClose();
+}
+
+// ===================================================================== //
 // Serialize/deserialize functions
 // see class headers
 // ===================================================================== //
@@ -839,6 +1134,28 @@ deszLine()  to populate
 
 */
 
+/* Find fixed delimeter
+ * behave as strchrnul() if goes past end of string
+ */
+char* Logger::deszFind(const char* in_line, char caller_id) {
+    char* retResult = strchr(in_line, DELIM_CHAR2);
+    if (NULL != retResult) return retResult;
+    MS_DBG(F("deszFind NULL found on "), caller_id);
+    // For NULL return pointer as per strchrnul
+    // should only occur on last search
+    return (char*)(in_line + strlen(in_line));
+
+    /*    The strchrnul() function is like strchr() except that if \p c is not
+        found in \p s, then it returns a pointer to the null byte at the end
+        of \p s, rather than \c NULL. (Glibc, GNU extension.)
+
+        \return The strchrnul() function returns a pointer to the matched
+        character, or a pointer to the null byte at the end of \p s (i.e.,
+        \c s+strlen(s)) if the character is not found.
+    //char *strchrnul(const char *in, int delim_char) */
+}
+
+
 bool Logger::deszRdelStart() {
     deszLinesRead = deszLinesUnsent = 0;
 
@@ -898,7 +1215,7 @@ bool Logger::deszLine(File* filep) {
         return false;  // EIO;
     }
     // Find next DELIM and go past it
-    deszq_nextChar = 1 + strchrnul(deszq_line, DELIM_CHAR2);
+    deszq_nextChar = 1 + deszFind(deszq_line, '1');
     if (deszq_nextChar == deszq_line) {
         PRINTOUT(F("deszLine epoch start not found"), deszq_line, F("'"));
         deszq_nextCharSz = 0;
@@ -912,14 +1229,14 @@ bool Logger::deszLine(File* filep) {
     }
     // Find next DELIM and go past it
     orig_nextChar  = deszq_nextChar;
-    deszq_nextChar = 1 + strchrnul(deszq_nextChar, DELIM_CHAR2);
+    deszq_nextChar = 1 + deszFind(deszq_nextChar, '2');
     if (orig_nextChar == deszq_nextChar) {
         PRINTOUT(F("deszLine readung start not found"), deszq_line, F("'"));
         deszq_nextCharSz = 0;
         return false;
     }
     // Find sz of this field
-    char* nextCharEnd = strchrnul(deszq_nextChar, DELIM_CHAR2);
+    char* nextCharEnd = deszFind(deszq_nextChar, '3');
     deszq_nextCharSz  = nextCharEnd - deszq_nextChar;
 
     deszq_timeVariant_sz = strlen(deszq_nextChar) - 1;
@@ -931,7 +1248,7 @@ bool Logger::deszLine(File* filep) {
 bool Logger::deszqNextCh(void) {
     char* deszq_old = deszq_nextChar;
     // Find next DELIM and go past it
-    deszq_nextChar = 1 + strchrnul(deszq_nextChar, DELIM_CHAR2);
+    deszq_nextChar = 1 + deszFind(deszq_nextChar, 'L');
     if ((deszq_old == deszq_nextChar)) {
         deszq_nextCharSz = 0;
         PRINTOUT(F("deszqNextCh 1error:"), deszq_nextChar, F("'"));
@@ -1273,4 +1590,5 @@ bool Logger::serzBegin(void) {
     MS_DBG(F("TESTQ END END END \n\n"));
     return true;
 }
+
 // End LoggerBaseExtCpp.h

@@ -416,144 +416,16 @@ void Logger::publishDataToRemotes(void) {
         }
     }
 }
-#define TEMP_BUFFER_SZ 37
-void Logger::publishDataQuedToRemotes(void) {
-    // Assumes that there is an internet connection
-    // bool    useQue = false;
-    int16_t  rspCode;
-    uint32_t tmrGateway_ms;
-    bool     dslStatus = false;
-    bool     retVal    = false;
-    // MS_DBG(F("Pub Data Qued"));
-    MS_DBG(F("pubDQTR from"), serzRdelFn_str);
-
-    // Open debug file
-#if defined MS_LOGGERBASE_POSTS
-    retVal = postLogOpen(postsLogFn_str);
-#endif  // MS_LOGGERBASE_POSTS
-
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        if (dataPublishers[i] != NULL) {
-            _dataPubInstance = i;
-            PRINTOUT(F("\npubDQTR Sending data to ["), i, F("]"),
-                     dataPublishers[i]->getEndpoint());
-            // open the qued file for serialized readings
-            // (char*)serzQuedFn_str
-
-
-            // dataPublishers[i]->publishData(_logModem->getClient());
-            // Need to manage filenames[i]
-
-            /* TODO njh check power availability
-            ps_Lbatt_status_t Lbatt_status;
-            Lbatt_status =
-            mcuBoard.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ);
-            if (no power) break out for loop;
-            */
-
-            if (dataPublishers[i]->getQuedStatus()) {
-                serzQuedStart((char)('0' + i));
-                deszRdelStart();
-                // MS_START_DEBUG_TIMER;
-                tmrGateway_ms = millis();
-                while ((dslStatus = deszRdelLine())) {
-                    rspCode = dataPublishers[i]->publishData();
-
-                    watchDogTimer.resetWatchDog();
-                    // MS_DBG(F("Rsp"), rspCode, F(", in"),
-                    // MS_PRINT_DEBUG_TIMER,    F("ms\n"));
-                    postLogLine(i, rspCode);
-
-                    if (HTTPSTATUS_CREATED_201 != rspCode) {
-#define DESLZ_STATUS_UNACK '1'
-#define DESLZ_STATUS_MAX '8'
-#define DESLZ_STATUS_POS 0
-#if 0
-                        if (++deszq_line[0] > '8') {
-                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_UNACK;
-                        }
-#endif  // if x
-                        retVal = serzQuedFile.print(deszq_line);
-                        if (0 >= retVal) {
-                            PRINTOUT(F("pubDQTR serzQuedFil err"), retVal);
-                        }
-                        desz_pending_records++;  // TODO: njh per publisher
-
-                        /*TODO njh process
-                        if (HTTPSTATUS_NC_901 == rspCode) {
-                            MS_DBG(F("pubDQTR abort this
-                        servers POST " "attempts"));
-
-                        However, will also have to cleanup/copy lines from
-                        serzQuedFile to before deszRdelClose
-
-                        break;
-
-                        }
-
-                        */
-                    }
-                }  // while reading line
-                deszRdelClose(true);
-                serzQuedCloseFile(false);
-                // retVal = serzQuedFile.close();
-                // if (!retVal)
-                //    PRINTOUT(
-                //        F("publishDataQuedToRemote serzQuedFile.close err"));
-
-                PRINTOUT(F("Sent"), deszLinesRead, F("readings in"),
-                         ((float)(millis() - tmrGateway_ms)) / 1000,
-                         F("sec. Queued readings="), desz_pending_records);
-
-                if (HTTPSTATUS_CREATED_201 == rspCode) {
-                    MS_DBG(F("pubDQTR retry from"), serzQuedFn);
-                    // Do retrys through publisher - if file exists
-                    if (sd1_card_fatfs.exists(serzQuedFn)) {
-                        uint8_t num_posted = 0;
-                        deszQuedStart();
-                        while ((dslStatus = deszQuedLine())) {
-                            // setup for publisher to call deszqNextCh()
-                            rspCode = dataPublishers[i]->publishData();
-                            watchDogTimer.resetWatchDog();
-                            postLogLine(i, rspCode);
-                            if (HTTPSTATUS_CREATED_201 != rspCode) break;
-                            num_posted++;
-                            deszq_line[0] = 0;  // Show completed
-                        }
-// increment status of number attempts
-#if 0
-                        if (deszq_line[DESLZ_STATUS_POS]++ >=
-                            DESLZ_STATUS_MAX) {
-                            deszq_line[DESLZ_STATUS_POS] = DESLZ_STATUS_MAX;
-                        }
-#endif  // if z
-        // deszQuedCloseFile() is serzQuedCloseFile(true)
-                        if (num_posted) {
-                            // At least one POST was accepted
-                            serzQuedCloseFile(true);
-                        } else {
-                            serzQuedCloseFile(false);
-                        }
-                    }
-                } else {
-                    MS_DBG(F("pubDQTR drop retrys. rspCode"), rspCode);
-                }
-            }
-        }
-    }
-    postLogClose();
-}
-
 void Logger::sendDataToRemotes(void) {
     publishDataToRemotes();
 }
+
 
 // ===================================================================== //
 // Public functions to access the clock in proper format and time zone
 // ===================================================================== //
 
-// Sets the static timezone that the data will be logged in - this must be
-// set
+// Sets the static timezone that the data will be logged in - this must be set
 void Logger::setLoggerTimeZone(int8_t timeZone) {
     _loggerTimeZone = timeZone;
 // Some helpful prints for debugging
@@ -641,13 +513,13 @@ uint32_t Logger::getNowEpochT0(void) {
         // PRINTOUT(F("The current clock timestamp is not valid!"),
         // formatDateTime_ISO8601(currentEpochTime).substring(0, 10),"
         // Setting to
-        // ",formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+        // ",formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
         PRINTOUT(F("Bad time "), currentEpochTime, " ",
                  formatDateTime_ISO8601(currentEpochTime).substring(0, 10),
                  " Setting to ",
-                 formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
+                 formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
         PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
-        currentEpochTime = EPOCH_TIME_20200101_SECS;
+        currentEpochTime = EPOCH_TIME_LOWER_SANITY_SECS;
         setNowEpochT0(currentEpochTime);
     }
 
@@ -678,8 +550,8 @@ uint32_t Logger::getNowEpochT0(void) {
     if (!isRTCSane(currentEpochTime)) {
         PRINTOUT(F("Bad time, resetting clock."), currentEpochTime, " ",
                  formatDateTime_ISO8601(currentEpochTime), " Setting to ",
-                 formatDateTime_ISO8601(EPOCH_TIME_20200101_SECS));
-        currentEpochTime = EPOCH_TIME_20200101_SECS;
+                 formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
+        currentEpochTime = EPOCH_TIME_LOWER_SANITY_SECS;
         setNowEpochT0(currentEpochTime);
     }
     return currentEpochTime;
@@ -694,6 +566,7 @@ void Logger::setNowEpoch(uint32_t ts) {
 void Logger::setNowEpochT0(uint32_t ts) {
     zero_sleep_rtc.setEpoch(ts);
 }
+
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -825,8 +698,8 @@ bool Logger::isRTCSane(void) {
     return isRTCSane(curRTC);
 }
 bool Logger::isRTCSane(uint32_t epochTime) {
-    if (epochTime < EPOCH_TIME_20200101_SECS || /*Before January 1, 2020*/
-        epochTime > EPOCH_TIME_20250101_SECS)   /*After January 1, 2025*/
+    if (epochTime < EPOCH_TIME_LOWER_SANITY_SECS || /*bad before <date>*/
+        epochTime > EPOCH_TIME_UPPER_SANITY_SECS)   /*bad after <date>*/
     {
         return false;
     } else {
@@ -839,9 +712,9 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
 // for updating the sensors - even though the routines to update the sensors
 // and to output the data may take several seconds.
-// It is not currently possible to output the instantaneous time an
-// individual sensor was updated, just a single marked time.  By custom,
-// this should be called before updating the sensors, not after.
+// It is not currently possible to output the instantaneous time an individual
+// sensor was updated, just a single marked time.  By custom, this should be
+// called before updating the sensors, not after.
 void Logger::markTime(void) {
     Logger::markedEpochTimeTz = getNowEpochTz();
 }
@@ -972,8 +845,7 @@ uint8_t Logger::checkInterval(void) {
 }
 
 
-// This checks to see if the MARKED time is an even interval of the logging
-// rate
+// This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval(void) {
     bool retval;
     MS_DBG(F("Marked Time:"), Logger::markedEpochTimeTz,
@@ -1110,7 +982,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     bool restoreUSBDevice = false;
     // if (SERIAL_PORT_USBVIRTUAL)
     // {
-    // 	USBDevice.standby();
+    //     USBDevice.standby();
     // }
     // else
     // {
@@ -1122,7 +994,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     // Disable systick interrupt:  See
     // https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
     SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
-// Now go to sleep
+    // Now go to sleep
 #if defined(MS_LOGGERBASE_DEBUG) || defined(MS_LOGGERBASE_SLEEP_DEBUG)
     // Maintens MS_DEBUGGING_STD output, but current is 13mA/SAMD51
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -1164,8 +1036,9 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     // to the processor registers
     noInterrupts();
 
-    // Disable the processor ADC (must be disabled before it will power
-    // down) ADCSRA = ADC Control and Status Register A ADEN = ADC Enable
+    // Disable the processor ADC (must be disabled before it will power down)
+    // ADCSRA = ADC Control and Status Register A
+    // ADEN = ADC Enable
     ADCSRA &= ~_BV(ADEN);
 
 // turn off the brown-out detector, if possible
@@ -1365,8 +1238,8 @@ void Logger::printFileHeader(Stream* stream) {
 }
 
 
-// This prints a comma separated list of volues of sensor data - including
-// the time -  out over an Arduino stream
+// This prints a comma separated list of volues of sensor data - including the
+// time -  out over an Arduino stream
 void Logger::printSensorDataCSV(Stream* stream) {
     String csvString = "";
     dtFromEpochT0(Logger::markedEpochTimeTz).addToString(csvString);
@@ -1379,8 +1252,7 @@ void Logger::printSensorDataCSV(Stream* stream) {
     stream->println();
 }
 
-// Protected helper function - This checks if the SD card is available and
-// ready
+// Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void) {
     bool retVal = true;
     // If we don't know the slave select of the sd card, we can't use it
@@ -1417,8 +1289,8 @@ void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag) {
 }
 
 
-// Protected helper function - This opens or creates a file, converting a
-// string file name to a character file name
+// Protected helper function - This opens or creates a file, converting a string
+// file name to a character file name
 bool Logger::openFile(String& filename, bool createFile,
                       bool writeDefaultHeader) {
     // Initialise the SD card
@@ -1478,10 +1350,10 @@ bool Logger::openFile(String& filename, bool createFile,
 // These functions create a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the
-// function. If specified, it will also write a header to the file based on
-// the sensors in the group. This can be used to force a logger to create a
-// file with a secondary file name.
+// setFileName(String)/setFileName(void) or can be specified in the function. If
+// specified, it will also write a header to the file based on the sensors in
+// the group. This can be used to force a logger to create a file with a
+// secondary file name.
 bool Logger::createLogFile(String& filename, bool writeDefaultHeader) {
     // Attempt to create and open a file
     if (openFile(filename, true, writeDefaultHeader)) {
@@ -1504,24 +1376,21 @@ bool Logger::createLogFile(bool writeDefaultHeader) {
 // These functions write a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the
-// function. If the file does not already exist, the file will be created.
-// This can be used to force a logger to write to a file with a secondary
-// file name.
+// setFileName(String)/setFileName(void) or can be specified in the function. If
+// the file does not already exist, the file will be created. This can be used
+// to force a logger to write to a file with a secondary file name.
 bool Logger::logToSD(String& filename, String& rec) {
     // First attempt to open the file without creating a new one
     if (!openFile(filename, false, false)) {
         // Next try to create the file, bail if we couldn't create it
-        // This will not attempt to generate a new file name or add a
-        // header!
+        // This will not attempt to generate a new file name or add a header!
         if (!openFile(filename, true, false)) {
             PRINTOUT(F("Unable to write to SD card!"));
             return false;
         }
     }
 
-    // If we could successfully open or create the file, write the data to
-    // it
+    // If we could successfully open or create the file, write the data to it
     logFile.println(rec);
     // Echo the line to the serial port
     PRINTOUT(F("\n \\/---- Line Saved to"), filename, F("----\\/"));
@@ -1541,9 +1410,8 @@ bool Logger::logToSD(String& rec) {
     if (_fileName == "") generateAutoFileName();
     return logToSD(_fileName, rec);
 }
-// NOTE:  This is structured differently than the version with a string
-// input record.  This is to avoid the creation/passing of very long
-// strings.
+// NOTE:  This is structured differently than the version with a string input
+// record.  This is to avoid the creation/passing of very long strings.
 bool Logger::logToSD(void) {
     // Get a new file name if the name is blank
     if (_fileName == "") generateAutoFileName();
@@ -1551,8 +1419,7 @@ bool Logger::logToSD(void) {
     // First attempt to open the file without creating a new one
     if (!openFile(_fileName, false, false)) {
         // Next try to create a new file, bail if we couldn't create it
-        // Generate a filename with the current date, if the file name isn't
-        // set
+        // Generate a filename with the current date, if the file name isn't set
         if (_fileName == "") generateAutoFileName();
         // Do add a default header to the new file!
         if (!openFile(_fileName, true, true)) {
@@ -1661,10 +1528,10 @@ void Logger::testingMode() {
         // needed only for the wifi XBee.  Update metadata will also ask the
         // module for current signal quality using the underlying TinyGSM
         // getSignalQuality() function, but for the WiFi XBee it will not
-        // actually measure anything except by explicitly making a
-        // connection, which getModemSignalQuality() does.  For all of the
-        // other modules, getModemSignalQuality() is just a straigh
-        // pass-through to getSignalQuality().
+        // actually measure anything except by explicitly making a connection,
+        // which getModemSignalQuality() does.  For all of the other modules,
+        // getModemSignalQuality() is just a straigh pass-through to
+        // getSignalQuality().
         _logModem->updateModemMetadata();
 
         watchDogTimer.resetWatchDog();
@@ -1731,8 +1598,8 @@ void Logger::begin() {
     MS_DBG(F("Logger is set to record at"), _loggingIntervalMinutes,
            F("minute intervals."));
 
-    MS_DBG(F("Setting up a watch-dog timer to fire after 5 minutes of "
-             "inactivity"));
+    MS_DBG(F(
+        "Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
     // watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
     watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
     // Enable the watchdog
@@ -1925,8 +1792,8 @@ void Logger::logData(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is
-    // an even interval of the logging interval
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -1938,9 +1805,8 @@ void Logger::logData(void) {
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
-        // TODO(SRGDamia1):  Decide how much delay is needed between turning
-        // on the card and writing to it.  Could we turn it on just before
-        // writing?
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
 
         // Do a complete sensor update
@@ -1974,10 +1840,9 @@ void Logger::logDataAndPublish(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is
-    // an even interval of the logging interval
-    uint8_t cia_val = checkInterval();
-    if (cia_val) {
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
+    if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1988,83 +1853,66 @@ void Logger::logDataAndPublish(void) {
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
-        // TODO(SRGDamia1):  Decide how much delay is needed between turning
-        // on the card and writing to it.  Could we turn it on just before
-        // writing?
+        // TODO(SRGDamia1):  Decide how much delay is needed between turning on
+        // the card and writing to it.  Could we turn it on just before writing?
         turnOnSDcard(false);
-        if (cia_val & CIA_NEW_READING) {
-            // Do a complete update on the variable array.
-            // This this includes powering all of the sensors, getting
-            // updated values, and turing them back off. NOTE:  The wake
-            // function for each sensor should force sensor setup to run if
-            // the sensor was not previously set up.
-            MS_DBG(F("Running a complete sensor update..."));
-            watchDogTimer.resetWatchDog();
-            _internalArray->completeUpdate();
-            watchDogTimer.resetWatchDog();
 
-            // Create a csv data record and save it to the log file
-            logToSD();
+        // Do a complete update on the variable array.
+        // This this includes powering all of the sensors, getting updated
+        // values, and turing them back off.
+        // NOTE:  The wake function for each sensor should force sensor setup
+        // to run if the sensor was not previously set up.
+        MS_DBG(F("Running a complete sensor update..."));
+        watchDogTimer.resetWatchDog();
+        _internalArray->completeUpdate();
+        watchDogTimer.resetWatchDog();
 
-            serzRdel_Line();  // Start Que
-        }
-        if (cia_val & CIA_POST_READINGS) {
-            if (_logModem != NULL) {
-                MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
-                if (_logModem->modemWake()) {
-                    // Connect to the network
+        // Create a csv data record and save it to the log file
+        logToSD();
+
+        if (_logModem != NULL) {
+            MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+            if (_logModem->modemWake()) {
+                // Connect to the network
+                watchDogTimer.resetWatchDog();
+                MS_DBG(F("Connecting to the Internet..."));
+                if (_logModem->connectInternet()) {
+                    // Publish data to remotes
                     watchDogTimer.resetWatchDog();
-                    MS_DBG(F("Connecting to the Internet..."));
-                    if (_logModem->connectInternet()) {
-                        // Publish data to remotes
-                        watchDogTimer.resetWatchDog();
-                        // publishDataToRemotes();
-                        publishDataQuedToRemotes();
-                        watchDogTimer.resetWatchDog();
+                    publishDataToRemotes();
+                    watchDogTimer.resetWatchDog();
 
-// Sync the clock at midnight
-#define NIST_SYNC_DAY 86400
-#define NIST_SYNC_HR 3600
-#define NIST_SYNC_RATE NIST_SYNC_HR
-#if 0
-                syncTimeCheck_normalized = Logger::markedEpochTime/logIntvl_sec;
-                syncTimeCheck_remainder = syncTimeCheck_normalized %(NIST_SYNC_RATE/logIntvl_sec);
-                MS_DBG(F("SyncTimeCheck "),syncTimeCheck_remainder," Rate",logIntvl_sec," Time",Logger::markedEpochTime);
-                if (Logger::markedEpochTime != 0 && syncTimeCheck_remainder == 0)
-#endif
-                        if ((Logger::markedEpochTime != 0 &&
-                             Logger::markedEpochTime % 86400 == 43200) ||
-                            !isRTCSane(Logger::markedEpochTime)) {
-                            // Sync the clock at noon
-                            MS_DBG(F("Running a daily clock sync..."));
-                            setRTClock(_logModem->getNISTTime());
-                            watchDogTimer.resetWatchDog();
-                        }
-
-                        // Update the modem metadata
-                        MS_DBG(F("Updating modem metadata..."));
-                        _logModem->updateModemMetadata();
-
-                        // Disconnect from the network
-                        MS_DBG(F("Disconnecting from the Internet..."));
-                        _logModem->disconnectInternet();
-                    } else {
-                        MS_DBG(F("Could not connect to the internet!"));
+                    if ((Logger::markedEpochTime != 0 &&
+                         Logger::markedEpochTime % 86400 == 43200) ||
+                        !isRTCSane(Logger::markedEpochTime)) {
+                        // Sync the clock at noon
+                        MS_DBG(F("Running a daily clock sync..."));
+                        setRTClock(_logModem->getNISTTime());
                         watchDogTimer.resetWatchDog();
                     }
+
+                    // Update the modem metadata
+                    MS_DBG(F("Updating modem metadata..."));
+                    _logModem->updateModemMetadata();
+
+                    // Disconnect from the network
+                    MS_DBG(F("Disconnecting from the Internet..."));
+                    _logModem->disconnectInternet();
+                } else {
+                    MS_DBG(F("Could not connect to the internet!"));
+                    watchDogTimer.resetWatchDog();
                 }
-                // Turn the modem off
-                _logModem->modemSleepPowerDown();
-            } else
-                MS_DBG(F("No _logModem "));
+            }
+            // Turn the modem off
+            _logModem->modemSleepPowerDown();
         }
 
 
-        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec
-        // has passed for internal SD card housekeeping before cutting power
-        // It seems very unlikely based on my testing that less than one
-        // second would be taken up in publishing data to remotes Cut power
-        // from the SD card - without additional housekeeping wait
+        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
+        // passed for internal SD card housekeeping before cutting power It
+        // seems very unlikely based on my testing that less than one second
+        // would be taken up in publishing data to remotes
+        // Cut power from the SD card - without additional housekeeping wait
         turnOffSDcard(false);
 
         // Turn off the LED
@@ -2082,5 +1930,6 @@ void Logger::logDataAndPublish(void) {
     // Call the processor sleep
     systemSleep();
 }
+
 #include "LoggerBaseExtCpp.h"
 // End of LoggerBase.cpp

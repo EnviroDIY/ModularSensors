@@ -65,7 +65,6 @@ It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbe
 
 [//]: # ( @subpage thingspeak_walkthrough )
 
-
 ___
 
 [//]: # ( @section examples_complex Calculations and Complex Logging )

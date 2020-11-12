@@ -41,6 +41,11 @@
 #define BOARD "Feather M0 Express"
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define BOARD "Feather M4 Express"
+#elif defined(WIO_TERMINAL)
+#define BOARD "WIO_TERMINAL"
+#elif defined(adafruit_pygamer_advance_m4)
+#define BOARD "adafruit_pygamer_advance_m4"
+
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
 #define BOARD "Mega Adk"
@@ -97,8 +102,9 @@ ProcessorStats::ProcessorStats(const char* version)
     : Sensor(BOARD, PROCESSOR_NUM_VARIABLES, PROCESSOR_WARM_UP_TIME_MS,
              PROCESSOR_STABILIZATION_TIME_MS, PROCESSOR_MEASUREMENT_TIME_MS, -1,
              -1, 1) {
-    _version    = version;
-    sampNum     = 0;
+    _version = version;
+    sampNum  = 0;
+
     _liion_type = PSLR_0500mA;
 
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
@@ -106,7 +112,9 @@ ProcessorStats::ProcessorStats(const char* version)
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \
     defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
     _batteryPin        = 9;
-#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(WIO_TERMINAL) || \
+    defined(adafruit_pygamer_advance_m4)
+#warning need to check WIO TERMINAL
     _batteryPin = A6;  // 20;  //Dedicated PB01 V_DIV
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || \
     defined(ARDUINO_AVR_SODAQ_NDOGO)
@@ -117,7 +125,7 @@ ProcessorStats::ProcessorStats(const char* version)
     else
         _batteryPin = 33;
 #else
-#error No board defined
+#warning No board defined
     _batteryPin = -1;
 #endif
 }
@@ -142,7 +150,6 @@ int16_t FreeRam() {
 
 bool ProcessorStats::addSingleMeasurementResult(void) {
     // Get the battery voltage
-    MS_DBG(F("Getting battery voltage"));
 
     float sensorValue_battery = -9999;
 
@@ -154,17 +161,23 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     analogReference(AR_DEFAULT);
 #endif  // ARDUINO_ARCH_AVR
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
-        // Get the battery voltage
-        float rawBattery    = analogRead(_batteryPin);
-        sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+    if (_usebatExt) {  // defined MS_VBAT_EXT
+        MS_DBG(F("Get battery voltage ext"));
+        sensorValue_battery = _batteryExt_V;
+    } else {
+        if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
+            // Get the battery voltage
+            int rawBattery      = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+            MS_DBG(F("Get battery voltage1 "), _version, rawBattery);
+        }
+        if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") == 0) {
+            // Get the battery voltage
+            int rawBattery      = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+            MS_DBG(F("Get battery voltage2 "), _version, rawBattery);
+        }
     }
-    if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") == 0) {
-        // Get the battery voltage
-        float rawBattery    = analogRead(_batteryPin);
-        sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
-    }
-
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \
     defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) ||                               \
     defined(ADAFRUIT_FEATHER_M4_EXPRESS)
@@ -198,7 +211,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
            F("):"), sensorValue_battery);
 
 #else
-    sensorValue_battery  = -9999;
+    sensorValue_battery = -9999;
 
 #endif
 
@@ -240,6 +253,10 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     return true;
 }
 
+void ProcessorStats::setBatteryV(float newReading) {
+    _batteryExt_V = newReading;
+    _usebatExt    = true;
+}
 void ProcessorStats::setBatteryType(ps_liion_rating_t LiionType) {
     _liion_type = LiionType;
 }
@@ -267,8 +284,11 @@ ProcessorStats::isBatteryStatusAbove(bool         newBattReading,
 #else
 #define threshold_store(p1)
 #endif
-
-    if (newBattReading) { getBatteryVm1(&LiIonBatt_V); }
+    if (_usebatExt) {
+        LiIonBatt_V = _batteryExt_V;
+    } else if (newBattReading) {
+        getBatteryVm1(&LiIonBatt_V);
+    }
 
     // determine expected status from thresholds
     if (LiIonBatt_V >= PS_LBATT_HEAVY_V) {
@@ -336,28 +356,33 @@ float ProcessorStats::getBatteryVm1(
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     uint16_t rawBattery_adc = 0;
     uint8_t  adcLp;
-
+    if (_usebatExt) {  // defined MS_VBAT_EXT
+        MS_DBG(F("Get battery voltage ext"));
+        *sensorValue_battery = _batteryExt_V;
+    } else {
 #define SAMPLE_BATTERY_PIN_NUM 4
-    for (adcLp = 0; adcLp < SAMPLE_BATTERY_PIN_NUM; adcLp++) {
-        rawBattery_adc += analogRead(_batteryPin);
-    }
+        for (adcLp = 0; adcLp < SAMPLE_BATTERY_PIN_NUM; adcLp++) {
+            rawBattery_adc += analogRead(_batteryPin);
+        }
 
-    if (strcmp(_version, "v0.5ba") == 0) {
+        if (strcmp(_version, "v0.5ba") == 0) {
 // For series 1M+270K mult raw_adc by ((3.3 / 1023) * 4.7037)
 #define CONST_VBATT_0_5BA 0.0151732
-        *sensorValue_battery = CONST_VBATT_0_5BA *
-            ((float)(rawBattery_adc / SAMPLE_BATTERY_PIN_NUM));
-    } else if (strcmp(_version, "v0.5") == 0 or
-               strcmp(_version, "v0.5b") == 0) {
-        // Get the battery voltage for series 10M+2.7M
-        *sensorValue_battery = (3.3 / 1023.) * 4.7 *
-            ((float)(rawBattery_adc / SAMPLE_BATTERY_PIN_NUM));
-    } else if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0) {
-        // Get the battery voltage
-        *sensorValue_battery = (3.3 / 1023.) * 1.47 *
-            ((float)(rawBattery_adc / SAMPLE_BATTERY_PIN_NUM));
-    } else {
-        MS_DBG(F("Unknown _version "), _version);
+            *sensorValue_battery = CONST_VBATT_0_5BA *
+                ((float)(rawBattery_adc / SAMPLE_BATTERY_PIN_NUM));
+        } else if (strcmp(_version, "v0.5") == 0 or
+                   strcmp(_version, "v0.5b") == 0) {
+            // Get the battery voltage for series 10M+2.7M
+            *sensorValue_battery = (3.3 / 1023.) * 4.7 *
+                ((float)(rawBattery_adc / SAMPLE_BATTERY_PIN_NUM));
+        } else if (strcmp(_version, "v0.3") == 0 or
+                   strcmp(_version, "v0.4") == 0) {
+            // Get the battery voltage
+            *sensorValue_battery = (3.3 / 1023.) * 1.47 *
+                ((float)(rawBattery_adc / SAMPLE_BATTERY_PIN_NUM));
+        } else {
+            MS_DBG(F("Unknown _version "), _version);
+        }
     }
 
 #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || \

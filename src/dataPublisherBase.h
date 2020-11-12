@@ -205,13 +205,13 @@ class dataPublisher {
      * This depends on an internet connection already having been made and a
      * client being available.
      *
-     * @param _outClient An Arduino client instance to use to print data to.
+     * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @return **int16_t** The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
-    virtual int16_t publishData(Client* _outClient) = 0;
+    virtual int16_t publishData(Client* outClient) = 0;
     /**
      * @brief Open a socket to the correct receiver and send out the formatted
      * data.
@@ -224,19 +224,19 @@ class dataPublisher {
      * response code or a result code from PubSubClient.
      */
     virtual int16_t publishData();
-    virtual int16_t storAndPublish();
+
     /**
      * @brief Retained for backwards compatibility.
      *
-     * @deprecated use publishData(Client* _outClient)
+     * @deprecated use publishData(Client* outClient)
      *
-     * @param _outClient An Arduino client instance to use to print data to.
+     * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @return **int16_t** The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
-    virtual int16_t sendData(Client* _outClient);
+    virtual int16_t sendData(Client* outClient);
     /**
      * @brief Retained for backwards compatibility.
      *
@@ -303,12 +303,6 @@ class dataPublisher {
      */
     uint8_t _sendOffset;
 
-    /**
-     * @brief TimerPost (ms); How long to wait for a response to a POST before
-     * declaring a timeout
-     */
-    // uint8_t _timerPost_mS;
-
     // Basic chunks of HTTP
     /**
      * @brief the text "GET "
@@ -327,7 +321,17 @@ class dataPublisher {
      */
     static const char* hostHeader;
 
+    /* atl_extension */
+
+    /**
+     * @brief TimerPost (ms); How long to wait for a response to a POST before
+     * declaring a timeout
+     */
+    // uint8_t _timerPost_mS;
+
  public:
+    virtual int16_t storAndPublish();
+
     bool useQueDataSource = false;
     bool virtual setQuedState(bool state, char uniqueId = '0') {
         PRINTOUT(F("dataPublisherBase setQued check"), useQueDataSource);
@@ -353,6 +357,8 @@ class dataPublisher {
         return _timerPost_ms;
     }
 };
+
+/* atl_extension */
 /*
  * HTTP STATUS Codes that are used by Modular Sensors
  * Placed at the end of the file, to facilitate mergein code
@@ -365,5 +371,7 @@ class dataPublisher {
 #define HTTPSTATUS_GT_504 504
 // This is an internaly created error, indicating No Connection with server
 #define HTTPSTATUS_NC_901 901
+// internal error, not enough power to connect with server
+#define HTTPSTATUS_NC_902 902
 
 #endif  // SRC_DATAPUBLISHERBASE_H_

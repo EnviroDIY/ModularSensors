@@ -64,10 +64,7 @@ bool KellerParent::setup(void) {
 
     return retVal;
 }
-// Manage the pins that are used
-void KellerParent::registerPinPowerMng(void (*fn)(bool)) {
-    _pinPowerMngFn = fn;
-}
+
 
 // This turns on sensor power
 void KellerParent::powerUp(void) {
@@ -177,4 +174,10 @@ bool KellerParent::addSingleMeasurementResult(void) {
 
     // Return true when finished
     return success;
+}
+
+/* atl_extension */
+// Manage the pins that are used
+void KellerParent::registerPinPowerMng(void (*fn)(bool)) {
+    _pinPowerMngFn = fn;
 }

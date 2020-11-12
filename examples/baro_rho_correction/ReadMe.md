@@ -8,3 +8,7 @@ The modem used in this example is a SIM800 based Sodaq GPRSBee r6.
 The sensors used in this example are a Maxim DS18 temperature probe, a Bosch BME280 environmental sensor, and a Measurement Specialties MS5803-14BA pressure sensor.
 
 [A detailed section-by-section walkthrough of this example can be found here.](@ref baro_rho_walkthrough)
+
+_______
+
+[//]: # ( @section baro_rho_correction_full The Complete Example Code: )

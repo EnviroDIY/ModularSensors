@@ -10,7 +10,7 @@
  * YosemitechY4000_Cond, YosemitechY4000_pH, YosemitechY4000_Temp,
  * YosemitechY4000_ORP, YosemitechY4000_Chlorophyll, and YosemitechY4000_BGA.
  *
- * These are for the Yosemitech Y4000 MultiParameter Sonde.
+ * These are for the Yosemitech Y4000 multi-parameter sonde.
  *
  * This depends on the YosemitechParent super class.
  *
@@ -18,55 +18,116 @@
  * within the documentation in the YosemitechModbus library at:
  * https://github.com/EnviroDIY/YosemitechModbus
  *
- * These devices output very high "resolution" (32bits) so the resolutions are
- * based on their accuracy, not the resolution of the sensor.
- *
- * More detailed infromation on each variable can be found in the documentaition
+ * More detailed infromation on each variable can be found in the documentation
  * for the individual sensor probes
- *
- * For Dissolved Oxygen:
- *     Resolution is 0.01 mg/L
- *     Accuracy is ± 0.3 mg/L
- *     Range is 0-20mg/L or 0-200% Air Saturation
- *
- * For Turbidity:
- *     Accuracy is ＜5% or 0.3NTU
- *     Range is 0.1~1000 NTU
- *
- * For Conductivity:
- *     Resolution is 0.1 µS/cm
- *     Accuracy is ± 1 % Full Scale
- *     Range is 1 µS/cm to 200 mS/cm
- *
- * For pH:
- *     Resolution is 0.01 pH units
- *     Accuracy is ± 0.1 pH units
- *     Range is 2 to 12 pH units
- *
- * For Temperature:
- *     Resolution is 0.1 °C
- *     Accuracy is ± 0.2°C
- *     Range is 0°C to + 50°C
- *
- * For ORP:
- *     Resolution is 1 mV
- *     Accuracy is ± 20 mV
- *     Range is -999 ~ 999 mV
- *
- * For Chlorophyll:
- *     Resolution is 0.1 µg/L / 0.1 RFU
- *     Accuracy is ± 1 %
- *     Range is 0 to 400 µg/L or 0 to 100 RFU
- *
- * For Blue-Green Algae:
- *     Resolution is 0.01 µg/L / 0.01 RFU
- *     Accuracy is ±  0.04ug/L PC
- *     Range is 0 to 100 µg/L or 0 to 100 RFU
- *
- * Time before sensor responds after power - 275-300ms (use 350 for safety)
- * Time between "StartMeasurement" command and stable reading depends on the
- * indindividual sensor probes, with Y520 Conductivity taking the longest
  */
+/* clang-format off */
+/**
+ * @defgroup y4000_group Yosemitech Y4000 Sonde
+ * Classes for the Yosemitech Y4000 multi-parameter sonde.
+ *
+ * @ingroup yosemitech_group
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section y4000_datasheet Sensor Datasheet
+ * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf)
+ * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
+ *
+ * @section y4000_sensor The Y4000 Sonde Sensor
+ * @ctor_doc{YosemitechY4000, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
+ * @subsection y4000_timing Sensor Timing
+ * - Time before sensor responds after power - 275-300ms (use 350 for safety)
+ * - Time between "StartMeasurement" command and stable reading depends on the
+ * indindividual sensor probes, with the Y520 conductivity sensor taking the
+ * longest.
+ *
+ * @section y4000_domgl Dissolved Oxygen Concentration Output
+ *   - Range is 0-20mg/L or 0-200% Air Saturation
+ *   - Accuracy is ± 0.3 mg/L
+ *   - Result stored in sensorValues[0]
+ *   - Resolution is 0.01 mg/L
+ *   - Reported as milligrams per liter (mg/L)
+ *   - Default variable code is Y4000DOmgL
+ * @variabledoc{y4000_domgl,YosemitechY4000,DOmgL,Y4000DOmgL}
+ *
+ * @section y4000_turb Turbidity Output
+ *   - Range is 0.1~1000 NTU
+ *   - Accuracy is ＜5% or 0.3NTU
+ *   - Result stored in sensorValues[1]
+ *   - Resolution is 0.01 NTU
+ *   - Reported as Nephelometric Turbidity Units (NTU)
+ *   - Default variable code is Y4000Turbidity
+ * @variabledoc{y4000_turb,YosemitechY4000,Turbidity,Y4000Turbidity}
+ *
+ * @section y4000_cond Conductivity Output
+ *   - Range is 1 µS/cm to 200 mS/cm
+ *   - Accuracy is ± 1 % Full Scale
+ *   - Result stored in sensorValues[2]
+ *   - Resolution is 0.1 µS/cm
+ *   - Reported as microsiemens per centimeter (µS/cm)
+ *   - Default variable code is Y4000Cond
+ * @variabledoc{y4000_cond,YosemitechY4000,Cond,Y4000Cond}
+ *
+ * @section y4000_ph pH Output
+ *   - Range is 2 to 12 pH units
+ *   - Accuracy is ± 0.1 pH units
+ *   - Result stored in sensorValues[3]
+ *   - Resolution is 0.01 pH units
+ *   - Reported as dimensionless pH units
+ *   - Default variable code is Y4000pH
+ * @variabledoc{y4000_ph,YosemitechY4000,pH,Y4000pH}
+ *
+ * @section y4000_temp Temperature Output
+ *   - Range is 0°C to + 50°C
+ *   - Accuracy is ± 0.2°C
+ *   - Result stored in sensorValues[4]
+ *   - Resolution is 0.1 °C
+ *   - Reported as degrees Celsius (°C)
+ *   - Default variable code is Y4000Temp
+ * @variabledoc{y4000_temp,YosemitechY4000,Temp,Y4000Temp}
+ *
+ * @section y4000_orp ORP Output
+ *   - Range is -999 ~ 999 mV
+ *   - Accuracy is ± 20 mV
+ *   - Result stored in sensorValues[5]
+ *   - Resolution is 1 mV
+ *   - Reported as millivolts (mV)
+ *   - Default variable code is Y4000Potential
+ * @variabledoc{y4000_orp,YosemitechY4000,ORP,Y4000Potential}
+ *
+ * @section y4000_bga BGA Output
+ *   - Range is 0 to 100 µg/L or 0 to 100 RFU
+ *   - Accuracy is ±  0.04ug/L PC
+ *   - Result stored in sensorValues[7]
+ *   - Resolution is 0.01 µg/L / 0.01 RFU
+ *   - Reported as micrograms per liter (µg/L)
+ *   - Default variable code is Y4000BGA
+ * @variabledoc{y4000_bga,YosemitechY4000,BGA,Y4000BGA}
+ *
+ * @section y4000_chloro Chlorophyll Output
+ *   - Range is 0 to 400 µg/L or 0 to 100 RFU
+ *   - Accuracy is ± 1 %
+ *   - Result stored in sensorValues[6]
+ *   - Resolution is 0.1 µg/L / 0.1 RFU
+ *   - Reported as micrograms per liter (µg/L)
+ *   - Default variable code is Y4000Chloro
+ * @variabledoc{y4000_chloro,YosemitechY4000,Chlorophyll,Y4000Chloro}
+ *
+ * The reported resolution (32 bit) gives far more precision than is significant
+ * based on the specified accuracy of the sensor, so the resolutions kept in the
+ * string representation of the variable values is based on the accuracy not the
+ * maximum reported resolution of the sensor.
+ *
+ *
+ * ___
+ * @section y4000_examples Example Code
+ * The Y4000 Sonde is used in the @menulink{y4000} example.
+ *
+ * @menusnip{y4000}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_YOSEMITECHY4000_H_
@@ -76,20 +137,31 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+
 /// Sensor::_numReturnedValues; the Y4000 can report 8 values.
 #define Y4000_NUM_VARIABLES 8
-/// Sensor::_warmUpTime_ms; the Y4000 warms up in 1600ms.
+/**
+ * @brief Sensor::_warmUpTime_ms; the Y4000 warms up in 1600ms.
+ *
+ * This is the time for communication to begin.
+ */
 #define Y4000_WARM_UP_TIME_MS 1600
-// Time for communication to begin
-/// Sensor::_stabilizationTime_ms; the Y4000 is stable after 60000ms.
+/**
+ * @brief  Sensor::_stabilizationTime_ms; the Y4000 is stable after 60000ms.
+ *
+ * Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
+ */
 #define Y4000_STABILIZATION_TIME_MS 60000
-// Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
-/// Sensor::_measurementTime_ms; the Y4000 takes 3000ms to complete a
-/// measurement.
+/**
+ * @brief Sensor::_measurementTime_ms; the Y4000 takes 3000ms to complete a
+ * measurement.
+ */
 #define Y4000_MEASUREMENT_TIME_MS 3000
 
-/// Decimals places in string representation; dissolved oxygen concentration
-/// should have 2.
+/**
+ * @brief Decimals places in string representation; dissolved oxygen
+ * concentration should have 2.
+ */
 #define Y4000_DOMGL_RESOLUTION 2
 /// Variable number; dissolved oxygen concentration is stored in sensorValues[0]
 #define Y4000_DOMGL_VAR_NUM 0
@@ -119,8 +191,10 @@
 /// Variable number; ORP is stored in sensorValues[5].
 #define Y4000_ORP_VAR_NUM 5
 
-/// Decimals places in string representation; chlorophyll concentration should
-/// have 1.
+/**
+ * @brief Decimals places in string representation; chlorophyll concentration
+ * should have 1.
+ */
 #define Y4000_CHLORO_RESOLUTION 1
 /// Variable number; chlorophyll concentration is stored in sensorValues[6].
 #define Y4000_CHLORO_VAR_NUM 6
@@ -131,10 +205,37 @@
 #define Y4000_BGA_VAR_NUM 7
 
 
-// The main class for the Yosemitech Y4000
+/* clang-format off */
+/**
+ * @brief The Sensor sub-class for the
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000 : public YosemitechParent {
  public:
     // Constructors with overloads
+    /**
+     * @brief Construct a new Yosemitech Y4000 object.
+     *
+     * @param modbusAddress The modbus address of the sensor.
+     * @param stream An Arduino data stream for modbus communication.  See
+     * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
+     * for more information on what streams can be used.
+     * @param powerPin The pin on the mcu controlling power to the Y4000.
+     * Use -1 if it is continuously powered.
+     * @param powerPin2 The pin on the mcu controlling power to the RS485
+     * adapter, if it is different from that used to power the sensor.  Use -1
+     * or omit if not applicable.
+     * @param enablePin The pin on the mcu controlling the direction enable on
+     * the RS485 adapter, if necessary; use -1 or omit if not applicable.
+     * @note An RS485 adapter with integrated flow control is strongly
+     * recommended.
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
     YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
@@ -143,6 +244,9 @@ class YosemitechY4000 : public YosemitechParent {
                            "YosemitechY4000", Y4000_NUM_VARIABLES,
                            Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS,
                            Y4000_MEASUREMENT_TIME_MS) {}
+    /**
+     * @copydoc YosemitechY4000::YosemitechY4000
+     */
     YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin,
                     int8_t powerPin2 = -1, int8_t enablePin = -1,
                     uint8_t measurementsToAverage = 1)
@@ -151,11 +255,22 @@ class YosemitechY4000 : public YosemitechParent {
                            "YosemitechY4000", Y4000_NUM_VARIABLES,
                            Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS,
                            Y4000_MEASUREMENT_TIME_MS) {}
+    /**
+     * @brief Destroy the Yosemitech Y4000 object
+     */
     ~YosemitechY4000() {}
 };
 
 
-// Defines the Dissolved Oxygen Concentration
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [dissolved oxygen concentration output](@ref y4000_domgl) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_DOmgL : public Variable {
  public:
     /**
@@ -164,9 +279,9 @@ class YosemitechY4000_DOmgL : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000DOmgL
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y4000DOmgL".
      */
     explicit YosemitechY4000_DOmgL(YosemitechY4000* parentSense,
                                    const char*      uuid    = "",
@@ -190,7 +305,15 @@ class YosemitechY4000_DOmgL : public Variable {
     ~YosemitechY4000_DOmgL() {}
 };
 
-// Defines the Turbidity
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [turbidity output](@ref y4000_turb) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_Turbidity : public Variable {
  public:
     /**
@@ -199,9 +322,9 @@ class YosemitechY4000_Turbidity : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000Turbidity
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y4000Turbidity".
      */
     explicit YosemitechY4000_Turbidity(YosemitechY4000* parentSense,
                                        const char*      uuid = "",
@@ -225,7 +348,15 @@ class YosemitechY4000_Turbidity : public Variable {
     ~YosemitechY4000_Turbidity() {}
 };
 
-// Defines the Conductivity
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [conductivity output](@ref y4000_cond) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_Cond : public Variable {
  public:
     /**
@@ -234,9 +365,9 @@ class YosemitechY4000_Cond : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000Cond
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y4000Cond".
      */
     explicit YosemitechY4000_Cond(YosemitechY4000* parentSense,
                                   const char*      uuid    = "",
@@ -260,7 +391,15 @@ class YosemitechY4000_Cond : public Variable {
     ~YosemitechY4000_Cond() {}
 };
 
-// Defines the pH
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [pH output](@ref y4000_ph)
+ * from a [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_pH : public Variable {
  public:
     /**
@@ -269,9 +408,9 @@ class YosemitechY4000_pH : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000pH
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y4000pH".
      */
     explicit YosemitechY4000_pH(YosemitechY4000* parentSense,
                                 const char*      uuid    = "",
@@ -293,7 +432,15 @@ class YosemitechY4000_pH : public Variable {
     ~YosemitechY4000_pH() {}
 };
 
-// Defines the Temperature Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref y4000_temp) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_Temp : public Variable {
  public:
     /**
@@ -302,9 +449,9 @@ class YosemitechY4000_Temp : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000Temp
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y4000Temp".
      */
     explicit YosemitechY4000_Temp(YosemitechY4000* parentSense,
                                   const char*      uuid    = "",
@@ -328,7 +475,15 @@ class YosemitechY4000_Temp : public Variable {
     ~YosemitechY4000_Temp() {}
 };
 
-// Defines the Electrode Electrical Potential
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [electrode electrical potential output](@ref y4000_orp) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_ORP : public Variable {
  public:
     /**
@@ -337,9 +492,9 @@ class YosemitechY4000_ORP : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000Potential
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y4000Potential".
      */
     explicit YosemitechY4000_ORP(YosemitechY4000* parentSense,
                                  const char*      uuid    = "",
@@ -363,7 +518,15 @@ class YosemitechY4000_ORP : public Variable {
     ~YosemitechY4000_ORP() {}
 };
 
-// Defines the Chlorophyll Concentration
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [chlorophyll concentration output](@ref y4000_chloro) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group)
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_Chlorophyll : public Variable {
  public:
     /**
@@ -372,9 +535,9 @@ class YosemitechY4000_Chlorophyll : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000Chloro
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y4000Chloro".
      */
     explicit YosemitechY4000_Chlorophyll(YosemitechY4000* parentSense,
                                          const char*      uuid = "",
@@ -399,7 +562,15 @@ class YosemitechY4000_Chlorophyll : public Variable {
     ~YosemitechY4000_Chlorophyll() {}
 };
 
-// Defines the Blue Green Algae (BGA) Concentration
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [blue green algae (BGA) concentration output](@ref y4000_bga) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ *
+ * @ingroup y4000_group
+ */
+/* clang-format on */
 class YosemitechY4000_BGA : public Variable {
  public:
     /**
@@ -408,9 +579,9 @@ class YosemitechY4000_BGA : public Variable {
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable.  Default is an empty string.
-     * @param varCode A short code to help identify the variable in files.
-     * Default is Y4000BGA
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of Y4000BGA
      */
     explicit YosemitechY4000_BGA(YosemitechY4000* parentSense,
                                  const char*      uuid    = "",

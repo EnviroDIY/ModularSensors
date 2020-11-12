@@ -7,3 +7,7 @@ This example should *never* be used directly, but rather taken as a template and
 
 Any line containing the word *MS_BUILD_TESTING* is to help ensure the library builds correctly in all environments.
 Those lines should be removed when using the example on your own board.
+
+_______
+
+[//]: # ( @section menu_a_la_carte_full The Complete Example Code: )

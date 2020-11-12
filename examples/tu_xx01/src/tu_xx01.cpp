@@ -8,6 +8,7 @@ Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
+  Copyright (c) 2020, Neil Hancock
   Copyright (c) 2020, Trout Unlimited, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
@@ -354,9 +355,11 @@ InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower,
 // ==========================================================================
 #ifdef AnalogProcEC_ACT
 #include <sensors/analogElecConductivity.h>
-const int8_t           ECpwrPin   = ECpwrPin_DEF;
-const int8_t           ECdataPin1 = ECdataPin1_DEF;
-analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1);
+const int8_t ECpwrPin   = ECpwrPin_DEF;
+const int8_t ECdataPin1 = ECdataPin1_DEF;
+
+#define EC_RELATIVE_OHMS 100000
+analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1, 1, EC_RELATIVE_OHMS);
 #endif  // AnalogProcEC_ACT
 
 // ==========================================================================
@@ -547,10 +550,12 @@ const int8_t ADSChannel0 = 0;  // The ADS channel of interest
 const int8_t ADSChannel1 = 1;  // The ADS channel of interest
 const int8_t ADSChannel2 = 2;  // The ADS channel of interest
 const int8_t ADSChannel3 = 3;  // The ADS channel of interest
-const float  dividerGain =
-    2;  //  Default 1/gain for grove voltage divider is 10x  assumes Rev001
+const float  dividerGain = 10;  // Gain RevR02 1/Gain 1M+100K
+// With gain=11 Reading 4.3, and actually 4.154
+//    2;  //  Gain RevR01  1/gain for grove voltage divider is 10x
+
 const uint8_t ADSi2c_addr    = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1;     // Only read one sample
+const uint8_t VoltReadsToAvg = 2;     // Only read one sample
 
 // Create an External Voltage sensor object
 ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
@@ -562,11 +567,65 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 //                         VoltReadsToAvg);
 // ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0,
 // ADSi2c_addr, VoltReadsToAvg);
-
-// Create a voltage variable pointer
-// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt,
-// "12345678-abcd-1234-ef00-1234567890ab");
+#define USE_EXT_BATTERY_ADC
+#if defined USE_EXT_BATTERY_ADC
+// Create a capability to read the battery Voltage asynchronously,
+// and have that voltage used on logging event
+Variable* kBatteryVoltage_V = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
+float     batteryLion_V;
+// This has bee calculated from the ADS1115 input impedance type 6Mohms in
+// parrallel 1Mohms
+#define FUDGE_ADC_IMPEDANCE 1.035
+//#define FUDGE_ADC_IMPEDANCE 1.0
+float kBatteryVoltage_worker(void) {  // get the Battery Reading
+    // Get new reading
+    batteryLion_V = kBatteryVoltage_V->getValue(true) * FUDGE_ADC_IMPEDANCE;
+    // float depth_ft = convert_mtoFt(depth_m);
+    MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
+    return batteryLion_V;
+}
+float getBatteryVoltage_V(void) {
+    return batteryLion_V;
+}
+// Setup the object that does the operation
+Variable* kBatteryVoltage_var =
+    new Variable(getBatteryVoltage_V,  // function that does the calculation
+                 2,                    // resolution
+                 "batteryVoltage",     // var name. This must be a value from
+                                    // http://vocabulary.odm2.org/variablename/
+                 "volts",  // var unit. This must be a value from This must be a
+                           // value from http://vocabulary.odm2.org/units/
+                 "extVolt0",  // var code
+                 ExternalVoltage_Volt0_UUID);
+#endif  // USE_EXT_BATTERY_ADC
 #endif  // ExternalVoltage_ACT
+
+#if defined USE_EXT_BATTERY_ADC
+#define mcuBoardExtBattery() mcuBoard.setBatteryV(kBatteryVoltage_worker());
+#else
+#define mcuBoardExtBattery()
+#endif  // USE_EXT_BATTERY_ADC
+#if defined ProcVolt_ACT
+// ==========================================================================
+//    Internal  ProcessorAdc
+// ==========================================================================
+#include <sensors/processorAdc.h>
+const int8_t  procVoltPower      = -1;
+const uint8_t procVoltReadsToAvg = 1;  // Only read one sample
+
+#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
+// Only support Mayfly rev5 10M/2.7M &  10bit ADC (3.3Vcc / 1023)
+const int8_t sensor_Vbatt_PIN    = A6;
+const float  procVoltDividerGain = 4.7;
+#else
+#error define other processors ADC pins here
+#endif  //
+processorAdc sensor_batt_V(procVoltPower, sensor_Vbatt_PIN, procVoltDividerGain,
+                           procVoltReadsToAvg);
+// processorAdc sensor_V3v6_V(procVoltPower, sensor_V3V6_PIN,
+// procVoltDividerGain, procVoltReadsToAvg);
+
+#endif  // ProcVolt_ACT
 
 // ==========================================================================
 // Creating Variable objects for those values for which we're reporting in
@@ -648,12 +707,15 @@ Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+#if defined ProcVolt_ACT
+    new processorAdc_Volt(&sensor_batt_V, ProcVolt0_UUID),
+#endif  // ProcVolt_ACT
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
     new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
 #if defined(ExternalVoltage_Volt0_UUID)
-    new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
+// kBatteryVoltage_var,
 #endif
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
@@ -778,6 +840,61 @@ float getBatteryVoltage() {
     return mcuBoard.sensorValues[0];
 }
 
+/**
+ * @brief Check if battery can provide power for action to be performed.
+ *
+ * @param reqBatState  On of ps_Lbatt_status_t
+ *   LB_PWR_USEABLE_REQ forces a battery voltage reading
+ *   all other requests use this reading
+ *
+ *   Customized per type of sensor configuration
+ *
+ * @return **bool *** True if power available, else false
+ */
+ps_Lbatt_status_t Lbatt_status = PS_LBATT_UNUSEABLE_STATUS;
+
+bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
+    bool retResult = true;
+
+    switch (reqBatState) {
+        case LB_PWR_USEABLE_REQ: mcuBoardExtBattery();  // Read battery votlage
+        default:
+            // Check battery status
+            Lbatt_status = mcuBoard.isBatteryStatusAbove(true,
+                                                         PS_PWR_USEABLE_REQ);
+            if (PS_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
+                PRINTOUT(F("---All  CANCELLED--Lbatt_V="));
+                retResult = false;
+            }
+            MS_DBG(F(" isBatteryChargeGoodEnoughU "), retResult,
+                   mcuBoard.getBatteryVm1(false), F("V status"), Lbatt_status,
+                   reqBatState);
+            break;
+
+        case LB_PWR_SENSOR_USE_REQ:
+
+// heavy power sensors ~ use PS_PWR_LOWSTATUS
+#if 0
+            if (PS_LBATT_LOW_STATUS >= Lbatt_status) {
+                retResult = false;
+                PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="))                         ;
+            }
+#endif
+
+            MS_DBG(F(" isBatteryChargeGoodEnouSnsr"), retResult);
+            break;
+
+        case LB_PWR_MODEM_USE_REQ:
+            // WiFi PS_LBATT_MEDIUM_STATUS
+            // Cell (PS_LBATT_HEAVY_STATUS
+            if (PS_LBATT_HEAVY_STATUS > Lbatt_status) { retResult = false; }
+            MS_DBG(F(" isBatteryChargeGoodEnoughTx"), retResult);
+            // modem sensors PS_PWR_LOW_REQ
+            break;
+    }
+    return retResult;
+}
+
 // ==========================================================================
 // Manages the Modbus Physical Pins.
 // Pins pulled high when powered off will cause a ghost power leakage.
@@ -852,6 +969,8 @@ void setup() {
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {}
 #endif
 
+    if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
+
     // Start the primary serial connection
     Serial.begin(serialBaud);
     Serial.print(F("\n---Boot. Sw Build: "));
@@ -875,8 +994,14 @@ void setup() {
     unusedBitsMakeSafe();
     readAvrEeprom();
 
+    // set up for escape out of battery check if too low.
+    // If buttonPress then exit.
+    // Button is read inactive as low
+    bool UserButtonAct = false;
+
     // A vital check on power availability
     do {
+        mcuBoardExtBattery();
         LiBattPower_Unseable =
             ((PS_LBATT_UNUSEABLE_STATUS ==
               mcuBoard.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ))
@@ -901,9 +1026,9 @@ void setup() {
             delay(1000);  // debug
             SerialStd.println(F("----Wakeup"));
         }
-    } while (LiBattPower_Unseable);
-    SerialStd.print(F("Good BatV="));
-    SerialStd.println(mcuBoard.getBatteryVm1(false));
+        if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
+    } while (LiBattPower_Unseable && !UserButtonAct);
+    PRINTOUT(F("Good BatV="), batteryLion_V);
 
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
@@ -984,29 +1109,39 @@ void setup() {
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
-    while ((PS_LBATT_UNUSEABLE_STATUS ==
-            mcuBoard.isBatteryStatusAbove(true, PS_PWR_LOW_REQ))) {
-        MS_DBG(F("Not enough power to sync with NIST "),
-               mcuBoard.getBatteryVm1(false), F("Need"), PS_PWR_LOW_REQ);
-        dataLogger.systemSleep();
-    }
+    mcuBoardExtBattery();
+#define LiIon_BAT_REQ PS_PWR_MEDIUM_REQ
+    MS_DBG(F("Check power to sync with NIST "), mcuBoard.getBatteryVm1(false),
+           F("Req"), LiIon_BAT_REQ, F("Got"),
+           mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ));
+    if ((PS_LBATT_UNUSEABLE_STATUS !=
+         mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ))) {
+        MS_DBG(F("Sync with NIST as have enough power"));
+
 #if defined DigiXBeeWifi_Module
-    // For the WiFi module, it may not be configured if no nscfg.ini file
-    // present,
-    // this supports the standalone logger, but need to get time at
-    // factory/ms_cfg.ini present
-    uint8_t cmp_result = modemPhy.getWiFiId().compareTo(wifiId_def);
-    // MS_DBG(F("cmp_result="),cmp_result,"
-    // ",modemPhy.getWiFiId(),"/",wifiId_def);
-    if (!(cmp_result == 0)) {
-        SerialStd.print(F("Sync with NIST over WiFi network "));
-        SerialStd.println(modemPhy.getWiFiId());
-        dataLogger.syncRTC();  // Will also set up the modemPhy
-    }
+        // For the WiFi module, it may not be configured if no nscfg.ini file
+        // present,
+        // this supports the standalone logger, but need to get time at
+        // factory/ms_cfg.ini present
+        uint8_t cmp_result = modemPhy.getWiFiId().compareTo(wifiId_def);
+        // MS_DBG(F("cmp_result="),cmp_result,"
+        // ",modemPhy.getWiFiId(),"/",wifiId_def);
+        if (!(cmp_result == 0)) {
+            SerialStd.print(F("Sync with NIST over WiFi network "));
+            SerialStd.println(modemPhy.getWiFiId());
+            dataLogger.syncRTC();  // Will also set up the modemPhy
+        }
 #else
-    MS_DBG(F("Sync with NIST "));
-    dataLogger.syncRTC();  // Will also set up the modemPhy
+        MS_DBG(F("Sync with NIST "));
+        dataLogger.syncRTC();  // Will also set up the modemPhy
 #endif  // DigiXBeeWifi_Module
+        MS_DBG(F("Set modem to sleep"));
+        modemPhy.disconnectInternet();
+        modemPhy.modemSleepPowerDown();
+    } else {
+        MS_DBG(F("Skipped sync with NIST as not enough power "),
+               mcuBoard.getBatteryVm1(false), F("Need"), LiIon_BAT_REQ);
+    }
 #endif  // UseModem_Module
     // List start time, if RTC invalid will also be initialized
     PRINTOUT(F("Time "),
@@ -1032,7 +1167,7 @@ void setup() {
     dataLogger.createLogFile(true);  // true = write a new header
     dataLogger.turnOffSDcard(
         true);  // true = wait for internal housekeeping after write
-
+    dataLogger.setBatHandler(&isBatteryChargeGoodEnough);
     MS_DBG(F("\n\nSetup Complete ****"));
 }
 
@@ -1042,38 +1177,6 @@ void setup() {
 // ==========================================================================
 
 void loop() {
-    ps_Lbatt_status_t Lbatt_status;
-    Lbatt_status = mcuBoard.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ);
-    if (PS_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
-        PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="),
-                 mcuBoard.getBatteryVm1(false));
-        dataLogger.systemSleep();
-    }
-    // If battery low, log data but don't send it over the modemPhy
-    // clang-format off
-    else
-#if defined UseModem_PushData
-        if (PS_LBATT_LOW_STATUS >= Lbatt_status)
-#endif  // UseModem_PushData
-        {
-#if defined UseModem_PushData
-            PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
-                 F(" LogOnly. V too low batteryV="),
-                 mcuBoard.getBatteryVm1(false), F(" Lbatt="), Lbatt_status);
-#else
-        PRINTOUT(F("Collect readings & log. batteryV="),
-                 mcuBoard.getBatteryVm1(false), F(" status="), Lbatt_status);
-#endif  // UseModem_PushData
-            dataLogger.logData();
-        }
-#if defined UseModem_PushData
-        // If the battery is good, send the data to the world
-    else {
-        PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
-                 F(" log&Pub V_batt"), mcuBoard.getBatteryVm1(false),
-                 F(" Lbatt="), Lbatt_status);
-        dataLogger.logDataAndPublish();
-    }
-#endif  // UseModem_PushData
-    // clang-format on
+    dataLogger.logDataAndPubReliably();
 }
+

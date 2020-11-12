@@ -47,8 +47,6 @@
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
 #include <Sodaq_DS3231.h>
 #endif
-#define HOURS_TO_SECS 3600
-// SECONDS_FROM_1970_TO_2000 946684800
 
 /**
  * @brief January 1, 2000 00:00:00 in "epoch" time
@@ -58,12 +56,13 @@
  * epoch beginning 1970-jan-01 00:00:00.
  */
 #define EPOCH_TIME_OFF 946684800
+// SECONDS_FROM_1970_TO_2000 946684800
 // This is 2000-jan-01 00:00:00 in "epoch" time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
 // timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
 // epoch beginning 1970-jan-01 00:00:00.
-#define EPOCH_TIME_20200101_SECS 1577836800
-#define EPOCH_TIME_20250101_SECS 1735689600
+
+#define HOURS_TO_SECS 3600
 
 #include <SdFat.h>  // To communicate with the SD card
 #if defined BOARD_SDQ_QSPI_FLASH
@@ -74,6 +73,13 @@
 #endif  // USE_TINYUSB
 typedef int (*ini_handler_atl485)(const char* section, const char* name,
                                   const char* value);
+typedef enum {
+    LB_PWR_USEABLE_REQ = 0,
+    LB_PWR_SENSOR_USE_REQ,
+    LB_PWR_MODEM_USE_REQ,
+    LB_PWR_END
+} lb_pwr_req_t;
+typedef bool (*bat_handler_atl)(lb_pwr_req_t reqBatState);
 // The largest number of variables from a single sensor
 
 /**
@@ -195,7 +201,7 @@ class Logger {
      * @brief Set the universally unique identifier (UUID or GUID) of the
      * sampling feature.
      *
-     * @param samplingFeatureUUID a pointer to the sampling feature UUID
+     * @param samplingFeatureUUID A pointer to the sampling feature UUID
      */
     void setSamplingFeatureUUID(const char* samplingFeatureUUID);
     /**
@@ -485,8 +491,7 @@ class Logger {
      * @brief Use the attahed loggerModem to synchronize the real-time clock
      * with NIST time servers.
      *
-     * @return **true** Indicates clock synchronization was successful
-     * @return **false** Clock was not successfully synchronized
+     * @return **bool** True if clock synchronization was successful
      */
     bool syncRTC();
 
@@ -522,11 +527,6 @@ class Logger {
      * @brief An array of all of the attached data publishers
      */
     dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
-
-    /**
-     * @brief Active instance of the attached data publishers
-     */
-    uint8_t        _dataPubInstance;
 
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
@@ -617,10 +617,6 @@ class Logger {
     static RTCZero zero_sleep_rtc;
 #endif
 
-    static uint32_t getNowEpochT0(void);  // Get Epoch standard UST
-    static uint32_t getNowEpochTz(void);  // Get Epoch with time zone offset
-    static void     setNowEpochT0(uint32_t ts);  // Set Epoch with standard UST
-    // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
     /**
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
@@ -641,9 +637,6 @@ class Logger {
      * @param ts The number of seconds since 1970.
      */
     static void setNowEpoch(uint32_t ts);
-
-    static DateTime dtFromEpochT0(uint32_t epochTime);
-    static DateTime dtFromEpochTz(uint32_t epochTime);
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
@@ -681,27 +674,29 @@ class Logger {
      * clock to the given time.
      *
      * @param UTCEpochSeconds The number of seconds since 1970 in UTC.
-     * @return **true** The input timestamp passes sanity checks and the clock
-     * has been set.
-     * @return **false** Either the input timestamp fails sanity range checking
-     * or the clock was not set successfully.
+     * @return **bool** True if the input timestamp passes sanity checks **and**
+     * the clock has been successfully set.
      */
     bool setRTClock(uint32_t UTCEpochSeconds);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
-     * @return **true** Current time on the RTC passes sanity range checking
-     * @return **false** Current time on the RTC is obvioiusly incorrect
+     * To be sane the clock  must be between 2020 and 2025.
+     *
+     * @return **bool** True if the current time on the RTC passes sanity range
+     * checking
      */
     static bool isRTCSane(void);
     /**
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
      *
+     * To be sane the clock  must be between 2020 and
+     * EPOCH_TIME_UPPER_SANITY_SECS.
+     *
      * @param epochTime The epoch time to be checked.
-     * @return **true** The given time passes sanity range checking.
-     * @return **false** The given time does not pass sanity range checking.
+     * @return **bool** True if the given time passes sanity range checking.
      */
     static bool isRTCSane(uint32_t epochTime);
 
@@ -720,30 +715,25 @@ class Logger {
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
      *
-     * @return **true** The current time on the RTC is an even interval of the
-     * logging rate.
-     * @return **false** The current time on the RTC is NOT an even interval of
-     * the logging rate.
+     * @return **bool** True if the current time on the RTC is an even interval
+     * of the logging rate.
      */
-    uint8_t       checkInterval(void);
+    uint8_t       checkInterval(void); /* atl_extension */
     const uint8_t CIA_NOACTION      = 0x0;
     const uint8_t CIA_NEW_READING   = 0x01;
     const uint8_t CIA_POST_READINGS = 0x02;
-
+    const uint8_t CIA_RLB_READINGS  = 0x04;
 
     /**
-     * @brief Check if the MARKED time is an even interval of the logging
-     * rate - That is the value saved in the static variable
-     * markedEpochTime.
+     * @brief Check if the MARKED time is an even interval of the logging rate -
+     * That is the value saved in the static variable markedEpochTime.
      *
-     * This should be used in conjunction with markTime() to ensure that
-     * all data outputs from a single data update session (SD, EnviroDIY,
-     * serial printing, etc) have the same timestamp even though the update
-     * routine may take several (or many) seconds.
+     * This should be used in conjunction with markTime() to ensure that all
+     * data outputs from a single data update session (SD, EnviroDIY, serial
+     * printing, etc) have the same timestamp even though the update routine may
+     * take several (or many) seconds.
      *
-     * @return **true** The marked time is an even interval of the
-     * logging rate.
-     * @return **false** The marked time is NOT an even interval of the
+     * @return **bool** True if the marked time is an even interval of the
      * logging rate.
      */
     bool checkMarkedInterval(void);
@@ -774,8 +764,8 @@ class Logger {
      * @brief Set up the Interrupt Service Request for waking
      *
      * In this case, we're doing nothing, we just want the processor to wake.
-     * This must be a static function (which means it can only call other
-     * static funcions.)
+     * This must be a static function (which means it can only call other static
+     * funcions.)
      */
     static void wakeISR(void);
 
@@ -785,7 +775,7 @@ class Logger {
      *
      * @note This DOES NOT sleep or wake the sensors!!
      */
-    void systemSleep(uint8_t sleep_min = 0);
+    void systemSleep(uint8_t sleep_min = 0); /* atl_extension */
 
 #if defined(ARDUINO_ARCH_SAMD)
     /**
@@ -864,14 +854,13 @@ class Logger {
      *
      * The filename will be the value specified in the function.  If desired, a
      * header will also be written to the file based on the variable information
-     * from the variable array. This can be used to force a logger to create a
+     * from the variable array.  This can be used to force a logger to create a
      * file with a secondary file name.
      *
      * @param filename The name of the file to create
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **true** The file was successfully created.
-     * @return **false** The file was NOT sucessfully created.
+     * @return **bool** True if the file was successfully created.
      */
     bool createLogFile(String& filename, bool writeDefaultHeader = false);
     /**
@@ -885,8 +874,7 @@ class Logger {
      *
      * @param writeDefaultHeader True to write a header to the file, default is
      * false
-     * @return **true** The file was successfully created.
-     * @return **false** The file was NOT sucessfully created.
+     * @return **bool** True if the file was successfully created.
      */
     bool createLogFile(bool writeDefaultHeader = false);
 
@@ -900,10 +888,8 @@ class Logger {
      *
      * @param filename The name of the file to write to
      * @param rec The line to be written to the file
-     * @return **true** The file was successfully accessed or created and data
-     * appended to it.
-     * @return **false** The file could not be accessed or data could not be
-     * written to it.
+     * @return **bool** True if the file was successfully accessed or created
+     * _and_ data appended to it.
      */
     bool logToSD(String& filename, String& rec);
     /**
@@ -915,10 +901,8 @@ class Logger {
      * modified and accessed timestamps of the file to the current time.
      *
      * @param rec The line to be written to the file
-     * @return **true** The file was successfully accessed or created and data
-     * appended to it.
-     * @return **false** The file could not be accessed or data could not be
-     * written to it.
+     * @return **bool** True if the file was successfully accessed or created
+     * _and_ data appended to it.
      */
     bool logToSD(String& rec);
     /**
@@ -930,10 +914,8 @@ class Logger {
      * attempt to create the file and add a header to it.  Set the modified and
      * accessed timestamps of the file to the current time.
      *
-     * @return **true** The file was successfully accessed or created and data
-     * appended to it.
-     * @return **false** The file could not be accessed or data could not be
-     * written to it.
+     * @return **bool** True if the file was successfully accessed or created
+     * _and_ data appended to it.
      */
     bool logToSD(void);
 
@@ -943,7 +925,6 @@ class Logger {
      * @brief An internal reference to SdFat for SD card control
      */
     SdFat sd1_card_fatfs;
-    ;
     /**
      * @brief An internal reference to an SdFat file instance
      */
@@ -959,8 +940,7 @@ class Logger {
      * We run this check before every communication with the SD card to prevent
      * hanging.
      *
-     * @return **true** The SD card is ready
-     * @return **false** The SD card is not available to be written to
+     * @return **bool** True if the SD card is ready
      */
     bool initializeSDCard(void);
 
@@ -988,10 +968,10 @@ class Logger {
      * @param createFile True to create the file if it did not already exist
      * @param writeDefaultHeader True to add a header to the file if it is
      * created
-     * @return **true** If a file was successfully opened or created.
-     * @return **false** If the file was NOT successfully opened or created.
+     * @return **bool** True if a file was successfully opened or created.
      */
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
+
 
     // ===================================================================== //
     // Public functions for a "sensor testing" mode
@@ -1021,6 +1001,7 @@ class Logger {
      */
     virtual void testingMode();
 
+
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
@@ -1040,7 +1021,7 @@ class Logger {
      * constructor.
      * @param inputArray A variableArray object instance providing data to be
      * logged.  This is NOT an array of variables, but an object of the variable
-     * array class. Supplying a variableArray object here will override any
+     * array class.  Supplying a variableArray object here will override any
      * value given in the constructor.
      */
     virtual void begin(const char* loggerID, uint16_t loggingIntervalMinutes,
@@ -1054,7 +1035,7 @@ class Logger {
      *
      * @param inputArray A variableArray object instance providing data to be
      * logged.  This is NOT an array of variables, but an object of the variable
-     * array class. Supplying a variableArray object here will override any
+     * array class.  Supplying a variableArray object here will override any
      * value given in the constructor.
      */
     virtual void begin(VariableArray* inputArray);
@@ -1103,6 +1084,37 @@ class Logger {
      */
     static volatile bool startTesting;
 
+    /* atl_extension */
+ protected:
+    /**
+     * @brief Active instance of the attached data publishers
+     */
+    uint8_t _dataPubInstance;
+
+ public:
+    /**
+     * @brief Get Epoch Time with no offsets
+     */
+    static uint32_t getNowEpochT0(void);
+    /**
+     * @brief Get Epoch time with zone offset
+     */
+    static uint32_t getNowEpochTz(void);
+    /**
+     * @brief Set Epoch time with no offsets
+     */
+    static void setNowEpochT0(uint32_t ts);  // Set Epoch with standard UST
+    // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
+    /**
+     * @brief DateTime from epoch time
+     */
+    static DateTime dtFromEpochT0(uint32_t epochTime);
+    /**
+     * @brief DateTime from epoch time with local time zone offset
+     */
+    static DateTime dtFromEpochTz(uint32_t epochTime);
+
+ public:
 #include "LoggerBaseHextClass.h"
 };
 

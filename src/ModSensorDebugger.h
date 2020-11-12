@@ -22,7 +22,7 @@
 /**
  * @brief The current library version number
  */
-#define MODULAR_SENSORS_VERSION "0.25.0"
+#define MODULAR_SENSORS_VERSION "0.25.1"
 
 #ifndef STANDARD_SERIAL_OUTPUT
 // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
@@ -141,7 +141,7 @@ static void MS_DBG(T head, Args... tail) {
  *
  * The name of the header file calling the print command is appended to the end
  * of the text.
- * */
+ */
 #define MS_DBG(...)
 /**
  * @brief Initializes a variable called start with the current processor millis.

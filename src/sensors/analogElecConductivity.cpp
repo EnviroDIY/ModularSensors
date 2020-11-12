@@ -2,6 +2,7 @@
  * @file analogElecConductivity.cpp
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library
+ * @copyright 2020 Neil Hancock
  *
  * * @brief This encapsulates an Electrical Conductivity sensors using an anlog
  *input and onboard ADC and ADC ref.
@@ -41,6 +42,10 @@
 #define BOARD "Feather M0 Express"
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define BOARD "Feather M4 Express"
+#elif defined(adafruit_pygamer_advance_m4)
+#define BOARD "adafruit_pygamer_advance_m4"
+#elif defined(WIO_TERMINAL)
+#define BOARD "WIO TERMINAL"
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
 #define BOARD "Mega Adk"
@@ -94,7 +99,8 @@
 
 // For Mayfly version; the battery resistor depends on it
 analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin,
-                                               uint8_t measurementsToAverage)
+                                               uint8_t measurementsToAverage,
+                                               float   Rseries_ohms)
     : Sensor("analogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
@@ -104,6 +110,7 @@ analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin,
     _EcPowerPin            = powerPin;
     _EcAdcPin              = dataPin;
     _ptrWaterTemperature_C = NULL;
+    _Rseries_ohms          = Rseries_ohms;
     /* #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) ||
      defined(ARDUINO_AVR_SODAQ_MBILI) _EcAdcPin = A6; #elif
      defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) ||
@@ -184,7 +191,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
         sensorEC_adc =
             1;  // Prevent underflow, can never be EC_SENSOR_ADC_RANGE
 
-    Rwater_ohms = Rseries_ohms /
+    Rwater_ohms = _Rseries_ohms /
         (((float)EC_SENSOR_ADC_RANGE / (float)sensorEC_adc) - 1);
 
     /* The Rwater is an absolute value, but is based on a defined size of the
@@ -193,7 +200,7 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
      */
     EC_uScm = 1000000 / (Rwater_ohms * sensorEC_Konst);
 
-    //*************Compensating For Temperaure********************//
+    //*************Compensating For Temperature********************//
     if (NULL != _ptrWaterTemperature_C) {
         EC25_uScm = EC_uScm /
             (1 + TemperatureCoef * (*_ptrWaterTemperature_C - 25.0));

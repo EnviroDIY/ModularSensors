@@ -122,7 +122,7 @@ void ThingSpeakPublisher::begin(Logger&     baseLogger,
 
 // This sends the data to ThingSpeak
 // bool ThingSpeakPublisher::mqttThingSpeak(void)
-int16_t ThingSpeakPublisher::publishData(Client* _outClient) {
+int16_t ThingSpeakPublisher::publishData(Client* outClient) {
     bool retVal = false;
 
     // Make sure we don't have too many fields
@@ -144,7 +144,7 @@ int16_t ThingSpeakPublisher::publishData(Client* _outClient) {
     strcat(topicBuffer, _thingSpeakChannelKey);
     MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
 
-    emptyTxBuffer();  // TODO: njh check, seems wrong
+    emptyTxBuffer();
 
     _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime)
         .toCharArray(tempBuffer, 26);
@@ -164,7 +164,7 @@ int16_t ThingSpeakPublisher::publishData(Client* _outClient) {
     MS_DBG(F("Message ["), strlen(txBuffer), F("]:"), String(txBuffer));
 
     // Set the client connection parameters
-    _mqttClient.setClient(*_outClient);
+    _mqttClient.setClient(*outClient);
     _mqttClient.setServer(mqttServer, mqttPort);
 
     // Make sure any previous TCP connections are closed
@@ -173,7 +173,7 @@ int16_t ThingSpeakPublisher::publishData(Client* _outClient) {
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
     // client is connected when a different socket is open
-    if (_outClient->connected()) { _outClient->stop(); }
+    if (outClient->connected()) { outClient->stop(); }
 
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for

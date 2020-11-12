@@ -88,7 +88,7 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void) {
 
 
 bool DigiXBeeCellularTransparent::extraModemSetup(void) {
-    bool   success = true;
+    bool success = true;
     String ui_vers;
     /** First run the TinyGSM init() function for the XBee. */
     MS_DBG(F("Initializing the XBee..."));
@@ -327,7 +327,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
         // Logger::setRTClock(time_epoch_sec); ////#include "LoggerBase.h"
         // PRINTOUT(F("Startup Time & thrownaway "),time_epoch_sec,"sec" ); /**/
 
-        // Exit command mode
+        /** Finally, exit command mode. */
         gsmModem.exitCommand();
     } else {
         success = false;

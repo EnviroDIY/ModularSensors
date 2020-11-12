@@ -1,0 +1,33 @@
+/**
+@page faq_page FAQs
+
+Here are some links to pages with more detailed information about some common issues with the ModularSensors library.
+
+@subpage processor_compatibility
+
+@subpage arduino_streams
+
+@subpage power_parasites
+
+@subpage memory_use
+
+@subpage code_debugging
+
+@subpage for_developers
+
+[TinyGSM Troubleshooting page](https://github.com/vshymanskyy/TinyGSM#troubleshooting)
+*/
+
+/**
+@page other_reading_page Other Reading
+
+Here are links to detailed information about the various supported sensors and modems.
+
+@subpage sensor_notes_page
+
+@subpage modem_notes_page
+
+@subpage wiki_home
+
+@subpage wiki_sidebar
+*/

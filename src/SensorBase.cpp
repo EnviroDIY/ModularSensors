@@ -425,13 +425,7 @@ bool Sensor::update(void) {
     return ret_val;
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-int digitalRdMir(uint32_t ulPin);
-#ifdef __cplusplus
-}
-#endif
+
 // This is a helper function to check if the power needs to be turned on
 bool Sensor::checkPowerOn(bool debug) {
     if (debug) {

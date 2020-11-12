@@ -10,6 +10,7 @@
 
 #include "processorAdc.h"
 #include "ms_cfg.h"
+
 //#include <Adafruit_ADS1015.h>
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define BOARD "EnviroDIY Mayfly"
@@ -42,6 +43,10 @@
 #define BOARD "Feather M0 Express"
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define BOARD "Feather M4 Express"
+#elif defined(adafruit_pygamer_advance_m4)
+#define BOARD "adafruit_pygamer_advance_m4"
+#elif defined(WIO_TERMINAL)
+#define BOARD "WIO TERMINAL"
 // Arduino boards
 /* #elif defined(ARDUINO_AVR_ADK)
     #define BOARD "Mega Adk"
@@ -127,7 +132,9 @@ bool processorAdc::addSingleMeasurementResult(void) {
         analogReference(ProcAdcDef_Reference);  // VDDANA = 3V3
 #endif                                          // ARDUINO_ARCH_AVR
         uint8_t useAdcChannel = _adcChannel;
+        uint8_t adcPort       = _adcChannel;
 #if defined ARD_ANALOLG_EXTENSION_PINS
+#include <WVariant.h>
         if ((thisVariantNumPins + ARD_DIGITAL_EXTENSION_PINS) < _adcChannel) {
             // ARD_COMMON_PIN on SAMD51
             if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
@@ -138,6 +145,7 @@ bool processorAdc::addSingleMeasurementResult(void) {
                 // useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
             }
         }
+        adcPort = ARD_ANLAOG_MULTIPLEX_PIN;
 
 #endif  // ARD_ANALOLG_EXTENSION_PINS
         // Create an Auxillary ADD object
@@ -145,10 +153,12 @@ bool processorAdc::addSingleMeasurementResult(void) {
         // the ADC may set the gain appropriately without effecting others.
 
         // *** Trial to check the results of two reads
-        uint32_t rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
+        uint32_t rawAdc = analogRead(adcPort);
         MS_DBG(F("  1stpass_adc("), rawAdc);
-        rawAdc = analogRead(ARD_ANLAOG_MULTIPLEX_PIN);
+        rawAdc = analogRead(adcPort);
+#if defined ARD_ANALOLG_EXTENSION_PINS
         digitalWrite(useAdcChannel, 0);
+#endif  // ARD_ANALOLG_EXTENSION_PINS
 #define PROCADC_REF_V 3.3
 #define PROCADC_RANGE_MIN_V -0.3
         adcVoltage = (PROCADC_REF_V / ProcAdc_Max) * (float)rawAdc;
