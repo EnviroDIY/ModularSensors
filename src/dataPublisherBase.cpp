@@ -109,6 +109,7 @@ void dataPublisher::printTxBuffer(Stream* stream, bool addNewLine) {
     emptyTxBuffer();
 }
 
+
 int16_t
 dataPublisher::storAndPublish() {  // superseded ~ put in LoggerBaseExtCpp.h
     // Determine if file already exists
@@ -149,6 +150,7 @@ dataPublisher::storAndPublish() {  // superseded ~ put in LoggerBaseExtCpp.h
     publishData();
     return 1;
 }
+
 
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData() {

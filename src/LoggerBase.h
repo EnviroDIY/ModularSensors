@@ -47,8 +47,6 @@
 #elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
 #include <Sodaq_DS3231.h>
 #endif
-#define HOURS_TO_SECS 3600
-// SECONDS_FROM_1970_TO_2000 946684800
 
 /**
  * @brief January 1, 2000 00:00:00 in "epoch" time
@@ -58,11 +56,13 @@
  * epoch beginning 1970-jan-01 00:00:00.
  */
 #define EPOCH_TIME_OFF 946684800
+// SECONDS_FROM_1970_TO_2000 946684800
 // This is 2000-jan-01 00:00:00 in "epoch" time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
 // timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
 // epoch beginning 1970-jan-01 00:00:00.
 
+#define HOURS_TO_SECS 3600
 
 #include <SdFat.h>  // To communicate with the SD card
 #if defined BOARD_SDQ_QSPI_FLASH

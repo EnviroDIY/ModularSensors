@@ -357,6 +357,7 @@ InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower,
 #include <sensors/analogElecConductivity.h>
 const int8_t ECpwrPin   = ECpwrPin_DEF;
 const int8_t ECdataPin1 = ECdataPin1_DEF;
+
 #define EC_RELATIVE_OHMS 100000
 analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1, 1, EC_RELATIVE_OHMS);
 #endif  // AnalogProcEC_ACT
@@ -1178,42 +1179,4 @@ void setup() {
 void loop() {
     dataLogger.logDataAndPubReliably();
 }
-#if 0
-void loop() {
-    ps_Lbatt_status_t Lbatt_status;
-    mcuBoardExtBattery();
-    Lbatt_status = mcuBoard.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ);
-    if (PS_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
-        PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="),
-                 mcuBoard.getBatteryVm1(false));
-        dataLogger.systemSleep();
-    }
-    // If battery low, log data but don't send it over the modemPhy
-    // clang-format off
-    else
-#if defined UseModem_PushData
-        if (PS_LBATT_MEDIUM_STATUS > Lbatt_status)
-#endif  // UseModem_PushData
-        {
-#if defined UseModem_PushData
-            PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
-                 F(" LogOnly. V too low batteryV="),
-                 mcuBoard.getBatteryVm1(false), F(" Lbatt="), Lbatt_status);
-#else
-        PRINTOUT(F("Collect readings & log. batteryV="),
-                 mcuBoard.getBatteryVm1(false), F(" status="), Lbatt_status);
-#endif  // UseModem_PushData
-            dataLogger.logData();
-        }
-#if defined UseModem_PushData
-        // If the battery is good, send the data to the world
-    else {
-        PRINTOUT(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()),
-                 F(" log&Pub V_batt"), mcuBoard.getBatteryVm1(false),
-                 F(" Lbatt="), Lbatt_status);
-        dataLogger.logDataAndPubReliably();
-    }
-#endif  // UseModem_PushData
-    // clang-format on
-}
-#endif  // 0
+

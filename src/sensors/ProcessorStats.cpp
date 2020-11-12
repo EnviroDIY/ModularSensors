@@ -45,6 +45,7 @@
 #define BOARD "WIO_TERMINAL"
 #elif defined(adafruit_pygamer_advance_m4)
 #define BOARD "adafruit_pygamer_advance_m4"
+
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
 #define BOARD "Mega Adk"
@@ -210,7 +211,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
            F("):"), sensorValue_battery);
 
 #else
-    sensorValue_battery  = -9999;
+    sensorValue_battery = -9999;
 
 #endif
 

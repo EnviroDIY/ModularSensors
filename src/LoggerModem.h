@@ -823,7 +823,6 @@ class loggerModem {
 #define EPOCH_UPPER_RANGE_SEC 1893456000
 #define EPOCH_TIME_UPPER_SANITY_SECS EPOCH_UPPER_RANGE_SEC
 
-
 // typedef float (loggerModem::_*loggerGetValueFxn)(void);
 
 // Classes for the modem variables
