@@ -549,8 +549,10 @@ const int8_t ADSChannel0 = 0;  // The ADS channel of interest
 const int8_t ADSChannel1 = 1;  // The ADS channel of interest
 const int8_t ADSChannel2 = 2;  // The ADS channel of interest
 const int8_t ADSChannel3 = 3;  // The ADS channel of interest
-const float  dividerGain =
-    2;  //  Default 1/gain for grove voltage divider is 10x  assumes Rev001
+const float  dividerGain = 10;  // Gain RevR02 1/Gain 1M+100K
+// With gain=11 Reading 4.3, and actually 4.154
+//    2;  //  Gain RevR01  1/gain for grove voltage divider is 10x
+
 const uint8_t ADSi2c_addr    = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 2;     // Only read one sample
 
@@ -966,6 +968,8 @@ void setup() {
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {}
 #endif
 
+    if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
+
     // Start the primary serial connection
     Serial.begin(serialBaud);
     Serial.print(F("\n---Boot. Sw Build: "));
@@ -988,6 +992,11 @@ void setup() {
 
     unusedBitsMakeSafe();
     readAvrEeprom();
+
+    // set up for escape out of battery check if too low.
+    // If buttonPress then exit.
+    // Button is read inactive as low
+    bool UserButtonAct = false;
 
     // A vital check on power availability
     do {
@@ -1016,7 +1025,8 @@ void setup() {
             delay(1000);  // debug
             SerialStd.println(F("----Wakeup"));
         }
-    } while (LiBattPower_Unseable);
+        if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
+    } while (LiBattPower_Unseable && !UserButtonAct);
     PRINTOUT(F("Good BatV="), batteryLion_V);
 
 // Allow interrupts for software serial

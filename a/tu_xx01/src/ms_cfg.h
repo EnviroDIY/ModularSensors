@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - testing MMW/WiFi
+ms_cfg.h_test  - ModularSensors Configuration - testing KellerNanolevel MMW/WiFi
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
@@ -32,7 +32,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // KellerAcculevel units can be 1 (meter) 2 (feet)
 //#define KellerAcculevel_DepthUnits 2
 
-//#define KellerNanolevel_ACT 1
+#define KellerNanolevel_ACT 1
 //#define ASONG_AM23XX_UUID 1
 
 // Mayfly configuration
