@@ -83,14 +83,26 @@ bool ExternalVoltage::addSingleMeasurementResult(void) {
         // for us
         adcVoltage =
             ads.readADC_SingleEnded_V(_adsChannel);  // Getting the reading
-        MS_DBG(F("  ads.readADC_SingleEnded_V("), _adsChannel, F("):"),
-               adcVoltage);
+#ifdef MS_EXTERNALVOLTAGE_DEBUG
+        DEBUGGING_SERIAL_OUTPUT.print(F("  ads.readADC_SingleEnded_V("));
+        DEBUGGING_SERIAL_OUTPUT.print(_adsChannel);
+        DEBUGGING_SERIAL_OUTPUT.print(F("):"));
+        DEBUGGING_SERIAL_OUTPUT.print(adcVoltage, 5);
+        DEBUGGING_SERIAL_OUTPUT.print(F(" gain:"));
+        DEBUGGING_SERIAL_OUTPUT.print(_gain);
+        DEBUGGING_SERIAL_OUTPUT.println();
+#endif  // MS_EXTERNALVOLTAGE_DEBUG
 
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
             // Apply the gain calculation, with a defualt gain of 10 V/V Gain
             calibResult = adcVoltage * _gain;
-            MS_DBG(F("  calibResult:"), calibResult);
+#ifdef MS_EXTERNALVOLTAGE_DEBUG
+            DEBUGGING_SERIAL_OUTPUT.print(F("  calibResult:"));
+            DEBUGGING_SERIAL_OUTPUT.print(calibResult, 5);
+            DEBUGGING_SERIAL_OUTPUT.println();
+#endif  // MS_EXTERNALVOLTAGE_DEBUG
+
         } else {  // set invalid voltages back to -9999
             adcVoltage = -9999;
         }
