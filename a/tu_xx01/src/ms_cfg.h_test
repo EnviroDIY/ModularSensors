@@ -23,7 +23,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // This configuration is for a standard Mayfly0.bb
 // Sensors Used - two std to begin then
 //#define AnalogProcEC_ACT 1
+// Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
 #define MAYFLY_VBAT 1
+#define ExternalVoltage_ACT 1
 //#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
@@ -220,20 +222,20 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_Batt_UUID "Batt_UUID"
 #endif  // ProcessorStats_ACT
 
-#define ExternalVoltage_ACT 1
+#if defined MAYFLY_VBAT
 #ifdef ExternalVoltage_ACT
 // AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
-#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+#define ExternalVoltage_Volt0_UUID "Batt_UUID"
+//#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 //#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
-#endif  // ExternalVoltage_ACT
-
-#if defined MAYFLY_VBAT
+#else  // ExternalVoltage_ACT
 #define ProcVolt_ACT 1
 #ifdef ProcVolt_ACT
 // AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
 #define ProcVolt0_UUID "Volt0_UUID"
 //#define ProcVolt1_UUID "Volt1_UUID"
 #endif  // ProcVolt_ACT
+#endif  // ExternalVoltage_ACT
 #endif  // MAYFLY_VBAT
 
 #endif  // ms_cfg_h

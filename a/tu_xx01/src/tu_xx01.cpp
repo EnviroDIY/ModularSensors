@@ -550,12 +550,17 @@ const int8_t ADSChannel0 = 0;  // The ADS channel of interest
 const int8_t ADSChannel1 = 1;  // The ADS channel of interest
 const int8_t ADSChannel2 = 2;  // The ADS channel of interest
 const int8_t ADSChannel3 = 3;  // The ADS channel of interest
-const float  dividerGain = 10;  // Gain RevR02 1/Gain 1M+100K
-// With gain=11 Reading 4.3, and actually 4.154
-//    2;  //  Gain RevR01  1/gain for grove voltage divider is 10x
+const float  dividerGain = 11;  // Gain RevR02 1/Gain 1M+100K
+// The Mayfly is modified for ECN R02 or divide by 11
+// Vbat is expected to be 3.2-4.2, so max V to ads is 0.38V,
+// Practically the defaule GAIN_ONE for ADS1115 provide the best performance.
+// 2020Nov13 Characterizing the ADS1115 for different gains seems to fall far
+// short of the datasheet. Very frustrating.
+// For GAIN_ONE Measurements where typically 20mV higher
+// For GAIN_FOUR
 
 const uint8_t ADSi2c_addr    = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 2;     // Only read one sample
+const uint8_t VoltReadsToAvg = 1;     // Only read one sample stable input
 
 // Create an External Voltage sensor object
 ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
@@ -573,15 +578,17 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 // and have that voltage used on logging event
 Variable* kBatteryVoltage_V = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
 float     batteryLion_V;
-// This has bee calculated from the ADS1115 input impedance type 6Mohms in
-// parrallel 1Mohms
-#define FUDGE_ADC_IMPEDANCE 1.035
-//#define FUDGE_ADC_IMPEDANCE 1.0
+
 float kBatteryVoltage_worker(void) {  // get the Battery Reading
     // Get new reading
-    batteryLion_V = kBatteryVoltage_V->getValue(true) * FUDGE_ADC_IMPEDANCE;
+    batteryLion_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
-    MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
+    // MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
+#ifdef MS_TU_CTD_DEBUG
+    DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker"));
+    DEBUGGING_SERIAL_OUTPUT.print(batteryLion_V, 4);
+    DEBUGGING_SERIAL_OUTPUT.println();
+#endif  // MS_TU_CTD_DEBUG
     return batteryLion_V;
 }
 float getBatteryVoltage_V(void) {
@@ -706,17 +713,19 @@ Variable*   ds3231TempFcalc = new Variable(
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
+
+
+#if defined ExternalVoltage_Volt0_UUID
+    kBatteryVoltage_var,
+#elif defined ProcVolt_ACT
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
-#if defined ProcVolt_ACT
-    new processorAdc_Volt(&sensor_batt_V, ProcVolt0_UUID),
+// new processorAdc_Volt(&sensor_batt_V, ProcVolt0_UUID),
 #endif  // ProcVolt_ACT
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
     new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
-#if defined(ExternalVoltage_Volt0_UUID)
-// kBatteryVoltage_var,
-#endif
+
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
@@ -969,8 +978,6 @@ void setup() {
     while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {}
 #endif
 
-    if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
-
     // Start the primary serial connection
     Serial.begin(serialBaud);
     Serial.print(F("\n---Boot. Sw Build: "));
@@ -997,6 +1004,7 @@ void setup() {
     // set up for escape out of battery check if too low.
     // If buttonPress then exit.
     // Button is read inactive as low
+    if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
     bool UserButtonAct = false;
 
     // A vital check on power availability
@@ -1179,4 +1187,3 @@ void setup() {
 void loop() {
     dataLogger.logDataAndPubReliably();
 }
-
