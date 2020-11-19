@@ -61,6 +61,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // USE_PS_EEPROM
 #include "ms_common.h"
 
+#define USE_LC709203F 1
+#if defined USE_LC709203F
+#include "Adafruit_LC709203F.h"  //https:  //github.com/adafruit/Adafruit_LC709203F
+Adafruit_LC709203F batteryFuelGauge;
+bool               bfgPresent = false;
+#endif  // USE_LC709203F
+
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -963,6 +970,20 @@ void unusedBitsMakeSafe() {
     // PORT_SAFE(31); //A7 Timer Int
 };
 
+void        bfgPoll() {
+#if defined USE_LC709203F
+    if (bfgPresent) {
+        Serial.print("Batt Voltage: ");
+        Serial.print(batteryFuelGauge.cellVoltage(), 3);
+        Serial.print(" Percent: ");
+        Serial.println(batteryFuelGauge.cellPercent(), 1);
+        // Serial.print("Batt Temp: ");
+        // Serial.println(lc.getCellTemperature(), 1);
+    }
+#endif  // USE_LC709203F
+}
+
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -1100,6 +1121,20 @@ void setup() {
 #endif  // USE_MS_SD_INI
 
     mcuBoard.printBatteryThresholds();
+#if defined USE_LC709203F
+    /* */
+    if (!batteryFuelGauge.begin()) {
+        Serial.println(F("Couldnt findLC709203F?\nMake sure a "
+                         "battery is plugged in!"));
+    } else {
+        bfgPresent = true;
+        // batteryFuelGauge.setThermistorB(3950);
+        batteryFuelGauge.setPackSize(LC709203F_APA_500MAH);
+        // batteryFuelGauge.setAlarmVoltage(3.8);
+        // Serial.println(F("Found LC709203F."));
+        bfgPoll();
+    }
+#endif  // defined USE_LC709203F
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
@@ -1185,5 +1220,6 @@ void setup() {
 // ==========================================================================
 
 void loop() {
+    bfgPoll();
     dataLogger.logDataAndPubReliably();
 }

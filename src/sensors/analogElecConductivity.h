@@ -6,10 +6,11 @@
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>
  *
  *
- * @brief This encapsulates an Electrical Conductivity sensors using an anlog
- *input and onboard ADC and ADC ref.
- *
- * EC from IEC probe, requires ADC_PIN, Source Resistance, Applied
+ * @brief Encapsulates an Electrical Conductivity sensors using an anlog
+ * input and onboard ADC and ADC ref.
+ */
+/* clang-format off */
+ /** EC from IEC probe, requires ADC_PIN, Source Resistance, Applied
  * Voltage, water temperature.
  *
  * Requires switched power pin. The water Temperature (if used) must be suplied
@@ -48,6 +49,7 @@
  * http://www.reagecon.com/pdf/technicalpapers/Effect_of_Temperature_TSP-07_Issue3.pdf
  *
  */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
@@ -67,7 +69,13 @@
 #include "VariableBase.h"
 #include "math.h"
 
-// Sensor Specific Defines
+/** @ingroup analogElecConductivity_group */
+/**@{*/
+/**
+ * @anchor analogElecConductivity_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing
+ */
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
 #define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
 #define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 0
@@ -111,6 +119,10 @@ class analogElecConductivity : public Sensor {
      *
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
+     *
+     * @param Rseries_ohms The series R in the line. Used to calculate the
+     * measured value. optional with default value of 499, that maybe overridden
+     * with a deifne.
      */
     analogElecConductivity(int8_t powerPin, int8_t dataPin,
                            uint8_t measurementsToAverage = 1,
@@ -246,5 +258,5 @@ class analogElecConductivity_EC : public Variable {
      */
     ~analogElecConductivity_EC() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
