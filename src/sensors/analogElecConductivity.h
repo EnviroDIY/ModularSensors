@@ -144,9 +144,6 @@ class analogElecConductivity : public Sensor {
      * @copydoc Sensor::addSingleMeasurementResult()
      */
     bool addSingleMeasurementResult(void) override;
-    // void set_active_sensors(uint8_t sensors_mask);
-    // uint8_t which_sensors_active(void);
-    // void setWaterTemperature(float  WaterTemperature_C);
 
     /**
      * @brief Set where to find (a pointer) WaterTemperature for internal
@@ -191,23 +188,23 @@ class analogElecConductivity : public Sensor {
     int8_t      _EcPowerPin;
     int8_t      _EcAdcPin;
 
-    // float _WaterTemperature_C;
     float*      _ptrWaterTemperature_C;
     const float SensorV = 3.3;
 
-    float _Rseries_ohms =
-        RSERIES_OHMS_DEF;  // that is R1 + any series port resistance
+    // _Rseries_ohms ~ that is R1 + any series port resistance
+    float _Rseries_ohms = RSERIES_OHMS_DEF;
+
 #if !defined TEMPERATURECOEF_DEF
+/// @brief TEMPERATURECOEF_DEF defined for chemical/transport under measurement
 #define TEMPERATURECOEF_DEF 0.019
 #endif  // TEMPERATURECOEF_DEF
-    const float TemperatureCoef =
-        TEMPERATURECOEF_DEF;  // depends on what chemical/transport is being
-                              // measured
-//********************** Cell Constant For Ec Measurements
-//*********************// Mine was around 2.9 with plugs being a standard size
-// they should all be around the same But If you get bad readings you can use
-// the calibration script and fluid to get a better estimate for K
+    const float TemperatureCoef = TEMPERATURECOEF_DEF;
+
 #if !defined SENSOREC_KONST_DEF
+/// @brief SENSOREC_KONST_DEF Cell Constant For Ec Measurements - place holder.
+/// Mine was around 2.9 with plugs being a standard size they should all be
+/// around the same. If you get bad readings you can use
+// the calibration script and fluid to get a better estimate for K
 #define SENSOREC_KONST_DEF 2.88
 #endif  // SENSOREC_KONST_DEF
     const float sensorEC_Konst = SENSOREC_KONST_DEF;

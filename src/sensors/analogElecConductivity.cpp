@@ -111,16 +111,29 @@ analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin,
     _EcAdcPin              = dataPin;
     _ptrWaterTemperature_C = NULL;
     _Rseries_ohms          = Rseries_ohms;
-    /* #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) ||
-     defined(ARDUINO_AVR_SODAQ_MBILI) _EcAdcPin = A6; #elif
-     defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) ||
-     defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) _EcAdcPin = 9; #elif
-     defined(ADAFRUIT_FEATHER_M4_EXPRESS) _EcAdcPin = A6;//20;  //Dedicated PB01
-     V_DIV #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
-     || defined(ARDUINO_AVR_SODAQ_NDOGO) _EcAdcPin = 10; #elif
-     defined(ARDUINO_SODAQ_AUTONOMO) if (strcmp(_version, "v0.1") == 0)
-     _EcAdcPin = 48; else _EcAdcPin = 33; #else #error No board defined
-     _EcAdcPin = -1; #endif */
+    /* clang-format off */
+    /* Not checked
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) ||
+    defined(ARDUINO_AVR_SODAQ_MBILI) _EcAdcPin = A6;
+#elif defined(ARDUINO_AVR_FEATHER32U4) ||
+        defined(ARDUINO_SAMD_FEATHER_M0) ||
+        defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) 
+        _EcAdcPin = 9;
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+        _EcAdcPin = A6;  // 20;  //Dedicated PB01 V_DIV 
+#elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) ||
+        defined(ARDUINO_AVR_SODAQ_NDOGO) 
+        _EcAdcPin = 10;
+#elif defined(ARDUINO_SODAQ_AUTONOMO) 
+    if (strcmp(_version, "v0.1") == 0)
+        _EcAdcPin   = 48;
+    else _EcAdcPin  = 33;
+#else 
+#info No board defined 
+    _EcAdcPin = -1;
+#endif
+    */
+    /* clang-format on */
 }
 // Destructor
 analogElecConductivity::~analogElecConductivity() {}
@@ -139,9 +152,8 @@ float analogElecConductivity::readEC() {
 
 float analogElecConductivity::readEC(uint8_t analogPinNum) {
     uint32_t sensorEC_adc;
-    // float sensorEC_V= 0;
-    float Rwater_ohms;         // literal value of water
-    float EC_uScm, EC25_uScm;  // units are uS per cm
+    float    Rwater_ohms;         // literal value of water
+    float    EC_uScm, EC25_uScm;  // units are uS per cm
 
 #if !defined ARDUINO_ARCH_AVR
 
@@ -149,8 +161,8 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     analogReference(AR_EXTERNAL);  // ratio metric for the EC resistor
 // analogReference(ProcAdcDef_Reference); //VDDANA = 3V3
 #endif  // ARDUINO_ARCH_AVR
-    uint8_t useAdcChannel = analogPinNum;
 #if defined ARD_ANALOLG_EXTENSION_PINS
+    uint8_t useAdcChannel = analogPinNum;
     if ((thisVariantNumPins + ARD_DIGITAL_EXTENSION_PINS) < analogPinNum) {
         // ARD_COMMON_PIN on SAMD51
         if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
@@ -167,11 +179,16 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     //************Estimates Resistance of Liquid ****************//
     // digitalWrite(_EcPowerPin,HIGH); //assume done by class Sensor
     delay(1);  // Total time is about 5mS
-    sensorEC_adc =
-        analogRead(analogPinNum);  // This is not a mistake, First reading will
-                                   // be low beause if charged a capacitor
+
+    // First reading will be low - discard
+    sensorEC_adc = analogRead(analogPinNum);
     // digitalWrite(_EcPowerPin,LOW);
+
+#if defined ARD_ANALOLG_EXTENSION_PINS
     digitalWrite(useAdcChannel, 0);  // Turn off Mux
+
+#endif  // ARD_ANALOLG_EXTENSION_PINS
+
     MS_DEEP_DBG("adc=", sensorEC_adc);
 
     //***************** Converts to EC **************************//
@@ -187,9 +204,10 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
      *
      *
      */
-    if (0 == sensorEC_adc)
-        sensorEC_adc =
-            1;  // Prevent underflow, can never be EC_SENSOR_ADC_RANGE
+    if (0 == sensorEC_adc) {
+        // Prevent underflow, can never be EC_SENSOR_ADC_RANGE
+        sensorEC_adc = 1;
+    }
 
     Rwater_ohms = _Rseries_ohms /
         (((float)EC_SENSOR_ADC_RANGE / (float)sensorEC_adc) - 1);
