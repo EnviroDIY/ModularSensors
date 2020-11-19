@@ -9,6 +9,7 @@
  */
 
 #include "analogElecConductivity.h"
+#include "ms_cfg.h"
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -160,13 +161,33 @@ float analogElecConductivity::readEC(uint8_t analogPinNum) {
     analogReference(AR_EXTERNAL);  // ratio metric for the EC resistor
 // analogReference(ProcAdcDef_Reference); //VDDANA = 3V3
 #endif  // ARDUINO_ARCH_AVR
+#if defined ARD_ANALOLG_EXTENSION_PINS
+    uint8_t useAdcChannel = analogPinNum;
+    if ((thisVariantNumPins + ARD_DIGITAL_EXTENSION_PINS) < analogPinNum) {
+        // ARD_COMMON_PIN on SAMD51
+        if (ARD_ANLAOG_MULTIPLEX_PIN != useAdcChannel) {
+            // Setup mutliplexer
+            MS_DBG("  adc_Single Setup Multiplexer ", useAdcChannel, "-->",
+                   ARD_ANLAOG_MULTIPLEX_PIN);
+            digitalWrite(useAdcChannel, 1);
+            // useAdcChannel = ARD_ANLAOG__MULTIPLEX_PIN;
+        }
+        analogPinNum = ARD_ANLAOG_MULTIPLEX_PIN;
+    }
 
+#endif  // ARD_ANALOLG_EXTENSION_PINS
     //************Estimates Resistance of Liquid ****************//
     // digitalWrite(_EcPowerPin,HIGH); //assume done by class Sensor
     delay(1);  // Total time is about 5mS
 
     // First reading will be low - discard
     sensorEC_adc = analogRead(analogPinNum);
+    // digitalWrite(_EcPowerPin,LOW);
+
+#if defined ARD_ANALOLG_EXTENSION_PINS
+    digitalWrite(useAdcChannel, 0);  // Turn off Mux
+
+#endif  // ARD_ANALOLG_EXTENSION_PINS
 
     MS_DEEP_DBG("adc=", sensorEC_adc);
 
