@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_rtd_group Atlas Scientific EZO-RTD
+ * @defgroup sensor_atlas_rtd Atlas Scientific EZO-RTD
  * Classes for the Atlas Scientific EZO-RTD temperature circuit and probes.
  *
  * @ingroup atlas_group
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section atlas_rtd_datasheet Sensor Datasheet
+ * @section sensor_atlas_rtd_datasheet Sensor Datasheet
  *
  * Documentation on the probe is found here:
  * https://www.atlas-scientific.com/probes/dissolved-oxygen-probe/
@@ -31,14 +31,20 @@
  * Documentation on the measurement circuit is found here:
  * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
  *
- * @section atlas_rtd_flags Build flags
+ * @section sensor_atlas_rtd_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
  * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
  *
+ * @section sensor_atlas_rtd_ctor Sensor Constructor
+ * {{ @ref AtlasScientificRTD::AtlasScientificRTD(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificRTD::AtlasScientificRTD(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificRTD::AtlasScientificRTD(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificRTD::AtlasScientificRTD(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
+ *
  * ___
- * @section atlas_rtd_examples Example Code
+ * @section sensor_atlas_rtd_examples Example Code
  * The Atlas RTD sensor is used in the @menulink{atlas_rtd} example.
  *
  * @menusnip{atlas_rtd}
@@ -59,7 +65,7 @@
 #define ATLAS_RTD_I2C_ADDR 0x66
 
 // Sensor Specific Defines
-/** @ingroup atlas_rtd_group */
+/** @ingroup sensor_atlas_rtd */
 /**@{*/
 /**
  * @brief Sensor::_numReturnedValues; the Atlas EZO temperature circuit can
@@ -69,9 +75,9 @@
 
 
 /**
- * @anchor atlas_rtd_timing_defines
+ * @anchor sensor_atlas_rtd_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an Atlas RTD (temperature) sensor
+ * The sensor timing for an Atlas RTD (temperature) sensor
  */
 /**@{*/
 /**
@@ -97,11 +103,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_rtd_temp_defines
+ * @anchor sensor_atlas_rtd_temp
  * @name Temperature
- * Defines for the temperature variable from an Atlas RTD (temperature) sensor
+ * The temperature variable from an Atlas RTD (temperature) sensor
  * - Accuracy is ± (0.10°C + 0.0017 x °C)
  * - Range is -126°C − 125°C
+ *
+ * {{ @ref AtlasScientificRTD_Temp::AtlasScientificRTD_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 3 -
@@ -121,18 +129,17 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_group).
+ * [Atlas Scientific RTD temperature sensor](@ref sensor_atlas_rtd).
  *
- * @ingroup atlas_rtd_group
+ * @ingroup sensor_atlas_rtd
  */
 /* clang-format on */
 class AtlasScientificRTD : public AtlasParent {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific RTD object using a *software* I2C
      * instance.
-     * @ingroup atlas_rtd_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -162,7 +169,6 @@ class AtlasScientificRTD : public AtlasParent {
      * @brief Construct a new Atlas Scientific RTD object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup atlas_rtd_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -197,11 +203,11 @@ class AtlasScientificRTD : public AtlasParent {
                       ATLAS_RTD_NUM_VARIABLES, ATLAS_RTD_WARM_UP_TIME_MS,
                       ATLAS_RTD_STABILIZATION_TIME_MS,
                       ATLAS_RTD_MEASUREMENT_TIME_MS) {}
-#else
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific RTD object using a secondary
      * *hardware* I2C instance.
-     * @ingroup atlas_rtd_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -233,7 +239,6 @@ class AtlasScientificRTD : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific RTD object using the primary
      * hardware I2C instance.
-     * @ingroup atlas_rtd_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas RTD
      * (temperature) circuit.  Use -1 if it is continuously powered.
@@ -267,17 +272,16 @@ class AtlasScientificRTD : public AtlasParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref atlas_rtd_temp) from an
- * [Atlas Scientific RTD temperature sensor](@ref atlas_rtd_group).
+ * [temperature output](@ref sensor_atlas_rtd_temp) from an
+ * [Atlas Scientific RTD temperature sensor](@ref sensor_atlas_rtd).
  *
- * @ingroup atlas_rtd_group
+ * @ingroup sensor_atlas_rtd
  */
 /* clang-format on */
 class AtlasScientificRTD_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificRTD_Temp object.
-     * @ingroup atlas_rtd_group
      *
      * @param parentSense The parent AtlasScientificRTD providing the result
      * values.

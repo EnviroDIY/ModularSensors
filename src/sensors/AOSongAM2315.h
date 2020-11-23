@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup am2315_group AOSong AM2315
+ * @defgroup sensor_am2315 AOSong AM2315
  * Classes for the AOSong AM2315 encased I2C capacitive humidity and
  * temperature sensor.
  *
@@ -23,11 +23,11 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section am2315_notes Quick Notes
+ * @section sensor_am2315_notes Quick Notes
  * - Applies to both the AOSong AM2315 and CM2311 capacitive relative humidity
  * and temperature sensors
  * - Depends on the [Adafruit AM2315 Library](https://github.com/adafruit/Adafruit_AM2315).
- * - Communicate via I2C
+ * - Communicates via I2C
  *   - only one address possible, 0xB8
  * - **Only 1 can be connected to a single I2C bus at a time**
  * - Requires a 3.3 - 5.5V power source
@@ -35,13 +35,16 @@
  * @note Software I2C is *not* supported for the AM2315.
  * A secondary hardware I2C on a SAMD board is supported.
  *
- * @section am2315_datasheet Sensor Datasheet
+ * @section sensor_am2315_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-AM2315-Product-Manual.pdf)
  *
- * @section am2315_examples Example Code
+ * @section sensor_am2315_ctor Sensor Constructors
+ * {{ @ref AOSongAM2315::AOSongAM2315(int8_t, uint8_t) }}
+ * {{ @ref AOSongAM2315::AOSongAM2315(TwoWire*, int8_t, uint8_t) }}
  *
- * The AM2315 is used in the
- * [double logger](@ref double_log_am2315)
+ * @section sensor_am2315_examples Example Code
+ *
+ * The AM2315 is used in the [double logger](@ref double_log_am2315)
  * and @menulink{am2315} example
  *
  * @menusnip{am2315}
@@ -67,16 +70,16 @@
 #include <Adafruit_AM2315.h>
 
 // Sensor Specific Defines
-/** @ingroup am2315_group */
+/** @ingroup sensor_am2315 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the AM2315 can report 2 values.
 #define AM2315_NUM_VARIABLES 2
 
 /**
- * @anchor am2315_timing_defines
+ * @anchor sensor_am2315_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an AOSong AM2315
+ * The sensor timing for an AOSong AM2315
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; AM2315 warms up in 500ms (estimated).
@@ -90,11 +93,13 @@
 /**@}*/
 
 /**
- * @anchor am2315_humidity_defines
+ * @anchor sensor_am2315_humidity
  * @name Humidity
- * Defines for the humidity variable from an AOSong AM2315
+ * The humidity variable from an AOSong AM2315
  * - Range is 0 to 100% RH
  * - Accuracy is ± 2 % RH at 25°C
+ *
+ * {{ @ref AOSongAM2315_Humidity::AOSongAM2315_Humidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; humidity should have 1 (0.1
@@ -111,11 +116,13 @@
 /**@}*/
 
 /**
- * @anchor am2315_temperature_defines
+ * @anchor sensor_am2315_temperature
  * @name Temperature
- * Defines for the temperature variable from an AOSong AM2315
+ * The temperature variable from an AOSong AM2315
  * - Range is -40°C to +125°C
  * - Accuracy is ±0.1°C
+ *
+ * {{ @ref AOSongAM2315_Temp::AOSongAM2315_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1.
@@ -134,9 +141,7 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the [AOSong AM2315](@ref am2315_group).
- *
- * @ingroup am2315_group
+ * @brief The Sensor sub-class for the [AOSong AM2315](@ref sensor_am2315).
  */
 /* clang-format on */
 class AOSongAM2315 : public Sensor {
@@ -144,10 +149,12 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief Construct a new AOSongAM2315 object using a secondary *hardware*
      * I2C instance.
-     * @ingroup am2315_group
+     *
+     * This is only applicable to SAMD boards that are able to have multiple
+     * hardware I2C ports in use via SERCOMs.
      *
      * @note It is only possible to connect *one* AM2315 at a time on a single
-     * I2C bus.  Software I2C is also not supported.
+     * I2C bus.
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -166,13 +173,12 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief Construct a new AOSongAM2315 object using the primary hardware I2C
      * instance.
-     * @ingroup am2315_group
      *
      * Because this is I2C and has only 1 possible address (0xB8), we only need
      * the power pin.
      *
      * @note It is only possible to connect *one* AM2315 at a time on a single
-     * I2C bus.  Software I2C is also not supported.
+     * I2C bus.
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong
      * AM2315.  Use -1 if it is continuously powered.
@@ -223,17 +229,14 @@ class AOSongAM2315 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [relative humidity output](@ref am2315_humidity) from an
- * [AOSong AM2315](@ref am2315_group).
- *
- * @ingroup am2315_group
+ * [relative humidity output](@ref sensor_am2315_humidity) from an
+ * [AOSong AM2315](@ref sensor_am2315).
  */
 /* clang-format on */
 class AOSongAM2315_Humidity : public Variable {
  public:
     /**
      * @brief Construct a new AOSongAM2315_Humidity object.
-     * @ingroup am2315_group
      *
      * @param parentSense The parent AOSongAM2315 providing the result
      * values.
@@ -269,17 +272,14 @@ class AOSongAM2315_Humidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref am2315_temperature) from an
- * [AOSong AM2315](@ref am2315_group).
- *
- * @ingroup am2315_group
+ * [temperature output](@ref sensor_am2315_temperature) from an
+ * [AOSong AM2315](@ref sensor_am2315).
  */
 /* clang-format on */
 class AOSongAM2315_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
-     * @ingroup am2315_group
      *
      * @param parentSense The parent AOSongAM2315 providing the result
      * values.

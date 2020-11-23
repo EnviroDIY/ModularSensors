@@ -581,7 +581,7 @@ Use a blank value (ie, "") for un-versioned boards.
 Please note that while you can opt to average more than one sample, it really makes no sense to do so for the processor.
 The number of "samples" taken will increase by one for each time another processor "measurement" is taken so averaging multiple measurements from the processor will result in the number of samples increasing by more than one with each loop.
 
-@see @ref processor_sensor_group
+@see @ref sensor_processor
 
 [//]: # ( @menusnip{processor_sensor} )
 ___
@@ -593,7 +593,7 @@ In addition to the time, we can also use the required DS3231 real time clock to 
 This temperature is _not_ equivalent to an environmental temperature measurement and should only be used to as a diagnostic.
 As above, we create both the sensor and the variables measured by it.
 
-@see @ref ds3231_group
+@see @ref sensor_ds3231
 
 [//]: # ( @menusnip{ds3231} )
 ___
@@ -605,7 +605,7 @@ Here is the code for the AOSong AM2315 temperature and humidity sensor.
 This is an I2C sensor with only one possible address so the only argument required for the constructor is the pin on the MCU controlling power to the AM2315 (AM2315Power).
 The number of readings to average from the sensor is optional, but can be supplied as the second argument for the constructor if desired.
 
-@see @ref am2315_group
+@see @ref sensor_am2315
 
 [//]: # ( @menusnip{am2315} )
 ___
@@ -617,7 +617,7 @@ Here is the code for the AOSong DHT temperature and humidity sensor.
 To create the DHT Sensor we need the power pin, the data pin, and the DHT type.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
-@see @ref dht_group
+@see @ref sensor_dht
 
 [//]: # ( @menusnip{dht} )
 ___
@@ -631,7 +631,7 @@ The Arduino pin controlling power on/off and the analog data channel _on the TI 
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 The number of readings to average from the sensor is optional, but can be supplied as the fourth argument for the constructor if desired.
 
-@see @ref sq212_group
+@see @ref sensor_sq212
 
 [//]: # ( @menusnip{dht} )
 ___
@@ -671,7 +671,7 @@ Using some Altas sensors with software I2C and others with hardware I2C is not s
 [//]: # ( @subsubsection menu_atlas_co2 Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor )
 #### Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 
-@see @ref atlas_co2_group
+@see @ref sensor_atlas_co2
 
 [//]: # ( @menusnip{atlas_co2} )
 ___
@@ -680,7 +680,7 @@ ___
 [//]: # ( @subsubsection menu_atlas_do Atlas Scientific EZO-DO Dissolved Oxygen Sensor )
 #### Atlas Scientific EZO-DO Dissolved Oxygen Sensor
 
-@see @ref atlas_do_group
+@see @ref sensor_atlas_do
 
 [//]: # ( @menusnip{atlas_do} )
 ___
@@ -689,7 +689,7 @@ ___
 [//]: # ( @subsubsection menu_atlas_ec Atlas Scientific EZO-EC Conductivity Sensor )
 #### Atlas Scientific EZO-EC Conductivity Sensor
 
-@see @ref atlas_cond_group
+@see @ref sensor_atlas_cond
 
 [//]: # ( @menusnip{atlas_ec} )
 ___
@@ -698,7 +698,7 @@ ___
 [//]: # ( @subsubsection menu_atlas_orp Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor )
 #### Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
 
-@see @ref atlas_orp_group
+@see @ref sensor_atlas_orp
 
 [//]: # ( @menusnip{atlas_orp} )
 ___
@@ -707,7 +707,7 @@ ___
 [//]: # ( @subsubsection menu_atlas_ph Atlas Scientific EZO-pH Sensor )
 #### Atlas Scientific EZO-pH Sensor
 
-@see @ref atlas_ph_group
+@see @ref sensor_atlas_ph
 
 [//]: # ( @menusnip{atlas_ph} )
 ___
@@ -716,7 +716,7 @@ ___
 [//]: # ( @subsubsection menu_atlas_rtd Atlas Scientific EZO-RTD Temperature Sensor )
 #### Atlas Scientific EZO-RTD Temperature Sensor
 
-@see @ref atlas_rtd_group
+@see @ref sensor_atlas_rtd
 
 [//]: # ( @menusnip{atlas_rtd} )
 ___
@@ -729,7 +729,7 @@ Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
 Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803; when using those sensors together, make sure they are set to opposite addresses.
 
-@see @ref bme280_group
+@see @ref sensor_bme280
 
 [//]: # ( @menusnip{bme280} )
 ___
@@ -746,7 +746,7 @@ Do NOT forget that if you want to give a number of measurements to average, that
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
-@see @ref obs3_group
+@see @ref sensor_obs3
 
 [//]: # ( @menusnip{obs3} )
 ___
@@ -759,7 +759,7 @@ The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and 
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
 
-@see @ref es2_group
+@see @ref sensor_es2
 
 [//]: # ( @menusnip{es2} )
 ___
@@ -773,7 +773,7 @@ If using a voltage divider to increase the measurable voltage range, enter the g
 If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.
 The number of measurements to average, if more than one is desired, goes as the fifth argument.
 
-@see @ref ext_volt_group
+@see @ref sensor_ads1x15
 
 [//]: # ( @menusnip{ext_volt} )
 ___
@@ -785,7 +785,7 @@ ___
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average.
 Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.
 
-@see @ref mpl115a2_group
+@see @ref sensor_mpl115a2
 
 [//]: # ( @menusnip{mpl115a2} )
 ___
@@ -813,7 +813,7 @@ Both pins _cannot_ be shared pins.
 [//]: # ( @subsubsection menu_nanolevel Keller Nanolevel Level Transmitter )
 #### Keller Nanolevel Level Transmitter
 
-@see @ref nanolevel_group
+@see @ref sensor_nanolevel
 
 [//]: # ( @menusnip{nanolevel} )
 ___
@@ -822,7 +822,7 @@ ___
 [//]: # ( @subsubsection menu_acculevel Keller Acculevel High Accuracy Submersible Level Transmitter )
 #### Keller Acculevel High Accuracy Submersible Level Transmitter
 
-@see @ref acculevel_group
+@see @ref sensor_acculevel
 
 [//]: # ( @menusnip{acculevel} )
 ___
@@ -834,7 +834,7 @@ ___
 The Arduino pin controlling power on/off, a stream instance for received data (ie, `Serial`), and the Arduino pin controlling the trigger are required for the sensor constructor.
 (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
 
-@see @ref maxbotics_group
+@see @ref sensor_maxbotix
 
 [//]: # ( @menusnip{maxbotics} )
 ___
@@ -848,7 +848,7 @@ The OneWire address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39
 To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.
 The sensor address is programmed at the factory and cannot be changed.
 
-@see @ref ds18_group
+@see @ref sensor_ds18
 
 [//]: # ( @menusnip{ds18} )
 ___
@@ -860,7 +860,7 @@ ___
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
 Keep in mind that the possible I2C addresses of the MS5803 match those of the BME280.
 
-@see @ref ms5803_group
+@see @ref sensor_ms5803
 
 [//]: # ( @menusnip{ms5803} )
 ___
@@ -878,7 +878,7 @@ The data pin must be a pin that supports pin-change interrupts.
 [//]: # ( @subsubsection menu_fivetm Meter ECH2O Soil Moisture Sensor )
 #### Meter ECH2O Soil Moisture Sensor
 
-@see @ref fivetm_group
+@see @ref sensor_fivetm
 
 [//]: # ( @menusnip{fivetm} )
 ___
@@ -887,7 +887,7 @@ ___
 [//]: # ( @subsubsection menu_hydros21 Meter Hydros 21 Conductivity, Temperature, and Depth Sensor )
 #### Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 
-@see @ref hydros21_group
+@see @ref sensor_hydros21
 
 [//]: # ( @menusnip{hydros21} )
 ___
@@ -896,7 +896,7 @@ ___
 [//]: # ( @subsubsection menu_teros Meter Teros 11 Soil Moisture Sensor )
 #### Meter Teros 11 Soil Moisture Sensor
 
-@see @ref teros_group
+@see @ref sensor_teros11
 
 [//]: # ( @menusnip{teros} )
 ___
@@ -918,7 +918,7 @@ A number of readings to average can also be given.
 @warning Either all or none your attached redox may use software I2C.
 Using some with software I2C and others with hardware I2C is not supported.
 
-@see @ref pt_redox_group
+@see @ref sensor_pt_redox
 
 [//]: # ( @menusnip{pt_redox} )
 ___
@@ -936,7 +936,7 @@ This library may not be updated immediately to reflect changes on the part of No
 The only option for the constructor is an optional setting for the I2C address, if the counter is not set at the default of 0x33.
 The counter should be continuously powered.
 
-@see @ref tally_group
+@see @ref sensor_tally
 
 [//]: # ( @menusnip{i2c_wind_tally} )
 ___
@@ -951,7 +951,7 @@ Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.
 Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
 Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
 
-@see @ref i2c_rain_group
+@see @ref sensor_i2c_rain
 
 [//]: # ( @menusnip{i2c_rain} )
 ___
@@ -965,7 +965,7 @@ The Arduino pin controlling power on/off is all that is required for the constru
 If your INA219 is not at the standard address of 0x40, you can enter its actual address as the fourth argument.
 The number of measurements to average, if more than one is desired, goes as the fifth argument.
 
-@see @ref ina219_group
+@see @ref sensor_ina219
 
 [//]: # ( @menusnip{ina219} )
 ___
@@ -988,7 +988,7 @@ Please see the section "[Notes on Arduino Streams and Software Serial](https://g
 [//]: # ( @subsubsection menu_y504 Yosemitech Y504 Dissolved Oxygen Sensor )
 #### Yosemitech Y504 Dissolved Oxygen Sensor
 
-@see @ref y504_group
+@see @ref sensor_y504
 
 [//]: # ( @menusnip{y504} )
 ___
@@ -997,7 +997,7 @@ ___
 [//]: # ( @subsubsection menu_y510 Yosemitech Y510 Turbidity Sensor )
 #### Yosemitech Y510 Yosemitech Y510 Turbidity Sensor
 
-@see @ref y510_group
+@see @ref sensor_y510
 
 [//]: # ( @menusnip{y510} )
 ___
@@ -1006,7 +1006,7 @@ ___
 [//]: # ( @subsubsection menu_y511 Yosemitech Y511 Turbidity Sensor with Wiper )
 #### Yosemitech Y511 Yosemitech Y511 Turbidity Sensor with Wiper
 
-@see @ref y511_group
+@see @ref sensor_y511
 
 [//]: # ( @menusnip{y511} )
 ___
@@ -1015,7 +1015,7 @@ ___
 [//]: # ( @subsubsection menu_y514 Yosemitech Y514 Chlorophyll Sensor )
 #### Yosemitech Y514 Yosemitech Y514 Chlorophyll Sensor
 
-@see @ref y514_group
+@see @ref sensor_y514
 
 [//]: # ( @menusnip{y514} )
 ___
@@ -1024,7 +1024,7 @@ ___
 [//]: # ( @subsubsection menu_y520 Yosemitech Y520 Conductivity Sensor )
 #### Yosemitech Y520 Yosemitech Y520 Conductivity Sensor
 
-@see @ref y520_group
+@see @ref sensor_y520
 
 [//]: # ( @menusnip{y520} )
 ___
@@ -1033,7 +1033,7 @@ ___
 [//]: # ( @subsubsection menu_y532 Yosemitech Y532 pH Sensor )
 #### Yosemitech Y532 Yosemitech Y532 pH Sensor
 
-@see @ref y532_group
+@see @ref sensor_y532
 
 [//]: # ( @menusnip{y532} )
 ___
@@ -1042,7 +1042,7 @@ ___
 [//]: # ( @subsubsection menu_y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor )
 #### Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor
 
-@see @ref y533_group
+@see @ref sensor_y533
 
 [//]: # ( @menusnip{y533} )
 ___
@@ -1051,7 +1051,7 @@ ___
 [//]: # ( @subsubsection menu_y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper )
 #### Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper
 
-@see @ref y550_group
+@see @ref sensor_y550
 
 [//]: # ( @menusnip{y550} )
 ___
@@ -1060,7 +1060,7 @@ ___
 [//]: # ( @subsubsection menu_y4000 Yosemitech Y4000 Multi-Parameter Sonde )
 #### Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde
 
-@see @ref y4000_group
+@see @ref sensor_y4000
 
 [//]: # ( @menusnip{y4000} )
 ___
@@ -1073,7 +1073,7 @@ The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and 
 Optionally, you can include a number of distinct readings to average.
 The data pin must be a pin that supports pin-change interrupts.
 
-@see @ref dopto_group
+@see @ref sensor_dopto
 
 [//]: # ( @menusnip{dopto} )
 ___

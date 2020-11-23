@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup dht_group AOSong DHT
+ * @defgroup sensor_dht AOSong DHT
  * Classes for the AOSong DHT digital-output relative humidity and temperature
  * sensor.
  *
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section dht_notes Quick Notes
+ * @section sensor_dht_notes Quick Notes
  * - Applies to AOSong modules:
  *   - [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109),
  *   - DHT21/AM2301, and
@@ -41,11 +41,14 @@
  * - Sensors should not be polled more frequently than once every 2 seconds
  * - Uses a Maxim DS18 sensor internally
  *
- * @section dht_datasheet Sensor Datasheet
+ * @section sensor_dht_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-DHT22-Datasheet.pdf)
  *
+ * @section sensor_dht_ctor Sensor Constructor
+ * {{ @ref AOSongDHT::AOSongDHT }}
+ *
  * ___
- * @section dht_examples Example Code
+ * @section sensor_dht_examples Example Code
  * The DHT is used in the @menulink{dht} example.
  *
  * @menusnip{dht}
@@ -78,16 +81,16 @@
 #undef AM2302
 
 // Sensor Specific Defines
-/** @ingroup dht_group */
+/** @ingroup sensor_dht */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the DHT can report 3 values.
 #define DHT_NUM_VARIABLES 3
 
 /**
- * @anchor dht_timing_defines
+ * @anchor sensor_dht_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an AOSong DHT
+ * The sensor timing for an AOSong DHT
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; DHT warms up in 1700ms (1.7sec).
@@ -101,11 +104,13 @@
 /**@}*/
 
 /**
- * @anchor dht_humidity_defines
+ * @anchor sensor_dht_humidity
  * @name Humidity
- * Defines for the humidity variable from an AOSong DHT
+ * The humidity variable from an AOSong DHT
  * - Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
  * - Range is 0 to 100 % RH
+ *
+ * {{ @ref AOSongDHT_Humidity::AOSongDHT_Humidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; humidity should have 1 (0.1
@@ -122,11 +127,13 @@
 /**@}*/
 
 /**
- * @anchor dht_temperature_defines
+ * @anchor sensor_dht_temperature
  * @name Temperature
- * Defines for the temperature variable from an AOSong DHT
+ * The temperature variable from an AOSong DHT
  * - Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
  * - Range is -40°C to +80°C
+ *
+ * {{ @ref AOSongDHT_Temp::AOSongDHT_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -143,11 +150,13 @@
 /**@}*/
 
 /**
- * @anchor dht_hi_defines
+ * @anchor sensor_dht_hi
  * @name Heat Index
- * Defines for the heat index variable from an AOSong DHT
+ * The heat index variable from an AOSong DHT
  * - Heat index is calculated within the Adafruit library from the measured
  * temperature and humidity.
+ *
+ * {{ @ref AOSongDHT_HI::AOSongDHT_HI }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; heat index should have 1 -
@@ -177,9 +186,9 @@ typedef enum DHTtype {
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [AOSong digital-output relative humidity and temperature sensor modules](@ref dht_group).
+ * [AOSong digital-output relative humidity and temperature sensor modules](@ref sensor_dht).
  *
- * @ingroup dht_group
+ * @ingroup sensor_dht
  */
 /* clang-format on */
 class AOSongDHT : public Sensor {
@@ -187,7 +196,6 @@ class AOSongDHT : public Sensor {
     /**
      * @brief Construct a new AOSongDHT object - need the power pin, the data
      * pin, and the sensor type
-     * @ingroup dht_group
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong DHT.
      * Use -1 if it is continuously powered.
@@ -232,16 +240,15 @@ class AOSongDHT : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [humidity output](@ref dht_humidity) from an [AOSong DHT](@ref dht_group).
+ * [humidity output](@ref sensor_dht_humidity) from an [AOSong DHT](@ref sensor_dht).
  *
- * @ingroup dht_group
+ * @ingroup sensor_dht
  */
 /* clang-format on */
 class AOSongDHT_Humidity : public Variable {
  public:
     /**
      * @brief Construct a new AOSongDHT_Humidity object.
-     * @ingroup dht_group
      *
      * @param parentSense The parent AOSongDHT providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -273,17 +280,16 @@ class AOSongDHT_Humidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref dht_temperature) from an
- * [AOSong DHT](@ref dht_group).
+ * [temperature output](@ref sensor_dht_temperature) from an
+ * [AOSong DHT](@ref sensor_dht).
  *
- * @ingroup dht_group
+ * @ingroup sensor_dht
  */
 /* clang-format on */
 class AOSongDHT_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AOSongDHT_Temp object.
-     * @ingroup dht_group
      *
      * @param parentSense The parent AOSongDHT providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -315,17 +321,16 @@ class AOSongDHT_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [heat index output](@ref dht_hi) calculated from measurements made
- * by an [AOSong DHT](@ref dht_group).
+ * [heat index output](@ref sensor_dht_hi) calculated from measurements made
+ * by an [AOSong DHT](@ref sensor_dht).
  *
- * @ingroup dht_group
+ * @ingroup sensor_dht
  */
 /* clang-format on */
 class AOSongDHT_HI : public Variable {
  public:
     /**
      * @brief Construct a new AOSongDHT_HI object.
-     * @ingroup dht_group
      *
      * @param parentSense The parent AOSongDHT providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the

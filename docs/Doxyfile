@@ -277,19 +277,7 @@ ALIASES                = "license=@par License:\n" \
                          "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since v\1.\2\"" \
                          "m_deprecated_since{2}=@since deprecated in v\1.\2 @deprecated" \
                          "menulink{1}=[menu a la carte](@ref menu_\1)" \
-                         "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ " \
-                         "variabledoc{4}=@subsection \1_ctor \2_\3 Constructor ^^ @m_div{m-doc m-default}@m_span{m-doc-wrap}\2_\3@m_endspan(@m_span{m-dim}\2*@m_endspan @m_span{m-param}parentSense@m_endspan, @m_span{m-dim}const char*@m_endspan @m_span{m-param}uuid@m_endspan, @m_span{m-dim}const char*@m_endspan @m_span{m-param}varCode@m_endspan)@m_enddiv \n @copydetails \2_\3::\2_\3" \
-                         "ctor_doc{2}=\1(\2) \n @copydetails \1::\1" \
-                         "ctor_doc{3}=\1(\2, \3) \n @copydetails \1::\1" \
-                         "ctor_doc{4}=\1(\2, \3, \4) \n @copydetails \1::\1" \
-                         "ctor_doc{5}=\1(\2, \3, \4, \5) \n @copydetails \1::\1" \
-                         "ctor_doc{6}=\1(\2, \3, \4, \5, \6) \n @copydetails \1::\1" \
-                         "ctor_doc{7}=\1(\2, \3, \4, \5, \6, \7) \n @copydetails \1::\1" \
-                         "ctor_doc{8}=\1(\2, \3, \4, \5, \6, \7, \8) \n @copydetails \1::\1" \
-                         "ctor_doc{9}=\1(\2, \3, \4, \5, \6, \7, \8, \9) \n @copydetails \1::\1" \
-                         "ctor_doc{10}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10) \n @copydetails \1::\1" \
-                         "ctor_doc{11}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11) \n @copydetails \1::\1" \
-                         "ctor_doc{12}=\1(\2, \3, \4, \5, \6, \7, \8, \9, \10, \11, \12) \n @copydetails \1::\1" \
+                         "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ "
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
@@ -451,7 +439,7 @@ INLINE_GROUPED_CLASSES = NO
 # Man pages) or section (for LaTeX and RTF).
 # The default value is: NO.
 
-INLINE_SIMPLE_STRUCTS  = YES
+INLINE_SIMPLE_STRUCTS  = NO
 
 # When TYPEDEF_HIDES_STRUCT tag is enabled, a typedef of a struct, union, or
 # enum is documented as struct, union, or enum with the name of the typedef. So
@@ -502,7 +490,7 @@ NUM_PROC_THREADS       = 1
 # normally produced when WARNINGS is set to YES.
 # The default value is: NO.
 
-EXTRACT_ALL            = NO
+EXTRACT_ALL            = YES
 
 # If the EXTRACT_PRIVATE tag is set to YES, all private members of a class will
 # be included in the documentation.
@@ -680,7 +668,7 @@ SORT_GROUP_NAMES       = NO
 # list.
 # The default value is: NO.
 
-SORT_BY_SCOPE_NAME     = NO
+SORT_BY_SCOPE_NAME     = YES
 
 # If the STRICT_PROTO_MATCHING option is enabled and doxygen fails to do proper
 # type resolution of all parameters of a function it will reject a match between
@@ -2225,7 +2213,47 @@ SEARCH_INCLUDES        = YES
 # preprocessor.
 # This tag requires that the tag SEARCH_INCLUDES is set to YES.
 
-INCLUDE_PATH           =
+INCLUDE_PATH           = ../src \
+                         ../src/modems \
+                         ../src/publishers \
+                         ../src/sensors \
+                         ../src/watchdogs \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SoftwareWire" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/NeoSWSerial/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/AltSoftSerial" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SoftwareSerial_ExtInts/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/StreamDebugger" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/YosemitechModbus/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/KellerModbus/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SensorModbusMaster/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Tally_Library/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/MS5803/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SDI-12/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/DallasTemperature" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/OneWire" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit MPL115A2" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit INA219" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/DHT sensor library" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit BME280 Library" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit AM2315" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit ADS1X15" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit Unified Sensor" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit BusIO" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/PubSubClient/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/TinyGSM/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SdFat/src" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/EnableInterrupt" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/EnableInterrupt/utility" \
+                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/EnviroDIY_DS3231/src" \
+                "C:/Users/sdamiano/.platformio/packages/toolchain-atmelavr/avr/include" \
+                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/Wire/src" \
+                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/SPI/src" \
+                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/cores/arduino" \
+                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/variants/mayfly" \
+                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src" \
+                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/HID/src" \
+                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src" \
+                "C:/Users/sdamiano/.platformio/packages/tool-unity"
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
@@ -2244,7 +2272,8 @@ INCLUDE_FILE_PATTERNS  = *.c \
                          *.hpp \
                          *.h++ \
                          *.md \
-                         *.markdown
+                         *.markdown \
+                         *.tpp
 
 # The PREDEFINED tag can be used to specify one or more macro names that are
 # defined before the preprocessor is started (similar to the -D option of e.g.
@@ -2254,7 +2283,8 @@ INCLUDE_FILE_PATTERNS  = *.c \
 # recursively expanded use the := operator instead of the = operator.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-PREDEFINED             = __attribute__((__progmem__))= \
+PREDEFINED             = DOXYGEN=1 \
+                         __attribute__((__progmem__))= \
                          PLATFORMIO=40304 \
                          ARDUINO_AVR_ENVIRODIY_MAYFLY \
                          F_CPU=8000000L \
@@ -2298,7 +2328,8 @@ EXPAND_AS_DEFINED      = MS_MODEM_EXTRA_SETUP \
                          STREAM_CSV_ROW \
                          MS_START_DEBUG_TIMER \
                          MS_RESET_DEBUG_TIMER \
-                         MS_PRINT_DEBUG_TIMER
+                         MS_PRINT_DEBUG_TIMER \
+                         MAKE_VARIABLE_CLASS
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
 # remove all references to function-like macros that are alone on a line, have
@@ -2380,7 +2411,7 @@ DIA_PATH               =
 # and usage relations if the target is undocumented or is not a class.
 # The default value is: YES.
 
-HIDE_UNDOC_RELATIONS   = YES
+HIDE_UNDOC_RELATIONS   = NO
 
 # If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is
 # available from the path. This tool is part of Graphviz (see:

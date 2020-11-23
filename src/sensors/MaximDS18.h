@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup ds18_group Maxim DS18
+ * @defgroup sensor_ds18 Maxim DS18
  * Classes for the Maxim DS18 one-wire temperature sensors.
  *
  * @ingroup the_sensors
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section ds18_intro Introduction
+ * @section sensor_ds18_intro Introduction
  *
  * The Maxim temperature probes communicate using the OneWire library, which can
  * be used on any digital pin on any of the supported boards.  The same module
@@ -59,14 +59,17 @@
  * example provided within the Dallas Temperature library.  The sensor address
  * is programmed at the factory and cannot be changed.
  *
- * @section ds18_datasheet Sensor Datasheet
+ * @section sensor_ds18_datasheet Sensor Datasheet
  * - [DS18B20 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18B20-1-Wire-Temperature-Probe-Datasheet.pdf)
  * - [DS18S20 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18S20-1-Wire-Temperature-Probe-Datasheet.pdf)
  * - [DS1822 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-DatasheetsMaxim-DS1822-1-Wire-Temperature-Probe-Datasheet.pdf)
  * - [MAX31820 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-MAX31820-1-Wire-Temperature-Probe-Datasheet.pdf)
  *
+ * @section sensor_ds18_ctor Sensor Constructor
+ * {{ @ref MaximDS18::MaximDS18 }}
+ *
  * ___
- * @section ds18_examples Example Code
+ * @section sensor_ds18_examples Example Code
  * The Maxim DS18 is used in the @menulink{ds18} example.
  *
  * @menusnip{ds18}
@@ -93,16 +96,16 @@
 #include <OneWire.h>
 
 // Sensor Specific Defines
-/** @ingroup ds18_group */
+/** @ingroup sensor_ds18 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the DS18 can report 1 value.
 #define DS18_NUM_VARIABLES 1
 
 /**
- * @anchor ds18_timing_defines
+ * @anchor sensor_ds18_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Maxim DS18
+ * The sensor timing for a Maxim DS18
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the DS18 warms up in 2ms (reset time is < 480
@@ -117,9 +120,9 @@
 /**@}*/
 
 /**
- * @anchor ds18_temp_defines
+ * @anchor sensor_ds18_temp
  * @name Temperature
- * Defines for the temperature variable from an Maxim DS18
+ * The temperature variable from an Maxim DS18
  *   - Range is -55°C to 125°C
  *   - Accuracy:
  *     - ± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20
@@ -130,6 +133,8 @@
  *     - @m_span{m-dim}@ref #DS18_TEMP_RESOLUTION = 4@m_endspan
  *   - Reported as degrees Celsius (°C)
  *   - Default variable code is DS18Temp
+ *
+ * {{ @ref MaximDS18_Temp::MaximDS18_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 4.
@@ -147,16 +152,15 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [DS18 one-wire temperature sensors](@ref ds18_group).
+ * [DS18 one-wire temperature sensors](@ref sensor_ds18).
  *
- * @ingroup ds18_group
+ * @ingroup sensor_ds18
  */
 /* clang-format on */
 class MaximDS18 : public Sensor {
  public:
     /**
      * @brief Construct a new Maxim DS18 with a known sensor address.
-     * @ingroup ds18_group
      *
      * Use this version for more than one sensor attached to the OneWire bus.
      *
@@ -182,7 +186,6 @@ class MaximDS18 : public Sensor {
     /**
      * @brief Construct a new Maxim DS18 for a single sensor with an unknown
      * address.
-     * @ingroup ds18_group
      *
      * Use this version of the constructor when there is only one temperature
      * sensor attached to the OneWire bus and the address of that sensor is not
@@ -255,17 +258,16 @@ class MaximDS18 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref ds18_temp) from a
- * [Maxim one-wire temperature sensor](@ref ds18_group).
+ * [temperature output](@ref sensor_ds18_temp) from a
+ * [Maxim one-wire temperature sensor](@ref sensor_ds18).
  *
- * @ingroup ds18_group
+ * @ingroup sensor_ds18
  */
 /* clang-format on */
 class MaximDS18_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MaximDS18_Temp object.
-     * @ingroup ds18_group
      *
      * @param parentSense The parent MaximDS18 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the

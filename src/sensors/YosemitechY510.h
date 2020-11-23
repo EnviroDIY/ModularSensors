@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y510_group Yosemitech Y510
+ * @defgroup sensor_y510 Yosemitech Y510 Turbidity Sensor
  * Classes for the Yosemitech Y510 turbidity sensor.
  *
  * @ingroup yosemitech_group
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y510_datasheet Sensor Datasheet
+ * @section sensor_y510_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_UserManual-v1.1.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_1.7-ModbusInstruction-en.pdf)
  *
@@ -34,8 +34,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y510_ctor Sensor Constructor
+ * {{ @ref YosemitechY510::YosemitechY510 }}
+ *
  * ___
- * @section y510_examples Example Code
+ * @section sensor_y510_examples Example Code
  * The Yosemitech Y510 Turbidity is used in the @menulink{y510} example.
  *
  * @menusnip{y510}
@@ -50,16 +53,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y510_group */
+/** @ingroup sensor_y510 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y510 can report 2 values.
 #define Y510_NUM_VARIABLES 2
 
 /**
- * @anchor y510_timing_defines
+ * @anchor sensor_y510_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y510
+ * The sensor timing for a Yosemitch Y510
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -74,11 +77,13 @@
 /**@}*/
 
 /**
- * @anchor y510_turb_defines
+ * @anchor sensor_y510_turb
  * @name Turbidity
- * Defines for the turbidity variable from a Yosemitch Y510
+ * The turbidity variable from a Yosemitch Y510
  * - Range is 0.1 to 1000 NTU
  * - Accuracy is ± 5 % or 0.3 NTU
+ *
+ * {{ @ref YosemitechY510_Turbidity::YosemitechY510_Turbidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; turbidity should have 2 -
@@ -95,11 +100,13 @@
 /**@}*/
 
 /**
- * @anchor y510_temp_defines
+ * @anchor sensor_y510_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y510
+ * The temperature variable from a Yosemitch Y510
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY510_Temp::YosemitechY510_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -119,9 +126,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y510-B optical turbidity sensor](@ref y510_group).
+ * [Yosemitech Y510-B optical turbidity sensor](@ref sensor_y510).
  *
- * @ingroup y510_group
+ * @ingroup sensor_y510
  */
 /* clang-format on */
 class YosemitechY510 : public YosemitechParent {
@@ -129,7 +136,6 @@ class YosemitechY510 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y510 object.
-     * @ingroup y510_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -177,17 +183,16 @@ class YosemitechY510 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [turbidity output](@ref y510_turb) from a
- * [Yosemitech Y510-B optical turbidity sensor](@ref y510_group).
+ * [turbidity output](@ref sensor_y510_turb) from a
+ * [Yosemitech Y510-B optical turbidity sensor](@ref sensor_y510).
  *
- * @ingroup y510_group
+ * @ingroup sensor_y510
  */
 /* clang-format on */
 class YosemitechY510_Turbidity : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY510_Turbidity object.
-     * @ingroup y510_group
      *
      * @param parentSense The parent YosemitechY510 providing the result
      * values.
@@ -222,17 +227,16 @@ class YosemitechY510_Turbidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y510_temp) from a
- * [Yosemitech Y510-B optical turbidity sensor](@ref y510_group).
+ * [temperature output](@ref sensor_y510_temp) from a
+ * [Yosemitech Y510-B optical turbidity sensor](@ref sensor_y510).
  *
- * @ingroup y510_group
+ * @ingroup sensor_y510
  */
 /* clang-format on */
 class YosemitechY510_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY510_Temp object.
-     * @ingroup y510_group
      *
      * @param parentSense The parent YosemitechY510 providing the result
      * values.

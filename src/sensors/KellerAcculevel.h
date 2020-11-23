@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup acculevel_group Keller Acculevel
+ * @defgroup sensor_acculevel Keller Acculevel
  * Classes for the Keller Acculevel.
  *
  * @ingroup keller_group
@@ -31,12 +31,15 @@
  *
  * Only tested on the Acculevel.
  *
- * @section acculevel_datasheet Sensor Datasheet
+ * @section sensor_acculevel_datasheet Sensor Datasheet
  * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  * [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
  *
+ * @section sensor_acculevel_ctor Sensor Constructor
+ * {{ @ref KellerAcculevel::KellerAcculevel }}
+ *
  * ___
- * @section acculevel_examples Example Code
+ * @section sensor_acculevel_examples Example Code
  * The Keller Acculevel is used in the @menulink{acculevel} example.
  *
  * @menusnip{acculevel}
@@ -51,13 +54,13 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
-/** @ingroup acculevel_group */
+/** @ingroup sensor_acculevel */
 /**@{*/
 
 /**
- * @anchor acculevel_timing_defines
+ * @anchor sensor_acculevel_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Keller Acculevel
+ * The sensor timing for a Keller Acculevel
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the Acculevel takes about 500 ms to respond.
@@ -71,11 +74,13 @@
 /**@}*/
 
 /**
- * @anchor acculevel_pressure_defines
+ * @anchor sensor_acculevel_pressure
  * @name Pressure
- * Defines for the pressure variable from a Keller Acculevel
+ * The pressure variable from a Keller Acculevel
  * - Range is 0 to 11 bar
  * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerAcculevel_Pressure::KellerAcculevel_Pressure }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; pressure should have 5 -
@@ -86,11 +91,13 @@
 /**@}*/
 
 /**
- * @anchor acculevel_temp_defines
+ * @anchor sensor_acculevel_temp
  * @name Temperature
- * Defines for the temperature variable from a Keller Acculevel
+ * The temperature variable from a Keller Acculevel
  * - Range is -10°C to 60°C
  * - Accuracy is not specified in the sensor datasheet
+ *
+ * {{ @ref KellerAcculevel_Temp::KellerAcculevel_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -101,11 +108,13 @@
 /**@}*/
 
 /**
- * @anchor acculevel_height_defines
+ * @anchor sensor_acculevel_height
  * @name Height
- * Defines for the height variable from a Keller Acculevel
+ * The height variable from a Keller Acculevel
  * - Range is 0 to 900 feet
  * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerAcculevel_Height::KellerAcculevel_Height }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; height should have 4 -
@@ -119,9 +128,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Keller Acculevel sensor](@ref acculevel_group).
+ * [Keller Acculevel sensor](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel : public KellerParent {
@@ -129,7 +138,6 @@ class KellerAcculevel : public KellerParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Keller Acculevel
-     * @ingroup acculevel_group
      *
      * @param modbusAddress The modbus address of the Acculevel.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -176,17 +184,16 @@ class KellerAcculevel : public KellerParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge pressure (vented and barometric pressure corrected) output](@ref acculevel_pressure)
- * from a [Keller Acculevel](@ref acculevel_group).
+ * [gauge pressure (vented and barometric pressure corrected) output](@ref sensor_acculevel_pressure)
+ * from a [Keller Acculevel](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel_Pressure : public Variable {
  public:
     /**
      * @brief Construct a new KellerAcculevel_Pressure object.
-     * @ingroup acculevel_group
      *
      * @param parentSense The parent KellerAcculevel providing the result
      * values.
@@ -223,17 +230,16 @@ class KellerAcculevel_Pressure : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref acculevel_temp) from a
- * [Keller Acculevel](@ref acculevel_group).
+ * [temperature output](@ref sensor_acculevel_temp) from a
+ * [Keller Acculevel](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel_Temp : public Variable {
  public:
     /**
      * @brief Construct a new KellerAcculevel_Temp object.
-     * @ingroup acculevel_group
      *
      * @param parentSense The parent KellerAcculevel providing the result
      * values.
@@ -268,17 +274,16 @@ class KellerAcculevel_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge height (water level with regard to an arbitrary gage datum) output](@ref acculevel_height)
- * from a [Keller Acculevel](@ref acculevel_group).
+ * [gauge height (water level with regard to an arbitrary gage datum) output](@ref sensor_acculevel_height)
+ * from a [Keller Acculevel](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel_Height : public Variable {
  public:
     /**
      * @brief Construct a new KellerAcculevel_Height object.
-     * @ingroup acculevel_group
      *
      * @param parentSense The parent KellerAcculevel providing the result
      * values.

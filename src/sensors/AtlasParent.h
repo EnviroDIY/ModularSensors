@@ -26,27 +26,27 @@
  *
  * - [EZO-CO2 Embedded NDIR CO2 Sensor](https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_CO2_Datasheet.pdf)
- *     - [Class Documentation](@ref atlas_co2_group)
+ *     - [Class Documentation](@ref sensor_atlas_co2)
  * - [EZO-DO Dissolved Oxygen Circuit and Probe](https://www.atlas-scientific.com/dissolved-oxygen.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_EZO_Datasheet.pdf)
  *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_probe.pdf)
- *     - [Class Documentation](@ref atlas_do_group)
+ *     - [Class Documentation](@ref sensor_atlas_do)
  * - [EZO-EC Conductivity Circuit and Probes](https://www.atlas-scientific.com/conductivity.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf)
  *     - [K0.1 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf)
  *     - [K1.0 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf)
  *     - [K10 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf)
- *     - [Class Documentation](@ref atlas_cond_group)
+ *     - [Class Documentation](@ref sensor_atlas_cond)
  * - [EZO-ORP Oxidation/Reduction Potential Circuit and Probes](https://www.atlas-scientific.com/orp.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_ORP_EZO_datasheet.pdf)
- *     - [Class Documentation](@ref atlas_orp_group)
+ *     - [Class Documentation](@ref sensor_atlas_orp)
  * - [EZO-pH Circuit and Probe](https://www.atlas-scientific.com/ph.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_pH_EZO_Datasheet.pdf)
- *     - [Class Documentation](@ref atlas_ph_group)
+ *     - [Class Documentation](@ref sensor_atlas_ph)
  * - [EZO-RTD Temperature Circuit and Probes](https://www.atlas-scientific.com/temperature.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_RTD_Datasheet.pdf)
  *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_PT-1000-probe.pdf)
- *     - [Class Documentation](@ref atlas_rtd_group)
+ *     - [Class Documentation](@ref sensor_atlas_rtd)
  *
  * The chips have operating voltages between 3.3V and 5V; power can be stopped
  * between measurements.  The probes and sensors can (and should) be calibrated
@@ -96,7 +96,7 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
@@ -109,7 +109,7 @@
  */
 class AtlasParent : public Sensor {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Parent object using a *software* I2C
      * instance.
@@ -174,7 +174,8 @@ class AtlasParent : public Sensor {
                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
                 uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms   = 0);
-#else
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Parent object using a secondary *hardware*
      * I2C instance.
@@ -297,7 +298,7 @@ class AtlasParent : public Sensor {
      * @brief The I2C address of the Atlas circuit.
      */
     int8_t _i2cAddressHex;
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief An internal reference to the SoftwareWire instance.
      */

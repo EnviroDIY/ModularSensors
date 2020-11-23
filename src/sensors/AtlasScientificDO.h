@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_do_group Atlas EZO-DO
+ * @defgroup sensor_atlas_do Atlas EZO-DO
  * Classes for the Atlas Scientific EZO-DO dissolved oxygen circuit and probe.
  *
  * @ingroup atlas_group
@@ -24,7 +24,7 @@
  *
  * The Atlas Scientifc DO sensor outputs DO in both mg/L and percent saturation.
  *
- * @section atlas_do_datasheet Sensor Datasheet
+ * @section sensor_atlas_do_datasheet Sensor Datasheet
  *
  * Documentation on the probe is found here:
  * https://www.atlas-scientific.com/probes/dissolved-oxygen-probe/
@@ -32,14 +32,20 @@
  * Documentation on the measurement circuit is found here:
  * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
  *
- * @section atlas_do_flags Build flags
+ * @section sensor_atlas_do_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
  * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
  *
+ * @section sensor_atlas_do_ctor Sensor Constructors
+ * {{ @ref AtlasScientificDO::AtlasScientificDO(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificDO::AtlasScientificDO(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificDO::AtlasScientificDO(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificDO::AtlasScientificDO(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
+ *
  * ___
- * @section atlas_do_examples Example Code
+ * @section sensor_atlas_do_examples Example Code
  * The Atlas DO sensor is used in the @menulink{atlas_do} example.
  *
  * @menusnip{atlas_do}
@@ -69,7 +75,7 @@
 #define ATLAS_DO_I2C_ADDR 0x61
 
 // Sensor Specific Defines
-/** @ingroup atlas_do_group */
+/** @ingroup sensor_atlas_do */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Atlas DO sensor can report 2 values.
@@ -77,9 +83,9 @@
 
 
 /**
- * @anchor atlas_do_timing_defines
+ * @anchor sensor_atlas_do_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an Atlas DO sensor
+ * The sensor timing for an Atlas DO sensor
  */
 /**@{*/
 /**
@@ -103,11 +109,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_do_conc_defines
+ * @anchor sensor_atlas_do_concentration
  * @name DO Concentration
- * Defines for the dissolved oxygen concentration for an Atlas DO sensor
+ * The dissolved oxygen concentration from an Atlas DO sensor
  * - Accuracy is ± 0.05 mg/L
  * - Range is 0.01 − 100+ mg/L
+ *
+ * {{ @ref AtlasScientificDO_DOmgL::AtlasScientificDO_DOmgL }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen
@@ -125,11 +133,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_do_pct_defines
+ * @anchor sensor_atlas_do_percent
  * @name DO Percent Saturation
- * Defines for the dissolved oxygen percent saturation for an Atlas DO sensor
+ * The dissolved oxygen percent saturation for an Atlas DO sensor
  * - Accuracy is ± 0.05 mg/L
  * - Range is 0.1 − 400+ % saturation
+ *
+ * {{ @ref AtlasScientificDO_DOpct::AtlasScientificDO_DOpct }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen percent
@@ -150,18 +160,17 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_group).
+ * [Atlas Scientific EZO dissolved oxygen circuit](@ref sensor_atlas_do).
  *
- * @ingroup atlas_do_group
+ * @ingroup sensor_atlas_do
  */
 /* clang-format on */
 class AtlasScientificDO : public AtlasParent {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific DO object using a *software* I2C
      * instance.
-     * @ingroup atlas_do_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -186,7 +195,6 @@ class AtlasScientificDO : public AtlasParent {
      * @brief Construct a new Atlas Scientific DO object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup atlas_do_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -216,11 +224,11 @@ class AtlasScientificDO : public AtlasParent {
     AtlasScientificDO(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                       uint8_t i2cAddressHex         = ATLAS_DO_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
-#else
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific DO object using a secondary
      * *hardware* I2C instance.
-     * @ingroup atlas_do_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -247,7 +255,6 @@ class AtlasScientificDO : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific DO object using the primary
      * hardware I2C instance.
-     * @ingroup atlas_do_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas DO
      * circuit.  Use -1 if it is continuously powered.
@@ -288,17 +295,16 @@ class AtlasScientificDO : public AtlasParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen concentration output](@ref atlas_do_concentration) from an
- * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_group).
+ * [dissolved oxygen concentration output](@ref sensor_atlas_do_concentration) from an
+ * [Atlas Scientific EZO dissolved oxygen circuit](@ref sensor_atlas_do).
  *
- * @ingroup atlas_do_group
+ * @ingroup sensor_atlas_do
  */
 /* clang-format on */
 class AtlasScientificDO_DOmgL : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificDO_DOmgL object.
-     * @ingroup atlas_do_group
      *
      * @param parentSense The parent AtlasScientificDO providing the result
      * values.
@@ -332,17 +338,16 @@ class AtlasScientificDO_DOmgL : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen percent of saturation output](@ref atlas_do_percent) from an
- * [Atlas Scientific EZO dissolved oxygen circuit](@ref atlas_do_group).
+ * [dissolved oxygen percent of saturation output](@ref sensor_atlas_do_percent) from an
+ * [Atlas Scientific EZO dissolved oxygen circuit](@ref sensor_atlas_do).
  *
- * @ingroup atlas_do_group
+ * @ingroup sensor_atlas_do
  */
 /* clang-format on */
 class AtlasScientificDO_DOpct : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificDO_DOpct object.
-     * @ingroup atlas_do_group
      *
      * @param parentSense The parent AtlasScientificDO providing the result
      * values.

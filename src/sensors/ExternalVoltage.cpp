@@ -19,9 +19,9 @@
 ExternalVoltage::ExternalVoltage(int8_t powerPin, uint8_t adsChannel,
                                  float gain, uint8_t i2cAddress,
                                  uint8_t measurementsToAverage)
-    : Sensor("ExternalVoltage", EXT_VOLT_NUM_VARIABLES,
-             EXT_VOLT_WARM_UP_TIME_MS, EXT_VOLT_STABILIZATION_TIME_MS,
-             EXT_VOLT_MEASUREMENT_TIME_MS, powerPin, -1,
+    : Sensor("ExternalVoltage", EXT_VOLTAGE_NUM_VARIABLES,
+             EXT_VOLTAGE_WARM_UP_TIME_MS, EXT_VOLTAGE_STABILIZATION_TIME_MS,
+             EXT_VOLTAGE_MEASUREMENT_TIME_MS, powerPin, -1,
              measurementsToAverage) {
     _adsChannel = adsChannel;
     _gain       = gain;
@@ -98,7 +98,7 @@ bool ExternalVoltage::addSingleMeasurementResult(void) {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    verifyAndAddMeasurementResult(EXT_VOLT_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(EXT_VOLTAGE_VAR_NUM, calibResult);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

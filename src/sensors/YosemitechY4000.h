@@ -23,7 +23,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y4000_group Yosemitech Y4000 Sonde
+ * @defgroup sensor_y4000 Yosemitech Y4000 Multi-Parameter Sonde
  * Classes for the Yosemitech Y4000 multi-parameter sonde.
  *
  * @ingroup yosemitech_group
@@ -31,7 +31,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y4000_datasheet Sensor Datasheet
+ * @section sensor_y4000_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
  *
@@ -40,8 +40,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y4000_ctor Sensor Constructor
+ * {{ @ref YosemitechY4000::YosemitechY4000 }}
+ *
  * ___
- * @section y4000_examples Example Code
+ * @section sensor_y4000_examples Example Code
  * The Y4000 Sonde is used in the @menulink{y4000} example.
  *
  * @menusnip{y4000}
@@ -56,16 +59,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y4000_group */
+/** @ingroup sensor_y4000 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y4000 can report 8 values.
 #define Y4000_NUM_VARIABLES 8
 
 /**
- * @anchor y4000_timing_defines
+ * @anchor sensor_y4000_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y4000 multi-parameter sonde
+ * The sensor timing for a Yosemitch Y4000 multi-parameter sonde
  */
 /**@{*/
 /**
@@ -87,21 +90,23 @@
 /**@}*/
 
 /**
- * @anchor y4000_docond_defines
+ * @anchor sensor_y4000_domgl
  * @name Dissolved Oxygen Concentration
- * Defines for the dissolved oxygen concentration variable from a Yosemitch
- * Y4000 multi-parameter sonde
+ * The dissolved oxygen concentration variable from a Yosemitch Y4000
+ * multi-parameter sonde
  * - Range is 0-20mg/L or 0-200% Air Saturation
  * - Accuracy is ± 0.3 mg/L
+ *
+ * {{ @ref YosemitechY4000_DOmgL::YosemitechY4000_DOmgL }}
  */
+/**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y4000_DOMGL_RESOLUTION 2
 /// @brief Variable number; dissolved oxygen concentration is stored in
 /// sensorValues[0]
 #define Y4000_DOMGL_VAR_NUM 0
-/// @brief Variable number; dissolved oxygen concentration is stored in
-/// sensorValues[0]
+/// @brief Variable name; "oxygenDissolved"
 #define Y4000_DOMGL_VAR_NAME "oxygenDissolved"
 /// @brief Variable unit name; "milligramPerLiter" (mg/L)
 #define Y4000_DOMGL_UNIT_NAME "milligramPerLiter"
@@ -110,12 +115,13 @@
 /**@}*/
 
 /**
- * @anchor y4000_turb_defines
+ * @anchor sensor_y4000_turb
  * @name Turbidity
- * Defines for the turbidity variable from a Yosemitch Y4000 multi-parameter
- * sonde
+ * The turbidity variable from a Yosemitch Y4000 multi-parameter sonde
  * - Range is 0.1~1000 NTU
  * - Accuracy is ＜5% or 0.3NTU
+ *
+ * {{ @ref YosemitechY4000_Turbidity::YosemitechY4000_Turbidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; turbidity should have 2 -
@@ -132,12 +138,13 @@
 /**@}*/
 
 /**
- * @anchor y4000_cond_defines
+ * @anchor sensor_y4000_cond
  * @name Conductivity
- * Defines for the conductivity variable from a Yosemitch Y4000 multi-parameter
- * sonde
+ * The conductivity variable from a Yosemitch Y4000 multi-parameter sonde
  * - Range is 1 µS/cm to 200 mS/cm
  * - Accuracy is ± 1 % Full Scale
+ *
+ * {{ @ref YosemitechY4000_Cond::YosemitechY4000_Cond }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; conductivity should have 1
@@ -154,11 +161,13 @@
 /**@}*/
 
 /**
- * @anchor y4000_ph_defines
+ * @anchor sensor_y4000_ph
  * @name pH
- * Defines for the pH variable from a Yosemitch Y4000 multi-parameter sonde
+ * The pH variable from a Yosemitch Y4000 multi-parameter sonde
  * - Range is 2 to 12 pH units
  * - Accuracy is ± 0.1 pH units
+ *
+ * {{ @ref YosemitechY4000_pH::YosemitechY4000_pH }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; ph should have 2 -
@@ -175,12 +184,13 @@
 /**@}*/
 
 /**
- * @anchor y4000_temp_defines
+ * @anchor sensor_y4000_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y4000 multi-parameter
- * sonde
+ * The temperature variable from a Yosemitch Y4000 multi-parameter sonde
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY4000_Temp::YosemitechY4000_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -197,11 +207,13 @@
 /**@}*/
 
 /**
- * @anchor y4000_orp_defines
+ * @anchor sensor_y4000_orp
  * @name ORP
- * Defines for the ORP variable from a Yosemitch Y4000 multi-parameter sonde
+ * The ORP variable from a Yosemitch Y4000 multi-parameter sonde
  * - Range is -999 ~ 999 mV
  * - Accuracy is ± 20 mV
+ *
+ * {{ @ref YosemitechY4000_ORP::YosemitechY4000_ORP }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; orp should have 0 -
@@ -218,12 +230,14 @@
 /**@}*/
 
 /**
- * @anchor y4000_chloro_defines
+ * @anchor sensor_y4000_chloro
  * @name Chlorophyll Concentration
- * Defines for the chlorophyll concentration variable from a Yosemitch Y4000
- * multi-parameter sonde
+ * The chlorophyll concentration variable from a Yosemitch Y4000 multi-parameter
+ * sonde
  * - Range is 0 to 400 µg/L or 0 to 100 RFU
  * - Accuracy is ± 1 %
+ *
+ * {{ @ref YosemitechY4000_Chlorophyll::YosemitechY4000_Chlorophyll }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; chlorophyll concentration
@@ -241,11 +255,13 @@
 /**@}*/
 
 /**
- * @anchor y4000_bga_defines
+ * @anchor sensor_y4000_bga
  * @name Blue Green Algae Concentration
- * Defines for the BGA variable from a Yosemitch Y4000 multi-parameter sonde
+ * The BGA variable from a Yosemitch Y4000 multi-parameter sonde
  * - Range is 0 to 100 µg/L or 0 to 100 RFU
  * - Accuracy is ±  0.04ug/L PC
+ *
+ * {{ @ref YosemitechY4000_BGA::YosemitechY4000_BGA }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; bga should have 2 -
@@ -265,9 +281,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000 : public YosemitechParent {
@@ -275,7 +291,6 @@ class YosemitechY4000 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y4000 object.
-     * @ingroup y4000_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -323,17 +338,16 @@ class YosemitechY4000 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen concentration output](@ref y4000_domgl) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [dissolved oxygen concentration output](@ref sensor_y4000_domgl) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_DOmgL : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_DOmgL object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -367,17 +381,16 @@ class YosemitechY4000_DOmgL : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [turbidity output](@ref y4000_turb) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [turbidity output](@ref sensor_y4000_turb) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_Turbidity : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_Turbidity object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -411,17 +424,16 @@ class YosemitechY4000_Turbidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [conductivity output](@ref y4000_cond) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [conductivity output](@ref sensor_y4000_cond) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_Cond : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_Cond object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -455,17 +467,16 @@ class YosemitechY4000_Cond : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pH output](@ref y4000_ph)
- * from a [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [pH output](@ref sensor_y4000_ph)
+ * from a [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_pH : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_pH object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -499,17 +510,16 @@ class YosemitechY4000_pH : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y4000_temp) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [temperature output](@ref sensor_y4000_temp) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_Temp object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -543,17 +553,16 @@ class YosemitechY4000_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [electrode electrical potential output](@ref y4000_orp) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [electrode electrical potential output](@ref sensor_y4000_orp) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_ORP : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_ORP object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -587,17 +596,16 @@ class YosemitechY4000_ORP : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [chlorophyll concentration output](@ref y4000_chloro) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group)
+ * [chlorophyll concentration output](@ref sensor_y4000_chloro) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000)
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_Chlorophyll : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_Chlorophyll object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -632,17 +640,16 @@ class YosemitechY4000_Chlorophyll : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [blue green algae (BGA) concentration output](@ref y4000_bga) from a
- * [Yosemitech Y4000 multiparameter sonde](@ref y4000_group).
+ * [blue green algae (BGA) concentration output](@ref sensor_y4000_bga) from a
+ * [Yosemitech Y4000 multiparameter sonde](@ref sensor_y4000).
  *
- * @ingroup y4000_group
+ * @ingroup sensor_y4000
  */
 /* clang-format on */
 class YosemitechY4000_BGA : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY4000_BGA object.
-     * @ingroup y4000_group
      *
      * @param parentSense The parent YosemitechY4000 providing the result
      * values.
@@ -672,6 +679,5 @@ class YosemitechY4000_BGA : public Variable {
      */
     ~YosemitechY4000_BGA() {}
 };
-
-
+/**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_

@@ -18,7 +18,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y550_group Yosemitech Y550 UV245/COD Sensor
+ * @defgroup sensor_y550 Yosemitech Y550 UV245/COD Sensor
  * Classes for the Yosemitech Y550 UV245/COD sensor with wiper.
  *
  * @ingroup yosemitech_group
@@ -26,7 +26,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y550_datasheet Sensor Datasheet
+ * @section sensor_y550_datasheet Sensor Datasheet
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf)
  *
  * @note The reported resolution (32 bit) gives far more precision than is significant
@@ -34,8 +34,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y550_ctor Sensor Constructor
+ * {{ @ref YosemitechY550::YosemitechY550 }}
+ *
  * ___
- * @section y550_examples Example Code
+ * @section sensor_y550_examples Example Code
  * The Yosemitech Y550 UV245/COD sensor is used in the @menulink{y550} example.
  *
  * @menusnip{y550}
@@ -50,16 +53,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y550_group */
+/** @ingroup sensor_y550 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y550 can report 2 values.
 #define Y550_NUM_VARIABLES 2
 
 /**
- * @anchor y550_timing_defines
+ * @anchor sensor_y550_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y550
+ * The sensor timing for a Yosemitch Y550
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -74,13 +77,15 @@
 /**@}*/
 
 /**
- * @anchor y550_cod_defines
+ * @anchor sensor_y550_cod
  * @name Carbon Oxygen Demand
- * Defines for the COD variable from a Yosemitch Y550
+ * The COD variable from a Yosemitch Y550
  * - Range is:
  *     - 0.75 to 370 mg/L COD (equiv. KHP)
  *     - 0.2 to 150 mg/L TOC (equiv. KHP)
  * - Accuracy is not reported on sensor datasheet
+ *
+ * {{ @ref YosemitechY550_COD::YosemitechY550_COD }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; cod should have 2 -
@@ -97,11 +102,13 @@
 /**@}*/
 
 /**
- * @anchor y550_temp_defines
+ * @anchor sensor_y550_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y550
+ * The temperature variable from a Yosemitch Y550
  * - Range is 5°C to + 45°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY550_Temp::YosemitechY550_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -118,11 +125,13 @@
 /**@}*/
 
 /**
- * @anchor y550_turb_defines
+ * @anchor sensor_y550_turb
  * @name Turbidity
- * Defines for the turbidity variable from a Yosemitch Y550
+ * The turbidity variable from a Yosemitch Y550
  * - Range is 0.1~1000 NTU
  * - Accuracy is ＜5% or 0.3NTU
+ *
+ * {{ @ref YosemitechY550_Turbidity::YosemitechY550_Turbidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; turbidity should have 2 -
@@ -142,9 +151,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref sensor_y550).
  *
- * @ingroup y550_group
+ * @ingroup sensor_y550
  */
 /* clang-format on */
 class YosemitechY550 : public YosemitechParent {
@@ -152,7 +161,6 @@ class YosemitechY550 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y550 object.
-     * @ingroup y550_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -200,17 +208,16 @@ class YosemitechY550 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [carbon oxygen demand (COD) output](@ref y550_cod) from a
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
+ * [carbon oxygen demand (COD) output](@ref sensor_y550_cod) from a
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref sensor_y550).
  *
- * @ingroup y550_group
+ * @ingroup sensor_y550
  */
 /* clang-format on */
 class YosemitechY550_COD : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY550_COD object.
-     * @ingroup y550_group
      *
      * @param parentSense The parent YosemitechY550 providing the result
      * values.
@@ -245,17 +252,16 @@ class YosemitechY550_COD : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y550_temp) from a
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
+ * [temperature output](@ref sensor_y550_temp) from a
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref sensor_y550).
  *
- * @ingroup y550_group
+ * @ingroup sensor_y550
  */
 /* clang-format on */
 class YosemitechY550_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY550_Temp object.
-     * @ingroup y550_group
      *
      * @param parentSense The parent YosemitechY550 providing the result
      * values.
@@ -290,17 +296,16 @@ class YosemitechY550_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [turbidity output](@ref y550_turb) from a
- * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref y550_group).
+ * [turbidity output](@ref sensor_y550_turb) from a
+ * [Yosemitech Y550-B UV254/COD sensor with wiper](@ref sensor_y550).
  *
- * @ingroup y550_group
+ * @ingroup sensor_y550
  */
 /* clang-format on */
 class YosemitechY550_Turbidity : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY550_Turbidity object.
-     * @ingroup y550_group
      *
      * @param parentSense The parent YosemitechY550 providing the result
      * values.

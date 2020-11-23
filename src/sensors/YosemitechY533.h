@@ -18,7 +18,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y533_group Yosemitech Y533
+ * @defgroup sensor_y533 Yosemitech Y533 ORP Sensor
  * Classes for the Yosemitech Y533 oxidation/reduction potential (ORP) sensor.
  *
  * @ingroup yosemitech_group
@@ -26,7 +26,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y533_datasheet Sensor Datasheet
+ * @section sensor_y533_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
  *
@@ -35,8 +35,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y533_ctor Sensor Constructor
+ * {{ @ref YosemitechY533::YosemitechY533 }}
+ *
  * ___
- * @section y533_examples Example Code
+ * @section sensor_y533_examples Example Code
  * The Yosemitech Y533 ORP sensor is used in the @menulink{y533} example.
  *
  * @menusnip{y533}
@@ -51,16 +54,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y533_group */
+/** @ingroup sensor_y533 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y533 can report 3 values.
 #define Y533_NUM_VARIABLES 3
 
 /**
- * @anchor y533_timing_defines
+ * @anchor sensor_y533_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y533
+ * The sensor timing for a Yosemitch Y533
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -75,11 +78,13 @@
 /**@}*/
 
 /**
- * @anchor y533_ph_defines
+ * @anchor sensor_y533_ph
  * @name pH
- * Defines for the pH variable from a Yosemitch Y533
+ * The pH variable from a Yosemitch Y533
  * - Range is 2-12 pH
  * - Accuracy is ±0.1 pH
+ *
+ * {{ @ref YosemitechY533_pH::YosemitechY533_pH }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; ph should have 2 -
@@ -96,11 +101,13 @@
 /**@}*/
 
 /**
- * @anchor y533_temp_defines
+ * @anchor sensor_y533_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y533
+ * The temperature variable from a Yosemitch Y533
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY533_Temp::YosemitechY533_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -117,33 +124,35 @@
 /**@}*/
 
 /**
- * @anchor y533_volt_defines
+ * @anchor sensor_y533_volt
  * @name Voltage
- * Defines for the voltage variable from a Yosemitch Y533
+ * The voltage variable from a Yosemitch Y533
  * - Range is -999 ~ 999 mV
  * - Accuracy is ± 20 mV
+ *
+ * {{ @ref YosemitechY533_Voltage::YosemitechY533_Voltage }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; voltage should have 0 -
 /// resolution is 1 mV.
-#define Y533_VOLT_RESOLUTION 0
+#define Y533_VOLTAGE_RESOLUTION 0
 /// @brief Variable number; voltage is stored in sensorValues[2].
-#define Y533_VOLT_VAR_NUM 2
+#define Y533_VOLTAGE_VAR_NUM 2
 /// @brief Variable name; "voltage"
-#define Y533_VOLT_VAR_NAME "voltage"
+#define Y533_VOLTAGE_VAR_NAME "voltage"
 /// @brief Variable unit name; "millivolt" (mV)
-#define Y533_VOLT_UNIT_NAME "millivolt"
+#define Y533_VOLTAGE_UNIT_NAME "millivolt"
 /// @brief Default variable short code; "Y533Potential"
-#define Y533_VOLT_DEFAULT_CODE "Y533Potential"
+#define Y533_VOLTAGE_DEFAULT_CODE "Y533Potential"
 /**@}*/
 
 
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y533 ORP sensor](@ref y533_group).
+ * [Yosemitech Y533 ORP sensor](@ref sensor_y533).
  *
- * @ingroup y533_group
+ * @ingroup sensor_y533
  */
 /* clang-format on */
 class YosemitechY533 : public YosemitechParent {
@@ -151,7 +160,6 @@ class YosemitechY533 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y533 object.
-     * @ingroup y533_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -199,17 +207,16 @@ class YosemitechY533 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pH output](@ref y533_ph)
- * from a [Yosemitech Y533 ORP sensor](@ref y533_group).
+ * [pH output](@ref sensor_y533_ph)
+ * from a [Yosemitech Y533 ORP sensor](@ref sensor_y533).
  *
- * @ingroup y533_group
+ * @ingroup sensor_y533
  */
 /* clang-format on */
 class YosemitechY533_pH : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY533_pH object.
-     * @ingroup y533_group
      *
      * @param parentSense The parent YosemitechY533 providing the result
      * values.
@@ -243,17 +250,16 @@ class YosemitechY533_pH : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y533_temp) from a
- * [Yosemitech Y533 ORP sensor](@ref y533_group).
+ * [temperature output](@ref sensor_y533_temp) from a
+ * [Yosemitech Y533 ORP sensor](@ref sensor_y533).
  *
- * @ingroup y533_group
+ * @ingroup sensor_y533
  */
 /* clang-format on */
 class YosemitechY533_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY533_Temp object.
-     * @ingroup y533_group
      *
      * @param parentSense The parent YosemitechY533 providing the result
      * values.
@@ -288,17 +294,16 @@ class YosemitechY533_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [electrode electrical potential output](@ref y533_volt) from a
- * [Yosemitech Y533 ORP sensor](@ref y533_group).
+ * [electrode electrical potential output](@ref sensor_y533_volt) from a
+ * [Yosemitech Y533 ORP sensor](@ref sensor_y533).
  *
- * @ingroup y533_group
+ * @ingroup sensor_y533
  */
 /* clang-format on */
 class YosemitechY533_Voltage : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY533_Voltage object.
-     * @ingroup y533_group
      *
      * @param parentSense The parent YosemitechY533 providing the result
      * values.
@@ -309,10 +314,10 @@ class YosemitechY533_Voltage : public Variable {
      */
     explicit YosemitechY533_Voltage(
         YosemitechY533* parentSense, const char* uuid = "",
-        const char* varCode = Y533_VOLT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y533_VOLT_VAR_NUM,
-                   (uint8_t)Y533_VOLT_RESOLUTION, Y533_VOLT_VAR_NAME,
-                   Y533_VOLT_UNIT_NAME, varCode, uuid) {}
+        const char* varCode = Y533_VOLTAGE_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)Y533_VOLTAGE_VAR_NUM,
+                   (uint8_t)Y533_VOLTAGE_RESOLUTION, Y533_VOLTAGE_VAR_NAME,
+                   Y533_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY533_Voltage object.
      *
@@ -320,9 +325,9 @@ class YosemitechY533_Voltage : public Variable {
      * used.
      */
     YosemitechY533_Voltage()
-        : Variable((const uint8_t)Y533_VOLT_VAR_NUM,
-                   (uint8_t)Y533_VOLT_RESOLUTION, Y533_VOLT_VAR_NAME,
-                   Y533_VOLT_UNIT_NAME, Y533_VOLT_DEFAULT_CODE) {}
+        : Variable((const uint8_t)Y533_VOLTAGE_VAR_NUM,
+                   (uint8_t)Y533_VOLTAGE_RESOLUTION, Y533_VOLTAGE_VAR_NAME,
+                   Y533_VOLTAGE_UNIT_NAME, Y533_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY533_Voltage object - no action needed.
      */

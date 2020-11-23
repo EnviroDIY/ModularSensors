@@ -20,7 +20,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup i2c_rain_group Trinket Tipping Bucket
+ * @defgroup sensor_i2c_rain Trinket Tipping Bucket
  * Classes for the Trinket-based I2C tipping bucket rain counter
  *
  * @ingroup the_sensors
@@ -28,7 +28,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section i2c_rain_intro Introduction
+ * @section sensor_i2c_rain_intro Introduction
  *
  * This module is for use with a simple external I2C tipping bucket counter
  * based on an [Adafriut Trinket](https://www.adafruit.com/product/1501). This
@@ -39,11 +39,11 @@
  * assumed that the processor of the tip counter takes care of its own power
  * management.
  *
- * @section i2c_rain_datasheet Sensor Datasheet
+ * @section sensor_i2c_rain_datasheet Sensor Datasheet
  * - [Adafriut Trinket](https://www.adafruit.com/product/1501)
  * - [I2C Tipping Bucket Library](https://github.com/EnviroDIY/TippingBucketRainCounter)
  *
- * @section i2c_rain_flags Build flags
+ * @section sensor_i2c_rain_flags Build flags
  * - `-D MS_RAIN_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none your attached tipping bucket counters may use
@@ -51,8 +51,14 @@
  * not supported. Though, honestly, having more than one attached seems pretty
  * unlikely anyway.
  *
+ * @section sensor_i2c_rain_ctor Sensor Constructors
+ * {{ @ref RainCounterI2C::RainCounterI2C(uint8_t, float) }}
+ * {{ @ref RainCounterI2C::RainCounterI2C(TwoWire*, uint8_t, float) }}
+ * {{ @ref RainCounterI2C::RainCounterI2C(SoftwareWire*, uint8_t, float) }}
+ * {{ @ref RainCounterI2C::RainCounterI2C(int8_t, int8_t, uint8_t, float) }}
+ *
  * ___
- * @section i2c_rain_examples Example Code
+ * @section sensor_i2c_rain_examples Example Code
  * The Arduino-based I2C tipping bucket rain counter is used in the
  * @menulink{i2c_rain} example.
  *
@@ -83,7 +89,7 @@
 #endif
 
 // Sensor Specific Defines
-/** @ingroup i2c_rain_group */
+/** @ingroup sensor_i2c_rain */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the tipping bucket counter can report 2
@@ -91,9 +97,9 @@
 #define BUCKET_NUM_VARIABLES 2
 
 /**
- * @anchor i2c_rain_timing_defines
+ * @anchor sensor_i2c_rain_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Trinket-based tipping bucket counter
+ * The sensor timing for a Trinket-based tipping bucket counter
  * - Readings transferred from the tipping bucket to the logger are from past
  * tips, so there is no need to wait for stability or measuring.
  */
@@ -109,10 +115,12 @@
 /**@}*/
 
 /**
- * @anchor i2c_rain_depth_defines
+ * @anchor sensor_i2c_rain_depth
  * @name Rain Depth
- * Defines for rain depth variable from a Trinket-based tipping bucket counter
+ * The rain depth variable from a Trinket-based tipping bucket counter
  * - Range and accuracy depend on the tipping bucket used
+ *
+ * {{ @ref RainCounterI2C_Depth::RainCounterI2C_Depth }}
  */
 /**@{*/
 /**
@@ -133,10 +141,12 @@
 /**@}*/
 
 /**
- * @anchor i2c_rain_tips_defines
+ * @anchor sensor_i2c_rain_tips
  * @name Tip Count
  * Defines for tip count variable from a Trinket-based tipping bucket counter
  * - Range and accuracy depend on the tipping bucket used.
+ *
+ * {{ @ref RainCounterI2C_Tips::RainCounterI2C_Tips }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; the number of tips should
@@ -156,18 +166,17 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Arduino-based external tipping bucket counter](@ref i2c_rain_group).
+ * [Arduino-based external tipping bucket counter](@ref sensor_i2c_rain).
  *
- * @ingroup i2c_rain_group
+ * @ingroup sensor_i2c_rain
  */
 /* clang-format on */
 class RainCounterI2C : public Sensor {
  public:
-#if defined MS_RAIN_SOFTWAREWIRE
+#if defined MS_RAIN_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Rain Counter I2C object using a *software* I2C
      * instance.
-     * @ingroup i2c_rain_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -183,7 +192,6 @@ class RainCounterI2C : public Sensor {
      * @brief Construct a new Rain Counter I2C object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup i2c_rain_group
      *
      * @note Unless there are address conflicts between I2C devices, you should
      * not create a new I2C instance.
@@ -200,11 +208,11 @@ class RainCounterI2C : public Sensor {
      */
     RainCounterI2C(int8_t dataPin, int8_t clockPin,
                    uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
-#else
+#endif
+#if !defined(MS_RAIN_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Rain Counter I2C object using a secondary
      * *hardware* I2C instance.
-     * @ingroup i2c_rain_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -222,7 +230,6 @@ class RainCounterI2C : public Sensor {
     /**
      * @brief Construct a new Rain Counter I2C object using the primary
      * hardware I2C instance.
-     * @ingroup i2c_rain_group
      *
      * @param i2cAddressHex The I2C address of the Trinket; can be any number
      * between 0x40 and 0x4F.  The default value is 0x08.
@@ -268,7 +275,7 @@ class RainCounterI2C : public Sensor {
      * @brief The I2C address of the Trinket counter.
      */
     uint8_t _i2cAddressHex;
-#if defined MS_RAIN_SOFTWAREWIRE
+#if defined MS_RAIN_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief An internal reference to the SoftwareWire instance.
      */
@@ -279,7 +286,8 @@ class RainCounterI2C : public Sensor {
      * memory leak.
      */
     bool createdSoftwareWire;
-#else
+#endif
+#if !defined(MS_RAIN_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief An internal reference to the hardware Wire instance.
      */
@@ -290,17 +298,16 @@ class RainCounterI2C : public Sensor {
 
 /**
  * @brief The Variable sub-class used for the
- * [total tip count output](@ref i2c_rain_tips) from an
- * [Adafruit Trinket based I2C tipping bucket counter](@ref i2c_rain_group)
+ * [total tip count output](@ref sensor_i2c_rain_tips) from an
+ * [Adafruit Trinket based I2C tipping bucket counter](@ref sensor_i2c_rain)
  * - gives the number of tips since last reading.
  *
- * @ingroup i2c_rain_group
+ * @ingroup sensor_i2c_rain
  */
 class RainCounterI2C_Tips : public Variable {
  public:
     /**
      * @brief Construct a new RainCounterI2C_Tips object.
-     * @ingroup i2c_rain_group
      *
      * @param parentSense The parent RainCounterI2C providing the result
      * values.
@@ -333,17 +340,16 @@ class RainCounterI2C_Tips : public Variable {
 
 /**
  * @brief The Variable sub-class used for the
- * [depth of rain output](@ref i2c_rain_depth) from an
- * [Adafruit Trinket based I2C tipping bucket counter](@ref i2c_rain_group)
+ * [depth of rain output](@ref sensor_i2c_rain_depth) from an
+ * [Adafruit Trinket based I2C tipping bucket counter](@ref sensor_i2c_rain)
  * - gives the number of mm since the last reading.
  *
- * @ingroup i2c_rain_group
+ * @ingroup sensor_i2c_rain
  */
 class RainCounterI2C_Depth : public Variable {
  public:
     /**
      * @brief Construct a new RainCounterI2C_Depth object.
-     * @ingroup i2c_rain_group
      *
      * @param parentSense The parent RainCounterI2C providing the result
      * values.
@@ -373,6 +379,5 @@ class RainCounterI2C_Depth : public Variable {
      */
     ~RainCounterI2C_Depth() {}
 };
-
-
+/**@}*/
 #endif  // SRC_SENSORS_RAINCOUNTERI2C_H_

@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_orp_group Atlas EZO-ORP
+ * @defgroup sensor_atlas_orp Atlas EZO-ORP
  * Classes for the Atlas Scientific EZO-ORP oxidation/reduction potential circuit and probes.
  *
  * @ingroup atlas_group
@@ -22,19 +22,25 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section atlas_orp_datasheet Sensor Datasheet
+ * @section sensor_atlas_orp_datasheet Sensor Datasheet
  * Documentation on the circuit is available here:
  * https://www.atlas-scientific.com/circuits/ezo-orp-circuit/
  *
- * @section atlas_orp_flags Build flags
+ * @section sensor_atlas_orp_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
  * Using some Altas sensors with software I2C and others with hardware I2C is
  * not supported.
  *
+ * @section sensor_atlas_orp_ctor Sensor Constructors
+ * {{ @ref AtlasScientificORP::AtlasScientificORP(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificORP::AtlasScientificORP(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificORP::AtlasScientificORP(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificORP::AtlasScientificORP(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
+ *
  * ___
- * @section atlas_orp_examples Example Code
+ * @section sensor_atlas_orp_examples Example Code
  * The Atlas ORP sensor is used in the @menulink{atlas_orp} example.
  *
  * @menusnip{atlas_orp}
@@ -50,7 +56,7 @@
 
 
 // Sensor Specific Defines
-/** @ingroup atlas_orp_group */
+/** @ingroup sensor_atlas_orp */
 /**@{*/
 
 /// @brief Default I2C address is 0x62 (98)
@@ -61,9 +67,9 @@
 #define ATLAS_ORP_NUM_VARIABLES 1
 
 /**
- * @anchor atlas_orp_timing_defines
+ * @anchor sensor_atlas_orp_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an Atlas ORP (redox) sensor
+ * The sensor timing for an Atlas ORP (redox) sensor
  */
 /**@{*/
 /**
@@ -88,11 +94,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_orp_orp_defines
+ * @anchor sensor_atlas_orp_orp
  * @name ORP
- * Defines for the ORP variable from an Atlas ORP (redox) sensor
+ * The ORP variable from an Atlas ORP (redox) sensor
  * - Accuracy is ± 1 mV
  * - Range is -1019.9mV − 1019.9mV
+ *
+ * {{ @ref AtlasScientificORP_Potential::AtlasScientificORP_Potential }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; ORP should have 1 -
@@ -112,18 +120,17 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific ORP (oxidation/reduction potential) sensor](@ref atlas_orp_group).
+ * [Atlas Scientific ORP (oxidation/reduction potential) sensor](@ref sensor_atlas_orp).
  *
- * @ingroup atlas_orp_group
+ * @ingroup sensor_atlas_orp
  */
 /* clang-format on */
 class AtlasScientificORP : public AtlasParent {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific ORP object using a *software* I2C
      * instance.
-     * @ingroup atlas_orp_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -153,7 +160,6 @@ class AtlasScientificORP : public AtlasParent {
      * @brief Construct a new Atlas Scientific ORP object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup atlas_orp_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -188,11 +194,11 @@ class AtlasScientificORP : public AtlasParent {
                       ATLAS_ORP_NUM_VARIABLES, ATLAS_ORP_WARM_UP_TIME_MS,
                       ATLAS_ORP_STABILIZATION_TIME_MS,
                       ATLAS_ORP_MEASUREMENT_TIME_MS) {}
-#else
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific ORP object using a secondary
      * *hardware* I2C instance.
-     * @ingroup atlas_orp_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -224,7 +230,6 @@ class AtlasScientificORP : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific ORP object using the primary
      * hardware I2C instance.
-     * @ingroup atlas_orp_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas ORP
      * circuit.  Use -1 if it is continuously powered.
@@ -259,17 +264,16 @@ class AtlasScientificORP : public AtlasParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [oxidation/reduction potential output](@ref atlas_orp_orp) from an
- * [Atlas Scientific EZO-ORP circuit](@ref atlas_orp_group).
+ * [oxidation/reduction potential output](@ref sensor_atlas_orp_orp) from an
+ * [Atlas Scientific EZO-ORP circuit](@ref sensor_atlas_orp).
  *
- * @ingroup atlas_orp_group
+ * @ingroup sensor_atlas_orp
  */
 /* clang-format on */
 class AtlasScientificORP_Potential : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificORP_Potential object.
-     * @ingroup atlas_orp_group
      *
      * @param parentSense The parent AtlasScientificORP providing the result
      * values.

@@ -12,7 +12,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup processor_sensor_group Processor Metadata
+ * @defgroup sensor_processor Processor Metadata
  * Classes for the using the processor as a sensor.
  *
  * @ingroup the_sensors
@@ -20,7 +20,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section processor_intro Introduction
+ * @section sensor_processor_intro Introduction
  *
  * The processor can return the number of "samples" it has taken, the amount of
  * RAM it has available and, for some boards, the battery voltage (EnviroDIY
@@ -31,7 +31,7 @@
  * makes no sense to do so for the processor.  These values are only intended to be
  * used as diagnostics.
  *
- * @section processor_datasheet Sensor Datasheet
+ * @section sensor_processor_datasheet Sensor Datasheet
  * - [Atmel ATmega1284P Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega1284P-Datasheet-Summary.pdf)
  * - [Atmel ATmega1284P Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega1284P-Datasheet.pdf)
  * - [Atmel SAMD21 Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-SAMD21-Datasheet-Summary.pdf)
@@ -39,12 +39,15 @@
  * - [Atmel ATmega16U4 32U4 Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet-Summary.pdf)
  * - [Atmel ATmega16U4 32U4 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet.pdf)
  *
- * ___
- * @section processor_sensor_examples Example Code
- * The processor is used as a sensor in all of the examples, including the
- * @menulink{processor_sensor} example.
+ * @section sensor_processor_sensor_ctor Sensor Constructor
+ * {{ @ref ProcessorStats::ProcessorStats }}
  *
- * @menusnip{processor_sensor}
+ * ___
+ * @section sensor_processor_sensor_examples Example Code
+ * The processor is used as a sensor in all of the examples, including the
+ * @menulink{sensor_processor_sensor} example.
+ *
+ * @menusnip{sensor_processor_sensor}
  */
 /* clang-format on */
 
@@ -66,7 +69,7 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-/** @ingroup processor_sensor_group */
+/** @ingroup sensor_processor */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the processor can report 3 values.
@@ -74,9 +77,9 @@
 
 
 /**
- * @anchor processor_sensor_timing_defines
+ * @anchor sensor_processor_sensor_timing
  * @name Sensor Timing
- * Defines for the sensor timing for the processor/mcu
+ * The sensor timing for the processor/mcu
  * - Timing variables do not apply to the processor in the same way they do to
  * other sensors.
  */
@@ -93,9 +96,9 @@
 /**@}*/
 
 /**
- * @anchor processor_battery_defines
+ * @anchor sensor_processor_battery
  * @name Battery Voltage
- * Defines for the battery voltage variable from the processor/mcu
+ * The battery voltage variable from the processor/mcu
  * This is the voltage as measured on the battery attached to the MCU using the
  * inbuilt ADC, if applicable.
  * - Range is assumed to be 0 to 5V
@@ -108,6 +111,8 @@
  *
  * The resolution is of the EnviroDIY Mayfly is 0.005V, we will use that
  * resolution for all processors.
+ *
+ * {{ @ref ProcessorStats_Battery::ProcessorStats_Battery }}
  */
 #define PROCESSOR_BATTERY_RESOLUTION 3
 /// @brief Battery voltage is stored in sensorValues[0]
@@ -121,14 +126,16 @@
 /**@}*/
 
 /**
- * @anchor processor_ram_defines
+ * @anchor sensor_processor_ram
  * @name Available RAM
- * Defines for the RAM variable from the processor/mcu
+ * The RAM variable from the processor/mcu
  * This is the amount of free space on the processor when running the program.
  * This is just a diagnostic value.  This number _**should always remain the
  * same for a single logger program**_.  If this number is not constant over
  * time, there is a memory leak and something wrong with your logging program.
  * - Range is 0 to full RAM available on processor
+ *
+ * {{ @ref ProcessorStats_FreeRam::ProcessorStats_FreeRam }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; ram should have 0 -
@@ -145,15 +152,17 @@
 /**@}*/
 
 /**
- * @anchor processor_sampno_defines
+ * @anchor sensor_processor_sampno
  * @name Sample Number
- * Defines for the sample number variable from the processor/mcu
+ * The sample number variable from the processor/mcu
  *
  * @note This is a board diagnostic.  It is _**roughly**_ the number of samples
  * measured since the processor was last restarted.  This value simply
  * increments up by one every time the addSingleMeasurementResult() function is
  * called for the processor sensor.  It is intended only as a rough diagnostic
  * to show when the processor restarts.
+ *
+ * {{ @ref ProcessorStats_SampleNumber::ProcessorStats_SampleNumber }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; sample number should have
@@ -176,13 +185,12 @@
 /**
  * @brief The main class to use the main processor (MCU) as a sensor.
  *
- * @ingroup processor_sensor_group
+ * @ingroup sensor_processor
  */
 class ProcessorStats : public Sensor {
  public:
     /**
-     * @brief Construct a new Processor Stats object
-     * @ingroup processor_sensor_group
+     * @brief Construct a new Processor Stats object.
      *
      * Need to know the Mayfly version because the battery resistor depends on
      * it
@@ -221,16 +229,15 @@ class ProcessorStats : public Sensor {
 
 /**
  * @brief The Variable sub-class used for the
- * [battery voltage output](@ref processor_battery) measured by the processor's
- * on-board ADC.
+ * [battery voltage output](@ref sensor_processor_battery) measured by the
+ * processor's on-board ADC.
  *
- * @ingroup processor_sensor_group
+ * @ingroup sensor_processor
  */
 class ProcessorStats_Battery : public Variable {
  public:
     /**
      * @brief Construct a new ProcessorStats_Battery object.
-     * @ingroup processor_sensor_group
      *
      * @param parentSense The parent ProcessorStats providing the result
      * values.
@@ -266,20 +273,20 @@ class ProcessorStats_Battery : public Variable {
 
 /**
  * @brief The Variable sub-class used for the
- * [free RAM](@ref processor_ram) measured by the MCU.
+ * [free RAM](@ref sensor_processor_ram) measured by the MCU.
  *
  * This is the amount of free space on the processor when running the program.
  * This is just a diagnostic value.  This number _**should always remain the
  * same for a single logger program**_.  If this number is not constant over
  * time, there is a memory leak and something wrong with your logging program.
  *
- * @ingroup processor_sensor_group
+ * @ingroup sensor_processor
  */
 class ProcessorStats_FreeRam : public Variable {
  public:
     /**
      * @brief Construct a new ProcessorStats_FreeRam object.
-     * @ingroup processor_sensor_group
+     *
      * @param parentSense The parent ProcessorStats providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -315,7 +322,7 @@ class ProcessorStats_FreeRam : public Variable {
 
 /**
  * @brief The Variable sub-class used for the
- * [sample number output](@ref processor_sampno) from the main processor.
+ * [sample number output](@ref sensor_processor_sampno) from the main processor.
  *
  * This is a board diagnostic.  It is _**roughly**_ the number of samples
  * measured since the processor was last restarted.  This value simply
@@ -323,13 +330,13 @@ class ProcessorStats_FreeRam : public Variable {
  * called for the processor sensor.  It is intended only as a rough diagnostic
  * to show when the processor restarts.
  *
- * @ingroup processor_sensor_group
+ * @ingroup sensor_processor
  */
 class ProcessorStats_SampleNumber : public Variable {
  public:
     /**
      * @brief Construct a new ProcessorStats_SampleNumber object.
-     * @ingroup processor_sensor_group
+     *
      * @param parentSense The parent ProcessorStats providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the

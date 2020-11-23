@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup pt_redox_group PaleoTerra Redox
+ * @defgroup sensor_pt_redox PaleoTerra Redox
  * Classes for the PaleoTerra Redox digital preassure sensor.
  *
  * @ingroup the_sensors
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section pt_redox_intro Introduction
+ * @section sensor_pt_redox_intro Introduction
  *
  * Because older versions of these sensors all ship with the same I2C address,
  * and more than one is frequently used at different soil depths in the same profile,
@@ -33,17 +33,23 @@
  * [SoftwareWire](https://github.com/Testato/SoftwareWire) library for software
  * I2C.
  *
- * @section pt_redox_datasheet Sensor Datasheet
+ * @section sensor_pt_redox_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at: https://paleoterra.nl/
  *
- * @section pt_redox_flags Build flags
+ * @section sensor_pt_redox_flags Build flags
  * - `-D MS_PALEOTERRA_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none your attached redox may use software I2C.
  * Using some with software I2C and others with hardware I2C is not supported.
  *
- *  ___
- * @section pt_redox_examples Example Code
+ * @section sensor_pt_redox_ctor Sensor Constructor
+ * {{ @ref PaleoTerraRedox::PaleoTerraRedox(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref PaleoTerraRedox::PaleoTerraRedox(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref PaleoTerraRedox::PaleoTerraRedox(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref PaleoTerraRedox::PaleoTerraRedox(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
+ *
+ * ___
+ * @section sensor_pt_redox_examples Example Code
  * The PaleoTerra Redox is used in the @menulink{pt_redox} example.
  *
  * @menusnip{pt_redox}
@@ -73,7 +79,7 @@
 #endif
 
 // Sensor Specific Defines
-/** @ingroup pt_redox_group */
+/** @ingroup sensor_pt_redox */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the PaleoTerra redox sensor can report 1
@@ -81,9 +87,9 @@
 #define PTR_NUM_VARIABLES 1
 
 /**
- * @anchor pt_redox_timing_defines
+ * @anchor sensor_pt_redox_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a PaleoTerra redox probe
+ * The sensor timing for a PaleoTerra redox probe
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the PaleoTerra redox sensor is immediately
@@ -98,10 +104,12 @@
 /**@}*/
 
 /**
- * @anchor pt_redox_volt_defines
+ * @anchor sensor_pt_redox_volt
  * @name Voltage
- * Defines for the voltage variable from a PaleoTerra redox probe
+ * The voltage variable from a PaleoTerra redox probe
  * - Accuracy is ±5mV
+ *
+ * {{ @ref PaleoTerraRedox_Volt::PaleoTerraRedox_Volt }}
  */
 /**@{*/
 /** @brief Decimals places in string representation; voltage should have 2.
@@ -109,15 +117,15 @@
  * Resolution is 1mV and 1 extra digit is added to increase the number of
  * significant figures to allow for averaging of multiple measurements.
  */
-#define PTR_VOLT_RESOLUTION 2
+#define PTR_VOLTAGE_RESOLUTION 2
 /// @brief Variable number; voltage is stored in sensorValues[0].
-#define PTR_VOLT_VAR_NUM 0
+#define PTR_VOLTAGE_VAR_NUM 0
 /// @brief Variable name; "Voltage"
-#define PTR_VOLT_VAR_NAME "Voltage"
+#define PTR_VOLTAGE_VAR_NAME "Voltage"
 /// @brief Variable unit name; "millivolt" (mV)
-#define PTR_VOLT_UNIT_NAME "millivolt"
+#define PTR_VOLTAGE_UNIT_NAME "millivolt"
 /// @brief Default variable short code; "PTRVoltage"
-#define PTR_VOLT_DEFAULT_CODE "PTRVoltage"
+#define PTR_VOLTAGE_DEFAULT_CODE "PTRVoltage"
 /**@}*/
 
 /// @brief The default I2C address of the PaleoTerra redox sensor
@@ -127,21 +135,20 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [PaleoTerra redox sensor](@ref pt_redox_group).
+ * [PaleoTerra redox sensor](@ref sensor_pt_redox).
  *
- * @ingroup pt_redox_group
+ * @ingroup sensor_pt_redox
  */
 /* clang-format on */
 class PaleoTerraRedox : public Sensor {
  public:
-#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#if defined MS_PALEOTERRA_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new PaleoTerra Redox object using a *software* I2C
      * instance.
-     * @ingroup pt_redox_group
      *
      * The constructor - need the power pin, optionally can give an instance of
-     * TwoWire for I2C communbication, an address, and  a number of measurements
+     * TwoWire for I2C communication, an address, and  a number of measurements
      * to average.
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
@@ -160,7 +167,6 @@ class PaleoTerraRedox : public Sensor {
      * @brief Construct a new PaleoTerra Redox object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup pt_redox_group
      *
      * @note Unless there are address conflicts between I2C devices, you should
      * not create a new I2C instance.
@@ -179,11 +185,11 @@ class PaleoTerraRedox : public Sensor {
     PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                     uint8_t i2cAddressHex         = MCP3421_ADR,
                     uint8_t measurementsToAverage = 1);
-#else
+#endif
+#if !defined(MS_PALEOTERRA_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new PaleoTerra Redox object using a secondary
      * *hardware* I2C instance.
-     * @ingroup pt_redox_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -203,7 +209,6 @@ class PaleoTerraRedox : public Sensor {
     /**
      * @brief Construct a new PaleoTerra Redox object using the primary hardware
      * I2C instance.
-     * @ingroup pt_redox_group
      *
      * @param powerPin The pin on the mcu controlling power to the PaleoTerra
      * redox sensor.  Use -1 if it is continuously powered.
@@ -270,15 +275,14 @@ class PaleoTerraRedox : public Sensor {
 // Defines the Redox Potential Variable
 /**
  * @brief The Variable sub-class used for the
- * [voltage output](@ref pt_redox_volt) from a PaleoTerra redox sensor.
+ * [voltage output](@ref sensor_pt_redox_volt) from a PaleoTerra redox sensor.
  *
- * @ingroup pt_redox_group
+ * @ingroup sensor_pt_redox
  */
 class PaleoTerraRedox_Volt : public Variable {
  public:
     /**
      * @brief Construct a new PaleoTerraRedox_Volt object.
-     * @ingroup pt_redox_group
      *
      * @param parentSense The parent PaleoTerraRedox providing the result
      * values.
@@ -287,11 +291,12 @@ class PaleoTerraRedox_Volt : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "PTRVoltage".
      */
-    explicit PaleoTerraRedox_Volt(Sensor* parentSense, const char* uuid = "",
-                                  const char* varCode = PTR_VOLT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)PTR_VOLT_VAR_NUM,
-                   (uint8_t)PTR_VOLT_RESOLUTION, PTR_VOLT_VAR_NAME,
-                   PTR_VOLT_UNIT_NAME, varCode, uuid) {}
+    explicit PaleoTerraRedox_Volt(
+        Sensor* parentSense, const char* uuid = "",
+        const char* varCode = PTR_VOLTAGE_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)PTR_VOLTAGE_VAR_NUM,
+                   (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
+                   PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new PaleoTerraRedox_Volt object.
      *
@@ -299,11 +304,13 @@ class PaleoTerraRedox_Volt : public Variable {
      * used.
      */
     PaleoTerraRedox_Volt()
-        : Variable((const uint8_t)PTR_VOLT_VAR_NUM,
-                   (uint8_t)PTR_VOLT_RESOLUTION, PTR_VOLT_VAR_NAME,
-                   PTR_VOLT_UNIT_NAME, PTR_VOLT_DEFAULT_CODE) {}
+        : Variable((const uint8_t)PTR_VOLTAGE_VAR_NUM,
+                   (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
+                   PTR_VOLTAGE_UNIT_NAME, PTR_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the PaleoTerraRedox_Volt object - no action needed.
      */
+    ~PaleoTerraRedox_Volt() {}
 };
-#endif  // SRC_SENSORS_PALEOTERRAREDOX_H_
+/**@}*/
+#endif  // SRC_SENSORS__PALEOTERRAREDOX_H_

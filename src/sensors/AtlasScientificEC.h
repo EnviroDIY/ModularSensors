@@ -16,7 +16,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_cond_group Atlas EZO-EC
+ * @defgroup sensor_atlas_cond Atlas EZO-EC
  * Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.
  *
  * @ingroup atlas_group
@@ -30,20 +30,27 @@
  * - Range is 0.07 − 500,000+ μS/cm
  * - Resolution is 3 decimal places
  *
- * @section atlas_cond_datasheet Sensor Datasheet
+ * @section sensor_atlas_cond_datasheet Sensor Datasheet
  *   - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf)
  *   - [K0.1 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf)
  *   - [K1.0 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf)
  *   - [K10 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf)
  *
- * @section atlas_cond_flags Build flags
+ * @section sensor_atlas_cond_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
  * Using some Altas sensors with software I2C and others with hardware I2C is
  * not supported.
+ *
+ * @section sensor_atlas_cond_ctor Sensor Constructors
+ * {{ @ref AtlasScientificEC::AtlasScientificEC(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificEC::AtlasScientificEC(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificEC::AtlasScientificEC(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificEC::AtlasScientificEC(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
+ *
  * ___
- * @section atlas_cond_examples Example Code
+ * @section sensor_atlas_cond_examples Example Code
  * The Atlas conductivity sensor is used in the @menulink{atlas_ec} example.
  *
  * @menusnip{atlas_ec}
@@ -69,7 +76,7 @@
 
 
 // Sensor Specific Defines
-/** @ingroup atlas_cond_group */
+/** @ingroup sensor_atlas_cond */
 /**@{*/
 
 /// @brief Default I2C address is 0x64 (100)
@@ -80,9 +87,9 @@
 
 
 /**
- * @anchor atlas_cond_timing_defines
+ * @anchor sensor_atlas_cond_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an Atlas EC (conducticity) sensor
+ * The sensor timing for an Atlas EC (conducticity) sensor
  */
 /**@{*/
 /**
@@ -105,11 +112,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_cond_cond_defines
+ * @anchor sensor_atlas_cond_cond
  * @name Conductivity
- * Defines for the conductivity variable from an Atlas EC (conducticity) sensor
+ * The conductivity variable from an Atlas EC (conducticity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
+ *
+ * {{ @ref AtlasScientificEC_Cond::AtlasScientificEC_Cond }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; conductivity should have 3.
@@ -125,11 +134,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_cond_tds_defines
+ * @anchor sensor_atlas_cond_tds
  * @name Total Dissolved Solids
- * Defines for the TDS variable from an Atlas EC (conducticity) sensor
+ * The TDS variable from an Atlas EC (conducticity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
+ *
+ * {{ @ref AtlasScientificEC_TDS::AtlasScientificEC_TDS }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; TDS should have 3.
@@ -145,11 +156,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_cond_salinity_defines
+ * @anchor sensor_atlas_cond_salinity
  * @name Salinity
- * Defines for the salinity variable from an Atlas EC (conducticity) sensor
+ * The salinity variable from an Atlas EC (conducticity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
+ *
+ * {{ @ref AtlasScientificEC_Salinity::AtlasScientificEC_Salinity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; salinity should have 3.
@@ -164,14 +177,17 @@
 #define ATLAS_SALINITY_DEFAULT_CODE "AtlasSalinity"
 /**@}*/
 
+/* clang-format off */
 /**
- * @anchor atlas_cond_gravity_defines
+ * @anchor sensor_atlas_cond_sg
  * @name Specific Gravity
- * Defines for the specific gravity variable from an Atlas EC (conducticity)
- * sensor
+ * The specific gravity variable from an Atlas EC (conducticity) sensor
  * - Accuracy is ± 2%
  * - Range is 0.07 − 500,000+ μS/cm
+ *
+ * {{ @ref AtlasScientificEC_SpecificGravity::AtlasScientificEC_SpecificGravity }}
  */
+/* clang-format on */
 /**@{*/
 /// @brief Decimals places in string representation; specific gravity should
 /// have 3.
@@ -190,18 +206,17 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific conductivity circuit and sensor](@ref atlas_cond_group).
+ * [Atlas Scientific conductivity circuit and sensor](@ref sensor_atlas_cond).
  *
- * @ingroup atlas_cond_group
+ * @ingroup sensor_atlas_cond
  */
 /* clang-format on */
 class AtlasScientificEC : public AtlasParent {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific EC object using a *software* I2C
      * instance.
-     * @ingroup atlas_cond_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -226,7 +241,6 @@ class AtlasScientificEC : public AtlasParent {
      * @brief Construct a new Atlas Scientific EC object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup atlas_cond_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -256,11 +270,11 @@ class AtlasScientificEC : public AtlasParent {
     AtlasScientificEC(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                       uint8_t i2cAddressHex         = ATLAS_COND_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
-#else
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific EC object using a secondary
      * *hardware* I2C instance.
-     * @ingroup atlas_cond_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -287,7 +301,6 @@ class AtlasScientificEC : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific EC object using the primary
      * hardware I2C instance.
-     * @ingroup atlas_cond_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas EC
      * circuit.  Use -1 if it is continuously powered.
@@ -328,17 +341,16 @@ class AtlasScientificEC : public AtlasParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [conductivity output](@ref atlas_cond_cond) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
+ * [conductivity output](@ref sensor_atlas_cond_cond) from an
+ * [Atlas Scientific EC EZO circuit](@ref sensor_atlas_cond).
  *
- * @ingroup atlas_cond_group
+ * @ingroup sensor_atlas_cond
  */
 /* clang-format on */
 class AtlasScientificEC_Cond : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificEC_Cond object.
-     * @ingroup atlas_cond_group
      *
      * @param parentSense The parent AtlasScientificEC providing the result
      * values.
@@ -372,17 +384,16 @@ class AtlasScientificEC_Cond : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [total dissolved solids output](@ref atlas_cond_tds) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
+ * [total dissolved solids output](@ref sensor_atlas_cond_tds) from an
+ * [Atlas Scientific EC EZO circuit](@ref sensor_atlas_cond).
  *
- * @ingroup atlas_cond_group
+ * @ingroup sensor_atlas_cond
  */
 /* clang-format on */
 class AtlasScientificEC_TDS : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificEC_TDS object.
-     * @ingroup atlas_cond_group
      *
      * @param parentSense The parent AtlasScientificEC providing the result
      * values.
@@ -416,17 +427,16 @@ class AtlasScientificEC_TDS : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [salinity output](@ref atlas_cond_salinity) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
+ * [salinity output](@ref sensor_atlas_cond_salinity) from an
+ * [Atlas Scientific EC EZO circuit](@ref sensor_atlas_cond).
  *
- * @ingroup atlas_cond_group
+ * @ingroup sensor_atlas_cond
  */
 /* clang-format on */
 class AtlasScientificEC_Salinity : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificEC_Salinity object.
-     * @ingroup atlas_cond_group
      *
      * @param parentSense The parent AtlasScientificEC providing the result
      * values.
@@ -461,17 +471,16 @@ class AtlasScientificEC_Salinity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [specific gravity output](@ref atlas_cond_sg) from an
- * [Atlas Scientific EC EZO circuit](@ref atlas_cond_group).
+ * [specific gravity output](@ref sensor_atlas_cond_sg) from an
+ * [Atlas Scientific EC EZO circuit](@ref sensor_atlas_cond).
  *
- * @ingroup atlas_cond_group
+ * @ingroup sensor_atlas_cond
  */
 /* clang-format on */
 class AtlasScientificEC_SpecificGravity : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificEC_SpecificGravity object.
-     * @ingroup atlas_cond_group
      *
      * @param parentSense The parent AtlasScientificEC providing the result
      * values.

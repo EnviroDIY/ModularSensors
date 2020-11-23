@@ -149,7 +149,7 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     else if (res == 0 && i2c_status == 0 && config == 0)
         res = -9999;  // List a failure when the sensor is not connected
     // Store the results in the sensorValues array
-    verifyAndAddMeasurementResult(PTR_VOLT_VAR_NUM, res);
+    verifyAndAddMeasurementResult(PTR_VOLTAGE_VAR_NUM, res);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

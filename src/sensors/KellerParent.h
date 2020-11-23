@@ -26,11 +26,11 @@
  * - [Acculevel](https://www.kelleramerica.com/submersible-level-transmitters/acculevel-high-accuracy-submersible-level-transmitter.html)
  *     - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  *     - [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
- *     - [Class Documentation](@ref acculevel_group)
+ *     - [Class Documentation](@ref sensor_acculevel)
  * - [Nanolevel](https://www.kelleramerica.com/submersible-level-transmitters/nanolevel-ceramic-capacitive-level-transmitter.html)
  *     - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  *     - [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
- *     - [Class Documentation](@ref nanolevel_group)
+ *     - [Class Documentation](@ref sensor_nanolevel)
  * - Any Keller Series 30, Class 5, Group 20 sensors that are software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *
  * These sensors communicate via Modbus RTU over RS485 at 9600 baud.
@@ -107,9 +107,9 @@
 #define KELLER_NUM_VARIABLES 3
 
 /**
- * @anchor keller_pressure_defines
+ * @anchor keller_pressure
  * @name Pressure
- * Defines for the pressure variable from a Keller modbus sensor
+ * The pressure variable from a Keller modbus sensor
  */
 /**@{*/
 /// Variable number; pressure is stored in sensorValues[0].
@@ -121,9 +121,9 @@
 /**@}*/
 
 /**
- * @anchor keller_temp_defines
+ * @anchor keller_temp
  * @name Temperature
- * Defines for the temperature variable from a Keller modbus sensor
+ * The temperature variable from a Keller modbus sensor
  */
 /**@{*/
 /// Variable number; temperature is stored in sensorValues[1].
@@ -135,9 +135,9 @@
 /**@}*/
 
 /**
- * @anchor keller_height_defines
+ * @anchor keller_height
  * @name Height
- * Defines for the height variable from a Keller modbus sensor
+ * The height variable from a Keller modbus sensor
  */
 /**@{*/
 /// Variable number; height is stored in sensorValues[2].

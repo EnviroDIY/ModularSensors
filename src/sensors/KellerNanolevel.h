@@ -13,7 +13,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup nanolevel_group Keller Nanolevel
+ * @defgroup sensor_nanolevel Keller Nanolevel
  * Classes for the Keller Nanolevel capacitive level sensor.
  *
  * @ingroup keller_group
@@ -23,12 +23,15 @@
  *
  * These are for Keller Nanolevel capacitive level sensors.
  *
- * @section nanolevel_datasheet Sensor Datasheet
+ * @section sensor_nanolevel_datasheet Sensor Datasheet
  * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  * [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
  *
+ * @section sensor_nanolevel_ctor Sensor Constructor
+ * {{ @ref KellerNanolevel::KellerNanolevel }}
+ *
  * ___
- * @section nanolevel_examples Example Code
+ * @section sensor_nanolevel_examples Example Code
  * The Keller Nanolevel is used in the @menulink{nanolevel} example.
  *
  * @menusnip{nanolevel}
@@ -43,13 +46,13 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
-/** @ingroup nanolevel_group */
+/** @ingroup sensor_nanolevel */
 /**@{*/
 
 /**
- * @anchor nanolevel_timing_defines
+ * @anchor sensor_nanolevel_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Keller Nanolevel
+ * The sensor timing for a Keller Nanolevel
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the Nanolevel warms up in 500ms.
@@ -63,11 +66,13 @@
 /**@}*/
 
 /**
- * @anchor nanolevel_pressure_defines
+ * @anchor sensor_nanolevel_pressure
  * @name Pressure
- * Defines for the pressure variable from a Keller Nanolevel
+ * The pressure variable from a Keller Nanolevel
  * - Range is 0 to 300mbar
  * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerNanolevel_Pressure::KellerNanolevel_Pressure }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; pressure should have 5 -
@@ -78,11 +83,13 @@
 /**@}*/
 
 /**
- * @anchor nanolevel_temp_defines
+ * @anchor sensor_nanolevel_temp
  * @name Temperature
- * Defines for the temperature variable from a Keller Nanolevel
+ * The temperature variable from a Keller Nanolevel
  * - Range is 10°C to 50°C
  * - Accuracy is not specified in the sensor datasheet
+ *
+ * {{ @ref KellerNanolevel_Temp::KellerNanolevel_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -93,11 +100,13 @@
 /**@}*/
 
 /**
- * @anchor nanolevel_height_defines
+ * @anchor sensor_nanolevel_height
  * @name Height
- * Defines for the height variable from a Keller Nanolevel
+ * The height variable from a Keller Nanolevel
  * - Range is 0 to 120 inches
  * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerNanolevel_Height::KellerNanolevel_Height }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; height should have 4 -
@@ -111,17 +120,16 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Keller nanolevel sensor](@ref nanolevel_group)
+ * [Keller nanolevel sensor](@ref sensor_nanolevel)
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel : public KellerParent {
  public:
     // Constructors with overloads
     /**
-     * @brief Construct a new Keller
-     * @ingroup nanolevel_group
+     * @brief Construct a new Keller Nanolevel instance
      *
      * @param modbusAddress The modbus address of the Nanolevel.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -168,17 +176,16 @@ class KellerNanolevel : public KellerParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge pressure (vented and barometric pressure corrected) output](@ref nanolevel_pressure)
- * from a [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
+ * [gauge pressure (vented and barometric pressure corrected) output](@ref sensor_nanolevel_pressure)
+ * from a [Keller Nanolevel ceramic capacitive level transmitter](@ref sensor_nanolevel).
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel_Pressure : public Variable {
  public:
     /**
      * @brief Construct a new KellerNanolevel_Pressure object.
-     * @ingroup nanolevel_group
      *
      * @param parentSense The parent KellerNanolevel providing the result
      * values.
@@ -215,17 +222,16 @@ class KellerNanolevel_Pressure : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref nanolevel_temp) from a
- * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
+ * [temperature output](@ref sensor_nanolevel_temp) from a
+ * [Keller Nanolevel ceramic capacitive level transmitter](@ref sensor_nanolevel).
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel_Temp : public Variable {
  public:
     /**
      * @brief Construct a new KellerNanolevel_Temp object.
-     * @ingroup nanolevel_group
      *
      * @param parentSense The parent KellerNanolevel providing the result
      * values.
@@ -260,17 +266,16 @@ class KellerNanolevel_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge height (water level with regard to an arbitrary gage datum) output](@ref nanolevel_height) from a
- * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
+ * [gauge height (water level with regard to an arbitrary gage datum) output](@ref sensor_nanolevel_height) from a
+ * [Keller Nanolevel ceramic capacitive level transmitter](@ref sensor_nanolevel).
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel_Height : public Variable {
  public:
     /**
      * @brief Construct a new KellerNanolevel_Height object.
-     * @ingroup nanolevel_group
      *
      * @param parentSense The parent KellerNanolevel providing the result
      * values.

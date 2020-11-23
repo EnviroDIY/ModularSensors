@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_co2_group Atlas EZO-CO2
+ * @defgroup sensor_atlas_co2 Atlas EZO-CO2
  * Classes for the Atlas Scientific EZO-CO2 embedded NDIR CO2 circuit and sensor.
  *
  * @ingroup atlas_group
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section atlas_co2_datasheet Sensor Datasheet
+ * @section sensor_atlas_co2_datasheet Sensor Datasheet
  * Documentation on the CO2 circuit and probe is available here:
  * https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/
  *
@@ -33,15 +33,21 @@
  * intended to be used to verify that the sensor is in equilibrium with its
  * surroundings.
  *
- * @section atlas_co2_flags Build flags
+ * @section sensor_atlas_co2_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
  * Using some Altas sensors with software I2C and others with hardware I2C is
  * not supported.
  *
+ * @section sensor_atlas_co2_ctor Sensor Constructors
+ * {{ @ref AtlasScientificCO2::AtlasScientificCO2(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificCO2::AtlasScientificCO2(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificCO2::AtlasScientificCO2(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificCO2::AtlasScientificCO2(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
+ *
  * ___
- * @section atlas_co2_examples Example Code
+ * @section sensor_atlas_co2_examples Example Code
  * The Atlas CO2 sensor is used in the @menulink{atlas_co2} example.
  *
  * @menusnip{atlas_co2}
@@ -66,7 +72,7 @@
 #include "sensors/AtlasParent.h"
 
 // Sensor Specific Defines
-/** @ingroup atlas_co2_group */
+/** @ingroup sensor_atlas_co2 */
 /**@{*/
 
 /// Default I2C address is 0x69 (105)
@@ -76,10 +82,10 @@
 #define ATLAS_CO2_NUM_VARIABLES 2
 
 /**
- * @anchor atlas_co2_timing_defines
+ * @anchor sensor_atlas_co2_timing
  * @name Sensor Timing
  * @todo (SRGDamia1):  Test timing with sensor
- * Defines for the sensor timing for an Atlas CO2 sensor
+ * The sensor timing for an Atlas CO2 sensor
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the Atlas CO2 sensor warms up in 850ms.
@@ -93,11 +99,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_co2_co2_defines
+ * @anchor sensor_atlas_co2_co2
  * @name CO2 Concentration
- * Defines for the co2 variable from an Atlas CO2 sensor
+ * The CO2 variable from an Atlas CO2 sensor
  * - Accuracy is ± 3% or ± 30 ppm
  * - Range is 0 − 10000 ppm
+ *
+ * {{ @ref AtlasScientificCO2_CO2::AtlasScientificCO2_CO2 }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; CO2 should have 1 -
@@ -114,11 +122,13 @@
 /**@}*/
 
 /**
- * @anchor atlas_co2_temp_defines
+ * @anchor sensor_atlas_co2_temp
  * @name Temperature
- * Defines for the temperature variable from an Atlas CO2 sensor
+ * The temperature variable from an Atlas CO2 sensor
  * - Accuracy is not reported on the sensor datasheet
  * - Range is -20°C to +50°C
+ *
+ * {{ @ref AtlasScientificCO2_Temp::AtlasScientificCO2_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; CO2TEMP should have 0 -
@@ -138,20 +148,19 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific gaseous CO2 and temperature sensor](@ref atlas_co2_group)
+ * [Atlas Scientific gaseous CO2 and temperature sensor](@ref sensor_atlas_co2)
  *  - used for any sensor attached to an
  * [Atlas EZO CO2 circuit](https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/).
  *
- * @ingroup atlas_co2_group
+ * @ingroup sensor_atlas_co2
  */
 /* clang-format on */
 class AtlasScientificCO2 : public AtlasParent {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific CO2 object using a *software*
      * I2C instance.
-     * @ingroup atlas_co2_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -176,7 +185,6 @@ class AtlasScientificCO2 : public AtlasParent {
      * @brief Construct a new Atlas Scientific CO2 object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup atlas_co2_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -206,11 +214,11 @@ class AtlasScientificCO2 : public AtlasParent {
     AtlasScientificCO2(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                        uint8_t i2cAddressHex         = ATLAS_CO2_I2C_ADDR,
                        uint8_t measurementsToAverage = 1);
-#else
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific CO2 object using a secondary
      * *hardware* I2C instance.
-     * @ingroup atlas_co2_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -237,7 +245,6 @@ class AtlasScientificCO2 : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific CO2 object using the primary
      * hardware I2C instance.
-     * @ingroup atlas_co2_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas CO2
      * circuit.  Use -1 if it is continuously powered.
@@ -279,17 +286,16 @@ class AtlasScientificCO2 : public AtlasParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [CO2 concentration output](@ref atlas_co2_co2) from an
- * [Atlas Scientific CO2 circuit](@ref atlas_co2_group).
+ * [CO2 concentration output](@ref sensor_atlas_co2_co2) from an
+ * [Atlas Scientific CO2 circuit](@ref sensor_atlas_co2).
  *
- * @ingroup atlas_co2_group
+ * @ingroup sensor_atlas_co2
  */
 /* clang-format on */
 class AtlasScientificCO2_CO2 : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificCO2_CO2 object.
-     * @ingroup atlas_co2_group
      *
      * @param parentSense The parent AtlasScientificCO2 providing the result
      * values.
@@ -323,17 +329,16 @@ class AtlasScientificCO2_CO2 : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref atlas_co2_temp) from an
- * [Atlas Scientific CO2 circuit](@ref atlas_co2_group).
+ * [temperature output](@ref sensor_atlas_co2_temp) from an
+ * [Atlas Scientific CO2 circuit](@ref sensor_atlas_co2).
  *
- * @ingroup atlas_co2_group
+ * @ingroup sensor_atlas_co2
  */
 /* clang-format on */
 class AtlasScientificCO2_Temp : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificCO2_Temp object.
-     * @ingroup atlas_co2_group
      *
      * @param parentSense The parent AtlasScientificCO2 providing the result
      * values.

@@ -19,7 +19,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y504_group Yosemitech Y504 Dissolved Oxygen
+ * @defgroup sensor_y504 Yosemitech Y504 Dissolved Oxygen Sensor
  * Classes for the Yosemitech Y502-A or Y504-A optical dissolved oxygen
  * sensor.
  *
@@ -28,7 +28,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y504_datasheet Sensor Datasheet
+ * @section sensor_y504_datasheet Sensor Datasheet
  * - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO_UserManual-v1.1.pdf)
  * - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y505-DO_UserManual-v1.2.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO-v6.2_ModbusInstructions.pdf)
@@ -38,8 +38,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y504_ctor Sensor Constructor
+ * {{ @ref YosemitechY504::YosemitechY504 }}
+ *
  * ___
- * @section y504_examples Example Code
+ * @section sensor_y504_examples Example Code
  * The Yosemitech Y504 Dissolved Oxygen is used in the @menulink{y504} example.
  *
  * @menusnip{y504}
@@ -54,16 +57,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y504_group */
+/** @ingroup sensor_y504 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y504 can report 3 values.
 #define Y504_NUM_VARIABLES 3
 
 /**
- * @anchor y504_timing_defines
+ * @anchor sensor_y504_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y504
+ * The sensor timing for a Yosemitch Y504
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -78,12 +81,13 @@
 /**@}*/
 
 /**
- * @anchor y504_dopct_defines
+ * @anchor sensor_y504_dopercent
  * @name Dissolved Oxygen Percent Saturation
- * Defines for the dissolved oxygen percent saturation variable from a Yosemitch
- * Y504
+ * The dissolved oxygen percent saturation variable from a Yosemitch Y504
  * - Range is 0-20mg/L or 0-200% Saturation
  * - Accuracy is ± 1 %
+ *
+ * {{ @ref YosemitechY504_DOpct::YosemitechY504_DOpct }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen percent
@@ -92,8 +96,7 @@
 /// @brief Variable number; dissolved oxygen percent is stored in
 /// sensorValues[0]
 #define Y504_DOPCT_VAR_NUM 0
-/// @brief Variable number; dissolved oxygen percent is stored in
-/// sensorValues[0]
+/// @brief Variable name; "oxygenDissolvedPercentOfSaturation"
 #define Y504_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
 /// @brief Variable unit name; "milligramPerLiter" (mg/L)
 #define Y504_DOPCT_UNIT_NAME "percent"
@@ -102,11 +105,13 @@
 /**@}*/
 
 /**
- * @anchor y504_temp_defines
+ * @anchor sensor_y504_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y504
+ * The temperature variable from a Yosemitch Y504
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY504_Temp::YosemitechY504_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -123,11 +128,13 @@
 /**@}*/
 
 /**
- * @anchor y504_doconc_defines
+ * @anchor sensor_y504_domgl
  * @name Dissolved Oxygen Concentration
- * Defines for the dissolved oxygen concentration variable from a Yosemitch Y504
+ * The dissolved oxygen concentration variable from a Yosemitch Y504
  * - Range is 0-20mg/L or 0-200% Saturation
  * - Accuracy is ± 1 %
+ *
+ * {{ @ref YosemitechY504_DOmgL::YosemitechY504_DOmgL }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen
@@ -136,8 +143,7 @@
 /// @brief Variable number; dissolved oxygen concentration is stored in
 /// sensorValues[2]
 #define Y504_DOMGL_VAR_NUM 2
-/// @brief Variable number; dissolved oxygen concentration is stored in
-/// sensorValues[2]
+/// @brief Variable name; "oxygenDissolved"
 #define Y504_DOMGL_VAR_NAME "oxygenDissolved"
 /// @brief Variable unit name; "milligramPerLiter" (mg/L)
 #define Y504_DOMGL_UNIT_NAME "milligramPerLiter"
@@ -149,9 +155,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensors](@ref y504_group).
+ * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensors](@ref sensor_y504).
  *
- * @ingroup y504_group
+ * @ingroup sensor_y504
  */
 /* clang-format on */
 class YosemitechY504 : public YosemitechParent {
@@ -159,7 +165,6 @@ class YosemitechY504 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y504 object.
-     * @ingroup y504_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -207,17 +212,16 @@ class YosemitechY504 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen percent saturation output](@ref y504_dopercent) from a
- * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref y504_group).
+ * [dissolved oxygen percent saturation output](@ref sensor_y504_dopercent) from a
+ * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref sensor_y504).
  *
- * @ingroup y504_group
+ * @ingroup sensor_y504
  */
 /* clang-format on */
 class YosemitechY504_DOpct : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY504_DOpct object.
-     * @ingroup y504_group
      *
      * @param parentSense The parent YosemitechY504 providing the result
      * values.
@@ -252,17 +256,16 @@ class YosemitechY504_DOpct : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y504_temp) from a
- * [Yosemitech Y504 optical dissolved oxygen sensor](@ref y504_group).
+ * [temperature output](@ref sensor_y504_temp) from a
+ * [Yosemitech Y504 optical dissolved oxygen sensor](@ref sensor_y504).
  *
- * @ingroup y504_group
+ * @ingroup sensor_y504
  */
 /* clang-format on */
 class YosemitechY504_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY504_Temp object.
-     * @ingroup y504_group
      *
      * @param parentSense The parent YosemitechY504 providing the result
      * values.
@@ -297,17 +300,16 @@ class YosemitechY504_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen concentration output](@ref y504_domgl) from a
- * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref y504_group).
+ * [dissolved oxygen concentration output](@ref sensor_y504_domgl) from a
+ * [Yosemitech Y502-A or Y504-A optical dissolved oxygen sensor](@ref sensor_y504).
  *
- * @ingroup y504_group
+ * @ingroup sensor_y504
  */
 /* clang-format on */
 class YosemitechY504_DOmgL : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY504_DOmgL object.
-     * @ingroup y504_group
      *
      * @param parentSense The parent YosemitechY504 providing the result
      * values.

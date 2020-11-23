@@ -83,14 +83,18 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      * This shold be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      * @param apn The Access Point Name (APN) for the SIM card.
+     * @param user The user name, if required, associated with the APN;
+     * optional, defaulting to NULL
+     * @param pwd The password, if required, associated with the APN; optional,
+     * defaulting to NULL
      *
      * @see DigiXBee::DigiXBee
      */
     DigiXBeeCellularTransparent(Stream* modemStream, int8_t powerPin,
                                 int8_t statusPin, bool useCTSStatus,
                                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                                const char* apn,
-                                const char* user = NULL, const char* pwd = NULL);
+                                const char* apn, const char* user = NULL,
+                                const char* pwd = NULL);
     /**
      * @brief Destroy the Digi XBee Cellular Transparent object - no action
      * needed

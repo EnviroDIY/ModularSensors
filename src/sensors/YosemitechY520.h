@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y520_group Yosemitech Y520
+ * @defgroup sensor_y520 Yosemitech Y520 Conductivity Sensor
  * Classes for the Yosemitech Y520 4-pole conductivity sensor.
  *
  * @ingroup yosemitech_group
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y520_datasheet Sensor Datasheet
+ * @section sensor_y520_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity_UserManual-v1.1.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity-v1.8_ModbusInstructions.pdf)
  *
@@ -34,8 +34,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y520_ctor Sensor Constructor
+ * {{ @ref YosemitechY520::YosemitechY520 }}
+ *
  * ___
- * @section y520_examples Example Code
+ * @section sensor_y520_examples Example Code
  * The Yosemitech Y520 conductivity sensor is used in the @menulink{y520}
  * example.
  *
@@ -51,16 +54,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y520_group */
+/** @ingroup sensor_y520 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y520 can report 2 values.
 #define Y520_NUM_VARIABLES 2
 
 /**
- * @anchor y520_timing_defines
+ * @anchor sensor_y520_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y520
+ * The sensor timing for a Yosemitch Y520
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
@@ -75,11 +78,13 @@
 /**@}*/
 
 /**
- * @anchor y520_cond_defines
+ * @anchor sensor_y520_cond
  * @name Conductivity
- * Defines for the conductivity variable from a Yosemitch Y520
+ * The conductivity variable from a Yosemitch Y520
  * - Range is 1 µS/cm to 200 mS/cm
  * - Accuracy is ± 1 % Full Scale
+ *
+ * {{ @ref YosemitechY520_Cond::YosemitechY520_Cond }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; conductivity should have 1
@@ -96,11 +101,13 @@
 /**@}*/
 
 /**
- * @anchor y520_temp_defines
+ * @anchor sensor_y520_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y520
+ * The temperature variable from a Yosemitch Y520
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY520_Temp::YosemitechY520_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -120,9 +127,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_group).
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref sensor_y520).
  *
- * @ingroup y520_group
+ * @ingroup sensor_y520
  */
 /* clang-format on */
 class YosemitechY520 : public YosemitechParent {
@@ -130,7 +137,6 @@ class YosemitechY520 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y520 object.
-     * @ingroup y520_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -178,17 +184,16 @@ class YosemitechY520 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [conductivity output](@ref y520_cond) from a
- * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_group).
+ * [conductivity output](@ref sensor_y520_cond) from a
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref sensor_y520).
  *
- * @ingroup y520_group
+ * @ingroup sensor_y520
  */
 /* clang-format on */
 class YosemitechY520_Cond : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY520_Cond object.
-     * @ingroup y520_group
      *
      * @param parentSense The parent YosemitechY520 providing the result
      * values.
@@ -223,17 +228,16 @@ class YosemitechY520_Cond : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y520_temp) from a
- * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref y520_group).
+ * [temperature output](@ref sensor_y520_temp) from a
+ * [Yosemitech Y520-A 4-electrode conductivity sensor](@ref sensor_y520).
  *
- * @ingroup y520_group
+ * @ingroup sensor_y520
  */
 /* clang-format on */
 class YosemitechY520_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY520_Temp object.
-     * @ingroup y520_group
      *
      * @param parentSense The parent YosemitechY520 providing the result
      * values.

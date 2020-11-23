@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup dopto_group Zebra-Tech D-Opto
+ * @defgroup sensor_dopto Zebra-Tech D-Opto
  * Classes for the Zebra-Tech D-Opto digital dissolved oxygen sensor.
  *
  * @ingroup sdi12_group
@@ -22,7 +22,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section dopto_intro Introduction
+ * @section sensor_dopto_intro Introduction
  *
  * The [Zebra-Tech D-Opto](http://www.zebra-tech.co.nz/d-opto-sensor/) sensor is implemented as a sub-classes of the SDI12Sensors class.
  * It require an 8-12V power supply, which can be turned off between measurements.
@@ -30,12 +30,15 @@
  * You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run.
  * At the Stroud Center, we use [Pololu 9V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
  *
- * @section dopto_datasheet Sensor Datasheet
+ * @section sensor_dopto_datasheet Sensor Datasheet
  * The manual for this sensor is available at:
  * www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf
  *
+ * @section sensor_dopto_ctor Sensor Constructor
+ * {{ @ref ZebraTechDOpto::ZebraTechDOpto }}
+ *
  * ___
- * @section dopto_examples Example Code
+ * @section sensor_dopto_examples Example Code
  * The Zebra-Tech D-Opto is used in the @menulink{dopto} example.
  *
  * @menusnip{dopto}
@@ -50,16 +53,16 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
-/** @ingroup dopto_group */
+/** @ingroup sensor_dopto */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the D-Opto can report 3 values.
 #define DOPTO_NUM_VARIABLES 3
 
 /**
- * @anchor dopto_timing_defines
+ * @anchor sensor_dopto_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an ZebraTech D-Opto
+ * The sensor timing for an ZebraTech D-Opto
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the D-Opto warms up in 275ms.  Maximum
@@ -86,11 +89,13 @@
 /**@}*/
 
 /**
- * @anchor dopto_temp_defines
+ * @anchor sensor_dopto_temp
  * @name Temperature
- * Defines for the temperature variable from an ZebraTech D-Opto
+ * The temperature variable from an ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is ± 0.1°C
+ *
+ * {{ @ref ZebraTechDOpto_Temp::ZebraTechDOpto_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -107,20 +112,22 @@
 /**@}*/
 
 /**
- * @anchor dopto_temp_defines
+ * @anchor sensor_dopto_dopercent
  * @name Dissolved Oxygen Percent Saturation
- * Defines for the percent saturation variable from an ZebraTech D-Opto
+ * The percent saturation variable from an ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
+ *
+ * {{ @ref ZebraTechDOpto_DOpct::ZebraTechDOpto_DOpct }}
  */
+/**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen percent
 /// should have 2.
 #define DOPTO_DOPCT_RESOLUTION 2
 /// @brief Variable number; dissolved oxygen percent is stored in
 /// sensorValues[1]
 #define DOPTO_DOPCT_VAR_NUM 1
-/// @brief Variable number; dissolved oxygen percent is stored in
-/// sensorValues[1]
+/// @brief Variable name; "oxygenDissolvedPercentOfSaturation"
 #define DOPTO_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
 /// @brief Variable unit name; "percent" (% saturation)
 #define DOPTO_DOPCT_UNIT_NAME "percent"
@@ -129,20 +136,22 @@
 /**@}*/
 
 /**
- * @anchor dopto_doconc_defines
+ * @anchor sensor_dopto_domgl
  * @name Dissolved Oxygen Concentration
- * Defines for the DO concentration variable from an ZebraTech D-Opto
+ * The DO concentration variable from an ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
+ *
+ * {{ @ref ZebraTechDOpto_DOmgL::ZebraTechDOpto_DOmgL }}
  */
+/**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen
 /// concentration should have 3 - resolution is 0.01 % / 0.001 PPM.
 #define DOPTO_DOMGL_RESOLUTION 3
 /// @brief Variable number; dissolved oxygen concentration is stored in
 /// sensorValues[2]
 #define DOPTO_DOMGL_VAR_NUM 2
-/// @brief Variable number; dissolved oxygen concentration is stored in
-/// sensorValues[2]
+/// @brief Variable name; "oxygenDissolved"
 #define DOPTO_DOMGL_VAR_NAME "oxygenDissolved"
 /// @brief Variable unit name; "milligramPerLiter" (mg/L)
 #define DOPTO_DOMGL_UNIT_NAME "milligramPerLiter"
@@ -154,9 +163,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref sensor_dopto).
  *
- * @ingroup dopto_group
+ * @ingroup sensor_dopto
  */
 /* clang-format on */
 class ZebraTechDOpto : public SDI12Sensors {
@@ -164,7 +173,6 @@ class ZebraTechDOpto : public SDI12Sensors {
     // Constructors with overloads
     /**
      * @brief Construct a new Zebra-Tech DOpto object.
-     * @ingroup dopto_group
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -172,7 +180,8 @@ class ZebraTechDOpto : public SDI12Sensors {
      * readings to average.  The data pin must be a pin that supports pin-change
      * interrupts.
      *
-     * @param SDI12address The SDI-12 address of the DOpto.
+     * @param SDI12address The SDI-12 address of the DOpto; can be a char,
+     * char*, or int.
      * @param powerPin The pin on the mcu controlling power to the D-Opto
      * Use -1 if it is continuously powered.
      * - The D-Opto requires a 8-12V power supply, which can be turned off
@@ -217,17 +226,16 @@ class ZebraTechDOpto : public SDI12Sensors {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref dopto_temp) from a
- * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ * [temperature output](@ref sensor_dopto_temp) from a
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref sensor_dopto).
  *
- * @ingroup dopto_group
+ * @ingroup sensor_dopto
  */
 /* clang-format on */
 class ZebraTechDOpto_Temp : public Variable {
  public:
     /**
      * @brief Construct a new ZebraTechDOpto_Temp object.
-     * @ingroup dopto_group
      *
      * @param parentSense The parent ZebraTechDOpto providing the result
      * values.
@@ -262,17 +270,16 @@ class ZebraTechDOpto_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen percent saturation output](@ref dopto_dopercent)
- * from a [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ * [dissolved oxygen percent saturation output](@ref sensor_dopto_dopercent)
+ * from a [Zebra-Tech D-Opto dissolved oxygen sensor](@ref sensor_dopto).
  *
- * @ingroup dopto_group
+ * @ingroup sensor_dopto
  */
 /* clang-format on */
 class ZebraTechDOpto_DOpct : public Variable {
  public:
     /**
      * @brief Construct a new ZebraTechDOpto_DOpct object.
-     * @ingroup dopto_group
      *
      * @param parentSense The parent ZebraTechDOpto providing the result
      * values.
@@ -307,17 +314,16 @@ class ZebraTechDOpto_DOpct : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen concentration output](@ref dopto_domgl) from a
- * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref dopto_group).
+ * [dissolved oxygen concentration output](@ref sensor_dopto_domgl) from a
+ * [Zebra-Tech D-Opto dissolved oxygen sensor](@ref sensor_dopto).
  *
- * @ingroup dopto_group
+ * @ingroup sensor_dopto
  */
 /* clang-format on */
 class ZebraTechDOpto_DOmgL : public Variable {
  public:
     /**
      * @brief Construct a new ZebraTechDOpto_DOmgL object.
-     * @ingroup dopto_group
      *
      * @param parentSense The parent ZebraTechDOpto providing the result
      * values.

@@ -18,7 +18,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup tally_group Tally Counter I2C
+ * @defgroup sensor_tally Tally Counter I2C
  * Classes for the Tally Counter I2C external event counter.
  *
  * @ingroup the_sensors
@@ -26,7 +26,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section tally_intro Introduction
+ * @section sensor_tally_intro Introduction
  * Northern Widget's Tally is
  * > a minimal ultra low power digital event counter, designed to be a
  * > counterpart to a traditional data logger to measure and average rapid
@@ -52,10 +52,17 @@
  * A super-capacitor is *NOT* an instantly charged battery and will not keep the counter
  * powered at too low a duty cycle.
  *
- * @section tally_datasheet Sensor Datasheet
+ * @section sensor_tally_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * - https://github.com/NorthernWidget-Skunkworks/Project-Tally​
  * - https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C
+ *
+ * @section sensor_tally_ctor Sensor Constructor
+ * {{ @ref TallyCounterI2C::TallyCounterI2C }}
+ *
+ * ___
+ * @section sensor_tally_examples Example Code
+ * The Tally countetr is used in the @menulink{tally} example.
  */
 /* clang-format on */
 
@@ -79,16 +86,16 @@
 
 
 // Sensor Specific Defines
-/** @ingroup tally_group */
+/** @ingroup sensor_tally */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Tally can report 1 value.
 #define TALLY_NUM_VARIABLES 1
 
 /**
- * @anchor tally_timing_defines
+ * @anchor sensor_tally_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Northern Widget Tally event counter
+ * The sensor timing for a Northern Widget Tally event counter
  * - Readings transferred from the reed-switch counting device (i.e. anemometer
  * or tipping bucket) to the logger are from past events, so there is no need
  * to wait for stability or measuring.
@@ -104,12 +111,14 @@
 /**@}*/
 
 /**
- * @anchor tally_events_defines
+ * @anchor sensor_tally_events
  * @name Events
- * Defines for the events variable from a Northern Widget Tally event counter
+ * The events variable from a Northern Widget Tally event counter
  * - Range and accuracy depend on the sensor used
  *     - For wind, we often use [Inspeed WS2R Version II Reed Switch Anemometer]
  *  (https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm)
+ *
+ * {{ @ref TallyCounterI2C_Events::TallyCounterI2C_Events }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; events are an integer
@@ -131,9 +140,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Tally Counter I2C](@ref tally_group).
+ * [Tally Counter I2C](@ref sensor_tally).
  *
- * @ingroup tally_group
+ * @ingroup sensor_tally
  */
 /* clang-format on */
 class TallyCounterI2C : public Sensor {
@@ -141,7 +150,6 @@ class TallyCounterI2C : public Sensor {
     /**
      * @brief Construct a new Tally Counter I2C object using the primary
      * hardware I2C instance.
-     * @ingroup tally_group
      *
      * @param powerPin The pin on the mcu controlling power to TallyCounterI2C.
      * - The default is to use -1 for continuous power because a counting
@@ -208,18 +216,17 @@ class TallyCounterI2C : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [events output](@ref tally_events) from a
- * [Tally Counter I2C](@ref tally_group) - shows the number of
+ * [events output](@ref sensor_tally_events) from a
+ * [Tally Counter I2C](@ref sensor_tally) - shows the number of
  * events since last read.
  *
- * @ingroup tally_group
+ * @ingroup sensor_tally
  */
 /* clang-format on */
 class TallyCounterI2C_Events : public Variable {
  public:
     /**
      * @brief Construct a new TallyCounterI2C_Events object.
-     * @ingroup tally_group
      *
      * @param parentSense The parent TallyCounterI2C providing the result
      * values.

@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y511_group Yosemitech Y511
+ * @defgroup sensor_y511 Yosemitech Y511 Wipered Turbidty Sensor
  * Classes for the Yosemitech Y511 wipered turbidity sensor.
  *
  * @ingroup yosemitech_group
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y511_datasheet Sensor Datasheet
+ * @section sensor_y511_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper_UserManual-v1.1.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper-v1.7_ModbusInstructions.pdf)
  *
@@ -34,8 +34,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y511_ctor Sensor Constructor
+ * {{ @ref YosemitechY511::YosemitechY511 }}
+ *
  * ___
- * @section y511_examples Example Code
+ * @section sensor_y511_examples Example Code
  * The Yosemitech Y511 wipered turbidity sensor is used in the @menulink{y511}
  * example.
  *
@@ -51,16 +54,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y511_group */
+/** @ingroup sensor_y511 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y511 can report 2 values.
 #define Y511_NUM_VARIABLES 2
 
 /**
- * @anchor y511_timing_defines
+ * @anchor sensor_y511_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y511
+ * The sensor timing for a Yosemitch Y511
  */
 /**@{*/
 /**
@@ -88,11 +91,13 @@
 /**@}*/
 
 /**
- * @anchor y511_turb_defines
+ * @anchor sensor_y511_turb
  * @name Turbidity
- * Defines for the turbidity variable from a Yosemitch Y511
+ * The turbidity variable from a Yosemitch Y511
  * - Range is 0.1 to 1000 NTU
  * - Accuracy is ± 5 % or 0.3 NTU
+ *
+ * {{ @ref YosemitechY511_Turbidity::YosemitechY511_Turbidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; turbidity should have 2 -
@@ -109,11 +114,13 @@
 /**@}*/
 
 /**
- * @anchor y511_temp_defines
+ * @anchor sensor_y511_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y511
+ * The temperature variable from a Yosemitch Y511
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY511_Temp::YosemitechY511_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -133,9 +140,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_group).
+ * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref sensor_y511).
  *
- * @ingroup y511_group
+ * @ingroup sensor_y511
  */
 /* clang-format on */
 class YosemitechY511 : public YosemitechParent {
@@ -143,7 +150,6 @@ class YosemitechY511 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y511 object.
-     * @ingroup y511_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -191,17 +197,16 @@ class YosemitechY511 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [turbidity output](@ref y511_turb) from a
- * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_group).
+ * [turbidity output](@ref sensor_y511_turb) from a
+ * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref sensor_y511).
  *
- * @ingroup y511_group
+ * @ingroup sensor_y511
  */
 /* clang-format on */
 class YosemitechY511_Turbidity : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY511_Turbidity object.
-     * @ingroup y511_group
      *
      * @param parentSense The parent YosemitechY511 providing the result
      * values.
@@ -236,17 +241,16 @@ class YosemitechY511_Turbidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y511_temp) from a
- * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref y511_group).
+ * [temperature output](@ref sensor_y511_temp) from a
+ * [Yosemitech Y511-A optical turbidity sensor with wiper](@ref sensor_y511).
  *
- * @ingroup y511_group
+ * @ingroup sensor_y511
  */
 /* clang-format on */
 class YosemitechY511_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY511_Temp object.
-     * @ingroup y511_group
      *
      * @param parentSense The parent YosemitechY511 providing the result
      * values.

@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup teros_group Meter Teros 11
+ * @defgroup sensor_teros11 Meter Teros 11
  * Classes for the Meter Teros 11 soil moisture probe.
  *
  * @ingroup sdi12_group
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section teros_intro Introduction
+ * @section sensor_teros11_intro Introduction
  *
  * Meter Environmental makes two series of soil moisture sensors, the
  * [ECH2O series](https://www.metergroup.com/environment/products/?product_category=9525) and the
@@ -38,18 +38,21 @@
  * power is connected to the _white_ cable, data to _red_, and ground to the
  * unshielded cable.
  *
- * @section teros_datasheet Sensor Datasheet
+ * @section sensor_teros11_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses for the Meter
  * Teros 11 can be found at:
  * http://publications.metergroup.com/Manuals/20587_TEROS11-12_Manual_Web.pdf
  *
- * @section teros_voltages Voltage Ranges
+ * @section sensor_teros11_voltages Voltage Ranges
  * - Supply Voltage (VCC to GND), 4.0 to 15.0 VDC
  * - Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)
  * - Digital Output Voltage (logic high), 3.6 typical
  *
+ * @section sensor_teros11_ctor Sensor Constructor
+ * {{ @ref MeterTeros11::MeterTeros11 }}
+ *
  * ___
- * @section teros_examples Example Code
+ * @section sensor_teros11_examples Example Code
  * The Meter Teros is used in the @menulink{teros} example.
  *
  * @menusnip{teros}
@@ -74,16 +77,16 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
-/** @ingroup teros_group */
+/** @ingroup sensor_teros11 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Teros 11 can report 3 values.
 #define TEROS11_NUM_VARIABLES 3
 
 /**
- * @anchor teros_timing_defines
+ * @anchor sensor_teros11_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Meter Teros 11
+ * The sensor timing for a Meter Teros 11
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the Teros 11 warm-up time in SDI-12 mode:
@@ -97,13 +100,15 @@
 /**@}*/
 
 /**
- * @anchor teros11_ea_defines
+ * @anchor sensor_teros11_ea
  * @name EA
- * Defines for the EA variable from a Meter Teros 11
+ * The EA variable from a Meter Teros 11
  * - Range is 1 (air) to 80 (water)
  * - Accuracy is:
  *     - 1–40 (soil range), ±1 εa (unitless)
  *     - 40–80, 15% of measurement
+ *
+ * {{ @ref MeterTeros11_Ea::MeterTeros11_Ea }}
  */
 /**@{*/
 /**
@@ -124,14 +129,17 @@
 /**@}*/
 
 /**
- * @anchor teros11_temp_defines
+ * @anchor sensor_teros11_temp
  * @name Temperature
- * Defines for the temperature variable from a Meter Teros 11
+ * The temperature variable from a Meter Teros 11
  * - Range is -40°C to 60°C
  * - Accuracy is:
  *     - ± 1°C, from -40°C to 0°C
  *     - ± 0.5°C, from 0°C to + 60°C
+ *
+ * {{ @ref MeterTeros11_Temp::MeterTeros11_Temp }}
  */
+/**@{*/
 /**
  * @brief Decimals places in string representation; temperature should have 2.
  *
@@ -150,9 +158,9 @@
 /**@}*/
 
 /**
- * @anchor teros11_vwc_defines
+ * @anchor sensor_teros11_vwc
  * @name Volumetric Water Content
- * Defines for the VWC variable from a Meter Teros 11
+ * The VWC variable from a Meter Teros 11
  *   - Range is:
  *     - Mineral soil calibration: 0.00–0.70 m3/m3 (0 – 70% VWC)
  *     - Soilless media calibration: 0.0–1.0 m3/m3 (0 – 100% VWC)
@@ -161,7 +169,10 @@
  * that have solution electrical conductivity <8 dS/m
  *     - Medium specific calibration: ±0.01–0.02 m3/m3 (± 1-2% VWC)in any porous
  * medium
+ *
+ * {{ @ref MeterTeros11_VWC::MeterTeros11_VWC }}
  */
+/**@{*/
 /**
  * @brief Decimals places in string representation; VWC should have 3.
  *
@@ -185,9 +196,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Meter Teros 11 sensor](@ref teros_group)
+ * [Meter Teros 11 sensor](@ref sensor_teros11)
  *
- * @ingroup teros_group
+ * @ingroup sensor_teros11
  */
 /* clang-format on */
 class MeterTeros11 : public SDI12Sensors {
@@ -195,7 +206,6 @@ class MeterTeros11 : public SDI12Sensors {
     // Constructors with overloads
     /**
      * @brief Construct a new Meter Teros 11 object.
-     * @ingroup teros_group
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -203,7 +213,8 @@ class MeterTeros11 : public SDI12Sensors {
      * readings to average.  The data pin must be a pin that supports pin-change
      * interrupts.
      *
-     * @param SDI12address The SDI-12 address of the Teros 11.
+     * @param SDI12address The SDI-12 address of the Teros 11; can be a char,
+     * char*, or int.
      * @warning The SDI-12 address **must** be changed from the factory
      * programmed value of "0" before the Teros 11 can be used with
      * ModularSensors!
@@ -257,17 +268,16 @@ class MeterTeros11 : public SDI12Sensors {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [apparent dielectric permittivity (εa, matric potential)](@ref teros11_ea)
- * from a [Meter Teros soil moisture/water content sensor](@ref teros_group).
+ * [apparent dielectric permittivity (εa, matric potential)](@ref sensor_teros11_ea)
+ * from a [Meter Teros soil moisture/water content sensor](@ref sensor_teros11).
  *
- * @ingroup teros_group
+ * @ingroup sensor_teros11
  */
 /* clang-format on */
 class MeterTeros11_Ea : public Variable {
  public:
     /**
      * @brief Construct a new MeterTeros11_Ea object.
-     * @ingroup teros_group
      *
      * @param parentSense The parent MeterTeros11 providing the result
      * values.
@@ -300,17 +310,16 @@ class MeterTeros11_Ea : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref teros11_temp) output from a
- * [Teros soil moisture/water content sensor](@ref teros_group).
+ * [temperature output](@ref sensor_teros11_temp) output from a
+ * [Teros soil moisture/water content sensor](@ref sensor_teros11).
  *
- * @ingroup teros_group
+ * @ingroup sensor_teros11
  */
 /* clang-format on */
 class MeterTeros11_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MeterTeros11_Temp object.
-     * @ingroup teros_group
      *
      * @param parentSense The parent MeterTeros11 providing the result
      * values.
@@ -343,17 +352,16 @@ class MeterTeros11_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [volumetric water content](@ref teros11_vwc) output from a
- * [Teros soil moisture/water content sensor](@ref teros_group).
+ * [volumetric water content](@ref sensor_teros11_vwc) output from a
+ * [Teros soil moisture/water content sensor](@ref sensor_teros11).
  *
- * @ingroup teros_group
+ * @ingroup sensor_teros11
  */
 /* clang-format on */
 class MeterTeros11_VWC : public Variable {
  public:
     /**
      * @brief Construct a new MeterTeros11_VWC object.
-     * @ingroup teros_group
      *
      * @param parentSense The parent MeterTeros11 providing the result
      * values.

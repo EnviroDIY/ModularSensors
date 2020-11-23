@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y514_group Yosemitech Y514
+ * @defgroup sensor_y514 Yosemitech Y514 Wipered Chlorophyll Sensor
  * Classes for the Yosemitech Y514 chlorophyll sensor with wiper.
  *
  * @ingroup yosemitech_group
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y514_datasheet Sensor Datasheet
+ * @section sensor_y514_datasheet Sensor Datasheet
  * - [Y514 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper_UserManual-v1.0.pdf)
  * - [Y515 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y515-Chlorophyll_UserManual-v1.0_en.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper-v1.6_ModbusInstructions.pdf)
@@ -35,8 +35,11 @@
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y514_ctor Sensor Constructor
+ * {{ @ref YosemitechY514::YosemitechY514 }}
+ *
  * ___
- * @section y514_examples Example Code
+ * @section sensor_y514_examples Example Code
  * The Yosemitech Y514 chlorophyll sensor is used in the @menulink{y514}
  * example.
  *
@@ -52,16 +55,16 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-/** @ingroup y514_group */
+/** @ingroup sensor_y514 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y514 can report 2 values.
 #define Y514_NUM_VARIABLES 2
 
 /**
- * @anchor y514_timing_defines
+ * @anchor sensor_y514_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Yosemitch Y514
+ * The sensor timing for a Yosemitch Y514
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power - 1.3
@@ -76,21 +79,22 @@
 /**@}*/
 
 /**
- * @anchor y514_chloro_defines
+ * @anchor sensor_y514_chloro
  * @name Chlorophyll Concentration
- * Defines for the chlorophyll concentration variable from a Yosemitch Y514
+ * The chlorophyll concentration variable from a Yosemitch Y514
  * - Range is 0 to 400 µg/L or 0 to 100 RFU
  * - Accuracy is ± 1 %
+ *
+ * {{ @ref YosemitechY514_Chlorophyll::YosemitechY514_Chlorophyll }}
  */
 /**@{*/
-///  @brief Decimals places in string representation; chlorophyll concentration
-///  should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
+/// @brief Decimals places in string representation; chlorophyll concentration
+/// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y514_CHLORO_RESOLUTION 1
 /// @brief Variable number; chlorophyll concentration is stored in
 /// sensorValues[0].
 #define Y514_CHLORO_VAR_NUM 0
-/// @brief Variable number; chlorophyll concentration is stored in
-/// sensorValues[0].
+/// @brief Variable name; "chlorophyllFluorescence"
 #define Y514_CHLORO_VAR_NAME "chlorophyllFluorescence"
 /// @brief Variable unit name; "microgramPerLiter" (µg/L)
 #define Y514_CHLORO_UNIT_NAME "microgramPerLiter"
@@ -99,11 +103,13 @@
 /**@}*/
 
 /**
- * @anchor y514_temp_defines
+ * @anchor sensor_y514_temp
  * @name Temperature
- * Defines for the temperature variable from a Yosemitch Y514
+ * The temperature variable from a Yosemitch Y514
  * - Range is 0°C to + 50°C
  * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY514_Temp::YosemitechY514_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 1 -
@@ -123,9 +129,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y514 sensor](@ref y514_group).
+ * [Yosemitech Y514 sensor](@ref sensor_y514).
  *
- * @ingroup y514_group
+ * @ingroup sensor_y514
  */
 /* clang-format on */
 class YosemitechY514 : public YosemitechParent {
@@ -133,7 +139,6 @@ class YosemitechY514 : public YosemitechParent {
     // Constructors with overloads
     /**
      * @brief Construct a new Yosemitech Y514 object.
-     * @ingroup y514_group
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -181,17 +186,16 @@ class YosemitechY514 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [chlorophyll concentration output](@ref y514_chloro) from a
- * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref y514_group).
+ * [chlorophyll concentration output](@ref sensor_y514_chloro) from a
+ * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref sensor_y514).
  *
- * @ingroup y514_group
+ * @ingroup sensor_y514
  */
 /* clang-format on */
 class YosemitechY514_Chlorophyll : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY514_Chlorophyll object.
-     * @ingroup y514_group
      *
      * @param parentSense The parent YosemitechY514 providing the result
      * values.
@@ -227,17 +231,16 @@ class YosemitechY514_Chlorophyll : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y514_temp) from a
- * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref y514_group).
+ * [temperature output](@ref sensor_y514_temp) from a
+ * [Yosemitech Y514-A chlorophyll sensor with wiper](@ref sensor_y514).
  *
- * @ingroup y514_group
+ * @ingroup sensor_y514
  */
 /* clang-format on */
 class YosemitechY514_Temp : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY514_Temp object.
-     * @ingroup y514_group
      *
      * @param parentSense The parent YosemitechY514 providing the result
      * values.
@@ -267,4 +270,5 @@ class YosemitechY514_Temp : public Variable {
      */
     ~YosemitechY514_Temp() {}
 };
-#endif  // SRC_SENSORS_YOSEMITECHY514_H_
+/**@}*/
+#endif  // SRC_SENSORS__YOSEMITECHY514_H_

@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup bme280_group Bosch BME280
+ * @defgroup sensor_bme280 Bosch BME280
  * Classes for the Bosch BME280 environmental sensor.
  *
  * @ingroup the_sensors
@@ -25,7 +25,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section bme280_intro Introduction
+ * @section sensor_bme280_intro Introduction
  * > The BME280 is a humidity sensor especially developed for mobile applications
  * > and wearables where size and low power consumption are key design parameters.
  * > The unit combines high linearity and high accuracy sensors and is perfectly
@@ -58,13 +58,18 @@
  * @note Software I2C is *not* supported for the BME280.
  * A secondary hardware I2C on a SAMD board is supported.
  *
- * @section bme280_datasheet Sensor Datasheet
+ * @section sensor_bme280_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/
  *
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf)
  *
- * @section bme280_examples Example Code
+ * @section sensor_bme280_ctor Sensor Constructors
+ * {{ @ref BoschBME280::BoschBME280(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref BoschBME280::BoschBME280(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ *
+ * ___
+ * @section sensor_bme280_examples Example Code
  * The BME280 is used in the @menulink{bme280} example.
  *
  * @menusnip{bme280}
@@ -90,16 +95,16 @@
 #include <Adafruit_BME280.h>
 
 // Sensor Specific Defines
-/** @ingroup bme280_group */
+/** @ingroup sensor_bme280 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the BME280 can report 4 values.
 #define BME280_NUM_VARIABLES 4
 
 /**
- * @anchor bme280_timing_defines
+ * @anchor sensor_bme280_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Bosch BME280
+ * The sensor timing for a Bosch BME280
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; BME280 warms up in 100ms.
@@ -124,11 +129,13 @@
 /**@}*/
 
 /**
- * @anchor bme280_temp_defines
+ * @anchor sensor_bme280_temp
  * @name Temperature
- * Defines for the temperature variable from a Bosch BME280
+ * The temperature variable from a Bosch BME280
  * - Range is -40°C to +85°C
  * - Accuracy is ±0.5°C
+ *
+ * {{ @ref BoschBME280_Temp::BoschBME280_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -145,9 +152,11 @@
 /**@}*/
 
 /**
- * @anchor bme280_humidity_defines
+ * @anchor sensor_bme280_humidity
  * @name Humidity
- * Defines for the humidity variable from a Bosch BME280
+ * The humidity variable from a Bosch BME280
+ *
+ * {{ @ref BoschBME280_Humidity::BoschBME280_Humidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; humidity should have 3-
@@ -164,21 +173,22 @@
 /**@}*/
 
 /**
- * @anchor bme280_pressure_defines
+ * @anchor sensor_bme280_pressure
  * @name Barometric Pressure
- * Defines for the barometric pressure variable from a Bosch BME280
+ * The barometric pressure variable from a Bosch BME280
  * - Range is 300 to 1100 hPa
  *   - Absolute accuracy is ±1 hPa
  *   - Relative accuracy is ±0.12 hPa
+ *
+ * {{ @ref BoschBME280_Pressure::BoschBME280_Pressure }}
  */
+/**@{*/
 /// @brief Decimals places in string representation; barometric pressure should
 /// have 2.
 #define BME280_PRESSURE_RESOLUTION 2
-/// @brief Decimals places in string representation; barometric pressure should
-/// have 2 - resolution is 0.18hPa.
+/// @brief Variable number; pressure is stored in sensorValues[2].
 #define BME280_PRESSURE_VAR_NUM 2
-/// @brief Decimals places in string representation; barometric pressure should
-/// have 2.
+/// @brief Variable name; "barometricPressure"
 #define BME280_PRESSURE_VAR_NAME "barometricPressure"
 /// @brief Variable unit name; "pascal" (Pa)
 #define BME280_PRESSURE_UNIT_NAME "pascal"
@@ -187,9 +197,11 @@
 /**@}*/
 
 /**
- * @anchor bme280_altitude_defines
+ * @anchor sensor_bme280_altitude
  * @name Altitude
- * Defines for the altitude variable from a Bosch BME280
+ * The altitude variable from a Bosch BME280
+ *
+ * {{ @ref BoschBME280_Altitude::BoschBME280_Altitude }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; altitude should have 0 -
@@ -210,9 +222,9 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the [Bosch BME280](@ref bme280_group).
+ * @brief The Sensor sub-class for the [Bosch BME280](@ref sensor_bme280).
  *
- * @ingroup bme280_group
+ * @ingroup sensor_bme280
  */
 /* clang-format on */
 class BoschBME280 : public Sensor {
@@ -220,7 +232,6 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Construct a new Bosch BME280 object using a secondary *hardware*
      * I2C instance.
-     * @ingroup bme280_group
      *
      * @note Software I2C is *not* supported for the BME280.
      *
@@ -243,7 +254,6 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Construct a new Bosch BME280 object using the primary hardware I2C
      * instance.
-     * @ingroup bme280_group
      *
      * @param powerPin The pin on the mcu controlling power to the BME280
      * Use -1 if it is continuously powered.
@@ -314,17 +324,16 @@ class BoschBME280 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref bme280_temp)
- * from a [Bosch BME280](@ref bme280_group).
+ * [temperature output](@ref sensor_bme280_temp)
+ * from a [Bosch BME280](@ref sensor_bme280).
  *
- * @ingroup bme280_group
+ * @ingroup sensor_bme280
  */
 /* clang-format on */
 class BoschBME280_Temp : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Temp object.
-     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -357,17 +366,16 @@ class BoschBME280_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [relative humidity output](@ref bme280_humidity) from a
- * [Bosch BME280](@ref bme280_group).
+ * [relative humidity output](@ref sensor_bme280_humidity) from a
+ * [Bosch BME280](@ref sensor_bme280).
  *
- * @ingroup bme280_group
+ * @ingroup sensor_bme280
  */
 /* clang-format on */
 class BoschBME280_Humidity : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Humidity object.
-     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -403,17 +411,16 @@ class BoschBME280_Humidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [atmospheric pressure output](@ref bme280_pressure) from a
- * [Bosch BME280](@ref bme280_group).
+ * [atmospheric pressure output](@ref sensor_bme280_pressure) from a
+ * [Bosch BME280](@ref sensor_bme280).
  *
- * @ingroup bme280_group
+ * @ingroup sensor_bme280
  */
 /* clang-format on */
 class BoschBME280_Pressure : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Pressure object.
-     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -445,17 +452,16 @@ class BoschBME280_Pressure : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [altitude](@ref bme280_altitude) calculated from the measurements
- * made by a [Bosch BME280](@ref bme280_group).
+ * [altitude](@ref sensor_bme280_altitude) calculated from the measurements
+ * made by a [Bosch BME280](@ref sensor_bme280).
  *
- * @ingroup bme280_group
+ * @ingroup sensor_bme280
  */
 /* clang-format on */
 class BoschBME280_Altitude : public Variable {
  public:
     /**
      * @brief Construct a new BoschBME280_Altitude object.
-     * @ingroup bme280_group
      *
      * @param parentSense The parent BoschBME280 providing the result
      * values.
@@ -482,6 +488,5 @@ class BoschBME280_Altitude : public Variable {
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME,
                    BME280_ALTITUDE_DEFAULT_CODE) {}
 };
-
-
+/**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_

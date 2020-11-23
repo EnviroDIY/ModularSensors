@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup es2_group Decagon ES-2
+ * @defgroup sensor_es2 Decagon ES-2
  * Classes for the Decagon ES-2 conductivity and temperature sensor.
  *
  * @ingroup sdi12_group
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section es2_intro Introduction
+ * @section sensor_es2_intro Introduction
  *
  * @warning This sensor is no longer manufactured!
  *
@@ -35,12 +35,15 @@
  * bare-wire version, the power is connected to the _white_ cable, data to
  * _red_, and ground to the unshielded cable.
  *
- * @section es2_datasheet Sensor Datasheet
+ * @section sensor_es2_datasheet Sensor Datasheet
  * [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf)
  * [Integrator's Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf)
  *
+ * @section sensor_es2_ctor Sensor Constructor
+ * {{ @ref DecagonES2::DecagonES2 }}
+ *
  * ___
- * @section es2_examples Example Code
+ * @section sensor_es2_examples Example Code
  * The Decagon ES-2 is used in the @menulink{es2} example.
  *
  * @menusnip{es2}
@@ -55,16 +58,16 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
-/** @ingroup es2_group */
+/** @ingroup sensor_es2 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the ES2 can report 2 values.
 #define ES2_NUM_VARIABLES 2
 
 /**
- * @anchor es2_timing_defines
+ * @anchor sensor_es2_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Decagon ES-2
+ * The sensor timing for a Decagon ES-2
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; maximum warm-up time in SDI-12 mode: 250ms.
@@ -77,11 +80,13 @@
 /**@}*/
 
 /**
- * @anchor es2_cond_defines
+ * @anchor sensor_es2_cond
  * @name Conductivity
- * Defines for the conductivity variable from a Decagon ES-2
+ * The conductivity variable from a Decagon ES-2
  * - Range is 0 – 120 mS/cm (bulk)
  * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ *
+ * {{ @ref DecagonES2_Cond::DecagonES2_Cond }}
  */
 /**@{*/
 /**
@@ -102,12 +107,15 @@
 /**@}*/
 
 /**
- * @anchor es2_temp_defines
+ * @anchor sensor_es2_temp
  * @name Temperature
- * Defines for the temperature variable from a Decagon ES-2
+ * The temperature variable from a Decagon ES-2
  * - Range is -40°C to +50°C
  * - Accuracy is ±1°C
+ *
+ * {{ @ref DecagonES2_Temp::DecagonES2_Temp }}
  */
+/**@{*/
 /**
  * @brief Decimals places in string representation; temperature should have 2.
  *
@@ -128,9 +136,9 @@
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the [Decagon ES-2 sensor](@ref es2_group)
+ * @brief The Sensor sub-class for the [Decagon ES-2 sensor](@ref sensor_es2)
  *
- * @ingroup es2_group
+ * @ingroup sensor_es2
  */
 /* clang-format on */
 class DecagonES2 : public SDI12Sensors {
@@ -138,7 +146,6 @@ class DecagonES2 : public SDI12Sensors {
     // Constructors with overloads
     /**
      * @brief Construct a new Decagon ES2 object.
-     * @ingroup es2_group
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -146,7 +153,8 @@ class DecagonES2 : public SDI12Sensors {
      * readings to average.  The data pin must be a pin that supports pin-change
      * interrupts.
      *
-     * @param SDI12address The SDI-12 address of the ES-2.
+     * @param SDI12address The SDI-12 address of the ES-2; can be a char, char*,
+     * or int.
      * @warning The SDI-12 address **must** be changed from the factory
      * programmed value of "0" before the ES-2 can be used with
      * ModularSensors!
@@ -167,7 +175,6 @@ class DecagonES2 : public SDI12Sensors {
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc DecagonES2::DecagonES2
-     * @ingroup es2_group
      */
     DecagonES2(char* SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
@@ -176,7 +183,6 @@ class DecagonES2 : public SDI12Sensors {
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc DecagonES2::DecagonES2
-     * @ingroup es2_group
      */
     DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage = 1)
@@ -193,17 +199,16 @@ class DecagonES2 : public SDI12Sensors {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [conductivity output](@ref es2_cond) from a
- * [Decagon ES-2 electrical conductivity sensor](@ref es2_group).
+ * [conductivity output](@ref sensor_es2_cond) from a
+ * [Decagon ES-2 electrical conductivity sensor](@ref sensor_es2).
  *
- * @ingroup es2_group
+ * @ingroup sensor_es2
  */
 /* clang-format on */
 class DecagonES2_Cond : public Variable {
  public:
     /**
      * @brief Construct a new DecagonES2_Cond object.
-     * @ingroup es2_group
      *
      * @param parentSense The parent DecagonES2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -234,17 +239,16 @@ class DecagonES2_Cond : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref es2_temp) from a
- * [Decagon ES-2 electrical conductivity sensor](@ref es2_group).
+ * [temperature output](@ref sensor_es2_temp) from a
+ * [Decagon ES-2 electrical conductivity sensor](@ref sensor_es2).
  *
- * @ingroup es2_group
+ * @ingroup sensor_es2
  */
 /* clang-format on */
 class DecagonES2_Temp : public Variable {
  public:
     /**
      * @brief Construct a new DecagonES2_Temp object.
-     * @ingroup es2_group
      *
      * @param parentSense The parent DecagonES2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the

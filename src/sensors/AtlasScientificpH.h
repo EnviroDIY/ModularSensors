@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup atlas_ph_group Atlas EZO-pH
+ * @defgroup sensor_atlas_ph Atlas EZO-pH
  * Classes for the Atlas Scientific EZO-pH circuit and probe.
  *
  * @ingroup atlas_group
@@ -22,11 +22,11 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section atlas_ph_datasheet Sensor Datasheet
+ * @section sensor_atlas_ph_datasheet Sensor Datasheet
  * Documentation on the probe and measurement circuit are found here:
  * https://www.atlas-scientific.com/ph.html
  *
- * @section atlas_ph_flags Build flags
+ * @section sensor_atlas_ph_flags Build flags
  * - `-D MS_ATLAS_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
  * @warning Either all or none of the Atlas sensors can be using software I2C.
@@ -35,8 +35,14 @@
  *
  * @note Be careful not to mix the similar variable and sensor object names!
  *
+ * @section sensor_atlas_ph_ctor Sensor Constructors
+ * {{ @ref AtlasScientificpH::AtlasScientificpH(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificpH::AtlasScientificpH(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificpH::AtlasScientificpH(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
+ * {{ @ref AtlasScientificpH::AtlasScientificpH(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
+ *
  * ___
- * @section atlas_ph_examples Example Code
+ * @section sensor_atlas_ph_examples Example Code
  * The Atlas pH sensor is used in the @menulink{atlas_ph} example.
  *
  * @menusnip{atlas_ph}
@@ -52,7 +58,7 @@
 
 
 // Sensor Specific Defines
-/** @ingroup atlas_ph_group */
+/** @ingroup sensor_atlas_ph */
 /**@{*/
 
 /// @brief Default I2C address is 0x63 (99)
@@ -62,9 +68,9 @@
 #define ATLAS_PH_NUM_VARIABLES 1
 
 /**
- * @anchor atlas_ph_timing_defines
+ * @anchor sensor_atlas_ph_timing
  * @name Sensor Timing
- * Defines for the sensor timing for an Atlas pH sensor
+ * The sensor timing for an Atlas pH sensor
  */
 /**@{*/
 /**
@@ -89,13 +95,15 @@
 /**@}*/
 
 /**
- * @anchor atlas_ph_ph_defines
+ * @anchor sensor_atlas_ph_ph
  * @name pH
- * Defines for the pH variable from an Atlas pH sensor
+ * The pH variable from an Atlas pH sensor
  * - Accuracy is ± 0.002
  * - Range is 0.001 − 14.000
  * @m_span{m-dim}(@ref #ATLAS_PH_RESOLUTION = 3)@m_endspan
  * - Reported as dimensionless pH units
+ *
+ * {{ @ref AtlasScientificpH_pH::AtlasScientificpH_pH }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; pH should have 3 -
@@ -115,20 +123,19 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Atlas Scientific pH sensor](@ref atlas_ph_group).
+ * [Atlas Scientific pH sensor](@ref sensor_atlas_ph).
  *
  * @note Be careful not to confuse the similar variable and sensor object names!
  *
- * @ingroup atlas_ph_group
+ * @ingroup sensor_atlas_ph
  */
 /* clang-format on */
 class AtlasScientificpH : public AtlasParent {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific pH object using a *software* I2C
      * instance.
-     * @ingroup atlas_ph_group
      *
      * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
      * instance for I2C communication.
@@ -157,7 +164,6 @@ class AtlasScientificpH : public AtlasParent {
      * @brief Construct a new Atlas Scientific pH object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
      * communication with that object.
-     * @ingroup atlas_ph_group
      *
      * Currently only
      * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
@@ -192,11 +198,11 @@ class AtlasScientificpH : public AtlasParent {
                       ATLAS_PH_NUM_VARIABLES, ATLAS_PH_WARM_UP_TIME_MS,
                       ATLAS_PH_STABILIZATION_TIME_MS,
                       ATLAS_PH_MEASUREMENT_TIME_MS) {}
-#else
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific pH object using a secondary
      * *hardware* I2C instance.
-     * @ingroup atlas_ph_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -227,7 +233,6 @@ class AtlasScientificpH : public AtlasParent {
     /**
      * @brief Construct a new Atlas Scientific pH object using the primary
      * hardware I2C instance.
-     * @ingroup atlas_ph_group
      *
      * @param powerPin The pin on the mcu controlling powering to the Atlas pH
      * circuit.  Use -1 if it is continuously powered.
@@ -261,19 +266,18 @@ class AtlasScientificpH : public AtlasParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pH output](@ref atlas_ph_ph) from an
- * [Atlas Scientific EZO pH circuit](@ref atlas_ph_group).
+ * [pH output](@ref sensor_atlas_ph_ph) from an
+ * [Atlas Scientific EZO pH circuit](@ref sensor_atlas_ph).
  *
  * @note Be careful not to mix the similar variable and sensor object names!
  *
- * @ingroup atlas_ph_group
+ * @ingroup sensor_atlas_ph
  */
 /* clang-format on */
 class AtlasScientificpH_pH : public Variable {
  public:
     /**
      * @brief Construct a new AtlasScientificpH_pH object.
-     * @ingroup atlas_ph_group
      *
      * @param parentSense The parent AtlasScientificpH providing the result
      * values.

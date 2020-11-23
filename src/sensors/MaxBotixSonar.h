@@ -11,7 +11,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup maxbotics_group MaxBotix MaxSonar
+ * @defgroup sensor_maxbotix MaxBotix MaxSonar
  * Classes for the MaxBotix MaxSonar ultrasonic range finders.
  *
  * @ingroup the_sensors
@@ -19,7 +19,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section maxbotics_intro Introduction
+ * @section sensor_maxbotix_intro Introduction
  *
  * The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm
  * resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output,
@@ -78,14 +78,17 @@
  *  - "Daisy chaining" sensors so the pulse-width output of one sensor acts as
  * the trigger for a second sensor *is not supported*.
  *
- * @section maxbotics_datasheet Sensor Datasheet
+ * @section sensor_maxbotix_datasheet Sensor Datasheet
  * - [HRXL WR Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HRXL-MaxSonar-WR-Datasheet.pdf)
  * - [HRXL WRS Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HRXL-MaxSonar-WRS-Datasheet.pdf)
  * - [MaxTemp Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HR-MaxTemp-Datasheet.pdf)
  * - [Wiring Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-MaxSonar-MB7954-Datasheet-ConnectWire.pdf)
  *
+ * @section sensor_maxbotix_ctor Sensor Constructor
+ * {{ @ref MaxBotixSonar::MaxBotixSonar }}
+ *
  * ___
- * @section maxbotics_examples Example Code
+ * @section sensor_maxbotix_examples Example Code
  * The MaxBotix MaxSonar is used in the @menulink{maxbotics} example.
  *
  * @menusnip{maxbotics}
@@ -110,16 +113,16 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-/** @ingroup maxbotics_group */
+/** @ingroup sensor_maxbotix */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the HRXL can report 1 value.
 #define HRXL_NUM_VARIABLES 1
 
 /**
- * @anchor maxbotics_timing_defines
+ * @anchor sensor_maxbotix_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Maxbotix HRXL ultrasonic range finder
+ * The sensor timing for a Maxbotix HRXL ultrasonic range finder
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; warm up time to completion of header:  160ms.
@@ -133,11 +136,13 @@
 /**@}*/
 
 /**
- * @anchor maxbotix_range_defines
+ * @anchor sensor_maxbotix_range
  * @name Range
- * Defines for the range variable from a Maxbotix HRXL ultrasonic range finder
+ * The range variable from a Maxbotix HRXL ultrasonic range finder
  * - Range is 300 to 5000mm or 500 to 9999mm, depending on model
  * - Accuracy is ±1%
+ *
+ * {{ @ref MaxBotixSonar_Range::MaxBotixSonar_Range }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; range should have 0 -
@@ -157,16 +162,15 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [MaxBotix ultrasonic range finders](@ref maxbotics_group).
+ * [MaxBotix ultrasonic range finders](@ref sensor_maxbotix).
  *
- * @ingroup maxbotics_group
+ * @ingroup sensor_maxbotix
  */
 /* clang-format on */
 class MaxBotixSonar : public Sensor {
  public:
     /**
      * @brief Construct a new MaxBotix Sonar object
-     * @ingroup maxbotics_group
      *
      * @param stream An Arduino data stream for TTL or RS232 communication.  See
      * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
@@ -238,17 +242,16 @@ class MaxBotixSonar : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [range output](@ref maxbotix_range) from a
- * [MaxBotix HRXL-MaxSonar ultrasonic range finder](@ref maxbotics_group).
+ * [range output](@ref sensor_maxbotix_range) from a
+ * [MaxBotix HRXL-MaxSonar ultrasonic range finder](@ref sensor_maxbotix).
  *
- * @ingroup maxbotics_group
+ * @ingroup sensor_maxbotix
  */
 /* clang-format on */
 class MaxBotixSonar_Range : public Variable {
  public:
     /**
      * @brief Construct a new MaxBotixSonar_Range object.
-     * @ingroup maxbotics_group
      *
      * @param parentSense The parent MaxBotixSonar providing the result
      * values.

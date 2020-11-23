@@ -19,7 +19,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup ms5803_group Measurement Specialties MS5803
+ * @defgroup sensor_ms5803 Measurement Specialties MS5803
  * Classes for the Measurement Specialties MS5803 digital preassure sensor.
  *
  * @ingroup the_sensors
@@ -27,7 +27,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section ms5803_intro Introduction
+ * @section sensor_ms5803_intro Introduction
  *
  * The Measurement Specialties MS5803 is a miniature digital pressure sensor.
  * It comes in several different pressure ranges, with 14 bar being one of the
@@ -53,17 +53,20 @@
  * The lower level communication between the mcu and the MS5803 is handled by the
  * [Northern Widget MS5803 library](https://github.com/NorthernWidget/MS5803).
  *
- * @section ms5803_datasheet Sensor Datasheet
+ * @section sensor_ms5803_datasheet Sensor Datasheet
  *
  * Documentation for the sensor can be found at:
  * https://www.sparkfun.com/products/12909 and
- * https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
+ * https://cdn.sparkfun.com/datasheets/Sensors/Weather/sensor_ms5803_14ba.pdf
  *
  * The datasheet is also available here:
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Measurement-Specialities-MS5803-14ba-Pressure-Sensor.pdf
  *
+ * @section sensor_ms5803_ctor Sensor Constructor
+ * {{ @ref MeaSpecMS5803::MeaSpecMS5803 }}
+ *
  * ___
- * @section ms5803_examples Example Code
+ * @section sensor_ms5803_examples Example Code
  * The Measurement Specialties MS5803 is used in the @menulink{ms5803} example.
  *
  * @menusnip{ms5803}
@@ -89,16 +92,16 @@
 #include <MS5803.h>
 
 // Sensor Specific Defines
-/** @ingroup ms5803_group */
+/** @ingroup sensor_ms5803 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the MS5803 can report 2 values.
 #define MS5803_NUM_VARIABLES 2
 
 /**
- * @anchor ms5803_timing_defines
+ * @anchor sensor_ms5803_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Measurement Specialties MS5803
+ * The sensor timing for a Measurement Specialties MS5803
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the MS5803 warms up in 10ms.
@@ -116,11 +119,13 @@
 /**@}*/
 
 /**
- * @anchor ms5803_temp_defines
+ * @anchor sensor_ms5803_temp
  * @name Temperature
- * Defines for the temperature variable from a Measurement Specialties MS5803
+ * The temperature variable from a Measurement Specialties MS5803
  * - Range is -40°C to +85°C
  * - Accuracy is ±0.8°C
+ *
+ * {{ @ref MeaSpecMS5803_Temp::MeaSpecMS5803_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -137,9 +142,9 @@
 /**@}*/
 
 /**
- * @anchor ms5803_pressure_defines
+ * @anchor sensor_ms5803_pressure
  * @name Pressure
- * Defines for the pressure variable from a Measurement Specialties MS5803
+ * The pressure variable from a Measurement Specialties MS5803
  *   - Range is 0 to 14 bar
  *   - Accuracy between 0 and +40°C is:
  *      - 14ba: ±20mbar
@@ -154,6 +159,8 @@
  *      - 2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024
  *      - 1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012
  *      - @m_span{m-dim}@ref #MS5803_PRESSURE_RESOLUTION = 3@m_endspan
+ *
+ * {{ @ref MeaSpecMS5803_Pressure::MeaSpecMS5803_Pressure }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; pressure should have 3.
@@ -172,16 +179,15 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Measurement Specialties MS5803 sensor](@ref ms5803_group).
+ * [Measurement Specialties MS5803 sensor](@ref sensor_ms5803).
  *
- * @ingroup ms5803_group
+ * @ingroup sensor_ms5803
  */
 /* clang-format on */
 class MeaSpecMS5803 : public Sensor {
  public:
     /**
      * @brief Construct a new MeaSpecMS5803 object.
-     * @ingroup ms5803_group
      *
      * @note Neither secondary hardware nor software I2C is supported for the
      * MS5803. Only the primary hardware I2C defined in the Arduino core can be
@@ -250,17 +256,16 @@ class MeaSpecMS5803 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref ms5803_temp) from a
- * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_group).
+ * [temperature output](@ref sensor_ms5803_temp) from a
+ * [Measurement Specialties MS5803 digital pressure sensor](@ref sensor_ms5803).
  *
- * @ingroup ms5803_group
+ * @ingroup sensor_ms5803
  */
 /* clang-format on */
 class MeaSpecMS5803_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MeaSpecMS5803_Temp object.
-     * @ingroup ms5803_group
      *
      * @param parentSense The parent MeaSpecMS5803 providing the result
      * values.
@@ -295,17 +300,16 @@ class MeaSpecMS5803_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pressure output](@ref ms5803_pressure) from a
- * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_group).
+ * [pressure output](@ref sensor_ms5803_pressure) from a
+ * [Measurement Specialties MS5803 digital pressure sensor](@ref sensor_ms5803).
  *
- * @ingroup ms5803_group
+ * @ingroup sensor_ms5803
  */
 /* clang-format on */
 class MeaSpecMS5803_Pressure : public Variable {
  public:
     /**
      * @brief Construct a new MeaSpecMS5803_Pressure object.
-     * @ingroup ms5803_group
      *
      * @param parentSense The parent MeaSpecMS5803 providing the result
      * values.
@@ -338,6 +342,5 @@ class MeaSpecMS5803_Pressure : public Variable {
      */
     ~MeaSpecMS5803_Pressure() {}
 };
-
-
+/**@}*/
 #endif  // SRC_SENSORS_MEASPECMS5803_H_

@@ -93,34 +93,34 @@
 
         <tab type="usergroup" url="@ref page_other_reading" title="Other Reading">
             <tab type="usergroup" url="@ref page_sensor_notes" title="Sensor Information">
-                <tab type="user" url="@ref processor_sensor_group" title="Processor Metadata" />
-                <tab type="user" url="@ref ds3231_group" title="Maxim DS3231 RTC" />
-                <tab type="user" url="@ref am2315_group" title="AOSong AM2315" />
-                <tab type="user" url="@ref dht_group" title="AOSong DHT" />
-                <tab type="user" url="@ref sq212_group" title="Apogee SQ212" />
+                <tab type="user" url="@ref sensor_processor" title="Processor Metadata" />
+                <tab type="user" url="@ref sensor_ds3231" title="Maxim DS3231 RTC" />
+                <tab type="user" url="@ref sensor_am2315" title="AOSong AM2315" />
+                <tab type="user" url="@ref sensor_dht" title="AOSong DHT" />
+                <tab type="user" url="@ref sensor_sq212" title="Apogee SQ212" />
                 <tab type="usergroup" url="@ref atlas_group" title="Atlas EZO Circuits">
-                    <tab type="user" url="@ref atlas_co2_group" title="Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor" />
-                    <tab type="user" url="@ref atlas_do_group" title="EZO-DO Dissolved Oxygen Circuit and Probe" />
-                    <tab type="user" url="@ref atlas_cond_group" title="Atlas Scientific EZO-EC Conductivity Circuit and Probes" />
-                    <tab type="user" url="@ref atlas_orp_group" title="Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes" />
-                    <tab type="user" url="@ref atlas_ph_group" title="Atlas Scientific EZO-pH Circuit and Probe" />
-                    <tab type="user" url="@ref atlas_rtd_group" title="Atlas Scientific EZO-RTD Temperature Circuit and Probes" />
+                    <tab type="user" url="@ref sensor_atlas_co2" title="Atlas Scientific EZO-CO2 Embedded NDIR CO2 %Sensor" />
+                    <tab type="user" url="@ref sensor_atlas_do" title="EZO-DO Dissolved Oxygen Circuit and Probe" />
+                    <tab type="user" url="@ref sensor_atlas_cond" title="Atlas Scientific EZO-EC Conductivity Circuit and Probes" />
+                    <tab type="user" url="@ref sensor_atlas_orp" title="Atlas Scientific EZO-ORP Oxidation/Reduction Potential Circuit and Probes" />
+                    <tab type="user" url="@ref sensor_atlas_ph" title="Atlas Scientific EZO-pH Circuit and Probe" />
+                    <tab type="user" url="@ref sensor_atlas_rtd" title="Atlas Scientific EZO-RTD Temperature Circuit and Probes" />
                 </tab>
-                <tab type="user" url="@ref bme280_group" title="Bosch BME28" />
-                <tab type="user" url="@ref obs3_group" title="Campbell OBS3+" />
-                <tab type="user" url="@ref es2_group" title="Decagon ES2" />
-                <tab type="user" url="@ref mpl115a2_group" title="Freescale MPL115A2" />
-                <tab type="user" url="@ref i2c_rain_group" title="Arduino I2C Tipping Bucket" />
+                <tab type="user" url="@ref sensor_bme280" title="Bosch BME28" />
+                <tab type="user" url="@ref sensor_obs3" title="Campbell OBS3+" />
+                <tab type="user" url="@ref sensor_es2" title="Decagon ES2" />
+                <tab type="user" url="@ref sensor_mpl115a2" title="Freescale MPL115A2" />
+                <tab type="user" url="@ref sensor_i2c_rain" title="Arduino I2C Tipping Bucket" />
                 <tab type="user" url="@ref keller_group" title="Keller Water Level Sensors" />
-                <tab type="user" url="@ref maxbotics_group" title="Maxbotix Ultrasonic Range Finders" />
-                <tab type="user" url="@ref ds18_group" title="Maxim DS18" />
-                <tab type="user" url="@ref ms5803_group" title="Measurement Specialties MS5803" />
+                <tab type="user" url="@ref sensor_maxbotix" title="Maxbotix Ultrasonic Range Finders" />
+                <tab type="user" url="@ref sensor_ds18" title="Maxim DS18" />
+                <tab type="user" url="@ref sensor_ms5803" title="Measurement Specialties MS5803" />
                 <tab type="user" url="@ref meter_soil_group" title="Meter Soil Moisture Sensors" />
-                <tab type="user" url="@ref hydros21_group" title="Meter Hydros 21" />
+                <tab type="user" url="@ref sensor_hydros21" title="Meter Hydros 21" />
                 <tab type="user" url="@ref analog_group" title="TI ADS1115" />
-                <tab type="user" url="@ref ina219_group" title="TI INA219" />
+                <tab type="user" url="@ref sensor_ina219" title="TI INA219" />
                 <tab type="user" url="@ref yosemitech_group" title="Yosemitech Environmental Sensors" />
-                <tab type="user" url="@ref dopto_group" title="ZebraTech D-Opto" />
+                <tab type="user" url="@ref sensor_dopto" title="ZebraTech D-Opto" />
             </tab>
             <tab type="usergroup" url="@ref page_modem_notes" title="Modem Information">
                 <tab type="user" url="@ref page_digi_xbees" title="Digi XBee" />

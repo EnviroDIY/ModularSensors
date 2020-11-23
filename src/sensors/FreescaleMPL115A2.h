@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup mpl115a2_group Freescale Semiconductor MPL115A2
+ * @defgroup sensor_mpl115a2 Freescale Semiconductor MPL115A2
  * Classes for the Freescale Semiconductor MPL115A2 digital barometer.
  *
  * @ingroup the_sensors
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section mpl115a2_intro Introduction
+ * @section sensor_mpl115a2_intro Introduction
  *
  * The Freescale Semiconductor MPL115A2 is a low-cost, low-power absolute
  * pressure sensor with a digital I2C output.  It is optimized for barometric
@@ -37,15 +37,19 @@
  * @note Software I2C is *not* supported for the AM2315.
  * A secondary hardware I2C on a SAMD board is supported.
  *
- * @section mpl115a2_datasheet Sensor Datasheet
+ * @section sensor_mpl115a2_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * https://www.adafruit.com/product/992 and
  * https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB
  * A copy of the datasheet is available here:
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf)
  *
+ * @section sensor_mpl115a2_ctor Sensor Constructors
+ * {{ @ref MPL115A2::MPL115A2(int8_t, uint8_t) }}
+ * {{ @ref MPL115A2::MPL115A2(TwoWire*, int8_t, uint8_t) }}
+ *
  * ___
- * @section mpl115a2_examples Example Code
+ * @section sensor_mpl115a2_examples Example Code
  * The Freescale Semiconductor MPL115A2 is used in the @menulink{mpl115a2}
  * example.
  *
@@ -72,16 +76,16 @@
 #include <Adafruit_MPL115A2.h>
 
 // Sensor Specific Defines
-/** @ingroup mpl115a2_group */
+/** @ingroup sensor_mpl115a2 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
 #define MPL115A2_NUM_VARIABLES 2
 
 /**
- * @anchor mpl115a2_timing_defines
+ * @anchor sensor_mpl115a2_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Freescale MPL115A2
+ * The sensor timing for a Freescale MPL115A2
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the MPL115A2 takes about 6 ms to respond.
@@ -95,11 +99,13 @@
 /**@}*/
 
 /**
- * @anchor mpl115a2_temp_defines
+ * @anchor sensor_mpl115a2_temp
  * @name Temperature
- * Defines for the temperature variable from a Freescale MPL115A2
+ * The temperature variable from a Freescale MPL115A2
  * - Range is -20°C to 85°C
  * - Accuracy is not specified on the sensor datasheet
+ *
+ * {{ @ref MPL115A2_Temp::MPL115A2_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -116,11 +122,13 @@
 /**@}*/
 
 /**
- * @anchor mpl115a2_pressure_defines
+ * @anchor sensor_mpl115a2_pressure
  * @name Pressure
- * Defines for the pressure variable from a Freescale MPL115A2
+ * The pressure variable from a Freescale MPL115A2
  * - Range is 500-1150 hPa
  * - Accuracy ±10 hPa
+ *
+ * {{ @ref MPL115A2_Pressure::MPL115A2_Pressure }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; pressure should have 2 -
@@ -140,9 +148,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Freescale Semiconductor MPL115A2 sensor](@ref mpl115a2_group).
+ * [Freescale Semiconductor MPL115A2 sensor](@ref sensor_mpl115a2).
  *
- * @ingroup mpl115a2_group
+ * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
 class MPL115A2 : public Sensor {
@@ -150,7 +158,6 @@ class MPL115A2 : public Sensor {
     /**
      * @brief Construct a new MPL115A2 using a secondary *hardware* I2C
      * instance.
-     * @ingroup mpl115a2_group
      *
      * @note It is only possible to connect *one* MPL115A2 at a time on a single
      * I2C bus.  Software I2C is also not supported.
@@ -171,7 +178,6 @@ class MPL115A2 : public Sensor {
              uint8_t measurementsToAverage = 1);
     /**
      * @brief Construct a new MPL115A2 using the primary hardware I2C instance.
-     * @ingroup mpl115a2_group
      *
      * @note It is only possible to connect *one* MPL115A2 at a time on a single
      * I2C bus.  Software I2C is also not supported.
@@ -226,17 +232,16 @@ class MPL115A2 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref mpl115a2_temp) from a
- * [Freescale Semiconductor MPL115A2](@ref mpl115a2_group).
+ * [temperature output](@ref sensor_mpl115a2_temp) from a
+ * [Freescale Semiconductor MPL115A2](@ref sensor_mpl115a2).
  *
- * @ingroup mpl115a2_group
+ * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
 class MPL115A2_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MPL115A2_Temp object.
-     * @ingroup mpl115a2_group
      *
      * @param parentSense The parent MPL115A2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -268,17 +273,16 @@ class MPL115A2_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pressure output](@ref mpl115a2_pressure) from a
- * [Freescale Semiconductor MPL115A2](@ref mpl115a2_group).
+ * [pressure output](@ref sensor_mpl115a2_pressure) from a
+ * [Freescale Semiconductor MPL115A2](@ref sensor_mpl115a2).
  *
- * @ingroup mpl115a2_group
+ * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
 class MPL115A2_Pressure : public Variable {
  public:
     /**
      * @brief Construct a new MPL115A2_Pressure object.
-     * @ingroup mpl115a2_group
      *
      * @param parentSense The parent MPL115A2 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -308,6 +312,5 @@ class MPL115A2_Pressure : public Variable {
      */
     ~MPL115A2_Pressure() {}
 };
-
-
+/**@}*/
 #endif  // SRC_SENSORS_FREESCALEMPL115A2_H_

@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup ds3231_group Maxim DS3231 RTC
+ * @defgroup sensor_ds3231 Maxim DS3231 RTC
  * Classes for the Maxim DS3231 high-precision, temperature-corrected
  * real-time clock.
  *
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section ds3231_intro Introduction
+ * @section sensor_ds3231_intro Introduction
  *
  * The I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html)
  * real time clock (RTC) is absolutely required for time-keeping on all AVR boards.
@@ -39,11 +39,14 @@
  * clock. Using separate power supply for the clock prevents the time from
  * resetting if the main board loses power.
  *
- * @section ds3231_datasheet Sensor Datasheet
+ * @section sensor_ds3231_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS3231-Real-Time-Clock.pdf)
  *
+ * @section sensor_ds3231_ctor Sensor Constructor
+ * {{ @ref MaximDS3231::MaximDS3231 }}
+ *
  * ___
- * @section ds3231_examples Example Code
+ * @section sensor_ds3231_examples Example Code
  * The Maxim DS3231 RTC is used in nearly all of the examples, including the
  * @menulink{ds3231} example.
  *
@@ -69,16 +72,16 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-/** @ingroup ds3231_group */
+/** @ingroup sensor_ds3231 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the DS3231 can report 1 value.
 #define DS3231_NUM_VARIABLES 1
 
 /**
- * @anchor ds3231_timing_defines
+ * @anchor sensor_ds3231_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a Maxim DS18 RTC
+ * The sensor timing for a Maxim DS18 RTC
  */
 /**@{*/
 /**
@@ -99,11 +102,13 @@
 /**@}*/
 
 /**
- * @anchor ds3231_temp_defines
+ * @anchor sensor_ds3231_temp
  * @name Temperature
- * Defines for the temperature variable from a Maxim DS18 RTC
+ * The temperature variable from a Maxim DS18 RTC
  *   - Range is -55°C to 125°C
  *   - Accuracy: ± 3°C
+ *
+ * {{ @ref MaximDS3231_Temp::MaximDS3231_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -120,19 +125,18 @@
 /**@}*/
 
 /**
- * @brief The Sensor sub-class for the [Maxim DS3231](@ref ds3231_group)
+ * @brief The Sensor sub-class for the [Maxim DS3231](@ref sensor_ds3231)
  * when used as a low-accuracy temperature sensor
  *
  * Only need a sleep and wake since these DON'T use the default of powering
  * up and down
  *
- * @ingroup ds3231_group
+ * @ingroup sensor_ds3231
  */
 class MaximDS3231 : public Sensor {
  public:
     /**
      * @brief Construct a new Maxim DS3231 object
-     * @ingroup ds3231_group
      *
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -184,16 +188,15 @@ class MaximDS3231 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref ds3231_temp) from a [DS3231](@ref ds3231_group).
+ * [temperature output](@ref sensor_ds3231_temp) from a [DS3231](@ref sensor_ds3231).
  *
- * @ingroup ds3231_group
+ * @ingroup sensor_ds3231
  */
 /* clang-format on */
 class MaximDS3231_Temp : public Variable {
  public:
     /**
      * @brief Construct a new MaximDS3231_Temp object.
-     * @ingroup ds3231_group
      *
      * @param parentSense The parent MaximDS3231 providing the result
      * values.

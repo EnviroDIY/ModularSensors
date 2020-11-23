@@ -27,7 +27,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section ads1x15_intro Introduction
+ * @section analog_intro Introduction
  *
  * Many sensors output simple analog voltages and leave the conversion to a digital
  * signal and final result up to the user.  These types of sensors are supported in
@@ -57,9 +57,10 @@
  * in the Adafruit library.  Until those corrections are pulled into the main library, we
  * use the fork instead.
  *
- * @section ads1x15_specs Specifications
+ * @section analog_ads1x15_specs Specifications
  * @note *In all cases, we assume that the ADS1x15 is powered at 3.3V and set the ADC's internal gain to 1x.
- * This divices the bit resolution over the range of 0-4.096V.
+ *
+ * This divides the bit resolution over the range of 0-4.096V.
  * - Response time: < 1ms
  * - Resample time: 860 samples per second (~1.2ms)
  * - Range:
@@ -67,18 +68,19 @@
  *     (whichever is smaller) must be applied to this device.
  *   - 0 - 3.6V [when ADC is powered at 3.3V]
  * - Accuracy:
- *   - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
- *   - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
+ *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
+ *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15% (gain error), <3 LSB (offset errror)
  * - Resolution:
- *   - 16-bit ADC:
+ *   - 16-bit ADC (ADS1115):
  *     - without voltage divider:  0.125 mV
- *   - 12-bit ADC:
+ *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```):
  *     - without voltage divider:  2 mV
- *   @note 1 bit of resolution is lost in single-ended reading.  The maximum possible
+ *
+ * @note 1 bit of resolution is lost in single-ended reading.  The maximum possible
  * resolution is over the differential range from negative to positive full scale, a
  * single ended reading is only over the range from 0 to positive full scale).
  *
- * @section ads1x15_datasheet Sensor Datasheet *
+ * @section analog_ads1x15_datasheet Sensor Datasheet
  * Technical specifications for the TI ADS1115 can be found at: http://www.ti.com/product/ADS1115
  * For the ADS1015, see: https://www.ti.com/product/ADS1015
  * [ADS1115 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS101x-Analog-to-Digital-Converter.pdf)
@@ -87,7 +89,7 @@
 /* clang-format on */
 /* clang-format off */
 /**
- * @defgroup ext_volt_group TI ADS1x15 External Voltage Sensor
+ * @defgroup sensor_ads1x15 TI ADS1x15 External Voltage Sensor
  * Classes for simple external analog voltage measurements.
  *
  * @ingroup analog_group
@@ -95,7 +97,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section ext_volt_intro Introduction
+ * @section sensor_ads1x15_intro Introduction
  *
  * Analog data output is supported in ModularSensors by way of the
  * Texas Instruments ADS1115.
@@ -114,17 +116,19 @@
  * pairs of voltage dividers, and a unity gain amplification to reduce output
  * impedance of the module.
  *
- * @section ext_volt_datasheet Sensor Datasheet
- * @see ads1x15_datasheet
+ * @section sensor_ads1x15_datasheet Sensor Datasheet
  * Technical specifications for the Grove Voltage Divider can be found at:
  * http://wiki.seeedstudio.com/Grove-Voltage_Divider
  *
- * @section ext_volt_flags Build flags
+ * @section sensor_ads1x15_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  *
+ * @section sensor_ads1x15_ctor Sensor Constructor
+ * {{ @ref ExternalVoltage::ExternalVoltage }}
+ *
  * ___
- * @section ext_volt_examples Example Code
+ * @section sensor_ads1x15_examples Example Code
  * The TI ADS1X15 external voltage sensor is used in the @menulink{ext_volt}
  * example.
  *
@@ -150,77 +154,78 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-/** @ingroup ext_volt_group */
+/** @ingroup sensor_ads1x15 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the ADS1115 can report 1 value.
-#define EXT_VOLT_NUM_VARIABLES 1
+#define EXT_VOLTAGE_NUM_VARIABLES 1
 
 /**
- * @anchor ext_volt_timing_defines
+ * @anchor sensor_ads1x15_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a TI ADS1x15 analog-to-digital converter
- * (ADC)
+ * The sensor timing for a TI ADS1x15 analog-to-digital converter (ADC)
  * The timing used for simple external voltage measurements is that of the
  * ADS1x15.
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the ADS1115 warms up in 2ms.
-#define EXT_VOLT_WARM_UP_TIME_MS 2
+#define EXT_VOLTAGE_WARM_UP_TIME_MS 2
 /**
  * @brief Sensor::_stabilizationTime_ms; the ADS1115 is stable 0ms after warm-up
  *
  * We assume a voltage is instantly ready.
  */
-#define EXT_VOLT_STABILIZATION_TIME_MS 0
+#define EXT_VOLTAGE_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the ADS1115 completes 860 conversions per
  * second, but the wait for the conversion to complete is built into the
  * underlying library, so we do not need to wait further here.
  */
-#define EXT_VOLT_MEASUREMENT_TIME_MS 0
+#define EXT_VOLTAGE_MEASUREMENT_TIME_MS 0
 /**@}*/
 
 /**
- * @anchor ext_volt_volt_defines
+ * @anchor sensor_ads1x15_volt
  * @name Voltage
- * Defines for the volt variable from a TI ADS1x15 analog-to-digital converter
- * (ADC)
+ * The volt variable from a TI ADS1x15 analog-to-digital converter (ADC)
  *   - Range:
  *     - without voltage divider:  0 - 3.6V [when ADC is powered at 3.3V]
  *     - 1/gain = 3x: 0.3 ~ 12.9V
  *     - 1/gain = 10x: 1 ~ 43V
  *   - Accuracy:
- *     - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
- *     - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
+ *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
+ * (gain error), <3 LSB (offset errror)
  *   - Resolution:
- *     - 16-bit ADC:
- *       - @m_span{m-dim}@ref #EXT_VOLT_RESOLUTION = 4@m_endspan
+ *     - 16-bit ADC (ADS1115):
+ *       - @m_span{m-dim}@ref #EXT_VOLTAGE_RESOLUTION = 4@m_endspan
  *       - without voltage divider:  0.125 mV
  *       - 1/gain = 3x: 0.375 mV
  *       - 1/gain = 10x: 1.25 mV
- *     - 12-bit ADC:
- *       - @m_span{m-dim}@ref #EXT_VOLT_RESOLUTION = 1@m_endspan
+ *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```):
+ *       - @m_span{m-dim}@ref #EXT_VOLTAGE_RESOLUTION = 1@m_endspan
  *       - without voltage divider:  2 mV
  *       - 1/gain = 3x: 6 mV
  *       - 1/gain = 10x: 20 mV *
+ *
+ * {{ @ref ExternalVoltage_Volt::ExternalVoltage_Volt }}
  */
 /**@{*/
 /// Variable number; voltage is stored in sensorValues[0].
-#define EXT_VOLT_VAR_NUM 0
+#define EXT_VOLTAGE_VAR_NUM 0
 /// @brief Variable name; "voltage"
-#define EXT_VOLT_VAR_NAME "voltage"
+#define EXT_VOLTAGE_VAR_NAME "voltage"
 /// @brief Variable unit name; "volt"
-#define EXT_VOLT_UNIT_NAME "volt"
+#define EXT_VOLTAGE_UNIT_NAME "volt"
 /// @brief Default variable short code; "extVoltage"
-#define EXT_VOLT_DEFAULT_CODE "extVoltage"
+#define EXT_VOLTAGE_DEFAULT_CODE "extVoltage"
 
 #ifdef MS_USE_ADS1015
 /// @brief Decimals places in string representation; voltage should have 1.
-#define EXT_VOLT_RESOLUTION 1
+#define EXT_VOLTAGE_RESOLUTION 1
 #else
 /// @brief Decimals places in string representation; voltage should have 4.
-#define EXT_VOLT_RESOLUTION 4
+#define EXT_VOLTAGE_RESOLUTION 4
 #endif
 /**@}*/
 
@@ -230,9 +235,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [external votlage as measured by TI ADS1115 or ADS1015](@ref ext_volt_group).
+ * [external votlage as measured by TI ADS1115 or ADS1015](@ref sensor_ads1x15).
  *
- * @ingroup ext_volt_group
+ * @ingroup sensor_ads1x15
  */
 /* clang-format on */
 class ExternalVoltage : public Sensor {
@@ -240,7 +245,6 @@ class ExternalVoltage : public Sensor {
     /**
      * @brief Construct a new External Voltage object - need the power pin and
      * the data channel on the ADS1x15.
-     * @ingroup ext_volt_group
      *
      * The gain value, I2C address, and number of measurements to average are
      * optional.  If nothing is given a 1x gain is used.
@@ -288,17 +292,16 @@ class ExternalVoltage : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [voltage output](@ref ext_volt_volt) from a
- * [TI ADS1115 or ADS1015](@ref ext_volt_group).
+ * [voltage output](@ref sensor_ads1x15_volt) from a
+ * [TI ADS1115 or ADS1015](@ref sensor_ads1x15).
  *
- * @ingroup ext_volt_group
+ * @ingroup sensor_ads1x15
  */
 /* clang-format on */
 class ExternalVoltage_Volt : public Variable {
  public:
     /**
      * @brief Construct a new ExternalVoltage_Volt object.
-     * @ingroup ext_volt_group
      *
      * @param parentSense The parent ExternalVoltage providing the result
      * values.
@@ -307,12 +310,12 @@ class ExternalVoltage_Volt : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "extVoltage".
      */
-    explicit ExternalVoltage_Volt(ExternalVoltage* parentSense,
-                                  const char*      uuid = "",
-                                  const char* varCode   = EXT_VOLT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)EXT_VOLT_VAR_NUM,
-                   (uint8_t)EXT_VOLT_RESOLUTION, EXT_VOLT_VAR_NAME,
-                   EXT_VOLT_UNIT_NAME, varCode, uuid) {}
+    explicit ExternalVoltage_Volt(
+        ExternalVoltage* parentSense, const char* uuid = "",
+        const char* varCode = EXT_VOLTAGE_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)EXT_VOLTAGE_VAR_NUM,
+                   (uint8_t)EXT_VOLTAGE_RESOLUTION, EXT_VOLTAGE_VAR_NAME,
+                   EXT_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new ExternalVoltage_Volt object.
      *
@@ -320,9 +323,9 @@ class ExternalVoltage_Volt : public Variable {
      * used.
      */
     ExternalVoltage_Volt()
-        : Variable((const uint8_t)EXT_VOLT_VAR_NUM,
-                   (uint8_t)EXT_VOLT_RESOLUTION, EXT_VOLT_VAR_NAME,
-                   EXT_VOLT_UNIT_NAME, EXT_VOLT_DEFAULT_CODE) {}
+        : Variable((const uint8_t)EXT_VOLTAGE_VAR_NUM,
+                   (uint8_t)EXT_VOLTAGE_RESOLUTION, EXT_VOLTAGE_VAR_NAME,
+                   EXT_VOLTAGE_UNIT_NAME, EXT_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ExternalVoltage_Volt object - no action needed.
      */

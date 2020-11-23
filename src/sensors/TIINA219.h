@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup ina219_group TI INA219
+ * @defgroup sensor_ina219 TI INA219
  * Classes for the TI INA219 current and voltage sensor.
  *
  * @ingroup the_sensors
@@ -23,7 +23,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section ina219_intro Intruduction
+ * @section sensor_ina219_intro Intruduction
  *
  * The [TI INA219](http://www.ti.com/product/INA219) is a bi-directional,
  * high-side, current/power monitor that communicates with the board via I2C.
@@ -39,14 +39,18 @@
  * @note Software I2C is *not* supported for the INA219.
  * A secondary hardware I2C on a SAMD board is supported.
  *
- * @section ina219_datasheet Sensor Datasheet
+ * @section sensor_ina219_datasheet Sensor Datasheet
  *
  * Documentation for the sensor can be found at:
  * https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout and
  * http://www.ti.com/product/INA219
  *
+ * @section sensor_ina219_ctor Sensor Constructor
+ * {{ @ref TIINA219::TIINA219(int8_t, uint8_t, uint8_t) }}
+ * {{ @ref TIINA219::TIINA219(TwoWire*, int8_t, uint8_t, uint8_t) }}
+ *
  * ___
- * @section ina219_examples Example Code
+ * @section sensor_ina219_examples Example Code
  * The TI INA219 is used in the @menulink{ina219} example.
  *
  * @menusnip{ina219}
@@ -72,16 +76,16 @@
 #include <Adafruit_INA219.h>
 
 // Sensor Specific Defines
-/** @ingroup ina219_group */
+/** @ingroup sensor_ina219 */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the INA219 can report 3 values.
 #define INA219_NUM_VARIABLES 3
 
 /**
- * @anchor ina219_timing_defines
+ * @anchor sensor_ina219_timing
  * @name Sensor Timing
- * Defines for the sensor timing for a TI INA219
+ * The sensor timing for a TI INA219
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the INA219 warms up in 100ms.
@@ -105,12 +109,14 @@
 /**@}*/
 
 /**
- * @anchor ina219_current_defines
+ * @anchor sensor_ina219_current
  * @name Current
- * Defines for the current variable from a TI INA219
+ * The current variable from a TI INA219
  * - Range is between +/-0.4 Amps and +/-3.2 Amps
  * - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
  * unknown)
+ *
+ * {{ @ref TIINA219_Current::TIINA219_Current }}
  */
 /**@{*/
 /**
@@ -131,11 +137,13 @@
 /**@}*/
 
 /**
- * @anchor ina219_volt_defines
+ * @anchor sensor_ina219_volt
  * @name Bus Voltage
- * Defines for the bus voltage variable from a TI INA219
+ * The bus voltage variable from a TI INA219
  * - Range is 0 to 26V
  * - Accuracy is ±4mV (1 LSB step size)
+ *
+ * {{ @ref TIINA219_Volt::TIINA219_Volt }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; bus voltage should have 4 -
@@ -152,9 +160,11 @@
 /**@}*/
 
 /**
- * @anchor ina219_power_defines
+ * @anchor sensor_ina219_power
  * @name Power
- * Defines for the power variable from a TI INA219
+ * The power variable from a TI INA219
+ *
+ * {{ @ref TIINA219_Power::TIINA219_Power }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; power draw should have 2 -
@@ -176,9 +186,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [TexasInstruments INA219 sensor](@ref ina219_group).
+ * [TexasInstruments INA219 sensor](@ref sensor_ina219).
  *
- * @ingroup ina219_group
+ * @ingroup sensor_ina219
  */
 /* clang-format on */
 class TIINA219 : public Sensor {
@@ -186,7 +196,6 @@ class TIINA219 : public Sensor {
     /**
      * @brief Construct a new TI INA219 object using a secondary *hardware* I2C
      * instance.
-     * @ingroup ina219_group
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * limitations of the Arduino core, only a hardware I2C instance can be
@@ -209,7 +218,6 @@ class TIINA219 : public Sensor {
     /**
      * @brief Construct a new TI INA219 object using the default hardware I2C
      * instance.
-     * @ingroup ina219_group
      *
      * @param powerPin The pin on the mcu controlling power to the INA219.
      * Use -1 if it is continuously powered.
@@ -280,16 +288,15 @@ class TIINA219 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [current output](@ref ina219_current) from a [TI INA219 power and current monitor](@ref ina219_group).
+ * [current output](@ref sensor_ina219_current) from a [TI INA219 power and current monitor](@ref sensor_ina219).
  *
- * @ingroup ina219_group
+ * @ingroup sensor_ina219
  */
 /* clang-format on */
 class TIINA219_Current : public Variable {
  public:
     /**
      * @brief Construct a new TIINA219_Current object.
-     * @ingroup ina219_group
      *
      * @param parentSense The parent TIINA219 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -324,16 +331,15 @@ class TIINA219_Current : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [bus voltage output](@ref ina219_volt) from a [TI INA219 power and current monitor](@ref ina219_group).
+ * [bus voltage output](@ref sensor_ina219_volt) from a [TI INA219 power and current monitor](@ref sensor_ina219).
  *
- * @ingroup ina219_group
+ * @ingroup sensor_ina219
  */
 /* clang-format on */
 class TIINA219_Volt : public Variable {
  public:
     /**
      * @brief Construct a new TIINA219_Volt object.
-     * @ingroup ina219_group
      *
      * @param parentSense The parent TIINA219 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -368,17 +374,16 @@ class TIINA219_Volt : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [power use output](@ref ina219_power) calculated from the voltage
- * and current measured by a [TI INA219 power and current monitor](@ref ina219_group).
+ * [power use output](@ref sensor_ina219_power) calculated from the voltage
+ * and current measured by a [TI INA219 power and current monitor](@ref sensor_ina219).
  *
- * @ingroup ina219_group
+ * @ingroup sensor_ina219
  */
 /* clang-format on */
 class TIINA219_Power : public Variable {
  public:
     /**
      * @brief Construct a new TIINA219_Power object.
-     * @ingroup ina219_group
      *
      * @param parentSense The parent TIINA219 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
