@@ -50,7 +50,7 @@ install:
   - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
   - pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
   - pio lib -g install https://github.com/Testato/SoftwareWire.git
-  - pio lib -g install vshymanskyy/StreamDebugger @ ~1.0.1
+  - pio lib -g install vshymanskyy/StreamDebugger@~1.0.1
   - pio lib -g list
 script:
   - platformio ci --project-conf="travis/platformio.ini"
