@@ -12,8 +12,8 @@
 
 // For Mayfly version; the battery resistor depends on it
 analogElecConductivity::analogElecConductivity(int8_t powerPin, int8_t dataPin,
-                                               uint8_t measurementsToAverage,
-                                               float   Rseries_ohms)
+                                               float   Rseries_ohms,
+                                               uint8_t measurementsToAverage)
     : Sensor("analogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
