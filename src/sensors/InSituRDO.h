@@ -91,7 +91,7 @@
  * @section sensor_insitu_rdo_examples Example Code
  * The InSitu RDO PRO-X is used in the @menulink{insitu_rdo} example.
  *
- * @menusnip{dopto}
+ * @menusnip{insitu_rdo}
  */
 /* clang-format on */
 
@@ -107,7 +107,7 @@
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the RDO PRO-X can report 3 values.
-#define DOPTO_NUM_VARIABLES 3
+#define INSITU_RDO_NUM_VARIABLES 3
 
 /**
  * @anchor sensor_insitu_rdo_timing
@@ -116,14 +116,14 @@
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; zzzzzzz
-#define DOPTO_WARM_UP_TIME_MS 275
+#define INSITU_RDO_WARM_UP_TIME_MS 275
 /// @brief Sensor::_stabilizationTime_ms; Per the manual, T90 < 45sec; T95 <
 /// 60sec @ 25°C
-#define DOPTO_STABILIZATION_TIME_MS 60000
+#define INSITU_RDO_STABILIZATION_TIME_MS 60000
 /**
  * @brief Sensor::_measurementTime_ms; zzzz
  */
-#define DOPTO_MEASUREMENT_TIME_MS 5335
+#define INSITU_RDO_MEASUREMENT_TIME_MS 5335
 /**@}*/
 
 /**
@@ -138,15 +138,15 @@
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
-#define DOPTO_TEMP_RESOLUTION 2
+#define INSITU_RDO_TEMP_RESOLUTION 2
 /// @brief Variable number; temperature is stored in sensorValues[0].
-#define DOPTO_TEMP_VAR_NUM 0
+#define INSITU_RDO_TEMP_VAR_NUM 0
 /// @brief Variable name; "temperature"
-#define DOPTO_TEMP_VAR_NAME "temperature"
+#define INSITU_RDO_TEMP_VAR_NAME "temperature"
 /// @brief Variable unit name; "degreeCelsius" (°C)
-#define DOPTO_TEMP_UNIT_NAME "degreeCelsius"
+#define INSITU_RDO_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DOtempC"
-#define DOPTO_TEMP_DEFAULT_CODE "RDOtempC"
+#define INSITU_RDO_TEMP_DEFAULT_CODE "RDOtempC"
 /**@}*/
 
 /**
@@ -165,16 +165,16 @@
 /**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen percent
 /// should have 2 - resolution is 0.01 mg/L.
-#define DOPTO_DOPCT_RESOLUTION 2
+#define INSITU_RDO_DOPCT_RESOLUTION 2
 /// @brief Variable number; dissolved oxygen percent is stored in
 /// sensorValues[1]
-#define DOPTO_DOPCT_VAR_NUM 1
+#define INSITU_RDO_DOPCT_VAR_NUM 1
 /// @brief Variable name; "oxygenDissolvedPercentOfSaturation"
-#define DOPTO_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
+#define INSITU_RDO_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
 /// @brief Variable unit name; "percent" (% saturation)
-#define DOPTO_DOPCT_UNIT_NAME "percent"
+#define INSITU_RDO_DOPCT_UNIT_NAME "percent"
 /// @brief Default variable short code; "DOpercent"
-#define DOPTO_DOPCT_DEFAULT_CODE "RDOpercent"
+#define INSITU_RDO_DOPCT_DEFAULT_CODE "RDOpercent"
 /**@}*/
 
 /**
@@ -191,16 +191,16 @@
 /**@{*/
 /// @brief Decimals places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
-#define DOPTO_DOMGL_RESOLUTION 2
+#define INSITU_RDO_DOMGL_RESOLUTION 2
 /// @brief Variable number; dissolved oxygen concentration is stored in
 /// sensorValues[2]
-#define DOPTO_DOMGL_VAR_NUM 2
+#define INSITU_RDO_DOMGL_VAR_NUM 2
 /// @brief Variable name; "oxygenDissolved"
-#define DOPTO_DOMGL_VAR_NAME "oxygenDissolved"
+#define INSITU_RDO_DOMGL_VAR_NAME "oxygenDissolved"
 /// @brief Variable unit name; "milligramPerLiter" (mg/L)
-#define DOPTO_DOMGL_UNIT_NAME "milligramPerLiter"
+#define INSITU_RDO_DOMGL_UNIT_NAME "milligramPerLiter"
 /// @brief Default variable short code; "DOppm"
-#define DOPTO_DOMGL_DEFAULT_CODE "RDOppm"
+#define INSITU_RDO_DOMGL_DEFAULT_CODE "RDOppm"
 /**@}*/
 
 
@@ -216,7 +216,7 @@ class InSituRDO : public SDI12Sensors {
  public:
     // Constructors with overloads
     /**
-     * @brief Construct a new Zebra-Tech DOpto object.
+     * @brief Construct a new InSitu RDO object.
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -224,7 +224,7 @@ class InSituRDO : public SDI12Sensors {
      * readings to average.  The data pin must be a pin that supports pin-change
      * interrupts.
      *
-     * @param SDI12address The SDI-12 address of the DOpto; can be a char,
+     * @param SDI12address The SDI-12 address of the RDO; can be a char,
      * char*, or int.
      * @param powerPin The pin on the mcu controlling power to the RDO PRO-X
      * Use -1 if it is continuously powered.
@@ -239,29 +239,32 @@ class InSituRDO : public SDI12Sensors {
     InSituRDO(char SDI12address, int8_t powerPin, int8_t dataPin,
               uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InSitu RDO PRO-X", DOPTO_NUM_VARIABLES,
-                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS) {}
+                       "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+                       INSITU_RDO_WARM_UP_TIME_MS,
+                       INSITU_RDO_STABILIZATION_TIME_MS,
+                       INSITU_RDO_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc InSituRDO::InSituRDO
      */
     InSituRDO(char* SDI12address, int8_t powerPin, int8_t dataPin,
               uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InSitu RDO PRO-X", DOPTO_NUM_VARIABLES,
-                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS) {}
+                       "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+                       INSITU_RDO_WARM_UP_TIME_MS,
+                       INSITU_RDO_STABILIZATION_TIME_MS,
+                       INSITU_RDO_MEASUREMENT_TIME_MS) {}
     /**
      * @copydoc InSituRDO::InSituRDO
      */
     InSituRDO(int SDI12address, int8_t powerPin, int8_t dataPin,
               uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InSitu RDO PRO-X", DOPTO_NUM_VARIABLES,
-                       DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS) {}
+                       "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+                       INSITU_RDO_WARM_UP_TIME_MS,
+                       INSITU_RDO_STABILIZATION_TIME_MS,
+                       INSITU_RDO_MEASUREMENT_TIME_MS) {}
     /**
-     * @brief Destroy the Zebra-Tech DOpto object
+     * @brief Destroy the InSitu RDO object
      */
     ~InSituRDO() {}
 };
@@ -289,10 +292,11 @@ class InSituRDO_Temp : public Variable {
      * optional with a default value of "RDOtempC".
      */
     explicit InSituRDO_Temp(InSituRDO* parentSense, const char* uuid = "",
-                            const char* varCode = DOPTO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_TEMP_VAR_NUM,
-                   (uint8_t)DOPTO_TEMP_RESOLUTION, DOPTO_TEMP_VAR_NAME,
-                   DOPTO_TEMP_UNIT_NAME, varCode, uuid) {}
+                            const char* varCode = INSITU_RDO_TEMP_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
+                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
+                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new InSituRDO_Temp object.
      *
@@ -300,9 +304,10 @@ class InSituRDO_Temp : public Variable {
      * used.
      */
     InSituRDO_Temp()
-        : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
-                   (uint8_t)DOPTO_TEMP_RESOLUTION, DOPTO_TEMP_VAR_NAME,
-                   DOPTO_TEMP_UNIT_NAME, DOPTO_TEMP_DEFAULT_CODE) {}
+        : Variable((const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
+                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
+                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME,
+                   INSITU_RDO_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_Temp object - no action needed.
      */
@@ -331,11 +336,13 @@ class InSituRDO_DOpct : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "RDOpercent".
      */
-    explicit InSituRDO_DOpct(InSituRDO* parentSense, const char* uuid = "",
-                             const char* varCode = DOPTO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_DOPCT_VAR_NUM,
-                   (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
-                   DOPTO_DOPCT_UNIT_NAME, varCode, uuid) {}
+    explicit InSituRDO_DOpct(
+        InSituRDO* parentSense, const char* uuid = "",
+        const char* varCode = INSITU_RDO_DOPCT_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
+                   (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
+                   INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new InSituRDO_DOpct object.
      *
@@ -343,9 +350,10 @@ class InSituRDO_DOpct : public Variable {
      * used.
      */
     InSituRDO_DOpct()
-        : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
-                   (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
-                   DOPTO_DOPCT_UNIT_NAME, DOPTO_DOPCT_DEFAULT_CODE) {}
+        : Variable((const uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
+                   (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
+                   INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
+                   INSITU_RDO_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_DOpct object - no action needed.
      */
@@ -374,11 +382,13 @@ class InSituRDO_DOmgL : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "RDOppm".
      */
-    explicit InSituRDO_DOmgL(InSituRDO* parentSense, const char* uuid = "",
-                             const char* varCode = DOPTO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)DOPTO_DOMGL_VAR_NUM,
-                   (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
-                   DOPTO_DOMGL_UNIT_NAME, varCode, uuid) {}
+    explicit InSituRDO_DOmgL(
+        InSituRDO* parentSense, const char* uuid = "",
+        const char* varCode = INSITU_RDO_DOMGL_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
+                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
+                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new InSituRDO_DOmgL object.
      *
@@ -386,9 +396,10 @@ class InSituRDO_DOmgL : public Variable {
      * used.
      */
     InSituRDO_DOmgL()
-        : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
-                   (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
-                   DOPTO_DOMGL_UNIT_NAME, DOPTO_DOMGL_DEFAULT_CODE) {}
+        : Variable((const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
+                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
+                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
+                   INSITU_RDO_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_DOmgL object - no action needed.
      */

@@ -1124,6 +1124,31 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 
 
 // ==========================================================================
+//  InSitu RDO PRO-X Rugged Dissolved Oxygen Probe
+// ==========================================================================
+/** Start [insitu_rdo] */
+#include <sensors/InSituRDO.h>
+
+const char* RDOSDI12address =
+    "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+const int8_t RDOPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t RDOData  = 7;               // The SDI12 data pin
+
+// Create a Zebra Tech DOpto dissolved oxygen sensor object
+InSituRDO insituRDO(*RDOSDI12address, RDOPower, RDOData);
+
+// Create dissolved oxygen percent, dissolved oxygen concentration, and
+// temperature variable pointers for the Zebra Tech
+Variable* rdoDOpct =
+    new InSituRDO_DOpct(&insituRDO, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rdoDOmgL =
+    new InSituRDO_DOmgL(&insituRDO, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rdoTemp = new InSituRDO_Temp(&insituRDO,
+                                       "12345678-abcd-1234-ef00-1234567890ab");
+/** End [insitu_rdo] */
+
+
+// ==========================================================================
 //  Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
 /** Start [acculevel] */
@@ -1831,13 +1856,13 @@ Variable* y4000BGA =
 /** Start [dopto] */
 #include <sensors/ZebraTechDOpto.h>
 
-const char* DOptoDI12address =
+const char* DOptoSDI12address =
     "5";  // The SDI-12 Address of the Zebra Tech D-Opto
 const int8_t ZTPower = sensorPowerPin;  // Power pin (-1 if unconnected)
 const int8_t ZTData  = 7;               // The SDI12 data pin
 
 // Create a Zebra Tech DOpto dissolved oxygen sensor object
-ZebraTechDOpto dopto(*DOptoDI12address, ZTPower, ZTData);
+ZebraTechDOpto dopto(*DOptoSDI12address, ZTPower, ZTData);
 
 // Create dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable pointers for the Zebra Tech
