@@ -48,14 +48,12 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
 
     // Set the resolution for the processor ADC, only applies to SAMD boards.
 #if !defined ARDUINO_ARCH_AVR
-    analogReadResolution(ANALOG_EC_DEFAULT_RESOLUTION);
+    analogReadResolution(ANALOG_EC_ADC_RESOLUTION);
 #endif  // ARDUINO_ARCH_AVR
     // Set the analog reference mode for the voltage measurement.
     // If possible, to get the best results, an external reference should be
     // used.
-    analogReference(PROC_ADC_DEF_REFERENCE);
-
-    //************ Estimates Resistance of Liquid ****************//
+    analogReference(ANALOG_EC_ADC_REFERENCE_MODE);
 
     // First measure the analog voltage.
     // The return value from analogRead() is IN BITS NOT IN VOLTS!!
@@ -71,14 +69,16 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
         sensorEC_adc = 1;
     }
 
+    // Estimate Resistance of Liquid
+
     // see the header for an explanation of this calculation
     Rwater_ohms = _Rseries_ohms /
         (((float)ANALOG_EC_ADC_RANGE / (float)sensorEC_adc) - 1);
 
-    //***************** Converts to EC **************************//
+    // Convert to EC
     EC_uScm = 1000000 / (Rwater_ohms * _sensorEC_Konst);
 
-    //*************Compensating For Temperature********************//
+    // Compensating For Temperature
     if (NULL != _ptrWaterTemperature_C) {
         EC25_uScm = EC_uScm /
             (1 + TemperatureCoef * (*_ptrWaterTemperature_C - 25.0));

@@ -100,8 +100,12 @@
  * http://www.reagecon.com/pdf/technicalpapers/Effect_of_Temperature_TSP-07_Issue3.pdf
  *
  * @section sensor_atlas_cond_flags Build flags
- * - `-D MS_ATLAS_SOFTWAREWIRE`
- *      - switches from using hardware I2C to software I2C
+ * - `-D ANALOG_EC_ADC_RESOLUTION=##`
+ *      - used to set the resolution of the processor ADC
+ *      - @see #ANALOG_EC_ADC_RESOLUTION
+ * - `-D ANALOG_EC_ADC_REFERENCE_MODE=xxx`
+ *      - used to set the processor ADC value reference mode
+ *      - @see #ANALOG_EC_ADC_REFERENCE_MODE
  *
  * @section sensor_analog_cond_ctor Sensor Constructors
  * {{ @ref AnalogElecConductivity::AnalogElecConductivity }}
@@ -189,24 +193,24 @@
 #define ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE "anlgEc"
 /**@}*/
 
-#if !defined ANALOG_EC_DEFAULT_RESOLUTION
+#if !defined ANALOG_EC_ADC_RESOLUTION
 /**
  * @brief Default resolution (in bits) of the voltage measurement
  *
  * This is the default for all boards, use a build flag to change this, if
  * necessary.
  */
-#define ANALOG_EC_DEFAULT_RESOLUTION 10
-#endif  // ANALOG_EC_DEFAULT_RESOLUTION
+#define ANALOG_EC_ADC_RESOLUTION 10
+#endif  // ANALOG_EC_ADC_RESOLUTION
 /// @brief The maximum possible value of the ADC - one less than the resolution
 /// shifted up one bit.
-#define ANALOG_EC_ADC_MAX ((1 << ANALOG_EC_DEFAULT_RESOLUTION) - 1)
+#define ANALOG_EC_ADC_MAX ((1 << ANALOG_EC_ADC_RESOLUTION) - 1)
 /// @brief The maximum possible range of the ADC - the resolution shifted up one
 /// bit.
-#define ANALOG_EC_ADC_RANGE (1 << ANALOG_EC_DEFAULT_RESOLUTION)
+#define ANALOG_EC_ADC_RANGE (1 << ANALOG_EC_ADC_RESOLUTION)
 
 /* clang-format off */
-#if !defined PROC_ADC_DEF_REFERENCE
+#if !defined ANALOG_EC_ADC_REFERENCE_MODE
 #ifdef ARDUINO_ARCH_SAMD
 /**
  * @brief The voltage reference mode for the processor's ADC.
@@ -221,7 +225,7 @@
  *
  * @see https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
  */
-#define PROC_ADC_DEF_REFERENCE AR_DEFAULT
+#define ANALOG_EC_ADC_REFERENCE_MODE AR_DEFAULT
 #elif defined ARDUINO_ARCH_AVR
 /**
  * @brief The voltage reference mode for the processor's ADC.
@@ -239,20 +243,12 @@
  *
  * @see https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
  */
-#define PROC_ADC_DEF_REFERENCE DEFAULT
+#define ANALOG_EC_ADC_REFERENCE_MODE DEFAULT
 #else
 #error The processor ADC reference type must be defined!
 #endif
-#endif  // PROC_ADC_DEF_REFERENCE
+#endif  // ANALOG_EC_ADC_REFERENCE_MODE
 /* clang-format on */
-
-#if !defined RSERIES_OHMS_DEF
-/**
- * @brief The default resistance (in ohms) of the measuring resistor.
- * This should not be less than 300 ohms when measuring EC in water.
- */
-#define RSERIES_OHMS_DEF 499
-#endif  // RSERIES_OHMS_DEF
 
 
 #if !defined TEMPERATURECOEF_DEF
@@ -267,6 +263,14 @@
  */
 #define TEMPERATURECOEF_DEF 0.019
 #endif  // TEMPERATURECOEF_DEF
+
+#if !defined RSERIES_OHMS_DEF
+/**
+ * @brief The default resistance (in ohms) of the measuring resistor.
+ * This should not be less than 300 ohms when measuring EC in water.
+ */
+#define RSERIES_OHMS_DEF 499
+#endif  // RSERIES_OHMS_DEF
 
 #if !defined SENSOREC_KONST_DEF
 /**
