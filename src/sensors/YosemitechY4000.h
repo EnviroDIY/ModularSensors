@@ -79,7 +79,7 @@
  */
 #define Y4000_WARM_UP_TIME_MS 1600
 /**
- * @brief  Sensor::_stabilizationTime_ms; the Y4000 is stable after 60000ms.
+ * @brief Sensor::_stabilizationTime_ms; the Y4000 is stable after 60000ms.
  *
  * Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
  */
