@@ -95,9 +95,16 @@
  * @note These calulations are for the on-board processor ADC, not an external
  * ACD like the TI ADS1115 built into the Mayfly!
  *
+ * @note The return from this "sensor" is conductivity - not the typically
+ * reported specific conductance, which is referenced to 25°C.  The temperature
+ * compensation, if desired, should be done via a calculated variable.  See the
+ * example code below as a guide.
+ *
  * @section sensor_analog_cond_ref References
+ * For the sensor setup and calculations:
  * https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino
- * http://www.reagecon.com/pdf/technicalpapers/Effect_of_Temperature_TSP-07_Issue3.pdf
+ * For temperature compensation:
+ * https://link.springer.com/article/10.1023/B:EMAS.0000031719.83065.68
  *
  * @section sensor_atlas_cond_flags Build flags
  * - `-D ANALOG_EC_ADC_RESOLUTION=##`
@@ -250,20 +257,6 @@
 #endif  // ANALOG_EC_ADC_REFERENCE_MODE
 /* clang-format on */
 
-
-#if !defined TEMPERATURECOEF_DEF
-/**
- *  @brief Linearized temperature correction coefficient per degrees Celsius.
- *
- * The value of 0.019 comes from measurements reported here:
- * Hayashi M. Temperature-electrical conductivity relation of water for
- * environmental monitoring and geophysical data inversion. Environ Monit
- * Assess. 2004 Aug-Sep;96(1-3):119-28. doi: 10.1023/b:emas.0000031719.83065.68.
- * PMID: 15327152.
- */
-#define TEMPERATURECOEF_DEF 0.019
-#endif  // TEMPERATURECOEF_DEF
-
 #if !defined RSERIES_OHMS_DEF
 /**
  * @brief The default resistance (in ohms) of the measuring resistor.
@@ -332,15 +325,6 @@ class AnalogElecConductivity : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
     /**
-     * @brief Set where to find (a pointer) WaterTemperature for internal
-     * calculations. The reference needs to be updated before every calculation,
-     * (if temperature has changed)
-     */
-    void setWaterTemperature(float* ptrWaterTemperature_C) {
-        _ptrWaterTemperature_C = ptrWaterTemperature_C;
-    }
-
-    /**
      * @brief Set EC constants for internal calculations.
      * Needs to be set at startup if different from defaults
      *
@@ -377,9 +361,6 @@ class AnalogElecConductivity : public Sensor {
 
     /// @brief the cell constant for the circuit
     float _sensorEC_Konst = SENSOREC_KONST_DEF;
-
-    /// @brief The temperature correction coefficient for the circuit
-    const float TemperatureCoef = TEMPERATURECOEF_DEF;
 };
 
 /**

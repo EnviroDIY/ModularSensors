@@ -20,11 +20,10 @@ AnalogElecConductivity::AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
              ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS, powerPin, dataPin,
              measurementsToAverage) {
-    _EcPowerPin            = powerPin;
-    _EcAdcPin              = dataPin;
-    _ptrWaterTemperature_C = NULL;
-    _Rseries_ohms          = Rseries_ohms;
-    _sensorEC_Konst        = sensorEC_Konst;
+    _EcPowerPin     = powerPin;
+    _EcAdcPin       = dataPin;
+    _Rseries_ohms   = Rseries_ohms;
+    _sensorEC_Konst = sensorEC_Konst;
 }
 // Destructor
 AnalogElecConductivity::~AnalogElecConductivity() {}
@@ -77,14 +76,6 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
 
     // Convert to EC
     EC_uScm = 1000000 / (Rwater_ohms * _sensorEC_Konst);
-
-    // Compensating For Temperature
-    if (NULL != _ptrWaterTemperature_C) {
-        EC25_uScm = EC_uScm /
-            (1 + TemperatureCoef * (*_ptrWaterTemperature_C - 25.0));
-    } else {
-        EC25_uScm = EC_uScm;
-    }
 
     // Note return Rwater_ohms if MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
     MS_DEEP_DBG("ohms=", Rwater_ohms);

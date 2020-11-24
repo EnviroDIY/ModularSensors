@@ -1470,17 +1470,64 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 
 
 // ==========================================================================
-//   Analog Electrical Conductivity using the processors analog pins
+//   Analog Electrical Conductivity using the Processor's Analog Pins
 // ==========================================================================
-/** Start [AnalogElecConductivity] */
-#include <sensors/analogElecConductivity.h>
+/** Start [analog_cond] */
+#include <sensors/AnalogElecConductivity.h>
 
-const int8_t ECpwrPin   = A4;
-const int8_t ECdataPin1 = A0;
+const int8_t ECpwrPin   = A4;  // Power pin (-1 if unconnected)
+const int8_t ECdataPin1 = A0;  // Data pin (must be an analog pin, ie A#)
 
-analogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1);
+// Create an Analog Electrical Conductivity sensor object
+AnalogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1);
 
-/** End [AnalogElecConductivity] */
+// Create a conductivity variable pointer for the analog sensor
+Variable* analogEc_cond = new AnalogElecConductivity_EC(
+    &analogEC_phy, "12345678-abcd-1234-ef00-1234567890ab");
+
+// Create a calculated variable for the temperature compensated conductivity
+// (that is, the specific conductance).  For this example, we will use the
+// temperature measured by the Maxim DS18 saved as ds18Temp several sections
+// above this.  You could use the temperature returned by any other water
+// temperature sensor if desired.  **DO NOT** use your logger board temperature
+// (ie, from the DS3231) to calculate specific conductance!
+float calculateAnalogSpCond(void) {
+    float spCond          = -9999;  // Always safest to start with a bad value
+    float waterTemp       = ds18Temp->getValue();
+    float rawCond         = analogEc_cond->getValue();
+    float temperatureCoef = 0.019;
+    // ^^ Linearized temperature correction coefficient per degrees Celsius.
+    // The value of 0.019 comes from measurements reported here:
+    // Hayashi M. Temperature-electrical conductivity relation of water for
+    // environmental monitoring and geophysical data inversion. Environ Monit
+    // Assess. 2004 Aug-Sep;96(1-3):119-28.
+    // doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.
+    if (waterTemp != -9999 &&
+        rawCond != -9999)  // make sure both inputs are good
+    {
+        spCond = rawCond / (1 + temperatureCoef * (waterTemp - 25.0));
+    }
+    return spCond;
+}
+
+// Properties of the calculated variable
+// The number of digits after the decimal place
+const uint8_t analogSpCondResolution = 0;
+// This must be a value from http://vocabulary.odm2.org/variablename/
+const char* analogSpCondName = "specificConductance";
+// This must be a value from http://vocabulary.odm2.org/units/
+const char* analogSpCondUnit = "microsiemenPerCentimeter";
+// A short code for the variable
+const char* analogSpCondCode = "anlgSpCond";
+// The (optional) universallly unique identifier
+const char* analogSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
+
+// Finally, Create the specific conductance variable and return a pointer to it
+Variable* analogEc_spcond = new Variable(
+    calculateAnalogSpCond, analogSpCondResolution, analogSpCondName,
+    analogSpCondUnit, analogSpCondCode, analogSpCondUUID);
+
+/** End [analog_cond] */
 
 
 // ==========================================================================
@@ -1897,8 +1944,7 @@ const char* calculatedVarCode = "calcVar";
 // The (optional) universallly unique identifier
 const char* calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";
 
-// Finally, Create a calculated variable pointer and return a variable pointer
-// to it
+// Finally, Create a calculated variable and return a pointer to it
 Variable* calculatedVar = new Variable(
     calculateVariableValue, calculatedVarResolution, calculatedVarName,
     calculatedVarUnit, calculatedVarCode, calculatedVarUUID);
@@ -1922,7 +1968,6 @@ Variable* variableList[] = {
                                "12345678-abcd-1234-ef00-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
     //  ... Add more variables as needed!
-    new analogElecConductivity_EC(&analogEC_phy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
