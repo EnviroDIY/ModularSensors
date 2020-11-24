@@ -1470,6 +1470,20 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 
 
 // ==========================================================================
+//   Analog Electrical Conductivity using the processors analog pins
+// ==========================================================================
+/** Start [AnalogElecConductivity] */
+#include <sensors/analogElecConductivity.h>
+
+const int8_t ECpwrPin   = A4;
+const int8_t ECdataPin1 = A0;
+
+analogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1);
+
+/** End [AnalogElecConductivity] */
+
+
+// ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
 /** Start [y504] */
@@ -1908,6 +1922,7 @@ Variable* variableList[] = {
                                "12345678-abcd-1234-ef00-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
     //  ... Add more variables as needed!
+    new analogElecConductivity_EC(&analogEC_phy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
