@@ -120,7 +120,7 @@
  */
 /**@{*/
 /**
- *  @brief Decimals places in string representation; current should have 1.
+ * @brief Decimals places in string representation; current should have 1.
  *  - resolution is 12-bit
  *     - 0.8mA using +/-3.2 Amp range
  *     - 0.1mA using +/-0.4 Amp range

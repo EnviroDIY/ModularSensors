@@ -30,6 +30,10 @@
  * - Range is 0.07 − 500,000+ μS/cm
  * - Resolution is 3 decimal places
  *
+ * @note This library *DOES NOT* support using the built-in temperature compensation for conductivity.
+ * The returned result is conductivity, not the more typically reported specific.
+ * If you need specific conductance, you should calculate it separately, as shown in the example code below.
+ *
  * @section sensor_atlas_cond_datasheet Sensor Datasheet
  *   - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf)
  *   - [K0.1 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf)
