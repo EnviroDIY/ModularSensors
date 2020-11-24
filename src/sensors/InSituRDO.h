@@ -69,7 +69,7 @@
  *
  * InSitu recommends useing an antifouling guard or airblast adapter to extend deployments and protect your data.
  *
- * @section sensor_insitu_rdo_cap Deployment Notes and Warnings
+ * @section sensor_insitu_rdo_warnings Deployment Notes and Warnings
  * @warning The inside of the controller must be kept free of moisture and humidity.
  * Condensed moisture can migrate through the wiring and cause the probe to fail.
  * Therefore, desiccant should be installed in the controller and be replaced on a regular basis.
@@ -141,9 +141,13 @@
 #define INSITU_RDO_TEMP_RESOLUTION 2
 /// @brief Variable number; temperature is stored in sensorValues[0].
 #define INSITU_RDO_TEMP_VAR_NUM 0
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define INSITU_RDO_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define INSITU_RDO_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DOtempC"
 #define INSITU_RDO_TEMP_DEFAULT_CODE "RDOtempC"
@@ -169,9 +173,13 @@
 /// @brief Variable number; dissolved oxygen percent is stored in
 /// sensorValues[1]
 #define INSITU_RDO_DOPCT_VAR_NUM 1
-/// @brief Variable name; "oxygenDissolvedPercentOfSaturation"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "oxygenDissolvedPercentOfSaturation"
 #define INSITU_RDO_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
-/// @brief Variable unit name; "percent" (% saturation)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
+/// (% saturation)
 #define INSITU_RDO_DOPCT_UNIT_NAME "percent"
 /// @brief Default variable short code; "DOpercent"
 #define INSITU_RDO_DOPCT_DEFAULT_CODE "RDOpercent"
@@ -195,9 +203,13 @@
 /// @brief Variable number; dissolved oxygen concentration is stored in
 /// sensorValues[2]
 #define INSITU_RDO_DOMGL_VAR_NUM 2
-/// @brief Variable name; "oxygenDissolved"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "oxygenDissolved"
 #define INSITU_RDO_DOMGL_VAR_NAME "oxygenDissolved"
-/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "milligramPerLiter" (mg/L)
 #define INSITU_RDO_DOMGL_UNIT_NAME "milligramPerLiter"
 /// @brief Default variable short code; "DOppm"
 #define INSITU_RDO_DOMGL_DEFAULT_CODE "RDOppm"
