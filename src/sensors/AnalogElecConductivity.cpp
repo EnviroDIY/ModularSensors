@@ -42,8 +42,8 @@ float AnalogElecConductivity::readEC() {
 
 float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
     uint32_t sensorEC_adc;
-    float    Rwater_ohms;         // literal value of water
-    float    EC_uScm, EC25_uScm;  // units are uS per cm
+    float    Rwater_ohms;      // literal value of water
+    float    EC_uScm = -9999;  // units are uS per cm
 
     // Set the resolution for the processor ADC, only applies to SAMD boards.
 #if !defined ARDUINO_ARCH_AVR
@@ -73,13 +73,13 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
     // see the header for an explanation of this calculation
     Rwater_ohms = _Rseries_ohms /
         (((float)ANALOG_EC_ADC_RANGE / (float)sensorEC_adc) - 1);
+    MS_DEEP_DBG("ohms=", Rwater_ohms);
 
     // Convert to EC
     EC_uScm = 1000000 / (Rwater_ohms * _sensorEC_Konst);
+    MS_DEEP_DBG("cond=", EC_uScm);
 
-    // Note return Rwater_ohms if MS_ANALOGELECCONDUCTIVITY_DEBUG_DEEP
-    MS_DEEP_DBG("ohms=", Rwater_ohms);
-    return EC25_uScm;
+    return EC_uScm;
 }
 
 
