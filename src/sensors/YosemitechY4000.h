@@ -103,12 +103,16 @@
 /// @brief Decimals places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y4000_DOMGL_RESOLUTION 2
-/// @brief Variable number; dissolved oxygen concentration is stored in
+/// @brief Sensor variable number; dissolved oxygen concentration is stored in
 /// sensorValues[0]
 #define Y4000_DOMGL_VAR_NUM 0
-/// @brief Variable name; "oxygenDissolved"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "oxygenDissolved"
 #define Y4000_DOMGL_VAR_NAME "oxygenDissolved"
-/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "milligramPerLiter" (mg/L)
 #define Y4000_DOMGL_UNIT_NAME "milligramPerLiter"
 /// @brief Default variable short code; "Y4000DOmgL"
 #define Y4000_DOMGL_DEFAULT_CODE "Y4000DOmgL"
@@ -127,11 +131,15 @@
 /// @brief Decimals places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y4000_TURB_RESOLUTION 2
-/// @brief Variable number; turbidity is stored in sensorValues[1].
+/// @brief Sensor variable number; turbidity is stored in sensorValues[1].
 #define Y4000_TURB_VAR_NUM 1
-/// @brief Variable name; "turbidity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "turbidity"
 #define Y4000_TURB_VAR_NAME "turbidity"
-/// @brief Variable unit name; "nephelometricTurbidityUnit" (NTU)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "nephelometricTurbidityUnit" (NTU)
 #define Y4000_TURB_UNIT_NAME "nephelometricTurbidityUnit"
 /// @brief Default variable short code; "Y4000Turbidity"
 #define Y4000_TURB_DEFAULT_CODE "Y4000Turbidity"
@@ -150,11 +158,15 @@
 /// @brief Decimals places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y4000_COND_RESOLUTION 1
-/// @brief Variable number; conductivity is stored in sensorValues[2].
+/// @brief Sensor variable number; conductivity is stored in sensorValues[2].
 #define Y4000_COND_VAR_NUM 2
-/// @brief Variable name; "specificConductance"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "specificConductance"
 #define Y4000_COND_VAR_NAME "specificConductance"
-/// @brief Variable unit name; "microsiemenPerCentimeter" (µS/cm)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microsiemenPerCentimeter" (µS/cm)
 #define Y4000_COND_UNIT_NAME "microsiemenPerCentimeter"
 /// @brief Default variable short code; "Y4000Cond"
 #define Y4000_COND_DEFAULT_CODE "Y4000Cond"
@@ -173,11 +185,14 @@
 /// @brief Decimals places in string representation; ph should have 2 -
 /// resolution is 0.01 pH units.
 #define Y4000_PH_RESOLUTION 2
-/// @brief Variable number; pH is stored in sensorValues[3].
+/// @brief Sensor variable number; pH is stored in sensorValues[3].
 #define Y4000_PH_VAR_NUM 3
-/// @brief Variable name; "pH"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "pH"
 #define Y4000_PH_VAR_NAME "pH"
-/// @brief Variable unit name; "pH" (dimensionless pH units)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "pH"
+/// (dimensionless pH units)
 #define Y4000_PH_UNIT_NAME "pH"
 /// @brief Default variable short code; "Y4000pH"
 #define Y4000_PH_DEFAULT_CODE "Y4000pH"
@@ -196,11 +211,15 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y4000_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[4].
+/// @brief Sensor variable number; temperature is stored in sensorValues[4].
 #define Y4000_TEMP_VAR_NUM 4
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define Y4000_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define Y4000_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y4000Temp"
 #define Y4000_TEMP_DEFAULT_CODE "Y4000Temp"
@@ -219,11 +238,15 @@
 /// @brief Decimals places in string representation; orp should have 0 -
 /// resolution is 1 mV.
 #define Y4000_ORP_RESOLUTION 0
-/// @brief Variable number; ORP is stored in sensorValues[5].
+/// @brief Sensor variable number; ORP is stored in sensorValues[5].
 #define Y4000_ORP_VAR_NUM 5
-/// @brief Variable name; "ORP"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "ORP"
 #define Y4000_ORP_VAR_NAME "ORP"
-/// @brief Variable unit name; "millivolt" (mV)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
+/// (mV)
 #define Y4000_ORP_UNIT_NAME "millivolt"
 /// @brief Default variable short code; "Y4000Potential"
 #define Y4000_ORP_DEFAULT_CODE "Y4000Potential"
@@ -243,12 +266,16 @@
 /// @brief Decimals places in string representation; chlorophyll concentration
 /// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y4000_CHLORO_RESOLUTION 1
-/// @brief Variable number; chlorophyll concentration is stored in
+/// @brief Sensor variable number; chlorophyll concentration is stored in
 /// sensorValues[6].
 #define Y4000_CHLORO_VAR_NUM 6
-/// @brief Variable name; "chlorophyllFluorescence"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "chlorophyllFluorescence"
 #define Y4000_CHLORO_VAR_NAME "chlorophyllFluorescence"
-/// @brief Variable unit name; "microgramPerLiter" (µg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microgramPerLiter" (µg/L)
 #define Y4000_CHLORO_UNIT_NAME "microgramPerLiter"
 /// @brief Default variable short code; "Y4000Chloro"
 #define Y4000_CHLORO_DEFAULT_CODE "Y4000Chloro"
@@ -267,11 +294,15 @@
 /// @brief Decimals places in string representation; bga should have 2 -
 /// resolution is 0.01 µg/L / 0.01 RFU.
 #define Y4000_BGA_RESOLUTION 2
-/// @brief Variable number; BGA is stored in sensorValues[7].
+/// @brief Sensor variable number; BGA is stored in sensorValues[7].
 #define Y4000_BGA_VAR_NUM 7
-/// @brief Variable name; "blueGreenAlgaeCyanobacteriaPhycocyanin"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "blueGreenAlgaeCyanobacteriaPhycocyanin"
 #define Y4000_BGA_VAR_NAME "blueGreenAlgaeCyanobacteriaPhycocyanin"
-/// @brief Variable unit name; "microgramPerLiter" (µg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microgramPerLiter" (µg/L)
 #define Y4000_BGA_UNIT_NAME "microgramPerLiter"
 /// @brief Default variable short code; "Y4000BGA"
 #define Y4000_BGA_DEFAULT_CODE "Y4000BGA"

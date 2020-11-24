@@ -213,9 +213,12 @@
 /**@{*/
 /// Variable number; voltage is stored in sensorValues[0].
 #define EXT_VOLTAGE_VAR_NUM 0
-/// @brief Variable name; "voltage"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "voltage"
 #define EXT_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name; "volt"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt"
 #define EXT_VOLTAGE_UNIT_NAME "volt"
 /// @brief Default variable short code; "extVoltage"
 #define EXT_VOLTAGE_DEFAULT_CODE "extVoltage"

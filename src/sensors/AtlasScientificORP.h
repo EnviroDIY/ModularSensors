@@ -106,11 +106,15 @@
 /// @brief Decimals places in string representation; ORP should have 1 -
 /// resolution is 0.1 mV.
 #define ATLAS_ORP_RESOLUTION 1
-/// @brief Variable number; ORP is stored in sensorValues[0].
+/// @brief Sensor variable number; ORP is stored in sensorValues[0].
 #define ATLAS_ORP_VAR_NUM 0
-/// @brief Variable name; "reductionPotential"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "reductionPotential"
 #define ATLAS_ORP_VAR_NAME "reductionPotential"
-/// @brief Variable unit name; "millivolt" (mV)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
+/// (mV)
 #define ATLAS_ORP_UNIT_NAME "millivolt"
 /// @brief Default variable short code; "AtlasORP"
 #define ATLAS_ORP_DEFAULT_CODE "AtlasORP"

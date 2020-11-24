@@ -141,11 +141,15 @@
 /// @brief Decimals places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define BME280_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define BME280_TEMP_VAR_NUM 0
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define BME280_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define BME280_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "BoschBME280Temp"
 #define BME280_TEMP_DEFAULT_CODE "BoschBME280Temp"
@@ -162,11 +166,15 @@
 /// @brief Decimals places in string representation; humidity should have 3-
 /// resolution is 0.008 % RH (16 bit).
 #define BME280_HUMIDITY_RESOLUTION 3
-/// @brief Variable number; humidity is stored in sensorValues[1].
+/// @brief Sensor variable number; humidity is stored in sensorValues[1].
 #define BME280_HUMIDITY_VAR_NUM 1
-/// @brief Variable name; "relativeHumidity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "relativeHumidity"
 #define BME280_HUMIDITY_VAR_NAME "relativeHumidity"
-/// @brief Variable unit name; "percent" - percent relative humidity (% RH)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent" -
+/// percent relative humidity (% RH)
 #define BME280_HUMIDITY_UNIT_NAME "percent"
 /// @brief Default variable short code; "BoschBME280Humidity"
 #define BME280_HUMIDITY_DEFAULT_CODE "BoschBME280Humidity"
@@ -186,11 +194,15 @@
 /// @brief Decimals places in string representation; barometric pressure should
 /// have 2.
 #define BME280_PRESSURE_RESOLUTION 2
-/// @brief Variable number; pressure is stored in sensorValues[2].
+/// @brief Sensor variable number; pressure is stored in sensorValues[2].
 #define BME280_PRESSURE_VAR_NUM 2
-/// @brief Variable name; "barometricPressure"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "barometricPressure"
 #define BME280_PRESSURE_VAR_NAME "barometricPressure"
-/// @brief Variable unit name; "pascal" (Pa)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "pascal"
+/// (Pa)
 #define BME280_PRESSURE_UNIT_NAME "pascal"
 /// @brief Default variable short code; "BoschBME280Pressure"
 #define BME280_PRESSURE_DEFAULT_CODE "BoschBME280Pressure"
@@ -207,11 +219,14 @@
 /// @brief Decimals places in string representation; altitude should have 0 -
 /// resolution is 1m.
 #define BME280_ALTITUDE_RESOLUTION 0
-/// @brief Variable number; altitude is stored in sensorValues[3].
+/// @brief Sensor variable number; altitude is stored in sensorValues[3].
 #define BME280_ALTITUDE_VAR_NUM 3
-/// @brief Variable name; "heightAboveSeaFloor"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "heightAboveSeaFloor"
 #define BME280_ALTITUDE_VAR_NAME "heightAboveSeaFloor"
-/// @brief Variable unit name; "meter"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
 #define BME280_ALTITUDE_UNIT_NAME "meter"
 /// @brief Default variable short code; "BoschBME280Altitude"
 #define BME280_ALTITUDE_DEFAULT_CODE "BoschBME280Altitude"

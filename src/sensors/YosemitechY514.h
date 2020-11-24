@@ -91,12 +91,16 @@
 /// @brief Decimals places in string representation; chlorophyll concentration
 /// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y514_CHLORO_RESOLUTION 1
-/// @brief Variable number; chlorophyll concentration is stored in
+/// @brief Sensor variable number; chlorophyll concentration is stored in
 /// sensorValues[0].
 #define Y514_CHLORO_VAR_NUM 0
-/// @brief Variable name; "chlorophyllFluorescence"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "chlorophyllFluorescence"
 #define Y514_CHLORO_VAR_NAME "chlorophyllFluorescence"
-/// @brief Variable unit name; "microgramPerLiter" (µg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microgramPerLiter" (µg/L)
 #define Y514_CHLORO_UNIT_NAME "microgramPerLiter"
 /// @brief Default variable short code; "Y514Chloro"
 #define Y514_CHLORO_DEFAULT_CODE "Y514Chloro"
@@ -115,11 +119,15 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y514_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define Y514_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define Y514_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define Y514_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y514Temp"
 #define Y514_TEMP_DEFAULT_CODE "Y514Temp"

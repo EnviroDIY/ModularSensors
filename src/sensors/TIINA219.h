@@ -126,11 +126,14 @@
  *     - 0.1mA using +/-0.4 Amp range
  */
 #define INA219_CURRENT_MA_RESOLUTION 1
-/// @brief Variable number; current is stored in sensorValues[0].
+/// @brief Sensor variable number; current is stored in sensorValues[0].
 #define INA219_CURRENT_MA_VAR_NUM 0
-/// @brief Variable name; "electricCurrent"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "electricCurrent"
 #define INA219_CURRENT_MA_VAR_NAME "electricCurrent"
-/// @brief Variable unit name; "milliamp"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "milliamp"
 #define INA219_CURRENT_MA_UNIT_NAME "milliamp"
 /// @brief Default variable short code; "TIINA219Amp"
 #define INA219_CURRENT_MA_DEFAULT_CODE "TIINA219Amp"
@@ -149,11 +152,14 @@
 /// @brief Decimals places in string representation; bus voltage should have 4 -
 /// resolution is 0.001V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
-/// @brief Variable number; bus voltage is stored in sensorValues[1].
+/// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
 #define INA219_BUS_VOLTAGE_VAR_NUM 1
-/// @brief Variable name; "voltage"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "voltage"
 #define INA219_BUS_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name; "volt"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt"
 #define INA219_BUS_VOLTAGE_UNIT_NAME "volt"
 /// @brief Default variable short code; "TIINA219Volt"
 #define INA219_BUS_VOLTAGE_DEFAULT_CODE "TIINA219Volt"
@@ -170,11 +176,14 @@
 /// @brief Decimals places in string representation; power draw should have 2 -
 /// resolution is 0.01mW.
 #define INA219_POWER_MW_RESOLUTION 2
-/// @brief Variable number; power draw is stored in sensorValues[2].
+/// @brief Sensor variable number; power draw is stored in sensorValues[2].
 #define INA219_POWER_MW_VAR_NUM 2
-/// @brief Variable name; "electricPower"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "electricPower"
 #define INA219_POWER_MW_VAR_NAME "electricPower"
-/// @brief Variable unit name; "milliwatt"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "milliwatt"
 #define INA219_POWER_MW_UNIT_NAME "milliwatt"
 /// @brief Default variable short code; "TIINA219Power"
 #define INA219_POWER_MW_DEFAULT_CODE "TIINA219Power"

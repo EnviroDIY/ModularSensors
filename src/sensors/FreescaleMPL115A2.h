@@ -111,11 +111,15 @@
 /// @brief Decimals places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define MPL115A2_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define MPL115A2_TEMP_VAR_NUM 0
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define MPL115A2_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define MPL115A2_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "MPL115A2_Temp"
 #define MPL115A2_TEMP_DEFAULT_CODE "MPL115A2_Temp"
@@ -134,11 +138,15 @@
 /// @brief Decimals places in string representation; pressure should have 2 -
 /// resolution is 1.5 hPa.
 #define MPL115A2_PRESSURE_RESOLUTION 2
-/// @brief Variable number; pressure is stored in sensorValues[1].
+/// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define MPL115A2_PRESSURE_VAR_NUM 1
-/// @brief Variable name; "atmosphericPressure"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "atmosphericPressure"
 #define MPL115A2_PRESSURE_VAR_NAME "atmosphericPressure"
-/// @brief Variable unit name; "kilopascal" (kPa)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "kilopascal" (kPa)
 #define MPL115A2_PRESSURE_UNIT_NAME "kilopascal"
 /// @brief Default variable short code; "MPL115A2_Pressure"
 #define MPL115A2_PRESSURE_DEFAULT_CODE "MPL115A2_Pressure"

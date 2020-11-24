@@ -113,11 +113,15 @@
  * from 0 – 50% VWC.
  */
 #define TM_EA_RESOLUTION 5
-/// @brief Variable number; EA is stored in sensorValues[0].
+/// @brief Sensor variable number; EA is stored in sensorValues[0].
 #define TM_EA_VAR_NUM 0
-/// @brief Variable name; "permittivity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "permittivity"
 #define TM_EA_VAR_NAME "permittivity"
-/// @brief Variable unit name; "faradPerMeter" (F/m)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "faradPerMeter" (F/m)
 #define TM_EA_UNIT_NAME "faradPerMeter"
 /// @brief Default variable short code; "SoilEa"
 #define TM_EA_DEFAULT_CODE "SoilEa"
@@ -140,11 +144,15 @@
  * of significant figures for averaging - resolution is 0.1°C.
  */
 #define TM_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define TM_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define TM_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define TM_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "SoilTemp"
 #define TM_TEMP_DEFAULT_CODE "SoilTemp"
@@ -169,12 +177,15 @@
  * from 0 – 50% VWC.
  */
 #define TM_VWC_RESOLUTION 3
-/// @brief Variable number; VWC is stored in sensorValues[2].
+/// @brief Sensor variable number; VWC is stored in sensorValues[2].
 #define TM_VWC_VAR_NUM 2
-/// @brief Variable name; "volumetricWaterContent"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "volumetricWaterContent"
 #define TM_VWC_VAR_NAME "volumetricWaterContent"
-/// @brief Variable unit name; "percent" - volumetric percent water content (%,
-/// m3/100m3)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent" -
+/// volumetric percent water content (%, m3/100m3)
 #define TM_VWC_UNIT_NAME "percent"
 /// @brief Default variable short code; "SoilVWC"
 #define TM_VWC_DEFAULT_CODE "SoilVWC"

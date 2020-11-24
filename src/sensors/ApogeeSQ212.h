@@ -139,9 +139,10 @@
 /**@{*/
 /// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
-/// @brief Variable name; "radiationIncomingPAR"
+/// @brief Variable name in [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "radiationIncomingPAR"
 #define SQ212_PAR_VAR_NAME "radiationIncomingPAR"
-/// @brief Variable unit name; "microeinsteinPerSquareMeterPerSecond" (µE m-2
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "microeinsteinPerSquareMeterPerSecond" (µE m-2
 /// s-1 or µmol * m-2 s-1)
 #define SQ212_PAR_UNIT_NAME "microeinsteinPerSquareMeterPerSecond"
 /// @brief Default variable short code; "photosyntheticallyActiveRadiation"
@@ -177,9 +178,10 @@
 /**@{*/
 /// Variable number; voltage is stored in sensorValues[1].
 #define SQ212_VOLTAGE_VAR_NUM 1
-/// @brief Variable name; "voltage"
+/// @brief Variable name in [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "voltage"
 #define SQ212_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name; "volt" (V)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt" (V)
 #define SQ212_VOLTAGE_UNIT_NAME "volt"
 /// @brief Default variable short code; "SQ212Voltage"
 #define SQ212_VOLTAGE_DEFAULT_CODE "SQ212Voltage"

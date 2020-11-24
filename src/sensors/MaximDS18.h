@@ -139,11 +139,15 @@
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 4.
 #define DS18_TEMP_RESOLUTION 4
-/// @brief Variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define DS18_TEMP_VAR_NUM 0
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define DS18_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define DS18_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DS18Temp"
 #define DS18_TEMP_DEFAULT_CODE "DS18Temp"

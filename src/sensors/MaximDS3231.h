@@ -114,11 +114,15 @@
 /// @brief Decimals places in string representation; temperature should have 2 -
 /// resolution is -0.25°C (10 bit).
 #define DS3231_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define DS3231_TEMP_VAR_NUM 0
-/// @brief Variable name; "temperatureDatalogger"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperatureDatalogger"
 #define DS3231_TEMP_VAR_NAME "temperatureDatalogger"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define DS3231_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "BoardTemp"
 #define DS3231_TEMP_DEFAULT_CODE "BoardTemp"

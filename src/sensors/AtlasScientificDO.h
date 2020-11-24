@@ -121,12 +121,16 @@
 /// @brief Decimals places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define ATLAS_DOMGL_RESOLUTION 2
-/// @brief Variable number; dissolved oxygen concentration is stored in
+/// @brief Sensor variable number; dissolved oxygen concentration is stored in
 /// sensorValues[0].
 #define ATLAS_DOMGL_VAR_NUM 0
-/// @brief Variable name; "oxygenDissolved"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "oxygenDissolved"
 #define ATLAS_DOMGL_VAR_NAME "oxygenDissolved"
-/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "milligramPerLiter" (mg/L)
 #define ATLAS_DOMGL_UNIT_NAME "milligramPerLiter"
 /// @brief Default variable short code; "AtlasDOmgL"
 #define ATLAS_DOMGL_DEFAULT_CODE "AtlasDOmgL"
@@ -145,12 +149,16 @@
 /// @brief Decimals places in string representation; dissolved oxygen percent
 /// should have 1 - resolution is 0.1 % saturation.
 #define ATLAS_DOPCT_RESOLUTION 1
-/// @brief Variable number; dissolved oxygen percent is stored in
+/// @brief Sensor variable number; dissolved oxygen percent is stored in
 /// sensorValues[1]
 #define ATLAS_DOPCT_VAR_NUM 1
-/// @brief Variable name; "oxygenDissolvedPercentOfSaturation"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "oxygenDissolvedPercentOfSaturation"
 #define ATLAS_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
-/// @brief Variable unit name; "percent" (percent saturation)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
+/// (percent saturation)
 #define ATLAS_DOPCT_UNIT_NAME "percent"
 /// @brief Default variable short code; "AtlasDOpct"
 #define ATLAS_DOPCT_DEFAULT_CODE "AtlasDOpct"

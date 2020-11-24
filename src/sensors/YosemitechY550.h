@@ -91,11 +91,15 @@
 /// @brief Decimals places in string representation; cod should have 2 -
 /// resolution is 0.01 mg/L COD.
 #define Y550_COD_RESOLUTION 2
-/// @brief Variable number; COD is stored in sensorValues[0].
+/// @brief Sensor variable number; COD is stored in sensorValues[0].
 #define Y550_COD_VAR_NUM 0
-/// @brief Variable name; "COD"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "COD"
 #define Y550_COD_VAR_NAME "COD"
-/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "milligramPerLiter" (mg/L)
 #define Y550_COD_UNIT_NAME "milligramPerLiter"
 /// @brief Default variable short code; "Y550COD"
 #define Y550_COD_DEFAULT_CODE "Y550COD"
@@ -114,11 +118,15 @@
 /// @brief Decimals places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define Y550_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define Y550_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define Y550_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define Y550_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y550Temp"
 #define Y550_TEMP_DEFAULT_CODE "Y550Temp"
@@ -137,11 +145,15 @@
 /// @brief Decimals places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y550_TURB_RESOLUTION 2
-/// @brief Variable number; turbidity is stored in sensorValues[2].
+/// @brief Sensor variable number; turbidity is stored in sensorValues[2].
 #define Y550_TURB_VAR_NUM 2
-/// @brief Variable name; "turbidity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "turbidity"
 #define Y550_TURB_VAR_NAME "turbidity"
-/// @brief Variable unit name; "nephelometricTurbidityUnit" (NTU)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "nephelometricTurbidityUnit" (NTU)
 #define Y550_TURB_UNIT_NAME "nephelometricTurbidityUnit"
 /// @brief Default variable short code; "Y550Turbidity"
 #define Y550_TURB_DEFAULT_CODE "Y550Turbidity"

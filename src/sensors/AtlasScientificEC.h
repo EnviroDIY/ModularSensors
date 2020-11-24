@@ -127,11 +127,15 @@
 /**@{*/
 /// @brief Decimals places in string representation; conductivity should have 3.
 #define ATLAS_COND_RESOLUTION 3
-/// @brief Variable number; conductivity is stored in sensorValues[0].
+/// @brief Sensor variable number; conductivity is stored in sensorValues[0].
 #define ATLAS_COND_VAR_NUM 0
-/// @brief Variable name; "electricalConductivity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "electricalConductivity"
 #define ATLAS_COND_VAR_NAME "electricalConductivity"
-/// @brief Variable unit name; "microsiemenPerCentimeter" (µS/cm)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microsiemenPerCentimeter" (µS/cm)
 #define ATLAS_COND_UNIT_NAME "microsiemenPerCentimeter"
 /// @brief Default variable short code; "AtlasCond"
 #define ATLAS_COND_DEFAULT_CODE "AtlasCond"
@@ -149,11 +153,15 @@
 /**@{*/
 /// @brief Decimals places in string representation; TDS should have 3.
 #define ATLAS_TDS_RESOLUTION 3
-/// @brief Variable number; TDS is stored in sensorValues[1].
+/// @brief Sensor variable number; TDS is stored in sensorValues[1].
 #define ATLAS_TDS_VAR_NUM 1
-/// @brief Variable name; "solidsTotalDissolved"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "solidsTotalDissolved"
 #define ATLAS_TDS_VAR_NAME "solidsTotalDissolved"
-/// @brief Variable unit name; "partPerMillion" (ppm)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "partPerMillion" (ppm)
 #define ATLAS_TDS_UNIT_NAME "partPerMillion"
 /// @brief Default variable short code; "AtlasTDS"
 #define ATLAS_TDS_DEFAULT_CODE "AtlasTDS"
@@ -171,11 +179,15 @@
 /**@{*/
 /// @brief Decimals places in string representation; salinity should have 3.
 #define ATLAS_SALINITY_RESOLUTION 3
-/// @brief Variable number; salinity is stored in sensorValues[2].
+/// @brief Sensor variable number; salinity is stored in sensorValues[2].
 #define ATLAS_SALINITY_VAR_NUM 2
-/// @brief Variable name; "salinity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "salinity"
 #define ATLAS_SALINITY_VAR_NAME "salinity"
-/// @brief Variable unit name; "practicalSalinityUnit"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "practicalSalinityUnit"
 #define ATLAS_SALINITY_UNIT_NAME "practicalSalinityUnit"
 /// @brief Default variable short code; "AtlasSalinity"
 #define ATLAS_SALINITY_DEFAULT_CODE "AtlasSalinity"
@@ -196,11 +208,16 @@
 /// @brief Decimals places in string representation; specific gravity should
 /// have 3.
 #define ATLAS_SG_RESOLUTION 3
-/// @brief Variable number; specific gravity is stored in sensorValues[3].
+/// @brief Sensor variable number; specific gravity is stored in
+/// sensorValues[3].
 #define ATLAS_SG_VAR_NUM 3
-/// @brief Variable name; "specificGravity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "specificGravity"
 #define ATLAS_SG_VAR_NAME "specificGravity"
-/// @brief Variable unit name; "dimensionless"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "dimensionless"
 #define ATLAS_SG_UNIT_NAME "dimensionless"
 /// @brief Default variable short code; "AtlasSpecGravity"
 #define ATLAS_SG_DEFAULT_CODE "AtlasSpecGravity"

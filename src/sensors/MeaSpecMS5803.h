@@ -131,11 +131,15 @@
 /// @brief Decimals places in string representation; temperature should have 2 -
 /// resolution is <0.01°C.
 #define MS5803_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define MS5803_TEMP_VAR_NUM 0
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define MS5803_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define MS5803_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "MeaSpecMS5803Temp"
 #define MS5803_TEMP_DEFAULT_CODE "MeaSpecMS5803Temp"
@@ -165,11 +169,14 @@
 /**@{*/
 /// @brief Decimals places in string representation; pressure should have 3.
 #define MS5803_PRESSURE_RESOLUTION 3
-/// @brief Variable number; pressure is stored in sensorValues[1].
+/// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define MS5803_PRESSURE_VAR_NUM 1
-/// @brief Variable name; "barometricPressure"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "barometricPressure"
 #define MS5803_PRESSURE_VAR_NAME "barometricPressure"
-/// @brief Variable unit name; "millibar"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millibar"
 #define MS5803_PRESSURE_UNIT_NAME "millibar"
 /// @brief Default variable short code; "MeaSpecMS5803Pressure"
 #define MS5803_PRESSURE_DEFAULT_CODE "MeaSpecMS5803Pressure"

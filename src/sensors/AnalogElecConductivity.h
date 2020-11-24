@@ -33,20 +33,26 @@
  * polarized and the values will not be valid. The water temperature (if used)
  * must be suplied separately for a calculation.
  *
+ * @note The return from this "sensor" is conductivity - not the typically
+ * reported specific conductance, which is referenced to 25°C.  The temperature
+ * compensation, if desired, should be done via a calculated variable.  See the
+ * example code as a guide.
+ *
  * @section sensor_analog_cond_circuit The Circuit
  * One pole of the power cord wire is connected to the ground of the main logger
  * board.  The other pole is connected to the sensor power supply via a resistor
  * of known resistance (R1) and then to an analog pin to measure the voltage.
  *
  * So the circuit is:
- *
- *  Vin (sensor power) ---- R1 ---- power cord  ---- Vout
- *                                       |
- *                                       |
- *                          water between prongs (Rwater)
- *                                       |
- *                                       |
- *                                    ground
+ * @code{.unparsed}
+ *  Vin (sensor power) --- R1 --- power cord  --- Vout
+ *                                     |
+ *                                     |
+ *                        water between prongs (Rwater)
+ *                                     |
+ *                                     |
+ *                                  ground
+ * @endcode
  *
  * The above diagram and the calculations assume the reistance of the analog
  * pins themselves on the Arduino is negligible.
@@ -55,13 +61,13 @@
  * First, we need to convert the bit reading of the ADC into volts based on the
  * range of the ADC (1 bit more than the resolution):
  *
- * meas_voltage = (analog_ref_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE
+ * `meas_voltage = (analog_ref_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE`
  *
  * Assuming the voltage of the ADC reference is the same as that used to power
  * the EC resistor circuit we can replace the reference voltage with the sensor
  * power voltage:
  *
- * meas_voltage = (sensor_power_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE
+ * `meas_voltage = (sensor_power_voltage * raw_adc_bits) / ANALOG_EC_ADC_RANGE`
  *
  * @note The Vcc going to the circuit (~3.3V) can and will vary, as battery
  * level gets low.  If possible, you should use setup the processor to use an
@@ -74,39 +80,35 @@
  * Now we can calculate the resistance of the water, knowing the resistance of
  * the resistor we put in the circuit and the voltage drop:
  *
- * Rwater_ohms = (meas_voltage * Rseries_ohms) / (sensor_power_voltage - meas_voltage);
+ * `Rwater_ohms = (meas_voltage * Rseries_ohms) / (sensor_power_voltage - meas_voltage)`
  *
  * Combining the above equations and doing some rearranging, we get:
  *
- * Rwater_ohms = Rseries_ohms / ((ANALOG_EC_ADC_RANGE / raw_adc_bits) - 1)
+ * `Rwater_ohms = Rseries_ohms / ((ANALOG_EC_ADC_RANGE / raw_adc_bits) - 1)`
  *
  * The conductivity is then the inverse of the resistance - multiplied by a
  * measured cell constant and a 10^6 conversion to µS/cm.
  *
- * water_conductivity = 1000000 / (Rwater_ohms * sensorEC_Konst)
+ * `water_conductivity = 1000000 / (Rwater_ohms * sensorEC_Konst)`
  *
  * The real cell constant will vary based on the size of the "cell" - that is,
  * the size of the plug on the power cord.  You can calculate the cell constant
- * for each power cord sensor you use following the calibration program here:
- * https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino.
- * For one AC Power Cord 12t with male IEC 320-C8 connector the cell constant
+ * for each power cord sensor you use following the
+ * [calibration program](https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino).
+ *
+ *  For one AC Power Cord 12t with male IEC 320-C8 connector the cell constant
  * was 2.88.
  *
  * @note These calulations are for the on-board processor ADC, not an external
  * ACD like the TI ADS1115 built into the Mayfly!
  *
- * @note The return from this "sensor" is conductivity - not the typically
- * reported specific conductance, which is referenced to 25°C.  The temperature
- * compensation, if desired, should be done via a calculated variable.  See the
- * example code below as a guide.
- *
  * @section sensor_analog_cond_ref References
- * For the sensor setup and calculations:
+ * - For the sensor setup and calculations:
  * https://hackaday.io/project/7008-fly-wars-a-hackers-solution-to-world-hunger/log/24646-three-dollar-ec-ppm-meter-arduino
- * For temperature compensation:
+ * - For temperature compensation:
  * https://link.springer.com/article/10.1023/B:EMAS.0000031719.83065.68
  *
- * @section sensor_atlas_cond_flags Build flags
+ * @section sensor_analog_cond_flags Build flags
  * - `-D ANALOG_EC_ADC_RESOLUTION=##`
  *      - used to set the resolution of the processor ADC
  *      - @see #ANALOG_EC_ADC_RESOLUTION
@@ -114,7 +116,7 @@
  *      - used to set the processor ADC value reference mode
  *      - @see #ANALOG_EC_ADC_REFERENCE_MODE
  *
- * @section sensor_analog_cond_ctor Sensor Constructors
+ * @section sensor_analog_cond_ctor Sensor Constructor
  * {{ @ref AnalogElecConductivity::AnalogElecConductivity }}
  *
  * ___
@@ -156,6 +158,7 @@
  * @name Sensor Timing
  * The timing for analog conductivity via resistance.
  */
+/**@{*/
 /// @brief Sensor::_warmUpTime_ms; giving 2ms for warm-up.
 #define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
 /// @brief Sensor::_stabilizationTime_ms; we give just a tiny delay for
@@ -163,8 +166,10 @@
 #define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 1
 /**
  * @brief Sensor::_measurementTime_ms; we assume the analog voltage is measured
- * instantly.  It's not really *quite* instantly, but it is very fast and the
- * time to measure is included in the read function.
+ * instantly.
+ *
+ * It's not really *quite* instantly, but it is very fast and the time to
+ * measure is included in the read function.
  * On ATmega based boards (UNO, Nano, Mini, Mega), it takes about 100
  * microseconds (0.0001 s) to read an analog input, so the maximum reading rate
  * is about 10,000 times a second.
@@ -190,11 +195,15 @@
  * Range of 0-3V3 with 10bit ADC - resolution of 0.003 = 3 µS/cm.
  */
 #define ANALOGELECCONDUCTIVITY_EC_RESOLUTION 1
-/// @brief Variable number; EC is stored in sensorValues[0].
+/// @brief Sensor vensor variable number; EC is stored in sensorValues[0].
 #define ANALOGELECCONDUCTIVITY_EC_VAR_NUM 0
-/// @brief Variable name; "electricalConductivity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "electricalConductivity"
 #define ANALOGELECCONDUCTIVITY_EC_VAR_NAME "electricalConductivity"
-/// @brief Variable unit name; "microsiemenPerCentimeter" (µS/cm)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microsiemenPerCentimeter" (µS/cm)
 #define ANALOGELECCONDUCTIVITY_EC_UNIT_NAME "microsiemenPerCentimeter"
 /// @brief Default variable short code; "anlgEc"
 #define ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE "anlgEc"
@@ -218,42 +227,41 @@
 
 /* clang-format off */
 #if !defined ANALOG_EC_ADC_REFERENCE_MODE
-#ifdef ARDUINO_ARCH_SAMD
-/**
- * @brief The voltage reference mode for the processor's ADC.
- *
- * For a SAMD board, this must be one of:
- * - AR_DEFAULT: the default analog reference of 3.3V
- * - AR_INTERNAL: a built-in 2.23V reference
- * - AR_INTERNAL1V0: a built-in 1.0V reference
- * - AR_INTERNAL1V65: a built-in 1.65V reference
- * - AR_INTERNAL2V23: a built-in 2.23V reference
- * - AR_EXTERNAL: the voltage applied to the AREF pin is used as the reference
- *
- * @see https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
- */
-#define ANALOG_EC_ADC_REFERENCE_MODE AR_DEFAULT
-#elif defined ARDUINO_ARCH_AVR
+#if defined ARDUINO_ARCH_AVR | defined DOXYGEN
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
  * For an AVR board, this must be one of:
- * - DEFAULT: the default analog reference of 5 volts (on 5V Arduino boards)
+ * - `DEFAULT`: the default analog reference of 5 volts (on 5V Arduino boards)
  * or 3.3 volts (on 3.3V Arduino boards)
- * - INTERNAL: a built-in reference, equal to 1.1 volts on the ATmega168 or
+ * - `INTERNAL`: a built-in reference, equal to 1.1 volts on the ATmega168 or
  * ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the
  * Arduino Mega)
- * - INTERNAL1V1: a built-in 1.1V reference (Arduino Mega only)
- * - INTERNAL2V56: a built-in 2.56V reference (Arduino Mega only)
- * - EXTERNAL: the voltage applied to the AREF pin (0 to 5V only) is used as the
+ * - `INTERNAL1V1`: a built-in 1.1V reference (Arduino Mega only)
+ * - `INTERNAL2V56`: a built-in 2.56V reference (Arduino Mega only)
+ * - `EXTERNAL`: the voltage applied to the AREF pin (0 to 5V only) is used as the
  * reference.
+ */
+#define ANALOG_EC_ADC_REFERENCE_MODE DEFAULT
+#endif
+#if defined ARDUINO_ARCH_SAMD | defined DOXYGEN
+/**
+ * @brief The voltage reference mode for the processor's ADC.
+ *
+ * For a SAMD board, this must be one of:
+ * - `AR_DEFAULT`: the default analog reference of 3.3V
+ * - `AR_INTERNAL`: a built-in 2.23V reference
+ * - `AR_INTERNAL1V0`: a built-in 1.0V reference
+ * - `AR_INTERNAL1V65`: a built-in 1.65V reference
+ * - `AR_INTERNAL2V23`: a built-in 2.23V reference
+ * - `AR_EXTERNAL`: the voltage applied to the AREF pin is used as the reference
  *
  * @see https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
  */
-#define ANALOG_EC_ADC_REFERENCE_MODE DEFAULT
-#else
-#error The processor ADC reference type must be defined!
+#define ANALOG_EC_ADC_REFERENCE_MODE AR_DEFAULT
 #endif
+#if !defined ANALOG_EC_ADC_REFERENCE_MODE
+#error The processor ADC reference type must be defined!
 #endif  // ANALOG_EC_ADC_REFERENCE_MODE
 /* clang-format on */
 
@@ -296,11 +304,12 @@ class AnalogElecConductivity : public Sensor {
      * as analog pins generally are numbered with an "A" in front of the number
      * - ie, A1.
      * @param Rseries_ohms The resistance of the resistor series (R) in the
-     * line. Used to calculate the measured value. optional with default value
-     * of 499, that maybe overridden with a define/build flag.
+     * line; optional with default value of 499.
+     * @param sensorEC_Konst The cell constant for the sensing circuit; optional
+     * with default value of 2.88 - which is what has been measured for a
+     * typical standard sized lamp-type plug.
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
-     *
      */
     AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
                            float   Rseries_ohms          = RSERIES_OHMS_DEF,
@@ -339,14 +348,18 @@ class AnalogElecConductivity : public Sensor {
     }
 
     /**
-     * @brief reads the calculated EC from an analog pin.
+     * @brief reads the calculated EC from an analog pin using the analog pin
+     * number set in the constructor.
      *
-     * @param analogPinNum (optional) Analog Port, or if not supplied the
-     * internal portNumber.
-     *
-     * @return EC value
+     * @return The electrical conductance value
      */
     float readEC(void);
+    /**
+     * @brief reads the calculated EC from an analog pin.
+     *
+     * @param analogPinNum Analog port pin number
+     * @return The electrical conductance value
+     */
     float readEC(uint8_t analogPinNum);
 
  private:

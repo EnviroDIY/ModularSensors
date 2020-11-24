@@ -45,9 +45,9 @@
  * ___
  * @section sensor_processor_sensor_examples Example Code
  * The processor is used as a sensor in all of the examples, including the
- * @menulink{sensor_processor_sensor} example.
+ * @menulink{processor_sensor} example.
  *
- * @menusnip{sensor_processor_sensor}
+ * @menusnip{processor_sensor}
  */
 /* clang-format on */
 
@@ -117,9 +117,12 @@
 #define PROCESSOR_BATTERY_RESOLUTION 3
 /// @brief Battery voltage is stored in sensorValues[0]
 #define PROCESSOR_BATTERY_VAR_NUM 0
-/// @brief Variable name; batteryVoltage
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// batteryVoltage
 #define PROCESSOR_BATTERY_VAR_NAME "batteryVoltage"
-/// @brief Variable unit name; "volt"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt"
 #define PROCESSOR_BATTERY_UNIT_NAME "volt"
 /// @brief Default variable short code; "Battery"
 #define PROCESSOR_BATTERY_DEFAULT_CODE "Battery"
@@ -143,9 +146,12 @@
 #define PROCESSOR_RAM_RESOLUTION 0
 /// @brief Free RAM is stored in sensorValues[1]
 #define PROCESSOR_RAM_VAR_NUM 1
-/// @brief Variable name; freeSRAM
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// freeSRAM
 #define PROCESSOR_RAM_VAR_NAME "freeSRAM"
-/// @brief Variable unit name; "Bit"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "Bit"
 #define PROCESSOR_RAM_UNIT_NAME "Bit"
 /// @brief Default variable short code; "FreeRam"
 #define PROCESSOR_RAM_DEFAULT_CODE "FreeRam"
@@ -170,9 +176,13 @@
 #define PROCESSOR_SAMPNUM_RESOLUTION 0
 /// @brief Sample number is stored in sensorValues[2]
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
-/// @brief Variable name; sequenceNumber
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// sequenceNumber
 #define PROCESSOR_SAMPNUM_VAR_NAME "sequenceNumber"
-/// @brief Variable unit name; "Dimensionless" (sequence number)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "Dimensionless" (sequence number)
 #define PROCESSOR_SAMPNUM_UNIT_NAME "Dimensionless"
 /// @brief Default variable short code; "SampNum"
 #define PROCESSOR_SAMPNUM_DEFAULT_CODE "SampNum"

@@ -124,11 +124,14 @@
 /// @brief Decimals places in string representation; events are an integer
 /// should be 0 - resolution is 1 event.
 #define TALLY_EVENTS_RESOLUTION 0
-/// @brief Variable number; events is stored in sensorValues[0].
+/// @brief Sensor variable number; events is stored in sensorValues[0].
 #define TALLY_EVENTS_VAR_NUM 0
-/// @brief Variable name; "counter"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "counter"
 #define TALLY_EVENTS_VAR_NAME "counter"
-/// @brief Variable unit name; "event"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "event"
 #define TALLY_EVENTS_UNIT_NAME "event"
 /// @brief Default variable short code; "TallyCounterI2CEvents"
 #define TALLY_EVENTS_DEFAULT_CODE "TallyCounterI2CEvents"

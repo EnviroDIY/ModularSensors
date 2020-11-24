@@ -148,11 +148,15 @@
 /// @brief Decimals places in string representation; range should have 0 -
 /// resolution is 1mm.
 #define HRXL_RESOLUTION 0
-/// @brief Variable number; range is stored in sensorValues[0].
+/// @brief Sensor variable number; range is stored in sensorValues[0].
 #define HRXL_VAR_NUM 0
-/// @brief Variable name; "distance"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "distance"
 #define HRXL_VAR_NAME "distance"
-/// @brief Variable unit name; "millimeter"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "millimeter"
 #define HRXL_UNIT_NAME "millimeter"
 /// @brief Default variable short code; "SonarRange"
 #define HRXL_DEFAULT_CODE "SonarRange"

@@ -118,11 +118,15 @@
  * of significant figures for averaging - resolution is 0.00001
  */
 #define TEROS11_EA_RESOLUTION 5
-/// @brief Variable number; EA is stored in sensorValues[0].
+/// @brief Sensor variable number; EA is stored in sensorValues[0].
 #define TEROS11_EA_VAR_NUM 0
-/// @brief Variable name; "permittivity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "permittivity"
 #define TEROS11_EA_VAR_NAME "permittivity"
-/// @brief Variable unit name; "faradPerMeter" (F/m)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "faradPerMeter" (F/m)
 #define TEROS11_EA_UNIT_NAME "faradPerMeter"
 /// @brief Default variable short code; "SoilEa"
 #define TEROS11_EA_DEFAULT_CODE "SoilEa"
@@ -147,11 +151,15 @@
  * of significant figures for averaging - resolution is 0.1°C
  */
 #define TEROS11_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define TEROS11_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define TEROS11_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define TEROS11_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "SoilTemp"
 #define TEROS11_TEMP_DEFAULT_CODE "SoilTemp"
@@ -181,12 +189,15 @@
  * from 0 – 70% VWC
  */
 #define TEROS11_VWC_RESOLUTION 3
-/// @brief Variable number; VWC is stored in sensorValues[2].
+/// @brief Sensor variable number; VWC is stored in sensorValues[2].
 #define TEROS11_VWC_VAR_NUM 2
-/// @brief Variable name; "volumetricWaterContent"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "volumetricWaterContent"
 #define TEROS11_VWC_VAR_NAME "volumetricWaterContent"
-/// @brief Variable unit name; "percent" - volumetric percent water content (%,
-/// m3/100m3)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent" -
+/// volumetric percent water content (%, m3/100m3)
 #define TEROS11_VWC_UNIT_NAME "percent"
 /// @brief Default variable short code; "SoilVWC"
 #define TEROS11_VWC_DEFAULT_CODE "SoilVWC"

@@ -95,11 +95,15 @@
  * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
  */
 #define CTD_COND_RESOLUTION 1
-/// @brief Variable number; conductivity is stored in sensorValues[2].
+/// @brief Sensor variable number; conductivity is stored in sensorValues[2].
 #define CTD_COND_VAR_NUM 2
-/// @brief Variable name; "specificConductance"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "specificConductance"
 #define CTD_COND_VAR_NAME "specificConductance"
-/// @brief Variable unit name; "microsiemenPerCentimeter" (µS/cm)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microsiemenPerCentimeter" (µS/cm)
 #define CTD_COND_UNIT_NAME "microsiemenPerCentimeter"
 /// @brief Default variable short code; "CTDcond"
 #define CTD_COND_DEFAULT_CODE "CTDcond"
@@ -122,11 +126,15 @@
  * of significant figures for averaging  - resolution is 0.1°C
  */
 #define CTD_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define CTD_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define CTD_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define CTD_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "CTDtemp"
 #define CTD_TEMP_DEFAULT_CODE "CTDtemp"
@@ -149,11 +157,15 @@
  * of significant figures for averaging - resolution is 2 mm
  */
 #define CTD_DEPTH_RESOLUTION 1
-/// @brief Variable number; depth is stored in sensorValues[0].
+/// @brief Sensor variable number; depth is stored in sensorValues[0].
 #define CTD_DEPTH_VAR_NUM 0
-/// @brief Variable name; "waterDepth"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "waterDepth"
 #define CTD_DEPTH_VAR_NAME "waterDepth"
-/// @brief Variable unit name; "millimeter"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "millimeter"
 #define CTD_DEPTH_UNIT_NAME "millimeter"
 /// @brief Default variable short code; "CTDdepth"
 #define CTD_DEPTH_DEFAULT_CODE "CTDdepth"

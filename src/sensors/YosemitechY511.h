@@ -103,11 +103,15 @@
 /// @brief Decimals places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y511_TURB_RESOLUTION 2
-/// @brief Variable number; turbidity is stored in sensorValues[0].
+/// @brief Sensor variable number; turbidity is stored in sensorValues[0].
 #define Y511_TURB_VAR_NUM 0
-/// @brief Variable name; "turbidity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "turbidity"
 #define Y511_TURB_VAR_NAME "turbidity"
-/// @brief Variable unit name; "nephelometricTurbidityUnit" (NTU)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "nephelometricTurbidityUnit" (NTU)
 #define Y511_TURB_UNIT_NAME "nephelometricTurbidityUnit"
 /// @brief Default variable short code; "Y511Turbidity"
 #define Y511_TURB_DEFAULT_CODE "Y511Turbidity"
@@ -126,11 +130,15 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y511_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define Y511_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define Y511_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define Y511_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y511Temp"
 #define Y511_TEMP_DEFAULT_CODE "Y511Temp"

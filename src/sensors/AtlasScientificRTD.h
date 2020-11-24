@@ -115,11 +115,15 @@
 /// @brief Decimals places in string representation; temperature should have 3 -
 /// resolution is 0.001°C.
 #define ATLAS_RTD_RESOLUTION 3
-/// @brief Variable number; RTD is stored in sensorValues[0].
+/// @brief Sensor variable number; RTD is stored in sensorValues[0].
 #define ATLAS_RTD_VAR_NUM 0
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define ATLAS_RTD_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define ATLAS_RTD_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "AtlasTemp"
 #define ATLAS_RTD_DEFAULT_CODE "AtlasTemp"

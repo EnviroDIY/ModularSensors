@@ -116,11 +116,15 @@
 /// @brief Decimals places in string representation; humidity should have 1 (0.1
 /// % RH for DHT22 and 1 % RH for DHT11)
 #define DHT_HUMIDITY_RESOLUTION 1
-/// @brief Variable number; humidity is stored in sensorValues[0].
+/// @brief Sensor variable number; humidity is stored in sensorValues[0].
 #define DHT_HUMIDITY_VAR_NUM 0
-/// @brief Variable name; "relativeHumidity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "relativeHumidity"
 #define DHT_HUMIDITY_VAR_NAME "relativeHumidity"
-/// @brief Variable unit name; "percent" (percent relative humidity or % RH)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
+/// (percent relative humidity or % RH)
 #define DHT_HUMIDITY_UNIT_NAME "percent"
 /// @brief Default variable short code; "DHTHumidity"
 #define DHT_HUMIDITY_DEFAULT_CODE "DHTHumidity"
@@ -139,11 +143,15 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define DHT_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define DHT_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define DHT_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (degrees Celsius, °C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (degrees Celsius, °C)
 #define DHT_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DHTTemp"
 #define DHT_TEMP_DEFAULT_CODE "DHTTemp"
@@ -162,11 +170,15 @@
 /// @brief Decimals places in string representation; heat index should have 1 -
 /// resolution is 0.1°C
 #define DHT_HI_RESOLUTION 1
-/// @brief Variable number; HI is stored in sensorValues[2].
+/// @brief Sensor variable number; HI is stored in sensorValues[2].
 #define DHT_HI_VAR_NUM 2
-/// @brief Variable name; "heatIndex"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "heatIndex"
 #define DHT_HI_VAR_NAME "heatIndex"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define DHT_HI_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DHTHI"
 #define DHT_HI_DEFAULT_CODE "DHTHI"

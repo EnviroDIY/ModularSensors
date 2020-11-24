@@ -58,9 +58,12 @@
  * RSSI is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_RSSI_RESOLUTION 0
-/// @brief Variable name; "RSSI"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "RSSI"
 #define MODEM_RSSI_VAR_NAME "RSSI"
-/// @brief Variable unit name; "RSSI"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "RSSI"
 #define MODEM_RSSI_UNIT_NAME "RSSI"
 /// @brief Default variable short code; "decibelMiliWatt"
 #define MODEM_RSSI_DEFAULT_CODE "decibelMiliWatt"
@@ -81,9 +84,12 @@
  * Percent signal is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_PERCENT_SIGNAL_RESOLUTION 0
-/// @brief Variable name; "signalPercent"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "signalPercent"
 #define MODEM_PERCENT_SIGNAL_VAR_NAME "signalPercent"
-/// @brief Variable unit name; "percent"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
 #define MODEM_PERCENT_SIGNAL_UNIT_NAME "percent"
 /// @brief Default variable short code; "signalPercent"
 #define MODEM_PERCENT_SIGNAL_DEFAULT_CODE "signalPercent"
@@ -108,9 +114,13 @@
  * Battery state is a code value; it has 0 decimal place resolution
  */
 #define MODEM_BATTERY_STATE_RESOLUTION 0
-/// @brief Variable name; "batteryChargeState"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "batteryChargeState"
 #define MODEM_BATTERY_STATE_VAR_NAME "batteryChargeState"
-/// @brief Variable unit name; "number" (dimensionless)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "number"
+/// (dimensionless)
 #define MODEM_BATTERY_STATE_UNIT_NAME "number"
 /// @brief Default variable short code; "modemBatteryCS"
 #define MODEM_BATTERY_STATE_DEFAULT_CODE "modemBatteryCS"
@@ -131,9 +141,12 @@
 /// @brief Decimals places in string representation; battery charge percent
 /// should have 0.
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
-/// @brief Variable name; "permittivity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "permittivity"
 #define MODEM_BATTERY_PERCENT_VAR_NAME "permittivity"
-/// @brief Variable unit name; "percent"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
 #define MODEM_BATTERY_PERCENT_UNIT_NAME "percent"
 /// @brief Default variable short code; "modemBatteryPct"
 #define MODEM_BATTERY_PERCENT_DEFAULT_CODE "modemBatteryPct"
@@ -158,9 +171,12 @@
  * No supported module has higher than 1mV resolution in battery reading.
  */
 #define MODEM_BATTERY_VOLTAGE_RESOLUTION 0
-/// @brief Variable name; "batteryVoltage"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "batteryVoltage"
 #define MODEM_BATTERY_VOLTAGE_VAR_NAME "batteryVoltage"
-/// @brief Variable unit name; "millivolt"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
 #define MODEM_BATTERY_VOLTAGE_UNIT_NAME "millivolt"
 /// @brief Default variable short code; "modemBatterymV"
 #define MODEM_BATTERY_VOLTAGE_DEFAULT_CODE "modemBatterymV"
@@ -184,9 +200,13 @@
  * Most modules that can measure temperature measure to 0.1°C
  */
 #define MODEM_TEMPERATURE_RESOLUTION 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define MODEM_TEMPERATURE_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define MODEM_TEMPERATURE_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "modemTemp"
 #define MODEM_TEMPERATURE_DEFAULT_CODE "modemTemp"
@@ -206,9 +226,12 @@
 /// @brief Decimals places in string representation; total active time should
 /// have 3.
 #define MODEM_ACTIVATION_RESOLUTION 3
-/// @brief Variable name; "timeElapsed"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "timeElapsed"
 #define MODEM_ACTIVATION_VAR_NAME "timeElapsed"
-/// @brief Variable unit name; "second"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "second"
 #define MODEM_ACTIVATION_UNIT_NAME "second"
 /// @brief Default variable short code; "modemActiveSec"
 #define MODEM_ACTIVATION_DEFAULT_CODE "modemActiveSec"
@@ -227,15 +250,18 @@
 /// @brief Decimals places in string representation; total powered time should
 /// have 3.
 #define MODEM_POWERED_RESOLUTION 3
-/// @brief Variable name; "timeElapsed"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "timeElapsed"
 #define MODEM_POWERED_VAR_NAME "timeElapsed"
-/// @brief Variable unit name; "second"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "second"
 #define MODEM_POWERED_UNIT_NAME "second"
 /// @brief Default variable short code; "modemPoweredSec"
 #define MODEM_POWERED_DEFAULT_CODE "modemPoweredSec"
 /**@}*/
-/**@}*/
 #endif
+/**@}*/
 
 
 /* ===========================================================================

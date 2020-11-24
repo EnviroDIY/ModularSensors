@@ -109,11 +109,14 @@
 /// @brief Decimals places in string representation; pH should have 3 -
 /// resolution is 0.001.
 #define ATLAS_PH_RESOLUTION 3
-/// @brief Variable number; pH is stored in sensorValues[0].
+/// @brief Sensor variable number; pH is stored in sensorValues[0].
 #define ATLAS_PH_VAR_NUM 0
-/// @brief Variable name; "pH"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "pH"
 #define ATLAS_PH_VAR_NAME "pH"
-/// @brief Variable unit name; "pH" (dimensionless pH units)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "pH"
+/// (dimensionless pH units)
 #define ATLAS_PH_UNIT_NAME "pH"
 /// @brief Default variable short code; "AtlaspH"
 #define ATLAS_PH_DEFAULT_CODE "AtlaspH"

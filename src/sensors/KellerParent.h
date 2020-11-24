@@ -114,9 +114,12 @@
 /**@{*/
 /// Variable number; pressure is stored in sensorValues[0].
 #define KELLER_PRESSURE_VAR_NUM 0
-/// @brief Variable name; "pressureGauge"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "pressureGauge"
 #define KELLER_PRESSURE_VAR_NAME "pressureGauge"
-/// @brief Variable unit name; "millibar"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millibar"
 #define KELLER_PRESSURE_UNIT_NAME "millibar"
 /**@}*/
 
@@ -128,9 +131,13 @@
 /**@{*/
 /// Variable number; temperature is stored in sensorValues[1].
 #define KELLER_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define KELLER_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define KELLER_TEMP_UNIT_NAME "degreeCelsius"
 /**@}*/
 
@@ -142,9 +149,12 @@
 /**@{*/
 /// Variable number; height is stored in sensorValues[2].
 #define KELLER_HEIGHT_VAR_NUM 2
-/// @brief Variable name; "gaugeHeight"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "gaugeHeight"
 #define KELLER_HEIGHT_VAR_NAME "gaugeHeight"
-/// @brief Variable unit name; "meter"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
 #define KELLER_HEIGHT_UNIT_NAME "meter"
 /**@}*/
 

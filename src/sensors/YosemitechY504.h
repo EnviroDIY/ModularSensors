@@ -93,12 +93,16 @@
 /// @brief Decimals places in string representation; dissolved oxygen percent
 /// should have 1 - resolution is 0.1%.
 #define Y504_DOPCT_RESOLUTION 1
-/// @brief Variable number; dissolved oxygen percent is stored in
+/// @brief Sensor variable number; dissolved oxygen percent is stored in
 /// sensorValues[0]
 #define Y504_DOPCT_VAR_NUM 0
-/// @brief Variable name; "oxygenDissolvedPercentOfSaturation"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "oxygenDissolvedPercentOfSaturation"
 #define Y504_DOPCT_VAR_NAME "oxygenDissolvedPercentOfSaturation"
-/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "milligramPerLiter" (mg/L)
 #define Y504_DOPCT_UNIT_NAME "percent"
 /// @brief Default variable short code; "Y504DOmgL"
 #define Y504_DOPCT_DEFAULT_CODE "Y504DOpct"
@@ -117,11 +121,15 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y504_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define Y504_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define Y504_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define Y504_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y504Temp"
 #define Y504_TEMP_DEFAULT_CODE "Y504Temp"
@@ -140,12 +148,16 @@
 /// @brief Decimals places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y504_DOMGL_RESOLUTION 2
-/// @brief Variable number; dissolved oxygen concentration is stored in
+/// @brief Sensor variable number; dissolved oxygen concentration is stored in
 /// sensorValues[2]
 #define Y504_DOMGL_VAR_NUM 2
-/// @brief Variable name; "oxygenDissolved"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "oxygenDissolved"
 #define Y504_DOMGL_VAR_NAME "oxygenDissolved"
-/// @brief Variable unit name; "milligramPerLiter" (mg/L)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "milligramPerLiter" (mg/L)
 #define Y504_DOMGL_UNIT_NAME "milligramPerLiter"
 /// @brief Default variable short code; "Y504DOmgL"
 #define Y504_DOMGL_DEFAULT_CODE "Y504DOmgL"

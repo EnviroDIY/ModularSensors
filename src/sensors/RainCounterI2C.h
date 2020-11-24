@@ -130,11 +130,15 @@
  * if bucket is calibrated to English or metric units.
  */
 #define BUCKET_RAIN_RESOLUTION 2
-/// @brief Variable number; rain depth is stored in sensorValues[0].
+/// @brief Sensor variable number; rain depth is stored in sensorValues[0].
 #define BUCKET_RAIN_VAR_NUM 0
-/// @brief Variable name; "precipitation"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "precipitation"
 #define BUCKET_RAIN_VAR_NAME "precipitation"
-/// @brief Variable unit name; "millimeter"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "millimeter"
 #define BUCKET_RAIN_UNIT_NAME "millimeter"
 /// @brief Default variable short code; "RainCounterI2CVol"
 #define BUCKET_RAIN_DEFAULT_CODE "RainCounterI2CVol"
@@ -152,11 +156,15 @@
 /// @brief Decimals places in string representation; the number of tips should
 /// have 0 - resolution is 1 tip.
 #define BUCKET_TIPS_RESOLUTION 0
-/// @brief Variable number; the number of tips is stored in sensorValues[1].
+/// @brief Sensor variable number; the number of tips is stored in
+/// sensorValues[1].
 #define BUCKET_TIPS_VAR_NUM 1
-/// @brief Variable name; "precipitation"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "precipitation"
 #define BUCKET_TIPS_VAR_NAME "precipitation"
-/// @brief Variable unit name; "event"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "event"
 #define BUCKET_TIPS_UNIT_NAME "event"
 /// @brief Default variable short code; "RainCounterI2CTips"
 #define BUCKET_TIPS_DEFAULT_CODE "RainCounterI2CTips"

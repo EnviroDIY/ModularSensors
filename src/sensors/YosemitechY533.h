@@ -90,11 +90,14 @@
 /// @brief Decimals places in string representation; ph should have 2 -
 /// resolution is 0.01 pH units.
 #define Y533_PH_RESOLUTION 2
-/// @brief Variable number; pH is stored in sensorValues[0].
+/// @brief Sensor variable number; pH is stored in sensorValues[0].
 #define Y533_PH_VAR_NUM 0
-/// @brief Variable name; "pH"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "pH"
 #define Y533_PH_VAR_NAME "pH"
-/// @brief Variable unit name; "pH" (dimensionless pH units)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "pH"
+/// (dimensionless pH units)
 #define Y533_PH_UNIT_NAME "pH"
 /// @brief Default variable short code; "Y533pH"
 #define Y533_PH_DEFAULT_CODE "Y533pH"
@@ -113,11 +116,15 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y533_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define Y533_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define Y533_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define Y533_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y533Temp"
 #define Y533_TEMP_DEFAULT_CODE "Y533Temp"
@@ -136,11 +143,15 @@
 /// @brief Decimals places in string representation; voltage should have 0 -
 /// resolution is 1 mV.
 #define Y533_VOLTAGE_RESOLUTION 0
-/// @brief Variable number; voltage is stored in sensorValues[2].
+/// @brief Sensor variable number; voltage is stored in sensorValues[2].
 #define Y533_VOLTAGE_VAR_NUM 2
-/// @brief Variable name; "voltage"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "voltage"
 #define Y533_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name; "millivolt" (mV)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
+/// (mV)
 #define Y533_VOLTAGE_UNIT_NAME "millivolt"
 /// @brief Default variable short code; "Y533Potential"
 #define Y533_VOLTAGE_DEFAULT_CODE "Y533Potential"

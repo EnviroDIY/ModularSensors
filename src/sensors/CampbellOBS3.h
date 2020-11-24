@@ -141,9 +141,13 @@
 /// @brief Decimals places in string representation; turbidity should have 5.
 #define OBS3_RESOLUTION 5
 #endif
-/// @brief Variable name; "turbidity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "turbidity"
 #define OBS3_TURB_VAR_NAME "turbidity"
-/// @brief Variable unit name; "nephelometricTurbidityUnit" (NTU)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "nephelometricTurbidityUnit" (NTU)
 #define OBS3_TURB_UNIT_NAME "nephelometricTurbidityUnit"
 /// @brief Default variable short code; "OBS3Turbidity"
 #define OBS3_TURB_DEFAULT_CODE "OBS3Turbidity"
@@ -166,9 +170,12 @@
 /**@{*/
 /// Variable number; voltage is stored in sensorValues[1].
 #define OBS3_VOLTAGE_VAR_NUM 1
-/// @brief Variable name; "voltage"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "voltage"
 #define OBS3_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name; "volt"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt"
 #define OBS3_VOLTAGE_UNIT_NAME "volt"
 /// @brief Default variable short code; "OBS3Voltage"
 #define OBS3_VOLTAGE_DEFAULT_CODE "OBS3Voltage"

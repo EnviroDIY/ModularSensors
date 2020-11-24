@@ -118,11 +118,15 @@
  * significant figures to allow for averaging of multiple measurements.
  */
 #define PTR_VOLTAGE_RESOLUTION 2
-/// @brief Variable number; voltage is stored in sensorValues[0].
+/// @brief Sensor variable number; voltage is stored in sensorValues[0].
 #define PTR_VOLTAGE_VAR_NUM 0
-/// @brief Variable name; "Voltage"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "Voltage"
 #define PTR_VOLTAGE_VAR_NAME "Voltage"
-/// @brief Variable unit name; "millivolt" (mV)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
+/// (mV)
 #define PTR_VOLTAGE_UNIT_NAME "millivolt"
 /// @brief Default variable short code; "PTRVoltage"
 #define PTR_VOLTAGE_DEFAULT_CODE "PTRVoltage"

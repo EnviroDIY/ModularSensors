@@ -90,11 +90,15 @@
 /// @brief Decimals places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y520_COND_RESOLUTION 1
-/// @brief Variable number; conductivity is stored in sensorValues[0].
+/// @brief Sensor variable number; conductivity is stored in sensorValues[0].
 #define Y520_COND_VAR_NUM 0
-/// @brief Variable name; "specificConductance"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "specificConductance"
 #define Y520_COND_VAR_NAME "specificConductance"
-/// @brief Variable unit name; "microsiemenPerCentimeter" (µS/cm)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microsiemenPerCentimeter" (µS/cm)
 #define Y520_COND_UNIT_NAME "microsiemenPerCentimeter"
 /// @brief Default variable short code; "Y520Cond"
 #define Y520_COND_DEFAULT_CODE "Y520Cond"
@@ -113,11 +117,15 @@
 /// @brief Decimals places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y520_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define Y520_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define Y520_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define Y520_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y520Temp"
 #define Y520_TEMP_DEFAULT_CODE "Y520Temp"

@@ -111,11 +111,15 @@
 /// @brief Decimals places in string representation; CO2 should have 1 -
 /// resolution is 1 ppm.
 #define ATLAS_CO2_RESOLUTION 1
-/// @brief Variable number; CO2 is stored in sensorValues[0].
+/// @brief Sensor variable number; CO2 is stored in sensorValues[0].
 #define ATLAS_CO2_VAR_NUM 0
-/// @brief Variable name; "carbonDioxide"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "carbonDioxide"
 #define ATLAS_CO2_VAR_NAME "carbonDioxide"
-/// @brief Variable unit name; "partPerMillion" (ppm)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "partPerMillion" (ppm)
 #define ATLAS_CO2_UNIT_NAME "partPerMillion"
 /// @brief Default variable short code; "AtlasCO2ppm"
 #define ATLAS_CO2_DEFAULT_CODE "AtlasCO2ppm"
@@ -134,11 +138,15 @@
 /// @brief Decimals places in string representation; CO2TEMP should have 0 -
 /// resolution is 1°C.
 #define ATLAS_CO2TEMP_RESOLUTION 0
-/// @brief Variable number; CO2TEMP is stored in sensorValues[1].
+/// @brief Sensor variable number; CO2TEMP is stored in sensorValues[1].
 #define ATLAS_CO2TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define ATLAS_CO2TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define ATLAS_CO2TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "AtlasCO2Temp"
 #define ATLAS_CO2TEMP_DEFAULT_CODE "AtlasCO2Temp"

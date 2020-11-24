@@ -105,11 +105,15 @@
 /// @brief Decimals places in string representation; humidity should have 1 (0.1
 /// % RH for the 16 bit sensor).
 #define AM2315_HUMIDITY_RESOLUTION 1
-/// @brief Variable number; humidity is stored in sensorValues[0].
+/// @brief Sensor variable number; humidity is stored in sensorValues[0].
 #define AM2315_HUMIDITY_VAR_NUM 0
-/// @brief Variable name; "relativeHumidity"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "relativeHumidity"
 #define AM2315_HUMIDITY_VAR_NAME "relativeHumidity"
-/// @brief Variable unit name; "percent" (percent relative humidity)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
+/// (percent relative humidity)
 #define AM2315_HUMIDITY_UNIT_NAME "percent"
 /// @brief Default variable short code; "AM2315Humidity"
 #define AM2315_HUMIDITY_DEFAULT_CODE "AM2315Humidity"
@@ -128,11 +132,15 @@
 /// @brief Decimals places in string representation; temperature should have 1.
 /// (0.1°C for the 16 bit sensor)
 #define AM2315_TEMP_RESOLUTION 1
-/// @brief Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define AM2315_TEMP_VAR_NUM 1
-/// @brief Variable name; "temperature"
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
 #define AM2315_TEMP_VAR_NAME "temperature"
-/// @brief Variable unit name; "degreeCelsius" (°C)
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
 #define AM2315_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "AM2315Temp"
 #define AM2315_TEMP_DEFAULT_CODE "AM2315Temp"
