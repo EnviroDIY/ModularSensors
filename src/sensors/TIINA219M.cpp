@@ -1,14 +1,16 @@
-/*
- *TIINA219M.cpp
+/**
+ * @TIINA219M.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
+ * @author Written By: Neil Hancock
  *
+ * @brief Implements the TIINA219 class.
  */
 
 #include "TIINA219M.h"
 
 // The constructor - because this is I2C, only need the power pin
 TIINA219M::TIINA219M(int8_t powerPin, uint8_t i2cAddressHex,
-                     uint8_t measurementsToAverage)
+                   uint8_t measurementsToAverage)
     : Sensor("TIINA219M", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
              INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage) {
@@ -21,19 +23,13 @@ TIINA219M::TIINA219M(int8_t powerPin, uint8_t i2cAddressHex,
 // Destructor
 TIINA219M::~TIINA219M(){};
 
+
 String TIINA219M::getSensorLocation(void) {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
-void TIINA219M::set_active_sensors(uint8_t sensors_mask) {
-    _ina219_pollmask = sensors_mask;
-}
-
-uint8_t TIINA219M::which_sensors_active() {
-    return _ina219_pollmask;
-}
 
 bool TIINA219M::setup(void) {
     bool wasOn;
@@ -54,6 +50,7 @@ bool TIINA219M::setup(void) {
     return true;
 }
 
+
 bool TIINA219M::wake(void) {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
@@ -69,6 +66,7 @@ bool TIINA219M::wake(void) {
 
     return true;
 }
+
 
 bool TIINA219M::addSingleMeasurementResult(void) {
     bool success = false;
@@ -133,7 +131,18 @@ bool TIINA219M::addSingleMeasurementResult(void) {
     return success;
 }
 
+
 // Az extensions
+
+void TIINA219M::set_active_sensors(uint8_t sensors_mask) {
+    _ina219_pollmask = sensors_mask;
+}
+
+uint8_t TIINA219M::which_sensors_active() {
+    return _ina219_pollmask;
+}
+
+
 void TIINA219M::setCustomAmpMult(float newAmpMult) {
     _ampMult = newAmpMult;
 }
@@ -152,3 +161,4 @@ void TIINA219M::setCustomVoltThreshold(
 float TIINA219M::getCustomVoltThreshold(void) {
     return _voltLowThreshold_V;
 }
+// End
