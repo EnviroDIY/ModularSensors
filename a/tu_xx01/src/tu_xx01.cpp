@@ -61,6 +61,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // USE_PS_EEPROM
 #include "ms_common.h"
 
+//#define USE_LC709203F 1
+#if defined USE_LC709203F
+#include "Adafruit_LC709203F.h"  //https:  //github.com/adafruit/Adafruit_LC709203F
+Adafruit_LC709203F batteryFuelGauge;
+bool               bfgPresent = false;
+#endif  // USE_LC709203F
+
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -351,15 +358,17 @@ InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower,
 #endif  // InsituLTrs485_ACT
 
 // ==========================================================================
-//    Electrical Conductivity using the processors analog pins
+//   Analog Electrical Conductivity using the processors analog pins
 // ==========================================================================
 #ifdef AnalogProcEC_ACT
-#include <sensors/analogElecConductivity.h>
+/** Start [AnalogElecConductivity] */
+#include <sensors/AnalogElecConductivity.h>
 const int8_t ECpwrPin   = ECpwrPin_DEF;
 const int8_t ECdataPin1 = ECdataPin1_DEF;
 
 #define EC_RELATIVE_OHMS 100000
-analogElecConductivity EC_procPhy(ECpwrPin, ECdataPin1, 1, EC_RELATIVE_OHMS);
+AnalogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1, EC_RELATIVE_OHMS, 1);
+/** End [AnalogElecConductivity] */
 #endif  // AnalogProcEC_ACT
 
 // ==========================================================================
@@ -723,7 +732,7 @@ Variable* variableList[] = {
 #endif  // ProcVolt_ACT
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
-    new analogElecConductivity_EC(&EC_procPhy, EC1_UUID),
+    new AnalogElecConductivity_EC(&analogEC_phy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
 
 #if defined(ExternalVoltage_Volt1_UUID)
@@ -963,6 +972,20 @@ void unusedBitsMakeSafe() {
     // PORT_SAFE(31); //A7 Timer Int
 };
 
+void        bfgPoll() {
+#if defined USE_LC709203F
+    if (bfgPresent) {
+        Serial.print("Batt Voltage: ");
+        Serial.print(batteryFuelGauge.cellVoltage(), 3);
+        Serial.print(" Percent: ");
+        Serial.println(batteryFuelGauge.cellPercent(), 1);
+        // Serial.print("Batt Temp: ");
+        // Serial.println(lc.getCellTemperature(), 1);
+    }
+#endif  // USE_LC709203F
+}
+
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -1100,6 +1123,20 @@ void setup() {
 #endif  // USE_MS_SD_INI
 
     mcuBoard.printBatteryThresholds();
+#if defined USE_LC709203F
+    /* */
+    if (!batteryFuelGauge.begin()) {
+        Serial.println(F("Couldnt findLC709203F?\nMake sure a "
+                         "battery is plugged in!"));
+    } else {
+        bfgPresent = true;
+        // batteryFuelGauge.setThermistorB(3950);
+        batteryFuelGauge.setPackSize(LC709203F_APA_500MAH);
+        // batteryFuelGauge.setAlarmVoltage(3.8);
+        // Serial.println(F("Found LC709203F."));
+        bfgPoll();
+    }
+#endif  // defined USE_LC709203F
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
@@ -1185,5 +1222,6 @@ void setup() {
 // ==========================================================================
 
 void loop() {
+    bfgPoll();
     dataLogger.logDataAndPubReliably();
 }

@@ -6,10 +6,11 @@
  * @author Written By: Neil Hancock <neilh20+aec2008@wLLw.net>
  *
  *
- * @brief This encapsulates an Electrical Conductivity sensors using an anlog
- *input and onboard ADC and ADC ref.
- *
- * EC from IEC probe, requires ADC_PIN, Source Resistance, Applied
+ * @brief Encapsulates an Electrical Conductivity sensors using an anlog
+ * input and onboard ADC and ADC ref.
+ */
+/* clang-format off */
+ /** EC from IEC probe, requires ADC_PIN, Source Resistance, Applied
  * Voltage, water temperature.
  *
  * Requires switched power pin. The water Temperature (if used) must be suplied
@@ -48,10 +49,11 @@
  * http://www.reagecon.com/pdf/technicalpapers/Effect_of_Temperature_TSP-07_Issue3.pdf
  *
  */
+/* clang-format on */
 
 // Header Guards
-#ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
-#define SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
+#ifndef SRC_SENSORS_ANALOGELECCONDUCTIVITYM_H_
+#define SRC_SENSORS_ANALOGELECCONDUCTIVITYM_H_
 
 #ifdef MS_ANALOGELECCONDUCTIVITY_DEBUG
 #define MS_DEBUGGING_STD "analogElecConductivity"
@@ -67,7 +69,13 @@
 #include "VariableBase.h"
 #include "math.h"
 
-// Sensor Specific Defines
+/** @ingroup analogElecConductivity_group */
+/**@{*/
+/**
+ * @anchor analogElecConductivity_timing_defines
+ * @name Sensor Timing
+ * Defines for the sensor timing
+ */
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
 #define ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS 2
 #define ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS 0
@@ -99,10 +107,10 @@
  * @brief Class for the analog Electrical Conductivity monitor
  *
  */
-class analogElecConductivity : public Sensor {
+class analogElecConductivityM : public Sensor {
  public:
     /**
-     * @brief Construct a new analogElecConductivity object.
+     * @brief Construct a new analogElecConductivityM object.
      *
      * @param powerPin The port pin providing power to the EC probe.
      * Needs to be switched, and assumed to be same V as the dataPin's ADC.
@@ -111,15 +119,19 @@ class analogElecConductivity : public Sensor {
      *
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
+     *
+     * @param Rseries_ohms The series R in the line. Used to calculate the
+     * measured value. optional with default value of 499, that maybe overridden
+     * with a deifne.
      */
-    analogElecConductivity(int8_t powerPin, int8_t dataPin,
-                           uint8_t measurementsToAverage = 1,
-                           float   Rseries_ohms          = RSERIES_OHMS_DEF);
+    analogElecConductivityM(int8_t powerPin, int8_t dataPin,
+                            uint8_t measurementsToAverage = 1,
+                            float   Rseries_ohms          = RSERIES_OHMS_DEF);
 
     /**
-     * @brief Destroy the analogElecConductivity object - no action needed.
+     * @brief Destroy the analogElecConductivityM object - no action needed.
      */
-    ~analogElecConductivity();
+    ~analogElecConductivityM();
 
     /**
      * @brief Report the sensor info.
@@ -132,9 +144,6 @@ class analogElecConductivity : public Sensor {
      * @copydoc Sensor::addSingleMeasurementResult()
      */
     bool addSingleMeasurementResult(void) override;
-    // void set_active_sensors(uint8_t sensors_mask);
-    // uint8_t which_sensors_active(void);
-    // void setWaterTemperature(float  WaterTemperature_C);
 
     /**
      * @brief Set where to find (a pointer) WaterTemperature for internal
@@ -179,23 +188,23 @@ class analogElecConductivity : public Sensor {
     int8_t      _EcPowerPin;
     int8_t      _EcAdcPin;
 
-    // float _WaterTemperature_C;
     float*      _ptrWaterTemperature_C;
     const float SensorV = 3.3;
 
-    float _Rseries_ohms =
-        RSERIES_OHMS_DEF;  // that is R1 + any series port resistance
+    // _Rseries_ohms ~ that is R1 + any series port resistance
+    float _Rseries_ohms = RSERIES_OHMS_DEF;
+
 #if !defined TEMPERATURECOEF_DEF
+/// @brief TEMPERATURECOEF_DEF defined for chemical/transport under measurement
 #define TEMPERATURECOEF_DEF 0.019
 #endif  // TEMPERATURECOEF_DEF
-    const float TemperatureCoef =
-        TEMPERATURECOEF_DEF;  // depends on what chemical/transport is being
-                              // measured
-//********************** Cell Constant For Ec Measurements
-//*********************// Mine was around 2.9 with plugs being a standard size
-// they should all be around the same But If you get bad readings you can use
-// the calibration script and fluid to get a better estimate for K
+    const float TemperatureCoef = TEMPERATURECOEF_DEF;
+
 #if !defined SENSOREC_KONST_DEF
+/// @brief SENSOREC_KONST_DEF Cell Constant For Ec Measurements - place holder.
+/// Mine was around 2.9 with plugs being a standard size they should all be
+/// around the same. If you get bad readings you can use
+// the calibration script and fluid to get a better estimate for K
 #define SENSOREC_KONST_DEF 2.88
 #endif  // SENSOREC_KONST_DEF
     const float sensorEC_Konst = SENSOREC_KONST_DEF;
@@ -246,5 +255,5 @@ class analogElecConductivity_EC : public Variable {
      */
     ~analogElecConductivity_EC() {}
 };
-
-#endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
+/**@}*/
+#endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITYM_H_
