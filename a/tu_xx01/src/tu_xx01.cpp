@@ -61,7 +61,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // USE_PS_EEPROM
 #include "ms_common.h"
 
-#define USE_LC709203F 1
+//#define USE_LC709203F 1
 #if defined USE_LC709203F
 #include "Adafruit_LC709203F.h"  //https:  //github.com/adafruit/Adafruit_LC709203F
 Adafruit_LC709203F batteryFuelGauge;
@@ -367,7 +367,7 @@ const int8_t ECpwrPin   = ECpwrPin_DEF;
 const int8_t ECdataPin1 = ECdataPin1_DEF;
 
 #define EC_RELATIVE_OHMS 100000
-analogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1, EC_RELATIVE_OHMS,1);
+AnalogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1, EC_RELATIVE_OHMS, 1);
 /** End [AnalogElecConductivity] */
 #endif  // AnalogProcEC_ACT
 
@@ -732,7 +732,7 @@ Variable* variableList[] = {
 #endif  // ProcVolt_ACT
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
-    new analogElecConductivity_EC(&analogEC_phy, EC1_UUID),
+    new AnalogElecConductivity_EC(&analogEC_phy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
 
 #if defined(ExternalVoltage_Volt1_UUID)
