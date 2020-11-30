@@ -71,7 +71,8 @@
  *
  * @note The Vcc going to the circuit (~3.3V) can and will vary, as battery
  * level gets low.  If possible, you should use setup the processor to use an
- * external reference and tie the Aref pin to the sensor power pin.
+ * external reference (`-D ANALOG_EC_ADC_REFERENCE_MODE=EXTEERNAL`) and tie
+ * the Aref pin to the sensor power pin.
  *
  * @note The analog reference of the Mayfly is not broken out (and is tied to
  * ground).  If using a Mayfly, you have no choice by to use the internal analog
@@ -213,7 +214,7 @@
 /**
  * @brief Default resolution (in bits) of the voltage measurement
  *
- * This is the default for all boards, use a build flag to change this, if
+ * The default for all boards is 10, use a build flag to change this, if
  * necessary.
  */
 #define ANALOG_EC_ADC_RESOLUTION 10
@@ -232,8 +233,8 @@
  * @brief The voltage reference mode for the processor's ADC.
  *
  * For an AVR board, this must be one of:
- * - `DEFAULT`: the default analog reference of 5 volts (on 5V Arduino boards)
- * or 3.3 volts (on 3.3V Arduino boards)
+ * - `DEFAULT`: the default built-in analog reference of 5 volts (on 5V Arduino
+ * boards) or 3.3 volts (on 3.3V Arduino boards)
  * - `INTERNAL`: a built-in reference, equal to 1.1 volts on the ATmega168 or
  * ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the
  * Arduino Mega)
@@ -241,6 +242,11 @@
  * - `INTERNAL2V56`: a built-in 2.56V reference (Arduino Mega only)
  * - `EXTERNAL`: the voltage applied to the AREF pin (0 to 5V only) is used as the
  * reference.
+ *
+ * If not set on an AVR board `DEFAULT` is used.
+ *
+ * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
+ * connected to the power supply for the EC sensor.
  */
 #define ANALOG_EC_ADC_REFERENCE_MODE DEFAULT
 #endif
@@ -249,12 +255,17 @@
  * @brief The voltage reference mode for the processor's ADC.
  *
  * For a SAMD board, this must be one of:
- * - `AR_DEFAULT`: the default analog reference of 3.3V
+ * - `AR_DEFAULT`: the default built-in analog reference of 3.3V
  * - `AR_INTERNAL`: a built-in 2.23V reference
  * - `AR_INTERNAL1V0`: a built-in 1.0V reference
  * - `AR_INTERNAL1V65`: a built-in 1.65V reference
  * - `AR_INTERNAL2V23`: a built-in 2.23V reference
  * - `AR_EXTERNAL`: the voltage applied to the AREF pin is used as the reference
+ *
+ * If not set on an SAMD board `AR_DEFAULT` is used.
+ *
+ * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
+ * connected to the power supply for the EC sensor.
  *
  * @see https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
  */
