@@ -60,10 +60,10 @@ ___
     - [Atlas Scientific EZO Circuits](#atlas-scientific-ezo-circuits)
       - [Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor](#atlas-scientific-ezo-co2-embedded-ndir-carbon-dioxide-sensor)
       - [Atlas Scientific EZO-DO Dissolved Oxygen Sensor](#atlas-scientific-ezo-do-dissolved-oxygen-sensor)
-      - [Atlas Scientific EZO-EC Conductivity Sensor](#atlas-scientific-ezo-ec-conductivity-sensor)
       - [Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor](#atlas-scientific-ezo-orp-oxidationreduction-potential-sensor)
       - [Atlas Scientific EZO-pH Sensor](#atlas-scientific-ezo-ph-sensor)
       - [Atlas Scientific EZO-RTD Temperature Sensor](#atlas-scientific-ezo-rtd-temperature-sensor)
+      - [Atlas Scientific EZO-EC Conductivity Sensor](#atlas-scientific-ezo-ec-conductivity-sensor)
     - [Bosch BME280 Environmental Sensor](#bosch-bme280-environmental-sensor)
     - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
     - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
@@ -80,9 +80,10 @@ ___
       - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
       - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
     - [PaleoTerra Redox Sensors](#paleoterra-redox-sensors)
-    - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
     - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
+    - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
     - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
+    - [Analog Electrical Conductivity using the Processor's Analog Pins](#analog-electrical-conductivity-using-the-processors-analog-pins)
     - [Yosemitech RS485/Modbus Environmental Sensors](#yosemitech-rs485modbus-environmental-sensors)
       - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
       - [Yosemitech Y510 Yosemitech Y510 Turbidity Sensor](#yosemitech-y510-yosemitech-y510-turbidity-sensor)
@@ -686,15 +687,6 @@ ___
 ___
 
 
-[//]: # ( @subsubsection menu_atlas_ec Atlas Scientific EZO-EC Conductivity Sensor )
-#### Atlas Scientific EZO-EC Conductivity Sensor
-
-@see @ref sensor_atlas_cond
-
-[//]: # ( @menusnip{atlas_ec} )
-___
-
-
 [//]: # ( @subsubsection menu_atlas_orp Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor )
 #### Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
 
@@ -719,6 +711,15 @@ ___
 @see @ref sensor_atlas_rtd
 
 [//]: # ( @menusnip{atlas_rtd} )
+___
+
+
+[//]: # ( @subsubsection menu_atlas_ec Atlas Scientific EZO-EC Conductivity Sensor )
+#### Atlas Scientific EZO-EC Conductivity Sensor
+
+@see @ref sensor_atlas_cond
+
+[//]: # ( @menusnip{atlas_ec} )
 ___
 
 
@@ -924,6 +925,21 @@ Using some with software I2C and others with hardware I2C is not supported.
 ___
 
 
+[//]: # ( @subsection menu_i2c_rain Trinket-Based Tipping Bucket Rain Gauge )
+### Trinket-Based Tipping Bucket Rain Gauge
+
+This is for use with a simple external I2C tipping bucket counter based on the [Adafriut Trinket](https://www.adafruit.com/product/1501).
+All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).
+Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.
+Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
+Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
+
+@see @ref sensor_i2c_rain
+
+[//]: # ( @menusnip{i2c_rain} )
+___
+
+
 [//]: # ( @subsection menu_tally Northern Widget Tally Event Counter )
 ### Northern Widget Tally Event Counter
 
@@ -942,21 +958,6 @@ The counter should be continuously powered.
 ___
 
 
-[//]: # ( @subsection menu_i2c_rain Trinket-Based Tipping Bucket Rain Gauge )
-### Trinket-Based Tipping Bucket Rain Gauge
-
-This is for use with a simple external I2C tipping bucket counter based on the [Adafriut Trinket](https://www.adafruit.com/product/1501).
-All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).
-Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.
-Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
-Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
-
-@see @ref sensor_i2c_rain
-
-[//]: # ( @menusnip{i2c_rain} )
-___
-
-
 [//]: # ( @subsection menu_ina219 TI INA219 High Side Current Sensor )
 ### TI INA219 High Side Current Sensor
 
@@ -968,6 +969,23 @@ The number of measurements to average, if more than one is desired, goes as the 
 @see @ref sensor_ina219
 
 [//]: # ( @menusnip{ina219} )
+___
+
+
+
+[//]: # ( @subsection menu_analog_cond Analog Electrical Conductivity using the Processor's Analog Pins )
+### Analog Electrical Conductivity using the Processor's Analog Pins
+
+This is the code for the measuring electrical conductivity using the processor's internal ADC and analog input pins.
+The Arduino pin controlling power on/off and the sensing pin are required for the constuctor.
+The power supply for the sensor *absolutely must be switched on and off between readings*!
+The resistance of your in-circuit resistor, the cell constant for your power cord, and the number of measurements to average are the optional third, fourth, and fifth arguments.
+If your processor has an ADS with resolution greater or less than 10-bit, compile with the build flag `-D ANALOG_EC_ADC_RESOLUTION=##`.
+For best results, you should also connect the AREF pin of your processors ADC to the power supply for the and compile with the build flag `-D ANALOG_EC_ADC_REFERENCE_MODE=EXTERNAL`.
+
+@see @ref sensor_analog_cond
+
+[//]: # ( @menusnip{analog_cond} )
 ___
 
 
