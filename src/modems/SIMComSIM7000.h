@@ -7,6 +7,44 @@
  * @brief Contains the SIMComSIM7000 subclass of loggerModem for
  * Botletics other modules based on the SIMCOM SIM7000.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_sim7000 SIMCom SIM7000
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_sim7000_notes Introduction
+ *
+ * The SIMCom [SIM7000](https://simcom.ee/modules/iot/sim7000e/) Tri-Band
+ * LTE-FDD and Dual-Band GPRS/EDGE module solution in a SMT type which
+ * supports LTE CAT-M1(eMTC) and NB-IoT up to 375kbps data transfer.
+ *
+ * There are breakouts of several variants made by
+ * [AND Technologies](http://www.and-global.com/) or
+ * [Botletics](https://www.botletics.com/products/sim7000-shield).
+ *
+ * @section modem_sim7000_mayfly Connecting a SIM7000 to a Mayfly
+ *
+ * To my knowledge, there are not any SIM7000 modules available that can
+ * directly connect to a Mayfly.
+ *
+ * @section modem_sim7000_docs Manufacturer Documentation
+ * The module datasheet and AT commands are available here:
+ * https://simcom.ee/modules/iot/sim7000e/
+ *
+ * @section modem_sim7000_ctor Modem Constructor
+ * {{ @ref SIMComSIM7000::SIMComSIM7000 }}
+ *
+ * ___
+ * @section modem_sim7000_examples Example Code
+ * The SIM7000 is used in the @menulink{sim7000} example.
+ *
+ * @menusnip{sim7000}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_SIMCOMSIM7000_H_
@@ -19,6 +57,9 @@
 #ifdef MS_SIMCOMSIM7000_DEBUG
 #define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
+
+/** @ingroup modem_sim7000 */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -113,21 +154,7 @@
  * @brief The loggerModem subclass for Botletics, And1, and other modules based
  * on the SIMCOM SIM7000.
  *
- * #### Pin and timing information for the SIM7000
- *
- * @copydetails #SIM7000_STATUS_LEVEL
- *
- * @copydetails #SIM7000_RESET_LEVEL
- *
- * @copydetails #SIM7000_WAKE_LEVEL
- *
- * @copydetails #SIM7000_WAKE_DELAY_MS
- *
- * @copydetails #SIM7000_ATRESPONSE_TIME_MS
- *
- * @copydetails #SIM7000_DISCONNECT_TIME_MS
- *
- * @see @ref page_sim7000
+ * @see @ref modem_sim7000
  */
 class SIMComSIM7000 : public loggerModem {
  public:
@@ -193,5 +220,5 @@ class SIMComSIM7000 : public loggerModem {
  private:
     const char* _apn;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_SIMCOMSIM7000_H_

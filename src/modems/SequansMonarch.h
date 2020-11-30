@@ -7,6 +7,49 @@
  * @brief Contains the SequansMonarch subclass of loggerModem for Nimbelink or
  * other modules based on the Sequans Monarch VZM20Q.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_monarch Sequans Monarch VZM20Q
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_monarch_notes Introduction
+ *
+ * The Sequans Monarch
+ * [VZM20Q](https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/)
+ * is another LTE CatM1 chip.
+ * It's available in "Skywire" (XBee-like) format from
+ * [Nimbelink](https://nimbelink.com/products/4g-lte-m-verizon-sequans/).
+
+ *
+ * @section modem_monarch_mayfly Monarchs and Mayflys
+ *
+ * To my knowledge, there are not any Sequans modules available that can
+ * directly connect to a Mayfly.
+ * Although the Nimbelink board linked above would fit the physical XBee
+ * footprint on the Mayfly, it will _not_ work without some additional
+ * interface or other modifications.
+ * The power supply on the Mayfly is insufficient, the voltage reference is not
+ * implemented on the Mayfly, and the Nimbelink board requires 3 extra ground
+ * pins that aren't available on the Mayfly.
+ *
+ * @section modem_monarch_docs Manufacturer Documentation
+ * The module datasheet and AT commands are available here:
+ * https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/
+ *
+ * @section modem_monarch_ctor Modem Constructor
+ * {{ @ref SequansMonarch::SequansMonarch }}
+ *
+ * ___
+ * @section modem_monarch_examples Example Code
+ * The monarch is used in the @menulink{monarch} example.
+ *
+ * @menusnip{monarch}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_SEQUANSMONARCH_H_
@@ -19,6 +62,9 @@
 #ifdef MS_SEQUANSMONARCH_DEBUG
 #define MS_DEBUGGING_STD "SequansMonarch"
 #endif
+
+/** @ingroup modem_monarch */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -137,21 +183,7 @@
  * @brief The loggerModem subclass for Nimbelink or other modules based on the
  * Sequans Monarch VZM20Q.
  *
- * #### Pin and timing information for the VZM20Q
- *
- * @copydetails #VZM20Q_STATUS_LEVEL
- *
- * @copydetails #VZM20Q_RESET_LEVEL
- *
- * @copydetails #VZM20Q_WAKE_LEVEL
- *
- * @copydetails #VZM20Q_WAKE_DELAY_MS
- *
- * @copydetails #VZM20Q_ATRESPONSE_TIME_MS
- *
- * @copydetails #VZM20Q_DISCONNECT_TIME_MS
- *
- * @see @ref page_monarch
+ * @see @ref modem_monarch
  */
 class SequansMonarch : public loggerModem {
  public:
@@ -221,5 +253,5 @@ class SequansMonarch : public loggerModem {
  private:
     const char* _apn;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_SEQUANSMONARCH_H_

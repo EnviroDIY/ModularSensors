@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup sensor_atlas_rtd Atlas Scientific EZO-RTD
+ * @defgroup sensor_atlas_rtd Atlas EZO-RTD
  * Classes for the Atlas Scientific EZO-RTD temperature circuit and probes.
  *
  * @ingroup atlas_group

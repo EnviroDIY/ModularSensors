@@ -7,6 +7,45 @@
  * @brief Contains the SodaqUBeeU201 subclass of loggerModem for the Sodaq UBee
  * based on the u-blox SARA U201 3G cellular module.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_ubee_3g Sodaq UBee 2G, 3G, and other u-blox 2G and 3G Modules
+ *
+ * @ingroup modem_ublox
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_ubee_3g_notes Introduction
+ *
+ * There are a several of boards available that feature a variant of the
+ * u-blox 2G and 3G modules, including a Sodaq UBee based on the SARA U201 and
+ * another based on the SARA G3.
+ *
+ * The default baud rate for the SARA U201 is 9600.
+ *
+ * Power draw for most 2G and 3G modules is up to 2A.
+ * The Sodaq UBee's provide extra battery sockets to supply the additional
+ * power.
+ * These _MUST_ be used.
+ *
+ * @section modem_ubee_3g_docs Manufacturer Documentation
+ * The module datasheet and AT commands for the SARA U2 series are available here:
+ * https://www.u-blox.com/en/product/sara-u2-series
+ * The schematics for the UBee are available here:
+ * https://support.sodaq.com/Shields_and_Bees/ubee/
+ *
+ * @section modem_ubee_3g_ctor Modem Constructor
+ * {{ @ref SodaqUBeeU201::SodaqUBeeU201 }}
+ *
+ * ___
+ * @section modem_ubee_3g_examples Example Code
+ *
+ * The SARA U201 based UBee is used in the @menulink{ubeeu201} example.
+ *
+ * @menusnip{sara_u201}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_SODAQUBEEU201_H_
@@ -19,6 +58,9 @@
 #ifdef MS_SODAQUBEEU201_DEBUG
 #define MS_DEBUGGING_STD "SodaqUBeeU201"
 #endif
+
+/** @ingroup modem_ubee_3g */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -111,21 +153,7 @@
  * @brief The loggerModem subclass for the Sodaq UBee based on the u-blox SARA
  * U201 3G cellular module.
  *
- * #### Pin and timing information for the SARA U2 series
- *
- * @copydetails #U201_STATUS_LEVEL
- *
- * @copydetails #U201_RESET_LEVEL
- *
- * @copydetails #U201_WAKE_LEVEL
- *
- * @copydetails #U201_WAKE_DELAY_MS
- *
- * @copydetails #U201_ATRESPONSE_TIME_MS
- *
- * @copydetails #U201_DISCONNECT_TIME_MS
- *
- * @see @ref page_ubee
+ * @see @ref modem_ubee_3g
  */
 class SodaqUBeeU201 : public loggerModem {
  public:
@@ -199,5 +227,5 @@ class SodaqUBeeU201 : public loggerModem {
  private:
     const char* _apn;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_SODAQUBEEU201_H_

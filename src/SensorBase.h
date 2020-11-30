@@ -14,6 +14,8 @@
  * All implemented Sensor classes
  *
  * @copydetails Sensor
+ *
+ * @see @ref page_sensor_notes
  */
 /* clang-format on */
 

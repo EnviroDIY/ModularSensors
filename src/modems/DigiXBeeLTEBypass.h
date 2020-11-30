@@ -8,6 +8,58 @@
  * Cellular XBee3's based on u-blox SARA R410M chips and operated in bypass
  * mode.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_digi_lte_bypass Digi XBee® Cellular LTE-M/NB-IoT
+ *
+ * @ingroup modem_digi
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_digi_lte_bypass_notes Introduction
+ *
+ * @warning Digi strongly recommends against this, but it actually seems to be
+ * more stable in our tests.
+ * Your milage may vary.
+ *
+ * When operated in Digi's "bypass" mode, the u-blox SARA R410M based XBee3 can
+ * be implented as a DigiXBeeLTEBypass object - a subclass of DigiXBee and
+ * loggerModem.
+ * Bypass refers to the fact that XBee3's main processor is bypassed - acting
+ * only as a pass-through to the u-blox cellular component.
+ *
+ * This LTE-M module can just about almost get by with only 500mA power supplied, but it definitely not ideal.
+ *
+ * @section modem_digi_lte_bypass_docs Manufacturer Documentation
+ * The Digi product page for the LTE-M module is here:
+ * https://www.digi.com/products/embedded-systems/digi-xbee/cellular-modems/xbee3-cellular-lte-m-nb-iot
+ *
+ * @section modem_digi_lte_bypass_ctor Modem Constructor
+ * {{ @ref DigiXBeeLTEBypass::DigiXBeeLTEBypass }}
+ *
+ * ___
+ * @section modem_digi_lte_bypass_examples Example Code
+ * @subsection modem_digi_lte_bypass_modem_obj Creating the Modem Object
+ *
+ * The digi_cellular is used in the @menulink{xbee_ltem_by} example.
+ *
+ * @menusnip{xbee3_ltem_bypass}
+ *
+ * @section modem_digi_lte_bypass_network LTE Network Selection
+ *
+ * It is good practice to select which network you'll be connecting to based
+ * on your SIM card and signal availability.
+ * Example code for this can also be found in the
+ * [menu a la carte example](@ref setup_r4_carrrier).
+ *
+ * @note The network selection for an LTE-M XBee in bypass mode is identical
+ * to that for a Sodaq LTE-M UBee or any other module based on the u-blox SARA
+ * R4 series.
+ *
+ * @menusnip{setup_r4_carrrier}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_DIGIXBEELTEBYPASS_H_
@@ -20,6 +72,9 @@
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG
 #define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
+
+/** @ingroup modem_digi_lte_bypass */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -50,9 +105,7 @@
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
  *
- * @see #DigiXBee
- * @see #SodaqUBeeR410M
- * @see @ref xbees_lte_bypass
+ * @see @ref modem_digi_lte_bypass
  */
 class DigiXBeeLTEBypass : public DigiXBee {
  public:
@@ -133,5 +186,5 @@ class DigiXBeeLTEBypass : public DigiXBee {
  private:
     const char* _apn;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_DIGIXBEELTEBYPASS_H_

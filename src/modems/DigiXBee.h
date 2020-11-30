@@ -7,6 +7,71 @@
  * @brief Contains the DigiXBee modem subclass of loggerModem, which itself is a
  * parent class for all other XBee's and XBee3's.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_digi Digi XBee's
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_digi_notes Introduction
+ *
+ * All of the various cellular XBee's and XBee3's are supported by this library.
+ * The wifi S6B is also supported.
+ *
+ * @warning This library does _NOT_ directly support the ZigBee, 900mHZ, or any
+ * other radio-based XBee's.
+ * It is for the cellular and WiFi Bee's only.
+ *
+ * @note All GPIOs are user configurable and are configured to use the expected
+ * input/output mode in the modem setup functions.
+ *
+ *
+ * @section modem_digi_mayfly-and-digi-xbee-connections Mayfly and Digi XBee Connections
+ *
+ * @subsection modem_digi_raw_pins Pin Numbers for connecting Digi XBee's Directly to a Mayfly
+ *
+ * This applies to _all_ Digi XBees and XBee3's when attached directly to the Mayfly's bee slot.
+ * @code{cpp}
+ * const int8_t modemVccPin = -1;      // MCU pin controlling modem power
+ * const bool useCTSforStatus = true;  // Flag to use the XBee `CTS` pin for status
+ * const int8_t modemStatusPin = 19;   // MCU pin used to read modem status
+ * const int8_t modemResetPin = -1;    // MCU pin connected to modem reset pin
+ * const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
+ * const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status
+ * @endcode
+ *
+ * - The Digi XBee gets power from pin 1; on a Mayfly this pin is always powered - the XBee cannot be powered down.
+ *     - NOTE:  If using a cellular XBee or XBee3 directly with the Mayfly your Mayfly must be at least v0.5b, you must use SJ13 to connect the Bee directly to the LiPo, and you must always have a battery connected to provide enough power for the XBee to make a cellular connection.
+ *     - NOTE 2:  If you turn off the Mayfly via its switch but leave the XBee connected as above, it will drain your battery very quickly.
+ * Disconnect the battery if you turn off the Mayfly.
+ * - The Digi XBee reports ON/SLEEP_N on pin 13, but this is not connected to a Mayfly pin.
+ * Instead, use the XBee's `CTS` pin (pin 12) which is connected to Mayfly pin 19.
+ * - XBee pin 5 is `RESET_N` but this is not connected to any pin on the Mayfly.
+ * - XBee pin 9 is SLEEP_RQ which is connected to Mayfly pin 23.
+ * - I like to use the red LED to show the bee wake/sleep since the Digi XBee's have no LEDs of their own.
+ *
+ * @subsection modem_digi_adapter_pins Pin Numbers for connecting Digi LTE XBee3's to a Mayfly via the LTE adapter board
+ *
+ * @code{cpp}
+ * const int8_t modemVccPin = -1;       // MCU pin controlling modem power
+ * const bool useCTSforStatus = false;  // Flag to use the XBee `CTS` pin for status
+ * const int8_t modemStatusPin = 19;    // MCU pin used to read modem status
+ * const int8_t modemResetPin = 20;     // MCU pin connected to modem reset pin
+ * const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request
+ * const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem status
+ * @endcode
+ *
+ * - The power is still not controllable unless you use both SJ7 on the Mayfly and SJ1 on the adapter.
+ * Doing so, you could use pin A5 for modem Vcc.
+ * - The LTE adapter connects ON/SLEEP_N on bee pin 13 to Mayfly pin 19 (unless you change this with adapter SJ2).
+ * - XBee pin 5 is `RESET_N` which the adapter connects to Mayfly pin 20.
+ * - XBee pin 9 is SLEEP_RQ which is connected still to Mayfly pin 23.
+ * - I still like to use the red LED to show the bee wake/sleep in addition to the lights on the adapter.
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_DIGIXBEE_H_
@@ -18,6 +83,9 @@
 #ifdef MS_DIGIXBEE_DEBUG
 #define MS_DEBUGGING_STD "DigiXBee"
 #endif
+
+/** @ingroup modem_digi */
+/**@{*/
 
 /**
  * @brief The loggerModem::_statusTime_ms.
@@ -97,27 +165,10 @@
  * All of the various cellular XBee's and XBee3's are supported.  The wifi S6B
  * is also supported.
  *
- * #### Pin and timing information for the XBees
- *
- * @copydetails #XBEE_STATUS_TIME_MS
- *
- * @copydetails #XBEE_RESET_LEVEL
- *
- * @copydetails #XBEE_WAKE_LEVEL
- *
- * @copydetails #XBEE_STATUS_TIME_MS
- *
- * @copydetails #XBEE_ATRESPONSE_TIME_MS
- *
- * @copydetails #XBEE_DISCONNECT_TIME_MS
- *
- * @note All GPIOs are user configurable and are configured to use the expected
- * input/output mode in the modem setup functions.
- *
  * @note The ZigBee, 900mHZ, and other radio-based XBee's are not
  * supported.
  *
- * @see @ref page_digi_xbees
+ * @see @ref modem_digi
  */
 class DigiXBee : public loggerModem {
  public:
@@ -150,5 +201,5 @@ class DigiXBee : public loggerModem {
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_DIGIXBEE_H_

@@ -4,10 +4,18 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the loggerModem class and  the variable subclasses
+ * @brief Contains the loggerModem class and the variable subclasses
  * Modem_RSSI, Modem_SignalPercent, Modem_BatteryState, Modem_BatteryPercent,
  * and Modem_BatteryVoltage - all of which are implemented as "calculated"
  * variables.
+ */
+/**
+ * @defgroup the_modems Supported Modems and Communication Modules
+ * All implemented loggerModem classes
+ *
+ * @copydetails loggerModem
+ *
+ * @see @ref page_modem_notes
  */
 
 // Header Guards
@@ -39,6 +47,8 @@
  * modem object are actually being called as calculated variables where the
  * calculation function is to ask the modem object for the values from the last
  * time it connected to the internet.
+ *
+ * @ingroup the_modems
  */
 
 /** @ingroup modem_measured_variables */

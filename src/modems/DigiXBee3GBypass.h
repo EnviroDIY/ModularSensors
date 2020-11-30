@@ -7,6 +7,43 @@
  * @brief Contains the DigiXBee3GBypass subclass of the DigiXBee class for Digi
  * Cellular XBee's based on u-blox SARA U201 chips and operated in bypass mode.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_digi_3g_bypass Digi XBee® Cellular 3G
+ *
+ * @ingroup modem_digi
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_digi_3g_bypass_notes Introduction
+ *
+ * @warning Digi strongly recommends against this, but it actually seems to be
+ * more stable in our tests.
+ * Your milage may vary.
+ *
+ * When operated in Digi's "bypass" mode, the u-blox SARA U201 based 3G XBee
+ * with 2G fallback can be implented as a DigiXBee3GBypass object -
+ * a subclass of DigiXBee and loggerModem.
+ * Bypass refers to the fact that XBee3's main processor is bypassed - acting
+ * only as a pass-through to the u-blox cellular component.
+ *
+ * The 3G module *must* have **2 amps** of power available.
+ *
+ * @section modem_digi_3g_bypass_docs Manufacturer Documentation
+ * The Digi product page for the 3G module is here:
+ * https://www.digi.com/products/embedded-systems/cellular-modems/digi-xbee-cellular-3g
+ *
+ * @section modem_digi_3g_bypass_ctor Modem Constructor
+ * {{ @ref DigiXBee3GBypass::DigiXBee3GBypass }}
+ *
+ * ___
+ * @section modem_digi_3g_bypass_examples Example Code
+ * The digi_cellular is used in the @menulink{digi_3gby} example.
+ *
+ * @menusnip{xbee_3g_bypass}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_DIGIXBEE3GBYPASS_H_
@@ -19,6 +56,9 @@
 #ifdef MS_DIGIXBEE3GBYPASS_DEBUG
 #define MS_DEBUGGING_STD "DigiXBee3GBypass"
 #endif
+
+/** @ingroup modem_digi_3g_bypass */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -50,9 +90,7 @@
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
  *
- * @see #DigiXBee
- * @see #SodaqUBeeU201
- * @see @ref xbees_3g_bypass
+ * @see @ref modem_digi_3g_bypass
  */
 class DigiXBee3GBypass : public DigiXBee {
  public:
@@ -133,5 +171,5 @@ class DigiXBee3GBypass : public DigiXBee {
  private:
     const char* _apn;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_DIGIXBEE3GBYPASS_H_

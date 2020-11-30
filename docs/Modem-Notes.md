@@ -19,34 +19,34 @@ If you are having trouble, please see the pages for the specific modems and the 
 [//]: # ( @section modem_notes_classes Summary of Classes to use for Various Manufactured Modules )
 ## Summary of Classes to use for Various Manufactured Modules
 
-|                    Module                     | Class                                            |
+|                    Module                     |                      Class                       |
 | :-------------------------------------------: | :----------------------------------------------: |
 |     Digi XBee3 LTE-M (u-blox SARA R410M)      | DigiXBeeCellularTransparent or DigiXBeeLTEBypass |
 |       Digi 3G Global (u-blox SARA U201)       | DigiXBeeCellularTransparent or DigiXBee3GBypass  |
-|   Digi XBee LTE Cat 1 Verizon (Telit LE866)   | DigiXBeeCellularTransparent                      |
-| Digi XBee3 LTE Cat 1 Verizon (Telit LE866-SV) | DigiXBeeCellularTransparent                      |
-| Digi XBee3 LTE Cat 1 AT&T (Telit LE866A1-NA)  | DigiXBeeCellularTransparent                      |
-|              Digi XBee S6B WiFi               | DigiXBeeWifi                                     |
-|               Espressif ESP8266               | EspressifESP8266                                 |
-|                Espressif ESP32                | EspressifESP8266                                 |
-|                 Quectel BG96                  | QuectelBG96                                      |
-|       Mikroe LTE IOT 2 Click (_BG96_)¹        | QuectelBG96                                      |
-|         Dragino NB IOT Bee (_BG96_)¹          | QuectelBG96                                      |
-|   Nimbelink Skywire LTE-M Global (_BG96_)¹    | QuectelBG96                                      |
-|            Sequans Monarch VZM20Q             | SequansMonarch                                   |
-|      Nimbelink Skywire LTE-M for Verizon      | SequansMonarch                                   |
-|            SIMCom SIM7000 variants            | SIMComSIM7000                                    |
-|      SIMCom SIM800, SIM900 and variants       | SIMComSIM800                                     |
-|          Adafruit Fona (2G, SIM800H)          | SIMComSIM800                                     |
-|           Sodaq GPRSBee R4 (SIM900)           | SIMComSIM800                                     |
-|         Mikroe GSM-GPS Click (SIM808)         | SIMComSIM800                                     |
-|       Mikroe GSM/GNSS 2 Click (SIM868)        | SIMComSIM800                                     |
-|       Sodaq GPRSBee R6 or R7 (SIM800H)        | Sodaq2GBeeR6                                     |
-|          u-blox SARA R4 or N4 series          | SodaqUBeeR410M                                   |
-|     Sodaq UBee LTE-M² (u-blox SARA R410M)     | SodaqUBeeR410M                                   |
-|   Mikroe LTE IOT Click (u-blox SARA R410M)    | SodaqUBeeR410M                                   |
-|         u-blox 2G, 3G, and 4G modules         | SodaqUBeeU201                                    |
-|       Sodaq UBee 3G² (u-blox SARA U201)       | SodaqUBeeU201                                    |
+|   Digi XBee LTE Cat 1 Verizon (Telit LE866)   |           DigiXBeeCellularTransparent            |
+| Digi XBee3 LTE Cat 1 Verizon (Telit LE866-SV) |           DigiXBeeCellularTransparent            |
+| Digi XBee3 LTE Cat 1 AT&T (Telit LE866A1-NA)  |           DigiXBeeCellularTransparent            |
+|              Digi XBee S6B WiFi               |                   DigiXBeeWifi                   |
+|               Espressif ESP8266               |                 EspressifESP8266                 |
+|                Espressif ESP32                |                 EspressifESP8266                 |
+|                 Quectel BG96                  |                   QuectelBG96                    |
+|       Mikroe LTE IOT 2 Click (_BG96_)¹        |                   QuectelBG96                    |
+|         Dragino NB IOT Bee (_BG96_)¹          |                   QuectelBG96                    |
+|   Nimbelink Skywire LTE-M Global (_BG96_)¹    |                   QuectelBG96                    |
+|            Sequans Monarch VZM20Q             |                  SequansMonarch                  |
+|      Nimbelink Skywire LTE-M for Verizon      |                  SequansMonarch                  |
+|            SIMCom SIM7000 variants            |                  SIMComSIM7000                   |
+|      SIMCom SIM800, SIM900 and variants       |                   SIMComSIM800                   |
+|          Adafruit Fona (2G, SIM800H)          |                   SIMComSIM800                   |
+|           Sodaq GPRSBee R4 (SIM900)           |                   SIMComSIM800                   |
+|         Mikroe GSM-GPS Click (SIM808)         |                   SIMComSIM800                   |
+|       Mikroe GSM/GNSS 2 Click (SIM868)        |                   SIMComSIM800                   |
+|       Sodaq GPRSBee R6 or R7 (SIM800H)        |                   Sodaq2GBeeR6                   |
+|          u-blox SARA R4 or N4 series          |                  SodaqUBeeR410M                  |
+|     Sodaq UBee LTE-M² (u-blox SARA R410M)     |                  SodaqUBeeR410M                  |
+|   Mikroe LTE IOT Click (u-blox SARA R410M)    |                  SodaqUBeeR410M                  |
+|         u-blox 2G, 3G, and 4G modules         |                  SodaqUBeeU201                   |
+|       Sodaq UBee 3G² (u-blox SARA U201)       |                  SodaqUBeeU201                   |
 
 ¹ The Quenctel BC95G based variant is _not_ supported.
 
@@ -56,16 +56,16 @@ If you are having trouble, please see the pages for the specific modems and the 
 [//]: # ( @section modem_notes_bauds Default Baud Rates of Supported Modems )
 ## Default baud rates of supported modules
 
-|               Module               | Default Baud Rate                                        |
+|               Module               |                    Default Baud Rate                     |
 | :--------------------------------: | :------------------------------------------------------: |
-| Digi XBee and XBee3 _all variants_ | 9600                                                     |
+| Digi XBee and XBee3 _all variants_ |                           9600                           |
 |     Espressif ESP8266 or ESP32     | 115200; Use `AT+UART_DEF=9600,8,1,0,0` to slow if needed |
-|            Quectel BG96            | 115200; Use `AT+IPR=9600` to slow if needed              |
-|       Sequans Monarch VZM20Q       | 921600; Use `AT+IPR=9600` to slow                        |
-|      SIMCom SIM7000 variants       | 9600                                                     |
-| SIMCom SIM800, SIM900 and variants | 9600                                                     |
-|    u-blox SARA R4 or N4 series     | 115200; _reverts to this speed after every power loss_   |
-|   u-blox 2G, 3G, and 4G modules    | varies by module, most auto-baud or use 9600             |
+|            Quectel BG96            |       115200; Use `AT+IPR=9600` to slow if needed        |
+|       Sequans Monarch VZM20Q       |            921600; Use `AT+IPR=9600` to slow             |
+|      SIMCom SIM7000 variants       |                           9600                           |
+| SIMCom SIM800, SIM900 and variants |                           9600                           |
+|    u-blox SARA R4 or N4 series     |  115200; _reverts to this speed after every power loss_  |
+|   u-blox 2G, 3G, and 4G modules    |       varies by module, most auto-baud or use 9600       |
 
 
 [//]: # ( @section modem_notes_power Power Requirements of Supported Modems )
@@ -128,30 +128,37 @@ Most modules are capable of serial communication and some level of functionality
 
 Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly using its Bee socket.
 
-|                       Module                       | Power | Status |     Reset      | Sleep Request  |
-| :------------------------------------------------: | :---: | :----: | :------------: | :------------: |
-| Digi XBee/XBee3, all variants (direct connection)¹ |  -1   |   19   |       -1       |       23       |
-|  Digi XBee/XBee3, all variants (with LTE adapter)  |  -1²  |   19   |       20       |       23       |
-|                Itead Wee (ESP8266)<sup>6</sup>     |  -1   |   -1   | -1<sup>3</sup> |       -1       |
-|             DFRobot WiFi Bee (ESP8266)             |  -1   |   -1   |       -1       | 19<sup>4</sup> |
-|             Dragino NB IOT Bee (BG96)              |  -1   |   -1   | -1<sup>5</sup> | -1<sup>5</sup> |
-|                  Sodaq GPRSBee R4                  |  -1   |   19   |       -1       |       23       |
-|               Sodaq GPRSBee R6 or R7               |  23   |   19   |       -1       |       -1       |
-|                  Sodaq UBee LTE-M                  |  23   |   19   |       -1       |       20       |
-|                   Sodaq UBee 3G                    |  23   |   19   |       -1       |       20       |
+|                       Module                       |     Power      |     Status     |     Reset      | Sleep Request  |
+| :------------------------------------------------: | :------------: | :------------: | :------------: | :------------: |
+| Digi XBee/XBee3, all variants (direct connection)¹ |       -1       |      19²       |       -1       |       23       |
+|  Digi XBee/XBee3, all variants (with LTE adapter)  | -1<sup>3</sup> | 19<sup>4</sup> |       20       |       23       |
+|          Itead Wee (ESP8266)<sup>8</sup>           |       -1       |       -1       | -1<sup>5</sup> |       -1       |
+|             DFRobot WiFi Bee (ESP8266)             |       -1       |       -1       |       -1       | 19<sup>6</sup> |
+|             Dragino NB IOT Bee (BG96)              |       -1       |       -1       | -1<sup>7</sup> | -1<sup>7</sup> |
+|                  Sodaq GPRSBee R4                  |       -1       |       19       |       -1       |       23       |
+|               Sodaq GPRSBee R6 or R7               |       23       |       19       |       -1       |       -1       |
+|                  Sodaq UBee LTE-M                  |       23       |       19       |       -1       |       20       |
+|                   Sodaq UBee 3G                    |       23       |       19       |       -1       |       20       |
 
 
-¹ To use the cellular Digi XBee's without the LTE adapter, use solder jumper 13 (SJ13) on the Mayfly to tie pin 1 on the XBee socket directly to the battery.
+¹ To use the cellular Digi XBee's without the LTE adapter, your Mayfly must be at least v0.5b, you must use SJ13 to connect the Bee directly to the LiPo, and you must always have a battery connected to provide enough power for the XBee to make a cellular connection.
+If you turn off the Mayfly via its switch but leave the XBee connected as above, it will drain your battery very quickly.
+Disconnect the battery if you turn off the Mayfly.
 
-² If you close solder jumper 1 (SJ1) on the LTE adapter and use connect solder jumper 7 (SJ7) on the Mayfly to te A5 to ASSOC, you can use A5 as the power pin for the XBee.
+² The Digi XBee reports ON/SLEEP_N on pin 13, but this is not connected to a Mayfly pin.
+Instead, you must use the XBee's `CTS` pin (pin 12) which is connected to Mayfly pin 19.
 
-<sup>3</sup> I *strongly* recommend running a new wire along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4.
+<sup>3</sup> If you close solder jumper 1 (SJ1) on the LTE adapter and use connect solder jumper 7 (SJ7) on the Mayfly to te A5 to ASSOC, you can use A5 as the power pin for the XBee.
+
+<sup>4</sup> The LTE adapter switches pins 12 and 13 so that the true `STATUS` pn of the XBee is connected to Mayfly pin 19.
+
+<sup>5</sup> I *strongly* recommend running a new wire along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4.
    This will enable you to use A4 as the reset pin which allows you to use deep sleep.
 
-<sup>4</sup> Use 13 as the `espSleepRqPin` for light sleep.
+<sup>6</sup> Use 13 as the `espSleepRqPin` for light sleep.
 
-<sup>5</sup> I *strongly* recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin of the XBee socket to A3.
+<sup>7</sup> I *strongly* recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin of the XBee socket to A3.
 This will enable you to use A4 as the reset pin and A3 as the sleep request pin.
-With those connections made, the Dragino BG96 becomes the *only* LTE module that can be run using only the 500mA regulator on the Mayfly (ie, without a separate battery connection for the modem).
+With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (ie, without a separate battery connection for the modem).
 
-<sup>6</sup> This module is no longer produced or sold.
+<sup>8</sup> This module is no longer produced or sold.
