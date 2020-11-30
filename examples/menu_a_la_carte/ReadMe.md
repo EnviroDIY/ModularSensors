@@ -315,8 +315,6 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [XBee Cellular Carrier](@ref menu_setup_xbeec_carrier) chunk of the setup function.
 
-@see @ref xbees_xbee_cellular_transparent
-
 
 [//]: # ( @subsection menu_xbee_ltem_by Digi XBee3 LTE-M Bypass )
 ### Digi XBee3 LTE-M - Bypass Mode
@@ -339,8 +337,6 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
 
-@see @ref xbees_lte_bypass
-
 
 [//]: # ( @subsubsection menu_digi_3gby Digi XBee 3G - Bypass Mode )
 ### Digi XBee 3G - Bypass Mode
@@ -356,8 +352,6 @@ To create a DigiXBee3GBypass object we need to know
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
-
-@see @ref xbees_3g_bypass
 
 [//]: # ( @menusnip{xbee_3g_bypass} )
 
@@ -377,8 +371,6 @@ To create a DigiXBeeWifi object we need to know
 - and the wifi WPA2 password.
 
 Pins that do not apply should be set as -1.
-
-@see @ref xbees_s6b
 
 [//]: # ( @menusnip{xbee_wifi} )
 
@@ -403,8 +395,6 @@ Pins that do not apply should be set as -1.
 Because the ESP8266's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
 You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(@ref menu_setup_esp) part of the setup function below.
 
-@see @ref page_esp8266
-
 
 [//]: # ( @subsection menu_bg96 Quectel BG96 )
 ### Quectel BG96
@@ -424,8 +414,6 @@ Pins that do not apply should be set as -1.
 
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
 Code to invert the pin levels is in the [Skywire Pin Inversions](@ref menu_setup_skywire) part of the setup function below.
-
-@see @ref page_bg96
 
 
 [//]: # ( @subsection menu_monarch Sequans Monarch )
@@ -451,8 +439,6 @@ The default baud rate of the SVZM20 is much too fast for almost all Arduino boar
 _Before_ attampting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
 The proper command to decrease the baud rate to 9600 (8N1) is: `AT+IPR=9600`.
 
-@see @ref page_monarch
-
 
 [//]: # ( @subsection menu_sim800 SIMCom SIM800 )
 ### SIMCom SIM800
@@ -471,8 +457,6 @@ Pins that do not apply should be set as -1.
 _NOTE:_  This is NOT the correct form for a Sodaq 2GBee R6 or R7.
 See the  section for a 2GBee R6.
 
-@see @ref page_sim800
-
 [//]: # ( @menusnip{sim800} )
 
 
@@ -490,8 +474,6 @@ To create a SIMComSIM7000 object we need to know
 
 Pins that do not apply should be set as -1.
 
-@see @ref page_sim7000
-
 [//]: # ( @menusnip{sim7000} )
 
 
@@ -508,8 +490,6 @@ You should enter this pin as the power pin.)
 Pins that do not apply should be set as -1.
 The GPRSBee R6/R7 does not expose the `RESET` pin of the SIM800.
 The `PWRKEY` is held `LOW` as long as the SIM800 is powered (as mentioned above).
-
-@see @ref page_gprsbee
 
 [//]: # ( @menusnip{gprsbee} )
 
@@ -534,8 +514,6 @@ Depending on your cellular carrier, it is best to select the proper carrier prof
 Setting these helps the modem to connect to network faster.
 This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
 
-@see @ref ubee_ltem
-
 [//]: # ( @subsection menu_ubeeu201 u-blox SARA U201 )
 ### u-blox SARA U201
 
@@ -549,8 +527,6 @@ To create a SodaqUBeeU201 object we need to know
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
-
-@see @ref ubee_2g
 
 [//]: # ( @menusnip{sara_u201} )
 

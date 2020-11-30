@@ -30,7 +30,7 @@ _NOTE:  The code snippets in this walkthrough will not appear on GitHub._
 [//]: # ( @section example_learn_envirodiy_pio PlatformIO Configuration )
 ## PlatformIO Configuration
 
-[//]: # ( @include{lineno} simple_logging_Learn_EnviroDIY/platformio.ini )
+[//]: # ( @include{lineno} simple_logging_LearnEnviroDIY/platformio.ini )
 
 [//]: # ( @section example_learn_envirodiy_code The Complete Code )
 ## The Complete Code
