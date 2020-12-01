@@ -301,13 +301,12 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     if (!wasActive) _SDI12Internal.end();
 
     // Verify the number of results the sensor will send
-    // uint8_t numVariables = sdiResponse.substring(4).toInt();
-    // if (numVariables != _numReturnedValues)
-    // {
-    //     MS_DBG(numVariables, F("results expected"),
-    //            F("This differs from the sensor's standard design of"),
-    //            numReturnedVars, F("measurements!!"));
-    // }
+    uint8_t numVariables = sdiResponse.substring(4).toInt();
+    if (numVariables != _numReturnedValues) {
+        PRINTOUT(numVariables, F("results expected"),
+                 F("This differs from the sensor's standard design of"),
+                 _numReturnedValues, F("measurements!!"));
+    }
 
     // Set the times we've activated the sensor and asked for a measurement
     if (sdiResponse.length() > 0) {
@@ -349,24 +348,44 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         _SDI12Internal.clearBuffer();
 
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-        String getDataCommand = "";
-        getDataCommand += _SDI12address;
-        // SDI-12 command to get data [address][D][dataOption][!]
-        getDataCommand += "D0!";
-        _SDI12Internal.sendCommand(getDataCommand);
-        delay(30);  // It just needs this little delay
-        MS_DBG(F("    >>>"), getDataCommand);
+        uint8_t resultsReceived = 0;
+        uint8_t cmd_number      = 0;
+        while (resultsReceived < _numReturnedValues && cmd_number <= 9) {
+            String getDataCommand = "";
+            getDataCommand += _SDI12address;
+            // SDI-12 command to get data [address][D][dataOption][!]
+            getDataCommand += "D";
+            getDataCommand += cmd_number;
+            getDataCommand += "!";
+            _SDI12Internal.sendCommand(getDataCommand);
+            delay(30);  // It just needs this little delay
+            MS_DBG(F("    >>>"), getDataCommand);
 
-        uint32_t start = millis();
-        while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
-        MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
-        _SDI12Internal.read();  // ignore the repeated SDI12 address
-        for (uint8_t i = 0; i < _numReturnedValues; i++) {
-            float result = _SDI12Internal.parseFloat();
-            // The SDI-12 library should return -9999 on timeout
-            if (result == -9999 || isnan(result)) result = -9999;
-            MS_DBG(F("    <<< Result #"), i, ':', result);
-            verifyAndAddMeasurementResult(i, result);
+            uint32_t start = millis();
+            while (_SDI12Internal.available() < 3 &&
+                   (millis() - start) < 1500) {}
+            MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
+            MS_DBG(F("    <<<"),
+                   _SDI12Internal.read());  // ignore the repeated SDI12 address
+
+            while (_SDI12Internal.available()) {
+                char c = _SDI12Internal.peek();
+                if (c == '-' || (c >= '0' && c <= '9') || c == '.') {
+                    float result = _SDI12Internal.parseFloat(SKIP_NONE);
+                    // The SDI-12 library should return -9999 on timeout
+                    if (result == -9999 || isnan(result)) result = -9999;
+                    MS_DBG(F("    <<< Result #"), resultsReceived, ':',
+                           String(result, 10));
+                    verifyAndAddMeasurementResult(resultsReceived, result);
+                    if (result != -9999) { resultsReceived++; }
+                } else {
+                    MS_DBG(F("    <<<"), _SDI12Internal.read());
+                }
+                delay(10);  // 1 character ~ 7.5ms
+            }
+            MS_DBG(F("  Total Results Received: "), resultsReceived,
+                   F(", Remaining: "), _numReturnedValues - resultsReceived);
+            cmd_number++;
         }
         // String sdiResponse = _SDI12Internal.readStringUntil('\n');
         // sdiResponse.trim();
@@ -380,7 +399,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         // Use end() instead of just forceHold to un-set the timers
         if (!wasActive) _SDI12Internal.end();
 
-        success = true;
+        success = _numReturnedValues == resultsReceived;
     } else {
         // If there's no measurement, need to make sure we send over all
         // of the "failed" result values
