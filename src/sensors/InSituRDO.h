@@ -38,6 +38,13 @@
  * required for communication and because most Arduino style processors have
  * very few possible COM ports available for RS485.
  *
+ * @note The default SDI-12 address of the RDO PRO-X is "0".
+ *
+ * @warning The order of variables returned on the SDI-12 bus from the RDO PRO-X
+ * can be changed using the WinSitu software.  This library assumes the default
+ * ordering of variables: DO concentration, DO % saturation, Temperature.  If
+ * added manually, O2 partial pressure is last.
+ *
  * @section sensor_insitu_rdo_calib Calibration
  * This library DOES NOT support calibrating the DO probe.  Per the manufacturer:
  * > This durable probe requires no calibration or conditioning prior to deployment and does not use membranes.
@@ -53,6 +60,9 @@
  *
  * If you do wish to re-calibrate the probe, that must be done using Win-Situ 5 software,
  * the VuSitu mobile app, or the Modbus/RS485 interface.
+ *
+ * @note The default connection settings for ModbusRTU are 19200 baud, 8E1.
+ * The default modbus address is 0x01.
  *
  * @section sensor_insitu_rdo_cap Sensor Cap Maintenance
  * The sensor cap has an estimated lifetime of 2 years from the time of first reading.
@@ -106,8 +116,14 @@
 /** @ingroup sensor_insitu_rdo */
 /**@{*/
 
-/// @brief Sensor::_numReturnedValues; the RDO PRO-X can report 3 values.
-#define INSITU_RDO_NUM_VARIABLES 3
+/**
+ * @brief Sensor::_numReturnedValues; the RDO PRO-X can report 4 values.
+ *
+ * It reports 3 values (DO concentration, DO % saturation, and temperature) by
+ * default.  Partial pressure of oxygen can be added to the output using WinSitu
+ * software.
+ */
+#define INSITU_RDO_NUM_VARIABLES 4
 
 /**
  * @anchor sensor_insitu_rdo_timing
@@ -127,48 +143,68 @@
 /**@}*/
 
 /**
- * @anchor sensor_insitu_rdo_temp
- * @name Temperature
- * The temperature variable from an InSitu RDO PRO-X
- * - Range is 0° to 50°C (32° to 122°F)
- * - Accuracy is ± 0.1°C typical
+ * @anchor sensor_insitu_rdo_domgl
+ * @name Dissolved Oxygen Concentration
+ * The DO concentration variable from an InSitu RDO PRO-X
+ * - Range is 0 to 50 mg/L concentration
+ * - Accuracy:
+ *   - ± 0.1 mg/L from 0 to 8 mg/L
+ *   - ± 0.2 mg/L of reading from 8-20 mg/L
+ *   - ± 10% of reading from 20-50 mg/L
  *
- * {{ @ref InSituRDO_Temp::InSituRDO_Temp }}
+ * @note To acheive maximum accuracy, the sensor must be calibrated using either
+ * a one or two point calibration.
+ *
+ * {{ @ref InSituRDO_DOmgL::InSituRDO_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
-/// resolution is 0.01°C.
-#define INSITU_RDO_TEMP_RESOLUTION 2
-/// @brief Variable number; temperature is stored in sensorValues[0].
-#define INSITU_RDO_TEMP_VAR_NUM 0
+/**
+ * @brief Decimals places in string representation; dissolved oxygen
+ * concentration should have 2 - resolution is 0.01 mg/L.
+ *
+ * Contrary to the spec sheet, the actual resolution returned by the sensor in
+ * SDI-12 mode is 0.000001 mg/L.  Since the accuracy is only 0.1 mg/L at best,
+ * we will keep only the two digits suggested by the spec sheet.
+ */
+#define INSITU_RDO_DOMGL_RESOLUTION 2
+/// @brief Variable number; dissolved oxygen concentration is stored in
+/// sensorValues[0]
+#define INSITU_RDO_DOMGL_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "temperature"
-#define INSITU_RDO_TEMP_VAR_NAME "temperature"
+/// "oxygenDissolved"
+#define INSITU_RDO_DOMGL_VAR_NAME "oxygenDissolved"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "degreeCelsius" (°C)
-#define INSITU_RDO_TEMP_UNIT_NAME "degreeCelsius"
-/// @brief Default variable short code; "DOtempC"
-#define INSITU_RDO_TEMP_DEFAULT_CODE "RDOtempC"
+/// "milligramPerLiter" (mg/L)
+#define INSITU_RDO_DOMGL_UNIT_NAME "milligramPerLiter"
+/// @brief Default variable short code; "RDOppm"
+#define INSITU_RDO_DOMGL_DEFAULT_CODE "RDOppm"
 /**@}*/
 
 /**
  * @anchor sensor_insitu_rdo_dopercent
  * @name Dissolved Oxygen Percent Saturation
  * The percent saturation variable from an InSitu RDO PRO-X
- * - Range is 0 to 60 mg/L concentration
+ * - Range is 0 to 50 mg/L concentration
  * - Accuracy:
- *   - ± 0.1 mg/L from 0 to 20 mg/L
- *   - ± 2% of reading from 20-60 mg/L
+ *   - ± 0.1 mg/L from 0 to 8 mg/L
+ *   - ± 0.2 mg/L of reading from 8-20 mg/L
+ *   - ± 10% of reading from 20-50 mg/L
  * @note To acheive maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
  *
  * {{ @ref InSituRDO_DOpct::InSituRDO_DOpct }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen percent
-/// should have 2 - resolution is 0.01 mg/L.
+/**
+ * @brief Decimals places in string representation; dissolved oxygen percent
+ * saturation should have 1.
+ *
+ * The actual resolution returned by the sensor in SDI-12 mode is 0.00001 %.
+ * Since the accuracy is much less than that, we'll ignore the not-significant
+ * figures.
+ */
 #define INSITU_RDO_DOPCT_RESOLUTION 2
 /// @brief Variable number; dissolved oxygen percent is stored in
 /// sensorValues[1]
@@ -181,38 +217,68 @@
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
 /// (% saturation)
 #define INSITU_RDO_DOPCT_UNIT_NAME "percent"
-/// @brief Default variable short code; "DOpercent"
+/// @brief Default variable short code; "RDOpercent"
 #define INSITU_RDO_DOPCT_DEFAULT_CODE "RDOpercent"
 /**@}*/
 
 /**
- * @anchor sensor_insitu_rdo_domgl
- * @name Dissolved Oxygen Concentration
- * The DO concentration variable from an InSitu RDO PRO-X
- * - Range is not specified in sensor datasheet
- * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
- * @note To acheive maximum accuracy, the sensor must be calibrated using either
- * a one or two point calibration.
+ * @anchor sensor_insitu_rdo_temp
+ * @name Temperature
+ * The temperature variable from an InSitu RDO PRO-X
+ * - Range is 0° to 50°C (32° to 122°F)
+ * - Accuracy is ± 0.1°C typical
  *
- * {{ @ref InSituRDO_DOmgL::InSituRDO_DOmgL }}
+ * {{ @ref InSituRDO_Temp::InSituRDO_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
-/// concentration should have 2 - resolution is 0.01 mg/L.
-#define INSITU_RDO_DOMGL_RESOLUTION 2
-/// @brief Variable number; dissolved oxygen concentration is stored in
-/// sensorValues[2]
-#define INSITU_RDO_DOMGL_VAR_NUM 2
+/// @brief
+/**
+ * @brief Decimals places in string representation; temperature should have 2 -
+ * resolution is 0.01°C.
+ *
+ * The spec sheet lists 2 decimal resolution, but the returned value has 5.
+ * Since the accuracy is less than either, we keep the two mentioned on the spec
+ * sheet.
+ */
+#define INSITU_RDO_TEMP_RESOLUTION 2
+/// @brief Variable number; temperature is stored in sensorValues[2].
+#define INSITU_RDO_TEMP_VAR_NUM 2
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "oxygenDissolved"
-#define INSITU_RDO_DOMGL_VAR_NAME "oxygenDissolved"
+/// "temperature"
+#define INSITU_RDO_TEMP_VAR_NAME "temperature"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "milligramPerLiter" (mg/L)
-#define INSITU_RDO_DOMGL_UNIT_NAME "milligramPerLiter"
-/// @brief Default variable short code; "DOppm"
-#define INSITU_RDO_DOMGL_DEFAULT_CODE "RDOppm"
+/// "degreeCelsius" (°C)
+#define INSITU_RDO_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "RDOtempC"
+#define INSITU_RDO_TEMP_DEFAULT_CODE "RDOtempC"
+/**@}*/
+
+/**
+ * @anchor sensor_insitu_rdo_pressure
+ * @name Oxygen Partial Pressure
+ * The oxygen partial pressure variable from an InSitu RDO PRO-X
+ *
+ * @note The oxygen partial pressure output must be manually enabled in SDI-12
+ * mode using the WinSitu software.
+ *
+ * {{ @ref InSituRDO_Pressure::InSituRDO_Pressure }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; pressure should have 3
+#define INSITU_RDO_PRESSURE_RESOLUTION 2
+/// @brief Variable number; temperature is stored in sensorValues[3].
+#define INSITU_RDO_PRESSURE_VAR_NUM 3
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "vaporPressure"
+#define INSITU_RDO_PRESSURE_VAR_NAME "vaporPressure"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "torr"
+#define INSITU_RDO_PRESSURE_UNIT_NAME "torr"
+/// @brief Default variable short code; "RDOppO2"
+#define INSITU_RDO_PRESSURE_DEFAULT_CODE "RDOppO2"
 /**@}*/
 
 
@@ -285,45 +351,46 @@ class InSituRDO : public SDI12Sensors {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref sensor_insitu_rdo_temp) from a
+ * [dissolved oxygen concentration output](@ref sensor_insitu_rdo_domgl) from a
  * [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
  *
  * @ingroup sensor_insitu_rdo
  */
 /* clang-format on */
-class InSituRDO_Temp : public Variable {
+class InSituRDO_DOmgL : public Variable {
  public:
     /**
-     * @brief Construct a new InSituRDO_Temp object.
+     * @brief Construct a new InSituRDO_DOmgL object.
      *
      * @param parentSense The parent InSituRDO providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "RDOtempC".
+     * optional with a default value of "RDOppm".
      */
-    explicit InSituRDO_Temp(InSituRDO* parentSense, const char* uuid = "",
-                            const char* varCode = INSITU_RDO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
-                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
-                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
-                   uuid) {}
+    explicit InSituRDO_DOmgL(
+        InSituRDO* parentSense, const char* uuid = "",
+        const char* varCode = INSITU_RDO_DOMGL_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
+                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
+                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
+                   varCode, uuid) {}
     /**
-     * @brief Construct a new InSituRDO_Temp object.
+     * @brief Construct a new InSituRDO_DOmgL object.
      *
      * @note This must be tied with a parent InSituRDO before it can be
      * used.
      */
-    InSituRDO_Temp()
-        : Variable((const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
-                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
-                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME,
-                   INSITU_RDO_TEMP_DEFAULT_CODE) {}
+    InSituRDO_DOmgL()
+        : Variable((const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
+                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
+                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
+                   INSITU_RDO_DOMGL_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the InSituRDO_Temp object - no action needed.
+     * @brief Destroy the InSituRDO_DOmgL object - no action needed.
      */
-    ~InSituRDO_Temp() {}
+    ~InSituRDO_DOmgL() {}
 };
 
 
@@ -376,46 +443,91 @@ class InSituRDO_DOpct : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [dissolved oxygen concentration output](@ref sensor_insitu_rdo_domgl) from a
+ * [temperature output](@ref sensor_insitu_rdo_temp) from a
  * [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
  *
  * @ingroup sensor_insitu_rdo
  */
 /* clang-format on */
-class InSituRDO_DOmgL : public Variable {
+class InSituRDO_Temp : public Variable {
  public:
     /**
-     * @brief Construct a new InSituRDO_DOmgL object.
+     * @brief Construct a new InSituRDO_Temp object.
      *
      * @param parentSense The parent InSituRDO providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "RDOppm".
+     * optional with a default value of "RDOtempC".
      */
-    explicit InSituRDO_DOmgL(
-        InSituRDO* parentSense, const char* uuid = "",
-        const char* varCode = INSITU_RDO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
-                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
-                   varCode, uuid) {}
+    explicit InSituRDO_Temp(InSituRDO* parentSense, const char* uuid = "",
+                            const char* varCode = INSITU_RDO_TEMP_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
+                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
+                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
-     * @brief Construct a new InSituRDO_DOmgL object.
+     * @brief Construct a new InSituRDO_Temp object.
      *
      * @note This must be tied with a parent InSituRDO before it can be
      * used.
      */
-    InSituRDO_DOmgL()
-        : Variable((const uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
-                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
-                   INSITU_RDO_DOMGL_DEFAULT_CODE) {}
+    InSituRDO_Temp()
+        : Variable((const uint8_t)INSITU_RDO_TEMP_VAR_NUM,
+                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
+                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME,
+                   INSITU_RDO_TEMP_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the InSituRDO_DOmgL object - no action needed.
+     * @brief Destroy the InSituRDO_Temp object - no action needed.
      */
-    ~InSituRDO_DOmgL() {}
+    ~InSituRDO_Temp() {}
+};
+
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [oxygen partial pressure output](@ref sensor_insitu_rdo_pressure) from a
+ * [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
+ *
+ * @ingroup sensor_insitu_rdo
+ */
+/* clang-format on */
+class InSituRDO_Pressure : public Variable {
+ public:
+    /**
+     * @brief Construct a new InSituRDO_Pressure object.
+     *
+     * @param parentSense The parent InSituRDO providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "RDOppO2".
+     */
+    explicit InSituRDO_Pressure(
+        InSituRDO* parentSense, const char* uuid = "",
+        const char* varCode = INSITU_RDO_PRESSURE_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
+                   (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
+                   INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
+                   varCode, uuid) {}
+    /**
+     * @brief Construct a new InSituRDO_Pressure object.
+     *
+     * @note This must be tied with a parent InSituRDO before it can be
+     * used.
+     */
+    InSituRDO_Pressure()
+        : Variable((const uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
+                   (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
+                   INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
+                   INSITU_RDO_PRESSURE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the InSituRDO_Pressure object - no action needed.
+     */
+    ~InSituRDO_Pressure() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_InSituRDO_H_
