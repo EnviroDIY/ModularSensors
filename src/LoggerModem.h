@@ -131,8 +131,8 @@
 /// @brief Decimals places in string representation; battery charge percent
 /// should have 0.
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
-/// @brief Variable name; "permittivity"
-#define MODEM_BATTERY_PERCENT_VAR_NAME "permittivity"
+/// @brief Variable name; "batteryVoltage"
+#define MODEM_BATTERY_PERCENT_VAR_NAME "batteryVoltage"
 /// @brief Variable unit name; "percent"
 #define MODEM_BATTERY_PERCENT_UNIT_NAME "percent"
 /// @brief Default variable short code; "modemBatteryPct"
