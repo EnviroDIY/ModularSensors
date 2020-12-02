@@ -383,6 +383,10 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
                 }
                 delay(10);  // 1 character ~ 7.5ms
             }
+            if (!resultsReceived) {
+                MS_DBG(F("  No results received, will not continue requests!"));
+                break;  // don't do another loop if we got nothing
+            }
             MS_DBG(F("  Total Results Received: "), resultsReceived,
                    F(", Remaining: "), _numReturnedValues - resultsReceived);
             cmd_number++;
