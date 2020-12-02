@@ -100,6 +100,8 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
 
     // MS_DBG(F("Calculated Variable object created"));
 }
+
+// constructor with no arguments
 Variable::Variable() : _sensorVarNum(0), _decimalResolution(0) {
     _varName = NULL;
     _varUnit = NULL;

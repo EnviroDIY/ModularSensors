@@ -14,7 +14,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup am2315_group AOSong AM2315
+ * @defgroup sensor_am2315 AOSong AM2315
  * Classes for the AOSong AM2315 encased I2C capacitive humidity and
  * temperature sensor.
  *
@@ -23,50 +23,28 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section am2315_notes Quick Notes
+ * @section sensor_am2315_notes Quick Notes
  * - Applies to both the AOSong AM2315 and CM2311 capacitive relative humidity
  * and temperature sensors
  * - Depends on the [Adafruit AM2315 Library](https://github.com/adafruit/Adafruit_AM2315).
- * - Communicate via I2C
+ * - Communicates via I2C
  *   - only one address possible, 0xB8
- * - **Only 1 can be connected to a system at a time**
+ * - **Only 1 can be connected to a single I2C bus at a time**
  * - Requires a 3.3 - 5.5V power source
  *
- * @section am2315_datasheet Sensor Datasheet
+ * @note Software I2C is *not* supported for the AM2315.
+ * A secondary hardware I2C on a SAMD board is supported.
+ *
+ * @section sensor_am2315_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-AM2315-Product-Manual.pdf)
  *
- * @section am2315_sensor The AM2315 Sensor
- * @ctor_doc{AOSongAM2315, int8_t powerPin, uint8_t measurementsToAverage}
- * @subsection am2315_timing Sensor Timing
- * - warm up estimated at 500ms
- * - stabilization estimated at 500ms
- * - measurements take 2s to complete
+ * @section sensor_am2315_ctor Sensor Constructors
+ * {{ @ref AOSongAM2315::AOSongAM2315(int8_t, uint8_t) }}
+ * {{ @ref AOSongAM2315::AOSongAM2315(TwoWire*, int8_t, uint8_t) }}
  *
- * ___
- * @section am2315_temperature Temperature Output
- * - Range is -40°C to +125°C
- * - Accuracy is ±0.1°C
- * - Result stored in sensorValues[1]
- * - Resolution is 0.1°C (16 bit)
- * - Reported as degrees Celsius
- * - Default variable code is AM2315Temp
- * @variabledoc{am2315_temperature,AOSongAM2315,Temp,AM2315Temp}
+ * @section sensor_am2315_examples Example Code
  *
- * ___
- * @section am2315_humidity Relative Humidity Output
- * - Range is 0 to 100% RH
- * - Accuracy is ± 2 % RH at 25°C
- * - Result stored in sensorValues[0]
- * - Resolution is 0.1 % RH (16 bit)
- * - Reported as percent relative humidity
- * - Default variable code is AM2315Humidity
- * @variabledoc{am2315_humidity,AOSongAM2315,Humidity,AM2315Humidity}
- *
- * ___
- * @section am2315_examples Example Code
- *
- * The AM2315 is used in the
- * [double logger](@ref double_log_am2315)
+ * The AM2315 is used in the [double logger](@ref double_log_am2315)
  * and @menulink{am2315} example
  *
  * @menusnip{am2315}
@@ -89,45 +67,126 @@
 #undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include <Adafruit_AM2315.h>
 
 // Sensor Specific Defines
+/** @ingroup sensor_am2315 */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the AM2315 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the AM2315 can report 2 values.
 #define AM2315_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; AM2315 warms up in 500ms.
+
+/**
+ * @anchor sensor_am2315_timing
+ * @name Sensor Timing
+ * The sensor timing for an AOSong AM2315
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; AM2315 warms up in 500ms (estimated).
 #define AM2315_WARM_UP_TIME_MS 500
-/// Sensor::_stabilizationTime_ms; AM2315 is stable after 500ms.
+/// @brief Sensor::_stabilizationTime_ms; AM2315 is stable after 500ms
+/// (estimated).
 #define AM2315_STABILIZATION_TIME_MS 500
-/// Sensor::_measurementTime_ms; AM2315 takes 2000ms to complete a measurement.
+/// @brief Sensor::_measurementTime_ms; AM2315 takes 2000ms (2s) to complete a
+/// measurement.
 #define AM2315_MEASUREMENT_TIME_MS 2000
+/**@}*/
 
-/// Decimals places in string representation; humidity should have 1.
+/**
+ * @anchor sensor_am2315_humidity
+ * @name Humidity
+ * The humidity variable from an AOSong AM2315
+ * - Range is 0 to 100% RH
+ * - Accuracy is ± 2 % RH at 25°C
+ *
+ * {{ @ref AOSongAM2315_Humidity::AOSongAM2315_Humidity }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; humidity should have 1 (0.1
+/// % RH for the 16 bit sensor).
 #define AM2315_HUMIDITY_RESOLUTION 1
-/// Variable number; humidity is stored in sensorValues[0].
+/// @brief Sensor variable number; humidity is stored in sensorValues[0].
 #define AM2315_HUMIDITY_VAR_NUM 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "relativeHumidity"
+#define AM2315_HUMIDITY_VAR_NAME "relativeHumidity"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
+/// (percent relative humidity)
+#define AM2315_HUMIDITY_UNIT_NAME "percent"
+/// @brief Default variable short code; "AM2315Humidity"
+#define AM2315_HUMIDITY_DEFAULT_CODE "AM2315Humidity"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 1.
+/**
+ * @anchor sensor_am2315_temperature
+ * @name Temperature
+ * The temperature variable from an AOSong AM2315
+ * - Range is -40°C to +125°C
+ * - Accuracy is ±0.1°C
+ *
+ * {{ @ref AOSongAM2315_Temp::AOSongAM2315_Temp }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 1.
+/// (0.1°C for the 16 bit sensor)
 #define AM2315_TEMP_RESOLUTION 1
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define AM2315_TEMP_VAR_NUM 1
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
+#define AM2315_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
+#define AM2315_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "AM2315Temp"
+#define AM2315_TEMP_DEFAULT_CODE "AM2315Temp"
+/**@}*/
 
 
 /* clang-format off */
 /**
- * @brief The Sensor sub-class for the [AOSong AM2315](@ref am2315_group).
- *
- * @ingroup am2315_group
+ * @brief The Sensor sub-class for the [AOSong AM2315](@ref sensor_am2315).
  */
 /* clang-format on */
 class AOSongAM2315 : public Sensor {
  public:
     /**
-     * @brief Construct a new AOSongAM2315 object
+     * @brief Construct a new AOSongAM2315 object using a secondary *hardware*
+     * I2C instance.
+     *
+     * This is only applicable to SAMD boards that are able to have multiple
+     * hardware I2C ports in use via SERCOMs.
+     *
+     * @note It is only possible to connect *one* AM2315 at a time on a single
+     * I2C bus.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling power to the AOSong
+     * AM2315.  Use -1 if it is continuously powered.
+     * - The AM2315 requires a 3.3 - 5.5V power source
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    AOSongAM2315(TwoWire* theI2C, int8_t powerPin,
+                 uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new AOSongAM2315 object using the primary hardware I2C
+     * instance.
      *
      * Because this is I2C and has only 1 possible address (0xB8), we only need
      * the power pin.
      *
-     * @note It is only possible to connect *one* AM2315 at a time!
+     * @note It is only possible to connect *one* AM2315 at a time on a single
+     * I2C bus.
      *
      * @param powerPin The pin on the mcu controlling power to the AOSong
      * AM2315.  Use -1 if it is continuously powered.
@@ -166,16 +225,20 @@ class AOSongAM2315 : public Sensor {
      * @copydoc Sensor::addSingleMeasurementResult()
      */
     bool addSingleMeasurementResult(void) override;
+
+ private:
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;
 };
 
 
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [relative humidity output](@ref am2315_humidity) from an
- * [AOSong AM2315](@ref am2315_group).
- *
- * @ingroup am2315_group
+ * [relative humidity output](@ref sensor_am2315_humidity) from an
+ * [AOSong AM2315](@ref sensor_am2315).
  */
 /* clang-format on */
 class AOSongAM2315_Humidity : public Variable {
@@ -190,12 +253,13 @@ class AOSongAM2315_Humidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "AM2315Humidity".
      */
-    explicit AOSongAM2315_Humidity(AOSongAM2315* parentSense,
-                                   const char*   uuid    = "",
-                                   const char*   varCode = "AM2315Humidity")
+    explicit AOSongAM2315_Humidity(
+        AOSongAM2315* parentSense, const char* uuid = "",
+        const char* varCode = AM2315_HUMIDITY_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", varCode, uuid) {}
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                   AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new AOSongAM2315_Humidity object.
      *
@@ -203,8 +267,9 @@ class AOSongAM2315_Humidity : public Variable {
      */
     AOSongAM2315_Humidity()
         : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION, "relativeHumidity",
-                   "percent", "AM2315Humidity") {}
+                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                   AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME,
+                   AM2315_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
@@ -215,10 +280,8 @@ class AOSongAM2315_Humidity : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref am2315_temperature) from an
- * [AOSong AM2315](@ref am2315_group).
- *
- * @ingroup am2315_group
+ * [temperature output](@ref sensor_am2315_temperature) from an
+ * [AOSong AM2315](@ref sensor_am2315).
  */
 /* clang-format on */
 class AOSongAM2315_Temp : public Variable {
@@ -234,10 +297,10 @@ class AOSongAM2315_Temp : public Variable {
      * optional with a default value of "AM2315Temp".
      */
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
-                               const char* varCode = "AM2315Temp")
+                               const char* varCode = AM2315_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
+                   AM2315_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
      *
@@ -245,12 +308,12 @@ class AOSongAM2315_Temp : public Variable {
      */
     AOSongAM2315_Temp()
         : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "AM2315Temp") {}
+                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
+                   AM2315_TEMP_UNIT_NAME, AM2315_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */
     ~AOSongAM2315_Temp() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_AOSONGAM2315_H_

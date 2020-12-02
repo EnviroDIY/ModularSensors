@@ -1,33 +1,119 @@
-DOXYFILE = 'mcss-Doxyfile'
-THEME_COLOR = '#cb4b16'
-FAVICON = 'https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-192x192.png'
+DOXYFILE = "mcss-Doxyfile"
+THEME_COLOR = "#cb4b16"
+# FAVICON = "https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-192x192.png"
+FAVICON = "MS_FavIcon.png"
 LINKS_NAVBAR1 = [
-    ("Pages", 'pages', [("Pages", 'pages')]),
-    ("Modules", 'modules', [])
+    (
+        "About",
+        "index",
+        [
+            ('<a href="index.html#data_receivers">Data Endpoints</a>',),
+            ('<a href="index.html#supported_sensors">Supported Sensors</a>',),
+            ('<a href="index.html#modems">Supported Cellular/Wifi Modules</a>',),
+            ('<a href="index.html#contributing">Contributing</a>',),
+            ('<a href="index.html#license">License</a>',),
+            ('<a href="index.html#acknowledgments">Acknowledgments</a>',),
+        ],
+    ),
+    (
+        "Getting Started",
+        "page_getting_started",
+        [
+            (
+                "Getting Started",
+                "page_getting_started",
+                # [
+                #     (
+                #         '<a href="getting_started.html#ide">IDE and Driver Installation</a>',
+                #     ),
+                #     (
+                #         '<a href="getting_started.html#libraries">Library Installation</a>',
+                #     ),
+                #     ('<a href="getting_started.html#clock">Setting the Clock</a>',),
+                #     (
+                #         '<a href="getting_started.html#program">Writing Your Logger Program</a>',
+                #     ),
+                #     (
+                #         '<a href="getting_started.html#examples">Modifying the Examples</a>',
+                #     ),
+                #     (
+                #         '<a href="getting_started.html#deploying">Deploying your Station</a>',
+                #     ),
+                # ],
+            ),
+            ("Library Dependencies", "page_library_dependencies",),
+            ("Physical Dependencies", "page_physical_dependencies",),
+            ("Terminology", "page_library_terminology",),
+        ],
+    ),
+    (
+        "FAQs",
+        "page_faq",
+        [
+            ("Processor Compatibility", "page_processor_compatibility",),
+            ("Arduino Streams and Software Serial", "page_arduino_streams",),
+            ("Power Draw over Data Lines", "page_power_parasites",),
+            ("Decreasing Memory Footprint", "page_memory_use"),
+            ("In-Library Debugging", "page_code_debugging",),
+            ("For Developers", "page_for_developers",),
+        ],
+    ),
+    ("Modules", "modules", []),
+    ("Classes", "annotated", [],),
+    ("Source Files", "files", [],),
+    (
+        "Examples",
+        "page_the_examples",
+        [],
+        # [
+        #     (
+        #         "Basic Functionality",
+        #         "examples_basic",
+        #         [
+        #             ("Single Sensor", "example_single_sensor"),
+        #             ("Simple Logging", "example_simple_logging"),
+        #             ("Learn EnviroDIY", "example_learn_envirodiy"),
+        #         ],
+        #     ),
+        #     (
+        #         "Publishing Data",
+        #         "examples_publishing",
+        #         [
+        #             ("Publishing to Monitor My Watershed", "example_mmw"),
+        #             ("Publishing to ThingSpeak", "example_thingspeak"),
+        #         ],
+        #     ),
+        #     (
+        #         "Calculations and Complex Logging",
+        #         "examples_complex",
+        #         [
+        #             ("Barometric Pressure Correction", "example_baro_rho"),
+        #             ("Multiple Logging Intervals", "example_double_log"),
+        #             ("Minimizing Cell Data Usage", "example_data_saving"),
+        #         ],
+        #     ),
+        #     (
+        #         "DRWI Citizen Science",
+        #         "examples_drwi",
+        #         [
+        #             ("DRWI LTE", "example_drwi_lte"),
+        #             ("DRWI CitSci (2G", "example_drwi_2g"),
+        #             ("DRWI CitSci No Cellular", "example_drwi_no_cell"),
+        #         ],
+        #     ),
+        #     (
+        #         "Everything at Once",
+        #         "examples_everything",
+        #         [("The a la carte Menu", "example_menu"),],
+        #     ),
+        # ],
+    ),
+    ("More", "pages", [],),
 ]
-LINKS_NAVBAR2 = [
-    ("Classes", 'annotated', []),
-    ("Files", 'files', [])
-]
+LINKS_NAVBAR2 = []
 VERSION_LABELS = True
 CLASS_INDEX_EXPAND_LEVELS = 2
 
 STYLESHEETS = [
-    'https://fonts.googleapis.com/css?family=Roboto+Condensed%3A300%2C300i%2C400%2C400i%2C700%2C700i%7CRoboto%3A300%2C300i%2C400%2C400i%2C500%2C500i%2C700%2C700i&display=swap&ver=4.2.1',
-    'https://fonts.googleapis.com/css?family=Open+Sans%3A400%2C400i%2C700%2C700i&display=swap&ver=4.2.1',
-    'https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap&ver=4.2.1',
-    'https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
-    'https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/style.css?ver=5.4.2',
-    'https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize-child/style.css?ver=5.4.2',
-    'css/m-EnviroDIY+documentation.compiled.css'
+    "css/m-EnviroDIY+documentation.compiled.css",
 ]
-FINE_PRINT = '''
-  <div class="m-container">
-    <div class="m-row">
-      <div class="m-col-l-10 m-push-l-1">
-        <p>ModularSensors An Arduino library to give environmental sensors a common interface of functions for use with Arduino-framework dataloggers, such as the EnviroDIY Mayfly.</p>
-        <p>Documentation created with <a href="https://doxygen.org/">Doxygen</a> {doxygen_version} and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
-      </div>
-    </div>
-  </div>
-'''

@@ -4,10 +4,18 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the loggerModem class and  the variable subclasses
+ * @brief Contains the loggerModem class and the variable subclasses
  * Modem_RSSI, Modem_SignalPercent, Modem_BatteryState, Modem_BatteryPercent,
  * and Modem_BatteryVoltage - all of which are implemented as "calculated"
  * variables.
+ */
+/**
+ * @defgroup the_modems Supported Modems and Communication Modules
+ * All implemented loggerModem classes
+ *
+ * @copydetails loggerModem
+ *
+ * @see @ref page_modem_notes
  */
 
 // Header Guards
@@ -28,12 +36,57 @@
 #include "VariableBase.h"
 #include <Arduino.h>
 
+
+/**
+ * @defgroup modem_measured_variables Modem Variables
+ *
+ * Variable objects to be tied to a loggerModem.  These are measured by a modem,
+ * but are implemented as calculated variables.
+ *
+ * @note  The modem is NOT set up as a sensor.  ALl of these variables for the
+ * modem object are actually being called as calculated variables where the
+ * calculation function is to ask the modem object for the values from the last
+ * time it connected to the internet.
+ *
+ * @ingroup the_modems
+ */
+
+/** @ingroup modem_measured_variables */
+/**@{*/
+/**
+ * @anchor modem_rssi
+ * @name Modem RSSI
+ * The RSSI (received signal strength indication) variable from a modem-like
+ * device.
+ *
+ * {{ @ref Modem_RSSI::Modem_RSSI }}
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; RSSI should have 0.
  *
  * RSSI is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_RSSI_RESOLUTION 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "RSSI"
+#define MODEM_RSSI_VAR_NAME "RSSI"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "RSSI"
+#define MODEM_RSSI_UNIT_NAME "RSSI"
+/// @brief Default variable short code; "decibelMiliWatt"
+#define MODEM_RSSI_DEFAULT_CODE "decibelMiliWatt"
+/**@}*/
+
+/**
+ * @anchor modem_signal_pct
+ * @name Modem Percent Full Signal
+ * The percent full signal variable from a modem-like device.
+ *
+ * {{ @ref Modem_SignalPercent::Modem_SignalPercent }}
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; percent signal should have
  * 0.
@@ -41,24 +94,115 @@
  * Percent signal is a rough calculation, so it has 0 decimal place resolution
  */
 #define MODEM_PERCENT_SIGNAL_RESOLUTION 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "signalPercent"
+#define MODEM_PERCENT_SIGNAL_VAR_NAME "signalPercent"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
+#define MODEM_PERCENT_SIGNAL_UNIT_NAME "percent"
+/// @brief Default variable short code; "signalPercent"
+#define MODEM_PERCENT_SIGNAL_DEFAULT_CODE "signalPercent"
+/**@}*/
+
+/**
+ * @anchor modem_battery_state
+ * @name Modem Battery Charge State
+ * The battery charge state variable from a modem-like device.  This is used to
+ * indicate whether or not the modem battery is currently being charged.
+ *
+ * @warning Whether this value is valid depends on both the type of modem you
+ * are using and the individual break out of it.  **In many cases, this value
+ * is not valid and should be ignored.**
+ *
+ * {{ @ref Modem_BatteryState::Modem_BatteryState }}
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; battery state should have 0.
  *
  * Battery state is a code value; it has 0 decimal place resolution
  */
 #define MODEM_BATTERY_STATE_RESOLUTION 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "batteryChargeState"
+#define MODEM_BATTERY_STATE_VAR_NAME "batteryChargeState"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "number"
+/// (dimensionless)
+#define MODEM_BATTERY_STATE_UNIT_NAME "number"
+/// @brief Default variable short code; "modemBatteryCS"
+#define MODEM_BATTERY_STATE_DEFAULT_CODE "modemBatteryCS"
+/**@}*/
+
 /**
- * @brief Decimals places in string representation; battery charge percent
- * should have 0.
+ * @anchor modem_battery_percent
+ * @name Modem Battery Charge Percent
+ * The percent battery charge from a modem-like device.
+ *
+ * @warning Whether this value is valid depends on both the type of modem you
+ * are using and the individual break out of it.  **In many cases, this value
+ * is not valid and should be ignored.**
+ *
+ * {{ @ref Modem_BatteryPercent::Modem_BatteryPercent }}
  */
+/**@{*/
+/// @brief Decimals places in string representation; battery charge percent
+/// should have 0.
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "permittivity"
+#define MODEM_BATTERY_PERCENT_VAR_NAME "permittivity"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
+#define MODEM_BATTERY_PERCENT_UNIT_NAME "percent"
+/// @brief Default variable short code; "modemBatteryPct"
+#define MODEM_BATTERY_PERCENT_DEFAULT_CODE "modemBatteryPct"
+/**@}*/
+
+/**
+ * @anchor modem_battery_voltage
+ * @name Modem Battery Voltage
+ * The battery voltage from a modem-like device.
+ *
+ * @warning Whether this value is valid depends on both the type of modem you
+ * are using and the individual break out of it.  **In many cases, this value
+ * is not valid and should be ignored.**
+ *
+ * {{ @ref Modem_BatteryVoltage::Modem_BatteryVoltage }}
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; battery voltage should have
  * 0.
  *
- * No module has higher than 1mV resolution in battery reading.
+ * No supported module has higher than 1mV resolution in battery reading.
  */
-#define MODEM_BATTERY_VOLT_RESOLUTION 0
+#define MODEM_BATTERY_VOLTAGE_RESOLUTION 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "batteryVoltage"
+#define MODEM_BATTERY_VOLTAGE_VAR_NAME "batteryVoltage"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
+#define MODEM_BATTERY_VOLTAGE_UNIT_NAME "millivolt"
+/// @brief Default variable short code; "modemBatterymV"
+#define MODEM_BATTERY_VOLTAGE_DEFAULT_CODE "modemBatterymV"
+/**@}*/
+
+/**
+ * @anchor modem_temperature
+ * @name Modem Chip Temperature
+ * The chip temperature from a modem-like device.
+ *
+ * @warning This is *NOT* representative of environmental temperature and should
+ * only be used to verify that the module is not overheating.
+ *
+ * {{ @ref Modem_Temp::Modem_Temp }}
+ */
+/**@{*/
 /**
  * @brief Decimals places in string representation; temperature should
  * have 1.
@@ -66,10 +210,69 @@
  * Most modules that can measure temperature measure to 0.1°C
  */
 #define MODEM_TEMPERATURE_RESOLUTION 1
-/// Decimals places in string representation; total active time should have 3.
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
+#define MODEM_TEMPERATURE_VAR_NAME "temperature"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
+#define MODEM_TEMPERATURE_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "modemTemp"
+#define MODEM_TEMPERATURE_DEFAULT_CODE "modemTemp"
+/**@}*/
+
+#ifdef MS_CHECK_MODEM_TIMING
+/**
+ * @anchor modem_activation
+ * @name Modem Active Time
+ * The active time from a modem-like device.
+ *
+ * @note This is only a testing/development diagnostic.
+ *
+ * {{ @ref Modem_ActivationDuration::Modem_ActivationDuration }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; total active time should
+/// have 3.
 #define MODEM_ACTIVATION_RESOLUTION 3
-/// Decimals places in string representation; total powered time should have 3.
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "timeElapsed"
+#define MODEM_ACTIVATION_VAR_NAME "timeElapsed"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "second"
+#define MODEM_ACTIVATION_UNIT_NAME "second"
+/// @brief Default variable short code; "modemActiveSec"
+#define MODEM_ACTIVATION_DEFAULT_CODE "modemActiveSec"
+/**@}*/
+
+/**
+ * @anchor modem_power
+ * @name Modem Power Time
+ * The total powered time from a modem-like device.
+ *
+ * @note This is only a testing/development diagnostic.
+ *
+ * {{ @ref Modem_PoweredDuration::Modem_PoweredDuration }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; total powered time should
+/// have 3.
 #define MODEM_POWERED_RESOLUTION 3
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "timeElapsed"
+#define MODEM_POWERED_VAR_NAME "timeElapsed"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "second"
+#define MODEM_POWERED_UNIT_NAME "second"
+/// @brief Default variable short code; "modemPoweredSec"
+#define MODEM_POWERED_DEFAULT_CODE "modemPoweredSec"
+/**@}*/
+#endif
+/**@}*/
+
 
 /* ===========================================================================
  * Functions for the modem class
@@ -78,8 +281,8 @@
 
 // template <class Derived, typename modemType, typename modemClientType>
 /**
- * @brief The loggerModem class provides an internet connection for the logger
- * and supplies an Arduino Client instance to use to publish data.
+ * @brief The loggerModem class provides an internet connection for the
+ * logger and supplies an Arduino Client instance to use to publish data.
  *
  * A modem is a device that can be controlled by a logger to send out data
  * directly to the world wide web.
@@ -88,6 +291,8 @@
  * functions to turn the modem on and off and some error checking.
  *
  * TinyGSM is available here:  https://github.com/vshymanskyy/TinyGSM
+ *
+ * @ingroup base_classes
  */
 class loggerModem {
  public:
@@ -791,17 +996,6 @@ class loggerModem {
 // typedef float (loggerModem::_*loggerGetValueFxn)(void);
 
 // Classes for the modem variables
-// NOTE:  The modem is NOT set up as a sensor.  ALl of these variables for
-// the modem object are actually being called as calculated variables where the
-// calculation function is to ask the modem object for the values from the
-// last time it connected to the internet.
-
-/**
- * @defgroup modem_measured_variables Modem Variables
- *
- * Variable objects to be tied to a loggerModem.  These are measured by a modem,
- * but are implemented as calculated variables.
- */
 
 /**
  * @brief The Variable sub-class used for the RSSI measured by a modem.
@@ -822,9 +1016,10 @@ class Modem_RSSI : public Variable {
      * optional with a default value of "RSSI".
      */
     explicit Modem_RSSI(loggerModem* parentModem, const char* uuid = "",
-                        const char* varCode = "RSSI")
+                        const char* varCode = MODEM_RSSI_DEFAULT_CODE)
         : Variable(&parentModem->getModemRSSI, (uint8_t)MODEM_RSSI_RESOLUTION,
-                   &*"RSSI", &*"decibelMiliWatt", varCode, uuid) {}
+                   &*MODEM_RSSI_VAR_NAME, &*MODEM_RSSI_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the Modem_RSSI object - no action needed.
      */
@@ -851,12 +1046,13 @@ class Modem_SignalPercent : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "signalPercent".
      */
-    explicit Modem_SignalPercent(loggerModem* parentModem,
-                                 const char*  uuid    = "",
-                                 const char*  varCode = "signalPercent")
+    explicit Modem_SignalPercent(
+        loggerModem* parentModem, const char* uuid = "",
+        const char* varCode = MODEM_PERCENT_SIGNAL_DEFAULT_CODE)
         : Variable(&parentModem->getModemSignalPercent,
-                   (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION, &*"signalPercent",
-                   &*"percent", varCode, uuid) {}
+                   (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
+                   &*MODEM_PERCENT_SIGNAL_VAR_NAME,
+                   &*MODEM_PERCENT_SIGNAL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Modem_SignalPercent object - no action needed.
      */
@@ -886,11 +1082,13 @@ class Modem_BatteryState : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatteryCS".
      */
-    explicit Modem_BatteryState(loggerModem* parentModem, const char* uuid = "",
-                                const char* varCode = "modemBatteryCS")
+    explicit Modem_BatteryState(
+        loggerModem* parentModem, const char* uuid = "",
+        const char* varCode = MODEM_BATTERY_STATE_DEFAULT_CODE)
         : Variable(&parentModem->getModemBatteryChargeState,
                    (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
-                   &*"batteryChargeState", &*"number", varCode, uuid) {}
+                   &*MODEM_BATTERY_STATE_VAR_NAME,
+                   &*MODEM_BATTERY_STATE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Modem_BatteryState object - no action needed.
      */
@@ -920,12 +1118,13 @@ class Modem_BatteryPercent : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatteryPct".
      */
-    explicit Modem_BatteryPercent(loggerModem* parentModem,
-                                  const char*  uuid    = "",
-                                  const char*  varCode = "modemBatteryPct")
+    explicit Modem_BatteryPercent(
+        loggerModem* parentModem, const char* uuid = "",
+        const char* varCode = MODEM_BATTERY_PERCENT_DEFAULT_CODE)
         : Variable(&parentModem->getModemBatteryChargePercent,
                    (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
-                   &*"batteryVoltage", &*"percent", varCode, uuid) {}
+                   &*MODEM_BATTERY_PERCENT_VAR_NAME,
+                   &*MODEM_BATTERY_PERCENT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Modem_BatteryPercent object - no action needed.
      */
@@ -955,12 +1154,13 @@ class Modem_BatteryVoltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "modemBatterymV".
      */
-    explicit Modem_BatteryVoltage(loggerModem* parentModem,
-                                  const char*  uuid    = "",
-                                  const char*  varCode = "modemBatterymV")
+    explicit Modem_BatteryVoltage(
+        loggerModem* parentModem, const char* uuid = "",
+        const char* varCode = MODEM_BATTERY_VOLTAGE_DEFAULT_CODE)
         : Variable(&parentModem->getModemBatteryVoltage,
-                   (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION, &*"batteryVoltage",
-                   &*"millivolt", varCode, uuid) {}
+                   (uint8_t)MODEM_BATTERY_VOLTAGE_RESOLUTION,
+                   &*MODEM_BATTERY_VOLTAGE_VAR_NAME,
+                   &*MODEM_BATTERY_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Modem_BatteryVoltage object - no action needed.
      */
@@ -991,10 +1191,11 @@ class Modem_Temp : public Variable {
      * optional with a default value of "modemTemp".
      */
     explicit Modem_Temp(loggerModem* parentModem, const char* uuid = "",
-                        const char* varCode = "modemTemp")
+                        const char* varCode = MODEM_TEMPERATURE_DEFAULT_CODE)
         : Variable(&parentModem->getModemTemperature,
-                   (uint8_t)MODEM_TEMPERATURE_RESOLUTION, &*"temperature",
-                   &*"degreeCelsius", varCode, uuid) {}
+                   (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
+                   &*MODEM_TEMPERATURE_VAR_NAME, &*MODEM_TEMPERATURE_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Modem_Temp object - no action needed.
      */
@@ -1002,33 +1203,33 @@ class Modem_Temp : public Variable {
 };
 
 
-// // Defines a diagnostic variable for how long the modem was last active
-// class Modem_ActivationDuration : public Variable {
-//  public:
-//     explicit Modem_ActivationDuration(loggerModem* parentModem,
-//                                       const char*  uuid    = "",
-//                                       const char*  varCode =
-//                                       "modemActiveSec")
-//         : Variable(&parentModem->getModemActivationDuration,
-//                    (uint8_t)MODEM_ACTIVATION_RESOLUTION,
-//                    &*"timeElapsed",
-//                    &*"second", varCode, uuid) {}
-//     ~Modem_ActivationDuration() {}
-// };
+#ifdef MS_CHECK_MODEM_TIMING
+// Defines a diagnostic variable for how long the modem was last active
+class Modem_ActivationDuration : public Variable {
+ public:
+    explicit Modem_ActivationDuration(
+        loggerModem* parentModem, const char* uuid = "",
+        const char* varCode = MODEM_ACTIVATION_DEFAULT_CODE)
+        : Variable(&parentModem->getModemActivationDuration,
+                   (uint8_t)MODEM_ACTIVATION_RESOLUTION,
+                   &*MODEM_ACTIVATION_VAR_NAME, &*MODEM_ACTIVATION_UNIT_NAME,
+                   varCode, uuid) {}
+    ~Modem_ActivationDuration() {}
+};
 
 
-// // Defines a diagnostic variable for how long the modem was last active
-// class Modem_PoweredDuration : public Variable {
-//  public:
-//     explicit Modem_PoweredDuration(loggerModem* parentModem,
-//                                    const char*  uuid    = "",
-//                                    const char*  varCode =
-//                                    "modemPoweredSec")
-//         : Variable(&parentModem->getModemPoweredDuration,
-//                    (uint8_t)MODEM_POWERED_RESOLUTION, &*"timeElapsed",
-//                    &*"second", varCode, uuid) {}
-//     ~Modem_PoweredDuration() {}
-// };
+// Defines a diagnostic variable for how long the modem was last active
+class Modem_PoweredDuration : public Variable {
+ public:
+    explicit Modem_PoweredDuration(
+        loggerModem* parentModem, const char* uuid = "",
+        const char* varCode = MODEM_POWERED_DEFAULT_CODE)
+        : Variable(&parentModem->getModemPoweredDuration,
+                   (uint8_t)MODEM_POWERED_RESOLUTION, &*MODEM_POWERED_VAR_NAME,
+                   &*MODEM_POWERED_UNIT_NAME, varCode, uuid) {}
+    ~Modem_PoweredDuration() {}
+};
+#endif
 
 // #include <LoggerModem.tpp>
 #endif  // SRC_LOGGERMODEM_H_

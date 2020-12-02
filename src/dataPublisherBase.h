@@ -9,6 +9,12 @@
  *
  * @copydetails dataPublisher
  */
+/**
+ * @defgroup the_publishers Supported Data Endpoints
+ * All implemented data endpoint (publisher) classes
+ *
+ * @copydetails dataPublisher
+ */
 
 // Header Guards
 #ifndef SRC_DATAPUBLISHERBASE_H_
@@ -52,6 +58,8 @@
  * A dataPublisher is a abstract concept.  It is something that "watches" the
  * logger for new data and correctly formats and sends that data to some online
  * web service.
+ *
+ * @ingroup base_classes
  */
 class dataPublisher {
  public:

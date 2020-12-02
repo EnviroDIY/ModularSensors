@@ -35,6 +35,8 @@
  *
  * Code for this is taken from this forum post:
  * https://forum.arduino.cc/index.php?topic=248263.0
+ *
+ * @ingroup base_classes
  */
 class extendedWatchDogAVR {
  public:

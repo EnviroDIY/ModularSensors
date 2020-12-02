@@ -19,7 +19,7 @@ git clone -b master --depth 1 https://github.com/EnviroDIY/ModularSensors Modula
 git clone --depth 1 https://github.com/EnviroDIY/ModularSensors.wiki
 
 # Clone m.css for its theming
-git clone --depth 1 https://github.com/SRGDamia1/m.css
+git clone --depth 1 https://github.com/SRGDamia1/m.css m.css
 
 # Get the current gh-pages branch
 # git clone -b gh-pages https://git@$GH_REPO_REF

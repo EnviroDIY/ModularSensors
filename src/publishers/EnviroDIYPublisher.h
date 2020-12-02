@@ -33,6 +33,8 @@
  * @brief The EnviroDIYPublisher subclass of dataPublisher for publishing data
  * to the Monitor My Watershed/EnviroDIY data portal at
  * http://data.enviroDIY.org
+ *
+ * @ingroup the_publishers
  */
 class EnviroDIYPublisher : public dataPublisher {
  public:

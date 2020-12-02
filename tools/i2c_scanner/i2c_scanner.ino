@@ -29,7 +29,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <SoftwareWire.h>  // for the stream communication
+#include <SoftwareWire.h>  // Testato's Software I2C
 
 
 const int8_t softwareSDA = 5;  // data in pin
