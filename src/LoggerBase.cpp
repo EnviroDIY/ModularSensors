@@ -50,6 +50,8 @@ int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
 #define markedEpochTimeTz markedEpochTime
 uint32_t Logger::markedEpochTimeTz = 0;
+//uint32_t Logger::markedEpochTime    = 0;
+uint32_t Logger::markedEpochTimeUTC = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -717,6 +719,9 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
     Logger::markedEpochTimeTz = getNowEpochTz();
+;    Logger::markedEpochTime    = getNowEpoch();
+    Logger::markedEpochTimeUTC = markedEpochTime
+                                 - ((uint32_t)_loggerRTCOffset) * 3600;
 }
 
 

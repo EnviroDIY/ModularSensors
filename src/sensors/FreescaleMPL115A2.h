@@ -15,7 +15,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup mpl115a2_group Freescale Semiconductor MPL115A2
+ * @defgroup sensor_mpl115a2 Freescale Semiconductor MPL115A2
  * Classes for the Freescale Semiconductor MPL115A2 digital barometer.
  *
  * @ingroup the_sensors
@@ -23,50 +23,33 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section mpl115a2_intro Introduction
+ * @section sensor_mpl115a2_intro Introduction
  *
  * The Freescale Semiconductor MPL115A2 is a low-cost, low-power absolute
  * pressure sensor with a digital I2C output.  It is optimized for barometric
  * measurements. Because this sensor can have only one I2C address (0x60), it is
- * only possible to connect one of these sensors to your system.  This sensor
+ * only possible to connect one of these sensors to a single I2C bus.  This sensor
  * should be attached to a 2.375-5.5V power source and the power supply to the
  * sensor can be stopped between measurements.  Communication with the MPL115A2
  * is managed by the
  * [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2).
  *
- * @section mpl115a2_datasheet Sensor Datasheet
+ * @note Software I2C is *not* supported for the AM2315.
+ * A secondary hardware I2C on a SAMD board is supported.
+ *
+ * @section sensor_mpl115a2_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
  * https://www.adafruit.com/product/992 and
  * https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB
  * A copy of the datasheet is available here:
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf)
  *
- * @section mpl115a2_sensor The MPL115A2 Sensor
- * @ctor_doc{MPL115A2, int8_t powerPin, uint8_t measurementsToAverage}
- * @subsection mpl115a2_timing Sensor Timing
- * - Sensor takes about 1.6 ms to respond
- * - Assume sensor is immediately stable
- *
- * @section mpl115a2_temp Temperature Output
- *   - Range is -20°C to 85°C
- *   - Accuracy is not specified on the sensor datasheet
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is MPL115A2_Temp
- * @variabledoc{mpl115a2_temp,MPL115A2,Temp,MPL115A2_Temp}
- *
- * @section mpl115a2_pressure Pressure Output
- *   - Range is 500-1150 hPa
- *   - Accuracy ±10 hPa
- *   - Result stored in sensorvalues[1]
- *   - Resolution is 1.5 hPa
- *   - Reported as kilopascal (kPa)
- *   - Default variable code is MPL115A2_Pressure
- * @variabledoc{mpl115a2_pressure,MPL115A2,Pressure,MPL115A2_Pressure}
+ * @section sensor_mpl115a2_ctor Sensor Constructors
+ * {{ @ref MPL115A2::MPL115A2(int8_t, uint8_t) }}
+ * {{ @ref MPL115A2::MPL115A2(TwoWire*, int8_t, uint8_t) }}
  *
  * ___
- * @section mpl115a2_examples Example Code
+ * @section sensor_mpl115a2_examples Example Code
  * The Freescale Semiconductor MPL115A2 is used in the @menulink{mpl115a2}
  * example.
  *
@@ -93,44 +76,119 @@
 #include <Adafruit_MPL115A2.h>
 
 // Sensor Specific Defines
+/** @ingroup sensor_mpl115a2 */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
 #define MPL115A2_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the MPL115A2 warms up in 6ms.
-#define MPL115A2_WARM_UP_TIME_MS 6
-/// Sensor::_stabilizationTime_ms; the MPL115A2 is stable after 0ms.
-#define MPL115A2_STABILIZATION_TIME_MS 0
+
 /**
- * @brief Sensor::_measurementTime_ms; the MPL115A2 takes 3ms to complete a
- * measurement.
+ * @anchor sensor_mpl115a2_timing
+ * @name Sensor Timing
+ * The sensor timing for a Freescale MPL115A2
  */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the MPL115A2 takes about 6 ms to respond.
+#define MPL115A2_WARM_UP_TIME_MS 6
+/// @brief Sensor::_stabilizationTime_ms; the MPL115A2 is stable as soon as it
+/// warms up (0ms stabilization).
+#define MPL115A2_STABILIZATION_TIME_MS 0
+/// @brief Sensor::_measurementTime_ms; the MPL115A2 takes 3ms to complete a
+/// measurement.
 #define MPL115A2_MEASUREMENT_TIME_MS 3
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @anchor sensor_mpl115a2_temp
+ * @name Temperature
+ * The temperature variable from a Freescale MPL115A2
+ * - Range is -20°C to 85°C
+ * - Accuracy is not specified on the sensor datasheet
+ *
+ * {{ @ref MPL115A2_Temp::MPL115A2_Temp }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is 0.01°C.
 #define MPL115A2_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define MPL115A2_TEMP_VAR_NUM 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
+#define MPL115A2_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
+#define MPL115A2_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "MPL115A2_Temp"
+#define MPL115A2_TEMP_DEFAULT_CODE "MPL115A2_Temp"
+/**@}*/
 
-/// Decimals places in string representation; pressure should have 2.
+/**
+ * @anchor sensor_mpl115a2_pressure
+ * @name Pressure
+ * The pressure variable from a Freescale MPL115A2
+ * - Range is 500-1150 hPa
+ * - Accuracy ±10 hPa
+ *
+ * {{ @ref MPL115A2_Pressure::MPL115A2_Pressure }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; pressure should have 2 -
+/// resolution is 1.5 hPa.
 #define MPL115A2_PRESSURE_RESOLUTION 2
-/// Variable number; pressure is stored in sensorValues[1].
+/// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define MPL115A2_PRESSURE_VAR_NUM 1
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "atmosphericPressure"
+#define MPL115A2_PRESSURE_VAR_NAME "atmosphericPressure"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "kilopascal" (kPa)
+#define MPL115A2_PRESSURE_UNIT_NAME "kilopascal"
+/// @brief Default variable short code; "MPL115A2_Pressure"
+#define MPL115A2_PRESSURE_DEFAULT_CODE "MPL115A2_Pressure"
+/**@}*/
 
 
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Freescale Semiconductor MPL115A2 sensor](@ref mpl115a2_group).
+ * [Freescale Semiconductor MPL115A2 sensor](@ref sensor_mpl115a2).
  *
- * @ingroup mpl115a2_group
+ * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
 class MPL115A2 : public Sensor {
  public:
     /**
-     * @brief Construct a new MPL115A2
+     * @brief Construct a new MPL115A2 using a secondary *hardware* I2C
+     * instance.
      *
-     * @note It is only possible to connect *one* MPL115A2 at a time!
+     * @note It is only possible to connect *one* MPL115A2 at a time on a single
+     * I2C bus.  Software I2C is also not supported.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling power to the MPL115A2
+     * Use -1 if it is continuously powered.
+     * - The MPL115A2 requires a 2.375 - 5.5V power source
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     */
+    MPL115A2(TwoWire* theI2C, int8_t powerPin,
+             uint8_t measurementsToAverage = 1);
+    /**
+     * @brief Construct a new MPL115A2 using the primary hardware I2C instance.
+     *
+     * @note It is only possible to connect *one* MPL115A2 at a time on a single
+     * I2C bus.  Software I2C is also not supported.
      *
      * @param powerPin The pin on the mcu controlling power to the MPL115A2
      * Use -1 if it is continuously powered.
@@ -168,18 +226,24 @@ class MPL115A2 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
+    /**
+     * @brief Private reference to the internal MPL115A2 object.
+     */
     Adafruit_MPL115A2 mpl115a2_internal;
-    uint8_t           _i2cAddressHex;
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;
 };
 
 
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref mpl115a2_temp) from a
- * [Freescale Semiconductor MPL115A2](@ref mpl115a2_group).
+ * [temperature output](@ref sensor_mpl115a2_temp) from a
+ * [Freescale Semiconductor MPL115A2](@ref sensor_mpl115a2).
  *
- * @ingroup mpl115a2_group
+ * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
 class MPL115A2_Temp : public Variable {
@@ -194,10 +258,10 @@ class MPL115A2_Temp : public Variable {
      * optional with a default value of "MPL115A2_Temp".
      */
     explicit MPL115A2_Temp(MPL115A2* parentSense, const char* uuid = "",
-                           const char* varCode = "MPL115A2_Temp")
+                           const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
+                   MPL115A2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MPL115A2_Temp object.
      *
@@ -205,8 +269,8 @@ class MPL115A2_Temp : public Variable {
      */
     MPL115A2_Temp()
         : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "MPL115A2_Temp") {}
+                   (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
+                   MPL115A2_TEMP_UNIT_NAME, MPL115A2_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MPL115A2_Temp object - no action needed.
      */
@@ -217,10 +281,10 @@ class MPL115A2_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pressure output](@ref mpl115a2_pressure) from a
- * [Freescale Semiconductor MPL115A2](@ref mpl115a2_group).
+ * [pressure output](@ref sensor_mpl115a2_pressure) from a
+ * [Freescale Semiconductor MPL115A2](@ref sensor_mpl115a2).
  *
- * @ingroup mpl115a2_group
+ * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
 class MPL115A2_Pressure : public Variable {
@@ -234,11 +298,13 @@ class MPL115A2_Pressure : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "MPL115A2_Pressure".
      */
-    explicit MPL115A2_Pressure(MPL115A2* parentSense, const char* uuid = "",
-                               const char* varCode = "MPL115A2_Pressure")
+    explicit MPL115A2_Pressure(
+        MPL115A2* parentSense, const char* uuid = "",
+        const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION, "atmosphericPressure",
-                   "kilopascal", varCode, uuid) {}
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                   MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new MPL115A2_Pressure object.
      *
@@ -246,13 +312,13 @@ class MPL115A2_Pressure : public Variable {
      */
     MPL115A2_Pressure()
         : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION, "atmosphericPressure",
-                   "kilopascal", "MPL115A2_Pressure") {}
+                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                   MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
+                   MPL115A2_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MPL115A2_Pressure object - no action needed.
      */
     ~MPL115A2_Pressure() {}
 };
-
-
+/**@}*/
 #endif  // SRC_SENSORS_FREESCALEMPL115A2_H_

@@ -8,6 +8,53 @@
  * specific to the Sodaq 2GBee revisions 6 and higher based on the SIMCOM
  * SIM800h.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_gprsbee Sodaq GPRSBee
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_gprsbee_notes Introduction
+ *
+ * This is for the Sodaq GPRSBee **R6 and higher**.
+ * This board is based on the [SIMCom SIM800H](https://simcom.ee/modules/gsm-gprs/sim800/),
+ * but adds an extra transistor to the `PWR_KEY` so it is turned on and off in a different way.
+ * For earlier Sodaq GPRSBee's, use the standard SIM800
+ * [constructor](https://github.com/EnviroDIY/ModularSensors/wiki/SIM800).
+ *
+ * The modem constructor follows the typical modem pattern, except that the
+ * Sodaq GPRSBee's do not expose the SIM800's reset pin or its sleep request
+ * (`PWRKEY`) pin.
+ * The SIM800H's `PWRKEY` is always held at the inverse of the main power.
+ * It cannot be controlled.
+ * Thus the GPRSBeeR6 can only be "put to sleep" by cutting the power to the
+ * SIM800H.
+ *
+ * @note **The power pin of the GPRSBee R6 and R7 is wired to the XBee socket
+ * pin usually used as the sleep request pin!!**  *On the GPRSBee, the XBee
+ * socket pin usually used for Vin (pin 1) is used for communication reference
+ * voltage only !*
+ *
+ * If you are capable of controlling the voltage reference pin (Bee socket pin 1)
+ * of the GPRSBee, you can set that pin using the function `setVRefPin(int8_t vRefPin)`.
+ *
+ * @section modem_gprsbee_docs Manufacturer Documentation
+ * The GPRSBee schematics are available here:
+ * https://support.sodaq.com/sodaq-one/gprsbee-5/
+ *
+ * @section modem_gprsbee_ctor Modem Constructor
+ * {{ @ref Sodaq2GBeeR6::Sodaq2GBeeR6 }}
+ *
+ * ___
+ * @section modem_gprsbee_examples Example Code
+ * The GPRSBee is used in the @menulink{gprsbee} example.
+ *
+ * @menusnip{gprsbee}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_SODAQ2GBEER6_H_
@@ -20,6 +67,9 @@
 #ifdef MS_SODAQ2GBEER6_DEBUG
 #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
+
+/** @ingroup modem_gprsbee */
+/**@{*/
 
 /**
  * @brief The loggerModem::_wakeDelayTime_ms.
@@ -43,10 +93,6 @@
  * @brief The loggerModem subclass for the Sodaq 2GBee revisions 6 and higher
  * based on the SIMCOM SIM800h.
  *
- * @copydetails #SIM800_ATRESPONSE_TIME_MS
- *
- * @copydetails #SIM800_DISCONNECT_TIME_MS
- *
  * @note The Sodaq GPRSBee doesn't expose the SIM800's reset pin..
  *
  * @note The power pin of the SIM800 is wired to the XBee's `DTR` pin, the
@@ -57,7 +103,7 @@
  * @note The normal `Vin` pin of the Bee socket (pin 1) is used for voltage
  * reference only.
  *
- * @see @ref gprsbee_page
+ * @see @ref modem_gprsbee
  */
 class Sodaq2GBeeR6 : public SIMComSIM800 {
  public:
@@ -123,5 +169,5 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
  private:
     int8_t _vRefPin;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_SODAQ2GBEER6_H_

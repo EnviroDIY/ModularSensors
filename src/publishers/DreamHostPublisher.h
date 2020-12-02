@@ -33,6 +33,8 @@
  * @brief The DreamHostPublisher subclass of dataPublisher is for publishing
  * data to the Stroud Center's now-deprecated DreamHost based live sensor data
  * system.
+ *
+ * @ingroup the_publishers
  */
 class DreamHostPublisher : public dataPublisher {
  public:

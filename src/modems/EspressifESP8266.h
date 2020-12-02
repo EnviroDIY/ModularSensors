@@ -4,11 +4,66 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the EspressifESP8266 subclass of loggerModem which SHOULD
+ * @brief Contains the EspressifESP8266 subclass of loggerModem which _SHOULD_
  * work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32
  * wifi/bluetooth chip that has been flashed with Espressif's AT command
  * firmware.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_esp8266 Espressif ESP8266 and ESP32
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_esp8266_notes Introduction
+ *
+ * These are handy, cheap, and very widely available WiFi and
+ * WiFi/Bluetooth modules.
+ * They use relatively little power amd can be put in a deep sleep mode to
+ * greatly reduce power draw.
+ * The types of sleep they can use are dependent on the breakout you have.
+ * If you're shopping for boards, I strongly recommend getting a breakout that
+ * exposes the deep sleep wake up (RSTB/DIO16) pin so that you can put the chip
+ * in its lowest power mode.
+ * When using the AT command firmware, it is not possible to purposefully enter
+ * light sleep mode.
+ * The module will enter light sleep on its own after some (undocumented) idle
+ * period.
+ * In my testing, I've never seen the module drop to the documented light sleep
+ * power levels regardless of the length of time idle.
+ *
+ * @section modem_esp8266_dfrobot DFRobot ESPBee
+ *
+ * I don't actually recommend this module.
+ * It gets hot and eats power for no apparent reason.
+ * And the pin connections are a bit strange.
+ * But it is cheap and available.
+ * The pins are technically available to use the ESP's "light sleep" but I've
+ * never successfully gotten the module to actually enter light sleep mode.
+ * It always runs at full power draw.
+ * It's not possible to use deep sleep on the DFRobot bee.
+ *
+ * @section modem_esp8266_docs Manufacturer Documentation
+ * More information on the ESP8266 is here:
+ * https://www.espressif.com/en/products/socs/esp8266
+ * And the page for the ESP32 is here:
+ * https://www.espressif.com/en/products/socs/esp32
+ *
+ * @section modem_esp8266_ctor Modem Constructor
+ * {{ @ref EspressifESP8266::EspressifESP8266 }}
+ *
+ * ___
+ * @section modem_esp8266_examples Example Code
+ * The ESP8266 is used in the @menulink{esp} example and the
+ * [logging to ThingSpeak](@ref logging_to_ThingSpeak.ino) example.
+ *
+ * @menusnip{esp8266}
+ */
+/* clang-format on */
+
 
 // Header Guards
 #ifndef SRC_MODEMS_ESPRESSIFESP8266_H_
@@ -21,6 +76,9 @@
 #ifdef MS_ESPRESSIFESP8266_DEBUG
 #define MS_DEBUGGING_STD "EspressifESP8266"
 #endif
+
+/** @ingroup modem_esp8266 */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -50,8 +108,8 @@
  * being able to configure light sleep mode for the module, it's not actually
  * possible to purposefully enter light sleep via AT commands, so we are
  * dependent on the module deciding it's been idle long enough and entering
- * sleep on its own.  It is a terrible system.  Use a deep-sleep with reset if
- * possible.
+ * sleep on its own.  It is a terrible system.  **Use a deep-sleep with reset if
+ * possible.**
  */
 #define ESP8266_STATUS_LEVEL HIGH
 /**
@@ -127,20 +185,10 @@
  * wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif's
  * AT command firmware.
  *
- * #### Pin and timing information for the ESP8266
- *
- * @copydetails #ESP8266_WAKE_DELAY_MS
- *
- * @copydetails #ESP8266_RESET_LEVEL
- *
- * @copydetails #ESP8266_ATRESPONSE_TIME_MS
- *
- * @copydetails #ESP8266_STATUS_LEVEL
- *
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  *
- * @see @ref esp8266_page
+ * @see @ref modem_esp8266
  */
 class EspressifESP8266 : public loggerModem {
  public:
@@ -162,7 +210,7 @@ class EspressifESP8266 : public loggerModem {
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
      * This can be any DIO pin on the esp.  It is only used in light sleep.
      * @param ssid The wifi network ID.
-     * @param pwd The wifi network password, assuming WPA2.
+     * @param pwd The wifi network password, **assuming WPA2**.
      * @param espSleepRqPin The DIO pin on the ESP8266 assigned to light sleep
      * wake.  This can be any DIO pin on the esp.
      * @param espStatusPin The DIO pin on the ESP8566 assigned to status
@@ -227,5 +275,5 @@ class EspressifESP8266 : public loggerModem {
     int8_t _espSleepRqPin;
     int8_t _espStatusPin;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

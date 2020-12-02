@@ -18,7 +18,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup y532_group Yosemitech Y532
+ * @defgroup sensor_y532 Yosemitech Y532 pH Sensor
  * Classes for the Yosemitech Y532 pH sensor.
  *
  * @ingroup yosemitech_group
@@ -26,51 +26,20 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section y532_datasheet Sensor Datasheet
+ * @section sensor_y532_datasheet Sensor Datasheet
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
  *
- * @section y532_sensor The y532 Sensor
- * @ctor_doc{YosemitechY532, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
- * @subsection y532_timing Sensor Timing
- * - Time before sensor responds after power - 500ms
- * - Time between "StartMeasurement" command and stable reading - 4.5sec
- *
- * @section y532_ph pH Output
- *   - Range is 2 to 12 pH units
- *   - Accuracy is ± 0.1 pH units
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.01 pH units
- *   - Reported as dimensionless pH units
- *   - Default variable code is Y532pH
- * @variabledoc{y532_ph,YosemitechY532,pH,Y532pH}
- *
- * @section y532_temp Temperature Output
- *   - Range is 0°C to + 50°C
- *   - Accuracy is ± 0.2°C
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.1 °C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is Y532Temp
- * @variabledoc{y532_temp,YosemitechY532,Temp,Y532Temp}
- *
- * @section y532_volt Voltage Output
- *   - Range is -999 ~ 999 mV
- *   - Accuracy is ± 20 mV
- *   - Result stored in sensorValues[2]
- *   - Resolution is 1mV
- *   - Reported as millivolts (mV)
- *   - Default variable code is Y532Potential
- * @variabledoc{y532_volt,YosemitechY532,Voltage,Y532Potential}
- *
- * The reported resolution (32 bit) gives far more precision than is significant
+ * @note The reported resolution (32 bit) gives far more precision than is significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
  *
+ * @section sensor_y532_ctor Sensor Constructor
+ * {{ @ref YosemitechY532::YosemitechY532 }}
  *
  * ___
- * @section y532_examples Example Code
+ * @section sensor_y532_examples Example Code
  * The Yosemitech Y532 pH sensor is used in the @menulink{y532} example.
  *
  * @menusnip{y532}
@@ -85,40 +54,116 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
+/** @ingroup sensor_y532 */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Y532 can report 3 values.
+/// @brief Sensor::_numReturnedValues; the Y532 can report 3 values.
 #define Y532_NUM_VARIABLES 3
-/// Sensor::_warmUpTime_ms; the Y532 warms up in 500ms.
-#define Y532_WARM_UP_TIME_MS 500
-/// Sensor::_stabilizationTime_ms; the Y532 is stable after 4500ms.
-#define Y532_STABILIZATION_TIME_MS 4500
+
 /**
- * @brief Sensor::_measurementTime_ms; the Y532 takes 1800ms to complete a
- * measurement.
+ * @anchor sensor_y532_timing
+ * @name Sensor Timing
+ * The sensor timing for a Yosemitch Y532
  */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
+/// 500ms.
+#define Y532_WARM_UP_TIME_MS 500
+/// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
+/// command and stable reading - 4.5sec (4500ms).
+#define Y532_STABILIZATION_TIME_MS 4500
+/// @brief Sensor::_measurementTime_ms; the Y532 takes ~1800ms to complete a
+/// measurement.
 #define Y532_MEASUREMENT_TIME_MS 1800
+/**@}*/
 
-/// Decimals places in string representation; pH should have 2.
+/**
+ * @anchor sensor_y532_ph
+ * @name pH
+ * The pH variable from a Yosemitch Y532
+ * - Range is 2 to 12 pH units
+ * - Accuracy is ± 0.1 pH units
+ *
+ * {{ @ref YosemitechY532_pH::YosemitechY532_pH }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; pH should have 2 -
+/// resolution is 0.01 pH units.
 #define Y532_PH_RESOLUTION 2
-/// Variable number; pH is stored in sensorValues[0].
+/// @brief Sensor variable number; pH is stored in sensorValues[0].
 #define Y532_PH_VAR_NUM 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "pH"
+#define Y532_PH_VAR_NAME "pH"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "pH"
+/// (dimensionless pH units)
+#define Y532_PH_UNIT_NAME "pH"
+/// @brief Default variable short code; "Y532pH"
+#define Y532_PH_DEFAULT_CODE "Y532pH"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 1.
+/**
+ * @anchor sensor_y532_temp
+ * @name Temperature
+ * The temperature variable from a Yosemitch Y532
+ * - Range is 0°C to + 50°C
+ * - Accuracy is ± 0.2°C
+ *
+ * {{ @ref YosemitechY532_Temp::YosemitechY532_Temp }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 1 -
+/// resolution is 0.1°C.
 #define Y532_TEMP_RESOLUTION 1
-/// Variable number; temperature is stored in sensorValues[1].
+/// @brief Sensor variable number; temperature is stored in sensorValues[1].
 #define Y532_TEMP_VAR_NUM 1
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
+#define Y532_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
+#define Y532_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "Y532Temp"
+#define Y532_TEMP_DEFAULT_CODE "Y532Temp"
+/**@}*/
 
-/// Decimals places in string representation; voltage should have 0.
-#define Y532_VOLT_RESOLUTION 0
-/// Variable number; voltage is stored in sensorValues[2].
-#define Y532_VOLT_VAR_NUM 2
+/**
+ * @anchor sensor_y532_volt
+ * @name Voltage
+ * The voltage variable from a Yosemitch Y532
+ * - Range is -999 ~ 999 mV
+ * - Accuracy is ± 20 mV
+ *
+ * {{ @ref YosemitechY532_Voltage::YosemitechY532_Voltage }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; voltage should have 0 -
+/// resolution is 1mV.
+#define Y532_VOLTAGE_RESOLUTION 0
+/// @brief Sensor variable number; voltage is stored in sensorValues[2].
+#define Y532_VOLTAGE_VAR_NUM 2
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "voltage"
+#define Y532_VOLTAGE_VAR_NAME "voltage"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
+/// (mV)
+#define Y532_VOLTAGE_UNIT_NAME "millivolt"
+/// @brief Default variable short code; "Y532Potential"
+#define Y532_VOLTAGE_DEFAULT_CODE "Y532Potential"
+/**@}*/
+
 
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Yosemitech Y532-A digital pH sensor](@ref y532_group).
+ * [Yosemitech Y532-A digital pH sensor](@ref sensor_y532).
  *
- * @ingroup y532_group
+ * @ingroup sensor_y532
  */
 /* clang-format on */
 class YosemitechY532 : public YosemitechParent {
@@ -173,10 +218,10 @@ class YosemitechY532 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pH output](@ref y532_ph)
- * from a  [Yosemitech Y532-A digital pH sensor](@ref y532_group).
+ * [pH output](@ref sensor_y532_ph)
+ * from a  [Yosemitech Y532-A digital pH sensor](@ref sensor_y532).
  *
- * @ingroup y532_group
+ * @ingroup sensor_y532
  */
 /* clang-format on */
 class YosemitechY532_pH : public Variable {
@@ -189,13 +234,14 @@ class YosemitechY532_pH : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of Y532pH
+     * optional with a default value of "Y532pH".
      */
     explicit YosemitechY532_pH(YosemitechY532* parentSense,
                                const char*     uuid    = "",
-                               const char*     varCode = "Y532pH")
+                               const char*     varCode = Y532_PH_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y532_PH_VAR_NUM,
-                   (uint8_t)Y532_PH_RESOLUTION, "pH", "pH", varCode, uuid) {}
+                   (uint8_t)Y532_PH_RESOLUTION, Y532_PH_VAR_NAME,
+                   Y532_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY532_pH object.
      *
@@ -204,7 +250,7 @@ class YosemitechY532_pH : public Variable {
      */
     YosemitechY532_pH()
         : Variable((const uint8_t)Y532_PH_VAR_NUM, (uint8_t)Y532_PH_RESOLUTION,
-                   "pH", "pH", "Y532pH") {}
+                   Y532_PH_VAR_NAME, Y532_PH_UNIT_NAME, Y532_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY532_pH object - no action needed.
      */
@@ -215,10 +261,10 @@ class YosemitechY532_pH : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref y532_temp) from a
- * [Yosemitech Y532-A digital pH sensor](@ref y532_group).
+ * [temperature output](@ref sensor_y532_temp) from a
+ * [Yosemitech Y532-A digital pH sensor](@ref sensor_y532).
  *
- * @ingroup y532_group
+ * @ingroup sensor_y532
  */
 /* clang-format on */
 class YosemitechY532_Temp : public Variable {
@@ -234,11 +280,11 @@ class YosemitechY532_Temp : public Variable {
      * optional with a default value of "Y532Temp".
      */
     explicit YosemitechY532_Temp(YosemitechY532* parentSense,
-                                 const char*     uuid    = "",
-                                 const char*     varCode = "Y532Temp")
+                                 const char*     uuid = "",
+                                 const char* varCode  = Y532_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y532_TEMP_VAR_NUM,
-                   (uint8_t)Y532_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)Y532_TEMP_RESOLUTION, Y532_TEMP_VAR_NAME,
+                   Y532_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY532_Temp object.
      *
@@ -247,8 +293,8 @@ class YosemitechY532_Temp : public Variable {
      */
     YosemitechY532_Temp()
         : Variable((const uint8_t)Y532_TEMP_VAR_NUM,
-                   (uint8_t)Y532_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "Y532Temp") {}
+                   (uint8_t)Y532_TEMP_RESOLUTION, Y532_TEMP_VAR_NAME,
+                   Y532_TEMP_UNIT_NAME, Y532_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY532_Temp object - no action needed.
      */
@@ -259,10 +305,10 @@ class YosemitechY532_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [electrode electrical potential output](@ref y532_volt) from a
- * [Yosemitech Y532-A digital pH sensor](@ref y532_group).
+ * [electrode electrical potential output](@ref sensor_y532_volt) from a
+ * [Yosemitech Y532-A digital pH sensor](@ref sensor_y532).
  *
- * @ingroup y532_group
+ * @ingroup sensor_y532
  */
 /* clang-format on */
 class YosemitechY532_Voltage : public Variable {
@@ -277,12 +323,12 @@ class YosemitechY532_Voltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y532Potential".
      */
-    explicit YosemitechY532_Voltage(YosemitechY532* parentSense,
-                                    const char*     uuid    = "",
-                                    const char*     varCode = "Y532Potential")
-        : Variable(parentSense, (const uint8_t)Y532_VOLT_VAR_NUM,
-                   (uint8_t)Y532_VOLT_RESOLUTION, "voltage", "millivolt",
-                   varCode, uuid) {}
+    explicit YosemitechY532_Voltage(
+        YosemitechY532* parentSense, const char* uuid = "",
+        const char* varCode = Y532_VOLTAGE_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)Y532_VOLTAGE_VAR_NUM,
+                   (uint8_t)Y532_VOLTAGE_RESOLUTION, Y532_VOLTAGE_VAR_NAME,
+                   Y532_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY532_Voltage object.
      *
@@ -290,13 +336,13 @@ class YosemitechY532_Voltage : public Variable {
      * used.
      */
     YosemitechY532_Voltage()
-        : Variable((const uint8_t)Y532_VOLT_VAR_NUM,
-                   (uint8_t)Y532_VOLT_RESOLUTION, "voltage", "millivolt",
-                   "Y532Potential") {}
+        : Variable((const uint8_t)Y532_VOLTAGE_VAR_NUM,
+                   (uint8_t)Y532_VOLTAGE_RESOLUTION, Y532_VOLTAGE_VAR_NAME,
+                   Y532_VOLTAGE_UNIT_NAME, Y532_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY532_Voltage object - no action needed.
      */
     ~YosemitechY532_Voltage() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY532_H_

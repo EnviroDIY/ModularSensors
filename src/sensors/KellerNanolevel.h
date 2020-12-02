@@ -13,7 +13,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup nanolevel_group Keller Nanolevel
+ * @defgroup sensor_nanolevel Keller Nanolevel
  * Classes for the Keller Nanolevel capacitive level sensor.
  *
  * @ingroup keller_group
@@ -23,44 +23,15 @@
  *
  * These are for Keller Nanolevel capacitive level sensors.
  *
- * @section nanolevel_datasheet Sensor Datasheet
+ * @section sensor_nanolevel_datasheet Sensor Datasheet
  * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  * [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
  *
- * @section nanolevel_sensor The Keller Nanolevel Sensor
- * @ctor_doc{KellerNanolevel, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
- * @subsection nanolevel_timing Sensor Timing
- *
- * @section nanolevel_pressure Pressure Output
- *   - Range is 0 to 300mbar
- *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.002%
- *   - Reported as millibar (mb)
- *   - Default variable code is kellerNanoPress
- * @variabledoc{nanolevel_pressure,KellerNanolevel,Pressure,kellerNanoPress}
- *
- * @section nanolevel_temp Temperature Output
- *   - Range is 10°C to 50°C
- *   - Accuracy is not specified in the sensor datasheet
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is kellerNanoTemp
- * @variabledoc{nanolevel_temp,KellerNanolevel,Temp,kellerNanoTemp}
- *
- * @section nanolevel_height Height Output
- *   - Range is 0 to 120 inches
- *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.002%
- *   - Reported as meters (m)
- *   - Default variable code is kellerNanoHeight
- * @variabledoc{nanolevel_height,KellerNanolevel,Height,kellerNanoHeight}
- *
+ * @section sensor_nanolevel_ctor Sensor Constructor
+ * {{ @ref KellerNanolevel::KellerNanolevel }}
  *
  * ___
- * @section nanolevel_examples Example Code
+ * @section sensor_nanolevel_examples Example Code
  * The Keller Nanolevel is used in the @menulink{nanolevel} example.
  *
  * @menusnip{nanolevel}
@@ -75,40 +46,90 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
+/** @ingroup sensor_nanolevel */
+/**@{*/
 
-/// Sensor::_warmUpTime_ms; the Nanolevel warms up in 500ms.
-#define NANOLEVEL_WARM_UP_TIME_MS 500
-/// Sensor::_stabilizationTime_ms; the Nanolevel is stable after 5000ms.
-#define NANOLEVEL_STABILIZATION_TIME_MS 5000
 /**
- * @brief Sensor::_measurementTime_ms; the Nanolevel takes 1500ms to complete a
- * measurement.
+ * @anchor sensor_nanolevel_timing
+ * @name Sensor Timing
+ * The sensor timing for a Keller Nanolevel
  */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the Nanolevel warms up in 500ms.
+#define NANOLEVEL_WARM_UP_TIME_MS 500
+/// @brief Sensor::_stabilizationTime_ms; the Nanolevel stabilization takes
+/// about 5s (5000ms).
+#define NANOLEVEL_STABILIZATION_TIME_MS 5000
+/// @brief Sensor::_measurementTime_ms; the Nanolevel takes 1500ms to complete a
+/// measurement.
 #define NANOLEVEL_MEASUREMENT_TIME_MS 1500
+/**@}*/
 
-/// Decimals places in string representation; pressure should have 5.
+/**
+ * @anchor sensor_nanolevel_pressure
+ * @name Pressure
+ * The pressure variable from a Keller Nanolevel
+ * - Range is 0 to 300mbar
+ * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerNanolevel_Pressure::KellerNanolevel_Pressure }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; pressure should have 5 -
+/// resolution is 0.002%.
 #define NANOLEVEL_PRESSURE_RESOLUTION 5
+/// @brief Default variable short code; "kellerNanoPress"
+#define NANOLEVEL_PRESSURE_DEFAULT_CODE "kellerNanoPress"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @anchor sensor_nanolevel_temp
+ * @name Temperature
+ * The temperature variable from a Keller Nanolevel
+ * - Range is 10°C to 50°C
+ * - Accuracy is not specified in the sensor datasheet
+ *
+ * {{ @ref KellerNanolevel_Temp::KellerNanolevel_Temp }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is 0.01°C.
 #define NANOLEVEL_TEMP_RESOLUTION 2
+/// @brief Default variable short code; "kellerNanoTemp"
+#define NANOLEVEL_TEMP_DEFAULT_CODE "kellerNanoTemp"
+/**@}*/
 
-/// Decimals places in string representation; height should have 4.
+/**
+ * @anchor sensor_nanolevel_height
+ * @name Height
+ * The height variable from a Keller Nanolevel
+ * - Range is 0 to 120 inches
+ * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerNanolevel_Height::KellerNanolevel_Height }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; height should have 4 -
+/// resolution is 0.002%.
 #define NANOLEVEL_HEIGHT_RESOLUTION 4
+/// @brief Default variable short code; "kellerNanoHeight"
+#define NANOLEVEL_HEIGHT_DEFAULT_CODE "kellerNanoHeight"
+/**@}*/
 
 
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Keller nanolevel sensor](@ref nanolevel_group)
+ * [Keller nanolevel sensor](@ref sensor_nanolevel)
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel : public KellerParent {
  public:
     // Constructors with overloads
     /**
-     * @brief Construct a new Keller Nanolevel
+     * @brief Construct a new Keller Nanolevel instance
      *
      * @param modbusAddress The modbus address of the Nanolevel.
      * @param stream An Arduino data stream for modbus communication.  See
@@ -155,10 +176,10 @@ class KellerNanolevel : public KellerParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge pressure (vented and barometric pressure corrected) output](@ref nanolevel_pressure)
- * from a [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
+ * [gauge pressure (vented and barometric pressure corrected) output](@ref sensor_nanolevel_pressure)
+ * from a [Keller Nanolevel ceramic capacitive level transmitter](@ref sensor_nanolevel).
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel_Pressure : public Variable {
@@ -171,14 +192,15 @@ class KellerNanolevel_Pressure : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of kellerNanoPress
+     * optional with a default value of "kellerNanoPress".
      */
-    explicit KellerNanolevel_Pressure(KellerNanolevel* parentSense,
-                                      const char*      uuid = "",
-                                      const char* varCode   = "kellerNanoPress")
+    explicit KellerNanolevel_Pressure(
+        KellerNanolevel* parentSense, const char* uuid = "",
+        const char* varCode = NANOLEVEL_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION, "pressureGauge",
-                   "millibar", varCode, uuid) {}
+                   (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION,
+                   KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new KellerNanolevel_Pressure object.
      *
@@ -187,8 +209,9 @@ class KellerNanolevel_Pressure : public Variable {
      */
     KellerNanolevel_Pressure()
         : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION, "pressureGauge",
-                   "millibar", "kellerNanoPress") {}
+                   (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION,
+                   KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME,
+                   NANOLEVEL_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerNanolevel_Pressure object - no action needed.
      */
@@ -199,10 +222,10 @@ class KellerNanolevel_Pressure : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref nanolevel_temp) from a
- * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
+ * [temperature output](@ref sensor_nanolevel_temp) from a
+ * [Keller Nanolevel ceramic capacitive level transmitter](@ref sensor_nanolevel).
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel_Temp : public Variable {
@@ -217,12 +240,12 @@ class KellerNanolevel_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "kellerNanoTemp".
      */
-    explicit KellerNanolevel_Temp(KellerNanolevel* parentSense,
-                                  const char*      uuid    = "",
-                                  const char*      varCode = "kellerNanoTemp")
+    explicit KellerNanolevel_Temp(
+        KellerNanolevel* parentSense, const char* uuid = "",
+        const char* varCode = NANOLEVEL_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)NANOLEVEL_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)NANOLEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
+                   KELLER_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new KellerNanolevel_Temp object.
      *
@@ -231,8 +254,8 @@ class KellerNanolevel_Temp : public Variable {
      */
     KellerNanolevel_Temp()
         : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)NANOLEVEL_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "kellerNanoTemp") {}
+                   (uint8_t)NANOLEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
+                   KELLER_TEMP_UNIT_NAME, NANOLEVEL_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerNanolevel_Temp object - no action needed.
      */
@@ -243,10 +266,10 @@ class KellerNanolevel_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge height (water level with regard to an arbitrary gage datum) output](@ref nanolevel_height) from a
- * [Keller Nanolevel ceramic capacitive level transmitter](@ref nanolevel_group).
+ * [gauge height (water level with regard to an arbitrary gage datum) output](@ref sensor_nanolevel_height) from a
+ * [Keller Nanolevel ceramic capacitive level transmitter](@ref sensor_nanolevel).
  *
- * @ingroup nanolevel_group
+ * @ingroup sensor_nanolevel
  */
 /* clang-format on */
 class KellerNanolevel_Height : public Variable {
@@ -261,12 +284,12 @@ class KellerNanolevel_Height : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "kellerNanoHeight".
      */
-    explicit KellerNanolevel_Height(KellerNanolevel* parentSense,
-                                    const char*      uuid = "",
-                                    const char* varCode   = "kellerNanoHeight")
+    explicit KellerNanolevel_Height(
+        KellerNanolevel* parentSense, const char* uuid = "",
+        const char* varCode = NANOLEVEL_HEIGHT_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
-                   varCode, uuid) {}
+                   (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
+                   KELLER_HEIGHT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new KellerNanolevel_Height object.
      *
@@ -275,12 +298,12 @@ class KellerNanolevel_Height : public Variable {
      */
     KellerNanolevel_Height()
         : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
-                   "kellerNanoHeight") {}
+                   (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
+                   KELLER_HEIGHT_UNIT_NAME, NANOLEVEL_HEIGHT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerNanolevel_Height object - no action needed.
      */
     ~KellerNanolevel_Height() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_KELLERNANOLEVEL_H_

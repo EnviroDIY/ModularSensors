@@ -25,3 +25,9 @@
  *
  * @brief Contains the source code for setting up the watch-dog reset on the various supported processors.
  */
+ /**
+ * @defgroup base_classes Primary Object Classes
+ * These are the primary object classes used by the ModularSensors library.
+ * One parent class exists for each of the major terms used to describe objects in the library.
+ * @see @ref page_library_terminology
+ */

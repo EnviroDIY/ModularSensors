@@ -7,6 +7,36 @@
  * @brief Contains the DigiXBeeWifi subclass of the DigiXBee class for Digi S6B
  * Wifi XBee's.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_digi_wifi XBee Wifi S6B
+ *
+ * @ingroup modem_digi
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_digi_wifi_notes Introduction
+ *
+ * Digi's wifi XBee is implemented as a DigiXBeeWifi object - a subclass of
+ * DigiXBee and loggerModem.
+ * The S6B is run in Digi's "transparent" mode.
+ * The maxiumum power draw is ~300mA.
+ *
+ * @section modem_digi_wifi_docs Manufacturer Documentation
+ * The Digi product page for the S6B wifi module is here:
+ * https://www.digi.com/products/embedded-systems/rf-modules/2-4-ghz-modules/xbee-wi-fi
+ *
+ * @section modem_digi_wifi_ctor Modem Constructor
+ * {{ @ref DigiXBeeWifi::DigiXBeeWifi }}
+ *
+ * ___
+ * @section modem_digi_wifi_examples Example Code
+ * The digi_cellular is used in the @menulink{xbee_ltem_by} example.
+ *
+ * @menusnip{xbee3_ltem_bypass}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_DIGIXBEEWIFI_H_
@@ -19,6 +49,9 @@
 #ifdef MS_DIGIXBEEWIFI_DEBUG
 #define MS_DEBUGGING_STD "DigiXBeeWifi"
 #endif
+
+/** @ingroup modem_digi_wifi */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -46,7 +79,7 @@
  * @brief The class for the Digi S6B wifi module operating in
  * Digi's "transparent" mode.
  *
- * @see #DigiXBee
+ * @see @ref modem_digi_wifi
  */
 class DigiXBeeWifi : public DigiXBee {
  public:
@@ -139,5 +172,5 @@ class DigiXBeeWifi : public DigiXBee {
     String getWiFiPwd(void);
 
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_

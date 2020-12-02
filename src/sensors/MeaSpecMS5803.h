@@ -4,7 +4,7 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com> with help from Beth
  * Fisher, Evan Host and Bobby Schulz.
- * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * Heavliy edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the MeaSpecMS5803 semsor subclass and the variable subclasses
  * MeaSpecMS5803_Temp and MeaSpecMS5803_Pressure.
@@ -19,7 +19,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup ms5803_group Measurement Specialties MS5803
+ * @defgroup sensor_ms5803 Measurement Specialties MS5803
  * Classes for the Measurement Specialties MS5803 digital preassure sensor.
  *
  * @ingroup the_sensors
@@ -27,7 +27,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section ms5803_intro Introduction
+ * @section sensor_ms5803_intro Introduction
  *
  * The Measurement Specialties MS5803 is a miniature digital pressure sensor.
  * It comes in several different pressure ranges, with 14 bar being one of the
@@ -47,54 +47,26 @@
  * sensors, make sure that the address for that sensor does not conflict with
  * the address of this sensor.
  *
+ * @note Neither secondary hardware nor software I2C is supported for the MS5803.
+ * Only the primary hardware I2C defined in the Arduino core can be used.
+ *
  * The lower level communication between the mcu and the MS5803 is handled by the
  * [Northern Widget MS5803 library](https://github.com/NorthernWidget/MS5803).
  *
- * @section ms5803_datasheet Sensor Datasheet
+ * @section sensor_ms5803_datasheet Sensor Datasheet
  *
  * Documentation for the sensor can be found at:
  * https://www.sparkfun.com/products/12909 and
- * https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
+ * https://cdn.sparkfun.com/datasheets/Sensors/Weather/sensor_ms5803_14ba.pdf
  *
  * The datasheet is also available here:
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Measurement-Specialities-MS5803-14ba-Pressure-Sensor.pdf
  *
- * @section ms5803_sensor The MS5803 Sensor
- * @ctor_doc{MeaSpecMS5803, int8_t powerPin, uint8_t i2cAddressHex, int16_t maxPressure, uint8_t measurementsToAverage}
- * @subsection ms5803_timing Sensor Timing
- * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
- * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
- * - Assume sensor is immediately stable
- *
- * @section ms5803_temp Temperature Output
- *   - Range is -40°C to +85°C
- *   - Accuracy is ±0.8°C
- *   - Result stored in sensorValues[0]
- *   - Resolution is <0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is MeaSpecMS5803Temp
- * @variabledoc{ms5803_temp,MeaSpecMS5803,Temp,MeaSpecMS5803Temp}
- *
- * @section ms5803_pressure Pressure Output
- *   - Range is 0 to 14 bar
- *   - Accuracy between 0 and +40°C is:
- *      - 14ba: ±20mbar
- *      - 2ba: ±1.5mbar
- *      - 1ba:  ±1.5mbar
- *   - Long term stability is:
- *      - 14ba: -20 mbar/yr
- *      - 2ba: -1 mbar/yr
- *   - Result stored in sensorValues[1]
- *   - Resolution is: (at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively))
- *      - 14ba: 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
- *      - 2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024
- *      - 1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012
- *   - Reported as millibar (mb)
- *   - Default variable code is MeaSpecMS5803Pressure
- * @variabledoc{ms5803_pressure,MeaSpecMS5803,Pressure,MeaSpecMS5803Pressure}
+ * @section sensor_ms5803_ctor Sensor Constructor
+ * {{ @ref MeaSpecMS5803::MeaSpecMS5803 }}
  *
  * ___
- * @section ms5803_examples Example Code
+ * @section sensor_ms5803_examples Example Code
  * The Measurement Specialties MS5803 is used in the @menulink{ms5803} example.
  *
  * @menusnip{ms5803}
@@ -120,42 +92,113 @@
 #include <MS5803.h>
 
 // Sensor Specific Defines
+/** @ingroup sensor_ms5803 */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the MS5803 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the MS5803 can report 2 values.
 #define MS5803_NUM_VARIABLES 2
-/// Sensor::_warmUpTime_ms; the MS5803 warms up in 10ms.
+
+/**
+ * @anchor sensor_ms5803_timing
+ * @name Sensor Timing
+ * The sensor timing for a Measurement Specialties MS5803
+ */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the MS5803 warms up in 10ms.
 #define MS5803_WARM_UP_TIME_MS 10
-/// Sensor::_stabilizationTime_ms; the MS5803 is stable after 0ms.
+/// @brief Sensor::_stabilizationTime_ms; the MS5803 is stable as soon as it
+/// warms up (0ms stabilization).
 #define MS5803_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the MS5803 takes 10ms to complete a
  * measurement.
+ * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
+ * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
  */
 #define MS5803_MEASUREMENT_TIME_MS 10
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @anchor sensor_ms5803_temp
+ * @name Temperature
+ * The temperature variable from a Measurement Specialties MS5803
+ * - Range is -40°C to +85°C
+ * - Accuracy is ±0.8°C
+ *
+ * {{ @ref MeaSpecMS5803_Temp::MeaSpecMS5803_Temp }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is <0.01°C.
 #define MS5803_TEMP_RESOLUTION 2
-/// Variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define MS5803_TEMP_VAR_NUM 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
+#define MS5803_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
+#define MS5803_TEMP_UNIT_NAME "degreeCelsius"
+/// @brief Default variable short code; "MeaSpecMS5803Temp"
+#define MS5803_TEMP_DEFAULT_CODE "MeaSpecMS5803Temp"
+/**@}*/
 
-/// Decimals places in string representation; pressure should have 3.
+/**
+ * @anchor sensor_ms5803_pressure
+ * @name Pressure
+ * The pressure variable from a Measurement Specialties MS5803
+ *   - Range is 0 to 14 bar
+ *   - Accuracy between 0 and +40°C is:
+ *      - 14ba: ±20mbar
+ *      - 2ba: ±1.5mbar
+ *      - 1ba:  ±1.5mbar
+ *   - Long term stability is:
+ *      - 14ba: -20 mbar/yr
+ *      - 2ba: -1 mbar/yr
+ *   - Resolution is: (at oversampling ratios: 256 / 512 / 1024 / 2048 /
+ * 4096, respectively))
+ *      - 14ba: 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
+ *      - 2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024
+ *      - 1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012
+ *      - @m_span{m-dim}@ref #MS5803_PRESSURE_RESOLUTION = 3@m_endspan
+ *
+ * {{ @ref MeaSpecMS5803_Pressure::MeaSpecMS5803_Pressure }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; pressure should have 3.
 #define MS5803_PRESSURE_RESOLUTION 3
-/// Variable number; pressure is stored in sensorValues[1].
+/// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define MS5803_PRESSURE_VAR_NUM 1
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "barometricPressure"
+#define MS5803_PRESSURE_VAR_NAME "barometricPressure"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millibar"
+#define MS5803_PRESSURE_UNIT_NAME "millibar"
+/// @brief Default variable short code; "MeaSpecMS5803Pressure"
+#define MS5803_PRESSURE_DEFAULT_CODE "MeaSpecMS5803Pressure"
+/**@}*/
 
 
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Measurement Specialties MS5803 sensor](@ref ms5803_group).
+ * [Measurement Specialties MS5803 sensor](@ref sensor_ms5803).
  *
- * @ingroup ms5803_group
+ * @ingroup sensor_ms5803
  */
 /* clang-format on */
 class MeaSpecMS5803 : public Sensor {
  public:
     /**
-     * @brief Construct a new MeaSpecMS5803
+     * @brief Construct a new MeaSpecMS5803 object.
+     *
+     * @note Neither secondary hardware nor software I2C is supported for the
+     * MS5803. Only the primary hardware I2C defined in the Arduino core can be
+     * used.
      *
      * @param powerPin The pin on the mcu controlling power to the MS5803
      * Use -1 if it is continuously powered.
@@ -202,8 +245,17 @@ class MeaSpecMS5803 : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
  private:
-    MS5803  MS5803_internal;
+    /**
+     * @brief Private internal reference to the MS5803 object.
+     */
+    MS5803 MS5803_internal;
+    /**
+     * @brief The I2C address of the MS5803.
+     */
     uint8_t _i2cAddressHex;
+    /**
+     * @brief Maximum pressure supported by the MS5803.
+     */
     int16_t _maxPressure;
 };
 
@@ -211,10 +263,10 @@ class MeaSpecMS5803 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref ms5803_temp) from a
- * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_group).
+ * [temperature output](@ref sensor_ms5803_temp) from a
+ * [Measurement Specialties MS5803 digital pressure sensor](@ref sensor_ms5803).
  *
- * @ingroup ms5803_group
+ * @ingroup sensor_ms5803
  */
 /* clang-format on */
 class MeaSpecMS5803_Temp : public Variable {
@@ -227,14 +279,14 @@ class MeaSpecMS5803_Temp : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of MeaSpecMS5803Temp
+     * optional with a default value of "MeaSpecMS5803Temp".
      */
     explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
-                                const char*    uuid    = "",
-                                const char*    varCode = "MeaSpecMS5803Temp")
+                                const char*    uuid = "",
+                                const char* varCode = MS5803_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MS5803_TEMP_VAR_NUM,
-                   (uint8_t)MS5803_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
+                   MS5803_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MeaSpecMS5803_Temp object.
      *
@@ -243,8 +295,8 @@ class MeaSpecMS5803_Temp : public Variable {
      */
     MeaSpecMS5803_Temp()
         : Variable((const uint8_t)MS5803_TEMP_VAR_NUM,
-                   (uint8_t)MS5803_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "MeaSpecMS5803Temp") {}
+                   (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
+                   MS5803_TEMP_UNIT_NAME, MS5803_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeaSpecMS5803_Temp object - no action needed.
      */
@@ -255,10 +307,10 @@ class MeaSpecMS5803_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pressure output](@ref ms5803_pressure) from a
- * [Measurement Specialties MS5803 digital pressure sensor](@ref ms5803_group).
+ * [pressure output](@ref sensor_ms5803_pressure) from a
+ * [Measurement Specialties MS5803 digital pressure sensor](@ref sensor_ms5803).
  *
- * @ingroup ms5803_group
+ * @ingroup sensor_ms5803
  */
 /* clang-format on */
 class MeaSpecMS5803_Pressure : public Variable {
@@ -276,10 +328,11 @@ class MeaSpecMS5803_Pressure : public Variable {
      */
     explicit MeaSpecMS5803_Pressure(
         MeaSpecMS5803* parentSense, const char* uuid = "",
-        const char* varCode = "MeaSpecMS5803Pressure")
+        const char* varCode = MS5803_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MS5803_PRESSURE_VAR_NUM,
-                   (uint8_t)MS5803_PRESSURE_RESOLUTION, "barometricPressure",
-                   "millibar", varCode, uuid) {}
+                   (uint8_t)MS5803_PRESSURE_RESOLUTION,
+                   MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new MeaSpecMS5803_Pressure object.
      *
@@ -288,13 +341,13 @@ class MeaSpecMS5803_Pressure : public Variable {
      */
     MeaSpecMS5803_Pressure()
         : Variable((const uint8_t)MS5803_PRESSURE_VAR_NUM,
-                   (uint8_t)MS5803_PRESSURE_RESOLUTION, "barometricPressure",
-                   "millibar", "MeaSpecMS5803Pressure") {}
+                   (uint8_t)MS5803_PRESSURE_RESOLUTION,
+                   MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME,
+                   MS5803_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeaSpecMS5803_Pressure object - no action needed.
      */
     ~MeaSpecMS5803_Pressure() {}
 };
-
-
+/**@}*/
 #endif  // SRC_SENSORS_MEASPECMS5803_H_

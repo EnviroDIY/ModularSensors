@@ -10,6 +10,10 @@
  *
  * This depends on the Arduino core Wire library.  It does *not* use the Atlas
  * Arduino library.
+ *
+ * This also depends on Testato's
+ * [SoftwareWire](https://github.com/Testato/SoftwareWire) library if software
+ * I2C is needed.
  */
 /* clang-format off */
 /**
@@ -18,32 +22,31 @@
  *
  * @ingroup the_sensors
  *
- *
  * This library currently supports the following Atlas Scientific sensors:
  *
  * - [EZO-CO2 Embedded NDIR CO2 Sensor](https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_CO2_Datasheet.pdf)
- *     - [Class Documentation](@ref atlas_co2_group)
+ *     - [Class Documentation](@ref sensor_atlas_co2)
  * - [EZO-DO Dissolved Oxygen Circuit and Probe](https://www.atlas-scientific.com/dissolved-oxygen.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_EZO_Datasheet.pdf)
  *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_DO_probe.pdf)
- *     - [Class Documentation](@ref atlas_do_group)
+ *     - [Class Documentation](@ref sensor_atlas_do)
  * - [EZO-EC Conductivity Circuit and Probes](https://www.atlas-scientific.com/conductivity.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf)
  *     - [K0.1 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf)
  *     - [K1.0 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf)
  *     - [K10 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf)
- *     - [Class Documentation](@ref atlas_cond_group)
+ *     - [Class Documentation](@ref sensor_atlas_cond)
  * - [EZO-ORP Oxidation/Reduction Potential Circuit and Probes](https://www.atlas-scientific.com/orp.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_ORP_EZO_datasheet.pdf)
- *     - [Class Documentation](@ref atlas_orp_group)
+ *     - [Class Documentation](@ref sensor_atlas_orp)
  * - [EZO-pH Circuit and Probe](https://www.atlas-scientific.com/ph.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_pH_EZO_Datasheet.pdf)
- *     - [Class Documentation](@ref atlas_ph_group)
+ *     - [Class Documentation](@ref sensor_atlas_ph)
  * - [EZO-RTD Temperature Circuit and Probes](https://www.atlas-scientific.com/temperature.html)
  *     - [Circuit Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EZO_RTD_Datasheet.pdf)
  *     - [Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_PT-1000-probe.pdf)
- *     - [Class Documentation](@ref atlas_rtd_group)
+ *     - [Class Documentation](@ref sensor_atlas_rtd)
  *
  * The chips have operating voltages between 3.3V and 5V; power can be stopped
  * between measurements.  The probes and sensors can (and should) be calibrated
@@ -59,6 +62,13 @@
  * deploying your Atlas chip chip and sensor, I recommend locking the protocol
  * (plock) to I2C so the sensors do not accidentally switch back to UART mode.
  * Legacy chips and EZO chips that do not support I2C are not supported.
+ *
+ * Both hardware and software I2C communication is supported for the Atlas sensors.
+ * Use the build flag `-D MS_ATLAS_SOFTWAREWIRE` to switch to software I2C.
+ * Only [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is currently supported.
+ *
+ * @warning Either all or none of the Atlas sensors can be using software I2C.
+ * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
  *
  * @warning **You must isolate the data lines of all Atlas circuits from the
  * main I2C bus if you wish to turn off their power!**  If you do not isolate
@@ -86,6 +96,10 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
+#include <SoftwareWire.h>  // Testato's SoftwareWire
+#endif
+
 /**
  * @brief A parent class for Atlas EZO circuits and sensors
  *
@@ -95,8 +109,108 @@
  */
 class AtlasParent : public Sensor {
  public:
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
     /**
-     * @brief Construct a new Atlas Parent object
+     * @brief Construct a new Atlas Parent object using a *software* I2C
+     * instance.
+     *
+     * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
+     * instance for I2C communication.
+     * @param powerPin The pin on the mcu controlling power to the Atlas
+     * circuit.  Use -1 if it is continuously powered.
+     * @param i2cAddressHex The I2C address of the Atlas circuit
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     * @param sensorName The name of the sensor, defaults to AtlasSensor.
+     * @param numReturnedVars The number of results returned by the sensor.
+     * Defaults to 1.
+     * @param warmUpTime_ms The time needed from the when a sensor has power
+     * until it's ready to talk (_warmUpTime_ms).
+     * @param stabilizationTime_ms The time needed from the when a sensor is
+     * activated until the readings are stable (_stabilizationTime_ms).
+     * @param measurementTime_ms The time needed from the when a sensor is told
+     * to take a single reading until that reading is expected to be complete
+     * (_measurementTime_ms)
+     */
+    AtlasParent(SoftwareWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex,
+                uint8_t       measurementsToAverage = 1,
+                const char*   sensorName            = "AtlasSensor",
+                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
+                uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms   = 0);
+    /**
+     * @brief Construct a new Atlas Parent object, also creating a
+     * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
+     * communication with that object.
+     *
+     * @note Unless there are address conflicts between I2C devices, you should
+     * not create a new I2C instance.
+     *
+     * @param powerPin The pin on the mcu controlling power to the Atlas
+     * circuit.  Use -1 if it is continuously powered.
+     * @param dataPin The pin on the mcu that will be used for I2C data (SDA).
+     * Must be a valid pin number.
+     * @param clockPin The pin on the mcu that will be used for the I2C clock
+     * (SCL).  Must be a valid pin number.
+     * @param i2cAddressHex The I2C address of the Atlas circuit
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     * @param sensorName The name of the sensor, defaults to AtlasSensor.
+     * @param numReturnedVars The number of results returned by the sensor.
+     * Defaults to 1.
+     * @param warmUpTime_ms The time needed from the when a sensor has power
+     * until it's ready to talk (_warmUpTime_ms).
+     * @param stabilizationTime_ms The time needed from the when a sensor is
+     * activated until the readings are stable (_stabilizationTime_ms).
+     * @param measurementTime_ms The time needed from the when a sensor is told
+     * to take a single reading until that reading is expected to be complete
+     * (_measurementTime_ms)
+     */
+    AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
+                const char*   sensorName      = "AtlasSensor",
+                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
+                uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms   = 0);
+#endif
+#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
+    /**
+     * @brief Construct a new Atlas Parent object using a secondary *hardware*
+     * I2C instance.
+     *
+     * @param theI2C A TwoWire instance for I2C communication.  Due to the
+     * limitations of the Arduino core, only a hardware I2C instance can be
+     * used.  For an AVR board, there is only one I2C instance possible and this
+     * form of the constructor should not be used.  For a SAMD board, this can
+     * be used if a secondary I2C port is created on one of the extra SERCOMs.
+     * @param powerPin The pin on the mcu controlling power to the Atlas
+     * circuit.  Use -1 if it is continuously powered.
+     * @param i2cAddressHex The I2C address of the Atlas circuit
+     * @param measurementsToAverage The number of measurements to take and
+     * average before giving a "final" result from the sensor; optional with a
+     * default value of 1.
+     * @param sensorName The name of the sensor, defaults to AtlasSensor.
+     * @param numReturnedVars The number of results returned by the sensor.
+     * Defaults to 1.
+     * @param warmUpTime_ms The time needed from the when a sensor has power
+     * until it's ready to talk (_warmUpTime_ms).
+     * @param stabilizationTime_ms The time needed from the when a sensor is
+     * activated until the readings are stable (_stabilizationTime_ms).
+     * @param measurementTime_ms The time needed from the when a sensor is told
+     * to take a single reading until that reading is expected to be complete
+     * (_measurementTime_ms)
+     */
+    AtlasParent(TwoWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex,
+                uint8_t       measurementsToAverage = 1,
+                const char*   sensorName            = "AtlasSensor",
+                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
+                uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms   = 0);
+    /**
+     * @brief Construct a new Atlas Parent object using the primary hardware I2C
+     * instance.
      *
      * @param powerPin The pin on the mcu controlling power to the Atlas
      * circuit.  Use -1 if it is continuously powered.
@@ -121,8 +235,10 @@ class AtlasParent : public Sensor {
                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
                 uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms   = 0);
+#endif
     /**
-     * @brief Destroy the Atlas Parent object - no action needed
+     * @brief Destroy the Atlas Parent object.  Also destroy the software I2C
+     * instance if one was created.
      */
     virtual ~AtlasParent();
 
@@ -179,9 +295,26 @@ class AtlasParent : public Sensor {
 
  protected:
     /**
-     * @brief The I2C address.
+     * @brief The I2C address of the Atlas circuit.
      */
     int8_t _i2cAddressHex;
+#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
+    /**
+     * @brief An internal reference to the SoftwareWire instance.
+     */
+    SoftwareWire* _i2c;  // Software Wire
+    /**
+     * @brief A flag denoting whether a new SoftwareWire instance was created.
+     * If it was created, it must be destroyed in the destructor to avoid a
+     * memory leak.
+     */
+    bool createdSoftwareWire;
+#else
+    /**
+     * @brief An internal reference to the hardware Wire instance.
+     */
+    TwoWire* _i2c;  // Hardware Wire
+#endif
 
     /**
      * @brief Wait for a command to process

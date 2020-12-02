@@ -16,7 +16,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup sq212_group Apogee SQ-212
+ * @defgroup sensor_sq212 Apogee SQ-212
  * Classes for the Apogee SQ-212 quantum light sensor.
  *
  * @ingroup analog_group
@@ -24,7 +24,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section sq212_intro Introduction
+ * @section sensor_sq212_intro Introduction
  * The [Apogee SQ-212 quantum light
  * sensor](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/)
  * measures [photosynthetically active radiation
@@ -50,51 +50,21 @@
  * the calibration factor.  This allows you to adjust the calibration or change
  * to another Apogee sensor (e.g. SQ-215 or SQ225) as needed.
  *
- * @section sq212_datasheet Sensor Datasheet
+ * @section sensor_sq212_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Apogee
  * SQ-212-215 Manual.pdf)
  *
- * @section sq212_sensor The SQ-212 Sensor
- * @ctor_doc{ApogeeSQ212, int8_t powerPin, uint8_t adsChannel, uint8_t i2cAddress, uint8_t measurementsToAverage}
- * @subsection sq212_timing Sensor Timing
- * - Response time (of the ADC): < 1ms
- * - Resample time: max of ADC (860/sec)
- * @subsection sq212_flags Build flags
+ * @section sensor_sq212_flags Build flags
  * - ```-D MS_USE_ADS1015```
  *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  * - ```-D SQ212_CALIBRATION_FACTOR=x```
  *      - Changes the calibration factor from 1 to x
  *
- * ___
- * @section sq212_par PAR Output
- * - Range is 0 to 2500 µmol m-2 s-1
- * - Accuracy is ± 0.5%
- * - Resolution:
- *   - 16-bit ADC: 0.3125 µmol m-2 s-1 (ADS1115)
- *   - 12-bit ADC: 5 µmol m-2 s-1 (ADS1015)
- * - Reported as microeinsteins per square meter per second (µE m-2 s-1 or µmol m-2 s-1)
- * - Result stored in sensorValues[0]
- * - Default variable code is radiationIncomingPAR
- * @variabledoc{sq212_par,ApogeeSQ212,PAR,radiationIncomingPAR}
+ * @section sensor_sq212_ctor Sensor Constructor
+ * {{ @ref ApogeeSQ212::ApogeeSQ212 }}
  *
  * ___
- *
- * @section sq212_voltage Raw Voltage Output
- * - Range is 0 to 3.6V [when ADC is powered at 3.3V]
- * - Accuracy is ± 0.5%
- *   - 16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset error)
- *   - 12-bit ADC: < 0.15% (gain error), <3 LSB (offset error)
- * - Resolution [assuming the ADC is powered at 3.3V with inbuilt gain set to 1
- * (0-4.096V)]:
- *   - 16-bit ADC: 0.125 mV (ADS1115)
- *   - 12-bit ADC: 2 mV (ADS1015)
- * - Reported as volts (V)
- * - Result stored in sensorValues[1]
- * - Default variable code is SQ212Voltage
- * @variabledoc{sq212_voltage,ApogeeSQ212,Voltage,SQ212Voltage}
- *
- * ___
- * @section sq212_examples Example Code
+ * @section sensor_sq212_examples Example Code
  * The SQ-212 is used in the @menulink{sq212} example.
  *
  * @menusnip{sq212}
@@ -119,13 +89,21 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
+/** @ingroup sensor_sq212 */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the SQ212 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values.
 #define SQ212_NUM_VARIABLES 2
+
 /**
- * @brief Sensor::_warmUpTime_ms; the ADS1115 warms up in 2ms.
- *
- * The warm up time of the SQ-212 itself is not known!
+ * @anchor sensor_sq212_timing
+ * @name Sensor Timing
+ * The sensor timing for an Apogee SQ-212
+ */
+/**@{*/
+/**
+ * @brief Sensor::_warmUpTime_ms; the warm up time is unknown; using the 2ms for
+ * the TI ADS1x15 to warm up
  *
  * @todo Measure warm-up time of the SQ-212
  */
@@ -138,28 +116,85 @@
  * @todo Measure stabilization time of the SQ-212
  */
 #define SQ212_STABILIZATION_TIME_MS 2
-/// Sensor::_measurementTime_ms; SQ212 takes 2ms to complete a measurement.
+/// @brief Sensor::_measurementTime_ms; ADS1115 takes almost 2ms to complete a
+/// measurement (860/sec).
 #define SQ212_MEASUREMENT_TIME_MS 2
+/**@}*/
 
+/**
+ * @anchor sensor_sq212_par
+ * @name PAR
+ * The PAR variable from an Apogee SQ-212
+ * - Range is 0 to 2500 µmol m-2 s-1
+ * - Accuracy is ± 0.5%
+ * - Resolution:
+ *   - 16-bit ADC (ADS1115): 0.3125 µmol m-2 s-1 (ADS1115)
+ *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 5 µmol m-2
+ * s-1 (ADS1015)
+ * - Reported as microeinsteins per square meter per second (µE m-2 s-1 or µmol
+ * m-2 s-1)
+ *
+ * {{ @ref ApogeeSQ212_PAR }}
+ */
+/**@{*/
 /// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
+/// @brief Variable name in [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "radiationIncomingPAR"
+#define SQ212_PAR_VAR_NAME "radiationIncomingPAR"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "microeinsteinPerSquareMeterPerSecond" (µE m-2
+/// s-1 or µmol * m-2 s-1)
+#define SQ212_PAR_UNIT_NAME "microeinsteinPerSquareMeterPerSecond"
+/// @brief Default variable short code; "photosyntheticallyActiveRadiation"
+#define SQ212_PAR_DEFAULT_CODE "photosyntheticallyActiveRadiation"
 #ifdef MS_USE_ADS1015
-/// Decimals places in string representation; PAR should have 0.
+/// @brief Decimals places in string representation; PAR should have 0 when
+/// using an ADS1015.
 #define SQ212_PAR_RESOLUTION 0
 #else
-/// Decimals places in string representation; PAR should have 4.
+/// @brief Decimals places in string representation; PAR should have 4 when
+/// using an ADS1115.
 #define SQ212_PAR_RESOLUTION 4
 #endif
+/**@}*/
 
+/**
+ * @anchor sensor_sq212_voltage
+ * @name Voltage
+ * The voltage variable from an Apogee SQ-212
+ * - Range is 0 to 3.6V [when ADC is powered at 3.3V]
+ * - Accuracy is ± 0.5%
+ *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
+ *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
+ * (gain error), <3 LSB (offset error)
+ * - Resolution [assuming the ADC is powered at 3.3V with inbuilt gain set to 1
+ * (0-4.096V)]:
+ *   - 16-bit ADC (ADS1115): 0.125 mV (ADS1115)
+ *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 2 mV
+ * (ADS1015)
+ *
+ * {{ @ref ApogeeSQ212_Voltage }}
+ */
+/**@{*/
 /// Variable number; voltage is stored in sensorValues[1].
 #define SQ212_VOLTAGE_VAR_NUM 1
+/// @brief Variable name in [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "voltage"
+#define SQ212_VOLTAGE_VAR_NAME "voltage"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt" (V)
+#define SQ212_VOLTAGE_UNIT_NAME "volt"
+/// @brief Default variable short code; "SQ212Voltage"
+#define SQ212_VOLTAGE_DEFAULT_CODE "SQ212Voltage"
 #ifdef MS_USE_ADS1015
-/// Decimals places in string representation; voltage should have 1.
-#define SQ212_VOLT_RESOLUTION 1
+/// @brief Decimals places in string representation; voltage should have 1 when
+/// used with an ADS1015.
+#define SQ212_VOLTAGE_RESOLUTION 1
 #else
-/// Decimals places in string representation; voltage should have 4.
-#define SQ212_VOLT_RESOLUTION 4
+/// @brief Decimals places in string representation; voltage should have 4 when
+/// used with an ADS1115.
+#define SQ212_VOLTAGE_RESOLUTION 4
 #endif
+/**@}*/
 
 /**
  * @brief The calibration factor between output in volts and PAR
@@ -174,15 +209,19 @@
 #define ADS1115_ADDRESS 0x48
 
 /**
- * @brief The Sensor sub-class for the [Apogee SQ-212](@ref sq212_group) sensor
+ * @brief The Sensor sub-class for the [Apogee SQ-212](@ref sensor_sq212) sensor
  *
- * @ingroup sq212_group
+ * @ingroup sensor_sq212
  */
 class ApogeeSQ212 : public Sensor {
  public:
     /**
      * @brief Construct a new Apogee SQ-212 object - need the power pin and the
-     * data channel on the ADS1x15
+     * data channel on the ADS1x15.
+     *
+     * @note ModularSensors only supports connecting the ADS1x15 to the primary
+     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
+     * a secondary hardware or software I2C instance is *not* supported!
      *
      * @param powerPin The pin on the mcu controlling power to the Apogee
      * SQ-212.  Use -1 if it is continuously powered.
@@ -229,10 +268,10 @@ class ApogeeSQ212 : public Sensor {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [photosynthetically active radiation (PAR) output](@ref sq212_par)
- * from an [Apogee SQ-212](@ref sq212_group).
+ * [photosynthetically active radiation (PAR) output](@ref sensor_sq212_par)
+ * from an [Apogee SQ-212](@ref sensor_sq212).
  *
- * @ingroup sq212_group
+ * @ingroup sensor_sq212
  */
 /* clang-format on */
 class ApogeeSQ212_PAR : public Variable {
@@ -247,12 +286,11 @@ class ApogeeSQ212_PAR : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "radiationIncomingPAR".
      */
-    explicit ApogeeSQ212_PAR(
-        ApogeeSQ212* parentSense, const char* uuid = "",
-        const char* varCode = "photosyntheticallyActiveRadiation")
+    explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense, const char* uuid = "",
+                             const char* varCode = SQ212_PAR_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)SQ212_PAR_VAR_NUM,
-                   (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
-                   "microeinsteinPerSquareMeterPerSecond", varCode, uuid) {}
+                   (uint8_t)SQ212_PAR_RESOLUTION, SQ212_PAR_VAR_NAME,
+                   SQ212_PAR_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new ApogeeSQ212_PAR object.
      *
@@ -260,9 +298,8 @@ class ApogeeSQ212_PAR : public Variable {
      */
     ApogeeSQ212_PAR()
         : Variable((const uint8_t)SQ212_PAR_VAR_NUM,
-                   (uint8_t)SQ212_PAR_RESOLUTION, "radiationIncomingPAR",
-                   "microeinsteinPerSquareMeterPerSecond",
-                   "photosyntheticallyActiveRadiation") {}
+                   (uint8_t)SQ212_PAR_RESOLUTION, SQ212_PAR_VAR_NAME,
+                   SQ212_PAR_UNIT_NAME, SQ212_PAR_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
      */
@@ -273,10 +310,10 @@ class ApogeeSQ212_PAR : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [raw voltage output](@ref sq212_voltage) from an
- * [Apogee SQ-212](@ref sq212_group).
+ * [raw voltage output](@ref sensor_sq212_voltage) from an
+ * [Apogee SQ-212](@ref sensor_sq212).
  *
- * @ingroup sq212_group
+ * @ingroup sensor_sq212
  */
 /* clang-format on */
 class ApogeeSQ212_Voltage : public Variable {
@@ -291,12 +328,12 @@ class ApogeeSQ212_Voltage : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "SQ212Voltage".
      */
-    explicit ApogeeSQ212_Voltage(ApogeeSQ212* parentSense,
-                                 const char*  uuid    = "",
-                                 const char*  varCode = "SQ212Voltage")
+    explicit ApogeeSQ212_Voltage(
+        ApogeeSQ212* parentSense, const char* uuid = "",
+        const char* varCode = SQ212_VOLTAGE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt", varCode,
-                   uuid) {}
+                   (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
+                   SQ212_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new ApogeeSQ212_Voltage object.
      *
@@ -304,12 +341,12 @@ class ApogeeSQ212_Voltage : public Variable {
      */
     ApogeeSQ212_Voltage()
         : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLT_RESOLUTION, "voltage", "volt",
-                   "SQ212Voltage") {}
+                   (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
+                   SQ212_VOLTAGE_UNIT_NAME, SQ212_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ApogeeSQ212_Voltage object - no action needed.
      */
     ~ApogeeSQ212_Voltage() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_APOGEESQ212_H_

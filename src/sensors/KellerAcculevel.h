@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup acculevel_group Keller Acculevel
+ * @defgroup sensor_acculevel Keller Acculevel
  * Classes for the Keller Acculevel.
  *
  * @ingroup keller_group
@@ -31,44 +31,15 @@
  *
  * Only tested on the Acculevel.
  *
- * @section acculevel_datasheet Sensor Datasheet
+ * @section sensor_acculevel_datasheet Sensor Datasheet
  * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  * [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
  *
- * @section acculevel_sensor The Keller Acculevel Sensor
- * @ctor_doc{KellerAcculevel, byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage}
- * @subsection acculevel_timing Sensor Timing
- *
- * @section acculevel_pressure Pressure Output
- *   - Range is 0 to 11 bar
- *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
- *   - Result stored in sensorValues[0]
- *   - Resolution is 0.002%
- *   - Reported as millibar (mb)
- *   - Default variable code is kellerAccuPress
- * @variabledoc{acculevel_pressure,KellerAcculevel,Pressure,kellerAccuPress}
- *
- * @section acculevel_temp Temperature Output
- *   - Range is -10°C to 60°C
- *   - Accuracy is not specified in the sensor datasheet
- *   - Result stored in sensorValues[1]
- *   - Resolution is 0.01°C
- *   - Reported as degrees Celsius (°C)
- *   - Default variable code is kellerAccuTemp
- * @variabledoc{acculevel_temp,KellerAcculevel,Temp,kellerAccuTemp}
- *
- * @section acculevel_height Height Output
- *   - Range is 0 to 900 feet
- *   - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
- *   - Result stored in sensorValues[2]
- *   - Resolution is 0.002%
- *   - Reported as meters (m)
- *   - Default variable code is kellerAccuHeight
- * @variabledoc{acculevel_height,KellerAcculevel,Height,kellerAccuHeight}
- *
+ * @section sensor_acculevel_ctor Sensor Constructor
+ * {{ @ref KellerAcculevel::KellerAcculevel }}
  *
  * ___
- * @section acculevel_examples Example Code
+ * @section sensor_acculevel_examples Example Code
  * The Keller Acculevel is used in the @menulink{acculevel} example.
  *
  * @menusnip{acculevel}
@@ -83,33 +54,83 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
+/** @ingroup sensor_acculevel */
+/**@{*/
 
-/// Sensor::_warmUpTime_ms; the Acculevel warms up in 500ms.
-#define ACCULEVEL_WARM_UP_TIME_MS 500
-/// Sensor::_stabilizationTime_ms; the Acculevel is stable after 5000ms.
-#define ACCULEVEL_STABILIZATION_TIME_MS 5000
 /**
- * @brief Sensor::_measurementTime_ms; the Acculevel takes 1500ms to complete a
- * measurement.
+ * @anchor sensor_acculevel_timing
+ * @name Sensor Timing
+ * The sensor timing for a Keller Acculevel
  */
+/**@{*/
+/// @brief Sensor::_warmUpTime_ms; the Acculevel takes about 500 ms to respond.
+#define ACCULEVEL_WARM_UP_TIME_MS 500
+/// @brief Sensor::_stabilizationTime_ms; the Acculevel is stable after about
+/// 5s (5000ms).
+#define ACCULEVEL_STABILIZATION_TIME_MS 5000
+///@brief Sensor::_measurementTime_ms; the Acculevel takes 1500ms to complete a
+/// measurement.
 #define ACCULEVEL_MEASUREMENT_TIME_MS 1500
+/**@}*/
 
-/// Decimals places in string representation; pressure should have 5.
+/**
+ * @anchor sensor_acculevel_pressure
+ * @name Pressure
+ * The pressure variable from a Keller Acculevel
+ * - Range is 0 to 11 bar
+ * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerAcculevel_Pressure::KellerAcculevel_Pressure }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; pressure should have 5 -
+/// resolution is 0.002%.
 #define ACCULEVEL_PRESSURE_RESOLUTION 5
+/// @brief Default variable short code; "kellerAccuPress"
+#define ACCULEVEL_PRESSURE_DEFAULT_CODE "kellerAccuPress"
+/**@}*/
 
-/// Decimals places in string representation; temperature should have 2.
+/**
+ * @anchor sensor_acculevel_temp
+ * @name Temperature
+ * The temperature variable from a Keller Acculevel
+ * - Range is -10°C to 60°C
+ * - Accuracy is not specified in the sensor datasheet
+ *
+ * {{ @ref KellerAcculevel_Temp::KellerAcculevel_Temp }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; temperature should have 2 -
+/// resolution is 0.01°C.
 #define ACCULEVEL_TEMP_RESOLUTION 2
+/// @brief Default variable short code; "kellerAccuTemp"
+#define ACCULEVEL_TEMP_DEFAULT_CODE "kellerAccuTemp"
+/**@}*/
 
-/// Decimals places in string representation; height should have 4.
+/**
+ * @anchor sensor_acculevel_height
+ * @name Height
+ * The height variable from a Keller Acculevel
+ * - Range is 0 to 900 feet
+ * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
+ *
+ * {{ @ref KellerAcculevel_Height::KellerAcculevel_Height }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; height should have 4 -
+/// resolution is 0.002%.
 #define ACCULEVEL_HEIGHT_RESOLUTION 4
+/// @brief Default variable short code; "kellerAccuHeight"
+#define ACCULEVEL_HEIGHT_DEFAULT_CODE "kellerAccuHeight"
+/**@}*/
 
 
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Keller Acculevel sensor](@ref acculevel_group).
+ * [Keller Acculevel sensor](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel : public KellerParent {
@@ -163,10 +184,10 @@ class KellerAcculevel : public KellerParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge pressure (vented and barometric pressure corrected) output](@ref acculevel_pressure)
- * from a [Keller Acculevel](@ref acculevel_group).
+ * [gauge pressure (vented and barometric pressure corrected) output](@ref sensor_acculevel_pressure)
+ * from a [Keller Acculevel](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel_Pressure : public Variable {
@@ -181,12 +202,13 @@ class KellerAcculevel_Pressure : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "kellerAccuPress".
      */
-    explicit KellerAcculevel_Pressure(KellerAcculevel* parentSense,
-                                      const char*      uuid = "",
-                                      const char* varCode   = "kellerAccuPress")
+    explicit KellerAcculevel_Pressure(
+        KellerAcculevel* parentSense, const char* uuid = "",
+        const char* varCode = ACCULEVEL_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION, "pressureGauge",
-                   "millibar", varCode, uuid) {}
+                   (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
+                   KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new KellerAcculevel_Pressure object.
      *
@@ -195,8 +217,9 @@ class KellerAcculevel_Pressure : public Variable {
      */
     KellerAcculevel_Pressure()
         : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION, "pressureGauge",
-                   "millibar", "kellerAccuPress") {}
+                   (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
+                   KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME,
+                   ACCULEVEL_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerAcculevel_Pressure object - no action needed.
      */
@@ -207,10 +230,10 @@ class KellerAcculevel_Pressure : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref acculevel_temp) from a
- * [Keller Acculevel](@ref acculevel_group).
+ * [temperature output](@ref sensor_acculevel_temp) from a
+ * [Keller Acculevel](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel_Temp : public Variable {
@@ -225,12 +248,12 @@ class KellerAcculevel_Temp : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "kellerAccuTemp".
      */
-    explicit KellerAcculevel_Temp(KellerAcculevel* parentSense,
-                                  const char*      uuid    = "",
-                                  const char*      varCode = "kellerAccuTemp")
+    explicit KellerAcculevel_Temp(
+        KellerAcculevel* parentSense, const char* uuid = "",
+        const char* varCode = ACCULEVEL_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)ACCULEVEL_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", varCode, uuid) {}
+                   (uint8_t)ACCULEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
+                   KELLER_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new KellerAcculevel_Temp object.
      *
@@ -239,8 +262,8 @@ class KellerAcculevel_Temp : public Variable {
      */
     KellerAcculevel_Temp()
         : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)ACCULEVEL_TEMP_RESOLUTION, "temperature",
-                   "degreeCelsius", "kellerAccuTemp") {}
+                   (uint8_t)ACCULEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
+                   KELLER_TEMP_UNIT_NAME, ACCULEVEL_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerAcculevel_Temp object - no action needed.
      */
@@ -251,10 +274,10 @@ class KellerAcculevel_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [gauge height (water level with regard to an arbitrary gage datum) output](@ref acculevel_height)
- * from a [Keller Acculevel](@ref acculevel_group).
+ * [gauge height (water level with regard to an arbitrary gage datum) output](@ref sensor_acculevel_height)
+ * from a [Keller Acculevel](@ref sensor_acculevel).
  *
- * @ingroup acculevel_group
+ * @ingroup sensor_acculevel
  */
 /* clang-format on */
 class KellerAcculevel_Height : public Variable {
@@ -269,12 +292,12 @@ class KellerAcculevel_Height : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "kellerAccuHeight".
      */
-    explicit KellerAcculevel_Height(KellerAcculevel* parentSense,
-                                    const char*      uuid = "",
-                                    const char* varCode   = "kellerAccuHeight")
+    explicit KellerAcculevel_Height(
+        KellerAcculevel* parentSense, const char* uuid = "",
+        const char* varCode = ACCULEVEL_HEIGHT_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
-                   varCode, uuid) {}
+                   (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
+                   KELLER_HEIGHT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new KellerAcculevel_Height object.
      *
@@ -283,12 +306,12 @@ class KellerAcculevel_Height : public Variable {
      */
     KellerAcculevel_Height()
         : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, "gaugeHeight", "meter",
-                   "kellerAccuHeight") {}
+                   (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
+                   KELLER_HEIGHT_UNIT_NAME, ACCULEVEL_HEIGHT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerAcculevel_Height object - no action needed.
      */
     ~KellerAcculevel_Height() {}
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_KELLERACCULEVEL_H_

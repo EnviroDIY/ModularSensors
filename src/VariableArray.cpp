@@ -634,10 +634,14 @@ bool VariableArray::completeUpdate(void) {
     prettyPrintArray(lastSensorVariable);
     MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
     prettyPrintArray(nMeasurementsToAverage);
+    MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
+    prettyPrintArray(nMeasurementsCompleted);
     MS_DEEP_DBG(F("powerPins:\t\t\t"));
     prettyPrintArray(powerPins);
     MS_DEEP_DBG(F("lastPinVariable:\t\t"));
     prettyPrintArray(lastPinVariable);
+    MS_DEEP_DBG(F("powerPinIndex:\t\t\t"));
+    prettyPrintArray(powerPinIndex);
     MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
     prettyPrintArray(nMeasurementsOnPin);
     MS_DEEP_DBG(F("powerPinIndex:\t\t\t"));
@@ -685,6 +689,15 @@ bool VariableArray::completeUpdate(void) {
                     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0),
                     F("- measurement #"), (nMeasurementsCompleted[i] + 1));
             }
+            MS_DEEP_DBG(F("----------------------------------"));
+            MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
+            prettyPrintArray(nMeasurementsToAverage);
+            MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
+            prettyPrintArray(nMeasurementsCompleted);
+            MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
+            prettyPrintArray(nMeasurementsOnPin);
+            MS_DEEP_DBG(F("nCompletedOnPin:\t\t\t"));
+            prettyPrintArray(nCompletedOnPin);
             // END CHUNK FOR DEBUGGING!
             ***/
 

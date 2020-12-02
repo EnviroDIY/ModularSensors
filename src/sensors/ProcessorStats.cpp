@@ -11,7 +11,8 @@
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-/// Pretty text for the board name derived from the board's compiler define.
+/// @brief Pretty text for the board name derived from the board's compiler
+/// define.
 #define BOARD "EnviroDIY Mayfly"
 
 // Sodaq boards

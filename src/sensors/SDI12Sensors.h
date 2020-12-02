@@ -86,7 +86,8 @@ class SDI12Sensors : public Sensor {
      * @brief Construct a new SDI 12 Sensors object.  This is only intended to
      * be used within this library.
      *
-     * @param SDI12address The SDI-12 address of the sensor.
+     * @param SDI12address The SDI-12 address of the sensor; can be a char,
+     * char*, or int.
      * @param powerPin The pin on the mcu controlling power to the sensor
      * Use -1 if it is continuously powered.
      * @param dataPin The pin on the mcu connected to the data line of the
