@@ -705,7 +705,7 @@ Variable*   ds3231TempFcalc = new Variable(
                               // http://vocabulary.odm2.org/units/
     "TempInF",                // var code
     MaximDS3231_TEMPF_UUID);
-#endif  // MaximDS3231_Temp_UUID
+#endif  // MaximDS3231_TEMPF_UUID
 
 
 // ==========================================================================
@@ -771,10 +771,6 @@ Variable* variableList[] = {
 // ASONG_AM23_Air_TemperatureF_UUID
 // calcAM2315_TempF
 #endif  // ASONG_AM23XX_UUID
-#if defined DIGI_RSSI_UUID
-    new Modem_RSSI(&modemPhy, DIGI_RSSI_UUID),
-// new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
-#endif  // DIGI_RSSI_UUID
 #if defined MaximDS3231_TEMP_UUID
     // new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
     ds3231TempC,
@@ -782,6 +778,11 @@ Variable* variableList[] = {
 #if defined MaximDS3231_TEMPF_UUID
     ds3231TempFcalc,
 #endif  // MaximDS3231_TempF_UUID
+#if defined DIGI_RSSI_UUID
+    new Modem_RSSI(&modemPhy, DIGI_RSSI_UUID),
+// new Modem_RSSI(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
+#endif  // DIGI_RSSI_UUID
+
 
 };
 
