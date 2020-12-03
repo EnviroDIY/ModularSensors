@@ -88,7 +88,8 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         if (!success) { MS_DBG(F("Fail PR "), success); }
 #if !defined MODEMPHY_NEVER_SLEEPS
 #define XBEE_SLEEP_SETTING 1
-#define XBEE_SLEEP_ASSOCIATE 200
+//#define XBEE_SLEEP_ASSOCIATE 200
+#define XBEE_SLEEP_ASSOCIATE 100
 #else
 #define XBEE_SLEEP_SETTING 0
 #define XBEE_SLEEP_ASSOCIATE 40
