@@ -34,6 +34,9 @@
  * The manual for this sensor is available at:
  * www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf
  *
+ * @section sensor_dopto_flags Build flags
+ * @see @ref sdi12_group_flags
+ *
  * @section sensor_dopto_ctor Sensor Constructor
  * {{ @ref ZebraTechDOpto::ZebraTechDOpto }}
  *
