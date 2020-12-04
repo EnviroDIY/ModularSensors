@@ -166,7 +166,7 @@ To start getting data from the wild, you'll need some [stuff](https://github.com
 There are [video instructions](https://www.envirodiy.org/videos/) on the EnviroDIY website showing how to prepare and install a typical steam-side logger box and seniors.
 
 
-[//]: # ( @section page_getting_started_other Other Pages to Help when Starting Out )
+[//]: # ( @section page_getting_started_other Other Helpful Pages to Get Started )
 
 [//]: # ( @subpage page_library_dependencies )
 

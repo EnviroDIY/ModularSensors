@@ -62,7 +62,7 @@
  * For LTE boards, it is good practice to select which network you'll be
  * connecting to based on your SIM card and signal availability.
  * Example code for this can also be found in the
- * [menu a la carte example](@ref menu_setup_xbeec_carrier).
+ * menulink{setup_xbeec_carrier} example.
  *
  * @menusnip{setup_xbeec_carrier}
  */

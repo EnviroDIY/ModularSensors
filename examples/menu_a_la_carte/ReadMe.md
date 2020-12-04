@@ -5,7 +5,7 @@ This shows most of the functionality of the library at once.
 It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
 This example should *never* be used directly, but rather taken as a template and all parts that do not apply cut out.
 
-Any line containing the word *MS_BUILD_TESTING* is to help ensure the library builds correctly in all environments.
+Any line containing the word `MS_BUILD_TESTING` is to help ensure the library builds correctly in all environments.
 Those lines should be removed when using the example on your own board.
 
 _______
@@ -211,7 +211,7 @@ Not all AVR boards are supported by NeoSWSerial.
 
 [//]: # ( @menusnip{neoswserial} )
 
-When using NeoSWSerial we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](@ref menu_setup_serial_interrupts).
+When using NeoSWSerial we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_serial_interrupts).
 
 
 [//]: # ( @paragraph menu_softwareseraial SoftwareSerial with External Interrupts )
@@ -228,7 +228,7 @@ If you only want to use the serial line for incoming or outgoing data, set the o
 
 [//]: # ( @menusnip{softwareserial} )
 
-When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](@ref menu_setup_serial_interrupts).
+When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_serial_interrupts).
 
 
 [//]: # ( @paragraph menu_softwarewire Software I2C/Wire )
@@ -253,7 +253,7 @@ These pin selections are based on the Adafruit Feather M0.
 [//]: # ( @menusnip{serial_ports_SAMD} )
 
 In addition to creating the extra SERCOM ports here, the pins must be set up as the proper pin peripherals after the serial ports are begun.
-This is shown in the [SAMD Pin Peripherals section](@ref menu_setup_pin_periph) of the setup function.
+This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_pin_periph) of the setup function.
 
 
 NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have any exmple code for using them.
@@ -313,7 +313,7 @@ The Telit based Digi XBees (LTE Cat1 both Verizon and AT&T) can only use this mo
 
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
-This is shows in the [XBee Cellular Carrier](@ref menu_setup_xbeec_carrier) chunk of the setup function.
+This is shows in the [XBee Cellular Carrier](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_xbeec_carrier) chunk of the setup function.
 
 
 [//]: # ( @subsection menu_xbee_ltem_by Digi XBee3 LTE-M Bypass )
@@ -393,7 +393,7 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{esp8266} )
 
 Because the ESP8266's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
-You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(@ref menu_setup_esp) part of the setup function below.
+You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_esp) part of the setup function below.
 
 
 [//]: # ( @subsection menu_bg96 Quectel BG96 )
@@ -413,7 +413,7 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{bg96} )
 
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
-Code to invert the pin levels is in the [Skywire Pin Inversions](@ref menu_setup_skywire) part of the setup function below.
+Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_skywire) part of the setup function below.
 
 
 [//]: # ( @subsection menu_monarch Sequans Monarch )
@@ -433,7 +433,7 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{monarch} )
 
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
-Code to invert the pin levels is in the [Skywire Pin Inversions](@ref menu_setup_skywire) part of the setup function below.
+Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_skywire) part of the setup function below.
 
 The default baud rate of the SVZM20 is much too fast for almost all Arduino boards.
 _Before_ attampting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
@@ -637,7 +637,7 @@ To use multiple circuits of the same type, re-address them.
 If for some reason you want or need to use software I2C, compile with the build flag `-D MS_ATLAS_SOFTWAREWIRE`.
 The constructors for the software I2C implementation requires either the SCL and SDA pin numbers or a reference to the I2C object as arguments.
 You must use Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library for software I2C.
-See the [software wire](@ref menu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
+See the [software wire](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
 
 @warning Either all or none of the Atlas sensors can be using software I2C.
 Using some Altas sensors with software I2C and others with hardware I2C is not supported.
@@ -775,7 +775,7 @@ The next two sections are for Keller RS485/Modbus water level sensors.
 The sensor class constructors for each are nearly identical, except for the class name.
 The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
-(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+(Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
 AltSoftSerial and HardwareSerial work fine.
 Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
@@ -809,7 +809,7 @@ ___
 ### Maxbotix HRXL Ultrasonic Range Finder
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, `Serial`), and the Arduino pin controlling the trigger are required for the sensor constructor.
-(Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+(Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 
 @see @ref sensor_maxbotix
 
@@ -885,7 +885,7 @@ ___
 Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library for software I2C.
 
 To use software I2C, compile with the build flag `-D MS_PALEOTERRA_SOFTWAREWIRE`.
-See the [software wire](@ref menu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
+See the [software wire](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
 
 The constructors for the software I2C implementation requires either the SCL and SDA pin numbers or a reference to the I2C object as arguments.
 All variants of the constructor require the Arduino power pin.
@@ -974,7 +974,7 @@ The sensor constructor requires as input: the sensor modbus address,  a stream i
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
 For most of the sensors, Yosemitech strongly recommends averaging multiple (in most cases 10) readings for each measurement.
-Please see the section "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)" for more information about what streams can be used along with this library.
+Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 
 @see @ref yosemitech_group
 
@@ -1189,7 +1189,7 @@ This is also just for debugging - it's very helpful when connected to the logger
 
 If we're using either NeoSWSerial or SoftwareSerial_ExtInts we need to assign the data receiver pins to interrupt functionality here in the setup.
 
-The [NeoSWSerial](@ref menu_neoswserial) and [SoftwareSerial_ExtInts](@ref menu_softwareseraial) objects were created way up in the [Extra Serial Ports](@ref menu_serial_ports) section.
+The [NeoSWSerial](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_neoswserial) and [SoftwareSerial_ExtInts](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_softwareseraial) objects were created way up in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_serial_ports) section.
 
 **NOTE:**  If you create more than one NeoSWSerial or Software serial object, you need to call the enableInterrupt function for each Rx pin!
 
@@ -1208,7 +1208,7 @@ For SoftwareSerial with External interrupts we use:
 ### Serial Begin
 
 Every serial port setup and used in the program must be "begun" in the setup function.
-This section calls the begin functions for all of the various ports defined in the [Extra Serial Ports](@ref menu_serial_ports) section
+This section calls the begin functions for all of the various ports defined in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_serial_ports) section
 
 [//]: # ( @menusnip{setup_serial_begins} )
 
@@ -1216,7 +1216,7 @@ This section calls the begin functions for all of the various ports defined in t
 ### SAMD Pin Peripherals
 
 After beginning all of the serial ports, we need to set the pin peripheral settings for any SERCOM's we assigned to serial functionality on the SAMD boards.
-These were created in the [Extra Serial Ports](@ref menu_samd_serial_ports) section above.
+These were created in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_samd_serial_ports) section above.
 This does not need to be done for an AVR board (like the Mayfly).
 
 [//]: # ( @menusnip{setup_samd_pins} )
@@ -1225,7 +1225,7 @@ This does not need to be done for an AVR board (like the Mayfly).
 ### Flash the LEDs
 
 Like printing debugging information to the serial port, flashing the board LED's is a very helpful indication that the board just restarted.
-Here we set the pin modes for the LED pins and flash them back and forth using the greenredflash() function we created back in the [working functions](@ref menu_working) section.
+Here we set the pin modes for the LED pins and flash them back and forth using the greenredflash() function we created back in the [working functions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_working) section.
 
 [//]: # ( @menusnip{setup_flashing_led} )
 

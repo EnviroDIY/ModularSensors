@@ -133,7 +133,7 @@ class KellerNanolevel : public KellerParent {
      *
      * @param modbusAddress The modbus address of the Nanolevel.
      * @param stream An Arduino data stream for modbus communication.  See
-     * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
+     * [notes](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)
      * for more information on what streams can be used.
      * @param powerPin The pin on the mcu controlling power to the Nanolevel.
      * Use -1 if it is continuously powered.

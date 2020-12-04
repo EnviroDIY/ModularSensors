@@ -5,7 +5,7 @@ ___
 [//]: # ( @section mainpage_intro The EnviroDIY ModularSensors Library )
 ## The EnviroDIY ModularSensors Library
 
-If you're new to EnviroDIY, I suggest you check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/getting_started.html) section of the documentation!
+If you're new to EnviroDIY, I suggest you check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/page_getting_started.html) section of the documentation!
 
 This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly.
 The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
@@ -18,7 +18,7 @@ The ModularSensors library coordinates these tasks by "wrapping" native sensor l
 These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
 Using the common sensor and variable interface, the library attempts to optimize measurement timing as much as possible to reduce logger "on-time" and power consumption.
 
-Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Compatibility) as well.
+Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](https://envirodiy.github.io/ModularSensors/page_processor_compatibility.html) as well.
 
 There is extensive documentation available in the [ModularSensors github pages](https://envirodiy.github.io/ModularSensors/index.html) including details of the class structures and example code.
 
@@ -90,11 +90,11 @@ For some generalized information about attaching sensors to an Arduino style boa
 ## Data Endpoints
 
 Within ModularSensors, the "dataPublisher" objects add the functionality to send data to remote web services.
-The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/) and [ThingSpeak](https://thingspeak.com/).
+The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), and the [Ubidots IoT platform](https://ubidots.com).
 
-- [Monitor My Watershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
-- [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Functions)
-- [Ubidots IoT platform](https://ubidots.com)
+- [Monitor My Watershed/EnviroDIY Data Portal](https://envirodiy.github.io/ModularSensors/class_enviro_d_i_y_publisher.html)
+- [ThingSpeak](https://envirodiy.github.io/ModularSensors/class_thing_speak_publisher.html)
+- [Ubidots IoT platform](https://envirodiy.github.io/ModularSensors/class_ubidots_publisher.html)
 
 [//]: # ( @todo Page on Data Endpoints )
 
