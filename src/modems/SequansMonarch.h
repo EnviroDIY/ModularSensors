@@ -181,9 +181,7 @@
 
 /**
  * @brief The loggerModem subclass for Nimbelink or other modules based on the
- * Sequans Monarch VZM20Q.
- *
- * @see @ref modem_monarch
+ * [Sequans Monarch VZM20Q](@ref modem_monarch).
  */
 class SequansMonarch : public loggerModem {
  public:

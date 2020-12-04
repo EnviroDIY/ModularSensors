@@ -90,8 +90,8 @@
 
 
 /**
- * @brief The loggerModem subclass for the Sodaq 2GBee revisions 6 and higher
- * based on the SIMCOM SIM800h.
+ * @brief The loggerModem subclass for the [Sodaq 2GBee](@ref modem_gprsbee)
+ * revisions 6 and higher based on the SIMCOM SIM800H.
  *
  * @note The Sodaq GPRSBee doesn't expose the SIM800's reset pin..
  *
@@ -102,8 +102,6 @@
  *
  * @note The normal `Vin` pin of the Bee socket (pin 1) is used for voltage
  * reference only.
- *
- * @see @ref modem_gprsbee
  */
 class Sodaq2GBeeR6 : public SIMComSIM800 {
  public:

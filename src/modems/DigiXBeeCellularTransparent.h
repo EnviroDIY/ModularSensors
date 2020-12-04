@@ -106,8 +106,9 @@
 #endif
 
 /**
- * @brief The class for any of Digi's cellular XBee or XBee3 modules operating
- * in Digi's "transparent" mode.
+ * @brief The class for any of
+ * [Digi Cellular XBee or XBee3](@ref modem_digi) modules operating in Digi's
+ * ["transparent" mode](@ref modem_digi_cellular).
  *
  * The "transparent" refers to the Digi name for the operating mode of the
  * module.
@@ -115,8 +116,6 @@
  * @note The u-blox based Digi XBee's (3G global and LTE-M global) may be more
  * stable used in bypass mode.  The Telit based Digi XBees (LTE Cat1 both
  * Verizon and AT&T) can only use this mode.
- *
- * @see @ref modem_digi_cellular
  */
 class DigiXBeeCellularTransparent : public DigiXBee {
  public:
