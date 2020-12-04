@@ -511,16 +511,10 @@ uint32_t Logger::getNowEpoch(void) {
 uint32_t Logger::getNowEpochT0(void) {
     uint32_t currentEpochTime = rtc.now().getEpoch();
     if (!isRTCSane(currentEpochTime)) {
-        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
-        // PRINTOUT(F("The current clock timestamp is not valid!"),
-        // formatDateTime_ISO8601(currentEpochTime).substring(0, 10),"
-        // Setting to
-        // ",formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
         PRINTOUT(F("Bad time "), currentEpochTime, " ",
                  formatDateTime_ISO8601(currentEpochTime).substring(0, 10),
                  " Setting to ",
                  formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
-        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
         currentEpochTime = EPOCH_TIME_LOWER_SANITY_SECS;
         setNowEpochT0(currentEpochTime);
     }
