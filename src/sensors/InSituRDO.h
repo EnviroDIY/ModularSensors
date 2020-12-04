@@ -27,7 +27,8 @@
  * > (EPA-approved RDO technology for Clean Water Act programs) to measure
  * > dissolved oxygen and temperature in demanding process environments.
  *
- * The RDO PRO-X requires a 9.6 - 16 VDC power supply when operating in SDI-12 mode.
+ * The RDO PRO-X requires a 9.6 - 16 VDC power supply when operating in SDI-12 mode,
+ * which is what this library uses.
  * The maximum power consumption is 50 mA at 12 VDC.
  * Measurement current is 6 mA typical at 24 VDC and idle current is 160 µA typical at 24 VDC.
  *
@@ -40,10 +41,43 @@
  *
  * @note The default SDI-12 address of the RDO PRO-X is "0".
  *
+ * @note The default connection settings for ModbusRTU are 19200 baud, 8E1.
+ * The default modbus address is 0x01.
+ *
+ * @section sensor_insitu_rdo_Win-Situ Setup with Win-Situ
+ *
+ * The RDO PRO-X arrives from the factory ready to take measurements.
+ * It is *NOT* necessary to connect it to a computer or use the Win-Situ software
+ * to do any additional setup.  If you are able to, however, I recommend using
+ * Win-Situ to chang some of the default settings on the sensor.
+ *
+ * To connect the sensor to Win-Situ, you can use any form of RS485 to USB interface.
+ * Insitu sells one that specifially works with their cables, but any
+ * inexpensive converter adapter with automatic flow control should work.
+ * The sensor must be powered at a minimum of **12V** (12-36V) to use the
+ * RS485/modbus interface.  This is different than the 9.6V - 16V required for
+ * the SDI-12 interface.
+ *
+ * These are the two settings I recommend changing with Win-Situ:
+ *
+ * 1.  Disable caching:
+ *   - By default, the RDO PRO-X "caches" readings for 5000ms (5s) and will
+ * not take a new measurement until the 5s cache expires.  If you want to take
+ * measurements at faster than 5s intervals (ie, to average multiple
+ * measurements), I strongly recommend setting the cache value to 0ms using the
+ * Win-Situ software.  The cache value can be changed in the "Diagnostics" menu
+ * found on the "Device Setup" tab of Win-Situ.
+ *
+ * 2. Enable O2 partial pressure output:
+ *   - By default, the partial pressure of oxygen is *not* returned over the
+ * SDI-12 interface.  It can be enabled by way of the "SDI-12 Setup..." menu
+ * found on the "Device Setup" tab of Win-Situ.
+ *
  * @warning The order of variables returned on the SDI-12 bus from the RDO PRO-X
- * can be changed using the WinSitu software.  This library assumes the default
+ * can be changed using the Win-Situ software.  This library assumes the default
  * ordering of variables: DO concentration, DO % saturation, Temperature.  If
- * added manually, O2 partial pressure is last.
+ * added manually, O2 partial pressure is last.  **If you change reorder the
+ * variables with Win-Situ, your results will be labeled incorrectly!**
  *
  * @section sensor_insitu_rdo_calib Calibration
  * This library DOES NOT support calibrating the DO probe.  Per the manufacturer:
@@ -58,11 +92,11 @@
  * > We recommend that you perform the [two-point 100% and] 0% oxygen calibration
  * > only if you intend to measure dissolved oxygen at a concentration of less than 4mg/L.
  *
- * If you do wish to re-calibrate the probe, that must be done using Win-Situ 5 software,
- * the VuSitu mobile app, or the Modbus/RS485 interface.
- *
- * @note The default connection settings for ModbusRTU are 19200 baud, 8E1.
- * The default modbus address is 0x01.
+ * If you do wish to re-calibrate the probe, that must be done using Win-Situ 5
+ * software, the VuSitu mobile app or using the raw Modbus/RS485 commands. Using
+ * the Win-Situ software is by far the easiest way.  With the Win-Situ software
+ * and the calibration "chamber" shipped with the sensor, performing a 1-point
+ * 100% water-saturated air calibration is fairly simple and straight forward.
  *
  * @section sensor_insitu_rdo_cap Sensor Cap Maintenance
  * The sensor cap has an estimated lifetime of 2 years from the time of first reading.
@@ -120,26 +154,34 @@
  * @brief Sensor::_numReturnedValues; the RDO PRO-X can report 4 values.
  *
  * It reports 3 values (DO concentration, DO % saturation, and temperature) by
- * default.  Partial pressure of oxygen can be added to the output using WinSitu
- * software.
+ * default.  Partial pressure of oxygen can be added to the output using
+ * Win-Situ software.
  */
 #define INSITU_RDO_NUM_VARIABLES 4
 
 /**
  * @anchor sensor_insitu_rdo_timing
  * @name Sensor Timing
- * The sensor timing for an InSitu RDO PRO-X
+ * The sensor timing for an InSitu RDO PRO-X.
+ *
+ * None of these values are specified in the documentation for the sensor; this
+ * is all based on SRGD's testing.
  */
 /**@{*/
-/// @brief Sensor::_warmUpTime_ms; zzzzzzz
-#define INSITU_RDO_WARM_UP_TIME_MS 275
-/// @brief Sensor::_stabilizationTime_ms; Per the manual, T90 < 45sec; T95 <
-/// 60sec @ 25°C
-#define INSITU_RDO_STABILIZATION_TIME_MS 60000
+/// @brief Sensor::_warmUpTime_ms; ~125ms in SRGD tests
+#define INSITU_RDO_WARM_UP_TIME_MS 125
 /**
- * @brief Sensor::_measurementTime_ms; zzzz
+ * @brief Sensor::_stabilizationTime_ms; the sensor is stable as soon as it
+ * can take a measurement.
+ *
+ * @note The RDO takes 5-10 minutes to stabilize after being put in a new
+ * environment but once the sensor has equilibrated to the environment it
+ * does not appear to need any additional stabilization time when it is
+ * powered on and off.
  */
-#define INSITU_RDO_MEASUREMENT_TIME_MS 5335
+#define INSITU_RDO_STABILIZATION_TIME_MS 0
+/// @brief Sensor::_measurementTime_ms; ~775 minimum
+#define INSITU_RDO_MEASUREMENT_TIME_MS 850
 /**@}*/
 
 /**
@@ -261,7 +303,7 @@
  * The oxygen partial pressure variable from an InSitu RDO PRO-X
  *
  * @note The oxygen partial pressure output must be manually enabled in SDI-12
- * mode using the WinSitu software.
+ * mode using the Win-Situ software.
  *
  * {{ @ref InSituRDO_Pressure::InSituRDO_Pressure }}
  */
