@@ -362,12 +362,12 @@ InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower,
 // ==========================================================================
 #ifdef AnalogProcEC_ACT
 /** Start [AnalogElecConductivity] */
-#include <sensors/AnalogElecConductivity.h>
+#include <sensors/AnalogElecConductivityM.h>
 const int8_t ECpwrPin   = ECpwrPin_DEF;
 const int8_t ECdataPin1 = ECdataPin1_DEF;
 
 #define EC_RELATIVE_OHMS 100000
-AnalogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1, EC_RELATIVE_OHMS, 1);
+AnalogElecConductivityM analogEC_phy(ECpwrPin, ECdataPin1, EC_RELATIVE_OHMS);
 /** End [AnalogElecConductivity] */
 #endif  // AnalogProcEC_ACT
 
@@ -732,7 +732,7 @@ Variable* variableList[] = {
 #endif  // ProcVolt_ACT
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
-    new AnalogElecConductivity_EC(&analogEC_phy, EC1_UUID),
+    new AnalogElecConductivityM_EC(&analogEC_phy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
 
 #if defined(ExternalVoltage_Volt1_UUID)
