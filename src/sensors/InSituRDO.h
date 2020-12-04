@@ -44,6 +44,12 @@
  * @note The default connection settings for ModbusRTU are 19200 baud, 8E1.
  * The default modbus address is 0x01.
  *
+ * @warning The RDO PRO-X is not properly compliant with the SDI-12 protocol
+ * and will not continue a concurrent measurement if there are any other SDI-12
+ * sensors on the same SDI-12 bus.  This means that the RDO PRO-X must either be
+ * put on a separate SDI-12 data pin than any other SDI-12 sensors or you must
+ * compile with the build flag `-D MS_SDI12_NON_CONCURRENT`.
+ *
  * @section sensor_insitu_rdo_Win-Situ Setup with Win-Situ
  *
  * The RDO PRO-X arrives from the factory ready to take measurements.
@@ -127,6 +133,9 @@
  * The manual for this sensor is available at:
  * https://in-situ.com/pub/media/support/documents/RDO_Pro-X_Manual.pdf
  * The spec sheet is here:  https://in-situ.com/pub/media/support/documents/RDO-PRO-X_SS.pdf
+ *
+ * @section sensor_insitu_rdo_flags Build flags
+ * @see @ref sdi12_group_flags
  *
  * @section sensor_insitu_rdo_ctor Sensor Constructor
  * {{ @ref InSituRDO::InSituRDO }}
