@@ -133,9 +133,13 @@ class Logger {
     virtual ~Logger();
 
     // ===================================================================== //
-    // Public functions to get and set basic logging paramters
+    /**
+     * @anchor logger_basic_parameters
+     * @name Basic Logging Parameters
+     * Public functions to get and set basic logging paramters
+     */
+    /**@{*/
     // ===================================================================== //
-
     /**
      * @brief Set the Logger ID.
      *
@@ -348,9 +352,15 @@ class Logger {
      * @brief The sampling feature UUID
      */
     const char* _samplingFeatureUUID;
+    /**@}*/
 
     // ===================================================================== //
-    // Public functions to get information about the attached variable array
+    /**
+     * @anchor logger_internal_array
+     * @name Attached Variable Array Functions
+     * Public functions to get information about the attached variable array
+     */
+    /**@{*/
     // ===================================================================== //
 
  public:
@@ -441,9 +451,15 @@ class Logger {
      * @brief A pointer to the internal variable array instance
      */
     VariableArray* _internalArray;
+    /**@}*/
 
     // ===================================================================== //
-    // Public functions for internet and dataPublishers
+    /**
+     * @anchor logger_internet
+     * @name Internet and Publisher Functions
+     * Public functions for internet and dataPublishers
+     */
+    /**@{*/
     // ===================================================================== //
 
  public:
@@ -500,9 +516,15 @@ class Logger {
      * @brief An array of all of the attached data publishers
      */
     dataPublisher* dataPublishers[MAX_NUMBER_SENDERS];
+    /**@}*/
 
     // ===================================================================== //
-    // Public functions to access the clock in proper format and time zone
+    /**
+     * @anchor logger_time
+     * @name Clock and Timezones
+     * Public functions to access the clock in proper format and time zone
+     */
+    /**@{*/
     // ===================================================================== //
 
  public:
@@ -722,10 +744,16 @@ class Logger {
      * same offset.
      */
     static int8_t _loggerRTCOffset;
+    /**@}*/
 
-    // ============================================================================
-    //  Public Functions for sleeping the logger
-    // ============================================================================
+    // ===================================================================== //
+    /**
+     * @anchor logger_sleep
+     * @name Clock and Timezones
+     * Public Functions for sleeping the logger
+     */
+    /**@{*/
+    // ===================================================================== //
 
  public:
     /**
@@ -758,9 +786,15 @@ class Logger {
      */
     extendedWatchDogAVR watchDogTimer;
 #endif
+    /**@}*/
 
     // ===================================================================== //
-    // Public functions for logging data to an SD card
+    /**
+     * @anchor logger_sdcard
+     * @name SD Cards and Saving Data
+     * Public functions for logging data to an SD card
+     */
+    /**@{*/
     // ===================================================================== //
 
  public:
@@ -939,10 +973,15 @@ class Logger {
      * @return **bool** True if a file was successfully opened or created.
      */
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
-
+    /**@}*/
 
     // ===================================================================== //
-    // Public functions for a "sensor testing" mode
+    /**
+     * @anchor logger_testing
+     * @name Sensor Testing Mode
+     * Public functions for a "sensor testing" mode
+     */
+    /**@{*/
     // ===================================================================== //
 
  public:
@@ -968,10 +1007,15 @@ class Logger {
      * from the internet, and the logger goes back to sleep.
      */
     virtual void testingMode();
-
+    /**@}*/
 
     // ===================================================================== //
-    // Convience functions to call several of the above functions
+    /**
+     * @anchor logger_conv
+     * @name Do-It-All Convience Functions
+     * Convience functions to call several of the above functions
+     */
+    /**@{*/
     // ===================================================================== //
 
     /**
@@ -1056,6 +1100,7 @@ class Logger {
      * "testing mode" routine when it finishes other operations.
      */
     static volatile bool startTesting;
+    /**@}*/
 };
 
 #endif  // SRC_LOGGERBASE_H_
