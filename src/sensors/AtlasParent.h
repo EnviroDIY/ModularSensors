@@ -63,12 +63,18 @@
  * (plock) to I2C so the sensors do not accidentally switch back to UART mode.
  * Legacy chips and EZO chips that do not support I2C are not supported.
  *
+ *
+ * @section atlas_group_flags Build flags
  * Both hardware and software I2C communication is supported for the Atlas sensors.
  * Use the build flag `-D MS_ATLAS_SOFTWAREWIRE` to switch to software I2C.
  * Only [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is currently supported.
  *
+ * - `-D MS_ATLAS_SOFTWAREWIRE`
+ *      - switches from using hardware I2C to software I2C
+ *
  * @warning Either all or none of the Atlas sensors can be using software I2C.
- * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
+ * Using some Altas sensors with software I2C and others with hardware I2C is
+ * not supported.
  *
  * @warning **You must isolate the data lines of all Atlas circuits from the
  * main I2C bus if you wish to turn off their power!**  If you do not isolate

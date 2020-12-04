@@ -39,6 +39,9 @@
  * [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf)
  * [Integrator's Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf)
  *
+ * @section sensor_es2_flags Build flags
+ * @see @ref sdi12_group_flags
+ *
  * @section sensor_es2_ctor Sensor Constructor
  * {{ @ref DecagonES2::DecagonES2 }}
  *

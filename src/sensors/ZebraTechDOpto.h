@@ -25,7 +25,7 @@
  * @section sensor_dopto_intro Introduction
  *
  * The [Zebra-Tech D-Opto](http://www.zebra-tech.co.nz/d-opto-sensor/) sensor is implemented as a sub-classes of the SDI12Sensors class.
- * It require an 8-12V power supply, which can be turned off between measurements.
+ * It requires an 8-12V power supply, which can be turned off between measurements.
  * The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech.
  * You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run.
  * At the Stroud Center, we use [Pololu 9V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
@@ -33,6 +33,9 @@
  * @section sensor_dopto_datasheet Sensor Datasheet
  * The manual for this sensor is available at:
  * www.zebra-tech.co.nz/wp-content/uploads/2014/04/D-Opto-Sensor-manual-A4-ver-2.pdf
+ *
+ * @section sensor_dopto_flags Build flags
+ * @see @ref sdi12_group_flags
  *
  * @section sensor_dopto_ctor Sensor Constructor
  * {{ @ref ZebraTechDOpto::ZebraTechDOpto }}
