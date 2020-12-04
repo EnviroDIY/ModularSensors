@@ -351,6 +351,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         uint8_t resultsReceived = 0;
         uint8_t cmd_number      = 0;
         while (resultsReceived < _numReturnedValues && cmd_number <= 9) {
+            bool   gotResults     = false;
             String getDataCommand = "";
             getDataCommand += _SDI12address;
             // SDI-12 command to get data [address][D][dataOption][!]
@@ -365,25 +366,30 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             while (_SDI12Internal.available() < 3 &&
                    (millis() - start) < 1500) {}
             MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
-            MS_DBG(F("    <<<"),
-                   _SDI12Internal.read());  // ignore the repeated SDI12 address
+            MS_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
+            // ^^ ignore the repeated SDI12 address
 
             while (_SDI12Internal.available()) {
-                char c = _SDI12Internal.peek();
+                int c = _SDI12Internal.peek();
                 if (c == '-' || (c >= '0' && c <= '9') || c == '.') {
                     float result = _SDI12Internal.parseFloat(SKIP_NONE);
                     // The SDI-12 library should return -9999 on timeout
                     if (result == -9999 || isnan(result)) result = -9999;
-                    MS_DBG(F("    <<< Result #"), resultsReceived, ':',
-                           String(result, 10));
+                    MS_DBG(F("    <<<"), String(result, 10));
                     verifyAndAddMeasurementResult(resultsReceived, result);
-                    if (result != -9999) { resultsReceived++; }
-                } else {
-                    MS_DBG(F("    <<<"), _SDI12Internal.read());
+                    if (result != -9999) {
+                        gotResults = true;
+                        resultsReceived++;
+                    }
+                } else if (c >= 0 && c != '\r' && c != '\n') {
+                    MS_DBG(F("    <<<"),
+                           static_cast<char>(_SDI12Internal.read()));
+                } else {  // no point -1's and new lines to debugging port
+                    _SDI12Internal.read();
                 }
                 delay(10);  // 1 character ~ 7.5ms
             }
-            if (!resultsReceived) {
+            if (!gotResults) {
                 MS_DBG(F("  No results received, will not continue requests!"));
                 break;  // don't do another loop if we got nothing
             }
