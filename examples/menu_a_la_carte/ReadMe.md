@@ -98,6 +98,9 @@ ___
   - [Calculated Variables](#calculated-variables)
   - [Creating the array, logger, publishers](#creating-the-array-logger-publishers)
     - [The variable array](#the-variable-array)
+      - [Creating Variables within an Array](#creating-variables-within-an-array)
+      - [Creating Variables and Pasting UUIDs from MonitorMyWatershed](#creating-variables-and-pasting-uuids-from-monitormywatershed)
+      - [Creating Variables within an Array](#creating-variables-within-an-array-1)
     - [The Logger Object](#the-logger-object)
     - [Data Publishers](#data-publishers)
       - [Monitor My Watershed](#monitor-my-watershed)
@@ -1076,7 +1079,7 @@ ___
 [//]: # ( @section menu_calc_vars Calculated Variables )
 ## Calculated Variables
 
-Create new #Variable objects calculated from the measured variables.
+Create new Variable objects calculated from the measured variables.
 For these calculate variables, we must not only supply a function for the calculation, but also all of the metadata about the variable - like the name of the variable and its units.
 
 [//]: # ( @menusnip{calculated_variables} )
@@ -1088,11 +1091,36 @@ ___
 [//]: # ( @subsection menu_variable_array The variable array )
 ### The variable array
 
-Create a #VariableArray containing all of the #Variable objects that we are logging the values of.
-Since we've created all of the variables above, we only need to call them by name here.
+Create a VariableArray containing all of the Variable objects that we are logging the values of.
 
-[//]: # ( @menusnip{variable_arrays} )
+This shows three differnt ways of creating the same variable array and filling it with variables.
+You should only use **ONE** of these in your own code
+
+[//]: # ( @subsubsection menu_variables_create_in_array Creating Variables within an Array )
+#### Creating Variables within an Array
+
+Here we use the `new` keyword to create multiple variables and get pointers to them all at the same time within the arry.
+
+[//]: # ( @menusnip{variables_create_in_array} )
+
+
+[//]: # ( @subsubsection menu_variables_separate_uuids Using Already-Created Variables )
+#### Creating Variables and Pasting UUIDs from MonitorMyWatershed
+
+If you are sending data to monitor my watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
+If using this method, be very, very, very careful to make sure the order of your variables exactly matches the order of your UUID's.
+
+[//]: # ( @menusnip{variables_separate_uuids} )
+
+
+[//]: # ( @subsubsection menu_variables_pre_named Using Already-Created Variables )
+#### Creating Variables within an Array
+
+You can also create and name variable pointer objects outside of the array (as is demonstrated in all of the code chunks here) and then reference those pointers inside of the array like so:
+
+[//]: # ( @menusnip{variables_pre_named} )
 ___
+
 
 [//]: # ( @subsection menu_logger_obj The Logger Object )
 ### The Logger Object
@@ -1269,8 +1297,8 @@ This is only needed for 8MHz boards (like the Mayfly) that cannot communicate at
 [//]: # ( @subsubsection menu_setup_skywire Skywire Pin Inversions )
 #### Skywire Pin Inversions
 
-This chunk of code reduces the baud rate of the ESP8266 from its default of 115200 to 9600.
-This is only needed for 8MHz boards (like the Mayfly) that cannot communicate at 115200 baud.
+This chunk of code inverts the pin levels for status, wake, and reset of the modem.
+This is necessary for the Skywire development board and some other breakouts.
 
 [//]: # ( @menusnip{setup_skywire} )
 
