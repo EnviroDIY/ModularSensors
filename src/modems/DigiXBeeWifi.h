@@ -164,13 +164,15 @@ class DigiXBeeWifi : public DigiXBee {
     char* _ssid_buf = NULL;
     char* _pwd_buf  = NULL;
 
+    uint16_t updateModemMetadata_cnt = 0;
+#define XBEE_RESET_THRESHOLD 100
+
  public:
     // Az extension
     void   setWiFiId(const char* WiFiId, bool copyId = false);
     void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
     String getWiFiId(void);
     String getWiFiPwd(void);
-
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_

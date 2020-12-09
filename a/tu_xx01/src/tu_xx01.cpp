@@ -1108,8 +1108,13 @@ void setup() {
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     // modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
-#if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID  //|| or others
-    modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+#if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID || \
+    defined                                     DIGI_VCC_UID
+#define POLL_MODEM_REQ                           \
+    (loggerModem::PollModemMetaData_t)(          \
+        loggerModem::POLL_MODEM_META_DATA_RSSI | \
+        loggerModem::POLL_MODEM_META_DATA_VCC)
+    modemPhy.pollModemMetadata(POLL_MODEM_REQ);
 #endif
 #endif  // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,

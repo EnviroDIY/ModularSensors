@@ -10,7 +10,9 @@
 #include "LoggerModem.h"
 
 // Initialize the static members
-bool    loggerModem::_pollModemMetaData   = false;
+loggerModem::PollModemMetaData_t loggerModem::_pollModemMetaData =
+    POLL_MODEM_META_DATA_DEF;
+
 int16_t loggerModem::_priorRSSI           = SENSOR_DEFAULT_I;
 int16_t loggerModem::_priorSignalPercent  = SENSOR_DEFAULT_I;
 float   loggerModem::_priorModemTemp      = SENSOR_DEFAULT_F;
@@ -326,8 +328,8 @@ void loggerModem::setModemPinModes(void) {
 }
 
 
-void loggerModem::pollModemMetadata(uint8_t status) {
-    if (POLL_MODEM_META_DATA_ON & status) { _pollModemMetaData = true; }
+void loggerModem::pollModemMetadata(PollModemMetaData_t status) {
+    _pollModemMetaData = status;
 }
 bool loggerModem::updateModemMetadata(void) {
     bool success = true;

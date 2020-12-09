@@ -994,18 +994,40 @@ class loggerModem {
 
     /* atl_extension */
 
+ public:
+    /**
+     * @brief modem management data setup
+     *
+     * Set in setup()
+     *
+     * @param status type of default polling
+     */
+#if !defined POLL_MODEM_META_DATA_ON
+#define POLL_MODEM_META_DATA_ALL 0xFF
+#endif  // POLL_MODEM_META_DATA_ON
+    typedef enum {
+        POLL_MODEM_META_DATA_RSSI  = 0x01,
+        POLL_MODEM_META_DATA_VCC   = 0x02,
+        POLL_MODEM_META_DATA_TEMP  = 0x04,
+        POLL_MODEM_META_DATA_PARM4 = 0x08,
+        POLL_MODEM_META_DATA_PARM5 = 0x010,
+        POLL_MODEM_META_DATA_DEF   = POLL_MODEM_META_DATA_ALL,
+    } PollModemMetaData_t;
+    // By default modem metadata won't be polled. Call this to enable.
+    void
+            pollModemMetadata(PollModemMetaData_t status = POLL_MODEM_META_DATA_DEF);
+    uint8_t getModemMetadata() {
+        return _pollModemMetaData;
+    }
+
  protected:
     /**
      * @brief poll the modem management data
      *
      * Set in the init() portion of the #modemSetup().
      */
-    static bool _pollModemMetaData;
+    PollModemMetaData_t static _pollModemMetaData;
 
- public:
-// By default modem metadata won't be polled. Call this to enable.
-#define POLL_MODEM_META_DATA_ON 0x80
-    void pollModemMetadata(uint8_t status = POLL_MODEM_META_DATA_ON);
 
 #if not defined SENSOR_DEFAULT_I
 #define SENSOR_DEFAULT_I -1
@@ -1018,7 +1040,7 @@ class loggerModem {
 #endif  // SENSOR_DEFAULT
 };
 
-    /* atl_extension */
+/* atl_extension */
 
 // Acceptable epoch time range from NIST
 // before Jan 1, 2020  most likely an error
