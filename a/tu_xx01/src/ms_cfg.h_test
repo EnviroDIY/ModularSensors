@@ -1,5 +1,7 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - testing KellerNanolevel MMW/WiFi
+ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
+- KellerNanolevel 
+- Temperature/Humidity 
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
@@ -35,7 +37,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define KellerAcculevel_DepthUnits 2
 
 #define KellerNanolevel_ACT 1
-//#define ASONG_AM23XX_UUID 1
+#define ASONG_AM23XX_UUID 1
 
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
