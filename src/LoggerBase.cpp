@@ -49,8 +49,7 @@ int8_t Logger::_loggerTimeZone = 0;
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
 #define markedEpochTimeTz markedEpochTime
-uint32_t Logger::markedEpochTimeTz = 0;
-//uint32_t Logger::markedEpochTime    = 0;
+uint32_t Logger::markedEpochTimeTz  = 0;
 uint32_t Logger::markedEpochTimeUTC = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
@@ -669,16 +668,16 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
     }
 #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
     // Check the current ExtRtc time -
-    DateTime nowExt          = rtcExtPhy.now();  // T0 UST
-    uint32_t nowExtEpoch_sec = nowExt.unixtime();
-    MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec,
+    DateTime nowExtUTC          = rtcExtPhy.now();  // UTC
+    uint32_t nowExtUTCEpoch_sec = nowExtUTC.unixtime();
+    MS_DBG("         Time Returned by rtcExt:", nowExtUTCEpoch_sec,
            "->(T=", getTimeZone(), ")",
-           formatDateTime_ISO8601(nowExtEpoch_sec));
-    time_diff_sec = abs((long)((uint64_t)nowExtEpoch_sec) -
+           formatDateTime_ISO8601(nowExtUTCEpoch_sec));
+    time_diff_sec = abs((long)((uint64_t)nowExtUTCEpoch_sec) -
                         (long)((uint64_t)UTCEpochSeconds));
     if (time_diff_sec > NIST_TIME_DIFF_SEC) {
         rtcExtPhy.adjust(UTCEpochSeconds);  // const DateTime& dt);
-        nowExt = rtcExtPhy.now();
+        nowExtUTC = rtcExtPhy.now();
         MS_DBG("         rtcExt diff", time_diff_sec, " updated to UTS ",
                UTCEpochSeconds, "->", formatDateTime_ISO8601(UTCEpochSeconds));
         retVal = true;
@@ -712,10 +711,10 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // sensor was updated, just a single marked time.  By custom, this should be
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
-    Logger::markedEpochTimeTz = getNowEpochTz();
-;    Logger::markedEpochTime    = getNowEpoch();
-    Logger::markedEpochTimeUTC = markedEpochTime
-                                 - ((uint32_t)_loggerRTCOffset) * 3600;
+    Logger::markedEpochTimeTz  = getNowEpochTz();
+    Logger::markedEpochTime    = getNowEpoch();
+    Logger::markedEpochTimeUTC = markedEpochTime -
+        ((uint32_t)_loggerRTCOffset) * 3600;
 }
 
 
@@ -1670,26 +1669,26 @@ void Logger::begin() {
     watchDogTimer.resetWatchDog();
 
 #if defined ARDUINO_ARCH_SAMD
-    /* Internal RTCZero Mode3       class Time relative to 2000 T0
-     * External RTC_PCF8523/PCF2127 class Time relative to 2000 UTS/GMT/TZ0
+    /* Internal RTCZero Mode3       class Time relative to 2000 UTC
+     * External RTC_PCF8523/PCF2127 class Time relative to 2000 UTC/GMT/TZ0
      * Seconds, Minutes 0-59,  Hours 0-23,  Days 1-31, Months 1-12, Years
      * 0-99
      */
 
     // eg Apr 22 2019 16:46:09 in this TZ
     DateTime ccTimeTZ(__DATE__, __TIME__);
-    DateTime ccTimeT0(((uint32_t)ccTimeTZ.unixtime()) +
-                      ((int32_t)getTimeZone() *
-                       HOURS_TO_SECS));  // set to secs from UST/GMT Year 2000
-#define COMPILE_TIME_UT0 ((uint32_t)ccTimeT0.unixtime() - (24 * HOURS_TO_SECS))
-#define TIME_FUT_UPPER_UT0 (COMPILE_TIME_UT0 + 50 * 365 * 24 * 60 * 60)
+    DateTime ccTimeUTC(((uint32_t)ccTimeTZ.unixtime()) +
+                       ((int32_t)getTimeZone() *
+                        HOURS_TO_SECS));  // set to secs from UST/GMT Year 2000
+#define COMPILE_TIME_UTC ((uint32_t)ccTimeUTC.unixtime() - (24 * HOURS_TO_SECS))
+#define TIME_FUT_UPPER_UTC (COMPILE_TIME_UTC + 50 * 365 * 24 * 60 * 60)
     // MS_DBG("Sw Build Time Tz:
     // ",ccTimeTZ.year(),"/",ccTimeTZ.month(),"/",ccTimeTZ.date(),"
     // ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second(), "
     // secs2kTz
-    // ",ccTimeTZ.unixtime()); MS_DBG("Sw Build Time T0:
-    // ",ccTimeT0.year(),"/",ccTimeT0.month(),"/",ccTimeT0.date(),"
-    // ",ccTimeT0.hour(),":",ccTimeT0.minute(),":",ccTimeT0.second(),"
+    // ",ccTimeTZ.unixtime()); MS_DBG("Sw Build Time UTC:
+    // ",ccTimeUTC.year(),"/",ccTimeUTC.month(),"/",ccTimeUTC.date(),"
+    // ",ccTimeUTC.hour(),":",ccTimeUTC.minute(),":",ccTimeUTC.second(),"
     // secs2kT0
     // ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
 
@@ -1715,16 +1714,16 @@ void Logger::begin() {
         } while (++init_counter < RTC_INIT_MAX_NUM);
 
         if (cold_init) {
-            MS_DBG("ExtRTC cold !init. set to compile time T0 ",
-                   COMPILE_TIME_UT0, " which is Tz ", __DATE__, " ", __TIME__);
+            MS_DBG("ExtRTC cold !init. set to compile time UTC ",
+                   COMPILE_TIME_UTC, " which is Tz ", __DATE__, " ", __TIME__);
             rtcExtPhy.init();
-            rtcExtPhy.adjust(ccTimeT0);
+            rtcExtPhy.adjust(ccTimeUTC);
 
         } else {
             DateTime rNow_dt    = rtcExtPhy.now();
             uint32_t rnow_usecs = rNow_dt.unixtime();
 
-            MS_DBG("ExtRTC t0 ", rNow_dt.year(), "/", rNow_dt.month(), "/",
+            MS_DBG("ExtRTC UTC ", rNow_dt.year(), "/", rNow_dt.month(), "/",
                    rNow_dt.date(), " ", rNow_dt.hour(), ":", rNow_dt.minute(),
                    ":", rNow_dt.second(), " or epoch ", rnow_usecs);
             MS_DBG("Good if between ", COMPILE_TIME_UT0, "<", rnow_usecs, "<",
@@ -1732,7 +1731,7 @@ void Logger::begin() {
             if ((rnow_usecs < COMPILE_TIME_UT0) ||
                 (rnow_usecs > TIME_FUT_UPPER_UT0)) {
                 rtcExtPhy.adjust(ccTimeT0);
-                MS_DBG("ExtRTC t0 set to compile time T0 ", COMPILE_TIME_UT0,
+                MS_DBG("ExtRTC UTC set to compile time UTC ", COMPILE_TIME_UT0,
                        " which is Tz ", __DATE__, " ", __TIME__);
             }
         }
