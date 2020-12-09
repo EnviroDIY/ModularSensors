@@ -38,6 +38,9 @@
  * Documentation for the SDI-12 Protocol commands and responses for the Hydros
  * 21 can be found at: http://library.metergroup.com/Manuals/13869_CTD_Web.pdf
  *
+ * @section sensor_hydros21_flags Build flags
+ * @see @ref sdi12_group_flags
+ *
  * @section sensor_hydros21_ctor Sensor Constructor
  * {{ @ref DecagonCTD::DecagonCTD }}
  *

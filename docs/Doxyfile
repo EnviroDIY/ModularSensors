@@ -38,7 +38,7 @@ PROJECT_NAME           = ModularSensors
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 0.26.0
+PROJECT_NUMBER         = 0.27.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -276,7 +276,7 @@ ALIASES                = "license=@par License:\n" \
                          "m_enum_values_as_keywords=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:enum-values-as-keywords=\"true\" />@endxmlonly" \
                          "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since v\1.\2\"" \
                          "m_deprecated_since{2}=@since deprecated in v\1.\2 @deprecated" \
-                         "menulink{1}=[menu a la carte](@ref menu_\1)" \
+                         "menulink{1}=[menu a la carte](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_\1)" \
                          "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ "
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources

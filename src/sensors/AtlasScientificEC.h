@@ -41,11 +41,7 @@
  *   - [K10 Probe Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf)
  *
  * @section sensor_atlas_cond_flags Build flags
- * - `-D MS_ATLAS_SOFTWAREWIRE`
- *      - switches from using hardware I2C to software I2C
- * @warning Either all or none of the Atlas sensors can be using software I2C.
- * Using some Altas sensors with software I2C and others with hardware I2C is
- * not supported.
+ * @see @ref atlas_group_flags
  *
  * @section sensor_atlas_cond_ctor Sensor Constructors
  * {{ @ref AtlasScientificEC::AtlasScientificEC(int8_t, uint8_t, uint8_t) }}

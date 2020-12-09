@@ -150,10 +150,9 @@
 
 
 /**
- * @brief The loggerModem subclass for the Sodaq UBee based on the u-blox SARA
- * U201 3G cellular module.
- *
- * @see @ref modem_ubee_3g
+ * @brief The loggerModem subclass for the [2G/3G](@ref modem_ubee_3g)
+ * [Sodaq UBee](@ref modem_ublox) based on the u-blox SARA U201 2G/3G cellular
+ * module.
  */
 class SodaqUBeeU201 : public loggerModem {
  public:

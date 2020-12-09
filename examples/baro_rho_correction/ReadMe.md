@@ -128,7 +128,7 @@ ___
 ### Bosch BME280 environmental sensor
 
 Set options for the Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
-Create the #Sensor object and all of the #Variable objects.
+Create the Sensor object and all of the Variable objects.
 
 [//]: # ( @snippet{lineno} baro_rho_correction/baro_rho_correction.ino bme280 )
 ___
@@ -137,7 +137,7 @@ ___
 ### Maxim DS18 one wire temperature sensor
 
 Set options for the Maxim DS18 One Wire Temperature Sensor
-Create the #Sensor object and all of the #Variable objects.
+Create the Sensor object and all of the Variable objects.
 
 [//]: # ( @snippet{lineno} baro_rho_correction/baro_rho_correction.ino ds18 )
 ___
@@ -146,7 +146,7 @@ ___
 ###  Measurement Specialties MS503 pressure and temperature sensor
 
 Set options for the Measurement Specialties MS503 pressure and temperature sensor.
-Create the #Sensor object and all of the #Variable objects.
+Create the Sensor object and all of the Variable objects.
 
 [//]: # ( @snippet{lineno} baro_rho_correction/baro_rho_correction.ino ms5803 )
 ___
@@ -154,7 +154,7 @@ ___
 [//]: # ( @section example_baro_rho_calc_vars Calculated Variables )
 ## Calculated Variables
 
-Create new #Variable objects calculated from the measured variables.
+Create new Variable objects calculated from the measured variables.
 For these calculate variables, we must not only supply a function for the calculation, but also all of the metadata about the variable - like the name of the variable and its units.
 
 [//]: # ( @subsection example_baro_rho_pressure Water pressure )
@@ -187,7 +187,7 @@ ___
 [//]: # ( @subsection example_baro_rho_variable_array The variable array )
 ### The variable array
 
-Create a #VariableArray containing all of the #Variable objects that we are logging the values of.
+Create a VariableArray containing all of the Variable objects that we are logging the values of.
 Since we've created all of the variables above, we only need to call them by name here.
 
 [//]: # ( @snippet{lineno} baro_rho_correction/baro_rho_correction.ino variable_arrays )

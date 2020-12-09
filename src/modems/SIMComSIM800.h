@@ -154,10 +154,8 @@
 
 /**
  * @brief The loggerModem subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4
- * and almost any other module based on the SIMCOM SIM800 or SIM900 modules and
- * thier variants.
- *
- * @see @ref modem_sim800
+ * and almost any other module based on the [SIMCOM SIM800 or SIM900 modules and
+ * thier variants](@ref modem_sim800).
  */
 class SIMComSIM800 : public loggerModem {
  public:

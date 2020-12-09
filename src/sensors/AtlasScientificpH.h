@@ -27,11 +27,7 @@
  * https://www.atlas-scientific.com/ph.html
  *
  * @section sensor_atlas_ph_flags Build flags
- * - `-D MS_ATLAS_SOFTWAREWIRE`
- *      - switches from using hardware I2C to software I2C
- * @warning Either all or none of the Atlas sensors can be using software I2C.
- * Using some Altas sensors with software I2C and others with hardware I2C is
- * not supported.
+ * @see @ref atlas_group_flags
  *
  * @note Be careful not to mix the similar variable and sensor object names!
  *

@@ -181,14 +181,12 @@
 #endif
 
 /**
- * @brief The loggerModem subclass for any breakout of the Espressif ESP8266
- * wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif's
- * AT command firmware.
+ * @brief The loggerModem subclass for any breakout of the
+ * [Espressif ESP8266](@ref modem_esp8266) wifi chip or ESP32 wifi/bluetooth
+ * chip that has been flashed with Espressif's AT command firmware.
  *
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
- *
- * @see @ref modem_esp8266
  */
 class EspressifESP8266 : public loggerModem {
  public:

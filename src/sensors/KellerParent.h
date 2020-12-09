@@ -55,7 +55,7 @@
  * adapter and the number of readings to average are optional.  (Use -1 for the
  * second power pin and -1 for the enable pin if these don't apply and you want
  * to average more than one reading.) Please see the section
- * "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)"
+ * "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)"
  * for more information about what streams can be used along with this library.
  * In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to
  * communicate with these sensors, because it isn't stable enough. AltSoftSerial
@@ -172,7 +172,7 @@ class KellerParent : public Sensor {
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
-     * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
+     * [notes](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)
      * for more information on what streams can be used.
      * @param powerPin The pin on the mcu controlling power to the Keller
      * sensor.  Use -1 if it is continuously powered.

@@ -209,11 +209,10 @@
 
 
 /**
- * @brief The loggerModem subclass for the Sodaq UBee based on the u-blox SARA
- * R410M LTE-M cellular module.  This can be also used for any other breakout of
- * the the u-blox R4 or N4 series modules.
- *
- * @see @ref modem_ubee_ltem
+ * @brief The loggerModem subclass for the
+ * [LTE-M](@ref modem_ubee_ltem) [Sodaq UBee](@ref modem_ublox) based on the
+ * u-blox SARA R410M LTE-M cellular module.  This can be also used for any other
+ * breakout of the the u-blox R4 or N4 series modules.
  */
 class SodaqUBeeR410M : public loggerModem {
  public:
