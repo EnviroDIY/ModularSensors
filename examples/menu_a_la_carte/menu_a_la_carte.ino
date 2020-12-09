@@ -105,6 +105,27 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
 
 
+/** Start [softwarewire] */
+// A software I2C (Wire) instance using Testato's SoftwareWire
+// To use SoftwareWire, you must also set a define for the sensor you want to
+// use Software I2C for, ie:
+//   `#define MS_ATLAS_SOFTWAREWIRE`
+//   `#define MS_RAIN_SOFTWAREWIRE`
+//   `#define MS_PALEOTERRA_SOFTWAREWIRE`
+// or set the build flag(s):
+//   `-D MS_ATLAS_SOFTWAREWIRE`
+//   `-D MS_RAIN_SOFTWAREWIRE`
+//   `-D MS_PALEOTERRA_SOFTWAREWIRE`
+#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_ATLAS_SOFTWAREWIRE || \
+    defined                                       MS_RAIN_SOFTWAREWIRE
+#include <SoftwareWire.h>  // Testato's Software I2C
+const int8_t softwareSDA = 5;
+const int8_t softwareSCL = 4;
+SoftwareWire softI2C(softwareSDA, softwareSCL);
+#endif
+/** End [softwarewire] */
+
+
 /** Start [serial_ports_SAMD] */
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART
 // communication.  The "core" code for most boards defines one or more UART
@@ -217,7 +238,10 @@ const long modemBaud = 9600;  // All XBee's use 9600 by default
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 // The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter
-const int8_t modemVccPin    = A5;  // MCU pin controlling modem power
+// For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md
+const int8_t modemVccPin = -1;     // MCU pin controlling modem power
+                                   // Option: modemVccPin = A5, if Mayfly SJ7 is
+                                   // connected to the ASSOC pin
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
@@ -377,7 +401,7 @@ HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
-// the AT+UART_CUR or AT+UART_DEF commandy.
+// the AT+UART_CUR or AT+UART_DEF command.
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -681,7 +705,7 @@ Variable* modemBatteryState = new Modem_BatteryState(
 Variable* modemBatteryPct = new Modem_BatteryPercent(
     &modem, "12345678-abcd-1234-ef00-1234567890ab", "modemBatteryPct");
 Variable* modemBatteryVoltage = new Modem_BatteryVoltage(
-    &modem, "12345678-abcd-1234-ef00-1234567890aa b", "modemBatterymV");
+    &modem, "12345678-abcd-1234-ef00-1234567890ab", "modemBatterymV");
 Variable* modemTemperature =
     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab", "modemTemp");
 /** End [modem_variables] */
@@ -799,8 +823,14 @@ uint8_t      AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific CO2 sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+// AtlasScientificCO2 atlasCO2(AtlasCO2Power, softwareSDA, softwareSCL,
+//                             AtlasCO2i2c_addr);
+AtlasScientificCO2 atlasCO2(&softI2C, AtlasCO2Power, AtlasCO2i2c_addr);
+#else
 // AtlasScientificCO2 atlasCO2(AtlasCO2Power, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(AtlasCO2Power);
+#endif
 
 // Create concentration and temperature variable pointers for the EZO-CO2
 Variable* atlasCO2CO2 = new AtlasScientificCO2_CO2(
@@ -823,8 +853,14 @@ uint8_t      AtlasDOi2c_addr = 0x61;            // Default for DO is 0x61 (97)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific DO sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+// AtlasScientificDO atlasDO(AtlasDOPower, softwareSDA, softwareSCL,
+//                           AtlasDOi2c_addr);
+AtlasScientificDO atlasDO(&softI2C, AtlasDOPower, AtlasDOi2c_addr);
+#else
 // AtlasScientificDO atlasDO(AtlasDOPower, AtlasDOi2c_addr);
 AtlasScientificDO atlasDO(AtlasDOPower);
+#endif
 
 // Create concentration and percent saturation variable pointers for the EZO-DO
 Variable* atlasDOconc = new AtlasScientificDO_DOmgL(
@@ -832,34 +868,6 @@ Variable* atlasDOconc = new AtlasScientificDO_DOmgL(
 Variable* atlasDOpct = new AtlasScientificDO_DOpct(
     &atlasDO, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [atlas_do] */
-
-
-// ==========================================================================
-//  Atlas Scientific EZO-EC Conductivity Sensor
-// ==========================================================================
-/** Start [atlas_ec] */
-#include <sensors/AtlasScientificEC.h>
-
-const int8_t AtlasECPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
-uint8_t      AtlasECi2c_addr = 0x64;            // Default for EC is 0x64 (100)
-// All Atlas sensors have different default I2C addresses, but any of them can
-// be re-addressed to any 8 bit number.  If using the default address for any
-// Atlas Scientific sensor, you may omit this argument.
-
-// Create an Atlas Scientific Conductivity sensor object
-// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);
-AtlasScientificEC atlasEC(AtlasECPower);
-
-// Create four variable pointers for the EZO-ES
-Variable* atlasCond = new AtlasScientificEC_Cond(
-    &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* atlasTDS =
-    new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* atlasSal = new AtlasScientificEC_Salinity(
-    &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* atlasGrav = new AtlasScientificEC_SpecificGravity(
-    &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas_ec] */
 
 
 // ==========================================================================
@@ -875,8 +883,14 @@ uint8_t      AtlasORPi2c_addr = 0x62;         // Default for ORP is 0x62 (98)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific ORP sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+AtlasScientificORP atlasORP(&softI2C, AtlasORPPower, AtlasORPi2c_addr);
+// AtlasScientificORP atlasORP(AtlasORPPower, softwareSDA, softwareSCL,
+//                             AtlasORPi2c_addr);
+#else
 // AtlasScientificORP atlasORP(AtlasORPPower, AtlasORPi2c_addr);
 AtlasScientificORP atlasORP(AtlasORPPower);
+#endif
 
 // Create a potential variable pointer for the ORP
 Variable* atlasORPot = new AtlasScientificORP_Potential(
@@ -897,8 +911,14 @@ uint8_t      AtlaspHi2c_addr = 0x63;            // Default for pH is 0x63 (99)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific pH sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+AtlasScientificpH atlaspH(&softI2C, AtlaspHPower, AtlaspHi2c_addr);
+// AtlasScientificpH atlaspH(AtlaspHPower, softwareSDA, softwareSCL,
+//                           AtlaspHi2c_addr);
+#else
 // AtlasScientificpH atlaspH(AtlaspHPower, AtlaspHi2c_addr);
 AtlasScientificpH atlaspH(AtlaspHPower);
+#endif
 
 // Create a pH variable pointer for the pH sensor
 Variable* atlaspHpH =
@@ -919,13 +939,95 @@ uint8_t      AtlasRTDi2c_addr = 0x66;         // Default for RTD is 0x66 (102)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific RTD sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+AtlasScientificRTD atlasRTD(&softI2C, AtlasRTDPower, AtlasRTDi2c_addr);
+// AtlasScientificRTD atlasRTD(AtlasRTDPower, softwareSDA, softwareSCL,
+//                             AtlasRTDi2c_addr);
+#else
 // AtlasScientificRTD atlasRTD(AtlasRTDPower, AtlasRTDi2c_addr);
 AtlasScientificRTD atlasRTD(AtlasRTDPower);
+#endif
 
 // Create a temperature variable pointer for the RTD
 Variable* atlasTemp = new AtlasScientificRTD_Temp(
     &atlasRTD, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [atlas_rtd] */
+
+
+// ==========================================================================
+//  Atlas Scientific EZO-EC Conductivity Sensor
+// ==========================================================================
+/** Start [atlas_ec] */
+#include <sensors/AtlasScientificEC.h>
+
+const int8_t AtlasECPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
+uint8_t      AtlasECi2c_addr = 0x64;            // Default for EC is 0x64 (100)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create an Atlas Scientific Conductivity sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+// AtlasScientificEC atlasEC(AtlasECPower, softwareSDA, softwareSCL,
+//                           AtlasECi2c_addr);
+AtlasScientificEC atlasEC(&softI2C, AtlasECPower, AtlasECi2c_addr);
+#else
+// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);
+AtlasScientificEC atlasEC(AtlasECPower);
+#endif
+
+// Create four variable pointers for the EZO-ES
+Variable* atlasCond = new AtlasScientificEC_Cond(
+    &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* atlasTDS =
+    new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* atlasSal = new AtlasScientificEC_Salinity(
+    &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* atlasGrav = new AtlasScientificEC_SpecificGravity(
+    &atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
+
+// Create a calculated variable for the temperature compensated conductivity
+// (that is, the specific conductance).  For this example, we will use the
+// temperature measured by the Atlas RTD above this.  You could use the
+// temperature returned by any other water temperature sensor if desired.
+// **DO NOT** use your logger board temperature (ie, from the DS3231) to
+// calculate specific conductance!
+float calculateAtlasSpCond(void) {
+    float spCond          = -9999;  // Always safest to start with a bad value
+    float waterTemp       = atlasTemp->getValue();
+    float rawCond         = atlasCond->getValue();
+    float temperatureCoef = 0.019;
+    // ^^ Linearized temperature correction coefficient per degrees Celsius.
+    // The value of 0.019 comes from measurements reported here:
+    // Hayashi M. Temperature-electrical conductivity relation of water for
+    // environmental monitoring and geophysical data inversion. Environ Monit
+    // Assess. 2004 Aug-Sep;96(1-3):119-28.
+    // doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.
+    if (waterTemp != -9999 &&
+        rawCond != -9999)  // make sure both inputs are good
+    {
+        spCond = rawCond / (1 + temperatureCoef * (waterTemp - 25.0));
+    }
+    return spCond;
+}
+
+// Properties of the calculated variable
+// The number of digits after the decimal place
+const uint8_t atlasSpCondResolution = 0;
+// This must be a value from http://vocabulary.odm2.org/variablename/
+const char* atlasSpCondName = "specificConductance";
+// This must be a value from http://vocabulary.odm2.org/units/
+const char* atlasSpCondUnit = "microsiemenPerCentimeter";
+// A short code for the variable
+const char* atlasSpCondCode = "atlasSpCond";
+// The (optional) universallly unique identifier
+const char* atlasSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
+
+// Finally, Create the specific conductance variable and return a pointer to it
+Variable* atlasSpCond =
+    new Variable(calculateAtlasSpCond, atlasSpCondResolution, atlasSpCondName,
+                 atlasSpCondUnit, atlasSpCondCode, atlasSpCondUUID);
+/** End [atlas_ec] */
 
 
 // ==========================================================================
@@ -1302,17 +1404,48 @@ Variable* teros11VWC =
 
 
 // ==========================================================================
+//  PaleoTerra Redox Sensors
+// ==========================================================================
+/** Start [pt_redox] */
+#include <sensors/PaleoTerraRedox.h>
+
+int8_t paleoTerraPower = sensorPowerPin;  // Pin to switch RS485 adapter power
+                                          // on and off (-1 if unconnected)
+uint8_t paleoI2CAddress = 0x68;           // the I2C address of the redox sensor
+
+// Create the PaleoTerra sensor object
+#ifdef MS_PALEOTERRA_SOFTWAREWIRE
+PaleoTerraRedox ptRedox(&softI2C, paleoTerraPower, paleoI2CAddress);
+// PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,
+// paleoI2CAddress);
+#else
+PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
+#endif
+
+// Create the voltage variable for the redox sensor
+Variable* ptVolt =
+    new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [pt_redox] */
+
+
+// ==========================================================================
 //  External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 /** Start [i2c_rain] */
 #include <sensors/RainCounterI2C.h>
 
-const uint8_t RainCounterI2CAddress =
-    0x08;                            // I2C Address for external tip counter
+const uint8_t RainCounterI2CAddress = 0x08;
+// I2C Address for EnviroDIY external tip counter; 0x08 by default
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 
 // Create a Rain Counter sensor object
-RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+#ifdef MS_RAIN_SOFTWAREWIRE
+RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
+// RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,
+//                      depthPerTipEvent);
+#else
+RainCounterI2C  tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+#endif
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
 Variable* tbi2cTips =
@@ -1320,6 +1453,37 @@ Variable* tbi2cTips =
 Variable* tbi2cDepth =
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [i2c_rain] */
+
+
+// ==========================================================================
+//    Tally I2C Event Counter for rain or wind reed-switch sensors
+// ==========================================================================
+/** Start [i2c_wind_tally] */
+#include <sensors/TallyCounterI2C.h>
+
+const int8_t TallyPower = -1;  // Power pin (-1 if unconnected)
+// NorthernWidget Tally I2CPower is -1 by default because it is often deployed
+// with power always on, but Tally also has a super capacitor that enables it
+// to be self powered between readings/recharge as described at
+// https://github.com/NorthernWidget-Skunkworks/Project-Tally
+
+const uint8_t TallyCounterI2CAddress = 0x33;
+// NorthernWidget Tally I2C address is 0x33 by default
+
+// Create a Tally Counter sensor object
+TallyCounterI2C tallyi2c(TallyPower, TallyCounterI2CAddress);
+
+// Create variable pointers for the Tally event counter
+Variable* tallyEvents = new TallyCounterI2C_Events(
+    &tallyi2c, "12345678-abcd-1234-ef00-1234567890ab");
+
+// For  Wind Speed, create a Calculated Variable that converts, similar to:
+// period = loggingInterval * 60.0;    // in seconds
+// frequency = tallyEventCount/period; // average event frequency in Hz
+// tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h
+// 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
+// web: Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R
+/** End [i2c_wind_tally] */
 
 
 // ==========================================================================
@@ -1348,6 +1512,66 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 
 
 // ==========================================================================
+//   Analog Electrical Conductivity using the Processor's Analog Pins
+// ==========================================================================
+/** Start [analog_cond] */
+#include <sensors/AnalogElecConductivity.h>
+
+const int8_t ECpwrPin   = A4;  // Power pin (-1 if unconnected)
+const int8_t ECdataPin1 = A0;  // Data pin (must be an analog pin, ie A#)
+
+// Create an Analog Electrical Conductivity sensor object
+AnalogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1);
+
+// Create a conductivity variable pointer for the analog sensor
+Variable* analogEc_cond = new AnalogElecConductivity_EC(
+    &analogEC_phy, "12345678-abcd-1234-ef00-1234567890ab");
+
+// Create a calculated variable for the temperature compensated conductivity
+// (that is, the specific conductance).  For this example, we will use the
+// temperature measured by the Maxim DS18 saved as ds18Temp several sections
+// above this.  You could use the temperature returned by any other water
+// temperature sensor if desired.  **DO NOT** use your logger board temperature
+// (ie, from the DS3231) to calculate specific conductance!
+float calculateAnalogSpCond(void) {
+    float spCond          = -9999;  // Always safest to start with a bad value
+    float waterTemp       = ds18Temp->getValue();
+    float rawCond         = analogEc_cond->getValue();
+    float temperatureCoef = 0.019;
+    // ^^ Linearized temperature correction coefficient per degrees Celsius.
+    // The value of 0.019 comes from measurements reported here:
+    // Hayashi M. Temperature-electrical conductivity relation of water for
+    // environmental monitoring and geophysical data inversion. Environ Monit
+    // Assess. 2004 Aug-Sep;96(1-3):119-28.
+    // doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.
+    if (waterTemp != -9999 &&
+        rawCond != -9999)  // make sure both inputs are good
+    {
+        spCond = rawCond / (1 + temperatureCoef * (waterTemp - 25.0));
+    }
+    return spCond;
+}
+
+// Properties of the calculated variable
+// The number of digits after the decimal place
+const uint8_t analogSpCondResolution = 0;
+// This must be a value from http://vocabulary.odm2.org/variablename/
+const char* analogSpCondName = "specificConductance";
+// This must be a value from http://vocabulary.odm2.org/units/
+const char* analogSpCondUnit = "microsiemenPerCentimeter";
+// A short code for the variable
+const char* analogSpCondCode = "anlgSpCond";
+// The (optional) universallly unique identifier
+const char* analogSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
+
+// Finally, Create the specific conductance variable and return a pointer to it
+Variable* analogEc_spcond = new Variable(
+    calculateAnalogSpCond, analogSpCondResolution, analogSpCondName,
+    analogSpCondUnit, analogSpCondCode, analogSpCondUUID);
+/** End [analog_cond] */
+
+
+// ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
 /** Start [y504] */
@@ -1359,8 +1583,8 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y504modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y504modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y504modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial&  y504modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y504modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y504ModbusAddress = 0x04;  // The modbus address of the Y504
@@ -1399,8 +1623,8 @@ Variable* y504Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y510modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y510modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y510modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y510modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y510modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y510ModbusAddress = 0x0B;  // The modbus address of the Y510
@@ -1436,8 +1660,8 @@ Variable* y510Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y511modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y511modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y511modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y511modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y511modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y511ModbusAddress = 0x1A;  // The modbus address of the Y511
@@ -1473,8 +1697,8 @@ Variable* y511Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y514modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y514modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y514modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y514modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y514modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y514ModbusAddress = 0x14;  // The modbus address of the Y514
@@ -1511,8 +1735,8 @@ Variable* y514Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y520modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y520modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y520modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y520modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y520modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y520ModbusAddress = 0x20;  // The modbus address of the Y520
@@ -1548,8 +1772,8 @@ Variable* y520Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y532modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y532modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y532modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y532modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y532modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y532ModbusAddress = 0x32;  // The modbus address of the Y532
@@ -1557,8 +1781,8 @@ const int8_t y532AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
 const int8_t  y532SensorPower = A3;               // Sensor power pin
 const int8_t  y532EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y532NumberReadings =
-    1;  // The manufacturer actually doesn't mention averaging for this one
+const uint8_t y532NumberReadings = 1;
+// The manufacturer actually doesn't mention averaging for this one
 
 // Create a Yosemitech Y532 pH sensor object
 YosemitechY532 y532(y532ModbusAddress, y532modbusSerial, y532AdapterPower,
@@ -1588,7 +1812,7 @@ Variable* y532Temp =
 HardwareSerial& y533modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 // AltSoftSerial& y533modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y533modbusSerial = neoSSerial1;  // For software serial
+NeoSWSerial&   y533modbusSerial = neoSSerial1;    // For software serial
 #endif
 
 byte         y533ModbusAddress = 0x32;  // The modbus address of the Y533
@@ -1626,8 +1850,8 @@ Variable* y533Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y550modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y550modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y550modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y550modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y550modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y550ModbusAddress = 0x50;  // The modbus address of the Y550
@@ -1666,8 +1890,8 @@ Variable* y550Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y4000modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y4000modbusSerial = altSoftSerial;  // For software serial
-NeoSWSerial& y4000modbusSerial = neoSSerial1;  // For software serial
+AltSoftSerial& y4000modbusSerial = altSoftSerial;  // For software serial
+// NeoSWSerial& y4000modbusSerial = neoSSerial1;  // For software serial
 #endif
 
 byte         y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
@@ -1761,8 +1985,7 @@ const char* calculatedVarCode = "calcVar";
 // The (optional) universallly unique identifier
 const char* calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";
 
-// Finally, Create a calculated variable pointer and return a variable pointer
-// to it
+// Finally, Create a calculated variable and return a pointer to it
 Variable* calculatedVar = new Variable(
     calculateVariableValue, calculatedVarResolution, calculatedVarName,
     calculatedVarUnit, calculatedVarCode, calculatedVarUUID);
@@ -1985,13 +2208,14 @@ void setup() {
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
 
-    // Start the stream for the modbus sensors; all currently supported modbus
-    // sensors use 9600 baud
+// Start the stream for the modbus sensors;
+// all currently supported modbus sensors use 9600 baud
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
     Serial2.begin(9600);  // Use hardware serial if possible
 #else
-    // altSoftSerial.begin(9600);  // For software serial
-    neoSSerial1.begin(9600);  // For software serial
+    altSoftSerial.begin(9600);  // For all modbus serial streams or other serial
+
+    // neoSSerial1.begin(9600);  // For software serial
 #endif
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600
@@ -2068,7 +2292,7 @@ void setup() {
     modem.setModemStatusLevel(LOW);  // If using CTS, LOW
     modem.setModemWakeLevel(HIGH);   // Skywire dev board inverts the signal
     modem.setModemResetLevel(HIGH);  // Skywire dev board inverts the signal
-/** End [setup_skywire] */
+                                     /** End [setup_skywire] */
 #endif
 
 #if defined MS_BUILD_TEST_XBEE_CELLULAR
@@ -2159,11 +2383,11 @@ void setup() {
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(
-            true);  // true = wait for card to settle after power up
+        dataLogger.turnOnSDcard(true);
+        // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(
-            true);  // true = wait for internal housekeeping after write
+        dataLogger.turnOffSDcard(true);
+        // true = wait for internal housekeeping after write
     }
     /** End [setup_file] */
 
@@ -2235,6 +2459,12 @@ void loop() {
         // return a signal strength reading.
         if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
 
+        // Start the stream for the modbus sensors, if your RS485 adapter bleeds
+        // current from data pins when powered off & you stop modbus serial
+        // connection with digitalWrite(5, LOW), below.
+        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        altSoftSerial.begin(9600);
+
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
         // values, and turing them back off.
@@ -2243,6 +2473,12 @@ void loop() {
         varArray.completeUpdate();
 
         dataLogger.watchDogTimer.resetWatchDog();
+
+        // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
+        // on sleep, because Modbus Stop bit leaves these pins HIGH.
+        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
+        digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
 
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
@@ -2255,6 +2491,7 @@ void loop() {
             if (modem.connectInternet()) {
                 dataLogger.watchDogTimer.resetWatchDog();
                 // Publish data to remotes
+                Serial.println(F("Modem connected to internet."));
                 dataLogger.publishDataToRemotes();
 
                 // Sync the clock at midnight
@@ -2290,7 +2527,21 @@ void loop() {
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) dataLogger.testingMode();
+    if (Logger::startTesting) {
+        // Start the stream for the modbus sensors, if your RS485 adapter bleeds
+        // current from data pins when powered off & you stop modbus serial
+        // connection with digitalWrite(5, LOW), below.
+        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+        altSoftSerial.begin(9600);
+
+        dataLogger.testingMode();
+    }
+
+    // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
+    // on sleep, because Modbus Stop bit leaves these pins HIGH.
+    // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
+    digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
+    digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
 
     // Call the processor sleep
     dataLogger.systemSleep();

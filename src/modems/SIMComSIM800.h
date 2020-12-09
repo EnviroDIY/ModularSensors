@@ -8,6 +8,47 @@
  * 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM
  * SIM800 or SIM900 modules and thier variants.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_sim800 SIMCom SIM800
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_sim800_notes Introduction
+ *
+ * There are a multitude of boards available that feature a variant of the
+ * SIMCom SIM800 or the nearly identical SIM900, including the
+ * [Adafruit Fona](whttps://www.adafruit.com/product/1946) Mini cellular GSM
+ * breakout.
+ * Almost all of those boards should work with ModularSensors as a generic
+ * SIM800.
+ * The one exception is the Sodaq GPRSBee **R6 and higher**, which has its own
+ * [constructor](@ref modem_gprsbee).
+ * The earlier Sodaq GPRSBee's (ie, R4) do use this version.
+ *
+ * The SIM800 consumes up to 2A of power while connecting to the network.
+ * That is 4x what a typical USB or Arduino board can supply, so expect to give
+ * the module it's own independent power source.
+ *
+ * The Adafruit _3G_ Fona is not currently supported.
+ *
+ * @section modem_sim800_docs Manufacturer Documentation
+ * The module datasheet and AT commands are available here:
+ * https://simcom.ee/modules/gsm-gprs/sim800/
+ *
+ * @section modem_sim800_ctor Modem Constructor
+ * {{ @ref SIMComSIM800::SIMComSIM800 }}
+ *
+ * ___
+ * @section modem_sim800_examples Example Code
+ * The SIM800 is used in the @menulink{sim800} example.
+ *
+ * @menusnip{sim800}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_SIMCOMSIM800_H_
@@ -20,6 +61,9 @@
 #ifdef MS_SIMCOMSIM800_DEBUG
 #define MS_DEBUGGING_STD "SIMComSIM800"
 #endif
+
+/** @ingroup modem_sim800 */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -113,21 +157,7 @@
  * and almost any other module based on the SIMCOM SIM800 or SIM900 modules and
  * thier variants.
  *
- * #### Pin and timing information for the SIM800
- *
- * @copydetails #SIM800_RESET_LEVEL
- *
- * @copydetails #SIM800_WAKE_LEVEL
- *
- * @copydetails #SIM800_WAKE_DELAY_MS
- *
- * @copydetails #SIM800_ATRESPONSE_TIME_MS
- *
- * @copydetails #SIM800_DISCONNECT_TIME_MS
- *
- * @copydetails #SIM800_STATUS_LEVEL
- *
- * @see @ref sim800_page
+ * @see @ref modem_sim800
  */
 class SIMComSIM800 : public loggerModem {
  public:
@@ -192,5 +222,5 @@ class SIMComSIM800 : public loggerModem {
  private:
     const char* _apn;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_SIMCOMSIM800_H_

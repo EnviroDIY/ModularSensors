@@ -1,4 +1,4 @@
-[//]: # ( @page simple_logging_example Simple Logging Example )
+[//]: # ( @page example_simple_logging Simple Logging Example )
 # Using ModularSensors to save data to an SD card
 
 This shows the simplest use of a "logger" object.
@@ -11,4 +11,26 @@ Those lines should be removed when using the example on your own board.
 
 _______
 
-[//]: # ( @section simple_logging_full The Complete Example Code: )
+[//]: # ( @section example_simple_logging_walk Walking Through the Code )
+# Walking Through the Code
+
+_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
+- [Using ModularSensors to save data to an SD card](#using-modularsensors-to-save-data-to-an-sd-card)
+- [Walking Through the Code](#walking-through-the-code)
+  - [PlatformIO Configuration](#platformio-configuration)
+  - [The Complete Code](#the-complete-code)
+
+[//]: # ( End GitHub Only )
+
+
+[//]: # ( @section example_simple_logging_pio PlatformIO Configuration )
+## PlatformIO Configuration
+
+[//]: # ( @include{lineno} simple_logging/platformio.ini )
+
+[//]: # ( @section example_simple_logging_code The Complete Code )
+## The Complete Code

@@ -51,6 +51,8 @@ class Sensor;
  * returning a float which is the value for that variable.
  *
  * Variables are expected to be grouped together into VariableArrays.
+ *
+ * @ingroup base_classes
  */
 class Variable {
  public:
@@ -62,16 +64,17 @@ class Variable {
      * libraries.  It is intended to be used internally with sensors defined in
      * this library.
      *
-     * @param parentSense The Sensor object supplying values
+     * @param parentSense The Sensor object supplying values.
      * @param sensorVarNum The position in the sensor's value array of this
-     * variable's value
-     * @param decimalResolution The resolution (in decimal places) of the value
-     * @param varName The name of the variable per the varialbe name controlled
-     * vocabulary
-     * @param varUnit The unit of the variable per the unit controlled
-     * vocabulary
-     * @param varCode A custom code of the variable
-     * @param uuid A universally unique identifier for the variable
+     * variable's value.
+     * @param decimalResolution The resolution (in decimal places) of the value.
+     * @param varName The name of the variable per the [ODM2 variable name
+     * controlled vocabulary](http://vocabulary.odm2.org/variablename/)
+     * @param varUnit The unit of the variable per the [ODM2 unit controlled
+     * vocabulary](http://vocabulary.odm2.org/units/)
+     * @param varCode A custom code for the variable.  This can be any short
+     * text helping to identify the variable in files.
+     * @param uuid A universally unique identifier for the variable.
      */
     Variable(Sensor* parentSense, const uint8_t sensorVarNum,
              uint8_t decimalResolution, const char* varName,
@@ -86,13 +89,14 @@ class Variable {
      * this library.
      *
      * @param sensorVarNum The position in the sensor's value array of this
-     * variable's value
-     * @param decimalResolution The resolution (in decimal places) of the value
-     * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary
-     * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary
-     * @param varCode A custom code for the variable
+     * variable's value.
+     * @param decimalResolution The resolution (in decimal places) of the value.
+     * @param varName The name of the variable per the [ODM2 variable name
+     * controlled vocabulary](http://vocabulary.odm2.org/variablename/)
+     * @param varUnit The unit of the variable per the [ODM2 unit controlled
+     * vocabulary](http://vocabulary.odm2.org/units/)
+     * @param varCode A custom code for the variable.  This can be any short
+     * text helping to identify the variable in files.
      */
     Variable(const uint8_t sensorVarNum, uint8_t decimalResolution,
              const char* varName, const char* varUnit, const char* varCode);
@@ -102,13 +106,14 @@ class Variable {
      * is, one whose value is calculated by the calcFxn which returns a float.
      *
      * @param calcFxn Any function returning a float value
-     * @param decimalResolution The resolution (in decimal places) of the value
-     * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary
-     * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary
-     * @param varCode A custom code for the variable
-     * @param uuid A universally unique identifier for the variable
+     * @param decimalResolution The resolution (in decimal places) of the value.
+     * @param varName The name of the variable per the [ODM2 variable name
+     * controlled vocabulary](http://vocabulary.odm2.org/variablename/)
+     * @param varUnit The unit of the variable per the [ODM2 unit controlled
+     * vocabulary](http://vocabulary.odm2.org/units/)
+     * @param varCode A custom code for the variable.  This can be any short
+     * text helping to identify the variable in files.
+     * @param uuid A universally unique identifier for the variable.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
@@ -117,12 +122,13 @@ class Variable {
      * is, one whose value is calculated by the calcFxn which returns a float.
      *
      * @param calcFxn Any function returning a float value
-     * @param decimalResolution The resolution (in decimal places) of the value
-     * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary
-     * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary
-     * @param varCode A custom code for the variable
+     * @param decimalResolution The resolution (in decimal places) of the value.
+     * @param varName The name of the variable per the [ODM2 variable name
+     * controlled vocabulary](http://vocabulary.odm2.org/variablename/)
+     * @param varUnit The unit of the variable per the [ODM2 unit controlled
+     * vocabulary](http://vocabulary.odm2.org/units/)
+     * @param varCode A custom code for the variable.  This can be any short
+     * text helping to identify the variable in files.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode);
@@ -291,8 +297,8 @@ class Variable {
     /**
      * @brief Set the variable unit.
      *
-     * Must be a value from the ODM2 unit controlled vocabulary available here:
-     * http://vocabulary.odm2.org/units/
+     * Must be a value from the ODM2 unit controlled vocabulary available
+     * here: http://vocabulary.odm2.org/units/
      *
      * @param varUnit The unit of the variable per the ODM2 unit controlled
      * vocabulary.
@@ -307,9 +313,8 @@ class Variable {
     /**
      * @brief Set a customized code for the variable
      *
-     * This can be any short text helping to identify the variable in files
-     *
-     * @param varCode A custom code for the variable.
+     * @param varCode A custom code for the variable.  This can be any short
+     * text helping to identify the variable in files.
      */
     void setVarCode(const char* varCode);
     // This gets/sets the variable UUID, if one has been assigned

@@ -47,6 +47,8 @@
  * order of the variables will be reflected is in the order of the data columns
  * in data saved by a logger or when sending data to ThingSpeak.
  *
+ * @ingroup base_classes
+ *
  */
 class VariableArray {
  public:

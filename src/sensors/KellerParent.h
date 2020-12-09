@@ -26,11 +26,11 @@
  * - [Acculevel](https://www.kelleramerica.com/submersible-level-transmitters/acculevel-high-accuracy-submersible-level-transmitter.html)
  *     - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  *     - [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
- *     - [Class Documentation](@ref acculevel_group)
+ *     - [Class Documentation](@ref sensor_acculevel)
  * - [Nanolevel](https://www.kelleramerica.com/submersible-level-transmitters/nanolevel-ceramic-capacitive-level-transmitter.html)
  *     - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
  *     - [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
- *     - [Class Documentation](@ref nanolevel_group)
+ *     - [Class Documentation](@ref sensor_nanolevel)
  * - Any Keller Series 30, Class 5, Group 20 sensors that are software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *
  * These sensors communicate via Modbus RTU over RS485 at 9600 baud.
@@ -99,15 +99,64 @@
 #include <KellerModbus.h>
 
 // Sensor Specific Defines
+/** @ingroup keller_group */
+/**@{*/
 
-/// Sensor::_numReturnedValues; the Keller level sensors can report 3 values.
+/// @brief Sensor::_numReturnedValues; the Keller level sensors can report 3
+/// values.
 #define KELLER_NUM_VARIABLES 3
+
+/**
+ * @anchor keller_pressure
+ * @name Pressure
+ * The pressure variable from a Keller modbus sensor
+ */
+/**@{*/
 /// Variable number; pressure is stored in sensorValues[0].
 #define KELLER_PRESSURE_VAR_NUM 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "pressureGauge"
+#define KELLER_PRESSURE_VAR_NAME "pressureGauge"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millibar"
+#define KELLER_PRESSURE_UNIT_NAME "millibar"
+/**@}*/
+
+/**
+ * @anchor keller_temp
+ * @name Temperature
+ * The temperature variable from a Keller modbus sensor
+ */
+/**@{*/
 /// Variable number; temperature is stored in sensorValues[1].
 #define KELLER_TEMP_VAR_NUM 1
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "temperature"
+#define KELLER_TEMP_VAR_NAME "temperature"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "degreeCelsius" (°C)
+#define KELLER_TEMP_UNIT_NAME "degreeCelsius"
+/**@}*/
+
+/**
+ * @anchor keller_height
+ * @name Height
+ * The height variable from a Keller modbus sensor
+ */
+/**@{*/
 /// Variable number; height is stored in sensorValues[2].
 #define KELLER_HEIGHT_VAR_NUM 2
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "gaugeHeight"
+#define KELLER_HEIGHT_VAR_NAME "gaugeHeight"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
+#define KELLER_HEIGHT_UNIT_NAME "meter"
+/**@}*/
 
 /**
  * @brief The Sensor sub-class for all
@@ -222,5 +271,5 @@ class KellerParent : public Sensor {
         _ksensor.stopDebugging();
     }
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_

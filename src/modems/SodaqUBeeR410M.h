@@ -7,6 +7,105 @@
  * @brief Contains the SodaqUBeeR410M subclass of loggerModem for the Sodaq UBee
  * based on the u-blox SARA R410M LTE-M cellular module.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_ublox Sodaq UBee's and other u-blox modules
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_ublox_notes Introduction
+ *
+ * There are several variants of the [Sodaq UBee](https://support.sodaq.com/sodaq-one/ubee/) available.
+ * This library supports 2G [SARA G3xx], 3G [SARA Uxx] and LTE M1 [SARA R4xx], but _not_ NB IoT only [SARA N2xx].
+ *
+ * The classes for the UBeeU201 can be used for any other u-blox 2G or 3G based module.
+ *
+ * The classes for the UBeeR410M can be used for any other u-blox LTE-M module.
+ *
+ * @warning The NB IoT only UBee - based on the u-blox SARA N211 - is not supported.
+ *
+ * @section modem_ublox_mayfly Pin Numbers for connecting Sodaq UBees to a Mayfly
+ *
+ * This applies to _all_ Sodaq UBee's
+ *
+ * @code{cpp}
+ * const int8_t modemVccPin = 23;      // MCU pin controlling modem power
+ * const int8_t modemStatusPin = 19;   // MCU pin used to read modem status
+ * const int8_t modemResetPin = -1;    // MCU pin connected to modem reset pin
+ * const int8_t modemSleepRqPin = 20;  // MCU pin used for modem sleep/wake request
+ * const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status
+ * @endcode
+ *
+ * - Power to the u-blox module is controlled by a switch connected to bee socket pin 9, which is Mayfly pin 23
+ *     NOTE:  The power for the u-blox module is supplied by either a battery for 2/3G (U201/G3) modules or by bee socket pin 1 for LTE-M modules.
+ * In the case of the LTE-M module where power comes from pin 1, it could also be cut by setting pin 1 low, but neither the Mayfly nor this library support it.
+ * - The u-blox `V_INT` pin is connected to UBEE pin 12 which is connected to Mayfly pin 19.
+ * - The UBee pin 5 is connected to the u-blox `RESET_N`, but this is not connected to any pin on the Mayfly.
+ * - The u-blox `PWR_ON` pin (which controls deep sleep) is connected to UBee pin 16 which is connected to Mayfly pin 20.
+ * - I like to use the red LED to show the bee wake/sleep in addition to the LED on the UBee itself.
+ */
+/**
+ * @defgroup modem_ubee_ltem Sodaq UBee LTE-M and other u-blox LTE-M Modules
+ *
+ * @ingroup modem_ublox
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_ubee_ltem_notes Introduction
+ *
+ * There are a multitude of boards available that feature a variant of the
+ * u-blox SARA R4 series, including a Sodaq UBee.
+ *
+ * The default baud rate for the SARA R410M is 115200.
+ * It _DOES NOT_ save baud rate to non-volatile memory.
+ * After every power loss, the module will return to the default baud rate of 115200.
+ * This library attempts to compensate by sending a baud rate change command in the wake function.
+ * Because of this, 8MHz boards, _LIKE THE MAYFLY_, *MUST* use a HardwareSerial instance as modemSerial.
+ * This requirement does not exist for 16MHz (and faster) boards.
+ * For those, any Stream instance may be used.
+ *
+ * Power draw is just about 500mA.
+ * A larger supply is (strongly) preferred.
+ *
+ * @note This library doesn't currently support turning off the power supply to the R410M by setting UBee pin 1 low.
+ * The library only supports controlling the power via the power-supply enable switch connected to UBee pin 9.
+ * If you can control UBee pin 1 with your mcu, you should set it to be continuously `HIGH`.
+ *
+ * @section modem_ubee_ltem_docs Manufacturer Documentation
+ * The module datasheet and AT commands for the SARA R4 series are available here:
+ * https://www.u-blox.com/en/product/sara-r4-series
+ * The schematics for the UBee are available here:
+ * https://support.sodaq.com/Shields_and_Bees/ubee/
+ *
+ * @section modem_ubee_ltem_ctor Modem Constructor
+ * {{ @ref SodaqUBeeR410M::SodaqUBeeR410M }}
+ *
+ * ___
+ * @section modem_ubee_ltem_examples Example Code
+ * @subsection modem_ubee_ltem_modem_obj Creating the Modem Object
+ *
+ * The SARA R410M based UBee is used in the @menulink{ubeer410} example.
+ *
+ * @menusnip{sara_r410m}
+ *
+ * @section modem_ubee_ltem_network LTE Network Selection
+ *
+ * It is good practice to select which network you'll be connecting to based on
+ * your SIM card and signal availability.
+ * Example code for this can also be found in the
+ * [menu a la carte example](@ref setup_r4_carrrier).
+ *
+ * @note The network selection for a Sodaq LTE-M UBee is identical to that for
+ * an LTE-M XBee in bypass mode or any other module based on the u-blox SARA
+ * R4 series.
+ *
+ * @menusnip{setup_r4_carrrier}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_SODAQUBEER410M_H_
@@ -19,6 +118,9 @@
 #ifdef MS_SODAQUBEER410M_DEBUG
 #define MS_DEBUGGING_STD "SodaqUBeeR410M"
 #endif
+
+/** @ingroup modem_ubee_ltem */
+/**@{*/
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
@@ -111,21 +213,7 @@
  * R410M LTE-M cellular module.  This can be also used for any other breakout of
  * the the u-blox R4 or N4 series modules.
  *
- * #### Pin and timing information for the R4 series
- *
- * @copydetails #R410M_STATUS_LEVEL
- *
- * @copydetails #R410M_RESET_LEVEL
- *
- * @copydetails #R410M_WAKE_LEVEL
- *
- * @copydetails #R410M_WAKE_DELAY_MS
- *
- * @copydetails #R410M_ATRESPONSE_TIME_MS
- *
- * @copydetails #R410M_DISCONNECT_TIME_MS
- *
- * @see @ref ubee_page
+ * @see @ref modem_ubee_ltem
  */
 class SodaqUBeeR410M : public loggerModem {
  public:
@@ -252,5 +340,5 @@ class SodaqUBeeR410M : public loggerModem {
  private:
     const char* _apn;
 };
-
+/**@}*/
 #endif  // SRC_MODEMS_SODAQUBEER410M_H_

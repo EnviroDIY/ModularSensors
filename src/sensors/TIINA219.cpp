@@ -10,13 +10,22 @@
 
 #include "TIINA219.h"
 
-// The constructor - because this is I2C, only need the power pin
+// The constructors
+TIINA219::TIINA219(TwoWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex,
+                   uint8_t measurementsToAverage)
+    : Sensor("TIINA219", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
+             INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
+             -1, measurementsToAverage) {
+    _i2cAddressHex = i2cAddressHex;
+    _i2c           = theI2C;
+}
 TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex,
                    uint8_t measurementsToAverage)
     : Sensor("TIINA219", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
              INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage) {
     _i2cAddressHex = i2cAddressHex;
+    _i2c           = &Wire;
 }
 // Destructor
 TIINA219::~TIINA219() {}
@@ -40,7 +49,7 @@ bool TIINA219::setup(void) {
         waitForWarmUp();
     }
 
-    ina219_phy.begin();
+    ina219_phy.begin(_i2c);
 
     // Turn the power back off it it had been turned on
     if (!wasOn) { powerDown(); }
@@ -56,7 +65,7 @@ bool TIINA219::wake(void) {
 
     // Begin/Init needs to be rerun after every power-up to set the calibration
     // coefficient for the INA219 (see p21 of datasheet)
-    ina219_phy.begin();
+    ina219_phy.begin(_i2c);
 
     return true;
 }

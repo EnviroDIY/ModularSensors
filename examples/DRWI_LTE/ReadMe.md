@@ -1,4 +1,4 @@
-[//]: # ( @page drwi_lte_example DRWI CitSci LTE Sites )
+[//]: # ( @page example_drwi_lte DRWI CitSci LTE Sites )
 # Examples using the Modular Sensors Library for DRWI Sites
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
@@ -105,4 +105,32 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 _______
 
-[//]: # ( @section drwi_lte_full The Complete Example Code: )
+[//]: # ( @section example_drwi_lte_walk Walking Through the Code )
+# Walking Through the Code
+
+_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+
+[//]: # ( @tableofcontents )
+
+[//]: # ( Start GitHub Only )
+- [Examples using the Modular Sensors Library for DRWI Sites](#examples-using-the-modular-sensors-library-for-drwi-sites)
+  - [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Set the logger ID](#set-the-logger-id)
+  - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
+  - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+  - [Upload!](#upload)
+- [Walking Through the Code](#walking-through-the-code)
+  - [PlatformIO Configuration](#platformio-configuration)
+  - [The Complete Code](#the-complete-code)
+
+[//]: # ( End GitHub Only )
+
+
+[//]: # ( @section example_drwi_lte_pio PlatformIO Configuration )
+## PlatformIO Configuration
+
+[//]: # ( @include{lineno} DRWI_LTE/platformio.ini )
+
+[//]: # ( @section example_drwi_lte_code The Complete Code )
+## The Complete Code

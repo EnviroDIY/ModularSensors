@@ -27,8 +27,8 @@ fi
 echo "Current Doxygen version..."
 $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen -v
 
-echo "Move Doxygen to working directory"
-cp $TRAVIS_BUILD_DIR/doxygen-src/build/bin/* $TRAVIS_BUILD_DIR/code_docs/ModularSensors
-#make install
+# echo "Move Doxygen to working directory"
+# cp $TRAVIS_BUILD_DIR/doxygen-src/build/bin/* $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+# #make install
 
 cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors

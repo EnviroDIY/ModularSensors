@@ -3,6 +3,7 @@
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Greg Cutrell <gcutrell@limno.com>
  *
  * @brief Implements the DigiXBeeCellularTransparent class.
  */
@@ -14,7 +15,8 @@
 // Constructor/Destructor
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
     Stream* modemStream, int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-    int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn)
+    int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn,
+    const char *user, const char *pwd)
     : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
                modemSleepRqPin),
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
@@ -25,6 +27,8 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
 #endif
       gsmClient(gsmModem) {
     _apn = apn;
+    _user = user;
+    _pwd = pwd;
 }
 
 // Destructor
@@ -173,7 +177,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
         // LTE
         MS_DBG(F("Setting the APN..."));
         /** Save the network connection parameters. */
-        success &= gsmModem.gprsConnect(_apn);
+        success &= gsmModem.gprsConnect(_apn,_user,_pwd);
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         /* Make sure we're really in transparent mode. */
         gsmModem.sendAT(GF("AP0"));
