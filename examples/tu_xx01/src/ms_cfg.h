@@ -1,5 +1,7 @@
 /*****************************************************************************
-ms_cfg.h_nano - ModularSensors cfg - tst KellerNano temp/humidity MMW/WiFi
+ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
+- KellerNanolevel 
+- Temperature/Humidity 
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
@@ -26,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
 #define MAYFLY_VBAT 1
 #define ExternalVoltage_ACT 1
-#define ENVIRODIY_MAYFLY_TEMPERATURE 1
+//#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
@@ -45,7 +47,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "nano temp/humidity WiFi"
+#define CONFIGURATION_DESCRIPTION_STR "tu_test basic WiFi"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1

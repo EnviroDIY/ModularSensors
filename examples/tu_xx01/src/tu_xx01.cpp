@@ -355,12 +355,12 @@ InsituLevelTroll InsituLT_snsr(ltModbusAddress, modbusSerial, rs485AdapterPower,
 // ==========================================================================
 #ifdef AnalogProcEC_ACT
 /** Start [AnalogElecConductivity] */
-#include <sensors/AnalogElecConductivity.h>
+#include <sensors/AnalogElecConductivityM.h>
 const int8_t ECpwrPin   = ECpwrPin_DEF;
 const int8_t ECdataPin1 = ECdataPin1_DEF;
 
 #define EC_RELATIVE_OHMS 100000
-AnalogElecConductivity analogEC_phy(ECpwrPin, ECdataPin1, EC_RELATIVE_OHMS, 1);
+AnalogElecConductivityM analogEC_phy(ECpwrPin, ECdataPin1, EC_RELATIVE_OHMS);
 /** End [AnalogElecConductivity] */
 #endif  // AnalogProcEC_ACT
 
@@ -725,7 +725,7 @@ Variable* variableList[] = {
 #endif  // ProcVolt_ACT
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
-    new AnalogElecConductivity_EC(&analogEC_phy, EC1_UUID),
+    new AnalogElecConductivityM_EC(&analogEC_phy, EC1_UUID),
 #endif  // AnalogProcEC_ACT
 
 #if defined(ExternalVoltage_Volt1_UUID)
@@ -1087,8 +1087,13 @@ void setup() {
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     // modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
-#if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID  //|| or others
-    modemPhy.pollModemMetadata(POLL_MODEM_META_DATA_ON);
+#if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID || \
+    defined                                     DIGI_VCC_UID
+#define POLL_MODEM_REQ                           \
+    (loggerModem::PollModemMetaData_t)(          \
+        loggerModem::POLL_MODEM_META_DATA_RSSI | \
+        loggerModem::POLL_MODEM_META_DATA_VCC)
+    modemPhy.pollModemMetadata(POLL_MODEM_REQ);
 #endif
 #endif  // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
