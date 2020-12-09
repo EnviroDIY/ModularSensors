@@ -59,6 +59,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Decagon Devices ES-2: conductivity ](https://envirodiy.github.io/ModularSensors/group__sensor__es2.html)
 - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__mpl115a2.html)
 - [External Arduino I2C Rain Tipping Bucket Counter: rainfall totals](https://envirodiy.github.io/ModularSensors/group__sensor__i2c__rain.html)
+- [Insitu RDO PRO-X: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__insitu__rdo.html.html)
 - [Keller Submersible Level Transmitters: pressure and temperature](https://envirodiy.github.io/ModularSensors/group__keller__group.html)
     - [Acculevel](https://envirodiy.github.io/ModularSensors/group__sensor__acculevel.html)
     - [Nanolevel](https://envirodiy.github.io/ModularSensors/group__sensor__nanolevel.html)
