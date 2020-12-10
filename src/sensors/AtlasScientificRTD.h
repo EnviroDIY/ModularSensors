@@ -32,10 +32,7 @@
  * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
  *
  * @section sensor_atlas_rtd_flags Build flags
- * - `-D MS_ATLAS_SOFTWAREWIRE`
- *      - switches from using hardware I2C to software I2C
- * @warning Either all or none of the Atlas sensors can be using software I2C.
- * Using some Altas sensors with software I2C and others with hardware I2C is not supported.
+ * @see @ref atlas_group_flags
  *
  * @section sensor_atlas_rtd_ctor Sensor Constructor
  * {{ @ref AtlasScientificRTD::AtlasScientificRTD(int8_t, uint8_t, uint8_t) }}

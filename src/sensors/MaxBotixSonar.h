@@ -56,7 +56,7 @@
  * setting up a trigger pin and manually trigger individual readings.
  *
  * Please see the section
- * "[Notes on Arduino Streams and Software Serial](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)"
+ * "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)"
  * for more information about what streams can be used along with this library.
  *
  * This library supports using multiple MaxBotix sensors on the same logger,
@@ -177,7 +177,7 @@ class MaxBotixSonar : public Sensor {
      * @brief Construct a new MaxBotix Sonar object
      *
      * @param stream An Arduino data stream for TTL or RS232 communication.  See
-     * [notes](https://github.com/EnviroDIY/ModularSensors/wiki/Arduino-Streams)
+     * [notes](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)
      * for more information on what streams can be used.
      * @param powerPin The pin on the mcu controlling power to the MaxSonar.
      * Use -1 if it is continuously powered.

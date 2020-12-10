@@ -76,10 +76,9 @@
 #endif
 
 /**
- * @brief The class for the Digi S6B wifi module operating in
- * Digi's "transparent" mode.
- *
- * @see @ref modem_digi_wifi
+ * @brief The class for the [Digi XBee](@ref modem_digi)
+ * [S6B wifi](@ref modem_digi_wifi) module operating in Digi's "transparent"
+ * mode.
  */
 class DigiXBeeWifi : public DigiXBee {
  public:

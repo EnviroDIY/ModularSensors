@@ -161,9 +161,7 @@
 
 /**
  * @brief The loggerModem subclass for Dragino, Nimbelink, or any other module
- * based on the Quectel BG96.
- *
- * @see @ref modem_bg96
+ * based on the [Quectel BG96](@ref modem_bg96).
  */
 class QuectelBG96 : public loggerModem {
  public:

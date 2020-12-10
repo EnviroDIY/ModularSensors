@@ -47,6 +47,24 @@
  * order of the variables will be reflected is in the order of the data columns
  * in data saved by a logger or when sending data to ThingSpeak.
  *
+ * To use the VariableArray module, you must first create the array of pointers.
+ * This should be done outside of the setup() or loop() functions.
+ * Remember that for measured variables you must first create a new sensor
+ * instance and then one or more new variable instances for that sensor
+ * (depending on how many values it can return).
+ * The sensor functions for sensors within a variable array take advantage of
+ * all of the timestamps and status bits within the sensor object to minimize
+ * the amount of time that all sensors are powered and the processor is awake.
+ * That is, the first sensor to be warmed up will be set up or activated first;
+ * the first sensor to stabilize will be asked for values first.
+ * All calculations for any calculated variables happen after all the sensor
+ * updating has finished.
+ * The order of the variables within the array should not matter, though for
+ * code readability, I strongly suggest putting all the variables attached to a
+ * single sensor next to each other in the array.
+ * When creating a logger, the order of variables in the array determines the
+ * order the values will be written to the data file.
+ *
  * @ingroup base_classes
  *
  */

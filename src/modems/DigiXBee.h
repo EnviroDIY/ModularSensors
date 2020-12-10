@@ -159,16 +159,14 @@
 
 
 /**
- * @brief The parent class for all Digi XBee and XBee3 wifi and cellular
- * modules.
+ * @brief The parent class for all [Digi XBee and XBee3](@ref modem_digi) wifi
+ * and cellular modules.
  *
  * All of the various cellular XBee's and XBee3's are supported.  The wifi S6B
  * is also supported.
  *
- * @note The ZigBee, 900mHZ, and other radio-based XBee's are not
+ * @note The ZigBee, 900mHZ, and other radio-based XBee's are **not**
  * supported.
- *
- * @see @ref modem_digi
  */
 class DigiXBee : public loggerModem {
  public:
