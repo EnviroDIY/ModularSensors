@@ -12,6 +12,7 @@ The ModularSensors library is specifically designed to support wireless, solar-p
 * Retrieve data from many physical sensors;
 * Save that data to a SD memory card;
 * Transmit that data wirelessly to a web server; and
+* Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
 * Based in the riparian corridor
 * Supports 12V/Modbus interface through Wingboard 
 * powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
@@ -21,7 +22,7 @@ The ModularSensors library is specifically designed to support wireless, solar-p
 * Manages the available LiIon battery power, with best management practices for power demand management,
 * Tested for ruggedness/reliability with the Xbee WiFi S6 module (and future the Xbee LTE family and Xbee ISM band modules)
 
-To use, from platformio.ini open folder ModularSensors\a\<select a folder> - and press icon "Build" (the tick mark)   
+To use, from the IDE Platformio (platformio.org) open folder ModularSensors\a\<select a folder> - and press icon "Build" (the tick mark), then download to the target.   
 tbd - download a prebuilt image   
 This is an open source fork of https://github.com/EnviroDIY/ModularSensors   
 EnviroDIY/ModularSensors is a comprehensive package that covers a number of boards and example usages. Its the recommended starting point for anybody new to ModularSensors, its assumed you read the excellent https://github.com/EnviroDIY/ModularSensors/blob/master/README.md
@@ -66,7 +67,6 @@ For changes made on this fork the best place to start is with a source differenc
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions for the whole library. 
 
 For this fork open an [issue](https://github.com/neilh10/ModularSensors/issues) to suggest and discuss potential changes/additions for this fork. 
-* Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
 
 The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns.
 These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
