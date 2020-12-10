@@ -153,8 +153,8 @@
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "permittivity"
-#define MODEM_BATTERY_PERCENT_VAR_NAME "permittivity"
+/// "batteryVoltage"
+#define MODEM_BATTERY_PERCENT_VAR_NAME "batteryVoltage"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "percent"
 #define MODEM_BATTERY_PERCENT_UNIT_NAME "percent"

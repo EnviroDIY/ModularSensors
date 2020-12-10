@@ -1,6 +1,6 @@
 /*****************************************************************************
 tu_ctd.cpp
-Based on examples/logging_to MMW.ino
+Based on examples/logging_to_MMW.ino
 Adapted by Matt Bartney
  and Neil Hancock
  Based on fork <tbd>

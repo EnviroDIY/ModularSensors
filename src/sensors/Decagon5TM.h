@@ -44,6 +44,9 @@
  * @section sensor_fivetm_datasheet Sensor Datasheet
  * [Datasheet](http://publications.metergroup.com/Manuals/20431_EC-5_Manual_Web.pdf)
  *
+ * @section sensor_fivetm_flags Build flags
+ * @see @ref sdi12_group_flags
+ *
  * @section sensor_fivetm_ctor Sensor Constructor
  * {{ @ref Decagon5TM::Decagon5TM }}
  *

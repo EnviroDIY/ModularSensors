@@ -14,12 +14,12 @@
 
         <tab type="usergroup" url="@ref page_getting_started" title="Getting Started">
             <tab type="usergroup" url="@ref page_getting_started" title="Getting Started">
-                <tab type="user" url="@ref getting_started_ide" title="IDE and Driver Installation" />
-                <tab type="user" url="@ref getting_started_libraries" title="Library Installation" />
-                <tab type="user" url="@ref getting_started_clock" title="Setting the Clock" />
-                <tab type="user" url="@ref getting_started_program" title="Writing Your Logger Program" />
-                <tab type="user" url="@ref getting_started_examples" title="Modifying the Examples" />
-                <tab type="user" url="@ref getting_started_deploying" title="Deploying your Station" />
+                <tab type="user" url="@ref page_getting_started_ide" title="IDE and Driver Installation" />
+                <tab type="user" url="@ref page_getting_started_libraries" title="Library Installation" />
+                <tab type="user" url="@ref page_getting_started_clock" title="Setting the Clock" />
+                <tab type="user" url="@ref page_getting_started_program" title="Writing Your Logger Program" />
+                <tab type="user" url="@ref page_getting_started_examples" title="Modifying the Examples" />
+                <tab type="user" url="@ref page_getting_started_deploying" title="Deploying your Station" />
             </tab>
             <tab type="user" url="@ref page_library_dependencies" title="Library Dependencies" />
             <tab type="user" url="@ref page_physical_dependencies" title="Physical Dependencies" />

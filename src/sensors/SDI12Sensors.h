@@ -19,7 +19,6 @@
  *
  * @ingroup the_sensors
  *
- *
  * SDI-12 is a common single-wire data protocol in environmental sensors.
  * The details of the communication are managed by the
  * [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12). In
@@ -48,6 +47,16 @@
  * have any interrupt driven sensors (like a tipping bucket) attached with an
  * SDI12 sensor, no interrupts (or tips) will be registered during SDI12
  * communication.
+ *
+ * @section sdi12_group_flags Build flags
+ * - `-D MS_SDI12_NON_CONCURRENT`
+ *    - Instructs *all* SDI-12 sensors to take non-concurrent measurements
+ *    - After starting a measurement on an SDI-12 sensor, the processor will
+ * stop everything, waiting for that measurement to complete before moving on
+ * to the next sensor.
+ *    - This may be necessary if your sensor uses a version of the SDI-12
+ * protocol prior to 1.2 or if your sensor is not properly compliant with the
+ * protocol.
  *
  */
 /* clang-format on */
@@ -190,6 +199,9 @@ class SDI12Sensors : public Sensor {
      */
     bool setup(void) override;
 
+// Only need this for concurrent measurements.
+// NOTE:  By default, concurrent measurements are used!
+#ifndef MS_SDI12_NON_CONCURRENT
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
      *
@@ -202,6 +214,7 @@ class SDI12Sensors : public Sensor {
      * successfully.
      */
     bool startSingleMeasurement(void) override;
+#endif
     /**
      * @copydoc Sensor::addSingleMeasurementResult()
      */
@@ -224,6 +237,13 @@ class SDI12Sensors : public Sensor {
      * sensor.
      */
     bool getSensorInfo(void);
+    /**
+     * @brief Gets the results of either a standard or a concurrent measurement
+     *
+     * @return **bool** True if the full number of expected results was
+     * returned.
+     */
+    bool getResults();
     /**
      * @brief Internal reference to the SDI-12 object.
      */

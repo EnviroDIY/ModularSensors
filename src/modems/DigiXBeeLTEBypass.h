@@ -99,13 +99,11 @@
 #endif
 
 /**
- * @brief The class for any of Digi's cellular LTE-M XBee3 modules operating in
- * Digi's "bypass" mode.
+ * @brief The class for any of Digi's cellular LTE-M [XBee3](@ref modem_digi)
+ * modules operating in [Digi's "bypass" mode](@ref modem_digi_lte_bypass).
  *
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
- *
- * @see @ref modem_digi_lte_bypass
  */
 class DigiXBeeLTEBypass : public DigiXBee {
  public:

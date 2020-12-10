@@ -5,7 +5,7 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the dataPublisher class - a virtual class used by other
- * publishes to distribute data online.
+ * publishers to distribute data online.
  *
  * @copydetails dataPublisher
  */
@@ -40,6 +40,8 @@
  *
  * This can be changed by setting the build flag MS_SEND_BUFFER_SIZE when
  * compiling.
+ *
+ * @ingroup the_publishers
  */
 #ifndef MS_SEND_BUFFER_SIZE
 #define MS_SEND_BUFFER_SIZE 750
@@ -52,7 +54,7 @@
 #include "Client.h"
 
 /**
- * @brief The dataPublisher class is a virtual class used by other publishes to
+ * @brief The dataPublisher class is a virtual class used by other publishers to
  * distribute data online.
  *
  * A dataPublisher is a abstract concept.  It is something that "watches" the

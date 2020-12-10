@@ -84,13 +84,12 @@
 
 
 /**
- * @brief The loggerModem subclass for Digi Cellular XBee's based on u-blox SARA
- * U201 chips and operated in bypass mode.
+ * @brief The loggerModem subclass for [Digi Cellular XBee's](@ref modem_digi)
+ * based on u-blox SARA U201 chips and operated in
+ * [bypass mode](@ref modem_digi_3g_bypass).
  *
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
- *
- * @see @ref modem_digi_3g_bypass
  */
 class DigiXBee3GBypass : public DigiXBee {
  public:

@@ -48,6 +48,9 @@
  * - Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)
  * - Digital Output Voltage (logic high), 3.6 typical
  *
+ * @section sensor_teros11_flags Build flags
+ * @see @ref sdi12_group_flags
+ *
  * @section sensor_teros11_ctor Sensor Constructor
  * {{ @ref MeterTeros11::MeterTeros11 }}
  *

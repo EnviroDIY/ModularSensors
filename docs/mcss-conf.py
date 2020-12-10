@@ -24,20 +24,23 @@ LINKS_NAVBAR1 = [
                 "page_getting_started",
                 # [
                 #     (
-                #         '<a href="getting_started.html#ide">IDE and Driver Installation</a>',
+                #         '<a href="page_getting_started.html#getting_started_ide">IDE and Driver Installation</a>',
                 #     ),
                 #     (
-                #         '<a href="getting_started.html#libraries">Library Installation</a>',
+                #         '<a href="page_getting_started.html#getting_started_libraries">Library Installation</a>',
                 #     ),
-                #     ('<a href="getting_started.html#clock">Setting the Clock</a>',),
+                #     ('<a href="page_getting_started.html#getting_started_clock">Setting the Clock</a>',),
                 #     (
-                #         '<a href="getting_started.html#program">Writing Your Logger Program</a>',
-                #     ),
-                #     (
-                #         '<a href="getting_started.html#examples">Modifying the Examples</a>',
+                #         '<a href="page_getting_started.html#getting_started_program">Writing Your Logger Program</a>',
                 #     ),
                 #     (
-                #         '<a href="getting_started.html#deploying">Deploying your Station</a>',
+                #         '<a href="page_getting_started.html#getting_started_examples">Modifying the Examples</a>',
+                #     ),
+                #     (
+                #         '<a href="page_getting_started.html#getting_started_deploying">Deploying your Station</a>',
+                #     ),
+                #     (
+                #         '<a href="page_getting_started.html#page_getting_started_other">Other Helpful Pages</a>',
                 #     ),
                 # ],
             ),

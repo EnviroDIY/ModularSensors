@@ -152,9 +152,7 @@
 
 /**
  * @brief The loggerModem subclass for Botletics, And1, and other modules based
- * on the SIMCOM SIM7000.
- *
- * @see @ref modem_sim7000
+ * on the [SIMCOM SIM7000](@ref modem_sim7000).
  */
 class SIMComSIM7000 : public loggerModem {
  public:

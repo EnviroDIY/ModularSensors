@@ -44,7 +44,7 @@
  *
  * @section sensor_am2315_examples Example Code
  *
- * The AM2315 is used in the [double logger](@ref double_log_am2315)
+ * The AM2315 is used in the [double logger](@ref double_logger.ino)
  * and @menulink{am2315} example
  *
  * @menusnip{am2315}
