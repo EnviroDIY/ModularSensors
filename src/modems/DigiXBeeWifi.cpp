@@ -483,7 +483,8 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     // Exit command modem
     MS_DBG(F("Leaving Command Mode:"));
     gsmModem.exitCommand();
-    if (0 == rssi || (++updateModemMetadata_cnt > XBEE_RESET_THRESHOLD)) {
+    ++updateModemMetadata_cnt;
+    if (0 == rssi || (XBEE_RESET_THRESHOLD <= updateModemMetadata_cnt)) {
         updateModemMetadata_cnt = 0;
         /** Since not giving an rssi value, restart the modem for next time.
          * This is likely to take over 2 seconds         */
