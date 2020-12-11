@@ -59,7 +59,7 @@ jobs:
         run: pio lib -g install https://github.com/$GITHUB_REPOSITORY.git#$GITHUB_SHA
 
       - name: Run PlatformIO
-        run: pio ci --board=<ID_1> --board=<ID_2> --board=<ID_N>
+        run: platformio ci --project-conf="continuous_integration/platformio.ini"
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
 
