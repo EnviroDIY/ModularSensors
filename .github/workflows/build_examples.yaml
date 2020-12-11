@@ -60,14 +60,14 @@ jobs:
           pio lib -g install greiman/SdFat
           pio lib -g install vshymanskyy/TinyGSM
           pio lib -g install knolleary/PubSubClient
-          pio lib -g install adafruit/Adafruit BusIO
-          pio lib -g install adafruit/Adafruit Unified Sensor
+          pio lib -g install adafruit/'Adafruit BusIO'
+          pio lib -g install adafruit/'Adafruit Unified Sensor'
           pio lib -g install https://github.com/soligen2010/Adafruit_ADS1X15.git
-          pio lib -g install adafruit/Adafruit AM2315
-          pio lib -g install adafruit/Adafruit BME280 Library
-          pio lib -g install adafruit/DHT sensor library
-          pio lib -g install adafruit/Adafruit INA219
-          pio lib -g install adafruit/Adafruit MPL115A2
+          pio lib -g install adafruit/'Adafruit AM2315'
+          pio lib -g install adafruit/'Adafruit BME280 Library'
+          pio lib -g install adafruit/'DHT sensor library'
+          pio lib -g install adafruit/'Adafruit INA219'
+          pio lib -g install adafruit/'Adafruit MPL115A2'
           pio lib -g install paulstoffregen/OneWire
           pio lib -g install milesburton/DallasTemperature
           pio lib -g install envirodiy/SDI-12
