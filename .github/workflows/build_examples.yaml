@@ -89,7 +89,7 @@ jobs:
       # We want to install from exactly the point that we're working on
       # NOTE:  We do NOT install to the global directory!
       - name: Install ModularSensors as current state
-        run: pio lib -d $GITHUB_WORKSPACE/ModularSensors/lib install https://github.com/$GITHUB_REPOSITORY.git#$GITHUB_SHA
+        run: pio lib -d $GITHUB_WORKSPACE/lib install https://github.com/$GITHUB_REPOSITORY.git#$GITHUB_SHA
 
       - name: Run PlatformIO
         run: platformio ci --project-conf="continuous_integration/platformio.ini"
@@ -98,4 +98,4 @@ jobs:
 
       # at the end, we uninstall ModularSensors so it's not cached
       - name: Uninstall ModularSensors
-        run: pio lib -d $GITHUB_WORKSPACE/ModularSensors/lib uninstall EnviroDIY_ModularSensors
+        run: pio lib -d $GITHUB_WORKSPACE/lib uninstall EnviroDIY_ModularSensors
