@@ -101,5 +101,5 @@ jobs:
 
       - name: List libraries
         run: |
-          pio lib List
+          pio lib list
           pio lib -g list
