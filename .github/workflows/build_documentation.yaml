@@ -25,7 +25,7 @@ jobs:
       - name: Restore or Cache pip
         uses: actions/cache@v2
         with:
-          path: m.css
+          path: ~/.cache/pip
           # if requirements.txt hasn't changed, then it will be a "cache hit" and pip will be restored
           # if requirements.txt HAS changed, it will be a "cache miss" and a new cache of pip will be created if the job completes successfully
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
