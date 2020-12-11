@@ -172,8 +172,8 @@ class KellerParent : public Sensor {
      *
      * @param modbusAddress The modbus address of the sensor.
      * @param stream An Arduino data stream for modbus communication.  See
-     * [notes](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)
-     * for more information on what streams can be used.
+     * [notes](@ref page_arduino_streams) for more information on what streams
+     * can be used.
      * @param powerPin The pin on the mcu controlling power to the Keller
      * sensor.  Use -1 if it is continuously powered.
      * @param powerPin2 The pin on the mcu controlling power to the RS485
