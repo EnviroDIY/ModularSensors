@@ -105,26 +105,54 @@ jobs:
           pio lib -g install https://github.com/Testato/SoftwareWire.git
 
       # Uninstall graphics libraries from Adafruit
-      - name: Uninstall graphics the libraries
+      - name: Uninstall Adafruit GFX Library library
+        continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit GFX Library"
           pio lib -g uninstall adafruit/Adafruit GFX Library
+
+      - name: Uninstall Adafruit NeoPixel library
+        continue-on-error: true
+        run: |
           echo "::debug::Removing Adafruit NeoPixel"
           pio lib -g uninstall adafruit/Adafruit NeoPixel
+
+      - name: Uninstall Adafruit SSD1306 library
+        continue-on-error: true
+        run: |
           echo "::debug::Removing Adafruit SSD1306"
           pio lib -g uninstall adafruit/Adafruit SSD1306
+
+      - name: Uninstall Adafruit ADXL343 library
+        continue-on-error: true
+        run: |
           echo "::debug::Removing Adafruit ADXL343"
           pio lib -g uninstall adafruit/Adafruit ADXL343
+
+      - name: Uninstall Adafruit STMPE610 library
+        continue-on-error: true
+        run: |
           echo "::debug::Removing Adafruit STMPE610"
           pio lib -g uninstall adafruit/Adafruit STMPE610
+
+      - name: Uninstall Adafruit TouchScreen library
+        continue-on-error: true
+        run: |
           echo "::debug::Removing Adafruit TouchScreen"
           pio lib -g uninstall adafruit/Adafruit TouchScreen
+
+      - name: Uninstall Adafruit ILI9341 library
+        continue-on-error: true
+        run: |
           echo "::debug::Removing Adafruit ILI9341"
           pio lib -g uninstall adafruit/Adafruit ILI9341
 
       # zip up all the installed libraries
       - name: Zip libraries
         run: |
+          echo "::debug::Listing global libraries"
+          pio lib -g list
+          echo "::debug::Zipping global libraries"
           zip ModularSensors_Dependencies.zip -r ~/.platformio/lib
 
       # Remove some extras from the zip

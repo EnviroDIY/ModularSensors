@@ -132,5 +132,5 @@ jobs:
         run: |
           echo "::debug::Listing local libraries"
           pio lib list
-          echo "::debug::Listing global"
+          echo "::debug::Listing global libraries"
           pio lib -g list
