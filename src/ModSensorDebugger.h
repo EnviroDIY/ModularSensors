@@ -22,7 +22,7 @@
 /**
  * @brief The current library version number
  */
-#define MODULAR_SENSORS_VERSION "0.27.0"
+#define MODULAR_SENSORS_VERSION "0.27.1"
 
 #ifndef STANDARD_SERIAL_OUTPUT
 // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
