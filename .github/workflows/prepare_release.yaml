@@ -216,6 +216,6 @@ jobs:
           asset_content_type: application/zip
 
       # Publish the new release to the pio package manager
-      - name: Publish relesase to PIO
+      - name: Publish release to PIO
         id: publish-pio
         run: pio package publish
