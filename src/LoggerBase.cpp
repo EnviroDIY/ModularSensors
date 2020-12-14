@@ -1436,9 +1436,9 @@ bool Logger::logToSD(void) {
 #endif
 
     // Set write/modification date time
-    setFileTimestamp(logFile, T_WRITE);
+    setFileTimestampTz(logFile, T_WRITE);
     // Set access date time
-    setFileTimestamp(logFile, T_ACCESS);
+    setFileTimestampTz(logFile, T_ACCESS);
     // Close the file to save it
     // logFile.sync();
     logFile.close();

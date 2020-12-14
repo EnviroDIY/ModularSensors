@@ -965,7 +965,7 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
 // ===================================================================== //
 
 // This update the timestamp on a file
-void Logger::setFileTimeStampMet(File fileToStamp, uint8_t stampFlag) {
+void Logger::setFileTimestampTz(File fileToStamp, uint8_t stampFlag) {
     DateTime markedDt(Logger::markedEpochTime - EPOCH_TIME_OFF);
 
     bool crStat = fileToStamp.timestamp(
@@ -1391,7 +1391,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
             PRINTOUT(F("logPLO err opening"), charFileName);
 
         } else {
-            setFileTimeStampMet(postsLogHndl, T_CREATE);
+            setFileTimestampTz(postsLogHndl, T_CREATE);
             MS_DBG(F("logPLO new file"), charFileName);
         }
     }
@@ -1402,7 +1402,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
 void        Logger::postLogClose() {
 #if defined MS_LOGGERBASE_POSTS
 
-    setFileTimeStampMet(postsLogHndl, (T_WRITE));  //| T_ACCESS
+    setFileTimestampTz(postsLogHndl, (T_WRITE));  //| T_ACCESS
     postsLogHndl.close();
 
 

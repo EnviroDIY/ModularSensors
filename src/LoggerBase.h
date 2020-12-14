@@ -995,6 +995,7 @@ class Logger {
      * T_CREATE, T_WRITE, or T_ACCESS
      */
     void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
+    void setFileTimestampTz(File fileToStamp, uint8_t stampFlag);
 
     /**
      * @brief Open or creates a file, converting a string file name to a
