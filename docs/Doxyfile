@@ -855,7 +855,6 @@ WARN_LOGFILE           = output_doxygen.log
 INPUT                  = ../README.md \
                          ../src \
                          ../docs \
-                         ../../ModularSensors.wiki
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -919,10 +918,6 @@ EXCLUDE                = ../src/ReadMe.md \
                          ../examples/logger_test \
                          ../examples/logger_test_nonew \
                          ../examples/YosemitechDO \
-                         ../../ModularSensors.wiki/Class-Functionality \
-                         ../../ModularSensors.wiki/Example-Snippets \
-                         ../../ModularSensors.wiki/Supported-Web-Services \
-                         ../../ModularSensors.wiki/Supported-Sensors
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -2218,42 +2213,42 @@ INCLUDE_PATH           = ../src \
                          ../src/publishers \
                          ../src/sensors \
                          ../src/watchdogs \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SoftwareWire" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/NeoSWSerial/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/AltSoftSerial" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SoftwareSerial_ExtInts/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/StreamDebugger" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/YosemitechModbus/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/KellerModbus/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SensorModbusMaster/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Tally_Library/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/MS5803/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SDI-12/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/DallasTemperature" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/OneWire" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit MPL115A2" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit INA219" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/DHT sensor library" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit BME280 Library" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit AM2315" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit ADS1X15" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit Unified Sensor" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit BusIO" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/PubSubClient/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/TinyGSM/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SdFat/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/EnableInterrupt" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/EnableInterrupt/utility" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/lib/EnviroDIY_DS3231/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/toolchain-atmelavr/avr/include" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/Wire/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/SPI/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/cores/arduino" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/variants/mayfly" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/EEPROM/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/HID/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/SoftwareSerial/src" \
-                "${PLATFORMIO_GLOBALLIB_DIR}/packages/tool-unity"
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/SoftwareWire" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/NeoSWSerial/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/AltSoftSerial" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/SoftwareSerial_ExtInts/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/StreamDebugger" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/YosemitechModbus/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/KellerModbus/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/SensorModbusMaster/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Tally_Library/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/MS5803/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/SDI-12/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/DallasTemperature" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/OneWire" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Adafruit MPL115A2" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Adafruit INA219" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/DHT sensor library" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Adafruit BME280 Library" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Adafruit AM2315" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Adafruit ADS1X15" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Adafruit Unified Sensor" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/Adafruit BusIO" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/PubSubClient/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/TinyGSM/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/SdFat/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/EnableInterrupt" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/EnableInterrupt/utility" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/lib/EnviroDIY_DS3231/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/toolchain-atmelavr/avr/include" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/framework-arduino-avr/libraries/Wire/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/framework-arduino-avr/libraries/SPI/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/framework-arduino-avr/cores/arduino" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/framework-arduino-avr/variants/mayfly" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/framework-arduino-avr/libraries/EEPROM/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/framework-arduino-avr/libraries/HID/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/framework-arduino-avr/libraries/SoftwareSerial/src" \
+                "$(PLATFORMIO_GLOBALLIB_DIR)/packages/tool-unity"
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
