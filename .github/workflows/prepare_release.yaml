@@ -201,6 +201,7 @@ jobs:
           release_name: ${{ env.VERSION }}
           draft: true
           prerelease: false
+          body: ${{join(fromJson(steps.generate_notes.outputs.notes).notes, '')}}
 
       # Upload the zipped dependencies to the release
       - name: Upload Release Asset
