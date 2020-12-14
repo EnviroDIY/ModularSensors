@@ -13,9 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### New Sensors:
 - PaleoTerra Redox sensors
-- Northren Widget Tally Counters
+- Northern Widget Tally Counters
 - simple analog electrical conductance sensors
-- InSitu RDO PRO-X fugged dissoled oxygen sensors
+- InSitu RDO PRO-X rugged dissolved oxygen sensors
 
 #### New Publisher:
 - Add Soracom/Ubidots as a data publisher
