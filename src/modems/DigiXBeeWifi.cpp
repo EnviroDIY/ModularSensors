@@ -255,6 +255,8 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 #endif  // MS_DIGIXBEEWIFI_DEBUG
         }
         gsmModem.exitCommand();
+    } else {
+        success = false;
     }
 
     if (false == success) { PRINTOUT(F("Xbee '"), _modemName, F("' failed.")); }
@@ -435,7 +437,7 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     if (0 == loggerModem::_pollModemMetaData) return false;
 
     // Enter command mode only once for temp and battery
-    MS_DBG(F("Entering Command Mode:"));
+    MS_DBG(F("updateModemMetadata Entering Command Mode:"));
     success &= gsmModem.commandMode();
     if (POLL_MODEM_META_DATA_RSSI & loggerModem::_pollModemMetaData) {
         // Assume a signal has already been established.
@@ -481,8 +483,9 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
                loggerModem::_priorModemTemp);
     }
     // Exit command modem
-    MS_DBG(F("Leaving Command Mode:"));
+    MS_DBG(F("updateModemMetadata Leaving Command Mode:"));
     gsmModem.exitCommand();
+
     ++updateModemMetadata_cnt;
     if (0 == rssi || (XBEE_RESET_THRESHOLD <= updateModemMetadata_cnt)) {
         updateModemMetadata_cnt = 0;

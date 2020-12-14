@@ -51,6 +51,7 @@ Temporary Items
 
 # Atom / PlatformIO
 .pio
+.pio_del
 .pioenvs
 .piolibdeps
 .pio

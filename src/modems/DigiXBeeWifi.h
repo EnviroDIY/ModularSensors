@@ -164,7 +164,8 @@ class DigiXBeeWifi : public DigiXBee {
     char* _pwd_buf  = NULL;
 
     uint16_t updateModemMetadata_cnt = 0;
-#define XBEE_RESET_THRESHOLD 100
+    //This causes the Xbee to reset afte this number of transmission attempts
+#define XBEE_RESET_THRESHOLD 4
 
  public:
     // Az extension

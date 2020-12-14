@@ -826,6 +826,8 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
             */
 
             if (dataPublishers[i]->getQuedStatus()) {
+                uint16_t delay_posted_pacing_ms = dataPublishers[i]->getTimerPostPacing_mS();
+                uint16_t published_this_pass =0;
                 serzQuedStart((char)('0' + i));
                 deszRdelStart();
                 // MS_START_DEBUG_TIMER;
@@ -870,6 +872,14 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
                         }
 
                         */
+                    } else {
+                        /*A publish has been sucessfull.
+                         * Slow Down sending based on publishers acceptance rate
+                         * Each publish creates and tears down a TCP connection */
+                        /*TODO njh create intergrate all POSTS to one tcp/ip connection */
+                        published_this_pass++;
+                        MS_DBG(F("pubDQTR1 delay"),delay_posted_pacing_ms ,F("mS : posted"), published_this_pass);
+                        delay(delay_posted_pacing_ms);
                     }
                 }  // while reading line
                 deszRdelClose(true);
@@ -892,12 +902,21 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
                         deszQuedStart();
                         while ((dslStatus = deszQuedLine()) &&
                                cnt_for_pwr_analysis) {
+
+                            /*At least one publish has been sucessfull.
+                             * Slow Down sending based on publishers acceptance rate
+                             * Each publish creates and tears down a TCP connection */
+                            MS_DBG(F("pubDQTR2 delay"),delay_posted_pacing_ms ,F("mS : total posted"), published_this_pass);
+                            delay(delay_posted_pacing_ms);
+
                             // setup for publisher to call deszqNextCh()
                             rspCode = dataPublishers[i]->publishData();
                             watchDogTimer.resetWatchDog();
                             postLogLine(i, rspCode);
                             if (HTTPSTATUS_CREATED_201 != rspCode) break;
+
                             tot_posted++;
+                            published_this_pass++;
 
                             deszq_line[0] = 0;  // Show completed
 
@@ -1408,7 +1427,7 @@ void Logger::postLogLine(uint8_t instance, int16_t rspParam) {
     itoa(rspParam, tempBuffer, 10);
     postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(","));
-    itoa(dataPublishers[instance]->getTimerPost_mS(), tempBuffer, 10);
+    itoa(dataPublishers[instance]->getTimerPostTimeout_mS(), tempBuffer, 10);
     postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(","));
     postsLogHndl.print(deszq_line);

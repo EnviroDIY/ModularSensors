@@ -271,23 +271,42 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param state - true for Qued, false for standard
      */
     bool setQuedState(bool state, char uniqueId = '0') override {
-        PRINTOUT(F("EnviroyDIYPublisher setQued "), state);
+        PRINTOUT(F("EnviroDIYPublisher setQued "), state);
         return useQueDataSource = state;
     }
     bool getQuedStatus() override {
-        PRINTOUT(F("EnviroyDIYPublisher gQS "), useQueDataSource);
+        PRINTOUT(F("EnviroDIYPublisher gQS "), useQueDataSource);
         return useQueDataSource;
     }
 
+#if !defined TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+#define TIMER_EDP_POST_TIMEOUT_DEF_MSEC 10000L
+#endif  // TIMER_EDP_POST_TIMEOUT_DEF_MSEC
+    uint16_t _timerPostTimeout_ms = TIMER_EDP_POST_TIMEOUT_DEF_MSEC;
     uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
-        MS_DBG(F("gTP check"), tpt_ms);
+        MS_DBG(F("setTPT(mS)"), tpt_ms);
         return _timerPostTimeout_ms = tpt_ms;  // Default for not supported.
     }
 
-    uint16_t getTimerPost_mS() {
-        MS_DBG(F("gTP check"), _timerPost_ms);
-        return _timerPost_ms;  // Default for not supported.
+    uint16_t getTimerPostTimeout_mS() {
+        MS_DBG(F("getTPT(mS)"), _timerPostTimeout_ms);
+        return _timerPostTimeout_ms;  // Default for not supported.
     }
+
+#if !defined TIMER_EDP_POSTED_PACING_DEF_MSEC
+#define TIMER_EDP_POSTED_PACING_DEF_MSEC 2000L
+#endif  // TIMER_EDP_POSTED_PACING_DEF_MSEC
+    uint16_t _timerPostPacing_ms = TIMER_EDP_POSTED_PACING_DEF_MSEC;
+    uint16_t virtual setTimerPostPacing_mS(uint16_t tpt_ms) {
+        MS_DBG(F("setTPP(mS)"), tpt_ms);
+        return _timerPostPacing_ms;  // Default not updated.
+    }
+
+    uint16_t getTimerPostPacing_mS() {
+        MS_DBG(F("getTPP(mS)"), _timerPostPacing_ms);
+        return _timerPostPacing_ms;
+    }    
+
 };
 
 #endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

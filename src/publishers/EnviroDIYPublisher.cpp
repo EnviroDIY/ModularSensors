@@ -192,7 +192,7 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
 #define REQUIRED_MIN_RSP_SZ 12
-#define TEMP_BUFFER_SZ 37
+#define TEMP_BUFFER_SZ (REQUIRED_MIN_RSP_SZ + 25)
 #define RESPONSE_UNINIT 0xFFFE
     char     tempBuffer[TEMP_BUFFER_SZ] = "";
     uint16_t did_respond                = RESPONSE_UNINIT;
@@ -241,6 +241,9 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         // Close the TCP/IP connection
         // MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
+        #if defined MS_DATAPUBLISHERBASE_DEBUG
+        delay(50); //debug allow data to come through UART before stop 1mS/CHar
+        #endif //MS_DATAPUBLISHERBASE_DEBUG
         outClient->stop();
         MS_DBG(F("Client waited"), elapsed_ms, F("mS for"), did_respond,
                F("bytes. Stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
@@ -269,7 +272,6 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         // 504 Gateway Timeout
         responseCode = HTTPSTATUS_GT_504;
     }
-    _timerPost_ms = (uint16_t)elapsed_ms;
 
     tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
     MS_DBG(F("Rsp:'"), tempBuffer, F("'"));

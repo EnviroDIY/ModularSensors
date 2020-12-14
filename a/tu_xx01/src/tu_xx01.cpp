@@ -1113,8 +1113,8 @@ void setup() {
 #define POLL_MODEM_REQ                           \
     (loggerModem::PollModemMetaData_t)(          \
         loggerModem::POLL_MODEM_META_DATA_RSSI | \
-        loggerModem::POLL_MODEM_META_DATA_VCC)
-    modemPhy.pollModemMetadata(POLL_MODEM_REQ);
+        loggerModem::POLL_MODEM_META_DATA_VCC        )
+    modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_RSSI );
 #endif
 #endif  // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
