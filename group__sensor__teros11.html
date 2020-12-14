@@ -1561,7 +1561,41 @@ div#ez-toc-container {
                 <li><a href="#volumetric-water-content">Volumetric Water Content</a></li>
           </ul>
         </div>
-          <p>Classes for the Meter Teros 11 soil moisture probe.</p><section id="sensor_teros11_intro"><h2>Introduction</h2><p>Meter Environmental makes two series of soil moisture sensors, the <a href="https://www.metergroup.com/environment/products/?product_category=9525">ECH2O series</a> and the <a href="https://www.metergroup.com/environment/products/teros-12/">Teros series</a>. <strong>This page is for the Teros series.</strong></p><p>Both series of sensors operate as sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. They require a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_teros11_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the SDI-12 Protocol commands and responses for the Meter Teros 11 can be found at: <a href="http://publications.metergroup.com/Manuals/20587_TEROS11-12_Manual_Web.pdf">http://publications.metergroup.com/Manuals/20587_<wbr />TEROS11-12_<wbr />Manual_<wbr />Web.pdf</a></p></section><section id="sensor_teros11_voltages"><h2>Voltage Ranges</h2><ul><li>Supply Voltage (VCC to GND), 4.0 to 15.0 VDC</li><li>Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)</li><li>Digital Output Voltage (logic high), 3.6 typical</li></ul></section><section id="sensor_teros11_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_teros11_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_meter_teros11.html#ae5cbf31fc48844396c3b1188cb82ae8b" class="m-doc">MeterTeros11::<wbr />MeterTeros11</a> }}</p><hr/></section><section id="sensor_teros11_examples"><h2>Example Code</h2><p>The Meter Teros is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_teros">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MeterTeros11.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Meter Teros 11 soil moisture probe.</p><section id="sensor_teros11_intro"><h2>Introduction</h2><p>Meter Environmental makes two series of soil moisture sensors, the <a href="https://www.metergroup.com/environment/products/?product_category=9525">ECH2O series</a> and the <a href="https://www.metergroup.com/environment/products/teros-12/">Teros series</a>. <strong>This page is for the Teros series.</strong></p><p>Both series of sensors operate as sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. They require a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_teros11_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the SDI-12 Protocol commands and responses for the Meter Teros 11 can be found at: <a href="http://publications.metergroup.com/Manuals/20587_TEROS11-12_Manual_Web.pdf">http://publications.metergroup.com/Manuals/20587_<wbr />TEROS11-12_<wbr />Manual_<wbr />Web.pdf</a></p></section><section id="sensor_teros11_voltages"><h2>Voltage Ranges</h2><ul><li>Supply Voltage (VCC to GND), 4.0 to 15.0 VDC</li><li>Digital Input Voltage (logic high), 2.8 to 3.9 V (3.6 typical)</li><li>Digital Output Voltage (logic high), 3.6 typical</li></ul></section><section id="sensor_teros11_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_teros11_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="ae5cbf31fc48844396c3b1188cb82ae8b"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_meter_teros11.html#ae5cbf31fc48844396c3b1188cb82ae8b">MeterTeros11</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Meter Teros 11 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">SDI12address</span></td>
+<td>The SDI-12 address of the Teros 11; can be a char, char*, or int.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the Teros 11 Use -1 if it is continuously powered.</p><ul><li>The Teros 11 requires a 3.5-12V power supply, which can be turned off between measurements</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The SDI-12 address <strong>must</strong> be changed from the factory programmed value of "0" before the Teros 11 can be used with ModularSensors!</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_teros11_examples"><h2>Example Code</h2><p>The Meter Teros is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_teros">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MeterTeros11.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">teros11SDI12address</span> <span class="o">=</span> <span class="s">&quot;4&quot;</span><span class="p">;</span>  <span class="c1">// The SDI-12 Address of the Teros 11</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">terosPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
@@ -1638,7 +1672,35 @@ div#ez-toc-container {
         </section>
         <section id="ea">
           <h2>EA</h2>
-<p><a name="sensor_teros11_ea"></a> The EA variable from a Meter Teros 11</p><ul><li>Range is 1 (air) to 80 (water)</li><li>Accuracy is:<ul><li>1–40 (soil range), ±1 εa (unitless)</li><li>40–80, 15% of measurement</li></ul></li></ul><p>{{ <a href="class_meter_teros11___ea.html#af3431d9df3e33d50de4700c1a7ef3995" class="m-doc">MeterTeros11_Ea::<wbr />MeterTeros11_Ea</a> }}</p>
+<p><a name="sensor_teros11_ea"></a> The EA variable from a Meter Teros 11</p><ul><li>Range is 1 (air) to 80 (water)</li><li>Accuracy is:<ul><li>1–40 (soil range), ±1 εa (unitless)</li><li>40–80, 15% of measurement</li></ul></li></ul><p><section class="m-doc-details" id="af3431d9df3e33d50de4700c1a7ef3995"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_meter_teros11___ea.html#af3431d9df3e33d50de4700c1a7ef3995">MeterTeros11_Ea</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_meter_teros11.html">MeterTeros11</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__teros11.html#gad3220ee1ee6c7c26a01e5780cd6c7d14">TEROS11_<wbr/>EA_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_meter_teros11___ea.html">MeterTeros11_<wbr/>Ea</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_meter_teros11.html">MeterTeros11</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SoilEa".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga779084d042da478e7ee5600ddd49e2f4" class="m-doc">TEROS11_EA_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
@@ -1675,7 +1737,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_teros11_temp"></a> The temperature variable from a Meter Teros 11</p><ul><li>Range is -40°C to 60°C</li><li>Accuracy is:<ul><li>± 1°C, from -40°C to 0°C</li><li>± 0.5°C, from 0°C to + 60°C</li></ul></li></ul><p>{{ <a href="class_meter_teros11___temp.html#aaf0d68a684a4f9764efa629e4761011f" class="m-doc">MeterTeros11_Temp::<wbr />MeterTeros11_Temp</a> }}</p>
+<p><a name="sensor_teros11_temp"></a> The temperature variable from a Meter Teros 11</p><ul><li>Range is -40°C to 60°C</li><li>Accuracy is:<ul><li>± 1°C, from -40°C to 0°C</li><li>± 0.5°C, from 0°C to + 60°C</li></ul></li></ul><p><section class="m-doc-details" id="aaf0d68a684a4f9764efa629e4761011f"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_meter_teros11___temp.html#aaf0d68a684a4f9764efa629e4761011f">MeterTeros11_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_meter_teros11.html">MeterTeros11</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__teros11.html#gae6c98dd72f41d224a714a6f5f851e8c6">TEROS11_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_meter_teros11___temp.html">MeterTeros11_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_meter_teros11.html">MeterTeros11</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SoilTemp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga5704a1f19985c6daf1234477184832ab" class="m-doc">TEROS11_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1712,7 +1802,35 @@ div#ez-toc-container {
         </section>
         <section id="volumetric-water-content">
           <h2>Volumetric Water Content</h2>
-<p><a name="sensor_teros11_vwc"></a> The VWC variable from a Meter Teros 11</p><ul><li>Range is:<ul><li>Mineral soil calibration: 0.00–0.70 m3/m3 (0 – 70% VWC)</li><li>Soilless media calibration: 0.0–1.0 m3/m3 (0 – 100% VWC)</li></ul></li><li>Accuracy is:<ul><li>Generic calibration: ±0.03 m3/m3 (± 3% VWC) typical in mineral soils that have solution electrical conductivity &lt;8 dS/m</li><li>Medium specific calibration: ±0.01–0.02 m3/m3 (± 1-2% VWC)in any porous medium</li></ul></li></ul><p>{{ <a href="class_meter_teros11___v_w_c.html#a5d4b808fe91807fd3856b0ef0378e5d6" class="m-doc">MeterTeros11_VWC::<wbr />MeterTeros11_VWC</a> }}</p>
+<p><a name="sensor_teros11_vwc"></a> The VWC variable from a Meter Teros 11</p><ul><li>Range is:<ul><li>Mineral soil calibration: 0.00–0.70 m3/m3 (0 – 70% VWC)</li><li>Soilless media calibration: 0.0–1.0 m3/m3 (0 – 100% VWC)</li></ul></li><li>Accuracy is:<ul><li>Generic calibration: ±0.03 m3/m3 (± 3% VWC) typical in mineral soils that have solution electrical conductivity &lt;8 dS/m</li><li>Medium specific calibration: ±0.01–0.02 m3/m3 (± 1-2% VWC)in any porous medium</li></ul></li></ul><p><section class="m-doc-details" id="a5d4b808fe91807fd3856b0ef0378e5d6"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_meter_teros11___v_w_c.html#a5d4b808fe91807fd3856b0ef0378e5d6">MeterTeros11_VWC</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_meter_teros11.html">MeterTeros11</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__teros11.html#gafd39b936e82b347a44842d7f432e0074">TEROS11_<wbr/>VWC_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_meter_teros11___v_w_c.html">MeterTeros11_<wbr/>VWC</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_meter_teros11.html">MeterTeros11</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SoilVWC".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga33d0aba03c2c9d99ca7d2e87506f2735" class="m-doc">TEROS11_VWC_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1789,7 +1907,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

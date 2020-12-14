@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>WatchDogs/ directory | ModularSensors</title>
+  <title>Supported Modems and Communication Modules &raquo; Sequans Monarch VZM20Q module | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
 rel="stylesheet"
@@ -1522,65 +1522,153 @@ div#ez-toc-container {
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
-            </a> &gt; <wbr/>
+            </a>  &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            <a href="files.html">
-              Files
-            </a> &gt; <wbr/>
+            <a href="modules.html">
+              Modules
+            </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-            WatchDogs
+          <a href="group__the__modems.html">Supported Modems and Communication Modules</a> &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+            Sequans Monarch VZM20Q
           </span>
 
-          <header class="gp-entry-header">
-            <h1 class="gp-entry-title" itemprop="headline">
+        <header class="gp-entry-header">
+          <h1 class="gp-entry-title" itemprop="headline">
 
-            WatchDogs
-            <span class="m-breadcrumb">
-            /
-            </span>
-            <span class="m-thin">
-            directory
-            </span>
-
-
-            </h1>
-          </header>
-        <p>Contains the source code for setting up the watch-dog reset on the various supported processors.</p>
+          Sequans Monarch VZM20Q <span class="m-thin">module</span>
+          </h1>
+        </header>
         <div class="m-block m-default">
           <ul>
-            <li>
-              Reference
-              <ul>
-                <li><a href="#files">Files</a></li>
-              </ul>
-            </li>
-            <li>
-              Detailed Descriptions
-              <ul>
-              </ul>
-            </li>
+            <li><a href="#modem_monarch_notes">Introduction</a></li>
+            <li><a href="#modem_monarch_mayfly">Monarchs and Mayflys</a></li>
+            <li><a href="#modem_monarch_docs">Manufacturer Documentation</a></li>
+            <li><a href="#modem_monarch_ctor">Modem Constructor</a></li>
+            <li><a href="#modem_monarch_examples">Example Code</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-        <section id="files">
-          <h2>Files</h2>
+          <section id="modem_monarch_notes"><h2>Introduction</h2><p>The Sequans Monarch <a href="https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/">VZM20Q</a> is another LTE CatM1 chip. It&#x27;s available in &quot;Skywire&quot; (XBee-like) format from <a href="https://nimbelink.com/products/4g-lte-m-verizon-sequans/">Nimbelink</a>.</p></section><section id="modem_monarch_mayfly"><h2>Monarchs and Mayflys</h2><p>To my knowledge, there are not any Sequans modules available that can directly connect to a Mayfly. Although the Nimbelink board linked above would fit the physical XBee footprint on the Mayfly, it will <em>not</em> work without some additional interface or other modifications. The power supply on the Mayfly is insufficient, the voltage reference is not implemented on the Mayfly, and the Nimbelink board requires 3 extra ground pins that aren&#x27;t available on the Mayfly.</p></section><section id="modem_monarch_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/">https:/<wbr />/<wbr />www.sequans.com/<wbr />products-solutions/<wbr />streamlitelte/<wbr />monarch-lte-platform/<wbr />ezlinklte-vzm20q/<wbr /></a></p></section><section id="modem_monarch_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_sequans_monarch.html#acbdb9475c72bae26a73ea44725a9258c" class="m-doc">SequansMonarch::<wbr />SequansMonarch</a> }}</p><hr/></section><section id="modem_monarch_examples"><h2>Example Code</h2><p>The monarch is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_monarch">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans</span>
+<span class="c1">// Monarch series</span>
+<span class="cp">#include</span> <span class="cpf">&lt;modems/SequansMonarch.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// Create a reference to the serial port for the modem</span>
+<span class="c1">// Extra hardware and software serial ports are created in the &quot;Settings for</span>
+<span class="c1">// Additional Serial Ports&quot; section</span>
+<span class="n">HardwareSerial</span><span class="o">&amp;</span> <span class="n">modemSerial</span> <span class="o">=</span> <span class="n">Serial1</span><span class="p">;</span>  <span class="c1">// Use hardware serial if possible</span>
+<span class="c1">// AltSoftSerial &amp;modemSerial = altSoftSerial;  // For software serial</span>
+<span class="c1">// NeoSWSerial &amp;modemSerial = neoSSerial1;  // For software serial</span>
+<span class="kr">const</span> <span class="kr">long</span> <span class="n">modemBaud</span> <span class="o">=</span> <span class="mi">921600</span><span class="p">;</span>  <span class="c1">// Default baud rate of SVZM20 is 921600</span>
+<span class="c1">// NOTE:  This baud rate is much too fast for many Arduinos!  The module should</span>
+<span class="c1">// be programmed to a slower baud rate or set to auto-baud using the AT+IPR</span>
+<span class="c1">// command.</span>
+
+<span class="c1">// Modem Pins - Describe the physical pin connection of your modem to your board</span>
+<span class="c1">// NOTE:  Use -1 for pins that do not apply</span>
+<span class="c1">// Nimbelink Skywire (NOT directly connectable to a Mayfly!)</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemVccPin</span>     <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// MCU pin controlling modem power</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemStatusPin</span>  <span class="o">=</span> <span class="mi">19</span><span class="p">;</span>  <span class="c1">// MCU pin used to read modem status</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemResetPin</span>   <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>  <span class="c1">// MCU pin connected to modem reset pin</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemSleepRqPin</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>  <span class="c1">// MCU pin for modem sleep/wake request</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemLEDPin</span> <span class="o">=</span> <span class="n">redLED</span><span class="p">;</span>  <span class="c1">// MCU pin connected an LED to show modem</span>
+                                    <span class="c1">// status</span>
+
+<span class="c1">// Network connection information</span>
+<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">apn</span> <span class="o">=</span> <span class="s">&quot;xxxxx&quot;</span><span class="p">;</span>  <span class="c1">// APN for GPRS connection</span>
+
+<span class="c1">// Create the modem object</span>
+<span class="n">SequansMonarch</span> <span class="nf">modemSVZM</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span> <span class="n">modemVccPin</span><span class="p">,</span> <span class="n">modemStatusPin</span><span class="p">,</span>
+                         <span class="n">modemResetPin</span><span class="p">,</span> <span class="n">modemSleepRqPin</span><span class="p">,</span> <span class="n">apn</span><span class="p">);</span>
+<span class="c1">// Create an extra reference to the modem by a generic name</span>
+<span class="n">SequansMonarch</span> <span class="n">modem</span> <span class="o">=</span> <span class="n">modemSVZM</span><span class="p">;</span></pre></section>
+        <section id="nested-classes">
+          <h2>Classes</h2>
           <dl class="m-doc">
-            <dt>file <a href="_watch_dog_a_v_r_8cpp.html" class="m-doc">WatchDogAVR.cpp</a></dt>
-            <dd>Implements the <a href="classextended_watch_dog_a_v_r.html" class="m-doc">extendedWatchDogAVR</a> class.</dd>
-            <dt>file <a href="_watch_dog_a_v_r_8h.html" class="m-doc">WatchDogAVR.h</a></dt>
-            <dd>Contains the <a href="classextended_watch_dog_a_v_r.html" class="m-doc">extendedWatchDogAVR</a> class.</dd>
-            <dt>file <a href="_watch_dog_s_a_m_d_8cpp.html" class="m-doc">WatchDogSAMD.cpp</a></dt>
-            <dd>Implements the <a href="classextended_watch_dog_s_a_m_d.html" class="m-doc">extendedWatchDogSAMD</a> class.</dd>
-            <dt>file <a href="_watch_dog_s_a_m_d_8h.html" class="m-doc">WatchDogSAMD.h</a></dt>
-            <dd>Contains the <a href="classextended_watch_dog_s_a_m_d.html" class="m-doc">extendedWatchDogSAMD</a> class.</dd>
+            <dt>
+              class <a href="class_sequans_monarch.html" class="m-doc">SequansMonarch</a>
+            </dt>
+            <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for Nimbelink or other modules based on the <a href="group__modem__monarch.html" class="m-doc">Sequans Monarch VZM20Q</a>.</dd>
           </dl>
         </section>
+        <section id="define-members">
+          <h2>Defines</h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2bbb05547ea9985b597902aa5d08c20a" class="m-doc">TINY_GSM_MODEM_SEQUANS_MONARCH</a></span>
+            </dt>
+            <dd>The modem type for the underlying TinyGSM library.</dd>
 
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gacfe6548772e5267608bbaf0c2463a2c1" class="m-doc">VZM20Q_STATUS_LEVEL</a><span class="m-dim m-right-m m-text-right"> = HIGH</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb" class="m-doc">loggerModem::<wbr />_statusLevel</a>.</dd>
 
+              <dd><p>Depending on firmware, you MIGHT be able to monitor the status on either <code>GPIO2/POWER_MON</code> or <code>GPIO3/STATUS_LED</code></p><p>The module integration guide says:</p><blockquote><p>GPIO3: Optional STATUS_LED. <em>Note that the LED function is currently not available.</em></p><p>GPIO2: GPIO or Power monitor (Output) in option. POWER_MON is high right after POWER_ON, then remains high until shutdown procedure is completed. Module can be safely electrically power off as soon as POWER_MON goes low. <em>Note that this feature is currently not available.</em></p></blockquote><p>Very useful, right?</p><p>The Nimbelink manual for their breakout lists a status pin, but doesn&#x27;t disclose which of these it is and the time for reporting isn&#x27;t mentioned either.</p></dd>
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9f10ca587168e0c9642ce6f9f6297801" class="m-doc">VZM20Q_STATUS_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5000</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b" class="m-doc">loggerModem::<wbr />_statusTime_ms</a>.</dd>
 
+              <dd><p>Depending on firmware, you MIGHT be able to monitor the status on either <code>GPIO2/POWER_MON</code> or <code>GPIO3/STATUS_LED</code></p><p>The module integration guide says:</p><blockquote><p>GPIO3: Optional STATUS_LED. <em>Note that the LED function is currently not available.</em></p><p>GPIO2: GPIO or Power monitor (Output) in option. POWER_MON is high right after POWER_ON, then remains high until shutdown procedure is completed. Module can be safely electrically power off as soon as POWER_MON goes low. <em>Note that this feature is currently not available.</em></p></blockquote><p>Very useful, right?</p><p>The Nimbelink manual for their breakout lists a status pin, but doesn&#x27;t disclose which of these it is and the time for reporting isn&#x27;t mentioned either.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga21a4a3a5518f28ce3dd32faa72643676" class="m-doc">VZM20Q_RESET_LEVEL</a><span class="m-dim m-right-m m-text-right"> = LOW</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a" class="m-doc">loggerModem::<wbr />_resetLevel</a>.</dd>
+
+              <dd><p>Reset for VZM20Q with a minimum 1µs <code>LOW</code> pulse on <code>RESETN</code>. The maximum time is not documented.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa215a1cac9e20306b0ecc283b68d60c7" class="m-doc">VZM20Q_RESET_PULSE_MS</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c" class="m-doc">loggerModem::<wbr />_resetPulse_ms</a>.</dd>
+
+              <dd><p>Reset for VZM20Q with a minimum 1µs <code>LOW</code> pulse on <code>RESETN</code>. The maximum time is not documented.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga294a7f07bcc69b3621ef3980a933d1eb" class="m-doc">VZM20Q_WAKE_DELAY_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8" class="m-doc">loggerModem::<wbr />_wakeDelayTime_ms</a>.</dd>
+
+              <dd><p>Module automatically boots when power is applied, no further command is needed.</p><p>To enter PSM (power save mode), you need to do the following :</p><ol><li>Request timers from the network</li><li>Register on the network</li><li>Pull the <code>RTS</code> pin logic - level <code>HIGH</code> - device will enter PSM a minimum of 100s later</li></ol><p>To exit PSM, you need to do the following :</p><ol><li>Pull the <code>RTS</code> pin logic - level <code>LOW</code></li></ol></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9cbc2b5f19731de5f75b96dbe654f7b9" class="m-doc">VZM20Q_WAKE_LEVEL</a><span class="m-dim m-right-m m-text-right"> = LOW</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf" class="m-doc">loggerModem::<wbr />_wakeLevel</a>.</dd>
+
+              <dd><p>The Sequans Monarch/VZM20Q wakes at <code>LOW</code> level.</p><aside class="m-note m-info"><h4>Note</h4><p>This wake functionality is unconfirmed.</p></aside></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gafbbb43c66b89c1ae9dc95a3625286f30" class="m-doc">VZM20Q_WAKE_PULSE_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d" class="m-doc">loggerModem::<wbr />_wakePulse_ms</a>.</dd>
+
+              <dd><p>The Sequans Monarch/VZM20Q wakes at <code>LOW</code> level.</p><aside class="m-note m-info"><h4>Note</h4><p>This wake functionality is unconfirmed.</p></aside></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga40ee48673ca64da6c1bba93d367f94c5" class="m-doc">VZM20Q_ATRESPONSE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 15000L</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489" class="m-doc">loggerModem::<wbr />_max_atresponse_time_ms</a>.</dd>
+
+              <dd><p>Time to UART availability not documented for the VZM20Q; allowing a long 15s buffer.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa854ca799743fed5924aa54754bce975" class="m-doc">VZM20Q_DISCONNECT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 15000L</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a32496b2b79dc9317639900a3c385405d" class="m-doc">loggerModem::<wbr />_disconnetTime_ms</a>.</dd>
+
+              <dd><p>Shutdown time for VZM20Q is undocumented. We allow 15sec in case it is not monitored.</p></dd>
+
+          </dl>
+        </section>
 
                     </div>
                   </div>
@@ -1623,7 +1711,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

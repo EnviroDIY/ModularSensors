@@ -1557,7 +1557,143 @@ div#ez-toc-container {
                 <li><a href="#temperature">Temperature</a></li>
           </ul>
         </div>
-          <p>Classes for the Atlas Scientific EZO-RTD temperature circuit and probes.</p><section id="sensor_atlas_rtd_datasheet"><h2>Sensor Datasheet</h2><p>Documentation on the probe is found here: <a href="https://www.atlas-scientific.com/probes/dissolved-oxygen-probe/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />probes/<wbr />dissolved-oxygen-probe/<wbr /></a></p><p>Documentation on the measurement circuit is found here: <a href="https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />circuits/<wbr />ezo-dissolved-oxygen-circuit/<wbr /></a></p></section><section id="sensor_atlas_rtd_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__atlas__group.html#atlas_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_atlas_rtd_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_atlas_scientific_r_t_d.html#a4795e438b00bf611e63993f1ac3ac5b6" class="m-doc">AtlasScientificRTD::<wbr />AtlasScientificRTD(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_r_t_d.html#a7ffab3e8d5bbc32941d21898346fb255" class="m-doc">AtlasScientificRTD::<wbr />AtlasScientificRTD(TwoWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_r_t_d.html#a2426bfc390acd6fcbfb3f68f5a3f8927" class="m-doc">AtlasScientificRTD::<wbr />AtlasScientificRTD(SoftwareWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_r_t_d.html#ac3ddb4a65ae890dd0a6043256b69f6b5" class="m-doc">AtlasScientificRTD::<wbr />AtlasScientificRTD(int8_t, int8_t, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_atlas_rtd_examples"><h2>Example Code</h2><p>The Atlas RTD sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_rtd">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AtlasScientificRTD.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Atlas Scientific EZO-RTD temperature circuit and probes.</p><section id="sensor_atlas_rtd_datasheet"><h2>Sensor Datasheet</h2><p>Documentation on the probe is found here: <a href="https://www.atlas-scientific.com/probes/dissolved-oxygen-probe/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />probes/<wbr />dissolved-oxygen-probe/<wbr /></a></p><p>Documentation on the measurement circuit is found here: <a href="https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />circuits/<wbr />ezo-dissolved-oxygen-circuit/<wbr /></a></p></section><section id="sensor_atlas_rtd_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__atlas__group.html#atlas_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_atlas_rtd_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a4795e438b00bf611e63993f1ac3ac5b6"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_r_t_d.html#a4795e438b00bf611e63993f1ac3ac5b6">AtlasScientificRTD</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="_atlas_scientific_r_t_d_8h.html#adbadebd3f80787eb04bffb1628b30627">ATLAS_<wbr/>RTD_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new Atlas Scientific RTD object using the primary hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas RTD (temperature) circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x66.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a7ffab3e8d5bbc32941d21898346fb255"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_r_t_d.html#a7ffab3e8d5bbc32941d21898346fb255">AtlasScientificRTD</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="_atlas_scientific_r_t_d_8h.html#adbadebd3f80787eb04bffb1628b30627">ATLAS_<wbr/>RTD_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Atlas Scientific RTD object using a secondary <em>hardware</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A TwoWire instance for I2C communication. Due to the limitations of the Arduino core, only a hardware I2C instance can be used. For an AVR board, there is only one I2C instance possible and this form of the constructor should not be used. For a SAMD board, this can be used if a secondary I2C port is created on one of the extra SERCOMs.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas RTD (temperature) circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x66.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a2426bfc390acd6fcbfb3f68f5a3f8927"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_r_t_d.html#a2426bfc390acd6fcbfb3f68f5a3f8927">AtlasScientificRTD</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="_atlas_scientific_r_t_d_8h.html#adbadebd3f80787eb04bffb1628b30627">ATLAS_<wbr/>RTD_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Atlas Scientific RTD object using a <em>software</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> instance for I2C communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas RTD (temperature) circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x66.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="ac3ddb4a65ae890dd0a6043256b69f6b5"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_r_t_d.html#ac3ddb4a65ae890dd0a6043256b69f6b5">AtlasScientificRTD</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="_atlas_scientific_r_t_d_8h.html#adbadebd3f80787eb04bffb1628b30627">ATLAS_<wbr/>RTD_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Atlas Scientific RTD object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas RTD (temperature) circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu that will be used for I2C data (SDA). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">clockPin</span></td>
+<td>The pin on the mcu that will be used for the I2C clock (SCL). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x66.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>Currently only <a href="https://github.com/Testato/SoftwareWire">Testato's SoftwareWire</a> is supported.</p><aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside><aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_atlas_rtd_examples"><h2>Example Code</h2><p>The Atlas RTD sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_rtd">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AtlasScientificRTD.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">AtlasRTDPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
 <span class="kr">uint8_t</span>      <span class="n">AtlasRTDi2c_addr</span> <span class="o">=</span> <span class="mh">0x66</span><span class="p">;</span>         <span class="c1">// Default for RTD is 0x66 (102)</span>
@@ -1630,7 +1766,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_atlas_rtd_temp"></a> The temperature variable from an Atlas RTD (temperature) sensor</p><ul><li>Accuracy is ± (0.10°C + 0.0017 x °C)</li><li>Range is -126°C − 125°C</li></ul><p>{{ <a href="class_atlas_scientific_r_t_d___temp.html#adc080f97f902da0a50f72da3700e8291" class="m-doc">AtlasScientificRTD_Temp::<wbr />AtlasScientificRTD_Temp</a> }}</p>
+<p><a name="sensor_atlas_rtd_temp"></a> The temperature variable from an Atlas RTD (temperature) sensor</p><ul><li>Accuracy is ± (0.10°C + 0.0017 x °C)</li><li>Range is -126°C − 125°C</li></ul><p><section class="m-doc-details" id="adc080f97f902da0a50f72da3700e8291"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_r_t_d___temp.html#adc080f97f902da0a50f72da3700e8291">AtlasScientificRTD_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_r_t_d.html">AtlasScientificRTD</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__rtd.html#ga2f32e47b64d9f023687331bf26258b5b">ATLAS_<wbr/>RTD_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_atlas_scientific_r_t_d___temp.html">AtlasScientificRTD_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_atlas_scientific_r_t_d.html">AtlasScientificRTD</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "AtlasTemp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga18b9fda26c829e099fc00825015e904f" class="m-doc">ATLAS_RTD_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1706,7 +1870,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

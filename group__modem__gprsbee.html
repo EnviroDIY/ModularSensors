@@ -1552,7 +1552,41 @@ div#ez-toc-container {
                 <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <section id="modem_gprsbee_notes"><h2>Introduction</h2><p>This is for the Sodaq GPRSBee <strong>R6 and higher</strong>. This board is based on the <a href="https://simcom.ee/modules/gsm-gprs/sim800/">SIMCom SIM800H</a>, but adds an extra transistor to the <code>PWR_KEY</code> so it is turned on and off in a different way. For earlier Sodaq GPRSBee&#x27;s, use the standard SIM800 <a href="https://envirodiy.github.io/ModularSensors/group__modem__sim800.html">constructor</a>.</p><p>The modem constructor follows the typical modem pattern, except that the Sodaq GPRSBee&#x27;s do not expose the SIM800&#x27;s reset pin or its sleep request (<code>PWRKEY</code>) pin. The SIM800H&#x27;s <code>PWRKEY</code> is always held at the inverse of the main power. It cannot be controlled. Thus the GPRSBeeR6 can only be &quot;put to sleep&quot; by cutting the power to the SIM800H.</p><aside class="m-note m-info"><h4>Note</h4><p><strong>The power pin of the GPRSBee R6 and R7 is wired to the XBee socket pin usually used as the sleep request pin!!</strong> <em>On the GPRSBee, the XBee socket pin usually used for Vin (pin 1) is used for communication reference voltage only !</em></p></aside><p>If you are capable of controlling the voltage reference pin (Bee socket pin 1) of the GPRSBee, you can set that pin using the function <code>setVRefPin(int8_t vRefPin)</code>.</p></section><section id="modem_gprsbee_docs"><h2>Manufacturer Documentation</h2><p>The GPRSBee schematics are available here: <a href="https://support.sodaq.com/sodaq-one/gprsbee-5/">https:/<wbr />/<wbr />support.sodaq.com/<wbr />sodaq-one/<wbr />gprsbee-5/<wbr /></a></p></section><section id="modem_gprsbee_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_sodaq2_g_bee_r6.html#a036118f60ec474cc2826017d35024630" class="m-doc">Sodaq2GBeeR6::<wbr />Sodaq2GBeeR6</a> }}</p><hr/></section><section id="modem_gprsbee_examples"><h2>Example Code</h2><p>The GPRSBee is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_gprsbee">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800</span>
+          <section id="modem_gprsbee_notes"><h2>Introduction</h2><p>This is for the Sodaq GPRSBee <strong>R6 and higher</strong>. This board is based on the <a href="https://simcom.ee/modules/gsm-gprs/sim800/">SIMCom SIM800H</a>, but adds an extra transistor to the <code>PWR_KEY</code> so it is turned on and off in a different way. For earlier Sodaq GPRSBee&#x27;s, use the standard SIM800 <a href="https://envirodiy.github.io/ModularSensors/group__modem__sim800.html">constructor</a>.</p><p>The modem constructor follows the typical modem pattern, except that the Sodaq GPRSBee&#x27;s do not expose the SIM800&#x27;s reset pin or its sleep request (<code>PWRKEY</code>) pin. The SIM800H&#x27;s <code>PWRKEY</code> is always held at the inverse of the main power. It cannot be controlled. Thus the GPRSBeeR6 can only be &quot;put to sleep&quot; by cutting the power to the SIM800H.</p><aside class="m-note m-info"><h4>Note</h4><p><strong>The power pin of the GPRSBee R6 and R7 is wired to the XBee socket pin usually used as the sleep request pin!!</strong> <em>On the GPRSBee, the XBee socket pin usually used for Vin (pin 1) is used for communication reference voltage only !</em></p></aside><p>If you are capable of controlling the voltage reference pin (Bee socket pin 1) of the GPRSBee, you can set that pin using the function <code>setVRefPin(int8_t vRefPin)</code>.</p></section><section id="modem_gprsbee_docs"><h2>Manufacturer Documentation</h2><p>The GPRSBee schematics are available here: <a href="https://support.sodaq.com/sodaq-one/gprsbee-5/">https:/<wbr />/<wbr />support.sodaq.com/<wbr />sodaq-one/<wbr />gprsbee-5/<wbr /></a></p></section><section id="modem_gprsbee_ctor"><h2>Modem Constructor</h2><p><section class="m-doc-details" id="a036118f60ec474cc2826017d35024630"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_sodaq2_g_bee_r6.html#a036118f60ec474cc2826017d35024630">Sodaq2GBeeR6</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">apn</span>)</span></span>
+</h3>
+<p>Construct a new Sodaq 2GBee R6 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modemStream</span></td>
+<td>The Arduino stream instance for serial communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>). Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">statusPin</span></td>
+<td>The digital pin number of the mcu pin connected to the modem status output pin. Should be set to a negative number if the modem status pin cannot be read. This is the pin labeled <code>STATUS</code> in Sodaq (and SIMCom)'s documentation.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">apn</span></td>
+<td>The Access Point Name (APN) for the SIM card.</td>
+</tr>
+</tbody>
+</table>
+<p>The constuctor initializes all of the provided member variables, constructs a <a class="m-doc" href="classlogger_modem.html">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><aside class="m-note m-default"><h4>See also</h4><p><a class="m-doc" href="class_s_i_m_com_s_i_m800.html#a2d6c990b7f5fd7aa52d87bddedc99031">SIMComSIM800::<wbr/>SIMComSIM800</a></p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="modem_gprsbee_examples"><h2>Example Code</h2><p>The GPRSBee is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_gprsbee">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800</span>
 <span class="c1">// NOTE:  The Sodaq GPRSBee doesn&#39;t expose the SIM800&#39;s reset pin</span>
 <span class="cp">#include</span> <span class="cpf">&lt;modems/Sodaq2GBeeR6.h&gt;</span><span class="cp"></span>
 
@@ -1644,7 +1678,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

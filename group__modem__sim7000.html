@@ -1553,7 +1553,51 @@ div#ez-toc-container {
                 <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <section id="modem_sim7000_notes"><h2>Introduction</h2><p>The SIMCom <a href="https://simcom.ee/modules/iot/sim7000e/">SIM7000</a> Tri-Band LTE-FDD and Dual-Band GPRS/EDGE module solution in a SMT type which supports LTE CAT-M1(eMTC) and NB-IoT up to 375kbps data transfer.</p><p>There are breakouts of several variants made by <a href="http://www.and-global.com/">AND Technologies</a> or <a href="https://www.botletics.com/products/sim7000-shield">Botletics</a>.</p></section><section id="modem_sim7000_mayfly"><h2>Connecting a SIM7000 to a Mayfly</h2><p>To my knowledge, there are not any SIM7000 modules available that can directly connect to a Mayfly.</p></section><section id="modem_sim7000_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://simcom.ee/modules/iot/sim7000e/">https:/<wbr />/<wbr />simcom.ee/<wbr />modules/<wbr />iot/<wbr />sim7000e/<wbr /></a></p></section><section id="modem_sim7000_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_s_i_m_com_s_i_m7000.html#a75d1029abeb4ec73d1a8bb34b023a75b" class="m-doc">SIMComSIM7000::<wbr />SIMComSIM7000</a> }}</p><hr/></section><section id="modem_sim7000_examples"><h2>Example Code</h2><p>The SIM7000 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_sim7000">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For almost anything based on the SIMCom SIM7000</span>
+          <section id="modem_sim7000_notes"><h2>Introduction</h2><p>The SIMCom <a href="https://simcom.ee/modules/iot/sim7000e/">SIM7000</a> Tri-Band LTE-FDD and Dual-Band GPRS/EDGE module solution in a SMT type which supports LTE CAT-M1(eMTC) and NB-IoT up to 375kbps data transfer.</p><p>There are breakouts of several variants made by <a href="http://www.and-global.com/">AND Technologies</a> or <a href="https://www.botletics.com/products/sim7000-shield">Botletics</a>.</p></section><section id="modem_sim7000_mayfly"><h2>Connecting a SIM7000 to a Mayfly</h2><p>To my knowledge, there are not any SIM7000 modules available that can directly connect to a Mayfly.</p></section><section id="modem_sim7000_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://simcom.ee/modules/iot/sim7000e/">https:/<wbr />/<wbr />simcom.ee/<wbr />modules/<wbr />iot/<wbr />sim7000e/<wbr /></a></p></section><section id="modem_sim7000_ctor"><h2>Modem Constructor</h2><p><section class="m-doc-details" id="a75d1029abeb4ec73d1a8bb34b023a75b"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_s_i_m_com_s_i_m7000.html#a75d1029abeb4ec73d1a8bb34b023a75b">SIMComSIM7000</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemResetPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemSleepRqPin</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">apn</span>)</span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_s_i_m_com_s_i_m7000.html">SIMComSIM7000</a> object The constuctor initializes all of the provided member variables, constructs a <a class="m-doc" href="classlogger_modem.html">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modemStream</span></td>
+<td>The Arduino stream instance for serial communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>). Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">statusPin</span></td>
+<td>The digital pin number of the mcu pin connected to the modem status output pin. Should be set to a negative number if the modem status pin cannot be read. This is the pin labeled <code>STATUS</code> in SIMCom's integration guide.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemResetPin</span></td>
+<td>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem. Should be set to a negative number if the modem reset pin is not connected to the MCU. This is the pin labeled <code>RESET</code> in SIMCom's integration guide.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemSleepRqPin</span></td>
+<td>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state. Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU. This is the pin labeled <code>PWRKEY</code> in SIMCom's integration guide.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">apn</span></td>
+<td>The Access Point Name (APN) for the SIM card.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-default"><h4>See also</h4><p><a class="m-doc" href="classlogger_modem.html#a9f13bc440fea4db11d219e5616214563">loggerModem::<wbr/>loggerModem</a></p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="modem_sim7000_examples"><h2>Example Code</h2><p>The SIM7000 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_sim7000">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For almost anything based on the SIMCom SIM7000</span>
 <span class="cp">#include</span> <span class="cpf">&lt;modems/SIMComSIM7000.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for the modem</span>
@@ -1706,7 +1750,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

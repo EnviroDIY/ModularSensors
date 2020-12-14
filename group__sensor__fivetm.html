@@ -1560,7 +1560,41 @@ div#ez-toc-container {
                 <li><a href="#volumetric-water-content">Volumetric Water Content</a></li>
           </ul>
         </div>
-          <p>Classes for the Meter ECH2O (5TM) soil moisture sensor.</p><section id="sensor_fivetm_intro"><h2>Introduction</h2><p>Meter Environmental makes two series of soil moisture sensors, the <a href="https://www.metergroup.com/environment/products/?product_category=9525">ECH2O series</a> and the <a href="https://www.metergroup.com/environment/products/teros-12/">Teros series</a>. <strong>This page is for the ECH2O series.</strong></p><aside class="m-note m-info"><h4>Note</h4><p>Meter Environmental was formerly known as Decagon Devices and sold a very similar sensor to the current EC-5 sensor as the 5TM.</p></aside><p>Both series of sensors operate as sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. They require a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_fivetm_datasheet"><h2>Sensor Datasheet</h2><p><a href="http://publications.metergroup.com/Manuals/20431_EC-5_Manual_Web.pdf">Datasheet</a></p></section><section id="sensor_fivetm_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_fivetm_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_decagon5_t_m.html#a279692adf91bb92187415b56ff91e766" class="m-doc">Decagon5TM::<wbr />Decagon5TM</a> }}</p><hr/></section><section id="sensor_fivetm_examples"><h2>Example Code</h2><p>The Meter ECH2O (5TM) is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_fivetm">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/Decagon5TM.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Meter ECH2O (5TM) soil moisture sensor.</p><section id="sensor_fivetm_intro"><h2>Introduction</h2><p>Meter Environmental makes two series of soil moisture sensors, the <a href="https://www.metergroup.com/environment/products/?product_category=9525">ECH2O series</a> and the <a href="https://www.metergroup.com/environment/products/teros-12/">Teros series</a>. <strong>This page is for the ECH2O series.</strong></p><aside class="m-note m-info"><h4>Note</h4><p>Meter Environmental was formerly known as Decagon Devices and sold a very similar sensor to the current EC-5 sensor as the 5TM.</p></aside><p>Both series of sensors operate as sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. They require a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_fivetm_datasheet"><h2>Sensor Datasheet</h2><p><a href="http://publications.metergroup.com/Manuals/20431_EC-5_Manual_Web.pdf">Datasheet</a></p></section><section id="sensor_fivetm_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_fivetm_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a279692adf91bb92187415b56ff91e766"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon5_t_m.html#a279692adf91bb92187415b56ff91e766">Decagon5TM</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Decagon 5TM object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">SDI12address</span></td>
+<td>The SDI-12 address of the ECH2O; can be a char, char*, or int.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the ECH2O Use -1 if it is continuously powered.</p><ul><li>The ECH2O requires a 3.5-12V power supply, which can be turned off between measurements</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The SDI-12 address <strong>must</strong> be changed from the factory programmed value of "0" before the ECH2O can be used with ModularSensors!</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_fivetm_examples"><h2>Example Code</h2><p>The Meter ECH2O (5TM) is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_fivetm">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/Decagon5TM.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>  <span class="n">TMSDI12address</span> <span class="o">=</span> <span class="s">&quot;2&quot;</span><span class="p">;</span>             <span class="c1">// The SDI-12 Address of the 5-TM</span>
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">TMPower</span>        <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
@@ -1635,7 +1669,35 @@ div#ez-toc-container {
         </section>
         <section id="ea">
           <h2>EA</h2>
-<p><a name="sensor_fivetm_ea"></a> The EA variable from a Meter ECH2O</p><ul><li>Range is 0 – 1 m3/m3 (0 – 100% VWC)</li><li>Accuracy for generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typical</li><li>Accuracy for medium-specific calibration: ± 0.02 m3/m3 (± 2% VWC)</li></ul><p>{{ <a href="class_decagon5_t_m___ea.html#a880cd3cc11e9972491681e3cd047544f" class="m-doc">Decagon5TM_Ea::<wbr />Decagon5TM_Ea</a> }}</p>
+<p><a name="sensor_fivetm_ea"></a> The EA variable from a Meter ECH2O</p><ul><li>Range is 0 – 1 m3/m3 (0 – 100% VWC)</li><li>Accuracy for generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typical</li><li>Accuracy for medium-specific calibration: ± 0.02 m3/m3 (± 2% VWC)</li></ul><p><section class="m-doc-details" id="a880cd3cc11e9972491681e3cd047544f"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon5_t_m___ea.html#a880cd3cc11e9972491681e3cd047544f">Decagon5TM_Ea</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon5_t_m.html">Decagon5TM</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__fivetm.html#gad07be7e10a98112dae0da5fa22200bfc">TM_<wbr/>EA_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon5_t_m___ea.html">Decagon5TM_<wbr/>Ea</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon5_t_m.html">Decagon5TM</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SoilEa".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga7031c1963725bafbacca30c9ecf541a2" class="m-doc">TM_EA_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
@@ -1672,7 +1734,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_fivetm_temp"></a> The temperature variable from a Meter ECH2O</p><ul><li>Range is - 40°C to + 50°C</li><li>Accuracy is ± 1°C</li></ul><p>{{ <a href="class_decagon5_t_m___temp.html#aca2fa846706c9b694cd7bad8d1a3bdf2" class="m-doc">Decagon5TM_Temp::<wbr />Decagon5TM_Temp</a> }}</p>
+<p><a name="sensor_fivetm_temp"></a> The temperature variable from a Meter ECH2O</p><ul><li>Range is - 40°C to + 50°C</li><li>Accuracy is ± 1°C</li></ul><p><section class="m-doc-details" id="aca2fa846706c9b694cd7bad8d1a3bdf2"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon5_t_m___temp.html#aca2fa846706c9b694cd7bad8d1a3bdf2">Decagon5TM_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon5_t_m.html">Decagon5TM</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__fivetm.html#ga9cec1905705148e423a820e444bc56e2">TM_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon5_t_m___temp.html">Decagon5TM_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon5_t_m.html">Decagon5TM</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SoilTemp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga14d1dabd1f9cc2aff7db5ec8c4e01114" class="m-doc">TM_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1709,7 +1799,35 @@ div#ez-toc-container {
         </section>
         <section id="volumetric-water-content">
           <h2>Volumetric Water Content</h2>
-<p><a name="sensor_fivetm_vwc"></a> The VWC variable from a Meter ECH2O</p><ul><li>Range is 0 – 1 m3/m3 (0 – 100% VWC)</li><li>Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ</li><li>Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)</li></ul><p>{{ <a href="class_decagon5_t_m___v_w_c.html#aa598ef3a22c49af6e5f008ce3e60ffab" class="m-doc">Decagon5TM_VWC::<wbr />Decagon5TM_VWC</a> }}</p>
+<p><a name="sensor_fivetm_vwc"></a> The VWC variable from a Meter ECH2O</p><ul><li>Range is 0 – 1 m3/m3 (0 – 100% VWC)</li><li>Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ</li><li>Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)</li></ul><p><section class="m-doc-details" id="aa598ef3a22c49af6e5f008ce3e60ffab"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon5_t_m___v_w_c.html#aa598ef3a22c49af6e5f008ce3e60ffab">Decagon5TM_VWC</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon5_t_m.html">Decagon5TM</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__fivetm.html#ga7ce48d248350e0f38f5a55bae2317452">TM_<wbr/>VWC_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon5_t_m___v_w_c.html">Decagon5TM_<wbr/>VWC</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon5_t_m.html">Decagon5TM</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SoilVWC".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga681ccd02725904d948c2dbeeaa8428c2" class="m-doc">TM_VWC_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1786,7 +1904,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

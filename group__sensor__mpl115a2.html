@@ -1555,7 +1555,60 @@ div#ez-toc-container {
                 <li><a href="#pressure">Pressure</a></li>
           </ul>
         </div>
-          <p>Classes for the Freescale Semiconductor <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> digital barometer.</p><section id="sensor_mpl115a2_intro"><h2>Introduction</h2><p>The Freescale Semiconductor <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> is a low-cost, low-power absolute pressure sensor with a digital I2C output. It is optimized for barometric measurements. Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to a single I2C bus. This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements. Communication with the <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> is managed by the <a href="https://github.com/adafruit/Adafruit_MPL115A2">Adafruit MPL115A2 library</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the AM2315. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id="sensor_mpl115a2_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://www.adafruit.com/product/992">https:/<wbr />/<wbr />www.adafruit.com/<wbr />product/<wbr />992</a> and <a href="https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB">https:/<wbr />/<wbr />github.com/<wbr />adafruit/<wbr />Adafruit-MPL115A2-Breakout-PCB</a> A copy of the datasheet is available here: <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />wiki/<wbr />Sensor-Datasheets/<wbr />Freescale-Semiconductor-MPL115A2.pdf</a>)</p></section><section id="sensor_mpl115a2_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_m_p_l115_a2.html#a71901f899fb5420b2fd520b46fb25a70" class="m-doc">MPL115A2::<wbr />MPL115A2(int8_t, uint8_t)</a> }} {{ <a href="class_m_p_l115_a2.html#a43af15ea58470167b3cd9da7be5ae4b6" class="m-doc">MPL115A2::<wbr />MPL115A2(TwoWire*, int8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_mpl115a2_examples"><h2>Example Code</h2><p>The Freescale Semiconductor <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_mpl115a2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/FreescaleMPL115A2.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Freescale Semiconductor <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> digital barometer.</p><section id="sensor_mpl115a2_intro"><h2>Introduction</h2><p>The Freescale Semiconductor <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> is a low-cost, low-power absolute pressure sensor with a digital I2C output. It is optimized for barometric measurements. Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to a single I2C bus. This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements. Communication with the <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> is managed by the <a href="https://github.com/adafruit/Adafruit_MPL115A2">Adafruit MPL115A2 library</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the AM2315. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id="sensor_mpl115a2_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://www.adafruit.com/product/992">https:/<wbr />/<wbr />www.adafruit.com/<wbr />product/<wbr />992</a> and <a href="https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB">https:/<wbr />/<wbr />github.com/<wbr />adafruit/<wbr />Adafruit-MPL115A2-Breakout-PCB</a> A copy of the datasheet is available here: <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />ModularSensors/<wbr />wiki/<wbr />Sensor-Datasheets/<wbr />Freescale-Semiconductor-MPL115A2.pdf</a>)</p></section><section id="sensor_mpl115a2_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="a71901f899fb5420b2fd520b46fb25a70"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_m_p_l115_a2.html#a71901f899fb5420b2fd520b46fb25a70">MPL115A2</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> using the primary hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> Use -1 if it is continuously powered.</p><ul><li>The <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> requires a 2.375 - 5.5V power source</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>It is only possible to connect <em>one</em> <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> at a time on a single I2C bus. Software I2C is also not supported.</p></aside>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a43af15ea58470167b3cd9da7be5ae4b6"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_m_p_l115_a2.html#a43af15ea58470167b3cd9da7be5ae4b6">MPL115A2</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> using a secondary <em>hardware</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A TwoWire instance for I2C communication. Due to the limitations of the Arduino core, only a hardware I2C instance can be used. For an AVR board, there is only one I2C instance possible and this form of the constructor should not be used. For a SAMD board, this can be used if a secondary I2C port is created on one of the extra SERCOMs.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> Use -1 if it is continuously powered.</p><ul><li>The <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> requires a 2.375 - 5.5V power source</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>It is only possible to connect <em>one</em> <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> at a time on a single I2C bus. Software I2C is also not supported.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_mpl115a2_examples"><h2>Example Code</h2><p>The Freescale Semiconductor <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_mpl115a2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/FreescaleMPL115A2.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">MPLPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
 <span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">MPL115A2ReadingsToAvg</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
@@ -1622,7 +1675,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_mpl115a2_temp"></a> The temperature variable from a Freescale <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a></p><ul><li>Range is -20°C to 85°C</li><li>Accuracy is not specified on the sensor datasheet</li></ul><p>{{ <a href="class_m_p_l115_a2___temp.html#abcee11d05193a5a5da876c3752342d36" class="m-doc">MPL115A2_Temp::<wbr />MPL115A2_Temp</a> }}</p>
+<p><a name="sensor_mpl115a2_temp"></a> The temperature variable from a Freescale <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a></p><ul><li>Range is -20°C to 85°C</li><li>Accuracy is not specified on the sensor datasheet</li></ul><p><section class="m-doc-details" id="abcee11d05193a5a5da876c3752342d36"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_m_p_l115_a2___temp.html#abcee11d05193a5a5da876c3752342d36">MPL115A2_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__mpl115a2.html#ga2c75838a36e137ee96bcec08ee9a6ab2">MPL115A2_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_m_p_l115_a2___temp.html">MPL115A2_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "MPL115A2_Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaa24b89ca4d3e215c9e6dc5e31143a0f4" class="m-doc">MPL115A2_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1658,7 +1739,35 @@ div#ez-toc-container {
         </section>
         <section id="pressure">
           <h2>Pressure</h2>
-<p><a name="sensor_mpl115a2_pressure"></a> The pressure variable from a Freescale <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a></p><ul><li>Range is 500-1150 hPa</li><li>Accuracy ±10 hPa</li></ul><p>{{ <a href="class_m_p_l115_a2___pressure.html#a284fb2946ec7b75a133a70b302a414da" class="m-doc">MPL115A2_Pressure::<wbr />MPL115A2_Pressure</a> }}</p>
+<p><a name="sensor_mpl115a2_pressure"></a> The pressure variable from a Freescale <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a></p><ul><li>Range is 500-1150 hPa</li><li>Accuracy ±10 hPa</li></ul><p><section class="m-doc-details" id="a284fb2946ec7b75a133a70b302a414da"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_m_p_l115_a2___pressure.html#a284fb2946ec7b75a133a70b302a414da">MPL115A2_Pressure</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__mpl115a2.html#gabf72bb79a7c3fa0924837abc95f9fa71">MPL115A2_<wbr/>PRESSURE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_m_p_l115_a2___pressure.html">MPL115A2_<wbr/>Pressure</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_m_p_l115_a2.html">MPL115A2</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "MPL115A2_Pressure".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad8084d7886a228aa72aff3e360bfa6d0" class="m-doc">MPL115A2_PRESSURE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1734,7 +1843,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

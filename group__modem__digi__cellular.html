@@ -1561,7 +1561,66 @@ div#ez-toc-container {
                 <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <section id="modem_digi_cellular_notes"><h2>Introduction</h2><p>**_All_** Digi <em>cellular</em> modems can be implented as a <a href="class_digi_x_bee_cellular_transparent.html" class="m-doc">DigiXBeeCellularTransparent</a> object - a subclass of <a href="class_digi_x_bee.html" class="m-doc">DigiXBee</a> and <a href="classlogger_modem.html" class="m-doc">loggerModem</a>. The &quot;transparent&quot; refers to the Digi name for the operating mode of the module. It is transparent in that data received by the module on the serial interface is output directly the connected client - the module becomes transparent allowing data to pass right through.</p><p>The power requirements for the cellular XBee&#x27;s depend on the specific module. The 3G module <em>must</em> have <strong>2 amps</strong> of power available. Most of the others can get by with ~1amp (which is still 2x what a standard USB port of Arduino board can provide.) The LTE-M module can just about almost get by on 500mA, but it definitely not ideal.</p><aside class="m-note m-info"><h4>Note</h4><p>The u-blox based Digi XBee&#x27;s (3G global and LTE-M global) may be more stable used in bypass mode. The Telit based Digi XBees (LTE Cat1 both Verizon and AT&amp;T) can only use this (transparent) mode.</p></aside></section><section id="modem_digi_cellular_docs"><h2>Manufacturer Documentation</h2><p>The Digi product page for the various cellular modules is here: <a href="https://www.digi.com/products/embedded-systems/digi-xbee/cellular-modems">https:/<wbr />/<wbr />www.digi.com/<wbr />products/<wbr />embedded-systems/<wbr />digi-xbee/<wbr />cellular-modems</a></p></section><section id="modem_digi_cellular_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_digi_x_bee_cellular_transparent.html#aa1b97e4fab4120964641ab5de1917dce" class="m-doc">DigiXBeeCellularTransparent::<wbr />DigiXBeeCellularTransparent</a> }}</p><hr/></section><section id="modem_digi_cellular_examples"><h2>Example Code</h2><section id="modem_digi_cellular_modem_obj"><h3>Creating the Modem Object</h3><p>A transparent-mode Digi cellular module is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_xbee_cell_trans">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For any Digi Cellular XBee&#39;s</span>
+          <section id="modem_digi_cellular_notes"><h2>Introduction</h2><p>**_All_** Digi <em>cellular</em> modems can be implented as a <a href="class_digi_x_bee_cellular_transparent.html" class="m-doc">DigiXBeeCellularTransparent</a> object - a subclass of <a href="class_digi_x_bee.html" class="m-doc">DigiXBee</a> and <a href="classlogger_modem.html" class="m-doc">loggerModem</a>. The &quot;transparent&quot; refers to the Digi name for the operating mode of the module. It is transparent in that data received by the module on the serial interface is output directly the connected client - the module becomes transparent allowing data to pass right through.</p><p>The power requirements for the cellular XBee&#x27;s depend on the specific module. The 3G module <em>must</em> have <strong>2 amps</strong> of power available. Most of the others can get by with ~1amp (which is still 2x what a standard USB port of Arduino board can provide.) The LTE-M module can just about almost get by on 500mA, but it definitely not ideal.</p><aside class="m-note m-info"><h4>Note</h4><p>The u-blox based Digi XBee&#x27;s (3G global and LTE-M global) may be more stable used in bypass mode. The Telit based Digi XBees (LTE Cat1 both Verizon and AT&amp;T) can only use this (transparent) mode.</p></aside></section><section id="modem_digi_cellular_docs"><h2>Manufacturer Documentation</h2><p>The Digi product page for the various cellular modules is here: <a href="https://www.digi.com/products/embedded-systems/digi-xbee/cellular-modems">https:/<wbr />/<wbr />www.digi.com/<wbr />products/<wbr />embedded-systems/<wbr />digi-xbee/<wbr />cellular-modems</a></p></section><section id="modem_digi_cellular_ctor"><h2>Modem Constructor</h2><p><section class="m-doc-details" id="aa1b97e4fab4120964641ab5de1917dce"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_digi_x_bee_cellular_transparent.html#aa1b97e4fab4120964641ab5de1917dce">DigiXBeeCellularTransparent</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
+              <span class="m-dim">bool</span> <span class="m-param">useCTSStatus</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemResetPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemSleepRqPin</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">apn</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">user</span><span class="m-dim"> = NULL</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">pwd</span><span class="m-dim"> = NULL</span>)</span></span>
+</h3>
+<p>Construct a new Digi XBee Cellular Transparent object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modemStream</span></td>
+<td>The Arduino stream instance for serial communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>). Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">statusPin</span></td>
+<td>The digital pin number of the mcu pin connected to the modem status output pin. Should be set to a negative number if the modem status pin cannot be read. This can be either the pin named <code>ON/SLEEP_N/DIO9</code> or <code>CTS_N/DIO7</code> pin in Digi's hardware reference.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">useCTSStatus</span></td>
+<td>True to use the <code>CTS_N/DIO7</code> pin of the XBee as a status indicator rather than the true status (<code>ON/SLEEP_N/DIO9</code>) pin. This inverts the <a class="m-doc" href="classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb">loggerModem::<wbr/>_statusLevel</a>.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemResetPin</span></td>
+<td>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem. Should be set to a negative number if the modem reset pin is not connected to the MCU. This shold be the pin called <code>RESET_N</code> in Digi's hardware reference.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemSleepRqPin</span></td>
+<td>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state. Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU. This shold be the pin called <code>DTR_N/SLEEP_RQ/DIO8</code> in Digi's hardware reference.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">apn</span></td>
+<td>The Access Point Name (APN) for the SIM card.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">user</span></td>
+<td>The user name, if required, associated with the APN; optional, defaulting to NULL</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">pwd</span></td>
+<td>The password, if required, associated with the APN; optional, defaulting to NULL</td>
+</tr>
+</tbody>
+</table>
+<p>The constuctor initializes all of the provided member variables, constructs a <a class="m-doc" href="classlogger_modem.html">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><aside class="m-note m-default"><h4>See also</h4><p><a class="m-doc" href="class_digi_x_bee.html#ab0e646918d321b3b6db52a049a5a3a99">DigiXBee::<wbr/>DigiXBee</a></p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="modem_digi_cellular_examples"><h2>Example Code</h2><section id="modem_digi_cellular_modem_obj"><h3>Creating the Modem Object</h3><p>A transparent-mode Digi cellular module is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_xbee_cell_trans">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For any Digi Cellular XBee&#39;s</span>
 <span class="c1">// NOTE:  The u-blox based Digi XBee&#39;s (3G global and LTE-M global) can be used</span>
 <span class="c1">// in either bypass or transparent mode, each with pros and cons</span>
 <span class="c1">// The Telit based Digi XBees (LTE Cat1) can only use this mode.</span>
@@ -1692,7 +1751,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

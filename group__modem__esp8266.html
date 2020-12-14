@@ -1553,7 +1553,66 @@ div#ez-toc-container {
                 <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <section id="modem_esp8266_notes"><h2>Introduction</h2><p>These are handy, cheap, and very widely available WiFi and WiFi/Bluetooth modules. They use relatively little power amd can be put in a deep sleep mode to greatly reduce power draw. The types of sleep they can use are dependent on the breakout you have. If you&#x27;re shopping for boards, I strongly recommend getting a breakout that exposes the deep sleep wake up (RSTB/DIO16) pin so that you can put the chip in its lowest power mode. When using the AT command firmware, it is not possible to purposefully enter light sleep mode. The module will enter light sleep on its own after some (undocumented) idle period. In my testing, I&#x27;ve never seen the module drop to the documented light sleep power levels regardless of the length of time idle.</p></section><section id="modem_esp8266_dfrobot"><h2>DFRobot ESPBee</h2><p>I don&#x27;t actually recommend this module. It gets hot and eats power for no apparent reason. And the pin connections are a bit strange. But it is cheap and available. The pins are technically available to use the ESP&#x27;s &quot;light sleep&quot; but I&#x27;ve never successfully gotten the module to actually enter light sleep mode. It always runs at full power draw. It&#x27;s not possible to use deep sleep on the DFRobot bee.</p></section><section id="modem_esp8266_docs"><h2>Manufacturer Documentation</h2><p>More information on the ESP8266 is here: <a href="https://www.espressif.com/en/products/socs/esp8266">https:/<wbr />/<wbr />www.espressif.com/<wbr />en/<wbr />products/<wbr />socs/<wbr />esp8266</a> And the page for the ESP32 is here: <a href="https://www.espressif.com/en/products/socs/esp32">https:/<wbr />/<wbr />www.espressif.com/<wbr />en/<wbr />products/<wbr />socs/<wbr />esp32</a></p></section><section id="modem_esp8266_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_espressif_e_s_p8266.html#a91a894cfb770d94c5e9ae2b9451776da" class="m-doc">EspressifESP8266::<wbr />EspressifESP8266</a> }}</p><hr/></section><section id="modem_esp8266_examples"><h2>Example Code</h2><p>The ESP8266 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_esp">menu a la carte</a> example and the <a href="logging_to__thing_speak_8ino-example.html" class="m-doc">logging to ThingSpeak</a> example.</p><pre class="m-code"><span class="c1">// For almost anything based on the Espressif ESP8266 using the</span>
+          <section id="modem_esp8266_notes"><h2>Introduction</h2><p>These are handy, cheap, and very widely available WiFi and WiFi/Bluetooth modules. They use relatively little power amd can be put in a deep sleep mode to greatly reduce power draw. The types of sleep they can use are dependent on the breakout you have. If you&#x27;re shopping for boards, I strongly recommend getting a breakout that exposes the deep sleep wake up (RSTB/DIO16) pin so that you can put the chip in its lowest power mode. When using the AT command firmware, it is not possible to purposefully enter light sleep mode. The module will enter light sleep on its own after some (undocumented) idle period. In my testing, I&#x27;ve never seen the module drop to the documented light sleep power levels regardless of the length of time idle.</p></section><section id="modem_esp8266_dfrobot"><h2>DFRobot ESPBee</h2><p>I don&#x27;t actually recommend this module. It gets hot and eats power for no apparent reason. And the pin connections are a bit strange. But it is cheap and available. The pins are technically available to use the ESP&#x27;s &quot;light sleep&quot; but I&#x27;ve never successfully gotten the module to actually enter light sleep mode. It always runs at full power draw. It&#x27;s not possible to use deep sleep on the DFRobot bee.</p></section><section id="modem_esp8266_docs"><h2>Manufacturer Documentation</h2><p>More information on the ESP8266 is here: <a href="https://www.espressif.com/en/products/socs/esp8266">https:/<wbr />/<wbr />www.espressif.com/<wbr />en/<wbr />products/<wbr />socs/<wbr />esp8266</a> And the page for the ESP32 is here: <a href="https://www.espressif.com/en/products/socs/esp32">https:/<wbr />/<wbr />www.espressif.com/<wbr />en/<wbr />products/<wbr />socs/<wbr />esp32</a></p></section><section id="modem_esp8266_ctor"><h2>Modem Constructor</h2><p><section class="m-doc-details" id="a91a894cfb770d94c5e9ae2b9451776da"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_espressif_e_s_p8266.html#a91a894cfb770d94c5e9ae2b9451776da">EspressifESP8266</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemResetPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemSleepRqPin</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">ssid</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">pwd</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">espSleepRqPin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">espStatusPin</span><span class="m-dim"> = -1</span>)</span></span>
+</h3>
+<p>Construct a new Espressif ESP8266 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modemStream</span></td>
+<td>The Arduino stream instance for serial communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>). Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">statusPin</span></td>
+<td>The digital pin number of the mcu pin connected to the modem status output pin. Should be set to a negative number if the modem status pin cannot be read. This can be any DIO pin on the esp. It is only used in light sleep.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemResetPin</span></td>
+<td>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem. Should be set to a negative number if the modem reset pin is not connected to the MCU. This is the ESP's <code>RSTB/DIO16</code> pin.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemSleepRqPin</span></td>
+<td>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state. Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU. This can be any DIO pin on the esp. It is only used in light sleep.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">ssid</span></td>
+<td>The wifi network ID.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">pwd</span></td>
+<td>The wifi network password, <strong>assuming WPA2</strong>.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">espSleepRqPin</span></td>
+<td>The DIO pin on the ESP8266 assigned to light sleep wake. This can be any DIO pin on the esp.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">espStatusPin</span></td>
+<td>The DIO pin on the ESP8566 assigned to status indication. This can be any DIO pin on the esp.</td>
+</tr>
+</tbody>
+</table>
+<p>The constuctor initializes all of the provided member variables, constructs a <a class="m-doc" href="classlogger_modem.html">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><aside class="m-note m-default"><h4>See also</h4><p><a class="m-doc" href="classlogger_modem.html#a9f13bc440fea4db11d219e5616214563">loggerModem::<wbr/>loggerModem</a></p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="modem_esp8266_examples"><h2>Example Code</h2><p>The ESP8266 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_esp">menu a la carte</a> example and the <a href="logging_to__thing_speak_8ino-example.html" class="m-doc">logging to ThingSpeak</a> example.</p><pre class="m-code"><span class="c1">// For almost anything based on the Espressif ESP8266 using the</span>
 <span class="c1">// AT command firmware</span>
 <span class="cp">#include</span> <span class="cpf">&lt;modems/EspressifESP8266.h&gt;</span><span class="cp"></span>
 
@@ -1721,7 +1780,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

@@ -1558,7 +1558,143 @@ div#ez-toc-container {
                 <li><a href="#temperature">Temperature</a></li>
           </ul>
         </div>
-          <p>Classes for the Atlas Scientific EZO-CO2 embedded NDIR CO2 circuit and sensor.</p><section id="sensor_atlas_co2_datasheet"><h2>Sensor Datasheet</h2><p>Documentation on the CO2 circuit and probe is available here: <a href="https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />probes/<wbr />ezo-co2-carbon-dioxide-sensor/<wbr /></a></p><aside class="m-note m-info"><h4>Note</h4><p>This has a long (10s) stabilization time!</p><p>According to the probe datasheet, the temperature measurement is only intended to be used to verify that the sensor is in equilibrium with its surroundings.</p></aside></section><section id="sensor_atlas_co2_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__atlas__group.html#atlas_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_atlas_co2_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_atlas_scientific_c_o2.html#a85a5307e88e1fe35eb3f62dec962a5df" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_c_o2.html#a6fbd3776802312f37c14d49bb88c527f" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(TwoWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_c_o2.html#a6154d58cf232b0270d5c36928b659679" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(SoftwareWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_c_o2.html#a358239524a0ee25fc9bd47c0814cfb50" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(int8_t, int8_t, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_atlas_co2_examples"><h2>Example Code</h2><p>The Atlas CO2 sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_co2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AtlasScientificCO2.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Atlas Scientific EZO-CO2 embedded NDIR CO2 circuit and sensor.</p><section id="sensor_atlas_co2_datasheet"><h2>Sensor Datasheet</h2><p>Documentation on the CO2 circuit and probe is available here: <a href="https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />probes/<wbr />ezo-co2-carbon-dioxide-sensor/<wbr /></a></p><aside class="m-note m-info"><h4>Note</h4><p>This has a long (10s) stabilization time!</p><p>According to the probe datasheet, the temperature measurement is only intended to be used to verify that the sensor is in equilibrium with its surroundings.</p></aside></section><section id="sensor_atlas_co2_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__atlas__group.html#atlas_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_atlas_co2_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="a85a5307e88e1fe35eb3f62dec962a5df"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_c_o2.html#a85a5307e88e1fe35eb3f62dec962a5df">AtlasScientificCO2</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__co2.html#gaf894224a50f55a48d1226f172334beca">ATLAS_<wbr/>CO2_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new Atlas Scientific CO2 object using the primary hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas CO2 circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x69.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a6fbd3776802312f37c14d49bb88c527f"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_c_o2.html#a6fbd3776802312f37c14d49bb88c527f">AtlasScientificCO2</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__co2.html#gaf894224a50f55a48d1226f172334beca">ATLAS_<wbr/>CO2_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Atlas Scientific CO2 object using a secondary <em>hardware</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A TwoWire instance for I2C communication. Due to the limitations of the Arduino core, only a hardware I2C instance can be used. For an AVR board, there is only one I2C instance possible and this form of the constructor should not be used. For a SAMD board, this can be used if a secondary I2C port is created on one of the extra SERCOMs.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas CO2 circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x69.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a6154d58cf232b0270d5c36928b659679"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_c_o2.html#a6154d58cf232b0270d5c36928b659679">AtlasScientificCO2</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__co2.html#gaf894224a50f55a48d1226f172334beca">ATLAS_<wbr/>CO2_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Atlas Scientific CO2 object using a <em>software</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> instance for I2C communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas CO2 circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x69.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a358239524a0ee25fc9bd47c0814cfb50"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_c_o2.html#a358239524a0ee25fc9bd47c0814cfb50">AtlasScientificCO2</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__co2.html#gaf894224a50f55a48d1226f172334beca">ATLAS_<wbr/>CO2_<wbr/>I2C_<wbr/>ADDR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Atlas Scientific CO2 object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling powering to the Atlas CO2 circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu that will be used for I2C data (SDA). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">clockPin</span></td>
+<td>The pin on the mcu that will be used for the I2C clock (SCL). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x69.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>Currently only <a href="https://github.com/Testato/SoftwareWire">Testato's SoftwareWire</a> is supported.</p><aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside><aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_atlas_co2_examples"><h2>Example Code</h2><p>The Atlas CO2 sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_co2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AtlasScientificCO2.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">AtlasCO2Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
 <span class="kr">uint8_t</span>      <span class="n">AtlasCO2i2c_addr</span> <span class="o">=</span> <span class="mh">0x69</span><span class="p">;</span>  <span class="c1">// Default for CO2-EZO is 0x69 (105)</span>
@@ -1641,7 +1777,35 @@ div#ez-toc-container {
         </section>
         <section id="co2-concentration">
           <h2>CO2 Concentration</h2>
-<p><a name="sensor_atlas_co2_co2"></a> The CO2 variable from an Atlas CO2 sensor</p><ul><li>Accuracy is ± 3% or ± 30 ppm</li><li>Range is 0 − 10000 ppm</li></ul><p>{{ <a href="class_atlas_scientific_c_o2___c_o2.html#a6d4ad9f7e4532b3480e66244f44b2565" class="m-doc">AtlasScientificCO2_CO2::<wbr />AtlasScientificCO2_CO2</a> }}</p>
+<p><a name="sensor_atlas_co2_co2"></a> The CO2 variable from an Atlas CO2 sensor</p><ul><li>Accuracy is ± 3% or ± 30 ppm</li><li>Range is 0 − 10000 ppm</li></ul><p><section class="m-doc-details" id="a6d4ad9f7e4532b3480e66244f44b2565"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_c_o2___c_o2.html#a6d4ad9f7e4532b3480e66244f44b2565">AtlasScientificCO2_CO2</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_c_o2.html">AtlasScientificCO2</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__co2.html#gae4f9b88ade31c8f74a33c6449280a516">ATLAS_<wbr/>CO2_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_atlas_scientific_c_o2___c_o2.html">AtlasScientificCO2_<wbr/>CO2</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_atlas_scientific_c_o2.html">AtlasScientificCO2</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "AtlasCO2ppm".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaa3fd038dd5a86a7bd9b0c2f77522090b" class="m-doc">ATLAS_CO2_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1677,7 +1841,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_atlas_co2_temp"></a> The temperature variable from an Atlas CO2 sensor</p><ul><li>Accuracy is not reported on the sensor datasheet</li><li>Range is -20°C to +50°C</li></ul><p>{{ <a href="class_atlas_scientific_c_o2___temp.html#a8601a301e197a7053e20c426a82ea1d4" class="m-doc">AtlasScientificCO2_Temp::<wbr />AtlasScientificCO2_Temp</a> }}</p>
+<p><a name="sensor_atlas_co2_temp"></a> The temperature variable from an Atlas CO2 sensor</p><ul><li>Accuracy is not reported on the sensor datasheet</li><li>Range is -20°C to +50°C</li></ul><p><section class="m-doc-details" id="a8601a301e197a7053e20c426a82ea1d4"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_c_o2___temp.html#a8601a301e197a7053e20c426a82ea1d4">AtlasScientificCO2_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_atlas_scientific_c_o2.html">AtlasScientificCO2</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__co2.html#ga44ecb9aeaf437e63734d5c8298457cfe">ATLAS_<wbr/>CO2TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_atlas_scientific_c_o2___temp.html">AtlasScientificCO2_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_atlas_scientific_c_o2.html">AtlasScientificCO2</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "AtlasCO2Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaea9c9b7507df378224e6fbb73ff94346" class="m-doc">ATLAS_CO2TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1753,7 +1945,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

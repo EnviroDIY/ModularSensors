@@ -1530,7 +1530,7 @@ div#ez-toc-container {
             </a> &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="dir_572954c38e781eed9d2dca94cebdcbc7.html">sensors</a>
+          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">sensors</a>
           /
           </span>
           <span class="m-breadcrumb">
@@ -1641,7 +1641,36 @@ div#ez-toc-container {
         </section>
         <section id="available-ram">
           <h2>Available RAM</h2>
-<p><a name="sensor_processor_ram"></a> The RAM variable from the processor/mcu This is the amount of free space on the processor when running the program. This is just a diagnostic value. This number <em><strong>should always remain the same for a single logger program</strong></em>. If this number is not constant over time, there is a memory leak and something wrong with your logging program.</p><ul><li>Range is 0 to full RAM available on processor</li></ul><p>{{ <a href="class_processor_stats___free_ram.html#a4d9b5431daae09c0c81c255836ce50d2" class="m-doc">ProcessorStats_FreeRam::<wbr />ProcessorStats_FreeRam</a> }}</p>
+<p><a name="sensor_processor_ram"></a> The RAM variable from the processor/mcu This is the amount of free space on the processor when running the program. This is just a diagnostic value. This number <em><strong>should always remain the same for a single logger program</strong></em>. If this number is not constant over time, there is a memory leak and something wrong with your logging program.</p><ul><li>Range is 0 to full RAM available on processor</li></ul><p><section class="m-doc-details" id="a4d9b5431daae09c0c81c255836ce50d2"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_processor_stats___free_ram.html#a4d9b5431daae09c0c81c255836ce50d2">ProcessorStats_FreeRam</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_processor_stats.html">ProcessorStats</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__processor.html#ga279828fd609f07255c405b7bbbde6eb4">PROCESSOR_<wbr/>RAM_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_processor_stats___free_ram.html">ProcessorStats_<wbr/>FreeRam</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_processor_stats.html">ProcessorStats</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "FreeRam".</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>While this variable is included, the value of it should never change. If it does change, that's a sign of a memory leak in your program which will eventually cause your board to crash.</p></aside>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__processor.html#ga98a5566c0cca149b161c6b7d1db30673" class="m-doc">PROCESSOR_RAM_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1667,7 +1696,35 @@ div#ez-toc-container {
         </section>
         <section id="sample-number">
           <h2>Sample Number</h2>
-<p><a name="sensor_processor_sampno"></a> The sample number variable from the processor/mcu</p><aside class="m-note m-info"><h4>Note</h4><p>This is a board diagnostic. It is <em><strong>roughly</strong></em> the number of samples measured since the processor was last restarted. This value simply increments up by one every time the addSingleMeasurementResult() function is called for the processor sensor. It is intended only as a rough diagnostic to show when the processor restarts.</p></aside><p>{{ <a href="class_processor_stats___sample_number.html#ae18c2e2719719ff5deb8c7edfa71ad35" class="m-doc">ProcessorStats_SampleNumber::<wbr />ProcessorStats_SampleNumber</a> }}</p>
+<p><a name="sensor_processor_sampno"></a> The sample number variable from the processor/mcu</p><aside class="m-note m-info"><h4>Note</h4><p>This is a board diagnostic. It is <em><strong>roughly</strong></em> the number of samples measured since the processor was last restarted. This value simply increments up by one every time the addSingleMeasurementResult() function is called for the processor sensor. It is intended only as a rough diagnostic to show when the processor restarts.</p></aside><p><section class="m-doc-details" id="ae18c2e2719719ff5deb8c7edfa71ad35"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_processor_stats___sample_number.html#ae18c2e2719719ff5deb8c7edfa71ad35">ProcessorStats_SampleNumber</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_processor_stats.html">ProcessorStats</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__processor.html#ga489528fad349a0dfd0fb50e8ce47db05">PROCESSOR_<wbr/>SAMPNUM_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_processor_stats___sample_number.html">ProcessorStats_<wbr/>SampleNumber</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_processor_stats.html">ProcessorStats</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SampNum".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__processor.html#ga38ddd2e5bb64c4e13b4bd94094d4c5d7" class="m-doc">PROCESSOR_SAMPNUM_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1738,7 +1795,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

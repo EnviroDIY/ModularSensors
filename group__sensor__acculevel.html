@@ -1557,7 +1557,51 @@ div#ez-toc-container {
                 <li><a href="#height">Height</a></li>
           </ul>
         </div>
-          <p>Classes for the Keller Acculevel.</p><p>These are for Keller Series 30, Class 5, Group 20 sensors using Modbus communication, that are software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week).</p><p>Only tested on the Acculevel.</p><section id="sensor_acculevel_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf">Manual</a> <a href="https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf">Datasheet</a></p></section><section id="sensor_acculevel_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_keller_acculevel.html#a06ee0fc2d9c9615a5d9922e9befcbbd1" class="m-doc">KellerAcculevel::<wbr />KellerAcculevel</a> }}</p><hr/></section><section id="sensor_acculevel_examples"><h2>Example Code</h2><p>The Keller Acculevel is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_acculevel">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/KellerAcculevel.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Keller Acculevel.</p><p>These are for Keller Series 30, Class 5, Group 20 sensors using Modbus communication, that are software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week).</p><p>Only tested on the Acculevel.</p><section id="sensor_acculevel_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf">Manual</a> <a href="https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf">Datasheet</a></p></section><section id="sensor_acculevel_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a06ee0fc2d9c9615a5d9922e9befcbbd1"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_keller_acculevel.html#a06ee0fc2d9c9615a5d9922e9befcbbd1">KellerAcculevel</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">enablePin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Keller Acculevel.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modbusAddress</span></td>
+<td>The modbus address of the Acculevel.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">stream</span></td>
+<td>An Arduino data stream for modbus communication. See <a class="m-doc" href="page_arduino_streams.html">notes</a> for more information on what streams can be used.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the Acculevel. Use -1 if it is continuously powered.</p><ul><li>The Acculevel requires a 9-28 VDC power supply.</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin2</span></td>
+<td>The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">enablePin</span></td>
+<td>The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_acculevel_examples"><h2>Example Code</h2><p>The Keller Acculevel is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_acculevel">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/KellerAcculevel.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for modbus</span>
 <span class="c1">// Extra hardware and software serial ports are created in the &quot;Settings for</span>
@@ -1636,7 +1680,35 @@ div#ez-toc-container {
         </section>
         <section id="pressure">
           <h2>Pressure</h2>
-<p><a name="sensor_acculevel_pressure"></a> The pressure variable from a Keller Acculevel</p><ul><li>Range is 0 to 11 bar</li><li>Accuracy is Standard ±0.1% FS, Optional ±0.05% FS</li></ul><p>{{ <a href="class_keller_acculevel___pressure.html#a76f91945b111a892cd81c36bf0897409" class="m-doc">KellerAcculevel_Pressure::<wbr />KellerAcculevel_Pressure</a> }}</p>
+<p><a name="sensor_acculevel_pressure"></a> The pressure variable from a Keller Acculevel</p><ul><li>Range is 0 to 11 bar</li><li>Accuracy is Standard ±0.1% FS, Optional ±0.05% FS</li></ul><p><section class="m-doc-details" id="a76f91945b111a892cd81c36bf0897409"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_keller_acculevel___pressure.html#a76f91945b111a892cd81c36bf0897409">KellerAcculevel_Pressure</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_keller_acculevel.html">KellerAcculevel</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__acculevel.html#ga693c3d1aac274b79eac3a69bef7105df">ACCULEVEL_<wbr/>PRESSURE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_keller_acculevel___pressure.html">KellerAcculevel_<wbr/>Pressure</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_keller_acculevel.html">KellerAcculevel</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "kellerAccuPress".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga89d5def1d48231ee01f8733e1a728dcf" class="m-doc">ACCULEVEL_PRESSURE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
@@ -1654,7 +1726,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_acculevel_temp"></a> The temperature variable from a Keller Acculevel</p><ul><li>Range is -10°C to 60°C</li><li>Accuracy is not specified in the sensor datasheet</li></ul><p>{{ <a href="class_keller_acculevel___temp.html#a59a0b666380c3515a92a437bcac10860" class="m-doc">KellerAcculevel_Temp::<wbr />KellerAcculevel_Temp</a> }}</p>
+<p><a name="sensor_acculevel_temp"></a> The temperature variable from a Keller Acculevel</p><ul><li>Range is -10°C to 60°C</li><li>Accuracy is not specified in the sensor datasheet</li></ul><p><section class="m-doc-details" id="a59a0b666380c3515a92a437bcac10860"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_keller_acculevel___temp.html#a59a0b666380c3515a92a437bcac10860">KellerAcculevel_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_keller_acculevel.html">KellerAcculevel</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__acculevel.html#ga89063e04b5fd497e1bdd63a2696f478e">ACCULEVEL_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_keller_acculevel___temp.html">KellerAcculevel_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_keller_acculevel.html">KellerAcculevel</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "kellerAccuTemp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gacfb6d904cc389b36facc6739e67de89d" class="m-doc">ACCULEVEL_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1672,7 +1772,35 @@ div#ez-toc-container {
         </section>
         <section id="height">
           <h2>Height</h2>
-<p><a name="sensor_acculevel_height"></a> The height variable from a Keller Acculevel</p><ul><li>Range is 0 to 900 feet</li><li>Accuracy is Standard ±0.1% FS, Optional ±0.05% FS</li></ul><p>{{ <a href="class_keller_acculevel___height.html#aa7ab675ff989553f9453e5bf3c39a609" class="m-doc">KellerAcculevel_Height::<wbr />KellerAcculevel_Height</a> }}</p>
+<p><a name="sensor_acculevel_height"></a> The height variable from a Keller Acculevel</p><ul><li>Range is 0 to 900 feet</li><li>Accuracy is Standard ±0.1% FS, Optional ±0.05% FS</li></ul><p><section class="m-doc-details" id="aa7ab675ff989553f9453e5bf3c39a609"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_keller_acculevel___height.html#aa7ab675ff989553f9453e5bf3c39a609">KellerAcculevel_Height</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_keller_acculevel.html">KellerAcculevel</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__acculevel.html#ga216bb5a960d937de99c316ef44ba8626">ACCULEVEL_<wbr/>HEIGHT_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_keller_acculevel___height.html">KellerAcculevel_<wbr/>Height</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_keller_acculevel.html">KellerAcculevel</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "kellerAccuHeight".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaab5df96d851ddd511c697fa799503462" class="m-doc">ACCULEVEL_HEIGHT_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
@@ -1730,7 +1858,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

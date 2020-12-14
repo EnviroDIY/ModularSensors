@@ -1556,7 +1556,26 @@ div#ez-toc-container {
                 <li><a href="#sample-number">Sample Number</a></li>
           </ul>
         </div>
-          <p>Classes for the using the processor as a sensor.</p><section id="sensor_processor_intro"><h2>Introduction</h2><p>The processor can return the number of &quot;samples&quot; it has taken, the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers). The version of the board is required as input (ie, for a EnviroDIY Mayfly: &quot;v0.3&quot; or &quot;v0.4&quot; or &quot;v0.5&quot;). Use a blank value (ie, &quot;&quot;) for un-versioned boards. Please note that while you cannot opt to average more than one sample, it really makes no sense to do so for the processor. These values are only intended to be used as diagnostics.</p></section><section id="sensor_processor_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega1284P-Datasheet-Summary.pdf">Atmel ATmega1284P Datasheet Summary</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega1284P-Datasheet.pdf">Atmel ATmega1284P Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-SAMD21-Datasheet-Summary.pdf">Atmel SAMD21 Datasheet Summary</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-SAMD21-Datasheet.pdf">Atmel SAMD21 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet-Summary.pdf">Atmel ATmega16U4 32U4 Datasheet Summary</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet.pdf">Atmel ATmega16U4 32U4 Datasheet</a></li></ul></section><section id="sensor_processor_sensor_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_processor_stats.html#a913a3d7acd111fea683bc25f59239dfd" class="m-doc">ProcessorStats::<wbr />ProcessorStats</a> }}</p><hr/></section><section id="sensor_processor_sensor_examples"><h2>Example Code</h2><p>The processor is used as a sensor in all of the examples, including the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_processor_sensor">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/ProcessorStats.h&gt;</span><span class="cp"></span>
+          <p>Classes for the using the processor as a sensor.</p><section id="sensor_processor_intro"><h2>Introduction</h2><p>The processor can return the number of &quot;samples&quot; it has taken, the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers). The version of the board is required as input (ie, for a EnviroDIY Mayfly: &quot;v0.3&quot; or &quot;v0.4&quot; or &quot;v0.5&quot;). Use a blank value (ie, &quot;&quot;) for un-versioned boards. Please note that while you cannot opt to average more than one sample, it really makes no sense to do so for the processor. These values are only intended to be used as diagnostics.</p></section><section id="sensor_processor_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega1284P-Datasheet-Summary.pdf">Atmel ATmega1284P Datasheet Summary</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega1284P-Datasheet.pdf">Atmel ATmega1284P Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-SAMD21-Datasheet-Summary.pdf">Atmel SAMD21 Datasheet Summary</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-SAMD21-Datasheet.pdf">Atmel SAMD21 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet-Summary.pdf">Atmel ATmega16U4 32U4 Datasheet Summary</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet.pdf">Atmel ATmega16U4 32U4 Datasheet</a></li></ul></section><section id="sensor_processor_sensor_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a913a3d7acd111fea683bc25f59239dfd"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_processor_stats.html#a913a3d7acd111fea683bc25f59239dfd">ProcessorStats</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">version</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new Processor Stats object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">version</span></td>
+<td><p>The version of the MCU, if applicable.</p><ul><li>For an EnviroDIY Mayfly, the version should be one of "v0.3", "v0.4", "v0.5", or "v0.5b." There <em>is</em> a difference between the versions!</li></ul></td>
+</tr>
+</tbody>
+</table>
+<p>Need to know the Mayfly version because the battery resistor depends on it</p><aside class="m-note m-info"><h4>Note</h4><p>It is not possible to average more than one measurement for processor variables - it just doesn't make sense for them.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_processor_sensor_examples"><h2>Example Code</h2><p>The processor is used as a sensor in all of the examples, including the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_processor_sensor">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/ProcessorStats.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create the main processor chip &quot;sensor&quot; - for general metadata</span>
 <span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>    <span class="n">mcuBoardVersion</span> <span class="o">=</span> <span class="s">&quot;v0.5b&quot;</span><span class="p">;</span>
@@ -1635,7 +1654,35 @@ div#ez-toc-container {
             </dt>
             <dd>Decimals places in string representation; battery voltage should have 3.</dd>
 
-              <dd><p>The resolution is of the EnviroDIY Mayfly is 0.005V, we will use that resolution for all processors.</p><p>{{ <a href="class_processor_stats___battery.html#a8f4f35f7e75c61f18f4fb3fa3b28c257" class="m-doc">ProcessorStats_Battery::<wbr />ProcessorStats_Battery</a> }}</p></dd>
+              <dd><p>The resolution is of the EnviroDIY Mayfly is 0.005V, we will use that resolution for all processors.</p><p><section class="m-doc-details" id="a8f4f35f7e75c61f18f4fb3fa3b28c257"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_processor_stats___battery.html#a8f4f35f7e75c61f18f4fb3fa3b28c257">ProcessorStats_Battery</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_processor_stats.html">ProcessorStats</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__processor.html#ga8be6ce6a1cc6afce73f0e14ad68a3b57">PROCESSOR_<wbr/>BATTERY_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_processor_stats___battery.html">ProcessorStats_<wbr/>Battery</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_processor_stats.html">ProcessorStats</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "batteryVoltage".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p></dd>
 
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga63be7c7479a5316678a488a56b0503a3" class="m-doc">PROCESSOR_BATTERY_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1665,7 +1712,36 @@ div#ez-toc-container {
         </section>
         <section id="available-ram">
           <h2>Available RAM</h2>
-<p><a name="sensor_processor_ram"></a> The RAM variable from the processor/mcu This is the amount of free space on the processor when running the program. This is just a diagnostic value. This number <em><strong>should always remain the same for a single logger program</strong></em>. If this number is not constant over time, there is a memory leak and something wrong with your logging program.</p><ul><li>Range is 0 to full RAM available on processor</li></ul><p>{{ <a href="class_processor_stats___free_ram.html#a4d9b5431daae09c0c81c255836ce50d2" class="m-doc">ProcessorStats_FreeRam::<wbr />ProcessorStats_FreeRam</a> }}</p>
+<p><a name="sensor_processor_ram"></a> The RAM variable from the processor/mcu This is the amount of free space on the processor when running the program. This is just a diagnostic value. This number <em><strong>should always remain the same for a single logger program</strong></em>. If this number is not constant over time, there is a memory leak and something wrong with your logging program.</p><ul><li>Range is 0 to full RAM available on processor</li></ul><p><section class="m-doc-details" id="a4d9b5431daae09c0c81c255836ce50d2"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_processor_stats___free_ram.html#a4d9b5431daae09c0c81c255836ce50d2">ProcessorStats_FreeRam</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_processor_stats.html">ProcessorStats</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__processor.html#ga279828fd609f07255c405b7bbbde6eb4">PROCESSOR_<wbr/>RAM_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_processor_stats___free_ram.html">ProcessorStats_<wbr/>FreeRam</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_processor_stats.html">ProcessorStats</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "FreeRam".</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>While this variable is included, the value of it should never change. If it does change, that's a sign of a memory leak in your program which will eventually cause your board to crash.</p></aside>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga98a5566c0cca149b161c6b7d1db30673" class="m-doc">PROCESSOR_RAM_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1701,7 +1777,35 @@ div#ez-toc-container {
         </section>
         <section id="sample-number">
           <h2>Sample Number</h2>
-<p><a name="sensor_processor_sampno"></a> The sample number variable from the processor/mcu</p><aside class="m-note m-info"><h4>Note</h4><p>This is a board diagnostic. It is <em><strong>roughly</strong></em> the number of samples measured since the processor was last restarted. This value simply increments up by one every time the addSingleMeasurementResult() function is called for the processor sensor. It is intended only as a rough diagnostic to show when the processor restarts.</p></aside><p>{{ <a href="class_processor_stats___sample_number.html#ae18c2e2719719ff5deb8c7edfa71ad35" class="m-doc">ProcessorStats_SampleNumber::<wbr />ProcessorStats_SampleNumber</a> }}</p>
+<p><a name="sensor_processor_sampno"></a> The sample number variable from the processor/mcu</p><aside class="m-note m-info"><h4>Note</h4><p>This is a board diagnostic. It is <em><strong>roughly</strong></em> the number of samples measured since the processor was last restarted. This value simply increments up by one every time the addSingleMeasurementResult() function is called for the processor sensor. It is intended only as a rough diagnostic to show when the processor restarts.</p></aside><p><section class="m-doc-details" id="ae18c2e2719719ff5deb8c7edfa71ad35"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_processor_stats___sample_number.html#ae18c2e2719719ff5deb8c7edfa71ad35">ProcessorStats_SampleNumber</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_processor_stats.html">ProcessorStats</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__processor.html#ga489528fad349a0dfd0fb50e8ce47db05">PROCESSOR_<wbr/>SAMPNUM_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_processor_stats___sample_number.html">ProcessorStats_<wbr/>SampleNumber</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_processor_stats.html">ProcessorStats</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SampNum".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga38ddd2e5bb64c4e13b4bd94094d4c5d7" class="m-doc">PROCESSOR_SAMPNUM_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1777,7 +1881,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

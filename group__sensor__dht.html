@@ -1558,7 +1558,40 @@ div#ez-toc-container {
                 <li><a href="#heat-index">Heat Index</a></li>
           </ul>
         </div>
-          <p>Classes for the AOSong DHT digital-output relative humidity and temperature sensor.</p><section id="sensor_dht_notes"><h2>Quick Notes</h2><ul><li>Applies to AOSong modules:<ul><li><a href="http://www.aosong.com/en/products/details.asp?id=109">DHT11/<wbr />CHT11</a>,</li><li>DHT21/AM2301, and</li><li><a href="http://www.aosong.com/en/products/details.asp?id=117">DHT22/<wbr />AM2302/<wbr />CM2302</a></li></ul></li><li>Depends on the <a href="https://github.com/adafruit/DHT-sensor-library">Adafruit DHT library</a></li><li>Communicate with a single-bus single wire digital signaling protocol<ul><li>Can be connected to any digital pin on a Arduino</li><li>The communication with these sensors is slow and <em>interrupts are turned off during communication</em>.</li><li>See the Adafruit DHT library&#x27;s DHT.cpp for details.</li><li>Could possibly cause issues if used in combination with other interrupt-driven sensors.</li></ul></li><li>Only 1 can be connected to a system at a time</li><li>Requires a 3.3 - 6V power source</li><li>Sensors should not be polled more frequently than once every 2 seconds</li><li>Uses a Maxim DS18 sensor internally</li></ul></section><section id="sensor_dht_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-DHT22-Datasheet.pdf">Datasheet</a></p></section><section id="sensor_dht_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_a_o_song_d_h_t.html#a6e64a7f12659557d1bfa635a24430320" class="m-doc">AOSongDHT::<wbr />AOSongDHT</a> }}</p><hr/></section><section id="sensor_dht_examples"><h2>Example Code</h2><p>The DHT is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_dht">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AOSongDHT.h&gt;</span><span class="cp"></span>
+          <p>Classes for the AOSong DHT digital-output relative humidity and temperature sensor.</p><section id="sensor_dht_notes"><h2>Quick Notes</h2><ul><li>Applies to AOSong modules:<ul><li><a href="http://www.aosong.com/en/products/details.asp?id=109">DHT11/<wbr />CHT11</a>,</li><li>DHT21/AM2301, and</li><li><a href="http://www.aosong.com/en/products/details.asp?id=117">DHT22/<wbr />AM2302/<wbr />CM2302</a></li></ul></li><li>Depends on the <a href="https://github.com/adafruit/DHT-sensor-library">Adafruit DHT library</a></li><li>Communicate with a single-bus single wire digital signaling protocol<ul><li>Can be connected to any digital pin on a Arduino</li><li>The communication with these sensors is slow and <em>interrupts are turned off during communication</em>.</li><li>See the Adafruit DHT library&#x27;s DHT.cpp for details.</li><li>Could possibly cause issues if used in combination with other interrupt-driven sensors.</li></ul></li><li>Only 1 can be connected to a system at a time</li><li>Requires a 3.3 - 6V power source</li><li>Sensors should not be polled more frequently than once every 2 seconds</li><li>Uses a Maxim DS18 sensor internally</li></ul></section><section id="sensor_dht_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-DHT22-Datasheet.pdf">Datasheet</a></p></section><section id="sensor_dht_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a6e64a7f12659557d1bfa635a24430320"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_a_o_song_d_h_t.html#a6e64a7f12659557d1bfa635a24430320">AOSongDHT</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim"><a class="m-doc" href="group__sensor__dht.html#ga03b149d104c7708e85271e186d9a4c45">DHTtype</a></span> <span class="m-param">type</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_a_o_song_d_h_t.html">AOSongDHT</a> object - need the power pin, the data pin, and the sensor type.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the AOSong DHT. Use -1 if it is continuously powered.</p><ul><li>The DHT requires a 3.3 - 6V power source</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu receiving data from the AOSong DHT</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">type</span></td>
+<td><p>The type of DHT. Possible values are DHT11, DHT21, AM2301, DHT22, or AM2302.</p><ul><li>NOTE: The DHT type should be entered <em>without quotation marks</em> since the values are members of an enum rather than a string.</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_dht_examples"><h2>Example Code</h2><p>The DHT is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_dht">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AOSongDHT.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">DHTPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">DHTPin</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>              <span class="c1">// DHT data pin</span>
@@ -1654,7 +1687,35 @@ div#ez-toc-container {
         </section>
         <section id="humidity">
           <h2>Humidity</h2>
-<p><a name="sensor_dht_humidity"></a> The humidity variable from an AOSong DHT</p><ul><li>Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11</li><li>Range is 0 to 100 % RH</li></ul><p>{{ <a href="class_a_o_song_d_h_t___humidity.html#af08d9f38d6724605005d686cddc434a1" class="m-doc">AOSongDHT_Humidity::<wbr />AOSongDHT_Humidity</a> }}</p>
+<p><a name="sensor_dht_humidity"></a> The humidity variable from an AOSong DHT</p><ul><li>Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11</li><li>Range is 0 to 100 % RH</li></ul><p><section class="m-doc-details" id="af08d9f38d6724605005d686cddc434a1"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_a_o_song_d_h_t___humidity.html#af08d9f38d6724605005d686cddc434a1">AOSongDHT_Humidity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_a_o_song_d_h_t.html">AOSongDHT</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__dht.html#gaa300f24f581cfa257caf9246d9fa68ce">DHT_<wbr/>HUMIDITY_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_a_o_song_d_h_t___humidity.html">AOSongDHT_<wbr/>Humidity</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_a_o_song_d_h_t.html">AOSongDHT</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "DHTHumidity".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt id="gaefd2841c3b26ff1286bfa8e07642fc47">
               <span class="m-doc-wrap-bumper">#define <a href="#gaefd2841c3b26ff1286bfa8e07642fc47" class="m-doc-self">DHT_HUMIDITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1690,7 +1751,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_dht_temperature"></a> The temperature variable from an AOSong DHT</p><ul><li>Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11</li><li>Range is -40°C to +80°C</li></ul><p>{{ <a href="class_a_o_song_d_h_t___temp.html#af193ae4c51321c814c84fa8329aa8423" class="m-doc">AOSongDHT_Temp::<wbr />AOSongDHT_Temp</a> }}</p>
+<p><a name="sensor_dht_temperature"></a> The temperature variable from an AOSong DHT</p><ul><li>Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11</li><li>Range is -40°C to +80°C</li></ul><p><section class="m-doc-details" id="af193ae4c51321c814c84fa8329aa8423"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_a_o_song_d_h_t___temp.html#af193ae4c51321c814c84fa8329aa8423">AOSongDHT_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_a_o_song_d_h_t.html">AOSongDHT</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__dht.html#gaf0ebbfdd3e3d90723c25ba1b39618796">DHT_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_a_o_song_d_h_t___temp.html">AOSongDHT_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_a_o_song_d_h_t.html">AOSongDHT</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "DHTTemp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt id="gacb812db915a440fd77538df18b3b2243">
               <span class="m-doc-wrap-bumper">#define <a href="#gacb812db915a440fd77538df18b3b2243" class="m-doc-self">DHT_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1726,7 +1815,35 @@ div#ez-toc-container {
         </section>
         <section id="heat-index">
           <h2>Heat Index</h2>
-<p><a name="sensor_dht_hi"></a> The heat index variable from an AOSong DHT</p><ul><li>Heat index is calculated within the Adafruit library from the measured temperature and humidity.</li></ul><p>{{ <a href="class_a_o_song_d_h_t___h_i.html#aa4f142de2e3f5826f99364e73af89a67" class="m-doc">AOSongDHT_HI::<wbr />AOSongDHT_HI</a> }}</p>
+<p><a name="sensor_dht_hi"></a> The heat index variable from an AOSong DHT</p><ul><li>Heat index is calculated within the Adafruit library from the measured temperature and humidity.</li></ul><p><section class="m-doc-details" id="aa4f142de2e3f5826f99364e73af89a67"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_a_o_song_d_h_t___h_i.html#aa4f142de2e3f5826f99364e73af89a67">AOSongDHT_HI</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_a_o_song_d_h_t.html">AOSongDHT</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__dht.html#ga6a36da5cfa2b862f1d312d7b9bd8696f">DHT_<wbr/>HI_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_a_o_song_d_h_t___h_i.html">AOSongDHT_<wbr/>HI</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_a_o_song_d_h_t.html">AOSongDHT</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "DHTHI".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt id="ga5d22842292a20f291765d2a0dd97eb25">
               <span class="m-doc-wrap-bumper">#define <a href="#ga5d22842292a20f291765d2a0dd97eb25" class="m-doc-self">DHT_HI_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1802,7 +1919,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

@@ -1558,7 +1558,51 @@ div#ez-toc-container {
                 <li><a href="#turbidity">Turbidity</a></li>
           </ul>
         </div>
-          <p>Classes for the Yosemitech Y550 UV245/COD sensor with wiper.</p><section id="sensor_y550_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf">Modbus Instructions</a></li></ul><aside class="m-note m-info"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id="sensor_y550_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_yosemitech_y550.html#a06eb355b3fa957670c5f71da2c34c7a5" class="m-doc">YosemitechY550::<wbr />YosemitechY550</a> }}</p><hr/></section><section id="sensor_y550_examples"><h2>Example Code</h2><p>The Yosemitech Y550 UV245/COD sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_y550">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/YosemitechY550.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Yosemitech Y550 UV245/COD sensor with wiper.</p><section id="sensor_y550_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf">Modbus Instructions</a></li></ul><aside class="m-note m-info"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id="sensor_y550_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a06eb355b3fa957670c5f71da2c34c7a5"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y550.html#a06eb355b3fa957670c5f71da2c34c7a5">YosemitechY550</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">enablePin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Yosemitech Y550 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modbusAddress</span></td>
+<td>The modbus address of the sensor.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">stream</span></td>
+<td>An Arduino data stream for modbus communication. See <a class="m-doc" href="page_arduino_streams.html">notes</a> for more information on what streams can be used.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The pin on the mcu controlling power to the Y550. Use -1 if it is continuously powered.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin2</span></td>
+<td>The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">enablePin</span></td>
+<td>The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_y550_examples"><h2>Example Code</h2><p>The Yosemitech Y550 UV245/COD sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_y550">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/YosemitechY550.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for modbus</span>
 <span class="c1">// Extra hardware and software serial ports are created in the &quot;Settings for</span>
@@ -1648,7 +1692,35 @@ div#ez-toc-container {
         </section>
         <section id="carbon-oxygen-demand">
           <h2>Carbon Oxygen Demand</h2>
-<p><a name="sensor_y550_cod"></a> The COD variable from a Yosemitch Y550</p><ul><li>Range is:<ul><li>0.75 to 370 mg/L COD (equiv. KHP)</li><li>0.2 to 150 mg/L TOC (equiv. KHP)</li></ul></li><li>Accuracy is not reported on sensor datasheet</li></ul><p>{{ <a href="class_yosemitech_y550___c_o_d.html#af0e6d8311e04279c6b4df97c6f470590" class="m-doc">YosemitechY550_COD::<wbr />YosemitechY550_COD</a> }}</p>
+<p><a name="sensor_y550_cod"></a> The COD variable from a Yosemitch Y550</p><ul><li>Range is:<ul><li>0.75 to 370 mg/L COD (equiv. KHP)</li><li>0.2 to 150 mg/L TOC (equiv. KHP)</li></ul></li><li>Accuracy is not reported on sensor datasheet</li></ul><p><section class="m-doc-details" id="af0e6d8311e04279c6b4df97c6f470590"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y550___c_o_d.html#af0e6d8311e04279c6b4df97c6f470590">YosemitechY550_COD</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y550.html">YosemitechY550</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y550.html#ga0732c3270f5e2bd60d72d3d9452d1103">Y550_<wbr/>COD_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y550___c_o_d.html">YosemitechY550_<wbr/>COD</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y550.html">YosemitechY550</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y550COD".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga97d8aaac3616d236128b131d80f0e2ac" class="m-doc">Y550_COD_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1684,7 +1756,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_y550_temp"></a> The temperature variable from a Yosemitch Y550</p><ul><li>Range is 5°C to + 45°C</li><li>Accuracy is ± 0.2°C</li></ul><p>{{ <a href="class_yosemitech_y550___temp.html#a5240b4417ef5274db31eec6b3cce4e23" class="m-doc">YosemitechY550_Temp::<wbr />YosemitechY550_Temp</a> }}</p>
+<p><a name="sensor_y550_temp"></a> The temperature variable from a Yosemitch Y550</p><ul><li>Range is 5°C to + 45°C</li><li>Accuracy is ± 0.2°C</li></ul><p><section class="m-doc-details" id="a5240b4417ef5274db31eec6b3cce4e23"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y550___temp.html#a5240b4417ef5274db31eec6b3cce4e23">YosemitechY550_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y550.html">YosemitechY550</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y550.html#gaf4f610e676c62daaa484dd41598d7cc4">Y550_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y550___temp.html">YosemitechY550_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y550.html">YosemitechY550</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y550Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaadc357b126abb0b8e28a7fd122e5fdea" class="m-doc">Y550_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1720,7 +1820,35 @@ div#ez-toc-container {
         </section>
         <section id="turbidity">
           <h2>Turbidity</h2>
-<p><a name="sensor_y550_turb"></a> The turbidity variable from a Yosemitch Y550</p><ul><li>Range is 0.1~1000 NTU</li><li>Accuracy is ＜5% or 0.3NTU</li></ul><p>{{ <a href="class_yosemitech_y550___turbidity.html#afe962381052d628f1c3b6367fa4d150f" class="m-doc">YosemitechY550_Turbidity::<wbr />YosemitechY550_Turbidity</a> }}</p>
+<p><a name="sensor_y550_turb"></a> The turbidity variable from a Yosemitch Y550</p><ul><li>Range is 0.1~1000 NTU</li><li>Accuracy is ＜5% or 0.3NTU</li></ul><p><section class="m-doc-details" id="afe962381052d628f1c3b6367fa4d150f"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y550___turbidity.html#afe962381052d628f1c3b6367fa4d150f">YosemitechY550_Turbidity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y550.html">YosemitechY550</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y550.html#ga37732a3b0e75e952d34406d678bd369b">Y550_<wbr/>TURB_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y550___turbidity.html">YosemitechY550_<wbr/>Turbidity</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y550.html">YosemitechY550</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y550Turbidity".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga4286e00ec37c6310057b31c91f2bab97" class="m-doc">Y550_TURB_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1796,7 +1924,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

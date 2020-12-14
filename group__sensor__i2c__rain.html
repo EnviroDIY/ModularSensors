@@ -1556,7 +1556,120 @@ div#ez-toc-container {
                 <li><a href="#tip-count">Tip Count</a></li>
           </ul>
         </div>
-          <p>Classes for the Trinket-based I2C tipping bucket rain counter</p><section id="sensor_i2c_rain_intro"><h2>Introduction</h2><p>This module is for use with a simple external I2C tipping bucket counter based on an <a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a>. This is <em>NOT</em> for direct counting of tips using an interrupt on the main processor. The construction and programming of the tipping bucket counter is documented on <a href="https://github.com/EnviroDIY/TippingBucketRainCounter">GitHub</a>. It is assumed that the processor of the tip counter takes care of its own power management.</p></section><section id="sensor_i2c_rain_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a></li><li><a href="https://github.com/EnviroDIY/TippingBucketRainCounter">I2C Tipping Bucket Library</a></li></ul></section><section id="sensor_i2c_rain_flags"><h2>Build flags</h2><ul><li><code>-D MS_RAIN_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none your attached tipping bucket counters may use software I2C. Using some with software I2C and others with hardware I2C is not supported. Though, honestly, having more than one attached seems pretty unlikely anyway.</p></aside></li></ul></li></ul></section><section id="sensor_i2c_rain_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_rain_counter_i2_c.html#aa537dd95ed991380aa0ddef2b088b4ba" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#a7ab12ed65fcf23fa959c690f30162cf1" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(TwoWire*, uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#aeecb6e053a5601be95de5785cbe16805" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(SoftwareWire*, uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#afb3ff9a5b9b25a0fb5711178d3c3ab00" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(int8_t, int8_t, uint8_t, float)</a> }}</p><hr/></section><section id="sensor_i2c_rain_examples"><h2>Example Code</h2><p>The Arduino-based I2C tipping bucket rain counter is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_i2c_rain">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/RainCounterI2C.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Trinket-based I2C tipping bucket rain counter</p><section id="sensor_i2c_rain_intro"><h2>Introduction</h2><p>This module is for use with a simple external I2C tipping bucket counter based on an <a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a>. This is <em>NOT</em> for direct counting of tips using an interrupt on the main processor. The construction and programming of the tipping bucket counter is documented on <a href="https://github.com/EnviroDIY/TippingBucketRainCounter">GitHub</a>. It is assumed that the processor of the tip counter takes care of its own power management.</p></section><section id="sensor_i2c_rain_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a></li><li><a href="https://github.com/EnviroDIY/TippingBucketRainCounter">I2C Tipping Bucket Library</a></li></ul></section><section id="sensor_i2c_rain_flags"><h2>Build flags</h2><ul><li><code>-D MS_RAIN_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none your attached tipping bucket counters may use software I2C. Using some with software I2C and others with hardware I2C is not supported. Though, honestly, having more than one attached seems pretty unlikely anyway.</p></aside></li></ul></li></ul></section><section id="sensor_i2c_rain_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="aa537dd95ed991380aa0ddef2b088b4ba"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_rain_counter_i2_c.html#aa537dd95ed991380aa0ddef2b088b4ba">RainCounterI2C</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x08</span>,
+              <span class="m-dim">float</span> <span class="m-param">rainPerTip</span><span class="m-dim"> = 0.2</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new Rain Counter I2C object using the primary hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Trinket; can be any number between 0x40 and 0x4F. The default value is 0x08.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">rainPerTip</span></td>
+<td>The depth of rain from a single tip; most likely either 0.01" or 0.2mm, depending on your tipping bucket calibration. The default value is 0.2.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a7ab12ed65fcf23fa959c690f30162cf1"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_rain_counter_i2_c.html#a7ab12ed65fcf23fa959c690f30162cf1">RainCounterI2C</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x08</span>,
+              <span class="m-dim">float</span> <span class="m-param">rainPerTip</span><span class="m-dim"> = 0.2</span>)</span></span>
+</h3>
+<p>Construct a new Rain Counter I2C object using a secondary <em>hardware</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A TwoWire instance for I2C communication. Due to the limitations of the Arduino core, only a hardware I2C instance can be used. For an AVR board, there is only one I2C instance possible and this form of the constructor should not be used. For a SAMD board, this can be used if a secondary I2C port is created on one of the extra SERCOMs.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Trinket; can be any number between 0x40 and 0x4F. The default value is 0x08.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">rainPerTip</span></td>
+<td>The depth of rain from a single tip; most likely either 0.01" or 0.2mm, depending on your tipping bucket calibration. The default value is 0.2.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="aeecb6e053a5601be95de5785cbe16805"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_rain_counter_i2_c.html#aeecb6e053a5601be95de5785cbe16805">RainCounterI2C</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x08</span>,
+              <span class="m-dim">float</span> <span class="m-param">rainPerTip</span><span class="m-dim"> = 0.2</span>)</span></span>
+</h3>
+<p>Construct a new Rain Counter I2C object using a <em>software</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> instance for I2C communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Trinket; can be any number between 0x40 and 0x4F. The default value is 0x08.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">rainPerTip</span></td>
+<td>The depth of rain from a single tip; most likely either 0.01" or 0.2mm, depending on your tipping bucket calibration. The default value is 0.2.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="afb3ff9a5b9b25a0fb5711178d3c3ab00"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_rain_counter_i2_c.html#afb3ff9a5b9b25a0fb5711178d3c3ab00">RainCounterI2C</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x08</span>,
+              <span class="m-dim">float</span> <span class="m-param">rainPerTip</span><span class="m-dim"> = 0.2</span>)</span></span>
+</h3>
+<p>Construct a new Rain Counter I2C object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu that will be used for I2C data (SDA). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">clockPin</span></td>
+<td>The pin on the mcu that will be used for the I2C clock (SCL). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Trinket; can be any number between 0x40 and 0x4F. The default value is 0x08.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">rainPerTip</span></td>
+<td>The depth of rain from a single tip; most likely either 0.01" or 0.2mm, depending on your tipping bucket calibration. The default value is 0.2.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_i2c_rain_examples"><h2>Example Code</h2><p>The Arduino-based I2C tipping bucket rain counter is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_i2c_rain">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/RainCounterI2C.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">RainCounterI2CAddress</span> <span class="o">=</span> <span class="mh">0x08</span><span class="p">;</span>
 <span class="c1">// I2C Address for EnviroDIY external tip counter; 0x08 by default</span>
@@ -1630,7 +1743,35 @@ div#ez-toc-container {
         </section>
         <section id="rain-depth">
           <h2>Rain Depth</h2>
-<p><a name="sensor_i2c_rain_depth"></a> The rain depth variable from a Trinket-based tipping bucket counter</p><ul><li>Range and accuracy depend on the tipping bucket used</li></ul><p>{{ <a href="class_rain_counter_i2_c___depth.html#ae49b87ef0fc3803770477b9e38215719" class="m-doc">RainCounterI2C_Depth::<wbr />RainCounterI2C_Depth</a> }}</p>
+<p><a name="sensor_i2c_rain_depth"></a> The rain depth variable from a Trinket-based tipping bucket counter</p><ul><li>Range and accuracy depend on the tipping bucket used</li></ul><p><section class="m-doc-details" id="ae49b87ef0fc3803770477b9e38215719"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_rain_counter_i2_c___depth.html#ae49b87ef0fc3803770477b9e38215719">RainCounterI2C_Depth</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_rain_counter_i2_c.html">RainCounterI2C</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__i2c__rain.html#ga72bcc561226b449ab024dca876deb1cb">BUCKET_<wbr/>RAIN_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_rain_counter_i2_c___depth.html">RainCounterI2C_<wbr/>Depth</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_rain_counter_i2_c.html">RainCounterI2C</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "RainCounterI2CVol".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaf8f0af68e205e101dced0851a7e6ab0a" class="m-doc">BUCKET_RAIN_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1667,7 +1808,35 @@ div#ez-toc-container {
         </section>
         <section id="tip-count">
           <h2>Tip Count</h2>
-<p><a name="sensor_i2c_rain_tips"></a> Defines for tip count variable from a Trinket-based tipping bucket counter</p><ul><li>Range and accuracy depend on the tipping bucket used.</li></ul><p>{{ <a href="class_rain_counter_i2_c___tips.html#a04ab610bd3328a8605d99d6014db2b28" class="m-doc">RainCounterI2C_Tips::<wbr />RainCounterI2C_Tips</a> }}</p>
+<p><a name="sensor_i2c_rain_tips"></a> Defines for tip count variable from a Trinket-based tipping bucket counter</p><ul><li>Range and accuracy depend on the tipping bucket used.</li></ul><p><section class="m-doc-details" id="a04ab610bd3328a8605d99d6014db2b28"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_rain_counter_i2_c___tips.html#a04ab610bd3328a8605d99d6014db2b28">RainCounterI2C_Tips</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_rain_counter_i2_c.html">RainCounterI2C</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__i2c__rain.html#ga2ef69c9c01ab9326a6447c68c71b798e">BUCKET_<wbr/>TIPS_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_rain_counter_i2_c___tips.html">RainCounterI2C_<wbr/>Tips</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_rain_counter_i2_c.html">RainCounterI2C</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "RainCounterI2CTips".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gafdaa6fc7bdcea0bc15a7ced9f5f6bb92" class="m-doc">BUCKET_TIPS_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1743,7 +1912,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

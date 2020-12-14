@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>modems/ directory | ModularSensors</title>
+  <title>sensors/AtlasScientificCO2.h file | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
 rel="stylesheet"
@@ -1530,30 +1530,30 @@ div#ez-toc-container {
             </a> &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-            modems
+          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">sensors</a>
+          /
+          </span>
+          <span class="m-breadcrumb">
+            AtlasScientificCO2.h
           </span>
 
-          <header class="gp-entry-header">
-            <h1 class="gp-entry-title" itemprop="headline">
+        <header class="gp-entry-header">
+          <h1 class="gp-entry-title" itemprop="headline">
+          AtlasScientificCO2.h <span class="m-thin">file</span>
 
-            modems
-            <span class="m-breadcrumb">
-            /
-            </span>
-            <span class="m-thin">
-            directory
-            </span>
-
-
-            </h1>
-          </header>
-        <p>Contains the source code for all <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclasses.</p>
+          </h1>
+        </header>
+        <p>Contains the <a href="class_atlas_scientific_c_o2.html" class="m-doc">AtlasScientificCO2</a> subclass of the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor class along with the variable subclasses <a href="class_atlas_scientific_c_o2___c_o2.html" class="m-doc">AtlasScientificCO2_<wbr />CO2</a> and <a href="class_atlas_scientific_c_o2___temp.html" class="m-doc">AtlasScientificCO2_<wbr />Temp</a>.</p>
         <div class="m-block m-default">
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#files">Files</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#define-members">Defines</a></li>
+                <li><a href="#sensor-timing">Sensor Timing</a></li>
+                <li><a href="#co2-concentration">CO2 Concentration</a></li>
+                <li><a href="#temperature">Temperature</a></li>
               </ul>
             </li>
             <li>
@@ -1563,63 +1563,105 @@ div#ez-toc-container {
             </li>
           </ul>
         </div>
-        <section id="files">
-          <h2>Files</h2>
+          <aside class="m-note m-default"><h4>Copyright</h4><p>2020 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class="m-note m-default"><h4>Author</h4><p>Initial developement for Atlas Sensors was done by Adam Gold Files were edited by Sara Damiano <a href="mailto:sdamiano@stroudcenter.org">sdamiano@stroudcenter.org</a></p></aside><p>These are used for any sensor attached to an Atlas EZO CO2 circuit.</p><aside class="m-note m-info"><h4>Note</h4><p>This has a long (10s) stabilization time!</p></aside>
+        <section id="nested-classes">
+          <h2>Classes</h2>
           <dl class="m-doc">
-            <dt>file <a href="_digi_x_bee_8cpp.html" class="m-doc">DigiXBee.cpp</a></dt>
-            <dd>Implements the <a href="class_digi_x_bee.html" class="m-doc">DigiXBee</a> class.</dd>
-            <dt>file <a href="_digi_x_bee_8h.html" class="m-doc">DigiXBee.h</a></dt>
-            <dd>Contains the <a href="class_digi_x_bee.html" class="m-doc">DigiXBee</a> modem subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a>, which itself is a parent class for all other XBee&#x27;s and XBee3&#x27;s.</dd>
-            <dt>file <a href="_digi_x_bee3_g_bypass_8cpp.html" class="m-doc">DigiXBee3GBypass.cpp</a></dt>
-            <dd>Implements the <a href="class_digi_x_bee3_g_bypass.html" class="m-doc">DigiXBee3GBypass</a> class.</dd>
-            <dt>file <a href="_digi_x_bee3_g_bypass_8h.html" class="m-doc">DigiXBee3GBypass.h</a></dt>
-            <dd>Contains the <a href="class_digi_x_bee3_g_bypass.html" class="m-doc">DigiXBee3GBypass</a> subclass of the <a href="class_digi_x_bee.html" class="m-doc">DigiXBee</a> class for Digi Cellular XBee&#x27;s based on u-blox SARA U201 chips and operated in bypass mode.</dd>
-            <dt>file <a href="_digi_x_bee_cellular_transparent_8cpp.html" class="m-doc">DigiXBeeCellularTransparent.cpp</a></dt>
-            <dd>Implements the <a href="class_digi_x_bee_cellular_transparent.html" class="m-doc">DigiXBeeCellularTransparent</a> class.</dd>
-            <dt>file <a href="_digi_x_bee_cellular_transparent_8h.html" class="m-doc">DigiXBeeCellularTransparent.h</a></dt>
-            <dd>Contains the <a href="class_digi_x_bee_cellular_transparent.html" class="m-doc">DigiXBeeCellularTransparent</a> class for Digi Cellular XBee&#x27;s operating in transparent mode.</dd>
-            <dt>file <a href="_digi_x_bee_l_t_e_bypass_8cpp.html" class="m-doc">DigiXBeeLTEBypass.cpp</a></dt>
-            <dd>Implements the <a href="class_digi_x_bee_l_t_e_bypass.html" class="m-doc">DigiXBeeLTEBypass</a> class.</dd>
-            <dt>file <a href="_digi_x_bee_l_t_e_bypass_8h.html" class="m-doc">DigiXBeeLTEBypass.h</a></dt>
-            <dd>Contains the <a href="class_digi_x_bee_l_t_e_bypass.html" class="m-doc">DigiXBeeLTEBypass</a> subclass of the <a href="class_digi_x_bee.html" class="m-doc">DigiXBee</a> class for Digi Cellular XBee3&#x27;s based on u-blox SARA R410M chips and operated in bypass mode.</dd>
-            <dt>file <a href="_digi_x_bee_wifi_8cpp.html" class="m-doc">DigiXBeeWifi.cpp</a></dt>
-            <dd>Implements the <a href="class_digi_x_bee_wifi.html" class="m-doc">DigiXBeeWifi</a> class.</dd>
-            <dt>file <a href="_digi_x_bee_wifi_8h.html" class="m-doc">DigiXBeeWifi.h</a></dt>
-            <dd>Contains the <a href="class_digi_x_bee_wifi.html" class="m-doc">DigiXBeeWifi</a> subclass of the <a href="class_digi_x_bee.html" class="m-doc">DigiXBee</a> class for Digi S6B Wifi XBee&#x27;s.</dd>
-            <dt>file <a href="_espressif_e_s_p8266_8cpp.html" class="m-doc">EspressifESP8266.cpp</a></dt>
-            <dd>Implements the <a href="class_espressif_e_s_p8266.html" class="m-doc">EspressifESP8266</a> class.</dd>
-            <dt>file <a href="_espressif_e_s_p8266_8h.html" class="m-doc">EspressifESP8266.h</a></dt>
-            <dd>Contains the <a href="class_espressif_e_s_p8266.html" class="m-doc">EspressifESP8266</a> subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a> which <em>SHOULD</em> work for essentially any breakout of the Espressif ESP8266 wifi chip or ESP32 wifi/bluetooth chip that has been flashed with Espressif&#x27;s AT command firmware.</dd>
-            <dt>file <a href="_logger_modem_macros_8h.html" class="m-doc">LoggerModemMacros.h</a></dt>
-            <dd>Contains PRE-ROCESSOR MACROS for use with logger modems.</dd>
-            <dt>file <a href="_quectel_b_g96_8cpp.html" class="m-doc">QuectelBG96.cpp</a></dt>
-            <dd>Implements the <a href="class_quectel_b_g96.html" class="m-doc">QuectelBG96</a> class.</dd>
-            <dt>file <a href="_quectel_b_g96_8h.html" class="m-doc">QuectelBG96.h</a></dt>
-            <dd>Contains the <a href="class_quectel_b_g96.html" class="m-doc">QuectelBG96</a> subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a> for Dragino, Nimbelink, or any other module based on the Quectel BG96.</dd>
-            <dt>file <a href="_sequans_monarch_8cpp.html" class="m-doc">SequansMonarch.cpp</a></dt>
-            <dd>Implements the <a href="class_sequans_monarch.html" class="m-doc">SequansMonarch</a> class.</dd>
-            <dt>file <a href="_sequans_monarch_8h.html" class="m-doc">SequansMonarch.h</a></dt>
-            <dd>Contains the <a href="class_sequans_monarch.html" class="m-doc">SequansMonarch</a> subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a> for Nimbelink or other modules based on the Sequans Monarch VZM20Q.</dd>
-            <dt>file <a href="_s_i_m_com_s_i_m7000_8cpp.html" class="m-doc">SIMComSIM7000.cpp</a></dt>
-            <dd>Implements the <a href="class_s_i_m_com_s_i_m7000.html" class="m-doc">SIMComSIM7000</a> class.</dd>
-            <dt>file <a href="_s_i_m_com_s_i_m7000_8h.html" class="m-doc">SIMComSIM7000.h</a></dt>
-            <dd>Contains the <a href="class_s_i_m_com_s_i_m7000.html" class="m-doc">SIMComSIM7000</a> subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a> for Botletics other modules based on the SIMCOM SIM7000.</dd>
-            <dt>file <a href="_s_i_m_com_s_i_m800_8cpp.html" class="m-doc">SIMComSIM800.cpp</a></dt>
-            <dd>Implements the <a href="class_s_i_m_com_s_i_m800.html" class="m-doc">SIMComSIM800</a> class.</dd>
-            <dt>file <a href="_s_i_m_com_s_i_m800_8h.html" class="m-doc">SIMComSIM800.h</a></dt>
-            <dd>Contains the <a href="class_s_i_m_com_s_i_m800.html" class="m-doc">SIMComSIM800</a> subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a> for Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM SIM800 or SIM900 modules and thier variants.</dd>
-            <dt>file <a href="_sodaq2_g_bee_r6_8cpp.html" class="m-doc">Sodaq2GBeeR6.cpp</a></dt>
-            <dd>Implements the <a href="class_sodaq2_g_bee_r6.html" class="m-doc">Sodaq2GBeeR6</a> class.</dd>
-            <dt>file <a href="_sodaq2_g_bee_r6_8h.html" class="m-doc">Sodaq2GBeeR6.h</a></dt>
-            <dd>Contains the <a href="class_sodaq2_g_bee_r6.html" class="m-doc">Sodaq2GBeeR6</a> subclass of the <a href="class_s_i_m_com_s_i_m800.html" class="m-doc">SIMComSIM800</a> class and is specific to the Sodaq 2GBee revisions 6 and higher based on the SIMCOM SIM800h.</dd>
-            <dt>file <a href="_sodaq_u_bee_r410_m_8cpp.html" class="m-doc">SodaqUBeeR410M.cpp</a></dt>
-            <dd>Implements the <a href="class_sodaq_u_bee_r410_m.html" class="m-doc">SodaqUBeeR410M</a> class.</dd>
-            <dt>file <a href="_sodaq_u_bee_r410_m_8h.html" class="m-doc">SodaqUBeeR410M.h</a></dt>
-            <dd>Contains the <a href="class_sodaq_u_bee_r410_m.html" class="m-doc">SodaqUBeeR410M</a> subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a> for the Sodaq UBee based on the u-blox SARA R410M LTE-M cellular module.</dd>
-            <dt>file <a href="_sodaq_u_bee_u201_8cpp.html" class="m-doc">SodaqUBeeU201.cpp</a></dt>
-            <dd>Implements the <a href="class_sodaq_u_bee_u201.html" class="m-doc">SodaqUBeeU201</a> class.</dd>
-            <dt>file <a href="_sodaq_u_bee_u201_8h.html" class="m-doc">SodaqUBeeU201.h</a></dt>
-            <dd>Contains the <a href="class_sodaq_u_bee_u201.html" class="m-doc">SodaqUBeeU201</a> subclass of <a href="classlogger_modem.html" class="m-doc">loggerModem</a> for the Sodaq UBee based on the u-blox SARA U201 3G cellular module.</dd>
+            <dt>
+              class <a href="class_atlas_scientific_c_o2.html" class="m-doc">AtlasScientificCO2</a>
+            </dt>
+            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__atlas__co2.html" class="m-doc">Atlas Scientific gaseous CO2 and temperature sensor</a>.</dd>
+            <dt>
+              class <a href="class_atlas_scientific_c_o2___c_o2.html" class="m-doc">AtlasScientificCO2_CO2</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__atlas__co2.html#sensor_atlas_co2_co2" class="m-doc">CO2 concentration output</a> from an <a href="group__sensor__atlas__co2.html" class="m-doc">Atlas Scientific CO2 circuit</a>.</dd>
+            <dt>
+              class <a href="class_atlas_scientific_c_o2___temp.html" class="m-doc">AtlasScientificCO2_Temp</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__atlas__co2.html#sensor_atlas_co2_temp" class="m-doc">temperature output</a> from an <a href="group__sensor__atlas__co2.html" class="m-doc">Atlas Scientific CO2 circuit</a>.</dd>
+          </dl>
+        </section>
+        <section id="define-members">
+          <h2>Defines</h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gaf894224a50f55a48d1226f172334beca" class="m-doc">ATLAS_CO2_I2C_ADDR</a><span class="m-dim m-right-m m-text-right"> = 0x69</span></span>
+            </dt>
+            <dd>Default I2C address is 0x69 (105)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#ga3a2af9ef16194eace38f965b7ed9dc26" class="m-doc">ATLAS_CO2_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Atlas CO2 sensor can report 2 values.</dd>
+          </dl>
+        </section>
+        <section id="sensor-timing">
+          <h2>Sensor Timing</h2>
+<p><a name="sensor_atlas_co2_timing"></a></p><aside class="m-note m-dim"><h4><a href="todo.html#_todo000004" class="m-doc">Todo</a></h4><p>(SRGDamia1): Test timing with sensor The sensor timing for an Atlas CO2 sensor</p></aside>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gaf45e7905a67e43b77537d5ba2f36f9c1" class="m-doc">ATLAS_CO2_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 850</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the Atlas CO2 sensor warms up in 850ms.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gac71b580385064c4eb5d301cad3b823c8" class="m-doc">ATLAS_CO2_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 10000</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the Atlas CO2 sensor is not stable until <strong>10s</strong> (10000ms) after warm-up.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gac53ac926e49f038534ddbf6207ce4842" class="m-doc">ATLAS_CO2_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 900</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the Atlas CO2 sensor takes 900ms to complete a measurement.</dd>
+          </dl>
+        </section>
+        <section id="co2-concentration">
+          <h2>CO2 Concentration</h2>
+<p><a name="sensor_atlas_co2_co2"></a> The CO2 variable from an Atlas CO2 sensor</p><ul><li>Accuracy is ± 3% or ± 30 ppm</li><li>Range is 0 − 10000 ppm</li></ul><p>{{ <a href="class_atlas_scientific_c_o2___c_o2.html#a6d4ad9f7e4532b3480e66244f44b2565" class="m-doc">AtlasScientificCO2_CO2::<wbr />AtlasScientificCO2_CO2</a> }}</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gaa3fd038dd5a86a7bd9b0c2f77522090b" class="m-doc">ATLAS_CO2_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd>Decimals places in string representation; CO2 should have 1 - resolution is 1 ppm.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#ga74958b8aead68141b7b83c8fe9b9e602" class="m-doc">ATLAS_CO2_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; CO2 is stored in sensorValues[0].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#ga122e5028ed4d7f8c395115837d5c66ba" class="m-doc">ATLAS_CO2_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "carbonDioxide"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;carbonDioxide&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#ga437b53b0186f6b75fefaaa8b65b75cb5" class="m-doc">ATLAS_CO2_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "partPerMillion"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;partPerMillion&quot; (ppm)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gae4f9b88ade31c8f74a33c6449280a516" class="m-doc">ATLAS_CO2_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasCO2ppm"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;AtlasCO2ppm&quot;.</dd>
+          </dl>
+        </section>
+        <section id="temperature">
+          <h2>Temperature</h2>
+<p><a name="sensor_atlas_co2_temp"></a> The temperature variable from an Atlas CO2 sensor</p><ul><li>Accuracy is not reported on the sensor datasheet</li><li>Range is -20°C to +50°C</li></ul><p>{{ <a href="class_atlas_scientific_c_o2___temp.html#a8601a301e197a7053e20c426a82ea1d4" class="m-doc">AtlasScientificCO2_Temp::<wbr />AtlasScientificCO2_Temp</a> }}</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gaea9c9b7507df378224e6fbb73ff94346" class="m-doc">ATLAS_CO2TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Decimals places in string representation; CO2TEMP should have 0 - resolution is 1°C.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#ga6b688115afc5972501f839c48030d3c8" class="m-doc">ATLAS_CO2TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; CO2TEMP is stored in sensorValues[1].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#ga03d59d0e72cc72e2fe7e4fb18ff7f0a3" class="m-doc">ATLAS_CO2TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#gaddf9b46d9464e9d04ae5cdadb3eb7a57" class="m-doc">ATLAS_CO2TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__co2.html#ga44ecb9aeaf437e63734d5c8298457cfe" class="m-doc">ATLAS_CO2TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "AtlasCO2Temp"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;AtlasCO2Temp&quot;.</dd>
           </dl>
         </section>
 
@@ -1669,7 +1711,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

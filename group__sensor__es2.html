@@ -1559,7 +1559,41 @@ div#ez-toc-container {
                 <li><a href="#temperature">Temperature</a></li>
           </ul>
         </div>
-          <p>Classes for the Decagon ES-2 conductivity and temperature sensor.</p><section id="sensor_es2_intro"><h2>Introduction</h2><aside class="m-note m-danger"><h4>Warning</h4><p>This sensor is no longer manufactured!</p></aside><p>If you still have one of these sensors, it is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the version with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_es2_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf">Manual</a> <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf">Integrator&#x27;s Guide</a></p></section><section id="sensor_es2_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_es2_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_decagon_e_s2.html#ad9451cec3015af6fe091ed611cdf1a7d" class="m-doc">DecagonES2::<wbr />DecagonES2</a> }}</p><hr/></section><section id="sensor_es2_examples"><h2>Example Code</h2><p>The Decagon ES-2 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_es2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/DecagonES2.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Decagon ES-2 conductivity and temperature sensor.</p><section id="sensor_es2_intro"><h2>Introduction</h2><aside class="m-note m-danger"><h4>Warning</h4><p>This sensor is no longer manufactured!</p></aside><p>If you still have one of these sensors, it is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the version with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_es2_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf">Manual</a> <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf">Integrator&#x27;s Guide</a></p></section><section id="sensor_es2_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_es2_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="ad9451cec3015af6fe091ed611cdf1a7d"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon_e_s2.html#ad9451cec3015af6fe091ed611cdf1a7d">DecagonES2</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Decagon ES2 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">SDI12address</span></td>
+<td>The SDI-12 address of the ES-2; can be a char, char*, or int.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the ES2 Use -1 if it is continuously powered.</p><ul><li>The ES2 requires a 3.5-12V power supply, which can be turned off between measurements</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The SDI-12 address <strong>must</strong> be changed from the factory programmed value of "0" before the ES-2 can be used with ModularSensors!</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_es2_examples"><h2>Example Code</h2><p>The Decagon ES-2 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_es2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/DecagonES2.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">ES2SDI12address</span> <span class="o">=</span> <span class="s">&quot;3&quot;</span><span class="p">;</span>      <span class="c1">// The SDI-12 Address of the ES2</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">ES2Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
@@ -1628,7 +1662,35 @@ div#ez-toc-container {
         </section>
         <section id="conductivity">
           <h2>Conductivity</h2>
-<p><a name="sensor_es2_cond"></a> The conductivity variable from a Decagon ES-2</p><ul><li>Range is 0 – 120 mS/cm (bulk)</li><li>Accuracy is ±0.01mS/cm or ±10% (whichever is greater)</li></ul><p>{{ <a href="class_decagon_e_s2___cond.html#a6e06b7794bdf500e9fb7a849a5bf23ec" class="m-doc">DecagonES2_Cond::<wbr />DecagonES2_Cond</a> }}</p>
+<p><a name="sensor_es2_cond"></a> The conductivity variable from a Decagon ES-2</p><ul><li>Range is 0 – 120 mS/cm (bulk)</li><li>Accuracy is ±0.01mS/cm or ±10% (whichever is greater)</li></ul><p><section class="m-doc-details" id="a6e06b7794bdf500e9fb7a849a5bf23ec"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon_e_s2___cond.html#a6e06b7794bdf500e9fb7a849a5bf23ec">DecagonES2_Cond</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon_e_s2.html">DecagonES2</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__es2.html#ga9e6b624f456306539ad1b9630bdce53c">ES2_<wbr/>COND_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon_e_s2___cond.html">DecagonES2_<wbr/>Cond</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon_e_s2.html">DecagonES2</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ES2Cond".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga0f02f3dcae760cb9e53cc8fc3044425d" class="m-doc">ES2_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1665,7 +1727,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_es2_temp"></a> The temperature variable from a Decagon ES-2</p><ul><li>Range is -40°C to +50°C</li><li>Accuracy is ±1°C</li></ul><p>{{ <a href="class_decagon_e_s2___temp.html#a23cab6146d83e0829fe04ba11f04b2ef" class="m-doc">DecagonES2_Temp::<wbr />DecagonES2_Temp</a> }}</p>
+<p><a name="sensor_es2_temp"></a> The temperature variable from a Decagon ES-2</p><ul><li>Range is -40°C to +50°C</li><li>Accuracy is ±1°C</li></ul><p><section class="m-doc-details" id="a23cab6146d83e0829fe04ba11f04b2ef"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon_e_s2___temp.html#a23cab6146d83e0829fe04ba11f04b2ef">DecagonES2_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon_e_s2.html">DecagonES2</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__es2.html#ga02d42d1d1179f2b85757fbe6eae5156b">ES2_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon_e_s2___temp.html">DecagonES2_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon_e_s2.html">DecagonES2</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ES2Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad975b4d2187495ee090c13458f48aadc" class="m-doc">ES2_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1742,7 +1832,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

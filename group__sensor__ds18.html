@@ -1554,7 +1554,41 @@ div#ez-toc-container {
                 <li><a href="#temperature">Temperature</a></li>
           </ul>
         </div>
-          <p>Classes for the Maxim DS18 one-wire temperature sensors.</p><section id="sensor_ds18_intro"><h2>Introduction</h2><p>The Maxim temperature probes communicate using the OneWire library, which can be used on any digital pin on any of the supported boards. The same module should work with a <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html">DS18B20</a>, <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html">DS18S20</a>, <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html">DS1822</a>, <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html">MAX31820</a>, and the no-longer-sold <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html">DS1820</a> sensor. These sensors can be attached to a 3.0-5.5V power source or they can take &quot;parasitic power&quot; from the data line. When using the more typical setup with power, ground, and data lines, a 4.7k resistor must be attached as a pull-up between the data and power lines. The one-wire communication protocol is slow and <em>interrupts are turned off during communication</em>. Keep this in mind if using this sensor in combination with a rain gauge or other interrupt-driven sensor.</p><p>The resolution of the DS18B20, DS1822, and MAX31820 temperature sensors are user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively. The default resolution at power-up is 12-bit, unless it has previously been set to something else. The resolution of the DS18S20 is set at 9-bit</p><p>The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. The OneWire address is an array of 8 hex values, for example: {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0}. To get the address of your sensor, plug a single sensor into your device and run the <a href="https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino">oneWireSearch</a> example or the <a href="https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde">Single</a> example provided within the Dallas Temperature library. The sensor address is programmed at the factory and cannot be changed.</p></section><section id="sensor_ds18_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18B20-1-Wire-Temperature-Probe-Datasheet.pdf">DS18B20 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18S20-1-Wire-Temperature-Probe-Datasheet.pdf">DS18S20 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-DatasheetsMaxim-DS1822-1-Wire-Temperature-Probe-Datasheet.pdf">DS1822 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-MAX31820-1-Wire-Temperature-Probe-Datasheet.pdf">MAX31820 Datasheet</a></li></ul></section><section id="sensor_ds18_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_maxim_d_s18.html#a6e6f39a5b63dbbf85897e5d66ea97c1e" class="m-doc">MaximDS18::<wbr />MaximDS18</a> }}</p><hr/></section><section id="sensor_ds18_examples"><h2>Example Code</h2><p>The Maxim DS18 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ds18">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MaximDS18.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Maxim DS18 one-wire temperature sensors.</p><section id="sensor_ds18_intro"><h2>Introduction</h2><p>The Maxim temperature probes communicate using the OneWire library, which can be used on any digital pin on any of the supported boards. The same module should work with a <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html">DS18B20</a>, <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html">DS18S20</a>, <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html">DS1822</a>, <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html">MAX31820</a>, and the no-longer-sold <a href="https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html">DS1820</a> sensor. These sensors can be attached to a 3.0-5.5V power source or they can take &quot;parasitic power&quot; from the data line. When using the more typical setup with power, ground, and data lines, a 4.7k resistor must be attached as a pull-up between the data and power lines. The one-wire communication protocol is slow and <em>interrupts are turned off during communication</em>. Keep this in mind if using this sensor in combination with a rain gauge or other interrupt-driven sensor.</p><p>The resolution of the DS18B20, DS1822, and MAX31820 temperature sensors are user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively. The default resolution at power-up is 12-bit, unless it has previously been set to something else. The resolution of the DS18S20 is set at 9-bit</p><p>The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. The OneWire address is an array of 8 hex values, for example: {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0}. To get the address of your sensor, plug a single sensor into your device and run the <a href="https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino">oneWireSearch</a> example or the <a href="https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde">Single</a> example provided within the Dallas Temperature library. The sensor address is programmed at the factory and cannot be changed.</p></section><section id="sensor_ds18_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18B20-1-Wire-Temperature-Probe-Datasheet.pdf">DS18B20 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-DS18S20-1-Wire-Temperature-Probe-Datasheet.pdf">DS18S20 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-DatasheetsMaxim-DS1822-1-Wire-Temperature-Probe-Datasheet.pdf">DS1822 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxim-MAX31820-1-Wire-Temperature-Probe-Datasheet.pdf">MAX31820 Datasheet</a></li></ul></section><section id="sensor_ds18_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a6e6f39a5b63dbbf85897e5d66ea97c1e"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_maxim_d_s18.html#a6e6f39a5b63dbbf85897e5d66ea97c1e">MaximDS18</a>(</span><span class="m-doc-wrap"><span class="m-dim">DeviceAddress</span> <span class="m-param">OneWireAddress</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Maxim DS18 with a known sensor address.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">OneWireAddress</span></td>
+<td>The unique address of the sensor. Should be an array of 8 values. To get the address of your sensor, plug a single sensor into your device and run the <a href="https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino">oneWireSearch</a> example or the <a href="https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde">Single</a> example provided within the Dallas Temperature library. The sensor address is programmed at the factory and cannot be changed.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the DS18, if using a separate power pin. Use -1 if the DS18 is continuously powered or you are using "parasitic" power.</p><ul><li>Requires a 3.0 - 5.5V power source</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu of the OneWire bus.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>Use this version for more than one sensor attached to the OneWire bus.</p>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_ds18_examples"><h2>Example Code</h2><p>The Maxim DS18 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ds18">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MaximDS18.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// OneWire Address [array of 8 hex characters]</span>
 <span class="c1">// If only using a single sensor on the OneWire bus, you may omit the address</span>
@@ -1624,7 +1658,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_ds18_temp"></a> The temperature variable from an Maxim DS18</p><ul><li>Range is -55°C to 125°C</li><li>Accuracy:<ul><li>± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20</li><li>± 2°C for DS1822 and MAX31820</li></ul></li><li>Resolution:<ul><li>0.0625°C for DS18B20, DS1822, and MAX31820 (12-bit)</li><li>0.5°C for DS18S20 (9-bit)</li><li><span class="m-dim"><a href="group__sensor__ds18.html#ga98d55b0d059d2d359fde80a4681246a1" class="m-doc">DS18_<wbr />TEMP_<wbr />RESOLUTION</a> = 4</span></li></ul></li><li>Reported as degrees Celsius (°C)</li><li>Default variable code is DS18Temp</li></ul><p>{{ <a href="class_maxim_d_s18___temp.html#a507f9e8563c6f18beeca22ea8bc1c579" class="m-doc">MaximDS18_Temp::<wbr />MaximDS18_Temp</a> }}</p>
+<p><a name="sensor_ds18_temp"></a> The temperature variable from an Maxim DS18</p><ul><li>Range is -55°C to 125°C</li><li>Accuracy:<ul><li>± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20</li><li>± 2°C for DS1822 and MAX31820</li></ul></li><li>Resolution:<ul><li>0.0625°C for DS18B20, DS1822, and MAX31820 (12-bit)</li><li>0.5°C for DS18S20 (9-bit)</li><li><span class="m-dim"><a href="group__sensor__ds18.html#ga98d55b0d059d2d359fde80a4681246a1" class="m-doc">DS18_<wbr />TEMP_<wbr />RESOLUTION</a> = 4</span></li></ul></li><li>Reported as degrees Celsius (°C)</li><li>Default variable code is DS18Temp</li></ul><p><section class="m-doc-details" id="a507f9e8563c6f18beeca22ea8bc1c579"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_maxim_d_s18___temp.html#a507f9e8563c6f18beeca22ea8bc1c579">MaximDS18_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_maxim_d_s18.html">MaximDS18</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ds18.html#ga616aae63718645073cb149c1c4cb4a17">DS18_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_maxim_d_s18___temp.html">MaximDS18_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_maxim_d_s18.html">MaximDS18</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "DS18Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga98d55b0d059d2d359fde80a4681246a1" class="m-doc">DS18_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
@@ -1700,7 +1762,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

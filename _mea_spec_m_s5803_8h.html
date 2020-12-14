@@ -1530,7 +1530,7 @@ div#ez-toc-container {
             </a> &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="dir_572954c38e781eed9d2dca94cebdcbc7.html">sensors</a>
+          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">sensors</a>
           /
           </span>
           <span class="m-breadcrumb">
@@ -1610,7 +1610,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_ms5803_temp"></a> The temperature variable from a Measurement Specialties MS5803</p><ul><li>Range is -40°C to +85°C</li><li>Accuracy is ±0.8°C</li></ul><p>{{ <a href="class_mea_spec_m_s5803___temp.html#a8fc63c208a7b2cbc5fad0fa56570b492" class="m-doc">MeaSpecMS5803_Temp::<wbr />MeaSpecMS5803_Temp</a> }}</p>
+<p><a name="sensor_ms5803_temp"></a> The temperature variable from a Measurement Specialties MS5803</p><ul><li>Range is -40°C to +85°C</li><li>Accuracy is ±0.8°C</li></ul><p><section class="m-doc-details" id="a8fc63c208a7b2cbc5fad0fa56570b492"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_mea_spec_m_s5803___temp.html#a8fc63c208a7b2cbc5fad0fa56570b492">MeaSpecMS5803_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_mea_spec_m_s5803.html">MeaSpecMS5803</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ms5803.html#gae921e196f9f50f2d6cb1b45c3182b3d0">MS5803_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_mea_spec_m_s5803___temp.html">MeaSpecMS5803_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_mea_spec_m_s5803.html">MeaSpecMS5803</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "MeaSpecMS5803Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__ms5803.html#ga1c2e60f662ade3cf9f664a2456f04c0c" class="m-doc">MS5803_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1636,7 +1664,35 @@ div#ez-toc-container {
         </section>
         <section id="pressure">
           <h2>Pressure</h2>
-<p><a name="sensor_ms5803_pressure"></a> The pressure variable from a Measurement Specialties MS5803</p><ul><li>Range is 0 to 14 bar</li><li>Accuracy between 0 and +40°C is:<ul><li>14ba: ±20mbar</li><li>2ba: ±1.5mbar</li><li>1ba: ±1.5mbar</li></ul></li><li>Long term stability is:<ul><li>14ba: -20 mbar/yr</li><li>2ba: -1 mbar/yr</li></ul></li><li>Resolution is: (at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively))<ul><li>14ba: 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)</li><li>2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024</li><li>1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012</li><li><span class="m-dim"><a href="group__sensor__ms5803.html#ga58a776dea7e006702ef0608657314b37" class="m-doc">MS5803_<wbr />PRESSURE_<wbr />RESOLUTION</a> = 3</span></li></ul></li></ul><p>{{ <a href="class_mea_spec_m_s5803___pressure.html#a5f071ff63bdb4ffc47f927378dae49ff" class="m-doc">MeaSpecMS5803_Pressure::<wbr />MeaSpecMS5803_Pressure</a> }}</p>
+<p><a name="sensor_ms5803_pressure"></a> The pressure variable from a Measurement Specialties MS5803</p><ul><li>Range is 0 to 14 bar</li><li>Accuracy between 0 and +40°C is:<ul><li>14ba: ±20mbar</li><li>2ba: ±1.5mbar</li><li>1ba: ±1.5mbar</li></ul></li><li>Long term stability is:<ul><li>14ba: -20 mbar/yr</li><li>2ba: -1 mbar/yr</li></ul></li><li>Resolution is: (at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively))<ul><li>14ba: 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)</li><li>2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024</li><li>1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012</li><li><span class="m-dim"><a href="group__sensor__ms5803.html#ga58a776dea7e006702ef0608657314b37" class="m-doc">MS5803_<wbr />PRESSURE_<wbr />RESOLUTION</a> = 3</span></li></ul></li></ul><p><section class="m-doc-details" id="a5f071ff63bdb4ffc47f927378dae49ff"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_mea_spec_m_s5803___pressure.html#a5f071ff63bdb4ffc47f927378dae49ff">MeaSpecMS5803_Pressure</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_mea_spec_m_s5803.html">MeaSpecMS5803</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ms5803.html#ga0362cc35c6cd7ee45c156abfa00ba733">MS5803_<wbr/>PRESSURE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_mea_spec_m_s5803___pressure.html">MeaSpecMS5803_<wbr/>Pressure</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_mea_spec_m_s5803.html">MeaSpecMS5803</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of th a default value of MeaSpecMS5803Pressure</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__ms5803.html#ga58a776dea7e006702ef0608657314b37" class="m-doc">MS5803_PRESSURE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1707,7 +1763,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

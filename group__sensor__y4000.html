@@ -1563,7 +1563,51 @@ div#ez-toc-container {
                 <li><a href="#blue-green-algae-concentration">Blue Green Algae Concentration</a></li>
           </ul>
         </div>
-          <p>Classes for the Yosemitech Y4000 multi-parameter sonde.</p><section id="sensor_y4000_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf">Manual</a></li><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf">Modbus Instructions</a></li></ul><aside class="m-note m-info"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id="sensor_y4000_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_yosemitech_y4000.html#a0bbc51132590575c15324be42b6651cb" class="m-doc">YosemitechY4000::<wbr />YosemitechY4000</a> }}</p><hr/></section><section id="sensor_y4000_examples"><h2>Example Code</h2><p>The Y4000 Sonde is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_y4000">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/YosemitechY4000.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Yosemitech Y4000 multi-parameter sonde.</p><section id="sensor_y4000_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf">Manual</a></li><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf">Modbus Instructions</a></li></ul><aside class="m-note m-info"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id="sensor_y4000_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a0bbc51132590575c15324be42b6651cb"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000.html#a0bbc51132590575c15324be42b6651cb">YosemitechY4000</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">enablePin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Yosemitech Y4000 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modbusAddress</span></td>
+<td>The modbus address of the sensor.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">stream</span></td>
+<td>An Arduino data stream for modbus communication. See <a class="m-doc" href="page_arduino_streams.html">notes</a> for more information on what streams can be used.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The pin on the mcu controlling power to the Y4000. Use -1 if it is continuously powered.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin2</span></td>
+<td>The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">enablePin</span></td>
+<td>The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_y4000_examples"><h2>Example Code</h2><p>The Y4000 Sonde is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_y4000">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/YosemitechY4000.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for modbus</span>
 <span class="c1">// Extra hardware and software serial ports are created in the &quot;Settings for</span>
@@ -1685,7 +1729,35 @@ div#ez-toc-container {
         </section>
         <section id="dissolved-oxygen-concentration">
           <h2>Dissolved Oxygen Concentration</h2>
-<p><a name="sensor_y4000_domgl"></a> The dissolved oxygen concentration variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0-20mg/L or 0-200% Air Saturation</li><li>Accuracy is ± 0.3 mg/L</li></ul><p>{{ <a href="class_yosemitech_y4000___d_omg_l.html#a0e145b1b2968222d138832ae6de41022" class="m-doc">YosemitechY4000_DOmgL::<wbr />YosemitechY4000_DOmgL</a> }}</p>
+<p><a name="sensor_y4000_domgl"></a> The dissolved oxygen concentration variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0-20mg/L or 0-200% Air Saturation</li><li>Accuracy is ± 0.3 mg/L</li></ul><p><section class="m-doc-details" id="a0e145b1b2968222d138832ae6de41022"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000___d_omg_l.html#a0e145b1b2968222d138832ae6de41022">YosemitechY4000_DOmgL</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#gaf2521d8a81142dc86f9c2d433e8af7a7">Y4000_<wbr/>DOMGL_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000___d_omg_l.html">YosemitechY4000_<wbr/>DOmgL</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000DOmgL".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad5fc6a3e97097cd70633038792a2f200" class="m-doc">Y4000_DOMGL_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1721,7 +1793,35 @@ div#ez-toc-container {
         </section>
         <section id="turbidity">
           <h2>Turbidity</h2>
-<p><a name="sensor_y4000_turb"></a> The turbidity variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0.1~1000 NTU</li><li>Accuracy is ＜5% or 0.3NTU</li></ul><p>{{ <a href="class_yosemitech_y4000___turbidity.html#a7c60a3f89bc89e513bc09f058e96b4af" class="m-doc">YosemitechY4000_Turbidity::<wbr />YosemitechY4000_Turbidity</a> }}</p>
+<p><a name="sensor_y4000_turb"></a> The turbidity variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0.1~1000 NTU</li><li>Accuracy is ＜5% or 0.3NTU</li></ul><p><section class="m-doc-details" id="a7c60a3f89bc89e513bc09f058e96b4af"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000___turbidity.html#a7c60a3f89bc89e513bc09f058e96b4af">YosemitechY4000_Turbidity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#ga78fa8dc16ae96c7c76b32a67c11349b1">Y4000_<wbr/>TURB_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000___turbidity.html">YosemitechY4000_<wbr/>Turbidity</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000Turbidity".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga00c68a89c9e622785e9b4d73124a01ef" class="m-doc">Y4000_TURB_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1757,7 +1857,35 @@ div#ez-toc-container {
         </section>
         <section id="conductivity">
           <h2>Conductivity</h2>
-<p><a name="sensor_y4000_cond"></a> The conductivity variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 1 µS/cm to 200 mS/cm</li><li>Accuracy is ± 1 % Full Scale</li></ul><p>{{ <a href="class_yosemitech_y4000___cond.html#a41db535ff96c70841943a47a5d5231ec" class="m-doc">YosemitechY4000_Cond::<wbr />YosemitechY4000_Cond</a> }}</p>
+<p><a name="sensor_y4000_cond"></a> The conductivity variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 1 µS/cm to 200 mS/cm</li><li>Accuracy is ± 1 % Full Scale</li></ul><p><section class="m-doc-details" id="a41db535ff96c70841943a47a5d5231ec"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000___cond.html#a41db535ff96c70841943a47a5d5231ec">YosemitechY4000_Cond</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#ga113d6ed4b5de5169d2b1740cdc25b434">Y4000_<wbr/>COND_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000___cond.html">YosemitechY4000_<wbr/>Cond</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000Cond".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga5cd899832889fbf2dc1e0855c9e8b91e" class="m-doc">Y4000_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1794,7 +1922,35 @@ div#ez-toc-container {
         </section>
         <section id="ph">
           <h2>pH</h2>
-<p><a name="sensor_y4000_ph"></a> The pH variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 2 to 12 pH units</li><li>Accuracy is ± 0.1 pH units</li></ul><p>{{ <a href="class_yosemitech_y4000__p_h.html#a0199a9be4d0946314a80bb2deab2a7da" class="m-doc">YosemitechY4000_pH::<wbr />YosemitechY4000_pH</a> }}</p>
+<p><a name="sensor_y4000_ph"></a> The pH variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 2 to 12 pH units</li><li>Accuracy is ± 0.1 pH units</li></ul><p><section class="m-doc-details" id="a0199a9be4d0946314a80bb2deab2a7da"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000__p_h.html#a0199a9be4d0946314a80bb2deab2a7da">YosemitechY4000_pH</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#gabbd28d81bb552d0fc2e942a7ee9739da">Y4000_<wbr/>PH_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000__p_h.html">YosemitechY4000_<wbr/>pH</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000pH".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga422476165a7453cfcf2e6b3308d45709" class="m-doc">Y4000_PH_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1830,7 +1986,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_y4000_temp"></a> The temperature variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0°C to + 50°C</li><li>Accuracy is ± 0.2°C</li></ul><p>{{ <a href="class_yosemitech_y4000___temp.html#abae73500c327cd9a1362316e3fbdef2a" class="m-doc">YosemitechY4000_Temp::<wbr />YosemitechY4000_Temp</a> }}</p>
+<p><a name="sensor_y4000_temp"></a> The temperature variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0°C to + 50°C</li><li>Accuracy is ± 0.2°C</li></ul><p><section class="m-doc-details" id="abae73500c327cd9a1362316e3fbdef2a"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000___temp.html#abae73500c327cd9a1362316e3fbdef2a">YosemitechY4000_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#gaf75e4c09972b5c4f0716b0f37d8c07e7">Y4000_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000___temp.html">YosemitechY4000_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga53582adb8469ac5ddf90cc6779f44f62" class="m-doc">Y4000_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1866,7 +2050,35 @@ div#ez-toc-container {
         </section>
         <section id="orp">
           <h2>ORP</h2>
-<p><a name="sensor_y4000_orp"></a> The ORP variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is -999 ~ 999 mV</li><li>Accuracy is ± 20 mV</li></ul><p>{{ <a href="class_yosemitech_y4000___o_r_p.html#a8167a80089f735d013dab35c80c1cff0" class="m-doc">YosemitechY4000_ORP::<wbr />YosemitechY4000_ORP</a> }}</p>
+<p><a name="sensor_y4000_orp"></a> The ORP variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is -999 ~ 999 mV</li><li>Accuracy is ± 20 mV</li></ul><p><section class="m-doc-details" id="a8167a80089f735d013dab35c80c1cff0"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000___o_r_p.html#a8167a80089f735d013dab35c80c1cff0">YosemitechY4000_ORP</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#gac6793ea95dba733583c311b0c14fae34">Y4000_<wbr/>ORP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000___o_r_p.html">YosemitechY4000_<wbr/>ORP</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000Potential".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga91ceca2923a665fa9fcd921b99319fdf" class="m-doc">Y4000_ORP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1902,7 +2114,35 @@ div#ez-toc-container {
         </section>
         <section id="chlorophyll-concentration">
           <h2>Chlorophyll Concentration</h2>
-<p><a name="sensor_y4000_chloro"></a> The chlorophyll concentration variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0 to 400 µg/L or 0 to 100 RFU</li><li>Accuracy is ± 1 %</li></ul><p>{{ <a href="class_yosemitech_y4000___chlorophyll.html#a2c8a625393cd8fe61e7ce3b63b336fe8" class="m-doc">YosemitechY4000_Chlorophyll::<wbr />YosemitechY4000_Chlorophyll</a> }}</p>
+<p><a name="sensor_y4000_chloro"></a> The chlorophyll concentration variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0 to 400 µg/L or 0 to 100 RFU</li><li>Accuracy is ± 1 %</li></ul><p><section class="m-doc-details" id="a2c8a625393cd8fe61e7ce3b63b336fe8"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000___chlorophyll.html#a2c8a625393cd8fe61e7ce3b63b336fe8">YosemitechY4000_Chlorophyll</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#ga4e42198dfbf84b91fd0fbd03c36b4a98">Y4000_<wbr/>CHLORO_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000___chlorophyll.html">YosemitechY4000_<wbr/>Chlorophyll</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000Chloro".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga6fc391998c64690b9e3c9b561605b175" class="m-doc">Y4000_CHLORO_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1938,7 +2178,35 @@ div#ez-toc-container {
         </section>
         <section id="blue-green-algae-concentration">
           <h2>Blue Green Algae Concentration</h2>
-<p><a name="sensor_y4000_bga"></a> The BGA variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0 to 100 µg/L or 0 to 100 RFU</li><li>Accuracy is ± 0.04ug/L PC</li></ul><p>{{ <a href="class_yosemitech_y4000___b_g_a.html#adfd9a355c70e34b181e3eda88144f1c0" class="m-doc">YosemitechY4000_BGA::<wbr />YosemitechY4000_BGA</a> }}</p>
+<p><a name="sensor_y4000_bga"></a> The BGA variable from a Yosemitch Y4000 multi-parameter sonde</p><ul><li>Range is 0 to 100 µg/L or 0 to 100 RFU</li><li>Accuracy is ± 0.04ug/L PC</li></ul><p><section class="m-doc-details" id="adfd9a355c70e34b181e3eda88144f1c0"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y4000___b_g_a.html#adfd9a355c70e34b181e3eda88144f1c0">YosemitechY4000_BGA</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y4000.html#ga12fa56c79036de695243527ce5430c2e">Y4000_<wbr/>BGA_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y4000___b_g_a.html">YosemitechY4000_<wbr/>BGA</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y4000.html">YosemitechY4000</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y4000BGA".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaac1fbdfeae0cb7f544f0edc37fd18619" class="m-doc">Y4000_BGA_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -2014,7 +2282,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

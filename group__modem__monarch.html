@@ -1553,7 +1553,51 @@ div#ez-toc-container {
                 <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <section id="modem_monarch_notes"><h2>Introduction</h2><p>The Sequans Monarch <a href="https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/">VZM20Q</a> is another LTE CatM1 chip. It&#x27;s available in &quot;Skywire&quot; (XBee-like) format from <a href="https://nimbelink.com/products/4g-lte-m-verizon-sequans/">Nimbelink</a>.</p></section><section id="modem_monarch_mayfly"><h2>Monarchs and Mayflys</h2><p>To my knowledge, there are not any Sequans modules available that can directly connect to a Mayfly. Although the Nimbelink board linked above would fit the physical XBee footprint on the Mayfly, it will <em>not</em> work without some additional interface or other modifications. The power supply on the Mayfly is insufficient, the voltage reference is not implemented on the Mayfly, and the Nimbelink board requires 3 extra ground pins that aren&#x27;t available on the Mayfly.</p></section><section id="modem_monarch_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/">https:/<wbr />/<wbr />www.sequans.com/<wbr />products-solutions/<wbr />streamlitelte/<wbr />monarch-lte-platform/<wbr />ezlinklte-vzm20q/<wbr /></a></p></section><section id="modem_monarch_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_sequans_monarch.html#acbdb9475c72bae26a73ea44725a9258c" class="m-doc">SequansMonarch::<wbr />SequansMonarch</a> }}</p><hr/></section><section id="modem_monarch_examples"><h2>Example Code</h2><p>The monarch is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_monarch">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans</span>
+          <section id="modem_monarch_notes"><h2>Introduction</h2><p>The Sequans Monarch <a href="https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/">VZM20Q</a> is another LTE CatM1 chip. It&#x27;s available in &quot;Skywire&quot; (XBee-like) format from <a href="https://nimbelink.com/products/4g-lte-m-verizon-sequans/">Nimbelink</a>.</p></section><section id="modem_monarch_mayfly"><h2>Monarchs and Mayflys</h2><p>To my knowledge, there are not any Sequans modules available that can directly connect to a Mayfly. Although the Nimbelink board linked above would fit the physical XBee footprint on the Mayfly, it will <em>not</em> work without some additional interface or other modifications. The power supply on the Mayfly is insufficient, the voltage reference is not implemented on the Mayfly, and the Nimbelink board requires 3 extra ground pins that aren&#x27;t available on the Mayfly.</p></section><section id="modem_monarch_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://www.sequans.com/products-solutions/streamlitelte/monarch-lte-platform/ezlinklte-vzm20q/">https:/<wbr />/<wbr />www.sequans.com/<wbr />products-solutions/<wbr />streamlitelte/<wbr />monarch-lte-platform/<wbr />ezlinklte-vzm20q/<wbr /></a></p></section><section id="modem_monarch_ctor"><h2>Modem Constructor</h2><p><section class="m-doc-details" id="acbdb9475c72bae26a73ea44725a9258c"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_sequans_monarch.html#acbdb9475c72bae26a73ea44725a9258c">SequansMonarch</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemResetPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemSleepRqPin</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">apn</span>)</span></span>
+</h3>
+<p>Construct a new Sequans Monarch object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modemStream</span></td>
+<td>The Arduino stream instance for serial communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>). Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">statusPin</span></td>
+<td>The digital pin number of the mcu pin connected to the modem status output pin. Should be set to a negative number if the modem status pin cannot be read. This could be the pin called either the <code>GPIO3/STATUS_LED</code> or <code>POWER_MON</code> in the Sequans Monarch integration guide.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemResetPin</span></td>
+<td>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem. Should be set to a negative number if the modem reset pin is not connected to the MCU. This should be the pin called <code>RESETN</code> in the Sequans Monarch integration guide.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemSleepRqPin</span></td>
+<td>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state. Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU. This should be the pin called <code>RTS</code> or <code>RTS0</code> in the Sequans Monarch integration guide.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">apn</span></td>
+<td>The Access Point Name (APN) for the SIM card.</td>
+</tr>
+</tbody>
+</table>
+<p>The constuctor initializes all of the provided member variables, constructs a <a class="m-doc" href="classlogger_modem.html">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><aside class="m-note m-default"><h4>See also</h4><p><a class="m-doc" href="classlogger_modem.html#a9f13bc440fea4db11d219e5616214563">loggerModem::<wbr/>loggerModem</a></p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="modem_monarch_examples"><h2>Example Code</h2><p>The monarch is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_monarch">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans</span>
 <span class="c1">// Monarch series</span>
 <span class="cp">#include</span> <span class="cpf">&lt;modems/SequansMonarch.h&gt;</span><span class="cp"></span>
 
@@ -1711,7 +1755,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

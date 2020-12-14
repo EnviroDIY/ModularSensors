@@ -1555,7 +1555,51 @@ div#ez-toc-container {
                 <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <section id="modem_ubee_3g_notes"><h2>Introduction</h2><p>There are a several of boards available that feature a variant of the u-blox 2G and 3G modules, including a Sodaq UBee based on the SARA U201 and another based on the SARA G3.</p><p>The default baud rate for the SARA U201 is 9600.</p><p>Power draw for most 2G and 3G modules is up to 2A. The Sodaq UBee&#x27;s provide extra battery sockets to supply the additional power. These <em>MUST</em> be used.</p></section><section id="modem_ubee_3g_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands for the SARA U2 series are available here: <a href="https://www.u-blox.com/en/product/sara-u2-series">https:/<wbr />/<wbr />www.u-blox.com/<wbr />en/<wbr />product/<wbr />sara-u2-series</a> The schematics for the UBee are available here: <a href="https://support.sodaq.com/Shields_and_Bees/ubee/">https://support.sodaq.com/Shields_<wbr />and_<wbr />Bees/ubee/</a></p></section><section id="modem_ubee_3g_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_sodaq_u_bee_u201.html#afb4d609c4e6784c36a95cb811770bcd5" class="m-doc">SodaqUBeeU201::<wbr />SodaqUBeeU201</a> }}</p><hr/></section><section id="modem_ubee_3g_examples"><h2>Example Code</h2><p>The SARA U201 based UBee is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ubeeu201">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Sodaq UBee based on the 3G u-blox SARA U201</span>
+          <section id="modem_ubee_3g_notes"><h2>Introduction</h2><p>There are a several of boards available that feature a variant of the u-blox 2G and 3G modules, including a Sodaq UBee based on the SARA U201 and another based on the SARA G3.</p><p>The default baud rate for the SARA U201 is 9600.</p><p>Power draw for most 2G and 3G modules is up to 2A. The Sodaq UBee&#x27;s provide extra battery sockets to supply the additional power. These <em>MUST</em> be used.</p></section><section id="modem_ubee_3g_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands for the SARA U2 series are available here: <a href="https://www.u-blox.com/en/product/sara-u2-series">https:/<wbr />/<wbr />www.u-blox.com/<wbr />en/<wbr />product/<wbr />sara-u2-series</a> The schematics for the UBee are available here: <a href="https://support.sodaq.com/Shields_and_Bees/ubee/">https://support.sodaq.com/Shields_<wbr />and_<wbr />Bees/ubee/</a></p></section><section id="modem_ubee_3g_ctor"><h2>Modem Constructor</h2><p><section class="m-doc-details" id="afb4d609c4e6784c36a95cb811770bcd5"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_sodaq_u_bee_u201.html#afb4d609c4e6784c36a95cb811770bcd5">SodaqUBeeU201</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemResetPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemSleepRqPin</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">apn</span>)</span></span>
+</h3>
+<p>Construct a new Sodaq UBee U201 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modemStream</span></td>
+<td>The Arduino stream instance for serial communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>). Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU. For the Sodaq UBee, this is the pin labeled <code>ON/OFF</code>; pin 9 on the bee socket. The fact that this pin controls the power to the u-blox module is not clear in the Sodaq documentation.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">statusPin</span></td>
+<td>The digital pin number of the mcu pin connected to the modem status output pin. Should be set to a negative number if the modem status pin cannot be read. This is the pin labeled <code>V_INT</code> in the u-blox integration guide. It is (misleadingly) called <code>CTS</code> in some of the Sodaq UBee documentation because Sodaq wired the <code>V_INT</code> from the u-blox to the pin usually reserved for <code>CTS</code> on the bee socket.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemResetPin</span></td>
+<td>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem. Should be set to a negative number if the modem reset pin is not connected to the MCU. This is the pin labeled <code>RESET_N</code> in both u-blox and Sodaq documentation.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemSleepRqPin</span></td>
+<td>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state. Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU. This is the pin labeled <code>PWR_ON</code> in both u-blox and Sodaq documentation.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">apn</span></td>
+<td>The Access Point Name (APN) for the SIM card.</td>
+</tr>
+</tbody>
+</table>
+<p>The constuctor initializes all of the provided member variables, constructs a <a class="m-doc" href="classlogger_modem.html">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><aside class="m-note m-default"><h4>See also</h4><p><a class="m-doc" href="classlogger_modem.html#a9f13bc440fea4db11d219e5616214563">loggerModem::<wbr/>loggerModem</a></p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="modem_ubee_3g_examples"><h2>Example Code</h2><p>The SARA U201 based UBee is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ubeeu201">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Sodaq UBee based on the 3G u-blox SARA U201</span>
 <span class="cp">#include</span> <span class="cpf">&lt;modems/SodaqUBeeU201.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for the modem</span>
@@ -1710,7 +1754,7 @@ application / network settings and the concurrent module activities.&quot;_ The 
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

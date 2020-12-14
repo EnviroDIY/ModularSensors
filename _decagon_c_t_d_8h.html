@@ -1530,7 +1530,7 @@ div#ez-toc-container {
             </a> &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="dir_572954c38e781eed9d2dca94cebdcbc7.html">sensors</a>
+          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">sensors</a>
           /
           </span>
           <span class="m-breadcrumb">
@@ -1615,7 +1615,35 @@ div#ez-toc-container {
         </section>
         <section id="conductivity">
           <h2>Conductivity</h2>
-<p><a name="sensor_hydros21_cond"></a> The conductivity variable from a Meter Hydros 21</p><ul><li>Range is 0 – 120 mS/cm (bulk)</li><li>Accuracy is ±0.01mS/cm or ±10% (whichever is greater)</li></ul><p>{{ <a href="class_decagon_c_t_d___cond.html#a1e186274819a8f22c63c2a19d130f44a" class="m-doc">DecagonCTD_Cond::<wbr />DecagonCTD_Cond</a> }}</p>
+<p><a name="sensor_hydros21_cond"></a> The conductivity variable from a Meter Hydros 21</p><ul><li>Range is 0 – 120 mS/cm (bulk)</li><li>Accuracy is ±0.01mS/cm or ±10% (whichever is greater)</li></ul><p><section class="m-doc-details" id="a1e186274819a8f22c63c2a19d130f44a"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon_c_t_d___cond.html#a1e186274819a8f22c63c2a19d130f44a">DecagonCTD_Cond</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon_c_t_d.html">DecagonCTD</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__hydros21.html#ga0cce3faca135d7275a14f0590e19d7ab">CTD_<wbr/>COND_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon_c_t_d___cond.html">DecagonCTD_<wbr/>Cond</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon_c_t_d.html">DecagonCTD</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "CTDcond".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__hydros21.html#gad508dc979b24dc03448fb3cd25e9ac7b" class="m-doc">CTD_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1641,7 +1669,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_hydros21_temp"></a> The temperature variable from a Meter Hydros 21</p><ul><li>Range is -11°C to +49°C</li><li>Accuracy is ±1°C</li></ul><p>{{ <a href="class_decagon_c_t_d___temp.html#a471eecc675c44f70432e20ac72503bfc" class="m-doc">DecagonCTD_Temp::<wbr />DecagonCTD_Temp</a> }}</p>
+<p><a name="sensor_hydros21_temp"></a> The temperature variable from a Meter Hydros 21</p><ul><li>Range is -11°C to +49°C</li><li>Accuracy is ±1°C</li></ul><p><section class="m-doc-details" id="a471eecc675c44f70432e20ac72503bfc"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon_c_t_d___temp.html#a471eecc675c44f70432e20ac72503bfc">DecagonCTD_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon_c_t_d.html">DecagonCTD</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__hydros21.html#ga304532b2a7ddc48785b0c41920cd710a">CTD_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon_c_t_d___temp.html">DecagonCTD_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon_c_t_d.html">DecagonCTD</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "CTDtemp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__hydros21.html#gae4e7f9eeb94ca4f70997188d71c7bb81" class="m-doc">CTD_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1667,7 +1723,35 @@ div#ez-toc-container {
         </section>
         <section id="water-depth">
           <h2>Water Depth</h2>
-<p><a name="sensor_hydros21_depth"></a> The water depth variable from a Meter Hydros 21</p><ul><li>Range is 0 to 5 m or 0 to 10 m, depending on model</li><li>Accuracy is ±0.05% of full scale</li></ul><p>{{ <a href="class_decagon_c_t_d___depth.html#a3afcc16c26e59aba0b0959547d96f12e" class="m-doc">DecagonCTD_Depth::<wbr />DecagonCTD_Depth</a> }}</p>
+<p><a name="sensor_hydros21_depth"></a> The water depth variable from a Meter Hydros 21</p><ul><li>Range is 0 to 5 m or 0 to 10 m, depending on model</li><li>Accuracy is ±0.05% of full scale</li></ul><p><section class="m-doc-details" id="a3afcc16c26e59aba0b0959547d96f12e"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon_c_t_d___depth.html#a3afcc16c26e59aba0b0959547d96f12e">DecagonCTD_Depth</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_decagon_c_t_d.html">DecagonCTD</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__hydros21.html#ga2bca19636712fe88ad179178e9138939">CTD_<wbr/>DEPTH_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_decagon_c_t_d___depth.html">DecagonCTD_<wbr/>Depth</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_decagon_c_t_d.html">DecagonCTD</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "CTDdepth".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__hydros21.html#gaa091732fd2bb6e5210a7f7ab18b45b48" class="m-doc">CTD_DEPTH_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1738,7 +1822,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

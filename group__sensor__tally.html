@@ -1554,7 +1554,31 @@ div#ez-toc-container {
                 <li><a href="#events">Events</a></li>
           </ul>
         </div>
-          <p>Classes for the Tally Counter I2C external event counter.</p><section id="sensor_tally_intro"><h2>Introduction</h2><p>Northern Widget&#x27;s Tally is</p><blockquote><p>a minimal ultra low power digital event counter, designed to be a counterpart to a traditional data logger to measure and average rapid events like an anemometer reading.</p></blockquote><p>It communicates over I2C at either 3.3 or 5V.</p><p>The <a href="https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C">Tally_<wbr />Library</a> is used internally for communication with the Tally.</p><aside class="m-note m-danger"><h4>Warning</h4><p>Northern Widget considers this sensor to be one of their &quot;bleeding edge&quot; sensors. As such, it is subject to change at any time. This library may not be updated immediately to reflect changes on the part of Northern Widget.</p><p>As an event counter, the Tally should be continuously powered (at 3.3V or 5V). It does have a large on-board capacitor which can act as a battery to ride out power shortages, but that shouldn&#x27;t be expected to perform as a long-term solution. If you do chose to switch the power for the Tally counter, be very conscious of the fact that the library is designed to run power this (and all other) sensors for the very minimum amount of time possible to get a reading. This means the capacitor will be running at a very low duty cycle; likely less than 1% if the sensors are only powered a few seconds every few minutes. A super-capacitor is <em>NOT</em> an instantly charged battery and will not keep the counter powered at too low a duty cycle.</p></aside></section><section id="sensor_tally_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at:</p><ul><li><a href="https://github.com/NorthernWidget-Skunkworks/Project-Tally">https:/<wbr />/<wbr />github.com/<wbr />NorthernWidget-Skunkworks/<wbr />Project-Tally</a>​</li><li><a href="https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C">https://github.com/NorthernWidget-Skunkworks/Tally_<wbr />Library/tree/Dev_<wbr />I2C</a></li></ul></section><section id="sensor_tally_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_tally_counter_i2_c.html#a14c9cff16610b3c4045b86eaae7a1d82" class="m-doc">TallyCounterI2C::<wbr />TallyCounterI2C</a> }}</p><hr/></section><section id="sensor_tally_examples"><h2>Example Code</h2><p>The Tally countetr is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_tally">menu a la carte</a> example.</p></section>
+          <p>Classes for the Tally Counter I2C external event counter.</p><section id="sensor_tally_intro"><h2>Introduction</h2><p>Northern Widget&#x27;s Tally is</p><blockquote><p>a minimal ultra low power digital event counter, designed to be a counterpart to a traditional data logger to measure and average rapid events like an anemometer reading.</p></blockquote><p>It communicates over I2C at either 3.3 or 5V.</p><p>The <a href="https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C">Tally_<wbr />Library</a> is used internally for communication with the Tally.</p><aside class="m-note m-danger"><h4>Warning</h4><p>Northern Widget considers this sensor to be one of their &quot;bleeding edge&quot; sensors. As such, it is subject to change at any time. This library may not be updated immediately to reflect changes on the part of Northern Widget.</p><p>As an event counter, the Tally should be continuously powered (at 3.3V or 5V). It does have a large on-board capacitor which can act as a battery to ride out power shortages, but that shouldn&#x27;t be expected to perform as a long-term solution. If you do chose to switch the power for the Tally counter, be very conscious of the fact that the library is designed to run power this (and all other) sensors for the very minimum amount of time possible to get a reading. This means the capacitor will be running at a very low duty cycle; likely less than 1% if the sensors are only powered a few seconds every few minutes. A super-capacitor is <em>NOT</em> an instantly charged battery and will not keep the counter powered at too low a duty cycle.</p></aside></section><section id="sensor_tally_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at:</p><ul><li><a href="https://github.com/NorthernWidget-Skunkworks/Project-Tally">https:/<wbr />/<wbr />github.com/<wbr />NorthernWidget-Skunkworks/<wbr />Project-Tally</a>​</li><li><a href="https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C">https://github.com/NorthernWidget-Skunkworks/Tally_<wbr />Library/tree/Dev_<wbr />I2C</a></li></ul></section><section id="sensor_tally_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a14c9cff16610b3c4045b86eaae7a1d82"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_tally_counter_i2_c.html#a14c9cff16610b3c4045b86eaae7a1d82">TallyCounterI2C</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__tally.html#ga19873c57a9082a3265946e43b49a1ca2">TALLY_<wbr/>ADDRESS_<wbr/>BASE</a></span>)</span></span>
+</h3>
+<p>Construct a new Tally Counter I2C object using the primary hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to <a class="m-doc" href="class_tally_counter_i2_c.html">TallyCounterI2C</a>.</p><ul><li>The default is to use -1 for continuous power because a counting device must always be on. However, the Tally also has a super capacitor that will keep it running even while powered down while the logger is in sleep during the interval between measurements.</li><li>The Tally Counter I2C can use either a 3.3V or 5V power source.</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the Tally Counter I2C is 0x33 by default.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-danger"><h4>Warning</h4><p>If you do chose to switch the power for the Tally counter, be very conscious of the fact that the library is designed to run power this (and all other) sensors for the very minimum amount of time possible to get a reading. This means the capacitor will be running at a very low duty cycle; likely less than 1% if the sensors are only powered a few seconds every few minutes. A super-capacitor is <em>NOT</em> an instantly charged battery and will not keep the counter powered at too low a duty cycle.</p></aside><aside class="m-note m-info"><h4>Note</h4><p>The event counter should be continuously powered. It has extremely low power draw.</p><p>There is no option for averaging measurements; that option does not make sense in an event counter.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_tally_examples"><h2>Example Code</h2><p>The Tally countetr is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_tally">menu a la carte</a> example.</p></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
@@ -1611,7 +1635,35 @@ div#ez-toc-container {
         </section>
         <section id="events">
           <h2>Events</h2>
-<p><a name="sensor_tally_events"></a> The events variable from a Northern Widget Tally event counter</p><ul><li>Range and accuracy depend on the sensor used<ul><li>For wind, we often use <a href="https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm">Inspeed WS2R Version II Reed Switch Anemometer</a></li></ul></li></ul><p>{{ <a href="class_tally_counter_i2_c___events.html#a0b90cd33a1da6848d8ad0c27f088c0e5" class="m-doc">TallyCounterI2C_Events::<wbr />TallyCounterI2C_Events</a> }}</p>
+<p><a name="sensor_tally_events"></a> The events variable from a Northern Widget Tally event counter</p><ul><li>Range and accuracy depend on the sensor used<ul><li>For wind, we often use <a href="https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm">Inspeed WS2R Version II Reed Switch Anemometer</a></li></ul></li></ul><p><section class="m-doc-details" id="a0b90cd33a1da6848d8ad0c27f088c0e5"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_tally_counter_i2_c___events.html#a0b90cd33a1da6848d8ad0c27f088c0e5">TallyCounterI2C_Events</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_tally_counter_i2_c.html">TallyCounterI2C</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__tally.html#ga4e039e655402c0a7c5602d3e631157df">TALLY_<wbr/>EVENTS_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_tally_counter_i2_c___events.html">TallyCounterI2C_<wbr/>Events</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_tally_counter_i2_c.html">TallyCounterI2C</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "TallyCounterI2CEvents".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga74883c34e9977c8ae3068ef772f29ade" class="m-doc">TALLY_EVENTS_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1687,7 +1739,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

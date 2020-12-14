@@ -1557,7 +1557,69 @@ div#ez-toc-container {
                 <li><a href="#altitude">Altitude</a></li>
           </ul>
         </div>
-          <p>Classes for the Bosch BME280 environmental sensor.</p><section id="sensor_bme280_intro"><h2>Introduction</h2><blockquote><p>The BME280 is a humidity sensor especially developed for mobile applications and wearables where size and low power consumption are key design parameters. The unit combines high linearity and high accuracy sensors and is perfectly feasible for low current consumption, long-term stability and high EMC robustness. The humidity sensor offers an extremely fast response time and therefore supports performance requirements for emerging applications such as context awareness, and high accuracy over a wide temperature range.</p></blockquote><p>Although this sensor has the option of either I2C or SPI communication, this library only supports I2C. The default I2C address varies by manufacturer and is either 0x77 or 0x76. The Adafruit and Sparkfun defaults are both 0x77 and Seeed/Grove default is 0x76, though all can be changed by physical modification of the sensor, if necessary (by cutting the board connection for the manufacturer default and soldering the optional address jumpers). To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses. No more than two can be attached. This module is likely to also work with the <a href="https://www.bosch-sensortec.com/bst/products/all_products/bmp280">Bosch BMP280 Barometric Pressure Sensor</a>, though it has not been tested on it. These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.</p><p>The <a href="https://github.com/adafruit/Adafruit_BME280_Library">Adafruit BME280 library</a> is used internally for communication with the BME280.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The I2C addresses used by the BME280 are the same as those of the MS5803! If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.</p></aside><aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the BME280. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id="sensor_bme280_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/">https:/<wbr />/<wbr />www.bosch-sensortec.com/<wbr />products/<wbr />environmental-sensors/<wbr />humidity-sensors-bme280/<wbr /></a></p><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf">Datasheet</a></p></section><section id="sensor_bme280_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_bosch_b_m_e280.html#af1f2ec4a5b1dba3f9402cbb606d40258" class="m-doc">BoschBME280::<wbr />BoschBME280(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_bosch_b_m_e280.html#adeee07525828c7bac5c962eb55bc5b71" class="m-doc">BoschBME280::<wbr />BoschBME280(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_bme280_examples"><h2>Example Code</h2><p>The BME280 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_bme280">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/BoschBME280.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Bosch BME280 environmental sensor.</p><section id="sensor_bme280_intro"><h2>Introduction</h2><blockquote><p>The BME280 is a humidity sensor especially developed for mobile applications and wearables where size and low power consumption are key design parameters. The unit combines high linearity and high accuracy sensors and is perfectly feasible for low current consumption, long-term stability and high EMC robustness. The humidity sensor offers an extremely fast response time and therefore supports performance requirements for emerging applications such as context awareness, and high accuracy over a wide temperature range.</p></blockquote><p>Although this sensor has the option of either I2C or SPI communication, this library only supports I2C. The default I2C address varies by manufacturer and is either 0x77 or 0x76. The Adafruit and Sparkfun defaults are both 0x77 and Seeed/Grove default is 0x76, though all can be changed by physical modification of the sensor, if necessary (by cutting the board connection for the manufacturer default and soldering the optional address jumpers). To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses. No more than two can be attached. This module is likely to also work with the <a href="https://www.bosch-sensortec.com/bst/products/all_products/bmp280">Bosch BMP280 Barometric Pressure Sensor</a>, though it has not been tested on it. These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.</p><p>The <a href="https://github.com/adafruit/Adafruit_BME280_Library">Adafruit BME280 library</a> is used internally for communication with the BME280.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The I2C addresses used by the BME280 are the same as those of the MS5803! If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.</p></aside><aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the BME280. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id="sensor_bme280_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/">https:/<wbr />/<wbr />www.bosch-sensortec.com/<wbr />products/<wbr />environmental-sensors/<wbr />humidity-sensors-bme280/<wbr /></a></p><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf">Datasheet</a></p></section><section id="sensor_bme280_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="af1f2ec4a5b1dba3f9402cbb606d40258"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_bosch_b_m_e280.html#af1f2ec4a5b1dba3f9402cbb606d40258">BoschBME280</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x76</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new Bosch BME280 object using the primary hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the BME280 Use -1 if it is continuously powered.</p><ul><li>The BME280 requires a 1.7 - 3.6V power source</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the BME280; must be either 0x76 or 0x77. The default value is 0x76.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="adeee07525828c7bac5c962eb55bc5b71"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_bosch_b_m_e280.html#adeee07525828c7bac5c962eb55bc5b71">BoschBME280</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = 0x76</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Bosch BME280 object using a secondary <em>hardware</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A TwoWire instance for I2C communication. Due to the limitations of the Arduino core, only a hardware I2C instance can be used. For an AVR board, there is only one I2C instance possible and this form of the constructor should not be used. For a SAMD board, this can be used if a secondary I2C port is created on one of the extra SERCOMs.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the BME280 Use -1 if it is continuously powered.</p><ul><li>The BME280 requires a 1.7 - 3.6V power source</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the BME280; must be either 0x76 or 0x77. The default value is 0x76.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the BME280.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_bme280_examples"><h2>Example Code</h2><p>The BME280 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_bme280">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/BoschBME280.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">BME280Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
 <span class="kr">uint8_t</span>      <span class="n">BMEi2c_addr</span> <span class="o">=</span> <span class="mh">0x76</span><span class="p">;</span>
@@ -1646,7 +1708,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_bme280_temp"></a> The temperature variable from a Bosch BME280</p><ul><li>Range is -40°C to +85°C</li><li>Accuracy is ±0.5°C</li></ul><p>{{ <a href="class_bosch_b_m_e280___temp.html#a3c9f124dd970823315fcea9279fb98a8" class="m-doc">BoschBME280_Temp::<wbr />BoschBME280_Temp</a> }}</p>
+<p><a name="sensor_bme280_temp"></a> The temperature variable from a Bosch BME280</p><ul><li>Range is -40°C to +85°C</li><li>Accuracy is ±0.5°C</li></ul><p><section class="m-doc-details" id="a3c9f124dd970823315fcea9279fb98a8"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_bosch_b_m_e280___temp.html#a3c9f124dd970823315fcea9279fb98a8">BoschBME280_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__bme280.html#ga586641383564f42193d22799509f6a93">BME280_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_bosch_b_m_e280___temp.html">BoschBME280_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "BoschBME280Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga60970d70575b2d45c2709aacdc1922b6" class="m-doc">BME280_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1682,7 +1772,35 @@ div#ez-toc-container {
         </section>
         <section id="humidity">
           <h2>Humidity</h2>
-<p><a name="sensor_bme280_humidity"></a> The humidity variable from a Bosch BME280</p><p>{{ <a href="class_bosch_b_m_e280___humidity.html#aae8c21cf7500ac9b370e2eb4a22265f4" class="m-doc">BoschBME280_Humidity::<wbr />BoschBME280_Humidity</a> }}</p>
+<p><a name="sensor_bme280_humidity"></a> The humidity variable from a Bosch BME280</p><p><section class="m-doc-details" id="aae8c21cf7500ac9b370e2eb4a22265f4"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_bosch_b_m_e280___humidity.html#aae8c21cf7500ac9b370e2eb4a22265f4">BoschBME280_Humidity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__bme280.html#ga7b615604888edba4efa00342bd0bb0df">BME280_<wbr/>HUMIDITY_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_bosch_b_m_e280___humidity.html">BoschBME280_<wbr/>Humidity</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "BoschBME280Humidity".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad79814d92ab26ea817401291b47cf94b" class="m-doc">BME280_HUMIDITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1718,7 +1836,35 @@ div#ez-toc-container {
         </section>
         <section id="barometric-pressure">
           <h2>Barometric Pressure</h2>
-<p><a name="sensor_bme280_pressure"></a> The barometric pressure variable from a Bosch BME280</p><ul><li>Range is 300 to 1100 hPa<ul><li>Absolute accuracy is ±1 hPa</li><li>Relative accuracy is ±0.12 hPa</li></ul></li></ul><p>{{ <a href="class_bosch_b_m_e280___pressure.html#a70753d38f302bf2cbfed4b836d2c5f64" class="m-doc">BoschBME280_Pressure::<wbr />BoschBME280_Pressure</a> }}</p>
+<p><a name="sensor_bme280_pressure"></a> The barometric pressure variable from a Bosch BME280</p><ul><li>Range is 300 to 1100 hPa<ul><li>Absolute accuracy is ±1 hPa</li><li>Relative accuracy is ±0.12 hPa</li></ul></li></ul><p><section class="m-doc-details" id="a70753d38f302bf2cbfed4b836d2c5f64"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_bosch_b_m_e280___pressure.html#a70753d38f302bf2cbfed4b836d2c5f64">BoschBME280_Pressure</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__bme280.html#ga57075f10d7f879d0e35f7646369d544f">BME280_<wbr/>PRESSURE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_bosch_b_m_e280___pressure.html">BoschBME280_<wbr/>Pressure</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "BoschBME280Pressure".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga79bb396d1d5fb9fde9cd881598d7da15" class="m-doc">BME280_PRESSURE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1754,7 +1900,35 @@ div#ez-toc-container {
         </section>
         <section id="altitude">
           <h2>Altitude</h2>
-<p><a name="sensor_bme280_altitude"></a> The altitude variable from a Bosch BME280</p><p>{{ <a href="class_bosch_b_m_e280___altitude.html#a331d4909d6605cfa10413f65b6acaf66" class="m-doc">BoschBME280_Altitude::<wbr />BoschBME280_Altitude</a> }}</p>
+<p><a name="sensor_bme280_altitude"></a> The altitude variable from a Bosch BME280</p><p><section class="m-doc-details" id="a331d4909d6605cfa10413f65b6acaf66"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_bosch_b_m_e280___altitude.html#a331d4909d6605cfa10413f65b6acaf66">BoschBME280_Altitude</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__bme280.html#gadad89cd9f4a53712d38e772118782bf1">BME280_<wbr/>ALTITUDE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_bosch_b_m_e280___altitude.html">BoschBME280_<wbr/>Altitude</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_bosch_b_m_e280.html">BoschBME280</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "BoschBME280Altitude".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga8c3db71a3017108a1f4b94cb1d13f470" class="m-doc">BME280_ALTITUDE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1830,7 +2004,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

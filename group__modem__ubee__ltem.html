@@ -1561,7 +1561,51 @@ div#ez-toc-container {
                 <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <section id="modem_ubee_ltem_notes"><h2>Introduction</h2><p>There are a multitude of boards available that feature a variant of the u-blox SARA R4 series, including a Sodaq UBee.</p><p>The default baud rate for the SARA R410M is 115200. It <em>DOES NOT</em> save baud rate to non-volatile memory. After every power loss, the module will return to the default baud rate of 115200. This library attempts to compensate by sending a baud rate change command in the wake function. Because of this, 8MHz boards, <em>LIKE THE MAYFLY</em>, <em>MUST</em> use a HardwareSerial instance as modemSerial. This requirement does not exist for 16MHz (and faster) boards. For those, any Stream instance may be used.</p><p>Power draw is just about 500mA. A larger supply is (strongly) preferred.</p><aside class="m-note m-info"><h4>Note</h4><p>This library doesn&#x27;t currently support turning off the power supply to the R410M by setting UBee pin 1 low. The library only supports controlling the power via the power-supply enable switch connected to UBee pin 9. If you can control UBee pin 1 with your mcu, you should set it to be continuously <code>HIGH</code>.</p></aside></section><section id="modem_ubee_ltem_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands for the SARA R4 series are available here: <a href="https://www.u-blox.com/en/product/sara-r4-series">https:/<wbr />/<wbr />www.u-blox.com/<wbr />en/<wbr />product/<wbr />sara-r4-series</a> The schematics for the UBee are available here: <a href="https://support.sodaq.com/Shields_and_Bees/ubee/">https://support.sodaq.com/Shields_<wbr />and_<wbr />Bees/ubee/</a></p></section><section id="modem_ubee_ltem_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_sodaq_u_bee_r410_m.html#ac7ec9cf9ab8d3d319ff96061f34e3811" class="m-doc">SodaqUBeeR410M::<wbr />SodaqUBeeR410M</a> }}</p><hr/></section><section id="modem_ubee_ltem_examples"><h2>Example Code</h2><section id="modem_ubee_ltem_modem_obj"><h3>Creating the Modem Object</h3><p>The SARA R410M based UBee is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ubeer410">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M</span>
+          <section id="modem_ubee_ltem_notes"><h2>Introduction</h2><p>There are a multitude of boards available that feature a variant of the u-blox SARA R4 series, including a Sodaq UBee.</p><p>The default baud rate for the SARA R410M is 115200. It <em>DOES NOT</em> save baud rate to non-volatile memory. After every power loss, the module will return to the default baud rate of 115200. This library attempts to compensate by sending a baud rate change command in the wake function. Because of this, 8MHz boards, <em>LIKE THE MAYFLY</em>, <em>MUST</em> use a HardwareSerial instance as modemSerial. This requirement does not exist for 16MHz (and faster) boards. For those, any Stream instance may be used.</p><p>Power draw is just about 500mA. A larger supply is (strongly) preferred.</p><aside class="m-note m-info"><h4>Note</h4><p>This library doesn&#x27;t currently support turning off the power supply to the R410M by setting UBee pin 1 low. The library only supports controlling the power via the power-supply enable switch connected to UBee pin 9. If you can control UBee pin 1 with your mcu, you should set it to be continuously <code>HIGH</code>.</p></aside></section><section id="modem_ubee_ltem_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands for the SARA R4 series are available here: <a href="https://www.u-blox.com/en/product/sara-r4-series">https:/<wbr />/<wbr />www.u-blox.com/<wbr />en/<wbr />product/<wbr />sara-r4-series</a> The schematics for the UBee are available here: <a href="https://support.sodaq.com/Shields_and_Bees/ubee/">https://support.sodaq.com/Shields_<wbr />and_<wbr />Bees/ubee/</a></p></section><section id="modem_ubee_ltem_ctor"><h2>Modem Constructor</h2><p><section class="m-doc-details" id="ac7ec9cf9ab8d3d319ff96061f34e3811"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_sodaq_u_bee_r410_m.html#ac7ec9cf9ab8d3d319ff96061f34e3811">SodaqUBeeR410M</a>(</span><span class="m-doc-wrap"><span class="m-dim">HardwareSerial*</span> <span class="m-param">modemStream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">statusPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemResetPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">modemSleepRqPin</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">apn</span>)</span></span>
+</h3>
+<p>Construct a new Sodaq UBee R410M object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modemStream</span></td>
+<td>The Arduino stream instance for serial communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>). Should be set to a negative number if the modem should be continuously powered or the power cannot be controlled by the MCU. For the Sodaq UBee, this is the pin labeled <code>ON/OFF</code>; pin 9 on the bee socket. The fact that this pin controls the power to the u-blox module is not clear in the Sodaq documentation.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">statusPin</span></td>
+<td>The digital pin number of the mcu pin connected to the modem status output pin. Should be set to a negative number if the modem status pin cannot be read. This is the pin labeled <code>V_INT</code> in the u-blox integration guide. It is (misleadingly) called <code>CTS</code> in some of the Sodaq UBee documentation because Sodaq wired the <code>V_INT</code> from the u-blox to the pin usually reserved for <code>CTS</code> on the bee socket.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemResetPin</span></td>
+<td>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem. Should be set to a negative number if the modem reset pin is not connected to the MCU. This is the pin labeled <code>RESET_N</code> in both u-blox and Sodaq documentation.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">modemSleepRqPin</span></td>
+<td>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state. Should be set to a negative number if there is no pin usable for deep sleep modes or it is not accessible to the MCU. This is the pin labeled <code>PWR_ON</code> in both u-blox and Sodaq documentation.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">apn</span></td>
+<td>The Access Point Name (APN) for the SIM card.</td>
+</tr>
+</tbody>
+</table>
+<p>The constuctor initializes all of the provided member variables, constructs a <a class="m-doc" href="classlogger_modem.html">loggerModem</a> parent class with the appropriate timing for the module, calls the constructor for a TinyGSM modem on the provided modemStream, and creates a TinyGSM Client linked to the modem.</p><aside class="m-note m-info"><h4>Note</h4><p>The SARA R410N DOES NOT save baud rate to non-volatile memory. After every power loss, the module will return to the default baud rate of 115200. This library attempts to compensate by sending a baud rate change command in the wake function. Because of this, 8MHz boards, LIKE THE MAYFLY, <em>MUST</em> use a HardwareSerial instance as modemSerial. This requirement does not exist for 16MHz (and faster) boards. For those, any Stream instance may be used.</p></aside><aside class="m-note m-default"><h4>See also</h4><p><a class="m-doc" href="classlogger_modem.html#a9f13bc440fea4db11d219e5616214563">loggerModem::<wbr/>loggerModem</a></p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="modem_ubee_ltem_examples"><h2>Example Code</h2><section id="modem_ubee_ltem_modem_obj"><h3>Creating the Modem Object</h3><p>The SARA R410M based UBee is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ubeer410">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M</span>
 <span class="cp">#include</span> <span class="cpf">&lt;modems/SodaqUBeeR410M.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for the modem</span>
@@ -1595,7 +1639,7 @@ div#ez-toc-container {
 <span class="n">SodaqUBeeR410M</span> <span class="nf">modemR410</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span> <span class="n">modemVccPin</span><span class="p">,</span> <span class="n">modemStatusPin</span><span class="p">,</span>
                          <span class="n">modemResetPin</span><span class="p">,</span> <span class="n">modemSleepRqPin</span><span class="p">,</span> <span class="n">apn</span><span class="p">);</span>
 <span class="c1">// Create an extra reference to the modem by a generic name</span>
-<span class="n">SodaqUBeeR410M</span> <span class="n">modem</span> <span class="o">=</span> <span class="n">modemR410</span><span class="p">;</span></pre></section></section><section id="modem_ubee_ltem_network"><h2>LTE Network Selection</h2><p>It is good practice to select which network you&#x27;ll be connecting to based on your SIM card and signal availability. Example code for this can also be found in the <a href="/home/travis/build/EnviroDIY/ModularSensors/code_docs/ModularSensors/docs/examples/menu_a_la_carte.dox.html#setup_r4_carrrier" class="m-doc">menu a la carte example</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>The network selection for a Sodaq LTE-M UBee is identical to that for an LTE-M XBee in bypass mode or any other module based on the u-blox SARA R4 series.</p></aside><pre class="m-code">    <span class="c1">// Extra modem set-up</span>
+<span class="n">SodaqUBeeR410M</span> <span class="n">modem</span> <span class="o">=</span> <span class="n">modemR410</span><span class="p">;</span></pre></section></section><section id="modem_ubee_ltem_network"><h2>LTE Network Selection</h2><p>It is good practice to select which network you&#x27;ll be connecting to based on your SIM card and signal availability. Example code for this can also be found in the <a href="/home/runner/work/ModularSensors/ModularSensors/code_docs/ModularSensors/docs/examples/menu_a_la_carte.dox.html#setup_r4_carrrier" class="m-doc">menu a la carte example</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>The network selection for a Sodaq LTE-M UBee is identical to that for an LTE-M XBee in bypass mode or any other module based on the u-blox SARA R4 series.</p></aside><pre class="m-code">    <span class="c1">// Extra modem set-up</span>
     <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Waking modem and setting Cellular Carrier Options...&quot;</span><span class="p">));</span>
     <span class="n">modem</span><span class="p">.</span><span class="n">modemWake</span><span class="p">();</span>  <span class="c1">// NOTE:  This will also set up the modem</span>
     <span class="c1">// Turn off the cellular radio while making network changes</span>
@@ -1750,7 +1794,7 @@ application / network settings and the concurrent module activities.&quot;_ The 
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

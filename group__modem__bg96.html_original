@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>publishers/ directory | ModularSensors</title>
+  <title>Supported Modems and Communication Modules &raquo; Quectel BG96 module | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
 rel="stylesheet"
@@ -1522,73 +1522,152 @@ div#ez-toc-container {
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
-            </a> &gt; <wbr/>
+            </a>  &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            <a href="files.html">
-              Files
-            </a> &gt; <wbr/>
+            <a href="modules.html">
+              Modules
+            </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-            publishers
+          <a href="group__the__modems.html">Supported Modems and Communication Modules</a> &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+            Quectel BG96
           </span>
 
-          <header class="gp-entry-header">
-            <h1 class="gp-entry-title" itemprop="headline">
+        <header class="gp-entry-header">
+          <h1 class="gp-entry-title" itemprop="headline">
 
-            publishers
-            <span class="m-breadcrumb">
-            /
-            </span>
-            <span class="m-thin">
-            directory
-            </span>
-
-
-            </h1>
-          </header>
-        <p>Contains the source code for all <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> subclasses.</p>
+          Quectel BG96 <span class="m-thin">module</span>
+          </h1>
+        </header>
         <div class="m-block m-default">
           <ul>
-            <li>
-              Reference
-              <ul>
-                <li><a href="#files">Files</a></li>
-              </ul>
-            </li>
-            <li>
-              Detailed Descriptions
-              <ul>
-              </ul>
-            </li>
+            <li><a href="#modem_bg96_notes">Introduction</a></li>
+            <li><a href="#modem_bg96_mayfly">Connecting a BG96 to a Mayfly</a></li>
+            <li><a href="#modem_bg96_docs">Manufacturer Documentation</a></li>
+            <li><a href="#modem_bg96_ctor">Modem Constructor</a></li>
+            <li><a href="#modem_bg96_examples">Example Code</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-        <section id="files">
-          <h2>Files</h2>
+          <section id="modem_bg96_notes"><h2>Introduction</h2><p>The Quectel BG96 is another LTE CatM1/NB1 chip. This same constructor should work for most boards based on this chip, including the <a href="https://www.dragino.com/products/nb-iot/item/132-nb-iot-bee.html">Dragino</a> and <a href="https://nimbelink.com/products/4g-lte-m-global-quectel/">Nimbelink</a> boards.</p><p>This is the <strong>only</strong> cellular module that I have found to function well on only a 500mA power supply - provided the cellular signal is strong and 2G fallback isn&#x27;t required. To enable 2G fallback, expect power draws of up to 2A.</p></section><section id="modem_bg96_mayfly"><h2>Connecting a BG96 to a Mayfly</h2><p>To my knowledge, there are not any Quectel BG96 modules available that can directly connect to a Mayfly. Although both the Dragino and Nimbelink boards linked above would fit the physical XBee footprint on the Mayfly, neither will work without some additional interface or other modifications. The Dragino module comes really close, but it will not actually work because the BG96 requires more power than the Mayfly can provide on its own but <em>cannot</em> be connected directly to a LiPo because it cannot handle a voltage over 3.6V. The Nimbelink module has the same power supply problem, voltage reference problems, and requires 3 extra ground pins that aren&#x27;t available on the Mayfly.</p></section><section id="modem_bg96_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="https://www.quectel.com/product/bg96.htm">https:/<wbr />/<wbr />www.quectel.com/<wbr />product/<wbr />bg96.htm</a></p></section><section id="modem_bg96_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_quectel_b_g96.html#a4c8d6952ccfbb24fd9a4b8562c71cd06" class="m-doc">QuectelBG96::<wbr />QuectelBG96</a> }}</p><hr/></section><section id="modem_bg96_examples"><h2>Example Code</h2><p>The Quectel BG96 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_bg96">menu a la carte</a>.</p><pre class="m-code"><span class="c1">// For the Dragino, Nimbelink or other boards based on the Quectel BG96</span>
+<span class="cp">#include</span> <span class="cpf">&lt;modems/QuectelBG96.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// Create a reference to the serial port for the modem</span>
+<span class="c1">// Extra hardware and software serial ports are created in the &quot;Settings for</span>
+<span class="c1">// Additional Serial Ports&quot; section</span>
+<span class="n">HardwareSerial</span><span class="o">&amp;</span> <span class="n">modemSerial</span> <span class="o">=</span> <span class="n">Serial1</span><span class="p">;</span>  <span class="c1">// Use hardware serial if possible</span>
+<span class="c1">// AltSoftSerial &amp;modemSerial = altSoftSerial;  // For software serial</span>
+<span class="c1">// NeoSWSerial &amp;modemSerial = neoSSerial1;  // For software serial</span>
+<span class="kr">const</span> <span class="kr">long</span> <span class="n">modemBaud</span> <span class="o">=</span> <span class="mi">115200</span><span class="p">;</span>  <span class="c1">// Communication speed of the modem</span>
+<span class="c1">// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The</span>
+<span class="c1">// module should be programmed to a slower baud rate or set to auto-baud using</span>
+<span class="c1">// the AT+IPR=9600 command.</span>
+
+<span class="c1">// Modem Pins - Describe the physical pin connection of your modem to your board</span>
+<span class="c1">// NOTE:  Use -1 for pins that do not apply</span>
+<span class="c1">// Example pins here are for a modified Mayfly and a Dragino IoT Bee</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemVccPin</span>     <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// MCU pin controlling modem power</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemStatusPin</span>  <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// MCU pin used to read modem status</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemResetPin</span>   <span class="o">=</span> <span class="n">A4</span><span class="p">;</span>  <span class="c1">// MCU pin connected to modem reset pin</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemSleepRqPin</span> <span class="o">=</span> <span class="n">A3</span><span class="p">;</span>  <span class="c1">// MCU pin for modem sleep/wake request</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemLEDPin</span> <span class="o">=</span> <span class="n">redLED</span><span class="p">;</span>  <span class="c1">// MCU pin connected an LED to show modem</span>
+                                    <span class="c1">// status</span>
+
+<span class="c1">// Network connection information</span>
+<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">apn</span> <span class="o">=</span> <span class="s">&quot;xxxxx&quot;</span><span class="p">;</span>  <span class="c1">// APN for GPRS connection</span>
+
+<span class="c1">// Create the modem object</span>
+<span class="n">QuectelBG96</span> <span class="nf">modemBG96</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span> <span class="n">modemVccPin</span><span class="p">,</span> <span class="n">modemStatusPin</span><span class="p">,</span> <span class="n">modemResetPin</span><span class="p">,</span>
+                      <span class="n">modemSleepRqPin</span><span class="p">,</span> <span class="n">apn</span><span class="p">);</span>
+<span class="c1">// Create an extra reference to the modem by a generic name</span>
+<span class="n">QuectelBG96</span> <span class="n">modem</span> <span class="o">=</span> <span class="n">modemBG96</span><span class="p">;</span></pre></section>
+        <section id="nested-classes">
+          <h2>Classes</h2>
           <dl class="m-doc">
-            <dt>file <a href="_dream_host_publisher_8cpp.html" class="m-doc">DreamHostPublisher.cpp</a></dt>
-            <dd>Implements the <a href="class_dream_host_publisher.html" class="m-doc">DreamHostPublisher</a> class.</dd>
-            <dt>file <a href="_dream_host_publisher_8h.html" class="m-doc">DreamHostPublisher.h</a></dt>
-            <dd>Contains the <a href="class_dream_host_publisher.html" class="m-doc">DreamHostPublisher</a> subclass of <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> for publishing data to the Stroud Center&#x27;s now-deprecated DreamHost based live sensor data system.</dd>
-            <dt>file <a href="_enviro_d_i_y_publisher_8cpp.html" class="m-doc">EnviroDIYPublisher.cpp</a></dt>
-            <dd>Implements the <a href="class_enviro_d_i_y_publisher.html" class="m-doc">EnviroDIYPublisher</a> class.</dd>
-            <dt>file <a href="_enviro_d_i_y_publisher_8h.html" class="m-doc">EnviroDIYPublisher.h</a></dt>
-            <dd>Contains the <a href="class_enviro_d_i_y_publisher.html" class="m-doc">EnviroDIYPublisher</a> subclass of <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> for publishing data to the Monitor My Watershed/EnviroDIY data portal at <a href="http://data.enviroDIY.org">http:/<wbr />/<wbr />data.enviroDIY.org</a>.</dd>
-            <dt>file <a href="_thing_speak_publisher_8cpp.html" class="m-doc">ThingSpeakPublisher.cpp</a></dt>
-            <dd>Implements the <a href="class_thing_speak_publisher.html" class="m-doc">ThingSpeakPublisher</a> class.</dd>
-            <dt>file <a href="_thing_speak_publisher_8h.html" class="m-doc">ThingSpeakPublisher.h</a></dt>
-            <dd>Contains the <a href="class_thing_speak_publisher.html" class="m-doc">ThingSpeakPublisher</a> subclass of <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> for publishing data to ThingSpeak using the MQTT protocol.</dd>
-            <dt>file <a href="_ubidots_publisher_8cpp.html" class="m-doc">UbidotsPublisher.cpp</a></dt>
-            <dd>Implements the <a href="class_ubidots_publisher.html" class="m-doc">UbidotsPublisher</a> class.</dd>
-            <dt>file <a href="_ubidots_publisher_8h.html" class="m-doc">UbidotsPublisher.h</a></dt>
-            <dd>Contains the <a href="class_ubidots_publisher.html" class="m-doc">UbidotsPublisher</a> subclass of <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> for publishing data to the Ubidots IoT platform at <a href="https://ubidots.com">https:/<wbr />/<wbr />ubidots.com</a>.</dd>
+            <dt>
+              class <a href="class_quectel_b_g96.html" class="m-doc">QuectelBG96</a>
+            </dt>
+            <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for Dragino, Nimbelink, or any other module based on the <a href="group__modem__bg96.html" class="m-doc">Quectel BG96</a>.</dd>
           </dl>
         </section>
+        <section id="define-members">
+          <h2>Defines</h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga846f360f21f8065ee4f777d031336985" class="m-doc">TINY_GSM_MODEM_BG96</a></span>
+            </dt>
+            <dd>The modem type for the underlying TinyGSM library.</dd>
 
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gab1ae455ca14433c80229530476876592" class="m-doc">BG96_STATUS_LEVEL</a><span class="m-dim m-right-m m-text-right"> = HIGH</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb" class="m-doc">loggerModem::<wbr />_statusLevel</a>.</dd>
 
+              <dd><p>Status of the BG96 can be monitored on the <code>STATUS(D0)</code> pin. Time after end pulse until status pin becomes active is 4.8s.</p></dd>
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac62da79b1ab53cd9ae1a26211780691b" class="m-doc">BG96_STATUS_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5000L</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b" class="m-doc">loggerModem::<wbr />_statusTime_ms</a>.</dd>
 
+              <dd><p>Status of the BG96 can be monitored on the <code>STATUS(D0)</code> pin. Time after end pulse until status pin becomes active is 4.8s.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf332acdb61354035b7cb64431038df35" class="m-doc">BG96_RESET_LEVEL</a><span class="m-dim m-right-m m-text-right"> = LOW</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a" class="m-doc">loggerModem::<wbr />_resetLevel</a>.</dd>
+
+              <dd><p>BG96 is reset with a 150-460ms low pulse on the <code>RESET_N</code> pin</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga5fc8f55b6b0a25202ae2e7f7084a0bb6" class="m-doc">BG96_RESET_PULSE_MS</a><span class="m-dim m-right-m m-text-right"> = 300</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c" class="m-doc">loggerModem::<wbr />_resetPulse_ms</a>.</dd>
+
+              <dd><p>BG96 is reset with a 150-460ms low pulse on the <code>RESET_N</code> pin</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1adbbfc95fcbbf3b3e5afc0408421038" class="m-doc">BG96_WAKE_LEVEL</a><span class="m-dim m-right-m m-text-right"> = LOW</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf" class="m-doc">loggerModem::<wbr />_wakeLevel</a>.</dd>
+
+              <dd><p>Module is switched on by a &gt;100 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Module is switched on by a &gt;650 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Using something between those times for wake and using AT commands for sleep, we should keep in the proper state.</p><aside class="m-note m-info"><h4>Note</h4><p>If at all possible, the BG96 status pin should be monitored to confirm active status.</p></aside></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga4e1e4b31676139427eeec1bd06127314" class="m-doc">BG96_WAKE_PULSE_MS</a><span class="m-dim m-right-m m-text-right"> = 110</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d" class="m-doc">loggerModem::<wbr />_wakePulse_ms</a>.</dd>
+
+              <dd><p>Module is switched on by a &gt;100 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Module is switched on by a &gt;650 millisecond <code>LOW</code> pulse on the <code>PWRKEY</code> pin. Using something between those times for wake and using AT commands for sleep, we should keep in the proper state.</p><aside class="m-note m-info"><h4>Note</h4><p>If at all possible, the BG96 status pin should be monitored to confirm active status.</p></aside></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gacce25cf16895e71f6bf673ae0f480d09" class="m-doc">BG96_WAKE_DELAY_MS</a><span class="m-dim m-right-m m-text-right"> = 100</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8" class="m-doc">loggerModem::<wbr />_wakeDelayTime_ms</a>.</dd>
+
+              <dd><p>Time after <code>VBAT</code> is stable before <code>PWRKEY</code> can be used on BG96 is &gt;30ms</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6df0e54fad1961be2691f16462059c7f" class="m-doc">BG96_ATRESPONSE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 10000L</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489" class="m-doc">loggerModem::<wbr />_max_atresponse_time_ms</a>.</dd>
+
+              <dd><p>The BG96 has USB active at &gt;4.2 sec, status at &gt;4.8 sec, URAT at &gt;4.9</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9b814e89abef176f687a5453c85a8f7e" class="m-doc">BG96_DISCONNECT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 5000L</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a32496b2b79dc9317639900a3c385405d" class="m-doc">loggerModem::<wbr />_disconnetTime_ms</a>.</dd>
+
+              <dd><p>Documentation for the BG96 says to allow &gt;2s for clean shutdown.</p></dd>
+
+          </dl>
+        </section>
 
                     </div>
                   </div>
@@ -1631,7 +1710,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

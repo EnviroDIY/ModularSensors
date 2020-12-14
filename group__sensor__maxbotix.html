@@ -1554,7 +1554,40 @@ div#ez-toc-container {
                 <li><a href="#range">Range</a></li>
           </ul>
         </div>
-          <p>Classes for the MaxBotix MaxSonar ultrasonic range finders.</p><section id="sensor_maxbotix_intro"><h2>Introduction</h2><p>The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation. Depending on the precise model, the range finders have ranges between 300 and 9999mm and read rates of 6-7.5Hz. This library supports TTL or RS323 sensor output, though an RS232-to-TTL adapter is needed for the RS232 models. Analog and pulse-width outputs are not supported. The MaxBotix sensors require a 2.7V - 5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TTL returned by the MaxSonar will match the power level it is supplied with. The digital TTL or RS232 output is sent out on pin 5 on the sensor. Pin 7 of the MaxSonar must be connected to power ground and pin 4 can optionally be used to trigger the MaxSonar.</p><p>If you are using the <a href="https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm">MaxBotix HR-MaxTemp</a> MB7955 temperature compensator on your MaxBotix (which greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 (square) on the MaxSonar. The white and shield (bare silver) wires from the MaxTemp should both be attached to Pin 7 (GND). The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself to accomodate it. It is not possible to read the temperature data from the MaxTemp.</p><p>The MaxBotix sensor have two different modes: free-ranging and triggered. Unless the trigger pin is externally held low, the sensor will continuously take readings at a rate of 6Hz or greater and immediate report each result over the digital output pin. (That is, it will be in free-ranging mode.) When continuously powered and operating in free-range mode, the data output is automatically filtered to help improve accuracy. If you are turning the power to the sensor off between readings, there is no advantage to using the free-ranging because many readings must be taken before the filter becomes effective. In this case, you may save a very small amount of power by setting up a trigger pin and manually trigger individual readings.</p><p>Please see the section &quot;[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)&quot; for more information about what streams can be used along with this library.</p><p>This library supports using multiple MaxBotix sensors on the same logger, with a few caveats:</p><ul><li>Any sensor operating in free-ranging mode (powered at the same time as any other sensors with the trigger pins unconnected) must have a dedicated stream instance/serial port.</li><li>To have two sensors operating in free-ranging mode, they must each have a dedicated stream instance/serial port <em>AND</em> you must specify a unique <em>negative</em> pin number for the trigger pin. Giving a negative pin number ensures that the Arduino will not attempt to trigger trigger individual readings but will still be able to tell the sensors apart. (Software-wise, simply specifying the different streams is not enough!) Keep in mind that two or more free ranging sensors must be spaced far enough apart in the field to prevent interference between the sonar beams.</li><li>Two or more sensors may send data to the same stream instance/serial port if both sensors are being triggered and each is triggered by a different trigger pin.</li><li>&quot;Daisy chaining&quot; sensors so the pulse-width output of one sensor acts as the trigger for a second sensor <em>is not supported</em>.</li></ul></section><section id="sensor_maxbotix_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HRXL-MaxSonar-WR-Datasheet.pdf">HRXL WR Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HRXL-MaxSonar-WRS-Datasheet.pdf">HRXL WRS Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HR-MaxTemp-Datasheet.pdf">MaxTemp Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-MaxSonar-MB7954-Datasheet-ConnectWire.pdf">Wiring Guide</a></li></ul></section><section id="sensor_maxbotix_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_max_botix_sonar.html#a42f2157863ec16eaa098d8b772a7df48" class="m-doc">MaxBotixSonar::<wbr />MaxBotixSonar</a> }}</p><hr/></section><section id="sensor_maxbotix_examples"><h2>Example Code</h2><p>The MaxBotix MaxSonar is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_maxbotics">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MaxBotixSonar.h&gt;</span><span class="cp"></span>
+          <p>Classes for the MaxBotix MaxSonar ultrasonic range finders.</p><section id="sensor_maxbotix_intro"><h2>Introduction</h2><p>The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation. Depending on the precise model, the range finders have ranges between 300 and 9999mm and read rates of 6-7.5Hz. This library supports TTL or RS323 sensor output, though an RS232-to-TTL adapter is needed for the RS232 models. Analog and pulse-width outputs are not supported. The MaxBotix sensors require a 2.7V - 5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TTL returned by the MaxSonar will match the power level it is supplied with. The digital TTL or RS232 output is sent out on pin 5 on the sensor. Pin 7 of the MaxSonar must be connected to power ground and pin 4 can optionally be used to trigger the MaxSonar.</p><p>If you are using the <a href="https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm">MaxBotix HR-MaxTemp</a> MB7955 temperature compensator on your MaxBotix (which greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 (square) on the MaxSonar. The white and shield (bare silver) wires from the MaxTemp should both be attached to Pin 7 (GND). The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself to accomodate it. It is not possible to read the temperature data from the MaxTemp.</p><p>The MaxBotix sensor have two different modes: free-ranging and triggered. Unless the trigger pin is externally held low, the sensor will continuously take readings at a rate of 6Hz or greater and immediate report each result over the digital output pin. (That is, it will be in free-ranging mode.) When continuously powered and operating in free-range mode, the data output is automatically filtered to help improve accuracy. If you are turning the power to the sensor off between readings, there is no advantage to using the free-ranging because many readings must be taken before the filter becomes effective. In this case, you may save a very small amount of power by setting up a trigger pin and manually trigger individual readings.</p><p>Please see the section &quot;[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)&quot; for more information about what streams can be used along with this library.</p><p>This library supports using multiple MaxBotix sensors on the same logger, with a few caveats:</p><ul><li>Any sensor operating in free-ranging mode (powered at the same time as any other sensors with the trigger pins unconnected) must have a dedicated stream instance/serial port.</li><li>To have two sensors operating in free-ranging mode, they must each have a dedicated stream instance/serial port <em>AND</em> you must specify a unique <em>negative</em> pin number for the trigger pin. Giving a negative pin number ensures that the Arduino will not attempt to trigger trigger individual readings but will still be able to tell the sensors apart. (Software-wise, simply specifying the different streams is not enough!) Keep in mind that two or more free ranging sensors must be spaced far enough apart in the field to prevent interference between the sonar beams.</li><li>Two or more sensors may send data to the same stream instance/serial port if both sensors are being triggered and each is triggered by a different trigger pin.</li><li>&quot;Daisy chaining&quot; sensors so the pulse-width output of one sensor acts as the trigger for a second sensor <em>is not supported</em>.</li></ul></section><section id="sensor_maxbotix_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HRXL-MaxSonar-WR-Datasheet.pdf">HRXL WR Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HRXL-MaxSonar-WRS-Datasheet.pdf">HRXL WRS Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HR-MaxTemp-Datasheet.pdf">MaxTemp Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-MaxSonar-MB7954-Datasheet-ConnectWire.pdf">Wiring Guide</a></li></ul></section><section id="sensor_maxbotix_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a42f2157863ec16eaa098d8b772a7df48"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_max_botix_sonar.html#a42f2157863ec16eaa098d8b772a7df48">MaxBotixSonar</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">triggerPin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new MaxBotix Sonar object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">stream</span></td>
+<td>An Arduino data stream for TTL or RS232 communication. See <a class="m-doc" href="page_arduino_streams.html">notes</a> for more information on what streams can be used.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the MaxSonar. Use -1 if it is continuously powered.</p><ul><li>The MaxSonar requires a 2.7V - 5.5V power supply.</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">triggerPin</span></td>
+<td>The pin on the mcu controlling the "trigger" for the MaxSonar. Use -1 or omit for continuous ranging.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_maxbotix_examples"><h2>Example Code</h2><p>The MaxBotix MaxSonar is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_maxbotics">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MaxBotixSonar.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for the sonar</span>
 <span class="c1">// A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port</span>
@@ -1632,7 +1665,35 @@ div#ez-toc-container {
         </section>
         <section id="range">
           <h2>Range</h2>
-<p><a name="sensor_maxbotix_range"></a> The range variable from a Maxbotix HRXL ultrasonic range finder</p><ul><li>Range is 300 to 5000mm or 500 to 9999mm, depending on model</li><li>Accuracy is ±1%</li></ul><p>{{ <a href="class_max_botix_sonar___range.html#af5c47413f52613fb2139f4afefc6b4ee" class="m-doc">MaxBotixSonar_Range::<wbr />MaxBotixSonar_Range</a> }}</p>
+<p><a name="sensor_maxbotix_range"></a> The range variable from a Maxbotix HRXL ultrasonic range finder</p><ul><li>Range is 300 to 5000mm or 500 to 9999mm, depending on model</li><li>Accuracy is ±1%</li></ul><p><section class="m-doc-details" id="af5c47413f52613fb2139f4afefc6b4ee"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_max_botix_sonar___range.html#af5c47413f52613fb2139f4afefc6b4ee">MaxBotixSonar_Range</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_max_botix_sonar.html">MaxBotixSonar</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__maxbotix.html#ga37bd1f752a06b18fdc1bcb0ba4a756e0">HRXL_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_max_botix_sonar___range.html">MaxBotixSonar_<wbr/>Range</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_max_botix_sonar.html">MaxBotixSonar</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "SonarRange".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga39b33d8eaa58af90ef62298ce5f8e8af" class="m-doc">HRXL_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1708,7 +1769,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

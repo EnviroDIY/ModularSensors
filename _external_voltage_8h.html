@@ -1530,7 +1530,7 @@ div#ez-toc-container {
             </a> &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="dir_572954c38e781eed9d2dca94cebdcbc7.html">sensors</a>
+          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">sensors</a>
           /
           </span>
           <span class="m-breadcrumb">
@@ -1609,7 +1609,35 @@ div#ez-toc-container {
         </section>
         <section id="voltage">
           <h2>Voltage</h2>
-<p><a name="sensor_ads1x15_volt"></a> The volt variable from a TI ADS1x15 analog-to-digital converter (ADC)</p><ul><li>Range:<ul><li>without voltage divider: 0 - 3.6V [when ADC is powered at 3.3V]</li><li>1/gain = 3x: 0.3 ~ 12.9V</li><li>1/gain = 10x: 1 ~ 43V</li></ul></li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)</li></ul></li><li>Resolution:<ul><li>16-bit ADC (ADS1115):<ul><li><span class="m-dim"><a href="group__sensor__ads1x15.html#ga170fe49e01535a92caf1f0793ec25e4f" class="m-doc">EXT_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 4</span></li><li>without voltage divider: 0.125 mV</li><li>1/gain = 3x: 0.375 mV</li><li>1/gain = 10x: 1.25 mV</li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>):<ul><li><span class="m-dim"><a href="group__sensor__ads1x15.html#ga170fe49e01535a92caf1f0793ec25e4f" class="m-doc">EXT_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 1</span></li><li>without voltage divider: 2 mV</li><li>1/gain = 3x: 6 mV</li><li>1/gain = 10x: 20 mV *</li></ul></li></ul></li></ul><p>{{ <a href="class_external_voltage___volt.html#a6d6e528e5842f3201a0bae6c0bbddf47" class="m-doc">ExternalVoltage_Volt::<wbr />ExternalVoltage_Volt</a> }}</p>
+<p><a name="sensor_ads1x15_volt"></a> The volt variable from a TI ADS1x15 analog-to-digital converter (ADC)</p><ul><li>Range:<ul><li>without voltage divider: 0 - 3.6V [when ADC is powered at 3.3V]</li><li>1/gain = 3x: 0.3 ~ 12.9V</li><li>1/gain = 10x: 1 ~ 43V</li></ul></li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)</li></ul></li><li>Resolution:<ul><li>16-bit ADC (ADS1115):<ul><li><span class="m-dim"><a href="group__sensor__ads1x15.html#ga170fe49e01535a92caf1f0793ec25e4f" class="m-doc">EXT_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 4</span></li><li>without voltage divider: 0.125 mV</li><li>1/gain = 3x: 0.375 mV</li><li>1/gain = 10x: 1.25 mV</li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>):<ul><li><span class="m-dim"><a href="group__sensor__ads1x15.html#ga170fe49e01535a92caf1f0793ec25e4f" class="m-doc">EXT_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 1</span></li><li>without voltage divider: 2 mV</li><li>1/gain = 3x: 6 mV</li><li>1/gain = 10x: 20 mV *</li></ul></li></ul></li></ul><p><section class="m-doc-details" id="a6d6e528e5842f3201a0bae6c0bbddf47"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_external_voltage___volt.html#a6d6e528e5842f3201a0bae6c0bbddf47">ExternalVoltage_Volt</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_external_voltage.html">ExternalVoltage</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ads1x15.html#ga6586bfc9f30bc93811b7843a66b461b1">EXT_<wbr/>VOLTAGE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_external_voltage___volt.html">ExternalVoltage_<wbr/>Volt</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_external_voltage.html">ExternalVoltage</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "extVoltage".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__ads1x15.html#ga555dd51ba6d78c3cde1697b1cebca4cf" class="m-doc">EXT_VOLTAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1680,7 +1708,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

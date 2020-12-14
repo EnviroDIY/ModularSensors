@@ -1556,7 +1556,68 @@ div#ez-toc-container {
                 <li><a href="#power">Power</a></li>
           </ul>
         </div>
-          <p>Classes for the TI INA219 current and voltage sensor.</p><section id="sensor_ina219_intro"><h2>Intruduction</h2><p>The <a href="http://www.ti.com/product/INA219">TI INA219</a> is a bi-directional, high-side, current/power monitor that communicates with the board via I2C. The I2C address of INA219 can be any number between 0x40 and 0x4F, depending on the settings of pins A0 and A1. See the datasheet for the possible configurations. The INA219 requires an input voltage of 3.0-5.5V. The gain of this sensor can be increased to increase sensitivity (at the expense of range) but this library assumes the maximum range.</p><p>Commuincation between the INA219 and the mcu is managed by the <a href="https://github.com/adafruit/Adafruit_INA219">Adafruit INA219 Library</a></p><aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the INA219. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id="sensor_ina219_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout">https:/<wbr />/<wbr />learn.adafruit.com/<wbr />adafruit-ina219-current-sensor-breakout</a> and <a href="http://www.ti.com/product/INA219">http:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />INA219</a></p></section><section id="sensor_ina219_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_t_i_i_n_a219.html#aaa32dc606a0094c1b61c3e2bd0280011" class="m-doc">TIINA219::<wbr />TIINA219(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_t_i_i_n_a219.html#a0fe9417e6631c054dac976f867bcbfd8" class="m-doc">TIINA219::<wbr />TIINA219(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_ina219_examples"><h2>Example Code</h2><p>The TI INA219 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ina219">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/TIINA219.h&gt;</span><span class="cp"></span>
+          <p>Classes for the TI INA219 current and voltage sensor.</p><section id="sensor_ina219_intro"><h2>Intruduction</h2><p>The <a href="http://www.ti.com/product/INA219">TI INA219</a> is a bi-directional, high-side, current/power monitor that communicates with the board via I2C. The I2C address of INA219 can be any number between 0x40 and 0x4F, depending on the settings of pins A0 and A1. See the datasheet for the possible configurations. The INA219 requires an input voltage of 3.0-5.5V. The gain of this sensor can be increased to increase sensitivity (at the expense of range) but this library assumes the maximum range.</p><p>Commuincation between the INA219 and the mcu is managed by the <a href="https://github.com/adafruit/Adafruit_INA219">Adafruit INA219 Library</a></p><aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the INA219. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id="sensor_ina219_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout">https:/<wbr />/<wbr />learn.adafruit.com/<wbr />adafruit-ina219-current-sensor-breakout</a> and <a href="http://www.ti.com/product/INA219">http:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />INA219</a></p></section><section id="sensor_ina219_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="aaa32dc606a0094c1b61c3e2bd0280011"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_t_i_i_n_a219.html#aaa32dc606a0094c1b61c3e2bd0280011">TIINA219</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ina219.html#ga914e9eb0442c3a30e5bc4d2dd9d6fd6e">INA219_<wbr/>ADDRESS_<wbr/>BASE</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new TI INA219 object using the default hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the INA219. Use -1 if it is continuously powered.</p><ul><li>The INA219 requires input voltage of 3.0-5.5V, which can be turned off between measurements.</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the BME280; can be any number between 0x40 and 0x4F. The default value is 0x40.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a0fe9417e6631c054dac976f867bcbfd8"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_t_i_i_n_a219.html#a0fe9417e6631c054dac976f867bcbfd8">TIINA219</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ina219.html#ga914e9eb0442c3a30e5bc4d2dd9d6fd6e">INA219_<wbr/>ADDRESS_<wbr/>BASE</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new TI INA219 object using a secondary <em>hardware</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A TwoWire instance for I2C communication. Due to the limitations of the Arduino core, only a hardware I2C instance can be used. For an AVR board, there is only one I2C instance possible and this form of the constructor should not be used. For a SAMD board, this can be used if a secondary I2C port is created on one of the extra SERCOMs.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the INA219. Use -1 if it is continuously powered.</p><ul><li>The INA219 requires input voltage of 3.0-5.5V, which can be turned off between measurements.</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the BME280; can be any number between 0x40 and 0x4F. The default value is 0x40.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_ina219_examples"><h2>Example Code</h2><p>The TI INA219 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ina219">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/TIINA219.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">INA219Power</span>    <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
 <span class="kr">uint8_t</span>      <span class="n">INA219i2c_addr</span> <span class="o">=</span> <span class="mh">0x40</span><span class="p">;</span>            <span class="c1">// 1000000 (Board A0+A1=GND)</span>
@@ -1640,7 +1701,35 @@ div#ez-toc-container {
         </section>
         <section id="current">
           <h2>Current</h2>
-<p><a name="sensor_ina219_current"></a> The current variable from a TI INA219</p><ul><li>Range is between +/-0.4 Amps and +/-3.2 Amps</li><li>Absolute accuracy is range dependent, and approx 2LSB (R accuracy unknown)</li></ul><p>{{ <a href="class_t_i_i_n_a219___current.html#a5a56af2715bb48d28c33355e51829357" class="m-doc">TIINA219_Current::<wbr />TIINA219_Current</a> }}</p>
+<p><a name="sensor_ina219_current"></a> The current variable from a TI INA219</p><ul><li>Range is between +/-0.4 Amps and +/-3.2 Amps</li><li>Absolute accuracy is range dependent, and approx 2LSB (R accuracy unknown)</li></ul><p><section class="m-doc-details" id="a5a56af2715bb48d28c33355e51829357"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_t_i_i_n_a219___current.html#a5a56af2715bb48d28c33355e51829357">TIINA219_Current</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_t_i_i_n_a219.html">TIINA219</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ina219.html#ga6899d4e90cf5defb9b4b569008283a2d">INA219_<wbr/>CURRENT_<wbr/>MA_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_t_i_i_n_a219___current.html">TIINA219_<wbr/>Current</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_t_i_i_n_a219.html">TIINA219</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "TIINA219Amp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gae992d9e948a81c27c050c819d2ee6ae2" class="m-doc">INA219_CURRENT_MA_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1677,7 +1766,35 @@ div#ez-toc-container {
         </section>
         <section id="bus-voltage">
           <h2>Bus Voltage</h2>
-<p><a name="sensor_ina219_volt"></a> The bus voltage variable from a TI INA219</p><ul><li>Range is 0 to 26V</li><li>Accuracy is ±4mV (1 LSB step size)</li></ul><p>{{ <a href="class_t_i_i_n_a219___volt.html#ab134251e4291a02fccf2cebd80cb5e41" class="m-doc">TIINA219_Volt::<wbr />TIINA219_Volt</a> }}</p>
+<p><a name="sensor_ina219_volt"></a> The bus voltage variable from a TI INA219</p><ul><li>Range is 0 to 26V</li><li>Accuracy is ±4mV (1 LSB step size)</li></ul><p><section class="m-doc-details" id="ab134251e4291a02fccf2cebd80cb5e41"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_t_i_i_n_a219___volt.html#ab134251e4291a02fccf2cebd80cb5e41">TIINA219_Volt</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_t_i_i_n_a219.html">TIINA219</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ina219.html#gad076e3257eb16da6929468cbfbfe08f1">INA219_<wbr/>BUS_<wbr/>VOLTAGE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_t_i_i_n_a219___volt.html">TIINA219_<wbr/>Volt</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_t_i_i_n_a219.html">TIINA219</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "TIINA219Volt".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga9abf9259877b68e4e4d6acff128238fe" class="m-doc">INA219_BUS_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
@@ -1713,7 +1830,35 @@ div#ez-toc-container {
         </section>
         <section id="power">
           <h2>Power</h2>
-<p><a name="sensor_ina219_power"></a> The power variable from a TI INA219</p><p>{{ <a href="class_t_i_i_n_a219___power.html#a5f023b65145a2990d010ae2a371422b6" class="m-doc">TIINA219_Power::<wbr />TIINA219_Power</a> }}</p>
+<p><a name="sensor_ina219_power"></a> The power variable from a TI INA219</p><p><section class="m-doc-details" id="a5f023b65145a2990d010ae2a371422b6"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_t_i_i_n_a219___power.html#a5f023b65145a2990d010ae2a371422b6">TIINA219_Power</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_t_i_i_n_a219.html">TIINA219</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__ina219.html#ga08969a6e8aae12bf2af7f80363e12cc9">INA219_<wbr/>POWER_<wbr/>MW_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_t_i_i_n_a219___power.html">TIINA219_<wbr/>Power</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_t_i_i_n_a219.html">TIINA219</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "TIINA219Power".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaace45edbbf103dd1f5c27937fe00b4c4" class="m-doc">INA219_POWER_MW_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1789,7 +1934,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

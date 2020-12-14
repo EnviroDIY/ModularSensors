@@ -1555,7 +1555,141 @@ div#ez-toc-container {
                 <li><a href="#voltage">Voltage</a></li>
           </ul>
         </div>
-          <p>Classes for the PaleoTerra Redox digital preassure sensor.</p><section id="sensor_pt_redox_intro"><h2>Introduction</h2><p>Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato&#x27;s <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> library for software I2C.</p></section><section id="sensor_pt_redox_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://paleoterra.nl/">https:/<wbr />/<wbr />paleoterra.nl/<wbr /></a></p></section><section id="sensor_pt_redox_flags"><h2>Build flags</h2><ul><li><code>-D MS_PALEOTERRA_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none your attached redox may use software I2C. Using some with software I2C and others with hardware I2C is not supported.</p></aside></li></ul></li></ul></section><section id="sensor_pt_redox_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_paleo_terra_redox.html#aa5116034ef3849b7372dd503dc01c682" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#a9cda3d90f1e4a10185d09abae9fa0f0c" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(TwoWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#af1151b8ebe2e040f577179e4d0706412" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(SoftwareWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#a734b46e62adfcfb21d2b3738f15919d1" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, int8_t, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_pt_redox_examples"><h2>Example Code</h2><p>The PaleoTerra Redox is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_pt_redox">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/PaleoTerraRedox.h&gt;</span><span class="cp"></span>
+          <p>Classes for the PaleoTerra Redox digital preassure sensor.</p><section id="sensor_pt_redox_intro"><h2>Introduction</h2><p>Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato&#x27;s <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> library for software I2C.</p></section><section id="sensor_pt_redox_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://paleoterra.nl/">https:/<wbr />/<wbr />paleoterra.nl/<wbr /></a></p></section><section id="sensor_pt_redox_flags"><h2>Build flags</h2><ul><li><code>-D MS_PALEOTERRA_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none your attached redox may use software I2C. Using some with software I2C and others with hardware I2C is not supported.</p></aside></li></ul></li></ul></section><section id="sensor_pt_redox_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="aa5116034ef3849b7372dd503dc01c682"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_paleo_terra_redox.html#aa5116034ef3849b7372dd503dc01c682">PaleoTerraRedox</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__pt__redox.html#ga2c3bf440e1d303158bd6b040a0f5b6e8">MCP3421_<wbr/>ADR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new PaleoTerra Redox object using the primary hardware I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td>The pin on the mcu controlling power to the PaleoTerra redox sensor. Use -1 if it is continuously powered.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the redox probe.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a9cda3d90f1e4a10185d09abae9fa0f0c"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_paleo_terra_redox.html#a9cda3d90f1e4a10185d09abae9fa0f0c">PaleoTerraRedox</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__pt__redox.html#ga2c3bf440e1d303158bd6b040a0f5b6e8">MCP3421_<wbr/>ADR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new PaleoTerra Redox object using a secondary <em>hardware</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A TwoWire instance for I2C communication. Due to the limitations of the Arduino core, only a hardware I2C instance can be used. For an AVR board, there is only one I2C instance possible and this form of the constructor should not be used. For a SAMD board, this can be used if a secondary I2C port is created on one of the extra SERCOMs.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The pin on the mcu controlling power to the PaleoTerra redox sensor. Use -1 if it is continuously powered.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the redox probe.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="af1151b8ebe2e040f577179e4d0706412"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_paleo_terra_redox.html#af1151b8ebe2e040f577179e4d0706412">PaleoTerraRedox</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__pt__redox.html#ga2c3bf440e1d303158bd6b040a0f5b6e8">MCP3421_<wbr/>ADR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new PaleoTerra Redox object using a <em>software</em> I2C instance.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
+<td>A <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> instance for I2C communication.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The pin on the mcu controlling power to the PaleoTerra redox sensor. Use -1 if it is continuously powered.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the redox probe.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>The constructor - need the power pin, optionally can give an instance of TwoWire for I2C communication, an address, and a number of measurements to average.</p>
+<hr/>
+</div>
+</section> <section class="m-doc-details" id="a734b46e62adfcfb21d2b3738f15919d1"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_paleo_terra_redox.html#a734b46e62adfcfb21d2b3738f15919d1">PaleoTerraRedox</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__pt__redox.html#ga2c3bf440e1d303158bd6b040a0f5b6e8">MCP3421_<wbr/>ADR</a></span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new PaleoTerra Redox object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
+<td>The pin on the mcu controlling power to the PaleoTerra redox sensor. Use -1 if it is continuously powered.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu that will be used for I2C data (SDA). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">clockPin</span></td>
+<td>The pin on the mcu that will be used for the I2C clock (SCL). Must be a valid pin number.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
+<td>The I2C address of the redox probe.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_pt_redox_examples"><h2>Example Code</h2><p>The PaleoTerra Redox is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_pt_redox">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/PaleoTerraRedox.h&gt;</span><span class="cp"></span>
 
 <span class="kr">int8_t</span> <span class="n">paleoTerraPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Pin to switch RS485 adapter power</span>
                                           <span class="c1">// on and off (-1 if unconnected)</span>
@@ -1629,7 +1763,35 @@ div#ez-toc-container {
         </section>
         <section id="voltage">
           <h2>Voltage</h2>
-<p><a name="sensor_pt_redox_volt"></a> The voltage variable from a PaleoTerra redox probe</p><ul><li>Accuracy is ±5mV</li></ul><p>{{ <a href="class_paleo_terra_redox___volt.html#a37434c419692957ca05eaf205958df84" class="m-doc">PaleoTerraRedox_Volt::<wbr />PaleoTerraRedox_Volt</a> }}</p>
+<p><a name="sensor_pt_redox_volt"></a> The voltage variable from a PaleoTerra redox probe</p><ul><li>Accuracy is ±5mV</li></ul><p><section class="m-doc-details" id="a37434c419692957ca05eaf205958df84"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_paleo_terra_redox___volt.html#a37434c419692957ca05eaf205958df84">PaleoTerraRedox_Volt</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_sensor.html">Sensor</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__pt__redox.html#gab00fec60dc84603180d3502ab69a68cf">PTR_<wbr/>VOLTAGE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_paleo_terra_redox___volt.html">PaleoTerraRedox_<wbr/>Volt</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_paleo_terra_redox.html">PaleoTerraRedox</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "PTRVoltage".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga90ceabb71f1ffed8830a39ee9e1f3665" class="m-doc">PTR_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1706,7 +1868,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

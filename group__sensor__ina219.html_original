@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>sensors/ directory | ModularSensors</title>
+  <title>Supported Sensors &raquo; TI INA219 module | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
 rel="stylesheet"
@@ -1522,191 +1522,231 @@ div#ez-toc-container {
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
-            </a> &gt; <wbr/>
+            </a>  &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            <a href="files.html">
-              Files
-            </a> &gt; <wbr/>
+            <a href="modules.html">
+              Modules
+            </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-            sensors
+          <a href="group__the__sensors.html">Supported Sensors</a> &gt; <wbr/>
+          </span>
+          <span class="m-breadcrumb">
+            TI INA219
           </span>
 
-          <header class="gp-entry-header">
-            <h1 class="gp-entry-title" itemprop="headline">
+        <header class="gp-entry-header">
+          <h1 class="gp-entry-title" itemprop="headline">
 
-            sensors
-            <span class="m-breadcrumb">
-            /
-            </span>
-            <span class="m-thin">
-            directory
-            </span>
-
-
-            </h1>
-          </header>
-        <p>Contains the source code for all <a href="class_sensor.html" class="m-doc">Sensor</a> subclasses, including the <a href="class_sensor.html" class="m-doc">Sensor</a> subclasses which themselves are the parent classes to other Sensors.</p>
+          TI INA219 <span class="m-thin">module</span>
+          </h1>
+        </header>
         <div class="m-block m-default">
           <ul>
-            <li>
-              Reference
-              <ul>
-                <li><a href="#files">Files</a></li>
-              </ul>
-            </li>
-            <li>
-              Detailed Descriptions
-              <ul>
-              </ul>
-            </li>
+            <li><a href="#sensor_ina219_intro">Intruduction</a></li>
+            <li><a href="#sensor_ina219_datasheet">Sensor Datasheet</a></li>
+            <li><a href="#sensor_ina219_ctor">Sensor Constructor</a></li>
+            <li><a href="#sensor_ina219_examples">Example Code</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#define-members">Defines</a></li>
+                <li><a href="#sensor-timing">Sensor Timing</a></li>
+                <li><a href="#current">Current</a></li>
+                <li><a href="#bus-voltage">Bus Voltage</a></li>
+                <li><a href="#power">Power</a></li>
           </ul>
         </div>
-        <section id="files">
-          <h2>Files</h2>
+          <p>Classes for the TI INA219 current and voltage sensor.</p><section id="sensor_ina219_intro"><h2>Intruduction</h2><p>The <a href="http://www.ti.com/product/INA219">TI INA219</a> is a bi-directional, high-side, current/power monitor that communicates with the board via I2C. The I2C address of INA219 can be any number between 0x40 and 0x4F, depending on the settings of pins A0 and A1. See the datasheet for the possible configurations. The INA219 requires an input voltage of 3.0-5.5V. The gain of this sensor can be increased to increase sensitivity (at the expense of range) but this library assumes the maximum range.</p><p>Commuincation between the INA219 and the mcu is managed by the <a href="https://github.com/adafruit/Adafruit_INA219">Adafruit INA219 Library</a></p><aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the INA219. A secondary hardware I2C on a SAMD board is supported.</p></aside></section><section id="sensor_ina219_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout">https:/<wbr />/<wbr />learn.adafruit.com/<wbr />adafruit-ina219-current-sensor-breakout</a> and <a href="http://www.ti.com/product/INA219">http:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />INA219</a></p></section><section id="sensor_ina219_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_t_i_i_n_a219.html#aaa32dc606a0094c1b61c3e2bd0280011" class="m-doc">TIINA219::<wbr />TIINA219(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_t_i_i_n_a219.html#a0fe9417e6631c054dac976f867bcbfd8" class="m-doc">TIINA219::<wbr />TIINA219(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_ina219_examples"><h2>Example Code</h2><p>The TI INA219 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ina219">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/TIINA219.h&gt;</span><span class="cp"></span>
+
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">INA219Power</span>    <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">uint8_t</span>      <span class="n">INA219i2c_addr</span> <span class="o">=</span> <span class="mh">0x40</span><span class="p">;</span>            <span class="c1">// 1000000 (Board A0+A1=GND)</span>
+<span class="c1">// The INA219 can have one of 16 addresses, depending on the connections of A0</span>
+<span class="c1">// and A1</span>
+<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">INA219ReadingsToAvg</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="c1">// Create an INA219 sensor object</span>
+<span class="n">TIINA219</span> <span class="nf">ina219</span><span class="p">(</span><span class="n">INA219Power</span><span class="p">,</span> <span class="n">INA219i2c_addr</span><span class="p">,</span> <span class="n">INA219ReadingsToAvg</span><span class="p">);</span>
+
+<span class="c1">// Create current, voltage, and power variable pointers for the INA219</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">inaCurrent</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">TIINA219_Current</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ina219</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">inaVolt</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">TIINA219_Volt</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ina219</span><span class="p">,</span>
+                                      <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">inaPower</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TIINA219_Power</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ina219</span><span class="p">,</span>
+                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+        <section id="nested-classes">
+          <h2>Classes</h2>
           <dl class="m-doc">
-            <dt>file <a href="_analog_elec_conductivity_8cpp.html" class="m-doc">AnalogElecConductivity.cpp</a></dt>
-            <dd>This encapsulates an Electrical Conductivity sensors using an anlog input and onboard ADC and ADC ref.</dd>
-            <dt>file <a href="_analog_elec_conductivity_8h.html" class="m-doc">AnalogElecConductivity.h</a></dt>
-            <dd>Encapsulates an Electrical Conductivity sensors using an anlog input and onboard ADC and ADC ref.</dd>
-            <dt>file <a href="_a_o_song_a_m2315_8cpp.html" class="m-doc">AOSongAM2315.cpp</a></dt>
-            <dd>Implements the <a href="class_a_o_song_a_m2315.html" class="m-doc">AOSongAM2315</a> class.</dd>
-            <dt>file <a href="_a_o_song_a_m2315_8h.html" class="m-doc">AOSongAM2315.h</a></dt>
-            <dd>Contains the <a href="class_a_o_song_a_m2315.html" class="m-doc">AOSongAM2315</a> sensor subclass and the variable subclasses <a href="class_a_o_song_a_m2315___humidity.html" class="m-doc">AOSongAM2315_<wbr />Humidity</a> and <a href="class_a_o_song_a_m2315___temp.html" class="m-doc">AOSongAM2315_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_a_o_song_d_h_t_8cpp.html" class="m-doc">AOSongDHT.cpp</a></dt>
-            <dd>Implements the <a href="class_a_o_song_d_h_t.html" class="m-doc">AOSongDHT</a> class.</dd>
-            <dt>file <a href="_apogee_s_q212_8cpp.html" class="m-doc">ApogeeSQ212.cpp</a></dt>
-            <dd>Implements the <a href="class_apogee_s_q212.html" class="m-doc">ApogeeSQ212</a> class.</dd>
-            <dt>file <a href="_apogee_s_q212_8h.html" class="m-doc">ApogeeSQ212.h</a></dt>
-            <dd>Contains the <a href="class_apogee_s_q212.html" class="m-doc">ApogeeSQ212</a> sensor subclass and the variable subclasses <a href="class_apogee_s_q212___p_a_r.html" class="m-doc">ApogeeSQ212_<wbr />PAR</a> and <a href="class_apogee_s_q212___voltage.html" class="m-doc">ApogeeSQ212_<wbr />Voltage</a>.</dd>
-            <dt>file <a href="_atlas_parent_8cpp.html" class="m-doc">AtlasParent.cpp</a></dt>
-            <dd>Implements the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> class.</dd>
-            <dt>file <a href="_atlas_parent_8h.html" class="m-doc">AtlasParent.h</a></dt>
-            <dd>Contains the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor subclass which is itself the parent class for all Atlas sensors.</dd>
-            <dt>file <a href="_atlas_scientific_c_o2_8cpp.html" class="m-doc">AtlasScientificCO2.cpp</a></dt>
-            <dd>Implements the <a href="class_atlas_scientific_c_o2.html" class="m-doc">AtlasScientificCO2</a> class.</dd>
-            <dt>file <a href="_atlas_scientific_c_o2_8h.html" class="m-doc">AtlasScientificCO2.h</a></dt>
-            <dd>Contains the <a href="class_atlas_scientific_c_o2.html" class="m-doc">AtlasScientificCO2</a> subclass of the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor class along with the variable subclasses <a href="class_atlas_scientific_c_o2___c_o2.html" class="m-doc">AtlasScientificCO2_<wbr />CO2</a> and <a href="class_atlas_scientific_c_o2___temp.html" class="m-doc">AtlasScientificCO2_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_atlas_scientific_d_o_8cpp.html" class="m-doc">AtlasScientificDO.cpp</a></dt>
-            <dd>Implements the <a href="class_atlas_scientific_c_o2.html" class="m-doc">AtlasScientificCO2</a> class.</dd>
-            <dt>file <a href="_atlas_scientific_d_o_8h.html" class="m-doc">AtlasScientificDO.h</a></dt>
-            <dd>Contains the <a href="class_atlas_scientific_c_o2.html" class="m-doc">AtlasScientificCO2</a> subclass of the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor class along with the variable subclasses <a href="class_atlas_scientific_d_o___d_omg_l.html" class="m-doc">AtlasScientificDO_<wbr />DOmgL</a> and <a href="class_atlas_scientific_d_o___d_opct.html" class="m-doc">AtlasScientificDO_<wbr />DOpct</a>.</dd>
-            <dt>file <a href="_atlas_scientific_e_c_8cpp.html" class="m-doc">AtlasScientificEC.cpp</a></dt>
-            <dd>Implements the <a href="class_atlas_scientific_e_c.html" class="m-doc">AtlasScientificEC</a> class.</dd>
-            <dt>file <a href="_atlas_scientific_e_c_8h.html" class="m-doc">AtlasScientificEC.h</a></dt>
-            <dd>Contains the <a href="class_atlas_scientific_c_o2.html" class="m-doc">AtlasScientificCO2</a> subclass of the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor class along with the variable subclasses <a href="class_atlas_scientific_e_c___cond.html" class="m-doc">AtlasScientificEC_<wbr />Cond</a>, <a href="class_atlas_scientific_e_c___t_d_s.html" class="m-doc">AtlasScientificEC_<wbr />TDS</a>, <a href="class_atlas_scientific_e_c___salinity.html" class="m-doc">AtlasScientificEC_<wbr />Salinity</a> and <a href="class_atlas_scientific_e_c___specific_gravity.html" class="m-doc">AtlasScientificEC_<wbr />SpecificGravity</a>.</dd>
-            <dt>file <a href="_atlas_scientific_o_r_p_8h.html" class="m-doc">AtlasScientificORP.h</a></dt>
-            <dd>Contains the <a href="class_atlas_scientific_r_t_d.html" class="m-doc">AtlasScientificRTD</a> subclass of the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor class along with the variable subclass <a href="class_atlas_scientific_o_r_p___potential.html" class="m-doc">AtlasScientificORP_<wbr />Potential</a>.</dd>
-            <dt>file <a href="_atlas_scientificp_h_8h.html" class="m-doc">AtlasScientificpH.h</a></dt>
-            <dd>Contains the <a href="class_atlas_scientific_r_t_d.html" class="m-doc">AtlasScientificRTD</a> subclass of the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor class along with the variable subclass <a href="class_atlas_scientificp_h__p_h.html" class="m-doc">AtlasScientificpH_<wbr />pH</a>.</dd>
-            <dt>file <a href="_atlas_scientific_r_t_d_8h.html" class="m-doc">AtlasScientificRTD.h</a></dt>
-            <dd>Contains the <a href="class_atlas_scientific_r_t_d.html" class="m-doc">AtlasScientificRTD</a> subclass of the <a href="class_atlas_parent.html" class="m-doc">AtlasParent</a> sensor class along with the variable subclass <a href="class_atlas_scientific_r_t_d___temp.html" class="m-doc">AtlasScientificRTD_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_bosch_b_m_e280_8cpp.html" class="m-doc">BoschBME280.cpp</a></dt>
-            <dd>Implements the <a href="class_bosch_b_m_e280.html" class="m-doc">BoschBME280</a> class.</dd>
-            <dt>file <a href="_bosch_b_m_e280_8h.html" class="m-doc">BoschBME280.h</a></dt>
-            <dd>Contains the <a href="class_bosch_b_m_e280.html" class="m-doc">BoschBME280</a> sensor subclass and the variable subclasses <a href="class_bosch_b_m_e280___temp.html" class="m-doc">BoschBME280_<wbr />Temp</a>, <a href="class_bosch_b_m_e280___humidity.html" class="m-doc">BoschBME280_<wbr />Humidity</a>, <a href="class_bosch_b_m_e280___pressure.html" class="m-doc">BoschBME280_<wbr />Pressure</a>, and <a href="class_bosch_b_m_e280___altitude.html" class="m-doc">BoschBME280_<wbr />Altitude</a>.</dd>
-            <dt>file <a href="_campbell_o_b_s3_8cpp.html" class="m-doc">CampbellOBS3.cpp</a></dt>
-            <dd>Implements the <a href="class_campbell_o_b_s3.html" class="m-doc">CampbellOBS3</a> class.</dd>
-            <dt>file <a href="_campbell_o_b_s3_8h.html" class="m-doc">CampbellOBS3.h</a></dt>
-            <dd>Contains the <a href="class_campbell_o_b_s3.html" class="m-doc">CampbellOBS3</a> sensor subclass and the variable subclasses <a href="class_campbell_o_b_s3___turbidity.html" class="m-doc">CampbellOBS3_<wbr />Turbidity</a> and <a href="class_campbell_o_b_s3___voltage.html" class="m-doc">CampbellOBS3_<wbr />Voltage</a>.</dd>
-            <dt>file <a href="_decagon5_t_m_8cpp.html" class="m-doc">Decagon5TM.cpp</a></dt>
-            <dd>Implements the <a href="class_decagon5_t_m.html" class="m-doc">Decagon5TM</a> class.</dd>
-            <dt>file <a href="_decagon5_t_m_8h.html" class="m-doc">Decagon5TM.h</a></dt>
-            <dd>Contains the <a href="class_decagon5_t_m.html" class="m-doc">Decagon5TM</a> subclass of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class along with the variable subclasses <a href="class_decagon5_t_m___ea.html" class="m-doc">Decagon5TM_<wbr />Ea</a>, <a href="class_decagon5_t_m___temp.html" class="m-doc">Decagon5TM_<wbr />Temp</a>, and <a href="class_decagon5_t_m___v_w_c.html" class="m-doc">Decagon5TM_<wbr />VWC</a>.</dd>
-            <dt>file <a href="_decagon_c_t_d_8h.html" class="m-doc">DecagonCTD.h</a></dt>
-            <dd>Contains the <a href="class_decagon_c_t_d.html" class="m-doc">DecagonCTD</a> subclass of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class along with the variable subclasses <a href="class_decagon_c_t_d___cond.html" class="m-doc">DecagonCTD_<wbr />Cond</a>, <a href="class_decagon_c_t_d___temp.html" class="m-doc">DecagonCTD_<wbr />Temp</a>, and <a href="class_decagon_c_t_d___depth.html" class="m-doc">DecagonCTD_<wbr />Depth</a>.</dd>
-            <dt>file <a href="_decagon_e_s2_8h.html" class="m-doc">DecagonES2.h</a></dt>
-            <dd>Contains the <a href="class_decagon_e_s2.html" class="m-doc">DecagonES2</a> subclass of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class along with the variable subclasses <a href="class_decagon_e_s2___cond.html" class="m-doc">DecagonES2_<wbr />Cond</a> and <a href="class_decagon_e_s2___temp.html" class="m-doc">DecagonES2_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_external_voltage_8cpp.html" class="m-doc">ExternalVoltage.cpp</a></dt>
-            <dd>Implements the <a href="class_external_voltage.html" class="m-doc">ExternalVoltage</a> class.</dd>
-            <dt>file <a href="_external_voltage_8h.html" class="m-doc">ExternalVoltage.h</a></dt>
-            <dd>This file contains the <a href="class_external_voltage.html" class="m-doc">ExternalVoltage</a> sensor subclass and the <a href="class_external_voltage___volt.html" class="m-doc">ExternalVoltage_<wbr />Volt</a> variable subclass.</dd>
-            <dt>file <a href="_freescale_m_p_l115_a2_8cpp.html" class="m-doc">FreescaleMPL115A2.cpp</a></dt>
-            <dd>Implements the <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> class.</dd>
-            <dt>file <a href="_freescale_m_p_l115_a2_8h.html" class="m-doc">FreescaleMPL115A2.h</a></dt>
-            <dd>Contains the <a href="class_m_p_l115_a2.html" class="m-doc">MPL115A2</a> sensor subclass and the variable subclasses <a href="class_m_p_l115_a2___temp.html" class="m-doc">MPL115A2_<wbr />Temp</a> and <a href="class_m_p_l115_a2___pressure.html" class="m-doc">MPL115A2_<wbr />Pressure</a>.</dd>
-            <dt>file <a href="_in_situ_r_d_o_8h.html" class="m-doc">InSituRDO.h</a></dt>
-            <dd>Contains the <a href="class_in_situ_r_d_o.html" class="m-doc">InSituRDO</a> sensor subclass and the variable subclasses <a href="class_in_situ_r_d_o___temp.html" class="m-doc">InSituRDO_<wbr />Temp</a>, <a href="class_in_situ_r_d_o___d_opct.html" class="m-doc">InSituRDO_<wbr />DOpct</a>, and <a href="class_in_situ_r_d_o___d_omg_l.html" class="m-doc">InSituRDO_<wbr />DOmgL</a>.</dd>
-            <dt>file <a href="_keller_acculevel_8h.html" class="m-doc">KellerAcculevel.h</a></dt>
-            <dd>Contains the <a href="class_keller_acculevel.html" class="m-doc">KellerAcculevel</a> sensor subclass and the <a href="class_keller_acculevel___pressure.html" class="m-doc">KellerAcculevel_<wbr />Pressure</a>, <a href="class_keller_acculevel___temp.html" class="m-doc">KellerAcculevel_<wbr />Temp</a>, and <a href="class_keller_acculevel___height.html" class="m-doc">KellerAcculevel_<wbr />Height</a> variable subclasses.</dd>
-            <dt>file <a href="_keller_nanolevel_8h.html" class="m-doc">KellerNanolevel.h</a></dt>
-            <dd>Contains the <a href="class_keller_nanolevel.html" class="m-doc">KellerNanolevel</a> sensor subclass and the <a href="class_keller_nanolevel___pressure.html" class="m-doc">KellerNanolevel_<wbr />Pressure</a>, <a href="class_keller_nanolevel___temp.html" class="m-doc">KellerNanolevel_<wbr />Temp</a>, and <a href="class_keller_nanolevel___height.html" class="m-doc">KellerNanolevel_<wbr />Height</a> variable subclasses.</dd>
-            <dt>file <a href="_keller_parent_8cpp.html" class="m-doc">KellerParent.cpp</a></dt>
-            <dd>Implements the <a href="class_keller_parent.html" class="m-doc">KellerParent</a> class.</dd>
-            <dt>file <a href="_keller_parent_8h.html" class="m-doc">KellerParent.h</a></dt>
-            <dd>Contains the <a href="class_keller_parent.html" class="m-doc">KellerParent</a> sensor subclass, itself used as a parent class for all Keller modbus sensors.</dd>
-            <dt>file <a href="_max_botix_sonar_8cpp.html" class="m-doc">MaxBotixSonar.cpp</a></dt>
-            <dd>Implements the <a href="class_max_botix_sonar.html" class="m-doc">MaxBotixSonar</a> class.</dd>
-            <dt>file <a href="_max_botix_sonar_8h.html" class="m-doc">MaxBotixSonar.h</a></dt>
-            <dd>Contains the <a href="class_max_botix_sonar.html" class="m-doc">MaxBotixSonar</a> sensor subclass and the <a href="class_max_botix_sonar___range.html" class="m-doc">MaxBotixSonar_<wbr />Range</a> variable subclass.</dd>
-            <dt>file <a href="_maxim_d_s18_8cpp.html" class="m-doc">MaximDS18.cpp</a></dt>
-            <dd>Implements the <a href="class_maxim_d_s18.html" class="m-doc">MaximDS18</a> class.</dd>
-            <dt>file <a href="_maxim_d_s18_8h.html" class="m-doc">MaximDS18.h</a></dt>
-            <dd>Contains the <a href="class_maxim_d_s18.html" class="m-doc">MaximDS18</a> sensor subclass and the <a href="class_maxim_d_s18___temp.html" class="m-doc">MaximDS18_<wbr />Temp</a> variable subclass.</dd>
-            <dt>file <a href="_maxim_d_s3231_8cpp.html" class="m-doc">MaximDS3231.cpp</a></dt>
-            <dd>Implements the <a href="class_maxim_d_s18.html" class="m-doc">MaximDS18</a> class.</dd>
-            <dt>file <a href="_maxim_d_s3231_8h.html" class="m-doc">MaximDS3231.h</a></dt>
-            <dd>Contains the <a href="class_maxim_d_s3231.html" class="m-doc">MaximDS3231</a> sensor subclass and the <a href="class_maxim_d_s3231___temp.html" class="m-doc">MaximDS3231_<wbr />Temp</a> variable subclass.</dd>
-            <dt>file <a href="_mea_spec_m_s5803_8cpp.html" class="m-doc">MeaSpecMS5803.cpp</a></dt>
-            <dd>Implements the <a href="class_mea_spec_m_s5803.html" class="m-doc">MeaSpecMS5803</a> class.</dd>
-            <dt>file <a href="_mea_spec_m_s5803_8h.html" class="m-doc">MeaSpecMS5803.h</a></dt>
-            <dd>Contains the <a href="class_mea_spec_m_s5803.html" class="m-doc">MeaSpecMS5803</a> semsor subclass and the variable subclasses <a href="class_mea_spec_m_s5803___temp.html" class="m-doc">MeaSpecMS5803_<wbr />Temp</a> and <a href="class_mea_spec_m_s5803___pressure.html" class="m-doc">MeaSpecMS5803_<wbr />Pressure</a>.</dd>
-            <dt>file <a href="_meter_teros11_8cpp.html" class="m-doc">MeterTeros11.cpp</a></dt>
-            <dd>Implements the <a href="class_meter_teros11.html" class="m-doc">MeterTeros11</a> class.</dd>
-            <dt>file <a href="_meter_teros11_8h.html" class="m-doc">MeterTeros11.h</a></dt>
-            <dd>Contains the <a href="class_meter_teros11.html" class="m-doc">MeterTeros11</a> sensor subclass and the variable subclasses <a href="class_meter_teros11___ea.html" class="m-doc">MeterTeros11_<wbr />Ea</a>, <a href="class_meter_teros11___temp.html" class="m-doc">MeterTeros11_<wbr />Temp</a>, and <a href="class_meter_teros11___v_w_c.html" class="m-doc">MeterTeros11_<wbr />VWC</a>.</dd>
-            <dt>file <a href="_paleo_terra_redox_8h.html" class="m-doc">PaleoTerraRedox.h</a></dt>
-            <dd>Contains the <a href="class_paleo_terra_redox.html" class="m-doc">PaleoTerraRedox</a> semsor subclass and the variable subclass <a href="class_paleo_terra_redox___volt.html" class="m-doc">PaleoTerraRedox_<wbr />Volt</a>.</dd>
-            <dt>file <a href="_processor_stats_8cpp.html" class="m-doc">ProcessorStats.cpp</a></dt>
-            <dd>Implements the <a href="class_processor_stats.html" class="m-doc">ProcessorStats</a> class.</dd>
-            <dt>file <a href="_processor_stats_8h.html" class="m-doc">ProcessorStats.h</a></dt>
-            <dd>Contains the <a href="class_processor_stats.html" class="m-doc">ProcessorStats</a> sensor subclass and the variable subclasses <a href="class_processor_stats___battery.html" class="m-doc">ProcessorStats_<wbr />Battery</a>, <a href="class_processor_stats___free_ram.html" class="m-doc">ProcessorStats_<wbr />FreeRam</a>, and <a href="class_processor_stats___sample_number.html" class="m-doc">ProcessorStats_<wbr />SampleNumber</a>.</dd>
-            <dt>file <a href="_rain_counter_i2_c_8cpp.html" class="m-doc">RainCounterI2C.cpp</a></dt>
-            <dd>Implements the <a href="class_rain_counter_i2_c.html" class="m-doc">RainCounterI2C</a> class.</dd>
-            <dt>file <a href="_rain_counter_i2_c_8h.html" class="m-doc">RainCounterI2C.h</a></dt>
-            <dd>Contains the <a href="class_rain_counter_i2_c.html" class="m-doc">RainCounterI2C</a> sensor subclass and the variable subclasses <a href="class_rain_counter_i2_c___tips.html" class="m-doc">RainCounterI2C_<wbr />Tips</a> and <a href="class_rain_counter_i2_c___depth.html" class="m-doc">RainCounterI2C_<wbr />Depth</a>.</dd>
-            <dt>file <a href="_s_d_i12_sensors_8cpp.html" class="m-doc">SDI12Sensors.cpp</a></dt>
-            <dd>Implements the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class.</dd>
-            <dt>file <a href="_s_d_i12_sensors_8h.html" class="m-doc">SDI12Sensors.h</a></dt>
-            <dd>Contains the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> sensor subclass, itself a parent class for all devices that communicate over SDI-12.</dd>
-            <dt>file <a href="_tally_counter_i2_c_8h.html" class="m-doc">TallyCounterI2C.h</a></dt>
-            <dd>Implements the <a href="class_tally_counter_i2_c.html" class="m-doc">TallyCounterI2C</a> sensor subclass.</dd>
-            <dt>file <a href="_t_i_i_n_a219_8cpp.html" class="m-doc">TIINA219.cpp</a></dt>
-            <dd>Implements the <a href="class_t_i_i_n_a219.html" class="m-doc">TIINA219</a> class.</dd>
-            <dt>file <a href="_t_i_i_n_a219_8h.html" class="m-doc">TIINA219.h</a></dt>
-            <dd>Contains the <a href="class_t_i_i_n_a219.html" class="m-doc">TIINA219</a> sensor subclass and the variale subclasses <a href="class_t_i_i_n_a219___current.html" class="m-doc">TIINA219_<wbr />Current</a>, <a href="class_t_i_i_n_a219___volt.html" class="m-doc">TIINA219_<wbr />Volt</a>, and <a href="class_t_i_i_n_a219___power.html" class="m-doc">TIINA219_<wbr />Power</a>.</dd>
-            <dt>file <a href="_yosemitech_parent_8cpp.html" class="m-doc">YosemitechParent.cpp</a></dt>
-            <dd>Implements the <a href="class_yosemitech_parent.html" class="m-doc">YosemitechParent</a> class.</dd>
-            <dt>file <a href="_yosemitech_parent_8h.html" class="m-doc">YosemitechParent.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_parent.html" class="m-doc">YosemitechParent</a> sensor subclass, itself a parent class for all Yosemitech sensors that communicate via Modbus and are supported by the EnviroDIY Yosemitech library.</dd>
-            <dt>file <a href="_yosemitech_y4000_8h.html" class="m-doc">YosemitechY4000.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y4000.html" class="m-doc">YosemitechY4000</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y4000___d_omg_l.html" class="m-doc">YosemitechY4000_<wbr />DOmgL</a>, <a href="class_yosemitech_y4000___turbidity.html" class="m-doc">YosemitechY4000_<wbr />Turbidity</a>, <a href="class_yosemitech_y4000___cond.html" class="m-doc">YosemitechY4000_<wbr />Cond</a>, <a href="class_yosemitech_y4000__p_h.html" class="m-doc">YosemitechY4000_<wbr />pH</a>, <a href="class_yosemitech_y4000___temp.html" class="m-doc">YosemitechY4000_<wbr />Temp</a>, <a href="class_yosemitech_y4000___o_r_p.html" class="m-doc">YosemitechY4000_<wbr />ORP</a>, <a href="class_yosemitech_y4000___chlorophyll.html" class="m-doc">YosemitechY4000_<wbr />Chlorophyll</a>, and <a href="class_yosemitech_y4000___b_g_a.html" class="m-doc">YosemitechY4000_<wbr />BGA</a>.</dd>
-            <dt>file <a href="_yosemitech_y504_8h.html" class="m-doc">YosemitechY504.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y504.html" class="m-doc">YosemitechY504</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y504___d_opct.html" class="m-doc">YosemitechY504_<wbr />DOpct</a>, <a href="class_yosemitech_y504___temp.html" class="m-doc">YosemitechY504_<wbr />Temp</a>, and <a href="class_yosemitech_y504___d_omg_l.html" class="m-doc">YosemitechY504_<wbr />DOmgL</a>.</dd>
-            <dt>file <a href="_yosemitech_y510_8h.html" class="m-doc">YosemitechY510.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y510.html" class="m-doc">YosemitechY510</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y510___turbidity.html" class="m-doc">YosemitechY510_<wbr />Turbidity</a> and <a href="class_yosemitech_y510___temp.html" class="m-doc">YosemitechY510_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_yosemitech_y511_8h.html" class="m-doc">YosemitechY511.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y511.html" class="m-doc">YosemitechY511</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y511___turbidity.html" class="m-doc">YosemitechY511_<wbr />Turbidity</a> and <a href="class_yosemitech_y511___temp.html" class="m-doc">YosemitechY511_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_yosemitech_y514_8h.html" class="m-doc">YosemitechY514.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y514.html" class="m-doc">YosemitechY514</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y514___chlorophyll.html" class="m-doc">YosemitechY514_<wbr />Chlorophyll</a> and <a href="class_yosemitech_y514___temp.html" class="m-doc">YosemitechY514_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_yosemitech_y520_8h.html" class="m-doc">YosemitechY520.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y520.html" class="m-doc">YosemitechY520</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y520___cond.html" class="m-doc">YosemitechY520_<wbr />Cond</a> and <a href="class_yosemitech_y520___temp.html" class="m-doc">YosemitechY520_<wbr />Temp</a>.</dd>
-            <dt>file <a href="_yosemitech_y532_8h.html" class="m-doc">YosemitechY532.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y532.html" class="m-doc">YosemitechY532</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y532__p_h.html" class="m-doc">YosemitechY532_<wbr />pH</a>, <a href="class_yosemitech_y532___temp.html" class="m-doc">YosemitechY532_<wbr />Temp</a>, and <a href="class_yosemitech_y532___voltage.html" class="m-doc">YosemitechY532_<wbr />Voltage</a>.</dd>
-            <dt>file <a href="_yosemitech_y533_8h.html" class="m-doc">YosemitechY533.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y533.html" class="m-doc">YosemitechY533</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y533__p_h.html" class="m-doc">YosemitechY533_<wbr />pH</a>, <a href="class_yosemitech_y533___temp.html" class="m-doc">YosemitechY533_<wbr />Temp</a>, and <a href="class_yosemitech_y533___voltage.html" class="m-doc">YosemitechY533_<wbr />Voltage</a>.</dd>
-            <dt>file <a href="_yosemitech_y550_8h.html" class="m-doc">YosemitechY550.h</a></dt>
-            <dd>Contains the <a href="class_yosemitech_y550.html" class="m-doc">YosemitechY550</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y550___c_o_d.html" class="m-doc">YosemitechY550_<wbr />COD</a>, <a href="class_yosemitech_y550___temp.html" class="m-doc">YosemitechY550_<wbr />Temp</a>, and <a href="class_yosemitech_y550___turbidity.html" class="m-doc">YosemitechY550_<wbr />Turbidity</a>.</dd>
-            <dt>file <a href="_zebra_tech_d_opto_8h.html" class="m-doc">ZebraTechDOpto.h</a></dt>
-            <dd>Contains the <a href="class_zebra_tech_d_opto.html" class="m-doc">ZebraTechDOpto</a> sensor subclass and the variable subclasses <a href="class_zebra_tech_d_opto___temp.html" class="m-doc">ZebraTechDOpto_<wbr />Temp</a>, <a href="class_zebra_tech_d_opto___d_opct.html" class="m-doc">ZebraTechDOpto_<wbr />DOpct</a>, and <a href="class_zebra_tech_d_opto___d_omg_l.html" class="m-doc">ZebraTechDOpto_<wbr />DOmgL</a>.</dd>
+            <dt>
+              class <a href="class_t_i_i_n_a219.html" class="m-doc">TIINA219</a>
+            </dt>
+            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__ina219.html" class="m-doc">TexasInstruments INA219 sensor</a>.</dd>
+            <dt>
+              class <a href="class_t_i_i_n_a219___current.html" class="m-doc">TIINA219_Current</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__ina219.html#sensor_ina219_current" class="m-doc">current output</a> from a <a href="group__sensor__ina219.html" class="m-doc">TI INA219 power and current monitor</a>.</dd>
+            <dt>
+              class <a href="class_t_i_i_n_a219___volt.html" class="m-doc">TIINA219_Volt</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__ina219.html#sensor_ina219_volt" class="m-doc">bus voltage output</a> from a <a href="group__sensor__ina219.html" class="m-doc">TI INA219 power and current monitor</a>.</dd>
+            <dt>
+              class <a href="class_t_i_i_n_a219___power.html" class="m-doc">TIINA219_Power</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__ina219.html#sensor_ina219_power" class="m-doc">power use output</a> calculated from the voltage and current measured by a <a href="group__sensor__ina219.html" class="m-doc">TI INA219 power and current monitor</a>.</dd>
           </dl>
         </section>
+        <section id="define-members">
+          <h2>Defines</h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae657102d4f426f1ba498f0cfa2f032c8" class="m-doc">INA219_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the INA219 can report 3 values.</dd>
 
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga914e9eb0442c3a30e5bc4d2dd9d6fd6e" class="m-doc">INA219_ADDRESS_BASE</a><span class="m-dim m-right-m m-text-right"> = 0x40</span></span>
+            </dt>
+            <dd>The default address of the INA219.</dd>
 
 
+          </dl>
+        </section>
+        <section id="sensor-timing">
+          <h2>Sensor Timing</h2>
+<p><a name="sensor_ina219_timing"></a> The sensor timing for a TI INA219</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6277cd4a8181a9864ccd02d3666083c5" class="m-doc">INA219_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 100</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the INA219 warms up in 100ms.</dd>
 
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9f79186f724bf8ab6bcb1efc440120bb" class="m-doc">INA219_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 4000</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the INA219 is stable after 4000ms.</dd>
+
+              <dd><p>Stable numbers can be acheived after 500ms, but waiting up to 4s gave more consistent numbers based on tests using INA219timingTest.ino</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2bf1af354a440531bd4e78ac2cb4b701" class="m-doc">INA219_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 1100</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the INA219 takes 1100ms to complete a measurement.</dd>
+
+              <dd><p>A single ADC conversion takes &gt;532 µs (586 µs typical) at 12 bit resolution, but in tests waiting closer to 1.1s gave data with a slightly better standard deviation.</p></dd>
+
+          </dl>
+        </section>
+        <section id="current">
+          <h2>Current</h2>
+<p><a name="sensor_ina219_current"></a> The current variable from a TI INA219</p><ul><li>Range is between +/-0.4 Amps and +/-3.2 Amps</li><li>Absolute accuracy is range dependent, and approx 2LSB (R accuracy unknown)</li></ul><p>{{ <a href="class_t_i_i_n_a219___current.html#a5a56af2715bb48d28c33355e51829357" class="m-doc">TIINA219_Current::<wbr />TIINA219_Current</a> }}</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gae992d9e948a81c27c050c819d2ee6ae2" class="m-doc">INA219_CURRENT_MA_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd>Decimals places in string representation; current should have 1.</dd>
+
+              <dd><ul><li>resolution is 12-bit<ul><li>0.8mA using +/-3.2 Amp range</li><li>0.1mA using +/-0.4 Amp range</li></ul></li></ul></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa65d688bdef44acd905afdcbaad2fb60" class="m-doc">INA219_CURRENT_MA_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; current is stored in sensorValues[0].</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga378f2b0a51b1b93eedaa65d0b249a47a" class="m-doc">INA219_CURRENT_MA_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "electricCurrent"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;electricCurrent&quot;.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0bff4522a781e8ace0517a6d789874c1" class="m-doc">INA219_CURRENT_MA_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "milliamp"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;milliamp&quot;.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6899d4e90cf5defb9b4b569008283a2d" class="m-doc">INA219_CURRENT_MA_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "TIINA219Amp"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;TIINA219Amp&quot;.</dd>
+
+
+          </dl>
+        </section>
+        <section id="bus-voltage">
+          <h2>Bus Voltage</h2>
+<p><a name="sensor_ina219_volt"></a> The bus voltage variable from a TI INA219</p><ul><li>Range is 0 to 26V</li><li>Accuracy is ±4mV (1 LSB step size)</li></ul><p>{{ <a href="class_t_i_i_n_a219___volt.html#ab134251e4291a02fccf2cebd80cb5e41" class="m-doc">TIINA219_Volt::<wbr />TIINA219_Volt</a> }}</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9abf9259877b68e4e4d6acff128238fe" class="m-doc">INA219_BUS_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+            </dt>
+            <dd>Decimals places in string representation; bus voltage should have 4 - resolution is 0.001V.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1b5721175ae35e620bf65b55a06e24ed" class="m-doc">INA219_BUS_VOLTAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; bus voltage is stored in sensorValues[1].</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga3ff995e1a8c3325c71ddc160d5999b5d" class="m-doc">INA219_BUS_VOLTAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "voltage"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2ffb06670be111b009ec70b31f20ca5f" class="m-doc">INA219_BUS_VOLTAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "volt"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;volt&quot;.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gad076e3257eb16da6929468cbfbfe08f1" class="m-doc">INA219_BUS_VOLTAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "TIINA219Volt"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;TIINA219Volt&quot;.</dd>
+
+
+          </dl>
+        </section>
+        <section id="power">
+          <h2>Power</h2>
+<p><a name="sensor_ina219_power"></a> The power variable from a TI INA219</p><p>{{ <a href="class_t_i_i_n_a219___power.html#a5f023b65145a2990d010ae2a371422b6" class="m-doc">TIINA219_Power::<wbr />TIINA219_Power</a> }}</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaace45edbbf103dd1f5c27937fe00b4c4" class="m-doc">INA219_POWER_MW_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+            </dt>
+            <dd>Decimals places in string representation; power draw should have 2 - resolution is 0.01mW.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf1e627a71a024cec334c6fe0700a453f" class="m-doc">INA219_POWER_MW_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; power draw is stored in sensorValues[2].</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga251f2b45a5f7db32d51c9b5f2a3f2e96" class="m-doc">INA219_POWER_MW_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "electricPower"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;electricPower&quot;.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gab56c1e390fad894c644fd8c83444fa32" class="m-doc">INA219_POWER_MW_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "milliwatt"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;milliwatt&quot;.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga08969a6e8aae12bf2af7f80363e12cc9" class="m-doc">INA219_POWER_MW_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "TIINA219Power"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;TIINA219Power&quot;.</dd>
+
+
+          </dl>
+        </section>
 
                     </div>
                   </div>
@@ -1749,7 +1789,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

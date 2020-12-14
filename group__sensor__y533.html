@@ -1558,7 +1558,51 @@ div#ez-toc-container {
                 <li><a href="#voltage">Voltage</a></li>
           </ul>
         </div>
-          <p>Classes for the Yosemitech Y533 oxidation/reduction potential (ORP) sensor.</p><section id="sensor_y533_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf">Manual</a></li><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf">Modbus Instructions</a></li></ul><aside class="m-note m-info"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id="sensor_y533_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_yosemitech_y533.html#a8b3445ffffadbe24ce765136f238b8e9" class="m-doc">YosemitechY533::<wbr />YosemitechY533</a> }}</p><hr/></section><section id="sensor_y533_examples"><h2>Example Code</h2><p>The Yosemitech Y533 ORP sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_y533">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/YosemitechY533.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Yosemitech Y533 oxidation/reduction potential (ORP) sensor.</p><section id="sensor_y533_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf">Manual</a></li><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf">Modbus Instructions</a></li></ul><aside class="m-note m-info"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id="sensor_y533_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a8b3445ffffadbe24ce765136f238b8e9"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y533.html#a8b3445ffffadbe24ce765136f238b8e9">YosemitechY533</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">enablePin</span><span class="m-dim"> = -1</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Yosemitech Y533 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">modbusAddress</span></td>
+<td>The modbus address of the sensor.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">stream</span></td>
+<td>An Arduino data stream for modbus communication. See <a class="m-doc" href="page_arduino_streams.html">notes</a> for more information on what streams can be used.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td>The pin on the mcu controlling power to the Y533. Use -1 if it is continuously powered.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin2</span></td>
+<td>The pin on the mcu controlling power to the RS485 adapter, if it is different from that used to power the sensor. Use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">enablePin</span></td>
+<td>The pin on the mcu controlling the direction enable on the RS485 adapter, if necessary; use -1 or omit if not applicable.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<aside class="m-note m-info"><h4>Note</h4><p>An RS485 adapter with integrated flow control is strongly recommended.</p></aside>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_y533_examples"><h2>Example Code</h2><p>The Yosemitech Y533 ORP sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_y533">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/YosemitechY533.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for modbus</span>
 <span class="c1">// Extra hardware and software serial ports are created in the &quot;Settings for</span>
@@ -1648,7 +1692,35 @@ div#ez-toc-container {
         </section>
         <section id="ph">
           <h2>pH</h2>
-<p><a name="sensor_y533_ph"></a> The pH variable from a Yosemitch Y533</p><ul><li>Range is 2-12 pH</li><li>Accuracy is ±0.1 pH</li></ul><p>{{ <a href="class_yosemitech_y533__p_h.html#ab6a1c1f6de1449261bfbbc0a664620a3" class="m-doc">YosemitechY533_pH::<wbr />YosemitechY533_pH</a> }}</p>
+<p><a name="sensor_y533_ph"></a> The pH variable from a Yosemitch Y533</p><ul><li>Range is 2-12 pH</li><li>Accuracy is ±0.1 pH</li></ul><p><section class="m-doc-details" id="ab6a1c1f6de1449261bfbbc0a664620a3"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y533__p_h.html#ab6a1c1f6de1449261bfbbc0a664620a3">YosemitechY533_pH</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y533.html#ga83c0f3f4b41786ce54a68dbe157a78c4">Y533_<wbr/>PH_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y533__p_h.html">YosemitechY533_<wbr/>pH</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y533pH".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga9024522f69571d43a9095e125a69ca7c" class="m-doc">Y533_PH_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1684,7 +1756,35 @@ div#ez-toc-container {
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_y533_temp"></a> The temperature variable from a Yosemitch Y533</p><ul><li>Range is 0°C to + 50°C</li><li>Accuracy is ± 0.2°C</li></ul><p>{{ <a href="class_yosemitech_y533___temp.html#ac066775cfbbf97b2b211838ee9368235" class="m-doc">YosemitechY533_Temp::<wbr />YosemitechY533_Temp</a> }}</p>
+<p><a name="sensor_y533_temp"></a> The temperature variable from a Yosemitch Y533</p><ul><li>Range is 0°C to + 50°C</li><li>Accuracy is ± 0.2°C</li></ul><p><section class="m-doc-details" id="ac066775cfbbf97b2b211838ee9368235"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y533___temp.html#ac066775cfbbf97b2b211838ee9368235">YosemitechY533_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y533.html#ga7ff2688431f962a85eb7ba489f5fc4ee">Y533_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y533___temp.html">YosemitechY533_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y533Temp".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaece495e7720107cc78d14cb53218f4e6" class="m-doc">Y533_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1720,7 +1820,35 @@ div#ez-toc-container {
         </section>
         <section id="voltage">
           <h2>Voltage</h2>
-<p><a name="sensor_y533_volt"></a> The voltage variable from a Yosemitch Y533</p><ul><li>Range is -999 ~ 999 mV</li><li>Accuracy is ± 20 mV</li></ul><p>{{ <a href="class_yosemitech_y533___voltage.html#a65605a008bd3facd962a7731b540db13" class="m-doc">YosemitechY533_Voltage::<wbr />YosemitechY533_Voltage</a> }}</p>
+<p><a name="sensor_y533_volt"></a> The voltage variable from a Yosemitch Y533</p><ul><li>Range is -999 ~ 999 mV</li><li>Accuracy is ± 20 mV</li></ul><p><section class="m-doc-details" id="a65605a008bd3facd962a7731b540db13"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y533___voltage.html#a65605a008bd3facd962a7731b540db13">YosemitechY533_Voltage</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y533.html#gae8e74e449bbbc4f24aa9586677166965">Y533_<wbr/>VOLTAGE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_yosemitech_y533___voltage.html">YosemitechY533_<wbr/>Voltage</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "Y533Potential".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaf41fa01dc1aa871c91f1144d202eee11" class="m-doc">Y533_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
@@ -1796,7 +1924,7 @@ div#ez-toc-container {
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.0 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
