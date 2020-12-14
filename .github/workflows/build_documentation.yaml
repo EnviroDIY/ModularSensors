@@ -34,6 +34,89 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
 
+      - name: Setup pip packages
+        run: pip3 install jinja2 Pygments
+
+      - name: Restore or cache build-essential
+        uses: actions/cache@v2
+        with:
+          path: ~/build-essential
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/build-essential') }}
+
+      - name: Install build-essential
+        run: sudo apt-get -y install build-essential
+
+      - name: Restore or cache graphviz
+        uses: actions/cache@v2
+        with:
+          path: ~/graphviz
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/graphviz') }}
+
+      - name: Install graphviz
+        run: sudo apt-get -y install graphviz
+
+      - name: Restore or cache flex
+        uses: actions/cache@v2
+        with:
+          path: ~/flex
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/flex') }}
+
+      - name: Install flex
+        run: sudo apt-get -y install flex
+
+      - name: Restore or cache bison
+        uses: actions/cache@v2
+        with:
+          path: ~/bison
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/bison') }}
+
+      - name: Install bison
+        run: sudo apt-get -y install bison
+
+      - name: Restore or cache texlive-base
+        uses: actions/cache@v2
+        with:
+          path: ~/texlive-base
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/texlive-base') }}
+
+      - name: Install texlive-base
+        run: sudo apt-get -y install texlive-base
+
+      - name: Restore or cache texlive-latex-extra
+        uses: actions/cache@v2
+        with:
+          path: ~/texlive-latex-extra
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/texlive-latex-extra') }}
+
+      - name: Install texlive-latex-extra
+        run: sudo apt-get -y install texlive-latex-extra
+
+      - name: Restore or cache texlive-fonts-extra
+        uses: actions/cache@v2
+        with:
+          path: ~/texlive-fonts-extra
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/texlive-fonts-extra') }}
+
+      - name: Install texlive-fonts-extra
+        run: sudo apt-get -y install texlive-fonts-extra
+
+      - name: Restore or cache texlive-fonts-recommended
+        uses: actions/cache@v2
+        with:
+          path: ~/texlive-fonts-recommended
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/texlive-fonts-recommended') }}
+
+      - name: Install texlive-fonts-recommended
+        run: sudo apt-get -y install texlive-fonts-recommended
+
+      # check out the most current version of Doxygen
+      - name: Checkout m.css
+        uses: actions/checkout@v2
+        with:
+          # Repository name with owner. For example, actions/checkout
+          repository: doxygen/doxygen
+          path: code_docs/m.css
+
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css
         uses: actions/checkout@v2
