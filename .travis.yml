@@ -78,15 +78,6 @@ jobs:
         - git config --global user.email "sdamiano@stroudcenter.org"
         - git config --global user.name "SRGDamia1"
         - git config --global push.default simple
-        - sudo apt-get update
-        - sudo apt-get -y install build-essential
-        - sudo apt-get -y install graphviz
-        - sudo apt-get -y install flex
-        - sudo apt-get -y install bison
-        - sudo apt-get -y install texlive-base
-        - sudo apt-get -y install texlive-latex-extra
-        - sudo apt-get -y install texlive-fonts-extra
-        - sudo apt-get -y install texlive-fonts-recommended
         - pip3 install jinja2 Pygments
       install:
         - cd $TRAVIS_BUILD_DIR

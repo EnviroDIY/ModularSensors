@@ -12,6 +12,9 @@ on:
     types: # This configuration does not affect the page_build event above
       - created
 
+env:
+  DOXYGEN_VERSION: 1.8.20
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,6 +28,7 @@ jobs:
 
       - name: Restore or Cache pip
         uses: actions/cache@v2
+        id: cache_pip
         with:
           path: ~/.cache/pip
           # if requirements.txt hasn't changed, then it will be a "cache hit" and pip will be restored
@@ -32,8 +36,80 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
 
+      - name: Restore or Cache PlatformIO and Libraries
+        uses: actions/cache@v2
+        id: cache_pio
+        with:
+          path: ~/.platformio
+          # if nothing in the lock files has changed, then it will be a "cache hit"
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
       - name: Set up Python
         uses: actions/setup-python@v2
+
+      # This should be pulled from cache, if there's not a new version
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
+
+      # Install *all* the dependencies!
+      # We're including the dependencies just so the includes can follow in the doxygen pre-processor
+      - name: Install the dependencies at global level
+        run: |
+          pio lib -g install envirodiy/EnviroDIY_DS3231
+          pio lib -g install arduino-libraries/RTCZero
+          pio lib -g install greygnome/EnableInterrupt
+          pio lib -g install greiman/SdFat
+          pio lib -g install vshymanskyy/TinyGSM
+          pio lib -g install knolleary/PubSubClient
+          pio lib -g install adafruit/'Adafruit BusIO'
+          pio lib -g install adafruit/'Adafruit Unified Sensor'
+          pio lib -g install https://github.com/soligen2010/Adafruit_ADS1X15.git
+          pio lib -g install adafruit/'Adafruit AM2315'
+          pio lib -g install adafruit/'Adafruit BME280 Library'
+          pio lib -g install adafruit/'DHT sensor library'
+          pio lib -g install adafruit/'Adafruit INA219'
+          pio lib -g install adafruit/'Adafruit MPL115A2'
+          pio lib -g install paulstoffregen/OneWire
+          pio lib -g install milesburton/DallasTemperature
+          pio lib -g install envirodiy/SDI-12
+          pio lib -g install northernwidget/MS5803
+          pio lib -g install https://github.com/NorthernWidget-Skunkworks/Tally_Library.git#Dev_I2C
+          pio lib -g install envirodiy/SensorModbusMaster
+          pio lib -g install envirodiy/KellerModbus
+          pio lib -g install envirodiy/YosemitechModbus
+          pio lib -g install vshymanskyy/StreamDebugger
+          pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git
+          pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
+          pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
+          pio lib -g install https://github.com/Testato/SoftwareWire.git
+
+      - name: Update Libraries from Cache
+        run: pio lib -g update
+
+      - name: Install GraphViz (DOT)
+        run: sudo apt-get -y install graphviz
+
+      - name: Restore or Cache Doxygen
+        id: cache_doxygen
+        uses: actions/cache@v2
+        with:
+          path: doxygen-src
+          key: ${{ runner.os }}-doxygen-$DOXYGEN_VERSION
+
+      - name: Download and build doxygen
+        if: steps.cache_doxygen.outputs.cache-hit != 'true'
+        env:
+          TRAVIS_BUILD_DIR: ${{ github.workspace }}
+        run: |
+          cd ${{ github.workspace }}
+          chmod +x continuous_integration/build-install-doxygen.sh
+          sh continuous_integration/build-install-doxygen.sh
+
+      # This should be pulled from cache, if there's not a new version
+      - name: Install Pygments and other m.css requirements
+        run: pip3 install jinja2 Pygments
 
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css
@@ -43,40 +119,13 @@ jobs:
           repository: SRGDamia1/m.css
           path: code_docs/m.css
 
-      - name: Update the style sheets
+      - name: Generate all the docymentation
+        env:
+          TRAVIS_BUILD_DIR: ${{ github.workspace }}
         run: |
-          cd ${{ github.workspace }}/code_docs/m.css/css/EnviroDIY
-          python ${{ github.workspace }}/code_docs/m.css/css/postprocess.py "m-EnviroDIY.css"
-          python ${{ github.workspace }}/code_docs/m.css/css/postprocess.py "m-EnviroDIY.css" "m-documentation.css" -o "m-EnviroDIY+documentation.compiled.css"
-          python ${{ github.workspace }}/code_docs/m.css/css/postprocess.py "m-EnviroDIY.css" "m-theme-EnviroDIY.css" "m-documentation.css" --no-import -o "m-EnviroDIY.documentation.compiled.css"
-          cp ${{ github.workspace }}/code_docs/m.css/css/EnviroDIY/m-EnviroDIY+documentation.compiled.css ${{ github.workspace }}/code_docs/ModularSensors/docs/css
-
-      - name: Creating dox files from example read-me files
-        run: |
-          cd ${{ github.workspace }}/code_docs/ModularSensors/docs
-          python documentExamples.py
-          ls
-
-      - name: Generate Doxygen code documentation
-        uses: mattnotmitt/doxygen-action@v1.2.1
-        with:
-          working-directory: /github/workspace/code_docs/ModularSensors/docs
-          doxyfile-path: /github/workspace/code_docs/ModularSensors/docs/Doxyfile
-
-      - name: Fix errant xml section names in examples as generated by Doxygen
-        run: |
-          cd ${{ github.workspace }}/code_docs/ModularSensors/docs
-          python fixXmlExampleSections.py
-
-      - name: Post-processing Doxygen xml with m.css
-        run: |
-          cd ${{ github.workspace }}/code_docs/ModularSensors/docs
-          python ${{ github.workspace }}/code_docs/m.css/documentation/doxygen.py "mcss-conf.py" --no-doxygen --output output_mcss.log --templates "${{ github.workspace }}/code_docs/m.css/documentation/templates/EnviroDIY"
-
-      - name: Copy function docs into group docs
-        run: |
-          cd ${{ github.workspace }}/code_docs/ModularSensors/docs
-          python copyFunctions.py
+          cd ${{ github.workspace }}
+          chmod +x continuous_integration/generate-documentation.sh
+          sh continuous_integration/generate-documentation.sh
 
       - name: Deploy to github pages
         uses: peaceiris/actions-gh-pages@v3

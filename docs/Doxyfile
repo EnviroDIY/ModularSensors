@@ -2218,42 +2218,42 @@ INCLUDE_PATH           = ../src \
                          ../src/publishers \
                          ../src/sensors \
                          ../src/watchdogs \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SoftwareWire" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/NeoSWSerial/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/AltSoftSerial" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SoftwareSerial_ExtInts/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/StreamDebugger" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/YosemitechModbus/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/KellerModbus/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SensorModbusMaster/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Tally_Library/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/MS5803/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SDI-12/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/DallasTemperature" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/OneWire" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit MPL115A2" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit INA219" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/DHT sensor library" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit BME280 Library" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit AM2315" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit ADS1X15" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit Unified Sensor" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/Adafruit BusIO" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/PubSubClient/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/TinyGSM/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/SdFat/src" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/EnableInterrupt" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/EnableInterrupt/utility" \
-                "c:/Users/sdamiano/Documents/GitHub/EnviroDIY/ModularSensors/.pio/libdeps/mayfly/EnviroDIY_DS3231/src" \
-                "C:/Users/sdamiano/.platformio/packages/toolchain-atmelavr/avr/include" \
-                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/Wire/src" \
-                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/SPI/src" \
-                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/cores/arduino" \
-                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/variants/mayfly" \
-                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src" \
-                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/HID/src" \
-                "C:/Users/sdamiano/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src" \
-                "C:/Users/sdamiano/.platformio/packages/tool-unity"
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SoftwareWire" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/NeoSWSerial/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/AltSoftSerial" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SoftwareSerial_ExtInts/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/StreamDebugger" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/YosemitechModbus/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/KellerModbus/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SensorModbusMaster/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Tally_Library/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/MS5803/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SDI-12/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/DallasTemperature" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/OneWire" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit MPL115A2" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit INA219" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/DHT sensor library" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit BME280 Library" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit AM2315" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit ADS1X15" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit Unified Sensor" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/Adafruit BusIO" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/PubSubClient/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/TinyGSM/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/SdFat/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/EnableInterrupt" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/EnableInterrupt/utility" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/lib/EnviroDIY_DS3231/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/toolchain-atmelavr/avr/include" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/Wire/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/SPI/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/cores/arduino" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/variants/mayfly" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/EEPROM/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/HID/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/framework-arduino-avr/libraries/SoftwareSerial/src" \
+                "${PLATFORMIO_GLOBALLIB_DIR}/packages/tool-unity"
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
@@ -2420,7 +2420,7 @@ HIDE_UNDOC_RELATIONS   = NO
 # set to NO
 # The default value is: NO.
 
-HAVE_DOT               = NO
+HAVE_DOT               = YES
 
 # The DOT_NUM_THREADS specifies the number of dot invocations doxygen is allowed
 # to run in parallel. When set to 0 doxygen will base this on the number of

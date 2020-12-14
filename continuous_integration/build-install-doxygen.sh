@@ -3,6 +3,16 @@
 # Exit with nonzero exit code if anything fails
 set -e
 
+# install all the dependencies for make for Doxygen
+sudo apt-get update
+sudo apt-get -y install build-essential
+sudo apt-get -y install flex
+sudo apt-get -y install bison
+sudo apt-get -y install texlive-base
+sudo apt-get -y install texlive-latex-extra
+sudo apt-get -y install texlive-fonts-extra
+sudo apt-get -y install texlive-fonts-recommended
+
 cd $TRAVIS_BUILD_DIR
 
 if [ ! -f $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen ]; then
