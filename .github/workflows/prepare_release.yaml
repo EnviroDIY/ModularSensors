@@ -162,14 +162,33 @@ jobs:
           echo "::debug::Deleting extra files to decrease size of zip"
           echo "::debug::Removing Git folders"
           zip -d -q ModularSensors_Dependencies "*/.gitattributes" "*/.gitignore" "*/.gitmodules" "*/.github/*" "*.sh"  "*/Doxyfile" "*/.travis.yml"
+      - name: Remove some extras from the zip
+        continue-on-error: true
+        run: |
           echo "::debug::Removing other pdfs"
           zip -d -q libraries "*/doc/*.pdf"
+      - name: Remove some extras from the zip
+        continue-on-error: true
+        run: |
           echo "::debug::Removing TinyGSM extras"
           zip -d -q libraries "*/TinyGSM/extras/*"
+      - name: Remove some extras from the zip
+        continue-on-error: true
+        run: |
           echo "::debug::Removing YosemitechModbus extras"
           zip -d -q libraries "*/YosemitechModbus/doc/*"
+      - name: Remove some extras from the zip
+        continue-on-error: true
+        run: |
           echo "::debug::Removing SDFat extras"
           zip -d -q libraries "*/SdFat/extras/*"
+
+      - name: Get notes
+        id: generate_notes
+        uses: anmarkoulis/commitizen-changelog-reader@master
+        with:
+          tag_name: ${{ env.VERSION }}
+          changelog: ChangeLog.md
 
       # Create a new release
       - name: Create Release

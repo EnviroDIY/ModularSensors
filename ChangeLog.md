@@ -1,10 +1,52 @@
-# v0.25.0
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+
+## v0.27.3
+
+## Multiple new Sensors and Workflows
+
+### New Features:
+
+#### New Sensors:
+- PaleoTerra Redox sensors
+- Northren Widget Tally Counters
+- simple analog electrical conductance sensors
+- InSitu RDO PRO-X fugged dissoled oxygen sensors
+
+#### New Publisher:
+- Add Soracom/Ubidots as a data publisher
+
+#### Other New Features:
+- Migrated from Travis CI to Github Actions for continuous integration
+- Deprecated wiki, moving contents to docs folder where needed
+- Add static variable for marked time in UTC
+- Add user name and password for GSM/SIM for XBee Cellular
+- Support software I2C or secondary hardware I2C for all sensors possible
+
+### Improvements:
+- Complete re-styling of the Doxygen output to be similar to envirodiy.org
+- Add enourmous amounts of documentation
+- Improved explanations and added walkthrough of menu a la carte example
+- Added example calculating specific conductance where applicable
+- For SDI-12 sensors, added calls to additional data commands (D1-D9) if full number of expected results are not returned by D0.
+- For SDI-12 sensors, added ability to disable concurrent measurements using the build flag `MS_SDI12_NON_CONCURRENT`.
+  - NOTE:  Setting the build flag disables concurrent measurements for *ALL* SDI-12 sensors!
+
+### Known Issues
+- The instructions for using most of the examples is out of date.
+
+
+## v0.25.0
 
 ## v0.25.0: Styling & Doxygen Code Documentation
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3908530.svg)](https://doi.org/10.5281/zenodo.3908530)
 
-## Downloads
+### Downloads
 
 **[libraries_v0.25.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.25.0/libraries_v0.25.0.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
@@ -13,8 +55,6 @@ In your the Arduino Software (IDE), import the library zip file following the in
 
 #### Installing for PlatformIO:
 Extract the contents of library zip to your project's 'lib' folder.
-
-## Change Log
 
 ### New Features:
 - Automated code documentation using [Doxygen](https://www.doxygen.nl/index.html), now available at https://envirodiy.github.io/ModularSensors/
@@ -36,7 +76,7 @@ Extract the contents of library zip to your project's 'lib' folder.
 For more details, see [Pull Request #309: The style sheet](https://github.com/EnviroDIY/ModularSensors/pull/309)
 
 
-# v0.24.1
+## v0.24.1
 
 ## v0.24.1: Modem Restructuring
 
@@ -52,14 +92,12 @@ In your the Arduino Software (IDE), import the library zip file following the in
 #### Installing for PlatformIO:
 Extract the contents of library zip to your project's 'lib' folder.
 
-## Change Log
-
 ### Improvements
 
 Restructured modem so that it no longer operates as a sensor.  Variables tied to the modem are now effectively calculated variables and all values from the modem will be offset by 1 sending cycle (ie, the signal strength posted will always be the strength from the prior send, not the current one).
 
 
-# v0.23.13
+## v0.23.13
 
 ## v0.23.13: More agressive attempts to set clock
 
@@ -75,8 +113,6 @@ In your the Arduino Software (IDE), import the library zip file following the in
 #### Installing for PlatformIO:
 Extract the contents of library zip to your project's 'lib' folder.
 
-## Change Log
-
 ### Improvements:
 - Much more aggressive attempts to set the clock if the time is not reasonable - before 01Sep2019 or after 01Jan2025.
     - The LED will flicker and warnings will be sent over the serial port for invalid times at every check.
@@ -85,7 +121,7 @@ Extract the contents of library zip to your project's 'lib' folder.
 - Using automatic network technology and carrier profile for Digi LTE-M XBee3's - with the current firmware there is not a significant time savings in manually selecting the carrier and manually selecting the carrier gives no options when the relative signal strength of the carriers changes.
 
 
-# v0.23.11
+## v0.23.11
 
 ## v0.23.11: Watchdogs and More
 
@@ -100,8 +136,6 @@ In your the Arduino Software (IDE), import the libraries.zip file following the 
 
 #### Installing for PlatformIO:
 Extract the contents of libraries.zip to your project's 'lib' folder.
-
-## Change Log
 
 ### New Features:
 - A watch-dog timer has been implemented for both the AVR and SAMD21 (and 51) boards to restart the boards in case of failure during logging
@@ -124,7 +158,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times.  This is a reflection of a change in the Adafruit library.  The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion.  The update function and all variable array functions should behave properly.
 
 
-# v0.22.5
+## v0.22.5
 
 ## v0.22.5: Modem Simplification
 
@@ -142,8 +176,6 @@ In your the Arduino Software (IDE), import the libraries.zip file following the 
 
 #### Installing for PlatformIO:
 Extract the contents of libraries.zip to your project's 'lib' folder.
-
-## Change Log
 
 ### New Features:
 - LoggerModem has become a parent class.  All modems now exist as separate subclass objects.
@@ -179,7 +211,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times.  This is a reflection of a change in the Adafruit library.  The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion.  The update function and all variable array functions should behave properly.
 
 
-# v0.21.4
+## v0.21.4
 
 ## v0.21.4:  Deep debug error
 
@@ -193,13 +225,11 @@ In your the Arduino Software (IDE), import the libraries.zip file following the 
 #### Installing for PlatformIO:
 Extract the contents of libraries.zip to your project's 'lib' folder.
 
-## Change Log
-
 ### Bug Fixes
 - Fixed minor bug in debugging created in previous release
 
 
-# v0.21.3
+## v0.21.3
 
 ## v0.21.3: Minor Bugs and Simplified Debugging
 
@@ -214,7 +244,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Typo fixes in comments
 
 
-# v0.21.2
+## v0.21.2
 
 ## v0.21.2:  Fix write to SD card
 
@@ -222,7 +252,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Fixed bug intoduced in 0.21.0 preventing writing to SD card - file must be closed (not sync'ed)
 
 
-# v0.21.0
+## v0.21.0
 
 ## v0.21.0: Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
 
@@ -261,7 +291,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - The sensor class and all of its subclasses still require input arguments in the constructor.
 
 
-# v0.19.6
+## v0.19.6
 
 ## v0.19.6: Modem Improvements & ADS1X15 Generalization
 
@@ -279,7 +309,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Fixed bug with ADS1115 for M0/SAM21
 
 
-# v0.19.3
+## v0.19.3
 
 ## v0.19.3: Bug fix and example re-working
 
@@ -290,7 +320,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Fixes bug in sending data to the WikiWatershed / [Monitor My Watershed](https://monitormywatershed.org/) data sharing portal.
 
 
-# v0.19.2
+## v0.19.2
 
 ## v0.19.2: Decreased Data Consumption
 
@@ -304,7 +334,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Refactored data publishers as a new class rather than subclasses of loggers
 
 
-# v0.17.2
+## v0.17.2
 
 ## v0.17.2: Major Update!
 
@@ -318,7 +348,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - All library dependencies will need to be updated to match versions in the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file.
 
 
-# v0.12.2
+## v0.12.2
 
 ## v0.12.2: Calculated variables and bug fixes
 
@@ -333,7 +363,7 @@ See PR #160 for a full list of improvements and fixes.
 NOTE: This **THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!** All `.ino` files will need to be updated to follow the updated examples.
 
 
-# v0.11.6
+## v0.11.6
 
 ## Fixed Longer Logger Intervals and Improved Documentation
 
@@ -345,7 +375,7 @@ NOTE: This **THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!** All `.ino` files 
 
 
 
-# v0.11.3
+## v0.11.3
 
 ## Added sensors and fixed timing bugs
 
@@ -368,7 +398,7 @@ Bug Fixes and other Tweeks:
 - Removed the "checkForUpdate()" function.  When asking for a value from a variable, you now must explicitly state whether you want the variable to ask its parent sensor for an updated value or not.  By default, it will _not_ ask the parent sensor to update, but only return the last value received or -9999 if a value has never been received.
 
 
-# v0.9.0
+## v0.9.0
 
 ## Timing Improvements
 
@@ -381,12 +411,12 @@ Added MS5803, external voltage, and external tip counter
 Fixed bugs with modem and 5TM
 
 
-# v0.6.10
+## v0.6.10
 
 ## Fixes bugs in description and examples
 
 
-# v0.6.9
+## v0.6.9
 
 ## Uniformity of missing values, averaging for all sensors
 
@@ -396,7 +426,7 @@ Fixed bugs with modem and 5TM
 - Example platformio.ini files
 
 
-# 0.5.4-beta
+## 0.5.4-beta
 
 ## 0.5.4-beta
 
@@ -409,7 +439,7 @@ Fixed bugs with modem and 5TM
 * Inching closer to full support for SAMD21 (M0/Zero) processors, though still some bugs present.
 
 
-# v0.3.0-beta
+## v0.3.0-beta
 
 ## Beta Release 0.3.0
 
@@ -422,14 +452,14 @@ Added the modem as a "sensor" which can return it's signal strength as a variabl
 Added a "debugging" mode, accessible by pushing a button while the checkForDebugMode function is running.
 
 
-# v0.2.5-beta
+## v0.2.5-beta
 
 ## Impoved setup functions
 
 Slight rearrangement of setup functions to improve efficiency.
 
 
-# v0.2.4-beta
+## v0.2.4-beta
 
 ## Another beta release
 
@@ -444,7 +474,7 @@ Put disconnect step within if block so it only tries to disconnect if it was con
 Fixed extra spaces in CSV
 
 
-# v0.2.2-beta
+## v0.2.2-beta
 
 ## Initial release
 

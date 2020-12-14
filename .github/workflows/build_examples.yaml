@@ -127,10 +127,3 @@ jobs:
         run: platformio ci --project-conf="continuous_integration/platformio.ini"
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
-
-      - name: List libraries
-        run: |
-          echo "::debug::Listing local libraries"
-          pio lib list
-          echo "::debug::Listing global libraries"
-          pio lib -g list
