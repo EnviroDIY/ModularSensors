@@ -13,7 +13,7 @@ on:
       - created
 
 env:
-  DOXYGEN_VERSION: 1.8.20
+  DOXYGEN_VERSION: Release_1_8_20
 
 jobs:
   build:
@@ -109,11 +109,7 @@ jobs:
 
       # This should be pulled from cache, if there's not a new version
       - name: Install Pygments and other m.css requirements
-        run: pip3 install jinja2 Pygments
-
-      # Install beautiful soup
-      - name: Install Pygments and other m.css requirements
-        run: apt-get install python3-bs4
+        run: pip3 install jinja2 Pygments beautifulsoup4
 
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css

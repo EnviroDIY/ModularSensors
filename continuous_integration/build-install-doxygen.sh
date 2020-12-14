@@ -19,7 +19,7 @@ if [ ! -f $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen ]; then
 
     # Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
     echo "Cloning doxygen repository..."
-    git clone https://github.com/doxygen/doxygen.git doxygen-src
+    git clone https://github.com/doxygen/doxygen.git doxygen-src --branch $DOXYGEN_VERSION --depth 1
 
     cd doxygen-src
 
