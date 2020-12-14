@@ -504,10 +504,10 @@ int8_t Logger::getTZOffset(void) {
 
 uint32_t Logger::getNowEpoch(void) {
     // Depreciated in 0.23.4, left in for compatiblity
-    return getNowEpochT0();
+    return getNowEpochUTC();
 }
 
-uint32_t Logger::getNowEpochT0(void) {
+uint32_t Logger::getNowEpochUTC(void) {
     uint32_t currentEpochTime = rtc.now().getEpoch();
     if (!isRTCSane(currentEpochTime)) {
         PRINTOUT(F("Bad time "), currentEpochTime, " ",
@@ -515,7 +515,7 @@ uint32_t Logger::getNowEpochT0(void) {
                  " Setting to ",
                  formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
         currentEpochTime = EPOCH_TIME_LOWER_SANITY_SECS;
-        setNowEpochT0(currentEpochTime);
+        setNowEpochUTC(currentEpochTime);
     }
 
     return currentEpochTime;
@@ -529,7 +529,7 @@ uint32_t Logger::getNowEpochTz(void) {
 void Logger::setNowEpoch(uint32_t ts) {
     rtc.setEpoch(ts);
 }  // Depreciated in 0.23.4, left in for compatiblity
-void Logger::setNowEpochT0(uint32_t ts) {
+void Logger::setNowEpochUTC(uint32_t ts) {
     rtc.setEpoch(ts);
 }
 
@@ -540,25 +540,25 @@ uint32_t Logger::getNowEpoch(void) {
     return getNowEpochTz();
 }
 
-uint32_t Logger::getNowEpochT0(void) {
+uint32_t Logger::getNowEpochUTC(void) {
     uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
     if (!isRTCSane(currentEpochTime)) {
         PRINTOUT(F("Bad time, resetting clock."), currentEpochTime, " ",
                  formatDateTime_ISO8601(currentEpochTime), " Setting to ",
                  formatDateTime_ISO8601(EPOCH_TIME_LOWER_SANITY_SECS));
         currentEpochTime = EPOCH_TIME_LOWER_SANITY_SECS;
-        setNowEpochT0(currentEpochTime);
+        setNowEpochUTC(currentEpochTime);
     }
     return currentEpochTime;
 }
 
 uint32_t Logger::getNowEpochTz(void) {
-    return (uint32_t)(getNowEpochT0() + (_loggerRTCOffset * HOURS_TO_SECS));
+    return (uint32_t)(getNowEpochUTC() + (_loggerRTCOffset * HOURS_TO_SECS));
 }
 void Logger::setNowEpoch(uint32_t ts) {
     zero_sleep_rtc.setEpoch(ts);
 }  // Depreciated in 0.23.4, left in for compatiblity
-void Logger::setNowEpochT0(uint32_t ts) {
+void Logger::setNowEpochUTC(uint32_t ts) {
     zero_sleep_rtc.setEpoch(ts);
 }
 
@@ -575,9 +575,9 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime) {
     // Depreciated
     return dtFromEpochTz(epochTime);
 }
-DateTime Logger::dtFromEpochT0(uint32_t epochTimeT0) {
-    // DateTime dt(epochTimeT0-EPOCH_TIME_OFF);
-    DateTimeClass(dt, epochTimeT0) return dt;
+DateTime Logger::dtFromEpochUTC(uint32_t epochTimeUTC) {
+    // DateTime dt(epochTimeUTC-EPOCH_TIME_OFF);
+    DateTimeClass(dt, epochTimeUTC) return dt;
 }
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time
@@ -647,17 +647,17 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
            formatDateTime_ISO8601(UTCEpochSeconds));
 
     // Check the current RTC time
-    uint32_t cur_logT0_sec = getNowEpochT0();
-    MS_DBG(F("    Current Epoch UST Time on RTC :"), cur_logT0_sec, F("->"),
-           formatDateTime_ISO8601(cur_logT0_sec));
-    uint32_t time_diff_sec = abs((long)((uint64_t)cur_logT0_sec) -
+    uint32_t cur_logUTC_sec = getNowEpochUTC();
+    MS_DBG(F("    Current Epoch UST Time on RTC :"), cur_logUTC_sec, F("->"),
+           formatDateTime_ISO8601(cur_logUTC_sec));
+    uint32_t time_diff_sec = abs((long)((uint64_t)cur_logUTC_sec) -
                                  (long)((uint64_t)UTCEpochSeconds));
     MS_DBG(F("    Offset between epoch NIST and RTC:"), time_diff_sec);
 
 // If the RTC and NIST disagree by more than 5 seconds, set the clock
 #define NIST_TIME_DIFF_SEC 5
     if (time_diff_sec > NIST_TIME_DIFF_SEC) {
-        setNowEpochT0(UTCEpochSeconds);
+        setNowEpochUTC(UTCEpochSeconds);
         PRINTOUT(F("Internal Clock set "), formatDateTime_ISO8601(nistTz_sec));
         retVal = true;
     } else {
@@ -1240,7 +1240,7 @@ void Logger::printFileHeader(Stream* stream) {
 // time -  out over an Arduino stream
 void Logger::printSensorDataCSV(Stream* stream) {
     String csvString = "";
-    dtFromEpochT0(Logger::markedEpochTimeTz).addToString(csvString);
+    dtFromEpochUTC(Logger::markedEpochTimeTz).addToString(csvString);
     csvString += ',';
     stream->print(csvString);
     for (uint8_t i = 0; i < getArrayVarCount(); i++) {
@@ -1689,8 +1689,8 @@ void Logger::begin() {
     // ",ccTimeTZ.unixtime()); MS_DBG("Sw Build Time UTC:
     // ",ccTimeUTC.year(),"/",ccTimeUTC.month(),"/",ccTimeUTC.date(),"
     // ",ccTimeUTC.hour(),":",ccTimeUTC.minute(),":",ccTimeUTC.second(),"
-    // secs2kT0
-    // ",ccTimeT0.unixtime(),"Tz=",getTimeZone());
+    // secs2kUTC
+    // ",ccTimeUTC.unixtime(),"Tz=",getTimeZone());
 
 #if defined ADAFRUIT_FEATHERWING_RTC_SD || defined USE_RTCLIB
     MS_DBG("ExtRTC init");
@@ -1726,12 +1726,12 @@ void Logger::begin() {
             MS_DBG("ExtRTC UTC ", rNow_dt.year(), "/", rNow_dt.month(), "/",
                    rNow_dt.date(), " ", rNow_dt.hour(), ":", rNow_dt.minute(),
                    ":", rNow_dt.second(), " or epoch ", rnow_usecs);
-            MS_DBG("Good if between ", COMPILE_TIME_UT0, "<", rnow_usecs, "<",
+            MS_DBG("Good if between ", COMPILE_TIME_UTC, "<", rnow_usecs, "<",
                    TIME_FUT_UPPER_UT0);
-            if ((rnow_usecs < COMPILE_TIME_UT0) ||
+            if ((rnow_usecs < COMPILE_TIME_UTC) ||
                 (rnow_usecs > TIME_FUT_UPPER_UT0)) {
-                rtcExtPhy.adjust(ccTimeT0);
-                MS_DBG("ExtRTC UTC set to compile time UTC ", COMPILE_TIME_UT0,
+                rtcExtPhy.adjust(ccTimeUTC);
+                MS_DBG("ExtRTC UTC set to compile time UTC ", COMPILE_TIME_UTC,
                        " which is Tz ", __DATE__, " ", __TIME__);
             }
         }

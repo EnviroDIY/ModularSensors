@@ -1148,7 +1148,7 @@ class Logger {
     /**
      * @brief Get Epoch Time with no offsets
      */
-    static uint32_t getNowEpochT0(void);
+    static uint32_t getNowEpochUTC(void);
     /**
      * @brief Get Epoch time with zone offset
      */
@@ -1156,12 +1156,12 @@ class Logger {
     /**
      * @brief Set Epoch time with no offsets
      */
-    static void setNowEpochT0(uint32_t ts);  // Set Epoch with standard UST
+    static void setNowEpochUTC(uint32_t ts);  // Set Epoch with standard UST
     // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
     /**
      * @brief DateTime from epoch time
      */
-    static DateTime dtFromEpochT0(uint32_t epochTime);
+    static DateTime dtFromEpochUTC(uint32_t epochTime);
     /**
      * @brief DateTime from epoch time with local time zone offset
      */

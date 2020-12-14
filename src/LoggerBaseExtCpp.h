@@ -1413,13 +1413,13 @@ void Logger::postLogLine(uint8_t instance, int16_t rspParam) {
 // If debug ...keep record
 #if defined MS_LOGGERBASE_POSTS
 #if 0
-    if (0 == postsLogHndl.print(getNowEpochT0())) {
+    if (0 == postsLogHndl.print(getNowEpochUTC())) {
         PRINTOUT(F("publishDataQuedToRemote postsLog err"));
     }
 #else
 
     char tempBuffer[TEMP_BUFFER_SZ];
-    formatDateTime_ISO8601(getNowEpochT0())
+    formatDateTime_ISO8601(getNowEpochUTC())
         .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
     postsLogHndl.print(tempBuffer);
 #endif
