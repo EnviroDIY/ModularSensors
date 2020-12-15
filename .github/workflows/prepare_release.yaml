@@ -189,7 +189,7 @@ jobs:
         uses: anmarkoulis/commitizen-changelog-reader@master
         with:
           # NOTE:  Need to add the refs/tags to work with the generate notes action
-          tag_name: ${{ join(['refs/tags/', env.VERSION], '') }}
+          tag_name: ${{ format('refs/tags/{0}', env.VERSION) }}
           changelog: ChangeLog.md
 
       # Create a new release
