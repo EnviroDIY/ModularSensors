@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.27.5 (2020-12-15)
 
-## Multiple new Sensors and Workflows
+## [Multiple new Sensors and Workflows](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
+
+### Downloads
+
+**[ModularSensors_Dependencies_0.27.5.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.27.5/ModularSensors_Dependencies_0.27.5.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
 ### New Features:
 
@@ -42,19 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.25.0
 
-## v0.25.0: Styling & Doxygen Code Documentation
+## [v0.25.0: Styling & Doxygen Code Documentation](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.25.0)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3908530.svg)](https://doi.org/10.5281/zenodo.3908530)
 
 ### Downloads
 
 **[libraries_v0.25.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.25.0/libraries_v0.25.0.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
-
-#### Installing on the Arduino IDE:
-In your the Arduino Software (IDE), import the library zip file following the instructions for "Manual Installation" from https://www.arduino.cc/en/Guide/Libraries#toc5. You cannot directly import the zip using the Arduino Library Manager because it contains multiple libraries.
-
-#### Installing for PlatformIO:
-Extract the contents of library zip to your project's 'lib' folder.
 
 ### New Features:
 - Automated code documentation using [Doxygen](https://www.doxygen.nl/index.html), now available at https://envirodiy.github.io/ModularSensors/
@@ -78,19 +76,13 @@ For more details, see [Pull Request #309: The style sheet](https://github.com/En
 
 ## v0.24.1
 
-## v0.24.1: Modem Restructuring
+## [v0.24.1: Modem Restructuring](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.24.1)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3693784.svg)](https://doi.org/10.5281/zenodo.3693784)
 
 ## Downloads
 
 **[libraries_v0.24.1.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.24.1/libraries_v0.24.1.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
-
-#### Installing on the Arduino IDE:
-In your the Arduino Software (IDE), import the library zip file following the instructions for "Manual Installation" from https://www.arduino.cc/en/Guide/Libraries#toc5. You cannot directly import the zip using the Arduino Library Manager because it contains multiple libraries.
-
-#### Installing for PlatformIO:
-Extract the contents of library zip to your project's 'lib' folder.
 
 ### Improvements
 
@@ -99,19 +91,13 @@ Restructured modem so that it no longer operates as a sensor.  Variables tied to
 
 ## v0.23.13
 
-## v0.23.13: More agressive attempts to set clock
+## [v0.23.13: More agressive attempts to set clock](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.13)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3451413.svg)](https://doi.org/10.5281/zenodo.3451413)
 
 ## Downloads
 
 **[libraries_v0.23.13.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.23.13/libraries_v0.23.13.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
-
-#### Installing on the Arduino IDE:
-In your the Arduino Software (IDE), import the library zip file following the instructions for "Manual Installation" from https://www.arduino.cc/en/Guide/Libraries#toc5. You cannot directly import the zip using the Arduino Library Manager because it contains multiple libraries.
-
-#### Installing for PlatformIO:
-Extract the contents of library zip to your project's 'lib' folder.
 
 ### Improvements:
 - Much more aggressive attempts to set the clock if the time is not reasonable - before 01Sep2019 or after 01Jan2025.
@@ -123,7 +109,7 @@ Extract the contents of library zip to your project's 'lib' folder.
 
 ## v0.23.11
 
-## v0.23.11: Watchdogs and More
+## [v0.23.11: Watchdogs and More](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.11)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3405562.svg)](https://doi.org/10.5281/zenodo.3405562)
 
@@ -160,7 +146,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 
 ## v0.22.5
 
-## v0.22.5: Modem Simplification
+## [v0.22.5: Modem Simplification](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.22.5)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3255084.svg)](https://doi.org/10.5281/zenodo.3255084)
 
