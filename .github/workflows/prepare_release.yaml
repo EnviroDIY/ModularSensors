@@ -26,7 +26,6 @@ jobs:
           echo "::debug::Get the current version number"
           VER=$(cat VERSION)
           echo "VERSION=$VER" >> $GITHUB_ENV
-          echo ${{ join(env.VERSION, 'refs/tags/') }}
 
       - name: Restore or Cache pip
         uses: actions/cache@v2
@@ -158,28 +157,28 @@ jobs:
           zip ModularSensors_Dependencies.zip -r ~/.platformio/lib
 
       # Remove some extras from the zip
-      - name: Remove some extras from the zip
+      - name: Remove git files from the zip
         continue-on-error: true
         run: |
           echo "::debug::Deleting extra files to decrease size of zip"
           echo "::debug::Removing Git folders"
           zip -d -q ModularSensors_Dependencies "*/.gitattributes" "*/.gitignore" "*/.gitmodules" "*/.github/*" "*.sh"  "*/Doxyfile" "*/.travis.yml"
-      - name: Remove some extras from the zip
+      - name: Remove other pdfs from the zip
         continue-on-error: true
         run: |
           echo "::debug::Removing other pdfs"
           zip -d -q libraries "*/doc/*.pdf"
-      - name: Remove some extras from the zip
+      - name: Remove TinyGSM extras from the zip
         continue-on-error: true
         run: |
           echo "::debug::Removing TinyGSM extras"
           zip -d -q libraries "*/TinyGSM/extras/*"
-      - name: Remove some extras from the zip
+      - name: Remove YosemitechModbus extras from the zip
         continue-on-error: true
         run: |
           echo "::debug::Removing YosemitechModbus extras"
           zip -d -q libraries "*/YosemitechModbus/doc/*"
-      - name: Remove some extras from the zip
+      - name: Remove SDFat extras from the zip
         continue-on-error: true
         run: |
           echo "::debug::Removing SDFat extras"
@@ -190,7 +189,7 @@ jobs:
         uses: anmarkoulis/commitizen-changelog-reader@master
         with:
           # NOTE:  Need to add the refs/tags to work with the generate notes action
-          tag_name: ${{ join(env.VERSION, 'refs/tags/') }}
+          tag_name: ${{ join(['refs/tags/', env.VERSION], '') }}
           changelog: ChangeLog.md
 
       # Create a new release
