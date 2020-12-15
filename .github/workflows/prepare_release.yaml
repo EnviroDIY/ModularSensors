@@ -26,6 +26,7 @@ jobs:
           echo "::debug::Get the current version number"
           VER=$(cat VERSION)
           echo "VERSION=$VER" >> $GITHUB_ENV
+          echo ${{ join(env.VERSION, 'refs/tags/') }}
 
       - name: Restore or Cache pip
         uses: actions/cache@v2
