@@ -1,6 +1,6 @@
 /*****************************************************************************
 tu_ctd.cpp
-Based on examples/logging_to MMW.ino
+Based on examples/logging_to_MMW.ino
 Adapted by Matt Bartney
  and Neil Hancock
  Based on fork <tbd>
@@ -1113,7 +1113,7 @@ void setup() {
 #define POLL_MODEM_REQ                           \
     (loggerModem::PollModemMetaData_t)(          \
         loggerModem::POLL_MODEM_META_DATA_RSSI | \
-        loggerModem::POLL_MODEM_META_DATA_VCC        )
+        loggerModem::POLL_MODEM_META_DATA_VCC)
     modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_RSSI );
 #endif
 #endif  // UseModem_Module
