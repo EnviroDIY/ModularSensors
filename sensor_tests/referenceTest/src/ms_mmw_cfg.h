@@ -23,11 +23,11 @@ const char* UUIDs[] =  // UUID array for device sensors
                                                 // (Digi_Cellular_Temp)
 };
 const char* registrationToken =
-    "38486242-cd9f-42f5-ad17-79b480cf2d28";  // Device registration token
+    "38486242-cd9f-42f5-ad17-79b480cf2d";//28";  // Device registration token
 const char* samplingFeature =
     "cb344d37-b557-400d-b999-f9b125cade29";  // Sampling feature UUID
 
     //Define only one modem
-    #define MODEM_WIFIID_CDEF "Arthur2004Sid"
-    #define MODEM_WIFIPWD_CDEF "LagunaGroup04Psk"
+    #define MODEM_WIFIID_CDEF "AddYourOwnGuest"
+    #define MODEM_WIFIPWD_CDEF "AddYourOwnGuest"
     //#define MODEM_LTE_APN_CDEF "xxx"
