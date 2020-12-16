@@ -50,6 +50,14 @@
  * epoch beginning 1970-jan-01 00:00:00.
  */
 #define EPOCH_TIME_OFF 946684800
+#define HOURS_TO_SECS 3600
+// Acceptable epoch time range from NIST
+// before Jan 1, 2020  most likely an error
+#define EPOCH_LOWER_RANGE_SEC 1577836800
+#define EPOCH_TIME_LOWER_SANITY_SECS EPOCH_LOWER_RANGE_SEC
+// after Jan 1, 2030, most likely an error
+#define EPOCH_UPPER_RANGE_SEC 1893456000
+#define EPOCH_TIME_UPPER_SANITY_SECS EPOCH_UPPER_RANGE_SEC
 
 #include <SdFat.h>  // To communicate with the SD card
 
@@ -616,31 +624,63 @@ class Logger {
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
      * logging time zone.
-     *
+     *  Depreciated in 0.27.5, use getNowEpochUTC
      * @return **uint32_t**  The number of seconds from January 1, 1970 in the
      * logging time zone.
      */
+    #define GETNOWEPOCH_FN  //Supersedded
+    #if defined GETNOWEPOCH_FN
     static uint32_t getNowEpoch(void);
+    #endif //GETNOWEPOCH_FN
+
+    /**
+     * @brief Get Epoch Time with no offsets
+     */
+    static uint32_t getNowEpochUTC(void);
+    /**
+     * @brief Get Epoch time with zone offset
+     */
+    static uint32_t getNowEpochTz(void);
+
     /**
      * @brief Set the real time clock to the given number of seconds from
      * January 1, 1970.
-     *
+     * Superseded 0.27.5 use setNowEpochUTC()
+     * 
      * The validity of the timestamp is not checked in any way!  In practice,
      * setRTClock(ts) should be used to avoid setting the clock to an obviously
      * invalid value.  The input value should be *in the timezone of the RTC.*
      *
      * @param ts The number of seconds since 1970.
      */
+    #define SETNOWEPOCH_FN
+    #if defined SETNOWEPOCH_FN
     static void setNowEpoch(uint32_t ts);
+    #endif // SETNOWEPOCH_FN
+
+    /**
+     * @brief Set Epoch time with no offsets
+     */
+    static void setNowEpochUTC(uint32_t ts); 
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
      * object instance.
-     *
+     *  Superseded 0.27.5 use dtFromEpochUTC()
      * @param epochTime The number of seconds since 1970.
      * @return **DateTime** The equivalent DateTime
      */
     static DateTime dtFromEpoch(uint32_t epochTime);
+
+    /**
+     * @brief DateTime from epoch time
+     */
+    static DateTime dtFromEpochUTC(uint32_t epochTime);
+
+    /**
+     * @brief DateTime from epoch time with local time zone offset
+     */
+    static DateTime dtFromEpochTz(uint32_t epochTime);
 
     /**
      * @brief Convert a date-time object into a ISO8601 formatted string.
@@ -687,7 +727,8 @@ class Logger {
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
      *
-     * To be sane the clock  must be between 2020 and 2025.
+     * To be sane the clock  must be between 2020 and
+     * EPOCH_TIME_UPPER_SANITY_SECS.
      *
      * @param epochTime The epoch time to be checked.
      * @return **bool** True if the given time passes sanity range checking.
@@ -954,13 +995,22 @@ class Logger {
     void generateAutoFileName(void);
 
     /**
-     * @brief Set a timestamp on a file.
+     * @brief Set a UTC time timestamp on a file. Depreciated 0.27.5
      *
      * @param fileToStamp The filename to change the timestamp of
      * @param stampFlag The "flag" of the timestamp to change - should be
      * T_CREATE, T_WRITE, or T_ACCESS
      */
     void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
+
+    /**
+     * @brief Set a local time timestamp on a file 
+     *
+     * @param fileToStamp The filename to change the timestamp of
+     * @param stampFlag The "flag" of the timestamp to change - should be
+     * T_CREATE, T_WRITE, or T_ACCESS
+     */
+    void setFileTimestampTz(File fileToStamp, uint8_t stampFlag);
 
     /**
      * @brief Open or creates a file, converting a string file name to a
