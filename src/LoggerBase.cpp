@@ -58,8 +58,8 @@ volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards
 #if defined(ARDUINO_ARCH_SAMD)
-// RTCZero internal registers based on year 2000
-// "Epoch" seconds from 1900, using  "struct tm", mktime, gmtime
+// RTCZero internal registers based on year 2000/20yk
+// "Epoch19yk" seconds from 1900, using  "struct tm", mktime, gmtime
 RTCZero Logger::zero_sleep_rtc;
 #endif
 
@@ -377,7 +377,7 @@ bool Logger::syncRTC() {
     // Power down the modem - but only if there will be more than 15 seconds
     // before the NEXT logging interval - it can take the modem that long to
     // shut down
-    if (Logger::getNowEpoch() % (_loggingIntervalMinutes * 60) > 15) {
+    if (Logger::getNowEpochUTC() % (_loggingIntervalMinutes * 60) > 15) {
         Serial.println(F("Putting modem to sleep"));
         _logModem->disconnectInternet();
         _logModem->modemSleepPowerDown();
@@ -502,10 +502,11 @@ int8_t Logger::getTZOffset(void) {
 // from January 1, 1970 00:00:00 UTC) and corrects it to the specified time zone
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
+#ifdef GETNOWEPOCH_FN
 uint32_t Logger::getNowEpoch(void) {
-    // Depreciated in 0.23.4, left in for compatiblity
     return getNowEpochUTC();
 }
+#endif // GETNOWEPOCH_FN
 
 uint32_t Logger::getNowEpochUTC(void) {
     uint32_t currentEpochTime = rtc.now().getEpoch();
@@ -526,19 +527,23 @@ uint32_t Logger::getNowEpochTz(void) {
     currentEpochTime += (_loggerRTCOffset * HOURS_TO_SECS);
     return (uint32_t)currentEpochTime;
 }
+
+#if defined SETNOWEPOCH_FN
 void Logger::setNowEpoch(uint32_t ts) {
     rtc.setEpoch(ts);
-}  // Depreciated in 0.23.4, left in for compatiblity
+}
+#endif // SETNOWEPOCH_FN
 void Logger::setNowEpochUTC(uint32_t ts) {
     rtc.setEpoch(ts);
 }
 
 #elif defined ARDUINO_ARCH_SAMD
-
+  #if defined GETNOWEPOCH_FN
 uint32_t Logger::getNowEpoch(void) {
-    // Depreciated in 0.23.4, left in for compatiblity
-    return getNowEpochTz();
+    // Depreciated in 0.27.4, left in for compatiblity
+    return getNowEpochUTC();
 }
+#endif //  GETNOWEPOCH_FN
 
 uint32_t Logger::getNowEpochUTC(void) {
     uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
@@ -555,33 +560,29 @@ uint32_t Logger::getNowEpochUTC(void) {
 uint32_t Logger::getNowEpochTz(void) {
     return (uint32_t)(getNowEpochUTC() + (_loggerRTCOffset * HOURS_TO_SECS));
 }
+#if defined SETNOWEPOCH_FN
 void Logger::setNowEpoch(uint32_t ts) {
     zero_sleep_rtc.setEpoch(ts);
-}  // Depreciated in 0.23.4, left in for compatiblity
+}
+#endif // SETNOWEPOCH_FN
 void Logger::setNowEpochUTC(uint32_t ts) {
     zero_sleep_rtc.setEpoch(ts);
 }
 
 #endif
 
-// This gets the current epoch time (unix time, ie, the number of seconds
-// from January 1, 1970 00:00:00 UTC)
-// Older njh
 // This converts the current UNIX timestamp (ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) into a DateTime object
 // The DateTime object constructor requires the number of seconds from
 // January 1, 2000 (NOT 1970) as input, so we need to subtract.
 DateTime Logger::dtFromEpoch(uint32_t epochTime) {
-    // Depreciated
     return dtFromEpochTz(epochTime);
 }
 DateTime Logger::dtFromEpochUTC(uint32_t epochTimeUTC) {
     // DateTime dt(epochTimeUTC-EPOCH_TIME_OFF);
     DateTimeClass(dt, epochTimeUTC) return dt;
 }
-// This gets the current epoch time (unix time, ie, the number of seconds
-// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time
-// zone
+
 DateTime Logger::dtFromEpochTz(uint32_t epochTimeTz) {
     // The DateTime object constructor requires the number of seconds from
     // January 1, 2000 (NOT 1970) as input, so we need to subtract.
@@ -648,14 +649,14 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
 
     // Check the current RTC time
     uint32_t cur_logUTC_sec = getNowEpochUTC();
-    MS_DBG(F("    Current Epoch UST Time on RTC :"), cur_logUTC_sec, F("->"),
+    MS_DBG(F("    Current Epoch UTC Time on RTC :"), cur_logUTC_sec, F("->"),
            formatDateTime_ISO8601(cur_logUTC_sec));
     uint32_t time_diff_sec = abs((long)((uint64_t)cur_logUTC_sec) -
                                  (long)((uint64_t)UTCEpochSeconds));
     MS_DBG(F("    Offset between epoch NIST and RTC:"), time_diff_sec);
 
-// If the RTC and NIST disagree by more than 5 seconds, set the clock
-#define NIST_TIME_DIFF_SEC 5
+    // If the RTC and NIST disagree by more than 5 seconds, set the clock
+    #define NIST_TIME_DIFF_SEC 5
     if (time_diff_sec > NIST_TIME_DIFF_SEC) {
         setNowEpochUTC(UTCEpochSeconds);
         PRINTOUT(F("Internal Clock set "), formatDateTime_ISO8601(nistTz_sec));
@@ -689,7 +690,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
 
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane(void) {
-    uint32_t curRTC = getNowEpoch();
+    uint32_t curRTC = getNowEpochUTC();
     return isRTCSane(curRTC);
 }
 bool Logger::isRTCSane(uint32_t epochTime) {
@@ -712,9 +713,10 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
     Logger::markedEpochTimeTz  = getNowEpochTz();
-    Logger::markedEpochTime    = getNowEpoch();
-    Logger::markedEpochTimeUTC = markedEpochTime -
-        ((uint32_t)_loggerRTCOffset) * 3600;
+    //Logger::markedEpochTime    = getNowEpoch();
+    Logger::markedEpochTimeUTC = getNowEpochUTC();
+    
+    MS_DEEP_DBG(F("markTime"),getNowEpochUTC(), markedEpochTimeUTC,markedEpochTimeTz  );
 }
 
 
@@ -723,7 +725,7 @@ void Logger::markTime(void) {
 uint8_t Logger::checkInterval(void) {
     uint8_t retval = CIA_NOACTION;
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    uint32_t checkTime = getNowEpoch();
+    uint32_t checkTime = getNowEpochUTC();
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
     MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
@@ -799,7 +801,7 @@ uint8_t Logger::checkInterval(void) {
         alertOff();
         delay(25);
         PRINTOUT(F("The current clock timestamp is not valid!"),
-                 formatDateTime_ISO8601(getNowEpoch()).substring(0, 10));
+                 formatDateTime_ISO8601(getNowEpochUTC()).substring(0, 10));
         alertOn();
         delay(25);
         alertOff();
@@ -925,7 +927,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
         local_secs = (sleep_min * 60);
     }
     // zero_sleep_rtc.setAlarmSeconds(local_secs);
-    timeNow_secs      = getNowEpoch();
+    timeNow_secs      = getNowEpochUTC();
     targetWakeup_secs = timeNow_secs + local_secs;
     adjust_secs       = targetWakeup_secs % 60;
     targetWakeup_secs -= adjust_secs;
@@ -1169,7 +1171,7 @@ void Logger::generateAutoFileName(void) {
     // Generate the file name from logger ID and date
     String fileName = String(_loggerID);
     fileName += "_";
-    fileName += formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+    fileName += formatDateTime_ISO8601(getNowEpochTz()).substring(0, 10);
     fileName += ".csv";
     setFileName(fileName);
     _fileName = fileName;
@@ -1240,7 +1242,7 @@ void Logger::printFileHeader(Stream* stream) {
 // time -  out over an Arduino stream
 void Logger::printSensorDataCSV(Stream* stream) {
     String csvString = "";
-    dtFromEpochUTC(Logger::markedEpochTimeTz).addToString(csvString);
+    dtFromEpochTz(Logger::markedEpochTimeTz).addToString(csvString);
     csvString += ',';
     stream->print(csvString);
     for (uint8_t i = 0; i < getArrayVarCount(); i++) {
@@ -1276,14 +1278,29 @@ bool Logger::initializeSDCard(void) {
     return SDextendedInit(retVal);
 }
 
+void Logger::setFileTimestampTz(File fileToStamp, uint8_t stampFlag) {
+    //DateTime markedDt(Logger::markedEpochTime - EPOCH_TIME_OFF);
+    DateTime markedDtTz(getNowEpochTz() );
+
+    MS_DEEP_DBG(F("setFTTz"),markedDtTz.year(),markedDtTz.month(), markedDtTz.date(),
+        markedDtTz.hour(), markedDtTz.minute(), markedDtTz.second());
+    bool crStat = fileToStamp.timestamp(
+        stampFlag, markedDtTz.year(), markedDtTz.month(), markedDtTz.date(),
+        markedDtTz.hour(), markedDtTz.minute(), markedDtTz.second());
+    if (!crStat) {
+        PRINTOUT(F("setFTTz err for "), markedDtTz.year(), markedDtTz.month(),
+                 markedDtTz.date(), markedDtTz.hour(), markedDtTz.minute(),
+                 markedDtTz.second());
+    }
+}
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag) {
     fileToStamp.timestamp(
-        stampFlag, dtFromEpoch(getNowEpoch()).year(),
-        dtFromEpoch(getNowEpoch()).month(), dtFromEpoch(getNowEpoch()).date(),
-        dtFromEpoch(getNowEpoch()).hour(), dtFromEpoch(getNowEpoch()).minute(),
-        dtFromEpoch(getNowEpoch()).second());
+        stampFlag, dtFromEpoch(getNowEpochTz()).year(),
+        dtFromEpoch(getNowEpochTz()).month(), dtFromEpoch(getNowEpochTz()).date(),
+        dtFromEpoch(getNowEpochTz()).hour(), dtFromEpoch(getNowEpochTz()).minute(),
+        dtFromEpoch(getNowEpochTz()).second());
 }
 
 
@@ -1307,14 +1324,14 @@ bool Logger::openFile(String& filename, bool createFile,
     if (logFile.open(charFileName, O_WRITE | O_AT_END)) {
         MS_DBG(F("Opened existing file:"), filename);
         // Set access date time
-        setFileTimestamp(logFile, T_ACCESS);
+        setFileTimestampTz(logFile, T_ACCESS);
         return true;
     } else if (createFile) {
         // Create and then open the file in write mode
         if (logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END)) {
             MS_DBG(F("Created new file:"), filename);
             // Set creation date time
-            setFileTimestamp(logFile, T_CREATE);
+            setFileTimestampTz(logFile, T_CREATE);
             // Write out a header, if requested
             if (writeDefaultHeader) {
                 // Add header information
@@ -1326,10 +1343,10 @@ bool Logger::openFile(String& filename, bool createFile,
                 MS_DBG('\n');
 #endif
                 // Set write/modification date time
-                setFileTimestamp(logFile, T_WRITE);
+                setFileTimestampTz(logFile, T_WRITE);
             }
             // Set access date time
-            setFileTimestamp(logFile, T_ACCESS);
+            setFileTimestampTz(logFile, T_ACCESS);
             return true;
         } else {
             // Return false if we couldn't create the file
@@ -1395,9 +1412,9 @@ bool Logger::logToSD(String& filename, String& rec) {
     PRINTOUT(rec);
 
     // Set write/modification date time
-    setFileTimestamp(logFile, T_WRITE);
+    setFileTimestampTz(logFile, T_WRITE);
     // Set access date time
-    setFileTimestamp(logFile, T_ACCESS);
+    setFileTimestampTz(logFile, T_ACCESS);
     // Close the file to save it
     // logFile.sync();
     logFile.close();
@@ -1539,7 +1556,7 @@ void Logger::testingMode() {
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is"),
-                 formatDateTime_ISO8601(getNowEpoch()));
+                 formatDateTime_ISO8601(getNowEpochTz()));
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
 #if defined(STANDARD_SERIAL_OUTPUT)

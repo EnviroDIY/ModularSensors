@@ -964,23 +964,6 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
 // see class headers
 // ===================================================================== //
 
-// This update the timestamp on a file
-void Logger::setFileTimestampTz(File fileToStamp, uint8_t stampFlag) {
-    DateTime markedDt(Logger::markedEpochTime - EPOCH_TIME_OFF);
-
-    bool crStat = fileToStamp.timestamp(
-        stampFlag, markedDt.year(), markedDt.month(), markedDt.date(),
-        markedDt.hour(), markedDt.minute(), markedDt.second());
-    if (!crStat) {
-        //#define BUFNAM_SZ 15
-        // char bufferName[BUFNAM_SZ];
-        // fileToStamp.getName(bufferName, BUFNAM_SZ);
-        PRINTOUT(F("sFTSMet err for "), markedDt.year(), markedDt.month(),
-                 markedDt.date(), markedDt.hour(), markedDt.minute(),
-                 markedDt.second());
-    }
-}
-
 #define DELIM_CHAR2 ','
 #define SERZQUED_OFLAGS
 bool Logger::serzQuedStart(char uniqueId) {
@@ -1369,7 +1352,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
     String fileName = String(postLogNam_str);
 
     // Create rotating log of 4 chars - start YYYY_MM_DD
-    String nameTemp = formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+    String nameTemp = formatDateTime_ISO8601(getNowEpochTz()).substring(0, 10);
 
     // Drop middle _ and get YYMM
     fileName += nameTemp.substring(2, 4) + nameTemp.substring(5, 7);

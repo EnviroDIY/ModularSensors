@@ -1195,8 +1195,13 @@ void setup() {
     }
 #endif  // UseModem_Module
     // List start time, if RTC invalid will also be initialized
-    PRINTOUT(F("Time "),
-             dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
+    PRINTOUT(F("Time UTC "),
+             dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochUTC()));
+    PRINTOUT(F("Time epoch UTC "),dataLogger.getNowEpochUTC());
+    PRINTOUT(F("Time Tz "),
+             dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
+    PRINTOUT(F("Time epoch Tz "),dataLogger.getNowEpochTz());
+
 
     Serial.println(F("Setting up sensors..."));
     varArray.setupSensors();

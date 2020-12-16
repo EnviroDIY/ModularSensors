@@ -21,9 +21,13 @@
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
 
+#ifdef MS_LOGGERBASE_DEEP_DEBUG
+#define MS_DEBUGGING_STD "LoggerBase"
+#endif
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_LOGGERBASE_DEEP_DEBUG
 #include "VariableArray.h"
 #include "LoggerModem.h"
 #include "ms_common.h"
@@ -645,31 +649,63 @@ class Logger {
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
      * logging time zone.
-     *
+     *  Depreciated in 0.27.1, use getNowEpochUTC
      * @return **uint32_t**  The number of seconds from January 1, 1970 in the
      * logging time zone.
      */
+    #define GETNOWEPOCH_FN  //Supersedded
+    #if defined GETNOWEPOCH_FN
     static uint32_t getNowEpoch(void);
+    #endif //GETNOWEPOCH_FN
+
+    /**
+     * @brief Get Epoch Time with no offsets
+     */
+    static uint32_t getNowEpochUTC(void);
+    /**
+     * @brief Get Epoch time with zone offset
+     */
+    static uint32_t getNowEpochTz(void);
+
     /**
      * @brief Set the real time clock to the given number of seconds from
      * January 1, 1970.
-     *
+     * Superseded 0.27.1 use setNowEpochUTC()
+     * 
      * The validity of the timestamp is not checked in any way!  In practice,
      * setRTClock(ts) should be used to avoid setting the clock to an obviously
      * invalid value.  The input value should be *in the timezone of the RTC.*
      *
      * @param ts The number of seconds since 1970.
      */
+    #define SETNOWEPOCH_FN
+    #if defined SETNOWEPOCH_FN
     static void setNowEpoch(uint32_t ts);
+    #endif // SETNOWEPOCH_FN
+
+    /**
+     * @brief Set Epoch time with no offsets
+     */
+    static void setNowEpochUTC(uint32_t ts); 
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
      * object instance.
-     *
+     *  Superseded 0.27.1 use dtFromEpochUTC()
      * @param epochTime The number of seconds since 1970.
      * @return **DateTime** The equivalent DateTime
      */
     static DateTime dtFromEpoch(uint32_t epochTime);
+
+    /**
+     * @brief DateTime from epoch time
+     */
+    static DateTime dtFromEpochUTC(uint32_t epochTime);
+
+    /**
+     * @brief DateTime from epoch time with local time zone offset
+     */
+    static DateTime dtFromEpochTz(uint32_t epochTime);
 
     /**
      * @brief Convert a date-time object into a ISO8601 formatted string.
@@ -988,13 +1024,21 @@ class Logger {
     void generateAutoFileName(void);
 
     /**
-     * @brief Set a timestamp on a file.
+     * @brief Set a UTC time timestamp on a file. Depreciated 0.27.1
      *
      * @param fileToStamp The filename to change the timestamp of
      * @param stampFlag The "flag" of the timestamp to change - should be
      * T_CREATE, T_WRITE, or T_ACCESS
      */
     void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
+
+    /**
+     * @brief Set a local time timestamp on a file 
+     *
+     * @param fileToStamp The filename to change the timestamp of
+     * @param stampFlag The "flag" of the timestamp to change - should be
+     * T_CREATE, T_WRITE, or T_ACCESS
+     */
     void setFileTimestampTz(File fileToStamp, uint8_t stampFlag);
 
     /**
@@ -1144,28 +1188,8 @@ class Logger {
      */
     uint8_t _dataPubInstance;
 
- public:
-    /**
-     * @brief Get Epoch Time with no offsets
-     */
-    static uint32_t getNowEpochUTC(void);
-    /**
-     * @brief Get Epoch time with zone offset
-     */
-    static uint32_t getNowEpochTz(void);
-    /**
-     * @brief Set Epoch time with no offsets
-     */
-    static void setNowEpochUTC(uint32_t ts);  // Set Epoch with standard UST
-    // static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
-    /**
-     * @brief DateTime from epoch time
-     */
-    static DateTime dtFromEpochUTC(uint32_t epochTime);
-    /**
-     * @brief DateTime from epoch time with local time zone offset
-     */
-    static DateTime dtFromEpochTz(uint32_t epochTime);
+ public: //Following needs moving up to getNowEpoch
+
 
  public:
 #include "LoggerBaseHextClass.h"

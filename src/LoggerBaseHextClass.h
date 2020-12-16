@@ -201,7 +201,7 @@ bool deszQuedCleanup(bool debug = false);
 bool deszLine(File* filep);
 
 // Utility resources
-void setFileTimeStampMet(File fileToStamp, uint8_t stampFlag);
+//void setFileTimeStampMet(File fileToStamp, uint8_t stampFlag);
 bool deszDbg(void);
 bool postLogOpen(const char* postsLogNm_str);
 void postLogLine(uint8_t instance, int16_t rspParam);
