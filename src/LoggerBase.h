@@ -649,7 +649,7 @@ class Logger {
      * @brief Get the current epoch time from the RTC (unix time, ie, the
      * number of seconds from January 1, 1970 00:00:00) and correct it to the
      * logging time zone.
-     *  Depreciated in 0.27.1, use getNowEpochUTC
+     *  Depreciated in 0.27.5, use getNowEpochUTC
      * @return **uint32_t**  The number of seconds from January 1, 1970 in the
      * logging time zone.
      */
@@ -670,7 +670,7 @@ class Logger {
     /**
      * @brief Set the real time clock to the given number of seconds from
      * January 1, 1970.
-     * Superseded 0.27.1 use setNowEpochUTC()
+     * Superseded 0.27.5 use setNowEpochUTC()
      * 
      * The validity of the timestamp is not checked in any way!  In practice,
      * setRTClock(ts) should be used to avoid setting the clock to an obviously
@@ -691,7 +691,7 @@ class Logger {
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
      * object instance.
-     *  Superseded 0.27.1 use dtFromEpochUTC()
+     *  Superseded 0.27.5 use dtFromEpochUTC()
      * @param epochTime The number of seconds since 1970.
      * @return **DateTime** The equivalent DateTime
      */
@@ -1024,7 +1024,7 @@ class Logger {
     void generateAutoFileName(void);
 
     /**
-     * @brief Set a UTC time timestamp on a file. Depreciated 0.27.1
+     * @brief Set a UTC time timestamp on a file. Depreciated 0.27.5
      *
      * @param fileToStamp The filename to change the timestamp of
      * @param stampFlag The "flag" of the timestamp to change - should be

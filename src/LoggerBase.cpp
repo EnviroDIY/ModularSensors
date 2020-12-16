@@ -69,8 +69,6 @@ USE_RTCLIB  rtcExtPhy;
 #define DateTimeClass(varNam, epochTime) DateTime varNam(epochTime);
 #else
 // For Sodaq_DS3231.h:DateTime(long) uses secs since 2000
-//#define DateTimeClass(epochTime) DateTime
-// dtTz((long)((uint64_t)(epochTimeTz-EPOCH_TIME_OFF)));
 #define DateTimeClass(varNam, epochTime) \
     DateTime varNam((long)((uint64_t)(epochTime - EPOCH_TIME_OFF)));
 #endif  //  USE_RTCLIB
@@ -644,8 +642,8 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
     // was uint32_t
     uint32_t nistTz_sec = UTCEpochSeconds +
         ((int32_t)getTZOffset()) * HOURS_TO_SECS;
-    MS_DBG(F("    NIST UST:"), UTCEpochSeconds, F("->"),
-           formatDateTime_ISO8601(UTCEpochSeconds));
+    MS_DBG(F("    NIST UTC:"), UTCEpochSeconds, F("(local time)->"),
+           formatDateTime_ISO8601(nistTz_sec));
 
     // Check the current RTC time
     uint32_t cur_logUTC_sec = getNowEpochUTC();
@@ -713,7 +711,6 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
     Logger::markedEpochTimeTz  = getNowEpochTz();
-    //Logger::markedEpochTime    = getNowEpoch();
     Logger::markedEpochTimeUTC = getNowEpochUTC();
     
     MS_DEEP_DBG(F("markTime"),getNowEpochUTC(), markedEpochTimeUTC,markedEpochTimeTz  );
