@@ -13,6 +13,7 @@ $config1 = $($args)
 $config2 = Get-Date -Format "yyMMdd_HHmm"
 $dest_dir = "..\..\..\releases"
 
+#function touch {set-content -Path ($args[0]) -Value ($null)} 
 function Do-Build {
     $dest_file = -join($dest_dir,"\mayfly",$config1, "_",$config2,$hext,".hex")
     $src_file  = -join("src\ms_cfg.h","$hext" )
@@ -22,9 +23,11 @@ function Do-Build {
         throw  "The file does not exist $src_file"
     } else {
         Write-Host "Output is $dest_file"
-        copy  src\ms_cfg.h$hext .\src\ms_cfg.h
+        copy src\ms_cfg.h$hext .\src\ms_cfg.h 
+        $(ls .\src\ms_cfg.h).LastWriteTime = Get-Date
+        Write-host $(cmd /r dir /s .\src\ms_cfg.h )
         C:\Users\neilh77a\.platformio\penv\Scripts\pio run
-        copy .\.pio\build\mayfly\firmware.hex  $dest_file
+        move .\.pio\build\mayfly\firmware.hex  $dest_file
     }
 }
 
@@ -32,6 +35,15 @@ if (-not (Test-Path -Path $dest_dir)) {
     #Write-Host  "The file does not exist $src_file"
     throw  "The file does not exist $dest_dir"
 }
+
+$envirodiy_dir = ".pio\libdeps\mayfly\EnviroDIY_ModularSensors"
+#Remove-item $envirodiy_dir -Recurse -Force
+if (Test-Path -Path $envirodiy_dir) {
+    Write-Host  "Removing $envirodiy_dir "
+    Remove-item $envirodiy_dir -Recurse -Force
+}
+C:\Users\neilh77a\.platformio\penv\Scripts\pio run --target clean
+
 
 $hext = "_EC"
 Do-Build
