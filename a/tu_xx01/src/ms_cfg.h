@@ -1,6 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_nano - ModularSensors cfg - tst KellerNano temp/humidity MMW/WiFi
-
+ms_cfg.h_LT5_wifi  - ModularSensors Configuration - tgt _LT5 Acculevel / WiFi
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -26,16 +25,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
 #define MAYFLY_VBAT 1
 #define ExternalVoltage_ACT 1
-#define ENVIRODIY_MAYFLY_TEMPERATURE 1
+//#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
-//#define Insitu_TrollSdi12_UUID 1
+#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
-//#define KellerAcculevel_ACT 1
+#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
-//#define KellerAcculevel_DepthUnits 2
+#define KellerAcculevel_DepthUnits 2
 
-#define KellerNanolevel_ACT 1
-#define ASONG_AM23XX_UUID 1
+//#define KellerNanolevel_ACT 1
+//#define ASONG_AM23XX_UUID 1
 
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
@@ -45,7 +44,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "nano temp/humidity WiFi"
+#define CONFIGURATION_DESCRIPTION_STR "tu_LT5_wifi LT500,Acculevel"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1
@@ -114,7 +113,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define WIFIID_CDEF "xxx"
 // NULL for none, or  password for connecting to WiFi,
 #define WIFIPWD_CDEF "yyy"
-#define MMW_TIMER_POST_TIMEOUT_MS_DEF 7000L
+#define MMW_TIMER_POST_TIMEOUT_MS_DEF 9000L
 #define COLLECT_READINGS_DEF 1
 #define SEND_OFFSET_MIN_DEF 0
 #endif  // Modules
@@ -212,8 +211,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // ENVIRODIY_MAYFLY_TEMPERATURE
 
 #if defined UseModem_Module
-// This seems to be de-stabilizing Digi S6B
-//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
+#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #endif  // UseModem_Module
 
