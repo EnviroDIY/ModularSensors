@@ -234,19 +234,19 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        tempBuffer[0] = 0;
+        memset(tempBuffer,0,TEMP_BUFFER_SZ);
         did_respond   = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
         // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
         // F("mS"));
         // Close the TCP/IP connection
         // MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
-        #if defined MS_DATAPUBLISHERBASE_DEBUG
-        delay(50); //debug allow data to come through UART before stop 1mS/CHar
-        #endif //MS_DATAPUBLISHERBASE_DEBUG
+
+        //Possibly a help for later +++ that sometimes get missed with Digi S6B
+        delay(100); //debug allow data to come through UART before stop 1mS/CHar
+        MS_DBG(F(" [[Client waited"), elapsed_ms, F("mS for"), did_respond,F("bytes."));
         outClient->stop();
-        MS_DBG(F("Client waited"), elapsed_ms, F("mS for"), did_respond,
-               F("bytes. Stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
+         MS_DBG( F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
                    "Portal --"));

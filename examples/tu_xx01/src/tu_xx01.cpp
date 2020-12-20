@@ -1094,6 +1094,9 @@ void setup() {
         loggerModem::POLL_MODEM_META_DATA_RSSI | \
         loggerModem::POLL_MODEM_META_DATA_VCC)
     modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_RSSI );
+    #else
+    //Ensure its all turned OFF.
+    modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_OFF);
 #endif
 #endif  // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,

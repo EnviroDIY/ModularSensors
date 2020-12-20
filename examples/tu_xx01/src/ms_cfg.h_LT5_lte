@@ -224,8 +224,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if defined MAYFLY_VBAT
 #ifdef ExternalVoltage_ACT
 // AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
-#define ExternalVoltage_Volt0_UUID "Batt_UUID"
-//#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+//#define ExternalVoltage_Volt0_UUID "Batt_UUID"
+#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 //#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
 #else  // ExternalVoltage_ACT
 #define ProcVolt_ACT 1

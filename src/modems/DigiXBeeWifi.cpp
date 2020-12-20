@@ -434,8 +434,10 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     uint16_t volt_mV = XBEE_V_KEY;
 
     // if not enabled don't collect data
-    if (0 == loggerModem::_pollModemMetaData) return false;
-
+    if (0 == loggerModem::_pollModemMetaData) {
+        MS_DBG(F("updateModemMetadata None to update"));
+        return false;
+    }
     // Enter command mode only once for temp and battery
     MS_DBG(F("updateModemMetadata Entering Command Mode:"));
     success &= gsmModem.commandMode();

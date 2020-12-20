@@ -1115,6 +1115,9 @@ void setup() {
         loggerModem::POLL_MODEM_META_DATA_RSSI | \
         loggerModem::POLL_MODEM_META_DATA_VCC)
     modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_RSSI );
+    #else
+    //Ensure its all turned OFF.
+    modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_OFF);
 #endif
 #endif  // UseModem_Module
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
@@ -1195,12 +1198,10 @@ void setup() {
     }
 #endif  // UseModem_Module
     // List start time, if RTC invalid will also be initialized
-    PRINTOUT(F("Time UTC "),
-             dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochUTC()));
-    PRINTOUT(F("Time epoch UTC "),dataLogger.getNowEpochUTC());
-    PRINTOUT(F("Time Tz "),
+    PRINTOUT(F("Local Time "),
              dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
     PRINTOUT(F("Time epoch Tz "),dataLogger.getNowEpochTz());
+    PRINTOUT(F("Time epoch UTC "),dataLogger.getNowEpochUTC());
 
 
     Serial.println(F("Setting up sensors..."));

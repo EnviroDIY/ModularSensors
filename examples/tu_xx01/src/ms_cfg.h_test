@@ -1,6 +1,5 @@
 /*****************************************************************************
 ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
-- KellerNanolevel 
 - Temperature/Humidity 
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
@@ -36,7 +35,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // KellerAcculevel units can be 1 (meter) 2 (feet)
 //#define KellerAcculevel_DepthUnits 2
 
-#define KellerNanolevel_ACT 1
+//#define KellerNanolevel_ACT 1
 #define ASONG_AM23XX_UUID 1
 
 // Mayfly configuration
