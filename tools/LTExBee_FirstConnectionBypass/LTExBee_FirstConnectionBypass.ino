@@ -185,8 +185,8 @@ void loop() {
     gsmModem.waitResponse();
     // Set the band mask manually if needed
     // bit 0 = band 1; bit 127 = band 128
-    gsmModem.sendAT(GF("+UBANDMASK="), 0, ',', 134217732);
-    gsmModem.waitResponse();
+    // gsmModem.sendAT(GF("+UBANDMASK="), 0, ',', 134217732);
+    // gsmModem.waitResponse();
     // Restart the module to apply changes and bring back to full functionality
     gsmModem.restart();
 
