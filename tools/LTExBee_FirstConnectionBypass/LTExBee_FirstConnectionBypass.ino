@@ -190,6 +190,11 @@ void loop() {
     // Restart the module to apply changes and bring back to full functionality
     gsmModem.restart();
 
+    // Check again for the carrier profile (to ensure it took)
+    // If 1/SIM select was used, this will show what the SIM picked
+    gsmModem.sendAT(GF("+UMNOPROF?"));
+    gsmModem.waitResponse();
+
     // Scan for networks - this is probably really slow
     DBG(F("Scanning for networks.  This may take up to 3 minutes"));
     gsmModem.sendAT(GF("+COPS=0"));
