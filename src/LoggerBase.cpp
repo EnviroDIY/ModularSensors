@@ -874,7 +874,22 @@ void Logger::wakeISR(void) {
     // MS_DBG(F("\nClock interrupt!"));
 }
 
+#if defined(__AVR__)
+#define freeRamMcr() \
+    (int)&v - (__brkval == 0 ? (int)&__heap_start : (int)__brkval)
+int16_t freeRamLb() {
+    extern int16_t __heap_start, *__brkval;
+    int16_t   v;
+    return  freeRamMcr();
+}
+#elif defined(ARDUINO_ARCH_SAMD)
+extern "C" char* sbrk(int i);
 
+int16_t freeRamCalcLb() {
+    char stack_dummy = 0;
+    return &stack_dummy - sbrk(0);
+}
+#endif
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
 void        Logger::systemSleep(uint8_t sleep_min) {
@@ -942,7 +957,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
 #endif
 
     // Send one last message before shutting down serial ports
-    MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
+    MS_DBG(F("Putting processor to sleep.Ram("),freeRamLb(),F(")  ZZzzz..."));
 
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
