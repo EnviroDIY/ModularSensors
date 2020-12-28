@@ -995,6 +995,9 @@ void setup() {
     // uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; AVR ?//Reads from hw
     bool     LiBattPower_Unseable;
     uint16_t lp_wait = 1;
+    uint8_t mcu_status = MCUSR; //is this already cleared by Arduino startup???
+    //MCUSR = 0; //reset for unique read
+
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
@@ -1004,7 +1007,9 @@ void setup() {
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Sw Build: "));
+    Serial.print(F("\n---Boot("));
+    Serial.print(mcu_status,HEX);
+    Serial.print(F(") Sw Build: "));
     Serial.print(build_ref);
     Serial.print(" ");
     Serial.println(git_branch);

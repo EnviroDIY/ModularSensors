@@ -1611,9 +1611,10 @@ void Logger::begin() {
            F("minute intervals."));
 
     MS_DBG(F(
-        "Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
-    // watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
-    watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
+        "Setting up a watch-dog timer to fire after 5minutes after loggingInterval"),_loggingIntervalMinutes);
+    //This setup is really about how long subsystems could take to initialize.
+    watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes+5)*60);
+    //watchDogTimer.setupWatchDog((uint32_t)(16 * 60));
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 

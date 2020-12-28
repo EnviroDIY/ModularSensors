@@ -63,6 +63,14 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         _modemName = gsmModem.getModemName();
         PRINTOUT(F("XbeeWiFi Initializing Internet comms with modem '"),
                  _modemName, F("'"));
+        {
+            String  xbeeSnLow,xbeeSnHigh;
+            gsmModem.sendAT(F("SL"));  // Request Module Serial Number Low
+            gsmModem.waitResponse(1000, xbeeSnLow);
+            gsmModem.sendAT(F("SH"));  // Request Module Serial Number High
+            gsmModem.waitResponse(1000, xbeeSnHigh);
+            PRINTOUT(F("Modem Sn "),xbeeSnHigh, F("-"),xbeeSnLow );
+        }
         // Leave all unused pins disconnected. Use the PR command to pull all of
         // the inputs on the device high using 40 k internal pull-up resistors.
         // You do not need a specific treatment for unused outputs.

@@ -74,8 +74,9 @@ class extendedWatchDogAVR {
     /**
      * @brief The number of times the pre-reset interrupt is allowed to fire
      * before the watchdog reset is allowed.
+     * Range: low 10s, must be signed integer
      */
-    static volatile uint32_t _barksUntilReset;
+    static volatile int16_t _barksUntilReset;
 
  private:
     uint32_t _resetTime_s;

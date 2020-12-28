@@ -17,7 +17,9 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 
-volatile uint32_t extendedWatchDogAVR::_barksUntilReset = 0;
+volatile int16_t extendedWatchDogAVR::_barksUntilReset = 0;
+// The AVR watchdog runs for 8 seconds
+#define BARKS_UNTIL_RESET (_resetTime_s / 8)
 
 extendedWatchDogAVR::extendedWatchDogAVR() {}
 extendedWatchDogAVR::~extendedWatchDogAVR() {
@@ -28,7 +30,7 @@ extendedWatchDogAVR::~extendedWatchDogAVR() {
 // One-time initialization of watchdog timer.
 void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s) {
     _resetTime_s                          = resetTime_s;
-    extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
+    extendedWatchDogAVR::_barksUntilReset = BARKS_UNTIL_RESET;
     MS_DBG(F("Watch-dog timeout is set for"), _resetTime_s,
            F("sec with the interrupt firing"),
            extendedWatchDogAVR::_barksUntilReset, F("times before the reset."));
@@ -36,7 +38,7 @@ void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s) {
 
 
 void extendedWatchDogAVR::enableWatchDog() {
-    MS_DBG(F("Enabling watch dog..."));
+    //MS_DBG(F("Enabling watch dog..."));
 
     cli();  // disable interrupts
 
@@ -67,9 +69,9 @@ void extendedWatchDogAVR::enableWatchDog() {
     //  4 seconds: 0bxx1xx000
     //  8 seconds: 0bxx1xx001
 
-    extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
-    MS_DBG(F("The watch dog is enabled in interrupt-only mode."));
-    MS_DBG(F("The interrupt will fire"), extendedWatchDogAVR::_barksUntilReset,
+    extendedWatchDogAVR::_barksUntilReset = BARKS_UNTIL_RESET;
+    //MS_DBG(F("The watch dog is enabled in interrupt-only mode."));
+    MS_DBG(F("Watchdog Enabled, Interrupt will fire"), extendedWatchDogAVR::_barksUntilReset,
            F("times before the system resets."));
 }
 
@@ -77,13 +79,23 @@ void extendedWatchDogAVR::enableWatchDog() {
 void extendedWatchDogAVR::disableWatchDog() {
     // Disable the watchdog
     wdt_disable();
+    MS_DBG(F("Watchdog disabled. barksUntilReset"), extendedWatchDogAVR::_barksUntilReset);
+    #if defined MS_WATCHDOGAVR_DEBUG
+    delay(30); //Alow 30 chars out
+    #endif 
 }
 
 
 void extendedWatchDogAVR::resetWatchDog() {
-    extendedWatchDogAVR::_barksUntilReset = _resetTime_s / 8;
-    // Reset the watchdog.
-    wdt_reset();
+    wdt_reset(); // Reset the watchdog.
+
+    if (BARKS_UNTIL_RESET != extendedWatchDogAVR::_barksUntilReset) {
+        PRINTOUT (F("... Watchdog low barksUntilReset"),_barksUntilReset,F(" expected"),BARKS_UNTIL_RESET);
+        extendedWatchDogAVR::_barksUntilReset = BARKS_UNTIL_RESET;
+    }
+
+    
+
 }
 
 
@@ -98,6 +110,9 @@ ISR(WDT_vect) {
     if (extendedWatchDogAVR::_barksUntilReset <= 0) {
         MCUSR = 0;  // reset flags
 
+        //Let anybody listening know. Not ideal to do a print in ISR ...but... woof
+        PRINTOUT(F(" **** WATCHDOG Woof Woof. Reseting Processor***"));
+        delay(100);
         // Put timer in reset-only mode:
         WDTCSR |= 0b00011000;  // Enter config mode.
         WDTCSR = 0b00001000 |
@@ -109,6 +124,8 @@ ISR(WDT_vect) {
         // wdt_reset();  // not needed
     } else {
         wdt_reset();  // start timer again (still in interrupt-only mode)
+        // This is never expected to happen, but if it does .. wimper
+        MS_DBG(F(" WATCHDOG ISR barksUntilReset"),extendedWatchDogAVR::_barksUntilReset);
     }
 }
 

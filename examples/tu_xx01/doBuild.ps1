@@ -1,4 +1,4 @@
-#  .\do.ps1 -rel 0_xx_y
+#  .\doBuild.ps1  0_xx_y
 #$param1=$args[0]
 #Get-Executionpolicy
 #Set-ExecutionPolicy -Scope CurrentUser unrestricted
@@ -19,17 +19,21 @@ function Do-Build {
     $src_file  = -join("src\ms_cfg.h","$hext" )
 
     if (-not (Test-Path -Path $src_file)) {
-        #Write-Host  "The file does not exist $src_file"
+        #Write-Ouput  "The file does not exist $src_file"
         throw  "The file does not exist $src_file"
     } else {
-        Write-Host "Output is $dest_file"
+        Write-Output "`n`r**************************************"
+        Write-Output "**** Build with src\ms_cfg.h$hext ****"
         copy src\ms_cfg.h$hext .\src\ms_cfg.h 
         $(ls .\src\ms_cfg.h).LastWriteTime = Get-Date
         Write-host $(cmd /r dir /s .\src\ms_cfg.h )
         C:\Users\neilh77a\.platformio\penv\Scripts\pio run
         move .\.pio\build\mayfly\firmware.hex  $dest_file
+        Write-Output "**** Build Output in $dest_file"
     }
 }
+
+Write-Output "`n Building $config2 `n"
 
 if (-not (Test-Path -Path $dest_dir)) {
     #Write-Host  "The file does not exist $src_file"
@@ -39,7 +43,7 @@ if (-not (Test-Path -Path $dest_dir)) {
 $envirodiy_dir = ".pio\libdeps\mayfly\EnviroDIY_ModularSensors"
 #Remove-item $envirodiy_dir -Recurse -Force
 if (Test-Path -Path $envirodiy_dir) {
-    Write-Host  "Removing $envirodiy_dir "
+    Write-Output  "Removing $envirodiy_dir "
     Remove-item $envirodiy_dir -Recurse -Force
 }
 C:\Users\neilh77a\.platformio\penv\Scripts\pio run --target clean
