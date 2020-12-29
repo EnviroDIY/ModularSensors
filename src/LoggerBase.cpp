@@ -957,7 +957,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
 #endif
 
     // Send one last message before shutting down serial ports
-    MS_DBG(F("Putting processor to sleep.Ram("),freeRamLb(),F(")  ZZzzz..."));
+    PRINTOUT(F("Going to sleep. Ram("),freeRamLb(),F(")  ZZzzz..."));
 
 // Wait until the serial ports have finished transmitting
 // This does not clear their buffers, it just waits until they are finished
@@ -1154,7 +1154,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
 
     // Wake-up message
     wakeUpTime_secs = getNowEpochTz();
-    MS_DBG(F("\n\n\n... zzzZZ Processor awake @"), wakeUpTime_secs);
+    PRINTOUT(F("\n... zzzZZ Awake @"), wakeUpTime_secs);
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup

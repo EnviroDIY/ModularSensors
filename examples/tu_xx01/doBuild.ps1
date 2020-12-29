@@ -15,7 +15,7 @@ $dest_dir = "..\..\..\releases"
 
 #function touch {set-content -Path ($args[0]) -Value ($null)} 
 function Do-Build {
-    $dest_file = -join($dest_dir,"\mayfly",$config1, "_",$config2,$hext,".hex")
+    $dest_file = -join($dest_dir,"\mayfly_",$config1, "_",$config2,$hext,".hex")
     $src_file  = -join("src\ms_cfg.h","$hext" )
 
     if (-not (Test-Path -Path $src_file)) {
