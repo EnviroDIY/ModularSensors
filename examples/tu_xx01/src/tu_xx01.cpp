@@ -1086,6 +1086,8 @@ void setup() {
 #endif  // UseModem_PushData
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
+    modemPhy.modemHardReset(); //Ensure in known state ~ 5mS
+
     // modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
 #if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID || \
     defined                                     DIGI_VCC_UID

@@ -170,6 +170,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         bool     apRegistered = false;
         PRINTOUT(F("Loop=Sec] rx db : Status #Polled Status every 1sec/30sec"));
         uint8_t reg_count = 0;
+        #define TIMER_POLL_AP_STATUS_MSEC 300000
         for (unsigned long start = millis(); millis() - start < 300000;
              loops++) {
             ui_db = 0;  // gsmModem.getSignalQuality();
@@ -179,26 +180,21 @@ bool DigiXBeeWifi::extraModemSetup(void) {
                 "] " + String(ui_db) + ":0x" + String(status, HEX);
             if (0 == status) {
                 ui_op += " Cnt=" + String(reg_count);
-                PRINTOUT(ui_op);
 #define XBEE_SUCCESS_CNTS 3
                 if (++reg_count > XBEE_SUCCESS_CNTS) {
+                    PRINTOUT(ui_op);
                     apRegistered = true;
                     break;
                 }
+            } else {
+                reg_count =0; //reset 
             }
             PRINTOUT(ui_op);
+            //Need to pet the watchDog as 8sec timeout ~ but how, LoggerBase::petDog()
             delay(1000);
         }
-        if (!apRegistered) {
-            // Fut: Could Scan for access points here AS commnd to indicate what
-            // is available
-            PRINTOUT(F(
-                "XbeeWiFi not AP Registered - aborting attempt, hope it works "
-                "next time"));
-            delay(100);
-            // NVIC_SystemReset();
-            success = false;
-        } else {
+        if (apRegistered) 
+        { 
             MS_DBG(F("Get IP number"));
             String  xbeeRsp;
             uint8_t index              = 0;
@@ -260,8 +256,18 @@ bool DigiXBeeWifi::extraModemSetup(void) {
                 getModemSignalQuality(rssi, percent);
                 MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
 #endif  // MS_DIGIXBEEWIFI_DEBUG
+            gsmModem.exitCommand();
+        } 
+        else 
+        { // !apRegistered  could be invalid SSID, no SSID, or stuck module
+            PRINTOUT(F(
+                "XbeeWiFi AP not Registered - reseting module, hope it works "
+                "next time"));
+            loggerModem::modemHardReset();
+            delay(50);
+            // NVIC_SystemReset();
+            success = false;
         }
-        gsmModem.exitCommand();
     } else {
         success = false;
     }
