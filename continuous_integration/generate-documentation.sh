@@ -34,3 +34,6 @@ python fixXmlExampleSections.py
 # python fixFunctionsInGroups.py
 
 python $TRAVIS_BUILD_DIR/code_docs/m.css/documentation/doxygen.py "mcss-conf.py" --no-doxygen --output output_mcss.log --templates "$TRAVIS_BUILD_DIR/code_docs/m.css/documentation/templates/EnviroDIY" --debug > mcss-doxy-output.log
+
+echo 'Copying function documentation'
+python copyFunctions.py

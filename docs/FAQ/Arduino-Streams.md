@@ -52,7 +52,7 @@ HardwareSerial* streamName = &Serial;
 If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, **[AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)** by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.
 Neither hardware serial nor AltSoftSerial require any modifications.
 Because of the limited number of serial ports available on most boards, I suggest giving first priority (i.e. the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.
-See the section on [Processor/Board Compatibility](https://envirodiy.github.io/ModularSensors/processor_compatibility.html) for more specific notes on what serial ports are available on the various supported processors.
+See the section on [Processor/Board Compatibility](https://envirodiy.github.io/ModularSensors/page_processor_compatibility.html) for more specific notes on what serial ports are available on the various supported processors.
 
 To use AltSoftSerial:
 
