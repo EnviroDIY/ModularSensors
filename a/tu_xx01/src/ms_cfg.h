@@ -1,5 +1,7 @@
 /*****************************************************************************
-ms_cfg.h_LT5_wifi  - ModularSensors Configuration - tgt _LT5 Acculevel / WiFi
+ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
+- Temperature/Humidity 
+
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -27,14 +29,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ExternalVoltage_ACT 1
 //#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
-#define Insitu_TrollSdi12_UUID 1
+//#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
-#define KellerAcculevel_ACT 1
+//#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
-#define KellerAcculevel_DepthUnits 2
+//#define KellerAcculevel_DepthUnits 2
 
 //#define KellerNanolevel_ACT 1
-//#define ASONG_AM23XX_UUID 1
+#define ASONG_AM23XX_UUID 1
 
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
@@ -44,7 +46,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "tu_LT5_wifi LT500,Acculevel"
+#define CONFIGURATION_DESCRIPTION_STR "tu_test basic WiFi"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1
@@ -113,7 +115,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define WIFIID_CDEF "xxx"
 // NULL for none, or  password for connecting to WiFi,
 #define WIFIPWD_CDEF "yyy"
-#define MMW_TIMER_POST_TIMEOUT_MS_DEF 9000L
+#define MMW_TIMER_POST_TIMEOUT_MS_DEF 7000L
 #define COLLECT_READINGS_DEF 1
 #define SEND_OFFSET_MIN_DEF 0
 #endif  // Modules
