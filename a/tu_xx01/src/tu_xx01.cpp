@@ -1229,6 +1229,8 @@ void setup() {
     dataLogger.turnOnSDcard(
         true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true);  // true = write a new header
+    //        PRINTOUT(F("SDI12 Sensor Vendor"),_sensorVendor,_sensorModel,_sensorVersion,F("Sn"),_sensorSerialNumber,
+    //    F("SDI12 Version"),sdi12Version,F("Addr"),sdi12Address);
     dataLogger.turnOffSDcard(
         true);  // true = wait for internal housekeeping after write
     dataLogger.setBatHandler(&isBatteryChargeGoodEnough);

@@ -131,7 +131,7 @@ bool processorAdc::addSingleMeasurementResult(void) {
         analogReadResolution(ProcAdcDef_Resolution);
         analogReference(ProcAdcDef_Reference);  // VDDANA = 3V3
 #endif                                          // ARDUINO_ARCH_AVR
-        uint8_t useAdcChannel = _adcChannel;
+        __attribute__((unused)) uint8_t useAdcChannel = _adcChannel;
         uint8_t adcPort       = _adcChannel;
 #if defined ARD_ANALOLG_EXTENSION_PINS
 #include <WVariant.h>

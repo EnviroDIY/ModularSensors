@@ -577,7 +577,7 @@ bool SDI12Sensors::getResults(void) {
     //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
-    char sdiNextChar;
+    __attribute__((unused)) char sdiNextChar;
 
     // if (wasActive) {
     //     MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),

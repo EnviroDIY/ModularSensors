@@ -300,7 +300,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 #define NIST_SERVER_RETRYS 4
 #endif  // NIST_SERVER_RETRYS
     String  nistIpStr;
-    uint8_t index = 0;
+    __attribute__((unused)) uint8_t index = 0;
     for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {
         /* Must ensure that we do not ping the daylight more than once every 4
          * seconds */
