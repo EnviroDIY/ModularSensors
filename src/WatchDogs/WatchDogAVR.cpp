@@ -70,7 +70,6 @@ void extendedWatchDogAVR::enableWatchDog() {
     //  8 seconds: 0bxx1xx001
 
     extendedWatchDogAVR::_barksUntilReset = BARKS_UNTIL_RESET;
-    //MS_DBG(F("The watch dog is enabled in interrupt-only mode."));
     MS_DBG(F("Watchdog Enabled, Interrupt will fire"), extendedWatchDogAVR::_barksUntilReset,
            F("times before the system resets."));
 }
@@ -89,7 +88,7 @@ void extendedWatchDogAVR::disableWatchDog() {
 void extendedWatchDogAVR::resetWatchDog() {
     wdt_reset(); // Reset the watchdog.
 
-    if (BARKS_UNTIL_RESET != extendedWatchDogAVR::_barksUntilReset) {
+    if ((int16_t)BARKS_UNTIL_RESET != extendedWatchDogAVR::_barksUntilReset) {
         PRINTOUT (F("... Watchdog low barksUntilReset"),_barksUntilReset,F(" expected"),BARKS_UNTIL_RESET);
         extendedWatchDogAVR::_barksUntilReset = BARKS_UNTIL_RESET;
     }
@@ -125,7 +124,7 @@ ISR(WDT_vect) {
     } else {
         wdt_reset();  // start timer again (still in interrupt-only mode)
         // This is never expected to happen, but if it does .. wimper
-        MS_DBG(F(" WATCHDOG ISR barksUntilReset"),extendedWatchDogAVR::_barksUntilReset);
+        MS_DEEP_DBG(F(" WATCHDOG ISR barksUntilReset"),extendedWatchDogAVR::_barksUntilReset);
     }
 }
 

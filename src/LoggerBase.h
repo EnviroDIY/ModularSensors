@@ -21,13 +21,13 @@
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
 
-#ifdef MS_LOGGERBASE_DEEP_DEBUG
-#define MS_DEBUGGING_STD "LoggerBase"
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "LoggerBase"
 #endif
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#undef MS_LOGGERBASE_DEEP_DEBUG
+#undef MS_DEBUGGING_DEEP
 #include "VariableArray.h"
 #include "LoggerModem.h"
 #include "ms_common.h"

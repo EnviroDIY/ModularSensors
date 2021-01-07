@@ -53,6 +53,19 @@
 /** End [includes] */
 
 
+//const char* UUIDs[]  taken from MMW
+//#define UUIDS_<make>_<model>  UUIDs[]
+//Mapping Test06
+#define CTD10_DEPTH_UUID UUIDs[0]
+#define CTD10_TEMP_UUID  UUIDs[2]
+#define UUIDS_MAYLFY_BATTERY_VOLTAGE UUIDs[4]
+#define UUIDS_MAYLFY_TEMPERATURE     UUIDs[3] 
+//2..5 not used
+#define UUIDS_MAYFLY_SAMPLENUM       UUIDs[5]
+#define UUIDS_DIGI_RSSI        UUIDs[6]
+//8
+#define UUIDS_DIGI_TEMPERATURE UUIDs[7]
+
 // ==========================================================================
 //  Data Logging Options
 // ==========================================================================
@@ -184,6 +197,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 /** End [bme280] */
 
 
+#if defined MAXIMDS18_TEMPERATURE_UUID
 // ==========================================================================
 //  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
@@ -203,18 +217,28 @@ const int8_t OneWireBus   = 6;               // OneWire Bus Pin (-1 if unconnect
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus
 // with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
-/** End [ds18] */
+#endif /** End [ds18] */
 
+//#define Decagon_CTD_UUID 1
+#if defined CTD10_DEPTH_UUID && defined CTD10_TEMP_UUID
+#define Decagon_CTD_UUID 1
+#endif //
+#if defined Decagon_CTD_UUID
+// ==========================================================================
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+#include <sensors/DecagonCTD.h>
 
-//const char* UUIDs[]  taken from MMW
-//#define UUIDS_<make>_<model>  UUIDs[]
-#define UUIDS_MAYLFY_BATTERY_VOLTAGE UUIDs[0]
-#define UUIDS_MAYLFY_TEMPERATURE     UUIDs[1]
-//2..5 not used
-#define UUIDS_MAYFLY_SAMPLENUM       UUIDs[6]
-#define UUIDS_DIGI_RSSI        UUIDs[7]
-//8
-#define UUIDS_DIGI_TEMPERATURE UUIDs[9]
+const char*   CTDSDI12address   = "1";  // The SDI-12 Address of the CTD
+const uint8_t CTDNumberReadings = 2;    // The number of readings to average
+const int8_t  SDI12Power =
+    sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t SDI12Data = 7;  // The SDI12 data pin
+
+// Create a Decagon CTD sensor object
+DecagonCTD ctdPhy(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
+#endif  // Decagon_CTD_UUID
+
 
 // ==========================================================================
 //  Creating the Variable Array[s] and Filling with Variable Objects
@@ -230,6 +254,10 @@ Variable* variableList[] = {
     //new MaximDS18_Temp(&ds18, UUIDS_MAYLFY_TEMPERATURE),
     new ProcessorStats_Battery(&mcuBoard, UUIDS_MAYLFY_BATTERY_VOLTAGE),
     new MaximDS3231_Temp(&ds3231, UUIDS_MAYLFY_TEMPERATURE),
+    #if defined Decagon_CTD_UUID
+    new DecagonCTD_Depth(&ctdPhy,CTD10_DEPTH_UUID),
+    new DecagonCTD_Temp(&ctdPhy, CTD10_TEMP_UUID),
+    #endif //Decagon_CTD_UUID
     //new Modem_RSSI(&modemPhy, UUIDS_DIGI_RSSI),
     //new Modem_SignalPercent(&modemPhy, UUIDS_DIGI_TEMPERATURE),
 };

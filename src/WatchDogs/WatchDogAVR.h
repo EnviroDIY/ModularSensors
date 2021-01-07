@@ -21,9 +21,14 @@
 #define MS_DEBUGGING_STD "WatchDogAVR"
 #endif
 
+#ifdef MS_WATCHDOGAVR_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "WatchDogAVR"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 
 /**
  * @brief The extendedWatchDogAVR class uses the pre-reset interrupt to of the
