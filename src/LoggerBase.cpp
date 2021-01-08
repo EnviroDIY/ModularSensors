@@ -310,6 +310,10 @@ uint8_t Logger::getArrayVarCount() {
 String Logger::getParentSensorNameAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getParentSensorName();
 }
+// This gets the details of the parent sensor, if applicable
+String Logger::getParentSensorDetails(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getParentSensorDetails();
+}
 // This gets the name and location of the parent sensor, if applicable
 String Logger::getParentSensorNameAndLocationAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]
@@ -1226,6 +1230,17 @@ void Logger::printFileHeader(Stream* stream) {
         stream->print(_samplingFeatureUUID);
         stream->println(',');
     }
+    //Add sensor details if known
+    String sensorDetails;
+    for (uint8_t i = 0; i < getArrayVarCount(); i++) {
+        sensorDetails =  getParentSensorDetails(i);
+        if (sensorDetails.length()) {
+            stream->print(sensorDetails);
+            stream->print(F(" for ")); 
+            stream->print( getVarNameAtI(i));  
+            stream->println();  
+        }
+    }                                                            \
 
     // Next line will be the parent sensor names
     STREAM_CSV_ROW(F("Sensor Name:"), getParentSensorNameAtI(i))

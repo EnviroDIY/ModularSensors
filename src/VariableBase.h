@@ -389,8 +389,21 @@ class Variable {
 
  public:
     /* atl_extension */
+   /**
+     * @brief set the UID for this sensor
+     *
+     */
     void setVarUUID_atl(const char* newUUID, bool copyUid = false,
                         uint8_t uuidSize = UUIDE_CLOUD_ID_SZ);
+   /**
+     * @brief Get the parent sensor details if possible
+     *
+     * This is a helper needed for dealing with variables in arrays
+     *
+     * @return **String** The parent sensor details or empty string
+     */
+    String getParentSensorDetails(void);
+
 };
 
 #endif  // SRC_VARIABLEBASE_H_

@@ -422,6 +422,8 @@ class Logger {
      * applicable.
      */
     String getParentSensorNameAtI(uint8_t position_i);
+    
+    String getParentSensorDetails(uint8_t position_i);
     /**
      * @brief Get the name and pin location of the parent sensor of the variable
      * at the given position in the internal variable array object.

@@ -355,7 +355,7 @@ void Variable::setVarUUID_atl(const char* newUUID, bool copyUid,
 #if defined __AVR__
     extern int16_t __heap_start, *__brkval;
     int16_t        v;
-    int            ramStart = freeRamCalc();
+    __attribute__((unused)) int ramStart = freeRamCalc();
 
 #elif defined(ARDUINO_ARCH_SAMD)
     int ramStart = freeRamCalc();
@@ -384,7 +384,7 @@ void Variable::setVarUUID_atl(const char* newUUID, bool copyUid,
         MS_DBG(F("setVarUUID cp "), newUUID);
     }
 #ifdef DEBUGGING_SERIAL_OUTPUT
-    int ramEnd = freeRamCalc();
+    __attribute__((unused)) int ramEnd = freeRamCalc();
     MS_DBG(F("setVarUUID ramUsed "), ramStart - ramEnd, " left:", ramEnd);
 #endif  // DEBUGGING_SERIAL_OUTPUT
 }
@@ -413,5 +413,18 @@ String Variable::getValueString(bool updateValue) {
         return String(val);
     } else {
         return String(getValue(updateValue), _decimalResolution);
+    }
+}
+
+//Az extensions
+
+// This is a helper - it returns the sensor details if supported
+// This is needed for dealing with variables in arrays
+String Variable::getParentSensorDetails(void) {
+    if (parentSensor == NULL) {
+        MS_DBG(F("ERROR! This variable is missing a parent sensor!"));
+        return "";
+    } else {
+        return parentSensor->getSensorDetails();
     }
 }

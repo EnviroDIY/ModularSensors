@@ -1,5 +1,5 @@
 /**
- * @file SDI12Sensors.cpp 0275bx
+ * @file SDI12Sensors.cpp 0.27.5b3
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -129,8 +129,8 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
         _SDI12Internal.clearBuffer();
 
         if (sdiResponse == String(_SDI12address)) {
-            //MS_DBG(F("   "), getSensorNameAndLocation(),
-            //       F("replied as expected."));
+            MS_DEEP_DBG(F("   "), getSensorNameAndLocation(),
+                   F("replied as expected."));
             didAcknowledge = true;
         } else if (sdiResponse.startsWith(String(_SDI12address))) {
             MS_DBG(F("   "), getSensorNameAndLocation(),
@@ -370,7 +370,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
 
         uint32_t start = millis();
         while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
-        //MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
+        MS_DEEP_DBG(F("  Receiving results from"), getSensorNameAndLocation());
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         for (uint8_t i = 0; i < _numReturnedValues; i++) {
             float result = _SDI12Internal.parseFloat();
@@ -661,4 +661,13 @@ bool SDI12Sensors::getResults(void) {
     return _numReturnedValues == resultsReceived;
 }
 
-
+String SDI12Sensors::getSensorDetails(void) {
+    // PRINTOUT(F("SDI12 Sensor Vendor"),_sensorVendor,_sensorModel,_sensorVersion,F("Sn"),_sensorSerialNumber,
+    //  F("SDI12 Version"),sdi12Version,F("Addr"),sdi12Address);
+    String sensorDetails(F("SDI Sensor "));
+    String space(" ");
+    sensorDetails += _sensorVendor+space+ _sensorModel+space+_sensorVersion
+    +String(F(" Sn "))+_sensorSerialNumber
+    +String(F(" SDI12 Version tbd"));//+String(sdi12Version)+String(F("Addr"))+String(sdi12Address);    
+    return sensorDetails;
+}

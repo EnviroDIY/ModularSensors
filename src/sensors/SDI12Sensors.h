@@ -262,6 +262,18 @@ class SDI12Sensors : public Sensor {
     String _sensorModel;
     String _sensorVersion;
     String _sensorSerialNumber;
+
+    //AZ extensions
+public:
+    /**
+     * @brief Get the stored sensor details returned by a previously
+     * called SDI-12 get sensor information (aI!) command.
+     *
+     * @return String The sensor details  as reported by the sensor
+     * itself.
+     */
+    String getSensorDetails(void) ;
+
 };
 
 #endif  // SRC_SENSORS_SDI12SENSORS_H_
