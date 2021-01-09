@@ -993,8 +993,15 @@ class loggerModem {
     // modemClientType gsmClient;
 
     /* atl_extension */
+    String _modemHwVersion;
+    String _modemSerialNumber;
+    String _modemFwVersion;
+
 
  public:
+    String getModemDevId(void)
+    {return _modemName+F(" Sn ")+_modemSerialNumber+F(" HwVer " )+_modemHwVersion+F(" FwVer ")+_modemFwVersion;}
+
     /**
      * @brief modem management data setup
      *

@@ -1230,17 +1230,6 @@ void Logger::printFileHeader(Stream* stream) {
         stream->print(_samplingFeatureUUID);
         stream->println(',');
     }
-    //Add sensor details if known
-    String sensorDetails;
-    for (uint8_t i = 0; i < getArrayVarCount(); i++) {
-        sensorDetails =  getParentSensorDetails(i);
-        if (sensorDetails.length()) {
-            stream->print(sensorDetails);
-            stream->print(F(" for ")); 
-            stream->print( getVarNameAtI(i));  
-            stream->println();  
-        }
-    }                                                            \
 
     // Next line will be the parent sensor names
     STREAM_CSV_ROW(F("Sensor Name:"), getParentSensorNameAtI(i))
@@ -1866,7 +1855,7 @@ void Logger::logData(void) {
         // Turn off the LED
         alertOff();
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("------------------------------------------LogToSD Complete\n"));
 
         // Unset flag
         Logger::isLoggingNow = false;

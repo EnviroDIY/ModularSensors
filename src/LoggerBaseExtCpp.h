@@ -640,6 +640,28 @@ void                Logger::printFileHeaderExtra(Stream* stream) {
     stream->print((char*)ps_cache->hw_boot.serial_num);
     stream->println(F("'"));
 #endif  // USE_PS_HW_BOOT
+
+    //Add known modemDetail - assumes been initialized
+    { 
+        String modemDetails = _logModem->getModemDevId();
+        if (modemDetails.length()) {
+            stream->print(modemDetails);
+            stream->println();  
+        }
+    }
+    //Add sensor details if known  assumes been initialized
+    String sensorDetails;
+    for (uint8_t i = 0; i < getArrayVarCount(); i++) {
+        sensorDetails =  getParentSensorDetails(i);
+        if (sensorDetails.length()) {
+            stream->print(sensorDetails);
+            stream->print(F(" for ")); 
+            stream->print( getVarNameAtI(i));  
+            stream->println();  
+        }
+    }     
+
+
 }
 #endif  // USE_MS_SD_INI
 

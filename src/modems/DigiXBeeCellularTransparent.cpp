@@ -702,7 +702,7 @@ uint32_t DigiXBeeCellularTransparent::getTimeNTP(void)
     /* bail if not connected to WIFI SSID */
     if (!isInternetAvailable())
     {
-        MS_DBG(F("No WiFi connection, cannot connect to NTP."));
+        MS_DBG(F("No Cell connection, cannot connect to NTP."));
         return 0;
     }
 

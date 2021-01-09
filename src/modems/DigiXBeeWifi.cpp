@@ -60,15 +60,22 @@ bool DigiXBeeWifi::extraModemSetup(void) {
     // MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode()) {
         {
-            String  xbeeSnLow,xbeeSnHigh;
+            String  xbeeSnLow,xbeeSnHigh;//XbeeDevHwVer,XbeeFwVer;
             gsmModem.getSeries();
             _modemName = gsmModem.getModemName();
-            gsmModem.sendAT(F("SL"));  // Request Module Serial Number Low
+            gsmModem.sendAT(F("SL"));  // Request Module MAC/Serial Number Low
             gsmModem.waitResponse(1000, xbeeSnLow);
-            gsmModem.sendAT(F("SH"));  // Request Module Serial Number High
+            gsmModem.sendAT(F("SH"));  // Request Module MAC/Serial Number High
             gsmModem.waitResponse(1000, xbeeSnHigh);
-            PRINTOUT(F("XbeeWiFi internet comms with '"),
-                 _modemName, F("' Sn "),xbeeSnHigh, F("-"),xbeeSnLow );
+            _modemSerialNumber = xbeeSnHigh+xbeeSnLow;
+            gsmModem.sendAT(F("HV"));  // Request Module Hw Version
+            //gsmModem.waitResponse(1000, XbeeDevHwVer);
+            gsmModem.waitResponse(1000, _modemHwVersion);
+            gsmModem.sendAT(F("VR"));  // Firmware VersionModule Serial Number High
+            gsmModem.waitResponse(1000, _modemFwVersion);
+            PRINTOUT(F("XbeeWiFi internet comms with"),_modemName, 
+                 F("Mac/Sn "), _modemSerialNumber,F("HwVer"),_modemHwVersion, F("FwVer"), _modemFwVersion);
+                 // F("Mac/Sn "),xbeeSnHigh, F("-"),xbeeSnLow,F("HwVer"),XbeeDevHwVer, F("FwVer"), XbeeFwVer);
         }
         // Leave all unused pins disconnected. Use the PR command to pull all of
         // the inputs on the device high using 40 k internal pull-up resistors.
@@ -712,3 +719,5 @@ String DigiXBeeWifi::getWiFiId(void) {
 String DigiXBeeWifi::getWiFiPwd(void) {
     return _pwd;
 }
+//If needed can provide specific information
+//String DigiXBeeWifi::getModemDevId(void) {return "DigiXbeeWiFiId";}

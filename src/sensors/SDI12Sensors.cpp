@@ -632,7 +632,7 @@ bool SDI12Sensors::getResults(void) {
                 _SDI12Internal.read();
             }
             delay(10);  // 1 character ~ 7.5ms
-            STANDARD_SERIAL_OUTPUT.write(c); //NJH Fast write debug
+            //STANDARD_SERIAL_OUTPUT.write(c); //NJH Fast write debug
             if ((millis() - start) > 10000) {
                 PRINTOUT("SDI12Sensors parse timeout",_SDI12Internal.readStringUntil('\n'));
                 break;
