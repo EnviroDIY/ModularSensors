@@ -69,13 +69,11 @@ bool DigiXBeeWifi::extraModemSetup(void) {
             gsmModem.waitResponse(1000, xbeeSnHigh);
             _modemSerialNumber = xbeeSnHigh+xbeeSnLow;
             gsmModem.sendAT(F("HV"));  // Request Module Hw Version
-            //gsmModem.waitResponse(1000, XbeeDevHwVer);
             gsmModem.waitResponse(1000, _modemHwVersion);
-            gsmModem.sendAT(F("VR"));  // Firmware VersionModule Serial Number High
+            gsmModem.sendAT(F("VR"));  // Firmware Version
             gsmModem.waitResponse(1000, _modemFwVersion);
             PRINTOUT(F("XbeeWiFi internet comms with"),_modemName, 
                  F("Mac/Sn "), _modemSerialNumber,F("HwVer"),_modemHwVersion, F("FwVer"), _modemFwVersion);
-                 // F("Mac/Sn "),xbeeSnHigh, F("-"),xbeeSnLow,F("HwVer"),XbeeDevHwVer, F("FwVer"), XbeeFwVer);
         }
         // Leave all unused pins disconnected. Use the PR command to pull all of
         // the inputs on the device high using 40 k internal pull-up resistors.

@@ -361,10 +361,10 @@ class ProcessorStats : public Sensor {
     // There could possibly be a MAYFLY off the ExternalVoltage ADS1115, it
     // still is limited to 3.3V inpu
 #else   //
-        {3.3, 3.4, 3.6, 3.8, 0.05},      // PSLR_0500mA, //500mA or less
-        {3.2, 3.3, 3.4, 3.7, 0.04},      // PSLR_1000mA
-        {3.1, 3.2, 3.3, 3.6, 0.03},      // PSLR_4000mA
-        {2.90, 3.10, 3.20, 3.30, 0.03},  // PLSR_LiSi18
+        {3.7,  3.8, 3.90, 4.00, 0.05},      // PSLR_0500mA, //500mA or less
+        {3.2,  3.6, 3.85, 3.95, 0.04},      // PSLR_1000mA
+        {3.1,  3.5, 3.80, 3.90, 0.03},      // PSLR_4000mA
+        {2.90, 3.1, 3.20, 3.30, 0.03},  // PLSR_LiSi18
         {3.5, 3.6, 4.00, 4.6, 0.03},     // 3*D to 2.4 to 4.8V
 #endif  // ARDUINO_AVR_ENVIRODIY_MAYFLY
     };

@@ -986,6 +986,40 @@ void        bfgPoll() {
 #endif  // USE_LC709203F
 }
 
+// ==========================================================================
+// Checks available power on battery.
+// 
+bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery) 
+{
+    bool LiBattPower_Unseable=false;
+    bool UserButtonAct = false;
+    uint16_t lp_wait = 1;
+
+    do {
+        mcuBoardExtBattery();
+        LiBattPower_Unseable =
+            ((PS_LBATT_UNUSEABLE_STATUS ==
+              mcuBoard.isBatteryStatusAbove(true, useable_req))
+                 ? true
+                 : false);
+        if (LiBattPower_Unseable && waitForGoodBattery) 
+        {
+            /* Sleep
+            * If can't collect data wait for more power to accumulate.
+            * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
+            * Under no other load conditions the mega1284 takes about 35mA
+            * Another issue is that onstartup currently requires turning on comms device to
+            * set it up. On an XbeeS6 WiFi this can take 20seconds for some reason.
+            */
+            PRINTOUT(lp_wait++,F(": BatV Low ="), mcuBoard.getBatteryVm1(false)),F(" Sleep60sec");
+            dataLogger.systemSleep(1);
+            //delay(1000);  // debug
+            PRINTOUT(F("----Wakeup"));
+        }
+        if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
+    } while (LiBattPower_Unseable && !UserButtonAct);
+    return !LiBattPower_Unseable;
+}
 
 // ==========================================================================
 // Main setup function
@@ -993,8 +1027,6 @@ void        bfgPoll() {
 void setup() {
     // uint8_t resetCause = REG_RSTC_RCAUSE;        AVR ?//Reads from hw
     // uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; AVR ?//Reads from hw
-    bool     LiBattPower_Unseable;
-    uint16_t lp_wait = 1;
     uint8_t mcu_status = MCUSR; //is this already cleared by Arduino startup???
     //MCUSR = 0; //reset for unique read
 
@@ -1034,38 +1066,11 @@ void setup() {
     // If buttonPress then exit.
     // Button is read inactive as low
     if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
-    bool UserButtonAct = false;
 
     // A vital check on power availability
-    do {
-        mcuBoardExtBattery();
-        LiBattPower_Unseable =
-            ((PS_LBATT_UNUSEABLE_STATUS ==
-              mcuBoard.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ))
-                 ? true
-                 : false);
-        if (LiBattPower_Unseable) {
-/* Sleep
- * If can't collect data wait for more power to accumulate.
- * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
- * Under no other load conditions the mega1284 takes about 35mA
- * Another issue is that onstartup currently requires turning on comms device to
- * set it up. On an XbeeS6 WiFi this can take 20seconds for some reason.
- */
-#if 1  // defined(CHECK_SLEEP_POWER)
-            SerialStd.print(lp_wait++);
-            SerialStd.print(F(": BatteryLow-Sleep60sec, BatV="));
-            SerialStd.println(mcuBoard.getBatteryVm1(false));
-#endif  //(CHECK_SLEEP_POWER)
-        // delay(59000); //60Seconds
-        // if(_mcuWakePin >= 0){systemSleep();}
-            dataLogger.systemSleep(1);
-            delay(1000);  // debug
-            SerialStd.println(F("----Wakeup"));
-        }
-        if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
-    } while (LiBattPower_Unseable && !UserButtonAct);
-    PRINTOUT(F("Good BatV="), batteryLion_V);
+    batteryCheck(PS_PWR_USEABLE_REQ, true);
+
+    PRINTOUT(F("BatV Good ="), batteryLion_V);
 
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
@@ -1132,10 +1137,10 @@ void setup() {
 
 #ifdef USE_MS_SD_INI
     // Set up SD card access
-    Serial.println(F("---parseIni "));
+    PRINTOUT(F("---parseIni "));
     dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def, inihUnhandledFn);
-    Serial.println(F("\n\n---parseIni complete "));
+    PRINTOUT(F("\n\n---parseIni complete "));
 #endif  // USE_MS_SD_INI
 
     mcuBoard.printBatteryThresholds();
@@ -1175,8 +1180,7 @@ void setup() {
     MS_DBG(F("Check power to sync with NIST "), mcuBoard.getBatteryVm1(false),
            F("Req"), LiIon_BAT_REQ, F("Got"),
            mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ));
-    if ((PS_LBATT_UNUSEABLE_STATUS !=
-         mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ))) {
+    if (batteryCheck(LiIon_BAT_REQ, true)) {
         MS_DBG(F("Sync with NIST as have enough power"));
 
 #if defined DigiXBeeWifi_Module
@@ -1188,8 +1192,7 @@ void setup() {
         // MS_DBG(F("cmp_result="),cmp_result,"
         // ",modemPhy.getWiFiId(),"/",wifiId_def);
         if (!(cmp_result == 0)) {
-            SerialStd.print(F("Sync with NIST over WiFi network "));
-            SerialStd.println(modemPhy.getWiFiId());
+             PRINTOUT(F("Sync with NIST over WiFi network "), modemPhy.getWiFiId());
             dataLogger.syncRTC();  // Will also set up the modemPhy
         }
 #else
@@ -1210,8 +1213,11 @@ void setup() {
     PRINTOUT(F("Time epoch Tz "),dataLogger.getNowEpochTz());
     PRINTOUT(F("Time epoch UTC "),dataLogger.getNowEpochUTC());
 
-
-    Serial.println(F("Setting up sensors..."));
+    //Setup sensors, including reading sensor data sheet that can be recorded on SD card
+    PRINTOUT(F("Setting up sensors..."));
+    //batteryCheck(PS_PWR_HEAVY_REQ, true);
+    #define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_HEAVY_REQ
+    batteryCheck(PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC, true);
     varArray.setupSensors();
 // Create the log file, adding the default header to it
 // Do this last so we have the best chance of getting the time correct and
@@ -1225,7 +1231,7 @@ void setup() {
 #if defined KellerAcculevel_ACT
     acculevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
 #endif  // KellerAcculevel_ACT
-    Serial.println(F("Setting up file on SD card"));
+    PRINTOUT(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(
         true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true);  // true = write a new header

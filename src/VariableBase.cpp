@@ -197,7 +197,7 @@ String Variable::getParentSensorName(void) {
         return "Calculated";
     } else if (parentSensor == NULL) {
         MS_DBG(F("ERROR! This variable is missing a parent sensor!"));
-        return "";
+        return String(F(""));
     } else {
         return parentSensor->getSensorName();
     }
@@ -211,7 +211,7 @@ String Variable::getParentSensorNameAndLocation(void) {
         return "Calculated";
     } else if (parentSensor == NULL) {
         MS_DBG(F("ERROR! This variable is missing a parent sensor!"));
-        return "";
+        return String(F(""));
     } else {
         return parentSensor->getSensorNameAndLocation();
     }
@@ -423,7 +423,7 @@ String Variable::getValueString(bool updateValue) {
 String Variable::getParentSensorDetails(void) {
     if (parentSensor == NULL) {
         MS_DBG(F("ERROR! This variable is missing a parent sensor!"));
-        return "";
+        return String(F(""));
     } else {
         return parentSensor->getSensorDetails();
     }
