@@ -1881,7 +1881,7 @@ void Logger::logDataAndPublish(void) {
         watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
-        PRINTOUT(F("------------------------------------------"));
+        PRINTOUT(F("---Log & Post Readings Best Effort----------"));
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
@@ -1907,7 +1907,7 @@ void Logger::logDataAndPublish(void) {
             if (_logModem->modemWake()) {
                 // Connect to the network
                 watchDogTimer.resetWatchDog();
-                MS_DBG(F("Connecting to the Internet..."));
+                PRINTOUT(F("Connecting to the Internet with"),_logModem->getModemName());
                 if (_logModem->connectInternet()) {
                     // Publish data to remotes
                     watchDogTimer.resetWatchDog();
@@ -1931,9 +1931,11 @@ void Logger::logDataAndPublish(void) {
                     MS_DBG(F("Disconnecting from the Internet..."));
                     _logModem->disconnectInternet();
                 } else {
-                    MS_DBG(F("Could not connect to the internet!"));
+                    PRINTOUT(F("Connect to the internet failed with"),_logModem->getModemName());
                     watchDogTimer.resetWatchDog();
                 }
+            } else {
+                PRINTOUT(F("Failed to wake "), _logModem->getModemName());
             }
             // Turn the modem off
             _logModem->modemSleepPowerDown();
@@ -1950,7 +1952,7 @@ void Logger::logDataAndPublish(void) {
         // Turn off the LED
         alertOff();
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("---Log & Post Readings End---------------"));
 
         // Unset flag
         Logger::isLoggingNow = false;

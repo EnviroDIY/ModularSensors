@@ -38,6 +38,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define KellerNanolevel_ACT 1
 #define ASONG_AM23XX_UUID 1
 
+// sensors with low power useage
+#define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_LOW_REQ
+
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
 // Digi WiFi S6 plugged in directly

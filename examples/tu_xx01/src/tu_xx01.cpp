@@ -994,7 +994,7 @@ bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery)
             PRINTOUT(lp_wait++,F(": BatV Low ="), mcuBoard.getBatteryVm1(false)),F(" Sleep60sec");
             dataLogger.systemSleep(1);
             //delay(1000);  // debug
-            PRINTOUT(F("----Wakeup"));
+            PRINTOUT(F("---tu_xx01:Wakeup check power"));
         }
         if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
     } while (LiBattPower_Unseable && !UserButtonAct);
@@ -1175,8 +1175,6 @@ void setup() {
 
     //Setup sensors, including reading sensor data sheet that can be recorded on SD card
     PRINTOUT(F("Setting up sensors..."));
-    //batteryCheck(PS_PWR_HEAVY_REQ, true);
-    #define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_HEAVY_REQ
     batteryCheck(PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC, true);
     varArray.setupSensors();
 // Create the log file, adding the default header to it

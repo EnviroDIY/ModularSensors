@@ -691,7 +691,7 @@ void Logger::logDataAndPubReliably(void) {
         _bat_handler_atl(LB_PWR_USEABLE_REQ);  // Measures battery
         if (!_bat_handler_atl(LB_PWR_SENSOR_USE_REQ)) {
             // Squash any activity
-            MS_DBG(F("logDataAndPubReliably - all cancelled"));
+            PRINTOUT(F("logDataAndPubReliably - all cancelled"));
             cia_val = 0;
         }
         if (!_bat_handler_atl(LB_PWR_MODEM_USE_REQ)) {
@@ -711,7 +711,10 @@ void Logger::logDataAndPubReliably(void) {
         watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
-        PRINTOUT(F("------------------------------------------"));
+        //PRINTOUT(F("---logDataAndPubReliably ("),cia_val,F(")----"));
+        STANDARD_SERIAL_OUTPUT.print(F("---logDataAndPubReliably (0x"));
+        STANDARD_SERIAL_OUTPUT.print(cia_val,HEX);
+        STANDARD_SERIAL_OUTPUT.println(F(")----"));
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
@@ -724,7 +727,7 @@ void Logger::logDataAndPubReliably(void) {
             // updated values, and turing them back off. NOTE:  The wake
             // function for each sensor should force sensor setup to run if
             // the sensor was not previously set up.
-            MS_DBG(F("Running a complete sensor update..."));
+            PRINTOUT(F("Read sensors..."));
             watchDogTimer.resetWatchDog();
             _internalArray->completeUpdate();
             watchDogTimer.resetWatchDog();
@@ -740,7 +743,7 @@ void Logger::logDataAndPubReliably(void) {
                 if (_logModem->modemWake()) {
                     // Connect to the network
                     watchDogTimer.resetWatchDog();
-                    MS_DBG(F("Connecting to the Internet..."));
+                    PRINTOUT(F("Connecting to the Internet with"),_logModem->getModemName());
                     if (_logModem->connectInternet()) {
                         // Publish data to remotes
                         watchDogTimer.resetWatchDog();
@@ -775,9 +778,11 @@ void Logger::logDataAndPubReliably(void) {
                         MS_DBG(F("Disconnecting from the Internet..."));
                         _logModem->disconnectInternet();
                     } else {
-                        MS_DBG(F("Could not connect to the internet!"));
+                        PRINTOUT(F("Connect to the internet failed with"),_logModem->getModemName());
                         watchDogTimer.resetWatchDog();
                     }
+                } else {
+                    PRINTOUT(F("Failed to wake "), _logModem->getModemName());
                 }
                 // Turn the modem off
                 _logModem->modemSleepPowerDown();
@@ -785,7 +790,7 @@ void Logger::logDataAndPubReliably(void) {
                 MS_DBG(F("No _logModem "));
         } else if (cia_val & CIA_RLB_READINGS) {
             // Values not transmitted,  save readings for later transmission
-            MS_DBG(F("logDataAndPubReliably - store readings"));
+            PRINTOUT(F("logDataAndPubReliably - store readings, no pub"));
             publishDataQuedToRemotes(false);
         }
 
@@ -799,8 +804,8 @@ void Logger::logDataAndPubReliably(void) {
 
         // Turn off the LED
         alertOff();
-        // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n"));
+        // Reading ended
+        PRINTOUT(F("---logDataAndPubReliably  Complete----------"));
 
         // Unset flag
         Logger::isLoggingNow = false;
