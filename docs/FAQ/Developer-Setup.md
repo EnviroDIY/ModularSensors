@@ -45,7 +45,21 @@ lib_ldf_mode = deep+
 ; look for the library director
 lib_extra_dirs = .
 ; We have to ignore these folders or PlatformIO will double count all the dependencies
-lib_ignore = .git, .pio, .vscode, include, doc, examples, tools
+lib_ignore =
+	.git
+	.pio
+	.vscode
+	doc
+	examples
+	sensor_tests
+    tools
+	Adafruit NeoPixel
+	Adafruit GFX Library
+	Adafruit SSD1306
+	Adafruit ADXL343
+	Adafruit STMPE610
+	Adafruit TouchScreen
+	Adafruit ILI9341
 ; All these library dependencies must be listed out since we're in the library
 ; source code and won't read the dependencies from the library.json like a
 ; typical user would
