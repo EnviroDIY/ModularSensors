@@ -128,8 +128,6 @@ ___
   - [Arduino Loop Function](#arduino-loop-function)
     - [A Typical Loop](#a-typical-loop)
     - [A Complex Loop](#a-complex-loop)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
 
 [//]: # ( End GitHub Only )
 
@@ -1412,9 +1410,7 @@ If you need more help in writing a complex loop, the [double_logger example prog
 The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 [//]: # ( @section example_menu_pio PlatformIO Configuration )
-## PlatformIO Configuration
 
 [//]: # ( @include{lineno} menu_a_la_carte/platformio.ini )
 
 [//]: # ( @section example_menu_code The Complete Code )
-## The Complete Code

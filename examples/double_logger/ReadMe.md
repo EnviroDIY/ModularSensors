@@ -35,10 +35,12 @@ _______
 [//]: # ( @subsection example_double_log_pio Prepare and set up PlatformIO )
 ## Prepare and set up PlatformIO
 - Create a new PlatformIO project
-- Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/double_logger/platformio.ini) file in the examples/double_logger folder on GitHub.
     - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
-Without this, the program won't compile or send data.
-- Download data_saving.ino and put it into the src directory of your project.
+    - Without this, the program won't compile.
+- Open [double_logger.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/double_logger/double_logger.ino) and save it to your computer.
+    - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
+    - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
 [//]: # ( @subsection example_double_log_logger_id Set the logger ID )

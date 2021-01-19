@@ -36,10 +36,12 @@ _______
 ## Prepare and set up PlatformIO
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
-- Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/baro_rho_correction/platformio.ini) file in the examples/baro_rho_correction folder on GitHub.
     - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
-Without this, the program won't compile or send data.
-- Download baro_rho_correction.ino and put it into the src directory of your project.
+    - Without this, the program won't compile.
+- Open [baro_rho_correction.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/baro_rho_correction/baro_rho_correction.ino) and save it to your computer.
+    - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
+    - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
 [//]: # ( @subsection example_baro_rho_logger_id Set the logger ID )
