@@ -1541,23 +1541,23 @@ div#ez-toc-container {
         <div class="m-block m-default">
           <ul>
             <li><a href="#xample_drwi_no_cell">DRWI CitSci Sites without Live Data</a></li>
+            <li><a href="#xample_double_log_unique">Unique Features of the Double %Logger Example</a></li>
             <li>
-              <a href="#rwi_no_cell_using">To Use this Example:</a>
+              <a href="#xample_drwi_no_cell_using">To Use this Example:</a>
               <ul>
-                              <li><a href="#rwi_no_cell_pio">Prepare and set up PlatformIO</a></li>
-                <li><a href="#rwi_no_cell_logger_id">Set the logger ID</a></li>
-                <li><a href="#rwi_no_cell_obs3_calibration">Set the calibration coefficients for the Campbell OBS3+</a></li>
-                <li><a href="#rwi_no_cell_uuids">Set the universally universal identifiers (UUID) for each variable</a></li>
-                <li><a href="#rwi_no_cell_upload">Upload!</a></li>
+                              <li><a href="#xample_drwi_no_cell_pio">Prepare and set up PlatformIO</a></li>
+                <li><a href="#xample_drwi_no_cell_logger_id">Set the logger ID</a></li>
+                <li><a href="#xample_drwi_no_cell_obs3_calibration">Set the calibration coefficients for the Campbell OBS3+</a></li>
+                <li><a href="#xample_drwi_no_cell_uuids">Set the universally universal identifiers (UUID) for each variable</a></li>
+                <li><a href="#xample_drwi_no_cell_upload">Upload!</a></li>
               </ul>
             </li>
-            <li><a href="#xample_drwi_no_cell_walk">Walking Through the Code</a></li>
-            <li><a href="#xample_drwi_no_cell_pio">PlatformIO Configuration</a></li>
+            <li><a href="#xample_drwi_no_cell_pio">Prepare and set up PlatformIO</a></li>
             <li><a href="#xample_drwi_no_cell_code">The Complete Code</a></li>
           </ul>
         </div>
-        <section id="xample_drwi_no_cell"><h2>DRWI CitSci Sites without Live Data</h2><p>This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative. This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.</p><p>Before using this example, you must register a site and sensors at the data portal (<a href="http://data.envirodiy.org/">http:/<wbr />/<wbr />data.envirodiy.org/<wbr /></a>). After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID&#x27;s for each variable. You will need to copy all of those UUID values into your sketch to replace the <code>12345678-abcd-1234-ef00-1234567890ab</code> place holders in this example. <strong>You should register even if your logger will not be sending live data.</strong> This ensures that the data file your logger writes will be ready to immediately upload to the portal.</p><hr/></section><section id="rwi_no_cell_using"><h2>To Use this Example:</h2><section id="rwi_no_cell_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>Create a new PlatformIO project</li><li>Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project<ul><li>It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example. Without this, the program won&#x27;t compile or send data.</li></ul></li><li>Download logging_to_EnviroDIY.ino and put it into the src directory of your project. Delete main.cpp in that folder.</li></ul></section><section id="rwi_no_cell_logger_id"><h3>Set the logger ID</h3><ul><li>Change the &quot;XXXX&quot; in this section of code to the loggerID assigned by Stroud:</li></ul><pre class="m-code"><span class="c1">// Logger ID, also becomes the prefix for the name of the data file on SD card</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">LoggerID</span> <span class="o">=</span> <span class="s">&quot;XXXX&quot;</span><span class="p">;</span></pre></section><section id="rwi_no_cell_obs3_calibration"><h3>Set the calibration coefficients for the Campbell OBS3+</h3><ul><li>The OBS3+ ships with a calibration certificate; you need this sheet!</li><li>Change <em><strong>all</strong></em> of the the <code>0.000E+00</code> and <code>0.000E+00</code> values in this section of code to the values on that calibration sheet. Use numbers from the side of the calibration sheet that shows the calibration in <em><strong>volts</strong></em>.<ul><li>The sketch will not compile if these values are not entered properly.</li><li>Do not change any values except those that are <code>0.000E+00</code> and <code>0.000E+00</code>!</li></ul></li></ul><pre class="m-code"><span class="c1">// ==========================================================================</span>
+        <section id="xample_drwi_no_cell"><h2>DRWI CitSci Sites without Live Data</h2><p>This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative. This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.</p><p>Before using this example, you must register a site and sensors at the data portal (<a href="http://data.envirodiy.org/">http:/<wbr />/<wbr />data.envirodiy.org/<wbr /></a>). After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID&#x27;s for each variable. You will need to copy all of those UUID values into your sketch to replace the <code>12345678-abcd-1234-ef00-1234567890ab</code> place holders in this example. <strong>You should register even if your logger will not be sending live data.</strong> This ensures that the data file your logger writes will be ready to immediately upload to the portal.</p><hr/><hr/></section><section id="xample_double_log_unique"><h2>Unique Features of the Double %Logger Example</h2><ul><li>Specifically for sites within the Delaware River Watershed Initiative.</li><li>Does <em>not</em> include any live data uploads.</li></ul></section><section id="xample_drwi_no_cell_using"><h2>To Use this Example:</h2><section id="xample_drwi_no_cell_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>Create a new PlatformIO project</li><li>Replace the contents of the platformio.ini for your new project with the <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_NoCellular/platformio.ini">platformio.ini</a> file in the examples/DRWI_NoCellular folder on GitHub.<ul><li>It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.</li><li>Without this, the program won&#x27;t compile.</li></ul></li><li>Open <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_NoCellular/DRWI_NoCellular.ino">DRWI_<wbr />NoCellular.ino</a> and save it to your computer.<ul><li>After opening the link, you should be able to right click anywhere on the page and select &quot;Save Page As&quot;.</li><li>Move it into the src directory of your project.</li><li>Delete main.cpp in that folder.</li></ul></li></ul></section><section id="xample_drwi_no_cell_logger_id"><h3>Set the logger ID</h3><ul><li>Change the &quot;XXXX&quot; in this section of code to the loggerID assigned by Stroud:</li></ul><pre class="m-code"><span class="c1">// Logger ID, also becomes the prefix for the name of the data file on SD card</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">LoggerID</span> <span class="o">=</span> <span class="s">&quot;XXXX&quot;</span><span class="p">;</span></pre></section><section id="xample_drwi_no_cell_obs3_calibration"><h3>Set the calibration coefficients for the Campbell OBS3+</h3><ul><li>The OBS3+ ships with a calibration certificate; you need this sheet!</li><li>Change <em><strong>all</strong></em> of the the <code>0.000E+00</code> and <code>1.000E+00</code> values in this section of code to the values on that calibration sheet. Use numbers from the side of the calibration sheet that shows the calibration in <em><strong>volts</strong></em>.<ul><li>The sketch will not compile if these values are not entered properly.</li><li>Do not change any values except those that are <code>0.000E+00</code> and <code>1.000E+00</code>!</li></ul></li></ul><pre class="m-code"><span class="c1">// ==========================================================================</span>
 <span class="c1">//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor</span>
 <span class="c1">// ==========================================================================</span>
 <span class="cp">#include</span> <span class="cpf">&lt;sensors/CampbellOBS3.h&gt;</span><span class="cp"></span>
@@ -1575,7 +1575,7 @@ div#ez-toc-container {
 <span class="k">const</span> <span class="kt">float</span> <span class="n">OBSHigh_A</span> <span class="o">=</span> <span class="mf">0.000E+00</span><span class="p">;</span>  <span class="c1">// &quot;A&quot; value (X^2) [*high* range]</span>
 <span class="k">const</span> <span class="kt">float</span> <span class="n">OBSHigh_B</span> <span class="o">=</span> <span class="mf">1.000E+00</span><span class="p">;</span>  <span class="c1">// &quot;B&quot; value (X) [*high* range]</span>
 <span class="k">const</span> <span class="kt">float</span> <span class="n">OBSHigh_C</span> <span class="o">=</span> <span class="mf">0.000E+00</span><span class="p">;</span>  <span class="c1">// &quot;C&quot; value [*high* range]</span>
-<span class="n">CampbellOBS3</span> <span class="nf">osb3high</span><span class="p">(</span><span class="n">OBS3Power</span><span class="p">,</span> <span class="n">OBSHighADSChannel</span><span class="p">,</span> <span class="n">OBSHigh_A</span><span class="p">,</span> <span class="n">OBSHigh_B</span><span class="p">,</span> <span class="n">OBSHigh_C</span><span class="p">,</span> <span class="n">ADSi2c_addr</span><span class="p">,</span> <span class="n">OBS3numberReadings</span><span class="p">);</span></pre></section><section id="rwi_no_cell_uuids"><h3>Set the universally universal identifiers (UUID) for each variable</h3><ul><li>Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>Find and click the white &quot;View Token UUID List&quot; button above the small map on your site page</li><li><strong>VERY CAREFULLY</strong> check that the variables are in exactly the same order as in the variable array:</li></ul><pre class="m-code"><span class="n">Variable</span><span class="o">*</span> <span class="n">variableList</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">CampbellOBS3</span> <span class="nf">osb3high</span><span class="p">(</span><span class="n">OBS3Power</span><span class="p">,</span> <span class="n">OBSHighADSChannel</span><span class="p">,</span> <span class="n">OBSHigh_A</span><span class="p">,</span> <span class="n">OBSHigh_B</span><span class="p">,</span> <span class="n">OBSHigh_C</span><span class="p">,</span> <span class="n">ADSi2c_addr</span><span class="p">,</span> <span class="n">OBS3numberReadings</span><span class="p">);</span></pre></section><section id="xample_drwi_no_cell_uuids"><h3>Set the universally universal identifiers (UUID) for each variable</h3><ul><li>Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>Find and click the white &quot;View Token UUID List&quot; button above the small map on your site page</li><li><strong>VERY CAREFULLY</strong> check that the variables are in exactly the same order as in the variable array:</li></ul><pre class="m-code"><span class="n">Variable</span><span class="o">*</span> <span class="n">variableList</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">...</span>
 <span class="p">}</span></pre><ul><li>If any of the variables are in a different order on the web page than in your code <strong>reorder the variables in your code to match the website</strong>.</li><li>After you are completely certain that you have the order right in the variable section of your code use the teal &quot;Copy&quot; button on the website to copy the section of code containing all of the UUID&#x27;s.</li><li>Paste the code from the website into your program in this section below the variable array</li></ul><pre class="m-code"><span class="c1">// *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***</span>
 <span class="c1">// Check the order of your variables in the variable list!!!</span>
@@ -1592,7 +1592,7 @@ div#ez-toc-container {
     <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span>   <span class="c1">// Temperature (EnviroDIY_Mayfly_Temp)</span>
 <span class="p">};</span>
 <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">registrationToken</span> <span class="o">=</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span>  <span class="c1">// Device registration token</span>
-<span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">samplingFeature</span> <span class="o">=</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span>  <span class="c1">// Sampling feature UUID</span></pre></section><section id="rwi_no_cell_upload"><h3>Upload!</h3><ul><li>Test everything at home <strong>before</strong> deploying out in the wild!</li></ul><hr/></section></section><section id="xample_drwi_no_cell_walk"><h2>Walking Through the Code</h2><p><em>NOTE: The code snippets in this walkthrough will not appear on GitHub.</em></p></section><section id="xample_drwi_no_cell_pio"><h2>PlatformIO Configuration</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
+<span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">samplingFeature</span> <span class="o">=</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span>  <span class="c1">// Sampling feature UUID</span></pre></section><section id="xample_drwi_no_cell_upload"><h3>Upload!</h3><ul><li>Test everything at home <strong>before</strong> deploying out in the wild!</li></ul><hr/></section></section><section id="xample_drwi_no_cell_pio"><h2>Prepare and set up PlatformIO</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
 <span class="c1">;</span>
 <span class="c1">;   Build options: build flags, source filter</span>
 <span class="c1">;   Upload options: custom upload port, speed and extra flags</span>
@@ -1611,23 +1611,23 @@ div#ez-toc-container {
 <span class="na">platform</span> <span class="o">=</span> <span class="s">atmelavr</span>
 <span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
 <span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep+</span>
-<span class="na">lib_ignore</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    RTCZero</span>
-<span class="s">    Adafruit NeoPixel</span>
-<span class="s">    Adafruit GFX Library</span>
-<span class="s">    Adafruit SSD1306</span>
-<span class="s">    Adafruit ADXL343</span>
-<span class="s">    Adafruit STMPE610</span>
-<span class="s">    Adafruit TouchScreen</span>
-<span class="s">    Adafruit ILI9341</span>
-<span class="na">build_flags</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    -DSDI12_EXTERNAL_PCINT</span>
-<span class="s">    -DNEOSWSERIAL_EXTERNAL_PCINT</span>
-<span class="s">    -DMQTT_MAX_PACKET_SIZE=240</span>
-<span class="s">    -DTINY_GSM_RX_BUFFER=64</span>
-<span class="s">    -DTINY_GSM_YIELD_MS=2</span>
-<span class="na">lib_deps</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    envirodiy/EnviroDIY_ModularSensors</span>
+<span class="na">lib_ignore</span> <span class="o">=</span>
+    <span class="na">RTCZero</span>
+    <span class="na">Adafruit NeoPixel</span>
+    <span class="na">Adafruit GFX Library</span>
+    <span class="na">Adafruit SSD1306</span>
+    <span class="na">Adafruit ADXL343</span>
+    <span class="na">Adafruit STMPE610</span>
+    <span class="na">Adafruit TouchScreen</span>
+    <span class="na">Adafruit ILI9341</span>
+<span class="na">build_flags</span> <span class="o">=</span>
+    <span class="na">-DSDI12_EXTERNAL_PCINT</span>
+    <span class="na">-DNEOSWSERIAL_EXTERNAL_PCINT</span>
+    <span class="na">-DMQTT_MAX_PACKET_SIZE</span><span class="o">=</span><span class="s">240</span>
+    <span class="na">-DTINY_GSM_RX_BUFFER</span><span class="o">=</span><span class="s">64</span>
+    <span class="na">-DTINY_GSM_YIELD_MS</span><span class="o">=</span><span class="s">2</span>
+<span class="na">lib_deps</span> <span class="o">=</span>
+    <span class="na">envirodiy/EnviroDIY_ModularSensors</span>
 <span class="c1">;  ^^ Use this when working from an official release of the library</span>
 <span class="c1">;    https://github.com/EnviroDIY/ModularSensors.git#develop</span>
 <span class="c1">;  ^^ Use this when if you want to pull from the develop branch</span></pre></section><section id="xample_drwi_no_cell_code"><h2>The Complete Code</h2><pre class="m-code"><span class="cm">/** =========================================================================</span>

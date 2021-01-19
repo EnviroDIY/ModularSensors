@@ -1548,88 +1548,119 @@ div#ez-toc-container {
 
 <span class="k">[platformio]</span>
 <span class="na">description</span> <span class="o">=</span> <span class="s">ModularSensors Library</span>
-<span class="c1">; We need to tell PlatformIO that the main directory is a library</span>
-<span class="na">lib_extra_dirs</span> <span class="o">=</span> <span class="s">., src</span>
+<span class="c1">; Pick your default environment, if you don&#39;t want to build all of them every time</span>
+<span class="na">default_envs</span> <span class="o">=</span> <span class="s">mayfly</span>
 <span class="c1">; Whatever code you personally want to test from</span>
 <span class="na">src_dir</span> <span class="o">=</span> <span class="s">your_directory/your_source_code</span>
 
-<span class="k">[common]</span>
+<span class="k">[env]</span>
+<span class="c1">; Default baud for all examples</span>
+<span class="na">monitor_speed</span> <span class="o">=</span> <span class="s">115200</span>
+<span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
+<span class="c1">; To run code checks; cppcheck and clangtidy must be installed</span>
+<span class="na">check_tool</span> <span class="o">=</span> <span class="s">cppcheck, clangtidy</span>
+<span class="na">check_patterns</span> <span class="o">=</span>
+    <span class="na">src</span>
+    <span class="na">tools</span>
+    <span class="na">examples</span>
+<span class="na">check_flags</span> <span class="o">=</span>
+    <span class="na">cppcheck: --enable</span><span class="o">=</span><span class="s">all, --inline-suppr</span>
+    <span class="na">clangtidy: --checks</span><span class="o">=</span><span class="s">-*</span>
+<span class="c1">; deep search for dependencies, evalulating preprocessor conditionals</span>
+<span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep+</span>
+<span class="c1">; look for the library director</span>
+<span class="na">lib_extra_dirs</span> <span class="o">=</span> <span class="s">.</span>
 <span class="c1">; We have to ignore these folders or PlatformIO will double count all the dependencies</span>
-<span class="na">lib_ignore</span> <span class="o">=</span> <span class="s">.git, .pioenvs, .piolibdeps, .vscode, include, doc, examples, sensor_tests, compile_tests, pioScripts</span>
+<span class="na">lib_ignore</span> <span class="o">=</span>
+    <span class="na">.git</span>
+    <span class="na">.pio</span>
+    <span class="na">.vscode</span>
+    <span class="na">doc</span>
+    <span class="na">examples</span>
+    <span class="na">sensor_tests</span>
+    <span class="na">tools</span>
+    <span class="na">Adafruit NeoPixel</span>
+    <span class="na">Adafruit GFX Library</span>
+    <span class="na">Adafruit SSD1306</span>
+    <span class="na">Adafruit ADXL343</span>
+    <span class="na">Adafruit STMPE610</span>
+    <span class="na">Adafruit TouchScreen</span>
+    <span class="na">Adafruit ILI9341</span>
 <span class="c1">; All these library dependencies must be listed out since we&#39;re in the library</span>
 <span class="c1">; source code and won&#39;t read the dependencies from the library.json like a</span>
 <span class="c1">; typical user would</span>
 <span class="na">lib_deps</span> <span class="o">=</span>
-<span class="na">.</span>
- <span class="na">EnviroDIY_DS3231</span>
-    <span class="na">EnableInterrupt</span>
-    <span class="na">SdFat</span>
-    <span class="na">ADS1X15</span>
-    <span class="na">Adafruit Unified Sensor</span>
-    <span class="na">Adafruit AM2315</span>
-    <span class="na">Adafruit BME280 Library</span>
-    <span class="na">DHT sensor library</span>
-    <span class="na">Adafruit MPL115A2</span>
-    <span class="na">OneWire</span>
-    <span class="na">DallasTemperature</span>
-    <span class="na">Arduino-SDI-12</span>
-    <span class="na">KellerModbus</span>
-    <span class="na">MS5803</span>
-    <span class="na">SensorModbusMaster</span>
-    <span class="na">YosemitechModbus</span>
-    <span class="na">https://github.com/EnviroDIY/TinyGSM.git</span>
-    <span class="na">StreamDebugger</span>
-    <span class="na">RTCZero</span>
-    <span class="na">Adafruit INA219</span>
+    <span class="na">envirodiy/EnviroDIY_DS3231</span>
+    <span class="na">arduino-libraries/RTCZero</span>
+    <span class="na">greygnome/EnableInterrupt</span>
+    <span class="na">greiman/SdFat</span>
+    <span class="na">vshymanskyy/TinyGSM</span>
+    <span class="na">knolleary/PubSubClient</span>
+    <span class="na">adafruit/Adafruit BusIO</span>
+    <span class="na">adafruit/Adafruit Unified Sensor</span>
+    <span class="na">https://github.com/soligen2010/Adafruit_ADS1X15.git</span>
+    <span class="na">adafruit/Adafruit AM2315</span>
+    <span class="na">adafruit/Adafruit BME280 Library</span>
+    <span class="na">adafruit/DHT sensor library</span>
+    <span class="na">adafruit/Adafruit INA219</span>
+    <span class="na">adafruit/Adafruit MPL115A2</span>
+    <span class="na">paulstoffregen/OneWire</span>
+    <span class="na">milesburton/DallasTemperature</span>
+    <span class="na">envirodiy/SDI-12</span>
+    <span class="na">northernwidget/MS5803</span>
+    <span class="na">https://github.com/NorthernWidget-Skunkworks/Tally_Library.git#Dev_I2C</span>
+    <span class="na">envirodiy/SensorModbusMaster</span>
+    <span class="na">envirodiy/KellerModbus</span>
+    <span class="na">envirodiy/YosemitechModbus</span>
+    <span class="na">vshymanskyy/StreamDebugger</span>
+<span class="c1">; The directories for the source code</span>
+<span class="na">src_filter</span> <span class="o">=</span>
+    <span class="na">+&lt;*&gt;</span>
+    <span class="na">+&lt;../../src&gt;</span>
+    <span class="na">+&lt;../../src/sensors&gt;</span>
+    <span class="na">+&lt;../../src/publishers&gt;</span>
+    <span class="na">+&lt;../../src/modems&gt;</span>
+    <span class="na">+&lt;../../src/WatchDogs&gt;</span>
+    <span class="na">+&lt;../../src/clocks&gt;</span>
+    <span class="na">+&lt;../../src/utils&gt;</span>
+<span class="c1">; Some common build flags</span>
+<span class="na">build_flags</span> <span class="o">=</span>
+    <span class="na">-D SDI12_EXTERNAL_PCINT</span>
+    <span class="na">-D NEOSWSERIAL_EXTERNAL_PCINT</span>
+    <span class="na">-D MQTT_MAX_PACKET_SIZE</span><span class="o">=</span><span class="s">240</span>
+    <span class="na">-D TINY_GSM_RX_BUFFER</span><span class="o">=</span><span class="s">64</span>
+    <span class="na">-D TINY_GSM_YIELD_MS</span><span class="o">=</span><span class="s">2</span>
 
 <span class="k">[env:mayfly]</span>
 <span class="na">upload_port</span> <span class="o">=</span> <span class="s">COM##</span>
-<span class="na">monitor_speed</span> <span class="o">=</span> <span class="s">115200</span>
+<span class="na">monitor_port</span> <span class="o">=</span> <span class="s">COM##</span>
 <span class="na">board</span> <span class="o">=</span> <span class="s">mayfly</span>
 <span class="na">platform</span> <span class="o">=</span> <span class="s">atmelavr</span>
 <span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
-<span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep+</span>
 <span class="c1">; You probably need some software serial libraries</span>
-<span class="na">lib_deps</span> <span class="o">=</span> <span class="s">${common.lib_deps}</span>
-<span class="s">           https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git</span>
-<span class="s">           https://github.com/PaulStoffregen/AltSoftSerial.git</span>
-<span class="s">           https://github.com/SRGDamia1/NeoSWSerial.git</span>
+<span class="na">lib_deps</span> <span class="o">=</span> <span class="s">${env.lib_deps}</span>
+           <span class="na">https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git</span>
+           <span class="na">https://github.com/PaulStoffregen/AltSoftSerial.git</span>
+           <span class="na">https://github.com/SRGDamia1/NeoSWSerial.git</span>
 <span class="c1">; AVR boards need to ignore RTCZero, it&#39;s for SAMD only and will not compile for AVR</span>
-<span class="na">lib_ignore</span> <span class="o">=</span> <span class="s">${common.lib_ignore}, RTCZero</span>
-<span class="c1">;  Use the src filter to ensure subfolders are built</span>
-<span class="na">src_filter</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    +&lt;*&gt; +&lt;../../src&gt; +&lt;../../src/sensors&gt; +&lt;../../src/publishers&gt;</span>
-<span class="c1">; extra_scripts = pioScripts/pio_set_global_flags.py</span>
-<span class="na">build_flags</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    -DSDI12_EXTERNAL_PCINT</span>
-<span class="s">    -DNEOSWSERIAL_EXTERNAL_PCINT</span>
-<span class="s">    -DMQTT_MAX_PACKET_SIZE=240</span>
-<span class="s">    -DTINY_GSM_RX_BUFFER=64</span>
-<span class="s">    -DTINY_GSM_YIELD_MS=2</span>
+<span class="na">lib_ignore</span> <span class="o">=</span> <span class="s">${env.lib_ignore}, RTCZero</span>
 
 
 <span class="k">[env:adafruit_feather_m0]</span>
 <span class="na">upload_port</span> <span class="o">=</span> <span class="s">COM##</span>
+<span class="na">monitor_port</span> <span class="o">=</span> <span class="s">COM##</span>
 <span class="na">platform</span> <span class="o">=</span> <span class="s">atmelsam</span>
 <span class="na">board</span> <span class="o">=</span> <span class="s">adafruit_feather_m0</span>
 <span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
-<span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep++</span>
-<span class="s">             NeoSWSerial</span>
 <span class="c1">; SAMD boards need RTCZero for the real time clock and sleeping</span>
-<span class="na">lib_deps</span> <span class="o">=</span> <span class="s">${common.lib_deps}</span>
-<span class="s">           RTCZero</span>
+<span class="na">lib_deps</span> <span class="o">=</span> <span class="s">${env.lib_deps}</span>
+           <span class="na">RTCZero</span>
 <span class="c1">; Most of the software serial libraries won&#39;t compile.</span>
 <span class="c1">; Use the SERCOM&#39;s; they&#39;re better anyway</span>
-<span class="na">lib_ignore</span> <span class="o">=</span> <span class="s">${common.lib_ignore}</span>
-<span class="s">            SoftwareSerial_ExtInts</span>
-<span class="s">            AltSoftSerial</span>
-<span class="c1">;  Use the src filter to ensure subfolders are built</span>
-<span class="na">src_filter</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    +&lt;*&gt; +&lt;../../src&gt; +&lt;../../src/sensors&gt; +&lt;../../src/publishers&gt;</span>
-<span class="na">build_flags</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    -Isrc/sensors</span>
-<span class="s">    -DSDI12_EXTERNAL_PCINT</span>
-<span class="s">    -DMQTT_MAX_PACKET_SIZE=240</span></pre><p>While you&#x27;re working on development, there is <em>extensive</em> debugging text built into this library. More on that is in the <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Code-Debugging">Code Debugging</a> page. In fact, there is <em>so much</em> debugging that turning it on universally through a build flag will cause the program to be too big to fit on a Mayfly and will likely crash a SAMD board&#x27;s on-board USB drivers.</p>
+<span class="na">lib_ignore</span> <span class="o">=</span> <span class="s">${env.lib_ignore}</span>
+            <span class="na">SoftwareSerial_ExtInts</span>
+            <span class="na">AltSoftSerial</span>
+            <span class="na">NeoSWSerial</span></pre><p>While you&#x27;re working on development, there is <em>extensive</em> debugging text built into this library. More on that is in the <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Code-Debugging">Code Debugging</a> page. In fact, there is <em>so much</em> debugging that turning it on universally through a build flag will cause the program to be too big to fit on a Mayfly and will likely crash a SAMD board&#x27;s on-board USB drivers.</p>
 
                     </div>
                   </div>

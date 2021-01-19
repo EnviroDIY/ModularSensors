@@ -1541,12 +1541,21 @@ div#ez-toc-container {
         <div class="m-block m-default">
           <ul>
             <li><a href="#xample_simple_logging">Simple Logging Example</a></li>
-            <li><a href="#xample_simple_logging_walk">Walking Through the Code</a></li>
-            <li><a href="#xample_simple_logging_pio">PlatformIO Configuration</a></li>
+            <li><a href="#xample_simple_logging_unique">Unique Features of the Simple Logging Example</a></li>
+            <li>
+              <a href="#xample_simple_logging_using">To Use this Example:</a>
+              <ul>
+                              <li><a href="#xample_simple_logging_pio">Prepare and set up PlatformIO</a></li>
+                <li><a href="#xample_simple_logging_logger_id">Set the logger ID</a></li>
+                <li><a href="#xample_simple_logging_upload">Upload!</a></li>
+              </ul>
+            </li>
+            <li><a href="#xample_simple_logging_pio">Prepare and set up PlatformIO</a></li>
             <li><a href="#xample_simple_logging_code">The Complete Code</a></li>
           </ul>
         </div>
-        <section id="xample_simple_logging"><h2>Simple Logging Example</h2><p>This shows the simplest use of a &quot;logger&quot; object. That is, creating an array of variable objects and then creating a logger object that utilizes those variables to update all of the variable results together and save the data to a SD card. The processor then goes to sleep between readings. This example has a placeholder to show users where to insert sensors, which can be found in menu_a_la_carte.ino.</p><p>This is the example you should use to deploy a logger somewhere where you don&#x27;t want or have access to a way of streaming live data and you won&#x27;t want to upload data to the Monitor My Watershed data portal. Those lines should be removed when using the example on your own board.</p><hr/></section><section id="xample_simple_logging_walk"><h2>Walking Through the Code</h2><p><em>NOTE: The code snippets in this walkthrough will not appear on GitHub.</em></p></section><section id="xample_simple_logging_pio"><h2>PlatformIO Configuration</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
+        <section id="xample_simple_logging"><h2>Simple Logging Example</h2><p>This shows the simplest use of a &quot;logger&quot; object. That is, creating an array of variable objects and then creating a logger object that utilizes those variables to update all of the variable results together and save the data to a SD card. The processor then goes to sleep between readings.</p><p>This is the example you should use to deploy a logger somewhere where you don&#x27;t want or have access to a way of streaming live data and you won&#x27;t want to upload data to the Monitor My Watershed data portal.</p><hr/><hr/></section><section id="xample_simple_logging_unique"><h2>Unique Features of the Simple Logging Example</h2><ul><li>Only logs data to an SD card.</li></ul></section><section id="xample_simple_logging_using"><h2>To Use this Example:</h2><section id="xample_simple_logging_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Create a new PlatformIO project</li><li>Replace the contents of the platformio.ini for your new project with the <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging/platformio.ini">platformio.ini</a> file in the examples/simple_logging folder on GitHub.<ul><li>It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.</li><li>Without this, the program won&#x27;t compile.</li></ul></li><li>Open <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging/simple_logging.ino">simple_<wbr />logging.ino</a> and save it to your computer. Put it into the src directory of your project.<ul><li>Delete main.cpp in that folder.</li></ul></li></ul></section><section id="xample_simple_logging_logger_id"><h3>Set the logger ID</h3><ul><li>Change the &quot;XXXX&quot; in this section of code to the loggerID assigned by Stroud:</li></ul><pre class="m-code"><span class="c1">// Logger ID, also becomes the prefix for the name of the data file on SD card</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">LoggerID</span> <span class="o">=</span> <span class="s">&quot;XXXX&quot;</span><span class="p">;</span></pre></section><section id="xample_simple_logging_upload"><h3>Upload!</h3><ul><li>Test everything at home <strong>before</strong> deploying out in the wild!</li></ul><hr/></section></section><section id="xample_simple_logging_pio"><h2>Prepare and set up PlatformIO</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
 <span class="c1">;</span>
 <span class="c1">;   Build options: build flags, source filter</span>
 <span class="c1">;   Upload options: custom upload port, speed and extra flags</span>
@@ -1565,23 +1574,23 @@ div#ez-toc-container {
 <span class="na">platform</span> <span class="o">=</span> <span class="s">atmelavr</span>
 <span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
 <span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep+</span>
-<span class="na">lib_ignore</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    RTCZero</span>
-<span class="s">    Adafruit NeoPixel</span>
-<span class="s">    Adafruit GFX Library</span>
-<span class="s">    Adafruit SSD1306</span>
-<span class="s">    Adafruit ADXL343</span>
-<span class="s">    Adafruit STMPE610</span>
-<span class="s">    Adafruit TouchScreen</span>
-<span class="s">    Adafruit ILI9341</span>
-<span class="na">build_flags</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    -DSDI12_EXTERNAL_PCINT</span>
-<span class="s">    -DNEOSWSERIAL_EXTERNAL_PCINT</span>
-<span class="s">    -DMQTT_MAX_PACKET_SIZE=240</span>
-<span class="s">    -DTINY_GSM_RX_BUFFER=64</span>
-<span class="s">    -DTINY_GSM_YIELD_MS=2</span>
-<span class="na">lib_deps</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    envirodiy/EnviroDIY_ModularSensors</span>
+<span class="na">lib_ignore</span> <span class="o">=</span>
+    <span class="na">RTCZero</span>
+    <span class="na">Adafruit NeoPixel</span>
+    <span class="na">Adafruit GFX Library</span>
+    <span class="na">Adafruit SSD1306</span>
+    <span class="na">Adafruit ADXL343</span>
+    <span class="na">Adafruit STMPE610</span>
+    <span class="na">Adafruit TouchScreen</span>
+    <span class="na">Adafruit ILI9341</span>
+<span class="na">build_flags</span> <span class="o">=</span>
+    <span class="na">-DSDI12_EXTERNAL_PCINT</span>
+    <span class="na">-DNEOSWSERIAL_EXTERNAL_PCINT</span>
+    <span class="na">-DMQTT_MAX_PACKET_SIZE</span><span class="o">=</span><span class="s">240</span>
+    <span class="na">-DTINY_GSM_RX_BUFFER</span><span class="o">=</span><span class="s">64</span>
+    <span class="na">-DTINY_GSM_YIELD_MS</span><span class="o">=</span><span class="s">2</span>
+<span class="na">lib_deps</span> <span class="o">=</span>
+    <span class="na">envirodiy/EnviroDIY_ModularSensors</span>
 <span class="c1">;  ^^ Use this when working from an official release of the library</span>
 <span class="c1">;    https://github.com/EnviroDIY/ModularSensors.git#develop</span>
 <span class="c1">;  ^^ Use this when if you want to pull from the develop branch</span>

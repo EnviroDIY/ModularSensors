@@ -1718,7 +1718,7 @@ div#ez-toc-container {
             <li><a href="#xample_menu_code">The Complete Code</a></li>
           </ul>
         </div>
-        <section id="xample_menu"><h2>A la carte Example</h2><p>This shows most of the functionality of the library at once. It has code in it for every possible sensor and modem and for both AVR and SAMD boards. This example should <em>never</em> be used directly, but rather taken as a template and all parts that do not apply cut out.</p><p>Any line containing the word <code>MS_BUILD_TESTING</code> is to help ensure the library builds correctly in all environments. Those lines should be removed when using the example on your own board.</p><hr/></section><section id="xample_menu_walk"><h2>Walking Through the Code</h2><p><em>NOTE: The code snippets in this walkthrough will not appear on GitHub.</em></p><p>WARNING: This example is long. This walk-through is really, really long. Make use of the table of contents to skip to the parts you need.</p><hr/></section><section id="enu_defines-and-includes"><h2>Defines and Includes</h2><section id="enu_defines"><h3>Defines for the Arduino IDE</h3><p>The top few lines of the examples set defines of buffer sizes and yields needed for the Arduino IDE. That IDE read any defines within the top few lines and applies them as build flags for the processor. This is <em>not</em> standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.</p><pre class="m-code"><span class="cp">#ifndef TINY_GSM_RX_BUFFER</span>
+        <section id="xample_menu"><h2>A la carte Example</h2><p>This shows most of the functionality of the library at once. It has code in it for every possible sensor and modem and for both AVR and SAMD boards. This example should <em>never</em> be used directly; it is intended to document all possibilities and to verify compilating.</p><p>To create your own code, I recommend starting from a much simpler targeted example, like the <a href="https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW">Logging to MMW</a> example, and then adding to it based on only the parts of this menu example that apply to you.</p><hr/></section><section id="xample_menu_walk"><h2>Walking Through the Code</h2><p><em>NOTE: This walkthrough is intended to be viewed here: <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html">https://envirodiy.github.io/ModularSensors/menu_<wbr />a_<wbr />la_<wbr />carte_<wbr />8ino-example.html</a></em></p><p>WARNING: This example is long. This walk-through is really, really long. Make use of the table of contents to skip to the parts you need.</p><hr/></section><section id="enu_defines-and-includes"><h2>Defines and Includes</h2><section id="enu_defines"><h3>Defines for the Arduino IDE</h3><p>The top few lines of the examples set defines of buffer sizes and yields needed for the Arduino IDE. That IDE read any defines within the top few lines and applies them as build flags for the processor. This is <em>not</em> standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.</p><pre class="m-code"><span class="cp">#ifndef TINY_GSM_RX_BUFFER</span>
 <span class="cp">#define TINY_GSM_RX_BUFFER 64</span>
 <span class="cp">#endif</span>
 <span class="cp">#ifndef TINY_GSM_YIELD_MS</span>
@@ -1726,12 +1726,12 @@ div#ez-toc-container {
 <span class="cp">#endif</span>
 <span class="cp">#ifndef MQTT_MAX_PACKET_SIZE</span>
 <span class="cp">#define MQTT_MAX_PACKET_SIZE 240</span>
-<span class="cp">#endif</span></pre><p>If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini. This is standard behaviour for C++.</p><pre class="m-code"><span class="na">build_flags</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    -DSDI12_EXTERNAL_PCINT</span>
-<span class="s">    -DNEOSWSERIAL_EXTERNAL_PCINT</span>
-<span class="s">    -DMQTT_MAX_PACKET_SIZE=240</span>
-<span class="s">    -DTINY_GSM_RX_BUFFER=64</span>
-<span class="s">    -DTINY_GSM_YIELD_MS=2</span></pre><hr/></section><section id="enu_includes"><h3>Library Includes</h3><p>Next, include the libraries needed for every program using ModularSensors.</p><pre class="m-code"><span class="c1">// The Arduino library is needed for every Arduino program.</span>
+<span class="cp">#endif</span></pre><p>If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini. This is standard behaviour for C++.</p><pre class="m-code"><span class="na">build_flags</span> <span class="o">=</span>
+    <span class="na">-DSDI12_EXTERNAL_PCINT</span>
+    <span class="na">-DNEOSWSERIAL_EXTERNAL_PCINT</span>
+    <span class="na">-DMQTT_MAX_PACKET_SIZE</span><span class="o">=</span><span class="s">240</span>
+    <span class="na">-DTINY_GSM_RX_BUFFER</span><span class="o">=</span><span class="s">64</span>
+    <span class="na">-DTINY_GSM_YIELD_MS</span><span class="o">=</span><span class="s">2</span></pre><hr/></section><section id="enu_includes"><h3>Library Includes</h3><p>Next, include the libraries needed for every program using ModularSensors.</p><pre class="m-code"><span class="c1">// The Arduino library is needed for every Arduino program.</span>
 <span class="cp">#include</span> <span class="cpf">&lt;Arduino.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// EnableInterrupt is used by ModularSensors for external and pin change</span>
@@ -3615,29 +3615,29 @@ div#ez-toc-container {
 <span class="na">platform</span> <span class="o">=</span> <span class="s">atmelavr</span>
 <span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
 <span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep+</span>
-<span class="na">lib_ignore</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    RTCZero</span>
-<span class="s">    Adafruit NeoPixel</span>
-<span class="s">    Adafruit GFX Library</span>
-<span class="s">    Adafruit SSD1306</span>
-<span class="s">    Adafruit ADXL343</span>
-<span class="s">    Adafruit STMPE610</span>
-<span class="s">    Adafruit TouchScreen</span>
-<span class="s">    Adafruit ILI9341</span>
-<span class="na">build_flags</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    -DSDI12_EXTERNAL_PCINT</span>
-<span class="s">    -DNEOSWSERIAL_EXTERNAL_PCINT</span>
-<span class="s">    -DMQTT_MAX_PACKET_SIZE=240</span>
-<span class="s">    -DTINY_GSM_RX_BUFFER=64</span>
-<span class="s">    -DTINY_GSM_YIELD_MS=2</span>
-<span class="s">    -DENABLE_SERIAL2</span>
-<span class="s">    -DENABLE_SERIAL3</span>
-<span class="s">    ; -D MS_BUILD_TEST_XBEE_CELLULAR  ; Turn on first time w/ a Digi LTE-M module</span>
-<span class="s">    ; -D MS_LOGGERBASE_DEBUG</span>
-<span class="s">    ; -D MS_DATAPUBLISHERBASE_DEBUG</span>
-<span class="s">    ; -D MS_ENVIRODIYPUBLISHER_DEBUG</span>
-<span class="na">lib_deps</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    envirodiy/EnviroDIY_ModularSensors</span>
+<span class="na">lib_ignore</span> <span class="o">=</span>
+    <span class="na">RTCZero</span>
+    <span class="na">Adafruit NeoPixel</span>
+    <span class="na">Adafruit GFX Library</span>
+    <span class="na">Adafruit SSD1306</span>
+    <span class="na">Adafruit ADXL343</span>
+    <span class="na">Adafruit STMPE610</span>
+    <span class="na">Adafruit TouchScreen</span>
+    <span class="na">Adafruit ILI9341</span>
+<span class="na">build_flags</span> <span class="o">=</span>
+    <span class="na">-DSDI12_EXTERNAL_PCINT</span>
+    <span class="na">-DNEOSWSERIAL_EXTERNAL_PCINT</span>
+    <span class="na">-DMQTT_MAX_PACKET_SIZE</span><span class="o">=</span><span class="s">240</span>
+    <span class="na">-DTINY_GSM_RX_BUFFER</span><span class="o">=</span><span class="s">64</span>
+    <span class="na">-DTINY_GSM_YIELD_MS</span><span class="o">=</span><span class="s">2</span>
+    <span class="na">-DENABLE_SERIAL2</span>
+    <span class="na">-DENABLE_SERIAL3</span>
+    <span class="c1">; -D MS_BUILD_TEST_XBEE_CELLULAR  ; Turn on first time w/ a Digi LTE-M module</span>
+    <span class="c1">; -D MS_LOGGERBASE_DEBUG</span>
+    <span class="c1">; -D MS_DATAPUBLISHERBASE_DEBUG</span>
+    <span class="c1">; -D MS_ENVIRODIYPUBLISHER_DEBUG</span>
+<span class="na">lib_deps</span> <span class="o">=</span>
+    <span class="na">envirodiy/EnviroDIY_ModularSensors</span>
 <span class="c1">;  ^^ Use this when working from a tagged release of the library</span>
 <span class="c1">;     See tags at https://platformio.org/lib/show/1648/EnviroDIY_ModularSensors</span>
 

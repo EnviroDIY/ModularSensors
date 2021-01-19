@@ -1541,12 +1541,22 @@ div#ez-toc-container {
         <div class="m-block m-default">
           <ul>
             <li><a href="#xample_mmw">Monitor My Watershed Example</a></li>
-            <li><a href="#xample_mmw_walk">Walking Through the Code</a></li>
-            <li><a href="#xample_mmw_pio">PlatformIO Configuration</a></li>
+            <li><a href="#xample_mmw_unique">Unique Features of the Monitor My Watershed Example</a></li>
+            <li>
+              <a href="#xample_mmw_using">To Use this Example:</a>
+              <ul>
+                              <li><a href="#xample_mmw_pio">Prepare and set up PlatformIO</a></li>
+                <li><a href="#xample_mmw_logger_id">Set the logger ID</a></li>
+                <li><a href="#xample_mmw_uuids">Set the universally universal identifiers (UUID) for each variable</a></li>
+                <li><a href="#xample_mmw_upload">Upload!</a></li>
+              </ul>
+            </li>
+            <li><a href="#xample_mmw_pio">Prepare and set up PlatformIO</a></li>
             <li><a href="#xample_mmw_code">The Complete Code</a></li>
           </ul>
         </div>
-        <section id="xample_mmw"><h2>Monitor My Watershed Example</h2><p>This sketch reduces menu_a_la_carte.ino to provide an example of how to log to <a href="https://monitormywatershed.org/">https:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a> from two sensors, the BME280 and DS18. To complete the set up for logging to the web portal, the UUIDs for the site and each variable would need to be added to the sketch.</p><p>The settings for other data portals were removed from the example.</p><p>The modem settings were left unchanged because the sketch will test successfully without modem connection (wait patiently, it takes a few minutes).</p><p>This is the example you should use to deploy a logger with a modem to stream live data to the Monitor My Watershed data portal.</p><hr/></section><section id="xample_mmw_walk"><h2>Walking Through the Code</h2><p><em>NOTE: The code snippets in this walkthrough will not appear on GitHub.</em></p></section><section id="xample_mmw_pio"><h2>PlatformIO Configuration</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
+        <section id="xample_mmw"><h2>Monitor My Watershed Example</h2><p>This sketch reduces menu_a_la_carte.ino to provide an example of how to log to <a href="https://monitormywatershed.org/">https:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a> from two sensors, the BME280 and DS18. To complete the set up for logging to the web portal, the UUIDs for the site and each variable would need to be added to the sketch.</p><p>The settings for other data portals were removed from the example.</p><p>The modem settings were left unchanged because the sketch will test successfully without modem connection (wait patiently, it takes a few minutes).</p><p>This is the example you should use to deploy a logger with a modem to stream live data to the Monitor My Watershed data portal.</p><hr/><hr/></section><section id="xample_mmw_unique"><h2>Unique Features of the Monitor My Watershed Example</h2><ul><li>A single logger publishes data to the Monitor My Watershed data portal.</li><li>Uses a cellular Digi XBee or XBee3</li></ul></section><section id="xample_mmw_using"><h2>To Use this Example:</h2><section id="xample_mmw_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>Create a new PlatformIO project</li><li>Replace the contents of the platformio.ini for your new project with the <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_MMW/platformio.ini">platformio.ini</a> file in the examples/logging_to_MMW folder on GitHub.<ul><li>It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.</li><li>Without this, the program won&#x27;t compile.</li></ul></li><li>Open <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_MMW/logging_to_MMW.ino">logging_<wbr />to_<wbr />MMW.ino</a> and save it to your computer.<ul><li>After opening the link, you should be able to right click anywhere on the page and select &quot;Save Page As&quot;.</li><li>Move it into the src directory of your project.</li><li>Delete main.cpp in that folder.</li></ul></li></ul></section><section id="xample_mmw_logger_id"><h3>Set the logger ID</h3><ul><li>Change the &quot;XXXX&quot; in this section of code to the loggerID assigned by Stroud:</li></ul><pre class="m-code"><span class="c1">// Logger ID, also becomes the prefix for the name of the data file on SD card</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">LoggerID</span> <span class="o">=</span> <span class="s">&quot;XXXX&quot;</span><span class="p">;</span></pre></section><section id="xample_mmw_uuids"><h3>Set the universally universal identifiers (UUID) for each variable</h3><ul><li>Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>For each variable, find the dummy UUID (<code>&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</code>) and replace it with the real UUID for the variable.</li></ul></section><section id="xample_mmw_upload"><h3>Upload!</h3><ul><li>Test everything at home <strong>before</strong> deploying out in the wild!</li></ul><hr/></section></section><section id="xample_mmw_pio"><h2>Prepare and set up PlatformIO</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
 <span class="c1">;</span>
 <span class="c1">;   Build options: build flags, source filter</span>
 <span class="c1">;   Upload options: custom upload port, speed and extra flags</span>
@@ -1565,19 +1575,19 @@ div#ez-toc-container {
 <span class="na">platform</span> <span class="o">=</span> <span class="s">atmelavr</span>
 <span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
 <span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep+</span>
-<span class="na">lib_ignore</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    RTCZero</span>
-<span class="s">    Adafruit NeoPixel</span>
-<span class="s">    Adafruit GFX Library</span>
-<span class="s">    Adafruit SSD1306</span>
-<span class="s">    Adafruit ADXL343</span>
-<span class="s">    Adafruit STMPE610</span>
-<span class="s">    Adafruit TouchScreen</span>
-<span class="s">    Adafruit ILI9341</span>
-<span class="na">build_flags</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    -DSDI12_EXTERNAL_PCINT</span>
-<span class="na">lib_deps</span> <span class="o">=</span><span class="s"></span>
-<span class="s">    envirodiy/EnviroDIY_ModularSensors</span>
+<span class="na">lib_ignore</span> <span class="o">=</span>
+    <span class="na">RTCZero</span>
+    <span class="na">Adafruit NeoPixel</span>
+    <span class="na">Adafruit GFX Library</span>
+    <span class="na">Adafruit SSD1306</span>
+    <span class="na">Adafruit ADXL343</span>
+    <span class="na">Adafruit STMPE610</span>
+    <span class="na">Adafruit TouchScreen</span>
+    <span class="na">Adafruit ILI9341</span>
+<span class="na">build_flags</span> <span class="o">=</span>
+    <span class="na">-DSDI12_EXTERNAL_PCINT</span>
+<span class="na">lib_deps</span> <span class="o">=</span>
+    <span class="na">envirodiy/EnviroDIY_ModularSensors</span>
 <span class="c1">;  ^^ Use this when working from an official release of the library</span>
 <span class="c1">;    https://github.com/EnviroDIY/ModularSensors.git#develop</span>
 <span class="c1">;  ^^ Use this when if you want to pull from the develop branch</span></pre></section><section id="xample_mmw_code"><h2>The Complete Code</h2><pre class="m-code"><span class="cm">/** =========================================================================</span>
