@@ -6,26 +6,59 @@ This showcases both how to use two different logging instances and how to use so
 
 _______
 
-[//]: # ( @section example_double_log_walk Walking Through the Code )
-# Walking Through the Code
-
-_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
-
 [//]: # ( @tableofcontents )
 
 [//]: # ( Start GitHub Only )
 - [Using ModularSensors to Record data from Two Different Groups of Sensors at Two Different Time Intervals](#using-modularsensors-to-record-data-from-two-different-groups-of-sensors-at-two-different-time-intervals)
-- [Walking Through the Code](#walking-through-the-code)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
+- [Unique Features of the Double Logger Example](#unique-features-of-the-double-logger-example)
+- [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Set the logger ID](#set-the-logger-id)
+  - [Upload!](#upload)
 
 [//]: # ( End GitHub Only )
 
+_______
+
+[//]: # ( @section example_double_log_unique Unique Features of the Double %Logger Example )
+# Unique Features of the Double Logger Example
+- Two different variable arrays and loggers are created and used.
+  - The Variables for the arrays are created within the array.
+  - There is no variable overlap between the two arrays or loggers.
+- The `loop` function is expanded into its components rather than using the `logData` functions.
+  - This demonstrates *how* to write the loop out, without using the `logData` functions.
+  - This shows which functions are required for each of the two loggers and which can be used in common.
+
+[//]: # ( @section example_double_log_using To Use this Example: )
+# To Use this Example:
+
+[//]: # ( @subsection example_double_log_pio Prepare and set up PlatformIO )
+## Prepare and set up PlatformIO
+- Create a new PlatformIO project
+- Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
+    - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
+Without this, the program won't compile or send data.
+- Download data_saving.ino and put it into the src directory of your project.
+    - Delete main.cpp in that folder.
+
+[//]: # ( @subsection example_double_log_logger_id Set the logger ID )
+## Set the logger ID
+- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+
+```cpp
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXX";
+```
+
+[//]: # ( @subsection example_double_log_upload Upload! )
+## Upload!
+- Test everything at home **before** deploying out in the wild!
+
+_______
+
 
 [//]: # ( @section example_double_log_pio PlatformIO Configuration )
-## PlatformIO Configuration
 
 [//]: # ( @include{lineno} double_logger/platformio.ini )
 
 [//]: # ( @section example_double_log_code The Complete Code )
-## The Complete Code

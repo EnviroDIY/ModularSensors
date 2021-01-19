@@ -113,11 +113,11 @@ build_flags =
 
 - Download the "ino" file for whatever example you think will be most similar to what you'll be doing.
 Put the ino into the src directory of your project.
-Delete main.cpp in that folder.
-Do a test build before changing the example just to make sure it compiles.
+    - Delete main.cpp in that folder.
+- Do a test build before changing the example just to make sure it compiles.
 Note: before compiling the first time, PlatformIO has to download the library and is dependencies so be patient.
 The download only happens once.
-If the build succeeds, you're ready to move on.
+- If the build succeeds, you're ready to move on.
 
 
 [//]: # ( @section page_getting_started_examples Modifying the Examples )
