@@ -5,9 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## v0.27.7 (2021-01-19)
+
+## [SDI-12 Bug Fix](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.7)
+
+### Downloads
+
+**[ModularSensors_Dependencies_0.27.7.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.27.7/ModularSensors_Dependencies_0.27.7.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
+### Bug Fixes
+- Fixed a compiler error for non-concurrent SDI-12 sensors.
+
 ## v0.27.6 (2021-01-19)
 
-## [Multiple new Sensors and Workflows](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.6)
+## [Update Documentation](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.6)
 
 ### Downloads
 

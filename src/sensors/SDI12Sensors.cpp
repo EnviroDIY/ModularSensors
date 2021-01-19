@@ -437,7 +437,6 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
 
     String startCommand;
     String sdiResponse;
-    bool   wasActive;
 
     // MS_DBG(F("   Activating SDI-12 instance for"),
     //        getSensorNameAndLocation());
