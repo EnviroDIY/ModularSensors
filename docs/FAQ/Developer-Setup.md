@@ -22,88 +22,119 @@ Set your platformio.ini configuration file up like this:
 
 [platformio]
 description = ModularSensors Library
-; We need to tell PlatformIO that the main directory is a library
-lib_extra_dirs = ., src
+; Pick your default environment, if you don't want to build all of them every time
+default_envs = mayfly
 ; Whatever code you personally want to test from
 src_dir = your_directory/your_source_code
 
-[common]
+[env]
+; Default baud for all examples
+monitor_speed = 115200
+framework = arduino
+; To run code checks; cppcheck and clangtidy must be installed
+check_tool = cppcheck, clangtidy
+check_patterns =
+	src
+	tools
+	examples
+check_flags =
+	cppcheck: --enable=all, --inline-suppr
+	clangtidy: --checks=-*
+; deep search for dependencies, evalulating preprocessor conditionals
+lib_ldf_mode = deep+
+; look for the library director
+lib_extra_dirs = .
 ; We have to ignore these folders or PlatformIO will double count all the dependencies
-lib_ignore = .git, .pioenvs, .piolibdeps, .vscode, include, doc, examples, sensor_tests, compile_tests, pioScripts
+lib_ignore =
+	.git
+	.pio
+	.vscode
+	doc
+	examples
+	sensor_tests
+    tools
+	Adafruit NeoPixel
+	Adafruit GFX Library
+	Adafruit SSD1306
+	Adafruit ADXL343
+	Adafruit STMPE610
+	Adafruit TouchScreen
+	Adafruit ILI9341
 ; All these library dependencies must be listed out since we're in the library
 ; source code and won't read the dependencies from the library.json like a
 ; typical user would
 lib_deps =
-.
- EnviroDIY_DS3231
-    EnableInterrupt
-    SdFat
-    ADS1X15
-    Adafruit Unified Sensor
-    Adafruit AM2315
-    Adafruit BME280 Library
-    DHT sensor library
-    Adafruit MPL115A2
-    OneWire
-    DallasTemperature
-    Arduino-SDI-12
-    KellerModbus
-    MS5803
-    SensorModbusMaster
-    YosemitechModbus
-    https://github.com/EnviroDIY/TinyGSM.git
-    StreamDebugger
-    RTCZero
-    Adafruit INA219
+	envirodiy/EnviroDIY_DS3231
+	arduino-libraries/RTCZero
+	greygnome/EnableInterrupt
+	greiman/SdFat
+	vshymanskyy/TinyGSM
+	knolleary/PubSubClient
+	adafruit/Adafruit BusIO
+	adafruit/Adafruit Unified Sensor
+	https://github.com/soligen2010/Adafruit_ADS1X15.git
+	adafruit/Adafruit AM2315
+	adafruit/Adafruit BME280 Library
+	adafruit/DHT sensor library
+	adafruit/Adafruit INA219
+	adafruit/Adafruit MPL115A2
+	paulstoffregen/OneWire
+	milesburton/DallasTemperature
+	envirodiy/SDI-12
+	northernwidget/MS5803
+	https://github.com/NorthernWidget-Skunkworks/Tally_Library.git#Dev_I2C
+	envirodiy/SensorModbusMaster
+	envirodiy/KellerModbus
+	envirodiy/YosemitechModbus
+	vshymanskyy/StreamDebugger
+; The directories for the source code
+src_filter =
+	+<*>
+	+<../../src>
+	+<../../src/sensors>
+	+<../../src/publishers>
+	+<../../src/modems>
+	+<../../src/WatchDogs>
+	+<../../src/clocks>
+	+<../../src/utils>
+; Some common build flags
+build_flags =
+	-D SDI12_EXTERNAL_PCINT
+	-D NEOSWSERIAL_EXTERNAL_PCINT
+	-D MQTT_MAX_PACKET_SIZE=240
+	-D TINY_GSM_RX_BUFFER=64
+	-D TINY_GSM_YIELD_MS=2
 
 [env:mayfly]
 upload_port = COM##
-monitor_speed = 115200
+monitor_port = COM##
 board = mayfly
 platform = atmelavr
 framework = arduino
-lib_ldf_mode = deep+
 ; You probably need some software serial libraries
-lib_deps = ${common.lib_deps}
+lib_deps = ${env.lib_deps}
            https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git
            https://github.com/PaulStoffregen/AltSoftSerial.git
            https://github.com/SRGDamia1/NeoSWSerial.git
 ; AVR boards need to ignore RTCZero, it's for SAMD only and will not compile for AVR
-lib_ignore = ${common.lib_ignore}, RTCZero
-;  Use the src filter to ensure subfolders are built
-src_filter =
-    +<*> +<../../src> +<../../src/sensors> +<../../src/publishers>
-; extra_scripts = pioScripts/pio_set_global_flags.py
-build_flags =
-    -DSDI12_EXTERNAL_PCINT
-    -DNEOSWSERIAL_EXTERNAL_PCINT
-    -DMQTT_MAX_PACKET_SIZE=240
-    -DTINY_GSM_RX_BUFFER=64
-    -DTINY_GSM_YIELD_MS=2
+lib_ignore = ${env.lib_ignore}, RTCZero
 
 
 [env:adafruit_feather_m0]
 upload_port = COM##
+monitor_port = COM##
 platform = atmelsam
 board = adafruit_feather_m0
 framework = arduino
-lib_ldf_mode = deep++
-             NeoSWSerial
 ; SAMD boards need RTCZero for the real time clock and sleeping
-lib_deps = ${common.lib_deps}
+lib_deps = ${env.lib_deps}
            RTCZero
 ; Most of the software serial libraries won't compile.
 ; Use the SERCOM's; they're better anyway
-lib_ignore = ${common.lib_ignore}
+lib_ignore = ${env.lib_ignore}
             SoftwareSerial_ExtInts
             AltSoftSerial
-;  Use the src filter to ensure subfolders are built
-src_filter =
-    +<*> +<../../src> +<../../src/sensors> +<../../src/publishers>
-build_flags =
-    -Isrc/sensors
-    -DSDI12_EXTERNAL_PCINT
-    -DMQTT_MAX_PACKET_SIZE=240
+            NeoSWSerial
 ```
 
 While you're working on development, there is *extensive* debugging text built into this library.

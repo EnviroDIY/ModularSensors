@@ -3,17 +3,16 @@
 
 This shows most of the functionality of the library at once.
 It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
-This example should *never* be used directly, but rather taken as a template and all parts that do not apply cut out.
+This example should *never* be used directly; it is intended to document all possibilities and to verify compilating.
 
-Any line containing the word `MS_BUILD_TESTING` is to help ensure the library builds correctly in all environments.
-Those lines should be removed when using the example on your own board.
+To create your own code, I recommend starting from a much simpler targeted example, like the [Logging to MMW](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW) example, and then adding to it based on only the parts of this menu example that apply to you.
 
 _______
 
 [//]: # ( @section example_menu_walk Walking Through the Code )
 # Walking Through the Code
 
-_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+_NOTE:  This walkthrough is intended to be viewed here:  https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html_
 
 WARNING:  This example is long.
 This walk-through is really, really long.
@@ -129,8 +128,6 @@ ___
   - [Arduino Loop Function](#arduino-loop-function)
     - [A Typical Loop](#a-typical-loop)
     - [A Complex Loop](#a-complex-loop)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
 
 [//]: # ( End GitHub Only )
 
@@ -1413,9 +1410,7 @@ If you need more help in writing a complex loop, the [double_logger example prog
 The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 [//]: # ( @section example_menu_pio PlatformIO Configuration )
-## PlatformIO Configuration
 
 [//]: # ( @include{lineno} menu_a_la_carte/platformio.ini )
 
 [//]: # ( @section example_menu_code The Complete Code )
-## The Complete Code
