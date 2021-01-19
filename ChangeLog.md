@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## v0.27.6 (2021-01-19)
+
+## [Multiple new Sensors and Workflows](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.6)
+
+### Downloads
+
+**[ModularSensors_Dependencies_0.27.6.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.27.6/ModularSensors_Dependencies_0.27.6.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
+### Improvements:
+- Update instructions for examples
+- Update developer instructions
+
+
 ## v0.27.5 (2020-12-15)
 
 ## [Multiple new Sensors and Workflows](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
