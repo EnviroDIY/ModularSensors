@@ -271,11 +271,11 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param state - true for Qued, false for standard
      */
     bool setQuedState(bool state, char uniqueId = '0') override {
-        PRINTOUT(F("EnviroDIYPublisher setQued "), state);
+        MS_DBG(F("EnvrDIYPub setQued "), state);
         return useQueDataSource = state;
     }
     bool getQuedStatus() override {
-        PRINTOUT(F("EnviroDIYPublisher gQS "), useQueDataSource);
+        MS_DBG(F("EnvrDIYPub gQS "), useQueDataSource);
         return useQueDataSource;
     }
 

@@ -277,7 +277,6 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
     PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
              F("mS Timeout"), _timerPostTimeout_ms);
-    // PRINTOUT(responseCode);
 
     return responseCode;
 }
