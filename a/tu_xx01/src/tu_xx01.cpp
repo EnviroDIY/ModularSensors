@@ -93,13 +93,26 @@ const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
 int8_t timeZone = CONFIG_TIME_ZONE_DEF;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
+// ==========================================================================
+//     Local storage - evolving
+// ==========================================================================
+#ifdef USE_MS_SD_INI
+persistent_store_t ps_ram;
+#define epc ps_ram
+#endif  //#define USE_MS_SD_INI
+
 #if defined UseModem_Module
-uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
-uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
-uint8_t     postMax_num         = 0;  // Future 0,5-50
+//uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+//#define  timerPostTimeout_ms_DEF ps_ram.app.provider.s.ed.timerPostTout_ms
+//timerPostTimeout_ms =MMW_TIMER_POST_TIMEOUT_MS_DEF;
+//ps_ram.app.provider.s.ed.timerPostTout_ms =MMW_TIMER_POST_TIMEOUT_MS_DEF;
+//#define timerPostPacing_ms ps_ram.app.provider.s.ed.timerPostPace_ms
+//uint16_t    timerPostPacing_ms  = MMW_TIMER_POST_PACING_MS_DEF;  
+//#define postMax_num_DEF ps_ram.app.provider.s.ed.postMax_num
+//uint8_t     postMax_num         = 0;  // Future 0,5-50
 // Common
-uint8_t collectReadings = COLLECT_READINGS_DEF;
-uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
+//uint8_t collectReadings = COLLECT_READINGS_DEF;
+//uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
 #endif  // UseModem_Module
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -801,14 +814,6 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // ==========================================================================
-//     Local storage - evolving
-// ==========================================================================
-#ifdef USE_MS_SD_INI
-persistent_store_t ps_ram;
-#define epc ps_ram
-#endif  //#define USE_MS_SD_INI
-
-// ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
 
@@ -832,6 +837,7 @@ const char* samplingFeature = samplingFeature_UUID;  // Sampling feature UUID
 // registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15, 0);
 #endif  // UseModem_PushData
+
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -1164,12 +1170,12 @@ void setup() {
     dataLogger.begin();
 #if defined UseModem_PushData
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
-                        ps_ram.app.provider.s.registration_token,
-                        ps_ram.app.provider.s.sampling_feature);
+                        ps_ram.app.provider.s.ed.registration_token,
+                        ps_ram.app.provider.s.ed.sampling_feature);
     EnviroDIYPOST.setQuedState(true);
-    EnviroDIYPOST.setTimerPostTimeout_mS(timerPostTimeout_ms);
-    dataLogger.setSendEveryX(collectReadings);
-    dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
+    EnviroDIYPOST.setTimerPostTimeout_mS(ps_ram.app.provider.s.ed.timerPostTout_ms);
+    dataLogger.setSendEveryX(ps_ram.app.msn.s.collectReadings_num);
+    dataLogger.setSendOffset(ps_ram.app.msn.s.sendOffset_min);  // delay Minutes
 
 #endif  // UseModem_PushData
 

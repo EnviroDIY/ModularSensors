@@ -28,29 +28,31 @@ const char BATTERY_TYPE_pm[] EDIY_PROGMEM = "BATTERY_TYPE";
 const char LIION_TYPE_pm[] EDIY_PROGMEM =
     "LIION_TYPE";  // FUT Supersede with BATTERY_TYPE
 const char TIME_ZONE_pm[] EDIY_PROGMEM          = "TIME_ZONE";
-const char TIMER_POST_TOUT_MS_pm[] EDIY_PROGMEM = "TIMER_POST_TOUT_MS";
-const char TIMER_POST_PACE_MS_pm[] EDIY_PROGMEM = "TIMER_POST_PACE_MS";
-const char POST_MAX_NUM_pm[] EDIY_PROGMEM       = "POST_MAX_NUM";
-const char COLLECT_READINGS_pm[] EDIY_PROGMEM   = "COLLECT_READINGS";
-const char SEND_OFFSET_MIN_pm[] EDIY_PROGMEM    = "SEND_OFFSET_MIN";
+
 const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM    = "GEOGRAPHICAL_ID";
 
 const char NETWORK_pm[] EDIY_PROGMEM = "NETWORK";
 const char apn_pm[] EDIY_PROGMEM     = "apn";
 const char WiFiId_pm[] EDIY_PROGMEM  = "WiFiId";
 const char WiFiPwd_pm[] EDIY_PROGMEM = "WiFiPwd";
+const char COLLECT_READINGS_pm[] EDIY_PROGMEM   = "COLLECT_READINGS";
+const char SEND_OFFSET_MIN_pm[] EDIY_PROGMEM    = "SEND_OFFSET_MIN";
 
 // INA219 configurable parms
 const char INA219M_MA_MULT_pm[] EDIY_PROGMEM     = "INA219M_MA_MULT";
 const char INA219M_V_THRESHLOW_pm[] EDIY_PROGMEM = "INA219M_V_THRESHLOW";
 
 const char PROVIDER_pm[] EDIY_PROGMEM           = "PROVIDER";
+
 const char CLOUD_ID_pm[] EDIY_PROGMEM           = "CLOUD_ID";
 const char REGISTRATION_TOKEN_pm[] EDIY_PROGMEM = "REGISTRATION_TOKEN";
 const char SAMPLING_FEATURE_pm[] EDIY_PROGMEM   = "SAMPLING_FEATURE";
+const char TIMER_POST_TOUT_MS_pm[] EDIY_PROGMEM = "TIMER_POST_TOUT_MS";
+const char TIMER_POST_PACE_MS_pm[] EDIY_PROGMEM = "TIMER_POST_PACE_MS";
+const char POST_MAX_NUM_pm[] EDIY_PROGMEM       = "POST_MAX_NUM";
 
-const char UUIDs_pm[] EDIY_PROGMEM   = "UUIDs";
-const char SENSORS_pm[] EDIY_PROGMEM = "SENSORS";
+//const char UUIDs_pm[] EDIY_PROGMEM   = "UUIDs"; - listed with PROVIDER as can vary.
+const char SENSORS_pm[] EDIY_PROGMEM = "SENSORS";  //Future
 const char index_pm[] EDIY_PROGMEM   = "index";
 
 const char USER_pm[] EDIY_PROGMEM   = "USER";
@@ -59,6 +61,7 @@ const char WRITE_pm[] EDIY_PROGMEM  = "WRITE";
 const char COPY_pm[] EDIY_PROGMEM   = "COPY";
 
 static uint8_t uuid_index = 0;
+static uint8_t uuid_ram_idx = 0;
 
 #if defined USE_PS_EEPROM && defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 //
@@ -97,6 +100,29 @@ void             ramAvailable() {
 #endif  // ARDUINO_AVR_ENVIRODIY_MAYFLY
 void       ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,
                     unsigned long offTime_ms = 150);
+
+/* Searh for name:value pairs that match a UUD
+*/
+static void iniUuidParser() {
+    uint8_t uuid_search_i = 0;
+    int uuid_lp=0;
+    do {
+        if (isalnum(epc.app.provider.s.ed.uuid[uuid_lp].value[0]) 
+        && isalnum(epc.app.provider.s.ed.uuid[uuid_lp].name[0])) 
+        {
+            //Found alpha values in table, search for a match
+            if (strcmp((const char*)variableList[uuid_search_i]
+                        ->getVarUUID().c_str(),
+                        epc.app.provider.s.ed.uuid[uuid_lp].name) == 0) 
+            {  // Found a match
+                variableList[uuid_search_i]->setVarUUID_atl((char*)epc.app.provider.s.ed.uuid[uuid_lp].value, false);
+                uuid_lp++;
+            }
+        }
+        uuid_search_i++;
+    }while (uuid_search_i < UUIDE_SENSOR_CNT_MAX_SZ );
+}
+
 static int inihUnhandledFn(const char* section, const char* name,
                            const char* value) {
 #if RAM_REPORT_LEVEL > 1
@@ -109,81 +135,135 @@ static int inihUnhandledFn(const char* section, const char* name,
     if (strcmp_P(section, PROVIDER_pm) == 0) {
         if (strcmp_P(name, REGISTRATION_TOKEN_pm) == 0) {
             // TODO: njh move storage to class EnviroDIYPublisher
-            strcpy(ps_ram.app.provider.s.registration_token, value);
+            //Assume EnviroDIY
+            strcpy(ps_ram.app.provider.s.ed.registration_token, value);
             SerialStd.print(F("PROVIDER Setting registration token: "));
-            SerialStd.println(ps_ram.app.provider.s.registration_token);
+            SerialStd.println(ps_ram.app.provider.s.ed.registration_token);
             // EnviroDIYPOST.setToken(ps_ram.provider.s.registration_token);
         } else if (strcmp_P(name, CLOUD_ID_pm) == 0) {
             // TODO: njh move storage to class EnviroDIYPublisher - though
             // hardcoded
-            strcpy(ps_ram.app.provider.s.cloudId, value);
+            strcpy(ps_ram.app.provider.s.ed.cloudId, value);
             SerialStd.print(F("PROVIDER Setting cloudId: "));
-            SerialStd.println(ps_ram.app.provider.s.cloudId);
+            SerialStd.println(ps_ram.app.provider.s.ed.cloudId);
         } else if (strcmp_P(name, SAMPLING_FEATURE_pm) == 0) {
             // TODO: njh move storage to class EnviroDIYPublisher
-            strcpy(ps_ram.app.provider.s.sampling_feature, value);
+            strcpy(ps_ram.app.provider.s.ed.sampling_feature, value);
             SerialStd.print(F("PROVIDER Setting SamplingFeature: "));
-            SerialStd.println(ps_ram.app.provider.s.sampling_feature);
+            SerialStd.println(ps_ram.app.provider.s.ed.sampling_feature);
             // dataLogger.setSamplingFeatureUUID(ps_ram.provider.s.sampling_feature);
-        } else {
-            SerialStd.print(F("PROVIDER not supported:"));
-            SerialStd.print(name);
-            SerialStd.print("=");
-            SerialStd.println(value);
-        }
-    } else if (strcmp_P(section, UUIDs_pm) == 0) {
-        /* UUIDs are applied to internal sensor Array as follows:
-        1) "UUID_label"="UUID"
-        eg ASQ212_PAR="UUID"
-           search variableList for UUID_label and if found replace with "UUID"
-        2) index="UUID"
-           if the word "index" is there with a UUID, then the UUID is applied in
-        sequence. Any UUID_label's found also increment the counted 'index'
-        */
-
-        uint8_t uuid_search_i = 0;
-
-        SerialStd.print(F(""));
-        SerialStd.print(uuid_index);
-        SerialStd.print(":");
-        SerialStd.print(name);
-        SerialStd.print(F("={"));
-        SerialStd.print(value);
-        do {
-            MS_DEEP_DBG(F(" ["), uuid_search_i, F("]"),
-                        variableList[uuid_search_i]->getVarUUID().c_str(), "#");
-            if (strcmp((const char*)variableList[uuid_search_i]
-                           ->getVarUUID()
-                           .c_str(),
-                       name) == 0) {  // Found a match
-                variableList[uuid_search_i]->setVarUUID_atl((char*)value, true);
-                MS_DEEP_DBG(F("set"), name, F(" for ["), uuid_search_i, F("]"),
-                            variableList[uuid_search_i]->getVarUUID().c_str());
-                uuid_search_i = variableCount;
-            }
-            uuid_search_i++;
-        } while (uuid_search_i < variableCount);
-
-        if (uuid_search_i > variableCount) {
-            SerialStd.println(F("} match  & added."));
-        } else if (strcmp_P(name, index_pm) ==
-                   0) {  // Check if index and then simple reference
-            if (uuid_index < variableCount) {
-                SerialStd.print(F("} replacing {"));
-                SerialStd.print(variableList[uuid_index]->getVarUUID());
-                SerialStd.println(F("}"));
-                variableList[uuid_index]->setVarUUID_atl((char*)value, true);
+        }else if (strcmp_P(name, TIMER_POST_TOUT_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostTimeout_local = strtol(value, &endptr, 10);
+            if ((timerPostTimeout_local <= 30000) &&
+                (timerPostTimeout_local >= 100) && (errno != ERANGE)) {
+                SerialStd.print(F("PROVIDER Set TIMER_POST_TOUT_MS : "));
+                //#define timerPostTimeout_ms_DEF ps_ram.app.provider.s.ed.timerPostTout_ms
+                ps_ram.app.provider.s.ed.timerPostTout_ms = timerPostTimeout_local;
             } else {
-                SerialStd.println(F("} out of range. Notused"));
+                SerialStd.print(F("PROVIDER Set TIMER_POST_TOUT_MS error; (range "
+                                  "100 : 30000) read:"));
             }
+            SerialStd.println(timerPostTimeout_local);
+        } else  if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostPacing_local = strtol(value, &endptr, 10);
+            if ((timerPostPacing_local <= 5000) &&
+                (timerPostPacing_local >= 0) && (errno != ERANGE)) {
+                SerialStd.print(F("PROVIDER Set TIMER_POST_PACE_MS: "));
+                //#define timerPostPacing_ms_DEF epc.app.provider.s.ed.timerPostPace_ms 
+                ps_ram.app.provider.s.ed.timerPostPace_ms = timerPostPacing_local;
+            } else {
+                SerialStd.print(F("PROVIDER Set TIMER_POST_PACE_MS error; (range "
+                                  "0 : 5000) read:"));
+            }
+            SerialStd.println(timerPostPacing_local);
+
+        } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
+            // convert  str to num with error checking
+            long postMax_num_local = strtol(value, &endptr, 10);
+            if ((postMax_num_local <= 50) && (postMax_num_local >= 0) &&
+                (errno != ERANGE)) {
+                SerialStd.print(F("PROVIDER Set POST_MAX_NUM: "));
+                //postMax_num = (uint8_t)postMax_num_local;
+                epc.app.provider.s.ed.postMax_num = postMax_num_local;
+            } else {
+                SerialStd.print(
+                    F("PROVIDER Set POST_MAX_NUM error; (range 0 : 50) read:"));
+            }
+            SerialStd.println(postMax_num_local);
+
         } else {
-            // SerialStd.println();
-            SerialStd.println(F("} UUID not supported"));
-            // SerialStd.print(name);
-            // SerialStd.print("=");
-            // SerialStd.println(value);
+
+            /* UUIDs are applied to internal sensor Array as follows:
+            1) "UUID_label"="UUID"
+            eg ASQ212_PAR="UUID"
+            search variableList for UUID_label and if found replace with "UUID"
+            2) index="UUID"
+            if the word "index" is there with a UUID, then the UUID is applied in
+            sequence. Any UUID_label's found also increment the counted 'index'
+            */
+  
+            uint8_t uuid_search_i = 0;
+
+            //SerialStd.print(F(""));
+            SerialStd.print(uuid_index);
+            SerialStd.print(":");
+            SerialStd.print(name);
+            SerialStd.print(F("={"));
+            SerialStd.print(value);
+            do {
+                MS_DEEP_DBG(F("\n ["), uuid_search_i, F("]"),
+                            variableList[uuid_search_i]->getVarUUID().c_str(), "#");
+                if (strcmp((const char*)variableList[uuid_search_i]
+                            ->getVarUUID()
+                            .c_str(),
+                        name) == 0) {  // Found a match
+
+                    // Add to epc where it can be referenced
+                    strcpy((char*)epc.app.provider.s.ed.uuid[uuid_ram_idx].name,name);
+                    #define EPC_VALUE (char*)epc.app.provider.s.ed.uuid[uuid_ram_idx].value
+                    strcpy(EPC_VALUE,value);
+                    uuid_ram_idx++;
+#warning getting an error here
+                    variableList[uuid_search_i]->setVarUUID_atl(EPC_VALUE, false);
+                    MS_DEEP_DBG(F("set"), name, F(" for ["), uuid_search_i, F("]"),
+                                variableList[uuid_search_i]->getVarUUID().c_str());
+                    uuid_search_i = variableCount;
+
+                }
+                uuid_search_i++;
+            } while (uuid_search_i < variableCount);
+
+            if (uuid_search_i > variableCount) {
+                SerialStd.println(F("} match  & added."));
+
+            } else if (strcmp_P(name, index_pm) ==
+                    0) {  // Check if index and then simple reference
+                if (uuid_index < variableCount) {
+                    SerialStd.print(F("} replacing {"));
+                    SerialStd.print(variableList[uuid_index]->getVarUUID());
+                    SerialStd.println(F("}"));
+                    variableList[uuid_index]->setVarUUID_atl((char*)value, true);
+                } else {
+                    SerialStd.println(F("} out of range. Notused"));
+                }
+            } else {
+                // SerialStd.println();
+                SerialStd.println(F("} not supported"));
+                //SerialStd.print(name);
+                //SerialStd.print("=");
+                //SerialStd.println(value);
+            }
+            uuid_index++;
+
+//            if (!name_found) {
+//                SerialStd.print(F("PROVIDER not supported:"));
+//                SerialStd.print(name);
+//                SerialStd.print("=");
+//                SerialStd.println(value);
+//            }
         }
-        uuid_index++;
     } else
 #endif                                            // USE_PS_Provider
         if (strcmp_P(section, COMMON_pm) == 0) {  // [COMMON] processing
@@ -371,6 +451,10 @@ static int inihUnhandledFn(const char* section, const char* name,
             SerialStd.print(F("', now set to '"));
             SerialStd.print(modemPhy.getApn());
             SerialStd.println("'");
+            #if defined USE_PS_EEPROM
+            epc.app.msn.s.network_type=MSCN_TYPE_CELL;
+            strcpy((char*)epc.app.msn.s.apn, value);
+            #endif  // USE_PS_EEPROM
 
         } else
 #endif  // DigiXBeeCellularTransparent_Module
@@ -383,7 +467,8 @@ static int inihUnhandledFn(const char* section, const char* name,
             SerialStd.print(F("' now '"));
             SerialStd.print(modemPhy.getWiFiId());
             SerialStd.println("'");
-
+            epc.app.msn.s.network_type=MSCN_TYPE_WIFI;
+            strcpy((char*)epc.app.msn.s.WiFiId, value);
         } else if (strcmp_P(name, WiFiPwd_pm) == 0) {
             SerialStd.print(F("NETWORK WiFiPwd: was '"));
             SerialStd.print(modemPhy.getWiFiPwd());
@@ -391,67 +476,18 @@ static int inihUnhandledFn(const char* section, const char* name,
             SerialStd.print(F("' now '"));
             SerialStd.print(modemPhy.getWiFiPwd());
             SerialStd.println("'");
-
+            strcpy((char*)epc.app.msn.s.WiFiPwd, value);
         } else
 #endif  // DigiXBeeWifi_Module
-            if (strcmp_P(name, TIMER_POST_TOUT_MS_pm) == 0) {
-            // convert  str to num with error checking
-            long timerPostTimeout_local = strtol(value, &endptr, 10);
-            if ((timerPostTimeout_local <= 30000) &&
-                (timerPostTimeout_local >= 100) && (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set TIMER_POST_TOUT_MS : "));
-                timerPostTimeout_ms = timerPostTimeout_local;
-#if 0   // defined USE_PS_EEPROM
-                epc.app.msc.s.timerPostTimeout_ms = timerPostTimeout_local;
-#endif  // USE_PS_EEPROM
-            } else {
-                SerialStd.print(F("COMMON Set TIMER_POST_TOUT_MS error; (range "
-                                  "100 : 30000) read:"));
-            }
-            SerialStd.println(timerPostTimeout_local);
 
-        } else if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
-            // convert  str to num with error checking
-            long timerPostPacing_local = strtol(value, &endptr, 10);
-            if ((timerPostPacing_local <= 5000) &&
-                (timerPostPacing_local >= 0) && (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set TIMER_POST_PACE_MS: "));
-                timerPostPacing_ms = timerPostPacing_local;
-#if 0   // defined USE_PS_EEPROM
-                epc.app.msc.s.timerPostPacing_ms = timerPostPacing_local;
-#endif  // USE_PS_EEPROM
-            } else {
-                SerialStd.print(F("COMMON Set TIMER_POST_PACE_MS error; (range "
-                                  "0 : 5000) read:"));
-            }
-            SerialStd.println(timerPostPacing_local);
-
-        } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
-            // convert  str to num with error checking
-            long postMax_num_local = strtol(value, &endptr, 10);
-            if ((postMax_num_local <= 50) && (postMax_num_local >= 0) &&
-                (errno != ERANGE)) {
-                SerialStd.print(F("COMMON Set POST_MAX_NUM: "));
-                postMax_num = (uint8_t)postMax_num_local;
-#if 0   // defined USE_PS_EEPROM
-                epc.app.msc.s.postMax_num = postMax_num_local;
-#endif  // USE_PS_EEPROM
-            } else {
-                SerialStd.print(
-                    F("COMMON Set POST_MAX_NUM error; (range 0 : 50) read:"));
-            }
-            SerialStd.println(postMax_num_local);
-
-        } else if (strcmp_P(name, COLLECT_READINGS_pm) == 0) {
+        if (strcmp_P(name, COLLECT_READINGS_pm) == 0) {
             // convert  str to num with error checking
             long collect_readings_local = strtol(value, &endptr, 10);
             if ((collect_readings_local <= 30) &&
                 (collect_readings_local >= 0) && (errno != ERANGE)) {
                 SerialStd.print(F("COMMON Set COLLECT_READINGS: "));
-                collectReadings = (uint8_t)collect_readings_local;
-#if 0   // defined USE_PS_EEPROM
-                epc.app.msc.s.colllectReadings = colllectReadings;
-#endif  // USE_PS_EEPROM
+                //collectReadings = (uint8_t)collect_readings_local;
+                epc.app.msn.s.collectReadings_num = (uint8_t)collect_readings_local;
             } else {
                 SerialStd.print(F(
                     "COMMON Set COLLECT_READINGS error; (range 0 : 30) read:"));
@@ -465,10 +501,8 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((send_offset_min_local <= 30) && (send_offset_min_local >= 0) &&
                 (errno != ERANGE)) {
                 SerialStd.print(F("COMMON Set SEND_OFFSET_MIN: "));
-                sendOffset_min = send_offset_min_local;
-#if 0   // defined USE_PS_EEPROM
-                epc.app.msc.s.sendOffset_min = sendOffset_min;
-#endif  // USE_PS_EEPROM
+                //sendOffset_min = send_offset_min_local;
+                epc.app.msn.s.sendOffset_min =  (uint8_t)send_offset_min_local;;
             } else {
                 SerialStd.print(F(
                     "COMMON Set SEND_OFFSET_MIN error; (range 0 : 30) read:"));
@@ -636,6 +670,7 @@ void readAvrEeprom() {
     MS_DBG(F("Eeprom  size="), EEPROM.length(), "boot=", sizeof_hw_boot,
            "app=", sizeof(epc.app));
 
+    // Read Eeprom [Boot] - every board should have it
     EEPROM.get(EP_HW_BOOT_ADDR, epc.hw_boot);
     crc16 = calc_crc16((const uint8_t*)((int)&epc.hw_boot + SIZE_UINT16_CRC16),
                        ((uint16_t)sizeof(epc.hw_boot) - SIZE_UINT16_CRC16));
@@ -644,7 +679,7 @@ void readAvrEeprom() {
            epc.hw_boot.crc16);
     if ((crc16 != epc.hw_boot.crc16) && (crc16 != 0)) {
         // Boot is invalid, therefore init. assume whole structure invalid
-        MS_DBG(F("eeprom hw_boot init"));
+        MS_DBG(F("  ***Eeprom hw_boot Invalid, loocal ram init"));
 #define EEPROM_DEFAULT_STATE 0xFF
         memset(&epc.hw_boot, EEPROM_DEFAULT_STATE, sizeof(epc.hw_boot));
         epc.hw_boot.struct_ver = HW_BOOT_STRUCT_VER;
@@ -655,6 +690,7 @@ void readAvrEeprom() {
         strcpy_P((char*)epc.hw_boot.rev, (const char*)F("0.5b"));
         // strcpy_P((char *)epc.hw_boot.sd_boot_ini,(const char
         // *)F("ms_cfg.ini"));
+        MS_DBG(F("  ***local hw_boot init end***"));
     }
 
     PRINTOUT(F("From eeprom boot Name["), (char*)epc.hw_boot.board_name,
@@ -667,8 +703,9 @@ void readAvrEeprom() {
     crc16 = calc_crc16((const uint8_t*)((int)&epc.app + SIZE_UINT16_CRC16),
                        (sizeof(epc.app) - SIZE_UINT16_CRC16));
     MS_DBG(F("App crc16calc"), crc16, F("crc16read"), epc.app.crc16);
-    if ((crc16 != epc.app.crc16) && (crc16 != 0)) {
-        MS_DBG(F("eeprom app storage init"));
+    if ((crc16 != epc.app.crc16) && (crc16 != 0)) 
+    {
+        MS_DBG(F("  ***Eeprom invalid, local app storage init***"));
         epc.app.struct_size = sizeof(epc.app.msc.s);
         epc.app.struct_ver  = 1;
         // Set defaults for [common]
@@ -679,8 +716,32 @@ void readAvrEeprom() {
         strcpy_P((char*)epc.app.msc.s.logger_id, (char*)F(LOGGERID_DEF_STR));
         strcpy_P((char*)epc.app.msc.s.geolocation_id,
                  (char*)F("Factory default"));
+
+        epc.app.msn.s.network_type= MSCN_TYPE_NONE;
+        strcpy_P((char*)epc.app.msn.s.apn,(char*)F(MSCN_APN_DEF_STR));
+        strcpy_P((char*)epc.app.msn.s.WiFiId,(char*)F(MSCN_WIFIID_DEF_STR));  
+        strcpy_P((char*)epc.app.msn.s.WiFiPwd,(char*)F(MSCN_WIFIPWD_DEF_STR)); 
+        epc.app.msn.s.collectReadings_num =MNGI_COLLECT_READINGS_DEF;
+        epc.app.msn.s.sendOffset_min = MNGI_SEND_OFFSET_MIN_DEF;
+
+
+        epc.app.provider.provider_type=  UUIDE_TYPE_ENVIRODIY;
+        strcpy_P((char*)epc.app.provider.s.ed.cloudId, (char*) F(UUIDE_DEF_STR));
+        strcpy_P((char*)epc.app.provider.s.ed.registration_token, (char*)F(UUIDE_DEF_STR));
+        strcpy_P((char*)epc.app.provider.s.ed.sampling_feature, (char*)F(UUIDE_DEF_STR));
+        epc.app.provider.s.ed.timerPostTout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+        epc.app.provider.s.ed.timerPostPace_ms = MMW_TIMER_POST_PACING_MS_DEF; 
+        epc.app.provider.s.ed.postMax_num = MMW_TIMER_POST_MAX_MUM_DEF;  
+        for (int uuid_lp=0;uuid_lp <UUIDE_SENSOR_CNT_MAX_SZ;uuid_lp++) {
+             //strcpy_P(epc.app.provider.s.ed.uuid[uuid_lp],(char*)F(UUIDE_NULL_STR ));
+             epc.app.provider.s.ed.uuid[uuid_lp].name[0] = UUIDE_NULL_TERMINATOR;
+             epc.app.provider.s.ed.uuid[uuid_lp].value[0] = UUIDE_NULL_TERMINATOR;
+        }
+        //MS_DBG(F("  ***local app init end***"));
+        //Defaults metwork ??
     }
 
+    // Read Eeprom Common .app.msc.s that maps from .ini [COMMON]
     PRINTOUT(F("From eeprom common: Logger File Name["),
              (char*)epc.app.msc.s.logger_id, F("]\n\r   logging interval="),
              epc.app.msc.s.logging_interval_min, F("minutes, Tz="),
@@ -695,7 +756,36 @@ void readAvrEeprom() {
     mcuBoard.setBatteryType((ps_liion_rating_t)epc.app.msc.s.battery_type);
     dataLogger.setLoggerId((const char*)epc.app.msc.s.logger_id, false);
 
-    // EEPROM for provider and UUP go here if ever needed
+    // read EEPROM Network app.msn.s that maps from .ini [NETWORK] 
+    PRINTOUT(F("From eeprom Network: Network Type="),epc.app.msn.s.network_type,
+            F("\n APN="),(char*)epc.app.msn.s.apn, 
+            F("\n WiFiId="),(char*)epc.app.msn.s.WiFiId,
+            F(" WiFiPwd="),(char*)epc.app.msn.s.WiFiPwd,
+            F("\n\r CollectReadings="), epc.app.msn.s.collectReadings_num,
+            F(" SendOffset(min)="), epc.app.msn.s.sendOffset_min
+            );
+
+
+    // read EEPROM provider app.provider.s that maps from .ini [PROVIDER] & UUIDs
+    PRINTOUT(F("From eeprom Provider: Provider Type="),epc.app.provider.provider_type,
+            F("\n\r CloudId="),(char*)epc.app.provider.s.ed.cloudId, 
+            F("\n\r Reg Token="),(char*)epc.app.provider.s.ed.registration_token,
+            F("\n\r Sampling Feature="),(char*)epc.app.provider.s.ed.sampling_feature,
+            F("\n\r timerPostTout(ms)="), epc.app.provider.s.ed.timerPostTout_ms,
+            F(" timerPostPace(ms)="), epc.app.provider.s.ed.timerPostPace_ms,
+            F(" postMax="), epc.app.provider.s.ed.postMax_num
+            );
+    PRINTOUT(F("UUIDs (none unless listed), Max="),UUIDE_SENSOR_CNT_MAX_SZ);
+    for (int uuid_lp=0;uuid_lp <UUIDE_SENSOR_CNT_MAX_SZ;uuid_lp++) {
+        //if (UUIDE_NULL_TERMINATOR != epc.app.provider.s.ed.uuid[uuid_lp][0]) {
+        if (isalnum(epc.app.provider.s.ed.uuid[uuid_lp].value[0]) 
+        || isalnum(epc.app.provider.s.ed.uuid[uuid_lp].name[0])) {
+            PRINTOUT(uuid_lp+1,F("]"),(char *)epc.app.provider.s.ed.uuid[uuid_lp].name,
+            F("="),(char *)epc.app.provider.s.ed.uuid[uuid_lp].value);
+        }
+
+    }    
+
 }
 #endif  // USE_PS_EEPROM
 

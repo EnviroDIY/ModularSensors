@@ -139,13 +139,30 @@ typedef struct {
 #define USE_PS_modularSensorsNetwork 1
 #endif  // UseModem_Module
 #if defined(USE_PS_modularSensorsNetwork)
+//MSCN_TYPE_XXX is the Network Type modem 
+#define MSCN_TYPE_NONE 0
+#define MSCN_TYPE_CELL 1
+#define MSCN_TYPE_WIFI 2
+#define MSCN_TYPE_LORA 3
 #define MSCN_APN_SZ 32
+#define MSCN_APN_DEF_STR "APN_NONE"
 #define MSCN_WIFI_ID_SZ 32
+#define MSCN_WIFIID_DEF_STR "WIFIID_NONE"
 #define MSCN_WIFI_PWD_SZ 32
+#define MSCN_WIFIPWD_DEF_STR "WIFIPWD_NONE"
+#ifndef MNGI_COLLECT_READINGS_DEF
+#define MNGI_COLLECT_READINGS_DEF 1
+#endif //MNGI_COLLECT_READINGS_DEF
+#ifndef MNGI_SEND_OFFSET_MIN_DEF 
+#define MNGI_SEND_OFFSET_MIN_DEF 100
+#endif //MNGI_SEND_OFFSET_MIN_DEF 
 typedef struct {
-    char apn[MSCN_APN_SZ];           // 32
-    char WiFiId[MSCN_WIFI_ID_SZ];    // 32?
-    char WiFiPwd[MSCN_WIFI_PWD_SZ];  // 32??
+    uint8_t network_type; 
+    uint8_t apn[MSCN_APN_SZ];           // 32
+    uint8_t WiFiId[MSCN_WIFI_ID_SZ];    // 32?
+    uint8_t WiFiPwd[MSCN_WIFI_PWD_SZ];  // 32??
+    uint8_t collectReadings_num; // 1-30
+    uint8_t sendOffset_min; //0-30
 } msn01_t;
 #define MSN_ACTIVE msn01_t
 typedef struct {
@@ -162,26 +179,44 @@ typedef struct {
 #define USE_PS_Provider 1
 #endif  // UseModem_Module
 //******
-
+//Provider UUI EnvviroDIY
+#define UUIDE_TYPE_NONE 0
+#define UUIDE_TYPE_ENVIRODIY 1
 #define UUIDE_CLOUD_ID_SZ 38
+#define UUIDE_DEF_STR "NONE"
+//#define UUIDE_NULL_STR ""
+#define UUIDE_NULL_TERMINATOR 0
 #define UUIDE_REGISTRATION_TOKEN_SZ 38
 #define UUIDE_SAMPLING_FEAUTRE_SZ 38
-#define UUIDE_SENSOR_UUID_SZ 38
-#define UUIDE_SENSOR_CNT_MAX_SZ 10
+#define UUIDE_SENSOR_NAME_SZ 40
+#define UUIDE_SENSOR_VALUE_SZ 38
+#define UUIDE_SENSOR_CNT_MAX_SZ 11
 #if defined(USE_PS_Provider)
+typedef struct {
+    char name[UUIDE_SENSOR_NAME_SZ];
+    char value[UUIDE_SENSOR_VALUE_SZ];
+} ini_name_value_t;
 typedef struct {
     // v01 initial structure
     // All are in ascii strings, with the first unused octet \0
-    uint8_t uuid_provider;
     char    cloudId[UUIDE_CLOUD_ID_SZ];  // ASCII url
     char    registration_token[UUIDE_REGISTRATION_TOKEN_SZ];
     char    sampling_feature[UUIDE_SAMPLING_FEAUTRE_SZ];
-    // char uuid[UUIDE_SENSOR_CNT_MAX_SZ][UUIDE_SENSOR_UUID_SZ];
+    uint16_t timerPostTout_ms; // Gateway Timeout (ms)
+    uint16_t timerPostPace_ms; // Gateway Pacing (ms)
+    uint16_t postMax_num; //0 no limit, else max num POSTs one session
+    ini_name_value_t uuid[UUIDE_SENSOR_CNT_MAX_SZ];
 } uuid_envirodiy01_t;
-#define UUID_ACTIVE uuid_envirodiy01_t
+typedef union  {
+    uuid_envirodiy01_t ed;
+} msp01_t;
+#define MSP_ACTIVE msp01_t
+//#define UUID_ACTIVE uuid_envirodiy01_t
+//#define UUID_ACTIVE provider_u_t
 typedef struct {
     uint8_t     sz;
-    UUID_ACTIVE s;
+    uint8_t provider_type; // Type of provider. 0=enviroDIY    
+    MSP_ACTIVE s;
 } provider_t;
 #define mProvider_t(p1) provider_t p1
 #else
