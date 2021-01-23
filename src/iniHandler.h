@@ -101,26 +101,35 @@ void             ramAvailable() {
 void       ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,
                     unsigned long offTime_ms = 150);
 
+#define uuid_value(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].value
+#define uuid_name(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].name
+
 /* Searh for name:value pairs that match a UUD
 */
 static void iniUuidParser() {
-    uint8_t uuid_search_i = 0;
-    int uuid_lp=0;
+    int8_t uuid_vl_idx = 0;
+    int eeprom_idx=0;
+    MS_DBG(F("iniUuidParser assign from Eeprom "));
     do {
-        if (isalnum(epc.app.provider.s.ed.uuid[uuid_lp].value[0]) 
-        && isalnum(epc.app.provider.s.ed.uuid[uuid_lp].name[0])) 
+        if (isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].value[0]) 
+        && isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].name[0])) 
         {
             //Found alpha values in table, search for a match
-            if (strcmp((const char*)variableList[uuid_search_i]
+            MS_DEEP_DBG(F("search"),uuid_name(eeprom_idx), F("?"),
+            (const char*)variableList[uuid_vl_idx]->getVarUUID().c_str()  );
+            if (strcmp((const char*)variableList[uuid_vl_idx]
                         ->getVarUUID().c_str(),
-                        epc.app.provider.s.ed.uuid[uuid_lp].name) == 0) 
+                        uuid_name(eeprom_idx)) == 0) 
             {  // Found a match
-                variableList[uuid_search_i]->setVarUUID_atl((char*)epc.app.provider.s.ed.uuid[uuid_lp].value, false);
-                uuid_lp++;
+                variableList[uuid_vl_idx]->setVarUUID_atl((char*)epc.app.provider.s.ed.uuid[eeprom_idx].value, false);
+                PRINTOUT(F("Eeprom"),uuid_name(eeprom_idx),uuid_value(eeprom_idx),F("->"),
+                 variableList[uuid_vl_idx]->getVarCode());
+                eeprom_idx++;
+                uuid_vl_idx = -1; ///Reset to start at beging of variable_list
             }
         }
-        uuid_search_i++;
-    }while (uuid_search_i < UUIDE_SENSOR_CNT_MAX_SZ );
+        uuid_vl_idx++;
+    }while (uuid_vl_idx < UUIDE_SENSOR_CNT_MAX_SZ );
 }
 
 static int inihUnhandledFn(const char* section, const char* name,
@@ -221,16 +230,14 @@ static int inihUnhandledFn(const char* section, const char* name,
                         name) == 0) {  // Found a match
 
                     // Add to epc where it can be referenced
-                    strcpy((char*)epc.app.provider.s.ed.uuid[uuid_ram_idx].name,name);
-                    #define EPC_VALUE (char*)epc.app.provider.s.ed.uuid[uuid_ram_idx].value
-                    strcpy(EPC_VALUE,value);
-                    uuid_ram_idx++;
-#warning getting an error here
-                    variableList[uuid_search_i]->setVarUUID_atl(EPC_VALUE, false);
+
+                    strcpy(uuid_name(uuid_ram_idx),name);
+                    strcpy(uuid_value(uuid_ram_idx),value);
+                    variableList[uuid_search_i]->setVarUUID_atl(uuid_value(uuid_ram_idx), false);
                     MS_DEEP_DBG(F("set"), name, F(" for ["), uuid_search_i, F("]"),
                                 variableList[uuid_search_i]->getVarUUID().c_str());
                     uuid_search_i = variableCount;
-
+                    uuid_ram_idx++;
                 }
                 uuid_search_i++;
             } while (uuid_search_i < variableCount);
@@ -784,7 +791,7 @@ void readAvrEeprom() {
             F("="),(char *)epc.app.provider.s.ed.uuid[uuid_lp].value);
         }
 
-    }    
+    }   
 
 }
 #endif  // USE_PS_EEPROM

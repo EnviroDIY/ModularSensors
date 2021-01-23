@@ -1146,6 +1146,8 @@ void setup() {
     PRINTOUT(F("---parseIni "));
     dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def, inihUnhandledFn);
+    #warning   iniUuidParser move to Class access
+    iniUuidParser();
     PRINTOUT(F("\n\n---parseIni complete "));
 #endif  // USE_MS_SD_INI
 

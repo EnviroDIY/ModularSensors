@@ -190,7 +190,7 @@ typedef struct {
 #define UUIDE_SAMPLING_FEAUTRE_SZ 38
 #define UUIDE_SENSOR_NAME_SZ 40
 #define UUIDE_SENSOR_VALUE_SZ 38
-#define UUIDE_SENSOR_CNT_MAX_SZ 11
+#define UUIDE_SENSOR_CNT_MAX_SZ 10
 #if defined(USE_PS_Provider)
 typedef struct {
     char name[UUIDE_SENSOR_NAME_SZ];
