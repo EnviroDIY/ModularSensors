@@ -1143,12 +1143,12 @@ void setup() {
 
 #ifdef USE_MS_SD_INI
     // Set up SD card access
-    PRINTOUT(F("---parseIni "));
+    PRINTOUT(F("---parseIni Start"));
     dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def, inihUnhandledFn);
     #warning   iniUuidParser move to Class access
     iniUuidParser();
-    PRINTOUT(F("\n\n---parseIni complete "));
+    PRINTOUT(F("---parseIni complete\n"));
 #endif  // USE_MS_SD_INI
 
     mcuBoard.printBatteryThresholds();

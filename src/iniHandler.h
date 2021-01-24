@@ -101,15 +101,52 @@ void             ramAvailable() {
 void       ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,
                     unsigned long offTime_ms = 150);
 
+    #define epc_WiFiId (char*)epc.app.msn.s.WiFiId
+    #define epc_WiFiId1st      epc.app.msn.s.WiFiId[0]
+    #define epc_WiFiPwd  (char*)epc.app.msn.s.WiFiPwd
+    #define epc_WiFiPwd1st      epc.app.msn.s.WiFiPwd[0]
 #define uuid_value(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].value
 #define uuid_name(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].name
 
-/* Searh for name:value pairs that match a UUD
+/* Parse the pesistent configuration data.
+ * The data has been read from EEPROM into a ram cache, 
+ * and then if exists in the .ini file, overwritten in the ram
+ * Now 
+ * ~ instate them in classes where needed
+ *  ~ Searh for name:value pairs that match a UUD that have not already been found
+ * 
 */
 static void iniUuidParser() {
     int8_t uuid_vl_idx = 0;
     int eeprom_idx=0;
+
     MS_DBG(F("iniUuidParser assign from Eeprom "));
+
+    #if defined DigiXBeeCellularTransparent_Module
+    #endif  // DigiXBeeCellularTransparent_Module
+    #if defined DigiXBeeWifi_Module
+    // cheeck for WiFiId and WiFiPwd
+    if (isalnum(epc_WiFiId1st))
+    {
+        SerialStd.print(F("NETWORK WiFiId: was '"));
+        SerialStd.print(modemPhy.getWiFiId());
+        modemPhy.setWiFiId(epc_WiFiId, false);
+        SerialStd.print(F("' now '"));
+        SerialStd.print(modemPhy.getWiFiId());
+        SerialStd.println("'");
+    } 
+    if( isalnum(epc_WiFiPwd1st)) 
+    {
+            SerialStd.print(F("NETWORK WiFiPwd: was '"));
+            SerialStd.print(modemPhy.getWiFiPwd());
+            modemPhy.setWiFiPwd(epc_WiFiPwd, false);
+            SerialStd.print(F("' now '"));
+            SerialStd.print(modemPhy.getWiFiPwd());
+            SerialStd.println("'");
+    }
+    #endif // DigiXBeeWifi_Module
+
+    //Check for any unassigned NAME:VALUE
     do {
         if (isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].value[0]) 
         && isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].name[0])) 
@@ -230,12 +267,13 @@ static int inihUnhandledFn(const char* section, const char* name,
                         name) == 0) {  // Found a match
 
                     // Add to epc where it can be referenced
-
                     strcpy(uuid_name(uuid_ram_idx),name);
                     strcpy(uuid_value(uuid_ram_idx),value);
+                    #if 0
                     variableList[uuid_search_i]->setVarUUID_atl(uuid_value(uuid_ram_idx), false);
                     MS_DEEP_DBG(F("set"), name, F(" for ["), uuid_search_i, F("]"),
                                 variableList[uuid_search_i]->getVarUUID().c_str());
+                    #endif
                     uuid_search_i = variableCount;
                     uuid_ram_idx++;
                 }
@@ -245,6 +283,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if (uuid_search_i > variableCount) {
                 SerialStd.println(F("} match  & added."));
 
+    #if 0//superseded
             } else if (strcmp_P(name, index_pm) ==
                     0) {  // Check if index and then simple reference
                 if (uuid_index < variableCount) {
@@ -255,31 +294,24 @@ static int inihUnhandledFn(const char* section, const char* name,
                 } else {
                     SerialStd.println(F("} out of range. Notused"));
                 }
+    #endif //0
             } else {
-                // SerialStd.println();
                 SerialStd.println(F("} not supported"));
-                //SerialStd.print(name);
-                //SerialStd.print("=");
-                //SerialStd.println(value);
             }
             uuid_index++;
-
-//            if (!name_found) {
-//                SerialStd.print(F("PROVIDER not supported:"));
-//                SerialStd.print(name);
-//                SerialStd.print("=");
-//                SerialStd.println(value);
-//            }
         }
     } else
-#endif                                            // USE_PS_Provider
-        if (strcmp_P(section, COMMON_pm) == 0) {  // [COMMON] processing
+#endif // USE_PS_Provider
+
+    if (strcmp_P(section, COMMON_pm) == 0)   // [COMMON] processing
+    {
 
         if (strcmp_P(name, LOGGER_ID_pm) == 0) {
             SerialStd.print(F("COMMON LoggerId Set: "));
             SerialStd.println(value);
 #if defined USE_PS_EEPROM
             strcpy((char*)epc.app.msc.s.logger_id, value);
+            #warning move to iniUuidParser
             dataLogger.setLoggerId((const char*)epc.app.msc.s.logger_id, false);
 #else
             dataLogger.setLoggerId(value, true);
@@ -302,6 +334,7 @@ static int inihUnhandledFn(const char* section, const char* name,
                     SerialStd.print(F("(min) from default "));
                     SerialStd.println(loggingInterval_def_min);
                 }
+                #warning move to iniUuidParser
                 dataLogger.setLoggingInterval(intervalMin);
 #if defined USE_PS_EEPROM
                 epc.app.msc.s.logging_interval_min = intervalMin;
@@ -361,6 +394,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             long batLiionType = strtoul(value, &endptr, 10);
             if ((batLiionType < PSLR_NUM) && (batLiionType >= 0) &&
                 (errno != ERANGE)) {
+                #warning move to iniUuidParser
                 mcuBoard.setBatteryType((ps_liion_rating_t)batLiionType);
 #if defined USE_PS_EEPROM
                 epc.app.msc.s.battery_type = batLiionType;
@@ -415,6 +449,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((ampMult > 0) && (errno != ERANGE)) {
                 SerialStd.print(F("SENSORS INA219_MA_MULT was '"));
                 SerialStd.print(ina219m_phy.getCustomAmpMult());
+                #warning move to iniUuidParser
                 ina219m_phy.setCustomAmpMult(ampMult);
                 SerialStd.print(F("' set to '"));
                 SerialStd.print(ina219m_phy.getCustomAmpMult());
@@ -431,6 +466,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((voltThreshold > 0) && (errno != ERANGE)) {
                 SerialStd.print(F("SENSORS INA219_V_THRESHOLD was'"));
                 SerialStd.print(ina219m_phy.getCustomVoltThreshold());
+                #warning move to iniUuidParser
                 ina219m_phy.setCustomVoltThreshold(
                     voltThreshold, ina219m_voltLowThresholdAlertFn);
                 SerialStd.print(F("' set to '"));
@@ -452,12 +488,14 @@ static int inihUnhandledFn(const char* section, const char* name,
         // NETWORK PARTS
 #if defined DigiXBeeCellularTransparent_Module
         if (strcmp_P(name, apn_pm) == 0) {
+            #warning move to iniUuidParser
             SerialStd.print(F("NETWORK APN was '"));
             SerialStd.print(modemPhy.getApn());
             modemPhy.setApn(value, true);
             SerialStd.print(F("', now set to '"));
             SerialStd.print(modemPhy.getApn());
             SerialStd.println("'");
+
             #if defined USE_PS_EEPROM
             epc.app.msn.s.network_type=MSCN_TYPE_CELL;
             strcpy((char*)epc.app.msn.s.apn, value);
@@ -467,23 +505,18 @@ static int inihUnhandledFn(const char* section, const char* name,
 #endif  // DigiXBeeCellularTransparent_Module
 
 #if defined DigiXBeeWifi_Module
-            if (strcmp_P(name, WiFiId_pm) == 0) {
-            SerialStd.print(F("NETWORK WiFiId: was '"));
-            SerialStd.print(modemPhy.getWiFiId());
-            modemPhy.setWiFiId(value, true);
-            SerialStd.print(F("' now '"));
-            SerialStd.print(modemPhy.getWiFiId());
-            SerialStd.println("'");
+        if (strcmp_P(name, WiFiId_pm) == 0) 
+        {
+            //Set the internet type as WIFI - future may be configurable
             epc.app.msn.s.network_type=MSCN_TYPE_WIFI;
-            strcpy((char*)epc.app.msn.s.WiFiId, value);
+            strcpy(epc_WiFiId , value);
+            MS_DBG(F("Use Ini WiFiId"), value);
+
         } else if (strcmp_P(name, WiFiPwd_pm) == 0) {
-            SerialStd.print(F("NETWORK WiFiPwd: was '"));
-            SerialStd.print(modemPhy.getWiFiPwd());
-            modemPhy.setWiFiPwd(value, true);
-            SerialStd.print(F("' now '"));
-            SerialStd.print(modemPhy.getWiFiPwd());
-            SerialStd.println("'");
+            //Expect there to be WiFiId
             strcpy((char*)epc.app.msn.s.WiFiPwd, value);
+            MS_DBG(F("Use Ini WiFiPwd"), value);
+
         } else
 #endif  // DigiXBeeWifi_Module
 
@@ -570,7 +603,7 @@ const char SD_INIT_ID_pm[] EDIY_PROGMEM = "SD_INIT_ID";
         } else if (strcmp_P(name, EEPROM_WRITE_pm) == 0) {
             if (strcmp_P(value, YES_pm) == 0) {
                 SerialStd.println(F("EEPROM Write started:"));
-#define epc ps_ram
+
                 // uint8_t crc8=Dallas_crc8((const uint8_t
                 // *)((int)&epc.hw_boot+1),((uint8_t)sizeof_hw_boot)-1 );
                 // epc.hw_boot.crc16=crc8;
