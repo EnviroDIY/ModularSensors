@@ -574,7 +574,7 @@ void Sensor::waitForMeasurementCompletion(void) {
 }
 
 //Az extensions
-// This returns the Details of the sensor.
+// This is a placeholder.
 String Sensor::getSensorDetails(void) {
     //String sensorDetails(F("SensorBase Details: None"));
     //return F("SensorBase Details: None");

@@ -347,7 +347,7 @@ extern "C" char* sbrk(int i);
 int16_t freeRamCalc() {
     char stack_dummy = 0;
     return &stack_dummy - sbrk(0);
-}`
+}
 #endif
 void Variable::setVarUUID_atl(const char* newUUID, bool copyUid,
                               uint8_t uuidSize) {

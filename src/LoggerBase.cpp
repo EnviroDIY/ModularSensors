@@ -1855,7 +1855,7 @@ void Logger::logData(void) {
         // Turn off the LED
         alertOff();
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------LogToSD Complete\n"));
+        PRINTOUT(F("---LogToSD Complete\n"));
 
         // Unset flag
         Logger::isLoggingNow = false;

@@ -84,14 +84,10 @@ const char git_branch[] = ".";
 const char* LoggerID          = LOGGERID_DEF_STR;
 const char* configIniID_def   = configIniID_DEF_STR;
 const char* configDescription = CONFIGURATION_DESCRIPTION_STR;
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
+const uint8_t loggingIntervaldef = loggingInterval_CDEF_MIN;
 // Your logger's timezone.
-int8_t timeZone = CONFIG_TIME_ZONE_DEF;
-// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 // ==========================================================================
 //     Local storage - evolving
@@ -818,7 +814,7 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, &varArray);
+Logger dataLogger(LoggerID, loggingIntervaldef, &varArray);
 
 
 // ==========================================================================
@@ -1146,8 +1142,7 @@ void setup() {
     PRINTOUT(F("---parseIni Start"));
     dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def, inihUnhandledFn);
-    #warning   iniUuidParser move to Class access
-    iniUuidParser();
+    epcParser(); //use ps_ram to update classes
     PRINTOUT(F("---parseIni complete\n"));
 #endif  // USE_MS_SD_INI
 
@@ -1176,6 +1171,7 @@ void setup() {
                         ps_ram.app.provider.s.ed.sampling_feature);
     EnviroDIYPOST.setQuedState(true);
     EnviroDIYPOST.setTimerPostTimeout_mS(ps_ram.app.provider.s.ed.timerPostTout_ms);
+    EnviroDIYPOST.setTimerPostPacing_mS(ps_ram.app.provider.s.ed.timerPostPace_ms);
     dataLogger.setSendEveryX(ps_ram.app.msn.s.collectReadings_num);
     dataLogger.setSendOffset(ps_ram.app.msn.s.sendOffset_min);  // delay Minutes
 

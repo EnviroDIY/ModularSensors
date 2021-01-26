@@ -804,7 +804,7 @@ void Logger::logDataAndPubReliably(void) {
 
         // Turn off the LED
         alertOff();
-        // Reading ended
+        // Print a line to show reading ended
         PRINTOUT(F("---logDataAndPubReliably  Complete----------"));
 
         // Unset flag

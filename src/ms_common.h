@@ -157,12 +157,12 @@ typedef struct {
 #define MNGI_SEND_OFFSET_MIN_DEF 100
 #endif //MNGI_SEND_OFFSET_MIN_DEF 
 typedef struct {
-    uint8_t network_type; 
+    uint8_t network_type; // 0=apn ,1=wifi network 
     uint8_t apn[MSCN_APN_SZ];           // 32
     uint8_t WiFiId[MSCN_WIFI_ID_SZ];    // 32?
     uint8_t WiFiPwd[MSCN_WIFI_PWD_SZ];  // 32??
     uint8_t collectReadings_num; // 1-30
-    uint8_t sendOffset_min; //0-30
+    uint8_t sendOffset_min;      //0-30
 } msn01_t;
 #define MSN_ACTIVE msn01_t
 typedef struct {
@@ -208,14 +208,16 @@ typedef struct {
     ini_name_value_t uuid[UUIDE_SENSOR_CNT_MAX_SZ];
 } uuid_envirodiy01_t;
 typedef union  {
+    //Providers meta data stored here. 
+    // Only one provider supported. 
+    /// Fut : union or simulataneous?
     uuid_envirodiy01_t ed;
 } msp01_t;
 #define MSP_ACTIVE msp01_t
-//#define UUID_ACTIVE uuid_envirodiy01_t
-//#define UUID_ACTIVE provider_u_t
+
 typedef struct {
     uint8_t     sz;
-    uint8_t provider_type; // Type of provider. 0=enviroDIY    
+    uint8_t provider_type; // Bit pos. 1=enviroDIY, 2=?    
     MSP_ACTIVE s;
 } provider_t;
 #define mProvider_t(p1) provider_t p1

@@ -173,8 +173,6 @@ class DigiXBeeWifi : public DigiXBee {
     void   setWiFiPwd(const char* WiFiPwd, bool copyId = false);
     String getWiFiId(void);
     String getWiFiPwd(void);
-
-    //String getModemDevId(void) override; //if needed
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEEWIFI_H_
