@@ -119,8 +119,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // NULL for none, or  password for connecting to WiFi,
 #define WIFIPWD_CDEF "yyy"
 #define MMW_TIMER_POST_TIMEOUT_MS_DEF 7000L
-#define COLLECT_READINGS_DEF 1
-#define SEND_OFFSET_MIN_DEF 0
+//POST PACING ms 0-15000
+#define MMW_TIMER_POST_PACING_MS_DEF 100L
+//Post MAX Num - is num of MAX num at one go. 0 no limit
+#define MMW_TIMER_POST_MAX_MUM_DEF 0 
+//Manage Internet - common for all providers
+#define MNGI_COLLECT_READINGS_DEF 1
+#define MNGI_SEND_OFFSET_MIN_DEF 0
 #endif  // Modules
 
 // end of _Module

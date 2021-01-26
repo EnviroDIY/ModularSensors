@@ -77,23 +77,19 @@ const char git_branch[] = ".";
 const char* LoggerID          = LOGGERID_DEF_STR;
 const char* configIniID_def   = configIniID_DEF_STR;
 const char* configDescription = CONFIGURATION_DESCRIPTION_STR;
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
+const uint8_t loggingIntervaldef = loggingInterval_CDEF_MIN;
 // Your logger's timezone.
-int8_t timeZone = CONFIG_TIME_ZONE_DEF;
-// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-#if defined UseModem_Module
-uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
-uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
-uint8_t     postMax_num         = 0;  // Future 0,5-50
-// Common
-uint8_t collectReadings = COLLECT_READINGS_DEF;
-uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
-#endif  // UseModem_Module
+// ==========================================================================
+//     Local storage - evolving
+// ==========================================================================
+#ifdef USE_MS_SD_INI
+persistent_store_t ps_ram;
+#define epc ps_ram
+#endif  //#define USE_MS_SD_INI
+
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -794,19 +790,11 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // ==========================================================================
-//     Local storage - evolving
-// ==========================================================================
-#ifdef USE_MS_SD_INI
-persistent_store_t ps_ram;
-#define epc ps_ram
-#endif  //#define USE_MS_SD_INI
-
-// ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, &varArray);
+Logger dataLogger(LoggerID, loggingIntervaldef, &varArray);
 
 
 // ==========================================================================
@@ -825,6 +813,7 @@ const char* samplingFeature = samplingFeature_UUID;  // Sampling feature UUID
 // registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15, 0);
 #endif  // UseModem_PushData
+
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -1113,10 +1102,11 @@ void setup() {
 
 #ifdef USE_MS_SD_INI
     // Set up SD card access
-    PRINTOUT(F("---parseIni "));
+    PRINTOUT(F("---parseIni Start"));
     dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def, inihUnhandledFn);
-    PRINTOUT(F("\n\n---parseIni complete "));
+    epcParser(); //use ps_ram to update classes
+    PRINTOUT(F("---parseIni complete\n"));
 #endif  // USE_MS_SD_INI
 
     mcuBoard.printBatteryThresholds();
@@ -1126,12 +1116,13 @@ void setup() {
     dataLogger.begin();
 #if defined UseModem_PushData
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
-                        ps_ram.app.provider.s.registration_token,
-                        ps_ram.app.provider.s.sampling_feature);
+                        ps_ram.app.provider.s.ed.registration_token,
+                        ps_ram.app.provider.s.ed.sampling_feature);
     EnviroDIYPOST.setQuedState(true);
-    EnviroDIYPOST.setTimerPostTimeout_mS(timerPostTimeout_ms);
-    dataLogger.setSendEveryX(collectReadings);
-    dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
+    EnviroDIYPOST.setTimerPostTimeout_mS(ps_ram.app.provider.s.ed.timerPostTout_ms);
+    EnviroDIYPOST.setTimerPostPacing_mS(ps_ram.app.provider.s.ed.timerPostPace_ms);
+    dataLogger.setSendEveryX(ps_ram.app.msn.s.collectReadings_num);
+    dataLogger.setSendOffset(ps_ram.app.msn.s.sendOffset_min);  // delay Minutes
 
 #endif  // UseModem_PushData
 

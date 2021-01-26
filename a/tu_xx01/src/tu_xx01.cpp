@@ -97,19 +97,6 @@ persistent_store_t ps_ram;
 #define epc ps_ram
 #endif  //#define USE_MS_SD_INI
 
-#if defined UseModem_Module
-//uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
-//#define  timerPostTimeout_ms_DEF ps_ram.app.provider.s.ed.timerPostTout_ms
-//timerPostTimeout_ms =MMW_TIMER_POST_TIMEOUT_MS_DEF;
-//ps_ram.app.provider.s.ed.timerPostTout_ms =MMW_TIMER_POST_TIMEOUT_MS_DEF;
-//#define timerPostPacing_ms ps_ram.app.provider.s.ed.timerPostPace_ms
-//uint16_t    timerPostPacing_ms  = MMW_TIMER_POST_PACING_MS_DEF;  
-//#define postMax_num_DEF ps_ram.app.provider.s.ed.postMax_num
-//uint8_t     postMax_num         = 0;  // Future 0,5-50
-// Common
-//uint8_t collectReadings = COLLECT_READINGS_DEF;
-//uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
-#endif  // UseModem_Module
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -987,6 +974,7 @@ void        bfgPoll() {
     }
 #endif  // USE_LC709203F
 }
+
 
 // ==========================================================================
 // Checks available power on battery.
