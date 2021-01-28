@@ -102,17 +102,7 @@ void       ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,
                     unsigned long offTime_ms = 150);
 void localAppInit();
 
-#define epc_WiFiId (char*)epc.app.msn.s.WiFiId
-#define epc_WiFiId1st      epc.app.msn.s.WiFiId[0]
-#define epc_WiFiPwd  (char*)epc.app.msn.s.WiFiPwd
-#define epc_WiFiPwd1st      epc.app.msn.s.WiFiPwd[0]
-
-#define uuid_value(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].value
-#define uuid_name(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].name
-
-
-/* Wrte the ps_ram.app to EEPROM
-*/
+// Wrte the ps_ram.app to EEPROM
 void localEepromAppWr(uint8_t srcdbg) 
 {
     PRINTOUT(F("ACTION Write app EEPROM started("),srcdbg,F(")"));
@@ -145,8 +135,7 @@ static void epcParser() {
 
     MS_DBG(F("epcParser assign from cached eeprom or ini"));
 
-#define epc_logger_id  (char*)epc.app.msc.s.logger_id
-#define epc_logger_id1st      epc.app.msc.s.logger_id[0]
+
     if (isalnum(epc_logger_id1st))
     {
         for (int i = 0; epc.app.msc.s.logger_id[i] != '\0'; i++)
@@ -161,11 +150,10 @@ static void epcParser() {
         dataLogger.setLoggerId(epc_logger_id , false);
 
     }
-#define epc_logging_interval_min epc.app.msc.s.logging_interval_min 
+
     dataLogger.setLoggingInterval(epc_logging_interval_min);
     PRINTOUT(F("COMMON Logginterval: "), epc_logging_interval_min);
 
-#define epc_battery_type  epc.app.msc.s.battery_type 
     mcuBoard.setBatteryType((ps_liion_rating_t)epc_battery_type);
     PRINTOUT(F("COMMON Battery Type: "), epc_battery_type);
 
@@ -174,9 +162,7 @@ static void epcParser() {
     /// Used  in uSD print epc.app.msc.s.geolocation_id
 
     #if defined DigiXBeeCellularTransparent_Module
-    #warning needs testing
-    #define epc_apn (char*)epc.app.msn.s.apn
-    #define epc_apn1st epc.app.msn.s.apn[0]
+    #warning DigiXBeeCellularTransparent apn needs testing
     if (isalnum(epc_apn1st))
     {
             epc.app.msn.s.network_type=MSCN_TYPE_CELL;
@@ -282,9 +268,9 @@ static int inihUnhandledFn(const char* section, const char* name,
                                   "100 : 30000) read:"),timerPostTimeout_local);
                 timerPostTimeout_local =MMW_TIMER_POST_TIMEOUT_MS_DEF;
             }
-            MS_DBG(F("PROVIDER Set TIMER_POST_TOUT_MS : "),timerPostTimeout_local);
-            //#define timerPostTimeout_ms_DEF ps_ram.app.provider.s.ed.timerPostTout_ms
             ps_ram.app.provider.s.ed.timerPostTout_ms = timerPostTimeout_local;
+            MS_DBG(F("PROVIDER Set TIMER_POST_TOUT_MS : "),timerPostTimeout_local);
+
         } else  if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
             // convert  str to num with error checking
             long timerPostPacing_local = strtol(value, &endptr, 10);
@@ -296,7 +282,6 @@ static int inihUnhandledFn(const char* section, const char* name,
                                   "0 : 5000) read:"),timerPostPacing_local);
                 timerPostPacing_local= MMW_TIMER_POST_PACING_MS_DEF;
             }
-            //#define timerPostPacing_ms_DEF epc.app.provider.s.ed.timerPostPace_ms 
             ps_ram.app.provider.s.ed.timerPostPace_ms = timerPostPacing_local;
             MS_DBG(F("PROVIDER Set TIMER_POST_PACE_MS: "),timerPostPacing_local);
 
@@ -387,7 +372,6 @@ static int inihUnhandledFn(const char* section, const char* name,
 
 #if defined USE_PS_EEPROM
             strcpy(epc_logger_id, value);
-
 #else
             dataLogger.setLoggerId(value, true);
 #endif  // USE_PS_EEPROM
@@ -489,7 +473,6 @@ static int inihUnhandledFn(const char* section, const char* name,
                 PRINTOUT(F("COMMON Set TimeZone error; (range -12 : +12) read:"),time_zone_local);
                 time_zone_local = CONFIG_TIME_ZONE_DEF;
             }
-            #define epc_time_zone epc.app.msc.s.time_zone
 #if defined USE_PS_EEPROM 
             epc.app.msc.s.time_zone = time_zone_local;
 #endif  // USE_PS_EEPROM

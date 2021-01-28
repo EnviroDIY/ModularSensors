@@ -126,6 +126,13 @@ typedef struct {
     uint8_t geolocation_id[MSC_GEOLOCATION_ID_SZ];
 } msc01_t;
 #define MSC_ACTIVE msc01_t
+
+#define epc_logging_interval_min epc.app.msc.s.logging_interval_min 
+#define epc_battery_type  epc.app.msc.s.battery_type 
+
+#define epc_logger_id  (char*)epc.app.msc.s.logger_id
+#define epc_logger_id1st      epc.app.msc.s.logger_id[0]
+
 typedef struct {
     uint8_t    sz;
     MSC_ACTIVE s;
@@ -165,10 +172,20 @@ typedef struct {
     uint8_t sendOffset_min;      //0-30
 } msn01_t;
 #define MSN_ACTIVE msn01_t
+
+#define epc_apn      (char*)epc.app.msn.s.apn
+#define epc_apn1st          epc.app.msn.s.apn[0]
+#define epc_WiFiId   (char*)epc.app.msn.s.WiFiId
+#define epc_WiFiId1st       epc.app.msn.s.WiFiId[0]
+#define epc_WiFiPwd  (char*)epc.app.msn.s.WiFiPwd
+#define epc_WiFiPwd1st      epc.app.msn.s.WiFiPwd[0]
+
 typedef struct {
     uint8_t    sz;
     MSN_ACTIVE s;
 } modularSensorsNetwork_t;
+
+
 #define mModularSensorsNetwork_t(p1) modularSensorsNetwork_t p1
 #else
 #define mModularSensorsNetwork_t(p1)
@@ -196,6 +213,10 @@ typedef struct {
     char name[UUIDE_SENSOR_NAME_SZ];
     char value[UUIDE_SENSOR_VALUE_SZ];
 } ini_name_value_t;
+
+#define uuid_value(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].value
+#define uuid_name(uuid_idx)  (char*)epc.app.provider.s.ed.uuid[uuid_idx].name
+
 typedef struct {
     // v01 initial structure
     // All are in ascii strings, with the first unused octet \0
