@@ -143,28 +143,21 @@ static void epcParser() {
     int8_t uuid_vl_idx = 0;
     int eeprom_idx=0;
 
-    MS_DBG(F("epcParser assign from Eeprom "));
+    MS_DBG(F("epcParser assign from cached eeprom or ini"));
 
 #define epc_logger_id  (char*)epc.app.msc.s.logger_id
 #define epc_logger_id1st      epc.app.msc.s.logger_id[0]
     if (isalnum(epc_logger_id1st))
     {
-        //if (Regex.IsMatch(pc_logger_id, "^[a-zA-Z0-9]*$")) {        }
-        #if 0
-        bool allAN=true
-        for (int i = 0; epc_logger_id[i] != '\0'; i++)
+        for (int i = 0; epc.app.msc.s.logger_id[i] != '\0'; i++)
         {
-            if (!isalnum(epc_logger_id[i]))
+            if (!isalnum(epc.app.msc.s.logger_id[i]) )
             {
-                allAN=false;
-                //Copy default
-                break;
+                PRINTOUT(F("Error !alnum logger file pos"),i,F("setting to 'x'"));
+                epc.app.msc.s.logger_id[i] = 'x';
             }
         }
-        #endif
-        #warning epc_logger_id should check if all are printable
-        SerialStd.print(F("COMMON LoggerId Set: "));
-        SerialStd.println(epc_logger_id);
+        PRINTOUT(F("COMMON LoggerId Set: "), epc_logger_id);
         dataLogger.setLoggerId(epc_logger_id , false);
 
     }
