@@ -1081,7 +1081,10 @@ void serialInputCheck()
     // 180sec total timer
 #define TIMER_TIMEOUT_LIMIT_MS 180000
 
-    PRINTOUT(F("MODULAR_SENSORS_VERSION"),configDescription);
+
+    PRINTOUT(F("\n\n"), (char*)epc.app.msc.s.logger_id,configDescription);
+    PRINTOUT(MODULAR_SENSORS_VERSION,F("@"), epc.app.msc.s.logging_interval_min,
+        F("min,"),dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
     PRINTOUT(F(" Enter cmd: ?<CR> for help.(need a key to be typed every "), TIMER_TIMEOUT_NOACTIVITY_MS/1000,F("secs)"));
     while (userInputCollection ) {
         if(Serial.available() != 0) {
