@@ -102,7 +102,7 @@ void       ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,
                     unsigned long offTime_ms = 150);
 void localAppInit();
 
-// Wrte the ps_ram.app to EEPROM
+// Wrte the epc.app to EEPROM
 void localEepromAppWr(uint8_t srcdbg) 
 {
     PRINTOUT(F("ACTION Write app EEPROM started("),srcdbg,F(")"));
@@ -196,17 +196,16 @@ static void epcParser() {
     }
     #endif // DigiXBeeWifi_Module
 
-    PRINTOUT(F("NETWORK CollectReadings="),epc.app.msn.s.collectReadings_num );
+    PRINTOUT(F("NETWORK CollectReadings"),epc.app.msn.s.collectReadings_num );
     PRINTOUT(F("NETWORK sendOffset_min"),epc.app.msn.s.sendOffset_min);
     
     //[Provider]
     //CLOUD_ID=data.enviroDIY.com - hard coded
 
-    PRINTOUT(F("NETWORK Registration Token="),ps_ram.app.provider.s.ed.registration_token);
-
-    PRINTOUT(F("NETWORK Samping Feature="),ps_ram.app.provider.s.ed.sampling_feature);
-    PRINTOUT(F("NETWORK timerPost Tout(ms)="),ps_ram.app.provider.s.ed.timerPostTout_ms);
-    PRINTOUT(F("NETWORK timerPost Pacing(ms)="),ps_ram.app.provider.s.ed.timerPostPace_ms);
+    PRINTOUT(F("NETWORK Registration Token"),  epc.app.provider.s.ed.registration_token);
+    PRINTOUT(F("NETWORK Samping Feature"),     epc.app.provider.s.ed.sampling_feature);
+    PRINTOUT(F("NETWORK timerPost Tout(ms)"),  epc.app.provider.s.ed.timerPostTout_ms);
+    PRINTOUT(F("NETWORK timerPost Pacing(ms)"),epc.app.provider.s.ed.timerPostPace_ms);
     //POST_MAX_NUM=0; Fut Not used
 
     //Check for any unassigned NAME:VALUE
@@ -245,17 +244,17 @@ static int inihUnhandledFn(const char* section, const char* name,
         //This [PROVIDER] only defined for EnviroDIY
         // For other providers needs to be extended/switch
         if (strcmp_P(name, REGISTRATION_TOKEN_pm) == 0) {
-            strcpy(ps_ram.app.provider.s.ed.registration_token, value);
+            strcpy(epc.app.provider.s.ed.registration_token, value);
             MS_DBG(F("PROVIDER Setting registration token: "),
-            ps_ram.app.provider.s.ed.registration_token);
+            epc.app.provider.s.ed.registration_token);
         } else if (strcmp_P(name, CLOUD_ID_pm) == 0) {
-            strcpy(ps_ram.app.provider.s.ed.cloudId, value);
+            strcpy(epc.app.provider.s.ed.cloudId, value);
             MS_DBG(F("PROVIDER Setting cloudId: "),
-            ps_ram.app.provider.s.ed.cloudId);
+            epc.app.provider.s.ed.cloudId);
         } else if (strcmp_P(name, SAMPLING_FEATURE_pm) == 0) {
-            strcpy(ps_ram.app.provider.s.ed.sampling_feature, value);
+            strcpy(epc.app.provider.s.ed.sampling_feature, value);
             MS_DBG(F("PROVIDER Setting SamplingFeature: "),
-            ps_ram.app.provider.s.ed.sampling_feature);
+            epc.app.provider.s.ed.sampling_feature);
         }else if (strcmp_P(name, TIMER_POST_TOUT_MS_pm) == 0) {
             // convert  str to num with error checking
             long timerPostTimeout_local = strtol(value, &endptr, 10);
@@ -268,7 +267,7 @@ static int inihUnhandledFn(const char* section, const char* name,
                                   "100 : 30000) read:"),timerPostTimeout_local);
                 timerPostTimeout_local =MMW_TIMER_POST_TIMEOUT_MS_DEF;
             }
-            ps_ram.app.provider.s.ed.timerPostTout_ms = timerPostTimeout_local;
+            epc.app.provider.s.ed.timerPostTout_ms = timerPostTimeout_local;
             MS_DBG(F("PROVIDER Set TIMER_POST_TOUT_MS : "),timerPostTimeout_local);
 
         } else  if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
@@ -282,7 +281,7 @@ static int inihUnhandledFn(const char* section, const char* name,
                                   "0 : 5000) read:"),timerPostPacing_local);
                 timerPostPacing_local= MMW_TIMER_POST_PACING_MS_DEF;
             }
-            ps_ram.app.provider.s.ed.timerPostPace_ms = timerPostPacing_local;
+            epc.app.provider.s.ed.timerPostPace_ms = timerPostPacing_local;
             MS_DBG(F("PROVIDER Set TIMER_POST_PACE_MS: "),timerPostPacing_local);
 
         } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
