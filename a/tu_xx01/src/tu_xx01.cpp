@@ -1081,7 +1081,8 @@ void serialInputCheck()
     // 180sec total timer
 #define TIMER_TIMEOUT_LIMIT_MS 180000
 
-    PRINTOUT(MODULAR_SENSORS_VERSION,F("] Enter cmd: ?<CR> for help.(need a key to be typed every "), TIMER_TIMEOUT_NOACTIVITY_MS/1000,F("secs)"));
+    PRINTOUT(F("MODULAR_SENSORS_VERSION"),configDescription);
+    PRINTOUT(F(" Enter cmd: ?<CR> for help.(need a key to be typed every "), TIMER_TIMEOUT_NOACTIVITY_MS/1000,F("secs)"));
     while (userInputCollection ) {
         if(Serial.available() != 0) {
             incoming_ch = Serial.read();
