@@ -162,7 +162,6 @@ static void epcParser() {
     /// Used  in uSD print epc.app.msc.s.geolocation_id
 
     #if defined DigiXBeeCellularTransparent_Module
-    #warning DigiXBeeCellularTransparent apn needs testing
     if (isalnum(epc_apn1st))
     {
             epc.app.msn.s.network_type=MSCN_TYPE_CELL;

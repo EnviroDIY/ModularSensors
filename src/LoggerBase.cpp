@@ -1158,7 +1158,7 @@ void        Logger::systemSleep(uint8_t sleep_min) {
 
     // Wake-up message
     wakeUpTime_secs = getNowEpochTz();
-    PRINTOUT(F("\n... zzzZZ Awake @"), wakeUpTime_secs);
+    PRINTOUT(F("\n... zzzZZ Awake @"), formatDateTime_ISO8601(wakeUpTime_secs));
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
