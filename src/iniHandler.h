@@ -140,10 +140,10 @@ static void epcParser() {
     {
         for (int i = 0; epc.app.msc.s.logger_id[i] != '\0'; i++)
         {
-            if (!isalnum(epc.app.msc.s.logger_id[i]) )
+            if (!isprint(epc.app.msc.s.logger_id[i]) )
             {
-                PRINTOUT(F("Error !alnum logger file pos"),i,F("setting to 'x'"));
-                epc.app.msc.s.logger_id[i] = 'x';
+                PRINTOUT(F("Error !alnum logger file pos"),i,F("setting to '_', found "),epc.app.msc.s.logger_id[i]);
+                epc.app.msc.s.logger_id[i] = '_';
             }
         }
         PRINTOUT(F("COMMON LoggerId Set: "), epc_logger_id);
