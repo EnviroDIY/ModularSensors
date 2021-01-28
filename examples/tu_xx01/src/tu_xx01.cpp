@@ -572,6 +572,7 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 // ADSi2c_addr, VoltReadsToAvg);
 #define USE_EXT_BATTERY_ADC
 #if defined USE_EXT_BATTERY_ADC
+bool userPrintBatterVoltage=false;
 // Create a capability to read the battery Voltage asynchronously,
 // and have that voltage used on logging event
 Variable* kBatteryVoltage_V = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
@@ -582,11 +583,17 @@ float kBatteryVoltage_worker(void) {  // get the Battery Reading
     batteryLion_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
     // MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
-#ifdef MS_TU_CTD_DEBUG
-    DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker"));
+#if defined MS_TU_CTD_DEBUG
+    DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(batteryLion_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
 #endif  // MS_TU_CTD_DEBUG
+    if (userPrintBatterVoltage) {
+        userPrintBatterVoltage = false;
+        STANDARD_SERIAL_OUTPUT.print(F("  BatteryVoltage(V) "));
+        STANDARD_SERIAL_OUTPUT.print(batteryLion_V, 4);
+        STANDARD_SERIAL_OUTPUT.println();       
+    }
     return batteryLion_V;
 }
 float getBatteryVoltage_V(void) {
@@ -595,7 +602,7 @@ float getBatteryVoltage_V(void) {
 // Setup the object that does the operation
 Variable* kBatteryVoltage_var =
     new Variable(getBatteryVoltage_V,  // function that does the calculation
-                 2,                    // resolution
+                 4,                    // resolution
                  "batteryVoltage",     // var name. This must be a value from
                                     // http://vocabulary.odm2.org/variablename/
                  "volts",  // var unit. This must be a value from This must be a
@@ -1381,6 +1388,9 @@ void loop() {
         userButton1Act = false;
 
     } 
-
+    #if defined USE_EXT_BATTERY_ADC    
+    // Signal when battery is next read, to give user information
+    userPrintBatterVoltage=true;
+    #endif //#if defined USE_EXT_BATTERY_ADC
     dataLogger.logDataAndPubReliably();
 }

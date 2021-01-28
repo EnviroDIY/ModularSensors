@@ -590,7 +590,7 @@ float kBatteryVoltage_worker(void) {  // get the Battery Reading
     batteryLion_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
     // MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
-#if defined MS_TU_CTD_DEBUG 
+#if defined MS_TU_CTD_DEBUG
     DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(batteryLion_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
