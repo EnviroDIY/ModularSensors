@@ -102,10 +102,22 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
     /** Then enter command mode to set pin outputs. */
     MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode()) {
-        MS_DBG(F("Setting I/O Pins..."));
+        //MS_DBG(F("Setting I/O Pins..."));
         gsmModem.getSeries();
         _modemName = gsmModem.getModemName();
-        MS_DBG(F("'"), _modemName, F("' in command mode. Setting I/O Pins..."));
+        gsmModem.sendAT(F("IM"));  // Request Module Serial Number
+        gsmModem.waitResponse(1000, _modemSerialNumber);
+        // gsmModem.sendAT(F("S#"));  // Request Module ICCID
+
+        gsmModem.sendAT(F("HV"));  // Request Module Hw Version
+        gsmModem.waitResponse(1000, _modemHwVersion);
+        gsmModem.sendAT(F("VR"));  // Firmware Version
+        gsmModem.waitResponse(1000, _modemFwVersion);
+        // gsmModem.sendAT(F("MR"));  // Firmware VersionModuleModem 
+        PRINTOUT(F("Lte internet comms with"),_modemName, 
+                 F("IMEI "), _modemSerialNumber,F("HwVer"),_modemHwVersion, F("FwVer"), _modemFwVersion);
+
+        //MS_DBG(F("'"), _modemName, F("' in command mode. Setting I/O Pins..."));
         /** Enable pin sleep functionality on `DIO9`.
          * NOTE: Only the `DTR_N/SLEEP_RQ/DIO8` pin (9 on the bee socket) can be
          * used for this pin sleep/wake. */
@@ -702,7 +714,7 @@ uint32_t DigiXBeeCellularTransparent::getTimeNTP(void)
     /* bail if not connected to WIFI SSID */
     if (!isInternetAvailable())
     {
-        MS_DBG(F("No WiFi connection, cannot connect to NTP."));
+        MS_DBG(F("No Cell connection, cannot connect to NTP."));
         return 0;
     }
 

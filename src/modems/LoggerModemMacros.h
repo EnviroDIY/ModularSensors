@@ -370,7 +370,7 @@
             MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,      \
                    F("seconds for connection"));                      \
             if (!gsmModem.waitForNetwork(maxConnectionTime)) {        \
-                MS_DBG(F("... WiFi connection failed"));              \
+                PRINTOUT(F("... WiFi connection failed"));              \
                 return false;                                         \
             }                                                         \
         }                                                             \

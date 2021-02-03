@@ -640,6 +640,28 @@ void                Logger::printFileHeaderExtra(Stream* stream) {
     stream->print((char*)ps_cache->hw_boot.serial_num);
     stream->println(F("'"));
 #endif  // USE_PS_HW_BOOT
+
+    //Add known modemDetail - assumes been initialized
+    { 
+        String modemDetails = _logModem->getModemDevId();
+        if (modemDetails.length()) {
+            stream->print(modemDetails);
+            stream->println();  
+        }
+    }
+    //Add sensor details if known  assumes been initialized
+    String sensorDetails;
+    for (uint8_t i = 0; i < getArrayVarCount(); i++) {
+        sensorDetails =  getParentSensorDetails(i);
+        if (sensorDetails.length()) {
+            stream->print(sensorDetails);
+            stream->print(F(" for ")); 
+            stream->print( getVarNameAtI(i));  
+            stream->println();  
+        }
+    }     
+
+
 }
 #endif  // USE_MS_SD_INI
 
@@ -669,7 +691,7 @@ void Logger::logDataAndPubReliably(void) {
         _bat_handler_atl(LB_PWR_USEABLE_REQ);  // Measures battery
         if (!_bat_handler_atl(LB_PWR_SENSOR_USE_REQ)) {
             // Squash any activity
-            MS_DBG(F("logDataAndPubReliably - all cancelled"));
+            PRINTOUT(F("logDataAndPubReliably - all cancelled"));
             cia_val = 0;
         }
         if (!_bat_handler_atl(LB_PWR_MODEM_USE_REQ)) {
@@ -689,7 +711,10 @@ void Logger::logDataAndPubReliably(void) {
         watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
-        PRINTOUT(F("------------------------------------------"));
+        //PRINTOUT(F("---logDataAndPubReliably ("),cia_val,F(")----"));
+        STANDARD_SERIAL_OUTPUT.print(F("---logDataAndPubReliably (0x"));
+        STANDARD_SERIAL_OUTPUT.print(cia_val,HEX);
+        STANDARD_SERIAL_OUTPUT.println(F(")----"));
         // Turn on the LED to show we're taking a reading
         alertOn();
         // Power up the SD Card
@@ -702,7 +727,7 @@ void Logger::logDataAndPubReliably(void) {
             // updated values, and turing them back off. NOTE:  The wake
             // function for each sensor should force sensor setup to run if
             // the sensor was not previously set up.
-            MS_DBG(F("Running a complete sensor update..."));
+            PRINTOUT(F("Read sensors..."));
             watchDogTimer.resetWatchDog();
             _internalArray->completeUpdate();
             watchDogTimer.resetWatchDog();
@@ -718,7 +743,7 @@ void Logger::logDataAndPubReliably(void) {
                 if (_logModem->modemWake()) {
                     // Connect to the network
                     watchDogTimer.resetWatchDog();
-                    MS_DBG(F("Connecting to the Internet..."));
+                    PRINTOUT(F("Connecting to the Internet with"),_logModem->getModemName());
                     if (_logModem->connectInternet()) {
                         // Publish data to remotes
                         watchDogTimer.resetWatchDog();
@@ -753,9 +778,11 @@ void Logger::logDataAndPubReliably(void) {
                         MS_DBG(F("Disconnecting from the Internet..."));
                         _logModem->disconnectInternet();
                     } else {
-                        MS_DBG(F("Could not connect to the internet!"));
+                        PRINTOUT(F("Connect to the internet failed with"),_logModem->getModemName());
                         watchDogTimer.resetWatchDog();
                     }
+                } else {
+                    PRINTOUT(F("Failed to wake "), _logModem->getModemName());
                 }
                 // Turn the modem off
                 _logModem->modemSleepPowerDown();
@@ -763,7 +790,7 @@ void Logger::logDataAndPubReliably(void) {
                 MS_DBG(F("No _logModem "));
         } else if (cia_val & CIA_RLB_READINGS) {
             // Values not transmitted,  save readings for later transmission
-            MS_DBG(F("logDataAndPubReliably - store readings"));
+            PRINTOUT(F("logDataAndPubReliably - store readings, no pub"));
             publishDataQuedToRemotes(false);
         }
 
@@ -778,7 +805,7 @@ void Logger::logDataAndPubReliably(void) {
         // Turn off the LED
         alertOff();
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("---logDataAndPubReliably  Complete----------"));
 
         // Unset flag
         Logger::isLoggingNow = false;
@@ -826,6 +853,8 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
             */
 
             if (dataPublishers[i]->getQuedStatus()) {
+                uint16_t delay_posted_pacing_ms = dataPublishers[i]->getTimerPostPacing_mS();
+                uint16_t published_this_pass =0;
                 serzQuedStart((char)('0' + i));
                 deszRdelStart();
                 // MS_START_DEBUG_TIMER;
@@ -870,6 +899,14 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
                         }
 
                         */
+                    } else {
+                        /*A publish has been sucessfull.
+                         * Slow Down sending based on publishers acceptance rate
+                         * Each publish creates and tears down a TCP connection */
+                        /*TODO njh create intergrate all POSTS to one tcp/ip connection */
+                        published_this_pass++;
+                        MS_DBG(F("pubDQTR1 delay"),delay_posted_pacing_ms ,F("mS : posted"), published_this_pass);
+                        delay(delay_posted_pacing_ms);
                     }
                 }  // while reading line
                 deszRdelClose(true);
@@ -892,12 +929,21 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
                         deszQuedStart();
                         while ((dslStatus = deszQuedLine()) &&
                                cnt_for_pwr_analysis) {
+
+                            /*At least one publish has been sucessfull.
+                             * Slow Down sending based on publishers acceptance rate
+                             * Each publish creates and tears down a TCP connection */
+                            MS_DBG(F("pubDQTR2 delay"),delay_posted_pacing_ms ,F("mS : total posted"), published_this_pass);
+                            delay(delay_posted_pacing_ms);
+
                             // setup for publisher to call deszqNextCh()
                             rspCode = dataPublishers[i]->publishData();
                             watchDogTimer.resetWatchDog();
                             postLogLine(i, rspCode);
                             if (HTTPSTATUS_CREATED_201 != rspCode) break;
+
                             tot_posted++;
+                            published_this_pass++;
 
                             deszq_line[0] = 0;  // Show completed
 
@@ -944,23 +990,6 @@ void Logger::publishDataQuedToRemotes(bool internetPresent) {
 // Serialize/deserialize functions
 // see class headers
 // ===================================================================== //
-
-// This update the timestamp on a file
-void Logger::setFileTimeStampMet(File fileToStamp, uint8_t stampFlag) {
-    DateTime markedDt(Logger::markedEpochTime - EPOCH_TIME_OFF);
-
-    bool crStat = fileToStamp.timestamp(
-        stampFlag, markedDt.year(), markedDt.month(), markedDt.date(),
-        markedDt.hour(), markedDt.minute(), markedDt.second());
-    if (!crStat) {
-        //#define BUFNAM_SZ 15
-        // char bufferName[BUFNAM_SZ];
-        // fileToStamp.getName(bufferName, BUFNAM_SZ);
-        PRINTOUT(F("sFTSMet err for "), markedDt.year(), markedDt.month(),
-                 markedDt.date(), markedDt.hour(), markedDt.minute(),
-                 markedDt.second());
-    }
-}
 
 #define DELIM_CHAR2 ','
 #define SERZQUED_OFLAGS
@@ -1350,7 +1379,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
     String fileName = String(postLogNam_str);
 
     // Create rotating log of 4 chars - start YYYY_MM_DD
-    String nameTemp = formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+    String nameTemp = formatDateTime_ISO8601(getNowEpochTz()).substring(0, 10);
 
     // Drop middle _ and get YYMM
     fileName += nameTemp.substring(2, 4) + nameTemp.substring(5, 7);
@@ -1372,7 +1401,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
             PRINTOUT(F("logPLO err opening"), charFileName);
 
         } else {
-            setFileTimeStampMet(postsLogHndl, T_CREATE);
+            setFileTimestampTz(postsLogHndl, T_CREATE);
             MS_DBG(F("logPLO new file"), charFileName);
         }
     }
@@ -1383,7 +1412,7 @@ bool Logger::postLogOpen(const char* postLogNam_str) {
 void        Logger::postLogClose() {
 #if defined MS_LOGGERBASE_POSTS
 
-    setFileTimeStampMet(postsLogHndl, (T_WRITE));  //| T_ACCESS
+    setFileTimestampTz(postsLogHndl, (T_WRITE));  //| T_ACCESS
     postsLogHndl.close();
 
 
@@ -1394,13 +1423,13 @@ void Logger::postLogLine(uint8_t instance, int16_t rspParam) {
 // If debug ...keep record
 #if defined MS_LOGGERBASE_POSTS
 #if 0
-    if (0 == postsLogHndl.print(getNowEpochT0())) {
+    if (0 == postsLogHndl.print(getNowEpochUTC())) {
         PRINTOUT(F("publishDataQuedToRemote postsLog err"));
     }
 #else
 
     char tempBuffer[TEMP_BUFFER_SZ];
-    formatDateTime_ISO8601(getNowEpochT0())
+    formatDateTime_ISO8601(getNowEpochUTC())
         .toCharArray(tempBuffer, TEMP_BUFFER_SZ);
     postsLogHndl.print(tempBuffer);
 #endif
@@ -1408,7 +1437,7 @@ void Logger::postLogLine(uint8_t instance, int16_t rspParam) {
     itoa(rspParam, tempBuffer, 10);
     postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(","));
-    itoa(dataPublishers[instance]->getTimerPost_mS(), tempBuffer, 10);
+    itoa(dataPublishers[instance]->getTimerPostTimeout_mS(), tempBuffer, 10);
     postsLogHndl.print(tempBuffer);
     postsLogHndl.print(F(","));
     postsLogHndl.print(deszq_line);

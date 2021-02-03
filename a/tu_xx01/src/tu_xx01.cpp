@@ -1,6 +1,6 @@
 /*****************************************************************************
 tu_ctd.cpp
-Based on examples/logging_to MMW.ino
+Based on examples/logging_to_MMW.ino
 Adapted by Matt Bartney
  and Neil Hancock
  Based on fork <tbd>
@@ -84,23 +84,19 @@ const char git_branch[] = ".";
 const char* LoggerID          = LOGGERID_DEF_STR;
 const char* configIniID_def   = configIniID_DEF_STR;
 const char* configDescription = CONFIGURATION_DESCRIPTION_STR;
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = loggingInterval_CDEF_MIN;
+const uint8_t loggingIntervaldef = loggingInterval_CDEF_MIN;
 // Your logger's timezone.
-int8_t timeZone = CONFIG_TIME_ZONE_DEF;
-// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-#if defined UseModem_Module
-uint16_t    timerPostTimeout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
-uint16_t    timerPostPacing_ms  = 0;  // Future 0,100-5000;
-uint8_t     postMax_num         = 0;  // Future 0,5-50
-// Common
-uint8_t collectReadings = COLLECT_READINGS_DEF;
-uint8_t sendOffset_min  = SEND_OFFSET_MIN_DEF;
-#endif  // UseModem_Module
+// ==========================================================================
+//     Local storage - evolving
+// ==========================================================================
+#ifdef USE_MS_SD_INI
+persistent_store_t ps_ram;
+#define epc ps_ram
+#endif  //#define USE_MS_SD_INI
+
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -246,7 +242,7 @@ DigiXBeeCellularTransparent modemPhy = modemXBCT;
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus =
-    true;  // true? Flag to use the XBee CTS pin for status
+    false;  // true? Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
 // useCTSforStatus is overload with  useCTSforStatus!-> loggerModem.statusLevel
@@ -583,6 +579,7 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 // ADSi2c_addr, VoltReadsToAvg);
 #define USE_EXT_BATTERY_ADC
 #if defined USE_EXT_BATTERY_ADC
+bool userPrintBatterVoltage=false;
 // Create a capability to read the battery Voltage asynchronously,
 // and have that voltage used on logging event
 Variable* kBatteryVoltage_V = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
@@ -593,11 +590,17 @@ float kBatteryVoltage_worker(void) {  // get the Battery Reading
     batteryLion_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
     // MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
-#ifdef MS_TU_CTD_DEBUG
-    DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker"));
+#if defined MS_TU_CTD_DEBUG
+    DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(batteryLion_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
 #endif  // MS_TU_CTD_DEBUG
+    if (userPrintBatterVoltage) {
+        userPrintBatterVoltage = false;
+        STANDARD_SERIAL_OUTPUT.print(F("  BatteryVoltage(V) "));
+        STANDARD_SERIAL_OUTPUT.print(batteryLion_V, 4);
+        STANDARD_SERIAL_OUTPUT.println();       
+    }
     return batteryLion_V;
 }
 float getBatteryVoltage_V(void) {
@@ -606,7 +609,7 @@ float getBatteryVoltage_V(void) {
 // Setup the object that does the operation
 Variable* kBatteryVoltage_var =
     new Variable(getBatteryVoltage_V,  // function that does the calculation
-                 2,                    // resolution
+                 4,                    // resolution
                  "batteryVoltage",     // var name. This must be a value from
                                     // http://vocabulary.odm2.org/variablename/
                  "volts",  // var unit. This must be a value from This must be a
@@ -801,19 +804,11 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // ==========================================================================
-//     Local storage - evolving
-// ==========================================================================
-#ifdef USE_MS_SD_INI
-persistent_store_t ps_ram;
-#define epc ps_ram
-#endif  //#define USE_MS_SD_INI
-
-// ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, &varArray);
+Logger dataLogger(LoggerID, loggingIntervaldef, &varArray);
 
 
 // ==========================================================================
@@ -832,6 +827,7 @@ const char* samplingFeature = samplingFeature_UUID;  // Sampling feature UUID
 // registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15, 0);
 #endif  // UseModem_PushData
+
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
@@ -973,7 +969,174 @@ void unusedBitsMakeSafe() {
     // PORT_SAFE(31); //A7 Timer Int
 };
 
-void        bfgPoll() {
+
+// ==========================================================================
+bool userButton1Act = false;
+void userButtonISR() {
+    //Need setting up to actiavted by appropiate buttonPin
+    MS_DBG(F("ISR userButton!"));
+    if (digitalRead(buttonPin)) {
+        userButton1Act =true;
+    } 
+
+} //userButtonISR
+
+// ==========================================================================
+ void setupUserButton () {
+    if (buttonPin >= 0) {
+        pinMode(buttonPin, INPUT_PULLUP);
+        enableInterrupt(buttonPin, userButtonISR, CHANGE);
+        MS_DBG(F("Button on pin"), buttonPin,
+               F("user input."));
+    }
+} // setupUserButton
+
+
+// ==========================================================================
+// Data section for userTuple processing
+String serialInputBuffer = "";
+bool  serial_1st_char_bool =true;
+
+bool   userInputCollection=false;
+#define  USERHELP "\n\
+dyymmdd:hhmm<cr> to set date/time\n\
+d?<cr> to print current date/time\n\
+?<cr> for this help\n"
+
+// ==========================================================================
+// parseTwoDigits
+// Simple helper function
+uint8_t parseTwoDigitsError =0;
+uint16_t parseTwoDigits(const char *digits) {
+    uint16_t  num=0; 
+    if ( !isdigit(digits[0]) || !isdigit(digits[1]) ) {
+        MS_DBG(F("parseTwoDigits error with "),digits[0],digits[1] );
+        parseTwoDigitsError =1;
+    } else {
+        num = (digits[0]-'0')*10 +
+            (digits[1]-'0');
+    }
+    return num;
+}  // parseTwoDigits
+
+
+// ==========================================================================
+// userTupleParse
+// When a user tuple has been detected, parse it,
+// take a appropiate action
+//
+// this could be  https://github.com/Uberi/Arduino-CommandParser  ~ KISS
+//
+void userTupleParse() {
+
+    switch (serialInputBuffer[0]) {
+        case 'd' :
+            // format d?\n OR dyymmdd-hhmm\n
+            if ('?'==serialInputBuffer[1]) {
+                PRINTOUT(F("Local Time "),dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
+            } else {
+                const char *cin = serialInputBuffer.c_str();
+                int ser_len = serialInputBuffer.length();
+                //MS_DBG(F("**sid("),ser_len,F(")="),serialInputBuffer);
+                if (12>ser_len) {
+                    PRINTOUT(F("date invalid, got"),ser_len,F(" expect at least 11 chars :'"),&cin[1],"'");
+                } else {
+                    parseTwoDigitsError =0;
+                    uint16_t year = parseTwoDigits(&cin[1]);
+                    uint8_t month = parseTwoDigits(&cin[3]);
+                    uint8_t day   = parseTwoDigits(&cin[5]);
+                    uint8_t hour  = parseTwoDigits(&cin[8]);
+                    uint8_t minute= parseTwoDigits(&cin[10]);
+                    if (0==parseTwoDigitsError) {
+                        DateTime dt(year,month,day,hour,minute,0,0);
+                        dataLogger.setRTClock(dt.getEpoch()-dataLogger.getTZOffset()*HOURS_TO_SECS);
+                        PRINTOUT(F("Time set to "),dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
+                        //    DateTime (uint16_t year, uint8_t month, uint8_t date,
+                        //uint8_t hour, uint8_t min, uint8_t sec, uint8_t wday);
+                    }
+                }
+           }
+           break;
+        case '<': //Treating as eRPC
+            break;
+        case '?': 
+            PRINTOUT(F(USERHELP));
+            break;            
+        default:
+            PRINTOUT("Input not processed :'",serialInputBuffer,"'");
+            break;
+
+    }
+} //userTupleParse
+
+// ==========================================================================
+// Serial Input Driver
+// serial Input & FUT: eRPC (eRPC needs to enable UART interrupt)
+//
+// Serial buffer max SERIAL_RX_BUFFER_SIZE  64 chars
+//
+// The serial input is very error pront  
+// 
+
+void serialInputCheck() 
+{
+    char incoming_ch;
+    long timer_start_ms, timer_activity_ms,timer_now_ms;
+    timer_start_ms=timer_activity_ms=millis();
+    //20 seconds between key strokes
+#define TIMER_TIMEOUT_NOACTIVITY_MS 20000
+    // 180sec total timer
+#define TIMER_TIMEOUT_LIMIT_MS 180000
+
+
+    PRINTOUT(F("\n\n"), (char*)epc.app.msc.s.logger_id,configDescription);
+    PRINTOUT(MODULAR_SENSORS_VERSION,F("@"), epc.app.msc.s.logging_interval_min,
+        F("min,"),dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
+    PRINTOUT(F(" Enter cmd: ?<CR> for help.(need a key to be typed every "), TIMER_TIMEOUT_NOACTIVITY_MS/1000,F("secs)"));
+    while (userInputCollection ) {
+        if(Serial.available() != 0) {
+            incoming_ch = Serial.read();
+            if (serial_1st_char_bool) {
+                //Do this only first time from reset, keeps heap simple
+                serial_1st_char_bool = false;
+                serialInputBuffer.reserve(SERIAL_RX_BUFFER_SIZE);
+            }
+            timer_activity_ms = millis();
+            dataLogger.watchDogTimer.resetWatchDog();
+
+            // Parse the string on new-line
+            if (incoming_ch == '\n' || incoming_ch == '\r' || incoming_ch == '!') { 
+                //user_selection = true;
+                MS_DBG("\nRead ",serialInputBuffer.length(),F(" chars in'"),serialInputBuffer,F("'"));
+                userTupleParse();
+                serialInputBuffer = "";
+                userInputCollection = false; 
+            } else {
+                // Append the current digit to the string placeholder
+                Serial.write(incoming_ch); // Echo input, for user feedback
+                serialInputBuffer += static_cast<char>(incoming_ch);
+            }
+        }
+        //delay(1); // limit polling ~ the single character input is error prone ??
+
+        timer_now_ms = millis();
+        if (TIMER_TIMEOUT_NOACTIVITY_MS < (timer_now_ms - timer_activity_ms) ) {
+            PRINTOUT(F(" No keyboard activity for"), TIMER_TIMEOUT_NOACTIVITY_MS/1000,F("secs. Returning to normal logging."));
+            break;
+        } 
+        if (TIMER_TIMEOUT_LIMIT_MS < (timer_now_ms - timer_start_ms) ) {
+            PRINTOUT(F(" Took too long, need to complete within "), TIMER_TIMEOUT_LIMIT_MS/1000,F("secs. Returning to normal logging."));
+            break;
+        } 
+
+    } //while
+    dataLogger.watchDogTimer.resetWatchDog();
+}//serialInputCheck
+
+// ==========================================================================
+// Poll management sensors- eg FuelGauges status  
+// 
+void  managementSensrorsPoll() {
 #if defined USE_LC709203F
     if (bfgPresent) {
         Serial.print("Batt Voltage: ");
@@ -984,8 +1147,43 @@ void        bfgPoll() {
         // Serial.println(lc.getCellTemperature(), 1);
     }
 #endif  // USE_LC709203F
-}
+} //managementSensrorsPoll
 
+
+// ==========================================================================
+// Checks available power on battery.
+// 
+bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery) 
+{
+    bool LiBattPower_Unseable=false;
+    bool UserButtonAct = false;
+    uint16_t lp_wait = 1;
+
+    do {
+        mcuBoardExtBattery();
+        LiBattPower_Unseable =
+            ((PS_LBATT_UNUSEABLE_STATUS ==
+              mcuBoard.isBatteryStatusAbove(true, useable_req))
+                 ? true
+                 : false);
+        if (LiBattPower_Unseable && waitForGoodBattery) 
+        {
+            /* Sleep
+            * If can't collect data wait for more power to accumulate.
+            * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
+            * Under no other load conditions the mega1284 takes about 35mA
+            * Another issue is that onstartup currently requires turning on comms device to
+            * set it up. On an XbeeS6 WiFi this can take 20seconds for some reason.
+            */
+            PRINTOUT(lp_wait++,F(": BatV Low ="), mcuBoard.getBatteryVm1(false)),F(" Sleep60sec");
+            dataLogger.systemSleep(1);
+            //delay(1000);  // debug
+            PRINTOUT(F("---tu_xx01:Wakeup check power"));
+        }
+        if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
+    } while (LiBattPower_Unseable && !UserButtonAct);
+    return !LiBattPower_Unseable;
+}
 
 // ==========================================================================
 // Main setup function
@@ -993,8 +1191,9 @@ void        bfgPoll() {
 void setup() {
     // uint8_t resetCause = REG_RSTC_RCAUSE;        AVR ?//Reads from hw
     // uint8_t resetBackupExit = REG_RSTC_BKUPEXIT; AVR ?//Reads from hw
-    bool     LiBattPower_Unseable;
-    uint16_t lp_wait = 1;
+    uint8_t mcu_status = MCUSR; //is this already cleared by Arduino startup???
+    //MCUSR = 0; //reset for unique read
+
 // Wait for USB connection to be established by PC
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
@@ -1004,7 +1203,9 @@ void setup() {
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("\n---Boot. Sw Build: "));
+    Serial.print(F("\n---Boot("));
+    Serial.print(mcu_status,HEX);
+    Serial.print(F(") Sw Build: "));
     Serial.print(build_ref);
     Serial.print(" ");
     Serial.println(git_branch);
@@ -1029,38 +1230,11 @@ void setup() {
     // If buttonPress then exit.
     // Button is read inactive as low
     if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
-    bool UserButtonAct = false;
 
     // A vital check on power availability
-    do {
-        mcuBoardExtBattery();
-        LiBattPower_Unseable =
-            ((PS_LBATT_UNUSEABLE_STATUS ==
-              mcuBoard.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ))
-                 ? true
-                 : false);
-        if (LiBattPower_Unseable) {
-/* Sleep
- * If can't collect data wait for more power to accumulate.
- * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
- * Under no other load conditions the mega1284 takes about 35mA
- * Another issue is that onstartup currently requires turning on comms device to
- * set it up. On an XbeeS6 WiFi this can take 20seconds for some reason.
- */
-#if 1  // defined(CHECK_SLEEP_POWER)
-            SerialStd.print(lp_wait++);
-            SerialStd.print(F(": BatteryLow-Sleep60sec, BatV="));
-            SerialStd.println(mcuBoard.getBatteryVm1(false));
-#endif  //(CHECK_SLEEP_POWER)
-        // delay(59000); //60Seconds
-        // if(_mcuWakePin >= 0){systemSleep();}
-            dataLogger.systemSleep(1);
-            delay(1000);  // debug
-            SerialStd.println(F("----Wakeup"));
-        }
-        if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
-    } while (LiBattPower_Unseable && !UserButtonAct);
-    PRINTOUT(F("Good BatV="), batteryLion_V);
+    batteryCheck(PS_PWR_USEABLE_REQ, true);
+
+    PRINTOUT(F("BatV Good ="), batteryLion_V);
 
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
@@ -1096,10 +1270,6 @@ void setup() {
     greenredflash();
     // not in this scope Wire.begin();
 
-
-    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    Logger::setRTCTimeZone(0);
-
 #ifdef UseModem_Module
 #if !defined UseModem_PushData
     const char None_STR[] = "None";
@@ -1107,6 +1277,8 @@ void setup() {
 #endif  // UseModem_PushData
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
+    modemPhy.modemHardReset(); //Ensure in known state ~ 5mS
+
     // modemPhy.setModemLED(modemLEDPin); //Used in UI_status subsystem
 #if defined Modem_SignalPercent_UUID || defined DIGI_RSSI_UUID || \
     defined                                     DIGI_VCC_UID
@@ -1114,19 +1286,27 @@ void setup() {
     (loggerModem::PollModemMetaData_t)(          \
         loggerModem::POLL_MODEM_META_DATA_RSSI | \
         loggerModem::POLL_MODEM_META_DATA_VCC)
-    modemPhy.pollModemMetadata(POLL_MODEM_REQ);
+    modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_RSSI );
+    #else
+    //Ensure its all turned OFF.
+    modemPhy.pollModemMetadata(loggerModem::POLL_MODEM_META_DATA_OFF);
 #endif
 #endif  // UseModem_Module
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
-                             greenLED);
+
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, -1, greenLED);
+    setupUserButton (); //used for serialInput
 
 #ifdef USE_MS_SD_INI
     // Set up SD card access
-    Serial.println(F("---parseIni "));
+    PRINTOUT(F("---parseIni Start"));
     dataLogger.setPs_cache(&ps_ram);
     dataLogger.parseIniSd(configIniID_def, inihUnhandledFn);
-    Serial.println(F("\n\n---parseIni complete "));
+    epcParser(); //use ps_ram to update classes
+    PRINTOUT(F("---parseIni complete\n"));
 #endif  // USE_MS_SD_INI
+
+    // set the RTC to be in UTC TZ=0
+    Logger::setRTCTimeZone(0);
 
     mcuBoard.printBatteryThresholds();
 #if defined USE_LC709203F
@@ -1140,7 +1320,7 @@ void setup() {
         batteryFuelGauge.setPackSize(LC709203F_APA_500MAH);
         // batteryFuelGauge.setAlarmVoltage(3.8);
         // Serial.println(F("Found LC709203F."));
-        bfgPoll();
+        managementSensrorsPoll();
     }
 #endif  // defined USE_LC709203F
 
@@ -1149,12 +1329,13 @@ void setup() {
     dataLogger.begin();
 #if defined UseModem_PushData
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
-                        ps_ram.app.provider.s.registration_token,
-                        ps_ram.app.provider.s.sampling_feature);
+                        ps_ram.app.provider.s.ed.registration_token,
+                        ps_ram.app.provider.s.ed.sampling_feature);
     EnviroDIYPOST.setQuedState(true);
-    EnviroDIYPOST.setTimerPostTimeout_mS(timerPostTimeout_ms);
-    dataLogger.setSendEveryX(collectReadings);
-    dataLogger.setSendOffset(sendOffset_min);  // delay Minutes
+    EnviroDIYPOST.setTimerPostTimeout_mS(ps_ram.app.provider.s.ed.timerPostTout_ms);
+    EnviroDIYPOST.setTimerPostPacing_mS(ps_ram.app.provider.s.ed.timerPostPace_ms);
+    dataLogger.setSendEveryX(ps_ram.app.msn.s.collectReadings_num);
+    dataLogger.setSendOffset(ps_ram.app.msn.s.sendOffset_min);  // delay Minutes
 
 #endif  // UseModem_PushData
 
@@ -1165,10 +1346,10 @@ void setup() {
     MS_DBG(F("Check power to sync with NIST "), mcuBoard.getBatteryVm1(false),
            F("Req"), LiIon_BAT_REQ, F("Got"),
            mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ));
-    if ((PS_LBATT_UNUSEABLE_STATUS !=
-         mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ))) {
+    if (batteryCheck(LiIon_BAT_REQ, true)) {
         MS_DBG(F("Sync with NIST as have enough power"));
 
+#if 1 //GET_TIME_ON_STARTUP
 #if defined DigiXBeeWifi_Module
         // For the WiFi module, it may not be configured if no nscfg.ini file
         // present,
@@ -1178,14 +1359,14 @@ void setup() {
         // MS_DBG(F("cmp_result="),cmp_result,"
         // ",modemPhy.getWiFiId(),"/",wifiId_def);
         if (!(cmp_result == 0)) {
-            SerialStd.print(F("Sync with NIST over WiFi network "));
-            SerialStd.println(modemPhy.getWiFiId());
+             PRINTOUT(F("Sync with NIST over WiFi network "), modemPhy.getWiFiId());
             dataLogger.syncRTC();  // Will also set up the modemPhy
         }
 #else
         MS_DBG(F("Sync with NIST "));
         dataLogger.syncRTC();  // Will also set up the modemPhy
 #endif  // DigiXBeeWifi_Module
+#endif //GET_TIME_ON_STARTUP
         MS_DBG(F("Set modem to sleep"));
         modemPhy.disconnectInternet();
         modemPhy.modemSleepPowerDown();
@@ -1195,10 +1376,14 @@ void setup() {
     }
 #endif  // UseModem_Module
     // List start time, if RTC invalid will also be initialized
-    PRINTOUT(F("Time "),
-             dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpoch()));
+    PRINTOUT(F("Local Time "),
+             dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
+    PRINTOUT(F("Time epoch Tz "),dataLogger.getNowEpochTz());
+    PRINTOUT(F("Time epoch UTC "),dataLogger.getNowEpochUTC());
 
-    Serial.println(F("Setting up sensors..."));
+    //Setup sensors, including reading sensor data sheet that can be recorded on SD card
+    PRINTOUT(F("Setting up sensors..."));
+    batteryCheck(PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC, true);
     varArray.setupSensors();
 // Create the log file, adding the default header to it
 // Do this last so we have the best chance of getting the time correct and
@@ -1212,7 +1397,7 @@ void setup() {
 #if defined KellerAcculevel_ACT
     acculevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
 #endif  // KellerAcculevel_ACT
-    Serial.println(F("Setting up file on SD card"));
+    PRINTOUT(F("Setting up file on SD card"));
     dataLogger.turnOnSDcard(
         true);  // true = wait for card to settle after power up
     dataLogger.createLogFile(true);  // true = write a new header
@@ -1228,6 +1413,16 @@ void setup() {
 // ==========================================================================
 
 void loop() {
-    bfgPoll();
+    managementSensrorsPoll();
+    if ((true == userButton1Act ) || Serial.available()){
+        userInputCollection =true;
+        serialInputCheck();
+        userButton1Act = false;
+
+    } 
+    #if defined USE_EXT_BATTERY_ADC    
+    // Signal when battery is next read, to give user information
+    userPrintBatterVoltage=true;
+    #endif //#if defined USE_EXT_BATTERY_ADC
     dataLogger.logDataAndPubReliably();
 }

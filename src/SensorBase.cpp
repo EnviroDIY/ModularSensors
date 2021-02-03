@@ -572,3 +572,11 @@ bool Sensor::isMeasurementComplete(bool debug) {
 void Sensor::waitForMeasurementCompletion(void) {
     while (!isMeasurementComplete()) {}
 }
+
+//Az extensions
+// This is a placeholder.
+String Sensor::getSensorDetails(void) {
+    //String sensorDetails(F("SensorBase Details: None"));
+    //return F("SensorBase Details: None");
+    return "";
+}

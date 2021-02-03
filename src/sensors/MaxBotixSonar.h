@@ -177,8 +177,8 @@ class MaxBotixSonar : public Sensor {
      * @brief Construct a new MaxBotix Sonar object
      *
      * @param stream An Arduino data stream for TTL or RS232 communication.  See
-     * [notes](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)
-     * for more information on what streams can be used.
+     * [notes](@ref page_arduino_streams) for more information on what streams
+     * can be used.
      * @param powerPin The pin on the mcu controlling power to the MaxSonar.
      * Use -1 if it is continuously powered.
      * - The MaxSonar requires a 2.7V - 5.5V power supply.

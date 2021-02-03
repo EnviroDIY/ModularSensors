@@ -192,7 +192,7 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
 #define REQUIRED_MIN_RSP_SZ 12
-#define TEMP_BUFFER_SZ 37
+#define TEMP_BUFFER_SZ (REQUIRED_MIN_RSP_SZ + 25)
 #define RESPONSE_UNINIT 0xFFFE
     char     tempBuffer[TEMP_BUFFER_SZ] = "";
     uint16_t did_respond                = RESPONSE_UNINIT;
@@ -234,16 +234,19 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        tempBuffer[0] = 0;
+        memset(tempBuffer,0,TEMP_BUFFER_SZ);
         did_respond   = outClient->readBytes(tempBuffer, REQUIRED_MIN_RSP_SZ);
         // MS_DBG(F("Rsp read,"), did_respond, F("bytes in"), elapsed_ms,
         // F("mS"));
         // Close the TCP/IP connection
         // MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
+
+        //Possibly a help for later +++ that sometimes get missed with Digi S6B
+        delay(100); //debug allow data to come through UART before stop 1mS/CHar
+        MS_DBG(F(" [[Client waited"), elapsed_ms, F("mS for"), did_respond,F("bytes."));
         outClient->stop();
-        MS_DBG(F("Client waited"), elapsed_ms, F("mS for"), did_respond,
-               F("bytes. Stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
+         MS_DBG( F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
                    "Portal --"));
@@ -269,13 +272,11 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         // 504 Gateway Timeout
         responseCode = HTTPSTATUS_GT_504;
     }
-    _timerPost_ms = (uint16_t)elapsed_ms;
 
     tempBuffer[TEMP_BUFFER_SZ - 1] = 0;
     MS_DBG(F("Rsp:'"), tempBuffer, F("'"));
     PRINTOUT(F("-- Response Code --"), responseCode, F("waited "), elapsed_ms,
              F("mS Timeout"), _timerPostTimeout_ms);
-    // PRINTOUT(responseCode);
 
     return responseCode;
 }

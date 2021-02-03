@@ -5,7 +5,7 @@ before_install:
 sudo: false
 git:
   depth: 1
-  sparse_checkout: travis/travis_sparse_checkout
+  sparse_checkout: continuous_integration/travis_sparse_checkout
 branches:
   except:
     - gh-pages
@@ -53,7 +53,7 @@ install:
   - pio lib -g install vshymanskyy/StreamDebugger@~1.0.1
   - pio lib -g list
 script:
-  - platformio ci --project-conf="travis/platformio.ini"
+  - platformio ci --project-conf="continuous_integration/platformio.ini"
 
 jobs:
   include:
@@ -74,35 +74,28 @@ jobs:
       language: python
       python:
         - '3.7'
+      env:
+        - DOXYGEN_VERSION="Release_1_8_20"
       before_install:
         - git config --global user.email "sdamiano@stroudcenter.org"
         - git config --global user.name "SRGDamia1"
         - git config --global push.default simple
-        - sudo apt-get update
-        - sudo apt-get -y install build-essential
-        - sudo apt-get -y install graphviz
-        - sudo apt-get -y install flex
-        - sudo apt-get -y install bison
-        - sudo apt-get -y install texlive-base
-        - sudo apt-get -y install texlive-latex-extra
-        - sudo apt-get -y install texlive-fonts-extra
-        - sudo apt-get -y install texlive-fonts-recommended
         - pip3 install jinja2 Pygments
       install:
         - cd $TRAVIS_BUILD_DIR
-        - chmod +x travis/copy-doc-sources.sh
-        - sh travis/copy-doc-sources.sh
+        - chmod +x continuous_integration/copy-doc-sources.sh
+        - sh continuous_integration/copy-doc-sources.sh
         - cd $TRAVIS_BUILD_DIR
-        - chmod +x travis/build-install-doxygen.sh
-        - sh travis/build-install-doxygen.sh
+        - chmod +x continuous_integration/build-install-doxygen.sh
+        - sh continuous_integration/build-install-doxygen.sh
       script:
         - cd $TRAVIS_BUILD_DIR
-        - chmod +x travis/generate-documentation.sh
-        - sh travis/generate-documentation.sh
+        - chmod +x continuous_integration/generate-documentation.sh
+        - sh continuous_integration/generate-documentation.sh
       # after_success:
       #   - cd $TRAVIS_BUILD_DIR
-      #   - chmod +x travis/deploy-documentation.sh
-      #   - sh travis/deploy-documentation.sh
+      #   - chmod +x continuous_integration/deploy-documentation.sh
+      #   - sh continuous_integration/deploy-documentation.sh
       deploy:
         provider: pages:git
         token: $GH_REPO_TOKEN

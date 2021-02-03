@@ -1,6 +1,5 @@
 /*****************************************************************************
 ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
-- KellerNanolevel 
 - Temperature/Humidity 
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
@@ -36,8 +35,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // KellerAcculevel units can be 1 (meter) 2 (feet)
 //#define KellerAcculevel_DepthUnits 2
 
-#define KellerNanolevel_ACT 1
+//#define KellerNanolevel_ACT 1
 #define ASONG_AM23XX_UUID 1
+
+// sensors with low power useage
+#define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_LOW_REQ
 
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
@@ -117,8 +119,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // NULL for none, or  password for connecting to WiFi,
 #define WIFIPWD_CDEF "yyy"
 #define MMW_TIMER_POST_TIMEOUT_MS_DEF 7000L
-#define COLLECT_READINGS_DEF 1
-#define SEND_OFFSET_MIN_DEF 0
+//POST PACING ms 0-15000
+#define MMW_TIMER_POST_PACING_MS_DEF 100L
+//Post MAX Num - is num of MAX num at one go. 0 no limit
+#define MMW_TIMER_POST_MAX_MUM_DEF 0 
+//Manage Internet - common for all providers
+#define MNGI_COLLECT_READINGS_DEF 1
+#define MNGI_SEND_OFFSET_MIN_DEF 0
 #endif  // Modules
 
 // end of _Module
@@ -214,7 +221,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // ENVIRODIY_MAYFLY_TEMPERATURE
 
 #if defined UseModem_Module
-#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
+//#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #endif  // UseModem_Module
 

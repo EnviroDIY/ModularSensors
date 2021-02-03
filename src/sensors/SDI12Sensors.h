@@ -71,10 +71,14 @@
 #ifdef MS_SDI12SENSORS_DEBUG
 #define MS_DEBUGGING_STD "SDI12Sensors"
 #endif
+#ifdef MS_SDI12SENSORS_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "SDI12Sensors"
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
 #ifdef SDI12_EXTERNAL_PCINT
@@ -258,6 +262,18 @@ class SDI12Sensors : public Sensor {
     String _sensorModel;
     String _sensorVersion;
     String _sensorSerialNumber;
+
+    //AZ extensions
+public:
+    /**
+     * @brief Get the stored sensor details returned by a previously
+     * called SDI-12 get sensor information (aI!) command.
+     *
+     * @return String The sensor details  as reported by the sensor
+     * itself.
+     */
+    String getSensorDetails(void) ;
+
 };
 
 #endif  // SRC_SENSORS_SDI12SENSORS_H_

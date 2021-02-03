@@ -7,7 +7,13 @@ It can be used by a newbie to easly verify their environment, an expert to easly
 Required: A minimium hardware configuration of a Mayfly (rev0.5b or later) with a DigiWiFi S6 to provide a reference test environment.
 
 The code base is referenced as src/* instead of  https://github.com/EnviroDIY/ModularSensors (develop)
-This is the one gottcha - to sync to the latest online code, the user needs to do a "git pull"
+This is the one gottcha - you need to have git installed and operational.
+ a) $ git pull     #to get latest code, before mods  ~ or git clone to get repo
+ b) $ git branch -b pr_<description>
+    make changes
+ c) $ git add .      #for changes
+ d) $ git commit -m  "change description"
+ e) $ git push     # to push changes, and follow instructions.
 
 This can be used for 
 1) Stability testing of  https://github.com/EnviroDIY/ModularSensors (develop) 
@@ -33,7 +39,7 @@ RAM:   [===       ]  28.7% (used 4708 bytes from 16384 bytes)
 Flash: [=====     ]  54.6% (used 71046 bytes from 130048 bytes)
 _______
 
-Next 
+(the following is included as boiler plate~ looks like it should provide references to docs)
 
 [//]: # ( @tableofcontents )
 

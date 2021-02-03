@@ -280,7 +280,7 @@ ProcessorStats::isBatteryStatusAbove(bool         newBattReading,
     ps_Lbatt_status_t lion_status;
     ps_Lbatt_status_t retValue;
 #if defined ProcessorStats_DBG || defined DEBUGGING_SERIAL_OUTPUT
-    float threshold_V;
+    __attribute__((unused)) float threshold_V;
 #define threshold_store(p1) threshold_V = p1
 #else
 #define threshold_store(p1)

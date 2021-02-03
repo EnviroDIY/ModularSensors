@@ -59,10 +59,22 @@ bool DigiXBeeWifi::extraModemSetup(void) {
     /** Then enter command mode to set pin outputs. */
     // MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode()) {
-        gsmModem.getSeries();
-        _modemName = gsmModem.getModemName();
-        PRINTOUT(F("XbeeWiFi Initializing Internet comms with modem '"),
-                 _modemName, F("'"));
+        {
+            String  xbeeSnLow,xbeeSnHigh;//XbeeDevHwVer,XbeeFwVer;
+            gsmModem.getSeries();
+            _modemName = gsmModem.getModemName();
+            gsmModem.sendAT(F("SL"));  // Request Module MAC/Serial Number Low
+            gsmModem.waitResponse(1000, xbeeSnLow);
+            gsmModem.sendAT(F("SH"));  // Request Module MAC/Serial Number High
+            gsmModem.waitResponse(1000, xbeeSnHigh);
+            _modemSerialNumber = xbeeSnHigh+xbeeSnLow;
+            gsmModem.sendAT(F("HV"));  // Request Module Hw Version
+            gsmModem.waitResponse(1000, _modemHwVersion);
+            gsmModem.sendAT(F("VR"));  // Firmware Version
+            gsmModem.waitResponse(1000, _modemFwVersion);
+            PRINTOUT(F("XbeeWiFi internet comms with"),_modemName, 
+                 F("Mac/Sn "), _modemSerialNumber,F("HwVer"),_modemHwVersion, F("FwVer"), _modemFwVersion);
+        }
         // Leave all unused pins disconnected. Use the PR command to pull all of
         // the inputs on the device high using 40 k internal pull-up resistors.
         // You do not need a specific treatment for unused outputs.
@@ -163,6 +175,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
         bool     apRegistered = false;
         PRINTOUT(F("Loop=Sec] rx db : Status #Polled Status every 1sec/30sec"));
         uint8_t reg_count = 0;
+        #define TIMER_POLL_AP_STATUS_MSEC 300000
         for (unsigned long start = millis(); millis() - start < 300000;
              loops++) {
             ui_db = 0;  // gsmModem.getSignalQuality();
@@ -172,26 +185,21 @@ bool DigiXBeeWifi::extraModemSetup(void) {
                 "] " + String(ui_db) + ":0x" + String(status, HEX);
             if (0 == status) {
                 ui_op += " Cnt=" + String(reg_count);
-                PRINTOUT(ui_op);
 #define XBEE_SUCCESS_CNTS 3
                 if (++reg_count > XBEE_SUCCESS_CNTS) {
+                    PRINTOUT(ui_op);
                     apRegistered = true;
                     break;
                 }
+            } else {
+                reg_count =0; //reset 
             }
             PRINTOUT(ui_op);
+            //Need to pet the watchDog as 8sec timeout ~ but how, LoggerBase::petDog()
             delay(1000);
         }
-        if (!apRegistered) {
-            // Fut: Could Scan for access points here AS commnd to indicate what
-            // is available
-            PRINTOUT(F(
-                "XbeeWiFi not AP Registered - aborting attempt, hope it works "
-                "next time"));
-            delay(100);
-            // NVIC_SystemReset();
-            success = false;
-        } else {
+        if (apRegistered) 
+        { 
             MS_DBG(F("Get IP number"));
             String  xbeeRsp;
             uint8_t index              = 0;
@@ -253,8 +261,20 @@ bool DigiXBeeWifi::extraModemSetup(void) {
                 getModemSignalQuality(rssi, percent);
                 MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
 #endif  // MS_DIGIXBEEWIFI_DEBUG
+            gsmModem.exitCommand();
+        } 
+        else 
+        { // !apRegistered  could be invalid SSID, no SSID, or stuck module
+            PRINTOUT(F(
+                "XbeeWiFi AP not Registered - reseting module, hope it works "
+                "next time"));
+            loggerModem::modemHardReset();
+            delay(50);
+            // NVIC_SystemReset();
+            success = false;
         }
-        gsmModem.exitCommand();
+    } else {
+        success = false;
     }
 
     if (false == success) { PRINTOUT(F("Xbee '"), _modemName, F("' failed.")); }
@@ -285,7 +305,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 #define NIST_SERVER_RETRYS 4
 #endif  // NIST_SERVER_RETRYS
     String  nistIpStr;
-    uint8_t index = 0;
+    __attribute__((unused)) uint8_t index = 0;
     for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {
         /* Must ensure that we do not ping the daylight more than once every 4
          * seconds */
@@ -432,10 +452,12 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     uint16_t volt_mV = XBEE_V_KEY;
 
     // if not enabled don't collect data
-    if (0 == loggerModem::_pollModemMetaData) return false;
-
+    if (0 == loggerModem::_pollModemMetaData) {
+        MS_DBG(F("updateModemMetadata None to update"));
+        return false;
+    }
     // Enter command mode only once for temp and battery
-    MS_DBG(F("Entering Command Mode:"));
+    MS_DBG(F("updateModemMetadata Entering Command Mode:"));
     success &= gsmModem.commandMode();
     if (POLL_MODEM_META_DATA_RSSI & loggerModem::_pollModemMetaData) {
         // Assume a signal has already been established.
@@ -481,8 +503,9 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
                loggerModem::_priorModemTemp);
     }
     // Exit command modem
-    MS_DBG(F("Leaving Command Mode:"));
+    MS_DBG(F("updateModemMetadata Leaving Command Mode:"));
     gsmModem.exitCommand();
+
     ++updateModemMetadata_cnt;
     if (0 == rssi || (XBEE_RESET_THRESHOLD <= updateModemMetadata_cnt)) {
         updateModemMetadata_cnt = 0;
@@ -694,3 +717,5 @@ String DigiXBeeWifi::getWiFiId(void) {
 String DigiXBeeWifi::getWiFiPwd(void) {
     return _pwd;
 }
+//If needed can provide specific information
+//String DigiXBeeWifi::getModemDevId(void) {return "DigiXbeeWiFiId";}

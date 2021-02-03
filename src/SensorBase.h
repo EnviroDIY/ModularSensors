@@ -523,6 +523,16 @@ class Sensor {
      * defined once for the whole class.
      */
     Variable* variables[MAX_NUMBER_VARS];
+ 
+ //az extensions
+ public:
+    /**
+     * @brief Get the complete sensor ID.
+     *
+     * @return **String** The sensor IDs that may have been retrieved from the instrument.
+     */
+    virtual String getSensorDetails(void) ;
+
 };
 
 #endif  // SRC_SENSORBASE_H_

@@ -352,20 +352,28 @@ class dataPublisher {
         return useQueDataSource;  // Default for not supported.
     }
 
-#if !defined TIMER_MMW_POST_TIMEOUT_DEF_MSEC
-#define TIMER_MMW_POST_TIMEOUT_DEF_MSEC 10000L
-#endif  // TIMER_MMW_POST_TIMEOUT_DEF_MSEC
-    uint16_t _timerPostTimeout_ms = TIMER_MMW_POST_TIMEOUT_DEF_MSEC;
+    //Required to implement the following
     uint16_t virtual setTimerPostTimeout_mS(uint16_t tpt_ms) {
-        MS_DBG(F("sTPT rejected "), tpt_ms);
-        return _timerPostTimeout_ms;  // Default not updated.
+        MS_DBG(F("setTPT rejected "));
+        return 0;  // Default not updated.
     }
 
-    uint16_t _timerPost_ms = 0;
-    uint16_t virtual getTimerPost_mS() {
-        MS_DBG(F("gTP check"), _timerPost_ms);
-        return _timerPost_ms;
+    uint16_t virtual getTimerPostTimeout_mS() {
+        MS_DBG(F("getTPT rejected"));
+        return 0;
     }
+
+    //Required to implement the following
+    uint16_t virtual setTimerPostPacing_mS(uint16_t tpt_ms) {
+        MS_DBG(F("setTPP rejected "));
+        return 0;  // Default not updated.
+    }
+
+    uint16_t virtual getTimerPostPacing_mS() {
+        MS_DBG(F("setTPP rejected"));
+        return 0;
+    }
+
 };
 
 /* atl_extension */

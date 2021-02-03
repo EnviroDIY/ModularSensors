@@ -1,8 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
-- KellerNanolevel 
-- Temperature/Humidity 
-
+ms_cfg.h_LT5_lte  - ModularSensors Configuration - tgt _LT5 Acculevel /LTE
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -30,14 +27,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ExternalVoltage_ACT 1
 //#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
-//#define Insitu_TrollSdi12_UUID 1
+#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
-//#define KellerAcculevel_ACT 1
+#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
-//#define KellerAcculevel_DepthUnits 2
+#define KellerAcculevel_DepthUnits 2
 
-#define KellerNanolevel_ACT 1
-#define ASONG_AM23XX_UUID 1
+//#define KellerNanolevel_ACT 1
+//#define ASONG_AM23XX_UUID 1
+
+//Two heavy sensors with power useage
+#define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_HEAVY_REQ
 
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
@@ -47,7 +47,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "tu_test basic WiFi"
+#define CONFIGURATION_DESCRIPTION_STR "tu_LT5_lte LT500,Acculevel"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1
@@ -90,9 +90,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // Instructions: define only one  _Module
-#define DigiXBeeWifi_Module 1
+//#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-//#define DigiXBeeCellularTransparent_Module 1
+#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant
@@ -116,9 +116,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define WIFIID_CDEF "xxx"
 // NULL for none, or  password for connecting to WiFi,
 #define WIFIPWD_CDEF "yyy"
-#define MMW_TIMER_POST_TIMEOUT_MS_DEF 7000L
-#define COLLECT_READINGS_DEF 1
-#define SEND_OFFSET_MIN_DEF 0
+#define MMW_TIMER_POST_TIMEOUT_MS_DEF 9000L
+//POST PACING ms 0-15000
+#define MMW_TIMER_POST_PACING_MS_DEF 100L
+//Post MAX Num - is num of MAX num at one go. 0 no limit
+#define MMW_TIMER_POST_MAX_MUM_DEF 0 
+//Manage Internet - common for all providers
+#define MNGI_COLLECT_READINGS_DEF 1
+#define MNGI_SEND_OFFSET_MIN_DEF 0
 #endif  // Modules
 
 // end of _Module
@@ -227,8 +232,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if defined MAYFLY_VBAT
 #ifdef ExternalVoltage_ACT
 // AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
-#define ExternalVoltage_Volt0_UUID "Batt_UUID"
-//#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+//#define ExternalVoltage_Volt0_UUID "Batt_UUID"
+#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 //#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
 #else  // ExternalVoltage_ACT
 #define ProcVolt_ACT 1

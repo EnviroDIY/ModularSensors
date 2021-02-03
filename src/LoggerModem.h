@@ -993,8 +993,15 @@ class loggerModem {
     // modemClientType gsmClient;
 
     /* atl_extension */
+    String _modemHwVersion;
+    String _modemSerialNumber;
+    String _modemFwVersion;
+
 
  public:
+    String getModemDevId(void)
+    {return _modemName+F(" Sn ")+_modemSerialNumber+F(" HwVer " )+_modemHwVersion+F(" FwVer ")+_modemFwVersion;}
+
     /**
      * @brief modem management data setup
      *
@@ -1006,6 +1013,7 @@ class loggerModem {
 #define POLL_MODEM_META_DATA_ALL 0xFF
 #endif  // POLL_MODEM_META_DATA_ON
     typedef enum {
+        POLL_MODEM_META_DATA_OFF  = 0x0,
         POLL_MODEM_META_DATA_RSSI  = 0x01,
         POLL_MODEM_META_DATA_VCC   = 0x02,
         POLL_MODEM_META_DATA_TEMP  = 0x04,
