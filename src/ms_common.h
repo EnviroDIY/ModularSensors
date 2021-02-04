@@ -198,7 +198,8 @@ typedef struct {
 //******
 //Provider UUI EnvviroDIY
 #define UUIDE_TYPE_NONE 0
-#define UUIDE_TYPE_ENVIRODIY 1
+#define UUIDE_TYPE_MMW 1
+
 #define UUIDE_CLOUD_ID_SZ 38
 #define UUIDE_DEF_STR "NONE"
 //#define UUIDE_NULL_STR ""
