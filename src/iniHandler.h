@@ -208,12 +208,13 @@ static void epcParser() {
     //POST_MAX_NUM=0; Fut Not used
 
     //Check for any unassigned NAME:VALUE
+    int idx_break=0;
     do {
         if (isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].value[0]) 
         && isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].name[0])) 
         {
             //Found alpha values in table, search for a match
-            MS_DEEP_DBG(F("search"),uuid_name(eeprom_idx), F("?"),
+            MS_DEEP_DBG(F("search"),uuid_name(eeprom_idx),eeprom_idx, F("?"),uuid_vl_idx,
             (const char*)variableList[uuid_vl_idx]->getVarUUID().c_str()  );
             if (strcmp((const char*)variableList[uuid_vl_idx]
                         ->getVarUUID().c_str(),
@@ -225,9 +226,25 @@ static void epcParser() {
                 eeprom_idx++;
                 uuid_vl_idx = -1; ///Reset to start at beging of variable_list
             }
+            #ifdef MS_TU_CTD_DEBUG
+            delay(100); //Don;t overpower debug output.
+            #endif
+        } else {
+            MS_DBG(F("search !isalnum eeprom["),eeprom_idx, F("] "),
+            isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].value[0]),
+            isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].name[0]) ) ;
         }
         uuid_vl_idx++;
-    }while (uuid_vl_idx < UUIDE_SENSOR_CNT_MAX_SZ );
+        if (uuid_vl_idx>=variableCount) { 
+            eeprom_idx++;
+            uuid_vl_idx = 0;
+        }
+        if (++idx_break > (UUIDE_SENSOR_CNT_MAX_SZ*UUIDE_SENSOR_CNT_MAX_SZ)) {
+            PRINTOUT(F("Search error! break out of loop"));
+            break;
+        }
+
+    }while (eeprom_idx < UUIDE_SENSOR_CNT_MAX_SZ );
 }
 
 static int inihUnhandledFn(const char* section, const char* name,
@@ -851,7 +868,7 @@ void readAvrEeprom() {
         //if (UUIDE_NULL_TERMINATOR != epc.app.provider.s.ed.uuid[uuid_lp][0]) {
         if (isalnum(epc.app.provider.s.ed.uuid[uuid_lp].value[0]) 
         || isalnum(epc.app.provider.s.ed.uuid[uuid_lp].name[0])) {
-            PRINTOUT(uuid_lp+1,F("]"),(char *)epc.app.provider.s.ed.uuid[uuid_lp].name,
+            PRINTOUT(uuid_lp,F("]"),(char *)epc.app.provider.s.ed.uuid[uuid_lp].name,
             F("="),(char *)epc.app.provider.s.ed.uuid[uuid_lp].value);
         }
 
