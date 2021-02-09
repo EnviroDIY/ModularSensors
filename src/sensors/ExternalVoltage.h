@@ -83,8 +83,8 @@
  * @section analog_ads1x15_datasheet Sensor Datasheet
  * Technical specifications for the TI ADS1115 can be found at: http://www.ti.com/product/ADS1115
  * For the ADS1015, see: https://www.ti.com/product/ADS1015
- * [ADS1115 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS101x-Analog-to-Digital-Converter.pdf)
- * [ADS1015 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS111x-Analog-to-Digital-Converter.pdf)
+ * - [ADS1115 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS101x-Analog-to-Digital-Converter.pdf)
+ * - [ADS1015 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS111x-Analog-to-Digital-Converter.pdf)
  */
 /* clang-format on */
 /* clang-format off */

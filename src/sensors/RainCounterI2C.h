@@ -233,8 +233,8 @@ class RainCounterI2C : public Sensor {
      * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
      * default value is 0.2.
      */
-    RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex = 0x08,
-                   float rainPerTip = 0.2);
+    explicit RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex = 0x08,
+                            float rainPerTip = 0.2);
     /**
      * @brief Construct a new Rain Counter I2C object using the primary
      * hardware I2C instance.

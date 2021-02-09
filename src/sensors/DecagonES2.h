@@ -36,8 +36,8 @@
  * _red_, and ground to the unshielded cable.
  *
  * @section sensor_es2_datasheet Sensor Datasheet
- * [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf)
- * [Integrator's Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf)
+ * - [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf)
+ * - [Integrator's Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf)
  *
  * @section sensor_es2_flags Build flags
  * @see @ref sdi12_group_flags

@@ -27,7 +27,7 @@ _______
 
 _______
 
-[//]: # ( @section example_double_log_unique Unique Features of the DRWI No Cellular Example )
+[//]: # ( @section example_drwi_no_cell_unique Unique Features of the DRWI No Cellular Example )
 # Unique Features of the DRWI LTE Example
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Does *not* include any live data uploads.
@@ -129,7 +129,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 _______
 
 
-[//]: # ( @section example_drwi_no_cell_pio PlatformIO Configuration )
+[//]: # ( @section example_drwi_no_cell_pio_config PlatformIO Configuration \)
 
 [//]: # ( @include{lineno} DRWI_NoCellular/platformio.ini )
 

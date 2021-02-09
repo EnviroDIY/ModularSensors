@@ -132,6 +132,7 @@
  * @section sensor_insitu_rdo_datasheet Sensor Datasheet
  * The manual for this sensor is available at:
  * https://in-situ.com/pub/media/support/documents/RDO_Pro-X_Manual.pdf
+ *
  * The spec sheet is here:  https://in-situ.com/pub/media/support/documents/RDO-PRO-X_SS.pdf
  *
  * @section sensor_insitu_rdo_flags Build flags

@@ -41,8 +41,8 @@
  * [ADS1115 page](@ref analog_group) for details on the conversion.
  *
  * @section sensor_obs3_datasheet Sensor Datasheet
- * [Basic Concepts](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Basics.pdf)
- * [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Manual.pdf)
+ * - [Basic Concepts](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Basics.pdf)
+ * - [Manual](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Campbell-OBS3-Manual.pdf)
  *
  * @note Low and high range are treated as completely independent, so only 2
  * "variables" are measured by each sensor - one for the raw voltage and another

@@ -25,7 +25,7 @@ _______
 
 _______
 
-[//]: # ( @section example_double_log_unique Unique Features of the DRWI LTE Example )
+[//]: # ( @section example_drwi_lte_unique Unique Features of the DRWI LTE Example )
 # Unique Features of the DRWI LTE Example
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a Digi XBee3 LTE-M for live data.
@@ -129,7 +129,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 _______
 
 
-[//]: # ( @section example_drwi_lte_pio PlatformIO Configuration )
+[//]: # ( @section example_drwi_lte_pio_config PlatformIO Configuration \)
 
 [//]: # ( @include{lineno} DRWI_LTE/platformio.ini )
 

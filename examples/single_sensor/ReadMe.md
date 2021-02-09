@@ -35,7 +35,6 @@ _______
     - Without this, the program won't compile.
 - Open [single_sensor.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/single_sensor.ino) and save it to your computer.  Put it into the src directory of your project.
     - Delete main.cpp in that folder.
-```
 
 [//]: # ( @subsection example_single_sensor_upload Upload! )
 ## Upload!
@@ -44,7 +43,7 @@ _______
 _______
 
 
-[//]: # ( @section example_single_sensor_pio PlatformIO Configuration )
+[//]: # ( @section example_single_sensor_pio_config PlatformIO Configuration \)
 
 [//]: # ( @include{lineno} single_sensor/platformio.ini )
 

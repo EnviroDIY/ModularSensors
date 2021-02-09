@@ -25,7 +25,7 @@ _______
 
 _______
 
-[//]: # ( @section example_double_log_unique Unique Features of the DRWI 2G Example )
+[//]: # ( @section example_drwi_2g_unique Unique Features of the DRWI 2G Example )
 # Unique Features of the DRWI 2G Example
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a Sodaq 2GBee for live data.
@@ -129,7 +129,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 _______
 
 
-[//]: # ( @section example_drwi_2g_pio PlatformIO Configuration )
+[//]: # ( @section example_drwi_2g_pio_config PlatformIO Configuration \)
 
 [//]: # ( @include{lineno} DRWI_CitSci/platformio.ini )
 

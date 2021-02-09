@@ -73,7 +73,7 @@ const char *LoggerID = "XXXX";
 _______
 
 
-[//]: # ( @section example_data_saving_pio PlatformIO Configuration )
+[//]: # ( @section example_data_saving_pio_config PlatformIO Configuration \)
 
 [//]: # ( @include{lineno} data_saving/platformio.ini )
 

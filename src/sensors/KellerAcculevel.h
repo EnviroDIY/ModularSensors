@@ -32,8 +32,8 @@
  * Only tested on the Acculevel.
  *
  * @section sensor_acculevel_datasheet Sensor Datasheet
- * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
- * [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
+ * - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
+ * - [Datasheet](https://www.kelleramerica.com/pdf-library/High%20Accuracy%20Analog%20Digital%20Submersible%20Level%20Transmitters%20Acculevel.pdf)
  *
  * @section sensor_acculevel_ctor Sensor Constructor
  * {{ @ref KellerAcculevel::KellerAcculevel }}
