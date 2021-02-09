@@ -231,7 +231,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 
@@ -275,7 +275,7 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 
@@ -316,7 +316,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 
@@ -355,7 +355,7 @@ DigiXBee3GBypass modem = modemXB3GB;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 
@@ -396,7 +396,7 @@ DigiXBeeWifi modem = modemXBWF;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
@@ -444,7 +444,7 @@ EspressifESP8266 modem = modemESP;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
@@ -483,7 +483,7 @@ QuectelBG96 modem = modemBG96;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
 // NOTE:  This baud rate is much too fast for many Arduinos!  The module should
@@ -522,7 +522,7 @@ SequansMonarch modem = modemSVZM;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
@@ -557,7 +557,7 @@ SIMComSIM800 modem = modemS800;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
 
@@ -592,7 +592,7 @@ SIMComSIM7000 modem = modem7000;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
@@ -626,7 +626,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
 // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
@@ -667,7 +667,7 @@ SodaqUBeeR410M modem = modemR410;
 // Extra hardware and software serial ports are created in the "Settings for
 // Additional Serial Ports" section
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &modemSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial
 const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
 
@@ -1066,11 +1066,12 @@ const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const uint8_t OBS3NumberReadings = 10;
 const uint8_t OBS3ADSi2c_addr    = 0x48;  // The I2C address of the ADS1115 ADC
 
-// Campbell OBS 3+ *Low* Range Calibration in Volts
 const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
-const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
-const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [*low* range]
-const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
+
+// Campbell OBS 3+ *Low* Range Calibration in Volts
+const float OBSLow_A = 0.000E+00;  // "A" value (X^2) [*low* range]
+const float OBSLow_B = 1.000E+00;  // "B" value (X) [*low* range]
+const float OBSLow_C = 0.000E+00;  // "C" value [*low* range]
 
 // Create a Campbell OBS3+ *low* range sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
@@ -1083,11 +1084,12 @@ Variable* obs3VoltLow =
     new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-ef00-1234567890ab");
 
 
-// Campbell OBS 3+ *High* Range Calibration in Volts
 const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
-const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [*high* range]
-const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [*high* range]
-const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
+
+// Campbell OBS 3+ *High* Range Calibration in Volts
+const float OBSHigh_A = 0.000E+00;  // "A" value (X^2) [*high* range]
+const float OBSHigh_B = 1.000E+00;  // "B" value (X) [*high* range]
+const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 
 // Create a Campbell OBS3+ *high* range sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
@@ -1171,22 +1173,24 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 /** Start [insitu_rdo] */
 #include <sensors/InSituRDO.h>
 
-const char* RDOSDI12address =
-    "5";  // The SDI-12 Address of the Zebra Tech D-Opto
-const int8_t RDOPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t RDOData  = 7;               // The SDI12 data pin
+const char*   RDOSDI12address = "5";      // The SDI-12 Address of the RDO PRO-X
+const int8_t  RDOPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  RDOData  = 7;               // The SDI12 data pin
+const uint8_t RDONumberReadings = 3;
 
-// Create a Zebra Tech DOpto dissolved oxygen sensor object
-InSituRDO insituRDO(*RDOSDI12address, RDOPower, RDOData);
+// Create an RDO PRO-X dissolved oxygen sensor object
+InSituRDO insituRDO(*RDOSDI12address, RDOPower, RDOData, RDONumberReadings);
 
-// Create dissolved oxygen percent, dissolved oxygen concentration, and
-// temperature variable pointers for the Zebra Tech
+// Create dissolved oxygen percent, dissolved oxygen concentration, temperature,
+// and oxygen partial pressure variable pointers for the RDO PRO-X
 Variable* rdoDOpct =
     new InSituRDO_DOpct(&insituRDO, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* rdoDOmgL =
     new InSituRDO_DOmgL(&insituRDO, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* rdoTemp = new InSituRDO_Temp(&insituRDO,
                                        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rdoO2pp =
+    new InSituRDO_Pressure(&insituRDO, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [insitu_rdo] */
 
 
@@ -1202,7 +1206,7 @@ Variable* rdoTemp = new InSituRDO_Temp(&insituRDO,
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& acculevelSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial&  acculevelSerial = altSoftSerial;  // For software serial
+// AltSoftSerial&  acculevelSerial = altSoftSerial;  // For AltSoftSerial
 NeoSWSerial& acculevelSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1240,7 +1244,7 @@ Variable* acculevHeight = new KellerAcculevel_Height(
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& nanolevelSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& nanolevelSerial = altSoftSerial;  // For software serial
+// AltSoftSerial& nanolevelSerial = altSoftSerial;  // For AltSoftSerial
 NeoSWSerial& nanolevelSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1281,7 +1285,7 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& sonarSerial = Serial3;  // Use hardware serial if possible
 #else
-// AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial
+// AltSoftSerial &sonarSerial = altSoftSerial;  // For AltSoftSerial
 NeoSWSerial& sonarSerial = neoSSerial1;  // For software serial
 // SoftwareSerial_ExtInts& sonarSerial = softSerial1;  // For software serial
 #endif
@@ -1537,6 +1541,65 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 
 
 // ==========================================================================
+//  Turner Cyclops-7F Submersible Fluorometer
+// ==========================================================================
+/** Start [cyclops] */
+#include <sensors/TurnerCyclops.h>
+
+const int8_t  cyclopsPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const uint8_t cyclopsNumberReadings = 10;
+const uint8_t cyclopsADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t  cyclopsADSChannel  = 0;     // ADS channel
+
+// Cyclops calibration information
+const float cyclopsStdConc = 1.000;  // Concentration of the standard used
+                                     // for a 1-point sensor calibration.
+const float cyclopsStdVolt =
+    1.000;  // The voltage (in volts) measured for the conc_std.
+const float cyclopsBlankVolt =
+    0.000;  // The voltage (in volts) measured for a blank.
+
+// Create a Turner Cyclops sensor object
+TurnerCyclops cyclops(cyclopsPower, cyclopsADSChannel, cyclopsStdConc,
+                      cyclopsStdVolt, cyclopsBlankVolt, cyclopsADSi2c_addr,
+                      cyclopsNumberReadings);
+
+// Create the voltage variable pointer - used for any type of Cyclops
+Variable* cyclopsVoltage =
+    new TurnerCyclops_Voltage(&cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+
+// Create the variable pointer for the primary output parameter.  Only use
+// **ONE** of these!  Which is possible depends on your specific sensor!
+Variable* cyclopsChloro = new TurnerCyclops_Chlorophyll(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsRWT = new TurnerCyclops_Rhodamine(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsFluoroscein = new TurnerCyclops_Fluorescein(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsPhycocyanin = new TurnerCyclops_Phycocyanin(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsPhycoerythrin = new TurnerCyclops_Phycoerythrin(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsCDOM =
+    new TurnerCyclops_CDOM(&cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsCrudeOil = new TurnerCyclops_CrudeOil(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsBrighteners = new TurnerCyclops_Brighteners(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsTurbidity = new TurnerCyclops_Turbidity(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsPTSA =
+    new TurnerCyclops_PTSA(&cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsBTEX =
+    new TurnerCyclops_BTEX(&cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsTryptophan = new TurnerCyclops_Tryptophan(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
+    &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [cyclops] */
+
+
+// ==========================================================================
 //   Analog Electrical Conductivity using the Processor's Analog Pins
 // ==========================================================================
 /** Start [analog_cond] */
@@ -1608,7 +1671,7 @@ Variable* analogEc_spcond = new Variable(
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y504modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial&  y504modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial&  y504modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y504modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1648,7 +1711,7 @@ Variable* y504Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y510modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y510modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial& y510modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y510modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1685,7 +1748,7 @@ Variable* y510Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y511modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y511modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial& y511modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y511modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1722,7 +1785,7 @@ Variable* y511Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y514modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y514modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial& y514modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y514modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1760,7 +1823,7 @@ Variable* y514Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y520modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y520modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial& y520modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y520modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1797,7 +1860,7 @@ Variable* y520Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y532modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y532modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial& y532modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y532modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1836,7 +1899,7 @@ Variable* y532Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y533modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-// AltSoftSerial& y533modbusSerial = altSoftSerial;  // For software serial
+// AltSoftSerial& y533modbusSerial = altSoftSerial;  // For AltSoftSerial
 NeoSWSerial&   y533modbusSerial = neoSSerial1;    // For software serial
 #endif
 
@@ -1875,7 +1938,7 @@ Variable* y533Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y550modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y550modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial& y550modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y550modbusSerial = neoSSerial1;  // For software serial
 #endif
 
@@ -1915,7 +1978,7 @@ Variable* y550Temp =
 #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial& y4000modbusSerial = Serial2;  // Use hardware serial if possible
 #else
-AltSoftSerial& y4000modbusSerial = altSoftSerial;  // For software serial
+AltSoftSerial& y4000modbusSerial = altSoftSerial;  // For AltSoftSerial
 // NeoSWSerial& y4000modbusSerial = neoSSerial1;  // For software serial
 #endif
 

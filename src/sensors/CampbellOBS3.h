@@ -102,8 +102,8 @@
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the ADS1115 warms up in 2ms.
 #define OBS3_WARM_UP_TIME_MS 2
-/// @brief Sensor::_stabilizationTime_ms; minimum stabilization time fr the OBS3
-/// is 2s (2000ms).
+/// @brief Sensor::_stabilizationTime_ms; minimum stabilization time for the
+/// OBS3 is 2s (2000ms).
 #define OBS3_STABILIZATION_TIME_MS 2000
 /// @brief Sensor::_measurementTime_ms; OBS3 takes 100ms to complete a
 /// measurement - Maximum data rate = 10Hz (100ms/sample).
@@ -301,7 +301,7 @@ class CampbellOBS3_Turbidity : public Variable {
      */
     CampbellOBS3_Turbidity()
         : Variable((const uint8_t)OBS3_TURB_VAR_NUM, (uint8_t)OBS3_RESOLUTION,
-                   OBS3_TURB_VAR_NUM, OBS3_TURB_UNIT_NAME,
+                   OBS3_TURB_VAR_NAME, OBS3_TURB_UNIT_NAME,
                    OBS3_TURB_DEFAULT_CODE) {}
     ~CampbellOBS3_Turbidity() {}
 };
