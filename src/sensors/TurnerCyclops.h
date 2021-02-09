@@ -117,7 +117,8 @@
  * standard parameters and additional custom parameters, each individual sensor
  * is only capable of measuring the single parameter it is configured for.  A
  * Cyclops that is configured to measure blue-green algae *cannot* be used to
- * measure turbidity.
+ * measure turbidity.  The raw voltage value can be recorded for all variants of
+ * the Cyclops.
  */
 #define CYCLOPS_NUM_VARIABLES 2
 
@@ -240,9 +241,13 @@ class TurnerCyclops : public Sensor {
      * @param adsChannel The analog data channel _on the TI ADS1115_ that the
      * Cyclops is connected to (0-3).
      * @param conc_std The concentration of the standard used for a 1-point
-     * sensor calibration.
-     * @param volt_std The x (B) coefficient for the calibration _in volts_
-     * @param volt_blank The x0 (C) coefficient for the calibration _in volts_
+     * sensor calibration.  The concentration units should be the same as the final measuring units.
+     * @param volt_std The voltage (in volts) measured for the conc_std.  This
+     * voltage should be the final voltage *after* accounting for any voltage
+     * dividers or gain settings.
+     * @param volt_blank The voltage (in volts) measured for a blank.  This
+     * voltage should be the final voltage *after* accounting for any voltage
+     * dividers or gain settings.
      * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
      * = GND)
      * @param measurementsToAverage The number of measurements to take and
@@ -331,8 +336,9 @@ class TurnerCyclops_Voltage : public Variable {
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
  * @note This can only be used for a Cyclops-7F that is configured for the blue
- * excitiation chlorophyll!  Chlorophyll (blue excitation) models will be marked
- * with a **“C”** at the top of the sensor housing near the cable connections.
+ * excitiation of chlorophyll!  Chlorophyll (blue excitation) models will be
+ * marked with a **“C”** at the top of the sensor housing near the cable
+ * connections.
  *
  * @ingroup sensor_cyclops
  */
@@ -847,8 +853,9 @@ class TurnerCyclops_Tryptophan : public Variable {
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
  * @note This can only be used for a Cyclops-7F that is configured for the red
- * excitiation chlorophyll!  Chlorophyll (red excitation) models will be marked
- * with a **“D”** at the top of the sensor housing near the cable connections.
+ * excitiation of chlorophyll!  Chlorophyll (red excitation) models will be
+ * marked with a **“D”** at the top of the sensor housing near the cable
+ * connections.
  *
  * @ingroup sensor_cyclops
  */

@@ -82,6 +82,7 @@ ___
     - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
     - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
     - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
+    - [Turner Cyclops-7F Submersible Fluorometer](#turner-cyclops-7f-submersible-fluorometer)
     - [Analog Electrical Conductivity using the Processor's Analog Pins](#analog-electrical-conductivity-using-the-processors-analog-pins)
     - [Yosemitech RS485/Modbus Environmental Sensors](#yosemitech-rs485modbus-environmental-sensors)
       - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
@@ -945,6 +946,22 @@ The number of measurements to average, if more than one is desired, goes as the 
 @see @ref sensor_ina219
 
 [//]: # ( @menusnip{ina219} )
+___
+
+
+[//]: # ( @subsection menu_cyclops Turner Cyclops-7F Submersible Fluorometer )
+### Turner Cyclops-7F Submersible Fluorometer
+
+This is the code for the Turner Cyclops-7F submersible fluorometer.
+The Arduino pin controlling power on/off and all calibration information is needed for the constructor.
+The address of the ADS1x15, if it is different than the default of 0x48, can be entered after the calibration information.
+The number of measurements to average, if more than one is desired, is the last argument.
+
+The Cyclops sensors are *NOT* pre-calibrated and must be calibrated prior to deployment.
+
+@see @ref sensor_cyclops
+
+[//]: # ( @menusnip{cyclops} )
 ___
 
 
