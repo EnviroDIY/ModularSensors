@@ -420,7 +420,7 @@ class TurnerCyclops_Chlorophyll : public Variable {
         const char* varCode = "CyclopsChlorophyll")
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION, "chlorophyllFluorescence",
-                   "microgramPerLiter", "CyclopsChlorophyll", uuid) {}
+                   "microgramPerLiter", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Chlorophyll object.
      *
@@ -473,7 +473,7 @@ class TurnerCyclops_Rhodamine : public Variable {
                                      const char* varCode = "CyclopsRhodamine")
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION, "RhodamineFluorescence",
-                   "partPerBillion", "CyclopsRhodamine", uuid) {}
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Rhodamine object.
      *
@@ -526,7 +526,7 @@ class TurnerCyclops_Fluorescein : public Variable {
         const char* varCode = "CyclopsFluorescein")
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION, "fluorescein", "partPerBillion",
-                   "CyclopsFluorescein", uuid) {}
+                   varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Fluorescein object.
      *
@@ -580,7 +580,7 @@ class TurnerCyclops_Phycocyanin : public Variable {
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION,
                    "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
-                   "partPerBillion", "CyclopsPhycocyanin", uuid) {}
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Phycocyanin object.
      *
@@ -634,7 +634,7 @@ class TurnerCyclops_Phycoerythrin : public Variable {
         const char* varCode = "CyclopsPhycoerythrin")
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION, "phycoerythrin",
-                   "partPerBillion", "CyclopsPhycoerythrin", uuid) {}
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Phycoerythrin object.
      *
@@ -691,7 +691,7 @@ class TurnerCyclops_CDOM : public Variable {
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION,
                    "fluorescenceDissolvedOrganicMatter", "partPerBillion",
-                   "CyclopsCDOM", uuid) {}
+                   varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_CDOM object.
      *
@@ -746,7 +746,7 @@ class TurnerCyclops_CrudeOil : public Variable {
                                     const char*    varCode = "CyclopsCrudeOil")
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION, "petroleumHydrocarbonTotal",
-                   "partPerBillion", "CyclopsCrudeOil", uuid) {}
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_CrudeOil object.
      *
@@ -802,7 +802,7 @@ class TurnerCyclops_Brighteners : public Variable {
         const char* varCode = "CyclopsOpticalBrighteners")
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION, "opticalBrighteners",
-                   "partPerBillion", "CyclopsOpticalBrighteners", uuid) {}
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Brighteners object.
      *
@@ -1067,7 +1067,7 @@ class TurnerCyclops_RedChlorophyll : public Variable {
         const char* varCode = "CyclopsRedChlorophyll")
         : Variable(parentSense, (const uint8_t)CYCLOPS_VAR_NUM,
                    (uint8_t)CYCLOPS_RESOLUTION, "chlorophyllFluorescence",
-                   "microgramPerLiter", "CyclopsChlorophyll", uuid) {}
+                   "microgramPerLiter", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_RedChlorophyll object.
      *
