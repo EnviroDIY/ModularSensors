@@ -30,19 +30,19 @@
  * The Cyclops sensors come pre-configured for one of 13 fluorophores and can
  * also be ordered with custom wavelength configurations.  The standard
  * configurations are:
- * - “C” = Chlorophyll (Blue Excitation)
- * - “R” = Rhodamine WT
- * - “F” = Fluorescein Dye
- * - “P” = Phycocyanin (Freshwater Cyanobacteria)
- * - “E” = Phycoerythrin (Marine Cyanobacteria)
- * - “U” = CDOM / fDOM
- * - “O” = Crude Oil
- * - “B” = Optical Brighteners for Wastewater Monitoring
- * - “T” = Turbidity
- * - “A” = PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)
- * - “G” = Refined Fuels
- * - “L” = Tryptophan for Wastewater Monitoring
- * - “D” = Red Excitation (of Chlorophyll)
+ * - “C” = Chlorophyll (Blue Excitation) [micrograms per Liter (µg/L)]
+ * - “R” = Rhodamine WT [parts per billion (ppb)]
+ * - “F” = Fluorescein Dye [parts per billion (ppb)]
+ * - “P” = Phycocyanin (Freshwater Cyanobacteria) [parts per billion (ppb)]
+ * - “E” = Phycoerythrin (Marine Cyanobacteria) [parts per billion (ppb)]
+ * - “U” = CDOM / fDOM [parts per billion (ppb)]
+ * - “O” = Crude Oil [parts per billion (ppb)]
+ * - “B” = Optical Brighteners for Wastewater Monitoring [parts per billion (ppb)]
+ * - “T” = Turbidity [nephelometric turbidity units (NTU)]
+ * - “A” = PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt) [parts per billion (ppb)]
+ * - “G” = Refined Fuels [parts per million (ppm)]
+ * - “L” = Tryptophan for Wastewater Monitoring [parts per billion (ppb)]
+ * - “D” = Red Excitation (of Chlorophyll) [micrograms per Liter (µg/L)]
  * The Cyclops configuration is set at the time of the sensor manufacturing and
  * cannot be changed. Each individual sensor is only capable of measuring the
  * single parameter it is configured for.  A Cyclops that is configured to
@@ -71,9 +71,9 @@
  * [ADS1115 page](@ref analog_group) for details on the conversion.
  *
  * @section sensor_cyclops_datasheet Sensor Datasheet
- * [Main Information Page](https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer)
- * [Optical Specification Guide](http://docs.turnerdesigns.com/t2/doc/spec-guides/998-2181.pdf)
- * [Manual](http://docs.turnerdesigns.com/t2/doc/manuals/998-2100.pdf)
+ * - [Main Information Page](https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer)
+ * - [Optical Specification Guide](http://docs.turnerdesigns.com/t2/doc/spec-guides/998-2181.pdf)
+ * - [Manual](http://docs.turnerdesigns.com/t2/doc/manuals/998-2100.pdf)
  *
  * @section sensor_cyclops_flags Build flags
  * - ```-D MS_USE_ADS1015```
@@ -153,8 +153,6 @@
  * See the [optical specification guide](http://docs.turnerdesigns.com/t2/doc/spec-guides/998-2181.pdf)
  * for the minimum detection limit, accuracy, and range of the various Cyclops
  * parameter configurations.
- *
- * {{ @ref TurnerCyclops_Turbidity::TurnerCyclops_Turbidity }}
  */
 /**@{*/
 /* clang-format on */
@@ -173,7 +171,8 @@
  * @anchor sensor_cyclops_voltage
  * @name Voltage
  * The voltage variable from an Cyclops-7F
- * - Range is 0 to 2.5V
+ * - Range is 0 to 3.6V when using an ADS1x15 powered at 3.3V
+ *     - Full sensor range is 0-5V
  * - Accuracy:
  *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
  *       - @m_span{m-dim}(@ref #CYCLOPS_VOLTAGE_RESOLUTION = 4)@m_endspan
@@ -215,7 +214,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Turner Cyclops analog turbidity sensor](@ref sensor_cyclops).
+ * [Turner Cyclops-7F submersible fluorometer](@ref sensor_cyclops).
  *
  * @ingroup sensor_cyclops
  */
@@ -241,7 +240,23 @@ class TurnerCyclops : public Sensor {
      * @param adsChannel The analog data channel _on the TI ADS1115_ that the
      * Cyclops is connected to (0-3).
      * @param conc_std The concentration of the standard used for a 1-point
-     * sensor calibration.  The concentration units should be the same as the final measuring units.
+     * sensor calibration.  The concentration units should be the same as the
+     * final measuring units.
+     * - “C” = Chlorophyll (Blue Excitation) [micrograms per Liter (µg/L)]
+     * - “R” = Rhodamine WT [parts per billion (ppb)]
+     * - “F” = Fluorescein Dye [parts per billion (ppb)]
+     * - “P” = Phycocyanin (Freshwater Cyanobacteria) [parts per billion (ppb)]
+     * - “E” = Phycoerythrin (Marine Cyanobacteria) [parts per billion (ppb)]
+     * - “U” = CDOM / fDOM [parts per billion (ppb)]
+     * - “O” = Crude Oil [parts per billion (ppb)]
+     * - “B” = Optical Brighteners for Wastewater Monitoring [parts per billion
+     * (ppb)]
+     * - “T” = Turbidity [nephelometric turbidity units (NTU)]
+     * - “A” = PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt) [parts
+     * per billion (ppb)]
+     * - “G” = Refined Fuels [parts per million (ppm)]
+     * - “L” = Tryptophan for Wastewater Monitoring [parts per billion (ppb)]
+     * - “D” = Red Excitation (of Chlorophyll) [micrograms per Liter (µg/L)]
      * @param volt_std The voltage (in volts) measured for the conc_std.  This
      * voltage should be the final voltage *after* accounting for any voltage
      * dividers or gain settings.
@@ -335,10 +350,20 @@ class TurnerCyclops_Voltage : public Variable {
  * [chlorophyll output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for the blue
- * excitiation of chlorophyll!  Chlorophyll (blue excitation) models will be
- * marked with a **“C”** at the top of the sensor housing near the cable
+ * @note _**This can only be used for a Cyclops-7F that is configured for the
+ * blue excitiation of chlorophyll!**_  Chlorophyll (blue excitation) models
+ * will be marked with a **“C”** at the top of the sensor housing near the cable
  * connections.
+ *
+ * Chlorophyll concentration is measured (and should be calibrated) in
+ * micrograms per Liter (µ/L).
+ *
+ * - Miminum detection limit:  0.03 µg/L
+ * - Sensor linear range:  0-500 µg/L
+ * - LED (CWL):  460 nm
+ * - Excitiation wavelength:  465/170 nm
+ * - Emission wavelength:  696/44 nm
+ * - Sensor power required (mW @12V):  240
  *
  * @ingroup sensor_cyclops
  */
@@ -379,9 +404,19 @@ class TurnerCyclops_Chlorophyll : public Variable {
  * [Rhodamine output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for Rhodamine
- * WT!  Rhodamine WT models will be marked with a **“R”** at the top of the
- * sensor housing near the cable connections.
+ * @note _**This can only be used for a Cyclops-7F that is configured for
+ * Rhodamine WT!**_  Rhodamine WT models will be marked with a **“R”** at the
+ * top of the sensor housing near the cable connections.
+ *
+ * Rhodamine WT concentration is measured (and should be calibrated) in parts
+ * per billion (ppb).
+ *
+ * - Miminum detection limit:  0.01 ppb
+ * - Sensor linear range:  0-1000 ppb
+ * - LED (CWL):  530 nm
+ * - Excitiation wavelength:  535/60 nm
+ * - Emission wavelength:  590-715 nm
+ * - Sensor power required (mW @12V):  175
  *
  * @ingroup sensor_cyclops
  */
@@ -422,9 +457,19 @@ class TurnerCyclops_Rhodamine : public Variable {
  * [fluorescein output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for
- * fluorescein dye!  Fluorescein models will be marked with an **“F”** at the
+ * @note _**This can only be used for a Cyclops-7F that is configured for
+ * fluorescein dye!**_  Fluorescein models will be marked with an **“F”** at the
  * top of the sensor housing near the cable connections.
+ *
+ * Fluorescein concentration is measured (and should be calibrated) in parts per
+ * billion (ppb).
+ *
+ * - Miminum detection limit:  0.01 ppb
+ * - Sensor linear range:  0-500 ppb
+ * - LED (CWL): 460 nm
+ * - Excitiation wavelength:  400/150 nm
+ * - Emission wavelength:  545/28 nm
+ * - Sensor power required (mW @12V):  145
  *
  * @ingroup sensor_cyclops
  */
@@ -464,9 +509,20 @@ class TurnerCyclops_Fluorescein : public Variable {
  * [phycocyanin output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for
- * phycocyanin (freshwater cyanobacteria)!  Phycocyanin models will be marked
+ * @note _**This can only be used for a Cyclops-7F that is configured for
+ * phycocyanin (freshwater cyanobacteria)!**_  Phycocyanin models will be marked
  * with a **“P”** at the top of the sensor housing near the cable connections.
+ *
+ * Phycocyanin concentration is measured (and should be calibrated) in parts per
+ * billion (ppb).
+ *
+ * - Miminum detection limit:  2 ppb (Phycocyanin pigment from Prozyme diluted
+ * in Deionized water)
+ * - Sensor linear range:  0-4,500 ppb
+ * - LED (CWL):  590 nm
+ * - Excitiation wavelength:  590/30 nm
+ * - Emission wavelength:  >= 645 nm
+ * - Sensor power required (mW @12V):  160
  *
  * @ingroup sensor_cyclops
  */
@@ -508,9 +564,20 @@ class TurnerCyclops_Phycocyanin : public Variable {
  * [phycoerythrin output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for
- * phycoerythrin (marine cyanobacteria)!  Phycoerythrin models will be marked
+ * @note _**This can only be used for a Cyclops-7F that is configured for
+ * phycoerythrin (marine cyanobacteria)!**_  Phycoerythrin models will be marked
  * with an **“E”** at the top of the sensor housing near the cable connections.
+ *
+ * Phycoerythrin concentration is measured (and should be calibrated) in parts
+ * per billion (ppb).
+ *
+ * - Miminum detection limit:  0.1 ppb (Phycoerythrin pigment from Prozyme
+ * diluted in Deionized water)
+ * - Sensor linear range:  0-750 ppb
+ * - LED (CWL):  525 nm
+ * - Excitiation wavelength:  515-547 nm
+ * - Emission wavelength:  >=590 nm
+ * - Sensor power required (mW @12V):  270
  *
  * @ingroup sensor_cyclops
  */
@@ -550,9 +617,23 @@ class TurnerCyclops_Phycoerythrin : public Variable {
  * [CDOM output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for CDOM /
- * fDOM!  CDOM models will be marked with a **“U”** at the top of the sensor
+ * @note _**This can only be used for a Cyclops-7F that is configured for CDOM /
+ * fDOM!**_  CDOM models will be marked with a **“U”** at the top of the sensor
  * housing near the cable connections.
+ *
+ * CDOM/fDOM concentration is measured (and should be calibrated) in parts per
+ * billion (ppb).
+ *
+ * - Miminum detection limit:
+ *   - 0.1 ppb Quinine Sulfate
+ *   - 0.5 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)
+ * - Sensor linear range:
+ *   - 0-1,500 ppb Quinine Sulfate
+ *   - 0-3,000 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)
+ * - LED (CWL):  365nm
+ * - Excitiation wavelength:  325/120 nm
+ * - Emission wavelength:  470/60 nm
+ * - Sensor power required (mW @12V):  240
  *
  * @ingroup sensor_cyclops
  */
@@ -594,9 +675,21 @@ class TurnerCyclops_CDOM : public Variable {
  * [crude oil output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for crude
- * oil!  Crude oil models will be marked with an **“O”** at the top of the
- * sensor housing near the cable connections.
+ * @note _**This can only be used for a Cyclops-7F that is configured for crude
+ * oil!**_  Crude oil / petrolium models will be marked with an **“O”** at the
+ * top of the sensor housing near the cable connections.
+ *
+ * Crude oil / petrolium concentration is measured (and should be calibrated) in
+ * parts per billion (ppb).
+ *
+ * - Miminum detection limit:  0.2 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
+ * Tetrasodium Salt)
+ * - Sensor linear range:  0-1,500 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
+ * Tetrasodium Salt)
+ * - LED (CWL):  365 nm
+ * - Excitiation wavelength:  325/120 nm
+ * - Emission wavelength:  410-600 nm
+ * - Sensor power required (mW @12V):  250
  *
  * @ingroup sensor_cyclops
  */
@@ -637,10 +730,22 @@ class TurnerCyclops_CrudeOil : public Variable {
  * [opticalBrighteners output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for optical
- * brighteners for wastewater monitoring !  Optical brighteners models will be
- * marked with a **“B”** at the top of the sensor housing near the cable
+ * @note _**This can only be used for a Cyclops-7F that is configured for
+ * optical brighteners for wastewater monitoring!**_  Optical brighteners models
+ * will be marked with a **“B”** at the top of the sensor housing near the cable
  * connections.
+ *
+ * Optical brightener concentration is measured (and should be calibrated) in
+ * parts per billion (ppb).
+ *
+ * - Miminum detection limit:  0.6 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
+ * Tetrasodium Salt)
+ * - Sensor linear range:  0-2,500 ppb PTSA (1,3,6,8-Pyrenetetrasulfonic Acid
+ * Tetrasodium Salt)
+ * - LED (CWL):  365 nm
+ * - Excitiation wavelength:  325/120 nm
+ * - Emission wavelength:  445/15 nm
+ * - Sensor power required (mW @12V):  200
  *
  * @ingroup sensor_cyclops
  */
@@ -681,9 +786,19 @@ class TurnerCyclops_Brighteners : public Variable {
  * [turbidity output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for
- * turbidity!  Turbidity models will be marked with a **“T”** at the top of the
- * sensor housing near the cable connections.
+ * @note _**This can only be used for a Cyclops-7F that is configured for
+ * turbidity!**_  Turbidity models will be marked with a **“T”** at the top of
+ * the sensor housing near the cable connections.
+ *
+ * Turbidity is measured (and should be calibrated) in nephelometric turbidity
+ * units (NTU).
+ *
+ * - Miminum detection limit:  0.05 NTU
+ * - Sensor linear range:  0-1,500 NTU
+ * - LED (CWL):  850 nm
+ * - Excitiation wavelength:  850 nm
+ * - Emission wavelength:  850 nm
+ * - Sensor power required (mW @12V):  120
  *
  * @ingroup sensor_cyclops
  */
@@ -724,10 +839,20 @@ class TurnerCyclops_Turbidity : public Variable {
  * [PTSA output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for PTSA
- * (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)!  PTSA models will be
+ * @note _**This can only be used for a Cyclops-7F that is configured for PTSA
+ * (1,3,6,8-Pyrenetetrasulfonic Acid Tetrasodium Salt)!**_  PTSA models will be
  * marked with an **“A”** at the top of the sensor housing near the cable
  * connections.
+ *
+ * PTSA concentration is measured (and should be calibrated) in parts per
+ * billion (ppb).
+ *
+ * - Miminum detection limit:  0.1 ppb
+ * - Sensor linear range:  0-650 ppb
+ * - LED (CWL):  365
+ * - Excitiation wavelength:  325/120 nm
+ * - Emission wavelength:  405/10 nm
+ * - Sensor power required (mW @12V):  320
  *
  * @ingroup sensor_cyclops
  */
@@ -767,10 +892,20 @@ class TurnerCyclops_PTSA : public Variable {
  * [refined fuels (BTEX) output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for fine oil
- * / refined fuels / BTEX!  Fine oil models will be marked with a **“G”** at the
- * top of the sensor housing near the cable connections.  Fine oil is measured
- * as BTEX (benzene, toluene, ethylbenzene, xylenes).
+ * @note _**This can only be used for a Cyclops-7F that is configured for fine
+ * oil / refined fuels / BTEX!**_  Fine oil models will be marked with a **“G”**
+ * at the top of the sensor housing near the cable connections.  Fine oil is
+ * measured as BTEX (benzene, toluene, ethylbenzene, xylenes).
+ *
+ * BTEX concentration is measured (and should be calibrated) in parts per
+ * million (ppm).
+ *
+ * - Miminum detection limit:  0.4 ppm
+ * - Sensor linear range:  0-20 ppm
+ * - LED (CWL):  255 nm
+ * - Excitiation wavelength:  <=290 nm
+ * - Emission wavelength:  350/50 nm
+ * - Sensor power required (mW @12V):  530
  *
  * @ingroup sensor_cyclops
  */
@@ -810,9 +945,19 @@ class TurnerCyclops_BTEX : public Variable {
  * [tryptophan output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for
- * tryptophan!  Tryptophan models will be marked with an **“L”** at the top of
- * the sensor housing near the cable connections.
+ * @note _**This can only be used for a Cyclops-7F that is configured for
+ * tryptophan!**_  Tryptophan models will be marked with an **“L”** at the top
+ * of the sensor housing near the cable connections.
+ *
+ * Tryptophan concentration is measured (and should be calibrated) in parts per
+ * billion (ppb).
+ *
+ * - Miminum detection limit:  3 ppb
+ * - Sensor linear range:  0-5,000 ppb
+ * - LED (CWL):  275 nm
+ * - Excitiation wavelength:  -
+ * - Emission wavelength:  350/55
+ * - Sensor power required (mW @12V):  540
  *
  * @ingroup sensor_cyclops
  */
@@ -852,10 +997,20 @@ class TurnerCyclops_Tryptophan : public Variable {
  * [chlorophyll output](@ref sensor_cyclops_output) from a
  * [Turner Cyclops-7F](@ref sensor_cyclops).
  *
- * @note This can only be used for a Cyclops-7F that is configured for the red
- * excitiation of chlorophyll!  Chlorophyll (red excitation) models will be
- * marked with a **“D”** at the top of the sensor housing near the cable
+ * @note _**This can only be used for a Cyclops-7F that is configured for the
+ * red excitiation of chlorophyll!**_  Chlorophyll (red excitation) models will
+ * be marked with a **“D”** at the top of the sensor housing near the cable
  * connections.
+ *
+ * Chlorophyll concentration is measured (and should be calibrated) in
+ * micrograms per Liter (µ/L).
+ *
+ * - Miminum detection limit:  0.3 µg/L
+ * - Sensor linear range:  0-500 µg/L
+ * - LED (CWL):  635 nm
+ * - Excitiation wavelength:  <=635 nm
+ * - Emission wavelength:  >=695 nm
+ * - Sensor power required (mW @12V):  240
  *
  * @ingroup sensor_cyclops
  */
