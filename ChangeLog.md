@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Downloads
 
-**[ModularSensors_Dependencies_0.28.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.0/ModularSensors_Dependencies_0.28.0.zip)**
+**[ModularSensors_Dependencies_v0.28.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.0/ModularSensors_Dependencies_v0.28.0.zip)**
 - contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
 ### New Features
@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Downloads
 
-**[ModularSensors_Dependencies_0.27.8.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.27.8/ModularSensors_Dependencies_0.27.8.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+**[ModularSensors_Dependencies_v0.27.8.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.27.8/ModularSensors_Dependencies_v0.27.8.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
 ### Bug Fixes
 - Just fixes an error in the github action to post a release

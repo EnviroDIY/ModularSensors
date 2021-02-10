@@ -6,24 +6,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PLATFORMIO_SRC_DIR: temp/menu_a_la_carte
     if: "!contains(github.event.head_commit.message, 'ci skip')"
-
-    strategy:
-      matrix:
-        example:
-          [
-            examples/single_sensor/,
-            examples/simple_logging/,
-            examples/simple_logging_LearnEnviroDIY/,
-            examples/DRWI_CitSci/,
-            examples/DRWI_LTE/,
-            examples/DRWI_NoCellular/,
-            examples/double_logger/,
-            examples/baro_rho_correction/,
-            examples/data_saving/,
-            examples/logging_to_MMW/,
-            examples/logging_to_ThingSpeak/,
-          ]
 
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +39,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade platformio
 
-      - name: Run PlatformIO
-        run: platformio ci --project-conf="continuous_integration/platformio.ini"
-        env:
-          PLATFORMIO_CI_SRC: ${{ matrix.example }}
+      - name: Test all configurations
+        run: |
+          chmod +x continuous_integration/build-menu-configurations.sh
+          sh continuous_integration/build-menu-configurations.sh

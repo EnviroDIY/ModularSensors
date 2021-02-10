@@ -28,13 +28,14 @@ ___
     - [Defines for the Arduino IDE](#defines-for-the-arduino-ide)
     - [Library Includes](#library-includes)
   - [Logger Settings](#logger-settings)
-    - [Extra Serial Ports](#extra-serial-ports)
+    - [Creating Extra Serial Ports](#creating-extra-serial-ports)
       - [AVR Boards](#avr-boards)
         - [AltSoftSerial](#altsoftserial)
         - [NeoSWSerial](#neoswserial)
         - [SoftwareSerial with External Interrupts](#softwareserial-with-external-interrupts)
         - [Software I2C/Wire](#software-i2cwire)
       - [SAMD Boards](#samd-boards)
+    - [Assigning Serial Port Functionality](#assigning-serial-port-functionality)
     - [Logging Options](#logging-options)
   - [Wifi/Cellular Modem Options](#wificellular-modem-options)
     - [Digi XBee Cellular - Transparent Mode](#digi-xbee-cellular---transparent-mode)
@@ -168,8 +169,8 @@ ___
 [//]: # ( @section menu_logger_and_modem_settings Logger Settings )
 ## Logger Settings
 
-[//]: # ( @subsection menu_serial_ports Extra Serial Ports )
-### Extra Serial Ports
+[//]: # ( @subsection menu_serial_ports Creating Extra Serial Ports )
+### Creating Extra Serial Ports
 
 This section of the example has all the code to create and link to serial ports for both AVR and SAMD based boards.
 The EnviroDIY Mayfly, the Arduino Mega, UNO, and Leonardo are all AVR boards.
@@ -258,6 +259,16 @@ This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/
 
 
 NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have any exmple code for using them.
+
+---
+
+[//]: # ( @subsection menu_serial_func Assigning Serial Port Functionality )
+### Assigning Serial Port Functionality
+
+This section just assigns all the serial ports from the @ref menu_serial_ports section above to specific functionality.
+For a board with the option of up to 4 hardware serial ports, like the SAMD21 or Arduino Mega, we use the Serial1 to talk to the modem, Serial2 for modbus, and Serial3 for the Maxbotix.
+For an AVR board where we're relying on a mix of hardware and software ports, we use hardware Serial 1 for the modem, AltSoftSerial for modbus, and NeoSWSerial for the Maxbotix.
+Depending on how you rank the importance of each component, you can adjust these to your liking.
 
 ---
 
@@ -779,6 +790,9 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
 AltSoftSerial and HardwareSerial work fine.
+
+The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to modbus functionality in the @ref menu_serial_func section.
+
 Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
 If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
 If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
@@ -810,7 +824,10 @@ ___
 ### Maxbotix HRXL Ultrasonic Range Finder
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, `Serial`), and the Arduino pin controlling the trigger are required for the sensor constructor.
-(Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
+(Use -1 for the trigger pin if you do not have it connected.)
+Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
+
+The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to the sonar functionality in the @ref menu_serial_func section.
 
 @see @ref sensor_maxbotix
 
@@ -892,7 +909,7 @@ The constructors for the software I2C implementation requires either the SCL and
 All variants of the constructor require the Arduino power pin.
 The I2C address can be given if it the sensor is not set to the default of 0x68.
 A number of readings to average can also be given.
-
+****
 @warning Either all or none of your attached redox probes may use software I2C.
 Using some with software I2C and others with hardware I2C is not supported.
 
@@ -992,6 +1009,11 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
 For most of the sensors, Yosemitech strongly recommends averaging multiple (in most cases 10) readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+NeoSWSerial is a bit hit or miss, but can be used in a pinch.
+
+The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to modbus functionality in the @ref menu_serial_func section.
 
 @see @ref yosemitech_group
 
