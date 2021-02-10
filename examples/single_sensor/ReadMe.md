@@ -43,7 +43,7 @@ _______
 _______
 
 
-[//]: # ( @section example_single_sensor_pio_config PlatformIO Configuration \)
+[//]: # ( @section example_single_sensor_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} single_sensor/platformio.ini )
 

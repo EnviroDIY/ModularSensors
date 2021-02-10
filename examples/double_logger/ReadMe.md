@@ -59,7 +59,7 @@ const char *LoggerID = "XXXX";
 _______
 
 
-[//]: # ( @section example_double_log_pio_config PlatformIO Configuration \)
+[//]: # ( @section example_double_log_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} double_logger/platformio.ini )
 

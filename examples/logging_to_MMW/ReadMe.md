@@ -66,7 +66,7 @@ const char *LoggerID = "XXXX";
 
 _______
 
-[//]: # ( @section example_mmw_pio_config PlatformIO Configuration \)
+[//]: # ( @section example_mmw_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} logging_to_MMW/platformio.ini )
 

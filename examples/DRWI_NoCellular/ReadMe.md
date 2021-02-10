@@ -129,7 +129,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 _______
 
 
-[//]: # ( @section example_drwi_no_cell_pio_config PlatformIO Configuration \)
+[//]: # ( @section example_drwi_no_cell_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} DRWI_NoCellular/platformio.ini )
 
