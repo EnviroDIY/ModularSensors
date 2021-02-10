@@ -46,7 +46,7 @@
  * @section sensor_i2c_rain_flags Build flags
  * - `-D MS_RAIN_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
- * @warning Either all or none your attached tipping bucket counters may use
+ * @warning Either all or none of your attached tipping bucket counters may use
  * software I2C. Using some with software I2C and others with hardware I2C is
  * not supported. Though, honestly, having more than one attached seems pretty
  * unlikely anyway.

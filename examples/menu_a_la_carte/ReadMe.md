@@ -893,7 +893,7 @@ All variants of the constructor require the Arduino power pin.
 The I2C address can be given if it the sensor is not set to the default of 0x68.
 A number of readings to average can also be given.
 
-@warning Either all or none your attached redox may use software I2C.
+@warning Either all or none of your attached redox probes may use software I2C.
 Using some with software I2C and others with hardware I2C is not supported.
 
 @see @ref sensor_pt_redox

@@ -115,19 +115,27 @@
  * @name Turbidity
  * The turbidity variable from an OBS3+
  * - Range: (depends on sediment size, particle shape, and reflectivity)
- *     - Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
+ *     - Turbidity (low/high):
+ *         - T1: 250/1000 NTU
+ *         - T2: 500/2000 NTU
+ *         - T3: 1000/4000 NTU
  *     - Mud: 5000 to 10,000 mg L–1
  *     - Sand: 50,000 to 100,000 mg L–1
  * - Accuracy: (whichever is larger)
  *     - Turbidity: 2% of reading or 0.5 NTU
  *     - Mud: 2% of reading or 1 mg L–1
  *     - Sand: 4% of reading or 10 mg L–1
- *  - Resolution:
- *     - 16-bit ADC, Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5
- * NTU
- *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 1)@m_endspan
- *     - 12-bit ADC, Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
- *       - @m_span{m-dim}(@ref #OBS3_RESOLUTION = 5)@m_endspan
+ * - Resolution:
+ *     - 16-bit ADC, Turbidity:
+ *         - T1: 0.03125/0.125 NTU
+ *         - T2: 0.0625/0.25 NTU
+ *         - T3: 0.125/0.5 NTU
+ *         - @m_span{m-dim}@ref #OBS3_RESOLUTION = 5@m_endspan
+ *     - 12-bit ADC, Turbidity:
+ *         - T1: 0.5/2.0 NTU
+ *         - T2: 1.0/4.0 NTU
+ *         - T3: 2.0/8.0 NTU
+ *         - @m_span{m-dim}@ref #OBS3_RESOLUTION = 1@m_endspan
  *
  * {{ @ref CampbellOBS3_Turbidity::CampbellOBS3_Turbidity }}
  */
@@ -159,11 +167,11 @@
  * The voltage variable from an OBS3+
  * - Range is 0 to 2.5V
  * - Accuracy:
- *     - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset errror)
- *       - @m_span{m-dim}(@ref #OBS3_VOLTAGE_RESOLUTION = 4)@m_endspan
+ *     - 16-bit ADC (ADS1115): < 0.25% (gain error), < 0.25 LSB (offset errror)
+ *       - @m_span{m-dim}@ref #OBS3_VOLTAGE_RESOLUTION = 4@m_endspan
  *     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
- * (gain error), <3 LSB (offset errror)
- *       - @m_span{m-dim}(@ref #OBS3_VOLTAGE_RESOLUTION = 1)@m_endspan
+ * (gain error), < 3 LSB (offset errror)
+ *       - @m_span{m-dim}@ref #OBS3_VOLTAGE_RESOLUTION = 1@m_endspan
  *
  * {{ @ref CampbellOBS3_Voltage::CampbellOBS3_Voltage }}
  */

@@ -104,10 +104,9 @@
  *
  * The External Voltage module is used for any case where the voltage itself is
  * the desired value (as for an external battery).  It can also be used in
- * combination with a [calculated variable](@ref page_calc_var) to support any
- * other analog sensor not explicity supported by ModularSensors.  To increase
- * the range available for voltage measurements, this module supports the use of
- * a voltage divider.
+ * combination with a calculated variable to support any other analog sensor not
+ * explicity supported by ModularSensors.  To increase the range available for
+ * voltage measurements, this module supports the use of a voltage divider.
  *
  * If you are working with an EnviroDIY Mayfly, the easiest voltage divider to
  * connect is the Grove voltage divider sold by seeed studio.  The grove voltage
