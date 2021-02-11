@@ -1315,7 +1315,7 @@
                 <li><a href="#temperature">Temperature</a></li>
           </ul>
         </div>
-          <p>Classes for the Decagon ES-2 conductivity and temperature sensor.</p><section id="sensor_es2_intro"><h2>Introduction</h2><aside class="m-note m-danger"><h4>Warning</h4><p>This sensor is no longer manufactured!</p></aside><p>If you still have one of these sensors, it is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the version with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_es2_datasheet"><h2>Sensor Datasheet</h2><p><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf">Manual</a> <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf">Integrator&#x27;s Guide</a></p></section><section id="sensor_es2_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_es2_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="ad9451cec3015af6fe091ed611cdf1a7d"><div>
+          <p>Classes for the Decagon ES-2 conductivity and temperature sensor.</p><section id="sensor_es2_intro"><h2>Introduction</h2><aside class="m-note m-danger"><h4>Warning</h4><p>This sensor is no longer manufactured!</p></aside><p>If you still have one of these sensors, it is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V. On the version with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve. On the bare-wire version, the power is connected to the <em>white</em> cable, data to <em>red</em>, and ground to the unshielded cable.</p></section><section id="sensor_es2_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Manual.pdf">Manual</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Decagon-ES-2-Integrators-Guide.pdf">Integrator&#x27;s Guide</a></li></ul></section><section id="sensor_es2_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_es2_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="ad9451cec3015af6fe091ed611cdf1a7d"><div>
 <h3>
 <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_decagon_e_s2.html#ad9451cec3015af6fe091ed611cdf1a7d">DecagonES2</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
@@ -1359,7 +1359,7 @@
 <span class="c1">// Create a Decagon ES2 sensor object</span>
 <span class="n">DecagonES2</span> <span class="nf">es2</span><span class="p">(</span><span class="o">*</span><span class="n">ES2SDI12address</span><span class="p">,</span> <span class="n">ES2Power</span><span class="p">,</span> <span class="n">ES2Data</span><span class="p">,</span> <span class="n">ES2NumberReadings</span><span class="p">);</span>
 
-<span class="c1">// Create conductivity and temperature variable pointers for the ES2</span>
+<span class="c1">// Create specific conductance and temperature variable pointers for the ES2</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">es2Cond</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonES2_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">es2</span><span class="p">,</span>
                                         <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">es2Temp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonES2_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">es2</span><span class="p">,</span>
@@ -1627,6 +1627,15 @@
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=5.6"
   id="jquery-flexslider-js"
 ></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: "disabled",
+    url: "https:\/\/www.envirodiy.org\/",
+    related_items_in_view: "",
+  };
+  /* ]]> */
+</script>
 <script
   type="text/javascript"
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=5.6"
@@ -1641,5 +1650,24 @@
   };
   /* ]]> */
 </script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/custom.js?ver=5.6"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: "https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php",
+    ajaxnonce: "6049425e02",
+    querystring: "",
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=5.6"
+  id="ghostpool-ajax-loop-js"
+></script>
 </body>
 </html>

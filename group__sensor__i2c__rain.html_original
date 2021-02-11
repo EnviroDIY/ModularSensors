@@ -1312,7 +1312,7 @@
                 <li><a href="#tip-count">Tip Count</a></li>
           </ul>
         </div>
-          <p>Classes for the Trinket-based I2C tipping bucket rain counter</p><section id="sensor_i2c_rain_intro"><h2>Introduction</h2><p>This module is for use with a simple external I2C tipping bucket counter based on an <a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a>. This is <em>NOT</em> for direct counting of tips using an interrupt on the main processor. The construction and programming of the tipping bucket counter is documented on <a href="https://github.com/EnviroDIY/TippingBucketRainCounter">GitHub</a>. It is assumed that the processor of the tip counter takes care of its own power management.</p></section><section id="sensor_i2c_rain_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a></li><li><a href="https://github.com/EnviroDIY/TippingBucketRainCounter">I2C Tipping Bucket Library</a></li></ul></section><section id="sensor_i2c_rain_flags"><h2>Build flags</h2><ul><li><code>-D MS_RAIN_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none your attached tipping bucket counters may use software I2C. Using some with software I2C and others with hardware I2C is not supported. Though, honestly, having more than one attached seems pretty unlikely anyway.</p></aside></li></ul></li></ul></section><section id="sensor_i2c_rain_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_rain_counter_i2_c.html#aa537dd95ed991380aa0ddef2b088b4ba" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#a7ab12ed65fcf23fa959c690f30162cf1" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(TwoWire*, uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#aeecb6e053a5601be95de5785cbe16805" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(SoftwareWire*, uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#afb3ff9a5b9b25a0fb5711178d3c3ab00" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(int8_t, int8_t, uint8_t, float)</a> }}</p><hr/></section><section id="sensor_i2c_rain_examples"><h2>Example Code</h2><p>The Arduino-based I2C tipping bucket rain counter is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_i2c_rain">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/RainCounterI2C.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Trinket-based I2C tipping bucket rain counter</p><section id="sensor_i2c_rain_intro"><h2>Introduction</h2><p>This module is for use with a simple external I2C tipping bucket counter based on an <a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a>. This is <em>NOT</em> for direct counting of tips using an interrupt on the main processor. The construction and programming of the tipping bucket counter is documented on <a href="https://github.com/EnviroDIY/TippingBucketRainCounter">GitHub</a>. It is assumed that the processor of the tip counter takes care of its own power management.</p></section><section id="sensor_i2c_rain_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://www.adafruit.com/product/1501">Adafriut Trinket</a></li><li><a href="https://github.com/EnviroDIY/TippingBucketRainCounter">I2C Tipping Bucket Library</a></li></ul></section><section id="sensor_i2c_rain_flags"><h2>Build flags</h2><ul><li><code>-D MS_RAIN_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none of your attached tipping bucket counters may use software I2C. Using some with software I2C and others with hardware I2C is not supported. Though, honestly, having more than one attached seems pretty unlikely anyway.</p></aside></li></ul></li></ul></section><section id="sensor_i2c_rain_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_rain_counter_i2_c.html#aa537dd95ed991380aa0ddef2b088b4ba" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#a7ab12ed65fcf23fa959c690f30162cf1" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(TwoWire*, uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#aeecb6e053a5601be95de5785cbe16805" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(SoftwareWire*, uint8_t, float)</a> }} {{ <a href="class_rain_counter_i2_c.html#afb3ff9a5b9b25a0fb5711178d3c3ab00" class="m-doc">RainCounterI2C::<wbr />RainCounterI2C(int8_t, int8_t, uint8_t, float)</a> }}</p><hr/></section><section id="sensor_i2c_rain_examples"><h2>Example Code</h2><p>The Arduino-based I2C tipping bucket rain counter is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_i2c_rain">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/RainCounterI2C.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">RainCounterI2CAddress</span> <span class="o">=</span> <span class="mh">0x08</span><span class="p">;</span>
 <span class="c1">// I2C Address for EnviroDIY external tip counter; 0x08 by default</span>
@@ -1324,7 +1324,7 @@
 <span class="c1">// RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,</span>
 <span class="c1">//                      depthPerTipEvent);</span>
 <span class="cp">#else</span>
-<span class="n">RainCounterI2C</span>  <span class="nf">tbi2c</span><span class="p">(</span><span class="n">RainCounterI2CAddress</span><span class="p">,</span> <span class="n">depthPerTipEvent</span><span class="p">);</span>
+<span class="n">RainCounterI2C</span>    <span class="nf">tbi2c</span><span class="p">(</span><span class="n">RainCounterI2CAddress</span><span class="p">,</span> <span class="n">depthPerTipEvent</span><span class="p">);</span>
 <span class="cp">#endif</span>
 
 <span class="c1">// Create number of tips and rain depth variable pointers for the tipping bucket</span>
@@ -1538,6 +1538,15 @@
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=5.6"
   id="jquery-flexslider-js"
 ></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: "disabled",
+    url: "https:\/\/www.envirodiy.org\/",
+    related_items_in_view: "",
+  };
+  /* ]]> */
+</script>
 <script
   type="text/javascript"
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=5.6"
@@ -1552,5 +1561,24 @@
   };
   /* ]]> */
 </script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/custom.js?ver=5.6"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: "https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php",
+    ajaxnonce: "6049425e02",
+    querystring: "",
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=5.6"
+  id="ghostpool-ajax-loop-js"
+></script>
 </body>
 </html>

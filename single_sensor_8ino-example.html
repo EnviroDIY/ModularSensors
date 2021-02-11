@@ -1304,11 +1304,11 @@
                 <li><a href="#xample_single_sensor_upload">Upload!</a></li>
               </ul>
             </li>
-            <li><a href="#xample_single_sensor_pio">Prepare and set up PlatformIO</a></li>
+            <li><a href="#xample_single_sensor_pio_config">PlatformIO Configuration</a></li>
             <li><a href="#xample_single_sensor_code">The Complete Code</a></li>
           </ul>
         </div>
-        <section id="xample_single_sensor"><h2>Single Sensor Example</h2><p>This somewhat trivial example show making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port. It also shows creating a calculated variable which is the water depth.</p><hr/><hr/></section><section id="xample_single_sensor_unique"><h2>Unique Features of the Single Sensor Example</h2><ul><li>Only communicates with and collects data from a single sensor.</li><li>Does not make use of any <a href="class_variable_array.html" class="m-doc">VariableArray</a> or logging features.</li></ul></section><section id="xample_single_sensor_using"><h2>To Use this Example:</h2><section id="xample_single_sensor_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Create a new PlatformIO project</li><li>Replace the contents of the platformio.ini for your new project with the <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/platformio.ini">platformio.ini</a> file in the examples/single_sensor folder on GitHub.<ul><li>It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.</li><li>Without this, the program won&#x27;t compile.</li></ul></li><li>Open <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/single_sensor.ino">single_<wbr />sensor.ino</a> and save it to your computer. Put it into the src directory of your project.<ul><li>Delete main.cpp in that folder.</li></ul></li></ul></section><section id="xample_single_sensor_upload"><h3>Upload!</h3><ul><li>Upload and see what happens</li></ul><hr/></section></section><section id="xample_single_sensor_pio"><h2>Prepare and set up PlatformIO</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
+        <section id="xample_single_sensor"><h2>Single Sensor Example</h2><p>This somewhat trivial example show making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port. It also shows creating a calculated variable which is the water depth.</p><hr/><hr/></section><section id="xample_single_sensor_unique"><h2>Unique Features of the Single Sensor Example</h2><ul><li>Only communicates with and collects data from a single sensor.</li><li>Does not make use of any <a href="class_variable_array.html" class="m-doc">VariableArray</a> or logging features.</li></ul></section><section id="xample_single_sensor_using"><h2>To Use this Example:</h2><section id="xample_single_sensor_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Create a new PlatformIO project</li><li>Replace the contents of the platformio.ini for your new project with the <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/platformio.ini">platformio.ini</a> file in the examples/single_sensor folder on GitHub.<ul><li>It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.</li><li>Without this, the program won&#x27;t compile.</li></ul></li><li>Open <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/single_sensor.ino">single_<wbr />sensor.ino</a> and save it to your computer. Put it into the src directory of your project.<ul><li>Delete main.cpp in that folder.</li></ul></li></ul></section><section id="xample_single_sensor_upload"><h3>Upload!</h3><ul><li>Upload and see what happens</li></ul><hr/></section></section><section id="xample_single_sensor_pio_config"><h2>PlatformIO Configuration</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
 <span class="c1">;</span>
 <span class="c1">;   Build options: build flags, source filter</span>
 <span class="c1">;   Upload options: custom upload port, speed and extra flags</span>
@@ -1387,9 +1387,9 @@
 <span class="c1">// The name of this program file</span>
 <span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">sketchName</span> <span class="o">=</span> <span class="s">&quot;single_sensor.ino&quot;</span><span class="p">;</span>
 
-<span class="kr">const</span> <span class="kr">long</span>   <span class="n">serialBaud</span> <span class="o">=</span> <span class="mi">115200</span><span class="p">;</span>  <span class="c1">// Baud rate for debugging</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">greenLED</span>   <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>       <span class="c1">// Pin for the green LED</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">redLED</span>     <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>       <span class="c1">// Pin for the red LED</span>
+<span class="kr">const</span> <span class="kr">int32_t</span> <span class="n">serialBaud</span> <span class="o">=</span> <span class="mi">115200</span><span class="p">;</span>  <span class="c1">// Baud rate for debugging</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">greenLED</span>   <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>       <span class="c1">// Pin for the green LED</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">redLED</span>     <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>       <span class="c1">// Pin for the red LED</span>
 <span class="cm">/** End [sketch_info] */</span>
 
 
@@ -1601,6 +1601,15 @@
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=5.6"
   id="jquery-flexslider-js"
 ></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: "disabled",
+    url: "https:\/\/www.envirodiy.org\/",
+    related_items_in_view: "",
+  };
+  /* ]]> */
+</script>
 <script
   type="text/javascript"
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=5.6"
@@ -1615,5 +1624,24 @@
   };
   /* ]]> */
 </script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/custom.js?ver=5.6"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: "https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php",
+    ajaxnonce: "6049425e02",
+    querystring: "",
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=5.6"
+  id="ghostpool-ajax-loop-js"
+></script>
 </body>
 </html>

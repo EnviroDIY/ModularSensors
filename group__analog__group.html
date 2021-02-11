@@ -1316,7 +1316,7 @@
             </li>
           </ul>
         </div>
-          <p>The <a href="class_sensor.html" class="m-doc">Sensor</a> and <a href="class_variable.html" class="m-doc">Variable</a> objects for all analog sensors requiring analog-to-digital conversion by TI ADS1x15.</p><section id="analog_intro"><h2>Introduction</h2><p>Many sensors output simple analog voltages and leave the conversion to a digital signal and final result up to the user. These types of sensors are supported in Modular sensors by way of a Texas Instruments ADS1115 or ADS1015. The TI ADS1115 ADD is a precision, low-power, 16-bit, I2C-compatible, analog-to-digitalconverter (ADC). It is built into the EnviroDIY Mayfly. The ADS1015 is a very similar ADC with 12-bit resolution and a slightly lower price point. Both chips are widely available in Arduino-ready breakouts.</p><p>ModularSensors always uses the TI ADS1115 (also ADS1113 or ADS1114) by default, but if you wish to use a 12 bit TI ADS1015 (also ADS1013 or ADS1014) you can compile with the build flag <code>-DMS_USE_ADS1015</code>.</p><p>In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground. Up to four of these ADD&#x27;s be used by changing the address value by changing the connection of the address pin on the ADS1x15. The ADS1x15 requires an input voltage of 2.0-5.5V, but <em>this library always assumes the ADS is powered with 3.3V</em>.</p><aside class="m-note m-info"><h4>Note</h4><p>ModularSensors only supports connecting the ADS1x15 to primary hardware I2C instance. Connecting the ADS to a secondary hardware or software I2C instance is <em>not</em> supported!</p></aside><p>Communication with the ADS1x15 depends on the <a href="https://github.com/soligen2010/Adafruit_ADS1X15">soligen2010 fork of the Adafruit ADS1015 library</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>We do <em>not</em> use the Adafruit library! The soligen2010 fork corrects some errors in the Adafruit library. Until those corrections are pulled into the main library, we use the fork instead.</p></aside></section><section id="analog_ads1x15_specs"><h2>Specifications</h2><aside class="m-note m-info"><h4>Note</h4><p>*In all cases, we assume that the ADS1x15 is powered at 3.3V and set the ADC&#x27;s internal gain to 1x.</p></aside><p>This divides the bit resolution over the range of 0-4.096V.</p><ul><li>Response time: &lt; 1ms</li><li>Resample time: 860 samples per second (~1.2ms)</li><li>Range:<ul><li>Range is determined by supply voltage - No more than VDD + 0.3 V r 5.5 V (whichever is smaller) must be applied to this device.</li><li>0 - 3.6V [when ADC is powered at 3.3V]</li></ul></li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)</li></ul></li><li>Resolution:<ul><li>16-bit ADC (ADS1115):<ul><li>without voltage divider: 0.125 mV</li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>):<ul><li>without voltage divider: 2 mV</li></ul></li></ul></li></ul><aside class="m-note m-info"><h4>Note</h4><p>1 bit of resolution is lost in single-ended reading. The maximum possible resolution is over the differential range from negative to positive full scale, a single ended reading is only over the range from 0 to positive full scale).</p></aside></section><section id="analog_ads1x15_datasheet"><h2>Sensor Datasheet</h2><p>Technical specifications for the TI ADS1115 can be found at: <a href="http://www.ti.com/product/ADS1115">http:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />ADS1115</a> For the ADS1015, see: <a href="https://www.ti.com/product/ADS1015">https:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />ADS1015</a> <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS101x-Analog-to-Digital-Converter.pdf">ADS1115 Datasheet</a> <a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS111x-Analog-to-Digital-Converter.pdf">ADS1015 Datasheet</a></p></section>
+          <p>The <a href="class_sensor.html" class="m-doc">Sensor</a> and <a href="class_variable.html" class="m-doc">Variable</a> objects for all analog sensors requiring analog-to-digital conversion by TI ADS1x15.</p><section id="analog_intro"><h2>Introduction</h2><p>Many sensors output simple analog voltages and leave the conversion to a digital signal and final result up to the user. These types of sensors are supported in Modular sensors by way of a Texas Instruments ADS1115 or ADS1015. The TI ADS1115 ADD is a precision, low-power, 16-bit, I2C-compatible, analog-to-digitalconverter (ADC). It is built into the EnviroDIY Mayfly. The ADS1015 is a very similar ADC with 12-bit resolution and a slightly lower price point. Both chips are widely available in Arduino-ready breakouts.</p><p>ModularSensors always uses the TI ADS1115 (also ADS1113 or ADS1114) by default, but if you wish to use a 12 bit TI ADS1015 (also ADS1013 or ADS1014) you can compile with the build flag <code>-DMS_USE_ADS1015</code>.</p><p>In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground. Up to four of these ADD&#x27;s be used by changing the address value by changing the connection of the address pin on the ADS1x15. The ADS1x15 requires an input voltage of 2.0-5.5V, but <em>this library always assumes the ADS is powered with 3.3V</em>.</p><aside class="m-note m-info"><h4>Note</h4><p>ModularSensors only supports connecting the ADS1x15 to primary hardware I2C instance. Connecting the ADS to a secondary hardware or software I2C instance is <em>not</em> supported!</p></aside><p>Communication with the ADS1x15 depends on the <a href="https://github.com/soligen2010/Adafruit_ADS1X15">soligen2010 fork of the Adafruit ADS1015 library</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>We do <em>not</em> use the Adafruit library! The soligen2010 fork corrects some errors in the Adafruit library. Until those corrections are pulled into the main library, we use the fork instead.</p></aside></section><section id="analog_ads1x15_specs"><h2>Specifications</h2><aside class="m-note m-info"><h4>Note</h4><p>*In all cases, we assume that the ADS1x15 is powered at 3.3V and set the ADC&#x27;s internal gain to 1x.</p></aside><p>This divides the bit resolution over the range of 0-4.096V.</p><ul><li>Response time: &lt; 1ms</li><li>Resample time: 860 samples per second (~1.2ms)</li><li>Range:<ul><li>Range is determined by supply voltage - No more than VDD + 0.3 V r 5.5 V (whichever is smaller) must be applied to this device.</li><li>0 - 3.6V [when ADC is powered at 3.3V]</li></ul></li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)</li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)</li></ul></li><li>Resolution:<ul><li>16-bit ADC (ADS1115):<ul><li>without voltage divider: 0.125 mV</li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>):<ul><li>without voltage divider: 2 mV</li></ul></li></ul></li></ul><aside class="m-note m-info"><h4>Note</h4><p>1 bit of resolution is lost in single-ended reading. The maximum possible resolution is over the differential range from negative to positive full scale, a single ended reading is only over the range from 0 to positive full scale).</p></aside></section><section id="analog_ads1x15_datasheet"><h2>Sensor Datasheet</h2><p>Technical specifications for the TI ADS1115 can be found at: <a href="http://www.ti.com/product/ADS1115">http:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />ADS1115</a> For the ADS1015, see: <a href="https://www.ti.com/product/ADS1015">https:/<wbr />/<wbr />www.ti.com/<wbr />product/<wbr />ADS1015</a></p><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS101x-Analog-to-Digital-Converter.pdf">ADS1115 Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/TI-ADS111x-Analog-to-Digital-Converter.pdf">ADS1015 Datasheet</a></li></ul></section>
         <section id="groups">
           <h2>Modules</h2>
           <dl class="m-doc">
@@ -1325,6 +1325,8 @@
             <dt>module <a href="group__sensor__obs3.html" class="m-doc">Campbell OBS3+</a></dt>
             <dd></dd>
             <dt>module <a href="group__sensor__ads1x15.html" class="m-doc">TI ADS1x15 External Voltage Sensor</a></dt>
+            <dd></dd>
+            <dt>module <a href="group__sensor__cyclops.html" class="m-doc">Turner Cyclops-7F</a></dt>
             <dd></dd>
           </dl>
         </section>
@@ -1414,6 +1416,15 @@
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=5.6"
   id="jquery-flexslider-js"
 ></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: "disabled",
+    url: "https:\/\/www.envirodiy.org\/",
+    related_items_in_view: "",
+  };
+  /* ]]> */
+</script>
 <script
   type="text/javascript"
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=5.6"
@@ -1428,5 +1439,24 @@
   };
   /* ]]> */
 </script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/custom.js?ver=5.6"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: "https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php",
+    ajaxnonce: "6049425e02",
+    querystring: "",
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=5.6"
+  id="ghostpool-ajax-loop-js"
+></script>
 </body>
 </html>

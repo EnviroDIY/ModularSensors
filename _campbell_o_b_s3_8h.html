@@ -1361,7 +1361,7 @@
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__obs3.html#ga6445f38091abf9eb0c0ffa8985d84fef" class="m-doc">OBS3_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2000</span></span>
             </dt>
-            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; minimum stabilization time fr the OBS3 is 2s (2000ms).</dd>
+            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; minimum stabilization time for the OBS3 is 2s (2000ms).</dd>
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__obs3.html#gaea2a3f187fdb062b2ad2bf6072e56d30" class="m-doc">OBS3_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 100</span></span>
             </dt>
@@ -1370,7 +1370,7 @@
         </section>
         <section id="turbidity">
           <h2>Turbidity</h2>
-<p><a name="sensor_obs3_turbidity"></a> The turbidity variable from an OBS3+</p><ul><li>Range: (depends on sediment size, particle shape, and reflectivity)<ul><li>Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU</li><li>Mud: 5000 to 10,000 mg L–1</li><li>Sand: 50,000 to 100,000 mg L–1</li></ul></li><li>Accuracy: (whichever is larger)<ul><li>Turbidity: 2% of reading or 0.5 NTU</li><li>Mud: 2% of reading or 1 mg L–1</li><li>Sand: 4% of reading or 10 mg L–1</li></ul></li></ul><p>Resolution:</p><ul><li>16-bit ADC, Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5 NTU<ul><li><span class="m-dim">(<a href="group__sensor__obs3.html#ga27654abea693c7b2fada7caf33f38f98" class="m-doc">OBS3_<wbr />RESOLUTION</a> = 1)</span></li></ul></li><li>12-bit ADC, Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU<ul><li><span class="m-dim">(<a href="group__sensor__obs3.html#ga27654abea693c7b2fada7caf33f38f98" class="m-doc">OBS3_<wbr />RESOLUTION</a> = 5)</span></li></ul></li></ul><p><section class="m-doc-details" id="a2ce2c98c7e5bca4b0e10ed866312f943"><div>
+<p><a name="sensor_obs3_turbidity"></a> The turbidity variable from an OBS3+</p><ul><li>Range: (depends on sediment size, particle shape, and reflectivity)<ul><li>Turbidity (low/high):<ul><li>T1: 250/1000 NTU</li><li>T2: 500/2000 NTU</li><li>T3: 1000/4000 NTU</li></ul></li><li>Mud: 5000 to 10,000 mg L–1</li><li>Sand: 50,000 to 100,000 mg L–1</li></ul></li><li>Accuracy: (whichever is larger)<ul><li>Turbidity: 2% of reading or 0.5 NTU</li><li>Mud: 2% of reading or 1 mg L–1</li><li>Sand: 4% of reading or 10 mg L–1</li></ul></li><li>Resolution:<ul><li>16-bit ADC, Turbidity:<ul><li>T1: 0.03125/0.125 NTU</li><li>T2: 0.0625/0.25 NTU</li><li>T3: 0.125/0.5 NTU</li><li><span class="m-dim"><a href="group__sensor__obs3.html#ga27654abea693c7b2fada7caf33f38f98" class="m-doc">OBS3_<wbr />RESOLUTION</a> = 5</span></li></ul></li><li>12-bit ADC, Turbidity:<ul><li>T1: 0.5/2.0 NTU</li><li>T2: 1.0/4.0 NTU</li><li>T3: 2.0/8.0 NTU</li><li><span class="m-dim"><a href="group__sensor__obs3.html#ga27654abea693c7b2fada7caf33f38f98" class="m-doc">OBS3_<wbr />RESOLUTION</a> = 1</span></li></ul></li></ul></li></ul><p><section class="m-doc-details" id="a2ce2c98c7e5bca4b0e10ed866312f943"><div>
 <h3>
 <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_o_b_s3___turbidity.html#a2ce2c98c7e5bca4b0e10ed866312f943">CampbellOBS3_Turbidity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_o_b_s3.html">CampbellOBS3</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
@@ -1424,7 +1424,7 @@
         </section>
         <section id="voltage">
           <h2>Voltage</h2>
-<p><a name="sensor_obs3_voltage"></a> The voltage variable from an OBS3+</p><ul><li>Range is 0 to 2.5V</li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt;0.25 LSB (offset errror)<ul><li><span class="m-dim">(<a href="group__sensor__obs3.html#ga54b39cead4f57c2e39510bf617902fa6" class="m-doc">OBS3_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 4)</span></li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt;3 LSB (offset errror)<ul><li><span class="m-dim">(<a href="group__sensor__obs3.html#ga54b39cead4f57c2e39510bf617902fa6" class="m-doc">OBS3_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 1)</span></li></ul></li></ul></li></ul><p><section class="m-doc-details" id="aa117aed1422610ceb7677a8657a60fbb"><div>
+<p><a name="sensor_obs3_voltage"></a> The voltage variable from an OBS3+</p><ul><li>Range is 0 to 2.5V</li><li>Accuracy:<ul><li>16-bit ADC (ADS1115): &lt; 0.25% (gain error), &lt; 0.25 LSB (offset errror)<ul><li><span class="m-dim"><a href="group__sensor__obs3.html#ga54b39cead4f57c2e39510bf617902fa6" class="m-doc">OBS3_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 4</span></li></ul></li><li>12-bit ADC (ADS1015, using build flag <code>MS_USE_ADS1015</code>): &lt; 0.15% (gain error), &lt; 3 LSB (offset errror)<ul><li><span class="m-dim"><a href="group__sensor__obs3.html#ga54b39cead4f57c2e39510bf617902fa6" class="m-doc">OBS3_<wbr />VOLTAGE_<wbr />RESOLUTION</a> = 1</span></li></ul></li></ul></li></ul><p><section class="m-doc-details" id="aa117aed1422610ceb7677a8657a60fbb"><div>
 <h3>
 <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_o_b_s3___voltage.html#aa117aed1422610ceb7677a8657a60fbb">CampbellOBS3_Voltage</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_o_b_s3.html">CampbellOBS3</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
@@ -1562,6 +1562,15 @@
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=5.6"
   id="jquery-flexslider-js"
 ></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: "disabled",
+    url: "https:\/\/www.envirodiy.org\/",
+    related_items_in_view: "",
+  };
+  /* ]]> */
+</script>
 <script
   type="text/javascript"
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=5.6"
@@ -1576,5 +1585,24 @@
   };
   /* ]]> */
 </script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/custom.js?ver=5.6"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: "https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php",
+    ajaxnonce: "6049425e02",
+    querystring: "",
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=5.6"
+  id="ghostpool-ajax-loop-js"
+></script>
 </body>
 </html>

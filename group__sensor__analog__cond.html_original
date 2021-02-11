@@ -1348,9 +1348,8 @@
     <span class="c1">// environmental monitoring and geophysical data inversion. Environ Monit</span>
     <span class="c1">// Assess. 2004 Aug-Sep;96(1-3):119-28.</span>
     <span class="c1">// doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">waterTemp</span> <span class="o">!=</span> <span class="mi">-9999</span> <span class="o">&amp;&amp;</span>
-        <span class="n">rawCond</span> <span class="o">!=</span> <span class="mi">-9999</span><span class="p">)</span>  <span class="c1">// make sure both inputs are good</span>
-    <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">waterTemp</span> <span class="o">!=</span> <span class="mi">-9999</span> <span class="o">&amp;&amp;</span> <span class="n">rawCond</span> <span class="o">!=</span> <span class="mi">-9999</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// make sure both inputs are good</span>
         <span class="n">spCond</span> <span class="o">=</span> <span class="n">rawCond</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">temperatureCoef</span> <span class="o">*</span> <span class="p">(</span><span class="n">waterTemp</span> <span class="o">-</span> <span class="mf">25.0</span><span class="p">));</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">spCond</span><span class="p">;</span>
@@ -1579,6 +1578,15 @@
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=5.6"
   id="jquery-flexslider-js"
 ></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: "disabled",
+    url: "https:\/\/www.envirodiy.org\/",
+    related_items_in_view: "",
+  };
+  /* ]]> */
+</script>
 <script
   type="text/javascript"
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=5.6"
@@ -1593,5 +1601,24 @@
   };
   /* ]]> */
 </script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/custom.js?ver=5.6"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: "https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php",
+    ajaxnonce: "6049425e02",
+    querystring: "",
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=5.6"
+  id="ghostpool-ajax-loop-js"
+></script>
 </body>
 </html>

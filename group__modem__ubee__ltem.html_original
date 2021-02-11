@@ -1320,13 +1320,10 @@
           <section id="modem_ubee_ltem_notes"><h2>Introduction</h2><p>There are a multitude of boards available that feature a variant of the u-blox SARA R4 series, including a Sodaq UBee.</p><p>The default baud rate for the SARA R410M is 115200. It <em>DOES NOT</em> save baud rate to non-volatile memory. After every power loss, the module will return to the default baud rate of 115200. This library attempts to compensate by sending a baud rate change command in the wake function. Because of this, 8MHz boards, <em>LIKE THE MAYFLY</em>, <em>MUST</em> use a HardwareSerial instance as modemSerial. This requirement does not exist for 16MHz (and faster) boards. For those, any Stream instance may be used.</p><p>Power draw is just about 500mA. A larger supply is (strongly) preferred.</p><aside class="m-note m-info"><h4>Note</h4><p>This library doesn&#x27;t currently support turning off the power supply to the R410M by setting UBee pin 1 low. The library only supports controlling the power via the power-supply enable switch connected to UBee pin 9. If you can control UBee pin 1 with your mcu, you should set it to be continuously <code>HIGH</code>.</p></aside></section><section id="modem_ubee_ltem_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands for the SARA R4 series are available here: <a href="https://www.u-blox.com/en/product/sara-r4-series">https:/<wbr />/<wbr />www.u-blox.com/<wbr />en/<wbr />product/<wbr />sara-r4-series</a> The schematics for the UBee are available here: <a href="https://support.sodaq.com/Shields_and_Bees/ubee/">https://support.sodaq.com/Shields_<wbr />and_<wbr />Bees/ubee/</a></p></section><section id="modem_ubee_ltem_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_sodaq_u_bee_r410_m.html#ac7ec9cf9ab8d3d319ff96061f34e3811" class="m-doc">SodaqUBeeR410M::<wbr />SodaqUBeeR410M</a> }}</p><hr/></section><section id="modem_ubee_ltem_examples"><h2>Example Code</h2><section id="modem_ubee_ltem_modem_obj"><h3>Creating the Modem Object</h3><p>The SARA R410M based UBee is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ubeer410">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M</span>
 <span class="cp">#include</span> <span class="cpf">&lt;modems/SodaqUBeeR410M.h&gt;</span><span class="cp"></span>
 
-<span class="c1">// Create a reference to the serial port for the modem</span>
-<span class="c1">// Extra hardware and software serial ports are created in the &quot;Settings for</span>
-<span class="c1">// Additional Serial Ports&quot; section</span>
-<span class="n">HardwareSerial</span><span class="o">&amp;</span> <span class="n">modemSerial</span> <span class="o">=</span> <span class="n">Serial1</span><span class="p">;</span>  <span class="c1">// Use hardware serial if possible</span>
-<span class="c1">// AltSoftSerial &amp;modemSerial = altSoftSerial;  // For software serial</span>
-<span class="c1">// NeoSWSerial &amp;modemSerial = neoSSerial1;  // For software serial</span>
-<span class="kr">const</span> <span class="kr">long</span> <span class="n">modemBaud</span> <span class="o">=</span> <span class="mi">115200</span><span class="p">;</span>  <span class="c1">// Default baud rate of the SARA R410M is 115200</span>
+<span class="c1">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>
+<span class="c1">// for Additional Serial Ports&quot; section</span>
+<span class="kr">const</span> <span class="kr">int32_t</span> <span class="n">modemBaud</span> <span class="o">=</span>
+    <span class="mi">115200</span><span class="p">;</span>  <span class="c1">// Default baud rate of the SARA R410M is 115200</span>
 <span class="c1">// NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After</span>
 <span class="c1">// every power loss, the module will return to the default baud rate of 115200.</span>
 <span class="c1">// NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to</span>
@@ -1545,6 +1542,15 @@ application / network settings and the concurrent module activities.&quot;_ The 
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.flexslider-min.js?ver=5.6"
   id="jquery-flexslider-js"
 ></script>
+<script type="text/javascript" id="ghostpool-custom-js-js-extra">
+  /* <![CDATA[ */
+  var ghostpool_script = {
+    lightbox: "disabled",
+    url: "https:\/\/www.envirodiy.org\/",
+    related_items_in_view: "",
+  };
+  /* ]]> */
+</script>
 <script
   type="text/javascript"
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/jquery.stellar.min.js?ver=5.6"
@@ -1559,5 +1565,24 @@ application / network settings and the concurrent module activities.&quot;_ The 
   };
   /* ]]> */
 </script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/custom.js?ver=5.6"
+  id="ghostpool-custom-js-js"
+></script>
+<script type="text/javascript" id="ghostpool-ajax-loop-js-extra">
+  /* <![CDATA[ */
+  var ghostpoolAjax = {
+    ajaxurl: "https:\/\/www.envirodiy.org\/wp-admin\/admin-ajax.php",
+    ajaxnonce: "6049425e02",
+    querystring: "",
+  };
+  /* ]]> */
+</script>
+<script
+  type="text/javascript"
+  src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/themes/socialize/lib/scripts/ajax-loop.js?ver=5.6"
+  id="ghostpool-ajax-loop-js"
+></script>
 </body>
 </html>
