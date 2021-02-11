@@ -5,12 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ****
-## v0.28.0 (2021-02-10) [Add Support for Turner Cyclops](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.0)
+
+## v0.28.01 (2021-02-10) [Gigantic SDI-12 bug](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.1)
 
 ### Downloads
 
-**[ModularSensors_Dependencies_v0.28.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.0/ModularSensors_Dependencies_v0.28.0.zip)**
+**[ModularSensors_Dependencies_v0.28.01.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.01/ModularSensors_Dependencies_v0.28.01.zip)**
 - contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
+### Bug Fixes
+- Fixes an **_EGREGIOUS_** error in the SDI-12 code causing the code to lock up if debugging was off (but always work with it on)
+  - [Issue #346](https://github.com/EnviroDIY/ModularSensors/issues/346)
+  - This was first introduced in [0.27.5](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
+- Fix GitHub action for pull requests.
+## v0.28.0 (2021-02-10) Add Support for Turner Cyclops
 
 ### New Features
 - Add support for all standard configurations of the [Turner Cyclops-7F submersible fluorometer](https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer)
