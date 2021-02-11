@@ -257,11 +257,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const long   serialBaud = 115200;  // Baud rate for debugging
-const int8_t greenLED   = 8;       // Pin for the green LED
-const int8_t redLED     = 9;       // Pin for the red LED
-const int8_t buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
+const int32_t serialBaud = 115200;  // Baud rate for debugging
+const int8_t  greenLED   = 8;       // Pin for the green LED
+const int8_t  redLED     = 9;       // Pin for the red LED
+const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t  wakePin    = A7;  // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -286,7 +286,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  // All XBee's use 9600 by default
+const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -326,7 +326,7 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  // All XBee's use 9600 by default
+const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -363,7 +363,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  // All XBee's use 9600 by default
+const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -398,7 +398,7 @@ DigiXBee3GBypass modem = modemXB3GB;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  // All XBee's use 9600 by default
+const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -435,7 +435,7 @@ DigiXBeeWifi modem = modemXBWF;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 115200;  // Communication speed of the modem
+const int32_t modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
 // the AT+UART_CUR or AT+UART_DEF command.
@@ -479,7 +479,7 @@ EspressifESP8266 modem = modemESP;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 115200;  // Communication speed of the modem
+const int32_t modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
 // the AT+IPR=9600 command.
@@ -514,7 +514,7 @@ QuectelBG96 modem = modemBG96;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
+const int32_t modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
 // NOTE:  This baud rate is much too fast for many Arduinos!  The module should
 // be programmed to a slower baud rate or set to auto-baud using the AT+IPR
 // command.
@@ -549,7 +549,7 @@ SequansMonarch modem = modemSVZM;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+const int32_t modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -580,7 +580,7 @@ SIMComSIM800 modem = modemS800;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
+const int32_t modemBaud = 9600;  //  SIM7000 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -611,7 +611,7 @@ SIMComSIM7000 modem = modem7000;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+const int32_t modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -641,7 +641,8 @@ Sodaq2GBeeR6 modem = modem2GB;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
+const int32_t modemBaud =
+    115200;  // Default baud rate of the SARA R410M is 115200
 // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
 // every power loss, the module will return to the default baud rate of 115200.
 // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
@@ -678,7 +679,8 @@ SodaqUBeeR410M modem = modemR410;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
+const int32_t modemBaud =
+    9600;  //  SARA U2xx module does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
@@ -1031,9 +1033,8 @@ float calculateAtlasSpCond(void) {
     // environmental monitoring and geophysical data inversion. Environ Monit
     // Assess. 2004 Aug-Sep;96(1-3):119-28.
     // doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.
-    if (waterTemp != -9999 &&
-        rawCond != -9999)  // make sure both inputs are good
-    {
+    if (waterTemp != -9999 && rawCond != -9999) {
+        // make sure both inputs are good
         float temperatureCoef = 0.019;
         spCond = rawCond / (1 + temperatureCoef * (waterTemp - 25.0));
     }
@@ -1682,9 +1683,8 @@ float calculateAnalogSpCond(void) {
     // environmental monitoring and geophysical data inversion. Environ Monit
     // Assess. 2004 Aug-Sep;96(1-3):119-28.
     // doi: 10.1023/b:emas.0000031719.83065.68. PMID: 15327152.
-    if (waterTemp != -9999 &&
-        rawCond != -9999)  // make sure both inputs are good
-    {
+    if (waterTemp != -9999 && rawCond != -9999) {
+        // make sure both inputs are good
         spCond = rawCond / (1 + temperatureCoef * (waterTemp - 25.0));
     }
     return spCond;
@@ -2061,8 +2061,7 @@ float calculateVariableValue(void) {
     // float inputVar1 = variable1->getValue();
     // float inputVar2 = variable2->getValue();
     // make sure both inputs are good
-    // if (inputVar1 != -9999 && inputVar2 != -9999)
-    // {
+    // if (inputVar1 != -9999 && inputVar2 != -9999) {
     //     calculatedResult = inputVar1 + inputVar2;
     // }
     return calculatedResult;
@@ -2711,13 +2710,11 @@ void loop() {
     // At very low battery, just go back to sleep
     if (getBatteryVoltage() < 3.4) {
         dataLogger.systemSleep();
-    }
-    // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.55) {
+    } else if (getBatteryVoltage() < 3.55) {
+        // At moderate voltage, log data but don't send it over the modem
         dataLogger.logData();
-    }
-    // If the battery is good, send the data to the world
-    else {
+    } else {
+        // If the battery is good, send the data to the world
         dataLogger.logDataAndPublish();
     }
 }

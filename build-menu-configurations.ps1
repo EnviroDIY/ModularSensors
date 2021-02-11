@@ -66,6 +66,7 @@ Foreach ($modemFlag in $modemFlags)
         Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Red
         Write-Host "PlatformIO Build Failed" -ForegroundColor Red
         Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Red
+        Remove-Item –path temp –recurse
         Exit 1
     }
 }
@@ -135,6 +136,7 @@ Foreach ($sensorFlag in $sensorFlags)
         Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Red
         Write-Host "PlatformIO Build Failed" -ForegroundColor Red
         Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Red
+        Remove-Item –path temp –recurse
         Exit 1
     }
 }
@@ -168,8 +170,9 @@ Foreach ($publisherFlag in $publisherFlags)
         Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Red
         Write-Host "PlatformIO Build Failed" -ForegroundColor Red
         Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Red
+        Remove-Item –path temp –recurse
         Exit 1
     }
 }
 
-Remove-Item –path temp/menu_a_la_carte –recurse
+Remove-Item –path temp –recurse

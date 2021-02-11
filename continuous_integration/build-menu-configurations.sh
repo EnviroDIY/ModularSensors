@@ -36,7 +36,7 @@ do
     echo "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
-    platformio run --project-conf="continuous_integration/platformio.ini" --silent
+    platformio run --project-conf="continuous_integration/platformio.ini"
 done
 
 for sensorFlag in \
@@ -91,7 +91,7 @@ do
     echo  "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
-    platformio run --project-conf="continuous_integration/platformio.ini" --silent
+    platformio run --project-conf="continuous_integration/platformio.ini"
 done
 
 for publisherFlag in \
@@ -110,5 +110,5 @@ do
     echo "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
-    platformio run --project-conf="continuous_integration/platformio.ini" --silent
+    platformio run --project-conf="continuous_integration/platformio.ini"
 done
