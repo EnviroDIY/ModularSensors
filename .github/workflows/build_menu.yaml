@@ -16,11 +16,11 @@ jobs:
       - name: Set variables
         run: |
           if [[ -z "${GITHUB_HEAD_REF}" ]]; then
-            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
-            echo "https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}=$LIBRARY_INSTALL_SOURCE" >> $GITHUB_ENV
-          else
             echo "::debug::Push to commit ${GITHUB_SHA}"
-            echo "https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}=$LIBRARY_INSTALL_SOURCE" >> $GITHUB_ENV
+            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}" >> $GITHUB_ENV
+          else
+            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
+            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
           fi
 
       - name: Restore or Cache pip
@@ -51,5 +51,6 @@ jobs:
 
       - name: Test all configurations
         run: |
+          echo "${{ env.LIBRARY_INSTALL_SOURCE }}
           chmod +x continuous_integration/build-menu-configurations.sh
           sh continuous_integration/build-menu-configurations.sh
