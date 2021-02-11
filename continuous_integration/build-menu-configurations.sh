@@ -8,6 +8,7 @@ set -e
 # echo an error message before exiting
 # trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
+mkdir temp
 mkdir temp/menu_a_la_carte
 
 for modemFlag in \
