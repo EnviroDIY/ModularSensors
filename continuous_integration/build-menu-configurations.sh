@@ -26,8 +26,10 @@ for modemFlag in \
     MS_BUILD_TEST_UBEE_U201
 
 do
-    sed -i '1s/^/#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $modemFlag\n/' examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
+    echo "Modifying source for $modemFlag"
+    sed '1s/^/#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $modemFlag\n/' examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
 
+    echo "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
     platformio run --project-conf="continuous_integration/platformio.ini"
@@ -75,8 +77,10 @@ for sensorFlag in \
     MS_BUILD_TEST_DOPTO \
 
 do
-    sed -i '1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $sensorFlag\n/' examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
+    echo "Modifying source for $sensorFlag"
+    sed '1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $sensorFlag\n/' examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
 
+    echo "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
     platformio run --project-conf="continuous_integration/platformio.ini"
@@ -88,8 +92,10 @@ for publisherFlag in \
     MS_BUILD_TEST_THINGSPEAK \
 
 do
-    sed -i '1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $publisherFlag\n/' examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
+    echo "Modifying source for $publisherFlag"
+    sed '1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $publisherFlag\n/' examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
 
+    echo "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
     platformio run --project-conf="continuous_integration/platformio.ini"
