@@ -193,7 +193,8 @@ void SERCOM2_Handler() {
 // ==========================================================================
 //  Assigning Serial Port Functionality
 // ==========================================================================
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560 || defined ARDUINO_AVR_MEGA2560
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560 || \
+    defined                              ARDUINO_AVR_MEGA2560
 /** Start [assign_ports_hw] */
 // If there are additional hardware Serial ports possible - use them!
 
@@ -950,7 +951,8 @@ Variable* atlaspHpH =
 #endif
 
 
-#if defined MS_BUILD_TEST_ATLASRTD || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_TEST_ATLASRTD || defined MS_BUILD_TEST_ATLASEC || \
+    defined                                   MS_BUILD_TEST_ALL_SENSORS
 // ==========================================================================
 //  Atlas Scientific EZO-RTD Temperature Sensor
 // ==========================================================================
@@ -1050,7 +1052,7 @@ const char* atlasSpCondCode = "atlasSpCond";
 // The (optional) universallly unique identifier
 const char* atlasSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
 
-// Finally, Create the specific conductance variable and return a pointer to it
+// Finally, create the specific conductance variable and return a pointer to it
 Variable* atlasSpCond =
     new Variable(calculateAtlasSpCond, atlasSpCondResolution, atlasSpCondName,
                  atlasSpCondUnit, atlasSpCondCode, atlasSpCondUUID);
@@ -1332,7 +1334,8 @@ Variable* sonar1Range =
 #endif
 
 
-#if defined MS_BUILD_TEST_DS18 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_TEST_DS18 || defined MS_BUILD_TEST_ANALOGEC || \
+    defined                               MS_BUILD_TEST_ALL_SENSORS
 // ==========================================================================
 //  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
@@ -2057,8 +2060,8 @@ float calculateVariableValue(void) {
     float calculatedResult = -9999;  // Always safest to start with a bad value
     // float inputVar1 = variable1->getValue();
     // float inputVar2 = variable2->getValue();
-    // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs
-    // are good
+    // make sure both inputs are good
+    // if (inputVar1 != -9999 && inputVar2 != -9999)
     // {
     //     calculatedResult = inputVar1 + inputVar2;
     // }

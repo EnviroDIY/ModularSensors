@@ -26,13 +26,15 @@ for modemFlag in \
     MS_BUILD_TEST_UBEE_U201
 
 do
-    echo "Modifying source for $modemFlag"
+    echo -e "\e[94m----------------------------------------------------------------------------\e[0m"
+    echo -e "Modifying source for \e[32m$modemFlag\e[0m"
+    echo -e "\e[94m----------------------------------------------------------------------------\e[0m"
     sed "1s/^/#define $modemFlag\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
 
     echo "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
-    platformio run --project-conf="continuous_integration/platformio.ini"
+    platformio run --project-conf="continuous_integration/platformio.ini" --silent
 done
 
 for sensorFlag in \
@@ -77,13 +79,15 @@ for sensorFlag in \
     MS_BUILD_TEST_DOPTO \
 
 do
-    echo "Modifying source for $sensorFlag"
+    echo -e "\e[94m----------------------------------------------------------------------------\e[0m"
+    echo -e "Modifying source for \e[32m$sensorFlag\e[0m"
+    echo -e "\e[94m----------------------------------------------------------------------------\e[0m"
     sed "1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $sensorFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
 
-    echo "First few lines of source"
+    echo  "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
-    platformio run --project-conf="continuous_integration/platformio.ini"
+    platformio run --project-conf="continuous_integration/platformio.ini" --silent
 done
 
 for publisherFlag in \
@@ -92,11 +96,13 @@ for publisherFlag in \
     MS_BUILD_TEST_THINGSPEAK \
 
 do
-    echo "Modifying source for $publisherFlag"
+    echo -e "\e[94m----------------------------------------------------------------------------\e[0m"
+    echo -e  "Modifying source for \e[32m$publisherFlag\e[0m"
+    echo -e "\e[94m----------------------------------------------------------------------------\e[0m"
     sed "1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $publisherFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
 
     echo "First few lines of source"
     head temp/menu_a_la_carte/main.cpp
 
-    platformio run --project-conf="continuous_integration/platformio.ini"
+    platformio run --project-conf="continuous_integration/platformio.ini" --silent
 done
