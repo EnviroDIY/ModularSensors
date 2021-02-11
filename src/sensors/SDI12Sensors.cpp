@@ -364,7 +364,7 @@ bool SDI12Sensors::getResults(void) {
         MS_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
         // ^^ ignore the repeated SDI12 address
 
-        while (_SDI12Internal.available()) {
+        while (_SDI12Internal.available() && (millis() - start) < 3000) {
             int c = _SDI12Internal.peek();
             if (c == '-' || (c >= '0' && c <= '9') || c == '.') {
                 float result = _SDI12Internal.parseFloat(SKIP_NONE);
@@ -377,7 +377,8 @@ bool SDI12Sensors::getResults(void) {
                     resultsReceived++;
                 }
             } else if (c >= 0 && c != '\r' && c != '\n') {
-                MS_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
+                int c_read = _SDI12Internal.read();
+                MS_DBG(F("    <<<"), static_cast<char>(c_read));
             } else {  // no point -1's and new lines to debugging port
                 _SDI12Internal.read();
             }
