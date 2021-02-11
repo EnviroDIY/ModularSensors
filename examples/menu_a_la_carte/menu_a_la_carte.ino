@@ -193,7 +193,7 @@ void SERCOM2_Handler() {
 // ==========================================================================
 //  Assigning Serial Port Functionality
 // ==========================================================================
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560 || defined ARDUINO_AVR_MEGA2560
 /** Start [assign_ports_hw] */
 // If there are additional hardware Serial ports possible - use them!
 
@@ -2154,6 +2154,12 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // Version 3: Fill array with already created and named variable pointers
 Variable* variableList[] = {
     mcuBoardSampNo,
+    mcuBoardAvailableRAM,
+    mcuBoardBatt,
+    calculatedVar,
+#if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
+    ds3231Temp,
+#endif
 #if defined MS_BUILD_TEST_AM2315 || defined MS_BUILD_TEST_ALL_SENSORS
     am2315Humid,
     am2315Temp,
@@ -2165,10 +2171,10 @@ Variable* variableList[] = {
 #endif
 #if defined MS_BUILD_TEST_SQ212 || defined MS_BUILD_TEST_ALL_SENSORS
     sq212PAR,
-    sq212voltage
+    sq212voltage,
 #endif
 #if defined MS_BUILD_TEST_ATLASCO2 || defined MS_BUILD_TEST_ALL_SENSORS
-        atlasCO2CO2,
+    atlasCO2CO2,
     atlasCO2Temp,
 #endif
 #if defined MS_BUILD_TEST_ATLASDO || defined MS_BUILD_TEST_ALL_SENSORS
@@ -2341,12 +2347,8 @@ Variable* variableList[] = {
     dOptoDOmgL,
     dOptoTemp,
 #endif
-    mcuBoardAvailableRAM,
-    mcuBoardBatt,
-    ds3231Temp,
     modemRSSI,
     modemSignalPct,
-    calculatedVar,
 #ifdef TINY_GSM_MODEM_HAS_BATTERY
     modemBatteryState,
     modemBatteryPct,
@@ -2698,6 +2700,7 @@ void setup() {
 // ==========================================================================
 //  Arduino Loop Function
 // ==========================================================================
+#ifndef MS_USE_COMPLEX_LOOP
 // Use this short loop for simple data logging and sending
 /** Start [simple_loop] */
 void loop() {
@@ -2717,7 +2720,7 @@ void loop() {
 }
 /** End [simple_loop] */
 
-#if defined MS_USE_COMPLEX_LOOP
+#else
 /** Start [complex_loop] */
 // Use this long loop when you want to do something special
 // Because of the way alarms work on the RTC, it will wake the processor and
