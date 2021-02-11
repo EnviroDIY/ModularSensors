@@ -28,6 +28,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set variables
+        run: |
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
+            echo "https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}=$LIBRARY_INSTALL_SOURCE" >> $GITHUB_ENV
+          else
+            echo "::debug::Push to commit ${GITHUB_SHA}"
+            echo "https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}=$LIBRARY_INSTALL_SOURCE" >> $GITHUB_ENV
+          fi
+
       - name: Restore or Cache pip
         uses: actions/cache@v2.1.4
         with:

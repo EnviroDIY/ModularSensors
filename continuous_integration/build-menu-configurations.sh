@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# exit when any command fails
+set -e
+
+# keep track of the last executed command
+trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+# echo an error message before exiting
+trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
+
+mkdir temp/menu_a_la_carte
+
 for modemFlag in \
     MS_BUILD_TEST_XBEE_CELLULAR \
     MS_BUILD_TEST_XBEE_LTE_B \
