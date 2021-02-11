@@ -24,8 +24,8 @@
  * These are for Keller Nanolevel capacitive level sensors.
  *
  * @section sensor_nanolevel_datasheet Sensor Datasheet
- * [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
- * [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
+ * - [Manual](https://www.kelleramerica.com/manuals-and-software/manuals/Keller_America_Users_Guide.pdf)
+ * - [Datasheet](https://www.kelleramerica.com/pdf-library/Very%20Low%20Range%20Submersible%20Transmitter%20Nanolevel.pdf)
  *
  * @section sensor_nanolevel_ctor Sensor Constructor
  * {{ @ref KellerNanolevel::KellerNanolevel }}

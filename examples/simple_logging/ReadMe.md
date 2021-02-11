@@ -55,7 +55,7 @@ const char *LoggerID = "XXXX";
 _______
 
 
-[//]: # ( @section example_simple_logging_pio PlatformIO Configuration )
+[//]: # ( @section example_simple_logging_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} simple_logging/platformio.ini )
 

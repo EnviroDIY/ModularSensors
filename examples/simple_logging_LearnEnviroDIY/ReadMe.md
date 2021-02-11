@@ -59,7 +59,7 @@ _______
 
 
 
-[//]: # ( @section example_learn_envirodiy_pio PlatformIO Configuration )
+[//]: # ( @section example_learn_envirodiy_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} simple_logging_LearnEnviroDIY/platformio.ini )
 

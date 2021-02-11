@@ -64,7 +64,7 @@ const char *LoggerID = "XXXX";
 
 _______
 
-[//]: # ( @section example_baro_rho_pio PlatformIO Configuration )
+[//]: # ( @section example_baro_rho_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} baro_rho_correction/platformio.ini )
 

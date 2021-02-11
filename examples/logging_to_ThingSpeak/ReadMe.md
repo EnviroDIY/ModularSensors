@@ -73,7 +73,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 _______
 
 
-[//]: # ( @section example_thingspeak_pio PlatformIO Configuration )
+[//]: # ( @section example_thingspeak_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} logging_to_ThingSpeak/platformio.ini )
 

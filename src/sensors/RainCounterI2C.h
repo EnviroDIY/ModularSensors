@@ -46,7 +46,7 @@
  * @section sensor_i2c_rain_flags Build flags
  * - `-D MS_RAIN_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
- * @warning Either all or none your attached tipping bucket counters may use
+ * @warning Either all or none of your attached tipping bucket counters may use
  * software I2C. Using some with software I2C and others with hardware I2C is
  * not supported. Though, honestly, having more than one attached seems pretty
  * unlikely anyway.
@@ -233,8 +233,8 @@ class RainCounterI2C : public Sensor {
      * 0.01" or 0.2mm, depending on your tipping bucket calibration.  The
      * default value is 0.2.
      */
-    RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex = 0x08,
-                   float rainPerTip = 0.2);
+    explicit RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex = 0x08,
+                            float rainPerTip = 0.2);
     /**
      * @brief Construct a new Rain Counter I2C object using the primary
      * hardware I2C instance.

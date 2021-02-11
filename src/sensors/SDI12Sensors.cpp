@@ -346,11 +346,20 @@ bool SDI12Sensors::getResults(void) {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     uint8_t resultsReceived = 0;
     uint8_t cmd_number      = 0;
+
+    // When requesting data, the sensor sends back up to ~80 characters at a
+    // time to each data request.  If it needs to return more results than can
+    // fit in the first data request (D0), we need to make additional requests
+    // (D1-9).  Since this is a parent to all sensors, we're going to keep
+    // requesting data until we either get as many results as we expect or no
+    // more data is returned.
     while (resultsReceived < _numReturnedValues && cmd_number <= 9) {
-        bool   gotResults     = false;
+        bool gotResults = false;
+        // Assemble the command based on how many commands we've already sent,
+        // starting with D0 and ending with D9
+        // SDI-12 command to get data [address][D][dataOption][!]
         String getDataCommand = "";
         getDataCommand += _SDI12address;
-        // SDI-12 command to get data [address][D][dataOption][!]
         getDataCommand += "D";
         getDataCommand += cmd_number;
         getDataCommand += "!";
@@ -358,28 +367,60 @@ bool SDI12Sensors::getResults(void) {
         delay(30);  // It just needs this little delay
         MS_DBG(F("    >>>"), getDataCommand);
 
+        // Wait for the first few charaters to arrive.  The response from a data
+        // request should always have more than three characters
         uint32_t start = millis();
         while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
         MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
-        MS_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
-        // ^^ ignore the repeated SDI12 address
+        // read the returned address to remove it from the buffer
+        char returnedAddress = _SDI12Internal.read();
+        // print out a warning if the address doesn't match up
+        if (returnedAddress != _SDI12address) {
+            MS_DBG(F("Warning, expecting data from"), _SDI12address,
+                   F("but got data from"), returnedAddress);
+        }
+        // Start printing out the returned data
+        MS_DBG(F("    <<<"), static_cast<char>(returnedAddress));
 
-        while (_SDI12Internal.available()) {
+        // While there is any data left in the buffer
+        while (_SDI12Internal.available() && (millis() - start) < 3000) {
+            // First peek to see if the next character in the buffer in a number
             int c = _SDI12Internal.peek();
+            // if there's a number, a decimal, or a negative sign next in the
+            // buffer, start reading it as a float.
             if (c == '-' || (c >= '0' && c <= '9') || c == '.') {
+                // Read the float without skipping any in-valid characters.
+                // We don't want to skip anything because we want to be able to
+                // debug and see exactly which characters the sensor sent over
+                // if they weren't numbers.
+                // Reading the numbers as a float will remove them from the
+                // buffer.
                 float result = _SDI12Internal.parseFloat(SKIP_NONE);
                 // The SDI-12 library should return -9999 on timeout
                 if (result == -9999 || isnan(result)) result = -9999;
+                // Print out what we got
                 MS_DBG(F("    <<<"), String(result, 10));
+                // Verify that the number is valid and add it to the result
+                // array. After each result is read, tick up the number of
+                // results received so that the next one goes in the next spot
+                // in the variable array.
                 verifyAndAddMeasurementResult(resultsReceived, result);
                 if (result != -9999) {
                     gotResults = true;
                     resultsReceived++;
                 }
-            } else if (c >= 0 && c != '\r' && c != '\n') {
+                // if the next spot in the buffer isn't a number, we don't want
+                // to try and parse it, but we do want to print it out to the
+                // debugging port
+            } else {
+                // if we're debugging print out the non-numeric character
+#ifdef MS_SDI12SENSORS_DEBUG
                 MS_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
-            } else {  // no point -1's and new lines to debugging port
+#else
+                // if we're not debugging, just read the character to make sure
+                // it's removed from the buffer
                 _SDI12Internal.read();
+#endif
             }
             delay(10);  // 1 character ~ 7.5ms
         }
@@ -503,7 +544,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         // wait for the sensor to issue a service request telling us that the
         // measurement is ready.
 
-        unsigned long timerStart = millis();
+        uint32_t timerStart = millis();
         while ((millis() - timerStart) < (1000 * (wait))) {
             if (_SDI12Internal.available())  // sensor can interrupt us to let
                                              // us know it is done early
@@ -542,4 +583,4 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
 
     return success;
 }
-#endif
+#endif  //#ifndef MS_SDI12_NON_CONCURRENT
