@@ -419,7 +419,7 @@ bool SDI12Sensors::getResults(void) {
 #else
                 // if we're not debugging, just read the character to make sure
                 // it's removed from the buffer
-                int c_read = ;
+                _SDI12Internal.read();
 #endif
             }
             delay(10);  // 1 character ~ 7.5ms
