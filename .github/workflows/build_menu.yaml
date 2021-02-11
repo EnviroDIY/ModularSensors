@@ -51,6 +51,6 @@ jobs:
 
       - name: Test all configurations
         run: |
-          echo "${{ env.LIBRARY_INSTALL_SOURCE }}
+          echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           chmod +x continuous_integration/build-menu-configurations.sh
           sh continuous_integration/build-menu-configurations.sh

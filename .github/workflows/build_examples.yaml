@@ -68,5 +68,5 @@ jobs:
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
         run: |
-          echo "${{ env.LIBRARY_INSTALL_SOURCE }}
+          echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           platformio ci --project-conf="continuous_integration/platformio.ini"
