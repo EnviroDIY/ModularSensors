@@ -76,7 +76,7 @@
  * ⁵ Phycoerythrin pigment from Prozyme diluted in Deionized water
  *
  * @note **The Cyclops configuration is set at the time of the sensor
- * manufacturing andcannot be changed.** Each individual sensor is only capable
+ * manufacturing and cannot be changed.**  Each individual sensor is only capable
  * of measuring the single parameter it is configured for.  A Cyclops that is
  * configured to measure chlorophyll *cannot* be used to measure turbidity.
  *

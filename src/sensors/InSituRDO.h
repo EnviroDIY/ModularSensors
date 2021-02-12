@@ -55,7 +55,7 @@
  * The RDO PRO-X arrives from the factory ready to take measurements.
  * It is *NOT* necessary to connect it to a computer or use the Win-Situ software
  * to do any additional setup.  If you are able to, however, I recommend using
- * Win-Situ to chang some of the default settings on the sensor.
+ * Win-Situ to change some of the default settings on the sensor.
  *
  * To connect the sensor to Win-Situ, you can use any form of RS485 to USB interface.
  * Insitu sells one that specifially works with their cables, but any
@@ -108,16 +108,18 @@
  * The sensor cap has an estimated lifetime of 2 years from the time of first reading.
  * To preserve its lifespan, the sensor cap should not be opened or removed from its
  * packaging until the sensor is ready to be deployed.
- * To clean the sensor cap:
+ *
+ * @subsection sensor_insitu_rdo_cap2 To clean the sensor cap:
  * > 1. The cap and nose cone must remain on the probe.
  * > 2. Rinse the sensor with clean water from a squirt bottle or spray bottle.
  * > 3. Gently wipe with a soft-bristled brush or soft cloth if biofouling is present.
- *      Use Alconox to remove grease.
+ * >    Use Alconox to remove grease.
  * > 4. If extensive fouling or mineral build-up is present, soak the cap end in vinegar for 15 minutes,
- *      then soak in deionized (DI) water for 15 minutes.
+ * >    then soak in deionized (DI) water for 15 minutes.
+ *
  * The optical window should only be cleaned when the sensor cap is changed.
  *
- * InSitu recommends useing an antifouling guard or airblast adapter to extend deployments and protect your data.
+ * InSitu recommends using an antifouling guard or airblast adapter to extend deployments and protect your data.
  *
  * @section sensor_insitu_rdo_warnings Deployment Notes and Warnings
  * @warning The inside of the controller must be kept free of moisture and humidity.
