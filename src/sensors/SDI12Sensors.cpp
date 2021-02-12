@@ -370,7 +370,13 @@ bool SDI12Sensors::getResults(void) {
         // Wait for the first few charaters to arrive.  The response from a data
         // request should always have more than three characters
         uint32_t start = millis();
-        while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
+        while (_SDI12Internal.available() < 3 ) {
+            if((millis() - start) > 1500) {
+                PRINTOUT(F("SDI12Sensors::getResults1 ERROR waiting for response"));
+                //contrinue on - likely to be other cascading failure msgs
+                break;
+            }
+        }
         MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
         // read the returned address to remove it from the buffer
         char returnedAddress = _SDI12Internal.read();
@@ -383,7 +389,11 @@ bool SDI12Sensors::getResults(void) {
         MS_DBG(F("    <<<"), static_cast<char>(returnedAddress));
 
         // While there is any data left in the buffer
-        while (_SDI12Internal.available() && (millis() - start) < 3000) {
+        while (_SDI12Internal.available()) {
+             if( (millis() - start) > 3000) {
+                PRINTOUT(F("SDI12Sensors::getResults2 ERROR sensor took too long to send data"));
+                break;
+             }
             // First peek to see if the next character in the buffer in a number
             int c = _SDI12Internal.peek();
             // if there's a number, a decimal, or a negative sign next in the
@@ -448,7 +458,7 @@ bool SDI12Sensors::getResults(void) {
 }
 
 
-#ifndef MS_SDI12_NON_CONCURRENT
+#if !(defined MS_SDI12_NON_CONCURRENT || defined MS_SDI12_SINGLE_LINE_RESPONSE)
 bool SDI12Sensors::addSingleMeasurementResult(void) {
     bool success = false;
 
@@ -472,7 +482,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
 
     return success;
 }
-#else
+#elif defined MS_SDI12_NON_CONCURRENT
 bool SDI12Sensors::addSingleMeasurementResult(void) {
     bool success = false;
 
@@ -583,6 +593,89 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
 
     return success;
 }
+#elif defined MS_SDI12_SINGLE_LINE_RESPONSE 
+/* This sections of defines has three options ~ 
+ the preferred option is no defines, 
+
+ When the SDI-12 sensors send data in response to a single D! /D0! command, the size of the response is limited to either 35 or 75characters. 
+ (SDI-12-ver1.4 sect 4.4.8).
+ 
+ The function below, parses a single line response from the instrument, and maintains compatibility for ModularSensors prior to 0.27.0
+ This method is depreciated, and will be removed at some future release
+*/
+bool SDI12Sensors::addSingleMeasurementResult(void) {
+    bool success = false;
+
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6)) {
+        // MS_DBG(F("   Activating SDI-12 instance for"),
+        //        getSensorNameAndLocation());
+        // Check if this the currently active SDI-12 Object
+        bool wasActive = _SDI12Internal.isActive();
+        // if (wasActive) {
+        //     MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
+        //            F("was already active!"));
+        // }
+        // If it wasn't active, activate it now.
+        // Use begin() instead of just setActive() to ensure timer is set
+        // correctly.
+        if (!wasActive) _SDI12Internal.begin();
+        // Empty the buffer
+        _SDI12Internal.clearBuffer();
+
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+        String getDataCommand = "";
+        getDataCommand += _SDI12address;
+        // SDI-12 command to get data [address][D][dataOption][!]
+        getDataCommand += "D0!";
+        MS_DEEP_DBG(F("    >>>"), getDataCommand);
+        _SDI12Internal.sendCommand(getDataCommand);
+        delay(30);  // It just needs this little delay
+
+        uint32_t start = millis();
+        while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
+        MS_DEEP_DBG(F("  Receiving results from"), getSensorNameAndLocation());
+        _SDI12Internal.read();  // ignore the repeated SDI12 address
+        for (uint8_t i = 0; i < _numReturnedValues; i++) {
+            float result = _SDI12Internal.parseFloat();
+            // The SDI-12 library should return -9999 on timeout
+            if (result == -9999 || isnan(result)) result = -9999;
+            MS_DEEP_DBG(F("    <<< Result #"), i, ':', result);
+            verifyAndAddMeasurementResult(i, result);
+        }
+        // String sdiResponse = _SDI12Internal.readStringUntil('\n');
+        // sdiResponse.trim();
+        // _SDI12Internal.clearBuffer();
+        // MS_DEEP_DBG(F("    <<<"), sdiResponse);
+
+        // Empty the buffer again
+        _SDI12Internal.clearBuffer();
+
+        // De-activate the SDI-12 Object
+        // Use end() instead of just forceHold to un-set the timers
+        if (!wasActive) _SDI12Internal.end();
+
+        success = true;
+    } else {
+        // If there's no measurement, need to make sure we send over all
+        // of the "failed" result values
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        for (uint8_t i = 0; i < _numReturnedValues; i++) {
+            verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
+        }
+    }
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
+
+    return success;
+}
+
+#else
+#error 
 #endif  //#ifndef MS_SDI12_NON_CONCURRENT
 
 String SDI12Sensors::getSensorDetails(void) {
