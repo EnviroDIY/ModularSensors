@@ -41,6 +41,7 @@
  * Documentation for the sensor can be found at:
  * https://www.adafruit.com/product/992 and
  * https://github.com/adafruit/Adafruit-MPL115A2-Breakout-PCB
+ *
  * A copy of the datasheet is available here:
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf)
  *

@@ -11,26 +11,70 @@ The sensors used in this example are Yosemitech Y504 Dissolved Oxygen Sensor, Yo
 
 _______
 
-[//]: # ( @section example_data_saving_walk Walking Through the Code )
-# Walking Through the Code
-
-_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
-
 [//]: # ( @tableofcontents )
 
 [//]: # ( Start GitHub Only )
 - [Using ModularSensors to Record data from Many Variables but Only Send a Portion to the EnviroDIY Data Portal](#using-modularsensors-to-record-data-from-many-variables-but-only-send-a-portion-to-the-envirodiy-data-portal)
-- [Walking Through the Code](#walking-through-the-code)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
+- [Unique Features of the Data Saving Example](#unique-features-of-the-data-saving-example)
+- [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Set the logger ID](#set-the-logger-id)
+  - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+  - [Upload!](#upload)
 
 [//]: # ( End GitHub Only )
 
+_______
 
-[//]: # ( @section example_data_saving_pio PlatformIO Configuration )
-## PlatformIO Configuration
+[//]: # ( @section example_data_saving_unique Unique Features of the Data Saving Example )
+# Unique Features of the Data Saving Example
+- Uses AltSoftSerial to create an additional serial port for RS485 communication.
+- All variables are created and named with their parent sensor (as opposed to being created within the variable array).
+- Two different variable arrays and loggers are created and used.
+  - Many of the same variables are used in both arrays.
+  - Only one of the loggers publishes data.
+- The `loop` function is expanded into its components rather than using the `logData` functions.
+  - This demonstrates *how* to write the loop out, without using the `logData` functions.
+  - It also shows how to forcibly set serial pins `LOW` at the start and end of the loop in order to prevent power loss through an RS485 adapter.
+
+[//]: # ( @section example_data_saving_using To Use this Example: )
+# To Use this Example:
+
+[//]: # ( @subsection example_data_saving_pio Prepare and set up PlatformIO )
+## Prepare and set up PlatformIO
+- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
+- Create a new PlatformIO project
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/data_saving/platformio.ini) file in the examples/data_saving folder on GitHub.
+    - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
+    - Without this, the program won't compile.
+- Open [data_saving.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/data_saving/data_saving.ino) and save it to your computer.
+    - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
+    - Move it into the src directory of your project.
+    - Delete main.cpp in that folder.
+
+[//]: # ( @subsection example_data_saving_logger_id Set the logger ID )
+## Set the logger ID
+- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+
+```cpp
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXX";
+```
+
+[//]: # ( @subsection example_data_saving_uuids Set the universally universal identifiers (UUID) for each variable )
+## Set the universally universal identifiers (UUID) for each variable
+- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
+- For each variable, find the dummy UUID (`"12345678-abcd-1234-ef00-1234567890ab"`) and replace it with the real UUID for the variable.
+
+[//]: # ( @subsection example_data_saving_upload Upload! )
+## Upload!
+- Test everything at home **before** deploying out in the wild!
+
+_______
+
+
+[//]: # ( @section example_data_saving_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} data_saving/platformio.ini )
 
 [//]: # ( @section example_data_saving_code The Complete Code )
-## The Complete Code

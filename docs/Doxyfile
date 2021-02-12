@@ -38,7 +38,7 @@ PROJECT_NAME           = ModularSensors
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 0.27.5
+PROJECT_NUMBER         = 0.28.01
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -2295,7 +2295,6 @@ PREDEFINED             = DOXYGEN=1 \
                          STANDARD_SERIAL_OUTPUT=Serial \
                          DEBUGGING_SERIAL_OUTPUT=Serial \
                          DEEP_DEBUGGING_SERIAL_OUTPUT=Serial \
-                         MS_BUILD_TESTING \
                          TINY_GSM_MODEM_HAS_GPRS \
                          TINY_GSM_MODEM_HAS_WIFI \
                          TINY_GSM_MODEM_HAS_BATTERY \

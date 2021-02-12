@@ -11,26 +11,63 @@ This is the example you should use to deploy a logger with a modem to stream liv
 
 _______
 
-[//]: # ( @section example_mmw_walk Walking Through the Code )
-# Walking Through the Code
-
-_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
-
 [//]: # ( @tableofcontents )
 
 [//]: # ( Start GitHub Only )
 - [Using ModularSensors to log data to Monitor My Watershed/EnviroDIY](#using-modularsensors-to-log-data-to-monitor-my-watershedenvirodiy)
-- [Walking Through the Code](#walking-through-the-code)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
+- [Unique Features of the Monitor My Watershed Example](#unique-features-of-the-monitor-my-watershed-example)
+- [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Set the logger ID](#set-the-logger-id)
+  - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+  - [Upload!](#upload)
 
 [//]: # ( End GitHub Only )
 
+_______
 
-[//]: # ( @section example_mmw_pio PlatformIO Configuration )
-## PlatformIO Configuration
+[//]: # ( @section example_mmw_unique Unique Features of the Monitor My Watershed Example )
+# Unique Features of the Monitor My Watershed Example
+- A single logger publishes data to the Monitor My Watershed data portal.
+- Uses a cellular Digi XBee or XBee3
+
+[//]: # ( @section example_mmw_using To Use this Example: )
+# To Use this Example:
+
+[//]: # ( @subsection example_mmw_pio Prepare and set up PlatformIO )
+## Prepare and set up PlatformIO
+- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
+- Create a new PlatformIO project
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_MMW/platformio.ini) file in the examples/logging_to_MMW folder on GitHub.
+    - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
+    - Without this, the program won't compile.
+- Open [logging_to_MMW.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_MMW/logging_to_MMW.ino) and save it to your computer.
+    - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
+    - Move it into the src directory of your project.
+    - Delete main.cpp in that folder.
+
+[//]: # ( @subsection example_mmw_logger_id Set the logger ID )
+## Set the logger ID
+- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+
+```cpp
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXX";
+```
+
+[//]: # ( @subsection example_mmw_uuids Set the universally universal identifiers (UUID) for each variable )
+## Set the universally universal identifiers (UUID) for each variable
+- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
+- For each variable, find the dummy UUID (`"12345678-abcd-1234-ef00-1234567890ab"`) and replace it with the real UUID for the variable.
+
+[//]: # ( @subsection example_mmw_upload Upload! )
+## Upload!
+- Test everything at home **before** deploying out in the wild!
+
+_______
+
+[//]: # ( @section example_mmw_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} logging_to_MMW/platformio.ini )
 
 [//]: # ( @section example_mmw_code The Complete Code )
-## The Complete Code

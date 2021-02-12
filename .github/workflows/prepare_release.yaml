@@ -25,12 +25,12 @@ jobs:
         run: |
           echo "::debug::Get the current version number"
           VER=$(cat VERSION)
-          ZIP_FILE="ModularSensors_Dependencies_${VER}""
+          ZIP_FILE="ModularSensors_Dependencies_${VER}"
           echo "VERSION=$VER" >> $GITHUB_ENV
           echo "ZIP_NAME=$ZIP_FILE" >> $GITHUB_ENV
 
       - name: Restore or Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.4
         with:
           path: ~/.cache/pip
           # if requirements.txt hasn't changed, then it will be a "cache hit" and pip will be restored
@@ -151,12 +151,16 @@ jobs:
           pio lib -g uninstall adafruit/Adafruit ILI9341
 
       # zip up all the installed libraries
+      # need to cd into the pio directory so we don't get extra junk directories
       - name: Zip libraries
         run: |
           echo "::debug::Listing global libraries"
           pio lib -g list
           echo "::debug::Zipping global libraries"
-          zip ${{ env.ZIP_NAME }}.zip -r ~/.platformio/lib
+          cd home/runner/.platformio/
+          zip ${{ env.ZIP_NAME }}.zip -r lib
+          mv ${{ env.ZIP_NAME }}.zip $GITHUB_WORKSPACE
+          cd $GITHUB_WORKSPACE
 
       # Remove some extras from the zip
       - name: Remove git files from the zip

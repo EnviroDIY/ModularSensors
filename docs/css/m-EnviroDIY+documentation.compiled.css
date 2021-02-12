@@ -3038,6 +3038,8 @@ article h1 .m-breadcrumb {
   color: #666;
   font-weight: normal;
   font-size: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 article h1 .m-breadcrumb a {
   color: #26a9e0;
@@ -3049,7 +3051,7 @@ article h1 a:active {
 }
 article hr {
   width: 75%;
-  border-width: 2px 0 0 0 ;
+  border-width: 2px 0 0 0;
   border-style: solid;
   border-color: #92d050;
   margin: auto;

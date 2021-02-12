@@ -9,20 +9,43 @@ Stroud can provide directions for registering your site if you need assistance.
 
 _______
 
-[//]: # ( @section drwi_2g_use To Use this Example: )
-## To Use this Example:
+[//]: # ( @tableofcontents )
 
-[//]: # ( @subsection drwi_2g_pio Prepare and set up PlatformIO )
+[//]: # ( Start GitHub Only )
+- [ModularSensors DRWI 2G Sites](#modularsensors-drwi-2g-sites)
+- [Unique Features of the DRWI 2G Example](#unique-features-of-the-drwi-2g-example)
+- [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Set the logger ID](#set-the-logger-id)
+  - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
+  - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+  - [Upload!](#upload)
+
+[//]: # ( End GitHub Only )
+
+_______
+
+[//]: # ( @section example_drwi_2g_unique Unique Features of the DRWI 2G Example )
+# Unique Features of the DRWI 2G Example
+- Specifically for sites within the Delaware River Watershed Initiative.
+- Uses a Sodaq 2GBee for live data.
+
+[//]: # ( @section example_drwi_2g_use To Use this Example: )
+# To Use this Example:
+
+[//]: # ( @subsection example_drwi_2g_pio Prepare and set up PlatformIO )
 ## Prepare and set up PlatformIO
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
-- Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/platformio.ini) file in the examples/DRWI_CitSci folder on GitHub.
     - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
-Without this, the program won't compile or send data.
-- Download logging_to_EnviroDIY.ino and put it into the src directory of your project.
-Delete main.cpp in that folder.
+    - Without this, the program won't compile.
+- Open [DRWI_CitSci.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/DRWI_CitSci.ino) and save it to your computer.
+    - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
+    - Move it into the src directory of your project.
+    - Delete main.cpp in that folder.
 
-[//]: # ( @subsection drwi_2g_logger_id Set the logger ID )
+[//]: # ( @subsection example_drwi_2g_logger_id Set the logger ID )
 ## Set the logger ID
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
@@ -31,13 +54,13 @@ Delete main.cpp in that folder.
 const char *LoggerID = "XXXX";
 ```
 
-[//]: # ( @subsection drwi_2g_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
+[//]: # ( @subsection example_drwi_2g_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
 ## Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
-- Change _**all**_ of the the `0.000E+00` and `0.000E+00` values in this section of code to the values on that calibration sheet.
+- Change _**all**_ of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
 Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
     - The sketch will not compile if these values are not entered properly.
-    - Do not change any values except those that are `0.000E+00` and `0.000E+00`!
+    - Do not change any values except those that are `0.000E+00` and `1.000E+00`!
 
 ```cpp
 // ==========================================================================
@@ -61,7 +84,7 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-[//]: # ( @subsection drwi_2g_uuids Set the universally universal identifiers (UUID) for each variable )
+[//]: # ( @subsection example_drwi_2g_uuids Set the universally universal identifiers (UUID) for each variable )
 ## Set the universally universal identifiers (UUID) for each variable
 - Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
@@ -99,38 +122,15 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 ```
 
-[//]: # ( @subsection drwi_2g_upload Upload! )
+[//]: # ( @subsection example_drwi_2g_upload Upload! )
 ## Upload!
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
-[//]: # ( @section example_drwi_2g_walk Walking Through the Code )
-# Walking Through the Code
 
-_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
-
-[//]: # ( @tableofcontents )
-
-[//]: # ( Start GitHub Only )
-- [ModularSensors DRWI 2G Sites](#modularsensors-drwi-2g-sites)
-  - [To Use this Example:](#to-use-this-example)
-  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
-  - [Set the logger ID](#set-the-logger-id)
-  - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
-  - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
-  - [Upload!](#upload)
-- [Walking Through the Code](#walking-through-the-code)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
-
-[//]: # ( End GitHub Only )
-
-
-[//]: # ( @section example_drwi_2g_pio PlatformIO Configuration )
-## PlatformIO Configuration
+[//]: # ( @section example_drwi_2g_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} DRWI_CitSci/platformio.ini )
 
 [//]: # ( @section example_drwi_2g_code The Complete Code )
-## The Complete Code
