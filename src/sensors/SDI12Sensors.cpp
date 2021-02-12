@@ -584,3 +584,14 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     return success;
 }
 #endif  //#ifndef MS_SDI12_NON_CONCURRENT
+
+String SDI12Sensors::getSensorDetails(void) {
+    // PRINTOUT(F("SDI12 Sensor Vendor"),_sensorVendor,_sensorModel,_sensorVersion,F("Sn"),_sensorSerialNumber,
+    //  F("SDI12 Version"),sdi12Version,F("Addr"),sdi12Address);
+    String sensorDetails(F("SDI Sensor "));
+    String space(" ");
+    sensorDetails += _sensorVendor+space+ _sensorModel+space+_sensorVersion
+    +String(F(" Sn "))+_sensorSerialNumber
+    +String(F(" SDI12 Version tbd"));//+String(sdi12Version)+String(F("Addr"))+String(sdi12Address);    
+    return sensorDetails;
+}
