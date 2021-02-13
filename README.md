@@ -16,6 +16,7 @@ The ModularSensors library is specifically designed to support wireless, solar-p
 * Based in the riparian corridor
 * Supports 12V/Modbus interface through Wingboard 
 * powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
+
 ## New for this fork   
 
 * Adds geographically scaling for multiple loggers using the same program/binays. It does this with a  custome ms_cfg.ini configuration file on the SD memory card
@@ -25,11 +26,10 @@ The ModularSensors library is specifically designed to support wireless, solar-p
 * prebuilt hex files at https://github.com/neilh10/ms_releases/wiki
 * Specific development stream in ModularSensors\a\.. directories (Mayfly and other ARM SAMDx boards)   
 
-* ONLY applies to ModularSensors\examples\tu_xx01 (Mayfly) and development ModularSensors\a\.. directories (Mayfly and other ARM SAMDx boards)   
+* ONLY applies to ModularSensors\examples\tu_xx01 (Mayfly)
 * Scales the rollout of multiple loggers with ms_cfg.ini configuration on the SD memory card
 * Manages the available LiIon battery power, with best management practices for power demand management,
 * Tested for ruggedness/reliability with the Xbee WiFi S6 module (and future the Xbee LTE family and Xbee ISM band modules)
-
 
 To use, from the IDE Platformio (platformio.org) open folder ModularSensors\a\<select a folder> - and press icon "Build" (the tick mark), then download to the target.   
 tbd - download a prebuilt image   
