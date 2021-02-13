@@ -65,11 +65,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const long   serialBaud = 115200;  // Baud rate for debugging
-const int8_t greenLED   = 8;       // Pin for the green LED
-const int8_t redLED     = 9;       // Pin for the red LED
-const int8_t buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t wakePin    = A7;      // MCU interrupt/alarm pin to wake from sleep
+const int32_t serialBaud = 115200;  // Baud rate for debugging
+const int8_t  greenLED   = 8;       // Pin for the green LED
+const int8_t  redLED     = 9;       // Pin for the red LED
+const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t  wakePin    = A7;  // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -90,17 +90,17 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-const long      modemBaud   = 9600;     // All XBee's use 9600 by default
+const int32_t   modemBaud   = 9600;     // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin     = -2;      // MCU pin controlling modem power
-const int8_t modemStatusPin  = 19;      // MCU pin used to read modem status
-const bool   useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
-const int8_t modemResetPin   = 20;      // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = 23;      // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin     = redLED;  // MCU pin connected an LED to show modem
-                                        // status (-1 if unconnected)
+const int8_t modemVccPin    = -2;     // MCU pin controlling modem power
+const int8_t modemStatusPin = 19;     // MCU pin used to read modem status
+const bool useCTSforStatus  = false;  // Flag to use the XBee CTS pin for status
+const int8_t modemResetPin  = 20;     // MCU pin connected to modem reset pin
+const int8_t modemSleepRqPin = 23;    // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;    // MCU pin connected an LED to show modem
+                                      // status (-1 if unconnected)
 
 // Network connection information
 const char* apn = "xxxxx";  // The APN for the gprs connection
@@ -108,8 +108,8 @@ const char* apn = "xxxxx";  // The APN for the gprs connection
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
 // the `CTS` pin can also be used if necessary
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
-                                      useCTSforStatus, modemResetPin, modemSleepRqPin,
-                                      apn);
+                                      useCTSforStatus, modemResetPin,
+                                      modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
 /** End [xbee_cell_transparent] */
@@ -165,7 +165,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 // DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03,
 // 0x0C};
 const int8_t OneWirePower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t OneWireBus   = 6;               // OneWire Bus Pin (-1 if unconnected)
+const int8_t OneWireBus   = 6;  // OneWire Bus Pin (-1 if unconnected)
 
 // Create a Maxim DS18 sensor objects (use this form for a known address)
 // MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
@@ -181,13 +181,15 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ProcessorStats_SampleNumber(&mcuBoard,
+                                    "12345678-abcd-1234-ef00-1234567890ab"),
     new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
     new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ProcessorStats_Battery(&mcuBoard,
+                               "12345678-abcd-1234-ef00-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -225,8 +227,8 @@ const char* samplingFeature =
 
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken,
-                                 samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
+                                 registrationToken, samplingFeature);
 /** End [publishers] */
 
 
@@ -286,7 +288,8 @@ void setup() {
 
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
+                    CHANGE);
 #endif
 #if defined NeoSWSerial_h
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
@@ -312,7 +315,8 @@ void setup() {
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
     modem.setModemLED(modemLEDPin);
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
+                             greenLED);
 
     // Begin the logger
     dataLogger.begin();
@@ -338,7 +342,8 @@ void setup() {
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
+        dataLogger.turnOnSDcard(
+            true);  // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
         dataLogger.turnOffSDcard(
             true);  // true = wait for internal housekeeping after write

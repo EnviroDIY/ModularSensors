@@ -90,3 +90,5 @@ mcss-doxy-output.log
 output_mcss.log
 docs/examples.dox_x
 platformio_extra_envs.ini
+src/sensors/table.md
+cache

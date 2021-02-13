@@ -39,7 +39,7 @@
  * @section sensor_pt_redox_flags Build flags
  * - `-D MS_PALEOTERRA_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
- * @warning Either all or none your attached redox may use software I2C.
+ * @warning Either all or none of your attached redox probes may use software I2C.
  * Using some with software I2C and others with hardware I2C is not supported.
  *
  * @section sensor_pt_redox_ctor Sensor Constructor

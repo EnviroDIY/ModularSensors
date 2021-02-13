@@ -6,29 +6,50 @@ Data is sent to [ThingSpeak](https://thingspeak.com) using MQTT.
 
 _______
 
-[//]: # ( @section thingspeak_using To Use this Example: )
-## To Use this Example:
+[//]: # ( @tableofcontents )
 
-[//]: # ( @subsection thingspeak_pio Prepare and set up PlatformIO )
+[//]: # ( Start GitHub Only )
+- [Using ModularSensors to save data to an SD card and send data to ThingSpeak](#using-modularsensors-to-save-data-to-an-sd-card-and-send-data-to-thingspeak)
+- [Unique Features of the ThingSpeak Example](#unique-features-of-the-thingspeak-example)
+- [To Use this Example:](#to-use-this-example)
+  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
+  - [Modify the Example](#modify-the-example)
+  - [Upload!](#upload)
+
+[//]: # ( End GitHub Only )
+
+_______
+
+[//]: # ( @section example_thingspeak_unique Unique Features of the ThingSpeak Example )
+# Unique Features of the ThingSpeak Example
+- A single logger publishes data to ThingSpeak.
+- Uses an Espressif ESP8266 to publish data.
+
+[//]: # ( @section example_thingspeak_using To Use this Example: )
+# To Use this Example:
+
+[//]: # ( @subsection example_thingspeak_pio Prepare and set up PlatformIO )
 ## Prepare and set up PlatformIO
 - Create a channel on ThingSpeak with fields to receive your data.
 - Create a new PlatformIO project
-- Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
-    - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.
-Without this, the program won't compile or send data.
-- Download logging_to_ThingSpeak.ino and put it into the src directory of your project.
-Delete main.cpp in that folder.
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_ThingSpeak/platformio.ini) file in the examples/logging_to_ThingSpeak folder on GitHub.
+    - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
+    - Without this, the program won't compile.
+- Open [logging_to_ThingSpeak.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_ThingSpeak/logging_to_ThingSpeak.ino) and save it to your computer.
+    - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
+    - Move it into the src directory of your project.
+    - Delete main.cpp in that folder.
 
-[//]: # ( @subsection thingspeak_modify Modify the Example )
+[//]: # ( @subsection example_thingspeak_modify Modify the Example )
 ## Modify the Example
 - Modify logging_to_ThingSpeak.ino to have the modem, sensor, and variable objects that you are interested in.
     - This example is written for an _ESP8266 (wifi)_ modem.
 Change this to whatever modem you are using.
-Pastable chunks of code for each modem are available in the [wiki](https://github.com/EnviroDIY/ModularSensors/wiki/Home).
+Pastable chunks of code for each modem are available in the individual sensor documentation or in the menu a la carte example.
     - Don't forget to put in your wifi username/password or cellular APN!
     - This example is written for a Campbell OBS3+ and a Meter Hydros 21.
 Remove those sensors if you are not using them and add code for all of your sensors.
-See the pages for the individual sensors in the [wiki](https://github.com/EnviroDIY/ModularSensors/wiki/Home) for code snippets/examples.
+See the pages for the individual sensors in the [documentation](https://envirodiy.github.io/ModularSensors/index.html) for code snippets/examples.
         - Remember, no more than **8** variables/fields can be sent to a single ThingSpeak channel.
 If you want to send data to multiple channels, you must create individual logger objects with unique publishers attached for each channel you want to send to.
 - **Make sure the pin numbers and serial ports selected in your code match with how things are physically attached to your board!**
@@ -45,36 +66,15 @@ const char *thingSpeakChannelID = "######";  // The numeric channel id for your 
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 ```
 
-[//]: # ( @subsection thingspeak_upload Upload! )
+[//]: # ( @subsection example_thingspeak_upload Upload! )
 ## Upload!
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
-[//]: # ( @section example_thingspeak_walk Walking Through the Code )
-# Walking Through the Code
 
-_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
-
-[//]: # ( @tableofcontents )
-
-[//]: # ( Start GitHub Only )
-- [Using ModularSensors to save data to an SD card and send data to ThingSpeak](#using-modularsensors-to-save-data-to-an-sd-card-and-send-data-to-thingspeak)
-  - [To Use this Example:](#to-use-this-example)
-  - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
-  - [Modify the Example](#modify-the-example)
-  - [Upload!](#upload)
-- [Walking Through the Code](#walking-through-the-code)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
-
-[//]: # ( End GitHub Only )
-
-
-[//]: # ( @section example_thingspeak_pio PlatformIO Configuration )
-## PlatformIO Configuration
+[//]: # ( @section example_thingspeak_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} logging_to_ThingSpeak/platformio.ini )
 
 [//]: # ( @section example_thingspeak_code The Complete Code )
-## The Complete Code

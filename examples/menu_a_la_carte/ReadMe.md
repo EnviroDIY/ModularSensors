@@ -3,17 +3,16 @@
 
 This shows most of the functionality of the library at once.
 It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
-This example should *never* be used directly, but rather taken as a template and all parts that do not apply cut out.
+This example should *never* be used directly; it is intended to document all possibilities and to verify compilating.
 
-Any line containing the word `MS_BUILD_TESTING` is to help ensure the library builds correctly in all environments.
-Those lines should be removed when using the example on your own board.
+To create your own code, I recommend starting from a much simpler targeted example, like the [Logging to MMW](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW) example, and then adding to it based on only the parts of this menu example that apply to you.
 
 _______
 
 [//]: # ( @section example_menu_walk Walking Through the Code )
 # Walking Through the Code
 
-_NOTE:  The code snippets in this walkthrough will not appear on GitHub._
+_NOTE:  This walkthrough is intended to be viewed here:  https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html_
 
 WARNING:  This example is long.
 This walk-through is really, really long.
@@ -29,13 +28,14 @@ ___
     - [Defines for the Arduino IDE](#defines-for-the-arduino-ide)
     - [Library Includes](#library-includes)
   - [Logger Settings](#logger-settings)
-    - [Extra Serial Ports](#extra-serial-ports)
+    - [Creating Extra Serial Ports](#creating-extra-serial-ports)
       - [AVR Boards](#avr-boards)
         - [AltSoftSerial](#altsoftserial)
         - [NeoSWSerial](#neoswserial)
         - [SoftwareSerial with External Interrupts](#softwareserial-with-external-interrupts)
         - [Software I2C/Wire](#software-i2cwire)
       - [SAMD Boards](#samd-boards)
+    - [Assigning Serial Port Functionality](#assigning-serial-port-functionality)
     - [Logging Options](#logging-options)
   - [Wifi/Cellular Modem Options](#wificellular-modem-options)
     - [Digi XBee Cellular - Transparent Mode](#digi-xbee-cellular---transparent-mode)
@@ -83,6 +83,7 @@ ___
     - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
     - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
     - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
+    - [Turner Cyclops-7F Submersible Fluorometer](#turner-cyclops-7f-submersible-fluorometer)
     - [Analog Electrical Conductivity using the Processor's Analog Pins](#analog-electrical-conductivity-using-the-processors-analog-pins)
     - [Yosemitech RS485/Modbus Environmental Sensors](#yosemitech-rs485modbus-environmental-sensors)
       - [Yosemitech Y504 Dissolved Oxygen Sensor](#yosemitech-y504-dissolved-oxygen-sensor)
@@ -129,8 +130,6 @@ ___
   - [Arduino Loop Function](#arduino-loop-function)
     - [A Typical Loop](#a-typical-loop)
     - [A Complex Loop](#a-complex-loop)
-  - [PlatformIO Configuration](#platformio-configuration)
-  - [The Complete Code](#the-complete-code)
 
 [//]: # ( End GitHub Only )
 
@@ -170,8 +169,8 @@ ___
 [//]: # ( @section menu_logger_and_modem_settings Logger Settings )
 ## Logger Settings
 
-[//]: # ( @subsection menu_serial_ports Extra Serial Ports )
-### Extra Serial Ports
+[//]: # ( @subsection menu_serial_ports Creating Extra Serial Ports )
+### Creating Extra Serial Ports
 
 This section of the example has all the code to create and link to serial ports for both AVR and SAMD based boards.
 The EnviroDIY Mayfly, the Arduino Mega, UNO, and Leonardo are all AVR boards.
@@ -260,6 +259,16 @@ This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/
 
 
 NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have any exmple code for using them.
+
+---
+
+[//]: # ( @subsection menu_serial_func Assigning Serial Port Functionality )
+### Assigning Serial Port Functionality
+
+This section just assigns all the serial ports from the @ref menu_serial_ports section above to specific functionality.
+For a board with the option of up to 4 hardware serial ports, like the SAMD21 or Arduino Mega, we use the Serial1 to talk to the modem, Serial2 for modbus, and Serial3 for the Maxbotix.
+For an AVR board where we're relying on a mix of hardware and software ports, we use hardware Serial 1 for the modem, AltSoftSerial for modbus, and NeoSWSerial for the Maxbotix.
+Depending on how you rank the importance of each component, you can adjust these to your liking.
 
 ---
 
@@ -781,6 +790,9 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
 AltSoftSerial and HardwareSerial work fine.
+
+The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to modbus functionality in the @ref menu_serial_func section.
+
 Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
 If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
 If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.
@@ -812,7 +824,10 @@ ___
 ### Maxbotix HRXL Ultrasonic Range Finder
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, `Serial`), and the Arduino pin controlling the trigger are required for the sensor constructor.
-(Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
+(Use -1 for the trigger pin if you do not have it connected.)
+Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
+
+The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to the sonar functionality in the @ref menu_serial_func section.
 
 @see @ref sensor_maxbotix
 
@@ -894,8 +909,8 @@ The constructors for the software I2C implementation requires either the SCL and
 All variants of the constructor require the Arduino power pin.
 The I2C address can be given if it the sensor is not set to the default of 0x68.
 A number of readings to average can also be given.
-
-@warning Either all or none your attached redox may use software I2C.
+****
+@warning Either all or none of your attached redox probes may use software I2C.
 Using some with software I2C and others with hardware I2C is not supported.
 
 @see @ref sensor_pt_redox
@@ -951,6 +966,22 @@ The number of measurements to average, if more than one is desired, goes as the 
 ___
 
 
+[//]: # ( @subsection menu_cyclops Turner Cyclops-7F Submersible Fluorometer )
+### Turner Cyclops-7F Submersible Fluorometer
+
+This is the code for the Turner Cyclops-7F submersible fluorometer.
+The Arduino pin controlling power on/off and all calibration information is needed for the constructor.
+The address of the ADS1x15, if it is different than the default of 0x48, can be entered after the calibration information.
+The number of measurements to average, if more than one is desired, is the last argument.
+
+The Cyclops sensors are *NOT* pre-calibrated and must be calibrated prior to deployment.
+
+@see @ref sensor_cyclops
+
+[//]: # ( @menusnip{cyclops} )
+___
+
+
 
 [//]: # ( @subsection menu_analog_cond Analog Electrical Conductivity using the Processor's Analog Pins )
 ### Analog Electrical Conductivity using the Processor's Analog Pins
@@ -978,6 +1009,11 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
 For most of the sensors, Yosemitech strongly recommends averaging multiple (in most cases 10) readings for each measurement.
 Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
+In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
+AltSoftSerial and HardwareSerial work fine.
+NeoSWSerial is a bit hit or miss, but can be used in a pinch.
+
+The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to modbus functionality in the @ref menu_serial_func section.
 
 @see @ref yosemitech_group
 
@@ -1412,10 +1448,8 @@ All together, this gives:
 If you need more help in writing a complex loop, the [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
 The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
-[//]: # ( @section example_menu_pio PlatformIO Configuration )
-## PlatformIO Configuration
+[//]: # ( @section example_menu_pio_config PlatformIO Configuration )
 
 [//]: # ( @include{lineno} menu_a_la_carte/platformio.ini )
 
 [//]: # ( @section example_menu_code The Complete Code )
-## The Complete Code

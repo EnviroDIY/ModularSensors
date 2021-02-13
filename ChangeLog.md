@@ -4,10 +4,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+****
 
-## v0.27.5 (2020-12-15)
+## v0.28.01 (2021-02-10) [Gigantic SDI-12 bug](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.1)
 
-## [Multiple new Sensors and Workflows](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
+### Downloads
+
+**[ModularSensors_Dependencies_v0.28.01.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.01/ModularSensors_Dependencies_v0.28.01.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
+### Bug Fixes
+- Fixes an **_EGREGIOUS_** error in the SDI-12 code causing the code to lock up if debugging was off (but always work with it on)
+  - [Issue #346](https://github.com/EnviroDIY/ModularSensors/issues/346)
+  - This was first introduced in [0.27.5](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
+- Fix GitHub action for pull requests.
+## v0.28.0 (2021-02-10) Add Support for Turner Cyclops
+
+### New Features
+- Add support for all standard configurations of the [Turner Cyclops-7F submersible fluorometer](https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer)
+
+### Documentation
+- Fix some minor Doxygen warnings
+- Small grammar fixes
+- Changes in the EnviroDIY fork of m.css:
+  - Added extra navigation hints to classes leading back to the containing module
+  - Correctly included script for the to-top element
+
+## v0.27.8 (2021-01-19) [Fix GitHub Action](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.8)
+
+### Downloads
+
+**[ModularSensors_Dependencies_v0.27.8.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.27.8/ModularSensors_Dependencies_v0.27.8.zip)** contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
+### Bug Fixes
+- Just fixes an error in the github action to post a release
+
+
+## v0.27.7 (2021-01-19) [SDI-12 Bug Fix](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.7)
+
+### Bug Fixes
+- Fixed a compiler error for non-concurrent SDI-12 sensors.
+
+## v0.27.6 (2021-01-19) [Update Documentation](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.6)
+
+### Improvements:
+- Update instructions for examples
+- Update developer instructions
+
+
+## v0.27.5 (2020-12-15) [Multiple new Sensors and Workflows](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
 
 ### Downloads
 
@@ -44,9 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The instructions for using most of the examples is out of date.
 
 
-## v0.25.0
-
-## [v0.25.0: Styling & Doxygen Code Documentation](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.25.0)
+## [v0.25.0 (2020-06-25) Styling & Doxygen Code Documentation](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.25.0)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3908530.svg)](https://doi.org/10.5281/zenodo.3908530)
 
@@ -74,9 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 For more details, see [Pull Request #309: The style sheet](https://github.com/EnviroDIY/ModularSensors/pull/309)
 
 
-## v0.24.1
-
-## [v0.24.1: Modem Restructuring](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.24.1)
+## [v0.24.1 (2020-03-02) Modem Restructuring](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.24.1)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3693784.svg)](https://doi.org/10.5281/zenodo.3693784)
 
@@ -89,9 +130,7 @@ For more details, see [Pull Request #309: The style sheet](https://github.com/En
 Restructured modem so that it no longer operates as a sensor.  Variables tied to the modem are now effectively calculated variables and all values from the modem will be offset by 1 sending cycle (ie, the signal strength posted will always be the strength from the prior send, not the current one).
 
 
-## v0.23.13
-
-## [v0.23.13: More agressive attempts to set clock](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.13)
+## [v0.23.13 (2019-09-19) More agressive attempts to set clock](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.13)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3451413.svg)](https://doi.org/10.5281/zenodo.3451413)
 
@@ -107,9 +146,7 @@ Restructured modem so that it no longer operates as a sensor.  Variables tied to
 - Using automatic network technology and carrier profile for Digi LTE-M XBee3's - with the current firmware there is not a significant time savings in manually selecting the carrier and manually selecting the carrier gives no options when the relative signal strength of the carriers changes.
 
 
-## v0.23.11
-
-## [v0.23.11: Watchdogs and More](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.11)
+## [v0.23.11 (2019-09-11) Watchdogs and More](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.23.11)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3405562.svg)](https://doi.org/10.5281/zenodo.3405562)
 
@@ -144,9 +181,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times.  This is a reflection of a change in the Adafruit library.  The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion.  The update function and all variable array functions should behave properly.
 
 
-## v0.22.5
-
-## [v0.22.5: Modem Simplification](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.22.5)
+## [v0.22.5 (2019-06-24) Modem Simplification](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.22.5)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3255084.svg)](https://doi.org/10.5281/zenodo.3255084)
 
@@ -197,9 +232,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - polling the AM2315 more frequently than every 2 seconds will now return a bad value (-9999) rather than returning the same value multiple times.  This is a reflection of a change in the Adafruit library.  The measurement time set for the sensor has always been this long so this issue should never be seen unless you attempt to call get measurement results from the AM2315 without first waiting for the measurement completion.  The update function and all variable array functions should behave properly.
 
 
-## v0.21.4
-
-## v0.21.4:  Deep debug error
+## [v0.21.4 (2019-05-02) Deep debug error](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.4)
 
 ## Downloads
 
@@ -215,9 +248,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Fixed minor bug in debugging created in previous release
 
 
-## v0.21.3
-
-## v0.21.3: Minor Bugs and Simplified Debugging
+## [v0.21.3 (2019-05-02) Minor Bugs and Simplified Debugging](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.3)
 
 ## New Features:
  - Gave every header file a unique debugging define statement so each file can be debugged individually by building with the build flag -DMS_xxx_DEBUG where xxx is the file name in upper case.
@@ -230,17 +261,14 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Typo fixes in comments
 
 
-## v0.21.2
-
-## v0.21.2:  Fix write to SD card
+## [v0.21.2 (2019-03-19) Fix write to SD card](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.2)
 
 ### Bug Fixes
 - Fixed bug intoduced in 0.21.0 preventing writing to SD card - file must be closed (not sync'ed)
 
 
-## v0.21.0
 
-## v0.21.0: Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
+## [v0.21.0 (2019-03-06) Support for all Atlas Scientific I2C sensors, compiler-safe begin functions](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.21.0)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2586200.svg)](https://doi.org/10.5281/zenodo.2586200)
 
@@ -277,9 +305,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - The sensor class and all of its subclasses still require input arguments in the constructor.
 
 
-## v0.19.6
-
-## v0.19.6: Modem Improvements & ADS1X15 Generalization
+## [v0.19.6 (2019-02-27) Modem Improvements & ADS1X15 Generalization](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.6)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2579301.svg)](https://doi.org/10.5281/zenodo.2579301)
 
@@ -295,9 +321,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Fixed bug with ADS1115 for M0/SAM21
 
 
-## v0.19.3
-
-## v0.19.3: Bug fix and example re-working
+## [v0.19.3 (2019-01-15) Bug fix and example re-working](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.3)
 
 ### Improvements:
 - Re-works the examples to remove duplication between them.
@@ -306,9 +330,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Fixes bug in sending data to the WikiWatershed / [Monitor My Watershed](https://monitormywatershed.org/) data sharing portal.
 
 
-## v0.19.2
-
-## v0.19.2: Decreased Data Consumption
+## [v0.19.2 (2018-12-22) Decreased Data Consumption](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.19.2)
 
 ### New Features:
 - Added ThingSpeak support via MQTT (PubSubClient is now a required dependency)
@@ -320,9 +342,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - Refactored data publishers as a new class rather than subclasses of loggers
 
 
-## v0.17.2
-
-## v0.17.2: Major Update!
+## [v0.17.2 (2018-11-27) Major Update!](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.17.2)
 
 ### New Features & Improvements
 - Improved power management.
@@ -334,9 +354,7 @@ Extract the contents of libraries.zip to your project's 'lib' folder.
 - All library dependencies will need to be updated to match versions in the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file.
 
 
-## v0.12.2
-
-## v0.12.2: Calculated variables and bug fixes
+## [v0.12.2 (2018-09-25) Calculated variables and bug fixes](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.12.2)
 
 ### New features and improvements:
 * Implemented real calculated variables, from PR #153, closing issue #127 (Create generic calculated variables).
@@ -349,9 +367,7 @@ See PR #160 for a full list of improvements and fixes.
 NOTE: This **THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!** All `.ino` files will need to be updated to follow the updated examples.
 
 
-## v0.11.6
-
-## Fixed Longer Logger Intervals and Improved Documentation
+## [v0.11.6 (2018-05-11) Fixed Longer Logger Intervals and Improved Documentation](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.11.6)
 
 - Fixed variable type for logging interval from uint8_t to uint16_t allowing consistent logging at intervals greater than 5 minutes
 
@@ -361,9 +377,7 @@ NOTE: This **THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!** All `.ino` files 
 
 
 
-## v0.11.3
-
-## Added sensors and fixed timing bugs
+## [v0.11.3 (2018-05-03) Added sensors and fixed timing bugs](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.11.3)
 
 New sensors:
 - Added support for Freescale MPL115A2 pressure sensor
@@ -384,9 +398,7 @@ Bug Fixes and other Tweeks:
 - Removed the "checkForUpdate()" function.  When asking for a value from a variable, you now must explicitly state whether you want the variable to ask its parent sensor for an updated value or not.  By default, it will _not_ ask the parent sensor to update, but only return the last value received or -9999 if a value has never been received.
 
 
-## v0.9.0
-
-## Timing Improvements
+## [v0.9.0 (2018-04-17) Timing Improvements](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.9.0)
 
 Major restructuring of sensor status and internal sensor time stamps to improve efficiency when using variables/sensors in arrays - this makes sensor/variable order much less important
 
@@ -397,14 +409,12 @@ Added MS5803, external voltage, and external tip counter
 Fixed bugs with modem and 5TM
 
 
-## v0.6.10
+## [v0.6.10 (2018-02-26) Fixes bugs in description and examples](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.10)
 
-## Fixes bugs in description and examples
+Small bug-fixing release
 
 
-## v0.6.9
-
-## Uniformity of missing values, averaging for all sensors
+## [v0.6.9 (2018-02-26) Uniformity of missing values, averaging for all sensors](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.9)
 
 - Allows all sensors to be averaged
 - More uniform return of -9999 for missing/bad values
@@ -412,9 +422,7 @@ Fixed bugs with modem and 5TM
 - Example platformio.ini files
 
 
-## 0.5.4-beta
-
-## 0.5.4-beta
+## [0.5.4-beta (2018-01-18) 0.5.4-beta](https://github.com/EnviroDIY/ModularSensors/releases/tag/0.5.4-beta)
 
 * Added Yosemitech brand sensors which communicate via RS485
 * Improvements to modem support and debugging
@@ -425,9 +433,7 @@ Fixed bugs with modem and 5TM
 * Inching closer to full support for SAMD21 (M0/Zero) processors, though still some bugs present.
 
 
-## v0.3.0-beta
-
-## Beta Release 0.3.0
+## [v0.3.0-beta (2017-06-07) Beta Release](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.3.0-beta)
 
 Added the Apogee SQ-212 PAR sensor.
 
@@ -438,16 +444,12 @@ Added the modem as a "sensor" which can return it's signal strength as a variabl
 Added a "debugging" mode, accessible by pushing a button while the checkForDebugMode function is running.
 
 
-## v0.2.5-beta
-
-## Impoved setup functions
+## [v0.2.5-beta (2017-05-31) Impoved setup functions](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.5-beta)
 
 Slight rearrangement of setup functions to improve efficiency.
 
 
-## v0.2.4-beta
-
-## Another beta release
+## [v0.2.4-beta (2017-05-17) Another beta release](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.4-beta)
 
 Shorted time allowed to attempt to turn Bee on/off
 
@@ -460,8 +462,6 @@ Put disconnect step within if block so it only tries to disconnect if it was con
 Fixed extra spaces in CSV
 
 
-## v0.2.2-beta
-
-## Initial release
+## [v0.2.2-beta (2017-05-09) Initial release](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.2-beta)
 
 Our first release of the modular sensors library to support easily logging data from a variety of environmental sensors and sending that data to the EnviroDIY data portal.

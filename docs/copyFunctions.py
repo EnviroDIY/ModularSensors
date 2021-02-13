@@ -28,7 +28,7 @@ def get_section_to_paste(match: re.Match) -> str:
     # print(source_file)
     source_section = match.group("copy_section_id")
     # print(source_section)
-    with open(os.path.join(abs_file_path, source_file)) as fp:
+    with open(os.path.join(abs_file_path, source_file), encoding="utf8") as fp:
         soup = BeautifulSoup(fp, "html.parser")
         details = soup.find(id=source_section)
         # print("Details:", details, "\n\n")
@@ -60,7 +60,7 @@ for filename in all_files:
     #     for find in soup.find_all(string=[re.compile("\{\{")]):
     #         print(find.find_parent("p").a.get("href"))
 
-    with open(abs_in, "r") as in_file:  # open in readonly mode
+    with open(abs_in, "r", encoding="utf8") as in_file:  # open in readonly mode
         lines = in_file.readlines()
         i = 0
         new_lines = []
@@ -87,7 +87,7 @@ for filename in all_files:
             new_lines.append(new_line)
 
     if copy_paste_needed:
-        with open(abs_out, "w+") as out_file:
+        with open(abs_out, "w+", encoding="utf8") as out_file:
             for line in new_lines:
                 out_file.write(line)
 
