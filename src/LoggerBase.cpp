@@ -578,8 +578,8 @@ bool Logger::isRTCSane(void) {
     return isRTCSane(curRTC);
 }
 bool Logger::isRTCSane(uint32_t epochTime) {
-    // Before January 1, 2020 or After January 1, 2025
-    if (epochTime < 1577836800 || epochTime > 1735689600) {
+    // Before January 1, 2020 or After January 1, 2030
+    if (epochTime < 1577836800 || epochTime > 1893474000) {
         return false;
     } else {
         return true;
@@ -596,8 +596,8 @@ bool Logger::isRTCSane(uint32_t epochTime) {
 // called before updating the sensors, not after.
 void Logger::markTime(void) {
     Logger::markedEpochTime    = getNowEpoch();
-    Logger::markedEpochTimeUTC = markedEpochTime
-                                 - ((uint32_t)_loggerRTCOffset) * 3600;
+    Logger::markedEpochTimeUTC = markedEpochTime -
+        ((uint32_t)_loggerRTCOffset) * 3600;
 }
 
 
