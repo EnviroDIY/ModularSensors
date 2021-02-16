@@ -79,7 +79,7 @@ Pick whatever board you'll be working with from the drop down.
 For a new project, it's easiest to let PlatformIO set everything up in a new folder.
 - Once PlatformIO sets up the new project, find and open the newly created platformio.ini file.
 It should be a short file with one `[platformio]` section and one `[env]` section for the board you selected earlier.
-    - In the `[platformio]` section add this line:  `src_dir = .piolibdeps/EnviroDIY_DS3231_ID2079/examples/PCsync`
+    - In the `[platformio]` section add this line:  `src_dir = .pio/libdeps/mayfly/EnviroDIY_DS3231/examples/PCsync`
     - In the `[env]` section add this line:  `lib_deps = EnviroDIY_DS3231`
 - Upload to your board.
 You shouldn't have to open or modify the program at all.
