@@ -103,7 +103,7 @@ void       ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,
 void localAppInit();
 
 // Wrte the epc.app to EEPROM
-void localEepromAppWr(uint8_t srcdbg) 
+void localEepromAppWr(const char *srcdbg) 
 {
     PRINTOUT(F("ACTION Write app EEPROM started("),srcdbg,F(")"));
     uint16_t crc16 = calc_crc16(
@@ -680,7 +680,7 @@ const char SD_INIT_ID_pm[] EDIY_PROGMEM = "SD_INIT_ID";
             } else if (strcmp_P(value, DEFAULT_APP_EEPROM_pm) == 0) {
                 SerialStd.println(F("ACTION DEFAULT app EEPROM"));
                 localAppInit(); 
-                localEepromAppWr(0);                
+                localEepromAppWr("Default");                
             } else {
                 SerialStd.print(F("EEPROM Write aborted. instruction '"));
                 SerialStd.print(value);
@@ -698,7 +698,7 @@ const char SD_INIT_ID_pm[] EDIY_PROGMEM = "SD_INIT_ID";
         if (strcmp_P(name, ACTION_pm) == 0) {
 #if defined USE_PS_EEPROM
             if (strcmp_P(value, WRITE_pm) == 0) {
-                localEepromAppWr(1); 
+                localEepromAppWr("User"); 
             } else
 #endif  // USE_PS_EEPROM
 
