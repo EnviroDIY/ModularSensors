@@ -47,9 +47,29 @@ const char PROVIDER_MMW_pm[] EDIY_PROGMEM           = "PROVIDER_MMW";
 const char CLOUD_ID_pm[] EDIY_PROGMEM           = "CLOUD_ID";
 const char REGISTRATION_TOKEN_pm[] EDIY_PROGMEM = "REGISTRATION_TOKEN";
 const char SAMPLING_FEATURE_pm[] EDIY_PROGMEM   = "SAMPLING_FEATURE";
+
 const char TIMER_POST_TOUT_MS_pm[] EDIY_PROGMEM = "TIMER_POST_TOUT_MS";
+const int  TIMER_POST_TOUT_MS_MAX=30000 ;
+const int  TIMER_POST_TOUT_MS_MIN=100 ;
+
 const char TIMER_POST_PACE_MS_pm[] EDIY_PROGMEM = "TIMER_POST_PACE_MS";
+const int  TIMER_POST_PACE_MS_MAX=5000 ;
+const int  TIMER_POST_PACE_MS_MIN=0 ;
+
 const char POST_MAX_NUM_pm[] EDIY_PROGMEM       = "POST_MAX_NUM";
+const int  POST_RANGE_MAX_NUM=500;
+const int  POST_RANGE_MIN_NUM=0;
+
+const char PROVIDER_TS_pm[] EDIY_PROGMEM           = "PROVIDER_TS";
+//KEY STRINGS 
+const char TS_MQTT_KEY_pm[] EDIY_PROGMEM      = "TS_MQTT_KEY";
+const char TS_CHANNEL_ID_pm[] EDIY_PROGMEM    = "TS_CHANNEL_ID";
+const char TS_CHANNELWR_KEY_pm[] EDIY_PROGMEM   = "TS_CHANNELWR_KEY";
+
+const char PROVIDER_UBIDOTS_pm[] EDIY_PROGMEM       = "PROVIDER_UBIDOTS";
+//KEY_STRINGS
+const char UB_AUTH_TOKEN_pm[] EDIY_PROGMEM = "UB_AUTH_TOKEN";
+const char UB_DEVICE_ID_pm[] EDIY_PROGMEM   = "UB_DEVICE_ID";
 
 const char SENSORS_pm[] EDIY_PROGMEM = "SENSORS";
 const char index_pm[] EDIY_PROGMEM   = "index";
@@ -239,12 +259,26 @@ static void epcParser() {
             eeprom_idx++;
             uuid_vl_idx = 0;
         }
-        if (++idx_break > (UUIDE_SENSOR_CNT_MAX_SZ*UUIDE_SENSOR_CNT_MAX_SZ)) {
+        if (++idx_break > (PROVID_MW__UUID_SENSOR_CNTMAX_SZ*PROVID_MW__UUID_SENSOR_CNTMAX_SZ)) {
             PRINTOUT(F("Search error! break out of loop"));
             break;
         }
 
-    }while (eeprom_idx < UUIDE_SENSOR_CNT_MAX_SZ );
+    }while (eeprom_idx < PROVID_MW__UUID_SENSOR_CNTMAX_SZ );
+}
+
+/* A short checker*/
+#define eCpy(parm1,parm2) chkLen(parm1,value,parm2)
+static bool chkLen(char *destStr, const char *value,int size) {
+    int value_len = strlen(value);
+    bool ret_val;
+    if (value_len > size-1) {
+        PRINTOUT(F("ERROR ini param too long, got"),value_len, F("expect"),size,F("for"),value );
+        ret_val= false;
+    } else {
+        strcpy(destStr,value );
+    }
+    return ret_val;
 }
 
 static int inihUnhandledFn(const char* section, const char* name,
@@ -256,17 +290,17 @@ static int inihUnhandledFn(const char* section, const char* name,
     errno = 0;
 // MS_DBG(F("inih "),section," ",name," ",value);
 #if defined USE_PS_Provider
-    if (strcmp_P(section, PROVIDER_MMW_pm) == 0) {
-        //This [PROVIDER] only defined for EnviroDIY
-        // For other providers needs to be extended/switch
-        if (strcmp_P(name, REGISTRATION_TOKEN_pm) == 0) {
-            strcpy(epc.app.provider.s.ed.registration_token, value);
-            MS_DBG(F("PROVIDER_MMW Setting registration token: "),
-            epc.app.provider.s.ed.registration_token);
-        } else if (strcmp_P(name, CLOUD_ID_pm) == 0) {
+    if (strcmp_P(section, PROVIDER_MMW_pm) == 0) 
+    {
+        //Process [PROVIDER_MMW] only defined for EnviroDIY 
+        if (strcmp_P(name, CLOUD_ID_pm) == 0) {
             strcpy(epc.app.provider.s.ed.cloudId, value);
             MS_DBG(F("PROVIDER_MMW Setting cloudId: "),
             epc.app.provider.s.ed.cloudId);
+        } else if (strcmp_P(name, REGISTRATION_TOKEN_pm) == 0) {
+            strcpy(epc.app.provider.s.ed.registration_token, value);
+            MS_DBG(F("PROVIDER_MMW Setting registration token: "),
+            epc.app.provider.s.ed.registration_token);
         } else if (strcmp_P(name, SAMPLING_FEATURE_pm) == 0) {
             strcpy(epc.app.provider.s.ed.sampling_feature, value);
             MS_DBG(F("PROVIDER_MMW Setting SamplingFeature: "),
@@ -274,13 +308,14 @@ static int inihUnhandledFn(const char* section, const char* name,
         }else if (strcmp_P(name, TIMER_POST_TOUT_MS_pm) == 0) {
             // convert  str to num with error checking
             long timerPostTimeout_local = strtol(value, &endptr, 10);
-            if ((timerPostTimeout_local <= 30000) &&
-                (timerPostTimeout_local >= 100) && (errno != ERANGE)) 
+            if ((timerPostTimeout_local <= TIMER_POST_TOUT_MS_MAX) &&
+                (timerPostTimeout_local >= TIMER_POST_TOUT_MS_MIN) && (errno != ERANGE)) 
             {
 
             } else {
-                PRINTOUT(F("PROVIDER_MMW Set TIMER_POST_TOUT_MS error; (range "
-                                  "100 : 30000) read:"),timerPostTimeout_local);
+                PRINTOUT(F("PROVIDER_MMW Set TIMER_POST_TOUT_MS error; (range ["),
+                TIMER_POST_TOUT_MS_MIN, TIMER_POST_TOUT_MS_MAX,
+                                  F("] read:"),timerPostTimeout_local);
                 timerPostTimeout_local =MMW_TIMER_POST_TIMEOUT_MS_DEF;
             }
             epc.app.provider.s.ed.timerPostTout_ms = timerPostTimeout_local;
@@ -289,27 +324,29 @@ static int inihUnhandledFn(const char* section, const char* name,
         } else  if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
             // convert  str to num with error checking
             long timerPostPacing_local = strtol(value, &endptr, 10);
-            if ((timerPostPacing_local <= 5000) &&
-                (timerPostPacing_local >= 0) && (errno != ERANGE)) 
+            if ((timerPostPacing_local <= TIMER_POST_PACE_MS_MAX) &&
+                (timerPostPacing_local >= TIMER_POST_PACE_MS_MIN) && (errno != ERANGE)) 
             {
             } else {
-                PRINTOUT(F("PROVIDE_MMWSet TIMER_POST_PACE_MS error; (range "
-                                  "0 : 5000) read:"),timerPostPacing_local);
+                PRINTOUT(F("PROVIDER_MMW Set TIMER_POST_PACE_MS error; (range "),
+                                TIMER_POST_PACE_MS_MIN,TIMER_POST_PACE_MS_MAX,
+                                F("] read:"),timerPostPacing_local);
                 timerPostPacing_local= MMW_TIMER_POST_PACING_MS_DEF;
             }
             epc.app.provider.s.ed.timerPostPace_ms = timerPostPacing_local;
-            MS_DBG(F("PROVIDE_MMWSet TIMER_POST_PACE_MS: "),timerPostPacing_local);
+            MS_DBG(F("PROVIDER_MMW Set TIMER_POST_PACE_MS: "),timerPostPacing_local);
 
         } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
             // convert  str to num with error checking
             long postMax_num_local = strtol(value, &endptr, 10);
-            if ((postMax_num_local <= 50) && (postMax_num_local >= 0) &&
+            if ((postMax_num_local <= POST_RANGE_MAX_NUM) && (postMax_num_local >= POST_RANGE_MIN_NUM) &&
                 (errno != ERANGE)) 
             {
 
             } else {
                 PRINTOUT(
-                    F("PROVIDER_MMW Set POST_MAX_NUM error; (range 0 : 50) read:"),postMax_num_local);
+                    F("PROVIDER_MMW Set POST_MAX_NUM error; range["), 
+                    POST_RANGE_MIN_NUM,POST_RANGE_MAX_NUM,F("] read:"),postMax_num_local);
                     postMax_num_local=MMW_TIMER_POST_MAX_MUM_DEF;
             }
             //postMax_num = (uint8_t)postMax_num_local;
@@ -377,6 +414,138 @@ static int inihUnhandledFn(const char* section, const char* name,
             }
             uuid_index++;
         }
+    } else if (strcmp_P(section, PROVIDER_TS_pm) == 0) 
+    {
+        //Process [PROVIDER_TS] only defined for thingSpeak 
+        if (strcmp_P(name, CLOUD_ID_pm) == 0) {
+            eCpy(epc.app.provider.s.ts.cloudId, PROVID_CLOUD_ID_SZ);
+            MS_DBG(F("PROVIDER_TS Setting cloudId: "),
+            epc.app.provider.s.ts.cloudId);
+        } else if (strcmp_P(name, TS_MQTT_KEY_pm) == 0) {
+            eCpy(epc.app.provider.s.ts.thingSpeakMQTTKey, PROVID_TSMQTTKEY_SZ);
+            MS_DBG(F("PROVIDER_TS Setting TS_MQTT_KEY: "),
+            epc.app.provider.s.ts.thingSpeakMQTTKey);
+        } else if (strcmp_P(name, TS_CHANNEL_ID_pm) == 0) {
+            eCpy(epc.app.provider.s.ts.thingSpeakChannelID, PROVID_TSCHANNELID_SZ);
+            MS_DBG(F("PROVIDER_TS Setting TS_CHANNEL_ID: "),
+            epc.app.provider.s.ts.thingSpeakChannelID);
+        } else if (strcmp_P(name, TS_CHANNELWR_KEY_pm) == 0) {
+            eCpy(epc.app.provider.s.ts.thingSpeakChannelKey, PROVID_TSCHANNELKEY_SZ);
+            MS_DBG(F("PROVIDER_TS Setting TS_CHANNELWR_KEY: "),
+            epc.app.provider.s.ts.thingSpeakChannelKey);
+        } else if (strcmp_P(name, TIMER_POST_TOUT_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostTimeout_local = strtol(value, &endptr, 10);
+            if ((timerPostTimeout_local <= TIMER_POST_TOUT_MS_MAX) &&
+                (timerPostTimeout_local >= TIMER_POST_TOUT_MS_MIN) && (errno != ERANGE)) 
+            {
+
+            } else {
+                PRINTOUT(F("PROVIDER_TS Set TIMER_POST_TOUT_MS error; range["),
+                                  TIMER_POST_TOUT_MS_MIN,TIMER_POST_TOUT_MS_MAX, 
+                                  F("] read:"),timerPostTimeout_local);
+                timerPostTimeout_local =MMW_TIMER_POST_TIMEOUT_MS_DEF;
+            }
+            epc.app.provider.s.ts.timerPostTout_ms = timerPostTimeout_local;
+            MS_DBG(F("PROVIDER_TS Set TIMER_POST_TOUT_MS : "),timerPostTimeout_local);
+
+        } else  if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostPacing_local = strtol(value, &endptr, 10);
+            if ((timerPostPacing_local <= TIMER_POST_PACE_MS_MAX) &&
+                (timerPostPacing_local >= TIMER_POST_PACE_MS_MIN) && (errno != ERANGE)) 
+            {
+            } else {
+                PRINTOUT(F("PROVIDE_TS Set TIMER_POST_PACE_MS error; (range "),
+                                  TIMER_POST_PACE_MS_MIN,TIMER_POST_PACE_MS_MAX,
+                                  F(" read:"),timerPostPacing_local);
+                timerPostPacing_local= MMW_TIMER_POST_PACING_MS_DEF;
+            }
+            epc.app.provider.s.ts.timerPostPace_ms = timerPostPacing_local;
+            MS_DBG(F("PROVIDE_TS Set TIMER_POST_PACE_MS: "),timerPostPacing_local);
+
+        } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
+            // convert  str to num with error checking
+            long postMax_num_local = strtol(value, &endptr, 10);
+            if ((postMax_num_local <= POST_RANGE_MAX_NUM) && (postMax_num_local >= TIMER_POST_PACE_MS_MIN) &&
+                (errno != ERANGE)) 
+            {
+
+            } else {
+                PRINTOUT(
+                    F("PROVIDER_TS Set POST_MAX_NUM error; ["),
+                    TIMER_POST_PACE_MS_MIN,POST_RANGE_MAX_NUM,F("] read:"),postMax_num_local);
+                    postMax_num_local=MMW_TIMER_POST_MAX_MUM_DEF;
+            }
+            //postMax_num = (uint8_t)postMax_num_local;
+            epc.app.provider.s.ts.postMax_num = postMax_num_local;
+            MS_DBG(F("PROVIDER_TS Set POST_MAX_NUM: "),postMax_num_local);
+
+        }
+    } else if (strcmp_P(section, PROVIDER_UBIDOTS_pm) == 0) 
+    {
+        //Process [PROVIDER_UBIDOTS] only defined for ubidots.com 
+
+        if (strcmp_P(name, CLOUD_ID_pm) == 0) {
+            strcpy(epc.app.provider.s.ub.cloudId, value);
+            MS_DBG(F("PROVIDER_UBIDOTS Setting cloudId: "),
+            epc.app.provider.s.ub.cloudId);
+        } else if (strcmp_P(name, UB_AUTH_TOKEN_pm) == 0) {
+            strcpy(epc.app.provider.s.ub.authentificationToken, value);
+            MS_DBG(F("PROVIDER_UBIDOTS Setting registration token: "),
+            epc.app.provider.s.ub.authentificationToken);
+        } else if (strcmp_P(name, UB_DEVICE_ID_pm) == 0) {
+            strcpy(epc.app.provider.s.ub.deviceID, value);
+            MS_DBG(F("PROVIDER_UBIDOTS Setting SamplingFeature: "),
+            epc.app.provider.s.ub.deviceID);
+        }else if (strcmp_P(name, TIMER_POST_TOUT_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostTimeout_local = strtol(value, &endptr, 10);
+            if ((timerPostTimeout_local <= TIMER_POST_TOUT_MS_MAX) &&
+                (timerPostTimeout_local >= TIMER_POST_TOUT_MS_MIN) && (errno != ERANGE)) 
+            {
+
+            } else {
+                PRINTOUT(F("PROVIDER_UBIDOTS Set TIMER_POST_TOUT_MS error; range["),
+                TIMER_POST_TOUT_MS_MIN,TIMER_POST_TOUT_MS_MAX,
+                                  F("] read:"),timerPostTimeout_local);
+                timerPostTimeout_local =MMW_TIMER_POST_TIMEOUT_MS_DEF;
+            }
+            epc.app.provider.s.ub.timerPostTout_ms = timerPostTimeout_local;
+            MS_DBG(F("PROVIDER_UBIDOTS Set TIMER_POST_TOUT_MS : "),timerPostTimeout_local);
+
+        } else  if (strcmp_P(name, TIMER_POST_PACE_MS_pm) == 0) {
+            // convert  str to num with error checking
+            long timerPostPacing_local = strtol(value, &endptr, 10);
+            if ((timerPostPacing_local <= TIMER_POST_PACE_MS_MAX) &&
+                (timerPostPacing_local >= TIMER_POST_PACE_MS_MIN) && (errno != ERANGE)) 
+            {
+            } else {
+                PRINTOUT(F("PROVIDE_TS Set TIMER_POST_PACE_MS error; (range "),
+                                  TIMER_POST_PACE_MS_MIN,TIMER_POST_PACE_MS_MAX,F("] read:"),timerPostPacing_local);
+                timerPostPacing_local= MMW_TIMER_POST_PACING_MS_DEF;
+            }
+            epc.app.provider.s.ub.timerPostPace_ms = timerPostPacing_local;
+            MS_DBG(F("PROVIDE_TS Set TIMER_POST_PACE_MS: "),timerPostPacing_local);
+
+        } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
+            // convert  str to num with error checking
+            long postMax_num_local = strtol(value, &endptr, 10);
+            if ((postMax_num_local <= POST_RANGE_MAX_NUM) && (postMax_num_local >= POST_RANGE_MIN_NUM) &&
+                (errno != ERANGE)) 
+            {
+
+            } else {
+                PRINTOUT(
+                    F("PROVIDER_UBIDOTS Set POST_MAX_NUM error; (range"),
+                    POST_RANGE_MIN_NUM,POST_RANGE_MAX_NUM,F("] read:"),postMax_num_local);
+                    postMax_num_local=MMW_TIMER_POST_MAX_MUM_DEF;
+            }
+            //postMax_num = (uint8_t)postMax_num_local;
+            epc.app.provider.s.ub.postMax_num = postMax_num_local;
+            MS_DBG(F("PROVIDER_UBIDOTS Set POST_MAX_NUM: "),postMax_num_local);
+        }
+
     } else
 #endif // USE_PS_Provider
 
@@ -773,26 +942,44 @@ void localAppInit()
     epc.app.msn.s.sendOffset_min = MNGI_SEND_OFFSET_MIN_DEF;
 
 
-    epc.app.provider.provider_type=  UUIDE_TYPE_MMW;
-    strcpy_P((char*)epc.app.provider.s.ed.cloudId, (char*) F(UUIDE_DEF_STR));
-    strcpy_P((char*)epc.app.provider.s.ed.registration_token, (char*)F(UUIDE_DEF_STR));
-    strcpy_P((char*)epc.app.provider.s.ed.sampling_feature, (char*)F(UUIDE_DEF_STR));
+    epc.app.provider.provider_type=  PROVID_TYPE_MMW;
+    strcpy_P((char*)epc.app.provider.s.ed.cloudId, (char*) F(PROVID_DEF_STR));
+    strcpy_P((char*)epc.app.provider.s.ed.registration_token, (char*)F(PROVID_DEF_STR));
+    strcpy_P((char*)epc.app.provider.s.ed.sampling_feature, (char*)F(PROVID_DEF_STR));
     epc.app.provider.s.ed.timerPostTout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
     epc.app.provider.s.ed.timerPostPace_ms = MMW_TIMER_POST_PACING_MS_DEF; 
     epc.app.provider.s.ed.postMax_num = MMW_TIMER_POST_MAX_MUM_DEF;  
-    for (int uuid_lp=0;uuid_lp <UUIDE_SENSOR_CNT_MAX_SZ;uuid_lp++) 
+    for (int uuid_lp=0;uuid_lp <PROVID_MW__UUID_SENSOR_CNTMAX_SZ;uuid_lp++) 
     {
         //strcpy_P(epc.app.provider.s.ed.uuid[uuid_lp],(char*)F(UUIDE_NULL_STR ));
-        epc.app.provider.s.ed.uuid[uuid_lp].name[0] = UUIDE_NULL_TERMINATOR;
-        epc.app.provider.s.ed.uuid[uuid_lp].value[0] = UUIDE_NULL_TERMINATOR;
+        epc.app.provider.s.ed.uuid[uuid_lp].name[0] = PROVID_NULL_TERMINATOR;
+        epc.app.provider.s.ed.uuid[uuid_lp].value[0] = PROVID_NULL_TERMINATOR;
     }
+
+    //ThingSpeak init
+    strcpy_P((char*)epc.app.provider.s.ts.cloudId, (char*) F(PROVID_DEF_STR));
+    strcpy_P((char*)epc.app.provider.s.ts.thingSpeakMQTTKey, (char*)F(PROVID_DEF_STR));
+    strcpy_P((char*)epc.app.provider.s.ts.thingSpeakChannelID, (char*)F(PROVID_DEF_STR));
+    strcpy_P((char*)epc.app.provider.s.ts.thingSpeakChannelKey, (char*)F(PROVID_DEF_STR));
+    epc.app.provider.s.ts.timerPostTout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+    epc.app.provider.s.ts.timerPostPace_ms = MMW_TIMER_POST_PACING_MS_DEF; 
+    epc.app.provider.s.ts.postMax_num = MMW_TIMER_POST_MAX_MUM_DEF;  
+
+    // UBIDOTS init
+    strcpy_P((char*)epc.app.provider.s.ub.cloudId, (char*) F(PROVID_DEF_STR));
+    strcpy_P((char*)epc.app.provider.s.ub.authentificationToken, (char*)F(PROVID_DEF_STR));
+    strcpy_P((char*)epc.app.provider.s.ub.deviceID, (char*)F(PROVID_DEF_STR));
+    epc.app.provider.s.ub.timerPostTout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
+    epc.app.provider.s.ub.timerPostPace_ms = MMW_TIMER_POST_PACING_MS_DEF; 
+    epc.app.provider.s.ub.postMax_num = MMW_TIMER_POST_MAX_MUM_DEF;  
+
 } // localAppInit()
 
 void readAvrEeprom() {
     uint16_t crc16;
     // Read EEPROM in sections, and verify CRC
 
-    MS_DBG(F("Eeprom  size="), EEPROM.length(), "boot=", sizeof_hw_boot,
+    MS_DBG(F("Eeprom size="), EEPROM.length(), "boot=", sizeof_hw_boot,
            "app=", sizeof(epc.app));
 
     // Read Eeprom [Boot] - every board should have it
@@ -853,19 +1040,20 @@ void readAvrEeprom() {
             F(" SendOffset(min)="), epc.app.msn.s.sendOffset_min
             );
 
-
-    // read EEPROM provider app.provider.s that maps from .ini [PROVIDER] & UUIDs
+    // List values for PROVIDER_XX 
+#if defined USE_PUB_MMW
+    // Don't print if not used, but still in eeprom
     PRINTOUT(F("From eeprom Provider: Provider Type="),epc.app.provider.provider_type,
             F("\n PROVIDER_MMW CloudId="),(char*)epc.app.provider.s.ed.cloudId, 
             F("\n PROVIDER_MMW Reg Token="),(char*)epc.app.provider.s.ed.registration_token,
             F("\n PROVIDER_MMW Sampling Feature="),(char*)epc.app.provider.s.ed.sampling_feature,
             F("\n PROVIDER_MMW timerPostTout(ms)="), epc.app.provider.s.ed.timerPostTout_ms,
             F("\n PROVIDER_MMW timerPostPace(ms)="), epc.app.provider.s.ed.timerPostPace_ms,
-            F("\n postMax="), epc.app.provider.s.ed.postMax_num
+            F("\n PROVIDER_MMW postMax="), epc.app.provider.s.ed.postMax_num
             );
-    PRINTOUT(F("PROVIDER_MMW UUIDs (none unless listed), Max="),UUIDE_SENSOR_CNT_MAX_SZ);
-    for (int uuid_lp=0;uuid_lp <UUIDE_SENSOR_CNT_MAX_SZ;uuid_lp++) {
-        //if (UUIDE_NULL_TERMINATOR != epc.app.provider.s.ed.uuid[uuid_lp][0]) {
+    PRINTOUT(F("PROVIDER_MMW UUIDs (none unless listed), Max="),PROVID_MW__UUID_SENSOR_CNTMAX_SZ);
+    for (int uuid_lp=0;uuid_lp <PROVID_MW__UUID_SENSOR_CNTMAX_SZ;uuid_lp++) {
+        //if (PROVID_NULL_TERMINATOR != epc.app.provider.s.ed.uuid[uuid_lp][0]) {
         if (isalnum(epc.app.provider.s.ed.uuid[uuid_lp].value[0]) 
         || isalnum(epc.app.provider.s.ed.uuid[uuid_lp].name[0])) {
             PRINTOUT(uuid_lp,F("]"),(char *)epc.app.provider.s.ed.uuid[uuid_lp].name,
@@ -873,6 +1061,29 @@ void readAvrEeprom() {
         }
 
     }   
+#endif // USE_PUB_MMW
+#if defined USE_PUB_TSMQTT
+    PRINTOUT(
+            F("\n PROVIDER_TS CloudId="),(char*)epc.app.provider.s.ts.cloudId, 
+            F("\n PROVIDER_TS TS_MQTT_KEY="),(char*)epc.app.provider.s.ts.thingSpeakMQTTKey,
+            F("\n PROVIDER_TS TS_CHANNEL_ID="),(char*)epc.app.provider.s.ts.thingSpeakChannelID,
+            F("\n PROVIDER_TS TS_CHANNEL_KEY="),(char*)epc.app.provider.s.ts.thingSpeakChannelID,
+            F("\n PROVIDER_TS timerPostTout(ms)="), epc.app.provider.s.ts.timerPostTout_ms,
+            F("\n PROVIDER_TS timerPostPace(ms)="), epc.app.provider.s.ts.timerPostPace_ms,
+            F("\n PROVIDER_TS postMax="), epc.app.provider.s.ts.postMax_num
+            );
+#endif //USE_PUB_TSMQTT
+
+#if defined USE_PUB_UBIDOTS
+    PRINTOUT(
+            F("\n PROVIDER_UBIDOTS CloudId="),(char*)epc.app.provider.s.ub.cloudId, 
+            F("\n PROVIDER_UBIDOTS Reg Token="),(char*)epc.app.provider.s.ub.authentificationToken,
+            F("\n PROVIDER_UBIDOTS Sampling Feature="),(char*)epc.app.provider.s.ub.deviceID,
+            F("\n PROVIDER_UBIDOTS timerPostTout(ms)="), epc.app.provider.s.ub.timerPostTout_ms,
+            F("\n PROVIDER_UBIDOTS timerPostPace(ms)="), epc.app.provider.s.ub.timerPostPace_ms,
+            F("\n PROVIDER_UBIDOTS postMax="), epc.app.provider.s.ub.postMax_num
+            );
+#endif // USE_PUB_UBIDOTS
 
 } // readAvrEeprom
 #endif  // USE_PS_EEPROM
