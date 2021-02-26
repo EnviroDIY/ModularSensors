@@ -814,11 +814,28 @@ const char* registrationToken =
 const char* samplingFeature = samplingFeature_UUID;  // Sampling feature UUID
 
 #if defined UseModem_PushData
+#if defined USE_PUB_MMW
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 // EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modemPhy.gsmClient,
 // registrationToken, samplingFeature);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15, 0);
+#endif //USE_PUB_MMW
+#if defined USE_PUB_TSMQTT
+// Create a data publisher for ThingSpeak
+// Create a channel with fields on ThingSpeak.com 
+// The fields will be sent in exactly the order they are in the variable array.
+// Any custom name or identifier given to the field on ThingSpeak is irrelevant.
+// No more than 8 fields of data can go to any one channel.  Any fields beyond
+// the eighth in the array will be ignored.
+//example https://www.mathworks.com/help/thingspeak/mqtt-publish-and-subscribe-with-esp8266.html
+#include <publishers/ThingSpeakPublisher.h>
+ThingSpeakPublisher TsMqttPub;
+#endif //USE_PUB_TSMQTT
+#if defined USE_PUB_UBIDOTS
+#include <publishers/UbidotsPublisher.h>
+UbidotsPublisher UbidotsPub;
+#endif  // USE_PUB_UBIDOTS
 #endif  // UseModem_PushData
 
 // ==========================================================================
@@ -1303,12 +1320,34 @@ void setup() {
     MS_DBG(F("---dataLogger.begin "));
     dataLogger.begin();
 #if defined UseModem_PushData
+#if defined USE_PUB_MMW
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient,
                         ps_ram.app.provider.s.ed.registration_token,
                         ps_ram.app.provider.s.ed.sampling_feature);
     EnviroDIYPOST.setQuedState(true);
     EnviroDIYPOST.setTimerPostTimeout_mS(ps_ram.app.provider.s.ed.timerPostTout_ms);
     EnviroDIYPOST.setTimerPostPacing_mS(ps_ram.app.provider.s.ed.timerPostPace_ms);
+#endif //USE_PUB_MMW
+#if defined USE_PUB_TSMQTT
+    TsMqttPub.begin(dataLogger, &modemPhy.gsmClient, 
+                ps_ram.app.provider.s.ts.thingSpeakMQTTKey,
+                ps_ram.app.provider.s.ts.thingSpeakChannelID, 
+                ps_ram.app.provider.s.ts.thingSpeakChannelKey);
+    //FUT: njh tbd extensions for Reliable delivery
+    //TsMqttPub.setQuedState(true);
+    //TsMqttPub.setTimerPostTimeout_mS(ps_ram.app.provider.s.ts.timerPostTout_ms);
+    //TsMqttPub.setTimerPostPacing_mS(ps_ram.app.provider.s.ts.timerPostPace_ms);
+#endif// USE_PUB_TSMQTT
+#if defined USE_PUB_UBIDOTS
+    UbidotsPub.begin(dataLogger, &modemPhy.gsmClient,
+                        ps_ram.app.provider.s.ub.authentificationToken,
+                        ps_ram.app.provider.s.ub.deviceID);
+    //FUT: njh tbd extensions for Reliable delivery
+    //UbidotsPub.setQuedState(true);
+    //UbidotsPub.setTimerPostTimeout_mS(ps_ram.app.provider.s.ts.timerPostTout_ms);
+    //UbidotsPub.setTimerPostPacing_mS(ps_ram.app.provider.s.ts.timerPostPace_ms);
+#endif // USE_PUB_UBIDOTS
+
     dataLogger.setSendEveryX(ps_ram.app.msn.s.collectReadings_num);
     dataLogger.setSendOffset(ps_ram.app.msn.s.sendOffset_min);  // delay Minutes
 
@@ -1395,5 +1434,10 @@ void loop() {
     // Signal when battery is next read, to give user information
     userPrintBatterVoltage=true;
     #endif //#if defined USE_EXT_BATTERY_ADC
+    #if defined USE_PUB_MMW
     dataLogger.logDataAndPubReliably();
+    #else
+    //FUT use reliable 
+    dataLogger.logDataAndPublish(); 
+    #endif 
 }

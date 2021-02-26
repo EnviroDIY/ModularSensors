@@ -215,7 +215,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // INA219_PHY_ACT
 
 #if defined ASONG_AM23XX_UUID
-
 #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID"
 #define ASONG_AM23_Air_TemperatureF_UUID "Air_TemperatureF_UUID"
 #define ASONG_AM23_Air_Humidity_UUID "Air_Humidity_UUID"

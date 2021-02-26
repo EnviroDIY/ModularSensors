@@ -1371,11 +1371,11 @@ void setup() {
     //UbidotsPub.setQuedState(true);
     //UbidotsPub.setTimerPostTimeout_mS(ps_ram.app.provider.s.ts.timerPostTout_ms);
     //UbidotsPub.setTimerPostPacing_mS(ps_ram.app.provider.s.ts.timerPostPace_ms);
-
+#endif // USE_PUB_UBIDOTS
 
     dataLogger.setSendEveryX(ps_ram.app.msn.s.collectReadings_num);
     dataLogger.setSendOffset(ps_ram.app.msn.s.sendOffset_min);  // delay Minutes
-#endif // USE_PUB_UBIDOTS
+
 #endif  // UseModem_PushData
 
 // Sync the clock  and we have battery to spare
