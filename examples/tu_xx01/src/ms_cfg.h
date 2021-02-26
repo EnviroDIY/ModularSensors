@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
+ms_cfg.h_ub_test  - ModularSensors Configuration - testing to UBIDOTS/WiFi
 - Temperature/Humidity 
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
