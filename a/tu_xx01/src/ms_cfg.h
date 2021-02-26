@@ -108,11 +108,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // UseModem_PushData.
 #define UseModem_Module 1
 #define UseModem_PushData 1
-//Select buildtime Publishers  supported. 
+//Select buildtime Publishers  supported. Not all publishers can be supported
 // The persisten resources (EEPROM) are allocated as a baselevel no matter what options 
 //#define USE_PUB_MMW      1
-#define USE_PUB_TSMQTT   1
-//#define  USE_PUB_UBIDOTS 1
+//#define USE_PUB_TSMQTT   1
+#define  USE_PUB_UBIDOTS 1
 
 // Required for TinyGsmClient.h
 #define TINY_GSM_MODEM_XBEE
@@ -215,6 +215,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // INA219_PHY_ACT
 
 #if defined ASONG_AM23XX_UUID
+
 #define ASONG_AM23_Air_Temperature_UUID "Air_Temperature_UUID"
 #define ASONG_AM23_Air_TemperatureF_UUID "Air_TemperatureF_UUID"
 #define ASONG_AM23_Air_Humidity_UUID "Air_Humidity_UUID"

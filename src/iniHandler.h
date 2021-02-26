@@ -80,6 +80,7 @@ const char WRITE_pm[] EDIY_PROGMEM  = "WRITE";
 const char DEFAULT_APP_EEPROM_pm[] EDIY_PROGMEM  = "DEFAULT_APP_EEPROM";
 const char COPY_pm[] EDIY_PROGMEM   = "COPY";
 
+//Ensure the following are initialized before new search
 static uint8_t uuid_index = 0;
 static uint8_t uuid_ram_idx = 0;
 
@@ -120,7 +121,7 @@ void             ramAvailable() {
 #endif  // ARDUINO_AVR_ENVIRODIY_MAYFLY
 void       ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,
                     unsigned long offTime_ms = 150);
-void localAppInit();
+void localAppStorageInit();
 
 // Wrte the epc.app to EEPROM
 void localEepromAppWr(const char *srcdbg) 
@@ -141,6 +142,57 @@ void localEepromAppWr(const char *srcdbg)
     SerialStd.println(F("EEPROM Write finished"));
 }
 
+/* Parse the pesistent UUIDs
+ * ~ instate them in classes where needed
+ *  ~ Searh for name:value pairs that match a UUD that have not already been found
+*/
+static void populateUuidMatchEpc(ini_name_value_t *uuidTable) 
+{
+    int8_t uuid_vl_idx = 0;
+    int epc_idx=0;
+    ini_name_value_t *dest2pi;;
+    int idx_break=0;
+
+    //Check for any unassigned NAME:VALUE
+    do {
+        //Point to active record
+        dest2pi = (ini_name_value_t *)((int)uuidTable+sizeof(ini_name_value_t)*epc_idx);
+        if (isalnum(dest2pi->value[0]) 
+        && isalnum(dest2pi->name[0])) 
+        {
+            //Found alpha values in table so valid, search for a match with internal variables
+            MS_DEEP_DBG(F("pume search"),dest2pi->name,epc_idx, F("?"),uuid_vl_idx,
+            (const char*)variableList[uuid_vl_idx]->getVarUUID().c_str()  );
+            if (strcmp((const char*)variableList[uuid_vl_idx]
+                        ->getVarUUID().c_str(),
+                        dest2pi->name) == 0) 
+            {  // Found a match
+                variableList[uuid_vl_idx]->setVarUUID_atl((char*)dest2pi->value, false);
+                PRINTOUT(F("PROVIDER_xx"),dest2pi->name,dest2pi->value,F("->"),
+                 variableList[uuid_vl_idx]->getVarCode());
+                epc_idx++;
+                uuid_vl_idx = -1; ///Reset to start at begining of variable_list
+            }
+            #ifdef MS_TU_CTD_DEBUG
+            delay(100); //Don;t overpower debug output.
+            #endif
+        } else {
+            MS_DBG(F("search !isalnum epc["),epc_idx, F("] "),
+            isalnum(dest2pi->value[0]),
+            isalnum(dest2pi->name[0]) ) ;
+        }
+        uuid_vl_idx++;
+        if (uuid_vl_idx>=variableCount) { 
+            epc_idx++;
+            uuid_vl_idx = 0;
+        }
+        if (++idx_break > (PROVID_UUID_SENSOR_CNTMAX_SZ*PROVID_UUID_SENSOR_CNTMAX_SZ)) {
+            PRINTOUT(F("Search error! break out of loop"));
+            break;
+        }
+    }while (epc_idx < PROVID_UUID_SENSOR_CNTMAX_SZ );
+}
+
 /* Parse the pesistent configuration data.
  * The data has been read from EEPROM into a ram cache, 
  * and then if exists in the .ini file, overwritten in the ram
@@ -150,11 +202,8 @@ void localEepromAppWr(const char *srcdbg)
  * 
 */
 static void epcParser() {
-    int8_t uuid_vl_idx = 0;
-    int eeprom_idx=0;
 
     MS_DBG(F("epcParser assign from cached eeprom or ini"));
-
 
     if (isalnum(epc_logger_id1st))
     {
@@ -218,7 +267,9 @@ static void epcParser() {
     PRINTOUT(F("NETWORK CollectReadings"),epc.app.msn.s.collectReadings_num );
     PRINTOUT(F("NETWORK sendOffset_min"),epc.app.msn.s.sendOffset_min);
     
-    //[Provider]
+
+    #if defined USE_PUB_MMW
+    //[Provider_MMW]
     //CLOUD_ID=data.enviroDIY.com - hard coded
     PRINTOUT(F("PROVIDER_MMW CloudId"),             epc.app.provider.s.ed.cloudId);
     PRINTOUT(F("PROVIDER_MMW Registration Token"),  epc.app.provider.s.ed.registration_token);
@@ -226,48 +277,33 @@ static void epcParser() {
     PRINTOUT(F("PROVIDER_MMW timerPost Tout(ms)"),  epc.app.provider.s.ed.timerPostTout_ms);
     PRINTOUT(F("PROVIDER_MMW timerPost Pacing(ms)"),epc.app.provider.s.ed.timerPostPace_ms);
     //POST_MAX_NUM=0; Fut Not used
+    populateUuidMatchEpc(epc.app.provider.s.ed.uuid);
+    #endif //USE_PUB_MMW
 
-    //Check for any unassigned NAME:VALUE
-    int idx_break=0;
-    do {
-        if (isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].value[0]) 
-        && isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].name[0])) 
-        {
-            //Found alpha values in table, search for a match
-            MS_DEEP_DBG(F("search"),uuid_name(eeprom_idx),eeprom_idx, F("?"),uuid_vl_idx,
-            (const char*)variableList[uuid_vl_idx]->getVarUUID().c_str()  );
-            if (strcmp((const char*)variableList[uuid_vl_idx]
-                        ->getVarUUID().c_str(),
-                        uuid_name(eeprom_idx)) == 0) 
-            {  // Found a match
-                variableList[uuid_vl_idx]->setVarUUID_atl((char*)epc.app.provider.s.ed.uuid[eeprom_idx].value, false);
-                PRINTOUT(F("PROVIDER_MMW"),uuid_name(eeprom_idx),uuid_value(eeprom_idx),F("->"),
-                 variableList[uuid_vl_idx]->getVarCode());
-                eeprom_idx++;
-                uuid_vl_idx = -1; ///Reset to start at beging of variable_list
-            }
-            #ifdef MS_TU_CTD_DEBUG
-            delay(100); //Don;t overpower debug output.
-            #endif
-        } else {
-            MS_DBG(F("search !isalnum eeprom["),eeprom_idx, F("] "),
-            isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].value[0]),
-            isalnum(epc.app.provider.s.ed.uuid[eeprom_idx].name[0]) ) ;
-        }
-        uuid_vl_idx++;
-        if (uuid_vl_idx>=variableCount) { 
-            eeprom_idx++;
-            uuid_vl_idx = 0;
-        }
-        if (++idx_break > (PROVID_MW__UUID_SENSOR_CNTMAX_SZ*PROVID_MW__UUID_SENSOR_CNTMAX_SZ)) {
-            PRINTOUT(F("Search error! break out of loop"));
-            break;
-        }
+    #if defined USE_PUB_TSMQTT 
+    #warning "Need Eeprom:TSMQTT"   
+    PRINTOUT(F("PROVIDER_TS EPROM fut\n\r CloudId"),epc.app.provider.s.ts.cloudId);
+    PRINTOUT(F("PROVIDER_TS MQTT Key"),             epc.app.provider.s.ts.thingSpeakMQTTKey );
+    PRINTOUT(F("PROVIDER_TS Channel ID"),           epc.app.provider.s.ts.thingSpeakChannelID);
+    PRINTOUT(F("PROVIDER_TS Channel Wr Key"),       epc.app.provider.s.ts.thingSpeakChannelKey);
+    PRINTOUT(F("PROVIDER_TS timerPost Tout(ms)"),   epc.app.provider.s.ed.timerPostTout_ms);
+    PRINTOUT(F("PROVIDER_TS timerPost Pacing(ms)"), epc.app.provider.s.ed.timerPostPace_ms);
+    //POST_MAX_NUM=0; Fut Not used    
+    #endif // USE_PUB_TSMQTT 
 
-    }while (eeprom_idx < PROVID_MW__UUID_SENSOR_CNTMAX_SZ );
+    #if defined USE_PUB_UBIDOTS
+    PRINTOUT(F("PROVIDER_UB"),F("EPROM fut\n\r CloudId"), epc.app.provider.s.ub.cloudId);
+    PRINTOUT(F("PROVIDER_UB"),F("Auth Token"),          epc.app.provider.s.ub.authentificationToken);
+    PRINTOUT(F("PROVIDER_UB"),F("DeviceId"),            epc.app.provider.s.ub.deviceID);
+    PRINTOUT(F("PROVIDER_UB"),F("timerPost Tout(ms)"),  epc.app.provider.s.ub.timerPostTout_ms);
+    PRINTOUT(F("PROVIDER_UB"),F("timerPost Pacing(ms)"),epc.app.provider.s.ub.timerPostPace_ms);
+    //POST_MAX_NUM=0; Fut Not used
+    populateUuidMatchEpc(epc.app.provider.s.ub.uuid);
+    #endif // USE_PUB_UBIDOTS
+
 }
 
-/* A short checker*/
+/* A short string size checker*/
 #define eCpy(parm1,parm2) chkLen(parm1,value,parm2)
 static bool chkLen(char *destStr, const char *value,int size) {
     int value_len = strlen(value);
@@ -281,6 +317,61 @@ static bool chkLen(char *destStr, const char *value,int size) {
     return ret_val;
 }
 
+static void populateUuidMatchIni(const char* name, const char* value,
+                           ini_name_value_t *uuidTable) 
+{
+
+    /* UUIDs are applied to internal sensor Array as follows:
+    1) "UUID_label"="UUID"
+    eg ASQ212_PAR="UUID"
+    search variableList for UUID_label and if found replace with "UUID"
+    */
+
+    uint8_t uuid_search_i = 0;
+
+    //SerialStd.print(F(""));
+    SerialStd.print(uuid_index);
+    SerialStd.print(":");
+    SerialStd.print(name);
+    SerialStd.print(F("={"));
+    SerialStd.print(value);
+    do {
+        MS_DEEP_DBG(F("\n ["), uuid_search_i, F("]"),
+                    variableList[uuid_search_i]->getVarUUID().c_str(), "#");
+        if (strcmp((const char*)variableList[uuid_search_i]
+                    ->getVarUUID()
+                    .c_str(),
+                name) == 0) {  // Found a match
+
+            // Add to epc where it can be referenced
+
+            //#define uuidde_name(uuid_idx)  (char*)epc.app.provider.s.ed.uuid[uuid_idx].name
+            //char *dest1p = uuidub_name(uuid_ram_idx);
+            ini_name_value_t *dest2pi = (ini_name_value_t *)((int)uuidTable+sizeof(ini_name_value_t)*uuid_ram_idx);
+            //char *dest2p = (char *)(dest2pi->name); //+(uuid_ram_idx*PROVID_UUID_SENSOR_NAME_SZ)
+            strcpy(dest2pi->name,name);
+
+            //#define uuidde_value(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].value
+            //dest1p = uuidub_value(uuid_ram_idx);
+            //dest2p = (char *)(dest2pi->value);//(uuid_ram_idx*PROVID_UUID_SENSOR_VALUE_SZ)
+
+            strcpy(dest2pi->value,value);
+
+            uuid_search_i = variableCount;
+            uuid_ram_idx++;
+        }
+        uuid_search_i++;
+    } while (uuid_search_i < variableCount);
+
+    if (uuid_search_i > variableCount) {
+        SerialStd.println(F("} match  & added."));
+    } else {
+        SerialStd.println(F("} not supported"));
+    }
+    uuid_index++;
+
+}
+
 static int inihUnhandledFn(const char* section, const char* name,
                            const char* value) {
 #if RAM_REPORT_LEVEL > 1
@@ -292,6 +383,7 @@ static int inihUnhandledFn(const char* section, const char* name,
 #if defined USE_PS_Provider
     if (strcmp_P(section, PROVIDER_MMW_pm) == 0) 
     {
+    #if defined USE_PUB_MMW
         //Process [PROVIDER_MMW] only defined for EnviroDIY 
         if (strcmp_P(name, CLOUD_ID_pm) == 0) {
             strcpy(epc.app.provider.s.ed.cloudId, value);
@@ -311,7 +403,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((timerPostTimeout_local <= TIMER_POST_TOUT_MS_MAX) &&
                 (timerPostTimeout_local >= TIMER_POST_TOUT_MS_MIN) && (errno != ERANGE)) 
             {
-
+                //Null, default below
             } else {
                 PRINTOUT(F("PROVIDER_MMW Set TIMER_POST_TOUT_MS error; (range ["),
                 TIMER_POST_TOUT_MS_MIN, TIMER_POST_TOUT_MS_MAX,
@@ -327,6 +419,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((timerPostPacing_local <= TIMER_POST_PACE_MS_MAX) &&
                 (timerPostPacing_local >= TIMER_POST_PACE_MS_MIN) && (errno != ERANGE)) 
             {
+                //Null, default below
             } else {
                 PRINTOUT(F("PROVIDER_MMW Set TIMER_POST_PACE_MS error; (range "),
                                 TIMER_POST_PACE_MS_MIN,TIMER_POST_PACE_MS_MAX,
@@ -342,7 +435,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((postMax_num_local <= POST_RANGE_MAX_NUM) && (postMax_num_local >= POST_RANGE_MIN_NUM) &&
                 (errno != ERANGE)) 
             {
-
+                //Null, default below
             } else {
                 PRINTOUT(
                     F("PROVIDER_MMW Set POST_MAX_NUM error; range["), 
@@ -359,63 +452,13 @@ static int inihUnhandledFn(const char* section, const char* name,
             1) "UUID_label"="UUID"
             eg ASQ212_PAR="UUID"
             search variableList for UUID_label and if found replace with "UUID"
-            2) index="UUID"
-            if the word "index" is there with a UUID, then the UUID is applied in
-            sequence. Any UUID_label's found also increment the counted 'index'
             */
-  
-            uint8_t uuid_search_i = 0;
-
-            //SerialStd.print(F(""));
-            SerialStd.print(uuid_index);
-            SerialStd.print(":");
-            SerialStd.print(name);
-            SerialStd.print(F("={"));
-            SerialStd.print(value);
-            do {
-                MS_DEEP_DBG(F("\n ["), uuid_search_i, F("]"),
-                            variableList[uuid_search_i]->getVarUUID().c_str(), "#");
-                if (strcmp((const char*)variableList[uuid_search_i]
-                            ->getVarUUID()
-                            .c_str(),
-                        name) == 0) {  // Found a match
-
-                    // Add to epc where it can be referenced
-                    strcpy(uuid_name(uuid_ram_idx),name);
-                    strcpy(uuid_value(uuid_ram_idx),value);
-                    #if 0
-                    variableList[uuid_search_i]->setVarUUID_atl(uuid_value(uuid_ram_idx), false);
-                    MS_DEEP_DBG(F("set"), name, F(" for ["), uuid_search_i, F("]"),
-                                variableList[uuid_search_i]->getVarUUID().c_str());
-                    #endif
-                    uuid_search_i = variableCount;
-                    uuid_ram_idx++;
-                }
-                uuid_search_i++;
-            } while (uuid_search_i < variableCount);
-
-            if (uuid_search_i > variableCount) {
-                SerialStd.println(F("} match  & added."));
-
-    #if 0//superseded
-            } else if (strcmp_P(name, index_pm) ==
-                    0) {  // Check if index and then simple reference
-                if (uuid_index < variableCount) {
-                    SerialStd.print(F("} replacing {"));
-                    SerialStd.print(variableList[uuid_index]->getVarUUID());
-                    SerialStd.println(F("}"));
-                    variableList[uuid_index]->setVarUUID_atl((char*)value, true);
-                } else {
-                    SerialStd.println(F("} out of range. Notused"));
-                }
-    #endif //0
-            } else {
-                SerialStd.println(F("} not supported"));
-            }
-            uuid_index++;
-        }
+            populateUuidMatchIni( name,  value, ps_ram.app.provider.s.ed.uuid);
+         }
+    #endif //USE_PUB_MMW
     } else if (strcmp_P(section, PROVIDER_TS_pm) == 0) 
     {
+    #if defined USE_PUB_TSMQTT 
         //Process [PROVIDER_TS] only defined for thingSpeak 
         if (strcmp_P(name, CLOUD_ID_pm) == 0) {
             eCpy(epc.app.provider.s.ts.cloudId, PROVID_CLOUD_ID_SZ);
@@ -439,7 +482,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((timerPostTimeout_local <= TIMER_POST_TOUT_MS_MAX) &&
                 (timerPostTimeout_local >= TIMER_POST_TOUT_MS_MIN) && (errno != ERANGE)) 
             {
-
+                //Null, default below
             } else {
                 PRINTOUT(F("PROVIDER_TS Set TIMER_POST_TOUT_MS error; range["),
                                   TIMER_POST_TOUT_MS_MIN,TIMER_POST_TOUT_MS_MAX, 
@@ -455,6 +498,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((timerPostPacing_local <= TIMER_POST_PACE_MS_MAX) &&
                 (timerPostPacing_local >= TIMER_POST_PACE_MS_MIN) && (errno != ERANGE)) 
             {
+                //Null, default below
             } else {
                 PRINTOUT(F("PROVIDE_TS Set TIMER_POST_PACE_MS error; (range "),
                                   TIMER_POST_PACE_MS_MIN,TIMER_POST_PACE_MS_MAX,
@@ -470,7 +514,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((postMax_num_local <= POST_RANGE_MAX_NUM) && (postMax_num_local >= TIMER_POST_PACE_MS_MIN) &&
                 (errno != ERANGE)) 
             {
-
+                //Null, default below
             } else {
                 PRINTOUT(
                     F("PROVIDER_TS Set POST_MAX_NUM error; ["),
@@ -482,10 +526,11 @@ static int inihUnhandledFn(const char* section, const char* name,
             MS_DBG(F("PROVIDER_TS Set POST_MAX_NUM: "),postMax_num_local);
 
         }
+    #endif // USE_PUB_TSMQTT 
     } else if (strcmp_P(section, PROVIDER_UBIDOTS_pm) == 0) 
     {
+    #if defined USE_PUB_UBIDOTS
         //Process [PROVIDER_UBIDOTS] only defined for ubidots.com 
-
         if (strcmp_P(name, CLOUD_ID_pm) == 0) {
             strcpy(epc.app.provider.s.ub.cloudId, value);
             MS_DBG(F("PROVIDER_UBIDOTS Setting cloudId: "),
@@ -494,6 +539,8 @@ static int inihUnhandledFn(const char* section, const char* name,
             strcpy(epc.app.provider.s.ub.authentificationToken, value);
             MS_DBG(F("PROVIDER_UBIDOTS Setting registration token: "),
             epc.app.provider.s.ub.authentificationToken);
+            uuid_ram_idx=0;
+            uuid_index=0;        
         } else if (strcmp_P(name, UB_DEVICE_ID_pm) == 0) {
             strcpy(epc.app.provider.s.ub.deviceID, value);
             MS_DBG(F("PROVIDER_UBIDOTS Setting SamplingFeature: "),
@@ -504,9 +551,10 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((timerPostTimeout_local <= TIMER_POST_TOUT_MS_MAX) &&
                 (timerPostTimeout_local >= TIMER_POST_TOUT_MS_MIN) && (errno != ERANGE)) 
             {
-
+                //Null, default below
             } else {
-                PRINTOUT(F("PROVIDER_UBIDOTS Set TIMER_POST_TOUT_MS error; range["),
+                //PRINTOUT(PROVIDER_UBIDOTS_pm,F("Set TIMER_POST_TOUT_MS error; range["),
+                PRINTOUT(F("PROVIDER_UBIDOTS"),F("Set TIMER_POST_TOUT_MS error; range["),
                 TIMER_POST_TOUT_MS_MIN,TIMER_POST_TOUT_MS_MAX,
                                   F("] read:"),timerPostTimeout_local);
                 timerPostTimeout_local =MMW_TIMER_POST_TIMEOUT_MS_DEF;
@@ -520,13 +568,14 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((timerPostPacing_local <= TIMER_POST_PACE_MS_MAX) &&
                 (timerPostPacing_local >= TIMER_POST_PACE_MS_MIN) && (errno != ERANGE)) 
             {
+                //Null, default below
             } else {
-                PRINTOUT(F("PROVIDE_TS Set TIMER_POST_PACE_MS error; (range "),
+                PRINTOUT(F("PROVIDER_UBIDOTS"),F("Set TIMER_POST_PACE_MS error; (range "),
                                   TIMER_POST_PACE_MS_MIN,TIMER_POST_PACE_MS_MAX,F("] read:"),timerPostPacing_local);
                 timerPostPacing_local= MMW_TIMER_POST_PACING_MS_DEF;
             }
             epc.app.provider.s.ub.timerPostPace_ms = timerPostPacing_local;
-            MS_DBG(F("PROVIDE_TS Set TIMER_POST_PACE_MS: "),timerPostPacing_local);
+            MS_DBG(F("PROVIDR_UBIDOTS Set TIMER_POST_PACE_MS: "),timerPostPacing_local);
 
         } else if (strcmp_P(name, POST_MAX_NUM_pm) == 0) {
             // convert  str to num with error checking
@@ -534,7 +583,7 @@ static int inihUnhandledFn(const char* section, const char* name,
             if ((postMax_num_local <= POST_RANGE_MAX_NUM) && (postMax_num_local >= POST_RANGE_MIN_NUM) &&
                 (errno != ERANGE)) 
             {
-
+                //Null, default below
             } else {
                 PRINTOUT(
                     F("PROVIDER_UBIDOTS Set POST_MAX_NUM error; (range"),
@@ -544,7 +593,17 @@ static int inihUnhandledFn(const char* section, const char* name,
             //postMax_num = (uint8_t)postMax_num_local;
             epc.app.provider.s.ub.postMax_num = postMax_num_local;
             MS_DBG(F("PROVIDER_UBIDOTS Set POST_MAX_NUM: "),postMax_num_local);
+        } else {
+
+            /* UBIDOTS UUIDs label are uniquuel used to identify the ubidots "variable" are applied to internal sensor Array as follows:
+            1) From ms_cfg.ini: "UUID_label"="ubiddotsVariable"
+            eg Air_Humidity_UUID=humd
+            search variableList for UUID_label and if found replace with "ubidotsVariable"
+            */
+            populateUuidMatchIni( name,  value, epc.app.provider.s.ub.uuid);
+
         }
+    #endif // USE_PUB_UBIDOTS
 
     } else
 #endif // USE_PS_Provider
@@ -848,7 +907,7 @@ const char SD_INIT_ID_pm[] EDIY_PROGMEM = "SD_INIT_ID";
                 SerialStd.println(F("EEPROM Write finished"));
             } else if (strcmp_P(value, DEFAULT_APP_EEPROM_pm) == 0) {
                 SerialStd.println(F("ACTION DEFAULT app EEPROM"));
-                localAppInit(); 
+                localAppStorageInit(); 
                 localEepromAppWr("Default");                
             } else {
                 SerialStd.print(F("EEPROM Write aborted. instruction '"));
@@ -916,11 +975,14 @@ AVR mega1284 has a 4Kbytes eeprom - electricaly eraseable programable read only
 memory This is used to store core provisioning setup, so each processor board
 can be customized.
 
+For other processors its expected they will have a local fixed QSPI/disk
+and this will be a persisten storage
+
 Read the eeprom into the local ram buffer. If crc is invalid then initialize to
 defaults. The eeprom has a crc16 in two sections. The epc.hw_boot_t and
 epc.app...
 */
-void localAppInit() 
+void localAppStorageInit() 
 {
     MS_DBG(F("  ***Eeprom local app storage init***"));
     epc.app.struct_size = sizeof(epc.app.msc.s);
@@ -949,9 +1011,8 @@ void localAppInit()
     epc.app.provider.s.ed.timerPostTout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
     epc.app.provider.s.ed.timerPostPace_ms = MMW_TIMER_POST_PACING_MS_DEF; 
     epc.app.provider.s.ed.postMax_num = MMW_TIMER_POST_MAX_MUM_DEF;  
-    for (int uuid_lp=0;uuid_lp <PROVID_MW__UUID_SENSOR_CNTMAX_SZ;uuid_lp++) 
+    for (int uuid_lp=0;uuid_lp <PROVID_UUID_SENSOR_CNTMAX_SZ;uuid_lp++) 
     {
-        //strcpy_P(epc.app.provider.s.ed.uuid[uuid_lp],(char*)F(UUIDE_NULL_STR ));
         epc.app.provider.s.ed.uuid[uuid_lp].name[0] = PROVID_NULL_TERMINATOR;
         epc.app.provider.s.ed.uuid[uuid_lp].value[0] = PROVID_NULL_TERMINATOR;
     }
@@ -972,8 +1033,12 @@ void localAppInit()
     epc.app.provider.s.ub.timerPostTout_ms = MMW_TIMER_POST_TIMEOUT_MS_DEF;
     epc.app.provider.s.ub.timerPostPace_ms = MMW_TIMER_POST_PACING_MS_DEF; 
     epc.app.provider.s.ub.postMax_num = MMW_TIMER_POST_MAX_MUM_DEF;  
-
-} // localAppInit()
+    for (int uuid_lp=0;uuid_lp <PROVID_UUID_SENSOR_CNTMAX_SZ;uuid_lp++) 
+    {
+        epc.app.provider.s.ub.uuid[uuid_lp].name[0] = PROVID_NULL_TERMINATOR;
+        epc.app.provider.s.ub.uuid[uuid_lp].value[0] = PROVID_NULL_TERMINATOR;
+    }
+} // localAppStorageInit()
 
 void readAvrEeprom() {
     uint16_t crc16;
@@ -1017,7 +1082,7 @@ void readAvrEeprom() {
     MS_DBG(F("App crc16calc"), crc16, F("crc16read"), epc.app.crc16);
     if ((crc16 != epc.app.crc16) && (crc16 != 0)) 
     {
-        localAppInit();
+        localAppStorageInit();
     }
 
     // Read Eeprom Common .app.msc.s that maps from .ini [COMMON]
@@ -1044,27 +1109,26 @@ void readAvrEeprom() {
 #if defined USE_PUB_MMW
     // Don't print if not used, but still in eeprom
     PRINTOUT(F("From eeprom Provider: Provider Type="),epc.app.provider.provider_type,
-            F("\n PROVIDER_MMW CloudId="),(char*)epc.app.provider.s.ed.cloudId, 
+            F(" PROVIDER_MMW CloudId="),(char*)epc.app.provider.s.ed.cloudId, 
             F("\n PROVIDER_MMW Reg Token="),(char*)epc.app.provider.s.ed.registration_token,
             F("\n PROVIDER_MMW Sampling Feature="),(char*)epc.app.provider.s.ed.sampling_feature,
             F("\n PROVIDER_MMW timerPostTout(ms)="), epc.app.provider.s.ed.timerPostTout_ms,
             F("\n PROVIDER_MMW timerPostPace(ms)="), epc.app.provider.s.ed.timerPostPace_ms,
             F("\n PROVIDER_MMW postMax="), epc.app.provider.s.ed.postMax_num
             );
-    PRINTOUT(F("PROVIDER_MMW UUIDs (none unless listed), Max="),PROVID_MW__UUID_SENSOR_CNTMAX_SZ);
-    for (int uuid_lp=0;uuid_lp <PROVID_MW__UUID_SENSOR_CNTMAX_SZ;uuid_lp++) {
+    PRINTOUT(F("  PROVIDER_MMW UUIDs (none unless listed), Max="),PROVID_UUID_SENSOR_CNTMAX_SZ);
+    for (int uuid_lp=0;uuid_lp <PROVID_UUID_SENSOR_CNTMAX_SZ;uuid_lp++) {
         //if (PROVID_NULL_TERMINATOR != epc.app.provider.s.ed.uuid[uuid_lp][0]) {
         if (isalnum(epc.app.provider.s.ed.uuid[uuid_lp].value[0]) 
         || isalnum(epc.app.provider.s.ed.uuid[uuid_lp].name[0])) {
             PRINTOUT(uuid_lp,F("]"),(char *)epc.app.provider.s.ed.uuid[uuid_lp].name,
             F("="),(char *)epc.app.provider.s.ed.uuid[uuid_lp].value);
         }
-
     }   
 #endif // USE_PUB_MMW
 #if defined USE_PUB_TSMQTT
     PRINTOUT(
-            F("\n PROVIDER_TS CloudId="),(char*)epc.app.provider.s.ts.cloudId, 
+            F(" PROVIDER_TS CloudId="),(char*)epc.app.provider.s.ts.cloudId, 
             F("\n PROVIDER_TS TS_MQTT_KEY="),(char*)epc.app.provider.s.ts.thingSpeakMQTTKey,
             F("\n PROVIDER_TS TS_CHANNEL_ID="),(char*)epc.app.provider.s.ts.thingSpeakChannelID,
             F("\n PROVIDER_TS TS_CHANNEL_KEY="),(char*)epc.app.provider.s.ts.thingSpeakChannelID,
@@ -1076,13 +1140,25 @@ void readAvrEeprom() {
 
 #if defined USE_PUB_UBIDOTS
     PRINTOUT(
-            F("\n PROVIDER_UBIDOTS CloudId="),(char*)epc.app.provider.s.ub.cloudId, 
-            F("\n PROVIDER_UBIDOTS Reg Token="),(char*)epc.app.provider.s.ub.authentificationToken,
-            F("\n PROVIDER_UBIDOTS Sampling Feature="),(char*)epc.app.provider.s.ub.deviceID,
+            F(" PROVIDER_UBIDOTS CloudId="),(char*)epc.app.provider.s.ub.cloudId, 
+            F("\n PROVIDER_UBIDOTS Auth Token="),(char*)epc.app.provider.s.ub.authentificationToken,
+            F("\n PROVIDER_UBIDOTS Device id="),(char*)epc.app.provider.s.ub.deviceID,
             F("\n PROVIDER_UBIDOTS timerPostTout(ms)="), epc.app.provider.s.ub.timerPostTout_ms,
             F("\n PROVIDER_UBIDOTS timerPostPace(ms)="), epc.app.provider.s.ub.timerPostPace_ms,
             F("\n PROVIDER_UBIDOTS postMax="), epc.app.provider.s.ub.postMax_num
             );
+    PRINTOUT(F("  PROVIDER_UBIDOTS Variable mapping  (none unless listed), Max="),PROVID_UUID_SENSOR_CNTMAX_SZ);
+    //                PRINTOUT(PROVIDER_UBIDOTS_pm,F("Set TIMER_POST_TOUT_MS error; range["),
+    //const char *PROVIDER_UBIDOTS_const =F("PROVIDER_UBIDOTS");
+    //PRINTOUT(PROVIDER_UBIDOTS_const,F("Variable mapping  (none unless listed), Max="),PROVID_UUID_SENSOR_CNTMAX_SZ);
+    for (int uuid_lp=0;uuid_lp <PROVID_UUID_SENSOR_CNTMAX_SZ;uuid_lp++) {
+        //if (PROVID_NULL_TERMINATOR != epc.app.provider.s.ed.uuid[uuid_lp][0]) {
+        if (isalnum(epc.app.provider.s.ub.uuid[uuid_lp].value[0]) 
+        || isalnum(epc.app.provider.s.ub.uuid[uuid_lp].name[0])) {
+            PRINTOUT(uuid_lp,F("]"),(char *)epc.app.provider.s.ub.uuid[uuid_lp].name,
+            F("="),(char *)epc.app.provider.s.ub.uuid[uuid_lp].value);
+        }
+    }   
 #endif // USE_PUB_UBIDOTS
 
 } // readAvrEeprom

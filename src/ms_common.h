@@ -207,10 +207,7 @@ typedef struct {
 #define PROVID_NULL_TERMINATOR 0
 
 #define PROVID_MW_REGISTRATION_TOKEN_SZ 38
-#define PROVID_MW__SAMPLING_FEAUTRE_SZ 38
-#define PROVID_MW__UUID_SENSOR_NAME_SZ 40
-#define PROVID_MW__UUID_SENSOR_VALUE_SZ 38
-#define PROVID_MW__UUID_SENSOR_CNTMAX_SZ 10
+#define PROVID_MW_SAMPLING_FEAUTRE_SZ 38
 
 #define PROVID_TSMQTTKEY_SZ    17  
 #define PROVID_TSCHANNELID_SZ   7
@@ -219,25 +216,27 @@ typedef struct {
 #define PROVID_UB_AUTH_TOKEN_SZ 38
 #define PROVID_UB_DEVICEID_SZ 38
 
+// If provider requires mapping, then use common mapping to whatever type
+#define PROVID_UUID_SENSOR_NAME_SZ 40
+#define PROVID_UUID_SENSOR_VALUE_SZ 38
+#define PROVID_UUID_SENSOR_CNTMAX_SZ 10
+
 #if defined(USE_PS_Provider)
 typedef struct {
-    char name[PROVID_MW__UUID_SENSOR_NAME_SZ];
-    char value[PROVID_MW__UUID_SENSOR_VALUE_SZ];
+    char name[PROVID_UUID_SENSOR_NAME_SZ];
+    char value[PROVID_UUID_SENSOR_VALUE_SZ];
 } ini_name_value_t;
-
-#define uuid_value(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].value
-#define uuid_name(uuid_idx)  (char*)epc.app.provider.s.ed.uuid[uuid_idx].name
 
 typedef struct {
     // v01 initial structure
     // All are in ascii strings, with the first unused octet \0
     char    cloudId[PROVID_CLOUD_ID_SZ];  // ASCII url
     char    registration_token[PROVID_MW_REGISTRATION_TOKEN_SZ];
-    char    sampling_feature[PROVID_MW__SAMPLING_FEAUTRE_SZ];
+    char    sampling_feature[PROVID_MW_SAMPLING_FEAUTRE_SZ];
     uint16_t timerPostTout_ms; // Gateway Timeout (ms)
     uint16_t timerPostPace_ms; // Gateway Pacing (ms)
     uint16_t postMax_num; //0 no limit, else max num POSTs one session
-    ini_name_value_t uuid[PROVID_MW__UUID_SENSOR_CNTMAX_SZ];
+    ini_name_value_t uuid[PROVID_UUID_SENSOR_CNTMAX_SZ];
 } provid_envirodiy01_t;
 typedef struct {
     // v01 initial structure
@@ -254,7 +253,7 @@ const char* thingSpeakChannelKey =   17x "XXXXXXXXXXXXXXXX";  // The Write API K
     uint16_t timerPostTout_ms; // Gateway Timeout (ms)
     uint16_t timerPostPace_ms; // Gateway Pacing (ms)
     uint16_t postMax_num; //0 no limit, else max num POSTs one session
-    //ini_name_value_t uuid[PROVID_MW__UUID_SENSOR_CNTMAX_SZ];
+    //uuid[] not used sequential 
 } provid_thingspeak01_t;
 
 typedef struct {
@@ -266,11 +265,11 @@ typedef struct {
     uint16_t timerPostTout_ms; // Gateway Timeout (ms)
     uint16_t timerPostPace_ms; // Gateway Pacing (ms)
     uint16_t postMax_num; //0 no limit, else max num POSTs one session
-    //ini_name_value_t uuid[PROVID_MW__UUID_SENSOR_CNTMAX_SZ];
+    ini_name_value_t uuid[PROVID_UUID_SENSOR_CNTMAX_SZ];
 } provid_ubidots01_t;
 typedef struct {
     //Providers meta data stored here. 
-    // Only one provider supported. 
+    // Only one provider using variables/uuid supported. 
     /// Fut : union or simulataneous?
     provid_envirodiy01_t ed;
     provid_thingspeak01_t ts;
