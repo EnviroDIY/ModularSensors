@@ -1,6 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_test  - ModularSensors Configuration - testing to MMW/WiFi
-- Temperature/Humidity 
+ms_cfg.h_nano - ModularSensors cfg - tst KellerNano temp/humidity MMW/WiFi
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
@@ -27,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
 #define MAYFLY_VBAT 1
 #define ExternalVoltage_ACT 1
-//#define ENVIRODIY_MAYFLY_TEMPERATURE 1
+#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
@@ -35,11 +34,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // KellerAcculevel units can be 1 (meter) 2 (feet)
 //#define KellerAcculevel_DepthUnits 2
 
-//#define KellerNanolevel_ACT 1
+#define KellerNanolevel_ACT 1
 #define ASONG_AM23XX_UUID 1
 
-// sensors with low power useage
-#define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_LOW_REQ
+//Two heavy sensors with power useage
+#define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_MEDIUM_REQ
 
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
@@ -49,7 +48,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "tu_test basic WiFi"
+#define CONFIGURATION_DESCRIPTION_STR "nano temp/humidity WiFi"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1
@@ -108,11 +107,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // UseModem_PushData.
 #define UseModem_Module 1
 #define UseModem_PushData 1
-//Select buildtime Publishers  supported. Not all publishers can be supported
+//Select buildtime Publishers  supported. 
 // The persisten resources (EEPROM) are allocated as a baselevel no matter what options 
-//#define USE_PUB_MMW      1
+#define USE_PUB_MMW      1
 //#define USE_PUB_TSMQTT   1
-#define  USE_PUB_UBIDOTS 1
+//#define  USE_PUB_UBIDOTS 1
 
 // Required for TinyGsmClient.h
 #define TINY_GSM_MODEM_XBEE
@@ -227,6 +226,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // ENVIRODIY_MAYFLY_TEMPERATURE
 
 #if defined UseModem_Module
+// This seems to be de-stabilizing Digi S6B
 //#define DIGI_RSSI_UUID "DIGI_RSSI_UUID"
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
 #endif  // UseModem_Module

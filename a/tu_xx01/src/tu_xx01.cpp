@@ -61,12 +61,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // USE_PS_EEPROM
 #include "ms_common.h"
 
-//#define USE_LC709203F 1
-#if defined USE_LC709203F
-#include "Adafruit_LC709203F.h"  //https:  //github.com/adafruit/Adafruit_LC709203F
-Adafruit_LC709203F batteryFuelGauge;
-bool               bfgPresent = false;
-#endif  // USE_LC709203F
+#define USE_STC3100 1
+#if defined USE_STC3100
+#include "STC3100dd.h"  //github.com/neilh10/STC3100arduino.git
+STC3100dd batteryFuelGauge;
+bool       bfgPresent = false;
+#endif  // USE_STC3100 
 
 // ==========================================================================
 //    Data Logger Settings
@@ -1154,16 +1154,18 @@ void serialInputCheck()
 // Poll management sensors- eg FuelGauges status  
 // 
 void  managementSensrorsPoll() {
-#if defined USE_LC709203F
+#if defined USE_STC3100
     if (bfgPresent) {
         Serial.print("Batt Voltage: ");
-        Serial.print(batteryFuelGauge.cellVoltage(), 3);
-        Serial.print(" Percent: ");
-        Serial.println(batteryFuelGauge.cellPercent(), 1);
+        Serial.print(batteryFuelGauge.v.voltage_V, 4);
+        Serial.print(" mA: ");
+        Serial.print(batteryFuelGauge.v.current_mA, 1);
+        Serial.print(" mAH: ");
+        Serial.println(batteryFuelGauge.v.charge_mAhr, 1);
         // Serial.print("Batt Temp: ");
         // Serial.println(lc.getCellTemperature(), 1);
     }
-#endif  // USE_LC709203F
+#endif  // USE_STC3100
 } //managementSensrorsPoll
 
 
@@ -1326,20 +1328,27 @@ void setup() {
     Logger::setRTCTimeZone(0);
 
     mcuBoard.printBatteryThresholds();
-#if defined USE_LC709203F
+#if defined USE_STC3100
     /* */
-    if (!batteryFuelGauge.begin()) {
-        Serial.println(F("Couldnt findLC709203F?\nMake sure a "
+    //batteryFuelGauge.init() //Wire.begin()
+    if (!batteryFuelGauge.start()) {
+        Serial.println(F("Couldnt find STC3100\nMake sure a "
                          "battery is plugged in!"));
     } else {
         bfgPresent = true;
+        Serial.print("STC3100 sn ");
+        for (int snlp=1;snlp<(STC3100_ID_LEN-1);snlp++) {
+            Serial.print(batteryFuelGauge.serial_number[snlp],HEX);
+        }
+        Serial.print(" Type ");
+        Serial.println(batteryFuelGauge.serial_number[0],HEX);
         // batteryFuelGauge.setThermistorB(3950);
-        batteryFuelGauge.setPackSize(LC709203F_APA_500MAH);
+        //FUT batteryFuelGauge.setPackSize(LC709203F_APA_500MAH); 
         // batteryFuelGauge.setAlarmVoltage(3.8);
         // Serial.println(F("Found LC709203F."));
         managementSensrorsPoll();
     }
-#endif  // defined USE_LC709203F
+#endif  // defined USE_STC3100
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
