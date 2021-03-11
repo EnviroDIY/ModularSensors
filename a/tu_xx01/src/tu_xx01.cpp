@@ -64,7 +64,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define USE_STC3100 1
 #if defined USE_STC3100
 #include "STC3100dd.h"  //github.com/neilh10/STC3100arduino.git
-STC3100dd batteryFuelGauge;
+STC3100dd batteryFuelGauge(STC3100_REG_MODE_ADCRES_12BITS,STC3100_R_SERIES_mOhms);
 bool       bfgPresent = false;
 #endif  // USE_STC3100 
 
@@ -1153,20 +1153,33 @@ void serialInputCheck()
 // ==========================================================================
 // Poll management sensors- eg FuelGauges status  
 // 
-void  managementSensrorsPoll() {
+void  managementSensorsPoll() {
 #if defined USE_STC3100
     if (bfgPresent) {
-        Serial.print("Batt Voltage: ");
+        batteryFuelGauge.readValues();
+        Serial.print("BtMonStc31, ");
+        //Create a time traceability header 
+        String csvString = "";
+        csvString.reserve(24);
+        dataLogger.dtFromEpochTz(dataLogger.getNowEpochTz()).addToString(csvString);
+        csvString += ", ";
+        Serial.print(csvString);
+        //Serial.print(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
+
+        //Output readings
         Serial.print(batteryFuelGauge.v.voltage_V, 4);
-        Serial.print(" mA: ");
+        Serial.print(",V, ");
         Serial.print(batteryFuelGauge.v.current_mA, 1);
-        Serial.print(" mAH: ");
-        Serial.println(batteryFuelGauge.v.charge_mAhr, 1);
-        // Serial.print("Batt Temp: ");
+        Serial.print(",mA, ");
+        Serial.print(batteryFuelGauge.v.charge_mAhr, 3);
+        Serial.print(",mAH, ");
+        Serial.print(batteryFuelGauge.v.counter);
+        Serial.println(",CntsAdc");
+        // Serial.print(" & IC Temp(C), ");
         // Serial.println(lc.getCellTemperature(), 1);
     }
 #endif  // USE_STC3100
-} //managementSensrorsPoll
+} //managementSensorsPoll
 
 
 // ==========================================================================
@@ -1330,7 +1343,7 @@ void setup() {
     mcuBoard.printBatteryThresholds();
 #if defined USE_STC3100
     /* */
-    //batteryFuelGauge.init() //Wire.begin()
+    batteryFuelGauge.init(); //does this interfere with other Wire.begin()
     if (!batteryFuelGauge.start()) {
         Serial.println(F("Couldnt find STC3100\nMake sure a "
                          "battery is plugged in!"));
@@ -1342,11 +1355,14 @@ void setup() {
         }
         Serial.print(" Type ");
         Serial.println(batteryFuelGauge.serial_number[0],HEX);
-        // batteryFuelGauge.setThermistorB(3950);
-        //FUT batteryFuelGauge.setPackSize(LC709203F_APA_500MAH); 
-        // batteryFuelGauge.setAlarmVoltage(3.8);
-        // Serial.println(F("Found LC709203F."));
-        managementSensrorsPoll();
+        //FUT  How to set batteryFuelGauge.setPackSize ?? (_500MAH); 
+        #if defined MS_TU_CTD_DEBUG
+        for (uint8_t cnt=0;cnt <5;cnt++)
+        #endif 
+        {
+            delay(125);
+            managementSensorsPoll();
+        }
     }
 #endif  // defined USE_STC3100
 
@@ -1461,7 +1477,7 @@ void setup() {
 // ==========================================================================
 
 void loop() {
-    managementSensrorsPoll();
+    managementSensorsPoll();
     if ((true == userButton1Act ) || Serial.available()){
         userInputCollection =true;
         serialInputCheck();
