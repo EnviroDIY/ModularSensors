@@ -38,18 +38,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include "ms_cfg.h"  //must be before ms_common.h & Arduino.h
 
 // Use  MS_DBG()
-#ifdef MS_TU_CTD_DEBUG
+#ifdef MS_TU_XX_DEBUG
 #undef MS_DEBUGGING_STD
 #define MS_DEBUGGING_STD "tu_ctd"
 #define MS_DEBUG_THIS_MODULE 1
-#endif  // MS_TU_CTD_DEBUG
+#endif  // MS_TU_XX_DEBUG
 
-#ifdef MS_TU_CTD_DEBUG_DEEP
+#ifdef MS_TU_XX_DEBUG_DEEP
 #undef MS_DEBUGGING_DEEP
 #define MS_DEBUGGING_DEEP "tu_ctdD"
 #undef MS_DEBUG_THIS_MODULE
 #define MS_DEBUG_THIS_MODULE 2
-#endif  // MS_TU_CTD_DEBUG_DEEP
+#endif  // MS_TU_XX_DEBUG_DEEP
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
@@ -61,12 +61,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // USE_PS_EEPROM
 #include "ms_common.h"
 
-#define USE_STC3100 1
-#if defined USE_STC3100
-#include "STC3100dd.h"  //github.com/neilh10/STC3100arduino.git
-STC3100dd batteryFuelGauge(STC3100_REG_MODE_ADCRES_12BITS,STC3100_R_SERIES_mOhms);
-bool       bfgPresent = false;
-#endif  // USE_STC3100 
 
 // ==========================================================================
 //    Data Logger Settings
@@ -543,6 +537,12 @@ const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnec
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
 #endif  // 0
+#if defined USE_STC3100
+#include "STC3100dd.h"  //github.com/neilh10/STC3100arduino.git
+STC3100dd batteryFuelGauge(STC3100_REG_MODE_ADCRES_12BITS,STC3100_R_SERIES_mOhms);
+bool       bfgPresent = false;
+#endif  // USE_STC3100 
+
 #ifdef ExternalVoltage_ACT
 // ==========================================================================
 //    External Voltage via TI ADS1115
@@ -590,11 +590,11 @@ float kBatteryVoltage_worker(void) {  // get the Battery Reading
     batteryLion_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
     // MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
-#if defined MS_TU_CTD_DEBUG
+#if defined MS_TU_XX_DEBUG
     DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(batteryLion_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
-#endif  // MS_TU_CTD_DEBUG
+#endif  // MS_TU_XX_DEBUG
     if (userPrintBatterVoltage) {
         userPrintBatterVoltage = false;
         STANDARD_SERIAL_OUTPUT.print(F("  BatteryVoltage(V) "));
@@ -604,6 +604,9 @@ float kBatteryVoltage_worker(void) {  // get the Battery Reading
     return batteryLion_V;
 }
 float getBatteryVoltage_V(void) {
+    #if defined MAYFLY_VBAT 
+    kBatteryVoltage_worker();
+    #endif //defined MAYFLY_VBAT 
     return batteryLion_V;
 }
 // Setup the object that does the operation
@@ -619,7 +622,8 @@ Variable* kBatteryVoltage_var =
 #endif  // USE_EXT_BATTERY_ADC
 #endif  // ExternalVoltage_ACT
 
-#if defined USE_EXT_BATTERY_ADC
+#if !defined MAYFLY_VBAT 
+// Need for internal battery 
 #define mcuBoardExtBattery() mcuBoard.setBatteryV(kBatteryVoltage_worker());
 #else
 #define mcuBoardExtBattery()
@@ -729,7 +733,8 @@ Variable* variableList[] = {
 
 #if defined ExternalVoltage_Volt0_UUID
     kBatteryVoltage_var,
-#elif defined ProcVolt_ACT
+#endif
+#if defined ProcessorStats_Batt_UUID
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
 // new processorAdc_Volt(&sensor_batt_V, ProcVolt0_UUID),
 #endif  // ProcVolt_ACT
@@ -1356,7 +1361,7 @@ void setup() {
         Serial.print(" Type ");
         Serial.println(batteryFuelGauge.serial_number[0],HEX);
         //FUT  How to set batteryFuelGauge.setPackSize ?? (_500MAH); 
-        #if defined MS_TU_CTD_DEBUG
+        #if defined MS_TU_XX_DEBUG
         for (uint8_t cnt=0;cnt <5;cnt++)
         #endif 
         {

@@ -20,21 +20,29 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Local default defitions here
 
 //**************************************************************************
-// This configuration is for a standard Mayfly0.bb
+// This configuration is for a standard Mayfly0.5b
 // Sensors Used - two std to begin then
 //#define AnalogProcEC_ACT 1
 // Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
+// If MAYFLY_VBAT will use it as a measure of Solar Charging and power monitoring
+// If no MAYFLY_VBAT - then will use ExternalVoltage for power monitoring
 #define MAYFLY_VBAT 1
 #define ExternalVoltage_ACT 1
 #define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
+
+#define WINGBOARD_KNH002 1
+#if defined WINGBOARD_KNH002
+//This supports RS485 1.9W and STC3100
+#define USE_STC3100 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
 //#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
 //#define KellerAcculevel_DepthUnits 2
 
 #define KellerNanolevel_ACT 1
+#endif //WINGBOARD_KNH002
 #define ASONG_AM23XX_UUID 1
 
 //Two heavy sensors with power useage
@@ -237,20 +245,23 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_Batt_UUID "Batt_UUID"
 #endif  // ProcessorStats_ACT
 
-#if defined MAYFLY_VBAT
+//#if defined MAYFLY_VBAT
 #ifdef ExternalVoltage_ACT
-// AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
-#define ExternalVoltage_Volt0_UUID "Batt_UUID"
-//#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+// AA0 is 1/10 of Vbat using R+R divider. Requires Mayfly ECO 04
+//#define ExternalVoltage_Volt0_UUID "Batt_UUID"
+#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 //#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
-#else  // ExternalVoltage_ACT
+//#else  // ExternalVoltage_ACT
+#endif  // ExternalVoltage_ACT
+#if defined MAYFLY_VBAT
 #define ProcVolt_ACT 1
 #ifdef ProcVolt_ACT
-// AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
-#define ProcVolt0_UUID "Volt0_UUID"
+#define ProcVolt0_UUID "Batt_UUID"
+// AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 04
+//#define ProcVolt0_UUID "Volt0_UUID"
 //#define ProcVolt1_UUID "Volt1_UUID"
 #endif  // ProcVolt_ACT
-#endif  // ExternalVoltage_ACT
+
 #endif  // MAYFLY_VBAT
 
 #endif  // ms_cfg_h
