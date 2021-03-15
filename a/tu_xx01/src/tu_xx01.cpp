@@ -1348,7 +1348,7 @@ void setup() {
     mcuBoard.printBatteryThresholds();
 #if defined USE_STC3100
     /* */
-    batteryFuelGauge.init(); //does this interfere with other Wire.begin()
+    batteryFuelGauge.begin(); //does this interfere with other Wire.begin()
     if (!batteryFuelGauge.start()) {
         Serial.println(F("Couldnt find STC3100\nMake sure a "
                          "battery is plugged in!"));
