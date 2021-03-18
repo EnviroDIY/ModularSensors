@@ -562,13 +562,13 @@ bool userPrintStc3100BatV_avlb=false;
 Variable* kBatteryVoltage_V = new STSTC3100_Volt(&stc3100_phy,"nu");
 float     LionBatStc3100_V;
 
-float kLionBatStc3100_worker(void) {  // get the Battery Reading
+float wLionBatStc3100_worker(void) {  // get the Battery Reading
     // Get new reading
     LionBatStc3100_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
-    // MS_DBG(F("kLionBatStc3100_worker"), LionBatStc3100_V);
-#if 1//defined MS_TU_XX_DEBUG
-    DEBUGGING_SERIAL_OUTPUT.print(F("  kLionBatStc3100_worker "));
+    // MS_DBG(F("wLionBatStc3100_worker"), LionBatStc3100_V);
+#if defined MS_TU_XX_DEBUG
+    DEBUGGING_SERIAL_OUTPUT.print(F("  wLionBatStc3100_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(LionBatStc3100_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
 #endif  // MS_TU_XX_DEBUG
@@ -582,7 +582,7 @@ float kLionBatStc3100_worker(void) {  // get the Battery Reading
 }
 float getLionBatStc3100_V(void) {
     #if defined MAYFLY_VBAT 
-    kLionBatStc3100_worker();
+    wLionBatStc3100_worker();
     #endif //defined MAYFLY_VBAT 
     return LionBatStc3100_V;
 }
@@ -642,13 +642,13 @@ bool userPrintExtBatV_avlb=false;
 Variable* varExternalVoltage_Volt = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
 float    LionBatExt_V;
 
-float kLionBatExt_worker(void) {  // get the Battery Reading
+float wLionBatExt_worker(void) {  // get the Battery Reading
     // Get new reading
    LionBatExt_V = varExternalVoltage_Volt->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
-    // MS_DBG(F("kLionBatExt_worker"), LionBatExt_V);
+    // MS_DBG(F("wLionBatExt_worker"), LionBatExt_V);
 #if defined MS_TU_XX_DEBUG
-    DEBUGGING_SERIAL_OUTPUT.print(F("  kLionBatExt_worker "));
+    DEBUGGING_SERIAL_OUTPUT.print(F("  wLionBatExt_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(LionBatExt_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
 #endif  // MS_TU_XX_DEBUG
@@ -662,7 +662,7 @@ float kLionBatExt_worker(void) {  // get the Battery Reading
 }
 float getLionBatExt_V(void) {
     #if defined MAYFLY_VBAT 
-    kLionBatExt_worker();
+    wLionBatExt_worker();
     #endif //defined MAYFLY_VBAT 
     return LionBatExt_V;
 }
@@ -681,7 +681,7 @@ Variable* pLionBatExt_var =
 
 #if !defined MAYFLY_VBAT 
 // Need for internal battery 
-#define mcuBoardExtBattery() mcuBoard.setBatteryV(kLionBatExt_worker());
+#define mcuBoardExtBattery() mcuBoard.setBatteryV(wLionBatExt_worker());
 #else
 #define mcuBoardExtBattery()
 #endif  // MAYFLY_VBAT 
@@ -1453,7 +1453,7 @@ void setup() {
     if (batteryCheck(LiIon_BAT_REQ, true)) {
         MS_DBG(F("Sync with NIST as have enough power"));
 
-#if 0 //GET_TIME_ON_STARTUP
+#if 1 //GET_TIME_ON_STARTUP
 #if defined DigiXBeeWifi_Module
         // For the WiFi module, it may not be configured if no nscfg.ini file
         // present,
@@ -1531,7 +1531,7 @@ void setup() {
     const char STC3100SN_100mohms_pm[] EDIY_PROGMEM = "13717d611";
     if (sn.equals(STC3100SN_100mohms_pm)) {
         #define STC3100_R_SERIES_100mOhms 100
-        PRINTOUT(F("STC3100 debug set R to mOhms "),STC3100_R_SERIES_100mOhms);
+        PRINTOUT(F("STC3100 diagnostic set R to mOhms "),STC3100_R_SERIES_100mOhms);
         stc3100_phy.stc3100_device.setCurrentResistor(STC3100_R_SERIES_100mOhms);
     } 
 #endif // USE_STC3100_SENSOR

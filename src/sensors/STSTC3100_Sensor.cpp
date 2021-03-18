@@ -17,7 +17,6 @@ STSTC3100_Sensor::STSTC3100_Sensor(TwoWire* theI2C,
                          uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, -1, -1, measurementsToAverage) {
-    //_i2cAddressHex = i2cAddressHex;
     _i2c           = theI2C;
 }
 STSTC3100_Sensor::STSTC3100_Sensor(
@@ -27,7 +26,6 @@ STSTC3100_Sensor::STSTC3100_Sensor(
                          uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, -1, -1, measurementsToAverage) {
-    //_i2cAddressHex = i2cAddressHex;
     _i2c           = &Wire;
 }
 
@@ -36,11 +34,13 @@ STSTC3100_Sensor::~STSTC3100_Sensor() {}
 
 
 String      STSTC3100_Sensor::getSensorLocation(void) {
+    String address = F(" I2C_0x");
+    address += String(_i2cAddressHex, HEX);
+    // Could add the serial number at some point, but not much value here
     //String address = F("Sn ");
     //Must have done stc3100_device.start() to read string
     //address += stc3100_device.getSn();
-    String address = F(" I2C_0x");
-    address += String(_i2cAddressHex, HEX);
+
     return address;
 }
 
@@ -66,9 +66,8 @@ bool STSTC3100_Sensor::setup(void) {
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
-
-// The function to put the sensor to sleep
-// The Stc3100 sensors must be told to sleep
+#if 0
+// The Stc3100 sensors can be put into low power mode, but this changes the setup time
 bool STSTC3100_Sensor::sleep(void) {
     if (!checkPowerOn()) { return true; }
     if (_millisSensorActivated == 0) {
@@ -100,43 +99,8 @@ bool STSTC3100_Sensor::sleep(void) {
 
     return success;
 }
-
-#if 0
-bool STSTC3100_Sensor::startSingleMeasurement(void) {
-    // Sensor::startSingleMeasurement() checks that if it's awake/active and
-    // sets the timestamp and status bits.  If it returns false, there's no
-    // reason to go on.
-    if (!Sensor::startSingleMeasurement()) return false;
-
-    bool success = true;
-    MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
-
-#if 0
-    _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write('r');  // Write "R" to start a reading
-    int I2Cstatus = _i2c->endTransmission();
-    MS_DBG(F("I2Cstatus:"), I2Cstatus);
-    success &= !I2Cstatus;
-    // NOTE: The return of 0 from endTransmission indicates success
-#endif 
-    //success &= stc3100_device.readValues(); // 0 == success 
-    // The STC3100 takes continuous measurements once started/
-    // Assumes it has already been started
-    if (success) {
-        // Update the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    } else {
-        // Otherwise, make sure that the measurement start time and success bit
-        // (bit 6) are unset
-        MS_DBG(getSensorNameAndLocation(),
-               F("did not successfully start a measurement."));
-        _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
-    }
-
-    return success;
-}
 #endif //0
+
 
 bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
     bool success = false;
@@ -144,32 +108,22 @@ bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
-        #if 0
-        // call the circuit and request 40 bytes (this may be more than we need)
-        _i2c->requestFrom((int)_i2cAddressHex, 40, 1);
-        // the first byte is the response code, we read this separately.
-        //uint8_t code = _i2c->read();
-        #endif //
+
         uint8_t code = stc3100_device.readValues(); // 0 == success 
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-        // Parse the response code
         switch (code) {
             case 0:  // the command was successful.
-                MS_DBG(F("  Measurement successful"));
+                MS_DBG(getSensorNameAndLocation(),F("  Measurement successful"));
                 success = true;
                 break;
 
             default:  // the command has failed.
-                MS_DBG(F("  Measurement Failed="),code );
+                MS_DBG(getSensorNameAndLocation(),F("  Measurement Failed="),code );
                 break;
-
         }
         // If the response code is successful, parse the remaining results
         if (success) {
             float result;
-            #if !defined STC3100_SENSOR_INVALID
-            #define STC3100_SENSOR_INVALID -9999
-            #endif
+
             for (uint8_t snsrn = 0; snsrn < _numReturnedValues; snsrn++) {
                 switch (snsrn) {
                 case STC3100_BUS_VOLTAGE_VAR_NUM :
@@ -178,7 +132,7 @@ bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
                     break; 
                 case STC3100_CURRENT_MA_VAR_NUM : 
                     result=stc3100_device.v.current_mA;
-                    // This is based on the 30mOhms, and is unlikely
+                    // This is based on the 30mOhms, and is unlikely to happen
                     if (result < -7000.0) {
                         MS_DBG(F("  Current_MA read invalid"),  result);
                         result = STC3100_SENSOR_INVALID;
@@ -213,21 +167,3 @@ bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
     return success;
 }
 
-
-// Wait for a command to process
-// NOTE:  This should ONLY be used as a wait when no response is
-// expected except a status code - the response will be "consumed"
-// and become unavailable.
-#if 0
-bool STSTC3100_Sensor::waitForProcessing(uint32_t timeout) {
-    // Wait for the command to have been processed and implented
-    bool     processed = false;
-    uint32_t start     = millis();
-    while (!processed && millis() - start < timeout) {
-        _i2c->requestFrom((int)_i2cAddressHex, 1, 1);
-        uint8_t code = _i2c->read();
-        if (code == 1) processed = true;
-    }
-    return processed;
-}
-#endif //0

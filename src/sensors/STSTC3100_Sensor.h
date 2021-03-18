@@ -1,8 +1,8 @@
 /**
  * @file STSTC3100_Sensor.h
  * @copyright 2020 Neil Hancock, assigned to the Stroud Water Research Center
- * Part of the EnviroDIY ModularSensors library for Arduino
- * @author Neil Hancock.  Based on the AtlasParent.xx of the Stroud Water Research Center
+ * Part of the EnviroDIY ModularSensors library 
+ * @author Neil Hancock.  Based on the AtlasParent.xx & TIINA219 of the Stroud Water Research Center
  * 
  *
  * @brief Contains the STSTC3100_Sensor sensor subclass which is itself the
@@ -21,8 +21,8 @@
  * This library currently supports the Stc3100 IC as a sensors
  *
  *
- * The chips have operating voltages between 3.3V and 5V; power can be stopped
- * between measurements.  
+ * The device is connected to the LiIon battery and needs to run continously for recording energy used
+ * It can be put into low power mode to save about 100uA (max spec). In low power it uses 2uA 
  *
  * The code in ModularSensors _**requires the Stc3100 Sensors to communicate over
  * I2C**_.  
@@ -88,30 +88,40 @@
  */
 #define STC3100_STABILIZATION_TIME_MS 0
 /**
- * @brief Sensor::_measurementTime_ms; the STC3100 takes 1100ms to complete a
- * measurement.
+ * @brief Sensor::_measurementTime_ms; the STC3100 takes 0ms to complete a
+ * measurement. 
  *
- * A single ADC conversion takes >532 µs (586 µs typical) at 12 bit resolution,
- * but in tests waiting closer to 1.1s gave data with a slightly better standard
- * deviation.
+ * The internal registers are being continually updated. 
  */
 #define STC3100_MEASUREMENT_TIME_MS 0
-/**@}*/
 
+/**
+ * @brief Sensor::invalid code
+ * 
+ * For any invalid reading, unless over-ridden 
+ */
+#if !defined STC3100_SENSOR_INVALID
+#define STC3100_SENSOR_INVALID -9999
+#endif
+/**@}*/
 
 /**
  * @anchor sensor_stc3100_volt
  * @name Bus Voltage
  * The bus voltage variable from a ST STC3100
- * - Range is 0 to 26V
- * - Accuracy is ±4mV (1 LSB step size)
+ * - Range is 2.7 to 4.5V - 
+ * - Accuracy is dependent on ADC resolution 
+ *  12bits 47uV every 125mS  
+ *  13bits 24uV       250mS
+ *  14bits 12uV       500mS
+ *  accuracy 0.5% @25C over temperature range 1%
  *
  * {{ @ref STSTC3100_Volt::STSTC3100_Volt }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bus voltage should have 4 -
+/// @brief Decimals places in string representation; bus voltage is 4 -
 /// resolution is 0.001V.
-#define STC3100_BUS_VOLTAGE_RESOLUTION 3
+#define STC3100_BUS_VOLTAGE_RESOLUTION 4
 /// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
 #define STC3100_BUS_VOLTAGE_VAR_NUM 0
 /// @brief Variable name in
@@ -126,26 +136,24 @@
 /**@}*/
 
 
-#warning more work  * Range is dependent on exernal R
 /**
  * @anchor sensor_stc3100_current
  * @name Current
  * The current variable from a ST STC3100
 
- * - Range is between +/-0.4 Amps and +/-3.2 Amps
- * - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
- * unknown)
+ * - Range with 30milliOhms is between +/-7.0 Amps
+ * - Absolute accuracy is range dependent, and 11.77uV measurement
+ * For 0.030 Ohms is 0.353mA
+ * For 0.100 Ohms is 0.117mA
  *
- * {{ @ref TISTC3100M_Current::TISTC3100M_Current }}
+ * {{ @ref STSTC3100M_Current::STSTC3100M_Current }}
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; current should have 1.
- *  - resolution is 12-bit
- *     - 0.8mA using +/-3.2 Amp range
- *     - 0.1mA using +/-0.4 Amp range
+ * @brief Decimals places in string representation; current is 1.
+ * 
  */
-#define STC3100_CURRENT_MA_RESOLUTION 2
+#define STC3100_CURRENT_MA_RESOLUTION 1
 /// @brief Sensor variable number; current is stored in sensorValues[0].
 #define STC3100_CURRENT_MA_VAR_NUM 1
 /// @brief Variable name in
@@ -162,12 +170,16 @@
  * @anchor sensor_stc3100_energy
  * @name energy_mAh
  * The energy variable from a ST STC3100
- *
+  * - Absolute accuracy is range dependent, and 6.70uV.h measurement
+ * For 0.030 Ohms is 0.2mAh
+ * For 0.100 ohms is 0.067mAh
+ * 0.277mAh == 1Coulomb
+ * 
  * {{ @ref STC3100M_mAh::STC3100M_mAh }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; power draw should have 2 -
-/// resolution is 0.01mW.
+/// @brief Decimals places in string representation; power draw is 2 -
+
 #define STC3100_ENERGY_MAH_RESOLUTION 2
 /// @brief Sensor variable number; power draw is stored in sensorValues[2].
 #define STC3100_ENERGY_MAH_VAR_NUM 2
@@ -176,7 +188,7 @@
 /// "electricPower"
 #define STC3100_ENERGY_MAH_VAR_NAME "electricEnergy"
 /// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "milliwatt"
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "Coulomb"
 #define STC3100_ENERGY_MAH_UNIT_NAME "milliAmpHour"
 /// @brief Default variable short code; "STSTC3100Power"
 #define STC3100_ENERGY_MAH_DEFAULT_CODE "STSTC3100Energy"
@@ -185,14 +197,13 @@
 /**
  * @brief Class for Stc3100 Device with internal sensors
  *
- * This contains the main I2C functionality for all Stc3100 circuits.
+ * This contains the access functionality over I2C for all Stc3100 sensors.
  *
  * @ingroup stc3100_group
  */
 class STSTC3100_Sensor : public Sensor {
  public:
 
-#if 1//!defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Stc3100 Parent object using a secondary *hardware*
      * I2C instance.
@@ -219,9 +230,9 @@ class STSTC3100_Sensor : public Sensor {
     STSTC3100_Sensor(TwoWire* theI2C, 
                 uint8_t       measurementsToAverage = STC3100_NUM_MEASUREMENTS,
                 const char*   sensorName            = "Stc3100Sensor",
-                const uint8_t numReturnedVars = STC3100_NUM_VARIABLES, uint32_t warmUpTime_ms = 0,
-                uint32_t stabilizationTime_ms = 0,
-                uint32_t measurementTime_ms   = 0);
+                const uint8_t numReturnedVars = STC3100_NUM_VARIABLES, uint32_t warmUpTime_ms = STC3100_WARM_UP_TIME_MS,
+                uint32_t stabilizationTime_ms = STC3100_STABILIZATION_TIME_MS,
+                uint32_t measurementTime_ms   = STC3100_MEASUREMENT_TIME_MS);
     /**
      * @brief Construct a new Stc3100 Parent object using the primary hardware I2C
      * instance.
@@ -243,10 +254,10 @@ class STSTC3100_Sensor : public Sensor {
     STSTC3100_Sensor( 
                 uint8_t       measurementsToAverage = STC3100_NUM_MEASUREMENTS,
                 const char*   sensorName            = "Stc3100Sensor",
-                const uint8_t numReturnedVars = STC3100_NUM_VARIABLES, uint32_t warmUpTime_ms = 0,
-                uint32_t stabilizationTime_ms = 0,
-                uint32_t measurementTime_ms   = 0);
-#endif
+                const uint8_t numReturnedVars = STC3100_NUM_VARIABLES, uint32_t warmUpTime_ms = STC3100_WARM_UP_TIME_MS,
+                uint32_t stabilizationTime_ms = STC3100_STABILIZATION_TIME_MS,
+                uint32_t measurementTime_ms   = STC3100_MEASUREMENT_TIME_MS);
+
     /**
      * @brief Destroy the Stc3100 Parent object.  Also destroy the software I2C
      * instance if one was created.
@@ -254,7 +265,7 @@ class STSTC3100_Sensor : public Sensor {
     virtual ~STSTC3100_Sensor();
 
     /**
-     * @brief Return the I2C address of the EZO circuit.
+     * @brief Return the I2C address of the sensor.
      *
      * @return **String** Text describing how the sensor is attached to the mcu.
      */
@@ -272,20 +283,15 @@ class STSTC3100_Sensor : public Sensor {
      */
     bool setup(void) override;
 
-    // NOTE:  The sensor should wake as soon as any command is sent.
-    // I assume that means we can use the command to take a reading to both
-    // wake it and ask for a reading.
-    // bool wake(void) override;
-
     /**
-     * @brief Puts the sensor to sleep, if necessary.
+     * @brief tbd can't put sensor to sleep, can do low power mode.  
      *
      * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
      * This does NOT power down the sensor!
      *
      * @return **bool** True if the sleep function completed successfully.
      */
-    bool sleep(void) override;
+    //tbd bool sleep(void) override;
 
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
@@ -333,7 +339,8 @@ class STSTC3100_Sensor : public Sensor {
     /**
      * @brief Wait for a command to process
      *
-     * Most Stc3100 I2C commands have a 300ms processing time from the time the
+     * The Stc3100 I2C commands reads register with data 
+     *  have a 300ms processing time from the time the
      * command is written until it is possible to request a response or result,
      * except for the commands to take a calibration point or a reading which
      * have a 600ms processing/response time.
@@ -346,7 +353,7 @@ class STSTC3100_Sensor : public Sensor {
      * @return **bool** True processing completed and a status code was returned
      * within the wait period.
      */
-    bool waitForProcessing(uint32_t timeout = 1000L);
+    // bool waitForProcessing(uint32_t timeout = 1000L);
 
 };
 
