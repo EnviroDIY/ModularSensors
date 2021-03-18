@@ -1,11 +1,11 @@
 /**
- * @file Stc3100sensor.h
+ * @file STSTC3100_Sensor.h
  * @copyright 2020 Neil Hancock, assigned to the Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Neil Hancock.  Based on the AtlasParent.xx of the Stroud Water Research Center
  * 
  *
- * @brief Contains the Stc3100sensor sensor subclass which is itself the
+ * @brief Contains the STSTC3100_Sensor sensor subclass which is itself the
  * parent class for all Stc3100 sensors.
  *
  * This depends on the Arduino core Wire library.  
@@ -29,7 +29,7 @@
  *
  * @section stc3100_group_flags Build flags
  *
- * - `-D MS_STC3100SENSOR_DEBUG`
+ * - `-D MS_STSTC3100SENSOR_DEBUG`
  *      - switches on debug
  *
  * @warning **The STC3100 as a battery monitor is expected to be powered at all times.
@@ -38,13 +38,13 @@
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_SENSORS_STC3100SENSOR_H_
-#define SRC_SENSORS_STC3100SENSOR_H_
+#ifndef SRC_SENSORS_STSTC3100SENSOR_H_
+#define SRC_SENSORS_STSTC3100SENSOR_H_
 
 // Debugging Statement
-// #define MS_STC3100SENSOR_DEBUG
+// #define MS_STSTC3100SENSOR_DEBUG
 
-#ifdef MS_STC3100SENSOR_DEBUG
+#ifdef MS_STSTC3100SENSOR_DEBUG
 #define MS_DEBUGGING_STD "Stc3100sensor"
 #endif
 
@@ -61,23 +61,32 @@
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the STC3100 can report 3 values at present - possibly more in future
+////
 #define STC3100_NUM_VARIABLES 3
 
+// Sensor Specific Defines
+/** @ingroup sensor_stc3100 */
+/**@{*/
+
+/// @brief Sensor::_numReturnedValues; the STC3100 can average readings
+////
+#define STC3100_NUM_MEASUREMENTS 1
+
 /**
- * @anchor sensor_ina219_timing
+ * @anchor sensor_stc3100_timing
  * @name Sensor Timing
  * The sensor timing for a ST STC3100
  */
 /**@{*/
-/// @brief Sensor::_warmUpTime_ms; the STC3100 warms up in 100ms.
-#define STC3100_WARM_UP_TIME_MS 100
+/// @brief Sensor::_warmUpTime_ms; the STC3100 warms up in 0ms.
+#define STC3100_WARM_UP_TIME_MS 0
 /**
- * @brief Sensor::_stabilizationTime_ms; the STC3100 is stable after 4000ms.
+ * @brief Sensor::_stabilizationTime_ms; the STC3100 is stable after00ms.
  *
  * Stable numbers can be acheived after 500ms, but waiting up to 4s gave more
  * consistent numbers based on tests using STC3100timingTest.ino
  */
-#define STC3100_STABILIZATION_TIME_MS 4000
+#define STC3100_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the STC3100 takes 1100ms to complete a
  * measurement.
@@ -86,12 +95,40 @@
  * but in tests waiting closer to 1.1s gave data with a slightly better standard
  * deviation.
  */
-#define STC3100_MEASUREMENT_TIME_MS 1100
+#define STC3100_MEASUREMENT_TIME_MS 0
 /**@}*/
+
+
+/**
+ * @anchor sensor_stc3100_volt
+ * @name Bus Voltage
+ * The bus voltage variable from a ST STC3100
+ * - Range is 0 to 26V
+ * - Accuracy is ±4mV (1 LSB step size)
+ *
+ * {{ @ref STSTC3100_Volt::STSTC3100_Volt }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; bus voltage should have 4 -
+/// resolution is 0.001V.
+#define STC3100_BUS_VOLTAGE_RESOLUTION 3
+/// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
+#define STC3100_BUS_VOLTAGE_VAR_NUM 0
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "voltage"
+#define STC3100_BUS_VOLTAGE_VAR_NAME "voltage"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt"
+#define STC3100_BUS_VOLTAGE_UNIT_NAME "volt"
+/// @brief Default variable short code; "STSTC3100Volt"
+#define STC3100_BUS_VOLTAGE_DEFAULT_CODE "STSTC3100Volt"
+/**@}*/
+
 
 #warning more work  * Range is dependent on exernal R
 /**
- * @anchor sensor_ina219_current
+ * @anchor sensor_stc3100_current
  * @name Current
  * The current variable from a ST STC3100
 
@@ -108,9 +145,9 @@
  *     - 0.8mA using +/-3.2 Amp range
  *     - 0.1mA using +/-0.4 Amp range
  */
-#define STC3100_CURRENT_MA_RESOLUTION 1
+#define STC3100_CURRENT_MA_RESOLUTION 2
 /// @brief Sensor variable number; current is stored in sensorValues[0].
-#define STC3100_CURRENT_MA_VAR_NUM 0
+#define STC3100_CURRENT_MA_VAR_NUM 1
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "electricCurrent"
@@ -121,33 +158,6 @@
 /// @brief Default variable short code; "STSTC3100Amp"
 #define STC3100_CURRENT_MA_DEFAULT_CODE "STSTC3100Amp"
 /**@}*/
-
-/**
- * @anchor sensor_ina219_volt
- * @name Bus Voltage
- * The bus voltage variable from a ST STC3100
- * - Range is 0 to 26V
- * - Accuracy is ±4mV (1 LSB step size)
- *
- * {{ @ref STSTC3100_Volt::STSTC3100_Volt }}
- */
-/**@{*/
-/// @brief Decimals places in string representation; bus voltage should have 4 -
-/// resolution is 0.001V.
-#define STC3100_BUS_VOLTAGE_RESOLUTION 3
-/// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
-#define STC3100_BUS_VOLTAGE_VAR_NUM 1
-/// @brief Variable name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "voltage"
-#define STC3100_BUS_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt"
-#define STC3100_BUS_VOLTAGE_UNIT_NAME "volt"
-/// @brief Default variable short code; "STSTC3100Volt"
-#define STC3100_BUS_VOLTAGE_DEFAULT_CODE "STSTC3100Volt"
-/**@}*/
-
 /**
  * @anchor sensor_stc3100_energy
  * @name energy_mAh
@@ -175,11 +185,11 @@
 /**
  * @brief Class for Stc3100 Device with internal sensors
  *
- * This contains the main I2C functionality for all Stc3100 EZO circuits.
+ * This contains the main I2C functionality for all Stc3100 circuits.
  *
  * @ingroup stc3100_group
  */
-class Stc3100sensor : public Sensor {
+class STSTC3100_Sensor : public Sensor {
  public:
 
 #if 1//!defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
@@ -206,10 +216,10 @@ class Stc3100sensor : public Sensor {
      * to take a single reading until that reading is expected to be complete
      * (_measurementTime_ms)
      */
-    Stc3100sensor(TwoWire* theI2C, 
-                uint8_t       measurementsToAverage = 1,
+    STSTC3100_Sensor(TwoWire* theI2C, 
+                uint8_t       measurementsToAverage = STC3100_NUM_MEASUREMENTS,
                 const char*   sensorName            = "Stc3100Sensor",
-                const uint8_t numReturnedVars = 3, uint32_t warmUpTime_ms = 0,
+                const uint8_t numReturnedVars = STC3100_NUM_VARIABLES, uint32_t warmUpTime_ms = 0,
                 uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms   = 0);
     /**
@@ -230,10 +240,10 @@ class Stc3100sensor : public Sensor {
      * to take a single reading until that reading is expected to be complete
      * (_measurementTime_ms)
      */
-    Stc3100sensor( 
-                uint8_t       measurementsToAverage = 1,
+    STSTC3100_Sensor( 
+                uint8_t       measurementsToAverage = STC3100_NUM_MEASUREMENTS,
                 const char*   sensorName            = "Stc3100Sensor",
-                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
+                const uint8_t numReturnedVars = STC3100_NUM_VARIABLES, uint32_t warmUpTime_ms = 0,
                 uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms   = 0);
 #endif
@@ -241,7 +251,7 @@ class Stc3100sensor : public Sensor {
      * @brief Destroy the Stc3100 Parent object.  Also destroy the software I2C
      * instance if one was created.
      */
-    virtual ~Stc3100sensor();
+    virtual ~STSTC3100_Sensor();
 
     /**
      * @brief Return the I2C address of the EZO circuit.
@@ -304,6 +314,8 @@ class Stc3100sensor : public Sensor {
         void setI2cAddress(int8_t i2cAddressHex=STC3100_BUS_ADDRESS) {_i2cAddressHex=i2cAddressHex;}
     #endif // STC3100_USE_ADDR
 
+    STC3100dd stc3100_device;
+
  protected:
     /**
      * @brief The I2C address of the Stc3100 circuit.
@@ -336,7 +348,134 @@ class Stc3100sensor : public Sensor {
      */
     bool waitForProcessing(uint32_t timeout = 1000L);
 
-    STC3100dd stc3100_device;
 };
 
-#endif  // SRC_SENSORS_STC3100SENSOR_H_
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [bus voltage output](@ref stc3100_volt) from a [ST STC3100 battery monitor](@ref stc3100_group).
+ *
+ * @ingroup stc3100_group
+ */
+/* clang-format on */
+class STSTC3100_Volt : public Variable {
+ public:
+    /**
+     * @brief Construct a new STSTC3100_Volt object.
+     *
+     * @param parentSense The parent STSTC3100 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "STSTC3100Volt".
+     */
+    //explicit STSTC3100_Volt(
+    STSTC3100_Volt(
+        STSTC3100_Sensor* parentSense, const char* uuid = "",
+        const char* varCode = STC3100_BUS_VOLTAGE_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)STC3100_BUS_VOLTAGE_VAR_NUM,
+                   (uint8_t)STC3100_BUS_VOLTAGE_RESOLUTION,
+                   STC3100_BUS_VOLTAGE_VAR_NAME, STC3100_BUS_VOLTAGE_UNIT_NAME,
+                   varCode, uuid) {}
+    /**
+     * @brief Construct a new STSTC3100_Volt object.
+     *
+     * @note This must be tied with a parent STSTC3100 before it can be used.
+     */
+    STSTC3100_Volt()
+        : Variable((const uint8_t)STC3100_BUS_VOLTAGE_VAR_NUM,
+                   (uint8_t)STC3100_BUS_VOLTAGE_RESOLUTION,
+                   STC3100_BUS_VOLTAGE_VAR_NAME, STC3100_BUS_VOLTAGE_UNIT_NAME,
+                   STC3100_BUS_VOLTAGE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the STSTC3100_Volt object - no action needed.
+     */
+    ~STSTC3100_Volt() {}
+};
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [current output](@ref sensor_stc3100_current) from a [ST STC3100 battery monitor](@ref sensor_stc3100).
+ *
+ * @ingroup sensor_stc3100
+ */
+/* clang-format on */
+class STSTC3100_Current : public Variable {
+ public:
+    /**
+     * @brief Construct a new STSTC3100_Current object.
+     *
+     * @param parentSense The parent STSTC3100 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "STSTC3100Amp".
+     */
+    explicit STSTC3100_Current(
+        STSTC3100_Sensor* parentSense, const char* uuid = "",
+        const char* varCode = STC3100_CURRENT_MA_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)STC3100_CURRENT_MA_VAR_NUM,
+                   (uint8_t)STC3100_CURRENT_MA_RESOLUTION,
+                   STC3100_CURRENT_MA_VAR_NAME, STC3100_CURRENT_MA_UNIT_NAME,
+                   varCode, uuid) {}
+    /**
+     * @brief Construct a new STSTC3100_Current object.
+     *
+     * @note This must be tied with a parent STSTC3100 before it can be used.
+     */
+    STSTC3100_Current()
+        : Variable((const uint8_t)STC3100_CURRENT_MA_VAR_NUM,
+                   (uint8_t)STC3100_CURRENT_MA_RESOLUTION,
+                   STC3100_CURRENT_MA_VAR_NAME, STC3100_CURRENT_MA_UNIT_NAME,
+                   STC3100_CURRENT_MA_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the STSTC3100_Current object - no action needed.
+     */
+    ~STSTC3100_Current() {}
+};
+
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [energy use output](@ref sensor_stc3100_energy) calculated from the voltage
+ * and current measured by a [ST STC3100 battery monitor](@ref sensor_stc3100).
+ *
+ * @ingroup sensor_stc3100
+ */
+/* clang-format on */
+class STSTC3100_Energy : public Variable {
+ public:
+    /**
+     * @brief Construct a new STSTC3100_Energy object.
+     *
+     * @param parentSense The parent STSTC3100 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "STSTC3100Energy".
+     */
+    explicit STSTC3100_Energy(STSTC3100_Sensor* parentSense, const char* uuid = "",
+                             const char* varCode = STC3100_ENERGY_MAH_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)STC3100_ENERGY_MAH_VAR_NUM,
+                   (uint8_t)STC3100_ENERGY_MAH_RESOLUTION,
+                   STC3100_ENERGY_MAH_VAR_NAME, STC3100_ENERGY_MAH_UNIT_NAME, varCode,
+                   uuid) {}
+    /**
+     * @brief Construct a new STSTC3100_Energy object.
+     *
+     * @note This must be tied with a parent STSTC3100 before it can be used.
+     */
+    STSTC3100_Energy()
+        : Variable((const uint8_t)STC3100_ENERGY_MAH_VAR_NUM,
+                   (uint8_t)STC3100_ENERGY_MAH_RESOLUTION,
+                   STC3100_ENERGY_MAH_VAR_NAME, STC3100_ENERGY_MAH_UNIT_NAME,
+                   STC3100_ENERGY_MAH_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the STSTC3100_Energy object - no action needed.
+     */
+    ~STSTC3100_Energy() {}
+};
+/**@}*/
+#endif  // SRC_SENSORS_STSTC3100SENSOR_H_

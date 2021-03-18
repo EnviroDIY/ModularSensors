@@ -1,16 +1,16 @@
 /**
- * @file Stc3100sensor.cpp
+ * @file STSTC3100_Sensor.cpp
  * @copyright 2020 Neil Hancock, assigned to the Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Neil Hancock.  Based on the AtlasParent.xx of the Stroud Water Research Center
  *
- * @brief Implements the Stc3100sensor class.
+ * @brief Implements the STSTC3100_Sensor class.
  */
 
-#include "Stc3100sensor.h"
+#include "STSTC3100_Sensor.h"
 #include <Wire.h>
 
-Stc3100sensor::Stc3100sensor(TwoWire* theI2C, 
+STSTC3100_Sensor::STSTC3100_Sensor(TwoWire* theI2C, 
                          uint8_t measurementsToAverage,
                          const char* sensorName, const uint8_t numReturnedVars,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
@@ -20,7 +20,7 @@ Stc3100sensor::Stc3100sensor(TwoWire* theI2C,
     //_i2cAddressHex = i2cAddressHex;
     _i2c           = theI2C;
 }
-Stc3100sensor::Stc3100sensor(
+STSTC3100_Sensor::STSTC3100_Sensor(
                          uint8_t measurementsToAverage, const char* sensorName,
                          const uint8_t numReturnedVars, uint32_t warmUpTime_ms,
                          uint32_t stabilizationTime_ms,
@@ -32,21 +32,22 @@ Stc3100sensor::Stc3100sensor(
 }
 
 
-Stc3100sensor::~Stc3100sensor() {}
+STSTC3100_Sensor::~STSTC3100_Sensor() {}
 
 
-String      Stc3100sensor::getSensorLocation(void) {
-    String address = F("Sn ");
+String      STSTC3100_Sensor::getSensorLocation(void) {
+    //String address = F("Sn ");
     //Must have done stc3100_device.start() to read string
-    address += stc3100_device.getSn();
-    //address += F(" I2C_0x");
-    //address += String(_i2cAddressHex, HEX);
+    //address += stc3100_device.getSn();
+    String address = F(" I2C_0x");
+    address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool Stc3100sensor::setup(void) {
+bool STSTC3100_Sensor::setup(void) {
     //njh _i2c->begin();  // Start the wire library (sensor power not required)
+    MS_DBG(F("Setup"));
     stc3100_device.begin();
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -59,6 +60,7 @@ bool Stc3100sensor::setup(void) {
 
     //Reads unique serial number
     if(!stc3100_device.start()){
+        MS_DBG(F("Not detected!"));
         return false;
     }
     return Sensor::setup();  // this will set pin modes and the setup status bit
@@ -67,7 +69,7 @@ bool Stc3100sensor::setup(void) {
 
 // The function to put the sensor to sleep
 // The Stc3100 sensors must be told to sleep
-bool Stc3100sensor::sleep(void) {
+bool STSTC3100_Sensor::sleep(void) {
     if (!checkPowerOn()) { return true; }
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
@@ -98,8 +100,9 @@ bool Stc3100sensor::sleep(void) {
 
     return success;
 }
+
 #if 0
-bool Stc3100sensor::startSingleMeasurement(void) {
+bool STSTC3100_Sensor::startSingleMeasurement(void) {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -135,7 +138,7 @@ bool Stc3100sensor::startSingleMeasurement(void) {
 }
 #endif //0
 
-bool Stc3100sensor::addSingleMeasurementResult(void) {
+bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
     bool success = false;
 
     // Check a measurement was *successfully* started (status bit 6 set)
@@ -169,13 +172,22 @@ bool Stc3100sensor::addSingleMeasurementResult(void) {
             #endif
             for (uint8_t snsrn = 0; snsrn < _numReturnedValues; snsrn++) {
                 switch (snsrn) {
-                    case 0: result=stc3100_device.readVoltage_V(); 
+                case STC3100_BUS_VOLTAGE_VAR_NUM :
+                    result=stc3100_device.v.voltage_V; 
                     if (result < -0.2) result = STC3100_SENSOR_INVALID;
                     break; 
-                    case 1: result=stc3100_device.readCurrent_mA();
-                    if (result < -7.0) result = STC3100_SENSOR_INVALID;
-                    case 2: result=stc3100_device.readCurrent_mA();
-                    default:
+                case STC3100_CURRENT_MA_VAR_NUM : 
+                    result=stc3100_device.v.current_mA;
+                    // This is based on the 30mOhms, and is unlikely
+                    if (result < -7000.0) {
+                        MS_DBG(F("  Current_MA read invalid"),  result);
+                        result = STC3100_SENSOR_INVALID;
+                        } // Could probably test for +7000A if needed.
+                    break;
+                case STC3100_ENERGY_MAH_VAR_NUM: 
+                    result=stc3100_device.v.charge_mAhr;
+                    break;
+                default:
                     result = STC3100_SENSOR_INVALID; 
                 }
                 if (isnan(result)) result = STC3100_SENSOR_INVALID;
@@ -207,7 +219,7 @@ bool Stc3100sensor::addSingleMeasurementResult(void) {
 // expected except a status code - the response will be "consumed"
 // and become unavailable.
 #if 0
-bool Stc3100sensor::waitForProcessing(uint32_t timeout) {
+bool STSTC3100_Sensor::waitForProcessing(uint32_t timeout) {
     // Wait for the command to have been processed and implented
     bool     processed = false;
     uint32_t start     = millis();

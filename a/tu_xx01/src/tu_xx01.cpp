@@ -537,11 +537,68 @@ const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnec
 // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18(OneWirePower, OneWireBus);
 #endif  // 0
-#if defined USE_STC3100
+
+
+#if defined USE_STC3100_DD
 #include "STC3100dd.h"  //github.com/neilh10/STC3100arduino.git
 STC3100dd batteryFuelGauge(STC3100_REG_MODE_ADCRES_12BITS,STC3100_R_SERIES_mOhms);
+
 bool       bfgPresent = false;
-#endif  // USE_STC3100 
+#endif  // USE_STC3100_DD 
+
+#if defined USE_STC3100_SENSOR
+#include "STSTC3100_Sensor.h" 
+
+// The STC3100 only has one address 
+
+STSTC3100_Sensor stc3100_phy(STC3100_NUM_MEASUREMENTS);
+
+#define USE_STC3100_SNSR_VAR 1
+#if defined USE_STC3100_SNSR_VAR || defined STC3100_Volt_UUID 
+bool userPrintStc3100BatV_avlb=false;
+// Read the battery Voltage asynchronously, with  getLionBatStc3100_V()
+// and have that voltage used on logging event
+
+Variable* kBatteryVoltage_V = new STSTC3100_Volt(&stc3100_phy,"nu");
+float     LionBatStc3100_V;
+
+float kLionBatStc3100_worker(void) {  // get the Battery Reading
+    // Get new reading
+    LionBatStc3100_V = kBatteryVoltage_V->getValue(true);
+    // float depth_ft = convert_mtoFt(depth_m);
+    // MS_DBG(F("kLionBatStc3100_worker"), LionBatStc3100_V);
+#if 1//defined MS_TU_XX_DEBUG
+    DEBUGGING_SERIAL_OUTPUT.print(F("  kLionBatStc3100_worker "));
+    DEBUGGING_SERIAL_OUTPUT.print(LionBatStc3100_V, 4);
+    DEBUGGING_SERIAL_OUTPUT.println();
+#endif  // MS_TU_XX_DEBUG
+    if (userPrintStc3100BatV_avlb) {
+        userPrintStc3100BatV_avlb = false;
+        STANDARD_SERIAL_OUTPUT.print(F("  BatteryVoltage(V) "));
+        STANDARD_SERIAL_OUTPUT.print(LionBatStc3100_V, 4);
+        STANDARD_SERIAL_OUTPUT.println();       
+    }
+    return LionBatStc3100_V;
+}
+float getLionBatStc3100_V(void) {
+    #if defined MAYFLY_VBAT 
+    kLionBatStc3100_worker();
+    #endif //defined MAYFLY_VBAT 
+    return LionBatStc3100_V;
+}
+// Setup the object that does the operation
+Variable*  pLionBatStc3100_var =
+    new Variable(getLionBatStc3100_V,  // function that does the calculation
+                 4,                    // resolution
+                 "batteryVoltage",     // var name. This must be a value from
+                                    // http://vocabulary.odm2.org/variablename/
+                 "volts",  // var unit. This must be a value from This must be a
+                           // value from http://vocabulary.odm2.org/units/
+                 "Stc3100_V",  // var code
+                 STC3100_Volt_UUID);
+#endif  // USE_STC3100_SNSR_VAR
+#endif //USE_STC3100_SENSOR
+
 
 #ifdef ExternalVoltage_ACT
 // ==========================================================================
@@ -577,41 +634,41 @@ ExternalVoltage extvolt0(ADSPower, ADSChannel0, dividerGain, ADSi2c_addr,
 //                         VoltReadsToAvg);
 // ExternalVoltage extvolt1(ADSPower, ADSChannel2, (const float)1.0,
 // ADSi2c_addr, VoltReadsToAvg);
-#define USE_EXT_BATTERY_ADC
-#if defined USE_EXT_BATTERY_ADC
-bool userPrintBatterVoltage=false;
+#define USE_EXTADC_BATV_VAR
+#if defined USE_EXTADC_BATV_VAR
+bool userPrintExtBatV_avlb=false;
 // Create a capability to read the battery Voltage asynchronously,
 // and have that voltage used on logging event
-Variable* kBatteryVoltage_V = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
-float     batteryLion_V;
+Variable* varExternalVoltage_Volt = new ExternalVoltage_Volt(&extvolt0, "NotUsed");
+float    LionBatExt_V;
 
-float kBatteryVoltage_worker(void) {  // get the Battery Reading
+float kLionBatExt_worker(void) {  // get the Battery Reading
     // Get new reading
-    batteryLion_V = kBatteryVoltage_V->getValue(true);
+   LionBatExt_V = varExternalVoltage_Volt->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
-    // MS_DBG(F("kBatteryVoltage_worker"), batteryLion_V);
+    // MS_DBG(F("kLionBatExt_worker"), LionBatExt_V);
 #if defined MS_TU_XX_DEBUG
-    DEBUGGING_SERIAL_OUTPUT.print(F("  kBatteryVoltage_worker "));
-    DEBUGGING_SERIAL_OUTPUT.print(batteryLion_V, 4);
+    DEBUGGING_SERIAL_OUTPUT.print(F("  kLionBatExt_worker "));
+    DEBUGGING_SERIAL_OUTPUT.print(LionBatExt_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
 #endif  // MS_TU_XX_DEBUG
-    if (userPrintBatterVoltage) {
-        userPrintBatterVoltage = false;
-        STANDARD_SERIAL_OUTPUT.print(F("  BatteryVoltage(V) "));
-        STANDARD_SERIAL_OUTPUT.print(batteryLion_V, 4);
+    if (userPrintExtBatV_avlb) {
+        userPrintExtBatV_avlb = false;
+        STANDARD_SERIAL_OUTPUT.print(F("  LiionBatExt(V) "));
+        STANDARD_SERIAL_OUTPUT.print(LionBatExt_V, 4);
         STANDARD_SERIAL_OUTPUT.println();       
     }
-    return batteryLion_V;
+    return LionBatExt_V;
 }
-float getBatteryVoltage_V(void) {
+float getLionBatExt_V(void) {
     #if defined MAYFLY_VBAT 
-    kBatteryVoltage_worker();
+    kLionBatExt_worker();
     #endif //defined MAYFLY_VBAT 
-    return batteryLion_V;
+    return LionBatExt_V;
 }
 // Setup the object that does the operation
-Variable* kBatteryVoltage_var =
-    new Variable(getBatteryVoltage_V,  // function that does the calculation
+Variable* pLionBatExt_var =
+    new Variable(getLionBatExt_V,  // function that does the calculation
                  4,                    // resolution
                  "batteryVoltage",     // var name. This must be a value from
                                     // http://vocabulary.odm2.org/variablename/
@@ -619,15 +676,15 @@ Variable* kBatteryVoltage_var =
                            // value from http://vocabulary.odm2.org/units/
                  "extVolt0",  // var code
                  ExternalVoltage_Volt0_UUID);
-#endif  // USE_EXT_BATTERY_ADC
+#endif  // USE_EXTADC_BATV_VAR
 #endif  // ExternalVoltage_ACT
 
 #if !defined MAYFLY_VBAT 
 // Need for internal battery 
-#define mcuBoardExtBattery() mcuBoard.setBatteryV(kBatteryVoltage_worker());
+#define mcuBoardExtBattery() mcuBoard.setBatteryV(kLionBatExt_worker());
 #else
 #define mcuBoardExtBattery()
-#endif  // USE_EXT_BATTERY_ADC
+#endif  // MAYFLY_VBAT 
 #if defined ProcVolt_ACT
 // ==========================================================================
 //    Internal  ProcessorAdc
@@ -729,10 +786,12 @@ Variable*   ds3231TempFcalc = new Variable(
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
-
+#if defined STC3100_Volt_UUID 
+    pLionBatStc3100_var,
+#endif //STC3100_Volt_UUID 
 
 #if defined ExternalVoltage_Volt0_UUID
-    kBatteryVoltage_var,
+    pLionBatExt_var,
 #endif
 #if defined ProcessorStats_Batt_UUID
     new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
@@ -1159,7 +1218,7 @@ void serialInputCheck()
 // Poll management sensors- eg FuelGauges status  
 // 
 void  managementSensorsPoll() {
-#if defined USE_STC3100
+#if defined USE_STC3100_DD
     if (bfgPresent) {
         batteryFuelGauge.readValues();
         Serial.print("BtMonStc31, ");
@@ -1183,7 +1242,7 @@ void  managementSensorsPoll() {
         // Serial.print(" & IC Temp(C), ");
         // Serial.println(lc.getCellTemperature(), 1);
     }
-#endif  // USE_STC3100
+#endif  // USE_STC3100_DD
 } //managementSensorsPoll
 
 
@@ -1271,7 +1330,7 @@ void setup() {
     // A vital check on power availability
     batteryCheck(PS_PWR_USEABLE_REQ, true);
 
-    PRINTOUT(F("BatV Good ="), batteryLion_V);
+    PRINTOUT(F("BatV Good ="), LionBatExt_V);
 
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
@@ -1346,30 +1405,6 @@ void setup() {
     Logger::setRTCTimeZone(0);
 
     mcuBoard.printBatteryThresholds();
-#if defined USE_STC3100
-    /* */
-    batteryFuelGauge.begin(); //does this interfere with other Wire.begin()
-    if (!batteryFuelGauge.start()) {
-        Serial.println(F("Couldnt find STC3100\nMake sure a "
-                         "battery is plugged in!"));
-    } else {
-        bfgPresent = true;
-        Serial.print("STC3100 sn ");
-        for (int snlp=1;snlp<(STC3100_ID_LEN-1);snlp++) {
-            Serial.print(batteryFuelGauge.serial_number[snlp],HEX);
-        }
-        Serial.print(" Type ");
-        Serial.println(batteryFuelGauge.serial_number[0],HEX);
-        //FUT  How to set batteryFuelGauge.setPackSize ?? (_500MAH); 
-        #if defined MS_TU_XX_DEBUG
-        for (uint8_t cnt=0;cnt <5;cnt++)
-        #endif 
-        {
-            delay(125);
-            managementSensorsPoll();
-        }
-    }
-#endif  // defined USE_STC3100
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));
@@ -1418,7 +1453,7 @@ void setup() {
     if (batteryCheck(LiIon_BAT_REQ, true)) {
         MS_DBG(F("Sync with NIST as have enough power"));
 
-#if 1 //GET_TIME_ON_STARTUP
+#if 0 //GET_TIME_ON_STARTUP
 #if defined DigiXBeeWifi_Module
         // For the WiFi module, it may not be configured if no nscfg.ini file
         // present,
@@ -1459,6 +1494,48 @@ void setup() {
 // all sensor names correct
 // Writing to the SD card can be power intensive, so if we're skipping
 // the sensor setup we'll skip this too.
+#if defined USE_STC3100_DD
+    /* */
+    batteryFuelGauge.begin(); //does this interfere with other Wire.begin()
+    if (!batteryFuelGauge.start()) {
+        Serial.println(F("Couldnt find STC3100\nMake sure a "
+                         "battery is plugged in!"));
+    } else {
+        bfgPresent = true;
+        Serial.print("STC3100 sn ");
+        for (int snlp=1;snlp<(STC3100_ID_LEN-1);snlp++) {
+            Serial.print(batteryFuelGauge.serial_number[snlp],HEX);
+        }
+        Serial.print(" Type ");
+        Serial.println(batteryFuelGauge.serial_number[0],HEX);
+        //FUT  How to set batteryFuelGauge.setPackSize ?? (_500MAH); 
+        #if defined MS_TU_XX_DEBUG
+        for (uint8_t cnt=0;cnt <5;cnt++)
+        #endif 
+        {
+            delay(125);
+            managementSensorsPoll();
+        }
+    }
+#endif  // defined USE_STC3100_DD
+#if defined USE_STC3100_SENSOR
+    //Setsup - Sensor not initialized yet. Reads unique serial number
+    //stc3100_phy.stc3100_device.begin(); assumes done
+    if(!stc3100_phy.stc3100_device.start()){
+        MS_DBG(F("STC3100 Not detected!"));
+    }
+
+    String sn(stc3100_phy.stc3100_device.getSn());
+    PRINTOUT(F("STC3100 sn:"),sn);
+    //if sn special, change series resistor range
+    const char STC3100SN_100mohms_pm[] EDIY_PROGMEM = "13717d611";
+    if (sn.equals(STC3100SN_100mohms_pm)) {
+        #define STC3100_R_SERIES_100mOhms 100
+        PRINTOUT(F("STC3100 debug set R to mOhms "),STC3100_R_SERIES_100mOhms);
+        stc3100_phy.stc3100_device.setCurrentResistor(STC3100_R_SERIES_100mOhms);
+    } 
+#endif // USE_STC3100_SENSOR
+
 // SDI12?
 #if defined KellerNanolevel_ACT
     nanolevel_snsr.registerPinPowerMng(&modbusPinPowerMng);
@@ -1489,10 +1566,13 @@ void loop() {
         userButton1Act = false;
 
     } 
-    #if defined USE_EXT_BATTERY_ADC    
+    #if defined USE_EXTADC_BATV_VAR    
     // Signal when battery is next read, to give user information
-    userPrintBatterVoltage=true;
-    #endif //#if defined USE_EXT_BATTERY_ADC
+    userPrintExtBatV_avlb=true;
+    #endif //USE_EXTADC_BATV_VAR
+    #if defined USE_STC3100_SENSOR
+    userPrintStc3100BatV_avlb=true;
+    #endif //USE_STC3100_SENSOR
     #if defined USE_PUB_MMW
     dataLogger.logDataAndPubReliably();
     #else

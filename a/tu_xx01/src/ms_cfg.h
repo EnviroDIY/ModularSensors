@@ -35,15 +35,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define WINGBOARD_KNH002 1
 #if defined WINGBOARD_KNH002
 //This supports RS485 1.9W and STC3100
-#define USE_STC3100 1
+//#define USE_STC3100_DD 1
+#define USE_STC3100_SENSOR 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
 //#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
 //#define KellerAcculevel_DepthUnits 2
 
-#define KellerNanolevel_ACT 1
+//#define KellerNanolevel_ACT 1
 #endif //WINGBOARD_KNH002
-#define ASONG_AM23XX_UUID 1
+//#define ASONG_AM23XX_UUID 1
 
 //Two heavy sensors with power useage
 #define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_MEDIUM_REQ
@@ -244,6 +245,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_SampleNumber_UUID "SampleNumber_UUID"
 #define ProcessorStats_Batt_UUID "Batt_UUID"
 #endif  // ProcessorStats_ACT
+
+#if defined USE_STC3100_SENSOR
+#define STC3100_Volt_UUID "STC3100Volt_UUID"
+#endif // USE_STC3100_SENSOR
 
 //#if defined MAYFLY_VBAT
 #ifdef ExternalVoltage_ACT
