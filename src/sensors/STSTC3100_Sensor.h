@@ -54,7 +54,7 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Wire.h>
-#include "STC3100dd.h"
+#include "STC3100dm.h"
 
 // Sensor Specific Defines
 /** @ingroup sensor_stc3100 */
@@ -191,7 +191,7 @@
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "Coulomb"
 #define STC3100_ENERGY_MAH_UNIT_NAME "milliAmpHour"
 /// @brief Default variable short code; "STSTC3100Power"
-#define STC3100_ENERGY_MAH_DEFAULT_CODE "STSTC3100Energy"
+#define STC3100_ENERGY_MAH_DEFAULT_CODE "STSTC3100mAhr"
 /**@}*/
 
 /**
@@ -320,7 +320,7 @@ class STSTC3100_Sensor : public Sensor {
         void setI2cAddress(int8_t i2cAddressHex=STC3100_BUS_ADDRESS) {_i2cAddressHex=i2cAddressHex;}
     #endif // STC3100_USE_ADDR
 
-    STC3100dd stc3100_device;
+    STC3100dm stc3100_device;
 
  protected:
     /**

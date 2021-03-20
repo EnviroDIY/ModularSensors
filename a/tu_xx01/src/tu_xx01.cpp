@@ -553,8 +553,8 @@ bool       bfgPresent = false;
 
 STSTC3100_Sensor stc3100_phy(STC3100_NUM_MEASUREMENTS);
 
-#define USE_STC3100_SNSR_VAR 1
-#if defined USE_STC3100_SNSR_VAR || defined STC3100_Volt_UUID 
+//#define USE_STC3100_SNSR_VAR 1
+#if 0//defined USE_STC3100_SNSR_VAR || defined STC3100_Volt_UUID 
 bool userPrintStc3100BatV_avlb=false;
 // Read the battery Voltage asynchronously, with  getLionBatStc3100_V()
 // and have that voltage used on logging event
@@ -567,7 +567,7 @@ float wLionBatStc3100_worker(void) {  // get the Battery Reading
     LionBatStc3100_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
     // MS_DBG(F("wLionBatStc3100_worker"), LionBatStc3100_V);
-#if defined MS_TU_XX_DEBUG
+#if 1//defined MS_TU_XX_DEBUG
     DEBUGGING_SERIAL_OUTPUT.print(F("  wLionBatStc3100_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(LionBatStc3100_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
@@ -786,8 +786,15 @@ Variable*   ds3231TempFcalc = new Variable(
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
+#if defined STC3100_mAhr_UUID 
+    new STSTC3100_Energy(&stc3100_phy,STC3100_mAhr_UUID),
+#endif //STC3100_mAhr_UUID 
 #if defined STC3100_Volt_UUID 
+#if defined USE_STC3100_SNSR_VAR 
     pLionBatStc3100_var,
+    #else
+    new STSTC3100_Volt(&stc3100_phy,STC3100_Volt_UUID),
+    #endif //USE_STC3100_SNSR_VAR 
 #endif //STC3100_Volt_UUID 
 
 #if defined ExternalVoltage_Volt0_UUID
@@ -1453,7 +1460,7 @@ void setup() {
     if (batteryCheck(LiIon_BAT_REQ, true)) {
         MS_DBG(F("Sync with NIST as have enough power"));
 
-#if 1 //GET_TIME_ON_STARTUP
+#if !defined MS_TU_XX_NO_TIME_UPDATE_SETUP
 #if defined DigiXBeeWifi_Module
         // For the WiFi module, it may not be configured if no nscfg.ini file
         // present,
@@ -1470,7 +1477,7 @@ void setup() {
         MS_DBG(F("Sync with NIST "));
         dataLogger.syncRTC();  // Will also set up the modemPhy
 #endif  // DigiXBeeWifi_Module
-#endif //GET_TIME_ON_STARTUP
+#endif //MS_TU_XX_NO_TIME_UPDATE_SETUP
         MS_DBG(F("Set modem to sleep"));
         modemPhy.disconnectInternet();
         modemPhy.modemSleepPowerDown();
@@ -1524,7 +1531,6 @@ void setup() {
     if(!stc3100_phy.stc3100_device.start()){
         MS_DBG(F("STC3100 Not detected!"));
     }
-
     String sn(stc3100_phy.stc3100_device.getSn());
     PRINTOUT(F("STC3100 sn:"),sn);
     //if sn special, change series resistor range
@@ -1534,6 +1540,8 @@ void setup() {
         PRINTOUT(F("STC3100 diagnostic set R to mOhms "),STC3100_R_SERIES_100mOhms);
         stc3100_phy.stc3100_device.setCurrentResistor(STC3100_R_SERIES_100mOhms);
     } 
+    delay(100); //Let STC3100 run a few ADS to generate i
+    stc3100_phy.stc3100_device.dmBegin(); //begin the Device Manager
 #endif // USE_STC3100_SENSOR
 
 // SDI12?
@@ -1570,7 +1578,7 @@ void loop() {
     // Signal when battery is next read, to give user information
     userPrintExtBatV_avlb=true;
     #endif //USE_EXTADC_BATV_VAR
-    #if defined USE_STC3100_SENSOR
+    #if defined USE_STC3100_SENSOR && defined USE_STC3100_SNSR_VAR 
     userPrintStc3100BatV_avlb=true;
     #endif //USE_STC3100_SENSOR
     #if defined USE_PUB_MMW
@@ -1579,4 +1587,7 @@ void loop() {
     //FUT use reliable 
     dataLogger.logDataAndPublish(); 
     #endif 
+    #if defined USE_STC3100_SENSOR
+    stc3100_phy.stc3100_device.setEnergyMarker1();
+    #endif //USE_STC3100_SENSOR
 }

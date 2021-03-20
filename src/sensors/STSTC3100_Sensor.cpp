@@ -139,7 +139,9 @@ bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
                         } // Could probably test for +7000A if needed.
                     break;
                 case STC3100_ENERGY_MAH_VAR_NUM: 
-                    result=stc3100_device.v.charge_mAhr;
+                    // For 30mOhms, the max could be +/-7000 Ahr and is unlikely to happen
+                    //result=stc3100_device.snapEnergyUsed1_mAhr();
+                    result=stc3100_device.getEnergyUsed1_mAhr();
                     break;
                 default:
                     result = STC3100_SENSOR_INVALID; 

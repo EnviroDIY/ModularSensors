@@ -42,9 +42,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // KellerAcculevel units can be 1 (meter) 2 (feet)
 //#define KellerAcculevel_DepthUnits 2
 
-//#define KellerNanolevel_ACT 1
+#define KellerNanolevel_ACT 1
 #endif //WINGBOARD_KNH002
-//#define ASONG_AM23XX_UUID 1
+#define ASONG_AM23XX_UUID 1
 
 //Two heavy sensors with power useage
 #define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_MEDIUM_REQ
@@ -248,6 +248,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #if defined USE_STC3100_SENSOR
 #define STC3100_Volt_UUID "STC3100Volt_UUID"
+#define STC3100_mAhr_UUID "STC3100mAhr_UUID"
 #endif // USE_STC3100_SENSOR
 
 //#if defined MAYFLY_VBAT
