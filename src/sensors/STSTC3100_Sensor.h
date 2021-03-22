@@ -180,18 +180,18 @@
 /**@{*/
 /// @brief Decimals places in string representation; power draw is 2 -
 
-#define STC3100_ENERGY_MAH_RESOLUTION 2
+#define STC3100_USED1_MAH_RESOLUTION 2
 /// @brief Sensor variable number; power draw is stored in sensorValues[2].
-#define STC3100_ENERGY_MAH_VAR_NUM 2
+#define STC3100_USED1_MAH_VAR_NUM 2
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "electricPower"
-#define STC3100_ENERGY_MAH_VAR_NAME "electricEnergy"
+#define STC3100_USED1_MAH_VAR_NAME "electricEnergy"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "Coulomb"
-#define STC3100_ENERGY_MAH_UNIT_NAME "milliAmpHour"
+#define STC3100_USED1_MAH_UNIT_NAME "milliAmpHour"
 /// @brief Default variable short code; "STSTC3100Power"
-#define STC3100_ENERGY_MAH_DEFAULT_CODE "STSTC3100mAhr"
+#define STC3100_USED1_MAH_DEFAULT_CODE "STSTC3100mAhr"
 /**@}*/
 
 /**
@@ -452,10 +452,10 @@ class STSTC3100_Current : public Variable {
  * @ingroup sensor_stc3100
  */
 /* clang-format on */
-class STSTC3100_Energy : public Variable {
+class STC3100_USED1_MAH : public Variable {
  public:
     /**
-     * @brief Construct a new STSTC3100_Energy object.
+     * @brief Construct a new STC3100_USED1_MAH object.
      *
      * @param parentSense The parent STSTC3100 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -463,26 +463,26 @@ class STSTC3100_Energy : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "STSTC3100Energy".
      */
-    explicit STSTC3100_Energy(STSTC3100_Sensor* parentSense, const char* uuid = "",
-                             const char* varCode = STC3100_ENERGY_MAH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)STC3100_ENERGY_MAH_VAR_NUM,
-                   (uint8_t)STC3100_ENERGY_MAH_RESOLUTION,
-                   STC3100_ENERGY_MAH_VAR_NAME, STC3100_ENERGY_MAH_UNIT_NAME, varCode,
+    explicit STC3100_USED1_MAH(STSTC3100_Sensor* parentSense, const char* uuid = "",
+                             const char* varCode = STC3100_USED1_MAH_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)STC3100_USED1_MAH_VAR_NUM,
+                   (uint8_t)STC3100_USED1_MAH_RESOLUTION,
+                   STC3100_USED1_MAH_VAR_NAME, STC3100_USED1_MAH_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new STSTC3100_Energy object.
+     * @brief Construct a new STC3100_USED1_MAH object.
      *
      * @note This must be tied with a parent STSTC3100 before it can be used.
      */
-    STSTC3100_Energy()
-        : Variable((const uint8_t)STC3100_ENERGY_MAH_VAR_NUM,
-                   (uint8_t)STC3100_ENERGY_MAH_RESOLUTION,
-                   STC3100_ENERGY_MAH_VAR_NAME, STC3100_ENERGY_MAH_UNIT_NAME,
-                   STC3100_ENERGY_MAH_DEFAULT_CODE) {}
+    STC3100_USED1_MAH()
+        : Variable((const uint8_t)STC3100_USED1_MAH_VAR_NUM,
+                   (uint8_t)STC3100_USED1_MAH_RESOLUTION,
+                   STC3100_USED1_MAH_VAR_NAME, STC3100_USED1_MAH_UNIT_NAME,
+                   STC3100_USED1_MAH_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the STSTC3100_Energy object - no action needed.
+     * @brief Destroy the STC3100_USED1_MAH object - no action needed.
      */
-    ~STSTC3100_Energy() {}
+    ~STC3100_USED1_MAH() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_STSTC3100SENSOR_H_

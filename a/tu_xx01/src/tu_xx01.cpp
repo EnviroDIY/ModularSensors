@@ -787,7 +787,7 @@ Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
 #if defined STC3100_mAhr_UUID 
-    new STSTC3100_Energy(&stc3100_phy,STC3100_mAhr_UUID),
+    new STC3100_USED1_MAH(&stc3100_phy,STC3100_mAhr_UUID),
 #endif //STC3100_mAhr_UUID 
 #if defined STC3100_Volt_UUID 
 #if defined USE_STC3100_SNSR_VAR 
@@ -1540,6 +1540,8 @@ void setup() {
         PRINTOUT(F("STC3100 diagnostic set R to mOhms "),STC3100_R_SERIES_100mOhms);
         stc3100_phy.stc3100_device.setCurrentResistor(STC3100_R_SERIES_100mOhms);
     } 
+    #define BatteryCapacity_mAhr 500
+    stc3100_phy.stc3100_device.setBatteryCapacity_mAh(BatteryCapacity_mAhr);
     delay(100); //Let STC3100 run a few ADS to generate i
     stc3100_phy.stc3100_device.dmBegin(); //begin the Device Manager
 #endif // USE_STC3100_SENSOR
@@ -1588,6 +1590,6 @@ void loop() {
     dataLogger.logDataAndPublish(); 
     #endif 
     #if defined USE_STC3100_SENSOR
-    stc3100_phy.stc3100_device.setEnergyMarker1();
+    //stc3100_phy.stc3100_device.setEnergyMarker1();
     #endif //USE_STC3100_SENSOR
 }
