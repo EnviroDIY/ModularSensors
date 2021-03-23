@@ -1463,7 +1463,6 @@ void setup() {
     if (batteryCheck(LiIon_BAT_REQ, true)) {
         MS_DBG(F("Sync with NIST as have enough power"));
 
-#if !defined MS_TU_XX_NO_TIME_UPDATE_SETUP
 #if defined DigiXBeeWifi_Module
         // For the WiFi module, it may not be configured if no nscfg.ini file
         // present,
@@ -1480,7 +1479,6 @@ void setup() {
         MS_DBG(F("Sync with NIST "));
         dataLogger.syncRTC();  // Will also set up the modemPhy
 #endif  // DigiXBeeWifi_Module
-#endif //MS_TU_XX_NO_TIME_UPDATE_SETUP
         MS_DBG(F("Set modem to sleep"));
         modemPhy.disconnectInternet();
         modemPhy.modemSleepPowerDown();
@@ -1543,9 +1541,8 @@ void setup() {
         PRINTOUT(F("STC3100 diagnostic set R to mOhms "),STC3100_R_SERIES_100mOhms);
         stc3100_phy.stc3100_device.setCurrentResistor(STC3100_R_SERIES_100mOhms);
     } 
-    #define BatteryCapacity_mAhr 500
-    stc3100_phy.stc3100_device.setBatteryCapacity_mAh(BatteryCapacity_mAhr);
-    delay(100); //Let STC3100 run a few ADS to generate i
+    stc3100_phy.stc3100_device.setBatteryCapacity_mAh(epc_battery_mAhr);
+    delay(100); //Let STC3100 run a few ADC to collect readings
     stc3100_phy.stc3100_device.dmBegin(); //begin the Device Manager
 #endif // USE_STC3100_SENSOR
 

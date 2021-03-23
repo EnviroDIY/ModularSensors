@@ -25,6 +25,7 @@ const char LOGGING_INTERVAL_MINUTES_pm[] EDIY_PROGMEM =
 const char LOGGING_INTERVAL_MULTIPLIER_pm[] EDIY_PROGMEM =
     "LOGGING_INTERVAL_MULTIPLIER";
 const char BATTERY_TYPE_pm[] EDIY_PROGMEM = "BATTERY_TYPE";
+const char BATTERY_mAhr_pm[] EDIY_PROGMEM = "BATTERY_mAhr";
 const char LIION_TYPE_pm[] EDIY_PROGMEM =
     "LIION_TYPE";  // FUT Supersede with BATTERY_TYPE
 const char TIME_ZONE_pm[] EDIY_PROGMEM          = "TIME_ZONE";
@@ -284,6 +285,8 @@ static void epcParser() {
 
     mcuBoard.setBatteryType((ps_liion_rating_t)epc_battery_type);
     PRINTOUT(F("COMMON Battery Type: "), epc_battery_type);
+
+    PRINTOUT(F("COMMON Battery mAhr: "), epc_battery_mAhr);
 
     Logger::setLoggerTimeZone(epc.app.msc.s.time_zone);
 
@@ -681,13 +684,26 @@ static int inihUnhandledFn(const char* section, const char* name,
             }
             #warning multNum not in eeprom or used?
 #endif  // loggingMultiplier_MAX_CDEF
+        } else if (strcmp_P(name, BATTERY_mAhr_pm) == 0) {
+            // convert  str to num with error checking
+            long batteryCap = strtoul(value, &endptr, 10);
+            if ((batteryCap >= 0) && (batteryCap < BATTERY_mAhr_MAX ) &&
+                (errno != ERANGE)) {
+            } else {
+                PRINTOUT(F(" Set BATTERY_mAhr error; (range >=0 & <"),BATTERY_mAhr_MAX ,F(") read:"),batteryCap); 
+                batteryCap=0;
+            }
+#if defined USE_PS_EEPROM
+            epc_battery_mAhr=batteryCap; //0-65,536 = batteryCap;
+            PRINTOUT(F(" Set BATTERY_mAhr "), batteryCap);
+#endif  // USE_PS_EEPROM
         } else if (strcmp_P(name, BATTERY_TYPE_pm) == 0) {
             // convert  str to num with error checking
             long batteryType = strtoul(value, &endptr, 10);
-            if ((batteryType < PSLR_NUM) && (batteryType > 0) &&
+            if ((batteryType < PSLR_NUM) &&
                 (errno != ERANGE)) {
             } else {
-                PRINTOUT(F(" Set BATTERY_TYPE error; (range 0-"),PSLR_NUM,F(") read:"),batteryType); 
+                PRINTOUT(F(" Set BATTERY_TYPE error; (range <"),PSLR_NUM,F(") read:"),batteryType); 
                 batteryType=PSLR_ALL;
             }
 #if defined USE_PS_EEPROM
@@ -995,6 +1011,7 @@ void localAppStorageInit()
     epc.app.msc.s.logging_interval_min = loggingInterval_CDEF_MIN;
     epc.app.msc.s.time_zone            = CONFIG_TIME_ZONE_DEF;
     epc.app.msc.s.battery_type         = PLSR_BAT_TYPE_DEF;
+    epc.app.msc.s.battery_mAhr         = BATTERY_mAhr_DEF;
     strcpy_P((char*)epc.app.msc.s.logger_id, (char*)F(LOGGERID_DEF_STR));
     strcpy_P((char*)epc.app.msc.s.geolocation_id,
                 (char*)F("Factory default"));
@@ -1088,12 +1105,15 @@ void readAvrEeprom() {
         localAppStorageInit();
     }
 
+    /* clang-format off */
     // Read Eeprom Common .app.msc.s that maps from .ini [COMMON]
     PRINTOUT(F("From eeprom common: Logger File Name["),
-             (char*)epc.app.msc.s.logger_id, F("]\n\r   logging interval="),
-             epc.app.msc.s.logging_interval_min, F("minutes, Tz="),
-             epc.app.msc.s.time_zone, F("battery type="),
-             epc.app.msc.s.battery_type);
+             (char*)epc.app.msc.s.logger_id, 
+             F("]\n\r   logging interval="), epc.app.msc.s.logging_interval_min, 
+             F("minutes, Tz="),  epc.app.msc.s.time_zone, 
+             F("battery type="), epc.app.msc.s.battery_type, 
+             F("battery mAhr="), epc_battery_mAhr 
+             );
     PRINTOUT(F("   Loc="), (char*)epc.app.msc.s.geolocation_id);
 
     MS_DBG(F("Common: sz="), epc.app.msc.sz);
@@ -1127,7 +1147,8 @@ void readAvrEeprom() {
             PRINTOUT(uuid_lp,F("]"),(char *)epc.app.provider.s.ed.uuid[uuid_lp].name,
             F("="),(char *)epc.app.provider.s.ed.uuid[uuid_lp].value);
         }
-    }   
+    }
+    /* clang-format on */
 #endif // USE_PUB_MMW
 #if defined USE_PUB_TSMQTT
     PRINTOUT(

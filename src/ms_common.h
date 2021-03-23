@@ -120,6 +120,7 @@ typedef struct {
     uint16_t logging_interval_min;
     int8_t   time_zone;  //-12,0 to +11?
     uint8_t  battery_type;
+    uint16_t battery_mAhr; //0-65,536
     // uint8_t  colllectReadings;
     // uint8_t  sendOffset_min;
     uint8_t logger_id[MSC_LOGGER_ID_SZ];
@@ -129,6 +130,9 @@ typedef struct {
 
 #define epc_logging_interval_min epc.app.msc.s.logging_interval_min 
 #define epc_battery_type  epc.app.msc.s.battery_type 
+#define epc_battery_mAhr  epc.app.msc.s.battery_mAhr
+#define BATTERY_mAhr_DEF  4400
+#define BATTERY_mAhr_MAX  65501
 
 #define epc_logger_id  (char*)epc.app.msc.s.logger_id
 #define epc_logger_id1st      epc.app.msc.s.logger_id[0]
