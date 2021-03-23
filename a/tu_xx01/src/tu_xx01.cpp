@@ -786,9 +786,12 @@ Variable*   ds3231TempFcalc = new Variable(
 Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,
                                     ProcessorStats_SampleNumber_UUID),
-#if defined STC3100_mAhr_UUID 
-    new STC3100_USED1_MAH(&stc3100_phy,STC3100_mAhr_UUID),
-#endif //STC3100_mAhr_UUID 
+#if defined STC3100_AVLBL_mAhr_UUID 
+    new STC3100_AVLBL_MAH(&stc3100_phy,STC3100_AVLBL_mAhr_UUID),
+#endif //STC3100_AVLBL_mAhr_UUID 
+#if defined STC3100_USED1_mAhr_UUID 
+    new STC3100_USED1_MAH(&stc3100_phy,STC3100_USED1_mAhr_UUID),
+#endif //STC3100_USED1_mAhr_UUID 
 #if defined STC3100_Volt_UUID 
 #if defined USE_STC3100_SNSR_VAR 
     pLionBatStc3100_var,

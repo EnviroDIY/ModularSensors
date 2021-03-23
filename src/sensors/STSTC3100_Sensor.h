@@ -191,7 +191,7 @@
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "Coulomb"
 #define STC3100_USED1_MAH_UNIT_NAME "milliAmpHour"
 /// @brief Default variable short code; "STSTC3100Power"
-#define STC3100_USED1_MAH_DEFAULT_CODE "STSTC3100mAhr"
+#define STC3100_USED1_MAH_DEFAULT_CODE "STC3100usedmAhr"
 
 
 /**
@@ -219,7 +219,7 @@
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "Coulomb"
 #define STC3100_AVLBL_MAH_UNIT_NAME "milliAmpHour"
 /// @brief Default variable short code; "STSTC3100Power"
-#define STC3100_AVLBL_MAH_DEFAULT_CODE "STSTC3100mAhr"
+#define STC3100_AVLBL_MAH_DEFAULT_CODE "STC3100avblmAhr"
 
 /**@}*/
 
