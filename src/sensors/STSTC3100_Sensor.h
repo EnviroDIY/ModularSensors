@@ -62,7 +62,7 @@
 
 /// @brief Sensor::_numReturnedValues; the STC3100 can report 3 values at present - possibly more in future
 ////
-#define STC3100_NUM_VARIABLES 3
+#define STC3100_NUM_VARIABLES 4
 
 // Sensor Specific Defines
 /** @ingroup sensor_stc3100 */
@@ -167,8 +167,8 @@
 #define STC3100_CURRENT_MA_DEFAULT_CODE "STSTC3100Amp"
 /**@}*/
 /**
- * @anchor sensor_stc3100_energy
- * @name energy_mAh
+ * @anchor sensor_stc3100_used1_mah
+ * @name used1_mAh
  * The energy variable from a ST STC3100
   * - Absolute accuracy is range dependent, and 6.70uV.h measurement
  * For 0.030 Ohms is 0.2mAh
@@ -192,6 +192,35 @@
 #define STC3100_USED1_MAH_UNIT_NAME "milliAmpHour"
 /// @brief Default variable short code; "STSTC3100Power"
 #define STC3100_USED1_MAH_DEFAULT_CODE "STSTC3100mAhr"
+
+
+/**
+ * @anchor sensor_stc3100_avlbl_mah
+ * @name available_mAh
+ * The energy variable from a ST STC3100
+  * - Absolute accuracy is range dependent, and 6.70uV.h measurement
+ * For 0.030 Ohms is 0.2mAh
+ * For 0.100 ohms is 0.067mAh
+ * 0.277mAh == 1Coulomb
+ * 
+ * {{ @ref STC3100M_mAh::STC3100M_mAh }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; power draw is 2 -
+
+#define STC3100_AVLBL_MAH_RESOLUTION 2
+/// @brief Sensor variable number; power draw is stored in sensorValues[3].
+#define STC3100_AVLBL_MAH_VAR_NUM 3
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "electricPower"
+#define STC3100_AVLBL_MAH_VAR_NAME "electricEnergy"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "Coulomb"
+#define STC3100_AVLBL_MAH_UNIT_NAME "milliAmpHour"
+/// @brief Default variable short code; "STSTC3100Power"
+#define STC3100_AVLBL_MAH_DEFAULT_CODE "STSTC3100mAhr"
+
 /**@}*/
 
 /**
@@ -484,5 +513,48 @@ class STC3100_USED1_MAH : public Variable {
      */
     ~STC3100_USED1_MAH() {}
 };
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [energy use output](@ref sensor_stc3100_energy) calculated from the voltage
+ * and current measured by a [ST STC3100 battery monitor](@ref sensor_stc3100).
+ *
+ * @ingroup sensor_stc3100
+ */
+/* clang-format on */
+class STC3100_AVLBL_MAH : public Variable {
+ public:
+    /**
+     * @brief Construct a new STC3100_AVLBL_MAH object.
+     *
+     * @param parentSense The parent STSTC3100 providing the result values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "STSTC3100Energy".
+     */
+    explicit STC3100_AVLBL_MAH(STSTC3100_Sensor* parentSense, const char* uuid = "",
+                             const char* varCode = STC3100_AVLBL_MAH_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)STC3100_AVLBL_MAH_VAR_NUM,
+                   (uint8_t)STC3100_AVLBL_MAH_RESOLUTION,
+                   STC3100_AVLBL_MAH_VAR_NAME, STC3100_AVLBL_MAH_UNIT_NAME, varCode,
+                   uuid) {}
+    /**
+     * @brief Construct a new STC3100_AVLBL_MAH object.
+     *
+     * @note This must be tied with a parent STSTC3100 before it can be used.
+     */
+    STC3100_AVLBL_MAH()
+        : Variable((const uint8_t)STC3100_AVLBL_MAH_VAR_NUM,
+                   (uint8_t)STC3100_AVLBL_MAH_RESOLUTION,
+                   STC3100_AVLBL_MAH_VAR_NAME, STC3100_AVLBL_MAH_UNIT_NAME,
+                   STC3100_AVLBL_MAH_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the STC3100_AVLBL_MAH object - no action needed.
+     */
+    ~STC3100_AVLBL_MAH() {}
+};
+
 /**@}*/
 #endif  // SRC_SENSORS_STSTC3100SENSOR_H_

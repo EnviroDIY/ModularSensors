@@ -1590,6 +1590,6 @@ void loop() {
     dataLogger.logDataAndPublish(); 
     #endif 
     #if defined USE_STC3100_SENSOR
-    //stc3100_phy.stc3100_device.setEnergyMarker1();
+    stc3100_phy.stc3100_device.periodicTask();
     #endif //USE_STC3100_SENSOR
 }
