@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ****
 
-## v0.28.2 (2021-03-24) [Valid version number](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.2)
+## v0.28.3 (2021-03-24) [Valid version number](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.3)
 
 ### Downloads
 
-**[ModularSensors_Dependencies_v0.28.2.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.2/ModularSensors_Dependencies_v0.28.2.zip)**
+**[ModularSensors_Dependencies_v0.28.3.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.3/ModularSensors_Dependencies_v0.28.3.zip)**
 - contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
 ### Bug Fixes
