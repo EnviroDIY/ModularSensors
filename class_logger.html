@@ -1326,10 +1326,11 @@
                 <li><a href="#basic-logging-parameters">Basic Logging Parameters</a></li>
                 <li><a href="#attached-variable-array-functions">Attached Variable Array Functions</a></li>
                 <li><a href="#internet-and-publisher-functions">Internet and Publisher Functions</a></li>
-                <li><a href="#clock-and-timezones">Clock and Timezones</a></li>
                 <li><a href="#sd-cards-and-saving-data">SD Cards and Saving Data</a></li>
-                <li><a href="#sensor-testing-mode">Sensor Testing Mode</a></li>
+                <li><a href="#clock-and-timezones">Clock and Timezones</a></li>
                 <li><a href="#do-it-all-convience-functions">Do-It-All Convience Functions</a></li>
+                <li><a href="#sensor-testing-mode">Sensor Testing Mode</a></li>
+                <li><a href="#friends">Friends</a></li>
               </ul>
             </li>
             <li>
@@ -1583,6 +1584,86 @@
           </dl>
         </section>
         <hr>
+        <section id="sd-cards-and-saving-data">
+          <h2>SD Cards and Saving Data</h2>
+            <p><a name="logger_sdcard"></a> Public functions for logging data to an SD card</p>
+          <dl class="m-doc">
+                          <dt id="a35cb09421eab3122c0489cd88e57f8d6">
+              <span class="m-dim">SdFat</span> <a href="#a35cb09421eab3122c0489cd88e57f8d6" class="m-doc-self">sd</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>An internal reference to SdFat for SD card control.</dd>
+                          <dt id="a01618684d05a39696dc155566eba0a4e">
+              <span class="m-dim">File</span> <a href="#a01618684d05a39696dc155566eba0a4e" class="m-doc-self">logFile</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>An internal reference to an SdFat file instance.</dd>
+                          <dt id="a9e86ced1966319d94334276f61d41b53">
+              <span class="m-dim">String</span> <a href="#a9e86ced1966319d94334276f61d41b53" class="m-doc-self">_fileName</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>An internal reference to the current filename.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a245218fa18260292c0ed47e77a342b5a" class="m-doc">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">fileName</span>)</span>
+            </dt>
+            <dd>Set the file name, if you want to decide on it in advance.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a0396c4ed48cf8c72211c8fca8f5683a8" class="m-doc">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">fileName</span>)</span>
+            </dt>
+            <dd>Set the file name, if you want to decide on it in advance.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">String</span> </span><a href="#ab7b8db13230d88ef2382a5f8b2452ca5" class="m-doc">getFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+            </dt>
+            <dd>Get the current filename.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a4de271d0622bfd4b38acef2607c8aa64" class="m-doc">printFileHeader</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>) <span class="m-label m-flat m-warning">virtual</span></span>
+            </dt>
+            <dd>Print a header out to a stream.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a9d6a8598a0ec7fff1e09836b75409fcb" class="m-doc">printSensorDataCSV</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>)</span>
+            </dt>
+            <dd>Print a comma separated list of volues of sensor data - including the time in the logging timezone - out over an Arduino stream.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a3fda4b6a89c97789653af166fbf09d2c" class="m-doc">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
+              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span>
+            </dt>
+            <dd>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a88b4b9247c72d389653985a679067b74" class="m-doc">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span>
+            </dt>
+            <dd>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a453249138181eb007a79a04b245fae6d" class="m-doc">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
+              <span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span>
+            </dt>
+            <dd>Open a file with the given name on the SD card and append the given line to the bottom of it.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a898b5c598b90086303569c677e3ca2c3" class="m-doc">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span>
+            </dt>
+            <dd>Open a file named with the current internal filename value and append the given line to the bottom of it.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#aada7ed61575988e4a2a45eaff25ccfb1" class="m-doc">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+            </dt>
+            <dd>Open a file named with the current internal filename value and append a line to the bottom of it with the most recent values of all variables in the variable array as a comma separated list.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a8761ee67d7c49d4c9acd2b42ec230b47" class="m-doc">initializeSDCard</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">protected</span></span>
+            </dt>
+            <dd>Check if the SD card is available and ready to write to.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a7f5510d561305dc1ac113d68201948d4" class="m-doc">generateAutoFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">protected</span></span>
+            </dt>
+            <dd>Generate a file name from the logger id and the current date.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#ac0441b0384792cb5fde631bde9e2cb71" class="m-doc">setFileTimestamp</a>(</span><span class="m-doc-wrap"><span class="m-dim">File</span> <span class="m-param">fileToStamp</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">stampFlag</span>) <span class="m-label m-flat m-warning">protected</span></span>
+            </dt>
+            <dd>Set a timestamp on a file.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a7521b29cde2c5848d895d7d9210c1249" class="m-doc">openFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
+              <span class="m-dim">bool</span> <span class="m-param">createFile</span>,
+              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span>) <span class="m-label m-flat m-warning">protected</span></span>
+            </dt>
+            <dd>Open or creates a file, converting a string file name to a character file name.</dd>
+          </dl>
+        </section>
+        <hr>
         <section id="clock-and-timezones">
           <h2>Clock and Timezones</h2>
             <p><a name="logger_sleep"></a> Public Functions for sleeping the logger</p>
@@ -1686,101 +1767,6 @@
           </dl>
         </section>
         <hr>
-        <section id="sd-cards-and-saving-data">
-          <h2>SD Cards and Saving Data</h2>
-            <p><a name="logger_sdcard"></a> Public functions for logging data to an SD card</p>
-          <dl class="m-doc">
-                          <dt id="a35cb09421eab3122c0489cd88e57f8d6">
-              <span class="m-dim">SdFat</span> <a href="#a35cb09421eab3122c0489cd88e57f8d6" class="m-doc-self">sd</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>An internal reference to SdFat for SD card control.</dd>
-                          <dt id="a01618684d05a39696dc155566eba0a4e">
-              <span class="m-dim">File</span> <a href="#a01618684d05a39696dc155566eba0a4e" class="m-doc-self">logFile</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>An internal reference to an SdFat file instance.</dd>
-                          <dt id="a9e86ced1966319d94334276f61d41b53">
-              <span class="m-dim">String</span> <a href="#a9e86ced1966319d94334276f61d41b53" class="m-doc-self">_fileName</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>An internal reference to the current filename.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a245218fa18260292c0ed47e77a342b5a" class="m-doc">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">fileName</span>)</span>
-            </dt>
-            <dd>Set the file name, if you want to decide on it in advance.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a0396c4ed48cf8c72211c8fca8f5683a8" class="m-doc">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">fileName</span>)</span>
-            </dt>
-            <dd>Set the file name, if you want to decide on it in advance.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">String</span> </span><a href="#ab7b8db13230d88ef2382a5f8b2452ca5" class="m-doc">getFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
-            </dt>
-            <dd>Get the current filename.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a4de271d0622bfd4b38acef2607c8aa64" class="m-doc">printFileHeader</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>) <span class="m-label m-flat m-warning">virtual</span></span>
-            </dt>
-            <dd>Print a header out to a stream.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a9d6a8598a0ec7fff1e09836b75409fcb" class="m-doc">printSensorDataCSV</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>)</span>
-            </dt>
-            <dd>Print a comma separated list of volues of sensor data - including the time in the logging timezone - out over an Arduino stream.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a3fda4b6a89c97789653af166fbf09d2c" class="m-doc">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
-              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span>
-            </dt>
-            <dd>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a88b4b9247c72d389653985a679067b74" class="m-doc">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span>
-            </dt>
-            <dd>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a453249138181eb007a79a04b245fae6d" class="m-doc">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
-              <span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span>
-            </dt>
-            <dd>Open a file with the given name on the SD card and append the given line to the bottom of it.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a898b5c598b90086303569c677e3ca2c3" class="m-doc">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span>
-            </dt>
-            <dd>Open a file named with the current internal filename value and append the given line to the bottom of it.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#aada7ed61575988e4a2a45eaff25ccfb1" class="m-doc">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
-            </dt>
-            <dd>Open a file named with the current internal filename value and append a line to the bottom of it with the most recent values of all variables in the variable array as a comma separated list.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a8761ee67d7c49d4c9acd2b42ec230b47" class="m-doc">initializeSDCard</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">protected</span></span>
-            </dt>
-            <dd>Check if the SD card is available and ready to write to.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a7f5510d561305dc1ac113d68201948d4" class="m-doc">generateAutoFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">protected</span></span>
-            </dt>
-            <dd>Generate a file name from the logger id and the current date.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#ac0441b0384792cb5fde631bde9e2cb71" class="m-doc">setFileTimestamp</a>(</span><span class="m-doc-wrap"><span class="m-dim">File</span> <span class="m-param">fileToStamp</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">stampFlag</span>) <span class="m-label m-flat m-warning">protected</span></span>
-            </dt>
-            <dd>Set a timestamp on a file.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a7521b29cde2c5848d895d7d9210c1249" class="m-doc">openFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
-              <span class="m-dim">bool</span> <span class="m-param">createFile</span>,
-              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span>) <span class="m-label m-flat m-warning">protected</span></span>
-            </dt>
-            <dd>Open or creates a file, converting a string file name to a character file name.</dd>
-          </dl>
-        </section>
-        <hr>
-        <section id="sensor-testing-mode">
-          <h2>Sensor Testing Mode</h2>
-            <p><a name="logger_testing"></a> Public functions for a &quot;sensor testing&quot; mode</p>
-          <dl class="m-doc">
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a660167dd63eccf44a50387904ead4544" class="m-doc">testingMode</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-warning">virtual</span></span>
-            </dt>
-            <dd>Execute testing mode.</dd>
-                          <dt id="abbadc1060ed23e55afc30473e672a8e3">
-              <span class="m-doc-wrap-bumper">static <span class="m-param">void </span><a href="#abbadc1060ed23e55afc30473e672a8e3" class="m-doc-self">testingISR</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
-            </dt>
-            <dd>The interrupt sevice routine called when an iterrupt is detected on the pin assigned for &quot;testing&quot; mode.</dd>
-          </dl>
-        </section>
-        <hr>
         <section id="do-it-all-convience-functions">
           <h2>Do-It-All Convience Functions</h2>
             <p><a name="logger_conv"></a> Convience functions to call several of the above functions</p>
@@ -1830,7 +1816,32 @@
           </dl>
         </section>
         <hr>
+        <section id="sensor-testing-mode">
+          <h2>Sensor Testing Mode</h2>
+            <p><a name="logger_testing"></a> Public functions for a &quot;sensor testing&quot; mode</p>
+          <dl class="m-doc">
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param">void </span><a href="#a660167dd63eccf44a50387904ead4544" class="m-doc">testingMode</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-warning">virtual</span></span>
+            </dt>
+            <dd>Execute testing mode.</dd>
+                          <dt id="abbadc1060ed23e55afc30473e672a8e3">
+              <span class="m-doc-wrap-bumper">static <span class="m-param">void </span><a href="#abbadc1060ed23e55afc30473e672a8e3" class="m-doc-self">testingISR</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span>
+            </dt>
+            <dd>The interrupt sevice routine called when an iterrupt is detected on the pin assigned for &quot;testing&quot; mode.</dd>
+          </dl>
+        </section>
+        <hr>
 
+        <section id="friends">
+          <h2>Friends</h2>
+          <dl class="m-doc">
+                          <dt id="ae18bf1e876898962ba1a37b127f87e54">
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">class</span> </span><a href="#ae18bf1e876898962ba1a37b127f87e54" class="m-doc-self">dataPublisher</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="classdata_publisher.html" class="m-doc">dataPublisher</a></span> <span class="m-param"></span>)</span>
+            </dt>
+            <dd>The <a href="classdata_publisher.html" class="m-doc">dataPublisher</a> class contains endpoints for logged data and the proper formats for sending it.</dd>
+          </dl>
+        </section>
+        <hr>
 
 
 
@@ -2531,6 +2542,332 @@
             <hr>
           </div>
         </section>
+                      <section class="m-doc-details" id="a245218fa18260292c0ed47e77a342b5a"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a245218fa18260292c0ed47e77a342b5a" class="m-doc-self">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">fileName</span>)</span></span>
+            </h3>
+            <p>Set the file name, if you want to decide on it in advance.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">fileName</span></td>
+                  <td>The file name</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>If the file name is set using this function, the same file name will be used for every single file created by the logger.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a0396c4ed48cf8c72211c8fca8f5683a8"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0396c4ed48cf8c72211c8fca8f5683a8" class="m-doc-self">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">fileName</span>)</span></span>
+            </h3>
+            <p>Set the file name, if you want to decide on it in advance.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">fileName</span></td>
+                  <td>The file name</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>If the file name is set using this function, the same file name will be used for every single file created by the logger.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="ab7b8db13230d88ef2382a5f8b2452ca5"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">String</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab7b8db13230d88ef2382a5f8b2452ca5" class="m-doc-self">getFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span></span>
+            </h3>
+            <p>Get the current filename.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td><strong>String</strong> The name of the file data is currently being saved to.</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p>This may be a single filename set using the setFileName(name) function or an auto-generated filename which is a concatenation of the logger id and the date when the file was started.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a4de271d0622bfd4b38acef2607c8aa64"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4de271d0622bfd4b38acef2607c8aa64" class="m-doc-self">printFileHeader</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>) <span class="m-label m-warning">virtual</span></span></span>
+            </h3>
+            <p>Print a header out to a stream.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">stream</span></td>
+                  <td>An Arduino stream instance - expected to be an SdFat file - but could also be the &quot;main&quot; Serial port for debugging.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>This removes need to pass around very long string objects which can crash the logger</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a9d6a8598a0ec7fff1e09836b75409fcb"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9d6a8598a0ec7fff1e09836b75409fcb" class="m-doc-self">printSensorDataCSV</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>)</span></span>
+            </h3>
+            <p>Print a comma separated list of volues of sensor data - including the time in the logging timezone - out over an Arduino stream.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">stream</span></td>
+                  <td>An Arduino stream instance - expected to be an SdFat file - but could also be the &quot;main&quot; Serial port for debugging.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a3fda4b6a89c97789653af166fbf09d2c"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3fda4b6a89c97789653af166fbf09d2c" class="m-doc-self">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
+              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span></span>
+            </h3>
+            <p>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">filename</span></td>
+                  <td>The name of the file to create</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">writeDefaultHeader</span></td>
+                  <td>True to write a header to the file, default is false</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><strong>bool</strong> True if the file was successfully created.</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p>The filename will be the value specified in the function. If desired, a header will also be written to the file based on the variable information from the variable array. This can be used to force a logger to create a file with a secondary file name.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a88b4b9247c72d389653985a679067b74"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a88b4b9247c72d389653985a679067b74" class="m-doc-self">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span></span>
+            </h3>
+            <p>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">writeDefaultHeader</span></td>
+                  <td>True to write a header to the file, default is false</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><strong>bool</strong> True if the file was successfully created.</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p>The filename will be the one set by setFileName(String) or generated using the logger id and the date. If desired, a header will also be written to the file based on the variable information from the variable array.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a453249138181eb007a79a04b245fae6d"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a453249138181eb007a79a04b245fae6d" class="m-doc-self">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
+              <span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span></span>
+            </h3>
+            <p>Open a file with the given name on the SD card and append the given line to the bottom of it.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">filename</span></td>
+                  <td>The name of the file to write to</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">rec</span></td>
+                  <td>The line to be written to the file</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><strong>bool</strong> True if the file was successfully accessed or created <em>and</em> data appended to it.</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p>If a file with the specified name does not already exist, attempt to create the file and add a header to it. Set the modified and accessed timestamps of the file to the current time.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a898b5c598b90086303569c677e3ca2c3"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a898b5c598b90086303569c677e3ca2c3" class="m-doc-self">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span></span>
+            </h3>
+            <p>Open a file named with the current internal filename value and append the given line to the bottom of it.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">rec</span></td>
+                  <td>The line to be written to the file</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><strong>bool</strong> True if the file was successfully accessed or created <em>and</em> data appended to it.</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p>If a file with the with the intenal filename does not already exist, attempt to create a file with that name and add a header to it. Set the modified and accessed timestamps of the file to the current time.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="aada7ed61575988e4a2a45eaff25ccfb1"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aada7ed61575988e4a2a45eaff25ccfb1" class="m-doc-self">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span></span>
+            </h3>
+            <p>Open a file named with the current internal filename value and append a line to the bottom of it with the most recent values of all variables in the variable array as a comma separated list.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td><strong>bool</strong> True if the file was successfully accessed or created <em>and</em> data appended to it.</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p>If a file with the with the intenal filename does not already exist, attempt to create the file and add a header to it. Set the modified and accessed timestamps of the file to the current time.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a8761ee67d7c49d4c9acd2b42ec230b47"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8761ee67d7c49d4c9acd2b42ec230b47" class="m-doc-self">initializeSDCard</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">protected</span></span></span>
+            </h3>
+            <p>Check if the SD card is available and ready to write to.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td><strong>bool</strong> True if the SD card is ready</td>
+                </tr>
+              </tfoot>
+            </table>
+            <p>We run this check before every communication with the SD card to prevent hanging.</p>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a7f5510d561305dc1ac113d68201948d4"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7f5510d561305dc1ac113d68201948d4" class="m-doc-self">generateAutoFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">protected</span></span></span>
+            </h3>
+            <p>Generate a file name from the logger id and the current date.</p>
+            <aside class="m-note m-info"><h4>Note</h4><p>This cannot be called until <em>after</em> the RTC is started</p></aside>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="ac0441b0384792cb5fde631bde9e2cb71"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac0441b0384792cb5fde631bde9e2cb71" class="m-doc-self">setFileTimestamp</a>(</span><span class="m-doc-wrap"><span class="m-dim">File</span> <span class="m-param">fileToStamp</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">stampFlag</span>) <span class="m-label m-warning">protected</span></span></span>
+            </h3>
+            <p>Set a timestamp on a file.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">fileToStamp</span></td>
+                  <td>The filename to change the timestamp of</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">stampFlag</span></td>
+                  <td>The &quot;flag&quot; of the timestamp to change - should be T_CREATE, T_WRITE, or T_ACCESS</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a7521b29cde2c5848d895d7d9210c1249"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7521b29cde2c5848d895d7d9210c1249" class="m-doc-self">openFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
+              <span class="m-dim">bool</span> <span class="m-param">createFile</span>,
+              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span>) <span class="m-label m-warning">protected</span></span></span>
+            </h3>
+            <p>Open or creates a file, converting a string file name to a character file name.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">filename</span></td>
+                  <td>The name of the file to open</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">createFile</span></td>
+                  <td>True to create the file if it did not already exist</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">writeDefaultHeader</span></td>
+                  <td>True to add a header to the file if it is created</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><strong>bool</strong> True if a file was successfully opened or created.</td>
+                </tr>
+              </tfoot>
+            </table>
+
+            <hr>
+          </div>
+        </section>
                       <section class="m-doc-details" id="a03aa67e62a92ee47afb5f28a6d4d28c3"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a03aa67e62a92ee47afb5f28a6d4d28c3" class="m-doc-self">setRTClock</a>(</span><span class="m-doc-wrap"><span class="m-dim">uint32_t</span> <span class="m-param">UTCEpochSeconds</span>)</span></span>
@@ -2938,342 +3275,6 @@
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="a245218fa18260292c0ed47e77a342b5a"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a245218fa18260292c0ed47e77a342b5a" class="m-doc-self">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">fileName</span>)</span></span>
-            </h3>
-            <p>Set the file name, if you want to decide on it in advance.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">fileName</span></td>
-                  <td>The file name</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>If the file name is set using this function, the same file name will be used for every single file created by the logger.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a0396c4ed48cf8c72211c8fca8f5683a8"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0396c4ed48cf8c72211c8fca8f5683a8" class="m-doc-self">setFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">fileName</span>)</span></span>
-            </h3>
-            <p>Set the file name, if you want to decide on it in advance.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">fileName</span></td>
-                  <td>The file name</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>If the file name is set using this function, the same file name will be used for every single file created by the logger.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="ab7b8db13230d88ef2382a5f8b2452ca5"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">String</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab7b8db13230d88ef2382a5f8b2452ca5" class="m-doc-self">getFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span></span>
-            </h3>
-            <p>Get the current filename.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <tfoot>
-                <tr>
-                  <th style="width: 1%">Returns</th>
-                  <td><strong>String</strong> The name of the file data is currently being saved to.</td>
-                </tr>
-              </tfoot>
-            </table>
-            <p>This may be a single filename set using the setFileName(name) function or an auto-generated filename which is a concatenation of the logger id and the date when the file was started.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a4de271d0622bfd4b38acef2607c8aa64"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4de271d0622bfd4b38acef2607c8aa64" class="m-doc-self">printFileHeader</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>) <span class="m-label m-warning">virtual</span></span></span>
-            </h3>
-            <p>Print a header out to a stream.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">stream</span></td>
-                  <td>An Arduino stream instance - expected to be an SdFat file - but could also be the &quot;main&quot; Serial port for debugging.</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>This removes need to pass around very long string objects which can crash the logger</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a9d6a8598a0ec7fff1e09836b75409fcb"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9d6a8598a0ec7fff1e09836b75409fcb" class="m-doc-self">printSensorDataCSV</a>(</span><span class="m-doc-wrap"><span class="m-dim">Stream*</span> <span class="m-param">stream</span>)</span></span>
-            </h3>
-            <p>Print a comma separated list of volues of sensor data - including the time in the logging timezone - out over an Arduino stream.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">stream</span></td>
-                  <td>An Arduino stream instance - expected to be an SdFat file - but could also be the &quot;main&quot; Serial port for debugging.</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a3fda4b6a89c97789653af166fbf09d2c"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3fda4b6a89c97789653af166fbf09d2c" class="m-doc-self">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
-              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span></span>
-            </h3>
-            <p>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">filename</span></td>
-                  <td>The name of the file to create</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">writeDefaultHeader</span></td>
-                  <td>True to write a header to the file, default is false</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td><strong>bool</strong> True if the file was successfully created.</td>
-                </tr>
-              </tfoot>
-            </table>
-            <p>The filename will be the value specified in the function. If desired, a header will also be written to the file based on the variable information from the variable array. This can be used to force a logger to create a file with a secondary file name.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a88b4b9247c72d389653985a679067b74"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a88b4b9247c72d389653985a679067b74" class="m-doc-self">createLogFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span><span class="m-dim"> = false</span>)</span></span>
-            </h3>
-            <p>Create a file on the SD card and set the created, modified, and accessed timestamps in that file.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">writeDefaultHeader</span></td>
-                  <td>True to write a header to the file, default is false</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td><strong>bool</strong> True if the file was successfully created.</td>
-                </tr>
-              </tfoot>
-            </table>
-            <p>The filename will be the one set by setFileName(String) or generated using the logger id and the date. If desired, a header will also be written to the file based on the variable information from the variable array.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a453249138181eb007a79a04b245fae6d"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a453249138181eb007a79a04b245fae6d" class="m-doc-self">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
-              <span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span></span>
-            </h3>
-            <p>Open a file with the given name on the SD card and append the given line to the bottom of it.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">filename</span></td>
-                  <td>The name of the file to write to</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">rec</span></td>
-                  <td>The line to be written to the file</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td><strong>bool</strong> True if the file was successfully accessed or created <em>and</em> data appended to it.</td>
-                </tr>
-              </tfoot>
-            </table>
-            <p>If a file with the specified name does not already exist, attempt to create the file and add a header to it. Set the modified and accessed timestamps of the file to the current time.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a898b5c598b90086303569c677e3ca2c3"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a898b5c598b90086303569c677e3ca2c3" class="m-doc-self">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">rec</span>)</span></span>
-            </h3>
-            <p>Open a file named with the current internal filename value and append the given line to the bottom of it.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">rec</span></td>
-                  <td>The line to be written to the file</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td><strong>bool</strong> True if the file was successfully accessed or created <em>and</em> data appended to it.</td>
-                </tr>
-              </tfoot>
-            </table>
-            <p>If a file with the with the intenal filename does not already exist, attempt to create a file with that name and add a header to it. Set the modified and accessed timestamps of the file to the current time.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="aada7ed61575988e4a2a45eaff25ccfb1"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aada7ed61575988e4a2a45eaff25ccfb1" class="m-doc-self">logToSD</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>)</span></span>
-            </h3>
-            <p>Open a file named with the current internal filename value and append a line to the bottom of it with the most recent values of all variables in the variable array as a comma separated list.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <tfoot>
-                <tr>
-                  <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the file was successfully accessed or created <em>and</em> data appended to it.</td>
-                </tr>
-              </tfoot>
-            </table>
-            <p>If a file with the with the intenal filename does not already exist, attempt to create the file and add a header to it. Set the modified and accessed timestamps of the file to the current time.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a8761ee67d7c49d4c9acd2b42ec230b47"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8761ee67d7c49d4c9acd2b42ec230b47" class="m-doc-self">initializeSDCard</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">protected</span></span></span>
-            </h3>
-            <p>Check if the SD card is available and ready to write to.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <tfoot>
-                <tr>
-                  <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the SD card is ready</td>
-                </tr>
-              </tfoot>
-            </table>
-            <p>We run this check before every communication with the SD card to prevent hanging.</p>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a7f5510d561305dc1ac113d68201948d4"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7f5510d561305dc1ac113d68201948d4" class="m-doc-self">generateAutoFileName</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">protected</span></span></span>
-            </h3>
-            <p>Generate a file name from the logger id and the current date.</p>
-            <aside class="m-note m-info"><h4>Note</h4><p>This cannot be called until <em>after</em> the RTC is started</p></aside>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="ac0441b0384792cb5fde631bde9e2cb71"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac0441b0384792cb5fde631bde9e2cb71" class="m-doc-self">setFileTimestamp</a>(</span><span class="m-doc-wrap"><span class="m-dim">File</span> <span class="m-param">fileToStamp</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">stampFlag</span>) <span class="m-label m-warning">protected</span></span></span>
-            </h3>
-            <p>Set a timestamp on a file.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">fileToStamp</span></td>
-                  <td>The filename to change the timestamp of</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">stampFlag</span></td>
-                  <td>The &quot;flag&quot; of the timestamp to change - should be T_CREATE, T_WRITE, or T_ACCESS</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a7521b29cde2c5848d895d7d9210c1249"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7521b29cde2c5848d895d7d9210c1249" class="m-doc-self">openFile</a>(</span><span class="m-doc-wrap"><span class="m-dim">String&amp;</span> <span class="m-param">filename</span>,
-              <span class="m-dim">bool</span> <span class="m-param">createFile</span>,
-              <span class="m-dim">bool</span> <span class="m-param">writeDefaultHeader</span>) <span class="m-label m-warning">protected</span></span></span>
-            </h3>
-            <p>Open or creates a file, converting a string file name to a character file name.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">filename</span></td>
-                  <td>The name of the file to open</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">createFile</span></td>
-                  <td>True to create the file if it did not already exist</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">writeDefaultHeader</span></td>
-                  <td>True to add a header to the file if it is created</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td><strong>bool</strong> True if a file was successfully opened or created.</td>
-                </tr>
-              </tfoot>
-            </table>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a660167dd63eccf44a50387904ead4544"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a660167dd63eccf44a50387904ead4544" class="m-doc-self">testingMode</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">virtual</span></span></span>
-            </h3>
-            <p>Execute testing mode.</p>
-            <p>In testing mode, the logger uses the <a href="classlogger_modem.html" class="m-doc">loggerModem</a>, if attached, to connect to the internet. It then powers up all sensors tied to variable in the internal variable array. The logger then updates readings from all sensors 25 times with a 5 second wait in between. All results are output to the &quot;main&quot; output - ie Serial - and NOT to the SD card. After 25 measurements, the sensors are put to sleep, the modem is disconnected from the internet, and the logger goes back to sleep.</p>
-
-            <hr>
-          </div>
-        </section>
                       <section class="m-doc-details" id="acfb1b3bbf1a197fd28e9f968ee30785a"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acfb1b3bbf1a197fd28e9f968ee30785a" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap"><span class="m-dim">const char*</span> <span class="m-param">loggerID</span>,
@@ -3332,6 +3333,16 @@
             </h3>
             <p>Set all pin levels and does initial communication with the real-time clock and SD card to prepare the logger for full functionality.</p>
             <p>This is used for operations that cannot happen in the logger constructor</p><ul><li>they must happen at run time, not at compile time.</li></ul>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a660167dd63eccf44a50387904ead4544"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">void</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a660167dd63eccf44a50387904ead4544" class="m-doc-self">testingMode</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">virtual</span></span></span>
+            </h3>
+            <p>Execute testing mode.</p>
+            <p>In testing mode, the logger uses the <a href="classlogger_modem.html" class="m-doc">loggerModem</a>, if attached, to connect to the internet. It then powers up all sensors tied to variable in the internal variable array. The logger then updates readings from all sensors 25 times with a 5 second wait in between. All results are output to the &quot;main&quot; output - ie Serial - and NOT to the SD card. After 25 measurements, the sensors are put to sleep, the modem is disconnected from the internet, and the logger goes back to sleep.</p>
 
             <hr>
           </div>
@@ -3437,7 +3448,7 @@
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

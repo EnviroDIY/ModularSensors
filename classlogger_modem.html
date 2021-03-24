@@ -1327,6 +1327,9 @@
                 <li><a href="#pub-methods">Public functions</a></li>
                 <li><a href="#pro-static-methods">Protected static functions</a></li>
                 <li><a href="#pro-attribs">Protected variables</a></li>
+                <li><a href="#member-variables-set-in-the-constructor">Member variables set in the constructor</a></li>
+                <li><a href="#flags-and-other-member-variables-only-used-internally">Flags and other member variables only used internally</a></li>
+                <li><a href="#static-member-variables-used-to-hold-modem-metadata">Static member variables used to hold modem metadata</a></li>
                 <li><a href="#functions-related-to-the-modem-power-and-activity-state">Functions related to the modem power and activity state</a></li>
                 <li><a href="#pin-setting-functions">Pin setting functions</a></li>
                 <li><a href="#functions-for-internet-connectivity">Functions for internet connectivity</a></li>
@@ -1335,9 +1338,6 @@
                 <li><a href="#functions-to-convert-between-signal-strength-measurement-types">Functions to convert between signal strength measurement types</a></li>
                 <li><a href="#helper-functions">Helper functions</a></li>
                 <li><a href="#pure-virtual-functions-for-each-modem-to-implement">Pure virtual functions for each modem to implement</a></li>
-                <li><a href="#member-variables-set-in-the-constructor">Member variables set in the constructor</a></li>
-                <li><a href="#flags-and-other-member-variables-only-used-internally">Flags and other member variables only used internally</a></li>
-                <li><a href="#static-member-variables-used-to-hold-modem-metadata">Static member variables used to hold modem metadata</a></li>
               </ul>
             </li>
             <li>
@@ -1368,10 +1368,6 @@
             </dt>
             <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for Dragino, Nimbelink, or any other module based on the <a href="group__modem__bg96.html" class="m-doc">Quectel BG96</a>.</dd>
                           <dt>
-              class <a href="class_sequans_monarch.html" class="m-doc">SequansMonarch</a>
-            </dt>
-            <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for Nimbelink or other modules based on the <a href="group__modem__monarch.html" class="m-doc">Sequans Monarch VZM20Q</a>.</dd>
-                          <dt>
               class <a href="class_s_i_m_com_s_i_m7000.html" class="m-doc">SIMComSIM7000</a>
             </dt>
             <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for Botletics, And1, and other modules based on the <a href="group__modem__sim7000.html" class="m-doc">SIMCOM SIM7000</a>.</dd>
@@ -1379,6 +1375,10 @@
               class <a href="class_s_i_m_com_s_i_m800.html" class="m-doc">SIMComSIM800</a>
             </dt>
             <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4 and almost any other module based on the <a href="group__modem__sim800.html" class="m-doc">SIMCOM SIM800 or SIM900 modules and</a>thier variants&quot;.</dd>
+                          <dt>
+              class <a href="class_sequans_monarch.html" class="m-doc">SequansMonarch</a>
+            </dt>
+            <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for Nimbelink or other modules based on the <a href="group__modem__monarch.html" class="m-doc">Sequans Monarch VZM20Q</a>.</dd>
                           <dt>
               class <a href="class_sodaq_u_bee_r410_m.html" class="m-doc">SodaqUBeeR410M</a>
             </dt>
@@ -1479,6 +1479,123 @@
 
 
 
+        <section id="member-variables-set-in-the-constructor">
+          <h2>Member variables set in the constructor</h2>
+            <p><a name="modem_ctor_variables"></a> These are all related to expected modem response times and the pin connections between the modem module and the logger MCU.</p>
+          <dl class="m-doc">
+                          <dt>
+              <span class="m-dim">int8_t</span> <a href="#a2debe6966737c06f1a1ae09785b357b0" class="m-doc">_powerPin</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>).</dd>
+                          <dt>
+              <span class="m-dim">int8_t</span> <a href="#acad0d45a5de232a5b115e31c82911d1a" class="m-doc">_statusPin</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The digital pin number of the mcu pin connected to the modem status output pin.</dd>
+                          <dt id="af44caee8dd6acf7c72cd1271441a41cb">
+              <span class="m-dim">bool</span> <a href="#af44caee8dd6acf7c72cd1271441a41cb" class="m-doc-self">_statusLevel</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The level (<code>LOW</code> or <code>HIGH</code>) of the <a href="classlogger_modem.html#acad0d45a5de232a5b115e31c82911d1a" class="m-doc">_<wbr />statusPin</a> when the modem is active.</dd>
+                          <dt>
+              <span class="m-dim">int8_t</span> <a href="#a477360bcdc59d84c7e3433e83506514c" class="m-doc">_modemResetPin</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem.</dd>
+                          <dt id="a4832f4560020f57bfb2e11ddade73d0a">
+              <span class="m-dim">bool</span> <a href="#a4832f4560020f57bfb2e11ddade73d0a" class="m-doc-self">_resetLevel</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The level (<code>LOW</code> or <code>HIGH</code>) of the <a href="classlogger_modem.html#a477360bcdc59d84c7e3433e83506514c" class="m-doc">_<wbr />modemResetPin</a> which will cause the modem to reset.</dd>
+                          <dt id="a9ee81f2d0dd9e5cdf89e8e469147c38c">
+              <span class="m-dim">uint32_t</span> <a href="#a9ee81f2d0dd9e5cdf89e8e469147c38c" class="m-doc-self">_resetPulse_ms</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The length of time in milliseconds at <a href="classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a" class="m-doc">_<wbr />resetLevel</a> needed on <a href="classlogger_modem.html#a477360bcdc59d84c7e3433e83506514c" class="m-doc">_<wbr />modemResetPin</a> to reset the modem.</dd>
+                          <dt>
+              <span class="m-dim">int8_t</span> <a href="#a116871437742fa383dce0a12652491b8" class="m-doc">_modemSleepRqPin</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state.</dd>
+                          <dt id="a71c42d58d22d8481e6e6f7e5b7d8f0bf">
+              <span class="m-dim">bool</span> <a href="#a71c42d58d22d8481e6e6f7e5b7d8f0bf" class="m-doc-self">_wakeLevel</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The level (<code>LOW</code> or <code>HIGH</code>) on the <a href="classlogger_modem.html#a116871437742fa383dce0a12652491b8" class="m-doc">_<wbr />modemSleepRqPin</a> used to <strong>wake</strong> the modem.</dd>
+                          <dt>
+              <span class="m-dim">uint32_t</span> <a href="#a1b4e78a1e0963fb1cc970ce6273c124d" class="m-doc">_wakePulse_ms</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The length of pulse in milliseconds at <a href="classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf" class="m-doc">_<wbr />wakeLevel</a> needed on the <a href="classlogger_modem.html#a116871437742fa383dce0a12652491b8" class="m-doc">_<wbr />modemSleepRqPin</a> to wake the modem.</dd>
+                          <dt id="a755d93cb67e9184a7cdfeae17448667b">
+              <span class="m-dim">uint32_t</span> <a href="#a755d93cb67e9184a7cdfeae17448667b" class="m-doc-self">_statusTime_ms</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The time in milliseconds between when <a href="classlogger_modem.html#af2c32f1b143a2dc94c0fe5a67121af88" class="m-doc">modemWake()</a> is run and when the <a href="classlogger_modem.html#acad0d45a5de232a5b115e31c82911d1a" class="m-doc">_<wbr />statusPin</a> is expected to be at <a href="classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb" class="m-doc">_<wbr />statusLevel</a>.</dd>
+                          <dt id="a32496b2b79dc9317639900a3c385405d">
+              <span class="m-dim">uint32_t</span> <a href="#a32496b2b79dc9317639900a3c385405d" class="m-doc-self">_disconnetTime_ms</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The maximum length of time in milliseconds between when the modem is requested to enter lowest power state (<a href="classlogger_modem.html#a8e6ada69f7ff5569e23184df8e7cb8e2" class="m-doc">modemSleep()</a>) and when it should have completed necessary steps to shut down.</dd>
+                          <dt>
+              <span class="m-dim">uint32_t</span> <a href="#a68051ed68b85195bf188a1914c71a9c8" class="m-doc">_wakeDelayTime_ms</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The time in milliseconds between when the modem is powered and when it is able to receive a wake command.</dd>
+                          <dt>
+              <span class="m-dim">uint32_t</span> <a href="#aa9bf26acfae6ec2611b4d7a806dd2489" class="m-doc">_max_atresponse_time_ms</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The time in milliseconds between when the modem is awake and when its serial ports reach full functionality and are ready to accept AT commands.</dd>
+          </dl>
+        </section>
+        <hr>
+        <section id="flags-and-other-member-variables-only-used-internally">
+          <h2>Flags and other member variables only used internally</h2>
+            <p><a name="modem_flag_variables"></a></p>
+          <dl class="m-doc">
+                          <dt>
+              <span class="m-dim">int8_t</span> <a href="#af99cffac4f4cc326d7e7a416381460dc" class="m-doc">_modemLEDPin</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The digital pin number of a pin on the mcu used to indicate the modem&#x27;s current activity state.</dd>
+                          <dt>
+              <span class="m-dim">uint32_t</span> <a href="#a32b3065bdbe41f70acca8f0fca5cd3b0" class="m-doc">_millisPowerOn</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The processor elapsed time when the power was turned on for the modem.</dd>
+                          <dt>
+              <span class="m-dim">uint32_t</span> <a href="#a07664567900d410a880740c5e1fe3e7d" class="m-doc">_lastNISTrequest</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The processor elapsed time when the a connection to the NIST time server was last attempted.</dd>
+                          <dt id="ab5f1cf4a8d50fdb927a5bea7ef89be1a">
+              <span class="m-dim">bool</span> <a href="#ab5f1cf4a8d50fdb927a5bea7ef89be1a" class="m-doc-self">_hasBeenSetup</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>Flag. True indicates that the modem has already successfully completed setup.</dd>
+                          <dt id="a73bfcb1d951666a6b362af782bd9f281">
+              <span class="m-dim">bool</span> <a href="#a73bfcb1d951666a6b362af782bd9f281" class="m-doc-self">_pinModesSet</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>Flag. True indicates that the pins on the mcu attached to the modem are set to the correct mode (ie, input vs output).</dd>
+          </dl>
+        </section>
+        <hr>
+        <section id="static-member-variables-used-to-hold-modem-metadata">
+          <h2>Static member variables used to hold modem metadata</h2>
+            <p><a name="modem_static_variables"></a></p>
+          <dl class="m-doc">
+                          <dt>
+              static <span class="m-dim">int16_t</span> <a href="#aa87cab7a19df8f47b0aea1d851066818" class="m-doc">_priorRSSI</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The last stored RSSI value.</dd>
+                          <dt>
+              static <span class="m-dim">int16_t</span> <a href="#ac415026e6488b11f39f4f6d61085089e" class="m-doc">_priorSignalPercent</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The last stored signal strength percent value.</dd>
+                          <dt>
+              static <span class="m-dim">float</span> <a href="#a637233cee6ddb552d6a87a426c21e288" class="m-doc">_priorModemTemp</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The last stored modem chip temperature value.</dd>
+                          <dt>
+              static <span class="m-dim">float</span> <a href="#a1822e8abafd11aa6c0996077fcf638ef" class="m-doc">_priorBatteryState</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The last stored modem battery state value.</dd>
+                          <dt>
+              static <span class="m-dim">float</span> <a href="#a10eda54803bacccab7fe504afcdf0348" class="m-doc">_priorBatteryPercent</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The last stored modem battery percent value.</dd>
+                          <dt>
+              static <span class="m-dim">float</span> <a href="#a00b43ae92752d2681355ad53adf6637a" class="m-doc">_priorBatteryVoltage</a> <span class="m-label m-flat m-warning">protected</span>
+            </dt>
+            <dd>The last stored modem battery voltage value.</dd>
+          </dl>
+        </section>
+        <hr>
         <section id="functions-related-to-the-modem-power-and-activity-state">
           <h2>Functions related to the modem power and activity state</h2>
             <p><a name="modem_power_functions"></a></p><p>These are similar to the like-named <a href="class_sensor.html" class="m-doc">Sensor</a> functions.</p>
@@ -1667,123 +1784,6 @@
               <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a79572d6c1bdc13026f0e880f535b35d9" class="m-doc">isModemAwake</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">protected</span> <span class="m-label m-flat m-warning">pure virtual</span></span>
             </dt>
             <dd>Check if the modem was awake using all possible means.</dd>
-          </dl>
-        </section>
-        <hr>
-        <section id="member-variables-set-in-the-constructor">
-          <h2>Member variables set in the constructor</h2>
-            <p><a name="modem_ctor_variables"></a> These are all related to expected modem response times and the pin connections between the modem module and the logger MCU.</p>
-          <dl class="m-doc">
-                          <dt>
-              <span class="m-dim">int8_t</span> <a href="#a2debe6966737c06f1a1ae09785b357b0" class="m-doc">_powerPin</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The digital pin number of the mcu pin controlling power to the modem (active <code>HIGH</code>).</dd>
-                          <dt>
-              <span class="m-dim">int8_t</span> <a href="#acad0d45a5de232a5b115e31c82911d1a" class="m-doc">_statusPin</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The digital pin number of the mcu pin connected to the modem status output pin.</dd>
-                          <dt id="af44caee8dd6acf7c72cd1271441a41cb">
-              <span class="m-dim">bool</span> <a href="#af44caee8dd6acf7c72cd1271441a41cb" class="m-doc-self">_statusLevel</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The level (<code>LOW</code> or <code>HIGH</code>) of the <a href="classlogger_modem.html#acad0d45a5de232a5b115e31c82911d1a" class="m-doc">_<wbr />statusPin</a> when the modem is active.</dd>
-                          <dt>
-              <span class="m-dim">int8_t</span> <a href="#a477360bcdc59d84c7e3433e83506514c" class="m-doc">_modemResetPin</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The digital pin number of the pin on the mcu attached the the hard or panic reset pin of the modem.</dd>
-                          <dt id="a4832f4560020f57bfb2e11ddade73d0a">
-              <span class="m-dim">bool</span> <a href="#a4832f4560020f57bfb2e11ddade73d0a" class="m-doc-self">_resetLevel</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The level (<code>LOW</code> or <code>HIGH</code>) of the <a href="classlogger_modem.html#a477360bcdc59d84c7e3433e83506514c" class="m-doc">_<wbr />modemResetPin</a> which will cause the modem to reset.</dd>
-                          <dt id="a9ee81f2d0dd9e5cdf89e8e469147c38c">
-              <span class="m-dim">uint32_t</span> <a href="#a9ee81f2d0dd9e5cdf89e8e469147c38c" class="m-doc-self">_resetPulse_ms</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The length of time in milliseconds at <a href="classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a" class="m-doc">_<wbr />resetLevel</a> needed on <a href="classlogger_modem.html#a477360bcdc59d84c7e3433e83506514c" class="m-doc">_<wbr />modemResetPin</a> to reset the modem.</dd>
-                          <dt>
-              <span class="m-dim">int8_t</span> <a href="#a116871437742fa383dce0a12652491b8" class="m-doc">_modemSleepRqPin</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The digital pin number of a pin on the mcu used to request the modem enter its lowest possible power state.</dd>
-                          <dt id="a71c42d58d22d8481e6e6f7e5b7d8f0bf">
-              <span class="m-dim">bool</span> <a href="#a71c42d58d22d8481e6e6f7e5b7d8f0bf" class="m-doc-self">_wakeLevel</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The level (<code>LOW</code> or <code>HIGH</code>) on the <a href="classlogger_modem.html#a116871437742fa383dce0a12652491b8" class="m-doc">_<wbr />modemSleepRqPin</a> used to <strong>wake</strong> the modem.</dd>
-                          <dt>
-              <span class="m-dim">uint32_t</span> <a href="#a1b4e78a1e0963fb1cc970ce6273c124d" class="m-doc">_wakePulse_ms</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The length of pulse in milliseconds at <a href="classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf" class="m-doc">_<wbr />wakeLevel</a> needed on the <a href="classlogger_modem.html#a116871437742fa383dce0a12652491b8" class="m-doc">_<wbr />modemSleepRqPin</a> to wake the modem.</dd>
-                          <dt id="a755d93cb67e9184a7cdfeae17448667b">
-              <span class="m-dim">uint32_t</span> <a href="#a755d93cb67e9184a7cdfeae17448667b" class="m-doc-self">_statusTime_ms</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The time in milliseconds between when <a href="classlogger_modem.html#af2c32f1b143a2dc94c0fe5a67121af88" class="m-doc">modemWake()</a> is run and when the <a href="classlogger_modem.html#acad0d45a5de232a5b115e31c82911d1a" class="m-doc">_<wbr />statusPin</a> is expected to be at <a href="classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb" class="m-doc">_<wbr />statusLevel</a>.</dd>
-                          <dt id="a32496b2b79dc9317639900a3c385405d">
-              <span class="m-dim">uint32_t</span> <a href="#a32496b2b79dc9317639900a3c385405d" class="m-doc-self">_disconnetTime_ms</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The maximum length of time in milliseconds between when the modem is requested to enter lowest power state (<a href="classlogger_modem.html#a8e6ada69f7ff5569e23184df8e7cb8e2" class="m-doc">modemSleep()</a>) and when it should have completed necessary steps to shut down.</dd>
-                          <dt>
-              <span class="m-dim">uint32_t</span> <a href="#a68051ed68b85195bf188a1914c71a9c8" class="m-doc">_wakeDelayTime_ms</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The time in milliseconds between when the modem is powered and when it is able to receive a wake command.</dd>
-                          <dt>
-              <span class="m-dim">uint32_t</span> <a href="#aa9bf26acfae6ec2611b4d7a806dd2489" class="m-doc">_max_atresponse_time_ms</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The time in milliseconds between when the modem is awake and when its serial ports reach full functionality and are ready to accept AT commands.</dd>
-          </dl>
-        </section>
-        <hr>
-        <section id="flags-and-other-member-variables-only-used-internally">
-          <h2>Flags and other member variables only used internally</h2>
-            <p><a name="modem_flag_variables"></a></p>
-          <dl class="m-doc">
-                          <dt>
-              <span class="m-dim">int8_t</span> <a href="#af99cffac4f4cc326d7e7a416381460dc" class="m-doc">_modemLEDPin</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The digital pin number of a pin on the mcu used to indicate the modem&#x27;s current activity state.</dd>
-                          <dt>
-              <span class="m-dim">uint32_t</span> <a href="#a32b3065bdbe41f70acca8f0fca5cd3b0" class="m-doc">_millisPowerOn</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The processor elapsed time when the power was turned on for the modem.</dd>
-                          <dt>
-              <span class="m-dim">uint32_t</span> <a href="#a07664567900d410a880740c5e1fe3e7d" class="m-doc">_lastNISTrequest</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The processor elapsed time when the a connection to the NIST time server was last attempted.</dd>
-                          <dt id="ab5f1cf4a8d50fdb927a5bea7ef89be1a">
-              <span class="m-dim">bool</span> <a href="#ab5f1cf4a8d50fdb927a5bea7ef89be1a" class="m-doc-self">_hasBeenSetup</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>Flag. True indicates that the modem has already successfully completed setup.</dd>
-                          <dt id="a73bfcb1d951666a6b362af782bd9f281">
-              <span class="m-dim">bool</span> <a href="#a73bfcb1d951666a6b362af782bd9f281" class="m-doc-self">_pinModesSet</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>Flag. True indicates that the pins on the mcu attached to the modem are set to the correct mode (ie, input vs output).</dd>
-          </dl>
-        </section>
-        <hr>
-        <section id="static-member-variables-used-to-hold-modem-metadata">
-          <h2>Static member variables used to hold modem metadata</h2>
-            <p><a name="modem_static_variables"></a></p>
-          <dl class="m-doc">
-                          <dt>
-              static <span class="m-dim">int16_t</span> <a href="#aa87cab7a19df8f47b0aea1d851066818" class="m-doc">_priorRSSI</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The last stored RSSI value.</dd>
-                          <dt>
-              static <span class="m-dim">int16_t</span> <a href="#ac415026e6488b11f39f4f6d61085089e" class="m-doc">_priorSignalPercent</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The last stored signal strength percent value.</dd>
-                          <dt>
-              static <span class="m-dim">float</span> <a href="#a637233cee6ddb552d6a87a426c21e288" class="m-doc">_priorModemTemp</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The last stored modem chip temperature value.</dd>
-                          <dt>
-              static <span class="m-dim">float</span> <a href="#a1822e8abafd11aa6c0996077fcf638ef" class="m-doc">_priorBatteryState</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The last stored modem battery state value.</dd>
-                          <dt>
-              static <span class="m-dim">float</span> <a href="#a10eda54803bacccab7fe504afcdf0348" class="m-doc">_priorBatteryPercent</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The last stored modem battery percent value.</dd>
-                          <dt>
-              static <span class="m-dim">float</span> <a href="#a00b43ae92752d2681355ad53adf6637a" class="m-doc">_priorBatteryVoltage</a> <span class="m-label m-flat m-warning">protected</span>
-            </dt>
-            <dd>The last stored modem battery voltage value.</dd>
           </dl>
         </section>
         <hr>
@@ -2778,7 +2778,7 @@
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.8.20 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
