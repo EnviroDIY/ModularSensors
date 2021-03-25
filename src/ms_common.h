@@ -223,7 +223,7 @@ typedef struct {
 // If provider requires mapping, then use common mapping to whatever type
 #define PROVID_UUID_SENSOR_NAME_SZ 40
 #define PROVID_UUID_SENSOR_VALUE_SZ 38
-#define PROVID_UUID_SENSOR_CNTMAX_SZ 10
+#define PROVID_UUID_SENSOR_CNTMAX_SZ 12
 
 #if defined(USE_PS_Provider)
 typedef struct {

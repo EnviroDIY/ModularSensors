@@ -23,11 +23,23 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // This configuration is for a standard Mayfly0.5b
 // Sensors Used - two std to begin then
 //#define AnalogProcEC_ACT 1
-// Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
-// If MAYFLY_VBAT will use it as a measure of Solar Charging and power monitoring
-// If no MAYFLY_VBAT - then will use ExternalVoltage for power monitoring
-#define MAYFLY_VBAT 1
-#define ExternalVoltage_ACT 1
+// Power Availability monitoring decisions use LiIon Voltge,
+// Battery Voltage measurements can be derived from a number of sources
+// MAYFLY_BAT_A6  - standard measures Solar Charging or LiIon battry V which ever is greated
+// MAYFLY_BAT_AA0  - ExternalVolt/ADS1115 requires external R - ECO4
+// MAYFLY_BAT_STC3100  sensor IC on RS485 WINGBOARD_KNH002
+// MAYFLY_BAT_DIGI Digi Modem LTE with onboard battery measurement
+// Choices applied to define MAYFLY_BAT_xx 1) Stc3100 2) ExternVolage_ACT 3) Digi Mode 4) MAYFLY_BAT_A6
+
+#define MAYFLY_BAT_A6 4
+#define MAYFLY_BAT_AA0 2
+//FUT #define MAYFLY_BAT_DIGI 3
+
+//Select one of following MAYFLY_BAT_xx
+//#define MAYFLY_BAT_CHOICE MAYFLY_BAT_A6
+//#define MAYFLY_BAT_CHOICE MAYFLY_BAT_AA0
+// or below MAYFLY_BAT_CHOICE MAYFLY_BAT_STC3100
+
 #define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
@@ -36,7 +48,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if defined WINGBOARD_KNH002
 //This supports RS485 1.9W and STC3100
 //#define USE_STC3100_DD 1
-#define USE_STC3100_SENSOR 1
+#define MAYFLY_BAT_STC3100 1
+#define MAYFLY_BAT_CHOICE MAYFLY_BAT_STC3100
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
 //#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
@@ -44,7 +57,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #define KellerNanolevel_ACT 1
 #endif //WINGBOARD_KNH002
-//#define ASONG_AM23XX_UUID 1
+#define ASONG_AM23XX_UUID 1
 
 //Two heavy sensors with power useage
 #define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_MEDIUM_REQ
@@ -246,29 +259,27 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_Batt_UUID "Batt_UUID"
 #endif  // ProcessorStats_ACT
 
-#if defined USE_STC3100_SENSOR
+#if defined MAYFLY_BAT_STC3100
 #define STC3100_Volt_UUID "STC3100Volt_UUID"
 #define STC3100_USED1_mAhr_UUID "STC3100used1_mAhr_UUID"
 #define STC3100_AVLBL_mAhr_UUID "STC3100avlbl_mAhr_UUID"
-#endif // USE_STC3100_SENSOR
+#endif // MAYFLY_BAT_STC3100
 
-//#if defined MAYFLY_VBAT
-#ifdef ExternalVoltage_ACT
-// AA0 is 1/10 of Vbat using R+R divider. Requires Mayfly ECO 04
+//#if defined MAYFLY_BAT_A6
+#ifdef MAYFLY_BAT_AA0
+// AA0(AIN0) is 1/10 of Vbat using R+R divider. Requires Mayfly ECO 04
 //#define ExternalVoltage_Volt0_UUID "Batt_UUID"
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 //#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
-//#else  // ExternalVoltage_ACT
-#endif  // ExternalVoltage_ACT
-#if defined MAYFLY_VBAT
+//#else  // MAYFLY_BAT_AA0
+#endif  // MAYFLY_BAT_AA0
+#if defined MAYFLY_BAT_A6
 #define ProcVolt_ACT 1
-#ifdef ProcVolt_ACT
+#if defined ProcVolt_ACT
 #define ProcVolt0_UUID "Batt_UUID"
-// AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 04
 //#define ProcVolt0_UUID "Volt0_UUID"
 //#define ProcVolt1_UUID "Volt1_UUID"
 #endif  // ProcVolt_ACT
-
-#endif  // MAYFLY_VBAT
+#endif  // MAYFLY_BAT_A6
 
 #endif  // ms_cfg_h

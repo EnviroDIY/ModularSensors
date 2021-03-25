@@ -292,7 +292,10 @@ ProcessorStats::isBatteryStatusAbove(bool         newBattReading,
     }
 
     // determine expected status from thresholds
-    if (LiIonBatt_V >= PS_LBATT_HEAVY_V) {
+    if (LiIonBatt_V < 0) {
+        //Sanity Check - if less than zero, allow any action
+        lion_status = PS_LBATT_HEAVY_STATUS;
+    } else if (LiIonBatt_V >= PS_LBATT_HEAVY_V) {
         lion_status = PS_LBATT_HEAVY_STATUS;
     } else if (LiIonBatt_V >= PS_LBATT_MEDIUM_V) {
         lion_status = PS_LBATT_MEDIUM_STATUS;
