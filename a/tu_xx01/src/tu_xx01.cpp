@@ -61,7 +61,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // USE_PS_EEPROM
 #include "ms_common.h"
 
-
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -549,7 +548,7 @@ bool       bfgPresent = false;
 float    flLionBatExt_V = -0.023;
 float    LionBatStc3100_V = -0.024;
 #if defined MAYFLY_BAT_STC3100
-#include "STSTC3100_Sensor.h" 
+#include <sensors/STSTC3100_Sensor.h> 
 
 // The STC3100 only has one address 
 
@@ -1458,7 +1457,6 @@ void setup() {
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
-    // already done mcuBoardExtBattery();
 #define LiIon_BAT_REQ PS_PWR_MEDIUM_REQ
     MS_DBG(F("Check power to sync with NIST "), mcuBoard.getBatteryVm1(false),
            F("Req"), LiIon_BAT_REQ, F("Got"),

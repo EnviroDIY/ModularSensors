@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_test_mmw  - ModularSensors Configuration - testing to MMW/WiFi
+ms_cfg.h_ts_test  - ModularSensors Configuration - testing to thingSpeak/WiFi
 - Temperature/Humidity 
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
@@ -21,7 +21,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Local default defitions here
 
 //**************************************************************************
-// This configuration is for a standard Mayfly0.bb
+// This configuration is for a standard Mayfly0.5b
 // Sensors Used - two std to begin then
 //#define AnalogProcEC_ACT 1
 // Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
@@ -110,8 +110,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define UseModem_PushData 1
 //Select buildtime Publishers  supported. Not all publishers can be supported
 // The persisten resources (EEPROM) are allocated as a baselevel no matter what options 
-#define USE_PUB_MMW      1
-//#define USE_PUB_TSMQTT   1
+//#define USE_PUB_MMW      1
+#define USE_PUB_TSMQTT   1
 //#define  USE_PUB_UBIDOTS 1
 
 // Required for TinyGsmClient.h

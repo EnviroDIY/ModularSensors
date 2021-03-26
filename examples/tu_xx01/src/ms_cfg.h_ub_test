@@ -1,5 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_test_ub  - ModularSensors Configuration - testing to UBIDOTS/WiFi
+ms_cfg.h_ub_test  - ModularSensors Configuration - testing to UBIDOTS/WiFi
 - Temperature/Humidity 
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
@@ -21,7 +21,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Local default defitions here
 
 //**************************************************************************
-// This configuration is for a standard Mayfly0.bb
+// This configuration is for a standard Mayfly0.5b
 // Sensors Used - two std to begin then
 //#define AnalogProcEC_ACT 1
 // Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR

@@ -7,3 +7,4 @@
 .vscode/ipch
 .piolibdeps.lock
 *.cpp.o
+*.log
