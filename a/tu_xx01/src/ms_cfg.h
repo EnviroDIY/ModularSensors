@@ -31,7 +31,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // MAYFLY_BAT_DIGI Digi Modem LTE with onboard battery measurement
 // Choices applied to define MAYFLY_BAT_xx 1) Stc3100 2) ExternVolage_ACT 3) Digi Mode 4) MAYFLY_BAT_A6
 
-#define MAYFLY_BAT_A6 4
+//#define MAYFLY_BAT_A6 4
 #define MAYFLY_BAT_AA0 2
 //FUT #define MAYFLY_BAT_DIGI 3
 
@@ -57,7 +57,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #define KellerNanolevel_ACT 1
 #endif //WINGBOARD_KNH002
-#define ASONG_AM23XX_UUID 1
+//#define ASONG_AM23XX_UUID 1
 
 //Two heavy sensors with power useage
 #define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_MEDIUM_REQ
@@ -256,8 +256,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_ACT 1
 #if defined ProcessorStats_ACT
 #define ProcessorStats_SampleNumber_UUID "SampleNumber_UUID"
-#define ProcessorStats_Batt_UUID "Batt_UUID"
 #endif  // ProcessorStats_ACT
+#if defined MAYFLY_BAT_A6
+#define ProcessorStats_Batt_UUID "Batt_UUID"
+#endif  // MAYFLY_BAT_A6
 
 #if defined MAYFLY_BAT_STC3100
 #define STC3100_Volt_UUID "STC3100Volt_UUID"
@@ -273,7 +275,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
 //#else  // MAYFLY_BAT_AA0
 #endif  // MAYFLY_BAT_AA0
-#if defined MAYFLY_BAT_A6
+#if 0// defined MAYFLY_BAT_A6
 #define ProcVolt_ACT 1
 #if defined ProcVolt_ACT
 #define ProcVolt0_UUID "Batt_UUID"
