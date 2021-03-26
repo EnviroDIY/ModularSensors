@@ -1,7 +1,7 @@
 /*****************************************************************************
 ms_cfg.h_ts_test  - ModularSensors Configuration - testing to thingSpeak/WiFi
 - Temperature/Humidity 
-210326 STATUS 0.28.3 cc but not tested
+210326 STATUS 0.28.3 updated cc, not tested
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO

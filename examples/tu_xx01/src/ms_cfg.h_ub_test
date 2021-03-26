@@ -1,6 +1,7 @@
 /*****************************************************************************
 ms_cfg.h_ub_test  - ModularSensors Configuration - testing to UBIDOTS/WiFi
 - Temperature/Humidity 
+210326 STATUS 0.28.3 updated cc, not tested
 
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
@@ -24,9 +25,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // This configuration is for a standard Mayfly0.5b
 // Sensors Used - two std to begin then
 //#define AnalogProcEC_ACT 1
-// Battery Voltage standard MAYFLY_VBAT or if added ExternalVoltage_ACT+ECNxx OR
-#define MAYFLY_VBAT 1
-#define ExternalVoltage_ACT 1
+// Battery Voltage standard MAYFLY_BAT_A6 or if added MAYFLY_BAT_AA0+ECNxx OR
+#define MAYFLY_BAT_A6 1
+#define MAYFLY_BAT_AA0 1
 //#define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
 //#define Insitu_TrollSdi12_UUID 1
@@ -237,20 +238,20 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_Batt_UUID "Batt_UUID"
 #endif  // ProcessorStats_ACT
 
-#if defined MAYFLY_VBAT
-#ifdef ExternalVoltage_ACT
+#if defined MAYFLY_BAT_A6
+#ifdef MAYFLY_BAT_AA0
 // AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
 #define ExternalVoltage_Volt0_UUID "Batt_UUID"
 //#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 //#define ExternalVoltage_Volt1_UUID "Volt1_UUID"
-#else  // ExternalVoltage_ACT
+#else  // MAYFLY_BAT_AA0
 #define ProcVolt_ACT 1
 #ifdef ProcVolt_ACT
 // AA0 is 1/2 of Vbat using R+R divider. Requires Mayfly ECO 01
 #define ProcVolt0_UUID "Volt0_UUID"
 //#define ProcVolt1_UUID "Volt1_UUID"
 #endif  // ProcVolt_ACT
-#endif  // ExternalVoltage_ACT
-#endif  // MAYFLY_VBAT
+#endif  // MAYFLY_BAT_AA0
+#endif  // MAYFLY_BAT_A6
 
 #endif  // ms_cfg_h
