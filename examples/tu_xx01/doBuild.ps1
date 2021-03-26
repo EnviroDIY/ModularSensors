@@ -61,11 +61,11 @@ Do-Build
 $hext = "_nano"
 Do-Build
 
-$hext = "_test_mmw"
+$hext = "_mmw_test"
 Do-Build
 
-$hext = "_test_ts"
+$hext = "_ts_test"
 Do-Build
 
-$hext = "_test_ub"
+$hext = "_ub_test"
 Do-Build
