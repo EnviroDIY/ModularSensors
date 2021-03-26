@@ -157,7 +157,7 @@ jobs:
           echo "::debug::Listing global libraries"
           pio lib -g list
           echo "::debug::Zipping global libraries"
-          cd home/runner/.platformio/
+          cd /home/runner/.platformio/
           zip ${{ env.ZIP_NAME }}.zip -r lib
           mv ${{ env.ZIP_NAME }}.zip $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE

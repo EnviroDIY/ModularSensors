@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ****
 
+## v0.28.3 (2021-03-24) [Valid version number](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.3)
+
+### Downloads
+
+**[ModularSensors_Dependencies_v0.28.3.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.28.3/ModularSensors_Dependencies_v0.28.3.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
+### Bug Fixes
+- Use a valid semantic version number
+
 ## v0.28.01 (2021-02-10) [Gigantic SDI-12 bug](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.1)
 
 ### Downloads
@@ -18,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [Issue #346](https://github.com/EnviroDIY/ModularSensors/issues/346)
   - This was first introduced in [0.27.5](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.5)
 - Fix GitHub action for pull requests.
+
 ## v0.28.0 (2021-02-10) Add Support for Turner Cyclops
 
 ### New Features

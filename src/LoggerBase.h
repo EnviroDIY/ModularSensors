@@ -744,7 +744,7 @@ class Logger {
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
-     * To be sane the clock  must be between 2020 and 2025.
+     * To be sane the clock  must be between 2020 and 2030.
      *
      * @return **bool** True if the current time on the RTC passes sanity range
      * checking
