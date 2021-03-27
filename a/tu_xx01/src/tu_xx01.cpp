@@ -93,6 +93,7 @@ persistent_store_t ps_ram;
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
+#include <BatteryManagement.h>
 #include <sensors/ProcessorStats.h>
 
 const long serialBaud =
@@ -112,6 +113,7 @@ const int8_t sensorPowerPin =
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
+BatteryManagement bms(mcuBoardVersion);
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // ==========================================================================
@@ -678,13 +680,20 @@ Variable* pLionBatExt_var =
 #endif  // MAYFLY_BAT_AA0
 
 #if MAYFLY_BAT_CHOICE == MAYFLY_BAT_STC3100
-#define mcuBoardExtBattery() mcuBoard.setBatteryV(wLionBatStc3100_worker());
+#define mcuBoardExtBattery() bms.setBatteryV(wLionBatStc3100_worker());
 #elif MAYFLY_BAT_CHOICE == MAYFLY_BAT_AA0 
 // Need for internal battery 
-#define mcuBoardExtBattery() mcuBoard.setBatteryV(wLionBatExt_worker());
+#define mcuBoardExtBattery() bms.setBatteryV(wLionBatExt_worker());
 #else   //MAYFLY_BAT_A6
-#define mcuBoardExtBattery()
-#endif  // MAYFLY_BAT_AA0 
+#warning need to test mcuBoard, interface 
+// Read's the battery voltage
+// NOTE: This will actually return the battery level from the previous update!
+float getBatteryVoltageProc() {
+    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[0];
+}
+#define mcuBoardExtBattery() bms.setBatteryVgetBatteryVoltageProc());
+#endif  //MAYFLY_BAT_A6
 #if defined ProcVolt_ACT
 // ==========================================================================
 //    Internal  ProcessorAdc
@@ -938,14 +947,6 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     digitalWrite(redLED, LOW);
 }
 
-
-// Read's the battery voltage
-// NOTE: This will actually return the battery level from the previous update!
-float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
-    return mcuBoard.sensorValues[0];
-}
-
 /**
  * @brief Check if battery can provide power for action to be performed.
  *
@@ -966,8 +967,7 @@ bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
         case LB_PWR_USEABLE_REQ: // mcuBoardExtBattery();  // Read battery votlage
         default:
             // Check battery status
-            Lbatt_status = mcuBoard.isBatteryStatusAbove(true,
-                                                         PS_PWR_USEABLE_REQ);
+            Lbatt_status = bms.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ);
             if (PS_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
                 PRINTOUT(F("---All  CANCELLED--Lbatt_V="));
                 retResult = false;
@@ -1269,7 +1269,7 @@ bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery)
         //mcuBoardExtBattery();
         LiBattPower_Unseable =
             ((PS_LBATT_UNUSEABLE_STATUS ==
-              mcuBoard.isBatteryStatusAbove(true, useable_req))
+              bms.isBatteryStatusAbove(true, useable_req))
                  ? true
                  : false);
         if (LiBattPower_Unseable && waitForGoodBattery) 
@@ -1281,7 +1281,7 @@ bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery)
             * Another issue is that onstartup currently requires turning on comms device to
             * set it up. On an XbeeS6 WiFi this can take 20seconds for some reason.
             */
-            PRINTOUT(lp_wait++,F(": BatV Low ="), mcuBoard.getBatteryVm1(false)),F(" Sleep60sec");
+            PRINTOUT(lp_wait++,F(": BatV Low ="), bms.getBatteryVm1(false)),F(" Sleep60sec");
             dataLogger.systemSleep(1);
             //delay(1000);  // debug
             PRINTOUT(F("---tu_xx01:Wakeup check power"));
@@ -1416,7 +1416,7 @@ void setup() {
     // set the RTC to be in UTC TZ=0
     Logger::setRTCTimeZone(0);
 
-    mcuBoard.printBatteryThresholds();
+    bms.printBatteryThresholds();
 
     // Begin the logger
     MS_DBG(F("---dataLogger.begin "));

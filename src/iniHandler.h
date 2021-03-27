@@ -283,7 +283,7 @@ static void epcParser() {
     dataLogger.setLoggingInterval(epc_logging_interval_min);
     PRINTOUT(F("COMMON Logginterval: "), epc_logging_interval_min);
 
-    mcuBoard.setBatteryType((ps_liion_rating_t)epc_battery_type);
+    bms.setBatteryType((ps_liion_rating_t)epc_battery_type);
     PRINTOUT(F("COMMON Battery Type: "), epc_battery_type);
 
     PRINTOUT(F("COMMON Battery mAhr: "), epc_battery_mAhr);
