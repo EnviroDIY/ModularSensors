@@ -171,8 +171,9 @@ BatteryManagement::isBatteryStatusAbove(bool         newBattReading,
     }
 
     // determine expected status from thresholds
-    if (LiIonBatt_V < 0) {
-        //Sanity Check - if less than zero, allow any action
+    #define PS_LBATT_ERROR_V 0.5
+    if (LiIonBatt_V < PS_LBATT_ERROR_V) {
+        //Sanity Check - if less than , allow any action
         lion_status = PS_LBATT_HEAVY_STATUS;
     } else if (LiIonBatt_V >= PS_LBATT_HEAVY_V) {
         lion_status = PS_LBATT_HEAVY_STATUS;

@@ -93,6 +93,11 @@
 /// @brief Sensor::_measurementTime_ms; the processor measurement times aren't
 /// measurable.
 #define PROCESSOR_MEASUREMENT_TIME_MS 0
+/// @brief Sensor::_invalid; the sensor reading is invalid.
+#if not defined PS_SENSOR_INVALID
+#define PS_SENSOR_INVALID -9999
+#endif //PS_SENSOR_INVALID
+
 /**@}*/
 
 /**
