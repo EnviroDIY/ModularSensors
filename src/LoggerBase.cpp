@@ -1296,7 +1296,7 @@ bool Logger::initializeSDCard(void) {
 
 void Logger::setFileTimestampTz(File fileToStamp, uint8_t stampFlag) {
     //DateTime markedDt(Logger::markedEpochTime - EPOCH_TIME_OFF);
-    DateTime markedDtTz(getNowEpochTz() );
+    DateTime markedDtTz(getNowEpochTz()- EPOCH_TIME_OFF );
 
     MS_DEEP_DBG(F("setFTTz"),markedDtTz.year(),markedDtTz.month(), markedDtTz.date(),
         markedDtTz.hour(), markedDtTz.minute(), markedDtTz.second());
