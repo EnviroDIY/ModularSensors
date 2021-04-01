@@ -113,7 +113,8 @@ const int8_t sensorPowerPin =
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
-BatteryManagement bms(mcuBoardVersion);
+BatteryManagement bms;
+//BatteryManagement bms(mcuBoardVersion);
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // ==========================================================================
@@ -543,6 +544,7 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 #if defined USE_STC3100_DD
 #include "STC3100dd.h"  //github.com/neilh10/STC3100arduino.git
 STC3100dd batteryFuelGauge(STC3100_REG_MODE_ADCRES_12BITS,STC3100_R_SERIES_mOhms);
+#define stc3100_bfg batteryFuelGauge
 
 bool       bfgPresent = false;
 #endif  // USE_STC3100_DD 
@@ -554,6 +556,9 @@ bool       bfgPresent = false;
 
 STSTC3100_Sensor stc3100_phy(STC3100_NUM_MEASUREMENTS);
 
+//Its on a wingboard and may not be plugged in
+bool       bfgPresent = false;
+#define stc3100_bfg stc3100_phy.stc3100_device
 //#define PRINT_STC3100_SNSR_VAR 1
 #if defined PRINT_STC3100_SNSR_VAR 
 bool userPrintStc3100BatV_avlb=false;
@@ -675,10 +680,10 @@ Variable* pLionBatExt_var =
 #endif  // MAYFLY_BAT_AA0
 
 #if MAYFLY_BAT_CHOICE == MAYFLY_BAT_STC3100
-#define mcuBoardExtBattery() bms.setBatteryV(wLionBatStc3100_worker());
+#define bms_SetBattery() bms.setBatteryV(wLionBatStc3100_worker());
 #elif MAYFLY_BAT_CHOICE == MAYFLY_BAT_AA0 
 // Need for internal battery 
-#define mcuBoardExtBattery() bms.setBatteryV(wLionBatExt_worker());
+#define bms_SetBattery() bms.setBatteryV(wLionBatExt_worker());
 #elif  MAYFLY_BAT_CHOICE == MAYFLY_BAT_A6
 //#warning need to test mcuBoard, interface 
 // Read's the battery voltage
@@ -687,7 +692,7 @@ float getBatteryVoltageProc() {
     if (mcuBoard.sensorValues[0] == PS_SENSOR_INVALID) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-#define mcuBoardExtBattery() bms.setBatteryV(getBatteryVoltageProc());
+#define bms_SetBattery() bms.setBatteryV(getBatteryVoltageProc());
 #else 
 #warning MAYFLY_BAT_CHOICE not defined
 #endif  //MAYFLY_BAT_A6
@@ -959,8 +964,9 @@ ps_Lbatt_status_t Lbatt_status = PS_LBATT_UNUSEABLE_STATUS;
 bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
     bool retResult = true;
 
+    bms_SetBattery();  // Read battery votlage
     switch (reqBatState) {
-        case LB_PWR_USEABLE_REQ: // mcuBoardExtBattery();  // Read battery votlage
+        case LB_PWR_USEABLE_REQ: 
         default:
             // Check battery status
             Lbatt_status = bms.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ);
@@ -1224,9 +1230,9 @@ void serialInputCheck()
 // Poll management sensors- eg FuelGauges status  
 // 
 void  managementSensorsPoll() {
-#if defined USE_STC3100_DD
+#if defined USE_STC3100_DD || defined MAYFLY_BAT_STC3100
     if (bfgPresent) {
-        batteryFuelGauge.readValues();
+        stc3100_bfg.readValues();
         Serial.print("BtMonStc31, ");
         //Create a time traceability header 
         String csvString = "";
@@ -1237,13 +1243,13 @@ void  managementSensorsPoll() {
         //Serial.print(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
 
         //Output readings
-        Serial.print(batteryFuelGauge.v.voltage_V, 4);
+        Serial.print(stc3100_bfg.v.voltage_V, 4);
         Serial.print(",V, ");
-        Serial.print(batteryFuelGauge.v.current_mA, 1);
+        Serial.print(stc3100_bfg.v.current_mA, 1);
         Serial.print(",mA, ");
-        Serial.print(batteryFuelGauge.v.charge_mAhr, 3);
+        Serial.print(stc3100_bfg.v.charge_mAhr, 3);
         Serial.print(",mAH, ");
-        Serial.print(batteryFuelGauge.v.counter);
+        Serial.print(stc3100_bfg.v.counter);
         Serial.println(",CntsAdc");
         // Serial.print(" & IC Temp(C), ");
         // Serial.println(lc.getCellTemperature(), 1);
@@ -1262,7 +1268,7 @@ bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery)
     uint16_t lp_wait = 1;
 
     do {
-        //mcuBoardExtBattery();
+        bms_SetBattery();
         LiBattPower_Unseable =
             ((PS_LBATT_UNUSEABLE_STATUS ==
               bms.isBatteryStatusAbove(true, useable_req))
@@ -1277,10 +1283,10 @@ bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery)
             * Another issue is that onstartup currently requires turning on comms device to
             * set it up. On an XbeeS6 WiFi this can take 20seconds for some reason.
             */
-            PRINTOUT(lp_wait++,F(": BatV Low ="), bms.getBatteryVm1(false)),F(" Sleep60sec");
+            PRINTOUT(lp_wait++,F(": BatV Low ="), bms.getBatteryVm1()),F(" Sleep60sec");
             dataLogger.systemSleep(1);
             //delay(1000);  // debug
-            PRINTOUT(F("---tu_xx01:Wakeup check power"));
+            PRINTOUT(F("---tu_xx01:Wakeup check power. Press used button to bypass"));
         }
         if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
     } while (LiBattPower_Unseable && !UserButtonAct);
@@ -1334,7 +1340,8 @@ void setup() {
     if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
 
     // A vital check on power availability
-    mcuBoardExtBattery();
+    bms_SetBattery();
+    #warning early battery check
     batteryCheck(PS_PWR_USEABLE_REQ, true);
 
 
@@ -1501,19 +1508,19 @@ void setup() {
 // the sensor setup we'll skip this too.
 #if defined USE_STC3100_DD
     /* */
-    batteryFuelGauge.begin(); //does this interfere with other Wire.begin()
-    if (!batteryFuelGauge.start()) {
+    stc3100_bfg.begin(); //does this interfere with other Wire.begin()
+    if (!stc3100_bfg.start()) {
         Serial.println(F("Couldnt find STC3100\nMake sure a "
                          "battery is plugged in!"));
     } else {
         bfgPresent = true;
         Serial.print("STC3100 sn ");
         for (int snlp=1;snlp<(STC3100_ID_LEN-1);snlp++) {
-            Serial.print(batteryFuelGauge.serial_number[snlp],HEX);
+            Serial.print(stc3100_bfg.serial_number[snlp],HEX);
         }
         Serial.print(" Type ");
-        Serial.println(batteryFuelGauge.serial_number[0],HEX);
-        //FUT  How to set batteryFuelGauge.setPackSize ?? (_500MAH); 
+        Serial.println(stc3100_bfg.serial_number[0],HEX);
+        //FUT  How to set stc3100_bfg.setPackSize ?? (_500MAH); 
         #if defined MS_TU_XX_DEBUG
         for (uint8_t cnt=0;cnt <5;cnt++)
         #endif 
@@ -1528,6 +1535,8 @@ void setup() {
     //stc3100_phy.stc3100_device.begin(); assumes done
     if(!stc3100_phy.stc3100_device.start()){
         MS_DBG(F("STC3100 Not detected!"));
+    } else {
+        bfgPresent = true;
     }
     String sn(stc3100_phy.stc3100_device.getSn());
     PRINTOUT(F("STC3100 sn:"),sn);
@@ -1571,7 +1580,6 @@ void loop() {
         userInputCollection =true;
         serialInputCheck();
         userButton1Act = false;
-
     } 
     #if defined PRINT_EXTADC_BATV_VAR    
     // Signal when battery is next read, to give user information

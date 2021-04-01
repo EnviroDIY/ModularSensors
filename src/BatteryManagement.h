@@ -47,7 +47,6 @@
 
 /**@}*/
 
-/* atl_extension */
 #define ProcessorStatsDef_Resolution 10
 #define ProcAdc_Max ((1 << ProcessorStatsDef_Resolution) - 1)
 
@@ -104,47 +103,22 @@ typedef enum {
  * @ingroup sensor_processor
  */
 class BatteryManagement 
-//: public Sensor 
 {
  public:
     /**
      * @brief Construct a new Processor Stats object.
      *
-     * Need to know the Mayfly version because the battery resistor depends on
-     * it
-     *
-     * @param version The version of the MCU, if applicable.
-     * - For an EnviroDIY Mayfly, the version should be one of "v0.3", "v0.4",
-     * "v0.5", or "v0.5b."  There *is* a difference between the versions!
-     *
-     * @note It is not possible to average more than one measurement for
-     * processor variables - it just doesn't make sense for them.
      */
-    explicit BatteryManagement(const char *version="0.5b");
+    explicit BatteryManagement();
     /**
      * @brief Destroy the Processor Stats object
      */
     ~BatteryManagement();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     *
-     * This returns the processor name as read from the compiler variable.
-     */
-    //String getSensorLocation(void) override;
 
     /**
      * @copydoc Sensor::addSingleMeasurementResult()
      */
-    //bool addSingleMeasurementResult(void) override;
-
- private:
-    const char* _version;
-    int8_t      _batteryPin;
-    //int16_t     sampNum;
-
-    /* atl_extension */
-    float LiIonBatt_V = -999.0;
 
  public:
     /* Battery Usage Level definitions
@@ -186,8 +160,7 @@ class BatteryManagement
      * accurate voltage drop from an applied load, the Mayfly's mega1284P
      * internal 2.4V reference can be used.
      */
-    float getBatteryVm1(bool newBattReading);
-    float getBatteryVm1(float* BattV);
+    float getBatteryVm1() {return _batteryExt_V;}
     // float getBatteryVm2a(bool newBattReading);//snap float voltage
     // float getBatteryVm2b(bool newBattReading);//snap load voltage
     // float getBatteryVm2diff(bool newBattReading); //getDifference in measured
@@ -195,7 +168,6 @@ class BatteryManagement
 
     /* atl_extension */
     float _batteryExt_V = 0;
-    bool  _usebatExt    = false;
 
 #define PS_TYPES 4
 #define PS_LPBATT_TBL_NUM (PS_TYPES + 1)
