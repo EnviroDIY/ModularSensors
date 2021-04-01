@@ -115,7 +115,6 @@ const int8_t sensorPowerPin =
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
-
 ProcessorStats mcuBoardPhy(mcuBoardVersion);
 
 // ==========================================================================
@@ -575,7 +574,7 @@ float wLionBatStc3100_worker(void) {  // get the Battery Reading
     float flLionBatStc3100_V = kBatteryVoltage_V->getValue(true);
     // float depth_ft = convert_mtoFt(depth_m);
     // MS_DBG(F("wLionBatStc3100_worker"), flLionBatStc3100_V);
-#if 0//defined MS_TU_XX_DEBUG
+#if defined MS_TU_XX_DEBUG
     DEBUGGING_SERIAL_OUTPUT.print(F("  wLionBatStc3100_worker "));
     DEBUGGING_SERIAL_OUTPUT.print(flLionBatStc3100_V, 4);
     DEBUGGING_SERIAL_OUTPUT.println();
@@ -677,7 +676,6 @@ Variable* pLionBatExt_var =
                            // value from http://vocabulary.odm2.org/units/
                  "extVolt0",  // var code
                  ExternalVoltage_Volt0_UUID);
-
 #endif  // MAYFLY_BAT_AA0
 
 #if MAYFLY_BAT_CHOICE == MAYFLY_BAT_STC3100
@@ -805,11 +803,7 @@ Variable* variableList[] = {
     new STC3100_USED1_MAH(&stc3100_phy,STC3100_USED1_mAhr_UUID),
 #endif //STC3100_USED1_mAhr_UUID 
 #if defined STC3100_Volt_UUID 
-//#if defined MAYFLY_BAT_STC3100
     pLionBatStc3100_var,
-    //#else
-    //new STSTC3100_Volt(&stc3100_phy,STC3100_Volt_UUID),
-    //#endif //PRINT_STC3100_SNSR_VAR 
 #endif //STC3100_Volt_UUID 
 
 #if defined ExternalVoltage_Volt0_UUID
@@ -1343,6 +1337,8 @@ void setup() {
     // A vital check on power availability
     batteryCheck(PS_PWR_USEABLE_REQ, true);
 
+    PRINTOUT(F("BatV Good ="), bms.getBatteryVm1());
+
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
@@ -1463,7 +1459,6 @@ void setup() {
         MS_DBG(F("Sync with NIST "), bms.getBatteryVm1(),
            F("Req"), LiIon_BAT_REQ, F("Got"),
            bms.isBatteryStatusAbove(true, LiIon_BAT_REQ));
-        //MS_DBG(F("Sync with NIST as have enough power"));
 
 #if defined DigiXBeeWifi_Module
         // For the WiFi module, it may not be configured if no nscfg.ini file

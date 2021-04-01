@@ -31,14 +31,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // MAYFLY_BAT_DIGI Digi Modem LTE with onboard battery measurement
 // Choices applied to define MAYFLY_BAT_xx 1) Stc3100 2) ExternVolage_ACT 3) Digi Mode 4) MAYFLY_BAT_A6
 
-//#define MAYFLY_BAT_A6 4
+#define MAYFLY_BAT_A6 4
 #define MAYFLY_BAT_AA0 2
 //FUT #define MAYFLY_BAT_DIGI 3
 
-//Select one of following MAYFLY_BAT_xx
-//#define MAYFLY_BAT_CHOICE MAYFLY_BAT_A6
-//#define MAYFLY_BAT_CHOICE MAYFLY_BAT_AA0
-// or below MAYFLY_BAT_CHOICE MAYFLY_BAT_STC3100
 
 #define ENVIRODIY_MAYFLY_TEMPERATURE 1
 //#define Decagon_CTD_UUID 1
@@ -49,7 +45,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //This supports RS485 1.9W and STC3100
 //#define USE_STC3100_DD 1
 #define MAYFLY_BAT_STC3100 1
-#define MAYFLY_BAT_CHOICE MAYFLY_BAT_STC3100
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
 //#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
@@ -57,6 +52,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #define KellerNanolevel_ACT 1
 #endif //WINGBOARD_KNH002
+
+//Select one of following MAYFLY_BAT_xx as the source for BatterManagement Analysis
+//#define MAYFLY_BAT_CHOICE MAYFLY_BAT_A6
+//#define MAYFLY_BAT_CHOICE MAYFLY_BAT_AA0
+#define MAYFLY_BAT_CHOICE MAYFLY_BAT_STC3100
+// FUT #define MAYFLY_BAT_CHOICE  MAYFLY_BAT_DIGI
+
 //#define ASONG_AM23XX_UUID 1
 
 //Two heavy sensors with power useage
@@ -267,7 +269,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define STC3100_AVLBL_mAhr_UUID "STC3100avlbl_mAhr_UUID"
 #endif // MAYFLY_BAT_STC3100
 
-//#if defined MAYFLY_BAT_A6
 #ifdef MAYFLY_BAT_AA0
 // AA0(AIN0) is 1/10 of Vbat using R+R divider. Requires Mayfly ECO 04
 //#define ExternalVoltage_Volt0_UUID "Batt_UUID"
