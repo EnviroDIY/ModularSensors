@@ -174,3 +174,8 @@ bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
     return success;
 }
 
+String STSTC3100_Sensor::getSensorDetails(void) {
+    String sensorDetails(F("RS485 Wingboard STC3100 Sn "));
+    sensorDetails += stc3100_device.getSn();
+    return sensorDetails;
+}

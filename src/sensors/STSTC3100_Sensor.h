@@ -340,6 +340,13 @@ class STSTC3100_Sensor : public Sensor {
     bool addSingleMeasurementResult(void) override;
 
     /**
+     * @brief Get the stored sensor serial number 
+     *
+     * @return String The sensor serial number
+     */
+    String getSensorDetails(void) ;
+
+    /**
      * @brief  setI2cAddress- call at beginning if need to change 
      * There only appears to be one IC that is commercially available,
      * but a number of IC addresses are defined in the manual
