@@ -94,6 +94,8 @@ persistent_store_t ps_ram;
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
 #include <BatteryManagement.h>
+BatteryManagement bms;
+
 #include <sensors/ProcessorStats.h>
 
 const long serialBaud =
@@ -113,9 +115,8 @@ const int8_t sensorPowerPin =
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v0.5b";
-BatteryManagement bms;
-//BatteryManagement bms(mcuBoardVersion);
-ProcessorStats mcuBoard(mcuBoardVersion);
+
+ProcessorStats mcuBoardPhy(mcuBoardVersion);
 
 // ==========================================================================
 //    Settings for Additional Serial Ports
@@ -685,12 +686,12 @@ Variable* pLionBatExt_var =
 // Need for internal battery 
 #define bms_SetBattery() bms.setBatteryV(wLionBatExt_worker());
 #elif  MAYFLY_BAT_CHOICE == MAYFLY_BAT_A6
-//#warning need to test mcuBoard, interface 
+#warning need to test mcuBoardPhy, interface 
 // Read's the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltageProc() {
-    if (mcuBoard.sensorValues[0] == PS_SENSOR_INVALID) mcuBoard.update();
-    return mcuBoard.sensorValues[0];
+    if (mcuBoardPhy.sensorValues[0] == PS_SENSOR_INVALID) mcuBoardPhy.update();
+    return mcuBoardPhy.sensorValues[0];
 }
 #define bms_SetBattery() bms.setBatteryV(getBatteryVoltageProc());
 #else 
@@ -795,7 +796,7 @@ Variable*   ds3231TempFcalc = new Variable(
 // ==========================================================================
 
 Variable* variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard,
+    new ProcessorStats_SampleNumber(&mcuBoardPhy,
                                     ProcessorStats_SampleNumber_UUID),
 #if defined STC3100_AVLBL_mAhr_UUID 
     new STC3100_AVLBL_MAH(&stc3100_phy,STC3100_AVLBL_mAhr_UUID),
@@ -815,7 +816,7 @@ Variable* variableList[] = {
     pLionBatExt_var,
 #endif
 #if defined MAYFLY_BAT_A6
-    new ProcessorStats_Battery(&mcuBoard, ProcessorStats_Batt_UUID),
+    new ProcessorStats_Battery(&mcuBoardPhy, ProcessorStats_Batt_UUID),
 #endif  // MAYFLY_BAT_A6
 #if defined AnalogProcEC_ACT
     // Do Analog processing measurements.
@@ -975,7 +976,7 @@ bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
                 retResult = false;
             }
             MS_DBG(F(" isBatteryChargeGoodEnoughU "), retResult,
-                   mcuBoard.getBatteryVm1(false), F("V status"), Lbatt_status,
+                   bms.getBatteryVm1(), F("V status"), Lbatt_status,
                    reqBatState);
             break;
 
@@ -1286,7 +1287,7 @@ bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery)
             PRINTOUT(lp_wait++,F(": BatV Low ="), bms.getBatteryVm1()),F(" Sleep60sec");
             dataLogger.systemSleep(1);
             //delay(1000);  // debug
-            PRINTOUT(F("---tu_xx01:Wakeup check power. Press used button to bypass"));
+            PRINTOUT(F("---tu_xx01:Wakeup check power. Press user button to bypass"));
         }
         if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
     } while (LiBattPower_Unseable && !UserButtonAct);
@@ -1340,12 +1341,7 @@ void setup() {
     if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
 
     // A vital check on power availability
-    bms_SetBattery();
-    #warning early battery check
     batteryCheck(PS_PWR_USEABLE_REQ, true);
-
-
-    // Is there a battery voltage ? PRINTOUT(F("BatV Good ="), flLionBatExt_V);
 
 // Allow interrupts for software serial
 #if defined SoftwareSerial_ExtInts_h
@@ -1461,11 +1457,13 @@ void setup() {
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
 #define LiIon_BAT_REQ PS_PWR_MEDIUM_REQ
-    MS_DBG(F("Check power to sync with NIST "), mcuBoard.getBatteryVm1(false),
+
+    if (batteryCheck(LiIon_BAT_REQ, true)) 
+    {
+        MS_DBG(F("Sync with NIST "), bms.getBatteryVm1(),
            F("Req"), LiIon_BAT_REQ, F("Got"),
-           mcuBoard.isBatteryStatusAbove(true, LiIon_BAT_REQ));
-    if (batteryCheck(LiIon_BAT_REQ, true)) {
-        MS_DBG(F("Sync with NIST as have enough power"));
+           bms.isBatteryStatusAbove(true, LiIon_BAT_REQ));
+        //MS_DBG(F("Sync with NIST as have enough power"));
 
 #if defined DigiXBeeWifi_Module
         // For the WiFi module, it may not be configured if no nscfg.ini file
@@ -1487,8 +1485,8 @@ void setup() {
         modemPhy.disconnectInternet();
         modemPhy.modemSleepPowerDown();
     } else {
-        MS_DBG(F("Skipped sync with NIST as not enough power "),
-               mcuBoard.getBatteryVm1(false), F("Need"), LiIon_BAT_REQ);
+        MS_DBG(F("Skipped sync with NIST as not enough power "), bms.getBatteryVm1(),
+           F("Req"), LiIon_BAT_REQ );
     }
 #endif  // UseModem_Module
     // List start time, if RTC invalid will also be initialized
