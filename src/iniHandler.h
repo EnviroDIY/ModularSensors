@@ -283,7 +283,7 @@ static void epcParser() {
     dataLogger.setLoggingInterval(epc_logging_interval_min);
     PRINTOUT(F("COMMON Logginterval: "), epc_logging_interval_min);
 
-    bms.setBatteryType((ps_liion_rating_t)epc_battery_type);
+    bms.setBatteryType((bm_battery_type_rating_t)epc_battery_type);
     PRINTOUT(F("COMMON Battery Type: "), epc_battery_type);
 
     PRINTOUT(F("COMMON Battery mAhr: "), epc_battery_mAhr);
@@ -700,11 +700,11 @@ static int inihUnhandledFn(const char* section, const char* name,
         } else if (strcmp_P(name, BATTERY_TYPE_pm) == 0) {
             // convert  str to num with error checking
             long batteryType = strtoul(value, &endptr, 10);
-            if ((batteryType < PSLR_NUM) &&
+            if ((batteryType < BMBR_NUM) &&
                 (errno != ERANGE)) {
             } else {
-                PRINTOUT(F(" Set BATTERY_TYPE error; (range <"),PSLR_NUM,F(") read:"),batteryType); 
-                batteryType=PSLR_ALL;
+                PRINTOUT(F(" Set BATTERY_TYPE error; (range <"),BMBR_NUM,F(") read:"),batteryType); 
+                batteryType=BMBR_ALL;
             }
 #if defined USE_PS_EEPROM
             epc_battery_type = batteryType;
@@ -713,13 +713,13 @@ static int inihUnhandledFn(const char* section, const char* name,
                    0) {  // Supersed by BATTERY_TYPE if exists
             // convert  str to num with error checking
             long batLiionType = strtoul(value, &endptr, 10);
-            if ((batLiionType < PSLR_NUM) && (batLiionType >= 0) &&
+            if ((batLiionType < BMBR_NUM) && (batLiionType >= 0) &&
                 (errno != ERANGE)) {
                 PRINTOUT(F("COMMON LiIon Type: "),
                 batLiionType,F(" superseded use BATTERY_TYPE"));
             } else {
-                PRINTOUT(F(" Set LiIon Type error; (range 0-"),PSLR_NUM,F(") read:"),batLiionType);
-                batLiionType=PSLR_ALL;
+                PRINTOUT(F(" Set LiIon Type error; (range 0-"),BMBR_NUM,F(") read:"),batLiionType);
+                batLiionType=BMBR_ALL;
             }
 #if defined USE_PS_EEPROM
             epc_battery_type = batLiionType;
@@ -1010,7 +1010,7 @@ void localAppStorageInit()
     epc.app.msc.sz                     = sizeof(epc.app.msc.s);
     epc.app.msc.s.logging_interval_min = loggingInterval_CDEF_MIN;
     epc.app.msc.s.time_zone            = CONFIG_TIME_ZONE_DEF;
-    epc.app.msc.s.battery_type         = PLSR_BAT_TYPE_DEF;
+    epc.app.msc.s.battery_type         = BMBR_BAT_TYPE_DEF;
     epc.app.msc.s.battery_mAhr         = BATTERY_mAhr_DEF;
     strcpy_P((char*)epc.app.msc.s.logger_id, (char*)F(LOGGERID_DEF_STR));
     strcpy_P((char*)epc.app.msc.s.geolocation_id,

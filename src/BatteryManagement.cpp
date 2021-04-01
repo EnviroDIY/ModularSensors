@@ -100,7 +100,7 @@
 
 BatteryManagement::BatteryManagement()
 {
-    _liion_type = PSLR_0500mA;
+    _battery_type = BMBR_0500mA;
 
 }
 // Destructor
@@ -110,27 +110,27 @@ BatteryManagement::~BatteryManagement() {}
 void BatteryManagement::setBatteryV(float newReading) {
     _batteryExt_V = newReading;
 }
-void BatteryManagement::setBatteryType(ps_liion_rating_t LiionType) {
-    _liion_type = LiionType;
+void BatteryManagement::setBatteryType(bm_battery_type_rating_t batteryType) {
+    _battery_type = batteryType;
 }
 void BatteryManagement::printBatteryThresholds() {
     Serial.print(F("Battery Type="));
-    Serial.println(_liion_type);
+    Serial.println(_battery_type);
     Serial.print(F(" Thresholds USEABLE="));
-    Serial.print(PS_LBATT_USEABLE_V);
+    Serial.print(BM_LBATT_USEABLE_V);
     Serial.print(F("V LOW="));
-    Serial.print(PS_LBATT_LOW_V);
+    Serial.print(BM_LBATT_LOW_V);
     Serial.print(F("V MEDIUM="));
-    Serial.print(PS_LBATT_MEDIUM_V);
+    Serial.print(BM_LBATT_MEDIUM_V);
     Serial.print(F("V GOOD="));
-    Serial.print(PS_LBATT_HEAVY_V);
+    Serial.print(BM_LBATT_HEAVY_V);
     Serial.println(F("V"));
 }
-ps_Lbatt_status_t
+bm_Lbatt_status_t
 BatteryManagement::isBatteryStatusAbove(bool         newBattReading,
-                                     ps_pwr_req_t status_req) {
-    ps_Lbatt_status_t lion_status;
-    ps_Lbatt_status_t retValue;
+                                     bm_pwr_req_t status_req) {
+    bm_Lbatt_status_t lion_status;
+    bm_Lbatt_status_t retValue;
 #if defined BatteryManagement_DBG || defined DEBUGGING_SERIAL_OUTPUT
     __attribute__((unused)) float threshold_V;
 #define threshold_store(p1) threshold_V = p1
@@ -140,47 +140,47 @@ BatteryManagement::isBatteryStatusAbove(bool         newBattReading,
     float  LiIonBatt_V = _batteryExt_V;
 
     // determine expected status from thresholds
-    #define PS_LBATT_ERROR_V 0.5
-    if (LiIonBatt_V < PS_LBATT_ERROR_V) {
+    #define BM_LBATT_ERROR_V 0.5
+    if (LiIonBatt_V < BM_LBATT_ERROR_V) {
         //Sanity Check - if less than , allow any action
-        lion_status = PS_LBATT_HEAVY_STATUS;
-    } else if (LiIonBatt_V >= PS_LBATT_HEAVY_V) {
-        lion_status = PS_LBATT_HEAVY_STATUS;
-    } else if (LiIonBatt_V >= PS_LBATT_MEDIUM_V) {
-        lion_status = PS_LBATT_MEDIUM_STATUS;
-    } else if (LiIonBatt_V >= PS_LBATT_LOW_V) {
-        lion_status = PS_LBATT_LOW_STATUS;
-    } else if (LiIonBatt_V >= PS_LBATT_USEABLE_V) {
-        lion_status = PS_LBATT_BARELYUSEABLE_STATUS;
+        lion_status = BM_LBATT_HEAVY_STATUS;
+    } else if (LiIonBatt_V >= BM_LBATT_HEAVY_V) {
+        lion_status = BM_LBATT_HEAVY_STATUS;
+    } else if (LiIonBatt_V >= BM_LBATT_MEDIUM_V) {
+        lion_status = BM_LBATT_MEDIUM_STATUS;
+    } else if (LiIonBatt_V >= BM_LBATT_LOW_V) {
+        lion_status = BM_LBATT_LOW_STATUS;
+    } else if (LiIonBatt_V >= BM_LBATT_USEABLE_V) {
+        lion_status = BM_LBATT_BARELYUSEABLE_STATUS;
     } else {
-        lion_status = PS_LBATT_UNUSEABLE_STATUS;
+        lion_status = BM_LBATT_UNUSEABLE_STATUS;
     }
     retValue = lion_status;
 
     // Check if meets the requested threshold/status
     switch (status_req) {
-        case PS_PWR_LOW_REQ:
-            if (PS_LBATT_LOW_STATUS > lion_status) {
-                retValue = PS_LBATT_UNUSEABLE_STATUS;
+        case BM_PWR_LOW_REQ:
+            if (BM_LBATT_LOW_STATUS > lion_status) {
+                retValue = BM_LBATT_UNUSEABLE_STATUS;
             }
-            threshold_store(PS_LBATT_LOW_V);
+            threshold_store(BM_LBATT_LOW_V);
             break;
-        case PS_PWR_MEDIUM_REQ:
-            if (PS_LBATT_MEDIUM_STATUS > lion_status) {
-                retValue = PS_LBATT_UNUSEABLE_STATUS;
+        case BM_PWR_MEDIUM_REQ:
+            if (BM_LBATT_MEDIUM_STATUS > lion_status) {
+                retValue = BM_LBATT_UNUSEABLE_STATUS;
             }
-            threshold_store(PS_LBATT_MEDIUM_V);
+            threshold_store(BM_LBATT_MEDIUM_V);
             break;
-        case PS_PWR_HEAVY_REQ:
-            if (PS_LBATT_HEAVY_STATUS > lion_status) {
-                retValue = PS_LBATT_UNUSEABLE_STATUS;
+        case BM_PWR_HEAVY_REQ:
+            if (BM_LBATT_HEAVY_STATUS > lion_status) {
+                retValue = BM_LBATT_UNUSEABLE_STATUS;
             }
-            threshold_store(PS_LBATT_HEAVY_V);
+            threshold_store(BM_LBATT_HEAVY_V);
             break;
-        // PS_LBATT_REQUEST_STATUS: //implicit
-        // PS_PWR_USEABLE_REQ: if (PS_PWR_BARELYUSEABLE_STATUS>=lion_status)
-        // retValue=PS_PWR_FAILED_TEST_STATUS; break; Implicit
-        default: threshold_store(PS_LBATT_USEABLE_V); break;
+        // BM_LBATT_REQUEST_STATUS: //implicit
+        // BM_PWR_USEABLE_REQ: if (BM_PWR_BARELYUSEABLE_STATUS>=lion_status)
+        // retValue=BM_PWR_FAILED_TEST_STATUS; break; Implicit
+        default: threshold_store(BM_LBATT_USEABLE_V); break;
     }
 
     if (newBattReading) {

@@ -946,7 +946,7 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
 /**
  * @brief Check if battery can provide power for action to be performed.
  *
- * @param reqBatState  On of ps_Lbatt_status_t
+ * @param reqBatState  On of bm_Lbatt_status_t
  *   LB_PWR_USEABLE_REQ forces a battery voltage reading
  *   all other requests use this reading
  *
@@ -954,7 +954,7 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
  *
  * @return **bool *** True if power available, else false
  */
-ps_Lbatt_status_t Lbatt_status = PS_LBATT_UNUSEABLE_STATUS;
+bm_Lbatt_status_t Lbatt_status = BM_LBATT_UNUSEABLE_STATUS;
 
 bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
     bool retResult = true;
@@ -964,8 +964,8 @@ bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
         case LB_PWR_USEABLE_REQ: 
         default:
             // Check battery status
-            Lbatt_status = bms.isBatteryStatusAbove(true, PS_PWR_USEABLE_REQ);
-            if (PS_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
+            Lbatt_status = bms.isBatteryStatusAbove(true, BM_PWR_USEABLE_REQ);
+            if (BM_LBATT_UNUSEABLE_STATUS == Lbatt_status) {
                 PRINTOUT(F("---All  CANCELLED--Lbatt_V="));
                 retResult = false;
             }
@@ -976,9 +976,9 @@ bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
 
         case LB_PWR_SENSOR_USE_REQ:
 
-// heavy power sensors ~ use PS_PWR_LOWSTATUS
+// heavy power sensors ~ use BM_PWR_LOWSTATUS
 #if 0
-            if (PS_LBATT_LOW_STATUS >= Lbatt_status) {
+            if (BM_LBATT_LOW_STATUS >= Lbatt_status) {
                 retResult = false;
                 PRINTOUT(F("---NewReading CANCELLED--Lbatt_V="))                         ;
             }
@@ -988,11 +988,11 @@ bool isBatteryChargeGoodEnough(lb_pwr_req_t reqBatState) {
             break;
 
         case LB_PWR_MODEM_USE_REQ:
-            // WiFi PS_LBATT_MEDIUM_STATUS
-            // Cell (PS_LBATT_HEAVY_STATUS
-            if (PS_LBATT_HEAVY_STATUS > Lbatt_status) { retResult = false; }
+            // WiFi BM_LBATT_MEDIUM_STATUS
+            // Cell (BM_LBATT_HEAVY_STATUS
+            if (BM_LBATT_HEAVY_STATUS > Lbatt_status) { retResult = false; }
             MS_DBG(F(" isBatteryChargeGoodEnoughTx"), retResult);
-            // modem sensors PS_PWR_LOW_REQ
+            // modem sensors BM_PWR_LOW_REQ
             break;
     }
     return retResult;
@@ -1256,7 +1256,7 @@ void  managementSensorsPoll() {
 // ==========================================================================
 // Checks available power on battery.
 // 
-bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery) 
+bool batteryCheck(bm_pwr_req_t useable_req, bool waitForGoodBattery) 
 {
     bool LiBattPower_Unseable=false;
     bool UserButtonAct = false;
@@ -1265,7 +1265,7 @@ bool batteryCheck(ps_pwr_req_t useable_req, bool waitForGoodBattery)
     do {
         bms_SetBattery();
         LiBattPower_Unseable =
-            ((PS_LBATT_UNUSEABLE_STATUS ==
+            ((BM_LBATT_UNUSEABLE_STATUS ==
               bms.isBatteryStatusAbove(true, useable_req))
                  ? true
                  : false);
@@ -1335,7 +1335,7 @@ void setup() {
     if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
 
     // A vital check on power availability
-    batteryCheck(PS_PWR_USEABLE_REQ, true);
+    batteryCheck(BM_PWR_USEABLE_REQ, true);
 
     PRINTOUT(F("BatV Good ="), bms.getBatteryVm1());
 
@@ -1452,7 +1452,7 @@ void setup() {
 
 // Sync the clock  and we have battery to spare
 #if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
-#define LiIon_BAT_REQ PS_PWR_MEDIUM_REQ
+#define LiIon_BAT_REQ BM_PWR_MEDIUM_REQ
 
     if (batteryCheck(LiIon_BAT_REQ, true)) 
     {
@@ -1492,7 +1492,7 @@ void setup() {
 
     //Setup sensors, including reading sensor data sheet that can be recorded on SD card
     PRINTOUT(F("Setting up sensors..."));
-    batteryCheck(PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC, true);
+    batteryCheck(BM_PWR_SENSOR_CONFIG_BUILD_SPECIFIC, true);
     varArray.setupSensors();
 // Create the log file, adding the default header to it
 // Do this last so we have the best chance of getting the time correct and

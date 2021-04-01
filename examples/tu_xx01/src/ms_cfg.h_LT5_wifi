@@ -62,7 +62,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define ASONG_AM23XX_UUID 1
 
 //Two heavy sensors with power useage
-#define PS_PWR_SENSOR_CONFIG_BUILD_SPECIFIC PS_PWR_HEAVY_REQ
+#define BM_PWR_SENSOR_CONFIG_BUILD_SPECIFIC BM_PWR_HEAVY_REQ
 
 // Mayfly configuration
 // Carrier board for Digi XBEE LTE CAT-M1 and jumper from battery
