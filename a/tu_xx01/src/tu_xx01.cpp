@@ -202,7 +202,7 @@ const int8_t modemSleepRqPin =
     23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status (-1 if unconnected)
-const int8_t I2CPower = -1;  // sensorPowerPin;  // Pin to switch power on and
+//const int8_t I2CPower = -1;  // sensorPowerPin;  // Pin to switch power on and
                              // off (-1 if unconnected)
 
 #if defined UseModem_Module
@@ -678,6 +678,7 @@ Variable* pLionBatExt_var =
                  ExternalVoltage_Volt0_UUID);
 #endif  // MAYFLY_BAT_AA0
 
+#if defined MAYFLY_BAT_CHOICE
 #if MAYFLY_BAT_CHOICE == MAYFLY_BAT_STC3100
 #define bms_SetBattery() bms.setBatteryV(wLionBatStc3100_worker());
 #elif MAYFLY_BAT_CHOICE == MAYFLY_BAT_AA0 
@@ -692,9 +693,12 @@ float getBatteryVoltageProc() {
     return mcuBoardPhy.sensorValues[0];
 }
 #define bms_SetBattery() bms.setBatteryV(getBatteryVoltageProc());
+#endif  //MAYFLY_BAT_A6
 #else 
 #warning MAYFLY_BAT_CHOICE not defined
-#endif  //MAYFLY_BAT_A6
+//Leave battery settings at default or off
+#define bms_SetBattery()
+#endif  //defined MAYFLY_BAT_CHOICE
 #if defined ProcVolt_ACT
 // ==========================================================================
 //    Internal  ProcessorAdc
@@ -1073,9 +1077,14 @@ void userButtonISR() {
  void setupUserButton () {
     if (buttonPin >= 0) {
         pinMode(buttonPin, INPUT_PULLUP);
+        #if defined USE_USER_BUTTONISR
         enableInterrupt(buttonPin, userButtonISR, CHANGE);
         MS_DBG(F("Button on pin"), buttonPin,
-               F("user input."));
+               F("user input. ISR"));
+        #else
+        MS_DBG(F("Button on pin"), buttonPin,
+               F("user input. NO Interrupt"));
+        #endif //USE_USER_BUTTONISR
     }
 } // setupUserButton
 
@@ -1397,7 +1406,7 @@ void setup() {
 #endif  // UseModem_Module
 
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, -1, greenLED);
-    setupUserButton (); //used for serialInput
+    setupUserButton(); //used for serialInput
 
 #ifdef USE_MS_SD_INI
     // Set up SD card access
