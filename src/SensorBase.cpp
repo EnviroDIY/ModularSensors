@@ -362,6 +362,11 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
     float float_val = resultValue;  // cast the int16_t to a float
     verifyAndAddMeasurementResult(resultNumber, float_val);
 }
+void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
+                                           int32_t resultValue) {
+    float float_val = resultValue;  // cast the int32_t to a float
+    verifyAndAddMeasurementResult(resultNumber, float_val);
+}
 
 
 void Sensor::averageMeasurements(void) {
