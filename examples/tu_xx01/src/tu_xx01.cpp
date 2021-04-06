@@ -202,7 +202,7 @@ const int8_t modemSleepRqPin =
     23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status (-1 if unconnected)
-//const int8_t I2CPower = -1;  // sensorPowerPin;  // Pin to switch power on and
+const int8_t I2CPower = -1;  // sensorPowerPin; Needs to remain on if any IC powered like STC3100/KNH002
                              // off (-1 if unconnected)
 
 #if defined UseModem_Module
