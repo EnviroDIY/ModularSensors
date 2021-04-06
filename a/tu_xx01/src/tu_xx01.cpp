@@ -1077,14 +1077,9 @@ void userButtonISR() {
  void setupUserButton () {
     if (buttonPin >= 0) {
         pinMode(buttonPin, INPUT_PULLUP);
-        #if defined USE_USER_BUTTONISR
         enableInterrupt(buttonPin, userButtonISR, CHANGE);
         MS_DBG(F("Button on pin"), buttonPin,
-               F("user input. ISR"));
-        #else
-        MS_DBG(F("Button on pin"), buttonPin,
-               F("user input. NO Interrupt"));
-        #endif //USE_USER_BUTTONISR
+               F("user input."));
     }
 } // setupUserButton
 
