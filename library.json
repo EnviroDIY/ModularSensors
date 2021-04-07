@@ -247,8 +247,10 @@
     },
     {
       "name": "SDI-12",
+      "owner": "envirodiy",
+      "library id": "1486",
       "version": "~2.1.2",
-      "url": "https://github.com/neilh10/Arduino-SDI-12#release1",
+      "url": "https://github.com/EnviroDIY/Arduino-SDI-12.git",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "authors": [
         "Kevin M. Smith",
