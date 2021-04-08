@@ -558,7 +558,9 @@ STSTC3100_Sensor stc3100_phy(STC3100_NUM_MEASUREMENTS);
 
 //Its on a wingboard and may not be plugged in
 bool       bfgPresent = false;
+//#define stc3100_bfgp stc3100_phy
 #define stc3100_bfg stc3100_phy.stc3100_device
+
 //#define PRINT_STC3100_SNSR_VAR 1
 #if defined PRINT_STC3100_SNSR_VAR 
 bool userPrintStc3100BatV_avlb=false;
@@ -570,9 +572,9 @@ Variable* kBatteryVoltage_V = new STSTC3100_Volt(&stc3100_phy,"nu");
 
 
 float wLionBatStc3100_worker(void) {  // get the Battery Reading
-    // Get new reading
-    float flLionBatStc3100_V = kBatteryVoltage_V->getValue(true);
-    // float depth_ft = convert_mtoFt(depth_m);
+    // Get reading - Assumes updated before calling
+    float flLionBatStc3100_V = stc3100_bfg.v.voltage_V; //. was kBatteryVoltage_V->getValue(true);
+
     // MS_DBG(F("wLionBatStc3100_worker"), flLionBatStc3100_V);
 #if defined MS_TU_XX_DEBUG
     DEBUGGING_SERIAL_OUTPUT.print(F("  wLionBatStc3100_worker "));
@@ -1242,16 +1244,26 @@ void  managementSensorsPoll() {
         //Serial.print(dataLogger.formatDateTime_ISO8601(dataLogger.getNowEpochTz()));
 
         //Output readings
+        Serial.print(F(" V=,"));
         Serial.print(stc3100_bfg.v.voltage_V, 4);
-        Serial.print(",V, ");
+        Serial.print(F(", mA=,"));
         Serial.print(stc3100_bfg.v.current_mA, 1);
-        Serial.print(",mA, ");
+        Serial.print(F(", mAh=,"));
         Serial.print(stc3100_bfg.v.charge_mAhr, 3);
-        Serial.print(",mAH, ");
-        Serial.print(stc3100_bfg.v.counter);
-        Serial.println(",CntsAdc");
+        Serial.print(F(", "));
+        Serial.print(stc3100_bfg._energyUsed_mAhr, 3);
+        Serial.print(F(",0x"));
+        Serial.print((uint16_t)stc3100_bfg._batCharge1_raw,HEX);
+        Serial.print(F(","));
+        Serial.print(stc3100_bfg.getEnergyAvlbl_mAhr(), 3);
+        Serial.print(", CntsAdc=,");
+        Serial.println(stc3100_bfg.v.counter);
+
         // Serial.print(" & IC Temp(C), ");
         // Serial.println(lc.getCellTemperature(), 1);
+
+        //stc3100_bfg.snapEnergyMarker1();
+        stc3100_bfg.setHandshake1();
     }
 #endif  // USE_STC3100_DD
 } //managementSensorsPoll

@@ -140,13 +140,11 @@ bool STSTC3100_Sensor::addSingleMeasurementResult(void) {
                     break;
                 case STC3100_USED1_MAH_VAR_NUM: 
                     // For 30mOhms, the max could be +/-7000 mAhr and is unlikely to happen
-                    result=stc3100_device.snapEnergyUsed1_mAhr();
-                    //result=stc3100_device.getEnergyUsed1_mAhr();
+                    result=stc3100_device.getEnergyUsed1_mAhr();
                     break;
                 case STC3100_AVLBL_MAH_VAR_NUM: 
                     // For 30mOhms, the max could be +/-7000 mAhr and is unlikely to happen
                     result=stc3100_device.getEnergyAvlbl_mAhr();
-                    //result=stc3100_device.getEnergyUsed1_mAhr();
                     break;
                 default:
                     result = STC3100_SENSOR_INVALID; 
