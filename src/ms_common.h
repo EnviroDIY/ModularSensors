@@ -120,6 +120,7 @@ typedef struct {
     uint16_t logging_interval_min;
     int8_t   time_zone;  //-12,0 to +11?
     uint8_t  battery_type;
+    uint16_t battery_mAhr; //0-65,536
     // uint8_t  colllectReadings;
     // uint8_t  sendOffset_min;
     uint8_t logger_id[MSC_LOGGER_ID_SZ];
@@ -129,6 +130,9 @@ typedef struct {
 
 #define epc_logging_interval_min epc.app.msc.s.logging_interval_min 
 #define epc_battery_type  epc.app.msc.s.battery_type 
+#define epc_battery_mAhr  epc.app.msc.s.battery_mAhr
+#define BATTERY_mAhr_DEF  4400
+#define BATTERY_mAhr_MAX  65501
 
 #define epc_logger_id  (char*)epc.app.msc.s.logger_id
 #define epc_logger_id1st      epc.app.msc.s.logger_id[0]
@@ -196,44 +200,84 @@ typedef struct {
 #define USE_PS_Provider 1
 #endif  // UseModem_Module
 //******
-//Provider UUI EnvviroDIY
-#define UUIDE_TYPE_NONE 0
-#define UUIDE_TYPE_MMW 1
+//Provider types supported
+#define PROVID_TYPE_NONE    0x00
+#define PROVID_TYPE_MMW     0x01
+#define PROVID_TYPE_TS      0x02
+#define PROVID_TYPE_UBIDOTS 0x04
 
-#define UUIDE_CLOUD_ID_SZ 38
-#define UUIDE_DEF_STR "NONE"
-//#define UUIDE_NULL_STR ""
-#define UUIDE_NULL_TERMINATOR 0
-#define UUIDE_REGISTRATION_TOKEN_SZ 38
-#define UUIDE_SAMPLING_FEAUTRE_SZ 38
-#define UUIDE_SENSOR_NAME_SZ 40
-#define UUIDE_SENSOR_VALUE_SZ 38
-#define UUIDE_SENSOR_CNT_MAX_SZ 10
+#define PROVID_CLOUD_ID_SZ 38
+#define PROVID_DEF_STR "NONE"
+#define PROVID_NULL_TERMINATOR 0
+
+#define PROVID_MW_REGISTRATION_TOKEN_SZ 38
+#define PROVID_MW_SAMPLING_FEAUTRE_SZ 38
+
+#define PROVID_TSMQTTKEY_SZ    17  
+#define PROVID_TSCHANNELID_SZ   7
+#define PROVID_TSCHANNELKEY_SZ 17
+
+#define PROVID_UB_AUTH_TOKEN_SZ 38
+#define PROVID_UB_DEVICEID_SZ 38
+
+// If provider requires mapping, then use common mapping to whatever type
+#define PROVID_UUID_SENSOR_NAME_SZ 40
+#define PROVID_UUID_SENSOR_VALUE_SZ 38
+#define PROVID_UUID_SENSOR_CNTMAX_SZ 12
+
 #if defined(USE_PS_Provider)
 typedef struct {
-    char name[UUIDE_SENSOR_NAME_SZ];
-    char value[UUIDE_SENSOR_VALUE_SZ];
+    char name[PROVID_UUID_SENSOR_NAME_SZ];
+    char value[PROVID_UUID_SENSOR_VALUE_SZ];
 } ini_name_value_t;
-
-#define uuid_value(uuid_idx) (char*)epc.app.provider.s.ed.uuid[uuid_idx].value
-#define uuid_name(uuid_idx)  (char*)epc.app.provider.s.ed.uuid[uuid_idx].name
 
 typedef struct {
     // v01 initial structure
     // All are in ascii strings, with the first unused octet \0
-    char    cloudId[UUIDE_CLOUD_ID_SZ];  // ASCII url
-    char    registration_token[UUIDE_REGISTRATION_TOKEN_SZ];
-    char    sampling_feature[UUIDE_SAMPLING_FEAUTRE_SZ];
+    char    cloudId[PROVID_CLOUD_ID_SZ];  // ASCII url
+    char    registration_token[PROVID_MW_REGISTRATION_TOKEN_SZ];
+    char    sampling_feature[PROVID_MW_SAMPLING_FEAUTRE_SZ];
     uint16_t timerPostTout_ms; // Gateway Timeout (ms)
     uint16_t timerPostPace_ms; // Gateway Pacing (ms)
     uint16_t postMax_num; //0 no limit, else max num POSTs one session
-    ini_name_value_t uuid[UUIDE_SENSOR_CNT_MAX_SZ];
-} uuid_envirodiy01_t;
-typedef union  {
+    ini_name_value_t uuid[PROVID_UUID_SENSOR_CNTMAX_SZ];
+} provid_envirodiy01_t;
+typedef struct {
+    // v01 initial structure
+    // All are in ascii strings, with the first unused octet \0
+    /*
+const char* thingSpeakMQTTKey =     17x "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char* thingSpeakChannelID =    7x "######";  // The numeric channel id for your channel
+const char* thingSpeakChannelKey =   17x "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel 
+    */
+    char    cloudId[PROVID_CLOUD_ID_SZ];  // ASCII url
+    char    thingSpeakMQTTKey[PROVID_TSMQTTKEY_SZ];
+    char    thingSpeakChannelID[PROVID_TSCHANNELID_SZ];
+    char    thingSpeakChannelKey [PROVID_TSCHANNELKEY_SZ];
+    uint16_t timerPostTout_ms; // Gateway Timeout (ms)
+    uint16_t timerPostPace_ms; // Gateway Pacing (ms)
+    uint16_t postMax_num; //0 no limit, else max num POSTs one session
+    //uuid[] not used sequential 
+} provid_thingspeak01_t;
+
+typedef struct {
+    // v01 initial structure
+    // All are in ascii strings, with the first unused octet \0
+    char    cloudId[PROVID_CLOUD_ID_SZ];  // ASCII url
+    char    authentificationToken[PROVID_UB_AUTH_TOKEN_SZ];
+    char    deviceID[PROVID_UB_DEVICEID_SZ];
+    uint16_t timerPostTout_ms; // Gateway Timeout (ms)
+    uint16_t timerPostPace_ms; // Gateway Pacing (ms)
+    uint16_t postMax_num; //0 no limit, else max num POSTs one session
+    ini_name_value_t uuid[PROVID_UUID_SENSOR_CNTMAX_SZ];
+} provid_ubidots01_t;
+typedef struct {
     //Providers meta data stored here. 
-    // Only one provider supported. 
+    // Only one provider using variables/uuid supported. 
     /// Fut : union or simulataneous?
-    uuid_envirodiy01_t ed;
+    provid_envirodiy01_t ed;
+    provid_thingspeak01_t ts;
+    provid_ubidots01_t ub;
 } msp01_t;
 #define MSP_ACTIVE msp01_t
 

@@ -699,7 +699,7 @@ void Logger::logDataAndPubReliably(void) {
                 // Change publish attempt to saving for next publish attempt
                 cia_val &= ~CIA_POST_READINGS;
                 cia_val |= CIA_RLB_READINGS;  //
-                MS_DBG(F("logDataAndPubReliably - tx cancelled"));
+                PRINTOUT(F("logDataAndPubReliably - tx cancelled"));
             }
         }
     }

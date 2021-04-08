@@ -394,7 +394,7 @@ class Variable {
      *
      */
     void setVarUUID_atl(const char* newUUID, bool copyUid = false,
-                        uint8_t uuidSize = UUIDE_CLOUD_ID_SZ);
+                        uint8_t uuidSize = PROVID_CLOUD_ID_SZ);
    /**
      * @brief Get the parent sensor details if possible
      *
