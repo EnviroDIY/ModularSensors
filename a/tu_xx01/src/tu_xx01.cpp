@@ -202,7 +202,7 @@ const int8_t modemSleepRqPin =
     23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status (-1 if unconnected)
-//const int8_t I2CPower = -1;  // sensorPowerPin;  // Pin to switch power on and
+const int8_t I2CPower = -1;  // sensorPowerPin; Needs to remain on if any IC powered like STC3100/KNH002
                              // off (-1 if unconnected)
 
 #if defined UseModem_Module
@@ -558,9 +558,7 @@ STSTC3100_Sensor stc3100_phy(STC3100_NUM_MEASUREMENTS);
 
 //Its on a wingboard and may not be plugged in
 bool       bfgPresent = false;
-//#define stc3100_bfgp stc3100_phy
 #define stc3100_bfg stc3100_phy.stc3100_device
-
 //#define PRINT_STC3100_SNSR_VAR 1
 #if defined PRINT_STC3100_SNSR_VAR 
 bool userPrintStc3100BatV_avlb=false;
@@ -573,7 +571,7 @@ Variable* kBatteryVoltage_V = new STSTC3100_Volt(&stc3100_phy,"nu");
 
 float wLionBatStc3100_worker(void) {  // get the Battery Reading
     // Get reading - Assumes updated before calling
-    float flLionBatStc3100_V = stc3100_bfg.v.voltage_V; //. was kBatteryVoltage_V->getValue(true);
+    float flLionBatStc3100_V = stc3100_bfg.v.voltage_V;
 
     // MS_DBG(F("wLionBatStc3100_worker"), flLionBatStc3100_V);
 #if defined MS_TU_XX_DEBUG
@@ -1262,7 +1260,7 @@ void  managementSensorsPoll() {
         // Serial.print(" & IC Temp(C), ");
         // Serial.println(lc.getCellTemperature(), 1);
 
-        //stc3100_bfg.snapEnergyMarker1();
+         //Ensure no matter how many readings are averaged, some values are only read once.
         stc3100_bfg.setHandshake1();
     }
 #endif  // USE_STC3100_DD
