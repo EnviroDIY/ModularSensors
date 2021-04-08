@@ -153,7 +153,7 @@
  * @brief Decimals places in string representation; current is 1.
  * 
  */
-#define STC3100_CURRENT_MA_RESOLUTION 1
+#define STC3100_CURRENT_MA_RESOLUTION 2
 /// @brief Sensor variable number; current is stored in sensorValues[0].
 #define STC3100_CURRENT_MA_VAR_NUM 1
 /// @brief Variable name in
@@ -180,7 +180,7 @@
 /**@{*/
 /// @brief Decimals places in string representation; power draw is 2 -
 
-#define STC3100_USED1_MAH_RESOLUTION 2
+#define STC3100_USED1_MAH_RESOLUTION 3
 /// @brief Sensor variable number; power draw is stored in sensorValues[2].
 #define STC3100_USED1_MAH_VAR_NUM 2
 /// @brief Variable name in
@@ -208,7 +208,7 @@
 /**@{*/
 /// @brief Decimals places in string representation; power draw is 2 -
 
-#define STC3100_AVLBL_MAH_RESOLUTION 2
+#define STC3100_AVLBL_MAH_RESOLUTION 3
 /// @brief Sensor variable number; power draw is stored in sensorValues[3].
 #define STC3100_AVLBL_MAH_VAR_NUM 3
 /// @brief Variable name in
