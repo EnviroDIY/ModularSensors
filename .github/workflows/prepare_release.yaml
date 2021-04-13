@@ -30,7 +30,7 @@ jobs:
           echo "ZIP_NAME=$ZIP_FILE" >> $GITHUB_ENV
 
       - name: Restore or Cache pip
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           path: ~/.cache/pip
           # if requirements.txt hasn't changed, then it will be a "cache hit" and pip will be restored
