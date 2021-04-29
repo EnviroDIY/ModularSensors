@@ -818,6 +818,29 @@ void Logger::logDataAndPubReliably(void) {
     systemSleep();
 }
 
+void Logger::setExtRtcSleep() {
+    //Verify EveryMinute on the RTC DS3231M
+    #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
+    uint8_t isRtcRegBad = rtc.enableInterruptsCheck(EveryMinute);
+    if (isRtcRegBad) {
+        Serial.print(F("RTC Alarm set for every minute. Check was 0x"));
+        Serial.print(isRtcRegBad,HEX);
+        rtc.enableInterrupts(EveryMinute);
+        isRtcRegBad = rtc.enableInterruptsCheck(EveryMinute);
+        if(isRtcRegBad) {
+            Serial.print(F("  retried & still bad at 0x"));
+            Serial.print(isRtcRegBad,HEX);
+        }
+        Serial.println();
+    } else {
+        MS_DBG(F("RTC Alarm good." ));
+        rtc.enableInterrupts(0xFF);
+    }
+    #else
+    rtc.enableInterrupts(EveryMinute);
+    #endif
+}
+
 void Logger::publishDataQuedToRemotes(bool internetPresent) {
     // Assumes that there is an internet connection
     // bool    useQue = false;

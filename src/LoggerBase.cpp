@@ -911,8 +911,9 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     // the alarm for every minute and use the checkInterval function.  This
     // is a hardware limitation of the DS3231; it is not due to the
     // libraries or software.
-    MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
-    rtc.enableInterrupts(EveryMinute);
+    //MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
+    //rtc.enableInterrupts(EveryMinute);
+    setExtRtcSleep();
 
     // Clear the last interrupt flag in the RTC status register
     // The next timed interrupt will not be sent until this is cleared
@@ -1119,6 +1120,9 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     // Re-enable the processor ADC
     ADCSRA |= _BV(ADEN);
 
+    // Detach the from the pin - assumes Mayfly
+    disableInterrupt(_mcuWakePin);
+
     // Re-enables interrupts
     interrupts();
 
@@ -1148,9 +1152,10 @@ void        Logger::systemSleep(uint8_t sleep_min) {
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste thought on the clock interrupt if it
     // happens while the processor is awake and doing other things.
-    rtc.disableInterrupts();
+    // nh: this re-initializes the RTC, maybe over driving the RTC - the disableInterrupt is a better way
+    //rtc.disableInterrupts();  after Wire.begin()
     // Detach the from the pin
-    disableInterrupt(_mcuWakePin);
+    //disableInterrupt(_mcuWakePin); moved up disable
 
 #elif defined ARDUINO_ARCH_SAMD
     zero_sleep_rtc.disableAlarm();

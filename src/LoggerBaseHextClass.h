@@ -133,6 +133,14 @@ void logDataAndPubReliably(void);
  */
 void publishDataQuedToRemotes(bool internetPresent);
 
+/**
+ * @brief Set up for sleep.
+ *
+ * For external clock chip need to ensure the data is set correctly
+ *
+ */
+void setExtRtcSleep(); 
+
 // ===================================================================== //
 /* Serializing/Deserialing
   A common set of functions that operate on files
