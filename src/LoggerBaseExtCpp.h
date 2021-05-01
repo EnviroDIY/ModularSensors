@@ -818,27 +818,27 @@ void Logger::logDataAndPubReliably(void) {
     systemSleep();
 }
 
+//Verify EveryMinute on the RTC DS3231M
 void Logger::setExtRtcSleep() {
-    //Verify EveryMinute on the RTC DS3231M
+    uint8_t isRtcRegBad;
+
     #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
-    uint8_t isRtcRegBad = rtc.enableInterruptsCheck(EveryMinute);
-    if (isRtcRegBad) {
-        Serial.print(F("RTC Alarm set for every minute. Check was 0x"));
-        Serial.print(isRtcRegBad,HEX);
-        rtc.enableInterrupts(EveryMinute);
-        isRtcRegBad = rtc.enableInterruptsCheck(EveryMinute);
-        if(isRtcRegBad) {
-            Serial.print(F("  retried & still bad at 0x"));
-            Serial.print(isRtcRegBad,HEX);
+    #define MAYFLY_WR_RETRYS 3
+    for (uint8_t chklp=0;chklp<MAYFLY_WR_RETRYS;chklp++) {
+        isRtcRegBad = rtc.enableInterruptsCheckAlm1(EveryMinute);
+        if (0==isRtcRegBad) {
+            MS_DBG(F("RTC Alarm good." ));
+            break;
         }
-        Serial.println();
-    } else {
-        MS_DBG(F("RTC Alarm good." ));
-        rtc.enableInterrupts(0xFF);
-    }
+        Serial.print(chklp);
+        Serial.print(F("]RTC Alarm set for every minute. Reg check was 0x"));
+        Serial.println(isRtcRegBad,HEX);
+        rtc.enableInterrupts(EveryMinute);
+        //rtc.enableInterruptsAlm2(EveryMinute);
+    } 
     #else
     rtc.enableInterrupts(EveryMinute);
-    #endif
+    #endif 
 }
 
 void Logger::publishDataQuedToRemotes(bool internetPresent) {
