@@ -52,10 +52,10 @@ C:\Users\neilh77a\.platformio\penv\Scripts\pio run --target clean
 $hext = "_EC"
 Do-Build
 
-$hext = "_LT5_lte"
+$hext = "_LT5KA_lte"
 Do-Build
 
-$hext = "_LT5_wifi"
+$hext = "_LT5KA_wifi"
 Do-Build
 
 $hext = "_nano"
