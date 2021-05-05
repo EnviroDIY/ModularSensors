@@ -38,6 +38,12 @@
  * power is connected to the _white_ cable, data to _red_, and ground to the
  * unshielded cable.
  *
+ * @warning Coming from the factory, METER sensors are set at SDI-12 address
+ * '0'.  They also output a "DDI" serial protocol string on each power up.
+ * This library *disables the DDI output string* on all newer METER sensors
+ * that support disabling it.  After using a METER sensor with ModularSensors,
+ * you will need to manually re-enable the DDI output if you wish to use it.
+ *
  * @section sensor_teros11_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses for the Meter
  * Teros 11 can be found at:

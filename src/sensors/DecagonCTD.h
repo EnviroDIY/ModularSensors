@@ -26,13 +26,23 @@
  *
  * @section sensor_hydros21_intro Introduction
  *
- * @note Meter Environmental was formerly known as Decagon Devices and sold the
- * a very similar sensor to the current Hydros 21 as the CTD-10.
+ * > A compact 3.4 cm diameter sensor that fits into tight spaces, the
+ * > HYDROS 21 is a low-cost, durable, and easy-to-use tool for monitoring EC,
+ * > temperature, and depth in both groundwater and surface water.
+ *
+ * @note Meter Environmental was formerly known as Decagon Devices and sold a
+ * very similar sensor to the current Hydros 21 as the CTD-10.
  *
  * The Hydros 21 is implemented as a sub-classes of the SDI12Sensors class.
  * It requires a 3.5-12V power supply, which can be turned off between
  * measurements. While contrary to the manual, they will run with power as low
  * as 3.3V.
+ *
+ * @warning Coming from the factory, METER sensors are set at SDI-12 address
+ * '0'.  They also output a "DDI" serial protocol string on each power up.
+ * This library *disables the DDI output string* on all newer METER sensors
+ * that support disabling it.  After using a METER sensor with ModularSensors,
+ * you will need to manually re-enable the DDI output if you wish to use it.
  *
  * @section sensor_hydros21_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses for the Hydros
