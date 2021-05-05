@@ -27,7 +27,7 @@ jobs:
           path: code_docs/ModularSensors
 
       - name: Restore or Cache pip
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         id: cache_pip
         with:
           path: ~/.cache/pip
@@ -37,7 +37,7 @@ jobs:
           restore-keys: ${{ runner.os }}-pip-
 
       - name: Restore or Cache PlatformIO and Libraries
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         id: cache_pio
         with:
           path: ~/.platformio
@@ -120,7 +120,7 @@ jobs:
 
       - name: Restore or Cache Doxygen
         id: cache_doxygen
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           path: doxygen-src
           key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}
@@ -155,7 +155,7 @@ jobs:
           sh continuous_integration/generate-documentation.sh
 
       - name: Deploy to github pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/code_docs/ModularSensorsDoxygen/m.css

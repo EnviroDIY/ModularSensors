@@ -26,13 +26,23 @@
  *
  * @section sensor_hydros21_intro Introduction
  *
- * @note Meter Environmental was formerly known as Decagon Devices and sold the
- * a very similar sensor to the current Hydros 21 as the CTD-10.
+ * > A compact 3.4 cm diameter sensor that fits into tight spaces, the
+ * > HYDROS 21 is a low-cost, durable, and easy-to-use tool for monitoring EC,
+ * > temperature, and depth in both groundwater and surface water.
+ *
+ * @note Meter Environmental was formerly known as Decagon Devices and sold a
+ * very similar sensor to the current Hydros 21 as the CTD-10.
  *
  * The Hydros 21 is implemented as a sub-classes of the SDI12Sensors class.
  * It requires a 3.5-12V power supply, which can be turned off between
  * measurements. While contrary to the manual, they will run with power as low
  * as 3.3V.
+ *
+ * @warning Coming from the factory, METER sensors are set at SDI-12 address
+ * '0'.  They also output a "DDI" serial protocol string on each power up.
+ * This library *disables the DDI output string* on all newer METER sensors
+ * that support disabling it.  After using a METER sensor with ModularSensors,
+ * you will need to manually re-enable the DDI output if you wish to use it.
  *
  * @section sensor_hydros21_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses for the Hydros
@@ -79,6 +89,9 @@
 #define CTD_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; maximum measurement duration: 500ms.
 #define CTD_MEASUREMENT_TIME_MS 500
+/// @brief Extra wake time required for an SDI-12 sensor between the "break"
+/// and the time the command is sent.  The CTD requires no extra time.
+#define CTD_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -214,7 +227,8 @@ class DecagonCTD : public SDI12Sensors {
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
-                       CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS) {}
+                       CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
+                       CTD_EXTRA_WAKE_TIME_MS) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
      */
@@ -222,7 +236,8 @@ class DecagonCTD : public SDI12Sensors {
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
-                       CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS) {}
+                       CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
+                       CTD_EXTRA_WAKE_TIME_MS) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
      */
@@ -230,7 +245,8 @@ class DecagonCTD : public SDI12Sensors {
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
-                       CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS) {}
+                       CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
+                       CTD_EXTRA_WAKE_TIME_MS) {}
 
     /**
      * @brief Destroy the Decagon CTD object

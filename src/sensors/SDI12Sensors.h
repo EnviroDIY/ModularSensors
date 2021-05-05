@@ -72,6 +72,10 @@
 #define MS_DEBUGGING_STD "SDI12Sensors"
 #endif
 
+#ifdef MS_SDI12SENSORS_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "SDI12Sensors"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
@@ -120,7 +124,7 @@ class SDI12Sensors : public Sensor {
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
                  uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms   = 0);
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
@@ -129,7 +133,7 @@ class SDI12Sensors : public Sensor {
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
                  uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms   = 0);
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
@@ -138,7 +142,7 @@ class SDI12Sensors : public Sensor {
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
                  uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms   = 0);
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */
@@ -252,6 +256,11 @@ class SDI12Sensors : public Sensor {
      * @brief Internal reference to the SDI-12 address.
      */
     char _SDI12address;
+    /**
+     * @brief Extra wake time required for an SDI-12 sensor between the "break"
+     * and the time the command is sent.
+     */
+    int8_t _extraWakeTime;
 
  private:
     String _sensorVendor;
