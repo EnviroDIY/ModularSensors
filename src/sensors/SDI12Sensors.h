@@ -72,6 +72,10 @@
 #define MS_DEBUGGING_STD "SDI12Sensors"
 #endif
 
+#ifdef MS_SDI12SENSORS_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "SDI12Sensors"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
