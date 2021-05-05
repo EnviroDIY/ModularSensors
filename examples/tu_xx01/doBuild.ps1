@@ -45,11 +45,17 @@ $envirodiy_dir = ".pio\libdeps\mayfly\EnviroDIY_ModularSensors"
 if (Test-Path -Path $envirodiy_dir) {
     Write-Output  "Removing $envirodiy_dir "
     Remove-item $envirodiy_dir -Recurse -Force
+    if (Test-Path -Path $envirodiy_dir) {
+        Write-Output  "ERROR $envirodiy_dir still present"
+    }
 }
 C:\Users\neilh77a\.platformio\penv\Scripts\pio run --target clean
 
 
 $hext = "_EC"
+Do-Build
+
+$hext = "_LT5_lte"
 Do-Build
 
 $hext = "_LT5KA_lte"
