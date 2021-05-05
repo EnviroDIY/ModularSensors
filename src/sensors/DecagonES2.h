@@ -80,6 +80,9 @@
 #define ES2_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; maximum measurement duration: 250ms.
 #define ES2_MEASUREMENT_TIME_MS 250
+/// @brief Extra wake time required for an SDI-12 sensor between the "break"
+/// and the time the command is sent.  The ES-2 requires no extra time.
+#define ES2_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -183,7 +186,8 @@ class DecagonES2 : public SDI12Sensors {
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
-                       ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
+                       ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS,
+                       ES2_EXTRA_WAKE_TIME_MS) {}
     /**
      * @copydoc DecagonES2::DecagonES2
      */
@@ -191,7 +195,8 @@ class DecagonES2 : public SDI12Sensors {
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
-                       ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
+                       ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS,
+                       ES2_EXTRA_WAKE_TIME_MS) {}
     /**
      * @copydoc DecagonES2::DecagonES2
      */
@@ -199,7 +204,8 @@ class DecagonES2 : public SDI12Sensors {
                uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
-                       ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS) {}
+                       ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS,
+                       ES2_EXTRA_WAKE_TIME_MS) {}
     /**
      * @brief Destroy the Decagon ES2 object
      */

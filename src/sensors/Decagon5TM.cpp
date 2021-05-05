@@ -40,7 +40,7 @@ bool Decagon5TM::addSingleMeasurementResult(void) {
         getDataCommand += _SDI12address;
         // SDI-12 command to get data [address][D][dataOption][!]
         getDataCommand += "D0!";
-        _SDI12Internal.sendCommand(getDataCommand);
+        _SDI12Internal.sendCommand(getDataCommand, _extraWakeTime);
         delay(30);  // It just needs this little delay
         MS_DBG(F("    >>>"), getDataCommand);
 

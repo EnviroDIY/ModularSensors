@@ -21,10 +21,10 @@ SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin,
                            const uint8_t numReturnedVars,
                            uint32_t      warmUpTime_ms,
                            uint32_t      stabilizationTime_ms,
-                           uint32_t      measurementTime_ms)
+                           uint32_t measurementTime_ms, int8_t extraWakeTime)
     : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, powerPin, dataPin, measurementsToAverage),
-      _SDI12Internal(dataPin) {
+      _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
     _SDI12address = SDI12address;
 }
 SDI12Sensors::SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
@@ -33,10 +33,10 @@ SDI12Sensors::SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
                            const uint8_t numReturnedVars,
                            uint32_t      warmUpTime_ms,
                            uint32_t      stabilizationTime_ms,
-                           uint32_t      measurementTime_ms)
+                           uint32_t measurementTime_ms, int8_t extraWakeTime)
     : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, powerPin, dataPin, measurementsToAverage),
-      _SDI12Internal(dataPin) {
+      _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
     _SDI12address = *SDI12address;
 }
 SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
@@ -45,10 +45,10 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                            const uint8_t numReturnedVars,
                            uint32_t      warmUpTime_ms,
                            uint32_t      stabilizationTime_ms,
-                           uint32_t      measurementTime_ms)
+                           uint32_t measurementTime_ms, int8_t extraWakeTime)
     : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
              measurementTime_ms, powerPin, dataPin, measurementsToAverage),
-      _SDI12Internal(dataPin) {
+      _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
     _SDI12address = SDI12address + '0';
 }
 // Destructor
@@ -115,7 +115,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
     bool    didAcknowledge = false;
     uint8_t ntries         = 0;
     while (!didAcknowledge && ntries < 5) {
-        _SDI12Internal.sendCommand(myCommand);
+        _SDI12Internal.sendCommand(myCommand, _extraWakeTime);
         MS_DBG(F("    >>>"), myCommand);
         delay(30);
 
@@ -171,7 +171,7 @@ bool SDI12Sensors::getSensorInfo(void) {
     String myCommand = "";
     myCommand += static_cast<char>(_SDI12address);
     myCommand += "I!";  // sends 'info' command [address][I][!]
-    _SDI12Internal.sendCommand(myCommand);
+    _SDI12Internal.sendCommand(myCommand, _extraWakeTime);
     MS_DBG(F("    >>>"), myCommand);
     delay(30);
 
@@ -363,7 +363,7 @@ bool SDI12Sensors::getResults(void) {
         getDataCommand += "D";
         getDataCommand += cmd_number;
         getDataCommand += "!";
-        _SDI12Internal.sendCommand(getDataCommand);
+        _SDI12Internal.sendCommand(getDataCommand, _extraWakeTime);
         delay(30);  // It just needs this little delay
         MS_DBG(F("    >>>"), getDataCommand);
 

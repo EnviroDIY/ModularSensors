@@ -194,6 +194,9 @@
 #define INSITU_RDO_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; ~775 minimum
 #define INSITU_RDO_MEASUREMENT_TIME_MS 850
+/// @brief Extra wake time required for an SDI-12 sensor between the "break"
+/// and the time the command is sent.  We give the RDO an extra 10ms.
+#define INSITU_RDO_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -370,31 +373,31 @@ class InSituRDO : public SDI12Sensors {
      */
     InSituRDO(char SDI12address, int8_t powerPin, int8_t dataPin,
               uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
-                       INSITU_RDO_WARM_UP_TIME_MS,
-                       INSITU_RDO_STABILIZATION_TIME_MS,
-                       INSITU_RDO_MEASUREMENT_TIME_MS) {}
+        : SDI12Sensors(
+              SDI12address, powerPin, dataPin, measurementsToAverage,
+              "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+              INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
+              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS) {}
     /**
      * @copydoc InSituRDO::InSituRDO
      */
     InSituRDO(char* SDI12address, int8_t powerPin, int8_t dataPin,
               uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
-                       INSITU_RDO_WARM_UP_TIME_MS,
-                       INSITU_RDO_STABILIZATION_TIME_MS,
-                       INSITU_RDO_MEASUREMENT_TIME_MS) {}
+        : SDI12Sensors(
+              SDI12address, powerPin, dataPin, measurementsToAverage,
+              "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+              INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
+              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS) {}
     /**
      * @copydoc InSituRDO::InSituRDO
      */
     InSituRDO(int SDI12address, int8_t powerPin, int8_t dataPin,
               uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
-                       INSITU_RDO_WARM_UP_TIME_MS,
-                       INSITU_RDO_STABILIZATION_TIME_MS,
-                       INSITU_RDO_MEASUREMENT_TIME_MS) {}
+        : SDI12Sensors(
+              SDI12address, powerPin, dataPin, measurementsToAverage,
+              "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+              INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
+              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS) {}
     /**
      * @brief Destroy the InSitu RDO object
      */
