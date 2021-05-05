@@ -1380,6 +1380,12 @@
             <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; maximum measurement duration: 250ms.</dd>
 
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga43382c9084c75ec16b19f0b71c2793d8" class="m-doc">ES2_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The ES-2 requires no extra time.</dd>
+
+
           </dl>
         </section>
         <section id="conductivity">

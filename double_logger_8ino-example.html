@@ -1486,7 +1486,7 @@
 <span class="c1">// ==========================================================================</span>
 <span class="cm">/** Start [variable_arrays] */</span>
 <span class="c1">// The variables to record at 1 minute intervals</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">variableList_at1min</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="k">new</span> <span class="nf">AOSongAM2315_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">),</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">variableList_at1min</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="k">new</span> <span class="n">AOSongAM2315_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">),</span>
                                    <span class="k">new</span> <span class="n">AOSongAM2315_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">)};</span>
 <span class="c1">// Count up the number of pointers in the 1-minute array</span>
 <span class="kr">int</span> <span class="n">variableCount1min</span> <span class="o">=</span> <span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at1min</span><span class="p">)</span> <span class="o">/</span>
@@ -1495,7 +1495,7 @@
 <span class="n">VariableArray</span> <span class="n">array1min</span><span class="p">;</span>
 
 <span class="c1">// The variables to record at 5 minute intervals</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">variableList_at5min</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="k">new</span> <span class="nf">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">),</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">variableList_at5min</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="k">new</span> <span class="n">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">),</span>
                                    <span class="k">new</span> <span class="n">ProcessorStats_Battery</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
                                    <span class="k">new</span> <span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">)};</span>
 <span class="c1">// Count up the number of pointers in the 5-minute array</span>

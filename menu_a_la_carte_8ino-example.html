@@ -2881,7 +2881,7 @@
     <span class="n">calculatedVarUnit</span><span class="p">,</span> <span class="n">calculatedVarCode</span><span class="p">,</span> <span class="n">calculatedVarUUID</span><span class="p">);</span></pre><hr/></section><section id="enu_create_objs"><h2>Creating the array, logger, publishers</h2><section id="enu_variable_array"><h3>The variable array</h3><p>Create a <a href="class_variable_array.html" class="m-doc">VariableArray</a> containing all of the <a href="class_variable.html" class="m-doc">Variable</a> objects that we are logging the values of.</p><p>This shows three differnt ways of creating the same variable array and filling it with variables. You should only use <strong>ONE</strong> of these in your own code</p><section id="enu_variables_create_in_array"><h4>Creating Variables within an Array</h4><p>Here we use the <code>new</code> keyword to create multiple variables and get pointers to them all at the same time within the arry.</p><pre class="m-code"><span class="c1">// Version 1: Create pointers for all of the variables from the sensors,</span>
 <span class="c1">// at the same time putting them into an array</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">variableList</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="k">new</span> <span class="nf">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span>
+    <span class="k">new</span> <span class="n">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span>
                                     <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span>
                                <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">),</span>
@@ -2903,7 +2903,7 @@
 <span class="c1">// one for the UUID&#39;s, then give both as input to the variable array</span>
 <span class="c1">// constructor.  Be cautious when doing this though because order is CRUCIAL!</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">variableList</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="k">new</span> <span class="nf">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
+    <span class="k">new</span> <span class="n">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">ProcessorStats_Battery</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">),</span>
@@ -5611,7 +5611,7 @@
 <span class="c1">// Version 1: Create pointers for all of the variables from the sensors,</span>
 <span class="c1">// at the same time putting them into an array</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">variableList</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="k">new</span> <span class="nf">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span>
+    <span class="k">new</span> <span class="n">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span>
                                     <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span>
                                <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">),</span>
@@ -5641,7 +5641,7 @@
 <span class="c1">// one for the UUID&#39;s, then give both as input to the variable array</span>
 <span class="c1">// constructor.  Be cautious when doing this though because order is CRUCIAL!</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">variableList</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="k">new</span> <span class="nf">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
+    <span class="k">new</span> <span class="n">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">ProcessorStats_Battery</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
     <span class="k">new</span> <span class="n">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">),</span>

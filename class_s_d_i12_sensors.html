@@ -1390,7 +1390,7 @@
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a1017312b563979fe22672c513d7e7647" class="m-doc">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a08854ab0712ec1b6ab090a8fa60afac7" class="m-doc">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
@@ -1398,11 +1398,12 @@
               <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">extraWakeTime</span><span class="m-dim"> = 0</span>)</span>
             </dt>
             <dd>Construct a new SDI 12 Sensors object. This is only intended to be used within this library.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#acefa4d9a7107b7fc82f36089ab18e5a6" class="m-doc">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char*</span> <span class="m-param">SDI12address</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#ac74ee8009e24f3e9393fbed14d078b6c" class="m-doc">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char*</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
@@ -1410,11 +1411,12 @@
               <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">extraWakeTime</span><span class="m-dim"> = 0</span>)</span>
             </dt>
             <dd>Construct a new SDI 12 Sensors object. This is only intended to be used within this library.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#af3bca1cbbab75f9a35f256a1e28b75e3" class="m-doc">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">SDI12address</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a24f315745e78920ca71ea6675e3911be" class="m-doc">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
@@ -1422,7 +1424,8 @@
               <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">extraWakeTime</span><span class="m-dim"> = 0</span>)</span>
             </dt>
             <dd>Construct a new SDI 12 Sensors object. This is only intended to be used within this library.</dd>
                           <dt id="a7f192b5650094867eedeb3f2cbb60513">
@@ -1509,6 +1512,10 @@
               <span class="m-dim">char</span> <a href="#a15c553ed0cb9fa5b5f20234276cc0021" class="m-doc-self">_SDI12address</a>
             </dt>
             <dd>Internal reference to the SDI-12 address.</dd>
+                          <dt id="a218492deba7296d8d1bb99176b135e1b">
+              <span class="m-dim">int8_t</span> <a href="#a218492deba7296d8d1bb99176b135e1b" class="m-doc-self">_extraWakeTime</a>
+            </dt>
+            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent.</dd>
           </dl>
         </section>
         <hr>
@@ -1522,9 +1529,9 @@
 
         <section id="function-details">
           <h2>Function documentation</h2>
-                      <section class="m-doc-details" id="a1017312b563979fe22672c513d7e7647"><div>
+                      <section class="m-doc-details" id="a08854ab0712ec1b6ab090a8fa60afac7"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1017312b563979fe22672c513d7e7647" class="m-doc-self">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a08854ab0712ec1b6ab090a8fa60afac7" class="m-doc-self">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
@@ -1532,7 +1539,8 @@
               <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span></span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">extraWakeTime</span><span class="m-dim"> = 0</span>)</span></span>
             </h3>
             <p>Construct a new SDI 12 Sensors object. This is only intended to be used within this library.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1575,6 +1583,10 @@
                 <tr>
                   <td class="m-param" ><span class="m-param">measurementTime_ms</span></td>
                   <td>The time in ms between when a measurement is started and when the result value is available. Defaults to 0.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">extraWakeTime</span></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -1582,9 +1594,9 @@
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="acefa4d9a7107b7fc82f36089ab18e5a6"><div>
+                      <section class="m-doc-details" id="ac74ee8009e24f3e9393fbed14d078b6c"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acefa4d9a7107b7fc82f36089ab18e5a6" class="m-doc-self">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char*</span> <span class="m-param">SDI12address</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac74ee8009e24f3e9393fbed14d078b6c" class="m-doc-self">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">char*</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
@@ -1592,7 +1604,8 @@
               <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span></span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">extraWakeTime</span><span class="m-dim"> = 0</span>)</span></span>
             </h3>
             <p>Construct a new SDI 12 Sensors object. This is only intended to be used within this library.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1635,6 +1648,10 @@
                 <tr>
                   <td class="m-param" ><span class="m-param">measurementTime_ms</span></td>
                   <td>The time in ms between when a measurement is started and when the result value is available. Defaults to 0.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">extraWakeTime</span></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -1642,9 +1659,9 @@
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="af3bca1cbbab75f9a35f256a1e28b75e3"><div>
+                      <section class="m-doc-details" id="a24f315745e78920ca71ea6675e3911be"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af3bca1cbbab75f9a35f256a1e28b75e3" class="m-doc-self">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">SDI12address</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a24f315745e78920ca71ea6675e3911be" class="m-doc-self">SDI12Sensors</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
@@ -1652,7 +1669,8 @@
               <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span></span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">extraWakeTime</span><span class="m-dim"> = 0</span>)</span></span>
             </h3>
             <p>Construct a new SDI 12 Sensors object. This is only intended to be used within this library.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1695,6 +1713,10 @@
                 <tr>
                   <td class="m-param" ><span class="m-param">measurementTime_ms</span></td>
                   <td>The time in ms between when a measurement is started and when the result value is available. Defaults to 0.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">extraWakeTime</span></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
