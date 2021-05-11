@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Variable &raquo; DecagonCTD_Depth class | ModularSensors</title>
+  <title>Sensor &raquo; SDI12Sensors &raquo; MeterHydros21 class | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
   rel="stylesheet"
@@ -1286,12 +1286,17 @@
           </a> &gt; <wbr/>
         </span>
                 <span class="m-breadcrumb">
-          <a href="class_variable.html">
-            Variable
+          <a href="class_sensor.html">
+            Sensor
           </a> &gt; <wbr/>
         </span>
         <span class="m-breadcrumb">
-          DecagonCTD_Depth
+          <a href="class_s_d_i12_sensors.html">
+            SDI12Sensors
+          </a> &gt; <wbr/>
+        </span>
+        <span class="m-breadcrumb">
+          MeterHydros21
         </span>
 <br>
         <span class="m-breadcrumb">
@@ -1305,23 +1310,23 @@
           </a>  &gt; <wbr/>
         </span>
                 <span class="m-breadcrumb">
-        <a href="group__sensor__decagon_c_t_d.html">Decagon CTD-10</a> &gt; <wbr/>
+        <a href="group__sensor__hydros21.html">Meter Hydros 21</a> &gt; <wbr/>
         </span>
         <span class="m-breadcrumb">
-          DecagonCTD_Depth
+          MeterHydros21
         </span>
 <br>
         <header class="gp-entry-header">
           <h1 class="gp-entry-title" itemprop="headline">
 
 
-            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_decagon_c_t_d_8h.html">&lt;sensors/DecagonCTD.h&gt;</a></div><br>
+            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_meter_hydros21_8h.html">&lt;sensors/MeterHydros21.h&gt;</a></div><br>
 
-            DecagonCTD_Depth
+            MeterHydros21
             <span class="m-thin">class</span>
           </h1>
         </header>
-        <p>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__decagon_c_t_d.html#sensor_decagon_ctd_depth" class="m-doc">depth output</a> from a <a href="group__sensor__decagon_c_t_d.html" class="m-doc">Decagon CTD-10 3-in-1 water level sensor.</a>.</p>
+        <p>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__hydros21.html" class="m-doc">Meter Hydros 21 conductivity, temperature, and depth sensor</a>.</p>
         <div class="m-block m-default">
           <ul>
             <li>
@@ -1344,9 +1349,9 @@
           <h2>Base classes</h2>
           <dl class="m-doc">
                           <dt>
-              class <a href="class_variable.html" class="m-doc">Variable</a>
+              class <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a>
             </dt>
-            <dd>The variable class for a value and related metadata.</dd>
+            <dd>The main class for SDI-12 Sensors.</dd>
           </dl>
         </section>
         <hr>
@@ -1359,19 +1364,30 @@
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a3afcc16c26e59aba0b0959547d96f12e" class="m-doc">DecagonCTD_Depth</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_decagon_c_t_d.html" class="m-doc">DecagonCTD</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = &quot;&quot;</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a href="group__sensor__decagon_c_t_d.html#ga2bca19636712fe88ad179178e9138939" class="m-doc">CTD_<wbr />DEPTH_<wbr />DEFAULT_<wbr />CODE</a></span>) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#add867a5381f3133c70507c924afb6513" class="m-doc">MeterHydros21</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
             </dt>
-            <dd>Construct a new <a href="class_decagon_c_t_d___depth.html" class="m-doc">DecagonCTD_<wbr />Depth</a> object.</dd>
+            <dd>Construct a new Meter Hydros 21 object.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#af6ecb543c829c41c702999b1479dd615" class="m-doc">DecagonCTD_Depth</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#ada4faf3e972736c117beb46a3f1b1109" class="m-doc">MeterHydros21</a>(</span><span class="m-doc-wrap"><span class="m-dim">char*</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
             </dt>
-            <dd>Construct a new <a href="class_decagon_c_t_d___depth.html" class="m-doc">DecagonCTD_<wbr />Depth</a> object.</dd>
-                          <dt id="a6ab26149fe1030778aa13f6d5ef68611">
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a6ab26149fe1030778aa13f6d5ef68611" class="m-doc-self">~DecagonCTD_Depth</a>(</span><span class="m-doc-wrap">)</span>
+            <dd>Construct a new Meter Hydros 21 object.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a2a0c7a8b9ec61faf5f8e981ded542831" class="m-doc">MeterHydros21</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
             </dt>
-            <dd>Destroy the <a href="class_decagon_c_t_d___depth.html" class="m-doc">DecagonCTD_<wbr />Depth</a> object - no action needed.</dd>
+            <dd>Construct a new Meter Hydros 21 object.</dd>
+                          <dt id="a17a5982a6446f9a13e396ab3edb4ca4d">
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a17a5982a6446f9a13e396ab3edb4ca4d" class="m-doc-self">~MeterHydros21</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>Destroy the Meter Hydros 21 object.</dd>
           </dl>
         </section>
         <hr>
@@ -1395,42 +1411,110 @@
 
         <section id="function-details">
           <h2>Function documentation</h2>
-                      <section class="m-doc-details" id="a3afcc16c26e59aba0b0959547d96f12e"><div>
+                      <section class="m-doc-details" id="add867a5381f3133c70507c924afb6513"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3afcc16c26e59aba0b0959547d96f12e" class="m-doc-self">DecagonCTD_Depth</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_decagon_c_t_d.html" class="m-doc">DecagonCTD</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = &quot;&quot;</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a href="group__sensor__decagon_c_t_d.html#ga2bca19636712fe88ad179178e9138939" class="m-doc">CTD_<wbr />DEPTH_<wbr />DEFAULT_<wbr />CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#add867a5381f3133c70507c924afb6513" class="m-doc-self">MeterHydros21</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
             </h3>
-            <p>Construct a new <a href="class_decagon_c_t_d___depth.html" class="m-doc">DecagonCTD_<wbr />Depth</a> object.</p>
+            <p>Construct a new Meter Hydros 21 object.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">parentSense</span></td>
-                  <td>The parent <a href="class_decagon_c_t_d.html" class="m-doc">DecagonCTD</a> providing the result values.</td>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">SDI12address</span></td>
+                  <td>The SDI-12 address of the Hydros 21; can be a char, char*, or int.</td>
                 </tr>
                 <tr>
-                  <td class="m-param" ><span class="m-param">uuid</span></td>
-                  <td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+                  <td class="m-param" ><span class="m-param">powerPin</span></td>
+                  <td><p>The pin on the mcu controlling power to the Hydros 21. Use -1 if it is continuously powered.</p><ul><li>The Hydros 21 requires a 3.5-12V power supply, which can be turned off between measurements</li></ul></td>
                 </tr>
                 <tr>
-                  <td class="m-param" ><span class="m-param">varCode</span></td>
-                  <td>A short code to help identify the variable in files; optional with a default value of &quot;CTDdepth&quot;.</td>
+                  <td class="m-param" ><span class="m-param">dataPin</span></td>
+                  <td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
+                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
                 </tr>
               </tbody>
             </table>
+            <p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The SDI-12 address <strong>must</strong> be changed from the factory programmed value of &quot;0&quot; before the Hydros 21 can be used with ModularSensors!</p></aside>
 
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="af6ecb543c829c41c702999b1479dd615"><div>
+                      <section class="m-doc-details" id="ada4faf3e972736c117beb46a3f1b1109"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af6ecb543c829c41c702999b1479dd615" class="m-doc-self">DecagonCTD_Depth</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ada4faf3e972736c117beb46a3f1b1109" class="m-doc-self">MeterHydros21</a>(</span><span class="m-doc-wrap"><span class="m-dim">char*</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
             </h3>
-            <p>Construct a new <a href="class_decagon_c_t_d___depth.html" class="m-doc">DecagonCTD_<wbr />Depth</a> object.</p>
-            <aside class="m-note m-info"><h4>Note</h4><p>This must be tied with a parent <a href="class_decagon_c_t_d.html" class="m-doc">DecagonCTD</a> before it can be used.</p></aside>
+            <p>Construct a new Meter Hydros 21 object.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">SDI12address</span></td>
+                  <td>The SDI-12 address of the Hydros 21; can be a char, char*, or int.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">powerPin</span></td>
+                  <td><p>The pin on the mcu controlling power to the Hydros 21. Use -1 if it is continuously powered.</p><ul><li>The Hydros 21 requires a 3.5-12V power supply, which can be turned off between measurements</li></ul></td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">dataPin</span></td>
+                  <td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
+                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The SDI-12 address <strong>must</strong> be changed from the factory programmed value of &quot;0&quot; before the Hydros 21 can be used with ModularSensors!</p></aside>
+
+            <hr>
+          </div>
+        </section>
+                      <section class="m-doc-details" id="a2a0c7a8b9ec61faf5f8e981ded542831"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2a0c7a8b9ec61faf5f8e981ded542831" class="m-doc-self">MeterHydros21</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+            </h3>
+            <p>Construct a new Meter Hydros 21 object.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">SDI12address</span></td>
+                  <td>The SDI-12 address of the Hydros 21; can be a char, char*, or int.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">powerPin</span></td>
+                  <td><p>The pin on the mcu controlling power to the Hydros 21. Use -1 if it is continuously powered.</p><ul><li>The Hydros 21 requires a 3.5-12V power supply, which can be turned off between measurements</li></ul></td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">dataPin</span></td>
+                  <td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
+                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p><aside class="m-note m-danger"><h4>Warning</h4><p>The SDI-12 address <strong>must</strong> be changed from the factory programmed value of &quot;0&quot; before the Hydros 21 can be used with ModularSensors!</p></aside>
 
             <hr>
           </div>

@@ -2399,23 +2399,25 @@
 <span class="n">Variable</span><span class="o">*</span> <span class="n">fivetmVWC</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">Decagon5TM_VWC</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fivetm</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">fivetmTemp</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">Decagon5TM_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fivetm</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre><hr/></section><section id="enu_hydros21"><h4>Meter Hydros 21 Conductivity, Temperature, and Depth Sensor</h4><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sensor__hydros21.html" class="m-doc">Meter Hydros 21</a></p></aside><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/DecagonCTD.h&gt;</span><span class="cp"></span>
+    <span class="k">new</span> <span class="n">Decagon5TM_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fivetm</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre><hr/></section><section id="enu_hydros21"><h4>Meter Hydros 21 Conductivity, Temperature, and Depth Sensor</h4><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sensor__hydros21.html" class="m-doc">Meter Hydros 21</a></p></aside><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MeterHydros21.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">CTDSDI12address</span>   <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>    <span class="c1">// The SDI-12 Address of the CTD</span>
-<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">CTDNumberReadings</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>      <span class="c1">// The number of readings to average</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDData</span>  <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>               <span class="c1">// The SDI12 data pin</span>
+<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">hydros21SDI12address</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>  <span class="c1">// The SDI-12 Address of the Hydros21</span>
+<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">hydros21NumberReadings</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>  <span class="c1">// The number of readings to average</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">hydros21Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">hydros21Data</span>  <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>               <span class="c1">// The SDI12 data pin</span>
 
-<span class="c1">// Create a Decagon CTD sensor object</span>
-<span class="n">DecagonCTD</span> <span class="nf">ctd</span><span class="p">(</span><span class="o">*</span><span class="n">CTDSDI12address</span><span class="p">,</span> <span class="n">CTDPower</span><span class="p">,</span> <span class="n">CTDData</span><span class="p">,</span> <span class="n">CTDNumberReadings</span><span class="p">);</span>
+<span class="c1">// Create a Decagon Hydros21 sensor object</span>
+<span class="n">MeterHydros21</span> <span class="nf">hydros21</span><span class="p">(</span><span class="o">*</span><span class="n">hydros21SDI12address</span><span class="p">,</span> <span class="n">hydros21Power</span><span class="p">,</span> <span class="n">hydros21Data</span><span class="p">,</span>
+                       <span class="n">hydros21NumberReadings</span><span class="p">);</span>
 
-<span class="c1">// Create conductivity, temperature, and depth variable pointers for the CTD</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdCond</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
-                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdTemp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
-                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdDepth</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">DecagonCTD_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre><hr/></section><section id="enu_teros"><h4>Meter Teros 11 Soil Moisture Sensor</h4><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sensor__teros11.html" class="m-doc">Meter Teros 11</a></p></aside><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MeterTeros11.h&gt;</span><span class="cp"></span>
+<span class="c1">// Create conductivity, temperature, and depth variable pointers for the</span>
+<span class="c1">// Hydros21</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Cond</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Temp</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Depth</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre><hr/></section><section id="enu_teros"><h4>Meter Teros 11 Soil Moisture Sensor</h4><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sensor__teros11.html" class="m-doc">Meter Teros 11</a></p></aside><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MeterTeros11.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">teros11SDI12address</span> <span class="o">=</span> <span class="s">&quot;4&quot;</span><span class="p">;</span>  <span class="c1">// The SDI-12 Address of the Teros 11</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">terosPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
@@ -2980,6 +2982,11 @@
     <span class="n">obs3TurbHigh</span><span class="p">,</span>
     <span class="n">obs3VoltHigh</span><span class="p">,</span>
 <span class="cp">#endif</span>
+<span class="cp">#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS</span>
+    <span class="n">ctdCond</span><span class="p">,</span>
+    <span class="n">ctdTemp</span><span class="p">,</span>
+    <span class="n">ctdDepth</span><span class="p">,</span>
+<span class="cp">#endif</span>
 <span class="cp">#if defined MS_BUILD_TEST_ES2 || defined MS_BUILD_TEST_ALL_SENSORS</span>
     <span class="n">es2Cond</span><span class="p">,</span>
     <span class="n">es2Temp</span><span class="p">,</span>
@@ -3022,10 +3029,10 @@
     <span class="n">fivetmVWC</span><span class="p">,</span>
     <span class="n">fivetmTemp</span><span class="p">,</span>
 <span class="cp">#endif</span>
-<span class="cp">#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS</span>
-    <span class="n">ctdCond</span><span class="p">,</span>
-    <span class="n">ctdTemp</span><span class="p">,</span>
-    <span class="n">ctdDepth</span><span class="p">,</span>
+<span class="cp">#if defined MS_BUILD_TEST_HYDROS21 || defined MS_BUILD_TEST_ALL_SENSORS</span>
+    <span class="n">hydros21Cond</span><span class="p">,</span>
+    <span class="n">hydros21Temp</span><span class="p">,</span>
+    <span class="n">hydros21Depth</span><span class="p">,</span>
 <span class="cp">#endif</span>
 <span class="cp">#if defined MS_BUILD_TEST_TEROS11 || defined MS_BUILD_TEST_ALL_SENSORS</span>
     <span class="n">teros11Ea</span><span class="p">,</span>
@@ -4653,6 +4660,32 @@
 <span class="cp">#endif</span>
 
 
+<span class="cp">#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS</span>
+<span class="c1">// ==========================================================================</span>
+<span class="c1">//  Decagon CTD-10 Conductivity, Temperature, and Depth Sensor</span>
+<span class="c1">// ==========================================================================</span>
+<span class="cm">/** Start [decagonCTD] */</span>
+<span class="cp">#include</span> <span class="cpf">&lt;sensors/DecagonCTD.h&gt;</span><span class="cp"></span>
+
+<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">CTDSDI12address</span>   <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>    <span class="c1">// The SDI-12 Address of the CTD</span>
+<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">CTDNumberReadings</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>      <span class="c1">// The number of readings to average</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDData</span>  <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>               <span class="c1">// The SDI12 data pin</span>
+
+<span class="c1">// Create a Decagon CTD sensor object</span>
+<span class="n">DecagonCTD</span> <span class="nf">ctd</span><span class="p">(</span><span class="o">*</span><span class="n">CTDSDI12address</span><span class="p">,</span> <span class="n">CTDPower</span><span class="p">,</span> <span class="n">CTDData</span><span class="p">,</span> <span class="n">CTDNumberReadings</span><span class="p">);</span>
+
+<span class="c1">// Create conductivity, temperature, and depth variable pointers for the CTD</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdCond</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
+                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdTemp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
+                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdDepth</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">DecagonCTD_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="cm">/** End [decagonCTD] */</span>
+<span class="cp">#endif</span>
+
+
 <span class="cp">#if defined MS_BUILD_TEST_ES2 || defined MS_BUILD_TEST_ALL_SENSORS</span>
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Decagon ES2 Conductivity and Temperature Sensor</span>
@@ -4933,28 +4966,30 @@
 <span class="cp">#endif</span>
 
 
-<span class="cp">#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS</span>
+<span class="cp">#if defined MS_BUILD_TEST_HYDROS21 || defined MS_BUILD_TEST_ALL_SENSORS</span>
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor</span>
 <span class="c1">// ==========================================================================</span>
 <span class="cm">/** Start [hydros21] */</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sensors/DecagonCTD.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sensors/MeterHydros21.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">CTDSDI12address</span>   <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>    <span class="c1">// The SDI-12 Address of the CTD</span>
-<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">CTDNumberReadings</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>      <span class="c1">// The number of readings to average</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDData</span>  <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>               <span class="c1">// The SDI12 data pin</span>
+<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">hydros21SDI12address</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>  <span class="c1">// The SDI-12 Address of the Hydros21</span>
+<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">hydros21NumberReadings</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>  <span class="c1">// The number of readings to average</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">hydros21Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">hydros21Data</span>  <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>               <span class="c1">// The SDI12 data pin</span>
 
-<span class="c1">// Create a Decagon CTD sensor object</span>
-<span class="n">DecagonCTD</span> <span class="nf">ctd</span><span class="p">(</span><span class="o">*</span><span class="n">CTDSDI12address</span><span class="p">,</span> <span class="n">CTDPower</span><span class="p">,</span> <span class="n">CTDData</span><span class="p">,</span> <span class="n">CTDNumberReadings</span><span class="p">);</span>
+<span class="c1">// Create a Decagon Hydros21 sensor object</span>
+<span class="n">MeterHydros21</span> <span class="nf">hydros21</span><span class="p">(</span><span class="o">*</span><span class="n">hydros21SDI12address</span><span class="p">,</span> <span class="n">hydros21Power</span><span class="p">,</span> <span class="n">hydros21Data</span><span class="p">,</span>
+                       <span class="n">hydros21NumberReadings</span><span class="p">);</span>
 
-<span class="c1">// Create conductivity, temperature, and depth variable pointers for the CTD</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdCond</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
-                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdTemp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
-                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdDepth</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">DecagonCTD_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="c1">// Create conductivity, temperature, and depth variable pointers for the</span>
+<span class="c1">// Hydros21</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Cond</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Temp</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Depth</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
 <span class="cm">/** End [hydros21] */</span>
 <span class="cp">#endif</span>
 
@@ -5726,6 +5761,11 @@
     <span class="n">obs3TurbHigh</span><span class="p">,</span>
     <span class="n">obs3VoltHigh</span><span class="p">,</span>
 <span class="cp">#endif</span>
+<span class="cp">#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS</span>
+    <span class="n">ctdCond</span><span class="p">,</span>
+    <span class="n">ctdTemp</span><span class="p">,</span>
+    <span class="n">ctdDepth</span><span class="p">,</span>
+<span class="cp">#endif</span>
 <span class="cp">#if defined MS_BUILD_TEST_ES2 || defined MS_BUILD_TEST_ALL_SENSORS</span>
     <span class="n">es2Cond</span><span class="p">,</span>
     <span class="n">es2Temp</span><span class="p">,</span>
@@ -5768,10 +5808,10 @@
     <span class="n">fivetmVWC</span><span class="p">,</span>
     <span class="n">fivetmTemp</span><span class="p">,</span>
 <span class="cp">#endif</span>
-<span class="cp">#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS</span>
-    <span class="n">ctdCond</span><span class="p">,</span>
-    <span class="n">ctdTemp</span><span class="p">,</span>
-    <span class="n">ctdDepth</span><span class="p">,</span>
+<span class="cp">#if defined MS_BUILD_TEST_HYDROS21 || defined MS_BUILD_TEST_ALL_SENSORS</span>
+    <span class="n">hydros21Cond</span><span class="p">,</span>
+    <span class="n">hydros21Temp</span><span class="p">,</span>
+    <span class="n">hydros21Depth</span><span class="p">,</span>
 <span class="cp">#endif</span>
 <span class="cp">#if defined MS_BUILD_TEST_TEROS11 || defined MS_BUILD_TEST_ALL_SENSORS</span>
     <span class="n">teros11Ea</span><span class="p">,</span>

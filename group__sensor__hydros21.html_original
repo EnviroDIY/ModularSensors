@@ -1316,40 +1316,42 @@
                 <li><a href="#water-depth">Water Depth</a></li>
           </ul>
         </div>
-          <p>Classes for the Meter Hydros 21 conductivity, temperature, and depth sensor.</p><section id="sensor_hydros21_intro"><h2>Introduction</h2><blockquote><p>A compact 3.4 cm diameter sensor that fits into tight spaces, the HYDROS 21 is a low-cost, durable, and easy-to-use tool for monitoring EC, temperature, and depth in both groundwater and surface water.</p></blockquote><aside class="m-note m-info"><h4>Note</h4><p>Meter Environmental was formerly known as Decagon Devices and sold a very similar sensor to the current Hydros 21 as the CTD-10.</p></aside><p>The Hydros 21 is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V.</p><aside class="m-note m-danger"><h4>Warning</h4><p>Coming from the factory, METER sensors are set at SDI-12 address &#x27;0&#x27;. They also output a &quot;DDI&quot; serial protocol string on each power up. This library <em>disables the DDI output string</em> on all newer METER sensors that support disabling it. After using a METER sensor with ModularSensors, you will need to manually re-enable the DDI output if you wish to use it.</p></aside></section><section id="sensor_hydros21_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the SDI-12 Protocol commands and responses for the Hydros 21 can be found at: <a href="http://library.metergroup.com/Manuals/13869_CTD_Web.pdf">http://library.metergroup.com/Manuals/13869_<wbr />CTD_<wbr />Web.pdf</a></p></section><section id="sensor_hydros21_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_hydros21_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_decagon_c_t_d.html#ab55f821e5b9ac2080f6421e80feba6bc" class="m-doc">DecagonCTD::<wbr />DecagonCTD</a> }}</p><hr/></section><section id="sensor_hydros21_examples"><h2>Example Code</h2><p>The Meter Hydros21 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_hydros21">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/DecagonCTD.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Meter Hydros 21 conductivity, temperature, and depth sensor.</p><section id="sensor_hydros21_intro"><h2>Introduction</h2><blockquote><p>A compact 3.4 cm diameter sensor that fits into tight spaces, the HYDROS 21 is a low-cost, durable, and easy-to-use tool for monitoring EC, temperature, and depth in both groundwater and surface water.</p></blockquote><aside class="m-note m-info"><h4>Note</h4><p>Meter Environmental was formerly known as Decagon Devices and sold a very similar sensor to the current Hydros 21 as the CTD-10.</p></aside><p>The Hydros 21 is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 3.5-12V power supply, which can be turned off between measurements. While contrary to the manual, they will run with power as low as 3.3V.</p><aside class="m-note m-info"><h4>Note</h4><p>This is identical to Meter Hydros 21 in everything but the names.</p></aside><aside class="m-note m-danger"><h4>Warning</h4><p>Coming from the factory, METER sensors are set at SDI-12 address &#x27;0&#x27;. They also output a &quot;DDI&quot; serial protocol string on each power up. This library <em>disables the DDI output string</em> on all newer METER sensors that support disabling it. After using a METER sensor with ModularSensors, you will need to manually re-enable the DDI output if you wish to use it.</p></aside></section><section id="sensor_hydros21_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the SDI-12 Protocol commands and responses for the Hydros 21 can be found at: <a href="http://library.metergroup.com/Manuals/13869_CTD_Web.pdf">http://library.metergroup.com/Manuals/13869_<wbr />CTD_<wbr />Web.pdf</a></p></section><section id="sensor_hydros21_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_hydros21_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_meter_hydros21.html#add867a5381f3133c70507c924afb6513" class="m-doc">MeterHydros21::<wbr />MeterHydros21</a> }}</p><hr/></section><section id="sensor_hydros21_examples"><h2>Example Code</h2><p>The Meter Hydros21 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_hydros21">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MeterHydros21.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">CTDSDI12address</span>   <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>    <span class="c1">// The SDI-12 Address of the CTD</span>
-<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">CTDNumberReadings</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>      <span class="c1">// The number of readings to average</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">CTDData</span>  <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>               <span class="c1">// The SDI12 data pin</span>
+<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>   <span class="n">hydros21SDI12address</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>  <span class="c1">// The SDI-12 Address of the Hydros21</span>
+<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">hydros21NumberReadings</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>  <span class="c1">// The number of readings to average</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">hydros21Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">hydros21Data</span>  <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>               <span class="c1">// The SDI12 data pin</span>
 
-<span class="c1">// Create a Decagon CTD sensor object</span>
-<span class="n">DecagonCTD</span> <span class="nf">ctd</span><span class="p">(</span><span class="o">*</span><span class="n">CTDSDI12address</span><span class="p">,</span> <span class="n">CTDPower</span><span class="p">,</span> <span class="n">CTDData</span><span class="p">,</span> <span class="n">CTDNumberReadings</span><span class="p">);</span>
+<span class="c1">// Create a Decagon Hydros21 sensor object</span>
+<span class="n">MeterHydros21</span> <span class="nf">hydros21</span><span class="p">(</span><span class="o">*</span><span class="n">hydros21SDI12address</span><span class="p">,</span> <span class="n">hydros21Power</span><span class="p">,</span> <span class="n">hydros21Data</span><span class="p">,</span>
+                       <span class="n">hydros21NumberReadings</span><span class="p">);</span>
 
-<span class="c1">// Create conductivity, temperature, and depth variable pointers for the CTD</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdCond</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
-                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdTemp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DecagonCTD_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span>
-                                        <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ctdDepth</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">DecagonCTD_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ctd</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="c1">// Create conductivity, temperature, and depth variable pointers for the</span>
+<span class="c1">// Hydros21</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Cond</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Cond</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Temp</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">hydros21Depth</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">MeterHydros21_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hydros21</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
             <dt>
-              class <a href="class_decagon_c_t_d.html" class="m-doc">DecagonCTD</a>
+              class <a href="class_meter_hydros21.html" class="m-doc">MeterHydros21</a>
             </dt>
             <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__hydros21.html" class="m-doc">Meter Hydros 21 conductivity, temperature, and depth sensor</a>.</dd>
             <dt>
-              class <a href="class_decagon_c_t_d___cond.html" class="m-doc">DecagonCTD_Cond</a>
+              class <a href="class_meter_hydros21___cond.html" class="m-doc">MeterHydros21_Cond</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__hydros21.html#sensor_hydros21_cond" class="m-doc">conductivity output</a> from a <a href="group__sensor__hydros21.html" class="m-doc">Meter Hydros 21 3-in-1 water level sensor.</a>.</dd>
             <dt>
-              class <a href="class_decagon_c_t_d___temp.html" class="m-doc">DecagonCTD_Temp</a>
+              class <a href="class_meter_hydros21___temp.html" class="m-doc">MeterHydros21_Temp</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__hydros21.html#sensor_hydros21_temp" class="m-doc">temperature Output</a> from a <a href="group__sensor__hydros21.html" class="m-doc">Meter Hydros 21 3-in-1 water level sensor.</a>.</dd>
             <dt>
-              class <a href="class_decagon_c_t_d___depth.html" class="m-doc">DecagonCTD_Depth</a>
+              class <a href="class_meter_hydros21___depth.html" class="m-doc">MeterHydros21_Depth</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__hydros21.html#sensor_hydros21_depth" class="m-doc">depth output</a> from a <a href="group__sensor__hydros21.html" class="m-doc">Meter Hydros 21 3-in-1 water level sensor.</a>.</dd>
           </dl>
@@ -1358,9 +1360,9 @@
           <h2>Defines</h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gad740d01155fd66ee816c50a290efb14a" class="m-doc">CTD_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2902f6738e8f627bf6842620176c8f5f" class="m-doc">HYDROS21_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
-            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the CTD can report 3 values.</dd>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Hydros 21 can report 3 values.</dd>
 
 
           </dl>
@@ -1370,138 +1372,138 @@
 <p><a name="sensor_hydros21_timing"></a> The sensor timing for a Meter Hydros 21</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaf28df8318435afcd50155d03755b44c0" class="m-doc">CTD_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 500</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga58592eec1a83581238a4695dbbf180cb" class="m-doc">HYDROS21_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 500</span></span>
             </dt>
             <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; maximum warm-up time in SDI-12 mode: 500ms.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gafe4fd5873da45c6aa8b99b7dfae275dc" class="m-doc">CTD_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga4995678389bf14d85cf55bc7f058d9d7" class="m-doc">HYDROS21_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
-            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the CTD is stable as soon as it warms up (0ms stabilization).</dd>
+            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the Hydros 21 is stable as soon as it warms up (0ms stabilization).</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga813862ea1da0977bc56fc15821826593" class="m-doc">CTD_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 500</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga4e9fa3a99898da3553b35a20e87f5b15" class="m-doc">HYDROS21_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 500</span></span>
             </dt>
             <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; maximum measurement duration: 500ms.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga87f7e4ff93d02481f60d5a7795ede7f3" class="m-doc">CTD_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga9413600eacc8ae89e335f777ca97f654" class="m-doc">HYDROS21_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
-            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The CTD requires no extra time.</dd>
+            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The Hydros 21 requires no extra time.</dd>
 
 
           </dl>
         </section>
         <section id="conductivity">
           <h2>Conductivity</h2>
-<p><a name="sensor_hydros21_cond"></a> The conductivity variable from a Meter Hydros 21</p><ul><li>Range is 0 – 120 mS/cm (bulk)</li><li>Accuracy is ±0.01mS/cm or ±10% (whichever is greater)</li></ul><p>{{ <a href="class_decagon_c_t_d___cond.html#a1e186274819a8f22c63c2a19d130f44a" class="m-doc">DecagonCTD_Cond::<wbr />DecagonCTD_Cond</a> }}</p>
+<p><a name="sensor_hydros21_cond"></a> The conductivity variable from a Meter Hydros 21</p><ul><li>Range is 0 – 120 mS/cm (bulk)</li><li>Accuracy is ±0.01mS/cm or ±10% (whichever is greater)</li></ul><p>{{ <a href="class_meter_hydros21___cond.html#a69bb03c07ef5821fa52ae51db628eb58" class="m-doc">MeterHydros21_Cond::<wbr />MeterHydros21_Cond</a> }}</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gad508dc979b24dc03448fb3cd25e9ac7b" class="m-doc">CTD_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf884f178c11f945b0a2ebdd6db60fce5" class="m-doc">HYDROS21_COND_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd>Decimals places in string representation; conductivity should have 1.</dd>
 
               <dd><p>0 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm</p></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga7aa38c8ea5c1785ba1fb5b2d5d79ca51" class="m-doc">CTD_COND_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac48ef93cc23489dc73f5b962484da9ed" class="m-doc">HYDROS21_COND_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; conductivity is stored in sensorValues[2].</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gab08175316ecc1856542b50b5492e4ded" class="m-doc">CTD_COND_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "specificConductance"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac288d2153bb0391cde7984c1bbcd745a" class="m-doc">HYDROS21_COND_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "specificConductance"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;specificConductance&quot;.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga85c16c7e0479dd6d024dc3665c818c65" class="m-doc">CTD_COND_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microsiemenPerCentimeter"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1a8f7ada4dbb0113dd387a4cf1862940" class="m-doc">HYDROS21_COND_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microsiemenPerCentimeter"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;microsiemenPerCentimeter&quot; (µS/cm)</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga0cce3faca135d7275a14f0590e19d7ab" class="m-doc">CTD_COND_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "CTDcond"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga487b4b2663f267f7fc48bc4ceed8e6b0" class="m-doc">HYDROS21_COND_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Hydros21cond"</span></span>
             </dt>
-            <dd>Default variable short code; &quot;CTDcond&quot;.</dd>
+            <dd>Default variable short code; &quot;Hydros21cond&quot;.</dd>
 
 
           </dl>
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_hydros21_temp"></a> The temperature variable from a Meter Hydros 21</p><ul><li>Range is -11°C to +49°C</li><li>Accuracy is ±1°C</li></ul><p>{{ <a href="class_decagon_c_t_d___temp.html#a471eecc675c44f70432e20ac72503bfc" class="m-doc">DecagonCTD_Temp::<wbr />DecagonCTD_Temp</a> }}</p>
+<p><a name="sensor_hydros21_temp"></a> The temperature variable from a Meter Hydros 21</p><ul><li>Range is -11°C to +49°C</li><li>Accuracy is ±1°C</li></ul><p>{{ <a href="class_meter_hydros21___temp.html#a58f163707b61f7472709d058188275f2" class="m-doc">MeterHydros21_Temp::<wbr />MeterHydros21_Temp</a> }}</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gae4e7f9eeb94ca4f70997188d71c7bb81" class="m-doc">CTD_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga6cdf9b0cff60a905be223410a92a2b7b" class="m-doc">HYDROS21_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd>Decimals places in string representation; temperature should have 2.</dd>
 
               <dd><p>1 is reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 0.1°C</p></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaca4fe53cc0e723e5147b5d1f442ff33d" class="m-doc">CTD_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac51a3323a346712863b2d17ff7158d7f" class="m-doc">HYDROS21_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; temperature is stored in sensorValues[1].</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga59152bd4c72a31c9a2122ac2416cb58d" class="m-doc">CTD_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac3be121dab183e12f6ec47314e8b234a" class="m-doc">HYDROS21_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga3ceba34fb18f1cb6595656b565e7ae22" class="m-doc">CTD_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga76524cf8512e98f994c84e7fc8b70d6d" class="m-doc">HYDROS21_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga304532b2a7ddc48785b0c41920cd710a" class="m-doc">CTD_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "CTDtemp"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa626dc952ccb4d07680d2a24a4e8fe24" class="m-doc">HYDROS21_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Hydros21temp"</span></span>
             </dt>
-            <dd>Default variable short code; &quot;CTDtemp&quot;.</dd>
+            <dd>Default variable short code; &quot;Hydros21temp&quot;.</dd>
 
 
           </dl>
         </section>
         <section id="water-depth">
           <h2>Water Depth</h2>
-<p><a name="sensor_hydros21_depth"></a> The water depth variable from a Meter Hydros 21</p><ul><li>Range is 0 to 5 m or 0 to 10 m, depending on model</li><li>Accuracy is ±0.05% of full scale</li></ul><p>{{ <a href="class_decagon_c_t_d___depth.html#a3afcc16c26e59aba0b0959547d96f12e" class="m-doc">DecagonCTD_Depth::<wbr />DecagonCTD_Depth</a> }}</p>
+<p><a name="sensor_hydros21_depth"></a> The water depth variable from a Meter Hydros 21</p><ul><li>Range is 0 to 5 m or 0 to 10 m, depending on model</li><li>Accuracy is ±0.05% of full scale</li></ul><p>{{ <a href="class_meter_hydros21___depth.html#a75960ec01de9a422e283fba703b26df1" class="m-doc">MeterHydros21_Depth::<wbr />MeterHydros21_Depth</a> }}</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaa091732fd2bb6e5210a7f7ab18b45b48" class="m-doc">CTD_DEPTH_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga09657f9681a9b227a3365d21bcf14437" class="m-doc">HYDROS21_DEPTH_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd>Decimals places in string representation; depth should have 1.</dd>
 
               <dd><p>0 are reported, adding extra digit to resolution to allow the proper number of significant figures for averaging - resolution is 2 mm</p></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga98b8b1dd352aba0165a754ef3b3bcd7c" class="m-doc">CTD_DEPTH_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga724721de0d35c4b1ea86593840351852" class="m-doc">HYDROS21_DEPTH_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; depth is stored in sensorValues[0].</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga2b33ca48fcdb7a7c293145937d0916bb" class="m-doc">CTD_DEPTH_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "waterDepth"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga36239380ceb2dd74de07d8f5903a2bb1" class="m-doc">HYDROS21_DEPTH_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "waterDepth"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;waterDepth&quot;.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga7aa2b1d051657fdb4155870ff70cf866" class="m-doc">CTD_DEPTH_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "millimeter"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga590f86a5632f278971b5d2e2efe4e1d8" class="m-doc">HYDROS21_DEPTH_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "millimeter"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;millimeter&quot;.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga2bca19636712fe88ad179178e9138939" class="m-doc">CTD_DEPTH_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "CTDdepth"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaa7086cb4f33ca62e9cf2b2ce569bee0f" class="m-doc">HYDROS21_DEPTH_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Hydros21depth"</span></span>
             </dt>
-            <dd>Default variable short code; &quot;CTDdepth&quot;.</dd>
+            <dd>Default variable short code; &quot;Hydros21depth&quot;.</dd>
 
 
           </dl>
