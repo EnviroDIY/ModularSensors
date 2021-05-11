@@ -1,6 +1,5 @@
 /*****************************************************************************
-ms_cfg.h_LT5_lte  - ModularSensors Configuration - tgt _LT5 Acculevel /LTE
-Status 210326: 0.28.3 updated cc, not tested
+ms_cfg.h_LT5_lte  - ModularSensors Configuration - tgt _LT5 /LTE
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
 Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
@@ -46,9 +45,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define USE_STC3100_DD 1
 #define MAYFLY_BAT_STC3100 1
 // Only one of NOT both KellerAcculevel and KellerNanolevel as share same ADDR
-#define KellerAcculevel_ACT 1
+//#define KellerAcculevel_ACT 1
 // KellerAcculevel units can be 1 (meter) 2 (feet)
-#define KellerAcculevel_DepthUnits 2
+//#define KellerAcculevel_DepthUnits 2
 
 //#define KellerNanolevel_ACT 1
 #endif //WINGBOARD_KNH002
@@ -72,7 +71,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFName_DEF "Mayfly"
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
-#define CONFIGURATION_DESCRIPTION_STR "tu_LT5_lte LT500,Acculevel"
+#define CONFIGURATION_DESCRIPTION_STR "tu_LT5_lte LT500"
 
 #define USE_MS_SD_INI 1
 #define USE_PS_EEPROM 1

@@ -679,7 +679,7 @@ USE_RTCLIB* Logger::rtcExtPhyObj() {
 // ===================================================================== //
 
 // This is a one-and-done to log data
-void Logger::logDataAndPubReliably(void) {
+void Logger::logDataAndPubReliably(uint8_t cia_val_override) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -687,6 +687,12 @@ void Logger::logDataAndPubReliably(void) {
     // Assuming we were woken up by the clock, check if the current time is
     // an even interval of the logging interval
     uint8_t cia_val = checkInterval();
+    if (cia_val_override) {
+        cia_val = cia_val_override;
+        wakeUpTime_secs = getNowEpochTz();//Set reference time
+        markTime();
+        PRINTOUT(F("logDataAndPubReliably - overide with "),cia_val);
+    }
     if (NULL != _bat_handler_atl) {
         _bat_handler_atl(LB_PWR_USEABLE_REQ);  // Measures battery
         if (!_bat_handler_atl(LB_PWR_SENSOR_USE_REQ)) {

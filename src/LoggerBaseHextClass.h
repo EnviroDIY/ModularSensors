@@ -121,7 +121,8 @@ public:
  * It uses an algorithim to reliably deliver the readings.
  *
  */
-void logDataAndPubReliably(void);
+#define LOGGER_RELIABLE_POST (Logger::CIA_NEW_READING|Logger::CIA_POST_READINGS)
+void logDataAndPubReliably(uint8_t cia_val_override =0);
 
 /**
  * @brief Process queued readings to send to remote if internet available.
