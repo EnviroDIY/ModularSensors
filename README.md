@@ -56,7 +56,8 @@ For some generalized information about attaching sensors to an Arduino style boa
     - [EZO-RTD: Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__atlas__rtd.html)
 - [Bosch BME280: barometric pressure, humidity & temperature](https://envirodiy.github.io/ModularSensors/group__sensor__bme280.html)
 - [Campbell Scientific OBS-3+: turbidity, via TI ADS1115](https://envirodiy.github.io/ModularSensors/group__sensor__obs3.html)
-- [Decagon Devices ES-2: conductivity ](https://envirodiy.github.io/ModularSensors/group__sensor__es2.html)
+- [Decagon Devices ES-2: conductivity ](https://envirodiy.github.io/ModularSensors/group__sensor__decagon__ctd.html)
+- [Decagon Devices CTD-10: conductivity, temperature & depth ](https://envirodiy.github.io/ModularSensors/group__sensor__es2.html)
 - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](https://envirodiy.github.io/ModularSensors/group__sensor__mpl115a2.html)
 - [External Arduino I2C Rain Tipping Bucket Counter: rainfall totals](https://envirodiy.github.io/ModularSensors/group__sensor__i2c__rain.html)
 - [Insitu RDO PRO-X: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__insitu__rdo.html.html)
@@ -69,7 +70,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - Meter Environmental Soil Moisture Probes: soil Ea and volumetric water content
     - [Meter ECH2O 5TM](https://envirodiy.github.io/ModularSensors/group__sensor__fivetm.html)
     - [Meter Teros 11](https://envirodiy.github.io/ModularSensors/group__sensor__teros11.html)
-- [Meter Environmental Hydros 21 (formerly Decagon Devices CTD-10): conductivity, temperature & depth](https://envirodiy.github.io/ModularSensors/group__sensor__hydros21.html)
+- [Meter Environmental Hydros 21: conductivity, temperature & depth](https://envirodiy.github.io/ModularSensors/group__sensor__hydros21.html)
 - [Northern Widget Tally Event Counter: number of events](https://envirodiy.github.io/ModularSensors/group__sensor__tally.html)
 - [PaleoTerra Redox Sensor: redox potential](https://envirodiy.github.io/ModularSensors/group__sensor__pt__redox.html)
 - [TI ADS1115: external voltage with support for divided current](https://envirodiy.github.io/ModularSensors/group__sensor__ads1x15.html)

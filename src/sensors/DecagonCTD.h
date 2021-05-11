@@ -8,35 +8,31 @@
  * the variable subclasses DecagonCTD_Cond, DecagonCTD_Temp, and
  * DecagonCTD_Depth.
  *
- * These are used for the Meter Hydros 21, formerly known as the Decagon Devices
- * CTD-10.
+ * These are used for the Decagon Devices CTD-10.
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
  * class.
+ *
+ * @note  This is identical to MeterHydros21.h in everything but the names.
  */
 /* clang-format off */
 /**
- * @defgroup sensor_hydros21 Meter Hydros 21
- * Classes for the Meter Hydros 21 conductivity, temperature, and depth sensor.
+ * @defgroup sensor_decagonCTD Decagon CTD-10
+ * Classes for the Decagon CTD-10 conductivity, temperature, and depth sensor.
  *
  * @ingroup sdi12_group
  *
  * @tableofcontents
  * @m_footernavigation
  *
- * @section sensor_hydros21_intro Introduction
+ * @section sensor_decagon_ctd_intro Introduction
  *
- * > A compact 3.4 cm diameter sensor that fits into tight spaces, the
- * > HYDROS 21 is a low-cost, durable, and easy-to-use tool for monitoring EC,
- * > temperature, and depth in both groundwater and surface water.
- *
- * @note Meter Environmental was formerly known as Decagon Devices and sold a
- * very similar sensor to the current Hydros 21 as the CTD-10.
- *
- * The Hydros 21 is implemented as a sub-classes of the SDI12Sensors class.
+ * The Decagon CTD is implemented as a sub-classes of the SDI12Sensors class.
  * It requires a 3.5-12V power supply, which can be turned off between
  * measurements. While contrary to the manual, they will run with power as low
  * as 3.3V.
+ *
+ * @note  This is identical to Meter Hydros 21 in everything but the names.
  *
  * @warning Coming from the factory, METER sensors are set at SDI-12 address
  * '0'.  They also output a "DDI" serial protocol string on each power up.
@@ -44,42 +40,42 @@
  * that support disabling it.  After using a METER sensor with ModularSensors,
  * you will need to manually re-enable the DDI output if you wish to use it.
  *
- * @section sensor_hydros21_datasheet Sensor Datasheet
- * Documentation for the SDI-12 Protocol commands and responses for the Hydros
- * 21 can be found at: http://library.metergroup.com/Manuals/13869_CTD_Web.pdf
+ * @section sensor_decagon_ctd_datasheet Sensor Datasheet
+ * Documentation for the SDI-12 Protocol commands and responses for the Decagon
+ * CTD are archived in the ModularSensors wiki.
  *
- * @section sensor_hydros21_flags Build flags
+ * @section sensor_decagon_ctd_flags Build flags
  * @see @ref sdi12_group_flags
  *
- * @section sensor_hydros21_ctor Sensor Constructor
+ * @section sensor_decagon_ctd_ctor Sensor Constructor
  * {{ @ref DecagonCTD::DecagonCTD }}
  *
  * ___
- * @section sensor_hydros21_examples Example Code
- * The Meter Hydros21 is used in the @menulink{hydros21} example.
+ * @section sensor_decagon_ctd_examples Example Code
+ * The Decagon CTD-10 is used in the @menulink{decagonCTD} example.
  *
- * @menusnip{hydros21}
+ * @menusnip{decagonCTD}
  */
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_SENSORS_DECAGONCTD_H_
-#define SRC_SENSORS_DECAGONCTD_H_
+#ifndef SRC_SENSORS_decagon_ctd_H_
+#define SRC_SENSORS_decagon_ctd_H_
 
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
-/** @ingroup sensor_hydros21 */
+/** @ingroup sensor_decagonCTD */
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the CTD can report 3 values.
 #define CTD_NUM_VARIABLES 3
 
 /**
- * @anchor sensor_hydros21_timing
+ * @anchor sensor_decagon_ctd_timing
  * @name Sensor Timing
- * The sensor timing for a Meter Hydros 21
+ * The sensor timing for a Decagon CTD-10
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; maximum warm-up time in SDI-12 mode: 500ms
@@ -95,9 +91,9 @@
 /**@}*/
 
 /**
- * @anchor sensor_hydros21_cond
+ * @anchor sensor_decagon_ctd_cond
  * @name Conductivity
- * The conductivity variable from a Meter Hydros 21
+ * The conductivity variable from a Decagon CTD-10
  * - Range is 0 – 120 mS/cm (bulk)
  * - Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
  *
@@ -126,9 +122,9 @@
 /**@}*/
 
 /**
- * @anchor sensor_hydros21_temp
+ * @anchor sensor_decagon_ctd_temp
  * @name Temperature
- * The temperature variable from a Meter Hydros 21
+ * The temperature variable from a Decagon CTD-10
  * - Range is -11°C to +49°C
  * - Accuracy is ±1°C
  *
@@ -157,9 +153,9 @@
 /**@}*/
 
 /**
- * @anchor sensor_hydros21_depth
+ * @anchor sensor_decagon_ctd_depth
  * @name Water Depth
- * The water depth variable from a Meter Hydros 21
+ * The water depth variable from a Decagon CTD-10
  * - Range is 0 to 5 m or 0 to 10 m, depending on model
  * - Accuracy is ±0.05% of full scale
  *
@@ -191,9 +187,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Meter Hydros 21 conductivity, temperature, and depth sensor](@ref sensor_hydros21)
+ * [Decagon CTD-10 conductivity, temperature, and depth sensor](@ref sensor_decagonCTD)
  *
- * @ingroup sensor_hydros21
+ * @ingroup sensor_decagonCTD
  */
 /* clang-format on */
 class DecagonCTD : public SDI12Sensors {
@@ -208,14 +204,14 @@ class DecagonCTD : public SDI12Sensors {
      * readings to average.  The data pin must be a pin that supports pin-change
      * interrupts.
      *
-     * @param SDI12address The SDI-12 address of the Hydros 21; can be a char,
+     * @param SDI12address The SDI-12 address of the CTD-10; can be a char,
      * char*, or int.
      * @warning The SDI-12 address **must** be changed from the factory
-     * programmed value of "0" before the Hydros 21 can be used with
+     * programmed value of "0" before the CTD-10 can be used with
      * ModularSensors!
-     * @param powerPin The pin on the mcu controlling power to the Hydros 21.
+     * @param powerPin The pin on the mcu controlling power to the CTD-10.
      * Use -1 if it is continuously powered.
-     * - The Hydros 21 requires a 3.5-12V power supply, which can be turned off
+     * - The CTD-10 requires a 3.5-12V power supply, which can be turned off
      * between measurements
      * @param dataPin The pin on the mcu connected to the data line of the
      * SDI-12 circuit.
@@ -258,10 +254,10 @@ class DecagonCTD : public SDI12Sensors {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [conductivity output](@ref sensor_hydros21_cond) from a
- * [Meter Hydros 21 3-in-1 water level sensor.](@ref sensor_hydros21)
+ * [conductivity output](@ref sensor_decagon_ctd_cond) from a
+ * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagonCTD)
  *
- * @ingroup sensor_hydros21
+ * @ingroup sensor_decagonCTD
  */
 /* clang-format on */
 class DecagonCTD_Cond : public Variable {
@@ -299,10 +295,10 @@ class DecagonCTD_Cond : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature Output](@ref sensor_hydros21_temp) from a
- * [Meter Hydros 21 3-in-1 water level sensor.](@ref sensor_hydros21)
+ * [temperature Output](@ref sensor_decagon_ctd_temp) from a
+ * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagonCTD)
  *
- * @ingroup sensor_hydros21
+ * @ingroup sensor_decagonCTD
  */
 /* clang-format on */
 class DecagonCTD_Temp : public Variable {
@@ -340,10 +336,10 @@ class DecagonCTD_Temp : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [depth output](@ref sensor_hydros21_depth) from a
- * [Meter Hydros 21 3-in-1 water level sensor.](@ref sensor_hydros21)
+ * [depth output](@ref sensor_decagon_ctd_depth) from a
+ * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagonCTD)
  *
- * @ingroup sensor_hydros21
+ * @ingroup sensor_decagonCTD
  */
 /* clang-format on */
 class DecagonCTD_Depth : public Variable {
@@ -377,4 +373,4 @@ class DecagonCTD_Depth : public Variable {
     ~DecagonCTD_Depth() {}
 };
 /**@}*/
-#endif  // SRC_SENSORS_DECAGONCTD_H_
+#endif  // SRC_SENSORS_decagon_ctd_H_

@@ -1138,6 +1138,32 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 #endif
 
 
+#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS
+// ==========================================================================
+//  Decagon CTD-10 Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+/** Start [decagonCTD] */
+#include <sensors/DecagonCTD.h>
+
+const char*   CTDSDI12address   = "1";    // The SDI-12 Address of the CTD
+const uint8_t CTDNumberReadings = 6;      // The number of readings to average
+const int8_t  CTDPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  CTDData  = 7;               // The SDI12 data pin
+
+// Create a Decagon CTD sensor object
+DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
+
+// Create conductivity, temperature, and depth variable pointers for the CTD
+Variable* ctdCond = new DecagonCTD_Cond(&ctd,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ctdTemp = new DecagonCTD_Temp(&ctd,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ctdDepth =
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [decagonCTD] */
+#endif
+
+
 #if defined MS_BUILD_TEST_ES2 || defined MS_BUILD_TEST_ALL_SENSORS
 // ==========================================================================
 //  Decagon ES2 Conductivity and Temperature Sensor
@@ -1418,28 +1444,30 @@ Variable* fivetmTemp =
 #endif
 
 
-#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_TEST_HYDROS21 || defined MS_BUILD_TEST_ALL_SENSORS
 // ==========================================================================
 //  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 /** Start [hydros21] */
-#include <sensors/DecagonCTD.h>
+#include <sensors/MeterHydros21.h>
 
-const char*   CTDSDI12address   = "1";    // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;      // The number of readings to average
-const int8_t  CTDPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t  CTDData  = 7;               // The SDI12 data pin
+const char*   hydros21SDI12address = "1";  // The SDI-12 Address of the Hydros21
+const uint8_t hydros21NumberReadings = 6;  // The number of readings to average
+const int8_t  hydros21Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  hydros21Data  = 7;               // The SDI12 data pin
 
-// Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
+// Create a Decagon Hydros21 sensor object
+MeterHydros21 hydros21(*hydros21SDI12address, hydros21Power, hydros21Data,
+                       hydros21NumberReadings);
 
-// Create conductivity, temperature, and depth variable pointers for the CTD
-Variable* ctdCond = new DecagonCTD_Cond(&ctd,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ctdTemp = new DecagonCTD_Temp(&ctd,
-                                        "12345678-abcd-1234-ef00-1234567890ab");
-Variable* ctdDepth =
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
+// Create conductivity, temperature, and depth variable pointers for the
+// Hydros21
+Variable* hydros21Cond =
+    new MeterHydros21_Cond(&hydros21, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* hydros21Temp =
+    new MeterHydros21_Temp(&hydros21, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* hydros21Depth =
+    new MeterHydros21_Depth(&hydros21, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [hydros21] */
 #endif
 
@@ -2211,6 +2239,11 @@ Variable* variableList[] = {
     obs3TurbHigh,
     obs3VoltHigh,
 #endif
+#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS
+    ctdCond,
+    ctdTemp,
+    ctdDepth,
+#endif
 #if defined MS_BUILD_TEST_ES2 || defined MS_BUILD_TEST_ALL_SENSORS
     es2Cond,
     es2Temp,
@@ -2253,10 +2286,10 @@ Variable* variableList[] = {
     fivetmVWC,
     fivetmTemp,
 #endif
-#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS
-    ctdCond,
-    ctdTemp,
-    ctdDepth,
+#if defined MS_BUILD_TEST_HYDROS21 || defined MS_BUILD_TEST_ALL_SENSORS
+    hydros21Cond,
+    hydros21Temp,
+    hydros21Depth,
 #endif
 #if defined MS_BUILD_TEST_TEROS11 || defined MS_BUILD_TEST_ALL_SENSORS
     teros11Ea,
