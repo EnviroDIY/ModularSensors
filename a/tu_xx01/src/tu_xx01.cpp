@@ -934,7 +934,7 @@ UbidotsPublisher UbidotsPub;
 #define SerialStd Serial
 #include "iniHandler.h"
 
-// Flashes the LED's on the primary board
+// Flashes the Green/Read LED's LED1 & LED2
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
@@ -947,6 +947,18 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     digitalWrite(redLED, LOW);
 }
 
+// Flashes the Green LED
+void greenflash(uint8_t numFlash = 4, uint8_t rate = 75) {
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        //digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        //digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
+    digitalWrite(redLED, LOW);
+}
 /**
  * @brief Check if battery can provide power for action to be performed.
  *
@@ -1276,8 +1288,11 @@ bool batteryCheck(bm_pwr_req_t useable_req, bool waitForGoodBattery)
     bool UserButtonAct = false;
     uint16_t lp_wait = 1;
 
+    bms_SetBattery();
     do {
-        bms_SetBattery();
+        //Read the V - FUT make compatible adcRead()
+        stc3100_phy.stc3100_device.readValues();
+        bms.setBatteryV(stc3100_phy.stc3100_device.v.voltage_V);
         LiBattPower_Unseable =
             ((BM_LBATT_UNUSEABLE_STATUS ==
               bms.isBatteryStatusAbove(true, useable_req))
@@ -1293,13 +1308,25 @@ bool batteryCheck(bm_pwr_req_t useable_req, bool waitForGoodBattery)
             * set it up. On an XbeeS6 WiFi this can take 20seconds for some reason.
             */
             PRINTOUT(lp_wait++,F(": BatV Low ="), bms.getBatteryVm1()),F(" Sleep60sec");
-            dataLogger.systemSleep(1);
-            //delay(1000);  // debug
+            dataLogger.systemSleep(1); //This is not sleeping
+            delay(1000);  // need 
             PRINTOUT(F("---tu_xx01:Wakeup check power. Press user button to bypass"));
         }
         if (buttonPin >= 0) { UserButtonAct = digitalRead(buttonPin); }
     } while (LiBattPower_Unseable && !UserButtonAct);
     return !LiBattPower_Unseable;
+}
+
+// ==========================================================================
+// Activate the logger
+// ==========================================================================
+inline void dataLogger_do (uint8_t cia_val_override){
+    #if defined USE_PUB_MMW
+    dataLogger.logDataAndPubReliably(cia_val_override);
+    #else
+    //FUT use reliable 
+    dataLogger.logDataAndPublish(); 
+    #endif 
 }
 
 // ==========================================================================
@@ -1348,6 +1375,27 @@ void setup() {
     // Button is read inactive as low
     if (buttonPin >= 0) { pinMode(buttonPin, INPUT_PULLUP); }
 
+ #if defined MAYFLY_BAT_STC3100
+    //Setsup Sensor for battery read. FUT local V ADC
+    // Could be warm boot in which case the STC3100 is alreading running
+    if(!stc3100_phy.stc3100_device.start()){
+        MS_DBG(F("STC3100 Not detected!"));
+    } else {
+        uint8_t dm_lp=0;
+        bfgPresent = true;
+        PRINTOUT(F("STC3100s detected."));
+        //managementSensorsPoll(); stc3100_bfg.v.voltage_V
+        #define STCDM_POLL 20
+        #define STCDM_MIN_V 2.5
+        for ( dm_lp=0;dm_lp<STCDM_POLL;dm_lp++) {
+            delay(250); //Takes 8192 clock cycles for first V measurement
+            stc3100_phy.stc3100_device.dmBegin(); //read registers
+            if (STCDM_MIN_V  < stc3100_bfg.v.voltage_V) break;
+        }
+
+        PRINTOUT(F("STC3100s BatV/lp/cntr"), stc3100_bfg.v.voltage_V,dm_lp,stc3100_bfg.v.counter);
+    }
+#endif //MAYFLY_BAT_STC3100
     // A vital check on power availability
     batteryCheck(BM_PWR_USEABLE_REQ, true);
 
@@ -1465,8 +1513,8 @@ void setup() {
 #endif  // UseModem_PushData
 
 // Sync the clock  and we have battery to spare
-#if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
 #define LiIon_BAT_REQ BM_PWR_MEDIUM_REQ
+#if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
 
     if (batteryCheck(LiIon_BAT_REQ, true)) 
     {
@@ -1557,6 +1605,7 @@ void setup() {
     stc3100_phy.stc3100_device.setBatteryCapacity_mAh(epc_battery_mAhr);
     delay(100); //Let STC3100 run a few ADC to collect readings
     stc3100_phy.stc3100_device.dmBegin(); //begin the Device Manager
+    ;managementSensorsPoll();
 #endif // MAYFLY_BAT_STC3100
 
 // SDI12?
@@ -1573,6 +1622,13 @@ void setup() {
     dataLogger.turnOffSDcard(
         true);  // true = wait for internal housekeeping after write
     dataLogger.setBatHandler(&isBatteryChargeGoodEnough);
+
+#if defined UseModem_Module && !defined NO_FIRST_SYNC_WITH_NIST
+    if (batteryCheck(LiIon_BAT_REQ, true)) {
+        dataLogger_do(LOGGER_RELIABLE_POST);
+    }
+#endif // UseModem_Module && !NO_FIRST_SYNC_WITH_NIST
+
     MS_DBG(F("\n\nSetup Complete ****"));
 }
 
@@ -1585,6 +1641,9 @@ void loop() {
     managementSensorsPoll();
     if ((true == userButton1Act ) || Serial.available()){
         userInputCollection =true;
+        if (userButton1Act) {
+            greenflash();
+        }
         serialInputCheck();
         userButton1Act = false;
     } 
@@ -1595,12 +1654,7 @@ void loop() {
     #if defined MAYFLY_BAT_STC3100 && defined PRINT_STC3100_SNSR_VAR 
     userPrintStc3100BatV_avlb=true;
     #endif //MAYFLY_BAT_STC3100
-    #if defined USE_PUB_MMW
-    dataLogger.logDataAndPubReliably();
-    #else
-    //FUT use reliable 
-    dataLogger.logDataAndPublish(); 
-    #endif 
+    dataLogger_do(0);
     #if defined MAYFLY_BAT_STC3100
     stc3100_phy.stc3100_device.periodicTask();
     #endif //MAYFLY_BAT_STC3100
