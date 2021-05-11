@@ -264,7 +264,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #endif  // MAYFLY_BAT_A6
 
 #if defined MAYFLY_BAT_STC3100
-//Test configuration fo NA13
+//Test configuration for NA13
 #define STC3100_Volt_UUID "Volt0_UUID"
 //#define STC3100_Volt_UUID "STC3100Volt_UUID"
 //#define STC3100_USED1_mAhr_UUID "STC3100used1_mAhr_UUID"

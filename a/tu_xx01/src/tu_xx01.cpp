@@ -1605,7 +1605,6 @@ void setup() {
     stc3100_phy.stc3100_device.setBatteryCapacity_mAh(epc_battery_mAhr);
     delay(100); //Let STC3100 run a few ADC to collect readings
     stc3100_phy.stc3100_device.dmBegin(); //begin the Device Manager
-    ;managementSensorsPoll();
 #endif // MAYFLY_BAT_STC3100
 
 // SDI12?
