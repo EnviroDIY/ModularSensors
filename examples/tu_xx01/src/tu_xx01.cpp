@@ -1290,9 +1290,12 @@ bool batteryCheck(bm_pwr_req_t useable_req, bool waitForGoodBattery)
 
     bms_SetBattery();
     do {
+         #if defined MAYFLY_BAT_STC3100
         //Read the V - FUT make compatible adcRead()
         stc3100_phy.stc3100_device.readValues();
         bms.setBatteryV(stc3100_phy.stc3100_device.v.voltage_V);
+        #else //alt Read the V - FUT make compatible adcRead()
+        #endif //
         LiBattPower_Unseable =
             ((BM_LBATT_UNUSEABLE_STATUS ==
               bms.isBatteryStatusAbove(true, useable_req))
