@@ -41,7 +41,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v2.2.2
 
       # This should be pulled from cache, if there's not a new version
       - name: Install PlatformIO
