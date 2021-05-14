@@ -58,6 +58,7 @@ bool SIMComSIM7080::modemWakeFxn(void) {
         digitalWrite(_modemSleepRqPin, _wakeLevel);
         delay(_wakePulse_ms);  // >1s
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        return gsmModem.waitResponse(30000L, GF("SMS Ready")) == 1;
     }
     return true;
 }

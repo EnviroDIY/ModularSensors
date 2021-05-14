@@ -603,6 +603,37 @@ SIMComSIM7000 modem = modem7000;
 // ==========================================================================
 
 
+#elif defined MS_BUILD_TEST_SIM7080
+/** Start [sim7080] */
+// For almost anything based on the SIMCom SIM7080G
+#include <modems/SIMComSIM7080.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+const int32_t modemBaud =
+    9600;  //  SIM7080 does auto-bauding by default, but I set mine to 9600
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+// and-global breakout bk-7080a
+const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
+const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
+                                    // status
+
+// Network connection information
+const char* apn = "xxxxx";  // APN for GPRS connection
+
+// Create the modem object
+SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
+                        modemSleepRqPin, apn);
+// Create an extra reference to the modem by a generic name
+SIMComSIM7080 modem = modem7080;
+/** End [sim7080] */
+// ==========================================================================
+
+
 #elif defined MS_BUILD_TEST_S2GB
 /** Start [gprsbee] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
@@ -2626,6 +2657,25 @@ void setup() {
     modem.setModemWakeLevel(HIGH);   // Skywire dev board inverts the signal
     modem.setModemResetLevel(HIGH);  // Skywire dev board inverts the signal
     /** End [setup_skywire] */
+#endif
+
+#if defined MS_BUILD_TEST_SIM7080
+    /** Start [setup_sim7080] */
+    modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
+    modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
+    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    modem.modemWake();  // NOTE:  This will also set up the modem
+    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
+    modem.gsmModem.setNetworkMode(38);   // set to LTE only
+                                         // 2 Automatic
+                                         // 13 GSM only
+                                         // 38 LTE only
+                                         // 51 GSM and LTE only
+    modem.gsmModem.setPreferredMode(1);  // set to CAT-M
+                                         // 1 CAT-M
+                                         // 2 NB-IoT
+                                         // 3 CAT-M and NB-IoT
+    /** End [setup_sim7080] */
 #endif
 
 #if defined MS_BUILD_TEST_XBEE_CELLULAR

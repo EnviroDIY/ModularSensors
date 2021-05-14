@@ -92,6 +92,8 @@ Most modules are capable of serial communication and some level of functionality
 |  SIMCom SIM800, SIM900 and variants  |    3.4 - 4.4 V    |                2A                 |     `VBAT`      |
 |        Sodaq GPRSBee R6 or R7        |    3.4 - 4.4 V    |                2A                 |    `ON/OFF`     |
 |       SIMCom SIM7000 variants        |    3.0 - 4.3 V    |    600mA¹, 2A for 2G fallback     |     `VBAT`      |
+|            SIMCom SIM7080            |    2.7 - 4.8 V    |              < 500mA              |     `VBAT`      |
+|      SModuleFun MBee (SIM7080G)      |    2.7 - 4.8 V    |              < 500mA              |      `VCC`      |
 |     u-blox SARA R4 or N4 series      |    3.2 - 4.2 V    | 500mA, 2A for 2G fallback on R412 |      `VCC`      |
 | Sodaq UBee LTE-M (u-blox SARA R410M) |    3.2 - 4.2 V    |               500mA               |    `ON/OFF`     |
 |    u-blox 2G, 3G, and 4G modules     | varies by module  |         varies by module          |      `VCC`      |
@@ -116,6 +118,8 @@ Most modules are capable of serial communication and some level of functionality
 |     SIMCom SIM800, SIM900     |                  `STATUS`                   |  `RESETN`   |                  `PWRKEY`                   |
 |    Sodaq GPRSBee R6 or R7     |                  `STATUS`                   |     N/A     |                     N/A                     |
 |    SIMCom SIM7000 variants    |                  `STATUS`                   |  `RESETN`   |                  `PWRKEY`                   |
+|        SIMCom SIM7080G        |                  `STATUS`                   |     N/A     |                  `PWRKEY`                   |
+|   ModuleFun MBee (SIM7080G)   |                  `STATUS`                   |     N/A     |                  `PWRKEY`"                  |
 |  u-blox SARA R4 or N4 series  |                   `V_INT`                   |  `RESET_N`  |                  `PWR_ON`                   |
 |       Sodaq UBee LTE-M        |      `STATUS` also mislabeled as `CTS`      |   `RESET`   |                  `PWR_ON`                   |
 | u-blox 2G, 3G, and 4G modules |                   `V_INT`                   |  `RESET_N`  |                  `PWR_ON`                   |
@@ -126,7 +130,7 @@ Most modules are capable of serial communication and some level of functionality
 [//]: # ( @section modem_notes_mayfly_pins Pin Numbers to Use when Connecting to the Mayfly )
 ## Pin Numbers to Use when Connecting to the Mayfly
 
-Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly using its Bee socket.
+Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly v0.x using its Bee socket.
 
 |                       Module                       |     Power      |     Status     |     Reset      | Sleep Request  |
 | :------------------------------------------------: | :------------: | :------------: | :------------: | :------------: |
@@ -135,10 +139,11 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 |          Itead Wee (ESP8266)<sup>8</sup>           |       -1       |       -1       | -1<sup>5</sup> |       -1       |
 |             DFRobot WiFi Bee (ESP8266)             |       -1       |       -1       |       -1       | 19<sup>6</sup> |
 |             Dragino NB IOT Bee (BG96)              |       -1       |       -1       | -1<sup>7</sup> | -1<sup>7</sup> |
-|                  Sodaq GPRSBee R4                  |       -1       |       19       |       -1       |       23       |
-|               Sodaq GPRSBee R6 or R7               |       23       |       19       |       -1       |       -1       |
-|                  Sodaq UBee LTE-M                  |       23       |       19       |       -1       |       20       |
-|                   Sodaq UBee 3G                    |       23       |       19       |       -1       |       20       |
+|             Sodaq GPRSBee R4 (SIM900)              |       -1       |       19       |       -1       |       23       |
+|          Sodaq GPRSBee R6 or R7 (SIM800H)          |       23       |       19       |       -1       |       -1       |
+|        Sodaq UBee LTE-M (u-blox SARA R410M)        |       23       |       19       |       -1       |       20       |
+|          Sodaq UBee 3G (u-blox SARA U201)          |       23       |       19       |       -1       |       20       |
+|             ModuleFun MBee (SIM7080G)              |       -1       |       19       | 23<sup>9</sup> | 23<sup>9</sup> |
 
 
 ¹ To use the cellular Digi XBee's without the LTE adapter, your Mayfly must be at least v0.5b, you must use SJ13 to connect the Bee directly to the LiPo, and you must always have a battery connected to provide enough power for the XBee to make a cellular connection.
@@ -162,3 +167,10 @@ This will enable you to use A4 as the reset pin and A3 as the sleep request pin.
 With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (ie, without a separate battery connection for the modem).
 
 <sup>8</sup> This module is no longer produced or sold.
+
+<sup>9</sup> The ModuleFun MBee inverts the signal to the sleep request pin (`PWRKEY`) - which is also used for reset.
+To use it, you must add these commands to your setup:
+```cpp
+modem.setModemWakeLevel(HIGH);
+modem.setModemResetLevel(HIGH);
+```
