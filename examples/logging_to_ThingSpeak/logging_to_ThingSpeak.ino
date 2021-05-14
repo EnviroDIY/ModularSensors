@@ -179,17 +179,18 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
 // ==========================================================================
 //  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-/** Start [decagon_ctd] */
-#include <sensors/DecagonCTD.h>
+/** Start [hydros21] */
+#include <sensors/MeterHydros21.h>
 
-const char*   CTDSDI12address   = "1";      // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;        // The number of readings to average
+const char*   hydrosSDI12address = "1";  // The SDI-12 Address of the Hydros 21
+const uint8_t hydrosNumberReadings = 6;  // The number of readings to average
 const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const int8_t  SDI12Data  = 7;               // The SDI12 data pin
 
-// Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
-/** End [decagon_ctd] */
+// Create a Meter Hydros 21 sensor object
+MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
+                     hydrosNumberReadings);
+/** End [hydros21] */
 
 
 // ==========================================================================
@@ -197,9 +198,9 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterHydros21_Cond(&hydros21, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterHydros21_Temp(&hydros21, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterHydros21_Depth(&hydros21, "12345678-abcd-1234-ef00-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-ef00-1234567890ab",
                                "TurbLow"),
     new CampbellOBS3_Turbidity(
