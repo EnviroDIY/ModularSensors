@@ -32,7 +32,7 @@ echo "\nDownloading Soligen fork of Adafruit_ADS1X15 as a tarball"
 curl -L https://github.com/soligen2010/Adafruit_ADS1X15/archive/master.zip --create-dirs -o ~/arduino/downloads/Adafruit_ADS1X15.zip
 ls ~/arduino/downloads/
 echo "Decompressing Adafruit_ADS1X15"
-unzip ~/arduino/downloads/Adafruit_ADS1X15.zip
+unzip ~/arduino/downloads/Adafruit_ADS1X15.zip -d -d ~/arduino/downloads/
 echo "Moving Adafruit_ADS1X15 to the libraries folder"
 mv ~/arduino/downloads/Adafruit_ADS1X15/Adafruit_ADS1X15-master/* ~/arduino/user/libraries/Adafruit_ADS1X15
 
