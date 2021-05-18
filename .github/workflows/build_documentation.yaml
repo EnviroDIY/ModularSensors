@@ -22,7 +22,7 @@ jobs:
 
     steps:
       # check out the ModularSensors repo
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
         with:
           path: code_docs/ModularSensors
 
@@ -45,7 +45,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v2.2.2
 
       # This should be pulled from cache, if there's not a new version
       - name: Install PlatformIO
@@ -140,7 +140,7 @@ jobs:
 
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           # Repository name with owner. For example, actions/checkout
           repository: SRGDamia1/m.css
