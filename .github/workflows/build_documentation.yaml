@@ -93,8 +93,8 @@ jobs:
           pio lib -g install envirodiy/SDI-12
           echo "::debug::Installing northernwidget/MS5803"
           pio lib -g install northernwidget/MS5803
-          echo "::debug::Installing https://github.com/NorthernWidget-Skunkworks/Tally_Library.git#Dev_I2C"
-          pio lib -g install https://github.com/NorthernWidget-Skunkworks/Tally_Library.git#Dev_I2C
+          echo "::debug::Installing https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C"
+          pio lib -g install https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
           echo "::debug::Installing envirodiy/SensorModbusMaster"
           pio lib -g install envirodiy/SensorModbusMaster
           echo "::debug::Installing envirodiy/KellerModbus"

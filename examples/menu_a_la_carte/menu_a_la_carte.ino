@@ -1598,7 +1598,7 @@ const int8_t TallyPower = -1;  // Power pin (-1 if unconnected)
 // NorthernWidget Tally I2CPower is -1 by default because it is often deployed
 // with power always on, but Tally also has a super capacitor that enables it
 // to be self powered between readings/recharge as described at
-// https://github.com/NorthernWidget-Skunkworks/Project-Tally
+// https://github.com/EnviroDIY/Project-Tally
 
 const uint8_t TallyCounterI2CAddress = 0x33;
 // NorthernWidget Tally I2C address is 0x33 by default

@@ -82,7 +82,7 @@ lib_deps =
 	milesburton/DallasTemperature
 	envirodiy/SDI-12
 	northernwidget/MS5803
-	https://github.com/NorthernWidget-Skunkworks/Tally_Library.git#Dev_I2C
+	https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
 	envirodiy/SensorModbusMaster
 	envirodiy/KellerModbus
 	envirodiy/YosemitechModbus
