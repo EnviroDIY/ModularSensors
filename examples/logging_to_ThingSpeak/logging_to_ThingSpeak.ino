@@ -188,8 +188,8 @@ const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const int8_t  SDI12Data  = 7;               // The SDI12 data pin
 
 // Create a Meter Hydros 21 sensor object
-MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
-                     hydrosNumberReadings);
+MeterHydros21 hydros21(*hydrosSDI12address, SDI12Power, SDI12Data,
+                       hydrosNumberReadings);
 /** End [hydros21] */
 
 
