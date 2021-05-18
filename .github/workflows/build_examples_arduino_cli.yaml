@@ -1,4 +1,4 @@
-name: Build Examples
+name: Build Examples with Arduino CLI
 
 # Triggers the workflow on push or pull request events
 on: [push, pull_request]
@@ -79,6 +79,7 @@ jobs:
       # Install library dependencies for the Arduino CLI
       - name: Install the Arduino libraries
         run: |
+          apt-get install zip unzip
           chmod +x continuous_integration/install-deps-arduino-cli.sh
           sh continuous_integration/install-deps-arduino-cli.sh
 
