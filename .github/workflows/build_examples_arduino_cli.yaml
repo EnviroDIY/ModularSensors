@@ -1,0 +1,95 @@
+name: Build Examples
+
+# Triggers the workflow on push or pull request events
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    strategy:
+      matrix:
+        example:
+          [
+            examples/single_sensor/,
+            examples/simple_logging/,
+            examples/simple_logging_LearnEnviroDIY/,
+            examples/DRWI_CitSci/,
+            examples/DRWI_LTE/,
+            examples/DRWI_NoCellular/,
+            examples/double_logger/,
+            examples/baro_rho_correction/,
+            examples/data_saving/,
+            examples/logging_to_MMW/,
+            examples/logging_to_ThingSpeak/,
+          ]
+        # This is usually optional but we need to statically define the
+        # FQBN of the boards we want to test for each platform. In the
+        # future the CLI might automatically detect and download the core
+        # needed to compile against a certain FQBN, at that point the
+        # following `include` section will be useless.
+        include:
+          # This works like this: when the platform is "arduino:samd", the
+          # variable `fqbn` is set to "arduino:samd:nano_33_iot".
+          - arduino-platform: 'EnviroDIY:avr'
+            fqbn: 'EnviroDIY:avr:EnviroDIY_Mayfly_1284P'
+          - arduino-platform: 'arduino:avr'
+            fqbn: 'Arduino_Mega'
+          - arduino-platform: 'arduino:samd'
+            fqbn: 'arduino:samd:Arduino_M0'
+          - arduino-platform: 'adafruit:samd'
+            fqbn: 'adafruit:samd:adafruit_feather_m0'
+          - arduino-platform: 'SODAQ:samd'
+            fqbn: 'SODAQ:samd:SODAQ_Autonomo'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set variables
+        run: |
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            echo "::debug::Push to commit ${GITHUB_SHA}"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
+          else
+            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
+          fi
+
+      # We use the `arduino/setup-arduino-cli` action to install and
+      # configure the Arduino CLI on the system.
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Restore or Cache Arduino Platforms and Libraries
+        uses: actions/cache@v2.1.5
+        with:
+          path: ~/arduino
+          # if nothing in the lock files has changed, then it will be a "cache hit" and pip will be restored
+          # otherwise, it will be a "cache miss" and a new cache of libraries will be created if the job completes successfully
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
+      # We then install the platform, which one will be determined
+      # dynamically by the build matrix.
+      - name: Install the Arduino platform
+        run: |
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install ${{ matrix.arduino-platform }}
+
+      # Install library dependencies for the Arduino CLI
+      - name: Install the Arduino libraries
+        run: |
+          chmod +x continuous_integration/install-deps-arduino-cli.sh
+          sh continuous_integration/install-deps-arduino-cli.sh
+
+      # Install ModularSensors for the Arduino CLI
+      - name: Install the testing version of Modular Sensors
+        run: |
+          curl -L ${{ env.LIBRARY_INSTALL_ZIP }} -o ~\arduino\downloads\ModularSensors.zip
+          upzip ~\arduino\downloads\ModularSensors.zip
+          mv ~\arduino\downloads\ModularSensors\ModularSensors-${GITHUB_SHA}\* ~\arduino\user\libraries\ModularSensors
+
+      - name: Compile examples using the Arduino CLI
+        env:
+          PLATFORMIO_CI_SRC: ${{ matrix.example }}
+        run: arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}

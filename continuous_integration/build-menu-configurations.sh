@@ -32,10 +32,10 @@ do
     echo "Modifying source for \e[32m$modemFlag\e[0m"
     echo "\e[36m----------------------------------------------------------------------------\e[0m"
     echo "\e[36m----------------------------------------------------------------------------\e[0m"
-    sed "1s/^/#define $modemFlag\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
+    sed "1s/^/#define $modemFlag\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 
     echo "First few lines of source"
-    head temp/menu_a_la_carte/main.cpp
+    head temp/menu_a_la_carte/menu_a_la_carte.ino
 
     platformio run --project-conf="continuous_integration/platformio.ini"
 done
@@ -88,10 +88,10 @@ do
     echo "Modifying source for \e[32m$sensorFlag\e[0m"
     echo "\e[36m----------------------------------------------------------------------------\e[0m"
     echo "\e[36m----------------------------------------------------------------------------\e[0m"
-    sed "1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $sensorFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
+    sed "1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $sensorFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 
     echo  "First few lines of source"
-    head temp/menu_a_la_carte/main.cpp
+    head temp/menu_a_la_carte/menu_a_la_carte.ino
 
     platformio run --project-conf="continuous_integration/platformio.ini"
 done
@@ -107,10 +107,14 @@ do
     echo "Modifying source for \e[32m$publisherFlag\e[0m"
     echo "\e[36m----------------------------------------------------------------------------\e[0m"
     echo "\e[36m----------------------------------------------------------------------------\e[0m"
-    sed "1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $publisherFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/main.cpp
+    sed "1s/^/#define MS_BUILD_TEST_XBEE_CELLULAR\n#define MS_BUILD_TEST_PRE_NAMED_VARS\n#define $publisherFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 
     echo "First few lines of source"
-    head temp/menu_a_la_carte/main.cpp
+    head temp/menu_a_la_carte/menu_a_la_carte.ino
 
+    # Test on several platforms using Platform IO
     platformio run --project-conf="continuous_integration/platformio.ini"
+
+    # Only test on the Mayfly with the Arduino CLI
+    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --fqbn EnviroDIY:avr:EnviroDIY_Mayfly_1284P temp/menu_a_la_carte/
 done

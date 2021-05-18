@@ -22,6 +22,13 @@ jobs:
             echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
             echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
           fi
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            echo "::debug::Push to commit ${GITHUB_SHA}"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
+          else
+            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
+          fi
 
       - name: Restore or Cache pip
         uses: actions/cache@v2.1.5
@@ -48,6 +55,38 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade platformio
+
+      # We use the `arduino/setup-arduino-cli` action to install and
+      # configure the Arduino CLI on the system.
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Restore or Cache Arduino Platforms and Libraries
+        uses: actions/cache@v2.1.5
+        with:
+          path: ~/arduino
+          # if nothing in the lock files has changed, then it will be a "cache hit" and pip will be restored
+          # otherwise, it will be a "cache miss" and a new cache of libraries will be created if the job completes successfully
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
+      # ONLY installing the EnviroDIY AVR platform here
+      - name: Install the Arduino platform
+        run: |
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install EnviroDIY:avr
+
+      # Install library dependencies for the Arduino CLI
+      - name: Install the Arduino libraries
+        run: |
+          chmod +x continuous_integration/install-deps-arduino-cli.sh
+          sh continuous_integration/install-deps-arduino-cli.sh
+
+      # Install ModularSensors for the Arduino CLI
+      - name: Install the testing version of Modular Sensors
+        run: |
+          curl -L ${{ env.LIBRARY_INSTALL_ZIP }} -o ~\arduino\downloads\ModularSensors.zip
+          upzip ~\arduino\downloads\ModularSensors.zip
+          mv ~\arduino\downloads\ModularSensors\ModularSensors-${GITHUB_SHA}\* ~\arduino\user\libraries\ModularSensors
 
       - name: Test all configurations
         run: |
