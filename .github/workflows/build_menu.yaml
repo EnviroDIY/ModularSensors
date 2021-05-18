@@ -78,16 +78,14 @@ jobs:
       # Install library dependencies for the Arduino CLI
       - name: Install the Arduino libraries
         run: |
-          sudo apt-get install zip unzip
           chmod +x continuous_integration/install-deps-arduino-cli.sh
           sh continuous_integration/install-deps-arduino-cli.sh
 
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors
         run: |
-          sudo apt-get install zip unzip
           curl -L ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o ~\arduino\downloads\ModularSensors.zip
-          upzip ~\arduino\downloads\ModularSensors.zip
+          unzip ~\arduino\downloads\ModularSensors.zip
           mv ~\arduino\downloads\ModularSensors\ModularSensors-${GITHUB_SHA}\* ~\arduino\user\libraries\ModularSensors
 
       - name: Test all configurations
