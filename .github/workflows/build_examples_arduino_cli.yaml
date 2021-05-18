@@ -86,7 +86,8 @@ jobs:
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors
         run: |
-          curl -L ${{ env.LIBRARY_INSTALL_ZIP }} -o ~\arduino\downloads\ModularSensors.zip
+          sudo apt-get install zip unzip
+          curl -L ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o ~\arduino\downloads\ModularSensors.zip
           upzip ~\arduino\downloads\ModularSensors.zip
           mv ~\arduino\downloads\ModularSensors\ModularSensors-${GITHUB_SHA}\* ~\arduino\user\libraries\ModularSensors
 
