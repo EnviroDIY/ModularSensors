@@ -37,7 +37,11 @@ do
     echo "First few lines of source"
     head temp/menu_a_la_carte/menu_a_la_carte.ino
 
+    # Test on several platforms using Platform IO
     platformio run --project-conf="continuous_integration/platformio.ini"
+
+    # Only test on the Mayfly with the Arduino CLI
+    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
 done
 
 for sensorFlag in \
@@ -93,7 +97,11 @@ do
     echo  "First few lines of source"
     head temp/menu_a_la_carte/menu_a_la_carte.ino
 
+    # Test on several platforms using Platform IO
     platformio run --project-conf="continuous_integration/platformio.ini"
+
+    # Only test on the Mayfly with the Arduino CLI
+    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
 done
 
 for publisherFlag in \
@@ -116,5 +124,5 @@ do
     platformio run --project-conf="continuous_integration/platformio.ini"
 
     # Only test on the Mayfly with the Arduino CLI
-    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --fqbn EnviroDIY:avr:EnviroDIY_Mayfly_1284P temp/menu_a_la_carte/
+    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
 done

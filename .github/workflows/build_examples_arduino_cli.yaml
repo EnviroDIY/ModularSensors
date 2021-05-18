@@ -33,15 +33,15 @@ jobs:
           # This works like this: when the platform is "arduino:samd", the
           # variable `fqbn` is set to "arduino:samd:nano_33_iot".
           - arduino-platform: 'EnviroDIY:avr'
-            fqbn: 'EnviroDIY:avr:EnviroDIY_Mayfly_1284P'
+            fqbn: 'EnviroDIY:avr:envirodiy_mayfly'
           - arduino-platform: 'arduino:avr'
-            fqbn: 'Arduino_Mega'
+            fqbn: 'arduino:avr:mega'
           - arduino-platform: 'arduino:samd'
-            fqbn: 'arduino:samd:Arduino_M0'
+            fqbn: 'arduino:samd:mzero_bl'
           - arduino-platform: 'adafruit:samd'
             fqbn: 'adafruit:samd:adafruit_feather_m0'
           - arduino-platform: 'SODAQ:samd'
-            fqbn: 'SODAQ:samd:SODAQ_Autonomo'
+            fqbn: 'SODAQ:samd:sodaq_autonomo'
 
     steps:
       - uses: actions/checkout@v2
