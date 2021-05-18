@@ -79,7 +79,7 @@ jobs:
       # Install library dependencies for the Arduino CLI
       - name: Install the Arduino libraries
         run: |
-          apt-get install zip unzip
+          sudo apt-get install zip unzip
           chmod +x continuous_integration/install-deps-arduino-cli.sh
           sh continuous_integration/install-deps-arduino-cli.sh
 
