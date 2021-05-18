@@ -86,7 +86,8 @@ jobs:
         run: |
           curl -L ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o ~/arduino/downloads/ModularSensors.zip
           unzip -o ~/arduino/downloads/ModularSensors.zip -d ~/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
-          mv ~/arduino/downloads/ModularSensors/ModularSensors-${GITHUB_SHA}/* ~/arduino/user/libraries/ModularSensors
+          mkdir -p ~/arduino/user/libraries/ModularSensors
+          mv ~/arduino/downloads/ModularSensors-${GITHUB_SHA}/* ~/arduino/user/libraries/ModularSensors
 
       - name: Test all configurations
         run: |

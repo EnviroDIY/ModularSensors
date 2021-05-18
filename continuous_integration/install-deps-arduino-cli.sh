@@ -33,11 +33,11 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 echo "\nDownloading Soligen fork of Adafruit_ADS1X15 as a tarball"
 # Soligen fork needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
 curl -L https://github.com/soligen2010/Adafruit_ADS1X15/archive/master.zip --create-dirs -o ~/arduino/downloads/Adafruit_ADS1X15.zip
-ls ~/arduino/downloads/
 echo "Decompressing Adafruit_ADS1X15"
 unzip -o ~/arduino/downloads/Adafruit_ADS1X15.zip -d ~/arduino/downloads/
 echo "Moving Adafruit_ADS1X15 to the libraries folder"
-mv ~/arduino/downloads/Adafruit_ADS1X15/Adafruit_ADS1X15-master/* ~/arduino/user/libraries/Adafruit_ADS1X15
+mkdir -p ~/arduino/user/libraries/Adafruit_ADS1X15
+mv ~/arduino/downloads/Adafruit_ADS1X15-master/* ~/arduino/user/libraries/Adafruit_ADS1X15
 
 echo "\nInstalling Adafruit AM2315 library from Arduino library index"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit AM2315"
