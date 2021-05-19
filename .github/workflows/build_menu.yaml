@@ -90,6 +90,7 @@ jobs:
           mv ~/arduino/downloads/ModularSensors-${GITHUB_SHA}/* ~/arduino/user/libraries/ModularSensors
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list --verbose
+          ls ~/arduino/user/libraries
 
       - name: Test all configurations
         run: |
