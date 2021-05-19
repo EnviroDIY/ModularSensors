@@ -24,10 +24,10 @@ jobs:
           fi
           if [[ -z "${GITHUB_HEAD_REF}" ]]; then
             echo "::debug::Push to commit ${GITHUB_SHA}"
-            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
+            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}" >> $GITHUB_ENV
           else
             echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
-            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
+            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
           fi
 
       - name: Restore or Cache pip
@@ -84,10 +84,7 @@ jobs:
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors
         run: |
-          curl -L ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o home/arduino/downloads/ModularSensors.zip
-          unzip -o home/arduino/downloads/ModularSensors.zip -d home/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
-          mkdir -p home/arduino/user/libraries/ModularSensors
-          mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url ${LIBRARY_INSTALL_SOURCE}
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list --verbose
           ls home/arduino/user/libraries

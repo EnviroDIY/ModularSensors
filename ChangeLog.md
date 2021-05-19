@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ****
 
+## v0.29.0 (2021-05-19) Create a ModularSensors.h
+
+### New Features
+- Created a ModularSensors.h file to include.
+This makes it much easiler to install and use the library from the Arduino CLI.
+  - Modified examples to include the ModularSensors.h file
+- Added continuous integration testing with the Arduino CLI
+- Modified examples to use Hydros 21
+
 ## v0.28.5 (2021-05-11) [Duplicate and Rename Hydros 21](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.5)
 
 ### Downloads

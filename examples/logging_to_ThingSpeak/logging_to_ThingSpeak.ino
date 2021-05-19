@@ -49,9 +49,8 @@
 // interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
 
-// To get all of the base classes for ModularSensors, include LoggerBase.
-// NOTE:  Individual sensor definitions must be included separately.
-#include <LoggerBase.h>
+// Include the main header for ModularSensors
+#include <ModularSensors.h>
 /** End [includes] */
 
 
