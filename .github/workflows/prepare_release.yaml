@@ -84,6 +84,8 @@ jobs:
           pio lib -g install milesburton/DallasTemperature
           echo "::debug::Installing envirodiy/SDI-12"
           pio lib -g install envirodiy/SDI-12
+          echo "::debug::Installing external interrupt version of SDI-12"
+          pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts
           echo "::debug::Installing northernwidget/MS5803"
           pio lib -g install northernwidget/MS5803
           echo "::debug::Installing https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C"

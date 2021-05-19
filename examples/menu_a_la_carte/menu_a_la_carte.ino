@@ -21,12 +21,6 @@
 //         platformio.ini
 // ==========================================================================
 /** Start [defines] */
-#ifndef SDI12_EXTERNAL_PCINT
-#define SDI12_EXTERNAL_PCINT
-#endif
-#ifndef NEOSWSERIAL_EXTERNAL_PCINT
-#define NEOSWSERIAL_EXTERNAL_PCINT
-#endif
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif

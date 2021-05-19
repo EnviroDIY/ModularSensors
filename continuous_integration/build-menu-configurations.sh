@@ -41,7 +41,7 @@ do
     platformio run --project-conf="continuous_integration/platformio.ini"
 
     # Only test on the Mayfly with the Arduino CLI
-    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
 done
 
 for sensorFlag in \
@@ -101,7 +101,7 @@ do
     platformio run --project-conf="continuous_integration/platformio.ini"
 
     # Only test on the Mayfly with the Arduino CLI
-    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
 done
 
 for publisherFlag in \
@@ -124,5 +124,5 @@ do
     platformio run --project-conf="continuous_integration/platformio.ini"
 
     # Only test on the Mayfly with the Arduino CLI
-    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+    arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
 done

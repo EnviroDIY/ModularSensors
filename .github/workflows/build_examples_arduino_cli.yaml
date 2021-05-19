@@ -96,4 +96,5 @@ jobs:
       - name: Compile examples using the Arduino CLI
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
-        run: arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}
+        run: |
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}

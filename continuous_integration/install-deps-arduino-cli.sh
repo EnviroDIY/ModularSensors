@@ -30,7 +30,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 echo "\nInstalling Adafruit Unified Sensor library from Arduino library index"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit Unified Sensor"
 
-echo "\nDownloading Soligen fork of Adafruit_ADS1X15 as a tarball"
+echo "\nDownloading Soligen fork of Adafruit_ADS1X15 as a zip"
 # Soligen fork needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
 curl -L https://github.com/soligen2010/Adafruit_ADS1X15/archive/master.zip --create-dirs -o home/arduino/downloads/Adafruit_ADS1X15.zip
 echo "Decompressing Adafruit_ADS1X15"
@@ -63,11 +63,22 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install Da
 echo "\nInstalling SDI-12 library from Arduino library index"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install SDI-12
 
+echo "\nDownloading External Interrupt version of the SDI-12 library as a zip"
+# The "external interrupt" version needs to be installed from a zip because the Arduino CLI cannot pull from a branch
+curl -L https://github.com/EnviroDIY/Arduino-SDI-12/archive/refs/heads/ExtInts.zip --create-dirs -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip
+echo "Decompressing EnviroDIY_SDI12_ExtInts"
+unzip -q -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip -d home/arduino/downloads/
+echo "Moving EnviroDIY_SDI12_ExtInts to the libraries folder"
+mkdir -p home/arduino/user/libraries/EnviroDIY_SDI12_ExtInts
+mv home/arduino/downloads/Arduino-SDI-12-ExtInts/* home/arduino/user/libraries/EnviroDIY_SDI12_ExtInts
+
 echo "\nInstalling NorthernWidget MS5803 library from GitHub"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/NorthernWidget/MS5803.git
 
 echo "\nInstalling EnviroDIY Tally_Library library from GitHub"
-arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
+# NOTE:  This only works because the DEV_I2C branch is the main branch of the EnviroDIY fork
+# The Arduino CLI can only install from whatever is assigned as the default branch on GitHub
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/EnviroDIY/Tally_Library.git
 
 echo "\nInstalling EnviroDIY SensorModbusMaster library from Arduino library index"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install SensorModbusMaster
@@ -80,6 +91,24 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install Yo
 
 echo "\nInstalling StreamDebugger library from Arduino library index"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install StreamDebugger
+
+echo "\nInstalling AltSoftSerial library from GitHub"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/PaulStoffregen/AltSoftSerial.git
+
+echo "\nInstalling SoftwareWire library from GitHub"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/Testato/SoftwareWire.git
+
+echo "\nInstalling NeoSWSerial library from GitHub"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/SRGDamia1/NeoSWSerial.git
+
+echo "\nDownloading SoftwareSerial with External Interrupts as a zip"
+# SoftwareSerial with External Interrupts needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
+curl -L https://github.com/EnviroDIY/SoftwareSerial_ExternalInts/archive/master.zip --create-dirs -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip
+echo "Decompressing SoftwareSerial_ExternalInts"
+unzip -q -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip -d home/arduino/downloads/
+echo "Moving SoftwareSerial_ExternalInts to the libraries folder"
+mkdir -p home/arduino/user/libraries/SoftwareSerial_ExternalInts
+mv home/arduino/downloads/SoftwareSerial_ExternalInts-master/* home/arduino/user/libraries/SoftwareSerial_ExternalInts
 
 echo "\nCurrently installed libraries:"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
