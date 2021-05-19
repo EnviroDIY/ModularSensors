@@ -108,7 +108,7 @@ echo "Decompressing SoftwareSerial_ExternalInts"
 unzip -q -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip -d home/arduino/downloads/
 echo "Moving SoftwareSerial_ExternalInts to the libraries folder"
 mkdir -p home/arduino/user/libraries/SoftwareSerial_ExternalInts
-mv home/arduino/downloads/SoftwareSerial_ExternalInts-master/* home/arduino/user/libraries/SoftwareSerial_ExternalInts
+mv home/arduino/downloads/SoftwareSerial_ExtInts-master/* home/arduino/user/libraries/SoftwareSerial_ExternalInts
 
 echo "\nCurrently installed libraries:"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
