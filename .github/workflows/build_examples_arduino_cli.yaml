@@ -24,13 +24,13 @@ jobs:
             examples/logging_to_MMW/,
             examples/logging_to_ThingSpeak/,
           ]
-        # arduino-platform: [EnviroDIY:avr, arduino:avr, arduino:samd, adafruit:samd]
+        # arduino-platform: ['EnviroDIY:avr', 'arduino:avr', 'arduino:samd', 'adafruit:samd']
         fqbn:
           [
-            EnviroDIY:avr:envirodiy_mayfly,
-            arduino:avr:mega,
-            arduino:samd:mzero_bl,
-            adafruit:samd:adafruit_feather_m0,
+            'EnviroDIY:avr:envirodiy_mayfly',
+            'arduino:avr:mega',
+            'arduino:samd:mzero_bl',
+            'adafruit:samd:adafruit_feather_m0',
           ]
 
         # This is usually optional but we need to statically define the
