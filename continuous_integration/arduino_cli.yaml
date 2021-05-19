@@ -4,9 +4,9 @@ https://adafruit.github.io/arduino-board-index/package_adafruit_index.json,http:
 daemon:
   port: "50051"
 directories:
-  data: ~/arduino/data
-  downloads: ~/arduino/downloads
-  user: ~/arduino/user
+  data: home/arduino/data
+  downloads: home/arduino/downloads
+  user: home/arduino/user
 library:
   enable_unsafe_install: true
 logging:

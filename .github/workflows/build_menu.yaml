@@ -64,7 +64,7 @@ jobs:
       - name: Restore or Cache Arduino Platforms and Libraries
         uses: actions/cache@v2.1.5
         with:
-          path: ~/arduino
+          path: home/arduino
           # if nothing in the lock files has changed, then it will be a "cache hit" and pip will be restored
           # otherwise, it will be a "cache miss" and a new cache of libraries will be created if the job completes successfully
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
@@ -84,13 +84,13 @@ jobs:
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors
         run: |
-          curl -L ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o ~/arduino/downloads/ModularSensors.zip
-          unzip -o ~/arduino/downloads/ModularSensors.zip -d ~/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
-          mkdir -p ~/arduino/user/libraries/ModularSensors
-          mv ~/arduino/downloads/ModularSensors-${GITHUB_SHA}/* ~/arduino/user/libraries/ModularSensors
+          curl -L ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o home/arduino/downloads/ModularSensors.zip
+          unzip -o home/arduino/downloads/ModularSensors.zip -d home/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
+          mkdir -p home/arduino/user/libraries/ModularSensors
+          mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list --verbose
-          ls ~/arduino/user/libraries
+          ls home/arduino/user/libraries
 
       - name: Test all configurations
         run: |
