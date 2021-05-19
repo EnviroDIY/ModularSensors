@@ -24,24 +24,31 @@ jobs:
             examples/logging_to_MMW/,
             examples/logging_to_ThingSpeak/,
           ]
+        # arduino-platform: [EnviroDIY:avr, arduino:avr, arduino:samd, adafruit:samd]
+        fqbn:
+          [
+            EnviroDIY:avr:envirodiy_mayfly,
+            arduino:avr:mega,
+            arduino:samd:mzero_bl,
+            adafruit:samd:adafruit_feather_m0,
+          ]
+
         # This is usually optional but we need to statically define the
         # FQBN of the boards we want to test for each platform. In the
         # future the CLI might automatically detect and download the core
         # needed to compile against a certain FQBN, at that point the
         # following `include` section will be useless.
-        include:
-          # This works like this: when the platform is "arduino:samd", the
-          # variable `fqbn` is set to "arduino:samd:nano_33_iot".
-          - arduino-platform: 'EnviroDIY:avr'
-            fqbn: 'EnviroDIY:avr:envirodiy_mayfly'
-          - arduino-platform: 'arduino:avr'
-            fqbn: 'arduino:avr:mega'
-          - arduino-platform: 'arduino:samd'
-            fqbn: 'arduino:samd:mzero_bl'
-          - arduino-platform: 'adafruit:samd'
-            fqbn: 'adafruit:samd:adafruit_feather_m0'
-          - arduino-platform: 'SODAQ:samd'
-            fqbn: 'SODAQ:samd:sodaq_autonomo'
+        # include:
+        #   # This works like this: when the platform is "arduino:samd", the
+        #   # variable `fqbn` is set to "arduino:samd:nano_33_iot".
+        #   - arduino-platform: 'EnviroDIY:avr'
+        #     fqbn: 'EnviroDIY:avr:envirodiy_mayfly'
+        #   - arduino-platform: 'arduino:avr'
+        #     fqbn: 'arduino:avr:mega'
+        #   - arduino-platform: 'arduino:samd'
+        #     fqbn: 'arduino:samd:mzero_bl'
+        #   - arduino-platform: 'adafruit:samd'
+        #     fqbn: 'adafruit:samd:adafruit_feather_m0'
 
     steps:
       - uses: actions/checkout@v2
@@ -71,10 +78,15 @@ jobs:
 
       # We then install the platform, which one will be determined
       # dynamically by the build matrix.
-      - name: Install the Arduino platform
+      # arduino-cli --config-file continuous_integration/arduino_cli.yaml core install ${{ matrix.arduino-platform }}
+      - name: Install all of the Arduino platforms
         run: |
           arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install ${{ matrix.arduino-platform }}
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:avr
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install EnviroDIY:avr
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:samd
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install adafruit:samd
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
 
       # Install library dependencies for the Arduino CLI
       - name: Install the Arduino libraries
@@ -97,4 +109,4 @@ jobs:
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
         run: |
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --verbose --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}

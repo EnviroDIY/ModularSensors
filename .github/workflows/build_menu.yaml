@@ -70,9 +70,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       # ONLY installing the EnviroDIY AVR platform here
-      - name: Install the Arduino platform
+      - name: Install the Arduino platforms
         run: |
           arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:avr
           arduino-cli --config-file continuous_integration/arduino_cli.yaml core install EnviroDIY:avr
 
       # Install library dependencies for the Arduino CLI
