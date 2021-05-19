@@ -89,6 +89,8 @@ jobs:
           unzip -o ~/arduino/downloads/ModularSensors.zip -d ~/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
           mkdir -p ~/arduino/user/libraries/ModularSensors
           mv ~/arduino/downloads/ModularSensors-${GITHUB_SHA}/* ~/arduino/user/libraries/ModularSensors
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list --verbose
 
       - name: Compile examples using the Arduino CLI
         env:

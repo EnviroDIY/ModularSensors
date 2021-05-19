@@ -80,3 +80,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install Yo
 
 echo "\nInstalling StreamDebugger library from Arduino library index"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install StreamDebugger
+
+echo "\nCurrently installed libraries:"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list --verbose
