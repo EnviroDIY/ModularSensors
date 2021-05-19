@@ -15,6 +15,27 @@
  * ======================================================================= */
 
 // ==========================================================================
+//  Defines for the Arduino IDE
+//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
+//         If you use PlatformIO, you should set these build flags in your
+//         platformio.ini
+// ==========================================================================
+/** Start [defines] */
+#ifndef SDI12_EXTERNAL_PCINT
+#define SDI12_EXTERNAL_PCINT
+#endif
+#ifndef NEOSWSERIAL_EXTERNAL_PCINT
+#define NEOSWSERIAL_EXTERNAL_PCINT
+#endif
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 64
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+/** End [defines] */
+
+// ==========================================================================
 // Include the base required libraries
 // ==========================================================================
 /** Start [includes] */
