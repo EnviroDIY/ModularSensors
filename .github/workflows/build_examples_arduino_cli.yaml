@@ -33,23 +33,6 @@ jobs:
             'adafruit:samd:adafruit_feather_m0',
           ]
 
-        # This is usually optional but we need to statically define the
-        # FQBN of the boards we want to test for each platform. In the
-        # future the CLI might automatically detect and download the core
-        # needed to compile against a certain FQBN, at that point the
-        # following `include` section will be useless.
-        # include:
-        #   # This works like this: when the platform is "arduino:samd", the
-        #   # variable `fqbn` is set to "arduino:samd:nano_33_iot".
-        #   - arduino-platform: 'EnviroDIY:avr'
-        #     fqbn: 'EnviroDIY:avr:envirodiy_mayfly'
-        #   - arduino-platform: 'arduino:avr'
-        #     fqbn: 'arduino:avr:mega'
-        #   - arduino-platform: 'arduino:samd'
-        #     fqbn: 'arduino:samd:mzero_bl'
-        #   - arduino-platform: 'adafruit:samd'
-        #     fqbn: 'adafruit:samd:adafruit_feather_m0'
-
     steps:
       - uses: actions/checkout@v2
 
@@ -70,26 +53,17 @@ jobs:
 
       - name: Restore or Cache Arduino Platforms and Libraries
         uses: actions/cache@v2.1.5
+        id: cache_arduino
         with:
           path: home/arduino
-          # if nothing in the lock files has changed, then it will be a "cache hit" and pip will be restored
-          # otherwise, it will be a "cache miss" and a new cache of libraries will be created if the job completes successfully
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          # if nothing in the dependencies.json file has changed, then it will
+          # be a "cache hit" and we can restore libraries from cache and not
+          # download them.  If it has changed we have to re-download.
+          key: ${{ hashFiles('./dependencies.json') }}
 
-      # We then install the platform, which one will be determined
-      # dynamically by the build matrix.
-      # arduino-cli --config-file continuous_integration/arduino_cli.yaml core install ${{ matrix.arduino-platform }}
-      - name: Install all of the Arduino platforms
-        run: |
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:avr
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install EnviroDIY:avr
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:samd
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install adafruit:samd
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
-
-      # Install library dependencies for the Arduino CLI
+      # Install cores and library dependencies for the Arduino CLI, iff no cache
       - name: Install the Arduino libraries
+        if: steps.cache_arduino.outputs.cache-hit != 'true'
         run: |
           chmod +x continuous_integration/install-deps-arduino-cli.sh
           sh continuous_integration/install-deps-arduino-cli.sh
@@ -110,3 +84,6 @@ jobs:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
         run: |
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}
+
+      - name: Uninstall testing version of Modular Sensors before caching
+        run: arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall EnviroDIY_ModularSensors

@@ -3,6 +3,33 @@
 # Exit with nonzero exit code if anything fails
 set -e
 
+echo "\nCurrent Arduino CLI version:"
+arduino-cli version
+
+echo "\nUpdating the core index"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
+
+echo "\nInstalling the Arduino AVR Core"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:avr
+
+echo "\nInstalling the EnviroDIY AVR Core"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core install EnviroDIY:avr
+
+echo "\nInstalling the Arduino SAMD Core"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:samd
+
+echo "\nInstalling the Adafruit SAMD Core"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core install adafruit:samd
+
+echo "\nUpdating the core index"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
+
+echo "\nUpgrading all cores"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core upgrade
+
+echo "\nCurrently installed cores:"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml core list
+
 echo "\nUpdating the library index"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
 

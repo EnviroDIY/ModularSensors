@@ -38,36 +38,26 @@ jobs:
             echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
           fi
 
-      - name: Restore or Cache pip
-        uses: actions/cache@v2.1.5
-        with:
-          path: ~/.cache/pip
-          # if requirements.txt hasn't changed, then it will be a "cache hit" and pip will be restored
-          # if requirements.txt HAS changed, it will be a "cache miss" and a new cache of pip will be created if the job completes successfully
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: ${{ runner.os }}-pip-
-
-      - name: Restore or Cache PlatformIO and Libraries
-        uses: actions/cache@v2.1.5
-        with:
-          path: ~/.platformio
-          # if nothing in the lock files has changed, then it will be a "cache hit" and pip will be restored
-          # otherwise, it will be a "cache miss" and a new cache of libraries will be created if the job completes successfully
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-
       - name: Set up Python
         uses: actions/setup-python@v2.2.2
 
-      # This should be pulled from cache, if there's not a new version
       - name: Install PlatformIO
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade platformio
 
+      - name: Restore or Cache PlatformIO and Libraries
+        uses: actions/cache@v2.1.5
+        with:
+          path: ~/.platformio
+          # if nothing in the dependencies.json file has changed, then it will
+          # be a "cache hit" and we can restore libraries from cache and not
+          # download them.  If it has changed we have to re-download.
+          key: ${{ hashFiles('./dependencies.json') }}
+
       - name: Run PlatformIO
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
         run: |
-          platformio lib --global update
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           platformio ci --project-conf="continuous_integration/platformio.ini"
