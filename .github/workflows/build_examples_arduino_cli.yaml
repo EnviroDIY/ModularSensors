@@ -87,7 +87,7 @@ jobs:
       - name: Compile examples using the Arduino CLI
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
-          EXTRA_BUILD_FLAGS: ${{ extra_build_flags }}
+          EXTRA_BUILD_FLAGS: ${{ matrix.extra_build_flags }}
         run: |
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}
 
