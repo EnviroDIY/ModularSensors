@@ -10,6 +10,75 @@ jobs:
       PLATFORMIO_SRC_DIR: temp/menu_a_la_carte
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
+    strategy:
+      matrix:
+        include:
+          - modemFlag:
+              [
+                MS_BUILD_TEST_XBEE_CELLULAR,
+                MS_BUILD_TEST_XBEE_LTE_B,
+                MS_BUILD_TEST_XBEE_3G_B,
+                MS_BUILD_TEST_XBEE_WIFI,
+                MS_BUILD_TEST_ESP8266,
+                MS_BUILD_TEST_BG96,
+                MS_BUILD_TEST_MONARCH,
+                MS_BUILD_TEST_SIM800,
+                MS_BUILD_TEST_SIM7000,
+                MS_BUILD_TEST_SIM7080,
+                MS_BUILD_TEST_S2GB,
+                MS_BUILD_TEST_UBEE_R410M,
+                MS_BUILD_TEST_UBEE_U201,
+              ]
+            sensorFlag: []
+            publisherFlag:
+              [MS_BUILD_TEST_MMW, MS_BUILD_TEST_DREAMHOST, MS_BUILD_TEST_THINGSPEAK]
+
+          - modemFlag: [MS_BUILD_TEST_SIM7080]
+            sensorFlag:
+              [
+                MS_BUILD_TEST_AM2315,
+                MS_BUILD_TEST_DHT,
+                MS_BUILD_TEST_SQ212,
+                MS_BUILD_TEST_ATLASCO2,
+                MS_BUILD_TEST_ATLASDO,
+                MS_BUILD_TEST_ATLASORP,
+                MS_BUILD_TEST_ATLASPH,
+                MS_BUILD_TEST_ATLASRTD,
+                MS_BUILD_TEST_ATLASEC,
+                MS_BUILD_TEST_BME280,
+                MS_BUILD_TEST_OBS3,
+                MS_BUILD_TEST_ES2,
+                MS_BUILD_TEST_VOLTAGE,
+                MS_BUILD_TEST_MPL115A2,
+                MS_BUILD_TEST_INSITURDO,
+                MS_BUILD_TEST_ACCULEVEL,
+                MS_BUILD_TEST_NANOLEVEL,
+                MS_BUILD_TEST_MAXBOTIX,
+                MS_BUILD_TEST_DS18,
+                MS_BUILD_TEST_MS5803,
+                MS_BUILD_TEST_5TM,
+                MS_BUILD_TEST_CTD,
+                MS_BUILD_TEST_HYDROS21,
+                MS_BUILD_TEST_TEROS11,
+                MS_BUILD_TEST_PALEOTERRA,
+                MS_BUILD_TEST_RAINI2C,
+                MS_BUILD_TEST_TALLY,
+                MS_BUILD_TEST_INA219,
+                MS_BUILD_TEST_CYCLOPS,
+                MS_BUILD_TEST_ANALOGEC,
+                MS_BUILD_TEST_Y504,
+                MS_BUILD_TEST_Y510,
+                MS_BUILD_TEST_Y511,
+                MS_BUILD_TEST_Y514,
+                MS_BUILD_TEST_Y520,
+                MS_BUILD_TEST_Y532,
+                MS_BUILD_TEST_Y533,
+                MS_BUILD_TEST_Y550,
+                MS_BUILD_TEST_Y4000,
+                MS_BUILD_TEST_DOPTO,
+              ]
+            publisherFlag: []
+
     steps:
       - uses: actions/checkout@v2.3.4
 
@@ -30,27 +99,9 @@ jobs:
             echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
           fi
 
-      - name: Restore or Cache pip
-        uses: actions/cache@v2.1.5
-        with:
-          path: ~/.cache/pip
-          # if requirements.txt hasn't changed, then it will be a "cache hit" and pip will be restored
-          # if requirements.txt HAS changed, it will be a "cache miss" and a new cache of pip will be created if the job completes successfully
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: ${{ runner.os }}-pip-
-
-      - name: Restore or Cache PlatformIO and Libraries
-        uses: actions/cache@v2.1.5
-        with:
-          path: ~/.platformio
-          # if nothing in the lock files has changed, then it will be a "cache hit" and pip will be restored
-          # otherwise, it will be a "cache miss" and a new cache of libraries will be created if the job completes successfully
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-
       - name: Set up Python
         uses: actions/setup-python@v2.2.2
 
-      # This should be pulled from cache, if there's not a new version
       - name: Install PlatformIO
         run: |
           python -m pip install --upgrade pip
@@ -61,23 +112,21 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1
 
-      - name: Restore or Cache Arduino Platforms and Libraries
+      - name: Restore or Cache PlatformIO and Arduino platforms and libraries
         uses: actions/cache@v2.1.5
+        id: cache_libraries
         with:
-          path: home/arduino
-          # if nothing in the lock files has changed, then it will be a "cache hit" and pip will be restored
-          # otherwise, it will be a "cache miss" and a new cache of libraries will be created if the job completes successfully
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          path: |
+            ~/.platformio
+            home/arduino
+          # if nothing in the dependencies.json file has changed, then it will
+          # be a "cache hit" and we can restore libraries from cache and not
+          # download them.  If it has changed we have to re-download.
+          key: ${{ hashFiles('./dependencies.json') }}
 
-      # ONLY installing the EnviroDIY AVR platform here
-      - name: Install the Arduino platforms
-        run: |
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install arduino:avr
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml core install EnviroDIY:avr
-
-      # Install library dependencies for the Arduino CLI
+      # Install cores and library dependencies for the Arduino CLI
       - name: Install the Arduino libraries
+        if: steps.cache_libraries.outputs.cache-hit != 'true'
         run: |
           chmod +x continuous_integration/install-deps-arduino-cli.sh
           sh continuous_integration/install-deps-arduino-cli.sh
@@ -93,9 +142,23 @@ jobs:
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list
           ls home/arduino/user/libraries
 
-      - name: Test all configurations
+      - name: Modify menu for matrix configuration
+        env:
+          modemFlag: ${{ matrix.modemFlag }}
+          sensorFlag: ${{ matrix.sensorFlag }}
+          publisherFlag: ${{ matrix.publisherFlag }}
         run: |
-          platformio lib --global update
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
-          chmod +x continuous_integration/build-menu-configurations.sh
-          sh continuous_integration/build-menu-configurations.sh
+          chmod +x continuous_integration/modify-menu-configurations.sh
+          sh continuous_integration/modify-menu-configurations.sh
+
+      - name: Test with PlatformIO
+        run: platformio run --project-conf="continuous_integration/platformio.ini"
+
+      - name: Test with Arduino CLI
+        run: arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+
+      - name: Uninstall testing version of Modular Sensors before caching
+        run: |
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall EnviroDIY_ModularSensors
+          pio lib -g uninstall EnviroDIY_ModularSensors
