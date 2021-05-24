@@ -24,7 +24,7 @@ echo "Adding flag for $modemFlag"
 sed -i "1s/^/#define $modemFlag\n/" temp/menu_a_la_carte/menu_a_la_carte.ino
 
 echo "Adding flag for $sensorFlag"
-sed -i "1s/^/#define $sensorFlag\n/"temp/menu_a_la_carte/menu_a_la_carte.ino
+sed -i "1s/^/#define $sensorFlag\n/" temp/menu_a_la_carte/menu_a_la_carte.ino
 
 echo "Adding flag for $publisherFlag"
 sed -i "1s/^/#define $publisherFlag\n/" temp/menu_a_la_carte/menu_a_la_carte.ino
