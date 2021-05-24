@@ -24,11 +24,12 @@ jobs:
             examples/logging_to_MMW/,
             examples/logging_to_ThingSpeak/,
           ]
+        pio_environment: [mayfly, mega, arduino_zero, adafruit_feather_m0, autonomo]
 
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - name: Set variables
+      - name: Set environment variable for library installation source
         run: |
           if [[ -z "${GITHUB_HEAD_REF}" ]]; then
             echo "::debug::Push to commit ${GITHUB_SHA}"
@@ -58,6 +59,7 @@ jobs:
       - name: Run PlatformIO
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
+          PLATFORMIO_DEFAULT_ENVS: ${{ matrix.pio_environment}}
         run: |
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           platformio ci --project-conf="continuous_integration/platformio.ini"

@@ -182,7 +182,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - name: Set variables
+      - name: Set environment variable for library installation source
         run: |
           if [[ -z "${GITHUB_HEAD_REF}" ]]; then
             echo "::debug::Push to commit ${GITHUB_SHA}"
@@ -249,14 +249,44 @@ jobs:
           publisherFlag: ${{ matrix.publisherFlag }}
         run: |
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
-          chmod +x continuous_integration/modify-menu-configurations.sh
-          sh continuous_integration/modify-menu-configurations.sh
+          chmod +x continuous_integration/modify-menu-configuration.sh
+          sh continuous_integration/modify-menu-configuration.sh
 
       - name: Test with PlatformIO
-        run: platformio run --project-conf="continuous_integration/platformio.ini"
+        run: |
+          echo "::group::Build for Mayfly"
+          platformio run --environment mayfly --project-conf="continuous_integration/platformio.ini"
+          echo "::endgroup::"
+          echo "::group::Build for Arduino Mega"
+          platformio run --environment mega --project-conf="continuous_integration/platformio.ini"
+          echo "::endgroup::"
+          echo "::group::Build for Arduino Zero"
+          platformio run --environment arduino_zero --project-conf="continuous_integration/platformio.ini"
+          echo "::endgroup::"
+          echo "::group::Build for Adafruit Feather M0"
+          platformio run --environment adafruit_feather_m0 --project-conf="continuous_integration/platformio.ini"
+          echo "::endgroup::"
+          echo "::group::Build for Sodaq Autonomo"
+          platformio run --environment autonomo --project-conf="continuous_integration/platformio.ini"
+          echo "::endgroup::"
 
       - name: Test with Arduino CLI
-        run: arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+        run: |
+          echo "::group::Build for Mayfly"
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+          echo "::endgroup::"
+          echo "::group::Build for Arduino Mega"
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_ATLAS_SOFTWAREWIRE -DMS_RAIN_SOFTWAREWIRE -DMS_PALEOTERRA_SOFTWAREWIRE -DMS_SDI12_NON_CONCURRENT" --fqbn arduino:avr:mega temp/menu_a_la_carte/
+          echo "::endgroup::"
+          echo "::group::Build for Arduino Zero"
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -D__SAMD21G18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON" --fqbn arduino:samd:mzero_bl temp/menu_a_la_carte/
+          echo "::endgroup::"
+          echo "::group::Build for Adafruit Feather M0"
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -DARM_MATH_CM0PLUS -DADAFRUIT_FEATHER_M0 -D__SAMD21G18A__ -DUSB_VID=0x239A -DUSB_PID=0x800B -DUSBCON -DUSB_CONFIG_POWER=100 -DMS_USE_ADS1015" --fqbn adafruit:samd:adafruit_feather_m0 temp/menu_a_la_carte/
+          echo "::endgroup::"
+          echo "::group::Build for Sodaq Autonomo"
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DVERY_LOW_POWER -D__SAMD21J18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON -DENABLE_SERIAL2 -DENABLE_SERIAL3 --DMS_SAMD_DS3231" --fqbn SODAQ:samd:sodaq_autonomo temp/menu_a_la_carte/
+          echo "::endgroup::"
 
       - name: Uninstall testing version of Modular Sensors before caching
         run: |

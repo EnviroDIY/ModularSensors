@@ -25,23 +25,19 @@ jobs:
             examples/logging_to_ThingSpeak/,
           ]
         # arduino-platform: ['EnviroDIY:avr', 'arduino:avr', 'arduino:samd', 'adafruit:samd']
-        fqbn: ['EnviroDIY:avr:envirodiy_mayfly']
-        include:
-          - fqbn: 'EnviroDIY:avr:envirodiy_mayfly'
-            extra_build_flags: '-DNEOSWSERIAL_EXTERNAL_PCINT'
-          - fqbn: 'arduino:avr:mega'
-            extra_build_flags: '-DNEOSWSERIAL_EXTERNAL_PCINT'
-          - fqbn: 'arduino:samd:mzero_bl'
-            extra_build_flags: '-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -D__SAMD21G18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON'
-          - fqbn: 'adafruit:samd:adafruit_feather_m0'
-            extra_build_flags: '-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -DARM_MATH_CM0PLUS -DADAFRUIT_FEATHER_M0 -D__SAMD21G18A__ -DUSB_VID=0x239A -DUSB_PID=0x800B -DUSBCON -DUSB_CONFIG_POWER=100'
-          - fqbn: 'SODAQ:samd:sodaq_autonomo'
-            extra_build_flags: '-DNEOSWSERIAL_EXTERNAL_PCINT -DVERY_LOW_POWER -D__SAMD21J18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON'
+        fqbn:
+          [
+            'EnviroDIY:avr:envirodiy_mayfly',
+            'arduino:avr:mega',
+            'arduino:samd:mzero_bl',
+            'adafruit:samd:adafruit_feather_m0',
+            'SODAQ:samd:sodaq_autonomo',
+          ]
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set variables
+      - name: Set environment variable for library installation source
         run: |
           if [[ -z "${GITHUB_HEAD_REF}" ]]; then
             echo "::debug::Push to commit ${GITHUB_SHA}"
@@ -84,12 +80,33 @@ jobs:
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list
           ls home/arduino/user/libraries
 
+      - name: Set appropriate build flags for Arduino CLI
+        run: |
+          echo "::group::Setting build flags"
+          echo "::debug::Setting build flags for ${{ matrix.fqbn }}"
+          if [ ${{ matrix.fqbn }} = 'EnviroDIY:avr:envirodiy_mayfly' ]; then
+            echo "EXTRA_BUILD_FLAGS=-DNEOSWSERIAL_EXTERNAL_PCINT" >> $GITHUB_ENV
+          fi
+          if [ ${{ matrix.fqbn }} = 'arduino:avr:mega' ]; then
+            echo "EXTRA_BUILD_FLAGS=-DNEOSWSERIAL_EXTERNAL_PCINT" >> $GITHUB_ENV
+          fi
+          if [ ${{ matrix.fqbn }} = 'arduino:samd:mzero_bl' ]; then
+            echo "EXTRA_BUILD_FLAGS=-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -D__SAMD21G18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON" >> $GITHUB_ENV
+          fi
+          if [ ${{ matrix.fqbn }} = 'adafruit:samd:adafruit_feather_m0' ]; then
+            echo "EXTRA_BUILD_FLAGS=-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -DARM_MATH_CM0PLUS -DADAFRUIT_FEATHER_M0 -D__SAMD21G18A__ -DUSB_VID=0x239A -DUSB_PID=0x800B -DUSBCON -DUSB_CONFIG_POWER=100" >> $GITHUB_ENV
+          fi
+          if [ ${{ matrix.fqbn }} = 'SODAQ:samd:sodaq_autonomo' ]; then
+            echo "EXTRA_BUILD_FLAGS=-DNEOSWSERIAL_EXTERNAL_PCINT -DVERY_LOW_POWER -D__SAMD21J18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON" >> $GITHUB_ENV
+          fi
+          echo "::endgroup::"
+
       - name: Compile examples using the Arduino CLI
         env:
-          PLATFORMIO_CI_SRC: ${{ matrix.example }}
-          EXTRA_BUILD_FLAGS: ${{ matrix.extra_build_flags }}
+          BUILD_EXAMPLE: ${{ matrix.example }}
         run: |
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn ${{ matrix.fqbn }} ${{ matrix.example }}
+          echo "::debug::Running Arduino CLI for ${{ matrix.example }}"
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn ${{ matrix.fqbn }} $BUILD_EXAMPLE
 
       - name: Uninstall testing version of Modular Sensors before caching
         run: arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall EnviroDIY_ModularSensors

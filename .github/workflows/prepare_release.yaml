@@ -21,7 +21,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.3.4
 
-      - name: Set variables
+      - name: Set environment variable for current library version
         run: |
           echo "::debug::Get the current version number"
           VER=$(cat VERSION)
