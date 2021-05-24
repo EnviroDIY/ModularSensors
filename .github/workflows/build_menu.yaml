@@ -296,7 +296,7 @@ jobs:
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -DARM_MATH_CM0PLUS -DADAFRUIT_FEATHER_M0 -D__SAMD21G18A__ -DUSB_VID=0x239A -DUSB_PID=0x800B -DUSBCON -DUSB_CONFIG_POWER=100 -DMS_USE_ADS1015" --fqbn adafruit:samd:adafruit_feather_m0 temp/menu_a_la_carte/
           echo "::endgroup::"
           echo "::group::Build for Sodaq Autonomo"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DVERY_LOW_POWER -D__SAMD21J18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON -DENABLE_SERIAL2 -DENABLE_SERIAL3 --DMS_SAMD_DS3231" --fqbn SODAQ:samd:sodaq_autonomo temp/menu_a_la_carte/
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DVERY_LOW_POWER -D__SAMD21J18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON -DENABLE_SERIAL2 -DENABLE_SERIAL3 -DMS_SAMD_DS3231" --fqbn SODAQ:samd:sodaq_autonomo temp/menu_a_la_carte/
           echo "::endgroup::"
 
       - name: Uninstall testing version of Modular Sensors before caching
