@@ -241,7 +241,7 @@ jobs:
           echo "::debug::Unzipping the library"
           unzip -q -o home/arduino/downloads/ModularSensors.zip -d home/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
           echo "::debug::Ensuring no old directories exist"
-          rm -r home/arduino/user/libraries/ModularSensors
+          rm -r -f home/arduino/user/libraries/ModularSensors
           echo "::debug::Creating a new directory for the testing version of Modular sensors"
           mkdir -p home/arduino/user/libraries/ModularSensors
           echo "::debug::Moving the unzipped library to the new directory"
@@ -301,5 +301,5 @@ jobs:
 
       - name: Uninstall testing version of Modular Sensors before caching
         run: |
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall EnviroDIY_ModularSensors
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors
           pio lib -g uninstall EnviroDIY_ModularSensors
