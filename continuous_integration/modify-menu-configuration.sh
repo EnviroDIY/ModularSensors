@@ -19,15 +19,15 @@ echo "\e[36m--------------------------------------------------------------------
 
 sed "1s/^/#define MS_BUILD_TEST_PRE_NAMED_VARS\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 
-if ["$modemFlag" != ""]
+if [ "$modemFlag" != "" ]
 then
     sed "1s/^/#define $modemFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 fi
-if ["$sensorFlag" != ""]
+if [ "$sensorFlag" != "" ]
 then
     sed "1s/^/#define $sensorFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 fi
-if ["$publisherFlag" != ""]
+if [ "$publisherFlag" != "" ]
 then
     sed "1s/^/#define $publisherFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 fi

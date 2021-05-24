@@ -62,7 +62,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 
 echo "\nDownloading Soligen fork of Adafruit_ADS1X15 as a zip"
 # Soligen fork needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
-curl -L https://github.com/soligen2010/Adafruit_ADS1X15/archive/master.zip --create-dirs -o home/arduino/downloads/Adafruit_ADS1X15.zip
+curl -L  --retry 5 --retry-delay 0 https://github.com/soligen2010/Adafruit_ADS1X15/archive/master.zip --create-dirs -o home/arduino/downloads/Adafruit_ADS1X15.zip
 echo "Decompressing Adafruit_ADS1X15"
 unzip -q -o home/arduino/downloads/Adafruit_ADS1X15.zip -d home/arduino/downloads/
 echo "Moving Adafruit_ADS1X15 to the libraries folder"
@@ -95,7 +95,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install SD
 
 echo "\nDownloading External Interrupt version of the SDI-12 library as a zip"
 # The "external interrupt" version needs to be installed from a zip because the Arduino CLI cannot pull from a branch
-curl -L https://github.com/EnviroDIY/Arduino-SDI-12/archive/refs/heads/ExtInts.zip --create-dirs -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip
+curl -L  --retry 5 --retry-delay 0 https://github.com/EnviroDIY/Arduino-SDI-12/archive/refs/heads/ExtInts.zip --create-dirs -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip
 echo "Decompressing EnviroDIY_SDI12_ExtInts"
 unzip -q -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip -d home/arduino/downloads/
 echo "Moving EnviroDIY_SDI12_ExtInts to the libraries folder"
@@ -133,7 +133,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --
 
 echo "\nDownloading SoftwareSerial with External Interrupts as a zip"
 # SoftwareSerial with External Interrupts needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
-curl -L https://github.com/EnviroDIY/SoftwareSerial_ExternalInts/archive/master.zip --create-dirs -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip
+curl -L  --retry 5 --retry-delay 0 https://github.com/EnviroDIY/SoftwareSerial_ExternalInts/archive/master.zip --create-dirs -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip
 echo "Decompressing SoftwareSerial_ExternalInts"
 unzip -q -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip -d home/arduino/downloads/
 echo "Moving SoftwareSerial_ExternalInts to the libraries folder"
