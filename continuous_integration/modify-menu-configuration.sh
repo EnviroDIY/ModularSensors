@@ -20,14 +20,14 @@ echo "\e[36m--------------------------------------------------------------------
 echo "Adding flag for pre-named variables"
 sed "1s/^/#define MS_BUILD_TEST_PRE_NAMED_VARS\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
 
-echo "Adding flag for$modemFlag"
-sed "1s/^/#define $modemFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
+echo "Adding flag for $modemFlag"
+sed -i "1s/^/#define $modemFlag\n/" temp/menu_a_la_carte/menu_a_la_carte.ino
 
-echo "Adding flag for$sensorFlag"
-sed "1s/^/#define $sensorFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
+echo "Adding flag for $sensorFlag"
+sed -i "1s/^/#define $sensorFlag\n/"temp/menu_a_la_carte/menu_a_la_carte.ino
 
-echo "Adding flag for$publisherFlag"
-sed "1s/^/#define $publisherFlag\n/" examples/menu_a_la_carte/menu_a_la_carte.ino > temp/menu_a_la_carte/menu_a_la_carte.ino
+echo "Adding flag for $publisherFlag"
+sed -i "1s/^/#define $publisherFlag\n/" temp/menu_a_la_carte/menu_a_la_carte.ino
 
 echo "First few lines of source"
 head temp/menu_a_la_carte/menu_a_la_carte.ino
