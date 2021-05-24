@@ -29,5 +29,5 @@ sed -i "1s/^/#define $sensorFlag\n/" temp/menu_a_la_carte/menu_a_la_carte.ino
 echo "Adding flag for $publisherFlag"
 sed -i "1s/^/#define $publisherFlag\n/" temp/menu_a_la_carte/menu_a_la_carte.ino
 
-echo "First few lines of source"
+echo "\e[32mFirst few lines of source\e[0m"
 head temp/menu_a_la_carte/menu_a_la_carte.ino
