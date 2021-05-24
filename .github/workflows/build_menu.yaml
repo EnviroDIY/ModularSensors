@@ -222,7 +222,7 @@ jobs:
           # if nothing in the dependencies.json file has changed, then it will
           # be a "cache hit" and we can restore libraries from cache and not
           # download them.  If it has changed we have to re-download.
-          key: ${{ hashFiles('./dependencies.json') }}
+          key: ${{ hashFiles('./continuous_integration/dependencies.json') }}
 
       # Install cores and library dependencies for the Arduino CLI
       - name: Install the Arduino libraries
@@ -230,6 +230,13 @@ jobs:
         run: |
           chmod +x continuous_integration/install-deps-arduino-cli.sh
           sh continuous_integration/install-deps-arduino-cli.sh
+
+      # Install the dependencies for PlatformIO
+      - name: Install the PlatformIO dependencies at global level
+        if: steps.cache_libraries.outputs.cache-hit != 'true'
+        run: |
+          chmod +x continuous_integration/install-deps-platformio.sh
+          sh continuous_integration/install-deps-platformio.sh
 
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors
