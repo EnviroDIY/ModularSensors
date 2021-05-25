@@ -316,10 +316,10 @@ int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
     }
 
     // Verify the number of results the sensor will send
-    if (numVariables != _numReturnedValues) {
+    if (numVariables != (_numReturnedValues - _incCalcValues)) {
         PRINTOUT(numVariables, F("results expected"),
                  F("This differs from the sensor's standard design of"),
-                 _numReturnedValues, F("measurements!!"));
+                 (_numReturnedValues - _incCalcValues), F("measurements!!"));
     }
 
     // Return how long we're expecting to wait for a measurement

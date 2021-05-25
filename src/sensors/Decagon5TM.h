@@ -69,9 +69,14 @@
 #define MS_DEBUGGING_STD "Decagon5TM"
 #endif
 
+#ifdef MS_SDI12SENSORS_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "SDI12Sensors"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 

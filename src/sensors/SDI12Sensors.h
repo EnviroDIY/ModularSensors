@@ -79,6 +79,7 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
 #ifdef SDI12_EXTERNAL_PCINT
