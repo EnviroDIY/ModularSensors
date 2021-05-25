@@ -95,6 +95,9 @@ bool Decagon5TM::getResults(void) {
     // Use end() instead of just forceHold to un-set the timers
     if (!wasActive) _SDI12Internal.end();
 
+    MS_DBG(F("Raw dielectric permittivity:"), ea);
+    MS_DBG(F("Raw Temperature Value:"), temp);
+
 
     // Set up the float variables for calculated variable
     float VWC = -9999;

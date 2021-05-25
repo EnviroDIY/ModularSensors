@@ -97,6 +97,8 @@ bool MeterTeros11::getResults(void) {
     // Use end() instead of just forceHold to un-set the timers
     if (!wasActive) _SDI12Internal.end();
 
+    MS_DBG(F("Raw VWC Counts:"), raw);
+    MS_DBG(F("Raw Temperature Value:"), temp);
 
     // Set up the float variables for calculated variable
     float ea  = -9999;
@@ -116,7 +118,7 @@ bool MeterTeros11::getResults(void) {
               (5.276e-2 * raw) - 43.39) *
             ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) +
              (5.276e-2 * raw) - 43.39);
-        MS_DBG(F("Calculated Ea:"), ea)
+        MS_DBG(F("Calculated Ea:"), ea);
     }
 
     // Calculate the VWC from EA using the Topp equation
