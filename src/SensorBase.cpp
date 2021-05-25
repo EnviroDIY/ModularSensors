@@ -168,7 +168,8 @@ void Sensor::powerDown(void) {
 bool Sensor::setup(void) {
     MS_DBG(F("Setting up"), getSensorName(), F("attached at"),
            getSensorLocation(), F("which can return up to"), _numReturnedValues,
-           F("variable[s]."));
+           F("variable[s]"), _incCalcValues,
+           F("of which are calculated internally."));
 
     MS_DBG(F("It warms up in"), _warmUpTime_ms, F("ms, is stable after"),
            _stabilizationTime_ms, F("ms, and takes a single measurement in"),

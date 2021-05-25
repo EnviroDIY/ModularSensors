@@ -249,12 +249,27 @@ class SDI12Sensors : public Sensor {
      */
     bool getSensorInfo(void);
     /**
+     * @brief Tell the sensor to start a single measurement, if needed.
+     *
+     * This also sets the #_millisMeasurementRequested timestamp.
+     *
+     * @note This function does NOT include any waiting for the sensor to be
+     * warmed up or stable!
+     *
+     * @param isConcurrent Whether to start a concurrent or standard
+     * measurement.  Defaults to 'true' for a concurrent measurement.
+     *
+     * @return **int8_t** The length of time the measurement is expected to
+     * take.
+     */
+    int8_t startSDI12Measurement(bool isConcurrent = true);
+    /**
      * @brief Gets the results of either a standard or a concurrent measurement
      *
      * @return **bool** True if the full number of expected results was
      * returned.
      */
-    bool getResults(void);
+    virtual bool getResults(void);
     /**
      * @brief Internal reference to the SDI-12 object.
      */

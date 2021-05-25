@@ -268,9 +268,9 @@ class Decagon5TM : public SDI12Sensors {
     ~Decagon5TM() {}
 
     /**
-     * @copydoc Sensor::addSingleMeasurementResult()
+     * @copydoc SDI12Sensors::getResults()
      */
-    bool addSingleMeasurementResult(void) override;
+    bool getResults(void) override;
 };
 
 

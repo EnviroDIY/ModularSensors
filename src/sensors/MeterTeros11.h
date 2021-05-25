@@ -79,6 +79,10 @@
 #define MS_DEBUGGING_STD "MeterTeros11"
 #endif
 
+#ifdef MS_SDI12SENSORS_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "SDI12Sensors"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
@@ -116,36 +120,30 @@
 /**@}*/
 
 /**
- * @anchor sensor_teros11_ea
- * @name EA
- * The EA variable from a Meter Teros 11
- * - Range is 1 (air) to 80 (water)
- * - Accuracy is:
- *     - 1–40 (soil range), ±1 εa (unitless)
- *     - 40–80, 15% of measurement
+ * @anchor sensor_teros11_counts
+ * @name Raw Counts
+ * The raw VWC counts variable from a Meter Teros 11
+ * - Range and accuracy of the raw count values are not specified
  *
- * {{ @ref MeterTeros11_Ea::MeterTeros11_Ea }}
+ * {{ @ref MeterTeros11_Counts::MeterTeros11_Counts }}
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; EA should have 5.
- *
- * 4 are reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging - resolution is 0.00001
+ * @brief Decimals places in string representation; EA should have 1.
  */
-#define TEROS11_EA_RESOLUTION 5
+#define TEROS11_COUNT_RESOLUTION 1
 /// @brief Sensor variable number; EA is stored in sensorValues[0].
-#define TEROS11_EA_VAR_NUM 0
+#define TEROS11_COUNT_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "permittivity"
-#define TEROS11_EA_VAR_NAME "permittivity"
+/// "counter"
+#define TEROS11_COUNT_VAR_NAME "counter"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "faradPerMeter" (F/m)
-#define TEROS11_EA_UNIT_NAME "faradPerMeter"
-/// @brief Default variable short code; "SoilEa"
-#define TEROS11_EA_DEFAULT_CODE "SoilEa"
+/// "count"
+#define TEROS11_COUNT_UNIT_NAME "count"
+/// @brief Default variable short code; "RawVWCCounts"
+#define TEROS11_COUNT_DEFAULT_CODE "RawVWCCounts"
 /**@}*/
 
 /**
@@ -182,6 +180,39 @@
 /**@}*/
 
 /**
+ * @anchor sensor_teros11_ea
+ * @name EA
+ * The EA variable from a Meter Teros 11
+ * - Range is 1 (air) to 80 (water)
+ * - Accuracy is:
+ *     - 1–40 (soil range), ±1 εa (unitless)
+ *     - 40–80, 15% of measurement
+ *
+ * {{ @ref MeterTeros11_Ea::MeterTeros11_Ea }}
+ */
+/**@{*/
+/**
+ * @brief Decimals places in string representation; EA should have 5.
+ *
+ * 4 are reported, adding extra digit to resolution to allow the proper number
+ * of significant figures for averaging - resolution is 0.00001
+ */
+#define TEROS11_EA_RESOLUTION 5
+/// @brief Sensor variable number; EA is stored in sensorValues[0].
+#define TEROS11_EA_VAR_NUM 2
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "permittivity"
+#define TEROS11_EA_VAR_NAME "permittivity"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "faradPerMeter" (F/m)
+#define TEROS11_EA_UNIT_NAME "faradPerMeter"
+/// @brief Default variable short code; "SoilEa"
+#define TEROS11_EA_DEFAULT_CODE "SoilEa"
+/**@}*/
+
+/**
  * @anchor sensor_teros11_vwc
  * @name Volumetric Water Content
  * The VWC variable from a Meter Teros 11
@@ -206,7 +237,7 @@
  */
 #define TEROS11_VWC_RESOLUTION 3
 /// @brief Sensor variable number; VWC is stored in sensorValues[2].
-#define TEROS11_VWC_VAR_NUM 2
+#define TEROS11_VWC_VAR_NUM 3
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "volumetricWaterContent"
@@ -260,8 +291,8 @@ class MeterTeros11 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS,
-                       TEROS11_MEASUREMENT_TIME_MS,
-                       TEROS11_EXTRA_WAKE_TIME_MS) {}
+                       TEROS11_MEASUREMENT_TIME_MS, TEROS11_EXTRA_WAKE_TIME_MS,
+                       TEROS11_INC_CALC_VARIABLES) {}
     /**
      * @copydoc MeterTeros11::MeterTeros11
      */
@@ -270,8 +301,8 @@ class MeterTeros11 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS,
-                       TEROS11_MEASUREMENT_TIME_MS,
-                       TEROS11_EXTRA_WAKE_TIME_MS) {}
+                       TEROS11_MEASUREMENT_TIME_MS, TEROS11_EXTRA_WAKE_TIME_MS,
+                       TEROS11_INC_CALC_VARIABLES) {}
     /**
      * @copydoc MeterTeros11::MeterTeros11
      */
@@ -280,17 +311,103 @@ class MeterTeros11 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS,
-                       TEROS11_MEASUREMENT_TIME_MS,
-                       TEROS11_EXTRA_WAKE_TIME_MS) {}
+                       TEROS11_MEASUREMENT_TIME_MS, TEROS11_EXTRA_WAKE_TIME_MS,
+                       TEROS11_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Meter Teros 11 object
      */
     ~MeterTeros11() {}
 
     /**
-     * @copydoc Sensor::addSingleMeasurementResult()
+     * @copydoc SDI12Sensors::getResults()
      */
-    bool addSingleMeasurementResult(void) override;
+    bool getResults(void) override;
+};
+
+
+// Defines the raw VWC count Variable
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [raw calibrated VWC counts](@ref sensor_teros11_counts)
+ * from a [Meter Teros soil moisture/water content sensor](@ref sensor_teros11).
+ *
+ * @ingroup sensor_teros11
+ */
+/* clang-format on */
+class MeterTeros11_Count : public Variable {
+ public:
+    /**
+     * @brief Construct a new MeterTeros11_Count object.
+     *
+     * @param parentSense The parent MeterTeros11 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "RawVWCCounts".
+     */
+    explicit MeterTeros11_Count(
+        MeterTeros11* parentSense, const char* uuid = "",
+        const char* varCode = TEROS11_COUNT_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)TEROS11_COUNT_VAR_NUM,
+                   (uint8_t)TEROS11_COUNT_RESOLUTION, TEROS11_COUNT_VAR_NAME,
+                   TEROS11_COUNT_UNIT_NAME, varCode, uuid) {}
+    /**
+     * @brief Construct a new MeterTeros11_Count object.
+     *
+     * @note This must be tied with a parent MeterTeros11 before it can be used.
+     */
+    MeterTeros11_Count()
+        : Variable((const uint8_t)TEROS11_COUNT_VAR_NUM,
+                   (uint8_t)TEROS11_COUNT_RESOLUTION, TEROS11_COUNT_VAR_NAME,
+                   TEROS11_COUNT_UNIT_NAME, TEROS11_COUNT_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the MeterTeros11_Count object - no action needed.
+     */
+    ~MeterTeros11_Count() {}
+};
+
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [temperature output](@ref sensor_teros11_temp) output from a
+ * [Teros soil moisture/water content sensor](@ref sensor_teros11).
+ *
+ * @ingroup sensor_teros11
+ */
+/* clang-format on */
+class MeterTeros11_Temp : public Variable {
+ public:
+    /**
+     * @brief Construct a new MeterTeros11_Temp object.
+     *
+     * @param parentSense The parent MeterTeros11 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "SoilTemp".
+     */
+    explicit MeterTeros11_Temp(MeterTeros11* parentSense, const char* uuid = "",
+                               const char* varCode = TEROS11_TEMP_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)TEROS11_TEMP_VAR_NUM,
+                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
+                   TEROS11_TEMP_UNIT_NAME, varCode, uuid) {}
+    /**
+     * @brief Construct a new MeterTeros11_Temp object.
+     *
+     * @note This must be tied with a parent MeterTeros11 before it can be used.
+     */
+    MeterTeros11_Temp()
+        : Variable((const uint8_t)TEROS11_TEMP_VAR_NUM,
+                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
+                   TEROS11_TEMP_UNIT_NAME, TEROS11_TEMP_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the MeterTeros11_Temp object - no action needed.
+     */
+    ~MeterTeros11_Temp() {}
 };
 
 
@@ -334,48 +451,6 @@ class MeterTeros11_Ea : public Variable {
      * @brief Destroy the MeterTeros11_Ea object - no action needed.
      */
     ~MeterTeros11_Ea() {}
-};
-
-
-/* clang-format off */
-/**
- * @brief The Variable sub-class used for the
- * [temperature output](@ref sensor_teros11_temp) output from a
- * [Teros soil moisture/water content sensor](@ref sensor_teros11).
- *
- * @ingroup sensor_teros11
- */
-/* clang-format on */
-class MeterTeros11_Temp : public Variable {
- public:
-    /**
-     * @brief Construct a new MeterTeros11_Temp object.
-     *
-     * @param parentSense The parent MeterTeros11 providing the result
-     * values.
-     * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable; optional with the default value of an empty string.
-     * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "SoilTemp".
-     */
-    explicit MeterTeros11_Temp(MeterTeros11* parentSense, const char* uuid = "",
-                               const char* varCode = TEROS11_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)TEROS11_TEMP_VAR_NUM,
-                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
-                   TEROS11_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterTeros11_Temp object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_Temp()
-        : Variable((const uint8_t)TEROS11_TEMP_VAR_NUM,
-                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
-                   TEROS11_TEMP_UNIT_NAME, TEROS11_TEMP_DEFAULT_CODE) {}
-    /**
-     * @brief Destroy the MeterTeros11_Temp object - no action needed.
-     */
-    ~MeterTeros11_Temp() {}
 };
 
 
