@@ -216,7 +216,7 @@ bool SDI12Sensors::getSensorInfo(void) {
         // Suppress the DDI serial start-up string on meter sensors.  This
         // shouldn't be sent if the SDI-12 address is non-zero, but we'll
         // explicitly suppress it just in case.
-        if (_sensorVendor == "METER") {
+        if (_sensorVendor == "METER" && _SDI12address == 0) {
             MS_DBG(F("  Suppressing DDI string on Meter sensor"));
             String myCommand = "";
             myCommand += static_cast<char>(_SDI12address);
@@ -487,7 +487,8 @@ bool SDI12Sensors::getResults(void) {
             break;  // don't do another loop if we got nothing
         }
         MS_DBG(F("  Total Results Received: "), resultsReceived,
-               F(", Remaining: "), _numReturnedValues - resultsReceived);
+               F(", Remaining: "),
+               (_numReturnedValues - _incCalcValues) - resultsReceived);
         cmd_number++;
     }
     // String sdiResponse = _SDI12Internal.readStringUntil('\n');
@@ -502,7 +503,7 @@ bool SDI12Sensors::getResults(void) {
     // Use end() instead of just forceHold to un-set the timers
     if (!wasActive) _SDI12Internal.end();
 
-    return _numReturnedValues == resultsReceived;
+    return (_numReturnedValues - _incCalcValues) == resultsReceived;
 }
 
 
