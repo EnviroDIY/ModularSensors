@@ -61,6 +61,8 @@
 
 /// @brief Sensor::_numReturnedValues; the D-Opto can report 3 values.
 #define DOPTO_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define DOPTO_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_dopto_timing
@@ -215,7 +217,8 @@ class ZebraTechDOpto : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS) {}
+                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS,
+                       DOPTO_INC_CALC_VARIABLES) {}
     /**
      * @copydoc ZebraTechDOpto::ZebraTechDOpto
      */
@@ -224,7 +227,8 @@ class ZebraTechDOpto : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS) {}
+                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS,
+                       DOPTO_INC_CALC_VARIABLES) {}
     /**
      * @copydoc ZebraTechDOpto::ZebraTechDOpto
      */
@@ -233,7 +237,8 @@ class ZebraTechDOpto : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS) {}
+                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS,
+                       DOPTO_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Zebra-Tech DOpto object
      */

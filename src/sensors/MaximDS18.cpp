@@ -16,7 +16,7 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin,
                      int8_t dataPin, uint8_t measurementsToAverage)
     : Sensor("MaximDS18", DS18_NUM_VARIABLES, DS18_WARM_UP_TIME_MS,
              DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS, powerPin,
-             dataPin, measurementsToAverage),
+             dataPin, measurementsToAverage, DS18_INC_CALC_VARIABLES),
       _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire) {
     for (uint8_t i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
     // _OneWireAddress = OneWireAddress;
@@ -29,7 +29,7 @@ MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin,
                      uint8_t measurementsToAverage)
     : Sensor("MaximDS18", DS18_NUM_VARIABLES, DS18_WARM_UP_TIME_MS,
              DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS, powerPin,
-             dataPin, measurementsToAverage),
+             dataPin, measurementsToAverage, DS18_INC_CALC_VARIABLES),
       _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire) {
     _addressKnown = false;
 }

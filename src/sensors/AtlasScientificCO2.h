@@ -76,6 +76,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Atlas CO2 sensor can report 2 values.
 #define ATLAS_CO2_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define ATLAS_CO2_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_atlas_co2_timing

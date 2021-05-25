@@ -152,7 +152,10 @@
 /** @ingroup sensor_analog_cond */
 /**@{*/
 
+/// @brief Sensor::_numReturnedValues; we only get one value from the analog conductivity sensor.
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.
+#define ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_analog_cond_parts_timing

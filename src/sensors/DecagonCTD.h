@@ -71,6 +71,8 @@
 
 /// @brief Sensor::_numReturnedValues; the CTD can report 3 values.
 #define CTD_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define CTD_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_decagon_ctd_timing
@@ -224,7 +226,7 @@ class DecagonCTD : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
-                       CTD_EXTRA_WAKE_TIME_MS) {}
+                       CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
      */
@@ -233,7 +235,7 @@ class DecagonCTD : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
-                       CTD_EXTRA_WAKE_TIME_MS) {}
+                       CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
      */
@@ -242,7 +244,7 @@ class DecagonCTD : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
-                       CTD_EXTRA_WAKE_TIME_MS) {}
+                       CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
 
     /**
      * @brief Destroy the Decagon CTD object

@@ -16,22 +16,26 @@
 #if defined MS_ATLAS_SOFTWAREWIRE
 AtlasParent::AtlasParent(SoftwareWire* theI2C, int8_t powerPin,
                          uint8_t i2cAddressHex, uint8_t measurementsToAverage,
-                         const char* sensorName, const uint8_t numReturnedVars,
+                         const char*   sensorName,
+                         const uint8_t totalReturnedValues,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
-                         uint32_t measurementTime_ms)
-    : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage) {
+                         uint32_t measurementTime_ms, uint8_t incCalcValues)
+    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
+             stabilizationTime_ms, measurementTime_ms, powerPin, -1,
+             measurementsToAverage, incCalcValues) {
     _i2cAddressHex      = i2cAddressHex;
     _i2c                = theI2C;
     createdSoftwareWire = false;
 }
 AtlasParent::AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                          uint8_t i2cAddressHex, uint8_t measurementsToAverage,
-                         const char* sensorName, const uint8_t numReturnedVars,
+                         const char*   sensorName,
+                         const uint8_t totalReturnedValues,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
-                         uint32_t measurementTime_ms)
-    : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, dataPin, measurementsToAverage) {
+                         uint32_t measurementTime_ms, uint8_t incCalcValues)
+    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
+             stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
+             measurementsToAverage, incCalcValues) {
     _i2cAddressHex      = i2cAddressHex;
     _i2c                = new SoftwareWire(dataPin, clockPin);
     createdSoftwareWire = true;
@@ -39,21 +43,24 @@ AtlasParent::AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
 #else
 AtlasParent::AtlasParent(TwoWire* theI2C, int8_t powerPin,
                          uint8_t i2cAddressHex, uint8_t measurementsToAverage,
-                         const char* sensorName, const uint8_t numReturnedVars,
+                         const char*   sensorName,
+                         const uint8_t totalReturnedValues,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
-                         uint32_t measurementTime_ms)
-    : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage) {
+                         uint32_t measurementTime_ms, uint8_t incCalcValues)
+    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
+             stabilizationTime_ms, measurementTime_ms, powerPin, -1,
+             measurementsToAverage, incCalcValues) {
     _i2cAddressHex = i2cAddressHex;
     _i2c           = theI2C;
 }
 AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                          uint8_t measurementsToAverage, const char* sensorName,
-                         const uint8_t numReturnedVars, uint32_t warmUpTime_ms,
-                         uint32_t stabilizationTime_ms,
-                         uint32_t measurementTime_ms)
-    : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage) {
+                         const uint8_t totalReturnedValues,
+                         uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
+                         uint32_t measurementTime_ms, uint8_t incCalcValues)
+    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
+             stabilizationTime_ms, measurementTime_ms, powerPin, -1,
+             measurementsToAverage, incCalcValues) {
     _i2cAddressHex = i2cAddressHex;
     _i2c           = &Wire;
 }

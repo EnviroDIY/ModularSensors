@@ -15,14 +15,15 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(const char* sensorName, const uint8_t numReturnedVars,
+Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                uint32_t measurementTime_ms, int8_t powerPin, int8_t dataPin,
-               uint8_t measurementsToAverage)
-    : _sensorName(sensorName), _numReturnedValues(numReturnedVars) {
+               uint8_t measurementsToAverage, uint8_t incCalcValues)
+    : _sensorName(sensorName), _numReturnedValues(totalReturnedValues) {
     _powerPin              = powerPin;
     _dataPin               = dataPin;
     _measurementsToAverage = measurementsToAverage;
+    _incCalcValues         = incCalcValues;
 
     // This is the time needed from the when a sensor has power until it's ready
     // to talk The _millisPowerOn value is set in the powerUp() function.  It is

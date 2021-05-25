@@ -61,6 +61,8 @@
 /// @brief Sensor::_numReturnedValues; the Atlas EZO ORP circuit can report 1
 /// value.
 #define ATLAS_ORP_NUM_VARIABLES 1
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define ATLAS_ORP_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_atlas_orp_timing
@@ -151,11 +153,11 @@ class AtlasScientificORP : public AtlasParent {
     AtlasScientificORP(SoftwareWire* theI2C, int8_t powerPin,
                        uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-        : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
-                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                      ATLAS_ORP_WARM_UP_TIME_MS,
-                      ATLAS_ORP_STABILIZATION_TIME_MS,
-                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+        : AtlasParent(
+              theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+              "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+              ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+              ATLAS_ORP_MEASUREMENT_TIME_MS, ATLAS_ORP_INC_CALC_VARIABLES) {}
     /**
      * @brief Construct a new Atlas Scientific ORP object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
@@ -189,11 +191,11 @@ class AtlasScientificORP : public AtlasParent {
     AtlasScientificORP(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                        uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-        : AtlasParent(powerPin, dataPin, clockPin, i2cAddressHex,
-                      measurementsToAverage, "AtlasScientificORP",
-                      ATLAS_ORP_NUM_VARIABLES, ATLAS_ORP_WARM_UP_TIME_MS,
-                      ATLAS_ORP_STABILIZATION_TIME_MS,
-                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+        : AtlasParent(
+              powerPin, dataPin, clockPin, i2cAddressHex, measurementsToAverage,
+              "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+              ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+              ATLAS_ORP_MEASUREMENT_TIME_MS, ATLAS_ORP_INC_CALC_VARIABLES) {}
 #endif
 #if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
@@ -222,11 +224,11 @@ class AtlasScientificORP : public AtlasParent {
     AtlasScientificORP(TwoWire* theI2C, int8_t powerPin,
                        uint8_t i2cAddressHex         = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-        : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
-                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                      ATLAS_ORP_WARM_UP_TIME_MS,
-                      ATLAS_ORP_STABILIZATION_TIME_MS,
-                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+        : AtlasParent(
+              theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+              "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+              ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+              ATLAS_ORP_MEASUREMENT_TIME_MS, ATLAS_ORP_INC_CALC_VARIABLES) {}
     /**
      * @brief Construct a new Atlas Scientific ORP object using the primary
      * hardware I2C instance.
@@ -248,11 +250,11 @@ class AtlasScientificORP : public AtlasParent {
     explicit AtlasScientificORP(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1)
-        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                      "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                      ATLAS_ORP_WARM_UP_TIME_MS,
-                      ATLAS_ORP_STABILIZATION_TIME_MS,
-                      ATLAS_ORP_MEASUREMENT_TIME_MS) {}
+        : AtlasParent(
+              powerPin, i2cAddressHex, measurementsToAverage,
+              "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+              ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+              ATLAS_ORP_MEASUREMENT_TIME_MS, ATLAS_ORP_INC_CALC_VARIABLES) {}
 #endif
     /**
      * @brief Destroy the Atlas Scientific ORP object

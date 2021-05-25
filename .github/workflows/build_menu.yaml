@@ -239,7 +239,7 @@ jobs:
           sh continuous_integration/install-deps-platformio.sh
 
       # Install ModularSensors for the Arduino CLI
-      - name: Install the testing version of Modular Sensors
+      - name: Install the testing version of Modular Sensors for the Arduino CLI
         run: |
           echo "::debug::Deleting any archived zips"
           rm -f home/arduino/downloads/ModularSensors.zip
@@ -261,7 +261,7 @@ jobs:
           ls home/arduino/user/libraries
 
       # Install ModularSensors at the Global level for PlatformIO
-      - name: Install the testing version of Modular Sensors
+      - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
           pio lib -g install {{ env.LIBRARY_INSTALL_SOURCE }}
 

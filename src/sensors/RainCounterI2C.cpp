@@ -27,7 +27,7 @@ RainCounterI2C::RainCounterI2C(int8_t dataPin, int8_t clockPin,
                                uint8_t i2cAddressHex, float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1,
-             dataPin, 1) {
+             dataPin, 1, BUCKET_INC_CALC_VARIABLES) {
     _i2cAddressHex      = i2cAddressHex;
     _i2c                = new SoftwareWire(dataPin, clockPin);
     createdSoftwareWire = true;

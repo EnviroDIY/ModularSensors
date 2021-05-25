@@ -22,7 +22,7 @@ ExternalVoltage::ExternalVoltage(int8_t powerPin, uint8_t adsChannel,
     : Sensor("ExternalVoltage", EXT_VOLTAGE_NUM_VARIABLES,
              EXT_VOLTAGE_WARM_UP_TIME_MS, EXT_VOLTAGE_STABILIZATION_TIME_MS,
              EXT_VOLTAGE_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage) {
+             measurementsToAverage, EXT_VOLTAGE_INC_CALC_VARIABLES) {
     _adsChannel = adsChannel;
     _gain       = gain;
     _i2cAddress = i2cAddress;

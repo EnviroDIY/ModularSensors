@@ -74,6 +74,8 @@
 
 /// @brief Sensor::_numReturnedValues; the processor can report 3 values.
 #define PROCESSOR_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; sample number is (sort-of) calculated.
+#define PROCESSOR_INC_CALC_VARIABLES 1
 
 
 /**

@@ -19,14 +19,15 @@ AtlasScientificDO::AtlasScientificDO(SoftwareWire* theI2C, int8_t powerPin,
     : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                   ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                  ATLAS_DO_MEASUREMENT_TIME_MS) {}
+                  ATLAS_DO_MEASUREMENT_TIME_MS, ATLAS_DO_INC_CALC_VARIABLES) {}
 AtlasScientificDO::AtlasScientificDO(int8_t powerPin, int8_t dataPin,
                                      int8_t clockPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-    : AtlasParent(
-          powerPin, dataPin, clockPin, i2cAddressHex, measurementsToAverage,
-          "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES, ATLAS_DO_WARM_UP_TIME_MS,
-          ATLAS_DO_STABILIZATION_TIME_MS, ATLAS_DO_MEASUREMENT_TIME_MS) {}
+    : AtlasParent(powerPin, dataPin, clockPin, i2cAddressHex,
+                  measurementsToAverage, "AtlasScientificDO",
+                  ATLAS_DO_NUM_VARIABLES, ATLAS_DO_WARM_UP_TIME_MS,
+                  ATLAS_DO_STABILIZATION_TIME_MS, ATLAS_DO_MEASUREMENT_TIME_MS,
+                  ATLAS_DO_INC_CALC_VARIABLES) {}
 #else
 AtlasScientificDO::AtlasScientificDO(TwoWire* theI2C, int8_t powerPin,
                                      uint8_t i2cAddressHex,
@@ -34,13 +35,13 @@ AtlasScientificDO::AtlasScientificDO(TwoWire* theI2C, int8_t powerPin,
     : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                   ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                  ATLAS_DO_MEASUREMENT_TIME_MS) {}
+                  ATLAS_DO_MEASUREMENT_TIME_MS, ATLAS_DO_INC_CALC_VARIABLES) {}
 AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                   ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
-                  ATLAS_DO_MEASUREMENT_TIME_MS) {}
+                  ATLAS_DO_MEASUREMENT_TIME_MS, ATLAS_DO_INC_CALC_VARIABLES) {}
 #endif
 // Destructor
 AtlasScientificDO::~AtlasScientificDO() {}

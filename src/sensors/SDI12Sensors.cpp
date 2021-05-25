@@ -18,36 +18,42 @@
 SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin,
                            uint8_t       measurementsToAverage,
                            const char*   sensorName,
-                           const uint8_t numReturnedVars,
+                           const uint8_t totalReturnedValues,
                            uint32_t      warmUpTime_ms,
                            uint32_t      stabilizationTime_ms,
-                           uint32_t measurementTime_ms, int8_t extraWakeTime)
-    : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, dataPin, measurementsToAverage),
+                           uint32_t measurementTime_ms, int8_t extraWakeTime,
+                           uint8_t incCalcValues)
+    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
+             stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
+             measurementsToAverage, incCalcValues),
       _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
     _SDI12address = SDI12address;
 }
 SDI12Sensors::SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
                            uint8_t       measurementsToAverage,
                            const char*   sensorName,
-                           const uint8_t numReturnedVars,
+                           const uint8_t totalReturnedValues,
                            uint32_t      warmUpTime_ms,
                            uint32_t      stabilizationTime_ms,
-                           uint32_t measurementTime_ms, int8_t extraWakeTime)
-    : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, dataPin, measurementsToAverage),
+                           uint32_t measurementTime_ms, int8_t extraWakeTime,
+                           uint8_t incCalcValues)
+    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
+             stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
+             measurementsToAverage, incCalcValues),
       _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
     _SDI12address = *SDI12address;
 }
 SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                            uint8_t       measurementsToAverage,
                            const char*   sensorName,
-                           const uint8_t numReturnedVars,
+                           const uint8_t totalReturnedValues,
                            uint32_t      warmUpTime_ms,
                            uint32_t      stabilizationTime_ms,
-                           uint32_t measurementTime_ms, int8_t extraWakeTime)
-    : Sensor(sensorName, numReturnedVars, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, dataPin, measurementsToAverage),
+                           uint32_t measurementTime_ms, int8_t extraWakeTime,
+                           uint8_t incCalcValues)
+    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
+             stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
+             measurementsToAverage, incCalcValues),
       _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
     _SDI12address = SDI12address + '0';
 }

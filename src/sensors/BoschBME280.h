@@ -100,6 +100,8 @@
 
 /// @brief Sensor::_numReturnedValues; the BME280 can report 4 values.
 #define BME280_NUM_VARIABLES 4
+/// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit library.
+#define BME280_INC_CALC_VARIABLES 1
 
 /**
  * @anchor sensor_bme280_timing

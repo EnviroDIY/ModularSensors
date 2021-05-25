@@ -129,7 +129,7 @@ class AtlasParent : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param sensorName The name of the sensor, defaults to AtlasSensor.
-     * @param numReturnedVars The number of results returned by the sensor.
+     * @param totalReturnedValues The number of results returned by the sensor.
      * Defaults to 1.
      * @param warmUpTime_ms The time needed from the when a sensor has power
      * until it's ready to talk (_warmUpTime_ms).
@@ -138,13 +138,17 @@ class AtlasParent : public Sensor {
      * @param measurementTime_ms The time needed from the when a sensor is told
      * to take a single reading until that reading is expected to be complete
      * (_measurementTime_ms)
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
     AtlasParent(SoftwareWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex,
                 uint8_t       measurementsToAverage = 1,
                 const char*   sensorName            = "AtlasSensor",
-                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                uint32_t stabilizationTime_ms = 0,
-                uint32_t measurementTime_ms   = 0);
+                const uint8_t totalReturnedValues   = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
     /**
      * @brief Construct a new Atlas Parent object, also creating a
      * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
@@ -164,7 +168,7 @@ class AtlasParent : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param sensorName The name of the sensor, defaults to AtlasSensor.
-     * @param numReturnedVars The number of results returned by the sensor.
+     * @param totalReturnedValues The number of results returned by the sensor.
      * Defaults to 1.
      * @param warmUpTime_ms The time needed from the when a sensor has power
      * until it's ready to talk (_warmUpTime_ms).
@@ -173,13 +177,17 @@ class AtlasParent : public Sensor {
      * @param measurementTime_ms The time needed from the when a sensor is told
      * to take a single reading until that reading is expected to be complete
      * (_measurementTime_ms)
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
     AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                 uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
-                const char*   sensorName      = "AtlasSensor",
-                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                uint32_t stabilizationTime_ms = 0,
-                uint32_t measurementTime_ms   = 0);
+                const char*   sensorName          = "AtlasSensor",
+                const uint8_t totalReturnedValues = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
 #endif
 #if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
@@ -198,7 +206,7 @@ class AtlasParent : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param sensorName The name of the sensor, defaults to AtlasSensor.
-     * @param numReturnedVars The number of results returned by the sensor.
+     * @param totalReturnedValues The number of results returned by the sensor.
      * Defaults to 1.
      * @param warmUpTime_ms The time needed from the when a sensor has power
      * until it's ready to talk (_warmUpTime_ms).
@@ -207,13 +215,17 @@ class AtlasParent : public Sensor {
      * @param measurementTime_ms The time needed from the when a sensor is told
      * to take a single reading until that reading is expected to be complete
      * (_measurementTime_ms)
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
     AtlasParent(TwoWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex,
                 uint8_t       measurementsToAverage = 1,
                 const char*   sensorName            = "AtlasSensor",
-                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                uint32_t stabilizationTime_ms = 0,
-                uint32_t measurementTime_ms   = 0);
+                const uint8_t totalReturnedValues   = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
     /**
      * @brief Construct a new Atlas Parent object using the primary hardware I2C
      * instance.
@@ -225,7 +237,7 @@ class AtlasParent : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param sensorName The name of the sensor, defaults to AtlasSensor.
-     * @param numReturnedVars The number of results returned by the sensor.
+     * @param totalReturnedValues The number of results returned by the sensor.
      * Defaults to 1.
      * @param warmUpTime_ms The time needed from the when a sensor has power
      * until it's ready to talk (_warmUpTime_ms).
@@ -234,13 +246,17 @@ class AtlasParent : public Sensor {
      * @param measurementTime_ms The time needed from the when a sensor is told
      * to take a single reading until that reading is expected to be complete
      * (_measurementTime_ms)
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
     AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                 uint8_t       measurementsToAverage = 1,
                 const char*   sensorName            = "AtlasSensor",
-                const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                uint32_t stabilizationTime_ms = 0,
-                uint32_t measurementTime_ms   = 0);
+                const uint8_t totalReturnedValues   = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
 #endif
     /**
      * @brief Destroy the Atlas Parent object.  Also destroy the software I2C

@@ -84,6 +84,10 @@
 /// @brief Sensor::_numReturnedValues; Atlas EZO conductivity circuit can report
 /// 4 values.
 #define ATLAS_COND_NUM_VARIABLES 4
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values -
+/// though we recommend users include a temperature sensor and calculate
+/// specific conductance in their own program.
+#define ATLAS_COND_INC_CALC_VARIABLES 0
 
 
 /**

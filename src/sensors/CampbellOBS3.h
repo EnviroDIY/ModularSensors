@@ -93,6 +93,8 @@
  * two sensor objects!
  */
 #define OBS3_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage using the input calibration equation.
+#define OBS3_INC_CALC_VARIABLES 1
 
 /**
  * @anchor sensor_obs3_timing

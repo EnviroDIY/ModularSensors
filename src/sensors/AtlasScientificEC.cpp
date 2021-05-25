@@ -19,15 +19,16 @@ AtlasScientificEC::AtlasScientificEC(SoftwareWire* theI2C, int8_t powerPin,
     : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
                   ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
-                  ATLAS_COND_MEASUREMENT_TIME_MS) {}
+                  ATLAS_COND_MEASUREMENT_TIME_MS,
+                  ATLAS_COND_INC_CALC_VARIABLES) {}
 AtlasScientificEC::AtlasScientificEC(int8_t powerPin, int8_t dataPin,
                                      int8_t clockPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-    : AtlasParent(powerPin, dataPin, clockPin, i2cAddressHex,
-                  measurementsToAverage, "AtlasScientificEC",
-                  ATLAS_COND_NUM_VARIABLES, ATLAS_COND_WARM_UP_TIME_MS,
-                  ATLAS_COND_STABILIZATION_TIME_MS,
-                  ATLAS_COND_MEASUREMENT_TIME_MS) {}
+    : AtlasParent(
+          powerPin, dataPin, clockPin, i2cAddressHex, measurementsToAverage,
+          "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
+          ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
+          ATLAS_COND_MEASUREMENT_TIME_MS, ATLAS_COND_INC_CALC_VARIABLES) {}
 #else
 AtlasScientificEC::AtlasScientificEC(TwoWire* theI2C, int8_t powerPin,
                                      uint8_t i2cAddressHex,
@@ -35,13 +36,15 @@ AtlasScientificEC::AtlasScientificEC(TwoWire* theI2C, int8_t powerPin,
     : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
                   ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
-                  ATLAS_COND_MEASUREMENT_TIME_MS) {}
+                  ATLAS_COND_MEASUREMENT_TIME_MS,
+                  ATLAS_COND_INC_CALC_VARIABLES) {}
 AtlasScientificEC::AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
                   ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
-                  ATLAS_COND_MEASUREMENT_TIME_MS) {}
+                  ATLAS_COND_MEASUREMENT_TIME_MS,
+                  ATLAS_COND_INC_CALC_VARIABLES) {}
 #endif
 // Destructor
 AtlasScientificEC::~AtlasScientificEC() {}

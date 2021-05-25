@@ -81,6 +81,9 @@
 
 /// @brief Sensor::_numReturnedValues; the 5TM can report 3 values.
 #define TM_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; volumetric water content is calculated from
+/// the permittivity and the temperature.
+#define TM_INC_CALC_VARIABLES 1
 
 /**
  * @anchor sensor_fivetm_timing
@@ -240,7 +243,7 @@ class Decagon5TM : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS,
-                       TM_EXTRA_WAKE_TIME_MS) {}
+                       TM_EXTRA_WAKE_TIME_MS, TM_INC_CALC_VARIABLES) {}
     /**
      * @copydoc Decagon5TM::Decagon5TM
      */
@@ -249,7 +252,7 @@ class Decagon5TM : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS,
-                       TM_EXTRA_WAKE_TIME_MS) {}
+                       TM_EXTRA_WAKE_TIME_MS, TM_INC_CALC_VARIABLES) {}
     /**
      * @copydoc Decagon5TM::Decagon5TM
      */
@@ -258,7 +261,7 @@ class Decagon5TM : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS,
-                       TM_EXTRA_WAKE_TIME_MS) {}
+                       TM_EXTRA_WAKE_TIME_MS, TM_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Decagon 5TM object
      */

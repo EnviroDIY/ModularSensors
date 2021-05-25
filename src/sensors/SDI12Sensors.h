@@ -109,7 +109,7 @@ class SDI12Sensors : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param sensorName The name of the sensor.  Defaults to "SDI12-Sensor".
-     * @param numReturnedVars The number of variable results returned by the
+     * @param totalReturnedValues The number of variable results returned by the
      * sensor.  Defaults to 1.
      * @param warmUpTime_ms The time in ms between when the sensor is powered on
      * and when it is ready to receive a wake command.  Defaults to 0.
@@ -118,31 +118,38 @@ class SDI12Sensors : public Sensor {
      * Defaults to 0.
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 0.
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
     SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin,
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
-                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
+                 const uint8_t totalReturnedValues   = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
+                 uint8_t incCalcValues = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
     SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
-                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
+                 const uint8_t totalReturnedValues   = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
+                 uint8_t incCalcValues = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
     SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
-                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
+                 const uint8_t totalReturnedValues   = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
+                 uint8_t incCalcValues = 0);
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */
@@ -247,7 +254,7 @@ class SDI12Sensors : public Sensor {
      * @return **bool** True if the full number of expected results was
      * returned.
      */
-    bool getResults();
+    bool getResults(void);
     /**
      * @brief Internal reference to the SDI-12 object.
      */

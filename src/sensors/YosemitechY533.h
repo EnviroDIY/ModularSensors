@@ -59,6 +59,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Y533 can report 3 values.
 #define Y533_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y533_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y533_timing
@@ -196,7 +198,7 @@ class YosemitechY533 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y533,
                            "YosemitechY533", Y533_NUM_VARIABLES,
                            Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
-                           Y533_MEASUREMENT_TIME_MS) {}
+                           Y533_MEASUREMENT_TIME_MS, Y533_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY533::YosemitechY533
      */
@@ -207,7 +209,7 @@ class YosemitechY533 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y533,
                            "YosemitechY533", Y533_NUM_VARIABLES,
                            Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
-                           Y533_MEASUREMENT_TIME_MS) {}
+                           Y533_MEASUREMENT_TIME_MS, Y533_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y533 object
      */

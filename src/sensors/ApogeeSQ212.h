@@ -92,8 +92,11 @@
 /** @ingroup sensor_sq212 */
 /**@{*/
 
-/// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values.
+/// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values, raw
+/// voltage and calculated PAR.
 #define SQ212_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; PAR is calculated from the raw voltage.
+#define SQ212_INC_CALC_VARIABLES 1
 
 /**
  * @anchor sensor_sq212_timing
