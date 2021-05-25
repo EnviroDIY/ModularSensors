@@ -67,7 +67,7 @@ jobs:
       # Install ModularSensors at the Global level for PlatformIO
       - name: Install the testing version of Modular Sensors
         run: |
-          pio lib -g install {{ env.LIBRARY_INSTALL_SOURCE }}
+          pio lib -g install ${{ env.LIBRARY_INSTALL_SOURCE }}
 
       - name: Run PlatformIO
         env:
