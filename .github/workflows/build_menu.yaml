@@ -260,6 +260,11 @@ jobs:
           echo "::debug::Listing the contents of the Arduino library directory"
           ls home/arduino/user/libraries
 
+      # Install ModularSensors at the Global level for PlatformIO
+      - name: Install the testing version of Modular Sensors
+        run: |
+          pio lib -g install {{ env.LIBRARY_INSTALL_SOURCE }}
+
       - name: Modify menu for matrix configuration
         env:
           modemFlag: ${{ matrix.modemFlag }}

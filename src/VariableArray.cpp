@@ -772,11 +772,11 @@ bool VariableArray::completeUpdate(void) {
                         success &= sensorSuccess_start;
 
                         if (sensorSuccess_start) {
-                            MS_DBG(F("   ... set up succeeded. <<---"), i, '.',
+                            MS_DBG(F("   ... start reading succeeded. <<---"), i, '.',
                                    nMeasurementsCompleted[i] + 1);
                         } else {
-                            MS_DBG(F("   ... set up failed! <<---"), i, '.',
-                                   nMeasurementsCompleted[i] + 1);
+                            MS_DBG(F("   ... start reading failed! <<---"), i,
+                                   '.', nMeasurementsCompleted[i] + 1);
                         }
                     }
 

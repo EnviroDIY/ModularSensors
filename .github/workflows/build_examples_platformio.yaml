@@ -64,6 +64,11 @@ jobs:
           chmod +x continuous_integration/install-deps-platformio.sh
           sh continuous_integration/install-deps-platformio.sh
 
+      # Install ModularSensors at the Global level for PlatformIO
+      - name: Install the testing version of Modular Sensors
+        run: |
+          pio lib -g install {{ env.LIBRARY_INSTALL_SOURCE }}
+
       - name: Run PlatformIO
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
@@ -71,3 +76,6 @@ jobs:
         run: |
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           platformio ci --project-conf="continuous_integration/platformio.ini"
+
+      - name: Uninstall testing version of Modular Sensors before caching
+        run: pio lib -g uninstall EnviroDIY_ModularSensors
