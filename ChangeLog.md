@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ****
 
+## v0.30.0 (2021-05-25) Add a new parameter to sensors for the number of internally calculated variables
+
+### New Features
+- Add a new parameter (internal variable) to the sensor base class for the number of internally calculated variables.
+These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor.
+This is separate from any calculated variables that are created on-the-fly and depend on multiple other sensors.
+In many cases, this is 0 and in most of the other cases the value is informational only.
+For the SDI-12 sensors, I'm actually using this to make sure I'm getting the number of values expected.
+
+### Improvements
+- Restructured SDI-12 slightly to break out the start measurement functionality into a new function.
+- Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurmentResult.
+This will allow both sensors to honor the 'non-concurrent' flag, if that is set.
+Previously, they would not have.
+
 ## v0.29.0 (2021-05-19) Create a ModularSensors.h
 
 ### New Features

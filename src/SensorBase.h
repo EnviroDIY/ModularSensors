@@ -474,9 +474,9 @@ class Sensor {
      * sensor, if any.
      *
      * These are used for values that we would always calculate for a sensor and
-     * depend only on the raw results of that single sensor.  This separate from
-     * any calculated variables that are done on-the-fly and depend on multiple
-     * other sensors.
+     * depend only on the raw results of that single sensor.  This is separate
+     * from any calculated variables that are created on-the-fly and depend on
+     * multiple other sensors.
      */
     uint8_t _incCalcValues;
     /**
