@@ -285,7 +285,7 @@ void loggerModem::setModemPinModes(void) {
             MS_DBG(F("Initializing pin"), _statusPin,
                    F("for modem status with on level expected to be"),
                    _statusLevel ? F("HIGH") : F("LOW"));
-            pinMode(_modemResetPin, INPUT);
+            pinMode(_statusPin, INPUT);
         }
         if (_modemSleepRqPin >= 0) {
             MS_DBG(F("Initializing pin"), _modemSleepRqPin,
