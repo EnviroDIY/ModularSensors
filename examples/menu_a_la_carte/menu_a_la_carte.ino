@@ -44,9 +44,8 @@
 // interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
 
-// To get all of the base classes for ModularSensors, include LoggerBase.
-// NOTE:  Individual sensor definitions must be included separately.
-#include <LoggerBase.h>
+// Include the main header for ModularSensors
+#include <ModularSensors.h>
 /** End [includes] */
 
 
@@ -261,7 +260,8 @@ const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t  wakePin    = A7;  // MCU interrupt/alarm pin to wake from sleep
+const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+// Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -600,6 +600,37 @@ SIMComSIM7000 modem7000(&modemSerial, modemVccPin, modemStatusPin,
 // Create an extra reference to the modem by a generic name
 SIMComSIM7000 modem = modem7000;
 /** End [sim7000] */
+// ==========================================================================
+
+
+#elif defined MS_BUILD_TEST_SIM7080
+/** Start [sim7080] */
+// For almost anything based on the SIMCom SIM7080G
+#include <modems/SIMComSIM7080.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+const int32_t modemBaud =
+    9600;  //  SIM7080 does auto-bauding by default, but I set mine to 9600
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+// and-global breakout bk-7080a
+const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
+const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
+                                    // status
+
+// Network connection information
+const char* apn = "xxxxx";  // APN for GPRS connection
+
+// Create the modem object
+SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
+                        modemSleepRqPin, apn);
+// Create an extra reference to the modem by a generic name
+SIMComSIM7080 modem = modem7080;
+/** End [sim7080] */
 // ==========================================================================
 
 
@@ -1567,7 +1598,7 @@ const int8_t TallyPower = -1;  // Power pin (-1 if unconnected)
 // NorthernWidget Tally I2CPower is -1 by default because it is often deployed
 // with power always on, but Tally also has a super capacitor that enables it
 // to be self powered between readings/recharge as described at
-// https://github.com/NorthernWidget-Skunkworks/Project-Tally
+// https://github.com/EnviroDIY/Project-Tally
 
 const uint8_t TallyCounterI2CAddress = 0x33;
 // NorthernWidget Tally I2C address is 0x33 by default
@@ -2622,6 +2653,25 @@ void setup() {
     modem.setModemWakeLevel(HIGH);   // Skywire dev board inverts the signal
     modem.setModemResetLevel(HIGH);  // Skywire dev board inverts the signal
     /** End [setup_skywire] */
+#endif
+
+#if defined MS_BUILD_TEST_SIM7080
+    /** Start [setup_sim7080] */
+    modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
+    modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
+    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    modem.modemWake();  // NOTE:  This will also set up the modem
+    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
+    modem.gsmModem.setNetworkMode(38);   // set to LTE only
+                                         // 2 Automatic
+                                         // 13 GSM only
+                                         // 38 LTE only
+                                         // 51 GSM and LTE only
+    modem.gsmModem.setPreferredMode(1);  // set to CAT-M
+                                         // 1 CAT-M
+                                         // 2 NB-IoT
+                                         // 3 CAT-M and NB-IoT
+    /** End [setup_sim7080] */
 #endif
 
 #if defined MS_BUILD_TEST_XBEE_CELLULAR
