@@ -1749,8 +1749,8 @@ Variable* analogEc_spcond = new Variable(
 // for Additional Serial Ports" section
 
 byte         y504ModbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t y504AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
+const int8_t y504AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                                 // (-1 if unconnected)
 const int8_t  y504SensorPower = A3;  // Sensor power pin
 const int8_t  y504EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y504NumberReadings = 5;
@@ -1784,8 +1784,8 @@ Variable* y504Temp =
 // for Additional Serial Ports" section
 
 byte         y510ModbusAddress = 0x0B;  // The modbus address of the Y510
-const int8_t y510AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
+const int8_t y510AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                                 // (-1 if unconnected)
 const int8_t  y510SensorPower = A3;  // Sensor power pin
 const int8_t  y510EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y510NumberReadings = 5;
@@ -1816,8 +1816,8 @@ Variable* y510Temp =
 // for Additional Serial Ports" section
 
 byte         y511ModbusAddress = 0x1A;  // The modbus address of the Y511
-const int8_t y511AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
+const int8_t y511AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                                 // (-1 if unconnected)
 const int8_t  y511SensorPower = A3;  // Sensor power pin
 const int8_t  y511EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y511NumberReadings = 5;
@@ -1881,8 +1881,8 @@ Variable* y514Temp =
 // for Additional Serial Ports" section
 
 byte         y520ModbusAddress = 0x20;  // The modbus address of the Y520
-const int8_t y520AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
+const int8_t y520AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                                 // (-1 if unconnected)
 const int8_t  y520SensorPower = A3;  // Sensor power pin
 const int8_t  y520EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y520NumberReadings = 5;
@@ -1954,12 +1954,11 @@ const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y533NumberReadings = 1;
     // The manufacturer actually doesn't mention averaging for this one
 
-// Create a Yosemitech Y533 pH sensor object
+// Create a Yosemitech Y533 ORP sensor object
 YosemitechY533 y533(y533ModbusAddress, modbusSerial, y533AdapterPower,
                     y533SensorPower, y533EnablePin, y533NumberReadings);
 
-// Create pH, electrical potential, and temperature variable pointers for the
-// Y533
+// Create ORP and temperature variable pointers for the Y533
 Variable* y533ORP =
     new YosemitechY533_ORP(&y533, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y533Temp =
@@ -1979,15 +1978,15 @@ Variable* y533Temp =
 // for Additional Serial Ports" section
 
 byte         y550ModbusAddress = 0x50;  // The modbus address of the Y550
-const int8_t y550AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
+const int8_t y550AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                                 // (-1 if unconnected)
 const int8_t  y550SensorPower = A3;  // Sensor power pin
 const int8_t  y550EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y550NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
-// Create a Y550 conductivity sensor object
+// Create a Y550 chemical oxygen demand sensor object
 YosemitechY550 y550(y550ModbusAddress, modbusSerial, y550AdapterPower,
                     y550SensorPower, y550EnablePin, y550NumberReadings);
 
@@ -2014,8 +2013,8 @@ Variable* y550Temp =
 // for Additional Serial Ports" section
 
 byte         y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
-const int8_t y4000AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
+const int8_t y4000AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
 const int8_t  y4000SensorPower = A3;  // Sensor power pin
 const int8_t  y4000EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y4000NumberReadings = 5;
