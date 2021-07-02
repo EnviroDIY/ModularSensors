@@ -1951,8 +1951,8 @@ const int8_t y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
 const int8_t  y533SensorPower = A3;               // Sensor power pin
 const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y533NumberReadings =
-    1;  // The manufacturer actually doesn't mention averaging for this one
+const uint8_t y533NumberReadings = 1;
+    // The manufacturer actually doesn't mention averaging for this one
 
 // Create a Yosemitech Y533 pH sensor object
 YosemitechY533 y533(y533ModbusAddress, modbusSerial, y533AdapterPower,
@@ -1960,10 +1960,8 @@ YosemitechY533 y533(y533ModbusAddress, modbusSerial, y533AdapterPower,
 
 // Create pH, electrical potential, and temperature variable pointers for the
 // Y533
-Variable* y533Voltage =
-    new YosemitechY533_Voltage(&y533, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* y533pH =
-    new YosemitechY533_pH(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y533ORP =
+    new YosemitechY533_ORP(&y533, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y533Temp =
     new YosemitechY533_Temp(&y533, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [y533] */
@@ -2358,8 +2356,7 @@ Variable* variableList[] = {
     y532Temp,
 #endif
 #if defined MS_BUILD_TEST_Y533 || defined MS_BUILD_TEST_ALL_SENSORS
-    y533Voltage,
-    y533pH,
+    y533ORP,
     y533Temp,
 #endif
 #if defined MS_BUILD_TEST_Y550 || defined MS_BUILD_TEST_ALL_SENSORS

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ****
 
+## v0.28.6 (2021-07-01) [Fix YosemiTech Y533 ORP sensor outputs](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.6)
+
+### Fixed
+- Modified `YosemitechY533.h` and examples to work with updated ORP `getValues()` function in https://github.com/EnviroDIY/YosemitechModbus released with v0.2.4.
+
+
 ## v0.28.5 (2021-05-11) [Duplicate and Rename Hydros 21](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.5)
 
 ### Downloads

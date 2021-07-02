@@ -5,10 +5,9 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the YosemitechY533 sensor subclass and the variable
- * subclasses YosemitechY533_pH, YosemitechY533_Temp, and
- * YosemitechY533_Voltage.
+ * subclasses YosemitechY533_ORP and YosemitechY533_Temp.
  *
- * These are for the Yosemitech Y533 ORP sensor.
+ * These are for the Yosemitech Y533 ORP (Oxygen Reduction Potential) sensor.
  *
  * This depends on the YosemitechParent super class.
  *
@@ -58,7 +57,7 @@
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y533 can report 3 values.
-#define Y533_NUM_VARIABLES 3
+#define Y533_NUM_VARIABLES 2
 
 /**
  * @anchor sensor_y533_timing
@@ -78,29 +77,33 @@
 /**@}*/
 
 /**
- * @anchor sensor_y533_ph
+ * @anchor sensor_y533_orp
  * @name pH
- * The pH variable from a Yosemitch Y533
- * - Range is 2-12 pH
- * - Accuracy is ±0.1 pH
+ * The ORP variable from a Yosemitch Y533
+ * - Range is -999 to 999 mV
+ * - Accuracy is ±20 mV
+ * - Resolution is 1 mV
  *
- * {{ @ref YosemitechY533_pH::YosemitechY533_pH }}
+ * {{ @ref YosemitechY533_ORP::YosemitechY533_ORP }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; ph should have 2 -
-/// resolution is 0.01 pH units.
-#define Y533_PH_RESOLUTION 2
-/// @brief Sensor variable number; pH is stored in sensorValues[0].
-#define Y533_PH_VAR_NUM 0
+/// resolution is 1 mV units.
+#define Y533_ORP_RESOLUTION 0
+/// @brief Sensor variable number; ORP is stored in sensorValues[0].
+#define Y533_ORP_VAR_NUM 0
 /// @brief Variable name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "pH"
-#define Y533_PH_VAR_NAME "pH"
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "voltage"
+/// NOTE: ORP should be added to ODM2 CVs, as ORP refers to a specific measure
+///  of electron potential relative to a silver chloride reference electrode.
+#define Y533_ORP_VAR_NAME "voltage"
 /// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "pH"
-/// (dimensionless pH units)
-#define Y533_PH_UNIT_NAME "pH"
-/// @brief Default variable short code; "Y533pH"
-#define Y533_PH_DEFAULT_CODE "Y533pH"
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
+/// (mV)
+#define Y533_ORP_UNIT_NAME "millivolt"
+/// @brief Default variable short code; "Y533ORP"
+#define Y533_ORP_DEFAULT_CODE "Y533ORP"
 /**@}*/
 
 /**
@@ -128,33 +131,6 @@
 #define Y533_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "Y533Temp"
 #define Y533_TEMP_DEFAULT_CODE "Y533Temp"
-/**@}*/
-
-/**
- * @anchor sensor_y533_volt
- * @name Voltage
- * The voltage variable from a Yosemitch Y533
- * - Range is -999 ~ 999 mV
- * - Accuracy is ± 20 mV
- *
- * {{ @ref YosemitechY533_Voltage::YosemitechY533_Voltage }}
- */
-/**@{*/
-/// @brief Decimals places in string representation; voltage should have 0 -
-/// resolution is 1 mV.
-#define Y533_VOLTAGE_RESOLUTION 0
-/// @brief Sensor variable number; voltage is stored in sensorValues[2].
-#define Y533_VOLTAGE_VAR_NUM 2
-/// @brief Variable name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "voltage"
-#define Y533_VOLTAGE_VAR_NAME "voltage"
-/// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "millivolt"
-/// (mV)
-#define Y533_VOLTAGE_UNIT_NAME "millivolt"
-/// @brief Default variable short code; "Y533Potential"
-#define Y533_VOLTAGE_DEFAULT_CODE "Y533Potential"
 /**@}*/
 
 
@@ -224,7 +200,7 @@ class YosemitechY533 : public YosemitechParent {
  * @ingroup sensor_y533
  */
 /* clang-format on */
-class YosemitechY533_pH : public Variable {
+class YosemitechY533_ORP : public Variable {
  public:
     /**
      * @brief Construct a new YosemitechY533_pH object.
@@ -236,25 +212,25 @@ class YosemitechY533_pH : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "Y533pH".
      */
-    explicit YosemitechY533_pH(YosemitechY533* parentSense,
+    explicit YosemitechY533_ORP(YosemitechY533* parentSense,
                                const char*     uuid    = "",
-                               const char*     varCode = Y533_PH_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y533_PH_VAR_NUM,
-                   (uint8_t)Y533_PH_RESOLUTION, Y533_PH_VAR_NAME,
-                   Y533_PH_UNIT_NAME, varCode, uuid) {}
+                               const char*     varCode = Y533_ORP_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)Y533_ORP_VAR_NUM,
+                   (uint8_t)Y533_ORP_RESOLUTION, Y533_ORP_VAR_NAME,
+                   Y533_ORP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY533_pH object.
+     * @brief Construct a new YosemitechY533_ORP object.
      *
      * @note This must be tied with a parent YosemitechY533 before it can be
      * used.
      */
-    YosemitechY533_pH()
-        : Variable((const uint8_t)Y533_PH_VAR_NUM, (uint8_t)Y533_PH_RESOLUTION,
-                   Y533_PH_VAR_NAME, Y533_PH_UNIT_NAME, Y533_PH_DEFAULT_CODE) {}
+    YosemitechY533_ORP()
+        : Variable((const uint8_t)Y533_ORP_VAR_NUM, (uint8_t)Y533_ORP_RESOLUTION,
+                   Y533_ORP_VAR_NAME, Y533_ORP_UNIT_NAME, Y533_ORP_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the YosemitechY533_pH object - no action needed.
+     * @brief Destroy the YosemitechY533_ORP object - no action needed.
      */
-    ~YosemitechY533_pH() {}
+    ~YosemitechY533_ORP() {}
 };
 
 
@@ -301,48 +277,5 @@ class YosemitechY533_Temp : public Variable {
     ~YosemitechY533_Temp() {}
 };
 
-
-/* clang-format off */
-/**
- * @brief The Variable sub-class used for the
- * [electrode electrical potential output](@ref sensor_y533_volt) from a
- * [Yosemitech Y533 ORP sensor](@ref sensor_y533).
- *
- * @ingroup sensor_y533
- */
-/* clang-format on */
-class YosemitechY533_Voltage : public Variable {
- public:
-    /**
-     * @brief Construct a new YosemitechY533_Voltage object.
-     *
-     * @param parentSense The parent YosemitechY533 providing the result
-     * values.
-     * @param uuid A universally unique identifier (UUID or GUID) for the
-     * variable; optional with the default value of an empty string.
-     * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "Y533Potential".
-     */
-    explicit YosemitechY533_Voltage(
-        YosemitechY533* parentSense, const char* uuid = "",
-        const char* varCode = Y533_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)Y533_VOLTAGE_VAR_NUM,
-                   (uint8_t)Y533_VOLTAGE_RESOLUTION, Y533_VOLTAGE_VAR_NAME,
-                   Y533_VOLTAGE_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY533_Voltage object.
-     *
-     * @note This must be tied with a parent YosemitechY533 before it can be
-     * used.
-     */
-    YosemitechY533_Voltage()
-        : Variable((const uint8_t)Y533_VOLTAGE_VAR_NUM,
-                   (uint8_t)Y533_VOLTAGE_RESOLUTION, Y533_VOLTAGE_VAR_NAME,
-                   Y533_VOLTAGE_UNIT_NAME, Y533_VOLTAGE_DEFAULT_CODE) {}
-    /**
-     * @brief Destroy the YosemitechY533_Voltage object - no action needed.
-     */
-    ~YosemitechY533_Voltage() {}
-};
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY533_H_

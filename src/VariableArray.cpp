@@ -721,7 +721,7 @@ bool VariableArray::completeUpdate(void) {
                         success &= sensorSuccess_wake;
 
                         if (sensorSuccess_wake) {
-                            MS_DBG(F("   ... wake up uccess. <<---"), i);
+                            MS_DBG(F("   ... wake up success. <<---"), i);
                         } else {
                             MS_DBG(F("   ... wake up failed! <<---"), i);
                         }
