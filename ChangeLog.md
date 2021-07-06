@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ****
+## v0.30.0 (2021-07-06) Remove support for SoftwareWire for Atlas sensors
+
+### New Features
+- **_REMOVED_** support for SoftwareWire for Atlas sensors.
+  - The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library.
+Without inheritance, the parseFloat functions used by the Atlas sensors will not work.
+As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.
+
+### Bug fixes
+- Fixed GitHub actions for pull requests
 
 ## v0.29.1 (2021-07-01) [Fix YosemiTech Y533 ORP sensor outputs](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.1)
 

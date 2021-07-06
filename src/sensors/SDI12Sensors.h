@@ -118,6 +118,9 @@ class SDI12Sensors : public Sensor {
      * Defaults to 0.
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 0.
+     * @param extraWakeTime Any extra time needed by the sensor between the
+     * start of the break and when the sensor is ready to accept commands.  This
+     * will be between 0 and 100ms per SDI-12 protocol.
      */
     SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin,
                  uint8_t       measurementsToAverage = 1,

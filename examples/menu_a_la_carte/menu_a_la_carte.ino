@@ -110,17 +110,14 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // #ifdef MS_BUILD_TEST_SOFTSERIAL
 
 
-#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_ATLAS_SOFTWAREWIRE || \
-    defined                                       MS_RAIN_SOFTWAREWIRE
+#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_RAIN_SOFTWAREWIRE
 /** Start [softwarewire] */
 // A software I2C (Wire) instance using Testato's SoftwareWire
 // To use SoftwareWire, you must also set a define for the sensor you want to
 // use Software I2C for, ie:
-//   `#define MS_ATLAS_SOFTWAREWIRE`
 //   `#define MS_RAIN_SOFTWAREWIRE`
 //   `#define MS_PALEOTERRA_SOFTWAREWIRE`
 // or set the build flag(s):
-//   `-D MS_ATLAS_SOFTWAREWIRE`
 //   `-D MS_RAIN_SOFTWAREWIRE`
 //   `-D MS_PALEOTERRA_SOFTWAREWIRE`
 #include <SoftwareWire.h>  // Testato's Software I2C
@@ -874,14 +871,8 @@ uint8_t      AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific CO2 sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-// AtlasScientificCO2 atlasCO2(AtlasCO2Power, softwareSDA, softwareSCL,
-//                             AtlasCO2i2c_addr);
-AtlasScientificCO2 atlasCO2(&softI2C, AtlasCO2Power, AtlasCO2i2c_addr);
-#else
 // AtlasScientificCO2 atlasCO2(AtlasCO2Power, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(AtlasCO2Power);
-#endif
 
 // Create concentration and temperature variable pointers for the EZO-CO2
 Variable* atlasCO2CO2 = new AtlasScientificCO2_CO2(
@@ -906,14 +897,8 @@ uint8_t      AtlasDOi2c_addr = 0x61;            // Default for DO is 0x61 (97)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific DO sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-// AtlasScientificDO atlasDO(AtlasDOPower, softwareSDA, softwareSCL,
-//                           AtlasDOi2c_addr);
-AtlasScientificDO atlasDO(&softI2C, AtlasDOPower, AtlasDOi2c_addr);
-#else
 // AtlasScientificDO atlasDO(AtlasDOPower, AtlasDOi2c_addr);
 AtlasScientificDO atlasDO(AtlasDOPower);
-#endif
 
 // Create concentration and percent saturation variable pointers for the EZO-DO
 Variable* atlasDOconc = new AtlasScientificDO_DOmgL(
@@ -938,14 +923,8 @@ uint8_t      AtlasORPi2c_addr = 0x62;         // Default for ORP is 0x62 (98)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific ORP sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-AtlasScientificORP atlasORP(&softI2C, AtlasORPPower, AtlasORPi2c_addr);
-// AtlasScientificORP atlasORP(AtlasORPPower, softwareSDA, softwareSCL,
-//                             AtlasORPi2c_addr);
-#else
 // AtlasScientificORP atlasORP(AtlasORPPower, AtlasORPi2c_addr);
 AtlasScientificORP atlasORP(AtlasORPPower);
-#endif
 
 // Create a potential variable pointer for the ORP
 Variable* atlasORPot = new AtlasScientificORP_Potential(
@@ -968,14 +947,8 @@ uint8_t      AtlaspHi2c_addr = 0x63;            // Default for pH is 0x63 (99)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific pH sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-AtlasScientificpH atlaspH(&softI2C, AtlaspHPower, AtlaspHi2c_addr);
-// AtlasScientificpH atlaspH(AtlaspHPower, softwareSDA, softwareSCL,
-//                           AtlaspHi2c_addr);
-#else
 // AtlasScientificpH atlaspH(AtlaspHPower, AtlaspHi2c_addr);
 AtlasScientificpH atlaspH(AtlaspHPower);
-#endif
 
 // Create a pH variable pointer for the pH sensor
 Variable* atlaspHpH =
@@ -999,14 +972,8 @@ uint8_t      AtlasRTDi2c_addr = 0x66;         // Default for RTD is 0x66 (102)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific RTD sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-AtlasScientificRTD atlasRTD(&softI2C, AtlasRTDPower, AtlasRTDi2c_addr);
-// AtlasScientificRTD atlasRTD(AtlasRTDPower, softwareSDA, softwareSCL,
-//                             AtlasRTDi2c_addr);
-#else
 // AtlasScientificRTD atlasRTD(AtlasRTDPower, AtlasRTDi2c_addr);
 AtlasScientificRTD atlasRTD(AtlasRTDPower);
-#endif
 
 // Create a temperature variable pointer for the RTD
 Variable* atlasTemp = new AtlasScientificRTD_Temp(
@@ -1029,14 +996,8 @@ uint8_t      AtlasECi2c_addr = 0x64;            // Default for EC is 0x64 (100)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific Conductivity sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-// AtlasScientificEC atlasEC(AtlasECPower, softwareSDA, softwareSCL,
-//                           AtlasECi2c_addr);
-AtlasScientificEC atlasEC(&softI2C, AtlasECPower, AtlasECi2c_addr);
-#else
 // AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);
 AtlasScientificEC atlasEC(AtlasECPower);
-#endif
 
 // Create four variable pointers for the EZO-ES
 Variable* atlasCond = new AtlasScientificEC_Cond(
@@ -1548,7 +1509,7 @@ PaleoTerraRedox ptRedox(&softI2C, paleoTerraPower, paleoI2CAddress);
 // PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,
 // paleoI2CAddress);
 #else
-PaleoTerraRedox   ptRedox(paleoTerraPower, paleoI2CAddress);
+PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
 #endif
 
 // Create the voltage variable for the redox sensor
@@ -1575,7 +1536,7 @@ RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
 // RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,
 //                      depthPerTipEvent);
 #else
-RainCounterI2C    tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C  tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #endif
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
