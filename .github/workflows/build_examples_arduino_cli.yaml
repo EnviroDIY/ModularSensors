@@ -83,7 +83,11 @@ jobs:
           echo "::debug::Creating a new directory for the testing version of Modular sensors"
           mkdir -p home/arduino/user/libraries/ModularSensors
           echo "::debug::Moving the unzipped library to the new directory"
-          mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
+          else
+            mv home/arduino/downloads/ModularSensors-${GITHUB_HEAD_REF}/* home/arduino/user/libraries/ModularSensors
+          fi
           echo "::debug::Updating the library index"
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
           echo "::debug::Listing libraries detected by the Arduino CLI"
