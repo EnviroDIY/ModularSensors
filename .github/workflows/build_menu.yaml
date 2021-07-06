@@ -299,7 +299,7 @@ jobs:
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_BUILD_TEST_ALTSOFTSERIAL -DMS_BUILD_TEST_NEOSWSERIAL -DMS_BUILD_TEST_SOFTSERIAL -DMS_USE_COMPLEX_LOOP" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
           echo "::endgroup::"
           echo "::group::Build for Arduino Mega"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_ATLAS_SOFTWAREWIRE -DMS_RAIN_SOFTWAREWIRE -DMS_PALEOTERRA_SOFTWAREWIRE -DMS_SDI12_NON_CONCURRENT" --fqbn arduino:avr:mega temp/menu_a_la_carte/
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_RAIN_SOFTWAREWIRE -DMS_PALEOTERRA_SOFTWAREWIRE -DMS_SDI12_NON_CONCURRENT" --fqbn arduino:avr:mega temp/menu_a_la_carte/
           echo "::endgroup::"
           echo "::group::Build for Arduino Zero"
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -D__SAMD21G18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON" --fqbn arduino:samd:mzero_bl temp/menu_a_la_carte/
