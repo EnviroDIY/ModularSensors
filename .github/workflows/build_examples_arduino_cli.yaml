@@ -70,20 +70,24 @@ jobs:
           sh continuous_integration/install-deps-arduino-cli.sh
 
       # Install ModularSensors for the Arduino CLI
-      - name: Install the testing version of Modular Sensors
+      - name: Install the testing version of Modular Sensors for the Arduino CLI
         run: |
           echo "::debug::Deleting any archived zips"
           rm -f home/arduino/downloads/ModularSensors.zip
           echo "::debug::Downloading library zip"
-          curl -L  --retry 5 --retry-delay 0 ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o home/arduino/downloads/ModularSensors.zip
+          curl -L  --retry 15 --retry-delay 0 ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o home/arduino/downloads/ModularSensors.zip
           echo "::debug::Unzipping the library"
-          unzip -q -o home/arduino/downloads/ModularSensors.zip -d home/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
+          unzip -o home/arduino/downloads/ModularSensors.zip -d home/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
           echo "::debug::Ensuring no old directories exist"
           rm -r -f home/arduino/user/libraries/ModularSensors
           echo "::debug::Creating a new directory for the testing version of Modular sensors"
           mkdir -p home/arduino/user/libraries/ModularSensors
           echo "::debug::Moving the unzipped library to the new directory"
-          mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
+          else
+            mv home/arduino/downloads/ModularSensors-${GITHUB_HEAD_REF}/* home/arduino/user/libraries/ModularSensors
+          fi
           echo "::debug::Updating the library index"
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
           echo "::debug::Listing libraries detected by the Arduino CLI"

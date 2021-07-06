@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ****
 
+## v0.30.0 (2021-07-06) Remove support for SoftwareWire for Atlas sensors
+
+### New Features
+- **_REMOVED_** support for SoftwareWire for Atlas sensors.
+  - The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library.
+Without inheritance, the parseFloat functions used by the Atlas sensors will not work.
+As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.
+
+### Bug fixes
+- Fixed GitHub actions for pull requests
+
 ## v0.29.0 (2021-05-19) Create a ModularSensors.h
 
 ### New Features
