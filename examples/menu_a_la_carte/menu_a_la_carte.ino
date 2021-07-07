@@ -1142,8 +1142,8 @@ const int8_t ClariVUEData  = 7;               // The SDI12 data pin
 // NOTE:  you should NOT take more than one readings.  THe sensor already takes
 // and averages 8 by default.
 
-// Create a Decagon ES2 sensor object
-ClariVUE clarivue(*ClariVUESDI12address, ClariVUEPower, ClariVUEData);
+// Create a Campbell ClariVUE10 sensor object
+CampbellClariVUE10 clarivue(*ClariVUESDI12address, ClariVUEPower, ClariVUEData);
 
 // Create turbidity, temperature, and error variable pointers for the ClariVUE10
 Variable* clarivueTurbidity = new CampbellClariVUE10_Turbidity(
