@@ -13,172 +13,174 @@ jobs:
     strategy:
       matrix:
         include:
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
+          - modemFlag: MS_BUILD_MODEM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_LTE_B
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_XBEE_CELLULAR
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_3G_B
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_XBEE_LTE_B
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_WIFI
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_XBEE_3G_B
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_ESP8266
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_XBEE_WIFI
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_BG96
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_ESP8266
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_MONARCH
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_BG96
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_SIM800
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_MONARCH
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_SIM7000
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM800
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_SIM7080
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7000
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_S2GB
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_S2GB
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_UBEE_R410M
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_UBEE_R410M
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_UBEE_U201
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_UBEE_U201
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_AM2315
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_DHT
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_SQ212
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ATLASCO2
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ATLASDO
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ATLASORP
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ATLASPH
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ATLASRTD
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ATLASEC
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_BME280
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_OBS3
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ES2
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_VOLTAGE
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_MPL115A2
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_INSITURDO
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ACCULEVEL
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_NANOLEVEL
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_MAXBOTIX
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_DS18
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_MS5803
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_5TM
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_CTD
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_HYDROS21
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_TEROS11
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_PALEOTERRA
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_RAINI2C
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_TALLY
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_INA219
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_CYCLOPS
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_ANALOGEC
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y504
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y510
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y511
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y514
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y520
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y532
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y533
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y550
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_Y4000
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
-            sensorFlag: MS_BUILD_TEST_DOPTO
-            publisherFlag: MS_BUILD_TEST_MMW
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_AM2315
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_DHT
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_SQ212
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ATLASCO2
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ATLASDO
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ATLASORP
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ATLASPH
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ATLASRTD
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ATLASEC
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_BME280
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_OBS3
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_CLARIVUE10
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_CTD
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ES2
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_VOLTAGE
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_MPL115A2
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_INSITURDO
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ACCULEVEL
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_NANOLEVEL
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_MAXBOTIX
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_DS18
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_MS5803
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_5TM
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_HYDROS21
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_TEROS11
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_PALEOTERRA
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_RAINI2C
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_TALLY
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_INA219
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_CYCLOPS
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_ANALOGEC
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y504
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y510
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y511
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y514
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y520
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y532
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y533
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y550
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_Y4000
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
+            sensorFlag: MS_BUILD_SENSOR_DOPTO
+            publisherFlag: MS_BUILD_PUB_MMW
+          - modemFlag: MS_BUILD_MODEM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_DREAMHOST
-          - modemFlag: MS_BUILD_TEST_XBEE_CELLULAR
+            publisherFlag: MS_BUILD_PUB_DREAMHOST
+          - modemFlag: MS_BUILD_MODEM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_TEST_THINGSPEAK
-
+            publisherFlag: MS_BUILD_PUB_THINGSPEAK
     steps:
       - uses: actions/checkout@v2.3.4
 
@@ -300,7 +302,7 @@ jobs:
       - name: Test with Arduino CLI
         run: |
           echo "::group::Build for Mayfly"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_BUILD_TEST_ALTSOFTSERIAL -DMS_BUILD_TEST_NEOSWSERIAL -DMS_BUILD_TEST_SOFTSERIAL -DMS_USE_COMPLEX_LOOP" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_BUILD_TEST_ALTSOFTSERIAL -DMS_BUILD_TEST_NEOSWSERIAL -DMS_BUILD_TEST_SOFTSERIAL -DMS_BUILD_TEST_COMPLEX_LOOP" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
           echo "::endgroup::"
           echo "::group::Build for Arduino Mega"
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_RAIN_SOFTWAREWIRE -DMS_PALEOTERRA_SOFTWAREWIRE -DMS_SDI12_NON_CONCURRENT" --fqbn arduino:avr:mega temp/menu_a_la_carte/

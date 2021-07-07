@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v0.30.0 (2021-07-06) Remove support for SoftwareWire for Atlas sensors
 
 ### New Features
+- Added support for [Campbell ClariVUE10](https://www.campbellsci.com/clarivue10) turbidity sensor
 - **_REMOVED_** support for SoftwareWire for Atlas sensors.
   - The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library.
 Without inheritance, the parseFloat functions used by the Atlas sensors will not work.
@@ -15,6 +16,9 @@ As I think this feature was completely unused for the Atlas sensors and I see no
 
 ### Bug fixes
 - Fixed GitHub actions for pull requests
+
+### Improvements
+- Changed build flags and created a pre-commit hook for myself to update the menu build matrix
 
 ## v0.29.1 (2021-07-01) [Fix YosemiTech Y533 ORP sensor outputs](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.1)
 
