@@ -12,7 +12,7 @@
  * used to measure windspeed or rainfall from reed-switch analog sensors.
  *
  * This depends on the [Tally_Library]
- * (https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C)
+ * (https://github.com/EnviroDIY/Tally_Library/tree/Dev_I2C)
  *
  * @copydetails TallyCounterI2C
  */
@@ -34,7 +34,7 @@
  * It communicates over I2C at either 3.3 or 5V.
  *
  * The [Tally_Library]
- * (https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C)
+ * (https://github.com/EnviroDIY/Tally_Library/tree/Dev_I2C)
  * is used internally for communication with the Tally.
  *
  * @warning Northern Widget considers this sensor to be one of their "bleeding edge"
@@ -54,8 +54,8 @@
  *
  * @section sensor_tally_datasheet Sensor Datasheet
  * Documentation for the sensor can be found at:
- * - https://github.com/NorthernWidget-Skunkworks/Project-Tally​
- * - https://github.com/NorthernWidget-Skunkworks/Tally_Library/tree/Dev_I2C
+ * - https://github.com/EnviroDIY/Project-Tally​
+ * - https://github.com/EnviroDIY/Tally_Library/tree/Dev_I2C
  *
  * @section sensor_tally_ctor Sensor Constructor
  * {{ @ref TallyCounterI2C::TallyCounterI2C }}

@@ -5,6 +5,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ****
+## v0.30.0 (2021-07-06) Remove support for SoftwareWire for Atlas sensors
+
+### New Features
+- Added support for [Campbell ClariVUE10](https://www.campbellsci.com/clarivue10) turbidity sensor
+- **_REMOVED_** support for SoftwareWire for Atlas sensors.
+  - The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library.
+Without inheritance, the parseFloat functions used by the Atlas sensors will not work.
+As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.
+
+### Bug fixes
+- Fixed GitHub actions for pull requests
+
+### Improvements
+- Changed build flags and created a pre-commit hook for myself to update the menu build matrix
+
+## v0.29.1 (2021-07-01) [Fix YosemiTech Y533 ORP sensor outputs](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.1)
+
+### Fixed
+- Modified `YosemitechY533.h` and examples to work with updated ORP `getValues()` function in https://github.com/EnviroDIY/YosemitechModbus released with v0.2.5.
+
+## v0.29.0 (2021-05-19) Create a ModularSensors.h
+
+### New Features
+- Created a ModularSensors.h file to include.
+This makes it much easiler to install and use the library from the Arduino CLI.
+  - Modified examples to include the ModularSensors.h file
+- Added continuous integration testing with the Arduino CLI
+- Modified examples to use Hydros 21
 
 ## v0.28.5 (2021-05-11) [Duplicate and Rename Hydros 21](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.5)
 

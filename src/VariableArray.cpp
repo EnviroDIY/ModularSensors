@@ -721,7 +721,7 @@ bool VariableArray::completeUpdate(void) {
                         success &= sensorSuccess_wake;
 
                         if (sensorSuccess_wake) {
-                            MS_DBG(F("   ... wake up uccess. <<---"), i);
+                            MS_DBG(F("   ... wake up success. <<---"), i);
                         } else {
                             MS_DBG(F("   ... wake up failed! <<---"), i);
                         }
@@ -772,11 +772,11 @@ bool VariableArray::completeUpdate(void) {
                         success &= sensorSuccess_start;
 
                         if (sensorSuccess_start) {
-                            MS_DBG(F("   ... set up succeeded. <<---"), i, '.',
+                            MS_DBG(F("   ... start reading succeeded. <<---"), i, '.',
                                    nMeasurementsCompleted[i] + 1);
                         } else {
-                            MS_DBG(F("   ... set up failed! <<---"), i, '.',
-                                   nMeasurementsCompleted[i] + 1);
+                            MS_DBG(F("   ... start reading failed! <<---"), i,
+                                   '.', nMeasurementsCompleted[i] + 1);
                         }
                     }
 
@@ -925,7 +925,7 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex) {
     /*MS_DEEP_DBG(F("Checking if"), arrayOfVars[arrayIndex]->getVarName(), '(',
            arrayIndex, F(") is the last variable from a sensor..."));*/
 
-    //  Calculated Variables are never the last variable from a sensor, simply
+    // Calculated Variables are never the last variable from a sensor, simply
     // because the don't come from a sensor at all.
     if (arrayOfVars[arrayIndex]->isCalculated) {
         // MS_DEEP_DBG(F("   ... Nope, it's calculated!"));

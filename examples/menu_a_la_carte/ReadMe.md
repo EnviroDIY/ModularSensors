@@ -646,14 +646,6 @@ The default I2C addresses for the circuits are:
 All of the circuits can be re-addressed to any other 8 bit number if desired.
 To use multiple circuits of the same type, re-address them.
 
-If for some reason you want or need to use software I2C, compile with the build flag `-D MS_ATLAS_SOFTWAREWIRE`.
-The constructors for the software I2C implementation requires either the SCL and SDA pin numbers or a reference to the I2C object as arguments.
-You must use Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library for software I2C.
-See the [software wire](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
-
-@warning Either all or none of the Atlas sensors can be using software I2C.
-Using some Altas sensors with software I2C and others with hardware I2C is not supported.
-
 @see @ref atlas_group
 
 

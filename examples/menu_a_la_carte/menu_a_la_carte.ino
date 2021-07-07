@@ -44,9 +44,8 @@
 // interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
 
-// To get all of the base classes for ModularSensors, include LoggerBase.
-// NOTE:  Individual sensor definitions must be included separately.
-#include <LoggerBase.h>
+// Include the main header for ModularSensors
+#include <ModularSensors.h>
 /** End [includes] */
 
 
@@ -111,17 +110,14 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // #ifdef MS_BUILD_TEST_SOFTSERIAL
 
 
-#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_ATLAS_SOFTWAREWIRE || \
-    defined                                       MS_RAIN_SOFTWAREWIRE
+#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_RAIN_SOFTWAREWIRE
 /** Start [softwarewire] */
 // A software I2C (Wire) instance using Testato's SoftwareWire
 // To use SoftwareWire, you must also set a define for the sensor you want to
 // use Software I2C for, ie:
-//   `#define MS_ATLAS_SOFTWAREWIRE`
 //   `#define MS_RAIN_SOFTWAREWIRE`
 //   `#define MS_PALEOTERRA_SOFTWAREWIRE`
 // or set the build flag(s):
-//   `-D MS_ATLAS_SOFTWAREWIRE`
 //   `-D MS_RAIN_SOFTWAREWIRE`
 //   `-D MS_PALEOTERRA_SOFTWAREWIRE`
 #include <SoftwareWire.h>  // Testato's Software I2C
@@ -261,7 +257,8 @@ const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t  wakePin    = A7;  // MCU interrupt/alarm pin to wake from sleep
+const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+// Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -276,7 +273,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 //           Delete the sections you are not using!
 // ==========================================================================
 
-#if defined MS_BUILD_TEST_XBEE_CELLULAR
+#if defined MS_BUILD_MODEM_XBEE_CELLULAR
 /** Start [xbee_cell_transparent] */
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
@@ -317,7 +314,7 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_XBEE_LTE_B
+#elif defined MS_BUILD_MODEM_XBEE_LTE_B
 /** Start [xbee3_ltem_bypass] */
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
@@ -354,7 +351,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_XBEE_3G_B
+#elif defined MS_BUILD_MODEM_XBEE_3G_B
 /** Start [xbee_3g_bypass] */
 // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
 // NOTE:  According to the manual, this should be less stable than transparent
@@ -391,7 +388,7 @@ DigiXBee3GBypass modem = modemXB3GB;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_XBEE_WIFI
+#elif defined MS_BUILD_MODEM_XBEE_WIFI
 /** Start [xbee_wifi] */
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
@@ -427,7 +424,7 @@ DigiXBeeWifi modem = modemXBWF;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_ESP8266
+#elif defined MS_BUILD_MODEM_ESP8266
 /** Start [esp8266] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -472,7 +469,7 @@ EspressifESP8266 modem = modemESP;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_BG96
+#elif defined MS_BUILD_MODEM_BG96
 /** Start [bg96] */
 // For the Dragino, Nimbelink or other boards based on the Quectel BG96
 #include <modems/QuectelBG96.h>
@@ -506,7 +503,7 @@ QuectelBG96 modem = modemBG96;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_MONARCH
+#elif defined MS_BUILD_MODEM_MONARCH
 /** Start [monarch] */
 // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans
 // Monarch series
@@ -541,7 +538,7 @@ SequansMonarch modem = modemSVZM;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_SIM800
+#elif defined MS_BUILD_MODEM_SIM800
 /** Start [sim800] */
 // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and
 // higher
@@ -573,7 +570,7 @@ SIMComSIM800 modem = modemS800;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_SIM7000
+#elif defined MS_BUILD_MODEM_SIM7000
 /** Start [sim7000] */
 // For almost anything based on the SIMCom SIM7000
 #include <modems/SIMComSIM7000.h>
@@ -603,7 +600,38 @@ SIMComSIM7000 modem = modem7000;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_S2GB
+#elif defined MS_BUILD_MODEM_SIM7080
+/** Start [sim7080] */
+// For almost anything based on the SIMCom SIM7080G
+#include <modems/SIMComSIM7080.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+const int32_t modemBaud =
+    9600;  //  SIM7080 does auto-bauding by default, but I set mine to 9600
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
+// and-global breakout bk-7080a
+const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
+const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
+                                    // status
+
+// Network connection information
+const char* apn = "xxxxx";  // APN for GPRS connection
+
+// Create the modem object
+SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
+                        modemSleepRqPin, apn);
+// Create an extra reference to the modem by a generic name
+SIMComSIM7080 modem = modem7080;
+/** End [sim7080] */
+// ==========================================================================
+
+
+#elif defined MS_BUILD_MODEM_S2GB
 /** Start [gprsbee] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
@@ -634,7 +662,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_UBEE_R410M
+#elif defined MS_BUILD_MODEM_UBEE_R410M
 /** Start [sara_r410m] */
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
 #include <modems/SodaqUBeeR410M.h>
@@ -672,7 +700,7 @@ SodaqUBeeR410M modem = modemR410;
 // ==========================================================================
 
 
-#elif defined MS_BUILD_TEST_UBEE_U201
+#elif defined MS_BUILD_MODEM_UBEE_U201
 /** Start [sara_u201] */
 // For the Sodaq UBee based on the 3G u-blox SARA U201
 #include <modems/SodaqUBeeU201.h>
@@ -760,7 +788,7 @@ Variable* ds3231Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_AM2315 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_AM2315
 // ==========================================================================
 //  AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
@@ -781,7 +809,7 @@ Variable* am2315Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_DHT || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_DHT
 // ==========================================================================
 //  AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
@@ -806,7 +834,7 @@ Variable* dhtHI   = new AOSongDHT_HI(&dht,
 #endif
 
 
-#if defined MS_BUILD_TEST_SQ212 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_SQ212
 // ==========================================================================
 //  Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
@@ -829,7 +857,7 @@ Variable* sq212voltage =
 #endif
 
 
-#if defined MS_BUILD_TEST_ATLASCO2 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASCO2
 // ==========================================================================
 //  Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 // ==========================================================================
@@ -843,14 +871,8 @@ uint8_t      AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific CO2 sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-// AtlasScientificCO2 atlasCO2(AtlasCO2Power, softwareSDA, softwareSCL,
-//                             AtlasCO2i2c_addr);
-AtlasScientificCO2 atlasCO2(&softI2C, AtlasCO2Power, AtlasCO2i2c_addr);
-#else
 // AtlasScientificCO2 atlasCO2(AtlasCO2Power, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(AtlasCO2Power);
-#endif
 
 // Create concentration and temperature variable pointers for the EZO-CO2
 Variable* atlasCO2CO2 = new AtlasScientificCO2_CO2(
@@ -861,7 +883,7 @@ Variable* atlasCO2Temp = new AtlasScientificCO2_Temp(
 #endif
 
 
-#if defined MS_BUILD_TEST_ATLASDO || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASDO
 // ==========================================================================
 //  Atlas Scientific EZO-DO Dissolved Oxygen Sensor
 // ==========================================================================
@@ -875,14 +897,8 @@ uint8_t      AtlasDOi2c_addr = 0x61;            // Default for DO is 0x61 (97)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific DO sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-// AtlasScientificDO atlasDO(AtlasDOPower, softwareSDA, softwareSCL,
-//                           AtlasDOi2c_addr);
-AtlasScientificDO atlasDO(&softI2C, AtlasDOPower, AtlasDOi2c_addr);
-#else
 // AtlasScientificDO atlasDO(AtlasDOPower, AtlasDOi2c_addr);
 AtlasScientificDO atlasDO(AtlasDOPower);
-#endif
 
 // Create concentration and percent saturation variable pointers for the EZO-DO
 Variable* atlasDOconc = new AtlasScientificDO_DOmgL(
@@ -893,7 +909,7 @@ Variable* atlasDOpct = new AtlasScientificDO_DOpct(
 #endif
 
 
-#if defined MS_BUILD_TEST_ATLASORP || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASORP
 // ==========================================================================
 //  Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
 // ==========================================================================
@@ -907,14 +923,8 @@ uint8_t      AtlasORPi2c_addr = 0x62;         // Default for ORP is 0x62 (98)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific ORP sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-AtlasScientificORP atlasORP(&softI2C, AtlasORPPower, AtlasORPi2c_addr);
-// AtlasScientificORP atlasORP(AtlasORPPower, softwareSDA, softwareSCL,
-//                             AtlasORPi2c_addr);
-#else
 // AtlasScientificORP atlasORP(AtlasORPPower, AtlasORPi2c_addr);
 AtlasScientificORP atlasORP(AtlasORPPower);
-#endif
 
 // Create a potential variable pointer for the ORP
 Variable* atlasORPot = new AtlasScientificORP_Potential(
@@ -923,7 +933,7 @@ Variable* atlasORPot = new AtlasScientificORP_Potential(
 #endif
 
 
-#if defined MS_BUILD_TEST_ATLASPH || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASPH
 // ==========================================================================
 //  Atlas Scientific EZO-pH Sensor
 // ==========================================================================
@@ -937,14 +947,8 @@ uint8_t      AtlaspHi2c_addr = 0x63;            // Default for pH is 0x63 (99)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific pH sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-AtlasScientificpH atlaspH(&softI2C, AtlaspHPower, AtlaspHi2c_addr);
-// AtlasScientificpH atlaspH(AtlaspHPower, softwareSDA, softwareSCL,
-//                           AtlaspHi2c_addr);
-#else
 // AtlasScientificpH atlaspH(AtlaspHPower, AtlaspHi2c_addr);
 AtlasScientificpH atlaspH(AtlaspHPower);
-#endif
 
 // Create a pH variable pointer for the pH sensor
 Variable* atlaspHpH =
@@ -953,8 +957,7 @@ Variable* atlaspHpH =
 #endif
 
 
-#if defined MS_BUILD_TEST_ATLASRTD || defined MS_BUILD_TEST_ATLASEC || \
-    defined                                   MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASRTD || defined MS_BUILD_SENSOR_ATLASEC
 // ==========================================================================
 //  Atlas Scientific EZO-RTD Temperature Sensor
 // ==========================================================================
@@ -968,14 +971,8 @@ uint8_t      AtlasRTDi2c_addr = 0x66;         // Default for RTD is 0x66 (102)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific RTD sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-AtlasScientificRTD atlasRTD(&softI2C, AtlasRTDPower, AtlasRTDi2c_addr);
-// AtlasScientificRTD atlasRTD(AtlasRTDPower, softwareSDA, softwareSCL,
-//                             AtlasRTDi2c_addr);
-#else
 // AtlasScientificRTD atlasRTD(AtlasRTDPower, AtlasRTDi2c_addr);
 AtlasScientificRTD atlasRTD(AtlasRTDPower);
-#endif
 
 // Create a temperature variable pointer for the RTD
 Variable* atlasTemp = new AtlasScientificRTD_Temp(
@@ -984,7 +981,7 @@ Variable* atlasTemp = new AtlasScientificRTD_Temp(
 #endif
 
 
-#if defined MS_BUILD_TEST_ATLASEC || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASEC
 // ==========================================================================
 //  Atlas Scientific EZO-EC Conductivity Sensor
 // ==========================================================================
@@ -998,14 +995,8 @@ uint8_t      AtlasECi2c_addr = 0x64;            // Default for EC is 0x64 (100)
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific Conductivity sensor object
-#ifdef MS_ATLAS_SOFTWAREWIRE
-// AtlasScientificEC atlasEC(AtlasECPower, softwareSDA, softwareSCL,
-//                           AtlasECi2c_addr);
-AtlasScientificEC atlasEC(&softI2C, AtlasECPower, AtlasECi2c_addr);
-#else
 // AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);
 AtlasScientificEC atlasEC(AtlasECPower);
-#endif
 
 // Create four variable pointers for the EZO-ES
 Variable* atlasCond = new AtlasScientificEC_Cond(
@@ -1061,7 +1052,7 @@ Variable* atlasSpCond =
 #endif
 
 
-#if defined MS_BUILD_TEST_BME280 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_BME280
 // ==========================================================================
 //  Bosch BME280 Environmental Sensor
 // ==========================================================================
@@ -1089,7 +1080,7 @@ Variable* bme280Alt =
 #endif
 
 
-#if defined MS_BUILD_TEST_OBS3 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_OBS3
 // ==========================================================================
 //  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
@@ -1138,7 +1129,34 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 #endif
 
 
-#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_CLARIVUE10
+// ==========================================================================
+//  Campbell ClariVUE Turbidity Sensor
+// ==========================================================================
+/** Start [clarivue] */
+#include <sensors/CampbellClariVUE10.h>
+
+const char* ClariVUESDI12address = "0";  // The SDI-12 Address of the ClariVUE10
+const int8_t ClariVUEPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t ClariVUEData  = 7;               // The SDI12 data pin
+// NOTE:  you should NOT take more than one readings.  THe sensor already takes
+// and averages 8 by default.
+
+// Create a Campbell ClariVUE10 sensor object
+CampbellClariVUE10 clarivue(*ClariVUESDI12address, ClariVUEPower, ClariVUEData);
+
+// Create turbidity, temperature, and error variable pointers for the ClariVUE10
+Variable* clarivueTurbidity = new CampbellClariVUE10_Turbidity(
+    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* clarivueTemp = new CampbellClariVUE10_Temp(
+    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
+    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [clarivue] */
+#endif
+
+
+#if defined MS_BUILD_SENSOR_CTD
 // ==========================================================================
 //  Decagon CTD-10 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
@@ -1164,7 +1182,7 @@ Variable* ctdDepth =
 #endif
 
 
-#if defined MS_BUILD_TEST_ES2 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ES2
 // ==========================================================================
 //  Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
@@ -1188,7 +1206,7 @@ Variable* es2Temp = new DecagonES2_Temp(&es2,
 #endif
 
 
-#if defined MS_BUILD_TEST_VOLTAGE || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_VOLTAGE
 // ==========================================================================
 //  External Voltage via TI ADS1115
 // ==========================================================================
@@ -1212,7 +1230,7 @@ Variable* extvoltV =
 #endif
 
 
-#if defined MS_BUILD_TEST_MPL115A2 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_MPL115A2
 // ==========================================================================
 //  Freescale Semiconductor MPL115A2 Barometer
 // ==========================================================================
@@ -1234,7 +1252,7 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 #endif
 
 
-#if defined MS_BUILD_TEST_INSITURDO || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_INSITURDO
 // ==========================================================================
 //  InSitu RDO PRO-X Rugged Dissolved Oxygen Probe
 // ==========================================================================
@@ -1263,7 +1281,7 @@ Variable* rdoO2pp =
 #endif
 
 
-#if defined MS_BUILD_TEST_ACCULEVEL || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ACCULEVEL
 // ==========================================================================
 //  Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1297,7 +1315,7 @@ Variable* acculevHeight = new KellerAcculevel_Height(
 #endif
 
 
-#if defined MS_BUILD_TEST_NANOLEVEL || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_NANOLEVEL
 // ==========================================================================
 //  Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1331,7 +1349,7 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 #endif
 
 
-#if defined MS_BUILD_TEST_MAXBOTIX || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_MAXBOTIX
 // ==========================================================================
 //  Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
@@ -1361,8 +1379,7 @@ Variable* sonar1Range =
 #endif
 
 
-#if defined MS_BUILD_TEST_DS18 || defined MS_BUILD_TEST_ANALOGEC || \
-    defined                               MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_DS18 || defined MS_BUILD_SENSOR_ANALOGEC
 // ==========================================================================
 //  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
@@ -1391,7 +1408,7 @@ Variable* ds18Temp = new MaximDS18_Temp(&ds18,
 #endif
 
 
-#if defined MS_BUILD_TEST_MS5803 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_MS5803
 // ==========================================================================
 //  Measurement Specialties MS5803-14BA pressure sensor
 // ==========================================================================
@@ -1418,7 +1435,7 @@ Variable* ms5803Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_5TM || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_5TM
 // ==========================================================================
 //  Meter ECH2O Soil Moisture Sensor
 // ==========================================================================
@@ -1444,7 +1461,7 @@ Variable* fivetmTemp =
 #endif
 
 
-#if defined MS_BUILD_TEST_HYDROS21 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_HYDROS21
 // ==========================================================================
 //  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
@@ -1472,7 +1489,7 @@ Variable* hydros21Depth =
 #endif
 
 
-#if defined MS_BUILD_TEST_TEROS11 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_TEROS11
 // ==========================================================================
 //  Meter Teros 11 Soil Moisture Sensor
 // ==========================================================================
@@ -1500,7 +1517,7 @@ Variable* teros11VWC =
 #endif
 
 
-#if defined MS_BUILD_TEST_PALEOTERRA || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_PALEOTERRA
 // ==========================================================================
 //  PaleoTerra Redox Sensors
 // ==========================================================================
@@ -1517,7 +1534,7 @@ PaleoTerraRedox ptRedox(&softI2C, paleoTerraPower, paleoI2CAddress);
 // PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,
 // paleoI2CAddress);
 #else
-PaleoTerraRedox   ptRedox(paleoTerraPower, paleoI2CAddress);
+PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
 #endif
 
 // Create the voltage variable for the redox sensor
@@ -1527,7 +1544,7 @@ Variable* ptVolt =
 #endif
 
 
-#if defined MS_BUILD_TEST_RAINI2C || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_RAINI2C
 // ==========================================================================
 //  External I2C Rain Tipping Bucket Counter
 // ==========================================================================
@@ -1544,7 +1561,7 @@ RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
 // RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,
 //                      depthPerTipEvent);
 #else
-RainCounterI2C    tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C  tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #endif
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
@@ -1556,7 +1573,7 @@ Variable* tbi2cDepth =
 #endif
 
 
-#if defined MS_BUILD_TEST_TALLY || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_TALLY
 // ==========================================================================
 //    Tally I2C Event Counter for rain or wind reed-switch sensors
 // ==========================================================================
@@ -1567,7 +1584,7 @@ const int8_t TallyPower = -1;  // Power pin (-1 if unconnected)
 // NorthernWidget Tally I2CPower is -1 by default because it is often deployed
 // with power always on, but Tally also has a super capacitor that enables it
 // to be self powered between readings/recharge as described at
-// https://github.com/NorthernWidget-Skunkworks/Project-Tally
+// https://github.com/EnviroDIY/Project-Tally
 
 const uint8_t TallyCounterI2CAddress = 0x33;
 // NorthernWidget Tally I2C address is 0x33 by default
@@ -1589,7 +1606,7 @@ Variable* tallyEvents = new TallyCounterI2C_Events(
 #endif
 
 
-#if defined MS_BUILD_TEST_INA219 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_INA219
 // ==========================================================================
 //  TI INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
 // ==========================================================================
@@ -1616,7 +1633,7 @@ Variable* inaPower = new TIINA219_Power(&ina219,
 #endif
 
 
-#if defined MS_BUILD_TEST_CYCLOPS || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_CYCLOPS
 // ==========================================================================
 //  Turner Cyclops-7F Submersible Fluorometer
 // ==========================================================================
@@ -1677,7 +1694,7 @@ Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
 #endif
 
 
-#if defined MS_BUILD_TEST_ANALOGEC || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ANALOGEC
 // ==========================================================================
 //   Analog Electrical Conductivity using the Processor's Analog Pins
 // ==========================================================================
@@ -1738,7 +1755,7 @@ Variable* analogEc_spcond = new Variable(
 #endif
 
 
-#if defined MS_BUILD_TEST_Y504 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y504
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
@@ -1749,9 +1766,9 @@ Variable* analogEc_spcond = new Variable(
 // for Additional Serial Ports" section
 
 byte         y504ModbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t y504AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
-const int8_t  y504SensorPower = A3;  // Sensor power pin
+const int8_t y504AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y504SensorPower = A3;               // Sensor power pin
 const int8_t  y504EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y504NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -1773,7 +1790,7 @@ Variable* y504Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_Y510 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y510
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
@@ -1784,9 +1801,9 @@ Variable* y504Temp =
 // for Additional Serial Ports" section
 
 byte         y510ModbusAddress = 0x0B;  // The modbus address of the Y510
-const int8_t y510AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
-const int8_t  y510SensorPower = A3;  // Sensor power pin
+const int8_t y510AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y510SensorPower = A3;               // Sensor power pin
 const int8_t  y510EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y510NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -1805,7 +1822,7 @@ Variable* y510Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_Y511 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y511
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
@@ -1816,9 +1833,9 @@ Variable* y510Temp =
 // for Additional Serial Ports" section
 
 byte         y511ModbusAddress = 0x1A;  // The modbus address of the Y511
-const int8_t y511AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
-const int8_t  y511SensorPower = A3;  // Sensor power pin
+const int8_t y511AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y511SensorPower = A3;               // Sensor power pin
 const int8_t  y511EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y511NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -1837,7 +1854,7 @@ Variable* y511Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_Y514 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y514
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
@@ -1870,7 +1887,7 @@ Variable* y514Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_Y520 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y520
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
@@ -1881,9 +1898,9 @@ Variable* y514Temp =
 // for Additional Serial Ports" section
 
 byte         y520ModbusAddress = 0x20;  // The modbus address of the Y520
-const int8_t y520AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
-const int8_t  y520SensorPower = A3;  // Sensor power pin
+const int8_t y520AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y520SensorPower = A3;               // Sensor power pin
 const int8_t  y520EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y520NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -1902,7 +1919,7 @@ Variable* y520Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_Y532 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y532
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
@@ -1936,7 +1953,7 @@ Variable* y532Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_Y533 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y533
 // ==========================================================================
 //  Yosemitech Y533 Oxidation Reduction Potential (ORP)
 // ==========================================================================
@@ -1951,26 +1968,23 @@ const int8_t y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
 const int8_t  y533SensorPower = A3;               // Sensor power pin
 const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y533NumberReadings =
-    1;  // The manufacturer actually doesn't mention averaging for this one
+const uint8_t y533NumberReadings = 1;
+// The manufacturer actually doesn't mention averaging for this one
 
-// Create a Yosemitech Y533 pH sensor object
+// Create a Yosemitech Y533 ORP sensor object
 YosemitechY533 y533(y533ModbusAddress, modbusSerial, y533AdapterPower,
                     y533SensorPower, y533EnablePin, y533NumberReadings);
 
-// Create pH, electrical potential, and temperature variable pointers for the
-// Y533
-Variable* y533Voltage =
-    new YosemitechY533_Voltage(&y533, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* y533pH =
-    new YosemitechY533_pH(&y533, "12345678-abcd-1234-ef00-1234567890ab");
+// Create ORP and temperature variable pointers for the Y533
+Variable* y533ORP =
+    new YosemitechY533_ORP(&y533, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y533Temp =
     new YosemitechY533_Temp(&y533, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [y533] */
 #endif
 
 
-#if defined MS_BUILD_TEST_Y550 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y550
 // ==========================================================================
 //  Yosemitech Y550 COD Sensor with Wiper
 // ==========================================================================
@@ -1981,15 +1995,15 @@ Variable* y533Temp =
 // for Additional Serial Ports" section
 
 byte         y550ModbusAddress = 0x50;  // The modbus address of the Y550
-const int8_t y550AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
-const int8_t  y550SensorPower = A3;  // Sensor power pin
+const int8_t y550AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y550SensorPower = A3;               // Sensor power pin
 const int8_t  y550EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y550NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
-// Create a Y550 conductivity sensor object
+// Create a Y550 chemical oxygen demand sensor object
 YosemitechY550 y550(y550ModbusAddress, modbusSerial, y550AdapterPower,
                     y550SensorPower, y550EnablePin, y550NumberReadings);
 
@@ -2004,7 +2018,7 @@ Variable* y550Temp =
 #endif
 
 
-#if defined MS_BUILD_TEST_Y4000 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y4000
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
@@ -2016,9 +2030,9 @@ Variable* y550Temp =
 // for Additional Serial Ports" section
 
 byte         y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
-const int8_t y4000AdapterPower =
-    sensorPowerPin;  // RS485 adapter power pin (-1 if unconnected)
-const int8_t  y4000SensorPower = A3;  // Sensor power pin
+const int8_t y4000AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                   // (-1 if unconnected)
+const int8_t  y4000SensorPower = A3;               // Sensor power pin
 const int8_t  y4000EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y4000NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2049,7 +2063,7 @@ Variable* y4000BGA =
 #endif
 
 
-#if defined MS_BUILD_TEST_DOPTO || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_DOPTO
 // ==========================================================================
 //  Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -2190,128 +2204,128 @@ Variable* variableList[] = {
 #if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
     ds3231Temp,
 #endif
-#if defined MS_BUILD_TEST_AM2315 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_AM2315
     am2315Humid,
     am2315Temp,
 #endif
-#if defined MS_BUILD_TEST_DHT || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_DHT
     dhtHumid,
     dhtTemp,
     dhtHI,
 #endif
-#if defined MS_BUILD_TEST_SQ212 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_SQ212
     sq212PAR,
     sq212voltage,
 #endif
-#if defined MS_BUILD_TEST_ATLASCO2 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASCO2
     atlasCO2CO2,
     atlasCO2Temp,
 #endif
-#if defined MS_BUILD_TEST_ATLASDO || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASDO
     atlasDOconc,
     atlasDOpct,
 #endif
-#if defined MS_BUILD_TEST_ATLASORP || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASORP
     atlasORPot,
 #endif
-#if defined MS_BUILD_TEST_ATLASPH || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASPH
     atlaspHpH,
 #endif
-#if defined MS_BUILD_TEST_ATLASRTD || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASRTD
     atlasTemp,
 #endif
-#if defined MS_BUILD_TEST_ATLASEC || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ATLASEC
     atlasCond,
     atlasTDS,
     atlasSal,
     atlasGrav,
     atlasSpCond,
 #endif
-#if defined MS_BUILD_TEST_BME280 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_BME280
     bme280Temp,
     bme280Humid,
     bme280Press,
     bme280Alt,
 #endif
-#if defined MS_BUILD_TEST_OBS3 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_OBS3
     obs3TurbLow,
     obs3VoltLow,
     obs3TurbHigh,
     obs3VoltHigh,
 #endif
-#if defined MS_BUILD_TEST_CTD || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_CTD
     ctdCond,
     ctdTemp,
     ctdDepth,
 #endif
-#if defined MS_BUILD_TEST_ES2 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ES2
     es2Cond,
     es2Temp,
 #endif
-#if defined MS_BUILD_TEST_VOLTAGE || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_VOLTAGE
     extvoltV,
 #endif
-#if defined MS_BUILD_TEST_MPL115A2 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_MPL115A2
     mplTemp,
     mplPress,
 #endif
-#if defined MS_BUILD_TEST_INSITURDO || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_INSITURDO
     rdoTemp,
     rdoDOpct,
     rdoDOmgL,
     rdoO2pp,
 #endif
-#if defined MS_BUILD_TEST_ACCULEVEL || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ACCULEVEL
     acculevPress,
     acculevTemp,
     acculevHeight,
 #endif
-#if defined MS_BUILD_TEST_NANOLEVEL || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_NANOLEVEL
     nanolevPress,
     nanolevTemp,
     nanolevHeight,
 #endif
-#if defined MS_BUILD_TEST_MAXBOTIX || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_MAXBOTIX
     sonar1Range,
 #endif
-#if defined MS_BUILD_TEST_DS18 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_DS18
     ds18Temp,
 #endif
-#if defined MS_BUILD_TEST_MS5803 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_MS5803
     ms5803Temp,
     ms5803Press,
 #endif
-#if defined MS_BUILD_TEST_5TM || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_5TM
     fivetmEa,
     fivetmVWC,
     fivetmTemp,
 #endif
-#if defined MS_BUILD_TEST_HYDROS21 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_HYDROS21
     hydros21Cond,
     hydros21Temp,
     hydros21Depth,
 #endif
-#if defined MS_BUILD_TEST_TEROS11 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_TEROS11
     teros11Ea,
     teros11Temp,
     teros11VWC,
 #endif
-#if defined MS_BUILD_TEST_PALEOTERRA || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_PALEOTERRA
     ptVolt,
 #endif
-#if defined MS_BUILD_TEST_RAINI2C || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_RAINI2C
     tbi2cTips,
     tbi2cDepth,
 #endif
-#if defined MS_BUILD_TEST_TALLY || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_TALLY
     tallyEvents,
 #endif
-#if defined MS_BUILD_TEST_INA219 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_INA219
     inaVolt,
     inaCurrent,
     inaPower,
 #endif
-#if defined MS_BUILD_TEST_CYCLOPS || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_CYCLOPS
     cyclopsVoltage,
     cyclopsChloro,
     cyclopsRWT,
@@ -2327,47 +2341,46 @@ Variable* variableList[] = {
     cyclopsTryptophan,
     cyclopsRedChloro,
 #endif
-#if defined MS_BUILD_TEST_ANALOGEC || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_ANALOGEC
     analogEc_cond,
     analogEc_spcond,
 #endif
-#if defined MS_BUILD_TEST_Y504 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y504
     y504DOpct,
     y504DOmgL,
     y504Temp,
 #endif
-#if defined MS_BUILD_TEST_Y510 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y510
     y510Turb,
     y510Temp,
 #endif
-#if defined MS_BUILD_TEST_Y511 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y511
     y511Turb,
     y511Temp,
 #endif
-#if defined MS_BUILD_TEST_Y514 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y514
     y514Chloro,
     y514Temp,
 #endif
-#if defined MS_BUILD_TEST_Y520 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y520
     y520Cond,
     y520Temp,
 #endif
-#if defined MS_BUILD_TEST_Y532 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y532
     y532Voltage,
     y532pH,
     y532Temp,
 #endif
-#if defined MS_BUILD_TEST_Y533 || defined MS_BUILD_TEST_ALL_SENSORS
-    y533Voltage,
-    y533pH,
+#if defined MS_BUILD_SENSOR_Y533
+    y533ORP,
     y533Temp,
 #endif
-#if defined MS_BUILD_TEST_Y550 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y550
     y550COD,
     y550Turbid,
     y550Temp,
 #endif
-#if defined MS_BUILD_TEST_Y4000 || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_Y4000
     y4000DO,
     y4000Turb,
     y4000Cond,
@@ -2377,7 +2390,7 @@ Variable* variableList[] = {
     y4000Chloro,
     y4000BGA,
 #endif
-#if defined MS_BUILD_TEST_DOPTO || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_DOPTO
     dOptoDOpct,
     dOptoDOmgL,
     dOptoTemp,
@@ -2410,7 +2423,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** End [loggers] */
 
 
-#if defined MS_BUILD_TEST_MMW
+#if defined MS_BUILD_PUB_MMW
 // ==========================================================================
 //  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
@@ -2430,7 +2443,7 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined MS_BUILD_TEST_DREAMHOST
+#if defined MS_BUILD_PUB_DREAMHOST
 // ==========================================================================
 //  A Publisher to DreamHost
 // ==========================================================================
@@ -2448,7 +2461,7 @@ DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
 #endif
 
 
-#if defined MS_BUILD_TEST_THINGSPEAK
+#if defined MS_BUILD_PUB_THINGSPEAK
 // ==========================================================================
 //  ThingSpeak Data Publisher
 // ==========================================================================
@@ -2549,7 +2562,7 @@ void setup() {
     // all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 
-#if defined MS_BUILD_TEST_MAXBOTIX || defined MS_BUILD_TEST_ALL_SENSORS
+#if defined MS_BUILD_SENSOR_MAXBOTIX
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600
     // baud
     sonarSerial.begin(9600);
@@ -2607,7 +2620,7 @@ void setup() {
     }
     /** End [setup_sesors] */
 
-#if defined MS_BUILD_TEST_ESP8266 && F_CPU == 8000000L
+#if defined MS_BUILD_MODEM_ESP8266 && F_CPU == 8000000L
     /** Start [setup_esp] */
     if (modemBaud > 57600) {
         modem.modemWake();  // NOTE:  This will also set up the modem
@@ -2628,7 +2641,26 @@ void setup() {
     /** End [setup_skywire] */
 #endif
 
-#if defined MS_BUILD_TEST_XBEE_CELLULAR
+#if defined MS_BUILD_MODEM_SIM7080
+    /** Start [setup_sim7080] */
+    modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
+    modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
+    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    modem.modemWake();  // NOTE:  This will also set up the modem
+    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
+    modem.gsmModem.setNetworkMode(38);   // set to LTE only
+                                         // 2 Automatic
+                                         // 13 GSM only
+                                         // 38 LTE only
+                                         // 51 GSM and LTE only
+    modem.gsmModem.setPreferredMode(1);  // set to CAT-M
+                                         // 1 CAT-M
+                                         // 2 NB-IoT
+                                         // 3 CAT-M and NB-IoT
+    /** End [setup_sim7080] */
+#endif
+
+#if defined MS_BUILD_MODEM_XBEE_CELLULAR
     /** Start [setup_xbeec_carrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
@@ -2665,7 +2697,7 @@ void setup() {
 #endif
 
 
-#if defined MS_BUILD_TEST_XBEE_LTE_B
+#if defined MS_BUILD_MODEM_XBEE_LTE_B
     /** Start [setup_r4_carrrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
@@ -2735,7 +2767,7 @@ void setup() {
 // ==========================================================================
 //  Arduino Loop Function
 // ==========================================================================
-#ifndef MS_USE_COMPLEX_LOOP
+#ifndef MS_BUILD_TEST_COMPLEX_LOOP
 // Use this short loop for simple data logging and sending
 /** Start [simple_loop] */
 void loop() {
