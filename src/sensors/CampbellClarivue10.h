@@ -15,7 +15,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_clarivue Campbell ClariVUE10
- * Classes for the Campbell ClariVUE10 digital dissolved oxygen sensor.
+ * Classes for the [Campbell ClariVUE10](https://www.campbellsci.com/clarivue10) turbidity sensor.
  *
  * @ingroup sdi12_group
  *
@@ -24,9 +24,17 @@
  *
  * @section sensor_clarivue_intro Introduction
  *
- * The Campbell ClariVUE10 sensor has not yet been released and all data here is based on a test model.
+ * > The ClariVUE™10 is an ISO 7027 compliant, side-scatter turbidity sensor. It
+ * > returns data via SDI-12 to a data logger. Turbidity is a common surrogate
+ * > measurement for suspended sediment concentration in aquatic systems. The
+ * > ClariVUE™10 is designed to operate in fresh and saline environments. It
+ * > will require regular maintenance to keep the optical window clean in high
+ * > bio-fouling environments. The face of the sensor is made from copper to
+ * > slow biological growth over the optical windows.
+ *
  * The sensor is implemented as a sub-classes of the SDI12Sensors class.
- * It requires a 12V power supply, which can be turned off between measurements.
+ * It requires a 9.6 to 18 Vdc power supply, which can be turned off between measurements.
+ * It draws < 300 µA when inactive and < 35 mA while measuring.
  * You will need a voltage booster or a separate power supply to give the ClariVUE10 sufficient voltage to run.
  * At the Stroud Center, we use [Pololu 12V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
  *
@@ -34,7 +42,7 @@
  * The sensor already takes 8 readings by default and returns the median of those.
  *
  * @section sensor_clarivue_datasheet Sensor Datasheet
- * No manual or datasheet is available.
+ * The specifications and datasheet are available at https://www.campbellsci.com/clarivue10
  *
  * @section sensor_clarivue_flags Build flags
  * @see @ref sdi12_group_flags
@@ -97,15 +105,16 @@
  * @anchor sensor_clarivue_turbidity
  * @name Turbidity
  * The turbidity variable from a Campbell ClariVUE10
- * - Range is not yet known.
- * - Accuracy is not yet known.
+ * - Range is 0 to 4000 FNU.
+ * - Accuracy ±2% or 0.5 FNU (whichever is greater).
  *
  * {{ @refCampbellClariVUE10_Turbidity::CampbellClariVUE10_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 2.
-#define CLARIVUE10_TURBIDITY_RESOLUTION 2
-/// @brief Sensor variable number; turbidity is stored in sensorValues[1]
+/// @brief Decimals places in string representation; turbidity should have 1
+/// (resolution is 0.2 FNU).
+#define CLARIVUE10_TURBIDITY_RESOLUTION 1
+/// @brief Sensor variable number; turbidity is stored in sensorValues[0]
 #define CLARIVUE10_TURBIDITY_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -113,8 +122,8 @@
 #define CLARIVUE10_TURBIDITY_VAR_NAME "turbidity"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "nephelometricTurbidityUnit"
-#define CLARIVUE10_TURBIDITY_UNIT_NAME "nephelometricTurbidityUnit"
+/// "formazinNephelometricUnit" (FNU)
+#define CLARIVUE10_TURBIDITY_UNIT_NAME "formazinNephelometricUnit"
 /// @brief Default variable short code; "ClariVUETurbidity"
 #define CLARIVUE10_TURBIDITY_DEFAULT_CODE "ClariVUETurbidity"
 /**@}*/
@@ -123,8 +132,8 @@
  * @anchor sensor_clarivue_temp
  * @name Temperature
  * The temperature variable from a Campbell ClariVUE10
- * - Range is not specified in sensor datasheet
- * - Accuracy is ± 0.1°C
+ * - Range is -2° to +40°C
+ * - Accuracy is ± 0.2°C
  *
  * {{ @refCampbellClariVUE10_Temp::CampbellClariVUE10_Temp }}
  */
@@ -132,7 +141,7 @@
 /// @brief Decimals places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define CLARIVUE10_TEMP_RESOLUTION 2
-/// @brief Sensor variable number; temperature is stored in sensorValues[0].
+/// @brief Sensor variable number; temperature is stored in sensorValues[5].
 #define CLARIVUE10_TEMP_VAR_NUM 5
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -196,8 +205,8 @@ class CampbellClariVUE10 : public SDI12Sensors {
      * char, char*, or int.
      * @param powerPin The pin on the mcu controlling power to the
      * ClariVUE10 Use -1 if it is continuously powered.
-     * - The ClariVUE10 requires a 8-12V power supply, which can be turned
-     * off between measurements
+     * - The ClariVUE10 requires a 9.6 to 18 Vdc power supply, which can be
+     * turned off between measurements
      * @param dataPin The pin on the mcu connected to the data line of the
      * SDI-12 circuit.
      * @param measurementsToAverage The number of measurements to take and
