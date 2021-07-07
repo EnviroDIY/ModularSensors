@@ -47,6 +47,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 |   Mikroe LTE IOT Click (u-blox SARA R410M)    |                  SodaqUBeeR410M                  |
 |         u-blox 2G, 3G, and 4G modules         |                  SodaqUBeeU201                   |
 |       Sodaq UBee 3G² (u-blox SARA U201)       |                  SodaqUBeeU201                   |
+|         EnviroDIY LTE Bee (SIM7080G)          |                    SIMCom7080                    |
 
 ¹ The Quenctel BC95G based variant is _not_ supported.
 
@@ -93,7 +94,7 @@ Most modules are capable of serial communication and some level of functionality
 |        Sodaq GPRSBee R6 or R7        |    3.4 - 4.4 V    |                2A                 |    `ON/OFF`     |
 |       SIMCom SIM7000 variants        |    3.0 - 4.3 V    |    600mA¹, 2A for 2G fallback     |     `VBAT`      |
 |            SIMCom SIM7080            |    2.7 - 4.8 V    |              < 500mA              |     `VBAT`      |
-|      SModuleFun MBee (SIM7080G)      |    2.7 - 4.8 V    |              < 500mA              |      `VCC`      |
+|     EnviroDIY LTE Bee (SIM7080G)     |    2.7 - 4.8 V    |              < 500mA              |      `VCC`      |
 |     u-blox SARA R4 or N4 series      |    3.2 - 4.2 V    | 500mA, 2A for 2G fallback on R412 |      `VCC`      |
 | Sodaq UBee LTE-M (u-blox SARA R410M) |    3.2 - 4.2 V    |               500mA               |    `ON/OFF`     |
 |    u-blox 2G, 3G, and 4G modules     | varies by module  |         varies by module          |      `VCC`      |
@@ -119,7 +120,7 @@ Most modules are capable of serial communication and some level of functionality
 |    Sodaq GPRSBee R6 or R7     |                  `STATUS`                   |     N/A     |                     N/A                     |
 |    SIMCom SIM7000 variants    |                  `STATUS`                   |  `RESETN`   |                  `PWRKEY`                   |
 |        SIMCom SIM7080G        |                  `STATUS`                   |     N/A     |                  `PWRKEY`                   |
-|   ModuleFun MBee (SIM7080G)   |                  `STATUS`                   |     N/A     |                  `PWRKEY`"                  |
+| EnviroDIY LTE Bee (SIM7080G)  |                  `STATUS`                   |     N/A     |                  `PWRKEY`"                  |
 |  u-blox SARA R4 or N4 series  |                   `V_INT`                   |  `RESET_N`  |                  `PWR_ON`                   |
 |       Sodaq UBee LTE-M        |      `STATUS` also mislabeled as `CTS`      |   `RESET`   |                  `PWR_ON`                   |
 | u-blox 2G, 3G, and 4G modules |                   `V_INT`                   |  `RESET_N`  |                  `PWR_ON`                   |
@@ -143,7 +144,7 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 |          Sodaq GPRSBee R6 or R7 (SIM800H)          |       23       |       19       |       -1       |       -1       |
 |        Sodaq UBee LTE-M (u-blox SARA R410M)        |       23       |       19       |       -1       |       20       |
 |          Sodaq UBee 3G (u-blox SARA U201)          |       23       |       19       |       -1       |       20       |
-|             ModuleFun MBee (SIM7080G)              |       -1       |       19       | 23<sup>9</sup> | 23<sup>9</sup> |
+|            EnviroDIY LTE Bee (SIM7080G)            |       -1       |       19       | 23<sup>9</sup> | 23<sup>9</sup> |
 
 
 ¹ To use the cellular Digi XBee's without the LTE adapter, your Mayfly must be at least v0.5b, you must use SJ13 to connect the Bee directly to the LiPo, and you must always have a battery connected to provide enough power for the XBee to make a cellular connection.
@@ -168,7 +169,7 @@ With those connections made, the Dragino BG96 becomes the _**only**_ LTE module 
 
 <sup>8</sup> This module is no longer produced or sold.
 
-<sup>9</sup> The ModuleFun MBee inverts the signal to the sleep request pin (`PWRKEY`) - which is also used for reset.
+<sup>9</sup> The EnviroDIY LTE Bee inverts the signal to the sleep request pin (`PWRKEY`) - which is also used for reset.
 To use it, you must add these commands to your setup:
 ```cpp
 modem.setModemWakeLevel(HIGH);
