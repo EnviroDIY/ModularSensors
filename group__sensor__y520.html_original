@@ -1319,9 +1319,9 @@
 <span class="c1">// for Additional Serial Ports&quot; section</span>
 
 <span class="kr">byte</span>         <span class="n">y520ModbusAddress</span> <span class="o">=</span> <span class="mh">0x20</span><span class="p">;</span>  <span class="c1">// The modbus address of the Y520</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">y520AdapterPower</span> <span class="o">=</span>
-    <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// RS485 adapter power pin (-1 if unconnected)</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">y520SensorPower</span> <span class="o">=</span> <span class="n">A3</span><span class="p">;</span>  <span class="c1">// Sensor power pin</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">y520AdapterPower</span>  <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// RS485 adapter power pin</span>
+                                                  <span class="c1">// (-1 if unconnected)</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">y520SensorPower</span> <span class="o">=</span> <span class="n">A3</span><span class="p">;</span>               <span class="c1">// Sensor power pin</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">y520EnablePin</span>   <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// Adapter RE/DE pin (-1 if not applicable)</span>
 <span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">y520NumberReadings</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
 <span class="c1">// The manufacturer recommends averaging 10 readings, but we take 5 to minimize</span>

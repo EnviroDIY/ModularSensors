@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Supported Sensors &raquo; PaleoTerra Redox module | ModularSensors</title>
+  <title>Supported Modems and Communication Modules &raquo; SIMCom SIM7080 module | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
   rel="stylesheet"
@@ -1286,137 +1286,133 @@
             </a>  &gt; <wbr/>
           </span>
                     <span class="m-breadcrumb">
-          <a href="group__the__sensors.html">Supported Sensors</a> &gt; <wbr/>
+          <a href="group__the__modems.html">Supported Modems and Communication Modules</a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            PaleoTerra Redox
+            SIMCom SIM7080
           </span>
 
         <header class="gp-entry-header">
           <h1 class="gp-entry-title" itemprop="headline">
 
-          PaleoTerra Redox <span class="m-thin">module</span>
+          SIMCom SIM7080 <span class="m-thin">module</span>
           </h1>
         </header>
         <div class="m-block m-default">
           <ul>
-            <li><a href="#sensor_pt_redox_intro">Introduction</a></li>
-            <li><a href="#sensor_pt_redox_datasheet">Sensor Datasheet</a></li>
-            <li><a href="#sensor_pt_redox_flags">Build flags</a></li>
-            <li><a href="#sensor_pt_redox_ctor">Sensor Constructor</a></li>
-            <li><a href="#sensor_pt_redox_examples">Example Code</a></li>
+            <li><a href="#modem_sim7080_notes">Introduction</a></li>
+            <li><a href="#modem_sim7080_docs">Manufacturer Documentation</a></li>
+            <li><a href="#modem_sim7080_ctor">Modem Constructor</a></li>
+            <li><a href="#modem_sim7080_examples">Example Code</a></li>
                 <li><a href="#nested-classes">Classes</a></li>
-                <li><a href="#define-members">Defines</a></li>
-                <li><a href="#sensor-timing">Sensor Timing</a></li>
-                <li><a href="#voltage">Voltage</a></li>
+                <li><a href="#define-members">Defines and Timing</a></li>
           </ul>
         </div>
-          <p>Classes for the PaleoTerra Redox digital preassure sensor.</p><section id="sensor_pt_redox_intro"><h2>Introduction</h2><p>Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato&#x27;s <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> library for software I2C.</p></section><section id="sensor_pt_redox_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://paleoterra.nl/">https:/<wbr />/<wbr />paleoterra.nl/<wbr /></a></p></section><section id="sensor_pt_redox_flags"><h2>Build flags</h2><ul><li><code>-D MS_PALEOTERRA_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none of your attached redox probes may use software I2C. Using some with software I2C and others with hardware I2C is not supported.</p></aside></li></ul></li></ul></section><section id="sensor_pt_redox_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_paleo_terra_redox.html#aa5116034ef3849b7372dd503dc01c682" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#a9cda3d90f1e4a10185d09abae9fa0f0c" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(TwoWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#af1151b8ebe2e040f577179e4d0706412" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(SoftwareWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#a734b46e62adfcfb21d2b3738f15919d1" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, int8_t, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_pt_redox_examples"><h2>Example Code</h2><p>The PaleoTerra Redox is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_pt_redox">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/PaleoTerraRedox.h&gt;</span><span class="cp"></span>
+          <section id="modem_sim7080_notes"><h2>Introduction</h2><p>The SIMCom <a href="http://www.simcom.com/product/SIM7080G.html">SIM7080G</a> is a Multi-Band CAT-M and NB-IoT module solution in a SMT type.</p></section><section id="modem_sim7080_docs"><h2>Manufacturer Documentation</h2><p>The module datasheet and AT commands are available here: <a href="http://www.simcom.com/product/SIM7080G.html">http:/<wbr />/<wbr />www.simcom.com/<wbr />product/<wbr />SIM7080G.html</a></p><aside class="m-note m-info"><h4>Note</h4><p>You must create an account with SIMCOM to be able to download the documents.</p></aside></section><section id="modem_sim7080_ctor"><h2>Modem Constructor</h2><p>{{ <a href="class_s_i_m_com_s_i_m7080.html#a8a60520d60490b44bb9ec3e0bd6be538" class="m-doc">SIMComSIM7080::<wbr />SIMComSIM7080</a> }}</p><hr/></section><section id="modem_sim7080_examples"><h2>Example Code</h2><p>The SIM7080 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_sim7080">menu a la carte</a> example.</p><pre class="m-code"><span class="c1">// For almost anything based on the SIMCom SIM7080G</span>
+<span class="cp">#include</span> <span class="cpf">&lt;modems/SIMComSIM7080.h&gt;</span><span class="cp"></span>
 
-<span class="kr">int8_t</span> <span class="n">paleoTerraPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Pin to switch RS485 adapter power</span>
-                                          <span class="c1">// on and off (-1 if unconnected)</span>
-<span class="kr">uint8_t</span> <span class="n">paleoI2CAddress</span> <span class="o">=</span> <span class="mh">0x68</span><span class="p">;</span>           <span class="c1">// the I2C address of the redox sensor</span>
+<span class="c1">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>
+<span class="c1">// for Additional Serial Ports&quot; section</span>
+<span class="kr">const</span> <span class="kr">int32_t</span> <span class="n">modemBaud</span> <span class="o">=</span>
+    <span class="mi">9600</span><span class="p">;</span>  <span class="c1">//  SIM7080 does auto-bauding by default, but I set mine to 9600</span>
 
-<span class="c1">// Create the PaleoTerra sensor object</span>
-<span class="cp">#ifdef MS_PALEOTERRA_SOFTWAREWIRE</span>
-<span class="n">PaleoTerraRedox</span> <span class="nf">ptRedox</span><span class="p">(</span><span class="o">&amp;</span><span class="n">softI2C</span><span class="p">,</span> <span class="n">paleoTerraPower</span><span class="p">,</span> <span class="n">paleoI2CAddress</span><span class="p">);</span>
-<span class="c1">// PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,</span>
-<span class="c1">// paleoI2CAddress);</span>
-<span class="cp">#else</span>
-<span class="n">PaleoTerraRedox</span> <span class="nf">ptRedox</span><span class="p">(</span><span class="n">paleoTerraPower</span><span class="p">,</span> <span class="n">paleoI2CAddress</span><span class="p">);</span>
-<span class="cp">#endif</span>
+<span class="c1">// Modem Pins - Describe the physical pin connection of your modem to your board</span>
+<span class="c1">// NOTE:  Use -1 for pins that do not apply</span>
+<span class="c1">// and-global breakout bk-7080a</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemVccPin</span>     <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// MCU pin controlling modem power</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemStatusPin</span>  <span class="o">=</span> <span class="mi">19</span><span class="p">;</span>  <span class="c1">// MCU pin used to read modem status</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemSleepRqPin</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>  <span class="c1">// MCU pin for modem sleep/wake request</span>
+<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemLEDPin</span> <span class="o">=</span> <span class="n">redLED</span><span class="p">;</span>  <span class="c1">// MCU pin connected an LED to show modem</span>
+                                    <span class="c1">// status</span>
 
-<span class="c1">// Create the voltage variable for the redox sensor</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ptVolt</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">PaleoTerraRedox_Volt</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ptRedox</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="c1">// Network connection information</span>
+<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">apn</span> <span class="o">=</span> <span class="s">&quot;xxxxx&quot;</span><span class="p">;</span>  <span class="c1">// APN for GPRS connection</span>
+
+<span class="c1">// Create the modem object</span>
+<span class="n">SIMComSIM7080</span> <span class="nf">modem7080</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span> <span class="n">modemVccPin</span><span class="p">,</span> <span class="n">modemStatusPin</span><span class="p">,</span>
+                        <span class="n">modemSleepRqPin</span><span class="p">,</span> <span class="n">apn</span><span class="p">);</span>
+<span class="c1">// Create an extra reference to the modem by a generic name</span>
+<span class="n">SIMComSIM7080</span> <span class="n">modem</span> <span class="o">=</span> <span class="n">modem7080</span><span class="p">;</span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
             <dt>
-              class <a href="class_paleo_terra_redox.html" class="m-doc">PaleoTerraRedox</a>
+              class <a href="class_s_i_m_com_s_i_m7080.html" class="m-doc">SIMComSIM7080</a>
             </dt>
-            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__pt__redox.html" class="m-doc">PaleoTerra redox sensor</a>.</dd>
-            <dt>
-              class <a href="class_paleo_terra_redox___volt.html" class="m-doc">PaleoTerraRedox_Volt</a>
-            </dt>
-            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__pt__redox.html#sensor_pt_redox_volt" class="m-doc">voltage output</a> from a PaleoTerra redox sensor.</dd>
+            <dd>The <a href="classlogger_modem.html" class="m-doc">loggerModem</a> subclass for modules based on the <a href="group__modem__sim7080.html" class="m-doc">SIMCOM</a>SIM7080&quot;.</dd>
           </dl>
         </section>
         <section id="define-members">
           <h2>Defines</h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga4a559652f9d994b02d2e8db64a52dd40" class="m-doc">PTR_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf02e0fa140c8ab430b8949cf671f7cd1" class="m-doc">TINY_GSM_MODEM_SIM7080</a></span>
             </dt>
-            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the PaleoTerra redox sensor can report 1 value.</dd>
+            <dd>The modem type for the underlying TinyGSM library.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga2c3bf440e1d303158bd6b040a0f5b6e8" class="m-doc">MCP3421_ADR</a><span class="m-dim m-right-m m-text-right"> = 0x68</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac2e781477e4756c1967121b0c6609ee6" class="m-doc">SIM7080_STATUS_LEVEL</a><span class="m-dim m-right-m m-text-right"> = HIGH</span></span>
             </dt>
-            <dd>The default I2C address of the PaleoTerra redox sensor.</dd>
+            <dd>The <a href="classlogger_modem.html#af44caee8dd6acf7c72cd1271441a41cb" class="m-doc">loggerModem::<wbr />_statusLevel</a>.</dd>
 
-
-          </dl>
-        </section>
-        <section id="sensor-timing">
-          <h2>Sensor Timing</h2>
-<p><a name="sensor_pt_redox_timing"></a> The sensor timing for a PaleoTerra redox probe</p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaec7fb48a0b95a3270b4622b2f0b1fef8" class="m-doc">PTR_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the PaleoTerra redox sensor is immediately warmed up.</dd>
-
+              <dd><p>Status of the SIM7080G should be monitored on the <code>STATUS</code> pin, which is at a high level when the module has powered on and the firmware goes ready.</p><p>Time after start of pulse until status pin becomes active is &gt;1.8sec.</p></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga9c2387901df65ba49542878b3c71ef0b" class="m-doc">PTR_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga06a39c9db1fc35a8c1289b65230060d3" class="m-doc">SIM7080_STATUS_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 1800L</span></span>
             </dt>
-            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the PaleoTerra redox sensor is immediately stable.</dd>
+            <dd>The <a href="classlogger_modem.html#a755d93cb67e9184a7cdfeae17448667b" class="m-doc">loggerModem::<wbr />_statusTime_ms</a>.</dd>
 
+              <dd><p>Status of the SIM7080G should be monitored on the <code>STATUS</code> pin, which is at a high level when the module has powered on and the firmware goes ready.</p><p>Time after start of pulse until status pin becomes active is &gt;1.8sec.</p></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga2a8fab23c9ec229c88e0751d9c466de0" class="m-doc">PTR_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 67</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga5afe716f5223ed572f5184ce73e5d5ab" class="m-doc">SIM7080_RESET_LEVEL</a><span class="m-dim m-right-m m-text-right"> = LOW</span></span>
             </dt>
-            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the PaleoTerra redox sensor takes 67ms to complete a measurement.</dd>
+            <dd>The <a href="classlogger_modem.html#a4832f4560020f57bfb2e11ddade73d0a" class="m-doc">loggerModem::<wbr />_resetLevel</a>.</dd>
 
-
-          </dl>
-        </section>
-        <section id="voltage">
-          <h2>Voltage</h2>
-<p><a name="sensor_pt_redox_volt"></a> The voltage variable from a PaleoTerra redox probe</p><ul><li>Accuracy is ±5mV</li></ul><p>{{ <a href="class_paleo_terra_redox___volt.html#a37434c419692957ca05eaf205958df84" class="m-doc">PaleoTerraRedox_Volt::<wbr />PaleoTerraRedox_Volt</a> }}</p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga90ceabb71f1ffed8830a39ee9e1f3665" class="m-doc">PTR_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd>Decimals places in string representation; voltage should have 2.</dd>
-
-              <dd><p>Resolution is 1mV and 1 extra digit is added to increase the number of significant figures to allow for averaging of multiple measurements.</p></dd>
+              <dd><p>The SIM7080G is reset using the <code>PWRKEY</code> <strong>NOT</strong> a separate <code>RESET</code> pin!</p><p>To reset the module, the <code>PWRKEY</code> is held low for 12.6s.</p></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gab9ed9f5da368f0ac841ba409c6145265" class="m-doc">PTR_VOLTAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga2248dde69285d85ce0c26d9004497337" class="m-doc">SIM7080_RESET_PULSE_MS</a><span class="m-dim m-right-m m-text-right"> = 12600L</span></span>
             </dt>
-            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; voltage is stored in sensorValues[0].</dd>
+            <dd>The <a href="classlogger_modem.html#a9ee81f2d0dd9e5cdf89e8e469147c38c" class="m-doc">loggerModem::<wbr />_resetPulse_ms</a>.</dd>
 
+              <dd><p>The SIM7080G is reset using the <code>PWRKEY</code> <strong>NOT</strong> a separate <code>RESET</code> pin!</p><p>To reset the module, the <code>PWRKEY</code> is held low for 12.6s.</p></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaabffa24a980d6d037bbf905b8f9bd0f3" class="m-doc">PTR_VOLTAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "Voltage"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga61b89ca07e95166337d3525f63ecb669" class="m-doc">SIM7080_WAKE_LEVEL</a><span class="m-dim m-right-m m-text-right"> = LOW</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;Voltage&quot;.</dd>
+            <dd>The <a href="classlogger_modem.html#a71c42d58d22d8481e6e6f7e5b7d8f0bf" class="m-doc">loggerModem::<wbr />_wakeLevel</a>.</dd>
 
+              <dd><p>The SIM7080G Module is switched on by a &gt;1 second <code>LOW</code> pulse on the <code>PWRKEY</code> pin.</p><aside class="m-note m-info"><h4>Note</h4><p>Module is switched OFF by a &gt;1.2 second <code>LOW</code> pulse on the <code>PWRKEY</code> pin, so by using a pulse of &gt;1 but &lt;1.2 s to wake the SIM7080G and using AT commands to put it to sleep, we should always be in the correct state, but if at all possible the status pin should be monitored to confirm.</p><p>A pulse of &gt;12.6s on the <code>PWRKEY</code> resets the module.</p></aside></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaeefe513422e081f9cbdad41caa9a472d" class="m-doc">PTR_VOLTAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "millivolt"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga563df009cd1e8ceb5ac43d415b54cd99" class="m-doc">SIM7080_WAKE_PULSE_MS</a><span class="m-dim m-right-m m-text-right"> = 1100</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)</dd>
+            <dd>The <a href="classlogger_modem.html#a1b4e78a1e0963fb1cc970ce6273c124d" class="m-doc">loggerModem::<wbr />_wakePulse_ms</a>.</dd>
 
+              <dd><p>The SIM7080G Module is switched on by a &gt;1 second <code>LOW</code> pulse on the <code>PWRKEY</code> pin.</p><aside class="m-note m-info"><h4>Note</h4><p>Module is switched OFF by a &gt;1.2 second <code>LOW</code> pulse on the <code>PWRKEY</code> pin, so by using a pulse of &gt;1 but &lt;1.2 s to wake the SIM7080G and using AT commands to put it to sleep, we should always be in the correct state, but if at all possible the status pin should be monitored to confirm.</p><p>A pulse of &gt;12.6s on the <code>PWRKEY</code> resets the module.</p></aside></dd>
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gab00fec60dc84603180d3502ab69a68cf" class="m-doc">PTR_VOLTAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "PTRVoltage"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga1187df80f0a01b878df8a3a787c4d83c" class="m-doc">SIM7080_WAKE_DELAY_MS</a><span class="m-dim m-right-m m-text-right"> = 1000L</span></span>
             </dt>
-            <dd>Default variable short code; &quot;PTRVoltage&quot;.</dd>
+            <dd>The <a href="classlogger_modem.html#a68051ed68b85195bf188a1914c71a9c8" class="m-doc">loggerModem::<wbr />_wakeDelayTime_ms</a>.</dd>
 
+              <dd><p>Time after power on before <code>PWRKEY</code> on SIM7080 can be used is undocumented. Using 1s.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga362abeec704f5f3943d8637bb1295aec" class="m-doc">SIM7080_ATRESPONSE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 1800</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#aa9bf26acfae6ec2611b4d7a806dd2489" class="m-doc">loggerModem::<wbr />_max_atresponse_time_ms</a>.</dd>
+
+              <dd><p>Time after end pulse until serial port on SIM7080 becomes active is &gt;1.8sec.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0c8b90fbb8cd27b2a5b075f37941d2f5" class="m-doc">SIM7080_DISCONNECT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2000L</span></span>
+            </dt>
+            <dd>The <a href="classlogger_modem.html#a32496b2b79dc9317639900a3c385405d" class="m-doc">loggerModem::<wbr />_disconnetTime_ms</a>.</dd>
+
+              <dd><p>SIM7080 power down (gracefully) takes 1.8-2 sec.</p></dd>
 
           </dl>
         </section>

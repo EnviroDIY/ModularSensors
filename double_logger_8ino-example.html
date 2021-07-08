@@ -1366,6 +1366,21 @@
 <span class="cm"> * ======================================================================= */</span>
 
 <span class="c1">// ==========================================================================</span>
+<span class="c1">//  Defines for the Arduino IDE</span>
+<span class="c1">//  NOTE:  These are ONLY needed to compile with the Arduino IDE.</span>
+<span class="c1">//         If you use PlatformIO, you should set these build flags in your</span>
+<span class="c1">//         platformio.ini</span>
+<span class="c1">// ==========================================================================</span>
+<span class="cm">/** Start [defines] */</span>
+<span class="cp">#ifndef TINY_GSM_RX_BUFFER</span>
+<span class="cp">#define TINY_GSM_RX_BUFFER 64</span>
+<span class="cp">#endif</span>
+<span class="cp">#ifndef TINY_GSM_YIELD_MS</span>
+<span class="cp">#define TINY_GSM_YIELD_MS 2</span>
+<span class="cp">#endif</span>
+<span class="cm">/** End [defines] */</span>
+
+<span class="c1">// ==========================================================================</span>
 <span class="c1">//  Include the libraries required for any data logger</span>
 <span class="c1">// ==========================================================================</span>
 <span class="cm">/** Start [includes] */</span>
@@ -1376,9 +1391,8 @@
 <span class="c1">// interrupts and must be explicitly included in the main program.</span>
 <span class="cp">#include</span> <span class="cpf">&lt;EnableInterrupt.h&gt;</span><span class="cp"></span>
 
-<span class="c1">// To get all of the base classes for ModularSensors, include LoggerBase.</span>
-<span class="c1">// NOTE:  Individual sensor definitions must be included separately.</span>
-<span class="cp">#include</span> <span class="cpf">&lt;LoggerBase.h&gt;</span><span class="cp"></span>
+<span class="c1">// Include the main header for ModularSensors</span>
+<span class="cp">#include</span> <span class="cpf">&lt;ModularSensors.h&gt;</span><span class="cp"></span>
 <span class="cm">/** End [includes] */</span>
 
 
@@ -1403,7 +1417,8 @@
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">greenLED</span>   <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>       <span class="c1">// Pin for the green LED</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">redLED</span>     <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>       <span class="c1">// Pin for the red LED</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">buttonPin</span>  <span class="o">=</span> <span class="mi">21</span><span class="p">;</span>      <span class="c1">// Pin for debugging mode (ie, button pin)</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">wakePin</span>    <span class="o">=</span> <span class="n">A7</span><span class="p">;</span>  <span class="c1">// MCU interrupt/alarm pin to wake from sleep</span>
+<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">wakePin</span>    <span class="o">=</span> <span class="mi">31</span><span class="p">;</span>  <span class="c1">// MCU interrupt/alarm pin to wake from sleep</span>
+<span class="c1">// Mayfly 0.x D31 = A7</span>
 <span class="c1">// Set the wake pin to -1 if you do not want the main processor to sleep.</span>
 <span class="c1">// In a SAMD system where you are using the built-in rtc, set wakePin to 1</span>
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">sdCardPwrPin</span>   <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// MCU SD card power pin</span>

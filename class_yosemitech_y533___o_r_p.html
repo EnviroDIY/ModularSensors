@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Supported Sensors &raquo; PaleoTerra Redox module | ModularSensors</title>
+  <title>Variable &raquo; YosemitechY533_ORP class | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
   rel="stylesheet"
@@ -1275,151 +1275,171 @@
                 <div class="m-container m-container-inflatable">
                   <div class="m-row">
                     <div class="m-col-l-10 m-push-l-1">
-          <span class="m-breadcrumb">
-            <a href="index.html">
-              ModularSensors
-            </a>  &gt; <wbr/>
-          </span>
-          <span class="m-breadcrumb">
-            <a href="modules.html">
-              Modules
-            </a>  &gt; <wbr/>
-          </span>
-                    <span class="m-breadcrumb">
-          <a href="group__the__sensors.html">Supported Sensors</a> &gt; <wbr/>
-          </span>
-          <span class="m-breadcrumb">
-            PaleoTerra Redox
-          </span>
-
+        <span class="m-breadcrumb">
+          <a href="index.html">
+            ModularSensors
+          </a> &gt; <wbr/>
+        </span>
+        <span class="m-breadcrumb">
+          <a href="annotated.html">
+            Classes
+          </a> &gt; <wbr/>
+        </span>
+                <span class="m-breadcrumb">
+          <a href="class_variable.html">
+            Variable
+          </a> &gt; <wbr/>
+        </span>
+        <span class="m-breadcrumb">
+          YosemitechY533_ORP
+        </span>
+<br>
+        <span class="m-breadcrumb">
+          <a href="index.html">
+            ModularSensors
+          </a>  &gt; <wbr/>
+        </span>
+        <span class="m-breadcrumb">
+          <a href="modules.html">
+            Modules
+          </a>  &gt; <wbr/>
+        </span>
+                <span class="m-breadcrumb">
+        <a href="group__sensor__y533.html">Yosemitech Y533 ORP Sensor</a> &gt; <wbr/>
+        </span>
+        <span class="m-breadcrumb">
+          YosemitechY533_ORP
+        </span>
+<br>
         <header class="gp-entry-header">
           <h1 class="gp-entry-title" itemprop="headline">
 
-          PaleoTerra Redox <span class="m-thin">module</span>
+
+            <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="_yosemitech_y533_8h.html">&lt;sensors/YosemitechY533.h&gt;</a></div><br>
+
+            YosemitechY533_ORP
+            <span class="m-thin">class</span>
           </h1>
         </header>
+        <p>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the pH output from a <a href="group__sensor__y533.html" class="m-doc">Yosemitech Y533 ORP sensor</a>.</p>
         <div class="m-block m-default">
           <ul>
-            <li><a href="#sensor_pt_redox_intro">Introduction</a></li>
-            <li><a href="#sensor_pt_redox_datasheet">Sensor Datasheet</a></li>
-            <li><a href="#sensor_pt_redox_flags">Build flags</a></li>
-            <li><a href="#sensor_pt_redox_ctor">Sensor Constructor</a></li>
-            <li><a href="#sensor_pt_redox_examples">Example Code</a></li>
-                <li><a href="#nested-classes">Classes</a></li>
-                <li><a href="#define-members">Defines</a></li>
-                <li><a href="#sensor-timing">Sensor Timing</a></li>
-                <li><a href="#voltage">Voltage</a></li>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#base-classes">Base classes</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+              </ul>
+            </li>
+            <li>
+              Detailed Descriptions
+              <ul>
+                <li><a href="#function-details">Functions</a></li>
+              </ul>
+            </li>
           </ul>
         </div>
-          <p>Classes for the PaleoTerra Redox digital preassure sensor.</p><section id="sensor_pt_redox_intro"><h2>Introduction</h2><p>Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato&#x27;s <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> library for software I2C.</p></section><section id="sensor_pt_redox_datasheet"><h2>Sensor Datasheet</h2><p>Documentation for the sensor can be found at: <a href="https://paleoterra.nl/">https:/<wbr />/<wbr />paleoterra.nl/<wbr /></a></p></section><section id="sensor_pt_redox_flags"><h2>Build flags</h2><ul><li><code>-D MS_PALEOTERRA_SOFTWAREWIRE</code><ul><li><p>switches from using hardware I2C to software I2C</p><aside class="m-note m-danger"><h4>Warning</h4><p>Either all or none of your attached redox probes may use software I2C. Using some with software I2C and others with hardware I2C is not supported.</p></aside></li></ul></li></ul></section><section id="sensor_pt_redox_ctor"><h2>Sensor Constructor</h2><p>{{ <a href="class_paleo_terra_redox.html#aa5116034ef3849b7372dd503dc01c682" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#a9cda3d90f1e4a10185d09abae9fa0f0c" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(TwoWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#af1151b8ebe2e040f577179e4d0706412" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(SoftwareWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_paleo_terra_redox.html#a734b46e62adfcfb21d2b3738f15919d1" class="m-doc">PaleoTerraRedox::<wbr />PaleoTerraRedox(int8_t, int8_t, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_pt_redox_examples"><h2>Example Code</h2><p>The PaleoTerra Redox is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_pt_redox">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/PaleoTerraRedox.h&gt;</span><span class="cp"></span>
 
-<span class="kr">int8_t</span> <span class="n">paleoTerraPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Pin to switch RS485 adapter power</span>
-                                          <span class="c1">// on and off (-1 if unconnected)</span>
-<span class="kr">uint8_t</span> <span class="n">paleoI2CAddress</span> <span class="o">=</span> <span class="mh">0x68</span><span class="p">;</span>           <span class="c1">// the I2C address of the redox sensor</span>
-
-<span class="c1">// Create the PaleoTerra sensor object</span>
-<span class="cp">#ifdef MS_PALEOTERRA_SOFTWAREWIRE</span>
-<span class="n">PaleoTerraRedox</span> <span class="nf">ptRedox</span><span class="p">(</span><span class="o">&amp;</span><span class="n">softI2C</span><span class="p">,</span> <span class="n">paleoTerraPower</span><span class="p">,</span> <span class="n">paleoI2CAddress</span><span class="p">);</span>
-<span class="c1">// PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL,</span>
-<span class="c1">// paleoI2CAddress);</span>
-<span class="cp">#else</span>
-<span class="n">PaleoTerraRedox</span> <span class="nf">ptRedox</span><span class="p">(</span><span class="n">paleoTerraPower</span><span class="p">,</span> <span class="n">paleoI2CAddress</span><span class="p">);</span>
-<span class="cp">#endif</span>
-
-<span class="c1">// Create the voltage variable for the redox sensor</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ptVolt</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">PaleoTerraRedox_Volt</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ptRedox</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
-        <section id="nested-classes">
-          <h2>Classes</h2>
+        <section id="base-classes">
+          <h2>Base classes</h2>
           <dl class="m-doc">
-            <dt>
-              class <a href="class_paleo_terra_redox.html" class="m-doc">PaleoTerraRedox</a>
+                          <dt>
+              class <a href="class_variable.html" class="m-doc">Variable</a>
             </dt>
-            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__pt__redox.html" class="m-doc">PaleoTerra redox sensor</a>.</dd>
-            <dt>
-              class <a href="class_paleo_terra_redox___volt.html" class="m-doc">PaleoTerraRedox_Volt</a>
-            </dt>
-            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__pt__redox.html#sensor_pt_redox_volt" class="m-doc">voltage output</a> from a PaleoTerra redox sensor.</dd>
+            <dd>The variable class for a value and related metadata.</dd>
           </dl>
         </section>
-        <section id="define-members">
-          <h2>Defines</h2>
+        <hr>
+
+
+
+
+
+        <section id="typeless-methods">
+          <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga4a559652f9d994b02d2e8db64a52dd40" class="m-doc">PTR_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#aa45c020443a2d046fd4cb5f1c9123eb1" class="m-doc">YosemitechY533_ORP</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_yosemitech_y533.html" class="m-doc">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = &quot;&quot;</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a href="group__sensor__y533.html#ga85c00fb1501af7983bdb82eec191a79f" class="m-doc">Y533_<wbr />ORP_<wbr />DEFAULT_<wbr />CODE</a></span>) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
-            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the PaleoTerra redox sensor can report 1 value.</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga2c3bf440e1d303158bd6b040a0f5b6e8" class="m-doc">MCP3421_ADR</a><span class="m-dim m-right-m m-text-right"> = 0x68</span></span>
+            <dd>Construct a new YosemitechY533_pH object.</dd>
+                          <dt>
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a13ce0fa7749770153dfb728b442b5290" class="m-doc">YosemitechY533_ORP</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>The default I2C address of the PaleoTerra redox sensor.</dd>
-
-
+            <dd>Construct a new <a href="class_yosemitech_y533___o_r_p.html" class="m-doc">YosemitechY533_<wbr />ORP</a> object.</dd>
+                          <dt id="a1ac656bca8314d933bc492c8c75ccdb1">
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a1ac656bca8314d933bc492c8c75ccdb1" class="m-doc-self">~YosemitechY533_ORP</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>Destroy the <a href="class_yosemitech_y533___o_r_p.html" class="m-doc">YosemitechY533_<wbr />ORP</a> object - no action needed.</dd>
           </dl>
         </section>
-        <section id="sensor-timing">
-          <h2>Sensor Timing</h2>
-<p><a name="sensor_pt_redox_timing"></a> The sensor timing for a PaleoTerra redox probe</p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaec7fb48a0b95a3270b4622b2f0b1fef8" class="m-doc">PTR_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the PaleoTerra redox sensor is immediately warmed up.</dd>
+        <hr>
 
 
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga9c2387901df65ba49542878b3c71ef0b" class="m-doc">PTR_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the PaleoTerra redox sensor is immediately stable.</dd>
 
 
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga2a8fab23c9ec229c88e0751d9c466de0" class="m-doc">PTR_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 67</span></span>
-            </dt>
-            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the PaleoTerra redox sensor takes 67ms to complete a measurement.</dd>
 
 
-          </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+        <section id="function-details">
+          <h2>Function documentation</h2>
+                      <section class="m-doc-details" id="aa45c020443a2d046fd4cb5f1c9123eb1"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa45c020443a2d046fd4cb5f1c9123eb1" class="m-doc-self">YosemitechY533_ORP</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a href="class_yosemitech_y533.html" class="m-doc">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = &quot;&quot;</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a href="group__sensor__y533.html#ga85c00fb1501af7983bdb82eec191a79f" class="m-doc">Y533_<wbr />ORP_<wbr />DEFAULT_<wbr />CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+            </h3>
+            <p>Construct a new YosemitechY533_pH object.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">parentSense</span></td>
+                  <td>The parent <a href="class_yosemitech_y533.html" class="m-doc">YosemitechY533</a> providing the result values.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">uuid</span></td>
+                  <td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">varCode</span></td>
+                  <td>A short code to help identify the variable in files; optional with a default value of &quot;Y533pH&quot;.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
         </section>
-        <section id="voltage">
-          <h2>Voltage</h2>
-<p><a name="sensor_pt_redox_volt"></a> The voltage variable from a PaleoTerra redox probe</p><ul><li>Accuracy is ±5mV</li></ul><p>{{ <a href="class_paleo_terra_redox___volt.html#a37434c419692957ca05eaf205958df84" class="m-doc">PaleoTerraRedox_Volt::<wbr />PaleoTerraRedox_Volt</a> }}</p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga90ceabb71f1ffed8830a39ee9e1f3665" class="m-doc">PTR_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd>Decimals places in string representation; voltage should have 2.</dd>
+                      <section class="m-doc-details" id="a13ce0fa7749770153dfb728b442b5290"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a13ce0fa7749770153dfb728b442b5290" class="m-doc-self">YosemitechY533_ORP</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>Construct a new <a href="class_yosemitech_y533___o_r_p.html" class="m-doc">YosemitechY533_<wbr />ORP</a> object.</p>
+            <aside class="m-note m-info"><h4>Note</h4><p>This must be tied with a parent <a href="class_yosemitech_y533.html" class="m-doc">YosemitechY533</a> before it can be used.</p></aside>
 
-              <dd><p>Resolution is 1mV and 1 extra digit is added to increase the number of significant figures to allow for averaging of multiple measurements.</p></dd>
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gab9ed9f5da368f0ac841ba409c6145265" class="m-doc">PTR_VOLTAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
-            </dt>
-            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; voltage is stored in sensorValues[0].</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaabffa24a980d6d037bbf905b8f9bd0f3" class="m-doc">PTR_VOLTAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "Voltage"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;Voltage&quot;.</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaeefe513422e081f9cbdad41caa9a472d" class="m-doc">PTR_VOLTAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "millivolt"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gab00fec60dc84603180d3502ab69a68cf" class="m-doc">PTR_VOLTAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "PTRVoltage"</span></span>
-            </dt>
-            <dd>Default variable short code; &quot;PTRVoltage&quot;.</dd>
-
-
-          </dl>
+            <hr>
+          </div>
         </section>
+        </section>
+        <hr>
+
+
+
 
                     </div>
                   </div>

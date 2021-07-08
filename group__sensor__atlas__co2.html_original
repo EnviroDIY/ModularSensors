@@ -1304,7 +1304,6 @@
         <div class="m-block m-default">
           <ul>
             <li><a href="#sensor_atlas_co2_datasheet">Sensor Datasheet</a></li>
-            <li><a href="#sensor_atlas_co2_flags">Build flags</a></li>
             <li><a href="#sensor_atlas_co2_ctor">Sensor Constructors</a></li>
             <li><a href="#sensor_atlas_co2_examples">Example Code</a></li>
                 <li><a href="#nested-classes">Classes</a></li>
@@ -1314,7 +1313,7 @@
                 <li><a href="#temperature">Temperature</a></li>
           </ul>
         </div>
-          <p>Classes for the Atlas Scientific EZO-CO2 embedded NDIR CO2 circuit and sensor.</p><section id="sensor_atlas_co2_datasheet"><h2>Sensor Datasheet</h2><p>Documentation on the CO2 circuit and probe is available here: <a href="https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />probes/<wbr />ezo-co2-carbon-dioxide-sensor/<wbr /></a></p><aside class="m-note m-info"><h4>Note</h4><p>This has a long (10s) stabilization time!</p><p>According to the probe datasheet, the temperature measurement is only intended to be used to verify that the sensor is in equilibrium with its surroundings.</p></aside></section><section id="sensor_atlas_co2_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__atlas__group.html#atlas_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_atlas_co2_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_atlas_scientific_c_o2.html#a85a5307e88e1fe35eb3f62dec962a5df" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_c_o2.html#a6fbd3776802312f37c14d49bb88c527f" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(TwoWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_c_o2.html#a6154d58cf232b0270d5c36928b659679" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(SoftwareWire*, int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_c_o2.html#a358239524a0ee25fc9bd47c0814cfb50" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(int8_t, int8_t, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_atlas_co2_examples"><h2>Example Code</h2><p>The Atlas CO2 sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_co2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AtlasScientificCO2.h&gt;</span><span class="cp"></span>
+          <p>Classes for the Atlas Scientific EZO-CO2 embedded NDIR CO2 circuit and sensor.</p><section id="sensor_atlas_co2_datasheet"><h2>Sensor Datasheet</h2><p>Documentation on the CO2 circuit and probe is available here: <a href="https://www.atlas-scientific.com/probes/ezo-co2-carbon-dioxide-sensor/">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />probes/<wbr />ezo-co2-carbon-dioxide-sensor/<wbr /></a></p><aside class="m-note m-info"><h4>Note</h4><p>This has a long (10s) stabilization time!</p><p>According to the probe datasheet, the temperature measurement is only intended to be used to verify that the sensor is in equilibrium with its surroundings.</p></aside></section><section id="sensor_atlas_co2_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_atlas_scientific_c_o2.html#a85a5307e88e1fe35eb3f62dec962a5df" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientific_c_o2.html#a6fbd3776802312f37c14d49bb88c527f" class="m-doc">AtlasScientificCO2::<wbr />AtlasScientificCO2(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_atlas_co2_examples"><h2>Example Code</h2><p>The Atlas CO2 sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_co2">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AtlasScientificCO2.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">AtlasCO2Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
 <span class="kr">uint8_t</span>      <span class="n">AtlasCO2i2c_addr</span> <span class="o">=</span> <span class="mh">0x69</span><span class="p">;</span>  <span class="c1">// Default for CO2-EZO is 0x69 (105)</span>
@@ -1323,14 +1322,8 @@
 <span class="c1">// Atlas Scientific sensor, you may omit this argument.</span>
 
 <span class="c1">// Create an Atlas Scientific CO2 sensor object</span>
-<span class="cp">#ifdef MS_ATLAS_SOFTWAREWIRE</span>
-<span class="c1">// AtlasScientificCO2 atlasCO2(AtlasCO2Power, softwareSDA, softwareSCL,</span>
-<span class="c1">//                             AtlasCO2i2c_addr);</span>
-<span class="n">AtlasScientificCO2</span> <span class="nf">atlasCO2</span><span class="p">(</span><span class="o">&amp;</span><span class="n">softI2C</span><span class="p">,</span> <span class="n">AtlasCO2Power</span><span class="p">,</span> <span class="n">AtlasCO2i2c_addr</span><span class="p">);</span>
-<span class="cp">#else</span>
 <span class="c1">// AtlasScientificCO2 atlasCO2(AtlasCO2Power, AtlasCO2i2c_addr);</span>
 <span class="n">AtlasScientificCO2</span> <span class="nf">atlasCO2</span><span class="p">(</span><span class="n">AtlasCO2Power</span><span class="p">);</span>
-<span class="cp">#endif</span>
 
 <span class="c1">// Create concentration and temperature variable pointers for the EZO-CO2</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">atlasCO2CO2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtlasScientificCO2_CO2</span><span class="p">(</span>

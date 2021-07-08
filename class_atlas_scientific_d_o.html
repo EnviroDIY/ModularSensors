@@ -1365,21 +1365,6 @@
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a19bf951fd4b99c40357f7f0ba68d45c4" class="m-doc">AtlasScientificDO</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a href="_atlas_scientific_d_o_8h.html#a84a99bcf95ae4aeabe852f64c5ace301" class="m-doc">ATLAS_<wbr />DO_<wbr />I2C_<wbr />ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
-            </dt>
-            <dd>Construct a new Atlas Scientific DO object using a <em>software</em> I2C instance.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a31739f17e2beb326c84bade9d91acea2" class="m-doc">AtlasScientificDO</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a href="_atlas_scientific_d_o_8h.html#a84a99bcf95ae4aeabe852f64c5ace301" class="m-doc">ATLAS_<wbr />DO_<wbr />I2C_<wbr />ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
-            </dt>
-            <dd>Construct a new Atlas Scientific DO object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</dd>
-                          <dt>
               <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#abf4b7028df4d562f2306273cf5078e35" class="m-doc">AtlasScientificDO</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a href="_atlas_scientific_d_o_8h.html#a84a99bcf95ae4aeabe852f64c5ace301" class="m-doc">ATLAS_<wbr />DO_<wbr />I2C_<wbr />ADDR</a></span>,
@@ -1429,83 +1414,6 @@
 
         <section id="function-details">
           <h2>Function documentation</h2>
-                      <section class="m-doc-details" id="a19bf951fd4b99c40357f7f0ba68d45c4"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a19bf951fd4b99c40357f7f0ba68d45c4" class="m-doc-self">AtlasScientificDO</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a href="_atlas_scientific_d_o_8h.html#a84a99bcf95ae4aeabe852f64c5ace301" class="m-doc">ATLAS_<wbr />DO_<wbr />I2C_<wbr />ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
-            </h3>
-            <p>Construct a new Atlas Scientific DO object using a <em>software</em> I2C instance.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">theI2C</span></td>
-                  <td>A <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> instance for I2C communication.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">powerPin</span></td>
-                  <td><p>The pin on the mcu controlling powering to the Atlas DO circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">i2cAddressHex</span></td>
-                  <td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x61.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
-                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
-                </tr>
-              </tbody>
-            </table>
-            <aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a31739f17e2beb326c84bade9d91acea2"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a31739f17e2beb326c84bade9d91acea2" class="m-doc-self">AtlasScientificDO</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a href="_atlas_scientific_d_o_8h.html#a84a99bcf95ae4aeabe852f64c5ace301" class="m-doc">ATLAS_<wbr />DO_<wbr />I2C_<wbr />ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
-            </h3>
-            <p>Construct a new Atlas Scientific DO object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">powerPin</span></td>
-                  <td><p>The pin on the mcu controlling powering to the Atlas DO circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">dataPin</span></td>
-                  <td>The pin on the mcu that will be used for I2C data (SDA). Must be a valid pin number.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">clockPin</span></td>
-                  <td>The pin on the mcu that will be used for the I2C clock (SCL). Must be a valid pin number.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">i2cAddressHex</span></td>
-                  <td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x61.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
-                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>Currently only <a href="https://github.com/Testato/SoftwareWire">Testato&#x27;s SoftwareWire</a> is supported.</p><aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside><aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
-
-            <hr>
-          </div>
-        </section>
                       <section class="m-doc-details" id="abf4b7028df4d562f2306273cf5078e35"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abf4b7028df4d562f2306273cf5078e35" class="m-doc-self">AtlasScientificDO</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,

@@ -1311,7 +1311,6 @@
                 <li><a href="#sensor-timing">Sensor Timing</a></li>
                 <li><a href="#ph">pH</a></li>
                 <li><a href="#temperature">Temperature</a></li>
-                <li><a href="#voltage">Voltage</a></li>
           </ul>
         </div>
           <p>Classes for the Yosemitech Y533 oxidation/reduction potential (ORP) sensor.</p><section id="sensor_y533_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf">Manual</a></li><li><a href="https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf">Modbus Instructions</a></li></ul><aside class="m-note m-info"><h4>Note</h4><p>The reported resolution (32 bit) gives far more precision than is significant based on the specified accuracy of the sensor, so the resolutions kept in the string representation of the variable values is based on the accuracy not the maximum reported resolution of the sensor.</p></aside></section><section id="sensor_y533_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a8b3445ffffadbe24ce765136f238b8e9"><div>
@@ -1368,19 +1367,16 @@
                                                   <span class="c1">// (-1 if unconnected)</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">y533SensorPower</span> <span class="o">=</span> <span class="n">A3</span><span class="p">;</span>               <span class="c1">// Sensor power pin</span>
 <span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">y533EnablePin</span>   <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>  <span class="c1">// Adapter RE/DE pin (-1 if not applicable)</span>
-<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">y533NumberReadings</span> <span class="o">=</span>
-    <span class="mi">1</span><span class="p">;</span>  <span class="c1">// The manufacturer actually doesn&#39;t mention averaging for this one</span>
+<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">y533NumberReadings</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="c1">// The manufacturer actually doesn&#39;t mention averaging for this one</span>
 
-<span class="c1">// Create a Yosemitech Y533 pH sensor object</span>
+<span class="c1">// Create a Yosemitech Y533 ORP sensor object</span>
 <span class="n">YosemitechY533</span> <span class="nf">y533</span><span class="p">(</span><span class="n">y533ModbusAddress</span><span class="p">,</span> <span class="n">modbusSerial</span><span class="p">,</span> <span class="n">y533AdapterPower</span><span class="p">,</span>
                     <span class="n">y533SensorPower</span><span class="p">,</span> <span class="n">y533EnablePin</span><span class="p">,</span> <span class="n">y533NumberReadings</span><span class="p">);</span>
 
-<span class="c1">// Create pH, electrical potential, and temperature variable pointers for the</span>
-<span class="c1">// Y533</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">y533Voltage</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">YosemitechY533_Voltage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">y533</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">y533pH</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">YosemitechY533_pH</span><span class="p">(</span><span class="o">&amp;</span><span class="n">y533</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
+<span class="c1">// Create ORP and temperature variable pointers for the Y533</span>
+<span class="n">Variable</span><span class="o">*</span> <span class="n">y533ORP</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">YosemitechY533_ORP</span><span class="p">(</span><span class="o">&amp;</span><span class="n">y533</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">y533Temp</span> <span class="o">=</span>
     <span class="k">new</span> <span class="n">YosemitechY533_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">y533</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
         <section id="nested-classes">
@@ -1391,24 +1387,20 @@
             </dt>
             <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__y533.html" class="m-doc">Yosemitech Y533 ORP sensor</a>.</dd>
             <dt>
-              class <a href="class_yosemitech_y533__p_h.html" class="m-doc">YosemitechY533_pH</a>
+              class <a href="class_yosemitech_y533___o_r_p.html" class="m-doc">YosemitechY533_ORP</a>
             </dt>
-            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y533.html#sensor_y533_ph" class="m-doc">pH output</a> from a <a href="group__sensor__y533.html" class="m-doc">Yosemitech Y533 ORP sensor</a>.</dd>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the pH output from a <a href="group__sensor__y533.html" class="m-doc">Yosemitech Y533 ORP sensor</a>.</dd>
             <dt>
               class <a href="class_yosemitech_y533___temp.html" class="m-doc">YosemitechY533_Temp</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y533.html#sensor_y533_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__y533.html" class="m-doc">Yosemitech Y533 ORP sensor</a>.</dd>
-            <dt>
-              class <a href="class_yosemitech_y533___voltage.html" class="m-doc">YosemitechY533_Voltage</a>
-            </dt>
-            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y533.html#sensor_y533_volt" class="m-doc">electrode electrical potential output</a> from a <a href="group__sensor__y533.html" class="m-doc">Yosemitech Y533 ORP sensor</a>.</dd>
           </dl>
         </section>
         <section id="define-members">
           <h2>Defines</h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga27b357f89ce6b09f523929a24c48e3d8" class="m-doc">Y533_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga27b357f89ce6b09f523929a24c48e3d8" class="m-doc">Y533_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Y533 can report 3 values.</dd>
 
@@ -1441,13 +1433,13 @@
         </section>
         <section id="ph">
           <h2>pH</h2>
-<p><a name="sensor_y533_ph"></a> The pH variable from a Yosemitch Y533</p><ul><li>Range is 2-12 pH</li><li>Accuracy is ±0.1 pH</li></ul><p><section class="m-doc-details" id="ab6a1c1f6de1449261bfbbc0a664620a3"><div>
+<p><a name="sensor_y533_orp"></a> The ORP variable from a Yosemitch Y533</p><ul><li>Range is -999 to 999 mV</li><li>Accuracy is ±20 mV</li><li>Resolution is 1 mV</li></ul><p><section class="m-doc-details" id="aa45c020443a2d046fd4cb5f1c9123eb1"><div>
 <h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y533__p_h.html#ab6a1c1f6de1449261bfbbc0a664620a3">YosemitechY533_pH</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y533___o_r_p.html#aa45c020443a2d046fd4cb5f1c9123eb1">YosemitechY533_ORP</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
               <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y533.html#ga83c0f3f4b41786ce54a68dbe157a78c4">Y533_<wbr/>PH_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y533.html#ga85c00fb1501af7983bdb82eec191a79f">Y533_<wbr/>ORP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
 </h3>
-<p>Construct a new <a class="m-doc" href="class_yosemitech_y533__p_h.html">YosemitechY533_<wbr/>pH</a> object.</p>
+<p>Construct a new YosemitechY533_pH object.</p>
 <table class="m-table m-fullwidth m-flat">
 <thead>
 <tr><th colspan="2">Parameters</th></tr>
@@ -1472,33 +1464,33 @@
 </section></p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga9024522f69571d43a9095e125a69ca7c" class="m-doc">Y533_PH_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0b2a7c3efb21fd4009f790a618041c4a" class="m-doc">Y533_ORP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
-            <dd>Decimals places in string representation; ph should have 2 - resolution is 0.01 pH units.</dd>
+            <dd>Decimals places in string representation; ph should have 2 - resolution is 1 mV units.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga063525b584797d3e19f9dcc6294da933" class="m-doc">Y533_PH_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga43596c3cd4bc752741305cc7dc5d9e34" class="m-doc">Y533_ORP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
-            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; pH is stored in sensorValues[0].</dd>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; ORP is stored in sensorValues[0].</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaabe804ddf6aa8acf4c98d6e32f36b1ba" class="m-doc">Y533_PH_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "pH"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaf3d5836e31b3215f38e352c0f40fd607" class="m-doc">Y533_ORP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "voltage"</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;pH&quot;.</dd>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;voltage&quot; NOTE: ORP should be added to ODM2 CVs, as ORP refers to a specific measure of electron potential relative to a silver chloride reference electrode.</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga1bd8f532afd23f5c8a09e254b4b126c8" class="m-doc">Y533_PH_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "pH"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#gac963b14307daba7a3e0ae1054103df57" class="m-doc">Y533_ORP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "millivolt"</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;pH&quot; (dimensionless pH units)</dd>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)</dd>
 
 
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga83c0f3f4b41786ce54a68dbe157a78c4" class="m-doc">Y533_PH_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Y533pH"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga85c00fb1501af7983bdb82eec191a79f" class="m-doc">Y533_ORP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Y533ORP"</span></span>
             </dt>
-            <dd>Default variable short code; &quot;Y533pH&quot;.</dd>
+            <dd>Default variable short code; &quot;Y533ORP&quot;.</dd>
 
 
           </dl>
@@ -1563,70 +1555,6 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga7ff2688431f962a85eb7ba489f5fc4ee" class="m-doc">Y533_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Y533Temp"</span></span>
             </dt>
             <dd>Default variable short code; &quot;Y533Temp&quot;.</dd>
-
-
-          </dl>
-        </section>
-        <section id="voltage">
-          <h2>Voltage</h2>
-<p><a name="sensor_y533_volt"></a> The voltage variable from a Yosemitch Y533</p><ul><li>Range is -999 ~ 999 mV</li><li>Accuracy is ± 20 mV</li></ul><p><section class="m-doc-details" id="a65605a008bd3facd962a7731b540db13"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y533___voltage.html#a65605a008bd3facd962a7731b540db13">YosemitechY533_Voltage</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y533.html#gae8e74e449bbbc4f24aa9586677166965">Y533_<wbr/>VOLTAGE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
-</h3>
-<p>Construct a new <a class="m-doc" href="class_yosemitech_y533___voltage.html">YosemitechY533_<wbr/>Voltage</a> object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
-<td>The parent <a class="m-doc" href="class_yosemitech_y533.html">YosemitechY533</a> providing the result values.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">uuid</span></td>
-<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">varCode</span></td>
-<td>A short code to help identify the variable in files; optional with a default value of "Y533Potential".</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-</div>
-</section></p>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gaf41fa01dc1aa871c91f1144d202eee11" class="m-doc">Y533_VOLTAGE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
-            </dt>
-            <dd>Decimals places in string representation; voltage should have 0 - resolution is 1 mV.</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga9cf3393637b4d9ab238ecdc8301e0d88" class="m-doc">Y533_VOLTAGE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
-            </dt>
-            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; voltage is stored in sensorValues[2].</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga990ff0eb07a425f2f2979a954be9d598" class="m-doc">Y533_VOLTAGE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "voltage"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;voltage&quot;.</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#ga1fa5811b90202060386a517ca6e8dd26" class="m-doc">Y533_VOLTAGE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "millivolt"</span></span>
-            </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;millivolt&quot; (mV)</dd>
-
-
-            <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="#gae8e74e449bbbc4f24aa9586677166965" class="m-doc">Y533_VOLTAGE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Y533Potential"</span></span>
-            </dt>
-            <dd>Default variable short code; &quot;Y533Potential&quot;.</dd>
 
 
           </dl>

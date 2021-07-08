@@ -1324,7 +1324,7 @@
 <span class="c1">// RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,</span>
 <span class="c1">//                      depthPerTipEvent);</span>
 <span class="cp">#else</span>
-<span class="n">RainCounterI2C</span>    <span class="nf">tbi2c</span><span class="p">(</span><span class="n">RainCounterI2CAddress</span><span class="p">,</span> <span class="n">depthPerTipEvent</span><span class="p">);</span>
+<span class="n">RainCounterI2C</span>  <span class="nf">tbi2c</span><span class="p">(</span><span class="n">RainCounterI2CAddress</span><span class="p">,</span> <span class="n">depthPerTipEvent</span><span class="p">);</span>
 <span class="cp">#endif</span>
 
 <span class="c1">// Create number of tips and rain depth variable pointers for the tipping bucket</span>

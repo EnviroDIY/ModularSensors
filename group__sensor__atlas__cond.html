@@ -1304,7 +1304,6 @@
         <div class="m-block m-default">
           <ul>
             <li><a href="#sensor_atlas_cond_datasheet">Sensor Datasheet</a></li>
-            <li><a href="#sensor_atlas_cond_flags">Build flags</a></li>
             <li><a href="#sensor_atlas_cond_ctor">Sensor Constructors</a></li>
             <li><a href="#sensor_atlas_cond_examples">Example Code</a></li>
                 <li><a href="#nested-classes">Classes</a></li>
@@ -1316,7 +1315,7 @@
                 <li><a href="#specific-gravity">Specific Gravity</a></li>
           </ul>
         </div>
-          <p>Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.</p><p>The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS, salinity, and specific gravity</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li><li>Resolution is 3 decimal places</li></ul><aside class="m-note m-info"><h4>Note</h4><p>This library <em>DOES NOT</em> support using the built-in temperature compensation for conductivity. The returned result is conductivity, not the more typically reported specific. If you need specific conductance, you should calculate it separately, as shown in the example code below.</p></aside><section id="sensor_atlas_cond_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf">Circuit Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf">K0.1 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf">K1.0 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf">K10 Probe Datasheet</a></li></ul></section><section id="sensor_atlas_cond_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__atlas__group.html#atlas_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_atlas_cond_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="a748569772bd9404f2d75cb7606e4c023"><div>
+          <p>Classes for the Atlas Scientific EZO-EC conductivity circuit and probes.</p><p>The Atlas Scientifc Conductivity sensor outputs raw conductivity, TDS, salinity, and specific gravity</p><ul><li>Accuracy is ± 2%</li><li>Range is 0.07 − 500,000+ μS/cm</li><li>Resolution is 3 decimal places</li></ul><aside class="m-note m-info"><h4>Note</h4><p>This library <em>DOES NOT</em> support using the built-in temperature compensation for conductivity. The returned result is conductivity, not the more typically reported specific. If you need specific conductance, you should calculate it separately, as shown in the example code below.</p></aside><section id="sensor_atlas_cond_datasheet"><h2>Sensor Datasheet</h2><ul><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_EZO_Datasheet.pdf">Circuit Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_0.1_probe.pdf">K0.1 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_1.0_probe.pdf">K1.0 Probe Datasheet</a></li><li><a href="https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AtlasScientific_EC_K_10_probe.pdf">K10 Probe Datasheet</a></li></ul></section><section id="sensor_atlas_cond_ctor"><h2>Sensor Constructors</h2><p><section class="m-doc-details" id="a748569772bd9404f2d75cb7606e4c023"><div>
 <h3>
 <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c.html#a748569772bd9404f2d75cb7606e4c023">AtlasScientificEC</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga8272843bc785fe53f11877b9f2e2992d">ATLAS_<wbr/>COND_<wbr/>I2C_<wbr/>ADDR</a></span>,
@@ -1379,79 +1378,6 @@
 <aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
 <hr/>
 </div>
-</section> <section class="m-doc-details" id="a11a569c3dd278f11c4c50b77d0f00ea1"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c.html#a11a569c3dd278f11c4c50b77d0f00ea1">AtlasScientificEC</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga8272843bc785fe53f11877b9f2e2992d">ATLAS_<wbr/>COND_<wbr/>I2C_<wbr/>ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
-</h3>
-<p>Construct a new Atlas Scientific EC object using a <em>software</em> I2C instance.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">theI2C</span></td>
-<td>A <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> instance for I2C communication.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">powerPin</span></td>
-<td><p>The pin on the mcu controlling powering to the Atlas EC circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
-<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x64.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
-<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
-</tr>
-</tbody>
-</table>
-<aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
-<hr/>
-</div>
-</section> <section class="m-doc-details" id="a626cf33c06f267cad3c99fba86b70ea7"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_atlas_scientific_e_c.html#a626cf33c06f267cad3c99fba86b70ea7">AtlasScientificEC</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__atlas__cond.html#ga8272843bc785fe53f11877b9f2e2992d">ATLAS_<wbr/>COND_<wbr/>I2C_<wbr/>ADDR</a></span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
-</h3>
-<p>Construct a new Atlas Scientific EC object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">powerPin</span></td>
-<td><p>The pin on the mcu controlling powering to the Atlas EC circuit. Use -1 if it is continuously powered.</p><ul><li>Requires a 3.3V and 5V power supply</li></ul></td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">dataPin</span></td>
-<td>The pin on the mcu that will be used for I2C data (SDA). Must be a valid pin number.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">clockPin</span></td>
-<td>The pin on the mcu that will be used for the I2C clock (SCL). Must be a valid pin number.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">i2cAddressHex</span></td>
-<td>The I2C address of the Atlas circuit; optional with the Atlas-supplied default address of 0x64.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
-<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
-</tr>
-</tbody>
-</table>
-<p>Currently only <a href="https://github.com/Testato/SoftwareWire">Testato's SoftwareWire</a> is supported.</p><aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside><aside class="m-note m-danger"><h4>Warning</h4><p><strong>You must isolate the data lines of all Atlas circuits from the main I2C bus if you wish to turn off their power!</strong> If you do not isolate them from your main I2C bus and you turn off power to the circuits between measurements the I2C lines will be pulled down to ground causing the I2C bus (and thus your logger) to crash.</p></aside>
-<hr/>
-</div>
 </section></p><hr/></section><section id="sensor_atlas_cond_examples"><h2>Example Code</h2><p>The Atlas conductivity sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_ec">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AtlasScientificEC.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">AtlasECPower</span>    <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
@@ -1461,14 +1387,8 @@
 <span class="c1">// Atlas Scientific sensor, you may omit this argument.</span>
 
 <span class="c1">// Create an Atlas Scientific Conductivity sensor object</span>
-<span class="cp">#ifdef MS_ATLAS_SOFTWAREWIRE</span>
-<span class="c1">// AtlasScientificEC atlasEC(AtlasECPower, softwareSDA, softwareSCL,</span>
-<span class="c1">//                           AtlasECi2c_addr);</span>
-<span class="n">AtlasScientificEC</span> <span class="nf">atlasEC</span><span class="p">(</span><span class="o">&amp;</span><span class="n">softI2C</span><span class="p">,</span> <span class="n">AtlasECPower</span><span class="p">,</span> <span class="n">AtlasECi2c_addr</span><span class="p">);</span>
-<span class="cp">#else</span>
 <span class="c1">// AtlasScientificEC atlasEC(AtlasECPower, AtlasECi2c_addr);</span>
 <span class="n">AtlasScientificEC</span> <span class="nf">atlasEC</span><span class="p">(</span><span class="n">AtlasECPower</span><span class="p">);</span>
-<span class="cp">#endif</span>
 
 <span class="c1">// Create four variable pointers for the EZO-ES</span>
 <span class="n">Variable</span><span class="o">*</span> <span class="n">atlasCond</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtlasScientificEC_Cond</span><span class="p">(</span>

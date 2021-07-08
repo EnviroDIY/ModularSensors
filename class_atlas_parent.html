@@ -1394,31 +1394,6 @@
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a59c0b10e6d6ebd8dbb5c6409530e4eec" class="m-doc">AtlasParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">sensorName</span><span class="m-dim"> = &quot;AtlasSensor&quot;</span>,
-              <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span>
-            </dt>
-            <dd>Construct a new Atlas Parent object using a <em>software</em> I2C instance.</dd>
-                          <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a4d22b7e39c2bb473be1c49c8a90b783b" class="m-doc">AtlasParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">sensorName</span><span class="m-dim"> = &quot;AtlasSensor&quot;</span>,
-              <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span>
-            </dt>
-            <dd>Construct a new Atlas Parent object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</dd>
-                          <dt>
               <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a2c7705e06eb9231375661fc7bb31315a" class="m-doc">AtlasParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span>,
@@ -1501,14 +1476,10 @@
               <span class="m-dim">int8_t</span> <a href="#a33344d38850913415bd50aa9aad57b86" class="m-doc-self">_i2cAddressHex</a>
             </dt>
             <dd>The I2C address of the Atlas circuit.</dd>
-                          <dt id="a855063e3dcb0ca00e5e09ff0177d949d">
-              <span class="m-dim">SoftwareWire*</span> <a href="#a855063e3dcb0ca00e5e09ff0177d949d" class="m-doc-self">_i2c</a>
+                          <dt id="ad1e40584af11df89adebfbd79440d991">
+              <span class="m-dim">TwoWire*</span> <a href="#ad1e40584af11df89adebfbd79440d991" class="m-doc-self">_i2c</a>
             </dt>
-            <dd>An internal reference to the SoftwareWire instance.</dd>
-                          <dt id="ac1e28d0e5945473d5c6ccecd9ef448b1">
-              <span class="m-dim">bool</span> <a href="#ac1e28d0e5945473d5c6ccecd9ef448b1" class="m-doc-self">createdSoftwareWire</a>
-            </dt>
-            <dd>A flag denoting whether a new SoftwareWire instance was created. If it was created, it must be destroyed in the destructor to avoid a memory leak.</dd>
+            <dd>An internal reference to the hardware Wire instance.</dd>
           </dl>
         </section>
         <hr>
@@ -1522,132 +1493,6 @@
 
         <section id="function-details">
           <h2>Function documentation</h2>
-                      <section class="m-doc-details" id="a59c0b10e6d6ebd8dbb5c6409530e4eec"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a59c0b10e6d6ebd8dbb5c6409530e4eec" class="m-doc-self">AtlasParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">SoftwareWire*</span> <span class="m-param">theI2C</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">sensorName</span><span class="m-dim"> = &quot;AtlasSensor&quot;</span>,
-              <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span></span>
-            </h3>
-            <p>Construct a new Atlas Parent object using a <em>software</em> I2C instance.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">theI2C</span></td>
-                  <td>A <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> instance for I2C communication.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">powerPin</span></td>
-                  <td>The pin on the mcu controlling power to the Atlas circuit. Use -1 if it is continuously powered.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">i2cAddressHex</span></td>
-                  <td>The I2C address of the Atlas circuit</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
-                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">sensorName</span></td>
-                  <td>The name of the sensor, defaults to AtlasSensor.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">numReturnedVars</span></td>
-                  <td>The number of results returned by the sensor. Defaults to 1.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">warmUpTime_ms</span></td>
-                  <td>The time needed from the when a sensor has power until it&#x27;s ready to talk (_warmUpTime_ms).</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">stabilizationTime_ms</span></td>
-                  <td>The time needed from the when a sensor is activated until the readings are stable (_stabilizationTime_ms).</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">measurementTime_ms</span></td>
-                  <td>The time needed from the when a sensor is told to take a single reading until that reading is expected to be complete (_measurementTime_ms)</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <hr>
-          </div>
-        </section>
-                      <section class="m-doc-details" id="a4d22b7e39c2bb473be1c49c8a90b783b"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4d22b7e39c2bb473be1c49c8a90b783b" class="m-doc-self">AtlasParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
-              <span class="m-dim">int8_t</span> <span class="m-param">clockPin</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">i2cAddressHex</span>,
-              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">sensorName</span><span class="m-dim"> = &quot;AtlasSensor&quot;</span>,
-              <span class="m-dim">const uint8_t</span> <span class="m-param">numReturnedVars</span><span class="m-dim"> = 1</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 0</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 0</span>)</span></span>
-            </h3>
-            <p>Construct a new Atlas Parent object, also creating a <a href="https://github.com/Testato/SoftwareWire">SoftwareWire</a> I2C instance for communication with that object.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="m-param"  style="width: 1%"><span class="m-param">powerPin</span></td>
-                  <td>The pin on the mcu controlling power to the Atlas circuit. Use -1 if it is continuously powered.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">dataPin</span></td>
-                  <td>The pin on the mcu that will be used for I2C data (SDA). Must be a valid pin number.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">clockPin</span></td>
-                  <td>The pin on the mcu that will be used for the I2C clock (SCL). Must be a valid pin number.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">i2cAddressHex</span></td>
-                  <td>The I2C address of the Atlas circuit</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
-                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">sensorName</span></td>
-                  <td>The name of the sensor, defaults to AtlasSensor.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">numReturnedVars</span></td>
-                  <td>The number of results returned by the sensor. Defaults to 1.</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">warmUpTime_ms</span></td>
-                  <td>The time needed from the when a sensor has power until it&#x27;s ready to talk (_warmUpTime_ms).</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">stabilizationTime_ms</span></td>
-                  <td>The time needed from the when a sensor is activated until the readings are stable (_stabilizationTime_ms).</td>
-                </tr>
-                <tr>
-                  <td class="m-param" ><span class="m-param">measurementTime_ms</span></td>
-                  <td>The time needed from the when a sensor is told to take a single reading until that reading is expected to be complete (_measurementTime_ms)</td>
-                </tr>
-              </tbody>
-            </table>
-            <aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside>
-
-            <hr>
-          </div>
-        </section>
                       <section class="m-doc-details" id="a2c7705e06eb9231375661fc7bb31315a"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2c7705e06eb9231375661fc7bb31315a" class="m-doc-self">AtlasParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">TwoWire*</span> <span class="m-param">theI2C</span>,
