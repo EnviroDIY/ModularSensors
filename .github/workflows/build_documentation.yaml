@@ -42,7 +42,7 @@ jobs:
           # if nothing in the dependencies.json file has changed, then it will
           # be a "cache hit" and we can restore libraries from cache and not
           # download them.  If it has changed we have to re-download.
-          key: ${{ hashFiles('./continuous_integration/dependencies.json') }}
+          key: ${{ hashFiles('continuous_integration/dependencies.json') }}
 
       # Install *all* the dependencies!
       # We're including the dependencies just so the includes can follow in the doxygen pre-processor
