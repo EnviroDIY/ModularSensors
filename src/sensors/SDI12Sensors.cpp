@@ -471,14 +471,14 @@ bool SDI12Sensors::getResults(void) {
                 // debugging port
             } else {
                 // if we're debugging print out the non-numeric character
-#ifdef MS_SDI12SENSORS_DEBUG_DEEP
+                #ifdef MS_SDI12SENSORS_DEBUG_DEEP
                 MS_DEEP_DBG(F("    <<<"),
                             static_cast<char>(_SDI12Internal.read()));
-#else
+                #else
                 // if we're not debugging, just read the character to make sure
                 // it's removed from the buffer
                 _SDI12Internal.read();
-#endif
+                #endif
             }
             delay(10);  // 1 character ~ 7.5ms
         }
