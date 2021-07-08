@@ -133,7 +133,7 @@ bool MeterTeros11::getResults(void) {
         VWC = (4.3e-6 * (ea * ea * ea)) - (5.5e-4 * (ea * ea)) +
             (2.92e-2 * ea) - 5.3e-2;
         VWC *= 100;  // Convert to actual percent
-        MS_DBG(F("Calculated VWC:"), ea)
+        MS_DBG(F("Calculated VWC:"), ea);
         if (VWC < 0) {
             VWC = 0;
             MS_DBG(F("Setting negative VWC to 0"));
