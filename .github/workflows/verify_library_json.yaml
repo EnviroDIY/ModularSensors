@@ -9,23 +9,15 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v1.4.4
+      - name: Set up Python
+        uses: actions/setup-python@v2.2.2
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v2.1.5
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
 
-      - name: install jsonlint
-        run: npm install -g jsonlint
-
-      - name: run jsonlint
-        run: jsonlint -q library.json
+      - name: Run python script to verify library structure
+        run: python continuous_integration/validate_manifest.py

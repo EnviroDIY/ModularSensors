@@ -40,9 +40,8 @@
 // interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
 
-// To get all of the base classes for ModularSensors, include LoggerBase.
-// NOTE:  Individual sensor definitions must be included separately.
-#include <LoggerBase.h>
+// Include the main header for ModularSensors
+#include <ModularSensors.h>
 /** End [includes] */
 
 
@@ -66,7 +65,8 @@ const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t  wakePin    = A7;  // MCU interrupt/alarm pin to wake from sleep
+const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+// Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
@@ -161,17 +161,18 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
 // ==========================================================================
 //  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-/** Start [decagon_ctd] */
-#include <sensors/DecagonCTD.h>
+/** Start [hydros21] */
+#include <sensors/MeterHydros21.h>
 
-const char*   CTDSDI12address   = "1";      // The SDI-12 Address of the CTD
-const uint8_t CTDNumberReadings = 6;        // The number of readings to average
+const char*   hydrosSDI12address = "1";  // The SDI-12 Address of the Hydros 21
+const uint8_t hydrosNumberReadings = 6;  // The number of readings to average
 const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const int8_t  SDI12Data  = 7;               // The SDI12 data pin
 
-// Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
-/** End [decagon_ctd] */
+// Create a Meter Hydros 21 sensor object
+MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
+                     hydrosNumberReadings);
+/** End [hydros21] */
 
 
 // ==========================================================================
@@ -179,9 +180,9 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
+    new MeterHydros21_Cond(&hydros),
+    new MeterHydros21_Temp(&hydros),
+    new MeterHydros21_Depth(&hydros),
     new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
     new ProcessorStats_Battery(&mcuBoard),

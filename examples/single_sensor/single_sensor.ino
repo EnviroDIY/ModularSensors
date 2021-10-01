@@ -25,11 +25,8 @@
 // interrupts and must be explicitely included in the main program.
 #include <EnableInterrupt.h>
 
-// SensorBase contains the Sensor class definition
-#include <SensorBase.h>
-
-// VariableBase contains the Variable class definition
-#include <VariableBase.h>
+// Include the main header for ModularSensors
+#include <ModularSensors.h>
 /** End [includes] */
 
 // ==========================================================================
