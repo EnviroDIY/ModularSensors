@@ -347,6 +347,12 @@ class Sensor {
      * @brief Average the results of all measurements by dividing the sum of
      * all measurements by the number of measurements taken.
      */
+    void verifyAndAddMeasurementResult(uint8_t resultNumber,
+                                       int32_t resultValue);
+     /**
+      * @brief Average the results of all measurements by dividing the sum of
+      * all measurements by the number of measurements taken.
+      */
     void averageMeasurements(void);
 
     /**

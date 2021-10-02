@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ****
+## v0.30.1 (2021-10-01) Add support for TippingBucketRainCounter v0.2.0
+
+### Improvements
+- Added support for [v0.2.0](https://github.com/EnviroDIY/TippingBucketRainCounter/releases) of the [EnviroDIY/TippingBucketRainCounter](https://github.com/EnviroDIY/TippingBucketRainCounter) device firmware, which added capability to count rotations on a reed-switch anemometer and fixed a critical bug that failed to count high rainfall rates. For details, see:
+  - https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0
+
+
 ## v0.30.0 (2021-07-06) Remove support for SoftwareWire for Atlas sensors
 
 ### New Features
