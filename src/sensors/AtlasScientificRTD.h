@@ -31,14 +31,9 @@
  * Documentation on the measurement circuit is found here:
  * https://www.atlas-scientific.com/circuits/ezo-dissolved-oxygen-circuit/
  *
- * @section sensor_atlas_rtd_flags Build flags
- * @see @ref atlas_group_flags
- *
  * @section sensor_atlas_rtd_ctor Sensor Constructor
  * {{ @ref AtlasScientificRTD::AtlasScientificRTD(int8_t, uint8_t, uint8_t) }}
  * {{ @ref AtlasScientificRTD::AtlasScientificRTD(TwoWire*, int8_t, uint8_t, uint8_t) }}
- * {{ @ref AtlasScientificRTD::AtlasScientificRTD(SoftwareWire*, int8_t, uint8_t, uint8_t) }}
- * {{ @ref AtlasScientificRTD::AtlasScientificRTD(int8_t, int8_t, int8_t, uint8_t, uint8_t) }}
  *
  * ___
  * @section sensor_atlas_rtd_examples Example Code
@@ -139,75 +134,6 @@
 /* clang-format on */
 class AtlasScientificRTD : public AtlasParent {
  public:
-#if defined MS_ATLAS_SOFTWAREWIRE | defined DOXYGEN
-    /**
-     * @brief Construct a new Atlas Scientific RTD object using a *software* I2C
-     * instance.
-     *
-     * @param theI2C A [SoftwareWire](https://github.com/Testato/SoftwareWire)
-     * instance for I2C communication.
-     * @param powerPin The pin on the mcu controlling powering to the Atlas RTD
-     * (temperature) circuit.  Use -1 if it is continuously powered.
-     * - Requires a 3.3V and 5V power supply
-     * @warning **You must isolate the data lines of all Atlas circuits from the
-     * main I2C bus if you wish to turn off their power!**  If you do not
-     * isolate them from your main I2C bus and you turn off power to the
-     * circuits between measurements the I2C lines will be pulled down to ground
-     * causing the I2C bus (and thus your logger) to crash.
-     * @param i2cAddressHex The I2C address of the Atlas circuit;
-     * optional with the Atlas-supplied default address of 0x66.
-     * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor; optional with a
-     * default value of 1.
-     */
-    AtlasScientificRTD(SoftwareWire* theI2C, int8_t powerPin,
-                       uint8_t i2cAddressHex         = ATLAS_RTD_I2C_ADDR,
-                       uint8_t measurementsToAverage = 1)
-        : AtlasParent(
-              theI2C, powerPin, i2cAddressHex, measurementsToAverage,
-              "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
-              ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
-              ATLAS_RTD_MEASUREMENT_TIME_MS, ATLAS_RTD_INC_CALC_VARIABLES) {}
-    /**
-     * @brief Construct a new Atlas Scientific RTD object, also creating a
-     * [SoftwareWire](https://github.com/Testato/SoftwareWire) I2C instance for
-     * communication with that object.
-     *
-     * Currently only
-     * [Testato's SoftwareWire](https://github.com/Testato/SoftwareWire) is
-     * supported.
-     *
-     * @note Unless there are address conflicts between I2C devices, you should
-     * not create a new I2C instance.
-     *
-     * @param powerPin The pin on the mcu controlling powering to the Atlas RTD
-     * (temperature) circuit.  Use -1 if it is continuously powered.
-     * - Requires a 3.3V and 5V power supply
-     * @warning **You must isolate the data lines of all Atlas circuits from the
-     * main I2C bus if you wish to turn off their power!**  If you do not
-     * isolate them from your main I2C bus and you turn off power to the
-     * circuits between measurements the I2C lines will be pulled down to ground
-     * causing the I2C bus (and thus your logger) to crash.
-     * @param dataPin The pin on the mcu that will be used for I2C data (SDA).
-     * Must be a valid pin number.
-     * @param clockPin The pin on the mcu that will be used for the I2C clock
-     * (SCL).  Must be a valid pin number.
-     * @param i2cAddressHex The I2C address of the Atlas circuit;
-     * optional with the Atlas-supplied default address of 0x66.
-     * @param measurementsToAverage The number of measurements to take and
-     * average before giving a "final" result from the sensor; optional with a
-     * default value of 1.
-     */
-    AtlasScientificRTD(int8_t powerPin, int8_t dataPin, int8_t clockPin,
-                       uint8_t i2cAddressHex         = ATLAS_RTD_I2C_ADDR,
-                       uint8_t measurementsToAverage = 1)
-        : AtlasParent(
-              powerPin, dataPin, clockPin, i2cAddressHex, measurementsToAverage,
-              "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
-              ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
-              ATLAS_RTD_MEASUREMENT_TIME_MS, ATLAS_RTD_INC_CALC_VARIABLES) {}
-#endif
-#if !defined(MS_ATLAS_SOFTWAREWIRE) | defined DOXYGEN
     /**
      * @brief Construct a new Atlas Scientific RTD object using a secondary
      * *hardware* I2C instance.
@@ -265,7 +191,6 @@ class AtlasScientificRTD : public AtlasParent {
               "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
               ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
               ATLAS_RTD_MEASUREMENT_TIME_MS, ATLAS_RTD_INC_CALC_VARIABLES) {}
-#endif
     /**
      * @brief Destroy the Atlas Scientific RTD object
      */

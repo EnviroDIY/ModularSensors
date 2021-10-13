@@ -13,34 +13,6 @@
 
 
 // The constructors
-#if defined MS_ATLAS_SOFTWAREWIRE
-AtlasParent::AtlasParent(SoftwareWire* theI2C, int8_t powerPin,
-                         uint8_t i2cAddressHex, uint8_t measurementsToAverage,
-                         const char*   sensorName,
-                         const uint8_t totalReturnedValues,
-                         uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
-                         uint32_t measurementTime_ms, uint8_t incCalcValues)
-    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
-             stabilizationTime_ms, measurementTime_ms, powerPin, -1,
-             measurementsToAverage, incCalcValues) {
-    _i2cAddressHex      = i2cAddressHex;
-    _i2c                = theI2C;
-    createdSoftwareWire = false;
-}
-AtlasParent::AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
-                         uint8_t i2cAddressHex, uint8_t measurementsToAverage,
-                         const char*   sensorName,
-                         const uint8_t totalReturnedValues,
-                         uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
-                         uint32_t measurementTime_ms, uint8_t incCalcValues)
-    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
-             stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
-             measurementsToAverage, incCalcValues) {
-    _i2cAddressHex      = i2cAddressHex;
-    _i2c                = new SoftwareWire(dataPin, clockPin);
-    createdSoftwareWire = true;
-}
-#else
 AtlasParent::AtlasParent(TwoWire* theI2C, int8_t powerPin,
                          uint8_t i2cAddressHex, uint8_t measurementsToAverage,
                          const char*   sensorName,
@@ -64,29 +36,14 @@ AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
     _i2cAddressHex = i2cAddressHex;
     _i2c           = &Wire;
 }
-#endif
 
 
 // Destructors
-#if defined MS_ATLAS_SOFTWAREWIRE
-// If we created a new SoftwareWire instance, we need to destroy it or
-// there will be a memory leak
-AtlasParent::~AtlasParent() {
-    if (createdSoftwareWire) delete _i2c;
-}
-#else
 AtlasParent::~AtlasParent() {}
-#endif
 
 
-String      AtlasParent::getSensorLocation(void) {
-#if defined MS_ATLAS_SOFTWAREWIRE
-    String address = F("SoftwareWire");
-    if (_dataPin >= 0) address += _dataPin;
-    address += F("_0x");
-#else
+String AtlasParent::getSensorLocation(void) {
     String address = F("I2C_0x");
-#endif
     address += String(_i2cAddressHex, HEX);
     return address;
 }
@@ -183,7 +140,7 @@ bool AtlasParent::addSingleMeasurementResult(void) {
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6)) {
         // call the circuit and request 40 bytes (this may be more than we need)
-        _i2c->requestFrom((int)_i2cAddressHex, 40, 1);
+        _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40, 1);
         // the first byte is the response code, we read this separately.
         uint8_t code = _i2c->read();
 
@@ -244,7 +201,7 @@ bool AtlasParent::waitForProcessing(uint32_t timeout) {
     bool     processed = false;
     uint32_t start     = millis();
     while (!processed && millis() - start < timeout) {
-        _i2c->requestFrom((int)_i2cAddressHex, 1, 1);
+        _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 1, 1);
         uint8_t code = _i2c->read();
         if (code == 1) processed = true;
     }

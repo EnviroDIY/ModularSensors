@@ -62,7 +62,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 
 echo "\n\e[32mDownloading Soligen fork of Adafruit_ADS1X15 as a zip"
 # Soligen fork needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
-curl -L  --retry 5 --retry-delay 0 https://github.com/soligen2010/Adafruit_ADS1X15/archive/master.zip --create-dirs -o home/arduino/downloads/Adafruit_ADS1X15.zip
+curl -L  --retry 15 --retry-delay 0 https://github.com/soligen2010/Adafruit_ADS1X15/archive/master.zip --create-dirs -o home/arduino/downloads/Adafruit_ADS1X15.zip
 echo "\e[32mDecompressing Adafruit_ADS1X15\e[0m"
 unzip -q -o home/arduino/downloads/Adafruit_ADS1X15.zip -d home/arduino/downloads/
 echo "\e[32mMoving Adafruit_ADS1X15 to the libraries folder\e[0m"
@@ -95,7 +95,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install SD
 
 echo "\n\e[32mDownloading External Interrupt version of the SDI-12 library as a zip\e[0m"
 # The "external interrupt" version needs to be installed from a zip because the Arduino CLI cannot pull from a branch
-curl -L  --retry 5 --retry-delay 0 https://github.com/EnviroDIY/Arduino-SDI-12/archive/refs/heads/ExtInts.zip --create-dirs -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip
+curl -L  --retry 15 --retry-delay 0 https://github.com/EnviroDIY/Arduino-SDI-12/archive/refs/heads/ExtInts.zip --create-dirs -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip
 echo "\e[32mDecompressing EnviroDIY_SDI12_ExtInts\e[0m"
 unzip -q -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip -d home/arduino/downloads/
 echo "\e[32mMoving EnviroDIY_SDI12_ExtInts to the libraries folder\e[0m"
@@ -126,14 +126,14 @@ echo "\n\e[32mInstalling AltSoftSerial library from GitHub\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/PaulStoffregen/AltSoftSerial.git
 
 echo "\n\e[32mInstalling SoftwareWire library from GitHub\e[0m"
-arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/Testato/SoftwareWire.git
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/Testato/SoftwareWire.git#v1.5.1
 
 echo "\n\e[32mInstalling NeoSWSerial library from GitHub\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/SRGDamia1/NeoSWSerial.git
 
 echo "\n\e[32mDownloading SoftwareSerial with External Interrupts as a zip\e[0m"
 # SoftwareSerial with External Interrupts needs to be manually unzipped and moved because the CLI chokes on the library name not matching the h file
-curl -L  --retry 5 --retry-delay 0 https://github.com/EnviroDIY/SoftwareSerial_ExternalInts/archive/master.zip --create-dirs -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip
+curl -L  --retry 15 --retry-delay 0 https://github.com/EnviroDIY/SoftwareSerial_ExternalInts/archive/master.zip --create-dirs -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip
 echo "\e[32mDecompressing SoftwareSerial_ExternalInts\e[0m"
 unzip -q -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip -d home/arduino/downloads/
 echo "\e[32mMoving SoftwareSerial_ExternalInts to the libraries folder\e[0m"

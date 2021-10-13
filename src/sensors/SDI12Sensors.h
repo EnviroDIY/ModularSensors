@@ -119,6 +119,9 @@ class SDI12Sensors : public Sensor {
      * Defaults to 0.
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 0.
+     * @param extraWakeTime Any extra time needed by the sensor between the
+     * start of the break and when the sensor is ready to accept commands.  This
+     * will be between 0 and 100ms per SDI-12 protocol.
      * @param incCalcValues The number of included calculated variables from the
      * sensor, if any.  These are used for values that we would always calculate
      * for a sensor and depend only on the raw results of that single sensor;

@@ -12,25 +12,7 @@
 #include "AtlasScientificCO2.h"
 
 // Constructors
-#if defined MS_ATLAS_SOFTWAREWIRE
-AtlasScientificCO2::AtlasScientificCO2(SoftwareWire* theI2C, int8_t powerPin,
-                                       uint8_t i2cAddressHex,
-                                       uint8_t measurementsToAverage)
-    : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
-                  "AtlasScientificCO2", ATLAS_CO2_NUM_VARIABLES,
-                  ATLAS_CO2_WARM_UP_TIME_MS, ATLAS_CO2_STABILIZATION_TIME_MS,
-                  ATLAS_CO2_MEASUREMENT_TIME_MS, ATLAS_CO2_INC_CALC_VARIABLES) {
-}
-AtlasScientificCO2::AtlasScientificCO2(int8_t powerPin, int8_t dataPin,
-                                       int8_t clockPin, uint8_t i2cAddressHex,
-                                       uint8_t measurementsToAverage)
-    : AtlasParent(powerPin, dataPin, clockPin, i2cAddressHex,
-                  measurementsToAverage, "AtlasScientificCO2",
-                  ATLAS_CO2_NUM_VARIABLES, ATLAS_CO2_WARM_UP_TIME_MS,
-                  ATLAS_CO2_STABILIZATION_TIME_MS,
-                  ATLAS_CO2_MEASUREMENT_TIME_MS, ATLAS_CO2_INC_CALC_VARIABLES) {
-}
-#else
+
 AtlasScientificCO2::AtlasScientificCO2(TwoWire* theI2C, int8_t powerPin,
                                        uint8_t i2cAddressHex,
                                        uint8_t measurementsToAverage)
@@ -46,7 +28,7 @@ AtlasScientificCO2::AtlasScientificCO2(int8_t powerPin, uint8_t i2cAddressHex,
                   ATLAS_CO2_WARM_UP_TIME_MS, ATLAS_CO2_STABILIZATION_TIME_MS,
                   ATLAS_CO2_MEASUREMENT_TIME_MS, ATLAS_CO2_INC_CALC_VARIABLES) {
 }
-#endif
+
 // Destructor
 AtlasScientificCO2::~AtlasScientificCO2() {}
 

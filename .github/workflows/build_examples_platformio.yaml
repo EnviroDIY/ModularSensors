@@ -48,7 +48,7 @@ jobs:
           pip install --upgrade platformio
 
       - name: Restore or Cache PlatformIO and Libraries
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         id: cache_libraries
         with:
           path: ~/.platformio
@@ -65,7 +65,7 @@ jobs:
           sh continuous_integration/install-deps-platformio.sh
 
       # Install ModularSensors at the Global level for PlatformIO
-      - name: Install the testing version of Modular Sensors
+      - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
           pio lib -g install ${{ env.LIBRARY_INSTALL_SOURCE }}
 

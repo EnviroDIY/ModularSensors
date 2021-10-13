@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ****
 
-## v0.30.0 (2021-05-25) Add a new parameter to sensors for the number of internally calculated variables
+## v0.31.0 (TBD) Add a new parameter to sensors for the number of internally calculated variables
 
 ### New Features
 - Add a new parameter (internal variable) to the sensor base class for the number of internally calculated variables.
@@ -20,6 +20,34 @@ For the SDI-12 sensors, I'm actually using this to make sure I'm getting the num
 - Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurmentResult.
 This will allow both sensors to honor the 'non-concurrent' flag, if that is set.
 Previously, they would not have.
+
+
+## v0.30.1 (2021-10-01) Add support for TippingBucketRainCounter v0.2.0
+
+### Improvements
+- Added support for [v0.2.0](https://github.com/EnviroDIY/TippingBucketRainCounter/releases) of the [EnviroDIY/TippingBucketRainCounter](https://github.com/EnviroDIY/TippingBucketRainCounter) device firmware, which added capability to count rotations on a reed-switch anemometer and fixed a critical bug that failed to count high rainfall rates. For details, see:
+  - https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0
+
+
+## v0.30.0 (2021-07-06) Remove support for SoftwareWire for Atlas sensors
+
+### New Features
+- Added support for [Campbell ClariVUE10](https://www.campbellsci.com/clarivue10) turbidity sensor
+- **_REMOVED_** support for SoftwareWire for Atlas sensors.
+  - The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library.
+Without inheritance, the parseFloat functions used by the Atlas sensors will not work.
+As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.
+
+### Bug fixes
+- Fixed GitHub actions for pull requests
+
+### Improvements
+- Changed build flags and created a pre-commit hook for myself to update the menu build matrix
+
+## v0.29.1 (2021-07-01) [Fix YosemiTech Y533 ORP sensor outputs](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.1)
+
+### Fixed
+- Modified `YosemitechY533.h` and examples to work with updated ORP `getValues()` function in https://github.com/EnviroDIY/YosemitechModbus released with v0.2.5.
 
 ## v0.29.0 (2021-05-19) Create a ModularSensors.h
 

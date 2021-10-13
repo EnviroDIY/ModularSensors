@@ -309,7 +309,7 @@ class MeterHydros21_Cond : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature Output](@ref sensor_hydros21_temp) from a
+ * [temperature output](@ref sensor_hydros21_temp) from a
  * [Meter Hydros 21 3-in-1 water level sensor.](@ref sensor_hydros21)
  *
  * @ingroup sensor_hydros21

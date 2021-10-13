@@ -81,8 +81,8 @@ pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
 echo "\e[32mInstalling https://github.com/SRGDamia1/NeoSWSerial.git\e[0m"
 pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
 
-echo "\e[32mInstalling https://github.com/Testato/SoftwareWire.git\e[0m"
-pio lib -g install https://github.com/Testato/SoftwareWire.git
+echo "\e[32mInstalling https://github.com/Testato/SoftwareWire.git#v1.5.1\e[0m"
+pio lib -g install https://github.com/Testato/SoftwareWire.git#v1.5.1
 
 echo "\e[32m\nCurrently installed libraries:\e[0m"
 pio lib -g list

@@ -297,7 +297,7 @@ class DecagonCTD_Cond : public Variable {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature Output](@ref sensor_decagon_ctd_temp) from a
+ * [temperature output](@ref sensor_decagon_ctd_temp) from a
  * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagonCTD)
  *
  * @ingroup sensor_decagonCTD
