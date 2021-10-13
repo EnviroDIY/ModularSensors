@@ -1345,24 +1345,24 @@
 <aside class="m-note m-info"><h4>Note</h4><p>Neither secondary hardware nor software I2C is supported for the MS5803. Only the primary hardware I2C defined in the Arduino core can be used.</p></aside><aside class="m-note m-info"><h4>Note</h4><p>Use "1" for the 1.1 bar module and "2" for the 1.3 bar module.</p></aside>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_ms5803_examples"><h2>Example Code</h2><p>The Measurement Specialties MS5803 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ms5803">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MeaSpecMS5803.h&gt;</span><span class="cp"></span>
+</section></p><hr/></section><section id="sensor_ms5803_examples"><h2>Example Code</h2><p>The Measurement Specialties MS5803 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ms5803">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/MeaSpecMS5803.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">MS5803Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">MS5803i2c_addr</span> <span class="o">=</span>
-    <span class="mh">0x76</span><span class="p">;</span>  <span class="c1">// The MS5803 can be addressed either as 0x76 (default) or 0x77</span>
-<span class="kr">const</span> <span class="kr">int16_t</span> <span class="n">MS5803maxPressure</span> <span class="o">=</span>
-    <span class="mi">14</span><span class="p">;</span>  <span class="c1">// The maximum pressure measurable by the specific MS5803 model</span>
-<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">MS5803ReadingsToAvg</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">MS5803Power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">MS5803i2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="mh">0x76</span><span class="p">;</span><span class="w">  </span><span class="c1">// The MS5803 can be addressed either as 0x76 (default) or 0x77</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int16_t</span><span class="w"> </span><span class="n">MS5803maxPressure</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="mi">14</span><span class="p">;</span><span class="w">  </span><span class="c1">// The maximum pressure measurable by the specific MS5803 model</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">MS5803ReadingsToAvg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// Create a MeaSpec MS5803 pressure and temperature sensor object</span>
-<span class="n">MeaSpecMS5803</span> <span class="nf">ms5803</span><span class="p">(</span><span class="n">MS5803Power</span><span class="p">,</span> <span class="n">MS5803i2c_addr</span><span class="p">,</span> <span class="n">MS5803maxPressure</span><span class="p">,</span>
-                     <span class="n">MS5803ReadingsToAvg</span><span class="p">);</span>
+<span class="n">MeaSpecMS5803</span><span class="w"> </span><span class="nf">ms5803</span><span class="p">(</span><span class="n">MS5803Power</span><span class="p">,</span><span class="w"> </span><span class="n">MS5803i2c_addr</span><span class="p">,</span><span class="w"> </span><span class="n">MS5803maxPressure</span><span class="p">,</span><span class="w"></span>
+<span class="w">                     </span><span class="n">MS5803ReadingsToAvg</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create pressure and temperature variable pointers for the MS5803</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ms5803Press</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">MeaSpecMS5803_Pressure</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ms5803</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ms5803Temp</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">MeaSpecMS5803_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ms5803</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">ms5803Press</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">MeaSpecMS5803_Pressure</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ms5803</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">ms5803Temp</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">MeaSpecMS5803_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ms5803</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">

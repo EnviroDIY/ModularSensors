@@ -1328,14 +1328,14 @@
 </table>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_ds3231_examples"><h2>Example Code</h2><p>The Maxim DS3231 RTC is used in nearly all of the examples, including the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ds3231">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/MaximDS3231.h&gt;</span><span class="cp"></span>
+</section></p><hr/></section><section id="sensor_ds3231_examples"><h2>Example Code</h2><p>The Maxim DS3231 RTC is used in nearly all of the examples, including the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ds3231">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/MaximDS3231.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a DS3231 sensor object</span>
-<span class="n">MaximDS3231</span> <span class="nf">ds3231</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">MaximDS3231</span><span class="w"> </span><span class="nf">ds3231</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create a temperature variable pointer for the DS3231</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">ds3231Temp</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">ds3231Temp</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">

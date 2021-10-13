@@ -1425,26 +1425,26 @@
 <aside class="m-note m-info"><h4>Note</h4><p>Unless there are address conflicts between I2C devices, you should not create a new I2C instance.</p></aside>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_i2c_rain_examples"><h2>Example Code</h2><p>The Arduino-based I2C tipping bucket rain counter is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_i2c_rain">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/RainCounterI2C.h&gt;</span><span class="cp"></span>
+</section></p><hr/></section><section id="sensor_i2c_rain_examples"><h2>Example Code</h2><p>The Arduino-based I2C tipping bucket rain counter is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_i2c_rain">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/RainCounterI2C.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">uint8_t</span> <span class="n">RainCounterI2CAddress</span> <span class="o">=</span> <span class="mh">0x08</span><span class="p">;</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">RainCounterI2CAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x08</span><span class="p">;</span><span class="w"></span>
 <span class="c1">// I2C Address for EnviroDIY external tip counter; 0x08 by default</span>
-<span class="kr">const</span> <span class="kr">float</span> <span class="n">depthPerTipEvent</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">;</span>  <span class="c1">// rain depth in mm per tip event</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">float</span><span class="w"> </span><span class="n">depthPerTipEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span><span class="p">;</span><span class="w">  </span><span class="c1">// rain depth in mm per tip event</span>
 
 <span class="c1">// Create a Rain Counter sensor object</span>
 <span class="cp">#ifdef MS_RAIN_SOFTWAREWIRE</span>
-<span class="n">RainCounterI2C</span> <span class="nf">tbi2c</span><span class="p">(</span><span class="o">&amp;</span><span class="n">softI2C</span><span class="p">,</span> <span class="n">RainCounterI2CAddress</span><span class="p">,</span> <span class="n">depthPerTipEvent</span><span class="p">);</span>
+<span class="n">RainCounterI2C</span><span class="w"> </span><span class="nf">tbi2c</span><span class="p">(</span><span class="o">&amp;</span><span class="n">softI2C</span><span class="p">,</span><span class="w"> </span><span class="n">RainCounterI2CAddress</span><span class="p">,</span><span class="w"> </span><span class="n">depthPerTipEvent</span><span class="p">);</span><span class="w"></span>
 <span class="c1">// RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress,</span>
 <span class="c1">//                      depthPerTipEvent);</span>
 <span class="cp">#else</span>
-<span class="n">RainCounterI2C</span>  <span class="nf">tbi2c</span><span class="p">(</span><span class="n">RainCounterI2CAddress</span><span class="p">,</span> <span class="n">depthPerTipEvent</span><span class="p">);</span>
+<span class="n">RainCounterI2C</span><span class="w">  </span><span class="nf">tbi2c</span><span class="p">(</span><span class="n">RainCounterI2CAddress</span><span class="p">,</span><span class="w"> </span><span class="n">depthPerTipEvent</span><span class="p">);</span><span class="w"></span>
 <span class="cp">#endif</span>
 
 <span class="c1">// Create number of tips and rain depth variable pointers for the tipping bucket</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">tbi2cTips</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">RainCounterI2C_Tips</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tbi2c</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">tbi2cDepth</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">RainCounterI2C_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tbi2c</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">tbi2cTips</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">RainCounterI2C_Tips</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tbi2c</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">tbi2cDepth</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">RainCounterI2C_Depth</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tbi2c</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">

@@ -1347,22 +1347,22 @@
 </table>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_dht_examples"><h2>Example Code</h2><p>The DHT is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_dht">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AOSongDHT.h&gt;</span><span class="cp"></span>
+</section></p><hr/></section><section id="sensor_dht_examples"><h2>Example Code</h2><p>The DHT is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_dht">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AOSongDHT.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">DHTPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">DHTPin</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>              <span class="c1">// DHT data pin</span>
-<span class="n">DHTtype</span>      <span class="n">dhtType</span>  <span class="o">=</span> <span class="n">DHT11</span><span class="p">;</span>  <span class="c1">// DHT type, either DHT11, DHT21, or DHT22</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">DHTPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">DHTPin</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">              </span><span class="c1">// DHT data pin</span>
+<span class="n">DHTtype</span><span class="w">      </span><span class="n">dhtType</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">DHT11</span><span class="p">;</span><span class="w">  </span><span class="c1">// DHT type, either DHT11, DHT21, or DHT22</span>
 
 <span class="c1">// Create an AOSong DHT sensor object</span>
-<span class="n">AOSongDHT</span> <span class="nf">dht</span><span class="p">(</span><span class="n">DHTPower</span><span class="p">,</span> <span class="n">DHTPin</span><span class="p">,</span> <span class="n">dhtType</span><span class="p">);</span>
+<span class="n">AOSongDHT</span><span class="w"> </span><span class="nf">dht</span><span class="p">(</span><span class="n">DHTPower</span><span class="p">,</span><span class="w"> </span><span class="n">DHTPin</span><span class="p">,</span><span class="w"> </span><span class="n">dhtType</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create humidity, temperature, and heat index variable pointers for the DHT</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">dhtHumid</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">AOSongDHT_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dht</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">dhtTemp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AOSongDHT_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dht</span><span class="p">,</span>
-                                       <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">dhtHI</span>   <span class="o">=</span> <span class="k">new</span> <span class="n">AOSongDHT_HI</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dht</span><span class="p">,</span>
-                                   <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dhtHumid</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AOSongDHT_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dht</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dhtTemp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AOSongDHT_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dht</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                       </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">dhtHI</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AOSongDHT_HI</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dht</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                   </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">

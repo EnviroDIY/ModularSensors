@@ -1311,7 +1311,7 @@
           </ul>
         </div>
         <section id="xample_double_log"><h2>Double %Logger Example</h2><p>This is a more complicated example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only every 5 minutes. This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the logData() function.</p><hr/><hr/></section><section id="xample_double_log_unique"><h2>Unique Features of the Double %Logger Example</h2><ul><li>Two different variable arrays and loggers are created and used.<ul><li>The Variables for the arrays are created within the array.</li><li>There is no variable overlap between the two arrays or loggers.</li></ul></li><li>The <code>loop</code> function is expanded into its components rather than using the <code>logData</code> functions.<ul><li>This demonstrates <em>how</em> to write the loop out, without using the <code>logData</code> functions.</li><li>This shows which functions are required for each of the two loggers and which can be used in common.</li></ul></li></ul></section><section id="xample_double_log_using"><h2>To Use this Example:</h2><section id="xample_double_log_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Create a new PlatformIO project</li><li>Replace the contents of the platformio.ini for your new project with the <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/double_logger/platformio.ini">platformio.ini</a> file in the examples/double_logger folder on GitHub.<ul><li>It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.</li><li>Without this, the program won&#x27;t compile.</li></ul></li><li>Open <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/double_logger/double_logger.ino">double_<wbr />logger.ino</a> and save it to your computer.<ul><li>After opening the link, you should be able to right click anywhere on the page and select &quot;Save Page As&quot;.</li><li>Move it into the src directory of your project.</li><li>Delete main.cpp in that folder.</li></ul></li></ul></section><section id="xample_double_log_logger_id"><h3>Set the logger ID</h3><ul><li>Change the &quot;XXXX&quot; in this section of code to the loggerID assigned by Stroud:</li></ul><pre class="m-code"><span class="c1">// Logger ID, also becomes the prefix for the name of the data file on SD card</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">LoggerID</span> <span class="o">=</span> <span class="s">&quot;XXXX&quot;</span><span class="p">;</span></pre></section><section id="xample_double_log_upload"><h3>Upload!</h3><ul><li>Test everything at home <strong>before</strong> deploying out in the wild!</li></ul><hr/></section></section><section id="xample_double_log_pio_config"><h2>PlatformIO Configuration</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">LoggerID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;XXXX&quot;</span><span class="p">;</span><span class="w"></span></pre></section><section id="xample_double_log_upload"><h3>Upload!</h3><ul><li>Test everything at home <strong>before</strong> deploying out in the wild!</li></ul><hr/></section></section><section id="xample_double_log_pio_config"><h2>PlatformIO Configuration</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
 <span class="c1">;</span>
 <span class="c1">;   Build options: build flags, source filter</span>
 <span class="c1">;   Upload options: custom upload port, speed and extra flags</span>
@@ -1363,7 +1363,7 @@
 <span class="cm"> *</span>
 <span class="cm"> * DISCLAIMER:</span>
 <span class="cm"> * THIS CODE IS PROVIDED &quot;AS IS&quot; - NO WARRANTY IS GIVEN.</span>
-<span class="cm"> * ======================================================================= */</span>
+<span class="cm"> * ======================================================================= */</span><span class="w"></span>
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Defines for the Arduino IDE</span>
@@ -1371,401 +1371,401 @@
 <span class="c1">//         If you use PlatformIO, you should set these build flags in your</span>
 <span class="c1">//         platformio.ini</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [defines] */</span>
+<span class="cm">/** Start [defines] */</span><span class="w"></span>
 <span class="cp">#ifndef TINY_GSM_RX_BUFFER</span>
 <span class="cp">#define TINY_GSM_RX_BUFFER 64</span>
 <span class="cp">#endif</span>
 <span class="cp">#ifndef TINY_GSM_YIELD_MS</span>
 <span class="cp">#define TINY_GSM_YIELD_MS 2</span>
 <span class="cp">#endif</span>
-<span class="cm">/** End [defines] */</span>
+<span class="cm">/** End [defines] */</span><span class="w"></span>
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Include the libraries required for any data logger</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [includes] */</span>
+<span class="cm">/** Start [includes] */</span><span class="w"></span>
 <span class="c1">// The Arduino library is needed for every Arduino program.</span>
-<span class="cp">#include</span> <span class="cpf">&lt;Arduino.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Arduino.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// EnableInterrupt is used by ModularSensors for external and pin change</span>
 <span class="c1">// interrupts and must be explicitly included in the main program.</span>
-<span class="cp">#include</span> <span class="cpf">&lt;EnableInterrupt.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EnableInterrupt.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Include the main header for ModularSensors</span>
-<span class="cp">#include</span> <span class="cpf">&lt;ModularSensors.h&gt;</span><span class="cp"></span>
-<span class="cm">/** End [includes] */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ModularSensors.h&gt;</span><span class="cp"></span>
+<span class="cm">/** End [includes] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Data Logging Options</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [logging_options] */</span>
+<span class="cm">/** Start [logging_options] */</span><span class="w"></span>
 <span class="c1">// The name of this program file</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">sketchName</span> <span class="o">=</span> <span class="s">&quot;double_logger.ino&quot;</span><span class="p">;</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">sketchName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;double_logger.ino&quot;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">// Logger ID - we&#39;re only using one logger ID for both &quot;loggers&quot;</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">LoggerID</span> <span class="o">=</span> <span class="s">&quot;XXXXX&quot;</span><span class="p">;</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">LoggerID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;XXXXX&quot;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">// The TWO filenames for the different logging intervals</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">FileName5min</span> <span class="o">=</span> <span class="s">&quot;Logger_5MinuteInterval.csv&quot;</span><span class="p">;</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">FileName1min</span> <span class="o">=</span> <span class="s">&quot;Logger_1MinuteInterval.csv&quot;</span><span class="p">;</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">FileName5min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Logger_5MinuteInterval.csv&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">FileName1min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Logger_1MinuteInterval.csv&quot;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">// Your logger&#39;s timezone.</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">timeZone</span> <span class="o">=</span> <span class="mi">-5</span><span class="p">;</span>  <span class="c1">// Eastern Standard Time</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">timeZone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-5</span><span class="p">;</span><span class="w">  </span><span class="c1">// Eastern Standard Time</span>
 <span class="c1">// NOTE:  Daylight savings time will not be applied!  Please use standard time!</span>
 
 <span class="c1">// Set the input and output pins for the logger</span>
 <span class="c1">// NOTE:  Use -1 for pins that do not apply</span>
-<span class="kr">const</span> <span class="kr">int32_t</span> <span class="n">serialBaud</span> <span class="o">=</span> <span class="mi">115200</span><span class="p">;</span>  <span class="c1">// Baud rate for debugging</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">greenLED</span>   <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>       <span class="c1">// Pin for the green LED</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">redLED</span>     <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>       <span class="c1">// Pin for the red LED</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">buttonPin</span>  <span class="o">=</span> <span class="mi">21</span><span class="p">;</span>      <span class="c1">// Pin for debugging mode (ie, button pin)</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">wakePin</span>    <span class="o">=</span> <span class="mi">31</span><span class="p">;</span>  <span class="c1">// MCU interrupt/alarm pin to wake from sleep</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int32_t</span><span class="w"> </span><span class="n">serialBaud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">115200</span><span class="p">;</span><span class="w">  </span><span class="c1">// Baud rate for debugging</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">greenLED</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w">       </span><span class="c1">// Pin for the green LED</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">redLED</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span><span class="w">       </span><span class="c1">// Pin for the red LED</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">buttonPin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">;</span><span class="w">      </span><span class="c1">// Pin for debugging mode (ie, button pin)</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">wakePin</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU interrupt/alarm pin to wake from sleep</span>
 <span class="c1">// Mayfly 0.x D31 = A7</span>
 <span class="c1">// Set the wake pin to -1 if you do not want the main processor to sleep.</span>
 <span class="c1">// In a SAMD system where you are using the built-in rtc, set wakePin to 1</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">sdCardPwrPin</span>   <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// MCU SD card power pin</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">sdCardSSPin</span>    <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>  <span class="c1">// SD card chip select/slave select pin</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">sensorPowerPin</span> <span class="o">=</span> <span class="mi">22</span><span class="p">;</span>  <span class="c1">// MCU pin controlling main sensor power</span>
-<span class="cm">/** End [logging_options] */</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">sdCardPwrPin</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU SD card power pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">sdCardSSPin</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span><span class="w">  </span><span class="c1">// SD card chip select/slave select pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin controlling main sensor power</span>
+<span class="cm">/** End [logging_options] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Wifi/Cellular Modem Options</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [xbee_wifi] */</span>
+<span class="cm">/** Start [xbee_wifi] */</span><span class="w"></span>
 <span class="c1">// For the Digi Wifi XBee (S6B)</span>
-<span class="cp">#include</span> <span class="cpf">&lt;modems/DigiXBeeWifi.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;modems/DigiXBeeWifi.h&gt;</span><span class="cp"></span>
 <span class="c1">// Create a reference to the serial port for the modem</span>
 
-<span class="n">HardwareSerial</span><span class="o">&amp;</span> <span class="n">modemSerial</span> <span class="o">=</span> <span class="n">Serial1</span><span class="p">;</span>  <span class="c1">// Use hardware serial if possible</span>
-<span class="kr">const</span> <span class="kr">int32_t</span>   <span class="n">modemBaud</span>   <span class="o">=</span> <span class="mi">9600</span><span class="p">;</span>     <span class="c1">// All XBee&#39;s use 9600 by default</span>
+<span class="n">HardwareSerial</span><span class="o">&amp;</span><span class="w"> </span><span class="n">modemSerial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Serial1</span><span class="p">;</span><span class="w">  </span><span class="c1">// Use hardware serial if possible</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int32_t</span><span class="w">   </span><span class="n">modemBaud</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">9600</span><span class="p">;</span><span class="w">     </span><span class="c1">// All XBee&#39;s use 9600 by default</span>
 
 <span class="c1">// Modem Pins - Describe the physical pin connection of your modem to your board</span>
 <span class="c1">// NOTE:  Use -1 for pins that do not apply</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemVccPin</span>    <span class="o">=</span> <span class="mi">-2</span><span class="p">;</span>    <span class="c1">// MCU pin controlling modem power</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemStatusPin</span> <span class="o">=</span> <span class="mi">19</span><span class="p">;</span>    <span class="c1">// MCU pin used to read modem status</span>
-<span class="kr">const</span> <span class="kr">bool</span> <span class="n">useCTSforStatus</span>  <span class="o">=</span> <span class="kr">true</span><span class="p">;</span>  <span class="c1">// Flag to use the modem CTS pin for status</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemResetPin</span>  <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>    <span class="c1">// MCU pin connected to modem reset pin</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemSleepRqPin</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>   <span class="c1">// MCU pin for modem sleep/wake request</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemLEDPin</span> <span class="o">=</span> <span class="n">redLED</span><span class="p">;</span>   <span class="c1">// MCU pin connected an LED to show modem</span>
-                                     <span class="c1">// status (-1 if unconnected)</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemVccPin</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">-2</span><span class="p">;</span><span class="w">    </span><span class="c1">// MCU pin controlling modem power</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">19</span><span class="p">;</span><span class="w">    </span><span class="c1">// MCU pin used to read modem status</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">bool</span><span class="w"> </span><span class="n">useCTSforStatus</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="kr">true</span><span class="p">;</span><span class="w">  </span><span class="c1">// Flag to use the modem CTS pin for status</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemResetPin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span><span class="w">    </span><span class="c1">// MCU pin connected to modem reset pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemSleepRqPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span><span class="w">   </span><span class="c1">// MCU pin for modem sleep/wake request</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemLEDPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redLED</span><span class="p">;</span><span class="w">   </span><span class="c1">// MCU pin connected an LED to show modem</span>
+<span class="w">                                     </span><span class="c1">// status (-1 if unconnected)</span>
 
 <span class="c1">// Network connection information</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">wifiId</span>  <span class="o">=</span> <span class="s">&quot;xxxxx&quot;</span><span class="p">;</span>  <span class="c1">// WiFi access point, unnecessary for GPRS</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">wifiPwd</span> <span class="o">=</span> <span class="s">&quot;xxxxx&quot;</span><span class="p">;</span>  <span class="c1">// WiFi password, unnecessary for GPRS</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">wifiId</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;xxxxx&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// WiFi access point, unnecessary for GPRS</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">wifiPwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;xxxxx&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// WiFi password, unnecessary for GPRS</span>
 
-<span class="n">DigiXBeeWifi</span> <span class="nf">modemXBWF</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span> <span class="n">modemVccPin</span><span class="p">,</span> <span class="n">modemStatusPin</span><span class="p">,</span>
-                       <span class="n">useCTSforStatus</span><span class="p">,</span> <span class="n">modemResetPin</span><span class="p">,</span> <span class="n">modemSleepRqPin</span><span class="p">,</span> <span class="n">wifiId</span><span class="p">,</span>
-                       <span class="n">wifiPwd</span><span class="p">);</span>
+<span class="n">DigiXBeeWifi</span><span class="w"> </span><span class="nf">modemXBWF</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span><span class="w"> </span><span class="n">modemVccPin</span><span class="p">,</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="p">,</span><span class="w"></span>
+<span class="w">                       </span><span class="n">useCTSforStatus</span><span class="p">,</span><span class="w"> </span><span class="n">modemResetPin</span><span class="p">,</span><span class="w"> </span><span class="n">modemSleepRqPin</span><span class="p">,</span><span class="w"> </span><span class="n">wifiId</span><span class="p">,</span><span class="w"></span>
+<span class="w">                       </span><span class="n">wifiPwd</span><span class="p">);</span><span class="w"></span>
 <span class="c1">// Create an extra reference to the modem by a generic name</span>
-<span class="n">DigiXBeeWifi</span> <span class="n">modem</span> <span class="o">=</span> <span class="n">modemXBWF</span><span class="p">;</span>
-<span class="cm">/** End [xbee_wifi] */</span>
+<span class="n">DigiXBeeWifi</span><span class="w"> </span><span class="n">modem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modemXBWF</span><span class="p">;</span><span class="w"></span>
+<span class="cm">/** End [xbee_wifi] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Using the Processor as a Sensor</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [processor_sensor] */</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sensors/ProcessorStats.h&gt;</span><span class="cp"></span>
+<span class="cm">/** Start [processor_sensor] */</span><span class="w"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/ProcessorStats.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create the main processor chip &quot;sensor&quot; - for general metadata</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>    <span class="n">mcuBoardVersion</span> <span class="o">=</span> <span class="s">&quot;v0.5b&quot;</span><span class="p">;</span>
-<span class="n">ProcessorStats</span> <span class="nf">mcuBoard</span><span class="p">(</span><span class="n">mcuBoardVersion</span><span class="p">);</span>
-<span class="cm">/** End [processor_sensor] */</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">    </span><span class="n">mcuBoardVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;v0.5b&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="n">ProcessorStats</span><span class="w"> </span><span class="nf">mcuBoard</span><span class="p">(</span><span class="n">mcuBoardVersion</span><span class="p">);</span><span class="w"></span>
+<span class="cm">/** End [processor_sensor] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Maxim DS3231 RTC (Real Time Clock)</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [ds3231] */</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sensors/MaximDS3231.h&gt;</span><span class="cp"></span>
+<span class="cm">/** Start [ds3231] */</span><span class="w"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/MaximDS3231.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a DS3231 sensor object</span>
-<span class="n">MaximDS3231</span> <span class="nf">ds3231</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="cm">/** End [ds3231] */</span>
+<span class="n">MaximDS3231</span><span class="w"> </span><span class="nf">ds3231</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="cm">/** End [ds3231] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  AOSong AM2315 Digital Humidity and Temperature Sensor</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [am2315] */</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sensors/AOSongAM2315.h&gt;</span><span class="cp"></span>
+<span class="cm">/** Start [am2315] */</span><span class="w"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AOSongAM2315.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">I2CPower</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">I2CPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
 
 <span class="c1">// Create and return the AOSong AM2315 sensor object</span>
-<span class="n">AOSongAM2315</span> <span class="nf">am2315</span><span class="p">(</span><span class="n">I2CPower</span><span class="p">);</span>
-<span class="cm">/** End [am2315] */</span>
+<span class="n">AOSongAM2315</span><span class="w"> </span><span class="nf">am2315</span><span class="p">(</span><span class="n">I2CPower</span><span class="p">);</span><span class="w"></span>
+<span class="cm">/** End [am2315] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Creating the Variable Array[s] and Filling with Variable Objects</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [variable_arrays] */</span>
+<span class="cm">/** Start [variable_arrays] */</span><span class="w"></span>
 <span class="c1">// The variables to record at 1 minute intervals</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">variableList_at1min</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="k">new</span> <span class="n">AOSongAM2315_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">),</span>
-                                   <span class="k">new</span> <span class="n">AOSongAM2315_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">)};</span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">variableList_at1min</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="k">new</span><span class="w"> </span><span class="n">AOSongAM2315_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">),</span><span class="w"></span>
+<span class="w">                                   </span><span class="k">new</span><span class="w"> </span><span class="n">AOSongAM2315_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">)};</span><span class="w"></span>
 <span class="c1">// Count up the number of pointers in the 1-minute array</span>
-<span class="kr">int</span> <span class="n">variableCount1min</span> <span class="o">=</span> <span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at1min</span><span class="p">)</span> <span class="o">/</span>
-    <span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at1min</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="kr">int</span><span class="w"> </span><span class="n">variableCount1min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at1min</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"></span>
+<span class="w">    </span><span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at1min</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"></span>
 <span class="c1">// Create the 1-minute VariableArray object</span>
-<span class="n">VariableArray</span> <span class="n">array1min</span><span class="p">;</span>
+<span class="n">VariableArray</span><span class="w"> </span><span class="n">array1min</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// The variables to record at 5 minute intervals</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">variableList_at5min</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="k">new</span> <span class="n">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">),</span>
-                                   <span class="k">new</span> <span class="n">ProcessorStats_Battery</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span>
-                                   <span class="k">new</span> <span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">)};</span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">variableList_at5min</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="k">new</span><span class="w"> </span><span class="n">MaximDS3231_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ds3231</span><span class="p">),</span><span class="w"></span>
+<span class="w">                                   </span><span class="k">new</span><span class="w"> </span><span class="n">ProcessorStats_Battery</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">),</span><span class="w"></span>
+<span class="w">                                   </span><span class="k">new</span><span class="w"> </span><span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">)};</span><span class="w"></span>
 <span class="c1">// Count up the number of pointers in the 5-minute array</span>
-<span class="kr">int</span> <span class="n">variableCount5min</span> <span class="o">=</span> <span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at5min</span><span class="p">)</span> <span class="o">/</span>
-    <span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at5min</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="kr">int</span><span class="w"> </span><span class="n">variableCount5min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at5min</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"></span>
+<span class="w">    </span><span class="kr">sizeof</span><span class="p">(</span><span class="n">variableList_at5min</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"></span>
 <span class="c1">// Create the 5-minute VariableArray object</span>
-<span class="n">VariableArray</span> <span class="n">array5min</span><span class="p">;</span>
-<span class="cm">/** End [variable_arrays] */</span>
+<span class="n">VariableArray</span><span class="w"> </span><span class="n">array5min</span><span class="p">;</span><span class="w"></span>
+<span class="cm">/** End [variable_arrays] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  The Logger Object[s]</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [loggers] */</span>
+<span class="cm">/** Start [loggers] */</span><span class="w"></span>
 <span class="c1">// Create the 1-minute  logger instance</span>
-<span class="n">Logger</span> <span class="n">logger1min</span><span class="p">;</span>
+<span class="n">Logger</span><span class="w"> </span><span class="n">logger1min</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// Create the 5-minute  logger instance</span>
-<span class="n">Logger</span> <span class="n">logger5min</span><span class="p">;</span>
-<span class="cm">/** End [loggers] */</span>
+<span class="n">Logger</span><span class="w"> </span><span class="n">logger5min</span><span class="p">;</span><span class="w"></span>
+<span class="cm">/** End [loggers] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Working Functions</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [working_functions] */</span>
+<span class="cm">/** Start [working_functions] */</span><span class="w"></span>
 <span class="c1">// Flashes the LED&#39;s on the primary board</span>
-<span class="kr">void</span> <span class="nf">greenredflash</span><span class="p">(</span><span class="kr">uint8_t</span> <span class="n">numFlash</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="kr">uint8_t</span> <span class="n">rate</span> <span class="o">=</span> <span class="mi">75</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kr">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numFlash</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">HIGH</span><span class="p">);</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-        <span class="nf">delay</span><span class="p">(</span><span class="n">rate</span><span class="p">);</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">HIGH</span><span class="p">);</span>
-        <span class="nf">delay</span><span class="p">(</span><span class="n">rate</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="cm">/** End [working_functions] */</span>
+<span class="kr">void</span><span class="w"> </span><span class="nf">greenredflash</span><span class="p">(</span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">numFlash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">numFlash</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">HIGH</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">delay</span><span class="p">(</span><span class="n">rate</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">HIGH</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">delay</span><span class="p">(</span><span class="n">rate</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="cm">/** End [working_functions] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Arduino Setup Function</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [setup] */</span>
-<span class="kr">void</span> <span class="nb">setup</span><span class="p">()</span> <span class="p">{</span>
-    <span class="c1">// Start the primary serial connection</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">serialBaud</span><span class="p">);</span>
+<span class="cm">/** Start [setup] */</span><span class="w"></span>
+<span class="kr">void</span><span class="w"> </span><span class="nb">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Start the primary serial connection</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">serialBaud</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Print a start-up note to the first serial port</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Now running &quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">sketchName</span><span class="p">);</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot; on Logger &quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">LoggerID</span><span class="p">);</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Print a start-up note to the first serial port</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Now running &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">sketchName</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot; on Logger &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">LoggerID</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">();</span><span class="w"></span>
 
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Using ModularSensors Library version &quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">MODULAR_SENSORS_VERSION</span><span class="p">);</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;TinyGSM Library version &quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">TINYGSM_VERSION</span><span class="p">);</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">();</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Using ModularSensors Library version &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">MODULAR_SENSORS_VERSION</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;TinyGSM Library version &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">TINYGSM_VERSION</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Start the serial connection with the modem</span>
-    <span class="n">modemSerial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">modemBaud</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Start the serial connection with the modem</span>
+<span class="w">    </span><span class="n">modemSerial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">modemBaud</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Set up pins for the LED&#39;s</span>
-    <span class="nf">pinMode</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">OUTPUT</span><span class="p">);</span>
-    <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-    <span class="nf">pinMode</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">OUTPUT</span><span class="p">);</span>
-    <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-    <span class="c1">// Blink the LEDs to show the board is on and starting up</span>
-    <span class="n">greenredflash</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Set up pins for the LED&#39;s</span>
+<span class="w">    </span><span class="nf">pinMode</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">OUTPUT</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">pinMode</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">OUTPUT</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Blink the LEDs to show the board is on and starting up</span>
+<span class="w">    </span><span class="n">greenredflash</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Set the timezones for the logger/data and the RTC</span>
-    <span class="c1">// Logging in the given time zone</span>
-    <span class="n">Logger</span><span class="o">::</span><span class="n">setLoggerTimeZone</span><span class="p">(</span><span class="n">timeZone</span><span class="p">);</span>
-    <span class="c1">// It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)</span>
-    <span class="n">Logger</span><span class="o">::</span><span class="n">setRTCTimeZone</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Set the timezones for the logger/data and the RTC</span>
+<span class="w">    </span><span class="c1">// Logging in the given time zone</span>
+<span class="w">    </span><span class="n">Logger</span><span class="o">::</span><span class="n">setLoggerTimeZone</span><span class="p">(</span><span class="n">timeZone</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)</span>
+<span class="w">    </span><span class="n">Logger</span><span class="o">::</span><span class="n">setRTCTimeZone</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Begin the variable array[s], logger[s], and publisher[s]</span>
-    <span class="n">array1min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">variableCount1min</span><span class="p">,</span> <span class="n">variableList_at1min</span><span class="p">);</span>
-    <span class="n">array5min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">variableCount5min</span><span class="p">,</span> <span class="n">variableList_at5min</span><span class="p">);</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">LoggerID</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">array1min</span><span class="p">);</span>
-    <span class="n">logger5min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">LoggerID</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">array5min</span><span class="p">);</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="n">setLoggerPins</span><span class="p">(</span><span class="n">wakePin</span><span class="p">,</span> <span class="n">sdCardSSPin</span><span class="p">,</span> <span class="n">sdCardPwrPin</span><span class="p">,</span> <span class="n">buttonPin</span><span class="p">,</span>
-                             <span class="n">greenLED</span><span class="p">);</span>
-    <span class="n">logger5min</span><span class="p">.</span><span class="n">setLoggerPins</span><span class="p">(</span><span class="n">wakePin</span><span class="p">,</span> <span class="n">sdCardSSPin</span><span class="p">,</span> <span class="n">sdCardPwrPin</span><span class="p">,</span> <span class="n">buttonPin</span><span class="p">,</span>
-                             <span class="n">greenLED</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Begin the variable array[s], logger[s], and publisher[s]</span>
+<span class="w">    </span><span class="n">array1min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">variableCount1min</span><span class="p">,</span><span class="w"> </span><span class="n">variableList_at1min</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">array5min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">variableCount5min</span><span class="p">,</span><span class="w"> </span><span class="n">variableList_at5min</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">LoggerID</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">array1min</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">logger5min</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">LoggerID</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">array5min</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="n">setLoggerPins</span><span class="p">(</span><span class="n">wakePin</span><span class="p">,</span><span class="w"> </span><span class="n">sdCardSSPin</span><span class="p">,</span><span class="w"> </span><span class="n">sdCardPwrPin</span><span class="p">,</span><span class="w"> </span><span class="n">buttonPin</span><span class="p">,</span><span class="w"></span>
+<span class="w">                             </span><span class="n">greenLED</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">logger5min</span><span class="p">.</span><span class="n">setLoggerPins</span><span class="p">(</span><span class="n">wakePin</span><span class="p">,</span><span class="w"> </span><span class="n">sdCardSSPin</span><span class="p">,</span><span class="w"> </span><span class="n">sdCardPwrPin</span><span class="p">,</span><span class="w"> </span><span class="n">buttonPin</span><span class="p">,</span><span class="w"></span>
+<span class="w">                             </span><span class="n">greenLED</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Turn on the modem</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">setModemLED</span><span class="p">(</span><span class="n">modemLEDPin</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Turn on the modem</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">setModemLED</span><span class="p">(</span><span class="n">modemLEDPin</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Set up the sensors (do this directly on the VariableArray)</span>
-    <span class="n">array1min</span><span class="p">.</span><span class="n">setupSensors</span><span class="p">();</span>
-    <span class="n">array5min</span><span class="p">.</span><span class="n">setupSensors</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Set up the sensors (do this directly on the VariableArray)</span>
+<span class="w">    </span><span class="n">array1min</span><span class="p">.</span><span class="n">setupSensors</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="n">array5min</span><span class="p">.</span><span class="n">setupSensors</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Print out the current time</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Current RTC time is: &quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">Logger</span><span class="o">::</span><span class="n">formatDateTime_ISO8601</span><span class="p">(</span><span class="n">Logger</span><span class="o">::</span><span class="n">getNowEpoch</span><span class="p">()));</span>
-    <span class="c1">// Connect to the network</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">connectInternet</span><span class="p">())</span> <span class="p">{</span>
-        <span class="c1">// Synchronize the RTC</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">setRTClock</span><span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">getNISTTime</span><span class="p">());</span>
-        <span class="n">modem</span><span class="p">.</span><span class="n">updateModemMetadata</span><span class="p">();</span>
-        <span class="c1">// Disconnect from the network</span>
-        <span class="n">modem</span><span class="p">.</span><span class="n">disconnectInternet</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="c1">// Turn off the modem</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">modemSleepPowerDown</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Print out the current time</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Current RTC time is: &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">Logger</span><span class="o">::</span><span class="n">formatDateTime_ISO8601</span><span class="p">(</span><span class="n">Logger</span><span class="o">::</span><span class="n">getNowEpoch</span><span class="p">()));</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Connect to the network</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">connectInternet</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Synchronize the RTC</span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">setRTClock</span><span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">getNISTTime</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="n">modem</span><span class="p">.</span><span class="n">updateModemMetadata</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Disconnect from the network</span>
+<span class="w">        </span><span class="n">modem</span><span class="p">.</span><span class="n">disconnectInternet</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Turn off the modem</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">modemSleepPowerDown</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Give the loggers different file names</span>
-    <span class="c1">// If we wanted to auto-generate the file name, that could also be done by</span>
-    <span class="c1">// not calling this function, but in that case if both &quot;loggers&quot; have the</span>
-    <span class="c1">// same logger id, they will end up with the same filename</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="n">setFileName</span><span class="p">(</span><span class="n">FileName1min</span><span class="p">);</span>
-    <span class="n">logger5min</span><span class="p">.</span><span class="n">setFileName</span><span class="p">(</span><span class="n">FileName5min</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Give the loggers different file names</span>
+<span class="w">    </span><span class="c1">// If we wanted to auto-generate the file name, that could also be done by</span>
+<span class="w">    </span><span class="c1">// not calling this function, but in that case if both &quot;loggers&quot; have the</span>
+<span class="w">    </span><span class="c1">// same logger id, they will end up with the same filename</span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="n">setFileName</span><span class="p">(</span><span class="n">FileName1min</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">logger5min</span><span class="p">.</span><span class="n">setFileName</span><span class="p">(</span><span class="n">FileName5min</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Setup the logger files.  Specifying true will put a default header at</span>
-    <span class="c1">// on to the file when it&#39;s created.</span>
-    <span class="c1">// Because we&#39;ve already called setFileName, we do not need to specify the</span>
-    <span class="c1">// file name for this function.</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="n">turnOnSDcard</span><span class="p">(</span>
-        <span class="kr">true</span><span class="p">);</span>  <span class="c1">// true = wait for card to settle after power up</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="n">createLogFile</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span>  <span class="c1">// true = write a new header</span>
-    <span class="n">logger5min</span><span class="p">.</span><span class="n">createLogFile</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span>  <span class="c1">// true = write a new header</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="n">turnOffSDcard</span><span class="p">(</span>
-        <span class="kr">true</span><span class="p">);</span>  <span class="c1">// true = wait for internal housekeeping after write</span>
+<span class="w">    </span><span class="c1">// Setup the logger files.  Specifying true will put a default header at</span>
+<span class="w">    </span><span class="c1">// on to the file when it&#39;s created.</span>
+<span class="w">    </span><span class="c1">// Because we&#39;ve already called setFileName, we do not need to specify the</span>
+<span class="w">    </span><span class="c1">// file name for this function.</span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="n">turnOnSDcard</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="kr">true</span><span class="p">);</span><span class="w">  </span><span class="c1">// true = wait for card to settle after power up</span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="n">createLogFile</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span><span class="w">  </span><span class="c1">// true = write a new header</span>
+<span class="w">    </span><span class="n">logger5min</span><span class="p">.</span><span class="n">createLogFile</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span><span class="w">  </span><span class="c1">// true = write a new header</span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="n">turnOffSDcard</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="kr">true</span><span class="p">);</span><span class="w">  </span><span class="c1">// true = wait for internal housekeeping after write</span>
 
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Logger setup finished!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;------------------------------------------&quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">();</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Logger setup finished!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;------------------------------------------&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Call the processor sleep</span>
-    <span class="c1">// Only need to do this for one of the loggers</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="n">systemSleep</span><span class="p">();</span>
-<span class="p">}</span>
-<span class="cm">/** End [setup] */</span>
+<span class="w">    </span><span class="c1">// Call the processor sleep</span>
+<span class="w">    </span><span class="c1">// Only need to do this for one of the loggers</span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="n">systemSleep</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="cm">/** End [setup] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Arduino Loop Function</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [loop] */</span>
+<span class="cm">/** Start [loop] */</span><span class="w"></span>
 <span class="c1">// Because of the way alarms work on the RTC, it will wake the processor and</span>
 <span class="c1">// start the loop every minute exactly on the minute.</span>
 <span class="c1">// The processor may also be woken up by another interrupt or level change on a</span>
 <span class="c1">// pin - from a button or some other input.</span>
 <span class="c1">// The &quot;if&quot; statements in the loop determine what will happen - whether the</span>
 <span class="c1">// sensors update, testing mode starts, or it goes back to sleep.</span>
-<span class="kr">void</span> <span class="nb">loop</span><span class="p">()</span> <span class="p">{</span>
-    <span class="c1">// Check if the current time is an even interval of the logging interval</span>
-    <span class="c1">// For whichever logger we call first, use the checkInterval() function.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">logger1min</span><span class="p">.</span><span class="n">checkInterval</span><span class="p">())</span> <span class="p">{</span>
-        <span class="c1">// Print a line to show new reading</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---------------------&gt;111&lt;---------------------&quot;</span><span class="p">));</span>
-        <span class="c1">// Turn on the LED to show we&#39;re taking a reading</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">HIGH</span><span class="p">);</span>
+<span class="kr">void</span><span class="w"> </span><span class="nb">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Check if the current time is an even interval of the logging interval</span>
+<span class="w">    </span><span class="c1">// For whichever logger we call first, use the checkInterval() function.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">logger1min</span><span class="p">.</span><span class="n">checkInterval</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Print a line to show new reading</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---------------------&gt;111&lt;---------------------&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Turn on the LED to show we&#39;re taking a reading</span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">HIGH</span><span class="p">);</span><span class="w"></span>
 
-        <span class="c1">// Send power to all of the sensors (do this directly on the</span>
-        <span class="c1">// VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Powering sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array1min</span><span class="p">.</span><span class="n">sensorsPowerUp</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Wake up all of the sensors (do this directly on the VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Waking sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array1min</span><span class="p">.</span><span class="n">sensorsWake</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Update the values from all attached sensors (do this directly on the</span>
-        <span class="c1">// VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Updating sensor values...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array1min</span><span class="p">.</span><span class="n">updateAllSensors</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Put sensors to sleep (do this directly on the VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Putting sensors back to sleep...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array1min</span><span class="p">.</span><span class="n">sensorsSleep</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Cut sensor power (do this directly on the VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Cutting sensor power...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array1min</span><span class="p">.</span><span class="n">sensorsPowerDown</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Send power to all of the sensors (do this directly on the</span>
+<span class="w">        </span><span class="c1">// VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Powering sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array1min</span><span class="p">.</span><span class="n">sensorsPowerUp</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Wake up all of the sensors (do this directly on the VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Waking sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array1min</span><span class="p">.</span><span class="n">sensorsWake</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Update the values from all attached sensors (do this directly on the</span>
+<span class="w">        </span><span class="c1">// VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Updating sensor values...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array1min</span><span class="p">.</span><span class="n">updateAllSensors</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Put sensors to sleep (do this directly on the VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Putting sensors back to sleep...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array1min</span><span class="p">.</span><span class="n">sensorsSleep</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Cut sensor power (do this directly on the VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Cutting sensor power...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array1min</span><span class="p">.</span><span class="n">sensorsPowerDown</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
 
-        <span class="c1">// Stream the csv data to the SD card</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">turnOnSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">logToSD</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">turnOffSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Stream the csv data to the SD card</span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">turnOnSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">logToSD</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">turnOffSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
 
-        <span class="c1">// Turn off the LED</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-        <span class="c1">// Print a line to show reading ended</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---------------------&lt;111&gt;---------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-    <span class="p">}</span>
-    <span class="c1">// Check if the already marked time is an even interval of the logging</span>
-    <span class="c1">// interval For logger[s] other than the first one, use the</span>
-    <span class="c1">// checkMarkedInterval() function.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">logger5min</span><span class="p">.</span><span class="n">checkMarkedInterval</span><span class="p">())</span> <span class="p">{</span>
-        <span class="c1">// Print a line to show new reading</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---------------------&gt;555&lt;---------------------&quot;</span><span class="p">));</span>
-        <span class="c1">// Turn on the LED to show we&#39;re taking a reading</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">HIGH</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Turn off the LED</span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Print a line to show reading ended</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---------------------&lt;111&gt;---------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Check if the already marked time is an even interval of the logging</span>
+<span class="w">    </span><span class="c1">// interval For logger[s] other than the first one, use the</span>
+<span class="w">    </span><span class="c1">// checkMarkedInterval() function.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">logger5min</span><span class="p">.</span><span class="n">checkMarkedInterval</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Print a line to show new reading</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---------------------&gt;555&lt;---------------------&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Turn on the LED to show we&#39;re taking a reading</span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">HIGH</span><span class="p">);</span><span class="w"></span>
 
-        <span class="c1">// Send power to all of the sensors (do this directly on the</span>
-        <span class="c1">// VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Powering sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array5min</span><span class="p">.</span><span class="n">sensorsPowerUp</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Wake up all of the sensors (do this directly on the VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Waking sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array5min</span><span class="p">.</span><span class="n">sensorsWake</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Update the values from all attached sensors (do this directly on the</span>
-        <span class="c1">// VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Updating sensor values...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array5min</span><span class="p">.</span><span class="n">updateAllSensors</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Put sensors to sleep (do this directly on the VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Putting sensors back to sleep...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array5min</span><span class="p">.</span><span class="n">sensorsSleep</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
-        <span class="c1">// Cut sensor power (do this directly on the VariableArray)</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Cutting sensor power...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-        <span class="n">array5min</span><span class="p">.</span><span class="n">sensorsPowerDown</span><span class="p">();</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Send power to all of the sensors (do this directly on the</span>
+<span class="w">        </span><span class="c1">// VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Powering sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array5min</span><span class="p">.</span><span class="n">sensorsPowerUp</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Wake up all of the sensors (do this directly on the VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Waking sensors...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array5min</span><span class="p">.</span><span class="n">sensorsWake</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Update the values from all attached sensors (do this directly on the</span>
+<span class="w">        </span><span class="c1">// VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Updating sensor values...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array5min</span><span class="p">.</span><span class="n">updateAllSensors</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Put sensors to sleep (do this directly on the VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Putting sensors back to sleep...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array5min</span><span class="p">.</span><span class="n">sensorsSleep</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Cut sensor power (do this directly on the VariableArray)</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Cutting sensor power...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">array5min</span><span class="p">.</span><span class="n">sensorsPowerDown</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
 
-        <span class="c1">// Stream the csv data to the SD card</span>
-        <span class="n">logger5min</span><span class="p">.</span><span class="n">turnOnSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span>
-        <span class="n">logger5min</span><span class="p">.</span><span class="n">logToSD</span><span class="p">();</span>
-        <span class="n">logger5min</span><span class="p">.</span><span class="n">turnOffSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span>
-        <span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Stream the csv data to the SD card</span>
+<span class="w">        </span><span class="n">logger5min</span><span class="p">.</span><span class="n">turnOnSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger5min</span><span class="p">.</span><span class="n">logToSD</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger5min</span><span class="p">.</span><span class="n">turnOffSDcard</span><span class="p">(</span><span class="kr">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">logger1min</span><span class="p">.</span><span class="n">watchDogTimer</span><span class="p">.</span><span class="n">resetWatchDog</span><span class="p">();</span><span class="w"></span>
 
-        <span class="c1">// Turn off the LED</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-        <span class="c1">// Print a line to show reading ended</span>
-        <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;--------------------&lt;555&gt;---------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
-    <span class="p">}</span>
-    <span class="c1">// Once a day, at midnight, sync the clock</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">Logger</span><span class="o">::</span><span class="n">markedEpochTime</span> <span class="o">%</span> <span class="mi">86400</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">// Turn on the modem</span>
-        <span class="n">modem</span><span class="p">.</span><span class="n">modemWake</span><span class="p">();</span>
-        <span class="c1">// Connect to the network</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">connectInternet</span><span class="p">())</span> <span class="p">{</span>
-            <span class="c1">// Synchronize the RTC</span>
-            <span class="n">logger1min</span><span class="p">.</span><span class="n">setRTClock</span><span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">getNISTTime</span><span class="p">());</span>
-            <span class="c1">// Disconnect from the network</span>
-            <span class="n">modem</span><span class="p">.</span><span class="n">disconnectInternet</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="c1">// Turn off the modem</span>
-        <span class="n">modem</span><span class="p">.</span><span class="n">modemSleepPowerDown</span><span class="p">();</span>
-    <span class="p">}</span>
+<span class="w">        </span><span class="c1">// Turn off the LED</span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Print a line to show reading ended</span>
+<span class="w">        </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;--------------------&lt;555&gt;---------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Once a day, at midnight, sync the clock</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Logger</span><span class="o">::</span><span class="n">markedEpochTime</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">86400</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Turn on the modem</span>
+<span class="w">        </span><span class="n">modem</span><span class="p">.</span><span class="n">modemWake</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Connect to the network</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">connectInternet</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="c1">// Synchronize the RTC</span>
+<span class="w">            </span><span class="n">logger1min</span><span class="p">.</span><span class="n">setRTClock</span><span class="p">(</span><span class="n">modem</span><span class="p">.</span><span class="n">getNISTTime</span><span class="p">());</span><span class="w"></span>
+<span class="w">            </span><span class="c1">// Disconnect from the network</span>
+<span class="w">            </span><span class="n">modem</span><span class="p">.</span><span class="n">disconnectInternet</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Turn off the modem</span>
+<span class="w">        </span><span class="n">modem</span><span class="p">.</span><span class="n">modemSleepPowerDown</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-    <span class="c1">// Call the processor sleep</span>
-    <span class="c1">// Only need to do this for one of the loggers</span>
-    <span class="n">logger1min</span><span class="p">.</span><span class="n">systemSleep</span><span class="p">();</span>
-<span class="p">}</span>
-<span class="cm">/** End [loop] */</span></pre></section>
+<span class="w">    </span><span class="c1">// Call the processor sleep</span>
+<span class="w">    </span><span class="c1">// Only need to do this for one of the loggers</span>
+<span class="w">    </span><span class="n">logger1min</span><span class="p">.</span><span class="n">systemSleep</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="cm">/** End [loop] */</span><span class="w"></span></pre></section>
         <div class="m-note m-dim m-thin m-text-center"><a href="data_saving_8ino-example.html" class="m-doc">&laquo; data_saving.ino</a> | <a href="page_the_examples.html" class="m-doc">Examples</a> | <a href="_d_r_w_i__cit_sci_8ino-example.html" class="m-doc">DRWI_CitSci.ino &raquo;</a></div>
 
                     </div>

@@ -1321,67 +1321,67 @@
 <span class="c1">// NOTE:  The u-blox based Digi XBee&#39;s (3G global and LTE-M global) can be used</span>
 <span class="c1">// in either bypass or transparent mode, each with pros and cons</span>
 <span class="c1">// The Telit based Digi XBees (LTE Cat1) can only use this mode.</span>
-<span class="cp">#include</span> <span class="cpf">&lt;modems/DigiXBeeCellularTransparent.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;modems/DigiXBeeCellularTransparent.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// NOTE: Extra hardware and software serial ports are created in the &quot;Settings</span>
 <span class="c1">// for Additional Serial Ports&quot; section</span>
-<span class="kr">const</span> <span class="kr">int32_t</span> <span class="n">modemBaud</span> <span class="o">=</span> <span class="mi">9600</span><span class="p">;</span>  <span class="c1">// All XBee&#39;s use 9600 by default</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int32_t</span><span class="w"> </span><span class="n">modemBaud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9600</span><span class="p">;</span><span class="w">  </span><span class="c1">// All XBee&#39;s use 9600 by default</span>
 
 <span class="c1">// Modem Pins - Describe the physical pin connection of your modem to your board</span>
 <span class="c1">// NOTE:  Use -1 for pins that do not apply</span>
 <span class="c1">// The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter</span>
 <span class="c1">// For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemVccPin</span> <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>     <span class="c1">// MCU pin controlling modem power</span>
-                                   <span class="c1">// Option: modemVccPin = A5, if Mayfly SJ7 is</span>
-                                   <span class="c1">// connected to the ASSOC pin</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemStatusPin</span> <span class="o">=</span> <span class="mi">19</span><span class="p">;</span>  <span class="c1">// MCU pin used to read modem status</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemVccPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w">     </span><span class="c1">// MCU pin controlling modem power</span>
+<span class="w">                                   </span><span class="c1">// Option: modemVccPin = A5, if Mayfly SJ7 is</span>
+<span class="w">                                   </span><span class="c1">// connected to the ASSOC pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">19</span><span class="p">;</span><span class="w">  </span><span class="c1">// MCU pin used to read modem status</span>
 <span class="c1">// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but</span>
 <span class="c1">// the CTS pin can also be used if necessary</span>
-<span class="kr">const</span> <span class="kr">bool</span>   <span class="n">useCTSforStatus</span> <span class="o">=</span> <span class="kr">false</span><span class="p">;</span>  <span class="c1">// Flag to use the CTS pin for status</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemResetPin</span>   <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>     <span class="c1">// MCU pin connected to modem reset pin</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemSleepRqPin</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>     <span class="c1">// MCU pin for modem sleep/wake request</span>
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">modemLEDPin</span> <span class="o">=</span> <span class="n">redLED</span><span class="p">;</span>     <span class="c1">// MCU pin connected an LED to show modem</span>
-                                       <span class="c1">// status</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">bool</span><span class="w">   </span><span class="n">useCTSforStatus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">false</span><span class="p">;</span><span class="w">  </span><span class="c1">// Flag to use the CTS pin for status</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemResetPin</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span><span class="w">     </span><span class="c1">// MCU pin connected to modem reset pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemSleepRqPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span><span class="w">     </span><span class="c1">// MCU pin for modem sleep/wake request</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">modemLEDPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redLED</span><span class="p">;</span><span class="w">     </span><span class="c1">// MCU pin connected an LED to show modem</span>
+<span class="w">                                       </span><span class="c1">// status</span>
 
 <span class="c1">// Network connection information</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">apn</span> <span class="o">=</span> <span class="s">&quot;xxxxx&quot;</span><span class="p">;</span>  <span class="c1">// APN for GPRS connection</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">apn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;xxxxx&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// APN for GPRS connection</span>
 
 <span class="c1">// Create the modem object</span>
-<span class="n">DigiXBeeCellularTransparent</span> <span class="nf">modemXBCT</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span> <span class="n">modemVccPin</span><span class="p">,</span> <span class="n">modemStatusPin</span><span class="p">,</span>
-                                      <span class="n">useCTSforStatus</span><span class="p">,</span> <span class="n">modemResetPin</span><span class="p">,</span>
-                                      <span class="n">modemSleepRqPin</span><span class="p">,</span> <span class="n">apn</span><span class="p">);</span>
+<span class="n">DigiXBeeCellularTransparent</span><span class="w"> </span><span class="nf">modemXBCT</span><span class="p">(</span><span class="o">&amp;</span><span class="n">modemSerial</span><span class="p">,</span><span class="w"> </span><span class="n">modemVccPin</span><span class="p">,</span><span class="w"> </span><span class="n">modemStatusPin</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                      </span><span class="n">useCTSforStatus</span><span class="p">,</span><span class="w"> </span><span class="n">modemResetPin</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                      </span><span class="n">modemSleepRqPin</span><span class="p">,</span><span class="w"> </span><span class="n">apn</span><span class="p">);</span><span class="w"></span>
 <span class="c1">// Create an extra reference to the modem by a generic name</span>
-<span class="n">DigiXBeeCellularTransparent</span> <span class="n">modem</span> <span class="o">=</span> <span class="n">modemXBCT</span><span class="p">;</span></pre></section><section id="modem_digi_cellular_network"><h3>LTE Network Selection</h3><p>For LTE boards, it is good practice to select which network you&#x27;ll be connecting to based on your SIM card and signal availability. Example code for this can also be found in the menulink{setup_xbeec_carrier} example.</p><pre class="m-code">    <span class="c1">// Extra modem set-up</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Waking modem and setting Cellular Carrier Options...&quot;</span><span class="p">));</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">modemWake</span><span class="p">();</span>  <span class="c1">// NOTE:  This will also set up the modem</span>
-    <span class="c1">// Go back to command mode to set carrier options</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">commandMode</span><span class="p">();</span>
-    <span class="c1">// Carrier Profile - 0 = Automatic selection</span>
-    <span class="c1">//                 - 1 = No profile/SIM ICCID selected</span>
-    <span class="c1">//                 - 2 = AT&amp;T</span>
-    <span class="c1">//                 - 3 = Verizon</span>
-    <span class="c1">// NOTE:  To select T-Mobile, you must enter bypass mode!</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;CP&quot;</span><span class="p">),</span> <span class="mi">2</span><span class="p">);</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">();</span>
-    <span class="c1">// Cellular network technology - 0 = LTE-M with NB-IoT fallback</span>
-    <span class="c1">//                             - 1 = NB-IoT with LTE-M fallback</span>
-    <span class="c1">//                             - 2 = LTE-M only</span>
-    <span class="c1">//                             - 3 = NB-IoT only</span>
-    <span class="c1">// NOTE:  As of 2020 in the USA, AT&amp;T and Verizon only use LTE-M</span>
-    <span class="c1">// T-Mobile uses NB-IOT</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;N#&quot;</span><span class="p">),</span> <span class="mi">2</span><span class="p">);</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">();</span>
-    <span class="c1">// Write changes to flash and apply them</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Wait while applying changes...&quot;</span><span class="p">));</span>
-    <span class="c1">// Write changes to flash</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">writeChanges</span><span class="p">();</span>
-    <span class="c1">// Reset the cellular component to ensure network settings are changed</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;!R&quot;</span><span class="p">));</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">(</span><span class="mf">30000L</span><span class="p">);</span>
-    <span class="c1">// Force reset of the Digi component as well</span>
-    <span class="c1">// This effectively exits command mode</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;FR&quot;</span><span class="p">));</span>
-    <span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">(</span><span class="mf">5000L</span><span class="p">);</span></pre></section></section>
+<span class="n">DigiXBeeCellularTransparent</span><span class="w"> </span><span class="n">modem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">modemXBCT</span><span class="p">;</span><span class="w"></span></pre></section><section id="modem_digi_cellular_network"><h3>LTE Network Selection</h3><p>For LTE boards, it is good practice to select which network you&#x27;ll be connecting to based on your SIM card and signal availability. Example code for this can also be found in the menulink{setup_xbeec_carrier} example.</p><pre class="m-code"><span class="w">    </span><span class="c1">// Extra modem set-up</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Waking modem and setting Cellular Carrier Options...&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">modemWake</span><span class="p">();</span><span class="w">  </span><span class="c1">// NOTE:  This will also set up the modem</span>
+<span class="w">    </span><span class="c1">// Go back to command mode to set carrier options</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">commandMode</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Carrier Profile - 0 = Automatic selection</span>
+<span class="w">    </span><span class="c1">//                 - 1 = No profile/SIM ICCID selected</span>
+<span class="w">    </span><span class="c1">//                 - 2 = AT&amp;T</span>
+<span class="w">    </span><span class="c1">//                 - 3 = Verizon</span>
+<span class="w">    </span><span class="c1">// NOTE:  To select T-Mobile, you must enter bypass mode!</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;CP&quot;</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Cellular network technology - 0 = LTE-M with NB-IoT fallback</span>
+<span class="w">    </span><span class="c1">//                             - 1 = NB-IoT with LTE-M fallback</span>
+<span class="w">    </span><span class="c1">//                             - 2 = LTE-M only</span>
+<span class="w">    </span><span class="c1">//                             - 3 = NB-IoT only</span>
+<span class="w">    </span><span class="c1">// NOTE:  As of 2020 in the USA, AT&amp;T and Verizon only use LTE-M</span>
+<span class="w">    </span><span class="c1">// T-Mobile uses NB-IOT</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;N#&quot;</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Write changes to flash and apply them</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Wait while applying changes...&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Write changes to flash</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">writeChanges</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Reset the cellular component to ensure network settings are changed</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;!R&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">(</span><span class="mf">30000L</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Force reset of the Digi component as well</span>
+<span class="w">    </span><span class="c1">// This effectively exits command mode</span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">sendAT</span><span class="p">(</span><span class="n">GF</span><span class="p">(</span><span class="s">&quot;FR&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">modem</span><span class="p">.</span><span class="n">gsmModem</span><span class="p">.</span><span class="n">waitResponse</span><span class="p">(</span><span class="mf">5000L</span><span class="p">);</span><span class="w"></span></pre></section></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">

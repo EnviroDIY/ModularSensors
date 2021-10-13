@@ -1364,18 +1364,18 @@
 <p>This is only applicable to SAMD boards that are able to have multiple hardware I2C ports in use via SERCOMs.</p><aside class="m-note m-info"><h4>Note</h4><p>It is only possible to connect <em>one</em> AM2315 at a time on a single I2C bus.</p></aside>
 <hr/>
 </div>
-</section></p></section><section id="sensor_am2315_examples"><h2>Example Code</h2><p>The AM2315 is used in the <a href="double_logger_8ino-example.html" class="m-doc">double logger</a> and <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_am2315">menu a la carte</a> example</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/AOSongAM2315.h&gt;</span><span class="cp"></span>
+</section></p></section><section id="sensor_am2315_examples"><h2>Example Code</h2><p>The AM2315 is used in the <a href="double_logger_8ino-example.html" class="m-doc">double logger</a> and <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_am2315">menu a la carte</a> example</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AOSongAM2315.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">AM2315Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AM2315Power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
 
 <span class="c1">// Create an AOSong AM2315 sensor object</span>
-<span class="n">AOSongAM2315</span> <span class="nf">am2315</span><span class="p">(</span><span class="n">AM2315Power</span><span class="p">);</span>
+<span class="n">AOSongAM2315</span><span class="w"> </span><span class="nf">am2315</span><span class="p">(</span><span class="n">AM2315Power</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create humidity and temperature variable pointers for the AM2315</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">am2315Humid</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">AOSongAM2315_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">am2315Temp</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">AOSongAM2315_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">am2315Humid</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AOSongAM2315_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">am2315Temp</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">AOSongAM2315_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">am2315</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">

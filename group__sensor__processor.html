@@ -1331,20 +1331,20 @@
 <p>Need to know the Mayfly version because the battery resistor depends on it</p><aside class="m-note m-info"><h4>Note</h4><p>It is not possible to average more than one measurement for processor variables - it just doesn't make sense for them.</p></aside>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_processor_sensor_examples"><h2>Example Code</h2><p>The processor is used as a sensor in all of the examples, including the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_processor_sensor">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/ProcessorStats.h&gt;</span><span class="cp"></span>
+</section></p><hr/></section><section id="sensor_processor_sensor_examples"><h2>Example Code</h2><p>The processor is used as a sensor in all of the examples, including the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_processor_sensor">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/ProcessorStats.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create the main processor chip &quot;sensor&quot; - for general metadata</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span>    <span class="n">mcuBoardVersion</span> <span class="o">=</span> <span class="s">&quot;v0.5b&quot;</span><span class="p">;</span>
-<span class="n">ProcessorStats</span> <span class="nf">mcuBoard</span><span class="p">(</span><span class="n">mcuBoardVersion</span><span class="p">);</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">    </span><span class="n">mcuBoardVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;v0.5b&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="n">ProcessorStats</span><span class="w"> </span><span class="nf">mcuBoard</span><span class="p">(</span><span class="n">mcuBoardVersion</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create sample number, battery voltage, and free RAM variable pointers for the</span>
 <span class="c1">// processor</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">mcuBoardBatt</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessorStats_Battery</span><span class="p">(</span>
-    <span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">mcuBoardAvailableRAM</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessorStats_FreeRam</span><span class="p">(</span>
-    <span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">mcuBoardSampNo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessorStats_SampleNumber</span><span class="p">(</span>
-    <span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">mcuBoardBatt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProcessorStats_Battery</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">mcuBoardAvailableRAM</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProcessorStats_FreeRam</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">mcuBoardSampNo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ProcessorStats_SampleNumber</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">mcuBoard</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">

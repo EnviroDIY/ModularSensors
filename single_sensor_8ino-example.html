@@ -1360,162 +1360,162 @@
 <span class="cm"> *</span>
 <span class="cm"> * DISCLAIMER:</span>
 <span class="cm"> * THIS CODE IS PROVIDED &quot;AS IS&quot; - NO WARRANTY IS GIVEN.</span>
-<span class="cm"> * ======================================================================= */</span>
+<span class="cm"> * ======================================================================= */</span><span class="w"></span>
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">// Include the base required libraries</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [includes] */</span>
+<span class="cm">/** Start [includes] */</span><span class="w"></span>
 <span class="c1">// The Arduino library is needed for every Arduino program.</span>
-<span class="cp">#include</span> <span class="cpf">&lt;Arduino.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Arduino.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// EnableInterrupt is used by ModularSensors for external and pin change</span>
 <span class="c1">// interrupts and must be explicitely included in the main program.</span>
-<span class="cp">#include</span> <span class="cpf">&lt;EnableInterrupt.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;EnableInterrupt.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Include the main header for ModularSensors</span>
-<span class="cp">#include</span> <span class="cpf">&lt;ModularSensors.h&gt;</span><span class="cp"></span>
-<span class="cm">/** End [includes] */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ModularSensors.h&gt;</span><span class="cp"></span>
+<span class="cm">/** End [includes] */</span><span class="w"></span>
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">// Board setup info</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [sketch_info] */</span>
+<span class="cm">/** Start [sketch_info] */</span><span class="w"></span>
 <span class="c1">// The name of this program file</span>
-<span class="kr">const</span> <span class="kr">char</span><span class="o">*</span> <span class="n">sketchName</span> <span class="o">=</span> <span class="s">&quot;single_sensor.ino&quot;</span><span class="p">;</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">sketchName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;single_sensor.ino&quot;</span><span class="p">;</span><span class="w"></span>
 
-<span class="kr">const</span> <span class="kr">int32_t</span> <span class="n">serialBaud</span> <span class="o">=</span> <span class="mi">115200</span><span class="p">;</span>  <span class="c1">// Baud rate for debugging</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">greenLED</span>   <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>       <span class="c1">// Pin for the green LED</span>
-<span class="kr">const</span> <span class="kr">int8_t</span>  <span class="n">redLED</span>     <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>       <span class="c1">// Pin for the red LED</span>
-<span class="cm">/** End [sketch_info] */</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int32_t</span><span class="w"> </span><span class="n">serialBaud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">115200</span><span class="p">;</span><span class="w">  </span><span class="c1">// Baud rate for debugging</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">greenLED</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w">       </span><span class="c1">// Pin for the green LED</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">redLED</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span><span class="w">       </span><span class="c1">// Pin for the red LED</span>
+<span class="cm">/** End [sketch_info] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">// Set up the sensor object</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [sensor] */</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sensors/MaxBotixSonar.h&gt;</span><span class="cp"></span>
+<span class="cm">/** Start [sensor] */</span><span class="w"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/MaxBotixSonar.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a reference to the serial port for the sonar</span>
-<span class="n">HardwareSerial</span><span class="o">&amp;</span> <span class="n">sonarSerial</span> <span class="o">=</span> <span class="n">Serial1</span><span class="p">;</span>  <span class="c1">// Use hardware serial if possible</span>
+<span class="n">HardwareSerial</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sonarSerial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Serial1</span><span class="p">;</span><span class="w">  </span><span class="c1">// Use hardware serial if possible</span>
 
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">SonarPower</span>   <span class="o">=</span> <span class="mi">22</span><span class="p">;</span>  <span class="c1">// excite (power) pin</span>
-<span class="kr">const</span> <span class="kr">int</span>    <span class="n">SonarTrigger</span> <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span>  <span class="c1">// Trigger pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">SonarPower</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">;</span><span class="w">  </span><span class="c1">// excite (power) pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int</span><span class="w">    </span><span class="n">SonarTrigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w">  </span><span class="c1">// Trigger pin</span>
 
 <span class="c1">// Create a new instance of the sonar sensor;</span>
-<span class="n">MaxBotixSonar</span> <span class="nf">sonar</span><span class="p">(</span><span class="n">sonarSerial</span><span class="p">,</span> <span class="n">SonarPower</span><span class="p">,</span> <span class="n">SonarTrigger</span><span class="p">);</span>
+<span class="n">MaxBotixSonar</span><span class="w"> </span><span class="nf">sonar</span><span class="p">(</span><span class="n">sonarSerial</span><span class="p">,</span><span class="w"> </span><span class="n">SonarPower</span><span class="p">,</span><span class="w"> </span><span class="n">SonarTrigger</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create a new instance of the range variable;</span>
-<span class="n">MaxBotixSonar_Range</span> <span class="nf">sonar_range</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sonar</span><span class="p">);</span>
-<span class="cm">/** End [sensor] */</span>
+<span class="n">MaxBotixSonar_Range</span><span class="w"> </span><span class="nf">sonar_range</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sonar</span><span class="p">);</span><span class="w"></span>
+<span class="cm">/** End [sensor] */</span><span class="w"></span>
 
-<span class="cm">/* Start [calculated variables] */</span>
+<span class="cm">/* Start [calculated variables] */</span><span class="w"></span>
 <span class="c1">// Create a function to calculate the water depth from the sonar range</span>
 <span class="c1">// For this example, we&#39;ll assume that the sonar is mounted 5m above the stream</span>
 <span class="c1">// bottom</span>
-<span class="kr">float</span> <span class="nf">calcDepth</span><span class="p">(</span><span class="kr">void</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kr">float</span> <span class="n">mountHeight</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
-    <span class="kr">float</span> <span class="n">sonarRange</span>  <span class="o">=</span> <span class="n">sonar_range</span><span class="p">.</span><span class="n">getValue</span><span class="p">();</span>
-    <span class="k">return</span> <span class="n">mountHeight</span> <span class="o">-</span> <span class="n">sonarRange</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="kr">float</span><span class="w"> </span><span class="nf">calcDepth</span><span class="p">(</span><span class="kr">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">mountHeight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">float</span><span class="w"> </span><span class="n">sonarRange</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">sonar_range</span><span class="p">.</span><span class="n">getValue</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">mountHeight</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sonarRange</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 <span class="c1">// Create a calculated variable for the water depth</span>
 <span class="c1">// Variable calcVar(functionName, VariableName, VariableUnit, Resolution, UUID,</span>
 <span class="c1">// Code); VariableName must be a value from</span>
 <span class="c1">// http://vocabulary.odm2.org/variablename/ VariableUnit must be a value from</span>
 <span class="c1">// http://vocabulary.odm2.org/units/</span>
-<span class="n">Variable</span> <span class="nf">waterDepth</span><span class="p">(</span><span class="n">calcDepth</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;waterDepth&quot;</span><span class="p">,</span> <span class="s">&quot;millimeter&quot;</span><span class="p">,</span> <span class="s">&quot;sonarDepth&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="cm">/** End [calculated_variables] */</span>
+<span class="n">Variable</span><span class="w"> </span><span class="nf">waterDepth</span><span class="p">(</span><span class="n">calcDepth</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;waterDepth&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;millimeter&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sonarDepth&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="cm">/** End [calculated_variables] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Working Functions</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [working_functions] */</span>
+<span class="cm">/** Start [working_functions] */</span><span class="w"></span>
 <span class="c1">// Flashes to Mayfly&#39;s LED&#39;s</span>
-<span class="kr">void</span> <span class="nf">greenredflash</span><span class="p">(</span><span class="kr">int</span> <span class="n">numFlash</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kr">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numFlash</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">HIGH</span><span class="p">);</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-        <span class="nf">delay</span><span class="p">(</span><span class="mi">75</span><span class="p">);</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-        <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">HIGH</span><span class="p">);</span>
-        <span class="nf">delay</span><span class="p">(</span><span class="mi">75</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="cm">/** End [working_functions] */</span>
+<span class="kr">void</span><span class="w"> </span><span class="nf">greenredflash</span><span class="p">(</span><span class="kr">int</span><span class="w"> </span><span class="n">numFlash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kr">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">numFlash</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">HIGH</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">delay</span><span class="p">(</span><span class="mi">75</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">HIGH</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="nf">delay</span><span class="p">(</span><span class="mi">75</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="cm">/** End [working_functions] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Arduino Setup Function</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [setup] */</span>
-<span class="kr">void</span> <span class="nb">setup</span><span class="p">()</span> <span class="p">{</span>
-    <span class="c1">// Start the primary serial connection</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">serialBaud</span><span class="p">);</span>
+<span class="cm">/** Start [setup] */</span><span class="w"></span>
+<span class="kr">void</span><span class="w"> </span><span class="nb">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Start the primary serial connection</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="n">serialBaud</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Print a start-up note to the first serial port</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Now running &quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">sketchName</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Print a start-up note to the first serial port</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Now running &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">sketchName</span><span class="p">);</span><span class="w"></span>
 
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Using ModularSensors Library version &quot;</span><span class="p">));</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">MODULAR_SENSORS_VERSION</span><span class="p">);</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Using ModularSensors Library version &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">MODULAR_SENSORS_VERSION</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Start the stream for the sonar</span>
-    <span class="n">sonarSerial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Start the stream for the sonar</span>
+<span class="w">    </span><span class="n">sonarSerial</span><span class="p">.</span><span class="nf">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Set up pins for the LED&#39;s</span>
-    <span class="nf">pinMode</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">OUTPUT</span><span class="p">);</span>
-    <span class="nf">pinMode</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span> <span class="kr">OUTPUT</span><span class="p">);</span>
-    <span class="c1">// Blink the LEDs to show the board is on and starting up</span>
-    <span class="n">greenredflash</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Set up pins for the LED&#39;s</span>
+<span class="w">    </span><span class="nf">pinMode</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">OUTPUT</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">pinMode</span><span class="p">(</span><span class="n">redLED</span><span class="p">,</span><span class="w"> </span><span class="kr">OUTPUT</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Blink the LEDs to show the board is on and starting up</span>
+<span class="w">    </span><span class="n">greenredflash</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Print a start-up note to the first serial port</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Single Sensor Example - Sonar Ranging&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="c1">// Print a start-up note to the first serial port</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;Single Sensor Example - Sonar Ranging&quot;</span><span class="p">));</span><span class="w"></span>
 
-    <span class="c1">// Set up the sensor</span>
-    <span class="n">sonar</span><span class="p">.</span><span class="nb">setup</span><span class="p">();</span>
-<span class="p">}</span>
-<span class="cm">/** End [setup] */</span>
+<span class="w">    </span><span class="c1">// Set up the sensor</span>
+<span class="w">    </span><span class="n">sonar</span><span class="p">.</span><span class="nb">setup</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="cm">/** End [setup] */</span><span class="w"></span>
 
 
 <span class="c1">// ==========================================================================</span>
 <span class="c1">//  Arduino Loop Function</span>
 <span class="c1">// ==========================================================================</span>
-<span class="cm">/** Start [loop] */</span>
-<span class="kr">void</span> <span class="nb">loop</span><span class="p">()</span> <span class="p">{</span>
-    <span class="c1">// Turn on the LED to show we&#39;re taking a reading</span>
-    <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">HIGH</span><span class="p">);</span>
+<span class="cm">/** Start [loop] */</span><span class="w"></span>
+<span class="kr">void</span><span class="w"> </span><span class="nb">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Turn on the LED to show we&#39;re taking a reading</span>
+<span class="w">    </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">HIGH</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Send power to the sensor</span>
-    <span class="n">sonar</span><span class="p">.</span><span class="n">powerUp</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Send power to the sensor</span>
+<span class="w">    </span><span class="n">sonar</span><span class="p">.</span><span class="n">powerUp</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Wake up the sensor</span>
-    <span class="n">sonar</span><span class="p">.</span><span class="n">wake</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Wake up the sensor</span>
+<span class="w">    </span><span class="n">sonar</span><span class="p">.</span><span class="n">wake</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Update the sensor value</span>
-    <span class="n">sonar</span><span class="p">.</span><span class="n">update</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Update the sensor value</span>
+<span class="w">    </span><span class="n">sonar</span><span class="p">.</span><span class="n">update</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Print the sonar result</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">&quot;Current sonar range: &quot;</span><span class="p">);</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">sonar_range</span><span class="p">.</span><span class="n">getValueString</span><span class="p">());</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">&quot;Calculated water depth: &quot;</span><span class="p">);</span>
-    <span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">waterDepth</span><span class="p">.</span><span class="n">getValueString</span><span class="p">());</span>
+<span class="w">    </span><span class="c1">// Print the sonar result</span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">&quot;Current sonar range: &quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">sonar_range</span><span class="p">.</span><span class="n">getValueString</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">&quot;Calculated water depth: &quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Serial</span><span class="p">.</span><span class="nf">println</span><span class="p">(</span><span class="n">waterDepth</span><span class="p">.</span><span class="n">getValueString</span><span class="p">());</span><span class="w"></span>
 
-    <span class="c1">// Put the sensor back to sleep</span>
-    <span class="n">sonar</span><span class="p">.</span><span class="n">sleep</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Put the sensor back to sleep</span>
+<span class="w">    </span><span class="n">sonar</span><span class="p">.</span><span class="n">sleep</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Cut the sensor power</span>
-    <span class="n">sonar</span><span class="p">.</span><span class="n">powerDown</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// Cut the sensor power</span>
+<span class="w">    </span><span class="n">sonar</span><span class="p">.</span><span class="n">powerDown</span><span class="p">();</span><span class="w"></span>
 
-    <span class="c1">// Turn off the LED to show we&#39;re done with the reading</span>
-    <span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span> <span class="kr">LOW</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Turn off the LED to show we&#39;re done with the reading</span>
+<span class="w">    </span><span class="nf">digitalWrite</span><span class="p">(</span><span class="n">greenLED</span><span class="p">,</span><span class="w"> </span><span class="kr">LOW</span><span class="p">);</span><span class="w"></span>
 
-    <span class="c1">// Wait for the next reading</span>
-    <span class="nf">delay</span><span class="p">(</span><span class="mi">5000</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="cm">/** End [loop] */</span></pre></section>
+<span class="w">    </span><span class="c1">// Wait for the next reading</span>
+<span class="w">    </span><span class="nf">delay</span><span class="p">(</span><span class="mi">5000</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+<span class="cm">/** End [loop] */</span><span class="w"></span></pre></section>
         <div class="m-note m-dim m-thin m-text-center"><a href="simple_logging__learn_enviro_d_i_y_8ino-example.html" class="m-doc">&laquo; simple_logging_LearnEnviroDIY.ino</a> | <a href="page_the_examples.html" class="m-doc">Examples</a></div>
 
                     </div>

@@ -1375,25 +1375,25 @@
 <aside class="m-note m-info"><h4>Note</h4><p>Software I2C is <em>not</em> supported for the BME280.</p></aside>
 <hr/>
 </div>
-</section></p><hr/></section><section id="sensor_bme280_examples"><h2>Example Code</h2><p>The BME280 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_bme280">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;sensors/BoschBME280.h&gt;</span><span class="cp"></span>
+</section></p><hr/></section><section id="sensor_bme280_examples"><h2>Example Code</h2><p>The BME280 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_bme280">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/BoschBME280.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span> <span class="kr">int8_t</span> <span class="n">BME280Power</span> <span class="o">=</span> <span class="n">sensorPowerPin</span><span class="p">;</span>  <span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="kr">uint8_t</span>      <span class="n">BMEi2c_addr</span> <span class="o">=</span> <span class="mh">0x76</span><span class="p">;</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">BME280Power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="kr">uint8_t</span><span class="w">      </span><span class="n">BMEi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x76</span><span class="p">;</span><span class="w"></span>
 <span class="c1">// The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove</span>
 <span class="c1">// default) Either can be physically mofidied for the other address</span>
 
 <span class="c1">// Create a Bosch BME280 sensor object</span>
-<span class="n">BoschBME280</span> <span class="nf">bme280</span><span class="p">(</span><span class="n">BME280Power</span><span class="p">,</span> <span class="n">BMEi2c_addr</span><span class="p">);</span>
+<span class="n">BoschBME280</span><span class="w"> </span><span class="nf">bme280</span><span class="p">(</span><span class="n">BME280Power</span><span class="p">,</span><span class="w"> </span><span class="n">BMEi2c_addr</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create four variable pointers for the BME280</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">bme280Humid</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">BoschBME280_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">bme280Temp</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">BoschBME280_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">bme280Press</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">BoschBME280_Pressure</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span>
-<span class="n">Variable</span><span class="o">*</span> <span class="n">bme280Alt</span> <span class="o">=</span>
-    <span class="k">new</span> <span class="n">BoschBME280_Altitude</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span> <span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span></pre></section>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">bme280Humid</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BoschBME280_Humidity</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">bme280Temp</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BoschBME280_Temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">bme280Press</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BoschBME280_Pressure</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">bme280Alt</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BoschBME280_Altitude</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bme280</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">);</span><span class="w"></span></pre></section>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
