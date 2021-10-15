@@ -22,7 +22,7 @@ jobs:
 
     steps:
       # check out the ModularSensors repo
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
         with:
           path: code_docs/ModularSensors
 
@@ -78,7 +78,7 @@ jobs:
 
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
         with:
           # Repository name with owner. For example, actions/checkout
           repository: SRGDamia1/m.css

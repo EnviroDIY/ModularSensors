@@ -182,7 +182,7 @@ jobs:
             sensorFlag: NO_SENSORS
             publisherFlag: MS_BUILD_PUB_THINGSPEAK
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
 
       - name: Set environment variable for library installation source
         run: |
