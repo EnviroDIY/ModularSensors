@@ -73,7 +73,7 @@ Foreach ($modemFlag in $modemFlags)
 
 $sensorFlags = @(`
     'MS_BUILD_SENSOR_AM2315', `
-    'MS_BUILD_SENSOR_DHT', `
+    # 'MS_BUILD_SENSOR_DHT', `
     'MS_BUILD_SENSOR_SQ212', `
     'MS_BUILD_SENSOR_ATLASCO2', `
     'MS_BUILD_SENSOR_ATLASDO', `
