@@ -19,18 +19,18 @@ with open(build_file, "r") as in_file:
 
 # set flags
 all_modem_flags = [
-    "MS_BUILD_MODEM_SIM7080",
+    "BUILD_MODEM_SIM7080",
 ]
 all_sensor_flags = [
     "NO_SENSORS",
 ]
 all_publisher_flags = [
-    "MS_BUILD_PUB_MMW",
+    "BUILD_PUB_MMW",
 ]
 
 #%% Read flags out of the menu example
 pattern = re.compile(
-    "^(?:#if|#elif) defined (?P<flag1>MS_BUILD_\w+)((?:[\\s\\n\\\\]*?\|\|[\\s\\n\\\\]*defined[\\s\\n\\\\]*?)(?P<flag_last>MS_BUILD_\w+))*",
+    "^(?:#if|#elif) defined (?P<flag1>BUILD_\w+)((?:[\\s\\n\\\\]*?\|\|[\\s\\n\\\\]*defined[\\s\\n\\\\]*?)(?P<flag_last>BUILD_\w+))*",
     re.MULTILINE,
 )
 textfile = open(menu_file, "r")
