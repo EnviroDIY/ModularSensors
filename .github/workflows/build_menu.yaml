@@ -173,9 +173,6 @@ jobs:
             sensorFlag: BUILD_SENSOR_DOPTO
             publisherFlag: BUILD_PUB_MMW
           - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_DHT
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
             sensorFlag: NO_SENSORS
             publisherFlag: BUILD_PUB_DREAMHOST
           - modemFlag: BUILD_MODEM_SIM7080

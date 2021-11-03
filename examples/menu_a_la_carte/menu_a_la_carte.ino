@@ -2208,11 +2208,11 @@ Variable* variableList[] = {
     am2315Humid,
     am2315Temp,
 #endif
-#if defined BUILD_SENSOR_DHT
-    dhtHumid,
-    dhtTemp,
-    dhtHI,
-#endif
+// #if defined BUILD_SENSOR_DHT
+//     dhtHumid,
+//     dhtTemp,
+//     dhtHI,
+// #endif
 #if defined BUILD_SENSOR_SQ212
     sq212PAR,
     sq212voltage,
