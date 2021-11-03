@@ -1,5 +1,5 @@
 /** =========================================================================
- * @file DRWI_LTE.ino
+ * @file DRWI_DigiLTE.ino
  * @brief Example for DRWI CitSci LTE sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -50,7 +50,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "DRWI_LTE.ino";
+const char* sketchName = "DRWI_DigiLTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -61,7 +61,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 115200;  // Baud rate for debugging
+const int32_t serialBaud = 57600;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
@@ -188,47 +188,46 @@ MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
 /** Start [variable_arrays] */
 Variable* variableList[] = {
     new MeterHydros21_Cond(&hydros),
-    new MeterHydros21_Temp(&hydros),
     new MeterHydros21_Depth(&hydros),
+    new MeterHydros21_Temp(&hydros),
     new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
     new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
-    new Modem_RSSI(&modem),
     new Modem_SignalPercent(&modem),
 };
 
-// All UUID's, device registration, and sampling feature information can be
-// pasted directly from Monitor My Watershed.  To get the list, click the "View
-// token UUID list" button on the upper right of the site page.
+// All UUID's, device registration, and sampling feature information can be pasted directly from Monitor My Watershed.  
+//To get the list, click the "View  token UUID list" button on the upper right of the site page.
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
 // Be VERY certain that they match the order of your UUID's!
-// Rearrange the variables in the variable list if necessary to match!
+// Rearrange the variables in the variable list ABOVE if necessary to match!
+// Do not change the order of the variables in the section below.
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
-const char* UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity
-                                             // (Decagon_CTD-10_Cond)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                             // (Decagon_CTD-10_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
-                                             // (Decagon_CTD-10_Depth)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
-                                             // (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                             // (EnviroDIY_Mayfly_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength
-                                             // indication (Digi_Cellular_RSSI)
-    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale
-                                             // (Digi_Cellular_SignalPercent)
+
+// Replace all of the text in the following section with the UUID array from MonitorMyWatershed
+
+// ---------------------   Beginning of Token UUID List   ---------------------------------------
+
+
+const char* UUIDs[] =                                  // UUID array for device sensors
+{     
+    "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (Low)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (High)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Maxim_DS3231_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (Digi_Cellular_SignalPercent)                 
 };
-const char* registrationToken =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";    // Sampling feature UUID
+
+
+// -----------------------   End of Token UUID List   ------------------------------------------
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -315,6 +314,8 @@ void setup() {
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
+    pinMode(20, OUTPUT);   //for proper operation of the onboard flash memory chip's ChipSelect (Mayfly v1.0 and later)
+  
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
