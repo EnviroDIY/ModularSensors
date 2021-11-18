@@ -22,10 +22,12 @@ echo "\n\e[32mCreating a new directory for the testing version of Modular sensor
 mkdir -p home/arduino/user/libraries/ModularSensors
 
 echo "\n\e[32mMoving the unzipped library to the new directory\e[0m"
-if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+if [ -z "${GITHUB_HEAD_REF}" ]; then
+echo "\n\e[36mExpected unzipped directory name (from SHA): home/arduino/downloads/ModularSensors-${GITHUB_SHA}\e[0m"
 mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
 else
 SAVED_ZIP_NAME=${GITHUB_HEAD_REF} | sed -e 's/\//-/g'
+echo "\n\e[36mExpected unzipped directory name (from head): home/arduino/downloads/ModularSensors-${SAVED_ZIP_NAME}\e[0m"
 mv home/arduino/downloads/ModularSensors-${SAVED_ZIP_NAME}/* home/arduino/user/libraries/ModularSensors
 fi
 
