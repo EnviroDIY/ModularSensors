@@ -56,6 +56,9 @@ jobs:
             sensorFlag: BUILD_SENSOR_AM2315
             publisherFlag: BUILD_PUB_MMW
           - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_DHT
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
             sensorFlag: BUILD_SENSOR_SQ212
             publisherFlag: BUILD_PUB_MMW
           - modemFlag: BUILD_MODEM_SIM7080

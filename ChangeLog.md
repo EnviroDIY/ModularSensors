@@ -5,21 +5,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ****
-## v0.31.2 (2021-11-03) Fix build without AOSong DHT
+
+## v0.32.0 (2021-11-18) Reinstate support for AOSong DHT
+
+### Downloads
+
+**[ModularSensors_Dependencies_v0.32.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.32.0/ModularSensors_Dependencies_v0.32.0.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
+### New Features
+- Restored support for AOSong DHT sensor.
+
+## v0.31.2 (2021-11-03) [Fix build without AOSong DHT](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.2)
+
+### Downloads
+
+**[ModularSensors_Dependencies_v0.31.2.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.31.2/ModularSensors_Dependencies_v0.31.2.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
 ### Bug fixes
 - Fixed build matrix to remove DHT
 
-### New Features
-- Temporarily **_REMOVED_** support for AOSong DHT sensor.
-  - Intend to restore this after updating to support newest Adafruit DHT library
-## v0.31.0 (2021-11-02) Remove support for AOSong DHT
+## v0.31.0 (2021-11-02) [Remove support for AOSong DHT](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.0)
+
+### Downloads
+
+**[ModularSensors_Dependencies_v0.31.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.31.0/ModularSensors_Dependencies_v0.31.0.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
 ### New Features
 - Temporarily **_REMOVED_** support for AOSong DHT sensor.
   - Intend to restore this after updating to support newest Adafruit DHT library
 
-****
+
 ## v0.30.0 (2021-07-06) Remove support for SoftwareWire for Atlas sensors
+
+### Downloads
+
+**[ModularSensors_Dependencies_v0.30.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.30.0/ModularSensors_Dependencies_v0.30.0.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
 ### New Features
 - Added support for [Campbell ClariVUE10](https://www.campbellsci.com/clarivue10) turbidity sensor
@@ -36,10 +60,20 @@ As I think this feature was completely unused for the Atlas sensors and I see no
 
 ## v0.29.1 (2021-07-01) [Fix YosemiTech Y533 ORP sensor outputs](https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.29.1)
 
+### Downloads
+
+**[ModularSensors_Dependencies_v0.29.1.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.29.1/ModularSensors_Dependencies_v0.29.1.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
+
 ### Fixed
 - Modified `YosemitechY533.h` and examples to work with updated ORP `getValues()` function in https://github.com/EnviroDIY/YosemitechModbus released with v0.2.5.
 
 ## v0.29.0 (2021-05-19) Create a ModularSensors.h
+
+### Downloads
+
+**[ModularSensors_Dependencies_v0.29.0.zip](https://github.com/EnviroDIY/ModularSensors/releases/download/v0.29.0/ModularSensors_Dependencies_v0.29.0.zip)**
+- contains this version of ModularSensors _and the proper versions of all of its dependencies_.
 
 ### New Features
 - Created a ModularSensors.h file to include.
