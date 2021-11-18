@@ -161,7 +161,7 @@
       "owner": "adafruit",
       "library id": "773",
       "url": "https://github.com/adafruit/Adafruit_AM2315.git",
-      "version": "~2.1.1",
+      "version": "~2.2.0",
       "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -252,7 +252,7 @@
       "version": "~2.1.4",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12.git",
       "note": "EnviroDIY SDI-12 Library for Arduino",
-      "authors": [
+      "author_notes": [
         "Kevin M. Smith",
         "Sara Damiano",
         "Shannon Hicks",
