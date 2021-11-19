@@ -126,7 +126,7 @@
  * The raw VWC counts variable from a Meter Teros 11
  * - Range and accuracy of the raw count values are not specified
  *
- * {{ @ref MeterTeros11_Counts::MeterTeros11_Counts }}
+ * {{ @ref MeterTeros11_Count::MeterTeros11_Count }}
  */
 /**@{*/
 /**
