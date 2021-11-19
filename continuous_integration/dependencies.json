@@ -154,7 +154,7 @@
       "owner": "paulstoffregen",
       "library id": "1",
       "url": "https://github.com/PaulStoffregen/OneWire.git",
-      "version": "~2.3.5",
+      "version": "~2.3.6",
       "note": "OneWire - Control 1-Wire protocol (DS18S20, DS18B20, DS2408 and etc)",
       "authors": [
         "Paul Stoffregen",

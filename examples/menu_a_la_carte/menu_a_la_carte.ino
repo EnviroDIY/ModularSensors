@@ -757,7 +757,7 @@ Variable* modemTemperature =
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
+const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the
@@ -1310,7 +1310,7 @@ Variable* rdoO2pp =
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte acculevelModbusAddress  = 0x01;  // The modbus address of KellerAcculevel
-const int8_t  acculevelPower = A3;              // Acculevel Sensor power pin
+const int8_t  acculevelPower = A3;    // Acculevel Sensor power pin
 const int8_t  alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
 const int8_t  al485EnablePin = -1;              // Adapter RE/DE pin
 const uint8_t acculevelNumberReadings = 5;

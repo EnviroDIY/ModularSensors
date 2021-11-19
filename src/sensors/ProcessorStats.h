@@ -209,7 +209,8 @@ class ProcessorStats : public Sensor {
      *
      * @param version The version of the MCU, if applicable.
      * - For an EnviroDIY Mayfly, the version should be one of "v0.3", "v0.4",
-     * "v0.5", or "v0.5b."  There *is* a difference between the versions!
+     * "v0.5", "v0.5b", "v1.0", or "v1.1".  There *is* a difference between some
+     * of the versions!
      *
      * @note It is not possible to average more than one measurement for
      * processor variables - it just doesn't make sense for them.

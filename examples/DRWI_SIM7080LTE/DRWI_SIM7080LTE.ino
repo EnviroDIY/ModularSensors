@@ -127,10 +127,7 @@ SIMComSIM7080 modem = modem7080;
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
-const char* mcuBoardVersion =
-    "v0.5b";  // is only used for onboard battery voltage calculation,
-              // "v0.5b" is safe to use on Mayfly v1.0 boards because the
-              // formula is the same
+const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
 /** End [processor_sensor] */
 

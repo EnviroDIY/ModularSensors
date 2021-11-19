@@ -148,7 +148,8 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
         float rawBattery    = analogRead(_batteryPin);
         sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
     }
-    if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") == 0) {
+    if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") ||
+        strcmp(_version, "v1.0") || strcmp(_version, "v1.1") == 0) {
         // Get the battery voltage
         float rawBattery    = analogRead(_batteryPin);
         sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;

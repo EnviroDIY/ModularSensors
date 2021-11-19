@@ -1,6 +1,6 @@
 {
   "name": "EnviroDIY_ModularSensors",
-  "version": "0.32.1",
+  "version": "0.32.2",
   "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
   "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
   "platforms": "atmelavr, atmelsam",
@@ -215,7 +215,7 @@
       "owner": "paulstoffregen",
       "library id": "1",
       "url": "https://github.com/PaulStoffregen/OneWire.git",
-      "version": "~2.3.5",
+      "version": "~2.3.6",
       "note": "OneWire - Control 1-Wire protocol (DS18S20, DS18B20, DS2408 and etc)",
       "authors": [
         "Paul Stoffregen",
