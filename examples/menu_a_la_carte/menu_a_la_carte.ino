@@ -809,29 +809,29 @@ Variable* am2315Temp =
 #endif
 
 
-// #if defined BUILD_SENSOR_DHT
-// // ==========================================================================
-// //  AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
-// // ==========================================================================
-// /** Start [dht] */
-// #include <sensors/AOSongDHT.h>
+#if defined BUILD_SENSOR_DHT
+// ==========================================================================
+//  AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
+// ==========================================================================
+/** Start [dht] */
+#include <sensors/AOSongDHT.h>
 
-// const int8_t DHTPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-// const int8_t DHTPin   = 10;              // DHT data pin
-// DHTtype      dhtType  = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
+const int8_t DHTPower = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t DHTPin   = 10;              // DHT data pin
+const int8_t dhtType  = DHT11;  // DHT type, one of DHT11, DHT12, DHT21, DHT22, or AM2301
 
-// // Create an AOSong DHT sensor object
-// AOSongDHT dht(DHTPower, DHTPin, dhtType);
+// Create an AOSong DHT sensor object
+AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
-// // Create humidity, temperature, and heat index variable pointers for the DHT
-// Variable* dhtHumid =
-//     new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* dhtTemp = new AOSongDHT_Temp(&dht,
-//                                        "12345678-abcd-1234-ef00-1234567890ab");
-// Variable* dhtHI   = new AOSongDHT_HI(&dht,
-//                                    "12345678-abcd-1234-ef00-1234567890ab");
-// /** End [dht] */
-// #endif
+// Create humidity, temperature, and heat index variable pointers for the DHT
+Variable* dhtHumid =
+    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* dhtTemp = new AOSongDHT_Temp(&dht,
+                                       "12345678-abcd-1234-ef00-1234567890ab");
+Variable* dhtHI   = new AOSongDHT_HI(&dht,
+                                   "12345678-abcd-1234-ef00-1234567890ab");
+/** End [dht] */
+#endif
 
 
 #if defined BUILD_SENSOR_SQ212
@@ -2208,11 +2208,11 @@ Variable* variableList[] = {
     am2315Humid,
     am2315Temp,
 #endif
-// #if defined BUILD_SENSOR_DHT
-//     dhtHumid,
-//     dhtTemp,
-//     dhtHI,
-// #endif
+#if defined BUILD_SENSOR_DHT
+    dhtHumid,
+    dhtTemp,
+    dhtHI,
+#endif
 #if defined BUILD_SENSOR_SQ212
     sq212PAR,
     sq212voltage,

@@ -29,8 +29,8 @@ jobs:
           echo "VERSION=$VER" >> $GITHUB_ENV
           echo "ZIP_NAME=$ZIP_FILE" >> $GITHUB_ENV
 
-      - name: Set up Python
-        uses: actions/setup-python@v2.2.2
+      - name: Set up python
+        uses: actions/setup-python@v2.3.0
 
       - name: Install PlatformIO
         run: |
@@ -126,40 +126,39 @@ jobs:
           echo "::debug::Removing SDFat extras"
           zip -d -q libraries "*/SdFat/extras/*"
 
-      - name: Get notes
-        id: generate_notes
-        uses: anmarkoulis/commitizen-changelog-reader@master
+      - name: Get change log entry for release notes
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
         with:
+          validation_depth: 10
           # NOTE:  Need to add the refs/tags to work with the generate notes action
-          tag_name: ${{ format('refs/tags/{0}', env.VERSION) }}
-          changelog: ChangeLog.md
+          version: ${{ format('refs/tags/{0}', env.VERSION) }}
+          path: ./CHANGELOG.md
+
+      # I use the first line of the change log entry as the name, so read it here
+      # - name: Get release name
+      #   id: get_release_name
+      #   run: |
+      #     release_name=$(echo ${{steps.changelog_reader.outputs.changes}} | cut -d '\n' -f 1)
+      #      echo "::set-output name=release_name::$release_name"
 
       # Create a new release
-      - name: Create Release
+      - name: Create release
         id: create_release
-        uses: actions/create-release@v1.1.4
+        uses: softprops/action-gh-release@v0.1.14
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.VERSION }}
-          release_name: ${{ env.VERSION }}
-          draft: false
-          prerelease: false
-          body: ${{join(fromJson(steps.generate_notes.outputs.notes).notes, '')}}
+          # name: ${{ format('{0} - {1}', env.VERSION, steps.get_release_name.outputs.release_name) }}
+          name: ${{ env.VERSION }}
+          draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
+          prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
+          body: ${{ steps.changelog_reader.outputs.changes }}
+          files: ${{ format('./{0}.zip', env.ZIP_NAME) }}
+          generate_release_notes: false
 
-      # Upload the zipped dependencies to the release
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ${{format('./{0}.zip', env.ZIP_NAME)}}
-          asset_name: ${{format('{0}.zip', env.ZIP_NAME)}}
-          asset_content_type: application/zip
-
-      # Publish the new release to the pio package manager
-      - name: Publish release to PIO
+      # Publish the new release to the PlatformIO package manager
+      - name: Publish release to the PlatformIO package manager
         id: publish-pio
         run: pio package publish

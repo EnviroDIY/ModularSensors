@@ -14,7 +14,7 @@
 /**
  * @brief The current library version number
  */
-#define MODULAR_SENSORS_VERSION "0.31.2"
+#define MODULAR_SENSORS_VERSION "0.32.0"
 
 // To get all of the base classes for ModularSensors, include LoggerBase.
 // NOTE:  Individual sensor definitions must be included separately.

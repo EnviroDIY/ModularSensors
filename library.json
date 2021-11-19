@@ -1,6 +1,6 @@
 {
   "name": "EnviroDIY_ModularSensors",
-  "version": "0.31.2",
+  "version": "0.32.0",
   "description": "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
   "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, Monitor My Watershed, ThingSpeak",
   "platforms": "atmelavr, atmelsam",
@@ -161,7 +161,7 @@
       "owner": "adafruit",
       "library id": "773",
       "url": "https://github.com/adafruit/Adafruit_AM2315.git",
-      "version": "~2.1.0",
+      "version": "~2.2.0",
       "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -252,7 +252,7 @@
       "version": "~2.1.4",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12.git",
       "note": "EnviroDIY SDI-12 Library for Arduino",
-      "authors": [
+      "author_notes": [
         "Kevin M. Smith",
         "Sara Damiano",
         "Shannon Hicks",
