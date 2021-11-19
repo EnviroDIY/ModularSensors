@@ -130,10 +130,9 @@ jobs:
         id: changelog_reader
         uses: mindsers/changelog-reader-action@v2
         with:
-          validation_depth: 10
-          # NOTE:  Need to add the refs/tags to work with the generate notes action
-          version: ${{ format('refs/tags/{0}', env.VERSION) }}
           path: ./CHANGELOG.md
+          version: ${{ env.VERSION }}
+          validation_depth: 10
 
       # I use the first line of the change log entry as the name, so read it here
       # - name: Get release name
@@ -149,9 +148,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.VERSION }}
-          # name: ${{ format('{0} - {1}', env.VERSION, steps.get_release_name.outputs.release_name) }}
-          name: ${{ env.VERSION }}
+          tag_name: ${{ format('v{0}',env.VERSION) }}
+          # name: ${{ format('v{0} - {1}', env.VERSION, steps.get_release_name.outputs.release_name) }}
+          name: ${{ format('v{0}',env.VERSION) }}
           draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
           prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
           body: ${{ steps.changelog_reader.outputs.changes }}

@@ -3,7 +3,7 @@
  * @brief Example for DRWI CitSci LTE sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -62,10 +62,10 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 const int32_t serialBaud = 57600;  // Baud rate for debugging
-const int8_t  greenLED   = 8;       // Pin for the green LED
-const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+const int8_t  greenLED   = 8;      // Pin for the green LED
+const int8_t  redLED     = 9;      // Pin for the red LED
+const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
+const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
@@ -197,8 +197,10 @@ Variable* variableList[] = {
     new Modem_SignalPercent(&modem),
 };
 
-// All UUID's, device registration, and sampling feature information can be pasted directly from Monitor My Watershed.  
-//To get the list, click the "View  token UUID list" button on the upper right of the site page.
+// All UUID's, device registration, and sampling feature information can be
+// pasted directly from Monitor My Watershed.
+// To get the list, click the "View  token UUID list" button on the upper right
+// of the site page.
 
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 // Check the order of your variables in the variable list!!!
@@ -207,27 +209,40 @@ Variable* variableList[] = {
 // Do not change the order of the variables in the section below.
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
 
-// Replace all of the text in the following section with the UUID array from MonitorMyWatershed
+// Replace all of the text in the following section with the UUID array from
+// MonitorMyWatershed
 
-// ---------------------   Beginning of Token UUID List   ---------------------------------------
+// ---------------------   Beginning of Token UUID List
+// ---------------------------------------
 
 
-const char* UUIDs[] =                                  // UUID array for device sensors
-{     
-    "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (Low)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (High)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Maxim_DS3231_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (Digi_Cellular_SignalPercent)                 
+const char* UUIDs[] =  // UUID array for device sensors
+    {
+        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance
+                                                 // (Meter_Hydros21_Cond)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
+                                                 // (Meter_Hydros21_Depth)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
+                                                 // (Meter_Hydros21_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
+                                                 // (Campbell_OBS3_Turb) (Low)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
+                                                 // (Campbell_OBS3_Turb) (High)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
+                                                 // (EnviroDIY_Mayfly_Batt)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
+                                                 // (Maxim_DS3231_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale
+                                                 // (Digi_Cellular_SignalPercent)
 };
-const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";    // Sampling feature UUID
+const char* registrationToken =
+    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature =
+    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
 
-// -----------------------   End of Token UUID List   ------------------------------------------
+// -----------------------   End of Token UUID List
+// ------------------------------------------
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -314,8 +329,9 @@ void setup() {
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    pinMode(20, OUTPUT);   //for proper operation of the onboard flash memory chip's ChipSelect (Mayfly v1.0 and later)
-  
+    pinMode(20, OUTPUT);  // for proper operation of the onboard flash memory
+                          // chip's ChipSelect (Mayfly v1.0 and later)
+
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);

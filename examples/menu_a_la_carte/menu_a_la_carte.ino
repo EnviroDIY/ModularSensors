@@ -3,7 +3,7 @@
  * @brief Example with all possible functionality.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -818,7 +818,8 @@ Variable* am2315Temp =
 
 const int8_t DHTPower = sensorPowerPin;  // Power pin (-1 if unconnected)
 const int8_t DHTPin   = 10;              // DHT data pin
-const int8_t dhtType  = DHT11;  // DHT type, one of DHT11, DHT12, DHT21, DHT22, or AM2301
+const int8_t dhtType =
+    DHT11;  // DHT type, one of DHT11, DHT12, DHT21, DHT22, or AM2301
 
 // Create an AOSong DHT sensor object
 AOSongDHT dht(DHTPower, DHTPin, dhtType);

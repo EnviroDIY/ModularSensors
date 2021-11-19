@@ -3,7 +3,7 @@
  * @brief An example using only sensor functions and no logging.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *

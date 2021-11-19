@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.32.0] - 2021-11-18
+## [0.32.0] - 2021-11-19
 Reinstate support for AOSong DHT
 
 ### Changed
 - **Documentation:** Restructured the changelog
+- **Documentation:** Restyled and corrected documentation links for new and renamed DRWI examples
 - **Continuous Integration:** Updated changelog reader and automated releaser
 
 ### Added
@@ -31,6 +32,9 @@ Fix build without AOSong DHT
 
 ## [0.31.0] - 2021-11-02
 Remove support for AOSong DHT
+
+### Added
+- **Examples:** Added a new example for the DRWI site using the new EnviroDIY bee based on the SIMCOM SIM7080G
 
 ### Removed
 - **Breaking:** Temporarily **_REMOVED_** support for AOSong DHT sensor.

@@ -1,5 +1,5 @@
-[//]: # ( @page example_drwi_lte DRWI CitSci LTE Sites )
-# Example using the Modular Sensors Library for DRWI Sites
+[//]: # ( @page example_drwi_digilte DRWI CitSci Digi LTE Sites )
+# Example using the Modular Sensors Library for DRWI Digi LTE Sites
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
 This should be used at all sites with cellular LTE service.
@@ -12,8 +12,8 @@ _______
 [//]: # ( @tableofcontents )
 
 [//]: # ( Start GitHub Only )
-- [Example using the Modular Sensors Library for DRWI Sites](#example-using-the-modular-sensors-library-for-drwi-sites)
-- [Unique Features of the DRWI LTE Example](#unique-features-of-the-drwi-lte-example)
+- [Example using the Modular Sensors Library for DRWI Digi LTE Sites](#example-using-the-modular-sensors-library-for-drwi-digi-lte-sites)
+- [Unique Features of the DRWI Digi LTE Example](#unique-features-of-the-drwi-digi-lte-example)
 - [To Use this Example:](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Set the logger ID](#set-the-logger-id)
@@ -25,15 +25,15 @@ _______
 
 _______
 
-[//]: # ( @section example_drwi_lte_unique Unique Features of the DRWI LTE Example )
-# Unique Features of the DRWI LTE Example
+[//]: # ( @section example_drwi_digilte_unique Unique Features of the DRWI Digi LTE Example )
+# Unique Features of the DRWI Digi LTE Example
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a Digi XBee3 LTE-M for live data.
 
-[//]: # ( @section example_drwi_lte_using To Use this Example: )
+[//]: # ( @section example_drwi_digilte_using To Use this Example: )
 # To Use this Example:
 
-[//]: # ( @subsection example_drwi_lte_pio Prepare and set up PlatformIO )
+[//]: # ( @subsection example_drwi_digilte_pio Prepare and set up PlatformIO )
 ## Prepare and set up PlatformIO
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
@@ -45,7 +45,7 @@ _______
     - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
-[//]: # ( @subsection example_drwi_lte_logger_id Set the logger ID )
+[//]: # ( @subsection example_drwi_digilte_logger_id Set the logger ID )
 ## Set the logger ID
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
@@ -54,7 +54,7 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-[//]: # ( @subsection example_drwi_lte_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
+[//]: # ( @subsection example_drwi_digilte_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
 ## Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change _**all**_ of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
@@ -84,7 +84,7 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-[//]: # ( @subsection example_drwi_lte_uuids Set the universally universal identifiers (UUID) for each variable )
+[//]: # ( @subsection example_drwi_digilte_uuids Set the universally universal identifiers (UUID) for each variable )
 ## Set the universally universal identifiers (UUID) for each variable
 - Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
@@ -122,15 +122,15 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 ```
 
-[//]: # ( @subsection example_drwi_lte_upload Upload! )
+[//]: # ( @subsection example_drwi_digilte_upload Upload! )
 ## Upload!
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
 
-[//]: # ( @section example_drwi_lte_pio_config PlatformIO Configuration )
+[//]: # ( @section example_drwi_digilte_pio_config PlatformIO Configuration )
 
-[//]: # ( @include{lineno} DRWI_LTE/platformio.ini )
+[//]: # ( @include{lineno} DRWI_DigiLTE/platformio.ini )
 
-[//]: # ( @section example_drwi_lte_code The Complete Code )
+[//]: # ( @section example_drwi_digilte_code The Complete Code )
