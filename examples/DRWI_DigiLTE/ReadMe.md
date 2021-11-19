@@ -37,10 +37,10 @@ _______
 ## Prepare and set up PlatformIO
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
-- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_LTE/platformio.ini) file in the examples/DRWI_LTE folder on GitHub.
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_DigiLTE/platformio.ini) file in the examples/DRWI_DigiLTE folder on GitHub.
     - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
     - Without this, the program won't compile.
-- Open [DRWI_LTE.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_LTE/DRWI_LTE.ino) and save it to your computer.
+- Open [DRWI_DigiLTE.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_DigiLTE/DRWI_DigiLTE.ino) and save it to your computer.
     - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
     - Move it into the src directory of your project.
     - Delete main.cpp in that folder.

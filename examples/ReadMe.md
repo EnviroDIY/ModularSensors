@@ -20,7 +20,8 @@ ___
     - [Multiple Logging Intervals](#multiple-logging-intervals)
     - [Minimizing Cell Data Usage](#minimizing-cell-data-usage)
   - [DRWI Citizen Science](#drwi-citizen-science)
-    - [DRWI LTE](#drwi-lte)
+    - [DRWI EnviroDIY Bee LTE](#drwi-envirodiy-bee-lte)
+    - [DRWI Digi LTE](#drwi-digi-lte)
     - [DRWI CitSci (2G)](#drwi-citsci-2g)
     - [DRWI CitSci No Cellular](#drwi-citsci-no-cellular)
   - [Everything at Once - a la carte](#everything-at-once---a-la-carte)
@@ -127,16 +128,27 @@ ___
 [//]: # ( @section examples_drwi DRWI Citizen Science )
 ## DRWI Citizen Science
 
-[//]: # ( @subsection examples_drwi_lte DRWI LTE )
-### DRWI LTE
+[//]: # ( @subsection examples_drwi_ediylte DRWI EnviroDIY Bee LTE )
+### DRWI EnviroDIY Bee LTE
 
-The DRWI LTE example uses the sensors and equipment standard groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
+The DRWI EnviroDIY Bee LTE example uses the sensors and equipment standard groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
+It includes a Meter Hydros 21, a Campbell OBS3+, and a SIM7080G-based EnviroDIY Bee for communication.
+The results are saved to the SD card and posted to the Monitor My Watershed data portal.
+The only difference between this and the other cellular DRWI examples is the type of modem used.
+
+- [Instructions for the EnviroDIY LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/_d_r_w_i__l_t_e_8ino-example.html)
+- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
+
+[//]: # ( @subsection examples_drwi_digilte DRWI Digi LTE )
+### DRWI Digi LTE
+
+The DRWI Digi LTE example uses the sensors and equipment standard groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
 It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Digi XBee3 LTE-M for communication.
 The results are saved to the SD card and posted to the Monitor My Watershed data portal.
-The only difference between the LTE and the 2G example is the type of modem used.
+The only difference between this and the other cellular DRWI examples is the type of modem used.
 
-- [Instructions for the LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/_d_r_w_i__l_t_e_8ino-example.html)
-- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_LTE)
+- [Instructions for the Digi LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/_d_r_w_i__digi_l_t_e_8ino-example.html)
+- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
 
 
 [//]: # ( @subsection examples_drwi_2g DRWI CitSci (2G) )
@@ -145,7 +157,7 @@ The only difference between the LTE and the 2G example is the type of modem used
 The 2G DRWI Citizen Science example uses the sensors and equipment standard groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
 It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Sodaq GPRSBee for communication.
 The results are saved to the SD card and posted to the Monitor My Watershed data portal.
-The only difference between the LTE and the 2G example is the type of modem used.
+The only difference between this and the other cellular DRWI examples is the type of modem used.
 
 - [Instructions for the 2G DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/_d_r_w_i__cit_sci_8ino-example.html)
 - [The 2G DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_CitSci)

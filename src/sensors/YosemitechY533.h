@@ -194,7 +194,7 @@ class YosemitechY533 : public YosemitechParent {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pH output](@ref sensor_y533_ph)
+ * [pH output](@ref sensor_y533_orp)
  * from a [Yosemitech Y533 ORP sensor](@ref sensor_y533).
  *
  * @ingroup sensor_y533

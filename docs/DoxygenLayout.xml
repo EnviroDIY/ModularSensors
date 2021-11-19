@@ -82,8 +82,9 @@
                 <tab type="user" url="@ref data_saving.ino" title=" Minimizing Cell Data Usage" />
             </tab>
             <tab type="usergroup" url="@ref examples_drwi" title="DRWI Citizen Science">
-                <tab type="user" url="@ref DRWI_CitSci.ino" title="DRWI CitSci (2G)" />
-                <tab type="user" url="@ref DRWI_LTE.ino" title="DRWI LTE" />
+                <tab type="user" url="@ref DRWI_SIM7080LTE.ino" title="DRWI EnviroDIY LTE" />
+                <tab type="user" url="@ref DRWI_DigiLTE.ino" title="DRWI Digi LTE" />
+                <tab type="user" url="@ref DRWI_2G.ino" title="DRWI CitSci (2G)" />
                 <tab type="user" url="@ref DRWI_NoCellular.ino" title=" DRWI CitSci No Cellular" />
             </tab>
             <tab type="usergroup" url="@ref examples_everything" title="Everything at Once">
