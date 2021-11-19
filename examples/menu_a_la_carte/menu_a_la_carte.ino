@@ -1310,8 +1310,8 @@ Variable* rdoO2pp =
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte acculevelModbusAddress  = 0x01;  // The modbus address of KellerAcculevel
+const int8_t  acculevelPower = A3;              // Acculevel Sensor power pin
 const int8_t  alAdapterPower = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  acculevelPower = A3;              // Sensor power pin
 const int8_t  al485EnablePin = -1;              // Adapter RE/DE pin
 const uint8_t acculevelNumberReadings = 5;
 // The manufacturer recommends taking and averaging a few readings

@@ -94,11 +94,11 @@
 /** @ingroup sensor_teros11 */
 /**@{*/
 
-/// @brief Sensor::_numReturnedValues; the Teros 11 can report 2 values and we
-/// always calculate two additional values from that.
+/// @brief Sensor::_numReturnedValues; the Teros 11 can report 2 raw values -
+/// counts and temperature.
 #define TEROS11_NUM_VARIABLES 4
-/// @brief Sensor::_incCalcValues; the Teros 11 can report 2 raw counts and
-/// temperatures and we calculate permittivity and water content from that.
+/// @brief Sensor::_incCalcValues; We calculate permittivity and water content
+/// from the raw counts and temperature reported by the Teros 11.
 #define TEROS11_INC_CALC_VARIABLES 2
 
 /**
