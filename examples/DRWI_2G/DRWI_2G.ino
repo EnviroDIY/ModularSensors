@@ -1,9 +1,9 @@
 /** =========================================================================
- * @file DRWI_CitSci.ino
+ * @file DRWI_2G.ino
  * @brief Example for DRWI CitSci 2G sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2020 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *

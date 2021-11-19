@@ -131,6 +131,6 @@ _______
 
 [//]: # ( @section example_drwi_2g_pio_config PlatformIO Configuration )
 
-[//]: # ( @include{lineno} DRWI_CitSci/platformio.ini )
+[//]: # ( @include{lineno} DRWI_2G/platformio.ini )
 
 [//]: # ( @section example_drwi_2g_code The Complete Code )
