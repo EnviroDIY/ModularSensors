@@ -12,7 +12,6 @@
 #include "AtlasScientificCO2.h"
 
 // Constructors
-
 AtlasScientificCO2::AtlasScientificCO2(TwoWire* theI2C, int8_t powerPin,
                                        uint8_t i2cAddressHex,
                                        uint8_t measurementsToAverage)

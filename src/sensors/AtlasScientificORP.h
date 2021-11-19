@@ -176,7 +176,6 @@ class AtlasScientificORP : public AtlasParent {
     explicit AtlasScientificORP(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1)
-<<<<<<< HEAD
         : AtlasParent(
               powerPin, i2cAddressHex, measurementsToAverage,
               "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,

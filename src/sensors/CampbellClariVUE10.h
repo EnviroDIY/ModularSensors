@@ -298,7 +298,8 @@ class CampbellClariVUE10_Turbidity : public Variable {
                    CLARIVUE10_TURBIDITY_UNIT_NAME,
                    CLARIVUE10_TURBIDITY_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the CampbellClariVUE10_Turbidity object - no action needed.
+     * @brief Destroy the CampbellClariVUE10_Turbidity object - no action
+     * needed.
      */
     ~CampbellClariVUE10_Turbidity() {}
 };
@@ -391,7 +392,8 @@ class CampbellClariVUE10_ErrorCode : public Variable {
                    CLARIVUE10_ERRORCODE_UNIT_NAME,
                    CLARIVUE10_ERRORCODE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the CampbellClariVUE10_ErrorCode object - no action needed.
+     * @brief Destroy the CampbellClariVUE10_ErrorCode object - no action
+     * needed.
      */
     ~CampbellClariVUE10_ErrorCode() {}
 };

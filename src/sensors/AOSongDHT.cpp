@@ -11,7 +11,7 @@
 
 
 // The constructor - need the power pin, data pin, and type of DHT
-AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type,
+AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
                      uint8_t measurementsToAverage)
     : Sensor("AOSongDHT", DHT_NUM_VARIABLES, DHT_WARM_UP_TIME_MS,
              DHT_STABILIZATION_TIME_MS, DHT_MEASUREMENT_TIME_MS, powerPin,
@@ -33,7 +33,8 @@ bool AOSongDHT::setup(void) {
 String AOSongDHT::getSensorName(void) {
     switch (_dhtType) {
         case 11: return "AOSongDHT11";
-        case 21: return "AOSongDHT21";
+        case 12: return "AOSongDHT12";
+        case 21: return "AOSongDHT21";  // DHT 21 or AM2301
         default: return "AOSongDHT22";
     }
 }
