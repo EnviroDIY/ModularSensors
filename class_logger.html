@@ -1431,7 +1431,7 @@
             </dt>
             <dd>Set the <a href="class_logger.html" class="m-doc">Logger</a> ID.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">const char*</span> </span><a href="#ac7f32881ed4ab9f85724917677a10414" class="m-doc">getLoggerID</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">const char*</span> </span><a href="#a48223721ea321687a1d7b3e79e64330e" class="m-doc">getLoggerID</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>Get the <a href="class_logger.html" class="m-doc">Logger</a> ID.</dd>
                           <dt>
@@ -1447,7 +1447,7 @@
             </dt>
             <dd>Set the universally unique identifier (UUID or GUID) of the sampling feature.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">const char*</span> </span><a href="#a012fdaa54b32effb4703d28b9d50228f" class="m-doc">getSamplingFeatureUUID</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">const char*</span> </span><a href="#a5e6163211c3b7204166aaa619074ce82" class="m-doc">getSamplingFeatureUUID</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>Get the Sampling Feature UUID.</dd>
                           <dt>
@@ -1780,15 +1780,15 @@
             </dt>
             <dd>The static &quot;marked&quot; epoch time for UTC.</dd>
                           <dt id="a9ec3dd21d0eb0350293dc0373b1d902e">
-              static <span class="m-dim">bool</span> <a href="#a9ec3dd21d0eb0350293dc0373b1d902e" class="m-doc-self">isLoggingNow</a>
+              static <span class="m-dim">volatile bool</span> <a href="#a9ec3dd21d0eb0350293dc0373b1d902e" class="m-doc-self">isLoggingNow</a>
             </dt>
             <dd>Internal flag set to true when logger is currently updating sensors or writing to the SD card.</dd>
                           <dt id="a64fdfb6c9a71b21aaefac691393b607a">
-              static <span class="m-dim">bool</span> <a href="#a64fdfb6c9a71b21aaefac691393b607a" class="m-doc-self">isTestingNow</a>
+              static <span class="m-dim">volatile bool</span> <a href="#a64fdfb6c9a71b21aaefac691393b607a" class="m-doc-self">isTestingNow</a>
             </dt>
             <dd>Internal flag set to true when the logger is going through the &quot;testing mode&quot; routine.</dd>
                           <dt id="ade9ad57a3cf5c7f7d22fabc743ece17f">
-              static <span class="m-dim">bool</span> <a href="#ade9ad57a3cf5c7f7d22fabc743ece17f" class="m-doc-self">startTesting</a>
+              static <span class="m-dim">volatile bool</span> <a href="#ade9ad57a3cf5c7f7d22fabc743ece17f" class="m-doc-self">startTesting</a>
             </dt>
             <dd>Internal flag set to true with then logger should begin the &quot;testing mode&quot; routine when it finishes other operations.</dd>
                           <dt>
@@ -1949,9 +1949,9 @@
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="ac7f32881ed4ab9f85724917677a10414"><div>
+                      <section class="m-doc-details" id="a48223721ea321687a1d7b3e79e64330e"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">const char*</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac7f32881ed4ab9f85724917677a10414" class="m-doc-self">getLoggerID</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">const char*</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a48223721ea321687a1d7b3e79e64330e" class="m-doc-self">getLoggerID</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>Get the <a href="class_logger.html" class="m-doc">Logger</a> ID.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -2023,9 +2023,9 @@
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="a012fdaa54b32effb4703d28b9d50228f"><div>
+                      <section class="m-doc-details" id="a5e6163211c3b7204166aaa619074ce82"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">const char*</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a012fdaa54b32effb4703d28b9d50228f" class="m-doc-self">getSamplingFeatureUUID</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">const char*</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5e6163211c3b7204166aaa619074ce82" class="m-doc-self">getSamplingFeatureUUID</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>Get the Sampling Feature UUID.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -3448,7 +3448,7 @@
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.2 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

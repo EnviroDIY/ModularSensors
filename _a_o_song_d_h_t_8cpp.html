@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Examples &raquo; DRWI_LTE.ino example | ModularSensors</title>
+  <title>sensors/AOSongDHT.cpp file | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
   rel="stylesheet"
@@ -992,8 +992,6 @@
   src="https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2"
   id="jquery-migrate-js"
 ></script>  <link rel="icon" href="MS_FavIcon.png" type="image/png" />
-  <link rel="prev" href="_d_r_w_i__cit_sci_8ino-example.html" />
-  <link rel="next" href="_d_r_w_i__no_cellular_8ino-example.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#cb4b16" />
 </head>
@@ -1280,112 +1278,34 @@
           <span class="m-breadcrumb">
             <a href="index.html">
               ModularSensors
-            </a>  &gt; <wbr/>
-          </span>
-                    <span class="m-breadcrumb">
-          <a href="page_the_examples.html">Examples</a> &gt; <wbr/>
+            </a> &gt; <wbr/>
           </span>
           <span class="m-breadcrumb">
-            DRWI_LTE.ino
+            <a href="files.html">
+              Files
+            </a> &gt; <wbr/>
+          </span>
+                    <span class="m-breadcrumb">
+          <a href="dir_7349e89ef19c117195f8e371603e1b1f.html">sensors</a>
+          /
+          </span>
+          <span class="m-breadcrumb">
+            AOSongDHT.cpp
           </span>
 
         <header class="gp-entry-header">
           <h1 class="gp-entry-title" itemprop="headline">
-          DRWI_LTE.ino <span class="m-thin">example</span>
+          AOSongDHT.cpp <span class="m-thin">file</span>
+
           </h1>
         </header>
-        <div class="m-block m-default">
-          <ul>
-            <li><a href="#xample_drwi_lte">DRWI CitSci LTE Sites</a></li>
-            <li><a href="#xample_drwi_lte_unique">Unique Features of the DRWI LTE Example</a></li>
-            <li>
-              <a href="#xample_drwi_lte_using">To Use this Example:</a>
-              <ul>
-                              <li><a href="#xample_drwi_lte_pio">Prepare and set up PlatformIO</a></li>
-                <li><a href="#xample_drwi_lte_logger_id">Set the logger ID</a></li>
-                <li><a href="#xample_drwi_lte_obs3_calibration">Set the calibration coefficients for the Campbell OBS3+</a></li>
-                <li><a href="#xample_drwi_lte_uuids">Set the universally universal identifiers (UUID) for each variable</a></li>
-                <li><a href="#xample_drwi_lte_upload">Upload!</a></li>
-              </ul>
-            </li>
-            <li><a href="#xample_drwi_lte_pio_config">PlatformIO Configuration</a></li>
-            <li><a href="#xample_drwi_lte_code">The Complete Code</a></li>
-          </ul>
-        </div>
-        <section id="xample_drwi_lte"><h2>DRWI CitSci LTE Sites</h2><p>This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative. This should be used at all sites with cellular LTE service.</p><p>Before programming your board with this example, you must register your site and sensors at <a href="http://data.envirodiy.org/">http:/<wbr />/<wbr />data.envirodiy.org/<wbr /></a>. Stroud can provide directions for registering your site if you need assistance.</p><hr/><hr/></section><section id="xample_drwi_lte_unique"><h2>Unique Features of the DRWI LTE Example</h2><ul><li>Specifically for sites within the Delaware River Watershed Initiative.</li><li>Uses a Digi XBee3 LTE-M for live data.</li></ul></section><section id="xample_drwi_lte_using"><h2>To Use this Example:</h2><section id="xample_drwi_lte_pio"><h3>Prepare and set up PlatformIO</h3><ul><li>Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>Create a new PlatformIO project</li><li>Replace the contents of the platformio.ini for your new project with the <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_LTE/platformio.ini">platformio.ini</a> file in the examples/DRWI_LTE folder on GitHub.<ul><li>It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.</li><li>Without this, the program won&#x27;t compile.</li></ul></li><li>Open <a href="https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_LTE/DRWI_LTE.ino">DRWI_<wbr />LTE.ino</a> and save it to your computer.<ul><li>After opening the link, you should be able to right click anywhere on the page and select &quot;Save Page As&quot;.</li><li>Move it into the src directory of your project.</li><li>Delete main.cpp in that folder.</li></ul></li></ul></section><section id="xample_drwi_lte_logger_id"><h3>Set the logger ID</h3><ul><li>Change the &quot;XXXX&quot; in this section of code to the loggerID assigned by Stroud:</li></ul><pre class="m-code"><span class="c1">// Logger ID, also becomes the prefix for the name of the data file on SD card</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">LoggerID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;XXXX&quot;</span><span class="p">;</span><span class="w"></span></pre></section><section id="xample_drwi_lte_obs3_calibration"><h3>Set the calibration coefficients for the Campbell OBS3+</h3><ul><li>The OBS3+ ships with a calibration certificate; you need this sheet!</li><li>Change <em><strong>all</strong></em> of the the <code>0.000E+00</code> and <code>1.000E+00</code> values in this section of code to the values on that calibration sheet. Use numbers from the side of the calibration sheet that shows the calibration in <em><strong>volts</strong></em>.<ul><li>The sketch will not compile if these values are not entered properly.</li><li>Do not change any values except those that are <code>0.000E+00</code> and <code>1.000E+00</code>!</li></ul></li></ul><pre class="m-code"><span class="c1">// ==========================================================================</span>
-<span class="c1">//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor</span>
-<span class="c1">// ==========================================================================</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/CampbellOBS3.h&gt;</span><span class="cp"></span>
-<span class="k">const</span><span class="w"> </span><span class="kt">int8_t</span><span class="w"> </span><span class="n">OBS3Power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">OBS3numberReadings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"></span>
-<span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ADSi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x48</span><span class="p">;</span><span class="w">  </span><span class="c1">// The I2C address of the ADS1115 ADC</span>
-<span class="c1">// Campbell OBS 3+ *Low* Range Calibration in Volts</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">int8_t</span><span class="w"> </span><span class="n">OBSLowADSChannel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="c1">// ADS channel for *low* range output</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">OBSLow_A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.000E+00</span><span class="p">;</span><span class="w">  </span><span class="c1">// &quot;A&quot; value (X^2) [*low* range]</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">OBSLow_B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.000E+00</span><span class="p">;</span><span class="w">  </span><span class="c1">// &quot;B&quot; value (X) [*low* range]</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">OBSLow_C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.000E+00</span><span class="p">;</span><span class="w">  </span><span class="c1">// &quot;C&quot; value [*low* range]</span>
-<span class="n">CampbellOBS3</span><span class="w"> </span><span class="nf">osb3low</span><span class="p">(</span><span class="n">OBS3Power</span><span class="p">,</span><span class="w"> </span><span class="n">OBSLowADSChannel</span><span class="p">,</span><span class="w"> </span><span class="n">OBSLow_A</span><span class="p">,</span><span class="w"> </span><span class="n">OBSLow_B</span><span class="p">,</span><span class="w"> </span><span class="n">OBSLow_C</span><span class="p">,</span><span class="w"> </span><span class="n">ADSi2c_addr</span><span class="p">,</span><span class="w"> </span><span class="n">OBS3numberReadings</span><span class="p">);</span><span class="w"></span>
-<span class="c1">// Campbell OBS 3+ *High* Range Calibration in Volts</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">int8_t</span><span class="w"> </span><span class="n">OBSHighADSChannel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c1">// ADS channel for *high* range output</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">OBSHigh_A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.000E+00</span><span class="p">;</span><span class="w">  </span><span class="c1">// &quot;A&quot; value (X^2) [*high* range]</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">OBSHigh_B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.000E+00</span><span class="p">;</span><span class="w">  </span><span class="c1">// &quot;B&quot; value (X) [*high* range]</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">OBSHigh_C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.000E+00</span><span class="p">;</span><span class="w">  </span><span class="c1">// &quot;C&quot; value [*high* range]</span>
-<span class="n">CampbellOBS3</span><span class="w"> </span><span class="nf">osb3high</span><span class="p">(</span><span class="n">OBS3Power</span><span class="p">,</span><span class="w"> </span><span class="n">OBSHighADSChannel</span><span class="p">,</span><span class="w"> </span><span class="n">OBSHigh_A</span><span class="p">,</span><span class="w"> </span><span class="n">OBSHigh_B</span><span class="p">,</span><span class="w"> </span><span class="n">OBSHigh_C</span><span class="p">,</span><span class="w"> </span><span class="n">ADSi2c_addr</span><span class="p">,</span><span class="w"> </span><span class="n">OBS3numberReadings</span><span class="p">);</span><span class="w"></span></pre></section><section id="xample_drwi_lte_uuids"><h3>Set the universally universal identifiers (UUID) for each variable</h3><ul><li>Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<a href="http://monitormywatershed.org/">http:/<wbr />/<wbr />monitormywatershed.org/<wbr /></a>)</li><li>Find and click the white &quot;View Token UUID List&quot; button above the small map on your site page</li><li><strong>VERY CAREFULLY</strong> check that the variables are in exactly the same order as in the variable array:</li></ul><pre class="m-code"><span class="n">Variable</span><span class="o">*</span><span class="w"> </span><span class="n">variableList</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="p">...</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><ul><li>If any of the variables are in a different order on the web page than in your code <strong>reorder the variables in your code to match the website</strong>.</li><li>After you are completely certain that you have the order right in the variable section of your code use the teal &quot;Copy&quot; button on the website to copy the section of code containing all of the UUID&#x27;s.</li><li>Paste the code from the website into your program in this section below the variable array</li></ul><pre class="m-code"><span class="c1">// *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***</span>
-<span class="c1">// Check the order of your variables in the variable list!!!</span>
-<span class="c1">// Be VERY certain that they match the order of your UUID&#39;s!</span>
-<span class="c1">// Rearrange the variables in the variable list if necessary to match!</span>
-<span class="c1">// *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">UUIDs</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Electrical conductivity (Decagon_CTD-10_Cond)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Temperature (Decagon_CTD-10_Temp)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Water depth (Decagon_CTD-10_Depth)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Turbidity (Campbell_OBS3_Turb)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Turbidity (Campbell_OBS3_Turb)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Battery voltage (EnviroDIY_Mayfly_Batt)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Temperature (EnviroDIY_Mayfly_Temp)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// Received signal strength indication (Digi_Cellular_RSSI)</span>
-<span class="w">    </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="w">    </span><span class="c1">// Percent full scale (Digi_Cellular_SignalPercent)</span>
-<span class="p">};</span><span class="w"></span>
-<span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">registrationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Device registration token</span>
-<span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">samplingFeature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;12345678-abcd-1234-ef00-1234567890ab&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Sampling feature UUID</span></pre></section><section id="xample_drwi_lte_upload"><h3>Upload!</h3><ul><li>Test everything at home <strong>before</strong> deploying out in the wild!</li></ul><hr/></section></section><section id="xample_drwi_lte_pio_config"><h2>PlatformIO Configuration</h2><pre class="m-code"><span class="c1">; PlatformIO Project Configuration File</span>
-<span class="c1">;</span>
-<span class="c1">;   Build options: build flags, source filter</span>
-<span class="c1">;   Upload options: custom upload port, speed and extra flags</span>
-<span class="c1">;   Library options: dependencies, extra library storages</span>
-<span class="c1">;   Advanced options: extra scripting</span>
-<span class="c1">;</span>
-<span class="c1">; Please visit documentation for the other options and examples</span>
-<span class="c1">; http://docs.platformio.org/page/projectconf.html</span>
+        <p>Implements the <a href="class_a_o_song_d_h_t.html" class="m-doc">AOSongDHT</a> class.</p>
+          <p>Contains the <a href="class_a_o_song_d_h_t.html" class="m-doc">AOSongDHT</a> sensor subclass and the variable subclasses <a href="class_a_o_song_d_h_t___humidity.html" class="m-doc">AOSongDHT_<wbr />Humidity</a>, <a href="class_a_o_song_d_h_t___temp.html" class="m-doc">AOSongDHT_<wbr />Temp</a>, and <a href="class_a_o_song_d_h_t___h_i.html" class="m-doc">AOSongDHT_<wbr />HI</a>.</p><aside class="m-note m-default"><h4>Copyright</h4><p>2020 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class="m-note m-default"><h4>Author</h4><p>Sara Geleskie Damiano <a href="mailto:sdamiano@stroudcenter.org">sdamiano@stroudcenter.org</a></p></aside><aside class="m-note m-default"><h4>Copyright</h4><p>2020 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class="m-note m-default"><h4>Author</h4><p>Sara Geleskie Damiano <a href="mailto:sdamiano@stroudcenter.org">sdamiano@stroudcenter.org</a></p></aside><p>These are used for the AOSong digital-output relative humidity &amp; temperature sensors/modules: DHT11, DHT21(AM2301), and DHT 22 (AM2302).</p><p>This file is dependent on the Adafruit DHT Library.</p>
 
-<span class="k">[platformio]</span>
-<span class="na">description</span> <span class="o">=</span> <span class="s">ModularSensors example intended for DRWI users with CTD, turbidity, and LTE signal</span>
 
-<span class="k">[env:mayfly]</span>
-<span class="na">monitor_speed</span> <span class="o">=</span> <span class="s">115200</span>
-<span class="na">board</span> <span class="o">=</span> <span class="s">mayfly</span>
-<span class="na">platform</span> <span class="o">=</span> <span class="s">atmelavr</span>
-<span class="na">framework</span> <span class="o">=</span> <span class="s">arduino</span>
-<span class="na">lib_ldf_mode</span> <span class="o">=</span> <span class="s">deep+</span>
-<span class="na">lib_ignore</span> <span class="o">=</span>
-    <span class="na">RTCZero</span>
-    <span class="na">Adafruit NeoPixel</span>
-    <span class="na">Adafruit GFX Library</span>
-    <span class="na">Adafruit SSD1306</span>
-    <span class="na">Adafruit ADXL343</span>
-    <span class="na">Adafruit STMPE610</span>
-    <span class="na">Adafruit TouchScreen</span>
-    <span class="na">Adafruit ILI9341</span>
-<span class="na">build_flags</span> <span class="o">=</span>
-    <span class="na">-DSDI12_EXTERNAL_PCINT</span>
-<span class="na">lib_deps</span> <span class="o">=</span>
-    <span class="na">envirodiy/EnviroDIY_ModularSensors</span>
-<span class="c1">;  ^^ Use this when working from an official release of the library</span>
-<span class="c1">;    https://github.com/EnviroDIY/ModularSensors.git#develop</span>
-<span class="c1">;  ^^ Use this when if you want to pull from the develop branch</span></pre></section><section id="xample_drwi_lte_code"><h2>The Complete Code</h2><pre class="m-code"></pre></section>
-        <div class="m-note m-dim m-thin m-text-center"><a href="_d_r_w_i__cit_sci_8ino-example.html" class="m-doc">&laquo; DRWI_CitSci.ino</a> | <a href="page_the_examples.html" class="m-doc">Examples</a> | <a href="_d_r_w_i__no_cellular_8ino-example.html" class="m-doc">DRWI_NoCellular.ino &raquo;</a></div>
+
+
+
 
                     </div>
                   </div>
@@ -1428,7 +1348,7 @@
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.2 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>

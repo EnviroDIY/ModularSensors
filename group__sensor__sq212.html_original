@@ -1378,14 +1378,14 @@
             </dt>
             <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the warm up time is unknown; using the 2ms for the TI ADS1x15 to warm up.</dd>
 
-              <dd><aside class="m-note m-dim"><h4><a href="todo.html#_todo000002" class="m-doc">Todo</a></h4><p>Measure warm-up time of the SQ-212</p></aside></dd>
+              <dd><aside class="m-note m-dim"><h4><a href="todo.html#_todo000005" class="m-doc">Todo</a></h4><p>Measure warm-up time of the SQ-212</p></aside></dd>
 
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga1fe8246d1520197f856fde7485ad07a7" class="m-doc">SQ212_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the ADS1115 is stable after 2ms.</dd>
 
-              <dd><p>The stabilization time of the SQ-212 itself is not known!</p><aside class="m-note m-dim"><h4><a href="todo.html#_todo000003" class="m-doc">Todo</a></h4><p>Measure stabilization time of the SQ-212</p></aside></dd>
+              <dd><p>The stabilization time of the SQ-212 itself is not known!</p><aside class="m-note m-dim"><h4><a href="todo.html#_todo000006" class="m-doc">Todo</a></h4><p>Measure stabilization time of the SQ-212</p></aside></dd>
 
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga909ba7f07c92b0753f6d48b036069084" class="m-doc">SQ212_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1509,7 +1509,7 @@
               <a href="https://envirodiy.org/contact/">Contact</a>
             </p>
             <p>
-              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.
+              Created with <a href="https://doxygen.org/">Doxygen</a> 1.9.2 and <a href="https://mcss.mosra.cz/">m.css</a>.
             </p>
           </div>
         </div>
