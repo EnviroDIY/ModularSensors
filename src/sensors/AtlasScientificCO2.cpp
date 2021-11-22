@@ -18,13 +18,15 @@ AtlasScientificCO2::AtlasScientificCO2(TwoWire* theI2C, int8_t powerPin,
     : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificCO2", ATLAS_CO2_NUM_VARIABLES,
                   ATLAS_CO2_WARM_UP_TIME_MS, ATLAS_CO2_STABILIZATION_TIME_MS,
-                  ATLAS_CO2_MEASUREMENT_TIME_MS) {}
+                  ATLAS_CO2_MEASUREMENT_TIME_MS, ATLAS_CO2_INC_CALC_VARIABLES) {
+}
 AtlasScientificCO2::AtlasScientificCO2(int8_t powerPin, uint8_t i2cAddressHex,
                                        uint8_t measurementsToAverage)
     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                   "AtlasScientificCO2", ATLAS_CO2_NUM_VARIABLES,
                   ATLAS_CO2_WARM_UP_TIME_MS, ATLAS_CO2_STABILIZATION_TIME_MS,
-                  ATLAS_CO2_MEASUREMENT_TIME_MS) {}
+                  ATLAS_CO2_MEASUREMENT_TIME_MS, ATLAS_CO2_INC_CALC_VARIABLES) {
+}
 
 // Destructor
 AtlasScientificCO2::~AtlasScientificCO2() {}

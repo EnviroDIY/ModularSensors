@@ -186,7 +186,7 @@ template <typename T>
 static void MS_DEEP_DBG(T last) {
     DEEP_DEBUGGING_SERIAL_OUTPUT.print(last);
     DEEP_DEBUGGING_SERIAL_OUTPUT.print(" <--");
-    DEEP_DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
+    DEEP_DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_DEEP);
 }
 /**
  * @brief Prints text to the "debugging" serial port.  This is intended for

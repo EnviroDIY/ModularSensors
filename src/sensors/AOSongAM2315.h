@@ -75,6 +75,8 @@
 
 /// @brief Sensor::_numReturnedValues; the AM2315 can report 2 values.
 #define AM2315_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define AM2315_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_am2315_timing

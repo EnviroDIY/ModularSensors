@@ -56,8 +56,10 @@
 /** @ingroup sensor_y533 */
 /**@{*/
 
-/// @brief Sensor::_numReturnedValues; the Y533 can report 3 values.
+/// @brief Sensor::_numReturnedValues; the Y533 can report 2 values.
 #define Y533_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y533_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y533_timing
@@ -172,7 +174,7 @@ class YosemitechY533 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y533,
                            "YosemitechY533", Y533_NUM_VARIABLES,
                            Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
-                           Y533_MEASUREMENT_TIME_MS) {}
+                           Y533_MEASUREMENT_TIME_MS, Y533_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY533::YosemitechY533
      */
@@ -183,7 +185,7 @@ class YosemitechY533 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y533,
                            "YosemitechY533", Y533_NUM_VARIABLES,
                            Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS,
-                           Y533_MEASUREMENT_TIME_MS) {}
+                           Y533_MEASUREMENT_TIME_MS, Y533_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y533 object
      */
@@ -213,8 +215,8 @@ class YosemitechY533_ORP : public Variable {
      * optional with a default value of "Y533pH".
      */
     explicit YosemitechY533_ORP(YosemitechY533* parentSense,
-                               const char*     uuid    = "",
-                               const char*     varCode = Y533_ORP_DEFAULT_CODE)
+                                const char*     uuid    = "",
+                                const char*     varCode = Y533_ORP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y533_ORP_VAR_NUM,
                    (uint8_t)Y533_ORP_RESOLUTION, Y533_ORP_VAR_NAME,
                    Y533_ORP_UNIT_NAME, varCode, uuid) {}
@@ -225,8 +227,9 @@ class YosemitechY533_ORP : public Variable {
      * used.
      */
     YosemitechY533_ORP()
-        : Variable((const uint8_t)Y533_ORP_VAR_NUM, (uint8_t)Y533_ORP_RESOLUTION,
-                   Y533_ORP_VAR_NAME, Y533_ORP_UNIT_NAME, Y533_ORP_DEFAULT_CODE) {}
+        : Variable((const uint8_t)Y533_ORP_VAR_NUM,
+                   (uint8_t)Y533_ORP_RESOLUTION, Y533_ORP_VAR_NAME,
+                   Y533_ORP_UNIT_NAME, Y533_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY533_ORP object - no action needed.
      */

@@ -59,6 +59,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Y511 can report 2 values.
 #define Y511_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y511_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y511_timing
@@ -183,7 +185,7 @@ class YosemitechY511 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y511,
                            "YosemitechY511", Y511_NUM_VARIABLES,
                            Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS,
-                           Y511_MEASUREMENT_TIME_MS) {}
+                           Y511_MEASUREMENT_TIME_MS, Y511_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY511::YosemitechY511
      */
@@ -194,7 +196,7 @@ class YosemitechY511 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y511,
                            "YosemitechY511", Y511_NUM_VARIABLES,
                            Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS,
-                           Y511_MEASUREMENT_TIME_MS) {}
+                           Y511_MEASUREMENT_TIME_MS, Y511_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y511 object
      */

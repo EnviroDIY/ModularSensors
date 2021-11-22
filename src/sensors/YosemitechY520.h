@@ -59,6 +59,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Y520 can report 2 values.
 #define Y520_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y520_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y520_timing
@@ -170,7 +172,7 @@ class YosemitechY520 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y520,
                            "YosemitechY520", Y520_NUM_VARIABLES,
                            Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS,
-                           Y520_MEASUREMENT_TIME_MS) {}
+                           Y520_MEASUREMENT_TIME_MS, Y520_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY520::YosemitechY520
      */
@@ -181,7 +183,7 @@ class YosemitechY520 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y520,
                            "YosemitechY520", Y520_NUM_VARIABLES,
                            Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS,
-                           Y520_MEASUREMENT_TIME_MS) {}
+                           Y520_MEASUREMENT_TIME_MS, Y520_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y520 object
      */

@@ -23,7 +23,7 @@ MPL115A2::MPL115A2(TwoWire* theI2C, int8_t powerPin,
 MPL115A2::MPL115A2(int8_t powerPin, uint8_t measurementsToAverage)
     : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES, MPL115A2_WARM_UP_TIME_MS,
              MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage) {
+             powerPin, -1, measurementsToAverage, MPL115A2_INC_CALC_VARIABLES) {
     _i2c = &Wire;
 }
 // Destructor

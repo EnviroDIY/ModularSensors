@@ -62,6 +62,9 @@
 
 /// @brief Sensor::_numReturnedValues; the Y504 can report 3 values.
 #define Y504_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we calculated DO concentration from the
+/// percent saturation and the temperature.
+#define Y504_INC_CALC_VARIABLES 1
 
 /**
  * @anchor sensor_y504_timing
@@ -202,7 +205,7 @@ class YosemitechY504 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y504,
                            "YosemitechY504", Y504_NUM_VARIABLES,
                            Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS,
-                           Y504_MEASUREMENT_TIME_MS) {}
+                           Y504_MEASUREMENT_TIME_MS, Y504_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY504::YosemitechY504
      */
@@ -213,7 +216,7 @@ class YosemitechY504 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y504,
                            "YosemitechY504", Y504_NUM_VARIABLES,
                            Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS,
-                           Y504_MEASUREMENT_TIME_MS) {}
+                           Y504_MEASUREMENT_TIME_MS, Y504_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y504 object
      */

@@ -158,6 +158,8 @@
 
 /// @brief Sensor::_numReturnedValues; the ADS1115 can report 1 value.
 #define EXT_VOLTAGE_NUM_VARIABLES 1
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define EXT_VOLTAGE_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_ads1x15_timing

@@ -27,7 +27,7 @@ RainCounterI2C::RainCounterI2C(int8_t dataPin, int8_t clockPin,
                                uint8_t i2cAddressHex, float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1,
-             dataPin, 1) {
+             dataPin, 1, BUCKET_INC_CALC_VARIABLES) {
     _i2cAddressHex      = i2cAddressHex;
     _i2c                = new SoftwareWire(dataPin, clockPin);
     createdSoftwareWire = true;
@@ -96,18 +96,47 @@ bool RainCounterI2C::setup(void) {
 bool RainCounterI2C::addSingleMeasurementResult(void) {
     // intialize values
     float   rain = -9999;  // Number of mm of rain
-    int16_t tips = -9999;  // Number of tip events
+    int32_t tips = -9999;  // Number of tip events, increased for anemometer
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
     if (_i2c->requestFrom(static_cast<uint8_t>(_i2cAddressHex),
-                          static_cast<uint8_t>(2))) {
+                          static_cast<uint8_t>(4))) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        uint8_t Byte1 = _i2c->read();  // Low byte of data
-        uint8_t Byte2 = _i2c->read();  // High byte of data
+        uint8_t SerialBuffer[4];  // Create a byte array of 4 bytes
+        uint8_t byte_in = 0; // Start iterator for reading Bytes
+        while (Wire.available()) { // slave may send less than requested
+            SerialBuffer[byte_in] = Wire.read();
+            MS_DBG(F("  SerialBuffer["), byte_in, F("] = "),
+                     SerialBuffer[byte_in]);
+            byte_in++;  // increment by 1
+        }
 
-        tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
+        // Concatenate bytes into uint32_t by bit-shifting
+        // https://thewanderingengineer.com/2015/05/06/sending-16-bit-and-32-bit-numbers-with-arduino-i2c/#
+        if ( (SerialBuffer[0] > 0)
+        ) {
+            // for Slave with libVersion = v0.1.0, which only sends 1-byte
+            // NOTE: this can not be falsely selected because it would require
+            // > 16,777,216 counts from a v0.2.0 slave, which is not possible in 24 hours
+            MS_DBG(F("  Counted with slave libVersion = v0.1.0"));
+            tips = SerialBuffer[0];
+        } else if ( (SerialBuffer[1] == 0) &&
+                    (SerialBuffer[2] == 255) ) {
+            // for Slave with libVersion = v0.1.0, in which no counts are made
+            // NOTE: this will be falsely selected if exactly 65535 counts
+            // were made by a v0.2.0 slave
+            MS_DBG(F("  No counts with slave libVersion = v0.1.0"));
+            tips = SerialBuffer[0];
+        } else {
+            // for Slave with libVersion >= v0.2.0
+            tips = SerialBuffer[0];
+            tips = (tips << 8) | SerialBuffer[1];
+            tips = (tips << 8) | SerialBuffer[2];
+            tips = (tips << 8) | SerialBuffer[3];
+        }
+
         rain = static_cast<float>(tips) *
             _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 

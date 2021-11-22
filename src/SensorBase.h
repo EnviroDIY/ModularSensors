@@ -64,8 +64,8 @@ class Sensor {
      * @brief Construct a new Sensor object.
      *
      * @param sensorName The name of the sensor.  Defaults to "Unknown".
-     * @param numReturnedVars The number of variable results returned by the
-     * sensor.  Defaults to 1.
+     * @param totalReturnedValues The total number of value results (raw or
+     * calculated internally) returned by the sensor.  Defaults to 1.
      * @param warmUpTime_ms The time in ms between when the sensor is powered on
      * and when it is ready to receive a wake command.  Defaults to 0.
      * @param stabilizationTime_ms The time in ms between when the sensor
@@ -80,12 +80,16 @@ class Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
-    Sensor(const char*   sensorName      = "Unknown",
-           const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
+    Sensor(const char*   sensorName          = "Unknown",
+           const uint8_t totalReturnedValues = 1, uint32_t warmUpTime_ms = 0,
            uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1,
-           uint8_t measurementsToAverage = 1);
+           uint8_t measurementsToAverage = 1, uint8_t incCalcValues = 0);
     /**
      * @brief Dis-allowed constructor for a new Sensor object from a copy of
      * another Sensor object - the deleted copy constructor.
@@ -347,6 +351,12 @@ class Sensor {
      * @brief Average the results of all measurements by dividing the sum of
      * all measurements by the number of measurements taken.
      */
+    void verifyAndAddMeasurementResult(uint8_t resultNumber,
+                                       int32_t resultValue);
+     /**
+      * @brief Average the results of all measurements by dividing the sum of
+      * all measurements by the number of measurements taken.
+      */
     void averageMeasurements(void);
 
     /**
@@ -449,6 +459,10 @@ class Sensor {
     const char* _sensorName;
     /**
      * @brief The number of values the sensor is capable of reporting.
+     *
+     * This includes raw values from the sensor and any values that are always
+     * calculated within the library for the sensor.  The @ref _incCalcValues
+     * are *included* in this total.
      */
     const uint8_t _numReturnedValues;
     /**
@@ -461,6 +475,16 @@ class Sensor {
      * requested.
      */
     uint8_t _measurementsToAverage;
+    /**
+     * @brief The number of included calculated variables from the
+     * sensor, if any.
+     *
+     * These are used for values that we would always calculate for a sensor and
+     * depend only on the raw results of that single sensor.  This is separate
+     * from any calculated variables that are created on-the-fly and depend on
+     * multiple other sensors.
+     */
+    uint8_t _incCalcValues;
     /**
      * @brief Array with the number of valid measurement values taken by the
      * sensor in the current update cycle.

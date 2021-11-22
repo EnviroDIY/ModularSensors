@@ -82,6 +82,8 @@
 
 /// @brief Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
 #define MPL115A2_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define MPL115A2_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_mpl115a2_timing

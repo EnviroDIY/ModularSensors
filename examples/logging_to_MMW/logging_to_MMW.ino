@@ -119,7 +119,7 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v0.5b";
+const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
 /** End [processor_sensor] */
 

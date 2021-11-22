@@ -57,6 +57,8 @@
 /// @brief Sensor::_numReturnedValues; the Atlas EZO pH circuit can report 1
 /// value.
 #define ATLAS_PH_NUM_VARIABLES 1
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define ATLAS_PH_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_atlas_ph_timing
@@ -155,7 +157,8 @@ class AtlasScientificpH : public AtlasParent {
         : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
                       "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
                       ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
-                      ATLAS_PH_MEASUREMENT_TIME_MS) {}
+                      ATLAS_PH_MEASUREMENT_TIME_MS,
+                      ATLAS_PH_INC_CALC_VARIABLES) {}
     /**
      * @brief Construct a new Atlas Scientific pH object using the primary
      * hardware I2C instance.
@@ -180,7 +183,8 @@ class AtlasScientificpH : public AtlasParent {
         : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                       "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
                       ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
-                      ATLAS_PH_MEASUREMENT_TIME_MS) {}
+                      ATLAS_PH_MEASUREMENT_TIME_MS,
+                      ATLAS_PH_INC_CALC_VARIABLES) {}
 
     /**
      * @brief Destroy the Atlas Scientific pH object

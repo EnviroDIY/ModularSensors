@@ -4,7 +4,7 @@
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains theCampbellClariVUE10 sensor subclass and the variable
+ * @brief Contains the CampbellClariVUE10 sensor subclass and the variable
  * subclasses CampbellClariVUE10_Temp, CampbellClariVUE10_Turbidity, and
  * CampbellClariVUE10_ErrorCode.
  *
@@ -48,7 +48,7 @@
  * @see @ref sdi12_group_flags
  *
  * @section sensor_clarivue_ctor Sensor Constructor
- * {{ @refCampbellClariVUE10::CampbellClariVUE10 }}
+ * {{ @ref CampbellClariVUE10::CampbellClariVUE10 }}
  *
  * ___
  * @section sensor_clarivue_examples Example Code
@@ -72,6 +72,9 @@
 /// @brief Sensor::_numReturnedValues; the ClariVUE10 can report 7 values
 /// (although we only keep 3).
 #define CLARIVUE10_NUM_VARIABLES 7
+/// @brief Sensor::_incCalcValues; The ClariVUE calcualtes averages and other
+/// stats on board, but we don't calculate any additional values.
+#define CLARIVUE10_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_clarivue_timing
@@ -99,6 +102,9 @@
  * non-concurrent measurment.  Waiting the full 8s seems excessive.
  */
 #define CLARIVUE10_MEASUREMENT_TIME_MS 7200
+/// @brief Extra wake time required for an SDI-12 sensor between the "break"
+/// and the time the command is sent.  The ClariVUE requires no extra time.
+#define CLARIVUE10_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -108,7 +114,7 @@
  * - Range is 0 to 4000 FNU.
  * - Accuracy ±2% or 0.5 FNU (whichever is greater).
  *
- * {{ @refCampbellClariVUE10_Turbidity::CampbellClariVUE10_Turbidity }}
+ * {{ @ref CampbellClariVUE10_Turbidity::CampbellClariVUE10_Turbidity }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; turbidity should have 1
@@ -135,7 +141,7 @@
  * - Range is -2° to +40°C
  * - Accuracy is ± 0.2°C
  *
- * {{ @refCampbellClariVUE10_Temp::CampbellClariVUE10_Temp }}
+ * {{ @ref CampbellClariVUE10_Temp::CampbellClariVUE10_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -161,7 +167,7 @@
  * The error code variable from a Campbell ClariVUE10
  * - Significance of error code values is unknown.
  *
- * {{ @refCampbellClariVUE10_ErrorCode::CampbellClariVUE10_ErrorCode }}
+ * {{ @ref CampbellClariVUE10_ErrorCode::CampbellClariVUE10_ErrorCode }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; the error code has 0.
@@ -215,31 +221,35 @@ class CampbellClariVUE10 : public SDI12Sensors {
      */
     CampbellClariVUE10(char SDI12address, int8_t powerPin, int8_t dataPin,
                        uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
-                       CLARIVUE10_WARM_UP_TIME_MS,
-                       CLARIVUE10_STABILIZATION_TIME_MS,
-                       CLARIVUE10_MEASUREMENT_TIME_MS) {}
+        : SDI12Sensors(
+              SDI12address, powerPin, dataPin, measurementsToAverage,
+              "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
+              CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
+              CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
-     * @copydocCampbellClariVUE10::CampbellClariVUE10
+     * @copydoc CampbellClariVUE10::CampbellClariVUE10
      */
     CampbellClariVUE10(char* SDI12address, int8_t powerPin, int8_t dataPin,
                        uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
-                       CLARIVUE10_WARM_UP_TIME_MS,
-                       CLARIVUE10_STABILIZATION_TIME_MS,
-                       CLARIVUE10_MEASUREMENT_TIME_MS) {}
+        : SDI12Sensors(
+              SDI12address, powerPin, dataPin, measurementsToAverage,
+              "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
+              CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
+              CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
-     * @copydocCampbellClariVUE10::CampbellClariVUE10
+     * @copydoc CampbellClariVUE10::CampbellClariVUE10
      */
     CampbellClariVUE10(int SDI12address, int8_t powerPin, int8_t dataPin,
                        uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
-                       CLARIVUE10_WARM_UP_TIME_MS,
-                       CLARIVUE10_STABILIZATION_TIME_MS,
-                       CLARIVUE10_MEASUREMENT_TIME_MS) {}
+        : SDI12Sensors(
+              SDI12address, powerPin, dataPin, measurementsToAverage,
+              "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
+              CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
+              CLARIVUE10_INC_CALC_VARIABLES) {}
+
     /**
      * @brief Destroy the Campbell ClariVUE10 object
      */
@@ -259,9 +269,9 @@ class CampbellClariVUE10 : public SDI12Sensors {
 class CampbellClariVUE10_Turbidity : public Variable {
  public:
     /**
-     * @brief Construct a newCampbellClariVUE10_Turbidity object.
+     * @brief Construct a new CampbellClariVUE10_Turbidity object.
      *
-     * @param parentSense The parentCampbellClariVUE10 providing the result
+     * @param parentSense The parent CampbellClariVUE10 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
@@ -276,9 +286,9 @@ class CampbellClariVUE10_Turbidity : public Variable {
                    CLARIVUE10_TURBIDITY_VAR_NAME,
                    CLARIVUE10_TURBIDITY_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a newCampbellClariVUE10_Turbidity object.
+     * @brief Construct a new CampbellClariVUE10_Turbidity object.
      *
-     * @note This must be tied with a parentCampbellClariVUE10 before it can be
+     * @note This must be tied with a parent CampbellClariVUE10 before it can be
      * used.
      */
     CampbellClariVUE10_Turbidity()
@@ -288,7 +298,8 @@ class CampbellClariVUE10_Turbidity : public Variable {
                    CLARIVUE10_TURBIDITY_UNIT_NAME,
                    CLARIVUE10_TURBIDITY_DEFAULT_CODE) {}
     /**
-     * @brief Destroy theCampbellClariVUE10_Turbidity object - no action needed.
+     * @brief Destroy the CampbellClariVUE10_Turbidity object - no action
+     * needed.
      */
     ~CampbellClariVUE10_Turbidity() {}
 };
@@ -306,9 +317,9 @@ class CampbellClariVUE10_Turbidity : public Variable {
 class CampbellClariVUE10_Temp : public Variable {
  public:
     /**
-     * @brief Construct a newCampbellClariVUE10_Temp object.
+     * @brief Construct a new CampbellClariVUE10_Temp object.
      *
-     * @param parentSense The parentCampbellClariVUE10 providing the result
+     * @param parentSense The parent CampbellClariVUE10 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
@@ -323,9 +334,9 @@ class CampbellClariVUE10_Temp : public Variable {
                    CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a newCampbellClariVUE10_Temp object.
+     * @brief Construct a new CampbellClariVUE10_Temp object.
      *
-     * @note This must be tied with a parentCampbellClariVUE10 before it can be
+     * @note This must be tied with a parent CampbellClariVUE10 before it can be
      * used.
      */
     CampbellClariVUE10_Temp()
@@ -334,7 +345,7 @@ class CampbellClariVUE10_Temp : public Variable {
                    CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME,
                    CLARIVUE10_TEMP_DEFAULT_CODE) {}
     /**
-     * @brief Destroy theCampbellClariVUE10_Temp object - no action needed.
+     * @brief Destroy the CampbellClariVUE10_Temp object - no action needed.
      */
     ~CampbellClariVUE10_Temp() {}
 };
@@ -352,9 +363,9 @@ class CampbellClariVUE10_Temp : public Variable {
 class CampbellClariVUE10_ErrorCode : public Variable {
  public:
     /**
-     * @brief Construct a newCampbellClariVUE10_ErrorCode object.
+     * @brief Construct a new CampbellClariVUE10_ErrorCode object.
      *
-     * @param parentSense The parentCampbellClariVUE10 providing the result
+     * @param parentSense The parent CampbellClariVUE10 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
@@ -369,9 +380,9 @@ class CampbellClariVUE10_ErrorCode : public Variable {
                    CLARIVUE10_ERRORCODE_VAR_NAME,
                    CLARIVUE10_ERRORCODE_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a newCampbellClariVUE10_ErrorCode object.
+     * @brief Construct a new CampbellClariVUE10_ErrorCode object.
      *
-     * @note This must be tied with a parentCampbellClariVUE10 before it can be
+     * @note This must be tied with a parent CampbellClariVUE10 before it can be
      * used.
      */
     CampbellClariVUE10_ErrorCode()
@@ -381,7 +392,8 @@ class CampbellClariVUE10_ErrorCode : public Variable {
                    CLARIVUE10_ERRORCODE_UNIT_NAME,
                    CLARIVUE10_ERRORCODE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy theCampbellClariVUE10_ErrorCode object - no action needed.
+     * @brief Destroy the CampbellClariVUE10_ErrorCode object - no action
+     * needed.
      */
     ~CampbellClariVUE10_ErrorCode() {}
 };

@@ -60,6 +60,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Y514 can report 2 values.
 #define Y514_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y514_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y514_timing
@@ -172,7 +174,7 @@ class YosemitechY514 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y514,
                            "YosemitechY514", Y514_NUM_VARIABLES,
                            Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS,
-                           Y514_MEASUREMENT_TIME_MS) {}
+                           Y514_MEASUREMENT_TIME_MS, Y514_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY514::YosemitechY514
      */
@@ -183,7 +185,7 @@ class YosemitechY514 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y514,
                            "YosemitechY514", Y514_NUM_VARIABLES,
                            Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS,
-                           Y514_MEASUREMENT_TIME_MS) {}
+                           Y514_MEASUREMENT_TIME_MS, Y514_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y514 object
      */
