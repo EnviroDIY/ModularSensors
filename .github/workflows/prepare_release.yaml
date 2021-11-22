@@ -130,7 +130,7 @@ jobs:
         id: changelog_reader
         uses: mindsers/changelog-reader-action@v2
         with:
-          path: CHANGELOG.md
+          path: ${{ format('{0}/CHANGELOG.md',github.workspace) }}
           version: ${{ env.VERSION }}
           # validation_depth: 10
 
