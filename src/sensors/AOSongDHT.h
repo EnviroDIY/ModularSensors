@@ -73,12 +73,23 @@
 #include "SensorBase.h"
 #include <DHT.h>
 
-// Undefine these macros so I can use a typedef instead
+#ifdef DHT11
+// In older versions of the DHT library, defines were used
+// Undefine these macros and convert to static const for compatibility with the
+// newer versions of the library
 #undef DHT11
 #undef DHT21
 #undef AM2301
 #undef DHT22
 #undef AM2302
+
+/* Define types of sensors. */
+static const uint8_t DHT11{11};  /**< DHT TYPE 11 */
+static const uint8_t DHT12{12};  /**< DHY TYPE 12 */
+static const uint8_t DHT21{21};  /**< DHT TYPE 21 */
+static const uint8_t DHT22{22};  /**< DHT TYPE 22 */
+static const uint8_t AM2301{21}; /**< AM2301 */
+#endif
 
 // Sensor Specific Defines
 /** @ingroup sensor_dht */
@@ -86,6 +97,8 @@
 
 /// @brief Sensor::_numReturnedValues; the DHT can report 3 values.
 #define DHT_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define DHT_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_dht_timing
@@ -184,17 +197,6 @@
 #define DHT_HI_DEFAULT_CODE "DHTHI"
 /**@}*/
 
-/**
- * @brief The possible types of DHT
- */
-typedef enum DHTtype {
-    DHT11  = 11,
-    DHT21  = 21,
-    AM2301 = 21,
-    DHT22  = 22,
-    AM2302 = 22
-} DHTtype;
-
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
@@ -221,7 +223,7 @@ class AOSongDHT : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type,
+    AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
               uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the AOSongDHT object - no action needed.
@@ -245,7 +247,7 @@ class AOSongDHT : public Sensor {
 
  private:
     DHT     dht_internal;
-    DHTtype _dhtType;
+    uint8_t _dhtType;
 };
 
 

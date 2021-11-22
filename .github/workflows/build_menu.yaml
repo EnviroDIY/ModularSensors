@@ -13,176 +13,176 @@ jobs:
     strategy:
       matrix:
         include:
-          - modemFlag: MS_BUILD_MODEM_SIM7080
+          - modemFlag: BUILD_MODEM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_XBEE_CELLULAR
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_XBEE_CELLULAR
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_XBEE_LTE_B
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_XBEE_LTE_B
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_XBEE_3G_B
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_XBEE_3G_B
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_XBEE_WIFI
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_XBEE_WIFI
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_ESP8266
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_ESP8266
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_BG96
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_BG96
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_MONARCH
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_MONARCH
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM800
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM800
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7000
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7000
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_S2GB
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_S2GB
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_UBEE_R410M
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_UBEE_R410M
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_UBEE_U201
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_UBEE_U201
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_AM2315
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_DHT
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_SQ212
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ATLASCO2
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ATLASDO
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ATLASORP
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ATLASPH
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ATLASRTD
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ATLASEC
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_BME280
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_OBS3
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_CLARIVUE10
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_CTD
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ES2
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_VOLTAGE
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_MPL115A2
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_INSITURDO
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ACCULEVEL
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_NANOLEVEL
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_MAXBOTIX
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_DS18
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_MS5803
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_5TM
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_HYDROS21
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_TEROS11
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_PALEOTERRA
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_RAINI2C
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_TALLY
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_INA219
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_CYCLOPS
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_ANALOGEC
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y504
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y510
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y511
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y514
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y520
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y532
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y533
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y550
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_Y4000
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
-            sensorFlag: MS_BUILD_SENSOR_DOPTO
-            publisherFlag: MS_BUILD_PUB_MMW
-          - modemFlag: MS_BUILD_MODEM_SIM7080
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_AM2315
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_DHT
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_SQ212
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLASCO2
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLASDO
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLASORP
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLASPH
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLASRTD
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLASEC
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_BME280
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_OBS3
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_CLARIVUE10
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_CTD
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ES2
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_VOLTAGE
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_MPL115A2
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_INSITURDO
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ACCULEVEL
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_NANOLEVEL
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_MAXBOTIX
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_DS18
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_MS5803
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_5TM
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_HYDROS21
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_TEROS11
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_PALEOTERRA
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_RAINI2C
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_TALLY
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_INA219
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_CYCLOPS
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_ANALOGEC
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y504
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y510
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y511
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y514
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y520
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y532
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y533
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y550
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y4000
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_DOPTO
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_DREAMHOST
-          - modemFlag: MS_BUILD_MODEM_SIM7080
+            publisherFlag: BUILD_PUB_DREAMHOST
+          - modemFlag: BUILD_MODEM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: MS_BUILD_PUB_THINGSPEAK
+            publisherFlag: BUILD_PUB_THINGSPEAK
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.4.0
 
       - name: Set environment variable for library installation source
         run: |
@@ -202,7 +202,7 @@ jobs:
           fi
 
       - name: Set up Python
-        uses: actions/setup-python@v2.2.2
+        uses: actions/setup-python@v2.3.0
 
       - name: Install PlatformIO
         run: |
@@ -212,7 +212,7 @@ jobs:
       # We use the `arduino/setup-arduino-cli` action to install and
       # configure the Arduino CLI on the system.
       - name: Setup Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+        uses: arduino/setup-arduino-cli@v1.1.1
 
       - name: Restore or Cache PlatformIO and Arduino platforms and libraries
         uses: actions/cache@v2.1.6
@@ -243,28 +243,8 @@ jobs:
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors for Arduino CLI
         run: |
-          echo "::debug::Deleting any archived zips"
-          rm -f home/arduino/downloads/ModularSensors.zip
-          echo "::debug::Downloading library zip"
-          curl -L  --retry 15 --retry-delay 0 ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o home/arduino/downloads/ModularSensors.zip
-          echo "::debug::Unzipping the library"
-          unzip -o home/arduino/downloads/ModularSensors.zip -d home/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
-          echo "::debug::Ensuring no old directories exist"
-          rm -r -f home/arduino/user/libraries/ModularSensors
-          echo "::debug::Creating a new directory for the testing version of Modular sensors"
-          mkdir -p home/arduino/user/libraries/ModularSensors
-          echo "::debug::Moving the unzipped library to the new directory"
-          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
-            mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
-          else
-            mv home/arduino/downloads/ModularSensors-${GITHUB_HEAD_REF}/* home/arduino/user/libraries/ModularSensors
-          fi
-          echo "::debug::Updating the library index"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
-          echo "::debug::Listing libraries detected by the Arduino CLI"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list
-          echo "::debug::Listing the contents of the Arduino library directory"
-          ls home/arduino/user/libraries
+          chmod +x continuous_integration/install-test-version-arduino-cli.sh
+          sh continuous_integration/install-test-version-arduino-cli.sh
 
       # Install ModularSensors at the Global level for PlatformIO
       - name: Install the testing version of Modular Sensors for PlatformIO
@@ -302,7 +282,7 @@ jobs:
       - name: Test with Arduino CLI
         run: |
           echo "::group::Build for Mayfly"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_BUILD_TEST_ALTSOFTSERIAL -DMS_BUILD_TEST_NEOSWSERIAL -DMS_BUILD_TEST_SOFTSERIAL -DMS_BUILD_TEST_COMPLEX_LOOP" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DBUILD_TEST_ALTSOFTSERIAL -DBUILD_TEST_NEOSWSERIAL -DBUILD_TEST_SOFTSERIAL -DBUILD_TEST_COMPLEX_LOOP" --fqbn EnviroDIY:avr:envirodiy_mayfly temp/menu_a_la_carte/
           echo "::endgroup::"
           echo "::group::Build for Arduino Mega"
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=-DNEOSWSERIAL_EXTERNAL_PCINT -DMS_RAIN_SOFTWAREWIRE -DMS_PALEOTERRA_SOFTWAREWIRE -DMS_SDI12_NON_CONCURRENT" --fqbn arduino:avr:mega temp/menu_a_la_carte/

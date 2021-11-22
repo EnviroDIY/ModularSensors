@@ -15,9 +15,10 @@ jobs:
             examples/single_sensor/,
             examples/simple_logging/,
             examples/simple_logging_LearnEnviroDIY/,
-            examples/DRWI_CitSci/,
-            examples/DRWI_LTE/,
             examples/DRWI_NoCellular/,
+            examples/DRWI_2G/,
+            examples/DRWI_DigiLTE/,
+            examples/DRWI_SIM7080LTE/,
             examples/double_logger/,
             examples/baro_rho_correction/,
             examples/data_saving/,
@@ -35,7 +36,7 @@ jobs:
           ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.4.0
 
       - name: Set environment variable for library installation source
         run: |
@@ -50,7 +51,7 @@ jobs:
       # We use the `arduino/setup-arduino-cli` action to install and
       # configure the Arduino CLI on the system.
       - name: Setup Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+        uses: arduino/setup-arduino-cli@v1.1.1
 
       - name: Restore or Cache Arduino Platforms and Libraries
         uses: actions/cache@v2.1.6
@@ -72,28 +73,8 @@ jobs:
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors for the Arduino CLI
         run: |
-          echo "::debug::Deleting any archived zips"
-          rm -f home/arduino/downloads/ModularSensors.zip
-          echo "::debug::Downloading library zip"
-          curl -L  --retry 15 --retry-delay 0 ${{ env.LIBRARY_INSTALL_ZIP }} --create-dirs -o home/arduino/downloads/ModularSensors.zip
-          echo "::debug::Unzipping the library"
-          unzip -o home/arduino/downloads/ModularSensors.zip -d home/arduino/downloads/ -x "*.git/*" "continuous_integration/*" "docs/*" "examples/*"
-          echo "::debug::Ensuring no old directories exist"
-          rm -r -f home/arduino/user/libraries/ModularSensors
-          echo "::debug::Creating a new directory for the testing version of Modular sensors"
-          mkdir -p home/arduino/user/libraries/ModularSensors
-          echo "::debug::Moving the unzipped library to the new directory"
-          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
-            mv home/arduino/downloads/ModularSensors-${GITHUB_SHA}/* home/arduino/user/libraries/ModularSensors
-          else
-            mv home/arduino/downloads/ModularSensors-${GITHUB_HEAD_REF}/* home/arduino/user/libraries/ModularSensors
-          fi
-          echo "::debug::Updating the library index"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
-          echo "::debug::Listing libraries detected by the Arduino CLI"
-          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list
-          echo "::debug::Listing the contents of the Arduino library directory"
-          ls home/arduino/user/libraries
+          chmod +x continuous_integration/install-test-version-arduino-cli.sh
+          sh continuous_integration/install-test-version-arduino-cli.sh
 
       - name: Set appropriate build flags for Arduino CLI
         run: |

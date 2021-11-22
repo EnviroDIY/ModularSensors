@@ -170,6 +170,8 @@
  * Win-Situ software.
  */
 #define INSITU_RDO_NUM_VARIABLES 4
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define INSITU_RDO_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_insitu_rdo_timing
@@ -377,7 +379,8 @@ class InSituRDO : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
               INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
-              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS) {}
+              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS,
+              INSITU_RDO_INC_CALC_VARIABLES) {}
     /**
      * @copydoc InSituRDO::InSituRDO
      */
@@ -387,7 +390,8 @@ class InSituRDO : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
               INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
-              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS) {}
+              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS,
+              INSITU_RDO_INC_CALC_VARIABLES) {}
     /**
      * @copydoc InSituRDO::InSituRDO
      */
@@ -397,7 +401,8 @@ class InSituRDO : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
               INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
-              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS) {}
+              INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS,
+              INSITU_RDO_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the InSitu RDO object
      */

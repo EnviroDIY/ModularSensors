@@ -58,6 +58,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Y550 can report 2 values.
 #define Y550_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y550_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y550_timing
@@ -198,7 +200,7 @@ class YosemitechY550 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y550,
                            "YosemitechY550", Y550_NUM_VARIABLES,
                            Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS,
-                           Y550_MEASUREMENT_TIME_MS) {}
+                           Y550_MEASUREMENT_TIME_MS, Y550_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY550::YosemitechY550
      */
@@ -209,7 +211,7 @@ class YosemitechY550 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y550,
                            "YosemitechY550", Y550_NUM_VARIABLES,
                            Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS,
-                           Y550_MEASUREMENT_TIME_MS) {}
+                           Y550_MEASUREMENT_TIME_MS, Y550_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y550 object
      */

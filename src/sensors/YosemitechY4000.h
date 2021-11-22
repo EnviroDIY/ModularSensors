@@ -64,6 +64,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Y4000 can report 8 values.
 #define Y4000_NUM_VARIABLES 8
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y4000_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y4000_timing
@@ -347,7 +349,8 @@ class YosemitechY4000 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y4000,
                            "YosemitechY4000", Y4000_NUM_VARIABLES,
                            Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS,
-                           Y4000_MEASUREMENT_TIME_MS) {}
+                           Y4000_MEASUREMENT_TIME_MS,
+                           Y4000_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY4000::YosemitechY4000
      */
@@ -358,7 +361,8 @@ class YosemitechY4000 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y4000,
                            "YosemitechY4000", Y4000_NUM_VARIABLES,
                            Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS,
-                           Y4000_MEASUREMENT_TIME_MS) {}
+                           Y4000_MEASUREMENT_TIME_MS,
+                           Y4000_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y4000 object
      */

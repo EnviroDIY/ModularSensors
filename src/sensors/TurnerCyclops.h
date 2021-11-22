@@ -155,6 +155,8 @@
  * the Cyclops.
  */
 #define CYCLOPS_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; the raw voltage is reported, the other parameter is calculated using the input calibration equation.
+#define CYCLOPS_INC_CALC_VARIABLES 1
 
 /**
  * @anchor sensor_cyclops_timing

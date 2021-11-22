@@ -163,6 +163,10 @@ class YosemitechParent : public Sensor {
      * Defaults to 20,000 (20s).
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 2000.
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
     YosemitechParent(byte modbusAddress, Stream* stream, int8_t powerPin,
                      int8_t powerPin2, int8_t enablePin = -1,
@@ -171,7 +175,7 @@ class YosemitechParent : public Sensor {
                      const char*     sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
-                     uint32_t measurementTime_ms   = 2000);
+                     uint32_t measurementTime_ms   = 2000, uint8_t incCalcValues = 0);
     /**
      * @copydoc YosemitechParent::YosemitechParent
      */
@@ -182,7 +186,7 @@ class YosemitechParent : public Sensor {
                      const char*     sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
-                     uint32_t measurementTime_ms   = 2000);
+                     uint32_t measurementTime_ms   = 2000, uint8_t incCalcValues = 0);
     /**
      * @brief Destroy the Yosemitech Parent object - no action taken
      */

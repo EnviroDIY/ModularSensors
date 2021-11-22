@@ -15,18 +15,22 @@ YosemitechParent::YosemitechParent(
     byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
     int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
     const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
-    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
+    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
+    uint8_t incCalcValues)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage),
+             measurementTime_ms, powerPin, -1, measurementsToAverage,
+             incCalcValues),
       _ysensor(), _model(model), _modbusAddress(modbusAddress), _stream(stream),
       _RS485EnablePin(enablePin), _powerPin2(powerPin2) {}
 YosemitechParent::YosemitechParent(
     byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
     int8_t enablePin, uint8_t measurementsToAverage, yosemitechModel model,
     const char* sensName, uint8_t numVariables, uint32_t warmUpTime_ms,
-    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
+    uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
+    uint8_t incCalcValues)
     : Sensor(sensName, numVariables, warmUpTime_ms, stabilizationTime_ms,
-             measurementTime_ms, powerPin, -1, measurementsToAverage),
+             measurementTime_ms, powerPin, -1, measurementsToAverage,
+             incCalcValues),
       _ysensor(), _model(model), _modbusAddress(modbusAddress),
       _stream(&stream), _RS485EnablePin(enablePin), _powerPin2(powerPin2) {}
 // Destructor

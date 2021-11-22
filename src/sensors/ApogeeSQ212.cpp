@@ -20,7 +20,7 @@ ApogeeSQ212::ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
                          uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES, SQ212_WARM_UP_TIME_MS,
              SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage) {
+             -1, measurementsToAverage, SQ212_INC_CALC_VARIABLES) {
     _adsChannel = adsChannel;
     _i2cAddress = i2cAddress;
 }

@@ -1,6 +1,6 @@
 /** =========================================================================
- * @file logging_to_MMW.ino
- * @brief Example logging data and publishing to Monitor My Watershed.
+ * @file DRWI_DigiLTE.ino
+ * @brief Example for DRWI CitSci LTE sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
@@ -50,7 +50,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "logging_to MMW.ino";
+const char* sketchName = "DRWI_DigiLTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -61,11 +61,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 115200;  // Baud rate for debugging
-const int8_t  greenLED   = 8;       // Pin for the green LED
-const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+const int32_t serialBaud = 57600;  // Baud rate for debugging
+const int8_t  greenLED   = 8;      // Pin for the green LED
+const int8_t  redLED     = 9;      // Pin for the red LED
+const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
+const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
@@ -80,8 +80,8 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 /** Start [xbee_cell_transparent] */
 // For any Digi Cellular XBee's
-// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
-// in either bypass or transparent mode, each with pros and cons
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
+// are more stable used in bypass mode (below)
 // The Telit based Digi XBees (LTE Cat1) can only use this mode.
 #include <modems/DigiXBeeCellularTransparent.h>
 
@@ -91,19 +91,17 @@ const int32_t   modemBaud   = 9600;     // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin    = -2;     // MCU pin controlling modem power
-const int8_t modemStatusPin = 19;     // MCU pin used to read modem status
-const bool useCTSforStatus  = false;  // Flag to use the XBee CTS pin for status
-const int8_t modemResetPin  = 20;     // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = 23;    // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin = redLED;    // MCU pin connected an LED to show modem
-                                      // status (-1 if unconnected)
+const int8_t modemVccPin    = -2;    // MCU pin controlling modem power
+const int8_t modemStatusPin = 19;    // MCU pin used to read modem status
+const bool useCTSforStatus = false;  // Flag to use the modem CTS pin for status
+const int8_t modemResetPin = 20;     // MCU pin connected to modem reset pin
+const int8_t modemSleepRqPin = 23;   // MCU pin for modem sleep/wake request
+const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
+                                     // status (-1 if unconnected)
 
 // Network connection information
-const char* apn = "xxxxx";  // The APN for the gprs connection
+const char* apn = "hologram";  // The APN for the gprs connection
 
-// NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
-// the `CTS` pin can also be used if necessary
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       useCTSforStatus, modemResetPin,
                                       modemSleepRqPin, apn);
@@ -119,7 +117,7 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
-const char*    mcuBoardVersion = "v1.1";
+const char*    mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 /** End [processor_sensor] */
 
@@ -136,41 +134,52 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//  Bosch BME280 Environmental Sensor
+//  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
-/** Start [bme280] */
-#include <sensors/BoschBME280.h>
+/** Start [obs3] */
+#include <sensors/CampbellOBS3.h>
 
-const int8_t I2CPower    = sensorPowerPin;  // Power pin (-1 if unconnected)
-uint8_t      BMEi2c_addr = 0x76;
-// The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove
-// default) Either can be physically mofidied for the other address
+const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const uint8_t OBS3NumberReadings = 10;
+const uint8_t ADSi2c_addr        = 0x48;  // The I2C address of the ADS1115 ADC
+// Campbell OBS 3+ *Low* Range Calibration in Volts
+const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
+const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
+const float  OBSLow_B         = 1.000E+00;  // "B" value (X) [*low* range]
+const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
 
-// Create a Bosch BME280 sensor object
-BoschBME280 bme280(I2CPower, BMEi2c_addr);
-/** End [bme280] */
+// Create a Campbell OBS3+ *low* range sensor object
+CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
+                     ADSi2c_addr, OBS3NumberReadings);
+
+
+// Campbell OBS 3+ *High* Range Calibration in Volts
+const int8_t OBSHighADSChannel = 1;  // ADS channel for *high* range output
+const float  OBSHigh_A         = 0.000E+00;  // "A" value (X^2) [*high* range]
+const float  OBSHigh_B         = 1.000E+00;  // "B" value (X) [*high* range]
+const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
+
+// Create a Campbell OBS3+ *high* range sensor object
+CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
+                      OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
+/** End [obs3] */
 
 
 // ==========================================================================
-//  Maxim DS18 One Wire Temperature Sensor
+//  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-/** Start [ds18] */
-#include <sensors/MaximDS18.h>
+/** Start [hydros21] */
+#include <sensors/MeterHydros21.h>
 
-// OneWire Address [array of 8 hex characters]
-// If only using a single sensor on the OneWire bus, you may omit the address
-// DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03,
-// 0x0C};
-const int8_t OneWirePower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t OneWireBus   = 6;  // OneWire Bus Pin (-1 if unconnected)
+const char*   hydrosSDI12address = "1";  // The SDI-12 Address of the Hydros 21
+const uint8_t hydrosNumberReadings = 6;  // The number of readings to average
+const int8_t  SDI12Power = sensorPowerPin;  // Power pin (-1 if unconnected)
+const int8_t  SDI12Data  = 7;               // The SDI12 data pin
 
-// Create a Maxim DS18 sensor objects (use this form for a known address)
-// MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
-
-// Create a Maxim DS18 sensor object (use this form for a single sensor on bus
-// with an unknown address)
-MaximDS18 ds18(OneWirePower, OneWireBus);
-/** End [ds18] */
+// Create a Meter Hydros 21 sensor object
+MeterHydros21 hydros(*hydrosSDI12address, SDI12Power, SDI12Data,
+                     hydrosNumberReadings);
+/** End [hydros21] */
 
 
 // ==========================================================================
@@ -178,26 +187,68 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard,
-                                    "12345678-abcd-1234-ef00-1234567890ab"),
-    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
-    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
-    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
-    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ProcessorStats_Battery(&mcuBoard,
-                               "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterHydros21_Cond(&hydros),
+    new MeterHydros21_Depth(&hydros),
+    new MeterHydros21_Temp(&hydros),
+    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
+    new ProcessorStats_Battery(&mcuBoard),
+    new MaximDS3231_Temp(&ds3231),
+    new Modem_SignalPercent(&modem),
 };
 
+// All UUID's, device registration, and sampling feature information can be
+// pasted directly from Monitor My Watershed.
+// To get the list, click the "View  token UUID list" button on the upper right
+// of the site page.
+
+// *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+// Check the order of your variables in the variable list!!!
+// Be VERY certain that they match the order of your UUID's!
+// Rearrange the variables in the variable list ABOVE if necessary to match!
+// Do not change the order of the variables in the section below.
+// *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+
+// Replace all of the text in the following section with the UUID array from
+// MonitorMyWatershed
+
+// ---------------------   Beginning of Token UUID List
+// ---------------------------------------
+
+
+const char* UUIDs[] =  // UUID array for device sensors
+    {
+        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance
+                                                 // (Meter_Hydros21_Cond)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
+                                                 // (Meter_Hydros21_Depth)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
+                                                 // (Meter_Hydros21_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
+                                                 // (Campbell_OBS3_Turb) (Low)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
+                                                 // (Campbell_OBS3_Turb) (High)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
+                                                 // (EnviroDIY_Mayfly_Batt)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
+                                                 // (Maxim_DS3231_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale
+                                                 // (Digi_Cellular_SignalPercent)
+};
+const char* registrationToken =
+    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature =
+    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+
+
+// -----------------------   End of Token UUID List
+// ------------------------------------------
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray(variableCount, variableList, UUIDs);
 /** End [variable_arrays] */
 
 
@@ -214,14 +265,6 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
-// Device registration and sampling feature information can be obtained after
-// registration at https://monitormywatershed.org or https://data.envirodiy.org
-const char* registrationToken =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
-
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
@@ -252,21 +295,13 @@ float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
-/** End [working_functions] */
 
 
 // ==========================================================================
-//  Arduino Setup Function
+// Arduino Setup Function
 // ==========================================================================
 /** Start [setup] */
 void setup() {
-// Wait for USB connection to be established by PC
-// NOTE:  Only use this when debugging - if not connected to a PC, this
-// could prevent the script from starting
-#if defined SERIAL_PORT_USBVIRTUAL
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {}
-#endif
-
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -283,15 +318,6 @@ void setup() {
     Serial.println(TINYGSM_VERSION);
     Serial.println();
 
-// Allow interrupts for software serial
-#if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
-                    CHANGE);
-#endif
-#if defined NeoSWSerial_h
-    enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
-#endif
-
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
 
@@ -302,6 +328,9 @@ void setup() {
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
+
+    pinMode(20, OUTPUT);  // for proper operation of the onboard flash memory
+                          // chip's ChipSelect (Mayfly v1.0 and later)
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -324,6 +353,49 @@ void setup() {
         Serial.println(F("Setting up sensors..."));
         varArray.setupSensors();
     }
+
+    // Extra modem set-up - selecting AT&T as the carrier and LTE-M only
+    // NOTE:  The code for this could be shortened using the "commandMode" and
+    // other XBee specific commands in TinyGSM.  I've written it this way in
+    // this example to show how the settings could be changed in either bypass
+    // OR transparent mode.
+    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    modem.modemWake();  // NOTE:  This will also set up the modem
+    // Go back to command mode to set carrier options
+    for (uint8_t i = 0; i < 5; i++) {
+        // Wait the required guard time before entering command mode
+        delay(1010);
+        modem.gsmModem.streamWrite(GF("+++"));  // enter command mode
+        if (modem.gsmModem.waitResponse(2000, GF("OK\r")) == 1) break;
+    }
+    // Carrier Profile - 0 = Automatic selection
+    //                 - 1 = No profile/SIM ICCID selected
+    //                 - 2 = AT&T
+    //                 - 3 = Verizon
+    // NOTE:  To select T-Mobile, you must enter bypass mode!
+    modem.gsmModem.sendAT(GF("CP"), 2);
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Cellular network technology - 0 = LTE-M with NB-IoT fallback
+    //                             - 1 = NB-IoT with LTE-M fallback
+    //                             - 2 = LTE-M only
+    //                             - 3 = NB-IoT only
+    modem.gsmModem.sendAT(GF("N#"), 2);
+    modem.gsmModem.waitResponse();
+    // Write changes to flash and apply them
+    Serial.println(F("Wait while applying changes..."));
+    // Write changes to flash
+    modem.gsmModem.sendAT(GF("WR"));
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Apply changes
+    modem.gsmModem.sendAT(GF("AC"));
+    modem.gsmModem.waitResponse(GF("OK\r"));
+    // Reset the cellular component to ensure network settings are changed
+    modem.gsmModem.sendAT(GF("!R"));
+    modem.gsmModem.waitResponse(30000L, GF("OK\r"));
+    // Force reset of the Digi component as well
+    // This effectively exits command mode
+    modem.gsmModem.sendAT(GF("FR"));
+    modem.gsmModem.waitResponse(5000L, GF("OK\r"));
 
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane()) {

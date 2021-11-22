@@ -18,7 +18,7 @@ TurnerCyclops::TurnerCyclops(int8_t powerPin, uint8_t adsChannel,
                              uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("TurnerCyclops", CYCLOPS_NUM_VARIABLES, CYCLOPS_WARM_UP_TIME_MS,
              CYCLOPS_STABILIZATION_TIME_MS, CYCLOPS_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage) {
+             powerPin, -1, measurementsToAverage, CYCLOPS_INC_CALC_VARIABLES) {
     _adsChannel = adsChannel;
     _conc_std   = conc_std;
     _volt_std   = volt_std;

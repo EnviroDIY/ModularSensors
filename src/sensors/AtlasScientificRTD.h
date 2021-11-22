@@ -64,6 +64,8 @@
  * report 1 value.
  */
 #define ATLAS_RTD_NUM_VARIABLES 1
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define ATLAS_RTD_INC_CALC_VARIABLES 0
 
 
 /**
@@ -158,11 +160,11 @@ class AtlasScientificRTD : public AtlasParent {
     AtlasScientificRTD(TwoWire* theI2C, int8_t powerPin,
                        uint8_t i2cAddressHex         = ATLAS_RTD_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-        : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
-                      "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
-                      ATLAS_RTD_WARM_UP_TIME_MS,
-                      ATLAS_RTD_STABILIZATION_TIME_MS,
-                      ATLAS_RTD_MEASUREMENT_TIME_MS) {}
+        : AtlasParent(
+              theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+              "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
+              ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
+              ATLAS_RTD_MEASUREMENT_TIME_MS, ATLAS_RTD_INC_CALC_VARIABLES) {}
     /**
      * @brief Construct a new Atlas Scientific RTD object using the primary
      * hardware I2C instance.
@@ -184,12 +186,11 @@ class AtlasScientificRTD : public AtlasParent {
     explicit AtlasScientificRTD(int8_t  powerPin,
                                 uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
                                 uint8_t measurementsToAverage = 1)
-        : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                      "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
-                      ATLAS_RTD_WARM_UP_TIME_MS,
-                      ATLAS_RTD_STABILIZATION_TIME_MS,
-                      ATLAS_RTD_MEASUREMENT_TIME_MS) {}
-
+        : AtlasParent(
+              powerPin, i2cAddressHex, measurementsToAverage,
+              "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
+              ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
+              ATLAS_RTD_MEASUREMENT_TIME_MS, ATLAS_RTD_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Atlas Scientific RTD object
      */

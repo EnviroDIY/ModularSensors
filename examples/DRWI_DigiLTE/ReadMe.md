@@ -1,8 +1,8 @@
-[//]: # ( @page example_drwi_2g DRWI CitSci 2G Sites )
-# ModularSensors DRWI 2G Sites
+[//]: # ( @page example_drwi_digilte DRWI CitSci Digi LTE Sites )
+# Example using the Modular Sensors Library for DRWI Digi LTE Sites
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
-This should be used at all sites with cellular 2G service.
+This should be used at all sites with cellular LTE service.
 
 Before programming your board with this example, you must register your site and sensors at http://data.envirodiy.org/.
 Stroud can provide directions for registering your site if you need assistance.
@@ -12,8 +12,8 @@ _______
 [//]: # ( @tableofcontents )
 
 [//]: # ( Start GitHub Only )
-- [ModularSensors DRWI 2G Sites](#modularsensors-drwi-2g-sites)
-- [Unique Features of the DRWI 2G Example](#unique-features-of-the-drwi-2g-example)
+- [Example using the Modular Sensors Library for DRWI Digi LTE Sites](#example-using-the-modular-sensors-library-for-drwi-digi-lte-sites)
+- [Unique Features of the DRWI Digi LTE Example](#unique-features-of-the-drwi-digi-lte-example)
 - [To Use this Example:](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Set the logger ID](#set-the-logger-id)
@@ -25,27 +25,27 @@ _______
 
 _______
 
-[//]: # ( @section example_drwi_2g_unique Unique Features of the DRWI 2G Example )
-# Unique Features of the DRWI 2G Example
+[//]: # ( @section example_drwi_digilte_unique Unique Features of the DRWI Digi LTE Example )
+# Unique Features of the DRWI Digi LTE Example
 - Specifically for sites within the Delaware River Watershed Initiative.
-- Uses a Sodaq 2GBee for live data.
+- Uses a Digi XBee3 LTE-M for live data.
 
-[//]: # ( @section example_drwi_2g_use To Use this Example: )
+[//]: # ( @section example_drwi_digilte_using To Use this Example: )
 # To Use this Example:
 
-[//]: # ( @subsection example_drwi_2g_pio Prepare and set up PlatformIO )
+[//]: # ( @subsection example_drwi_digilte_pio Prepare and set up PlatformIO )
 ## Prepare and set up PlatformIO
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
-- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/platformio.ini) file in the examples/DRWI_CitSci folder on GitHub.
+- Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_DigiLTE/platformio.ini) file in the examples/DRWI_DigiLTE folder on GitHub.
     - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
     - Without this, the program won't compile.
-- Open [DRWI_CitSci.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/DRWI_CitSci.ino) and save it to your computer.
+- Open [DRWI_DigiLTE.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_DigiLTE/DRWI_DigiLTE.ino) and save it to your computer.
     - After opening the link, you should be able to right click anywhere on the page and select "Save Page As".
     - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
-[//]: # ( @subsection example_drwi_2g_logger_id Set the logger ID )
+[//]: # ( @subsection example_drwi_digilte_logger_id Set the logger ID )
 ## Set the logger ID
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
@@ -54,7 +54,7 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-[//]: # ( @subsection example_drwi_2g_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
+[//]: # ( @subsection example_drwi_digilte_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
 ## Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change _**all**_ of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
@@ -84,7 +84,7 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-[//]: # ( @subsection example_drwi_2g_uuids Set the universally universal identifiers (UUID) for each variable )
+[//]: # ( @subsection example_drwi_digilte_uuids Set the universally universal identifiers (UUID) for each variable )
 ## Set the universally universal identifiers (UUID) for each variable
 - Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
@@ -114,23 +114,23 @@ const char* UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",   // Turbidity (Campbell_OBS3_Turb)
     "12345678-abcd-1234-ef00-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Batt)
     "12345678-abcd-1234-ef00-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Received signal strength indication (Sodaq_2GBee_RSSI)
-    "12345678-abcd-1234-ef00-1234567890ab"    // Percent full scale (Sodaq_2GBee_SignalPercent)
+    "12345678-abcd-1234-ef00-1234567890ab",   // Received signal strength indication (Digi_Cellular_RSSI)
+    "12345678-abcd-1234-ef00-1234567890ab"    // Percent full scale (Digi_Cellular_SignalPercent)
 };
 const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
 ```
 
-[//]: # ( @subsection example_drwi_2g_upload Upload! )
+[//]: # ( @subsection example_drwi_digilte_upload Upload! )
 ## Upload!
 - Test everything at home **before** deploying out in the wild!
 
 _______
 
 
-[//]: # ( @section example_drwi_2g_pio_config PlatformIO Configuration )
+[//]: # ( @section example_drwi_digilte_pio_config PlatformIO Configuration )
 
-[//]: # ( @include{lineno} DRWI_CitSci/platformio.ini )
+[//]: # ( @include{lineno} DRWI_DigiLTE/platformio.ini )
 
-[//]: # ( @section example_drwi_2g_code The Complete Code )
+[//]: # ( @section example_drwi_digilte_code The Complete Code )

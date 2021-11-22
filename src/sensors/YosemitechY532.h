@@ -59,6 +59,8 @@
 
 /// @brief Sensor::_numReturnedValues; the Y532 can report 3 values.
 #define Y532_NUM_VARIABLES 3
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define Y532_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_y532_timing
@@ -173,7 +175,9 @@ class YosemitechY532 : public YosemitechParent {
      * @brief Construct a new Yosemitech Y532 object.
      *
      * @param modbusAddress The modbus address of the sensor.
-     * @param stream An Arduino data stream for modbus communication.  See [notes](@ref page_arduino_streams) for more information on what streams can be used.
+     * @param stream An Arduino data stream for modbus communication.  See
+     * [notes](@ref page_arduino_streams) for more information on what streams
+     * can be used.
      * @param powerPin The pin on the mcu controlling power to the Y532.
      * Use -1 if it is continuously powered.
      * @param powerPin2 The pin on the mcu controlling power to the RS485
@@ -194,7 +198,7 @@ class YosemitechY532 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y532,
                            "YosemitechY532", Y532_NUM_VARIABLES,
                            Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS,
-                           Y532_MEASUREMENT_TIME_MS) {}
+                           Y532_MEASUREMENT_TIME_MS, Y532_INC_CALC_VARIABLES) {}
     /**
      * @copydoc YosemitechY532::YosemitechY532
      */
@@ -205,7 +209,7 @@ class YosemitechY532 : public YosemitechParent {
                            enablePin, measurementsToAverage, Y532,
                            "YosemitechY532", Y532_NUM_VARIABLES,
                            Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS,
-                           Y532_MEASUREMENT_TIME_MS) {}
+                           Y532_MEASUREMENT_TIME_MS, Y532_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Yosemitech Y532 object
      */

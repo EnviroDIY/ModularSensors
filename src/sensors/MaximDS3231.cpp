@@ -14,7 +14,7 @@
 MaximDS3231::MaximDS3231(uint8_t measurementsToAverage)
     : Sensor("MaximDS3231", DS3231_NUM_VARIABLES, DS3231_WARM_UP_TIME_MS,
              DS3231_STABILIZATION_TIME_MS, DS3231_MEASUREMENT_TIME_MS, -1, -1,
-             measurementsToAverage) {}
+             measurementsToAverage, DS3231_INC_CALC_VARIABLES) {}
 // Destructor
 MaximDS3231::~MaximDS3231() {}
 

@@ -66,6 +66,8 @@
 
 /// @brief Sensor::_numReturnedValues; the ES2 can report 2 values.
 #define ES2_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values.
+#define ES2_INC_CALC_VARIABLES 0
 
 /**
  * @anchor sensor_es2_timing
@@ -187,7 +189,7 @@ class DecagonES2 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS,
-                       ES2_EXTRA_WAKE_TIME_MS) {}
+                       ES2_EXTRA_WAKE_TIME_MS, ES2_INC_CALC_VARIABLES) {}
     /**
      * @copydoc DecagonES2::DecagonES2
      */
@@ -196,7 +198,7 @@ class DecagonES2 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS,
-                       ES2_EXTRA_WAKE_TIME_MS) {}
+                       ES2_EXTRA_WAKE_TIME_MS, ES2_INC_CALC_VARIABLES) {}
     /**
      * @copydoc DecagonES2::DecagonES2
      */
@@ -205,7 +207,7 @@ class DecagonES2 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonES2", ES2_NUM_VARIABLES, ES2_WARM_UP_TIME_MS,
                        ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS,
-                       ES2_EXTRA_WAKE_TIME_MS) {}
+                       ES2_EXTRA_WAKE_TIME_MS, ES2_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Decagon ES2 object
      */

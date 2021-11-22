@@ -79,6 +79,7 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
 #ifdef SDI12_EXTERNAL_PCINT
@@ -109,7 +110,7 @@ class SDI12Sensors : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param sensorName The name of the sensor.  Defaults to "SDI12-Sensor".
-     * @param numReturnedVars The number of variable results returned by the
+     * @param totalReturnedValues The number of variable results returned by the
      * sensor.  Defaults to 1.
      * @param warmUpTime_ms The time in ms between when the sensor is powered on
      * and when it is ready to receive a wake command.  Defaults to 0.
@@ -121,31 +122,38 @@ class SDI12Sensors : public Sensor {
      * @param extraWakeTime Any extra time needed by the sensor between the
      * start of the break and when the sensor is ready to accept commands.  This
      * will be between 0 and 100ms per SDI-12 protocol.
+     * @param incCalcValues The number of included calculated variables from the
+     * sensor, if any.  These are used for values that we would always calculate
+     * for a sensor and depend only on the raw results of that single sensor;
+     * optional with a default value of 0.
      */
     SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin,
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
-                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
+                 const uint8_t totalReturnedValues   = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
+                 uint8_t incCalcValues = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
     SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
-                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
+                 const uint8_t totalReturnedValues   = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
+                 uint8_t incCalcValues = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
     SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                  uint8_t       measurementsToAverage = 1,
                  const char*   sensorName            = "SDI12-Sensor",
-                 const uint8_t numReturnedVars = 1, uint32_t warmUpTime_ms = 0,
-                 uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0);
+                 const uint8_t totalReturnedValues   = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
+                 uint8_t incCalcValues = 0);
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */
@@ -245,12 +253,27 @@ class SDI12Sensors : public Sensor {
      */
     bool getSensorInfo(void);
     /**
+     * @brief Tell the sensor to start a single measurement, if needed.
+     *
+     * This also sets the #_millisMeasurementRequested timestamp.
+     *
+     * @note This function does NOT include any waiting for the sensor to be
+     * warmed up or stable!
+     *
+     * @param isConcurrent Whether to start a concurrent or standard
+     * measurement.  Defaults to 'true' for a concurrent measurement.
+     *
+     * @return **int8_t** The length of time the measurement is expected to
+     * take.
+     */
+    int8_t startSDI12Measurement(bool isConcurrent = true);
+    /**
      * @brief Gets the results of either a standard or a concurrent measurement
      *
      * @return **bool** True if the full number of expected results was
      * returned.
      */
-    bool getResults();
+    virtual bool getResults(void);
     /**
      * @brief Internal reference to the SDI-12 object.
      */
