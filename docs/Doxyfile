@@ -2263,43 +2263,7 @@ INCLUDE_PATH           = ../src \
                          ../src/modems \
                          ../src/publishers \
                          ../src/sensors \
-                         ../src/watchdogs \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/SoftwareWire" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/NeoSWSerial/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/AltSoftSerial" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/SoftwareSerial_ExtInts/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/StreamDebugger" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/YosemitechModbus/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/KellerModbus/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/SensorModbusMaster/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Tally_Library/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/MS5803/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/SDI-12/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/DallasTemperature" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/OneWire" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Adafruit MPL115A2" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Adafruit INA219" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/DHT sensor library" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Adafruit BME280 Library" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Adafruit AM2315" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Adafruit ADS1X15" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Adafruit Unified Sensor" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/Adafruit BusIO" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/PubSubClient/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/TinyGSM/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/SdFat/src" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/EnableInterrupt" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/EnableInterrupt/utility" \
-                "$(PLATFORMIO_GLOBALLIB_DIR)/EnviroDIY_DS3231/src" \
-                "$(PLATFORMIO_PACKAGES_DIR)/toolchain-atmelavr/avr/include" \
-                "$(PLATFORMIO_PACKAGES_DIR)/framework-arduino-avr/libraries/Wire/src" \
-                "$(PLATFORMIO_PACKAGES_DIR)/framework-arduino-avr/libraries/SPI/src" \
-                "$(PLATFORMIO_PACKAGES_DIR)/framework-arduino-avr/cores/arduino" \
-                "$(PLATFORMIO_PACKAGES_DIR)/framework-arduino-avr/variants/mayfly" \
-                "$(PLATFORMIO_PACKAGES_DIR)/framework-arduino-avr/libraries/EEPROM/src" \
-                "$(PLATFORMIO_PACKAGES_DIR)/framework-arduino-avr/libraries/HID/src" \
-                "$(PLATFORMIO_PACKAGES_DIR)/framework-arduino-avr/libraries/SoftwareSerial/src" \
-                "$(PLATFORMIO_PACKAGES_DIR)/tool-unity"
+                         ../src/watchdogs
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the

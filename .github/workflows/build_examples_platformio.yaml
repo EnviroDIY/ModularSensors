@@ -48,7 +48,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade platformio
 
-      - name: Restore or Cache PlatformIO and Libraries
+      - name: Restore PlatformIO Platforms and Libraries
         uses: actions/cache@v2.1.6
         id: cache_libraries
         with:
@@ -66,17 +66,11 @@ jobs:
           sh continuous_integration/install-deps-platformio.sh
 
       # Install ModularSensors at the Global level for PlatformIO
+      # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          echo "::debug::Already installed global libraries"
-          pio lib -g list
-          echo "::debug::Already installed temp/project libraries"
-          pio lib list
-          pio lib -g install ${{ env.LIBRARY_INSTALL_SOURCE }}
-          echo "::debug::Now installed global libraries"
-          pio lib -g list
-          echo "::debug::Now installed temp/project libraries"
-          pio lib list
+          pio lib -g -f install ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio lib show EnviroDIY_ModularSensors
 
       - name: Run PlatformIO
         env:
@@ -86,5 +80,7 @@ jobs:
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           platformio ci --project-conf="continuous_integration/platformio.ini"
 
-      - name: Uninstall testing version of Modular Sensors before caching
-        run: pio lib -g uninstall EnviroDIY_ModularSensors
+      # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
+      # dependencies leaving nothing for the cache
+      # - name: Uninstall testing version of Modular Sensors before caching
+      #   run: pio lib -g uninstall EnviroDIY_ModularSensors
