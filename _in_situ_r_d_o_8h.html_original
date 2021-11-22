@@ -1354,6 +1354,10 @@
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#ga9fd50d02f54c25c1351c1318905d4bc3" class="m-doc">INSITU_RDO_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the RDO PRO-X can report 4 values.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__insitu__rdo.html#gabd8d8d06a3d1845efe8a00af73be8e7f" class="m-doc">INSITU_RDO_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
           </dl>
         </section>
         <section id="sensor-timing">

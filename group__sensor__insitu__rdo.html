@@ -1362,9 +1362,10 @@
 </div>
 </section></p><hr/></section><section id="sensor_insitu_rdo_examples"><h2>Example Code</h2><p>The InSitu RDO PRO-X is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_insitu_rdo">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/InSituRDO.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">   </span><span class="n">RDOSDI12address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5&quot;</span><span class="p">;</span><span class="w">      </span><span class="c1">// The SDI-12 Address of the RDO PRO-X</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">RDOPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">RDOData</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span><span class="w">               </span><span class="c1">// The SDI12 data pin</span>
+<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">   </span><span class="n">RDOSDI12address</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// The SDI-12 Address of the RDO PRO-X</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">RDOPower</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">RDOData</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span><span class="w">               </span><span class="c1">// The SDI12 data pin</span>
 <span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">RDONumberReadings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// Create an In-Situ RDO PRO-X dissolved oxygen sensor object</span>
@@ -1414,6 +1415,12 @@
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the RDO PRO-X can report 4 values.</dd>
 
               <dd><p>It reports 3 values (DO concentration, DO % saturation, and temperature) by default. Partial pressure of oxygen can be added to the output using Win-Situ software.</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gabd8d8d06a3d1845efe8a00af73be8e7f" class="m-doc">INSITU_RDO_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
+
 
           </dl>
         </section>

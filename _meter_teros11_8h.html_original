@@ -1308,8 +1308,9 @@
                 <li><a href="#nested-classes">Classes</a></li>
                 <li><a href="#define-members">Defines</a></li>
                 <li><a href="#sensor-timing">Sensor Timing</a></li>
-                <li><a href="#ea">EA</a></li>
+                <li><a href="#raw-counts">Raw Counts</a></li>
                 <li><a href="#temperature">Temperature</a></li>
+                <li><a href="#ea">EA</a></li>
                 <li><a href="#volumetric-water-content">Volumetric Water Content</a></li>
               </ul>
             </li>
@@ -1329,13 +1330,17 @@
             </dt>
             <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__teros11.html" class="m-doc">Meter Teros 11 sensor</a>.</dd>
             <dt>
-              class <a href="class_meter_teros11___ea.html" class="m-doc">MeterTeros11_Ea</a>
+              class <a href="class_meter_teros11___count.html" class="m-doc">MeterTeros11_Count</a>
             </dt>
-            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__teros11.html#sensor_teros11_ea" class="m-doc">apparent dielectric permittivity (εa, matric potential)</a> from a <a href="group__sensor__teros11.html" class="m-doc">Meter Teros soil moisture/water content sensor</a>.</dd>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__teros11.html#sensor_teros11_counts" class="m-doc">raw calibrated VWC counts</a> from a <a href="group__sensor__teros11.html" class="m-doc">Meter Teros soil moisture/water content sensor</a>.</dd>
             <dt>
               class <a href="class_meter_teros11___temp.html" class="m-doc">MeterTeros11_Temp</a>
             </dt>
             <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__teros11.html#sensor_teros11_temp" class="m-doc">temperature output</a> output from a <a href="group__sensor__teros11.html" class="m-doc">Teros soil moisture/water content sensor</a>.</dd>
+            <dt>
+              class <a href="class_meter_teros11___ea.html" class="m-doc">MeterTeros11_Ea</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__teros11.html#sensor_teros11_ea" class="m-doc">apparent dielectric permittivity (εa, matric potential)</a> from a <a href="group__sensor__teros11.html" class="m-doc">Meter Teros soil moisture/water content sensor</a>.</dd>
             <dt>
               class <a href="class_meter_teros11___v_w_c.html" class="m-doc">MeterTeros11_VWC</a>
             </dt>
@@ -1346,9 +1351,13 @@
           <h2>Defines</h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga61002929cac6a8cedd0e4a754c56d624" class="m-doc">TEROS11_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga61002929cac6a8cedd0e4a754c56d624" class="m-doc">TEROS11_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 4</span></span>
             </dt>
-            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Teros 11 can report 3 values.</dd>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Teros 11 can report 2 raw values - counts and temperature.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#gaf55216b1ba885e49fe21bf0534d659a0" class="m-doc">TEROS11_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; We calculate permittivity and water content from the raw counts and temperature reported by the Teros 11.</dd>
           </dl>
         </section>
         <section id="sensor-timing">
@@ -1373,30 +1382,30 @@
             <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The Terros-11 requires no extra time.</dd>
           </dl>
         </section>
-        <section id="ea">
-          <h2>EA</h2>
-<p><a name="sensor_teros11_ea"></a> The EA variable from a Meter Teros 11</p><ul><li>Range is 1 (air) to 80 (water)</li><li>Accuracy is:<ul><li>1–40 (soil range), ±1 εa (unitless)</li><li>40–80, 15% of measurement</li></ul></li></ul><p>{{ <a href="class_meter_teros11___ea.html#af3431d9df3e33d50de4700c1a7ef3995" class="m-doc">MeterTeros11_Ea::<wbr />MeterTeros11_Ea</a> }}</p>
+        <section id="raw-counts">
+          <h2>Raw Counts</h2>
+<p><a name="sensor_teros11_counts"></a> The raw VWC counts variable from a Meter Teros 11</p><ul><li>Range and accuracy of the raw count values are not specified</li></ul><p>{{ <a href="class_meter_teros11___count.html#a11e92d2ee5dd0d581571cb3e78755601" class="m-doc">MeterTeros11_Count::<wbr />MeterTeros11_Count</a> }}</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga779084d042da478e7ee5600ddd49e2f4" class="m-doc">TEROS11_EA_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#gab05fcaf9f3d3686679dd4189eb66844c" class="m-doc">TEROS11_COUNT_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
-            <dd>Decimals places in string representation; EA should have 5.</dd>
+            <dd>Decimals places in string representation; EA should have 1.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga53d47497364d7e954487ba644c925a82" class="m-doc">TEROS11_EA_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga3b77479457c451755ea7c810335a8aa9" class="m-doc">TEROS11_COUNT_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; EA is stored in sensorValues[0].</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga4a20f0b3d1f709d6546f51a24f035423" class="m-doc">TEROS11_EA_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "permittivity"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga139427d85092c8ed0d020166dcfabd04" class="m-doc">TEROS11_COUNT_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "counter"</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;permittivity&quot;.</dd>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;counter&quot;.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga4ccef41777511d4470ca46a481f5fe10" class="m-doc">TEROS11_EA_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "faradPerMeter"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga19b9e5ebd0362d76b4b10050b134d1b4" class="m-doc">TEROS11_COUNT_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "count"</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;faradPerMeter&quot; (F/m)</dd>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;count&quot;.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#gad3220ee1ee6c7c26a01e5780cd6c7d14" class="m-doc">TEROS11_EA_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "SoilEa"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga3c8f699336f9525b6c4f6d138540e9eb" class="m-doc">TEROS11_COUNT_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "RawVWCCounts"</span></span>
             </dt>
-            <dd>Default variable short code; &quot;SoilEa&quot;.</dd>
+            <dd>Default variable short code; &quot;RawVWCCounts&quot;.</dd>
           </dl>
         </section>
         <section id="temperature">
@@ -1425,6 +1434,32 @@
             <dd>Default variable short code; &quot;SoilTemp&quot;.</dd>
           </dl>
         </section>
+        <section id="ea">
+          <h2>EA</h2>
+<p><a name="sensor_teros11_ea"></a> The EA variable from a Meter Teros 11</p><ul><li>Range is 1 (air) to 80 (water)</li><li>Accuracy is:<ul><li>1–40 (soil range), ±1 εa (unitless)</li><li>40–80, 15% of measurement</li></ul></li></ul><p>{{ <a href="class_meter_teros11___ea.html#af3431d9df3e33d50de4700c1a7ef3995" class="m-doc">MeterTeros11_Ea::<wbr />MeterTeros11_Ea</a> }}</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga779084d042da478e7ee5600ddd49e2f4" class="m-doc">TEROS11_EA_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
+            </dt>
+            <dd>Decimals places in string representation; EA should have 5.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga53d47497364d7e954487ba644c925a82" class="m-doc">TEROS11_EA_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; EA is stored in sensorValues[0].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga4a20f0b3d1f709d6546f51a24f035423" class="m-doc">TEROS11_EA_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "permittivity"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;permittivity&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga4ccef41777511d4470ca46a481f5fe10" class="m-doc">TEROS11_EA_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "faradPerMeter"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;faradPerMeter&quot; (F/m)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#gad3220ee1ee6c7c26a01e5780cd6c7d14" class="m-doc">TEROS11_EA_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "SoilEa"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;SoilEa&quot;.</dd>
+          </dl>
+        </section>
         <section id="volumetric-water-content">
           <h2>Volumetric Water Content</h2>
 <p><a name="sensor_teros11_vwc"></a> The VWC variable from a Meter Teros 11</p><ul><li>Range is:<ul><li>Mineral soil calibration: 0.00–0.70 m3/m3 (0 – 70% VWC)</li><li>Soilless media calibration: 0.0–1.0 m3/m3 (0 – 100% VWC)</li></ul></li><li>Accuracy is:<ul><li>Generic calibration: ±0.03 m3/m3 (± 3% VWC) typical in mineral soils that have solution electrical conductivity &lt;8 dS/m</li><li>Medium specific calibration: ±0.01–0.02 m3/m3 (± 1-2% VWC)in any porous medium</li></ul></li></ul><p>{{ <a href="class_meter_teros11___v_w_c.html#a5d4b808fe91807fd3856b0ef0378e5d6" class="m-doc">MeterTeros11_VWC::<wbr />MeterTeros11_VWC</a> }}</p>
@@ -1434,7 +1469,7 @@
             </dt>
             <dd>Decimals places in string representation; VWC should have 3.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga5fcdc96d634e6d811b1a5a60ccb14dab" class="m-doc">TEROS11_VWC_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__teros11.html#ga5fcdc96d634e6d811b1a5a60ccb14dab" class="m-doc">TEROS11_VWC_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; VWC is stored in sensorValues[2].</dd>
             <dt>

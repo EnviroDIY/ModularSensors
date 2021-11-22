@@ -1347,7 +1347,8 @@
 </div>
 </section></p><hr/></section><section id="sensor_dht_examples"><h2>Example Code</h2><p>The DHT is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_dht">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AOSongDHT.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">DHTPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">DHTPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
 <span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">DHTPin</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">              </span><span class="c1">// DHT data pin</span>
 <span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">dhtType</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
 <span class="w">    </span><span class="n">DHT11</span><span class="p">;</span><span class="w">  </span><span class="c1">// DHT type, one of DHT11, DHT12, DHT21, DHT22, or AM2301</span>
@@ -1390,6 +1391,12 @@
               <span class="m-doc-wrap-bumper">#define <a href="#gaf1e521618506220f7a5c06d49a1033b0" class="m-doc-self">DHT_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the DHT can report 3 values.</dd>
+
+
+            <dt id="ga4011d0e28fd6d73937114e9a90eae072">
+              <span class="m-doc-wrap-bumper">#define <a href="#ga4011d0e28fd6d73937114e9a90eae072" class="m-doc-self">DHT_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
 
 
           </dl>

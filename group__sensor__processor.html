@@ -1324,7 +1324,7 @@
 <tbody>
 <tr>
 <td class="m-param" style="width: 1%"><span class="m-param">version</span></td>
-<td><p>The version of the MCU, if applicable.</p><ul><li>For an EnviroDIY Mayfly, the version should be one of "v0.3", "v0.4", "v0.5", or "v0.5b." There <em>is</em> a difference between the versions!</li></ul></td>
+<td><p>The version of the MCU, if applicable.</p><ul><li>For an EnviroDIY Mayfly, the version should be one of "v0.3", "v0.4", "v0.5", "v0.5b", "v1.0", or "v1.1". There <em>is</em> a difference between some of the versions!</li></ul></td>
 </tr>
 </tbody>
 </table>
@@ -1334,7 +1334,7 @@
 </section></p><hr/></section><section id="sensor_processor_sensor_examples"><h2>Example Code</h2><p>The processor is used as a sensor in all of the examples, including the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_processor_sensor">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/ProcessorStats.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create the main processor chip &quot;sensor&quot; - for general metadata</span>
-<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">    </span><span class="n">mcuBoardVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;v0.5b&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w">    </span><span class="n">mcuBoardVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;v1.1&quot;</span><span class="p">;</span><span class="w"></span>
 <span class="n">ProcessorStats</span><span class="w"> </span><span class="nf">mcuBoard</span><span class="p">(</span><span class="n">mcuBoardVersion</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Create sample number, battery voltage, and free RAM variable pointers for the</span>
@@ -1373,6 +1373,12 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga0f2a873a149203f8a5713cb8c5d0b71c" class="m-doc">PROCESSOR_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the processor can report 3 values.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga31b37f04a1fd811a68fa7907bf8ab06a" class="m-doc">PROCESSOR_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; sample number is (sort-of) calculated.</dd>
 
 
           </dl>

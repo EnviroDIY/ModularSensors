@@ -1344,6 +1344,10 @@
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__es2.html#gab72343b2cbe845277b2ddecef41b3968" class="m-doc">ES2_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the ES2 can report 2 values.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__es2.html#gab41685455127a7d5ec13e0f79597ae73" class="m-doc">ES2_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
           </dl>
         </section>
         <section id="sensor-timing">

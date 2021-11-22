@@ -1343,6 +1343,10 @@
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__orp.html#ga1e2a49c1b904dbc2140d2916909648c7" class="m-doc">ATLAS_ORP_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Atlas EZO ORP circuit can report 1 value.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__atlas__orp.html#ga5b8ad0791fb434460200cb369d68bbf6" class="m-doc">ATLAS_ORP_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
           </dl>
         </section>
         <section id="sensor-timing">

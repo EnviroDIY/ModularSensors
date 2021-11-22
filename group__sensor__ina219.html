@@ -1375,7 +1375,8 @@
 </div>
 </section></p><hr/></section><section id="sensor_ina219_examples"><h2>Example Code</h2><p>The TI INA219 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_ina219">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/TIINA219.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">INA219Power</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">INA219Power</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
 <span class="kr">uint8_t</span><span class="w">      </span><span class="n">INA219i2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x40</span><span class="p">;</span><span class="w">            </span><span class="c1">// 1000000 (Board A0+A1=GND)</span>
 <span class="c1">// The INA219 can have one of 16 addresses, depending on the connections of A0</span>
 <span class="c1">// and A1</span>
@@ -1419,6 +1420,12 @@
               <span class="m-doc-wrap-bumper">#define <a href="#gae657102d4f426f1ba498f0cfa2f032c8" class="m-doc">INA219_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the INA219 can report 3 values.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaae83a395a3afa4c84ea908605e6910a3" class="m-doc">INA219_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
 
 
             <dt>

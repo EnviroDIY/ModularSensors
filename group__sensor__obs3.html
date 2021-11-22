@@ -1366,7 +1366,8 @@
 </div>
 </section></p><hr/></section><section id="sensor_obs3_examples"><h2>Example Code</h2><p>The Campbell OBS3+ is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_obs3">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/CampbellOBS3.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">OBS3Power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w">  </span><span class="n">OBS3Power</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
 <span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">OBS3NumberReadings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"></span>
 <span class="kr">const</span><span class="w"> </span><span class="kr">uint8_t</span><span class="w"> </span><span class="n">OBS3ADSi2c_addr</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">0x48</span><span class="p">;</span><span class="w">  </span><span class="c1">// The I2C address of the ADS1115 ADC</span>
 
@@ -1430,6 +1431,12 @@
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the OBS3 can report 2 values.</dd>
 
               <dd><p>Low and high range are treated as completely independent, so only 2 &quot;variables&quot; are measured by each sensor - one for the raw voltage and another for the calibrated turbidity. To get both high and low range values, create two sensor objects!</p></dd>
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga0d5d88a642e06481da32a8d9df549b3b" class="m-doc">OBS3_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; turbidity is calculated from raw voltage using the input calibration equation.</dd>
+
 
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaf5e311c48b7a1778d4ce4b13ea0be68d" class="m-doc">ADS1115_ADDRESS</a><span class="m-dim m-right-m m-text-right"> = 0x48</span></span>

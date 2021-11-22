@@ -1447,9 +1447,8 @@
 </div>
 </section></p><hr/></section><section id="sensor_pt_redox_examples"><h2>Example Code</h2><p>The PaleoTerra Redox is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_pt_redox">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/PaleoTerraRedox.h&gt;</span><span class="cp"></span>
 
-<span class="kr">int8_t</span><span class="w"> </span><span class="n">paleoTerraPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Pin to switch RS485 adapter power</span>
-<span class="w">                                          </span><span class="c1">// on and off (-1 if unconnected)</span>
-<span class="kr">uint8_t</span><span class="w"> </span><span class="n">paleoI2CAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x68</span><span class="p">;</span><span class="w">           </span><span class="c1">// the I2C address of the redox sensor</span>
+<span class="kr">int8_t</span><span class="w">  </span><span class="n">paleoTerraPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
+<span class="kr">uint8_t</span><span class="w"> </span><span class="n">paleoI2CAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x68</span><span class="p">;</span><span class="w">  </span><span class="c1">// the I2C address of the redox sensor</span>
 
 <span class="c1">// Create the PaleoTerra sensor object</span>
 <span class="cp">#ifdef MS_PALEOTERRA_SOFTWAREWIRE</span>
@@ -1483,6 +1482,12 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga4a559652f9d994b02d2e8db64a52dd40" class="m-doc">PTR_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the PaleoTerra redox sensor can report 1 value.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaeb19d1bada2782b22073a1e77e92bb10" class="m-doc">PTR_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
 
 
             <dt>

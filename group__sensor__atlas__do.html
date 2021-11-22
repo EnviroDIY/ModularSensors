@@ -1378,7 +1378,8 @@
 </div>
 </section></p><hr/></section><section id="sensor_atlas_do_examples"><h2>Example Code</h2><p>The Atlas DO sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_do">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AtlasScientificDO.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlasDOPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlasDOPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
 <span class="kr">uint8_t</span><span class="w">      </span><span class="n">AtlasDOi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x61</span><span class="p">;</span><span class="w">            </span><span class="c1">// Default for DO is 0x61 (97)</span>
 <span class="c1">// All Atlas sensors have different default I2C addresses, but any of them can</span>
 <span class="c1">// be re-addressed to any 8 bit number.  If using the default address for any</span>
@@ -1417,6 +1418,12 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga86ce29406b90f0b80f1f2005fa1fdaf0" class="m-doc">ATLAS_DO_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Atlas DO sensor can report 2 values.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga326444686a8c85021ef78c917a9ef669" class="m-doc">ATLAS_DO_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
 
 
           </dl>

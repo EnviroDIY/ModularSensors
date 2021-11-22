@@ -1403,7 +1403,7 @@
           <h2>Constructors, destructors, conversion operators</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a345bedee4439384053e03270674db190" class="m-doc">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a6bc48bf779e47a946a6147ee8b596c5b" class="m-doc">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
               <span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span>,
@@ -1414,11 +1414,12 @@
               <span class="m-dim">uint8_t</span> <span class="m-param">numVariables</span><span class="m-dim"> = 2</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 1500</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 20000</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>)</span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">incCalcValues</span><span class="m-dim"> = 0</span>)</span>
             </dt>
             <dd>Construct a new Yosemitech Parent object. This is only intended to be used within this library.</dd>
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#aa227fa63aa3af2eb500965e3d7649ad0" class="m-doc">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a37b1f380beaa9dca584d887ee2b1bbad" class="m-doc">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
               <span class="m-dim">Stream&amp;</span> <span class="m-param">stream</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span>,
@@ -1429,7 +1430,8 @@
               <span class="m-dim">uint8_t</span> <span class="m-param">numVariables</span><span class="m-dim"> = 2</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 1500</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 20000</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>)</span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">incCalcValues</span><span class="m-dim"> = 0</span>)</span>
             </dt>
             <dd>Construct a new Yosemitech Parent object. This is only intended to be used within this library.</dd>
                           <dt id="a60d4770dbcda6ca794eb63b8bd844059">
@@ -1493,9 +1495,9 @@
 
         <section id="function-details">
           <h2>Function documentation</h2>
-                      <section class="m-doc-details" id="a345bedee4439384053e03270674db190"><div>
+                      <section class="m-doc-details" id="a6bc48bf779e47a946a6147ee8b596c5b"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a345bedee4439384053e03270674db190" class="m-doc-self">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6bc48bf779e47a946a6147ee8b596c5b" class="m-doc-self">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
               <span class="m-dim">Stream*</span> <span class="m-param">stream</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span>,
@@ -1506,7 +1508,8 @@
               <span class="m-dim">uint8_t</span> <span class="m-param">numVariables</span><span class="m-dim"> = 2</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 1500</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 20000</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>)</span></span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">incCalcValues</span><span class="m-dim"> = 0</span>)</span></span>
             </h3>
             <p>Construct a new Yosemitech Parent object. This is only intended to be used within this library.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1562,15 +1565,19 @@
                   <td class="m-param" ><span class="m-param">measurementTime_ms</span></td>
                   <td>The time in ms between when a measurement is started and when the result value is available. Defaults to 2000.</td>
                 </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">incCalcValues</span></td>
+                  <td>The number of included calculated variables from the sensor, if any. These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor; optional with a default value of 0.</td>
+                </tr>
               </tbody>
             </table>
 
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="aa227fa63aa3af2eb500965e3d7649ad0"><div>
+                      <section class="m-doc-details" id="a37b1f380beaa9dca584d887ee2b1bbad"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa227fa63aa3af2eb500965e3d7649ad0" class="m-doc-self">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
+              <span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a37b1f380beaa9dca584d887ee2b1bbad" class="m-doc-self">YosemitechParent</a>(</span><span class="m-doc-wrap"><span class="m-dim">byte</span> <span class="m-param">modbusAddress</span>,
               <span class="m-dim">Stream&amp;</span> <span class="m-param">stream</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin2</span>,
@@ -1581,7 +1588,8 @@
               <span class="m-dim">uint8_t</span> <span class="m-param">numVariables</span><span class="m-dim"> = 2</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">warmUpTime_ms</span><span class="m-dim"> = 1500</span>,
               <span class="m-dim">uint32_t</span> <span class="m-param">stabilizationTime_ms</span><span class="m-dim"> = 20000</span>,
-              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>)</span></span>
+              <span class="m-dim">uint32_t</span> <span class="m-param">measurementTime_ms</span><span class="m-dim"> = 2000</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">incCalcValues</span><span class="m-dim"> = 0</span>)</span></span>
             </h3>
             <p>Construct a new Yosemitech Parent object. This is only intended to be used within this library.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1636,6 +1644,10 @@
                 <tr>
                   <td class="m-param" ><span class="m-param">measurementTime_ms</span></td>
                   <td>The time in ms between when a measurement is started and when the result value is available. Defaults to 2000.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">incCalcValues</span></td>
+                  <td>The number of included calculated variables from the sensor, if any. These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor; optional with a default value of 0.</td>
                 </tr>
               </tbody>
             </table>

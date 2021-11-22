@@ -1340,6 +1340,10 @@
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Tally can report 1 value.</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__tally.html#gad7eee93016cb809fe22f5bf8f957bf29" class="m-doc">TALLY_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__tally.html#ga19873c57a9082a3265946e43b49a1ca2" class="m-doc">TALLY_ADDRESS_BASE</a><span class="m-dim m-right-m m-text-right"> = 0x33</span></span>
             </dt>
             <dd>The default address of the Tally.</dd>

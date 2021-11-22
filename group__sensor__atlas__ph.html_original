@@ -1314,7 +1314,8 @@
         </div>
           <p>Classes for the Atlas Scientific EZO-pH circuit and probe.</p><section id="sensor_atlas_ph_datasheet"><h2>Sensor Datasheet</h2><p>Documentation on the probe and measurement circuit are found here: <a href="https://www.atlas-scientific.com/ph.html">https:/<wbr />/<wbr />www.atlas-scientific.com/<wbr />ph.html</a></p><aside class="m-note m-info"><h4>Note</h4><p>Be careful not to mix the similar variable and sensor object names!</p></aside></section><section id="sensor_atlas_ph_ctor"><h2>Sensor Constructors</h2><p>{{ <a href="class_atlas_scientificp_h.html#a14c708c0fc1e5720d15ae1dd07b0885a" class="m-doc">AtlasScientificpH::<wbr />AtlasScientificpH(int8_t, uint8_t, uint8_t)</a> }} {{ <a href="class_atlas_scientificp_h.html#a7dfbfc06acbf0deade567aeb9b9936b5" class="m-doc">AtlasScientificpH::<wbr />AtlasScientificpH(TwoWire*, int8_t, uint8_t, uint8_t)</a> }}</p><hr/></section><section id="sensor_atlas_ph_examples"><h2>Example Code</h2><p>The Atlas pH sensor is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_atlas_ph">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/AtlasScientificpH.h&gt;</span><span class="cp"></span>
 
-<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlaspHPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
+<span class="c1">// NOTE: Use -1 for any pins that don&#39;t apply or aren&#39;t being used.</span>
+<span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">AtlaspHPower</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin</span>
 <span class="kr">uint8_t</span><span class="w">      </span><span class="n">AtlaspHi2c_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x63</span><span class="p">;</span><span class="w">            </span><span class="c1">// Default for pH is 0x63 (99)</span>
 <span class="c1">// All Atlas sensors have different default I2C addresses, but any of them can</span>
 <span class="c1">// be re-addressed to any 8 bit number.  If using the default address for any</span>
@@ -1353,6 +1354,12 @@
               <span class="m-doc-wrap-bumper">#define <a href="#ga37f961b3f25f6f7eb1951d7c63011550" class="m-doc">ATLAS_PH_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Atlas EZO pH circuit can report 1 value.</dd>
+
+
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#ga073127c6b21e372c0b2dd9d7e0fe08b5" class="m-doc">ATLAS_PH_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
 
 
           </dl>

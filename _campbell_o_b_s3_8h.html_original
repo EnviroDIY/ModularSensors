@@ -1345,6 +1345,10 @@
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the OBS3 can report 2 values.</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__obs3.html#ga0d5d88a642e06481da32a8d9df549b3b" class="m-doc">OBS3_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; turbidity is calculated from raw voltage using the input calibration equation.</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__obs3.html#gaf5e311c48b7a1778d4ce4b13ea0be68d" class="m-doc">ADS1115_ADDRESS</a><span class="m-dim m-right-m m-text-right"> = 0x48</span></span>
             </dt>
             <dd>The assumed address of the ADS1115, 1001 000 (ADDR = GND)</dd>

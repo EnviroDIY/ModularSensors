@@ -1349,6 +1349,10 @@
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y532.html#gae9d96056448da94ef2fc10fa8048048d" class="m-doc">Y532_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 3</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Y532 can report 3 values.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y532.html#ga31d53970c32a6bded50aff75a3ccb351" class="m-doc">Y532_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
           </dl>
         </section>
         <section id="sensor-timing">

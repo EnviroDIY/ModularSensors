@@ -1299,7 +1299,7 @@
 
           </h1>
         </header>
-        <p>Contains theCampbellClariVUE10 sensor subclass and the variable subclasses <a href="class_campbell_clari_v_u_e10___temp.html" class="m-doc">CampbellClariVUE10_<wbr />Temp</a>, <a href="class_campbell_clari_v_u_e10___turbidity.html" class="m-doc">CampbellClariVUE10_<wbr />Turbidity</a>, and <a href="class_campbell_clari_v_u_e10___error_code.html" class="m-doc">CampbellClariVUE10_<wbr />ErrorCode</a>.</p>
+        <p>Contains the <a href="class_campbell_clari_v_u_e10.html" class="m-doc">CampbellClariVUE10</a> sensor subclass and the variable subclasses <a href="class_campbell_clari_v_u_e10___temp.html" class="m-doc">CampbellClariVUE10_<wbr />Temp</a>, <a href="class_campbell_clari_v_u_e10___turbidity.html" class="m-doc">CampbellClariVUE10_<wbr />Turbidity</a>, and <a href="class_campbell_clari_v_u_e10___error_code.html" class="m-doc">CampbellClariVUE10_<wbr />ErrorCode</a>.</p>
         <div class="m-block m-default">
           <ul>
             <li>
@@ -1349,6 +1349,10 @@
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gafda5e1bb4cdd78c6f6b1bdf1fc97f6b1" class="m-doc">CLARIVUE10_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 7</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the ClariVUE10 can report 7 values (although we only keep 3).</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gaba10735f28ea8d0826c43793d766d0a0" class="m-doc">CLARIVUE10_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; The ClariVUE calcualtes averages and other stats on board, but we don&#x27;t calculate any additional values.</dd>
           </dl>
         </section>
         <section id="sensor-timing">
@@ -1367,11 +1371,43 @@
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga5ad6d3d00da115492366607d786ee58b" class="m-doc">CLARIVUE10_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 7200</span></span>
             </dt>
             <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the ClariVUE10 takes ~7200ms to complete a measurement.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gab0524e068321464f4c0d20ae0f7991f9" class="m-doc">CLARIVUE10_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The ClariVUE requires no extra time.</dd>
           </dl>
         </section>
         <section id="turbidity">
           <h2>Turbidity</h2>
-<p><a name="sensor_clarivue_turbidity"></a> The turbidity variable from a Campbell ClariVUE10</p><ul><li>Range is 0 to 4000 FNU.</li><li>Accuracy ±2% or 0.5 FNU (whichever is greater).</li></ul><p>{{ @refCampbellClariVUE10_Turbidity<a href="class_campbell_clari_v_u_e10___turbidity.html" class="m-doc">CampbellClariVUE10_<wbr />Turbidity</a> }}</p>
+<p><a name="sensor_clarivue_turbidity"></a> The turbidity variable from a Campbell ClariVUE10</p><ul><li>Range is 0 to 4000 FNU.</li><li>Accuracy ±2% or 0.5 FNU (whichever is greater).</li></ul><p><section class="m-doc-details" id="a622262aae6cabdf5ef22997e7b81fe2a"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_clari_v_u_e10___turbidity.html#a622262aae6cabdf5ef22997e7b81fe2a">CampbellClariVUE10_Turbidity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__clarivue.html#ga2cb0c21010b4700331b1a470db123694">CLARIVUE10_<wbr/>TURBIDITY_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_campbell_clari_v_u_e10___turbidity.html">CampbellClariVUE10_<wbr/>Turbidity</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ClariVUETurbidity".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga81cb435c8572bfd8a652b8c62518c20d" class="m-doc">CLARIVUE10_TURBIDITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1397,7 +1433,35 @@
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_clarivue_temp"></a> The temperature variable from a Campbell ClariVUE10</p><ul><li>Range is -2° to +40°C</li><li>Accuracy is ± 0.2°C</li></ul><p>{{ @refCampbellClariVUE10_Temp<a href="class_campbell_clari_v_u_e10___temp.html" class="m-doc">CampbellClariVUE10_<wbr />Temp</a> }}</p>
+<p><a name="sensor_clarivue_temp"></a> The temperature variable from a Campbell ClariVUE10</p><ul><li>Range is -2° to +40°C</li><li>Accuracy is ± 0.2°C</li></ul><p><section class="m-doc-details" id="a90a41967c35fd3cab0fc9e3ba84864ce"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_clari_v_u_e10___temp.html#a90a41967c35fd3cab0fc9e3ba84864ce">CampbellClariVUE10_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__clarivue.html#ga660ffcf1232ef45c5f6ef31b41485273">CLARIVUE10_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_campbell_clari_v_u_e10___temp.html">CampbellClariVUE10_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ClariVUETempC".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gaf135b7b4dea6d1bbd373220912ffb28e" class="m-doc">CLARIVUE10_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1423,7 +1487,35 @@
         </section>
         <section id="error-code">
           <h2>Error Code</h2>
-<p><a name="sensor_clarivue_error"></a> The error code variable from a Campbell ClariVUE10</p><ul><li>Significance of error code values is unknown.</li></ul><p>{{ @refCampbellClariVUE10_ErrorCode<a href="class_campbell_clari_v_u_e10___error_code.html" class="m-doc">CampbellClariVUE10_<wbr />ErrorCode</a> }}</p>
+<p><a name="sensor_clarivue_error"></a> The error code variable from a Campbell ClariVUE10</p><ul><li>Significance of error code values is unknown.</li></ul><p><section class="m-doc-details" id="a1293c39a500562529f41e26d46f21126"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_clari_v_u_e10___error_code.html#a1293c39a500562529f41e26d46f21126">CampbellClariVUE10_ErrorCode</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__clarivue.html#ga77ab4f0b227b0facada352a6a8992c66">CLARIVUE10_<wbr/>ERRORCODE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_campbell_clari_v_u_e10___error_code.html">CampbellClariVUE10_<wbr/>ErrorCode</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ClariVUEError".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gad9146e2ff6eb41ca7b588a85e4cbc951" class="m-doc">CLARIVUE10_ERRORCODE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>

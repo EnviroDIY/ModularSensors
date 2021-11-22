@@ -1316,7 +1316,41 @@
                 <li><a href="#error-code">Error Code</a></li>
           </ul>
         </div>
-          <p>Classes for the <a href="https://www.campbellsci.com/clarivue10">Campbell ClariVUE10</a> turbidity sensor.</p><section id="sensor_clarivue_intro"><h2>Introduction</h2><blockquote><p>The ClariVUE™10 is an ISO 7027 compliant, side-scatter turbidity sensor. It returns data via SDI-12 to a data logger. Turbidity is a common surrogate measurement for suspended sediment concentration in aquatic systems. The ClariVUE™10 is designed to operate in fresh and saline environments. It will require regular maintenance to keep the optical window clean in high bio-fouling environments. The face of the sensor is made from copper to slow biological growth over the optical windows.</p></blockquote><p>The sensor is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 9.6 to 18 Vdc power supply, which can be turned off between measurements. It draws &lt; 300 µA when inactive and &lt; 35 mA while measuring. You will need a voltage booster or a separate power supply to give the ClariVUE10 sufficient voltage to run. At the Stroud Center, we use <a href="https://www.pololu.com/product/2116">Pololu 12V Step-Up Voltage Regulators</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>While it is supported, you should not average measurements for this sensor. The sensor already takes 8 readings by default and returns the median of those.</p></aside></section><section id="sensor_clarivue_datasheet"><h2>Sensor Datasheet</h2><p>The specifications and datasheet are available at <a href="https://www.campbellsci.com/clarivue10">https:/<wbr />/<wbr />www.campbellsci.com/<wbr />clarivue10</a></p></section><section id="sensor_clarivue_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_clarivue_ctor"><h2>Sensor Constructor</h2><p>{{ @refCampbellClariVUE10<a href="class_campbell_clari_v_u_e10.html" class="m-doc">CampbellClariVUE10</a> }}</p><hr/></section><section id="sensor_clarivue_examples"><h2>Example Code</h2><p>The Campbell ClariVUE10 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_clarivue">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/CampbellClariVUE10.h&gt;</span><span class="cp"></span>
+          <p>Classes for the <a href="https://www.campbellsci.com/clarivue10">Campbell ClariVUE10</a> turbidity sensor.</p><section id="sensor_clarivue_intro"><h2>Introduction</h2><blockquote><p>The ClariVUE™10 is an ISO 7027 compliant, side-scatter turbidity sensor. It returns data via SDI-12 to a data logger. Turbidity is a common surrogate measurement for suspended sediment concentration in aquatic systems. The ClariVUE™10 is designed to operate in fresh and saline environments. It will require regular maintenance to keep the optical window clean in high bio-fouling environments. The face of the sensor is made from copper to slow biological growth over the optical windows.</p></blockquote><p>The sensor is implemented as a sub-classes of the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> class. It requires a 9.6 to 18 Vdc power supply, which can be turned off between measurements. It draws &lt; 300 µA when inactive and &lt; 35 mA while measuring. You will need a voltage booster or a separate power supply to give the ClariVUE10 sufficient voltage to run. At the Stroud Center, we use <a href="https://www.pololu.com/product/2116">Pololu 12V Step-Up Voltage Regulators</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>While it is supported, you should not average measurements for this sensor. The sensor already takes 8 readings by default and returns the median of those.</p></aside></section><section id="sensor_clarivue_datasheet"><h2>Sensor Datasheet</h2><p>The specifications and datasheet are available at <a href="https://www.campbellsci.com/clarivue10">https:/<wbr />/<wbr />www.campbellsci.com/<wbr />clarivue10</a></p></section><section id="sensor_clarivue_flags"><h2>Build flags</h2><aside class="m-note m-default"><h4>See also</h4><p><a href="group__sdi12__group.html#sdi12_group_flags" class="m-doc">Build flags</a></p></aside></section><section id="sensor_clarivue_ctor"><h2>Sensor Constructor</h2><p><section class="m-doc-details" id="a99d1e86252c3086f7a4e36f9411175ad"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_clari_v_u_e10.html#a99d1e86252c3086f7a4e36f9411175ad">CampbellClariVUE10</a>(</span><span class="m-doc-wrap"><span class="m-dim">char</span> <span class="m-param">SDI12address</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
+              <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
+              <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
+</h3>
+<p>Construct a new Campbell ClariVUE10 object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">SDI12address</span></td>
+<td>The SDI-12 address of the ClariVUE10; can be a char, char*, or int.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">powerPin</span></td>
+<td><p>The pin on the mcu controlling power to the ClariVUE10 Use -1 if it is continuously powered.</p><ul><li>The ClariVUE10 requires a 9.6 to 18 Vdc power supply, which can be turned off between measurements</li></ul></td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">dataPin</span></td>
+<td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">measurementsToAverage</span></td>
+<td>The number of measurements to take and average before giving a "final" result from the sensor; optional with a default value of 1.</td>
+</tr>
+</tbody>
+</table>
+<p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p>
+<hr/>
+</div>
+</section></p><hr/></section><section id="sensor_clarivue_examples"><h2>Example Code</h2><p>The Campbell ClariVUE10 is used in the <a href="https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_clarivue">menu a la carte</a> example.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sensors/CampbellClariVUE10.h&gt;</span><span class="cp"></span>
 
 <span class="kr">const</span><span class="w"> </span><span class="kr">char</span><span class="o">*</span><span class="w"> </span><span class="n">ClariVUESDI12address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// The SDI-12 Address of the ClariVUE10</span>
 <span class="kr">const</span><span class="w"> </span><span class="kr">int8_t</span><span class="w"> </span><span class="n">ClariVUEPower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensorPowerPin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Power pin (-1 if unconnected)</span>
@@ -1364,6 +1398,12 @@
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the ClariVUE10 can report 7 values (although we only keep 3).</dd>
 
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gaba10735f28ea8d0826c43793d766d0a0" class="m-doc">CLARIVUE10_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; The ClariVUE calcualtes averages and other stats on board, but we don&#x27;t calculate any additional values.</dd>
+
+
           </dl>
         </section>
         <section id="sensor-timing">
@@ -1390,11 +1430,45 @@
 
               <dd><p>Spec sheet says the measurement time is 8s. When taking concurrent measurements I was consistently getting a result before about 6800ms. When taking a standard measurement I was getting a result after about 7185ms. It seems safest to use round up from the time I was getting for a non-concurrent measurment. Waiting the full 8s seems excessive.</p></dd>
 
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#gab0524e068321464f4c0d20ae0f7991f9" class="m-doc">CLARIVUE10_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The ClariVUE requires no extra time.</dd>
+
+
           </dl>
         </section>
         <section id="turbidity">
           <h2>Turbidity</h2>
-<p><a name="sensor_clarivue_turbidity"></a> The turbidity variable from a Campbell ClariVUE10</p><ul><li>Range is 0 to 4000 FNU.</li><li>Accuracy ±2% or 0.5 FNU (whichever is greater).</li></ul><p>{{ @refCampbellClariVUE10_Turbidity<a href="class_campbell_clari_v_u_e10___turbidity.html" class="m-doc">CampbellClariVUE10_<wbr />Turbidity</a> }}</p>
+<p><a name="sensor_clarivue_turbidity"></a> The turbidity variable from a Campbell ClariVUE10</p><ul><li>Range is 0 to 4000 FNU.</li><li>Accuracy ±2% or 0.5 FNU (whichever is greater).</li></ul><p><section class="m-doc-details" id="a622262aae6cabdf5ef22997e7b81fe2a"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_clari_v_u_e10___turbidity.html#a622262aae6cabdf5ef22997e7b81fe2a">CampbellClariVUE10_Turbidity</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__clarivue.html#ga2cb0c21010b4700331b1a470db123694">CLARIVUE10_<wbr/>TURBIDITY_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_campbell_clari_v_u_e10___turbidity.html">CampbellClariVUE10_<wbr/>Turbidity</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ClariVUETurbidity".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#ga81cb435c8572bfd8a652b8c62518c20d" class="m-doc">CLARIVUE10_TURBIDITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
@@ -1430,7 +1504,35 @@
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_clarivue_temp"></a> The temperature variable from a Campbell ClariVUE10</p><ul><li>Range is -2° to +40°C</li><li>Accuracy is ± 0.2°C</li></ul><p>{{ @refCampbellClariVUE10_Temp<a href="class_campbell_clari_v_u_e10___temp.html" class="m-doc">CampbellClariVUE10_<wbr />Temp</a> }}</p>
+<p><a name="sensor_clarivue_temp"></a> The temperature variable from a Campbell ClariVUE10</p><ul><li>Range is -2° to +40°C</li><li>Accuracy is ± 0.2°C</li></ul><p><section class="m-doc-details" id="a90a41967c35fd3cab0fc9e3ba84864ce"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_clari_v_u_e10___temp.html#a90a41967c35fd3cab0fc9e3ba84864ce">CampbellClariVUE10_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__clarivue.html#ga660ffcf1232ef45c5f6ef31b41485273">CLARIVUE10_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_campbell_clari_v_u_e10___temp.html">CampbellClariVUE10_<wbr/>Temp</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ClariVUETempC".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gaf135b7b4dea6d1bbd373220912ffb28e" class="m-doc">CLARIVUE10_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
@@ -1466,7 +1568,35 @@
         </section>
         <section id="error-code">
           <h2>Error Code</h2>
-<p><a name="sensor_clarivue_error"></a> The error code variable from a Campbell ClariVUE10</p><ul><li>Significance of error code values is unknown.</li></ul><p>{{ @refCampbellClariVUE10_ErrorCode<a href="class_campbell_clari_v_u_e10___error_code.html" class="m-doc">CampbellClariVUE10_<wbr />ErrorCode</a> }}</p>
+<p><a name="sensor_clarivue_error"></a> The error code variable from a Campbell ClariVUE10</p><ul><li>Significance of error code values is unknown.</li></ul><p><section class="m-doc-details" id="a1293c39a500562529f41e26d46f21126"><div>
+<h3>
+<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_campbell_clari_v_u_e10___error_code.html#a1293c39a500562529f41e26d46f21126">CampbellClariVUE10_ErrorCode</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a>*</span> <span class="m-param">parentSense</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
+              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__clarivue.html#ga77ab4f0b227b0facada352a6a8992c66">CLARIVUE10_<wbr/>ERRORCODE_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
+</h3>
+<p>Construct a new <a class="m-doc" href="class_campbell_clari_v_u_e10___error_code.html">CampbellClariVUE10_<wbr/>ErrorCode</a> object.</p>
+<table class="m-table m-fullwidth m-flat">
+<thead>
+<tr><th colspan="2">Parameters</th></tr>
+</thead>
+<tbody>
+<tr>
+<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
+<td>The parent <a class="m-doc" href="class_campbell_clari_v_u_e10.html">CampbellClariVUE10</a> providing the result values.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">uuid</span></td>
+<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
+</tr>
+<tr>
+<td class="m-param"><span class="m-param">varCode</span></td>
+<td>A short code to help identify the variable in files; optional with a default value of "ClariVUEError".</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+</div>
+</section></p>
           <dl class="m-doc">
             <dt>
               <span class="m-doc-wrap-bumper">#define <a href="#gad9146e2ff6eb41ca7b588a85e4cbc951" class="m-doc">CLARIVUE10_ERRORCODE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>

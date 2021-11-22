@@ -1336,6 +1336,14 @@
           <h2>Defines</h2>
           <dl class="m-doc">
             <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__analog__cond.html#gadff49875437dbdf485b0d7e8b38119bf" class="m-doc">ANALOGELECCONDUCTIVITY_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; we only get one value from the analog conductivity sensor.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__analog__cond.html#ga0f9a765449bd767de386d03da995520b" class="m-doc">ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__analog__cond.html#gadbe35b81bb92f4e5ef792cebadacb5e1" class="m-doc">ANALOG_EC_ADC_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 10</span></span>
             </dt>
             <dd>Default resolution (in bits) of the voltage measurement.</dd>

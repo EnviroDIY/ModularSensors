@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>sensors/YosemitechY514.h file | ModularSensors</title>
+  <title>sensors/CampbellClariVUE10.h file | ModularSensors</title>
   <link rel="stylesheet" href="m-EnviroDIY+documentation.compiled.css" />
 <link
   rel="stylesheet"
@@ -1290,16 +1290,16 @@
           /
           </span>
           <span class="m-breadcrumb">
-            YosemitechY514.h
+            CampbellClariVUE10.h
           </span>
 
         <header class="gp-entry-header">
           <h1 class="gp-entry-title" itemprop="headline">
-          YosemitechY514.h <span class="m-thin">file</span>
+          CampbellClariVUE10.h <span class="m-thin">file</span>
 
           </h1>
         </header>
-        <p>Contains the <a href="class_yosemitech_y514.html" class="m-doc">YosemitechY514</a> sensor subclass and the variable subclasses <a href="class_yosemitech_y514___chlorophyll.html" class="m-doc">YosemitechY514_<wbr />Chlorophyll</a> and <a href="class_yosemitech_y514___temp.html" class="m-doc">YosemitechY514_<wbr />Temp</a>.</p>
+        <p>Contains the <a href="class_campbell_clari_v_u_e10.html" class="m-doc">CampbellClariVUE10</a> sensor subclass and the variable subclasses <a href="class_campbell_clari_v_u_e10___temp.html" class="m-doc">CampbellClariVUE10_<wbr />Temp</a>, <a href="class_campbell_clari_v_u_e10___turbidity.html" class="m-doc">CampbellClariVUE10_<wbr />Turbidity</a>, and <a href="class_campbell_clari_v_u_e10___error_code.html" class="m-doc">CampbellClariVUE10_<wbr />ErrorCode</a>.</p>
         <div class="m-block m-default">
           <ul>
             <li>
@@ -1308,8 +1308,9 @@
                 <li><a href="#nested-classes">Classes</a></li>
                 <li><a href="#define-members">Defines</a></li>
                 <li><a href="#sensor-timing">Sensor Timing</a></li>
-                <li><a href="#chlorophyll-concentration">Chlorophyll Concentration</a></li>
+                <li><a href="#turbidity">Turbidity</a></li>
                 <li><a href="#temperature">Temperature</a></li>
+                <li><a href="#error-code">Error Code</a></li>
               </ul>
             </li>
             <li>
@@ -1319,161 +1320,139 @@
             </li>
           </ul>
         </div>
-          <aside class="m-note m-default"><h4>Copyright</h4><p>2020 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class="m-note m-default"><h4>Author</h4><p>Sara Geleskie Damiano <a href="mailto:sdamiano@stroudcenter.org">sdamiano@stroudcenter.org</a></p></aside><p>These are for the Yosemitech Y514 chlorophyll sensor with wiper.</p><p>This depends on the <a href="class_yosemitech_parent.html" class="m-doc">YosemitechParent</a> super class.</p><p>Documentation for the Modbus Protocol commands and responses can be found within the documentation in the YosemitechModbus library at: <a href="https://github.com/EnviroDIY/YosemitechModbus">https:/<wbr />/<wbr />github.com/<wbr />EnviroDIY/<wbr />YosemitechModbus</a></p>
+          <aside class="m-note m-default"><h4>Copyright</h4><p>2020 Stroud Water Research Center Part of the EnviroDIY ModularSensors library for Arduino</p></aside><aside class="m-note m-default"><h4>Author</h4><p>Sara Geleskie Damiano <a href="mailto:sdamiano@stroudcenter.org">sdamiano@stroudcenter.org</a></p></aside><p>These are for theCampbell ClariVUE10 digital dissolved oxygen sensor.</p><p>This depends on the <a href="class_s_d_i12_sensors.html" class="m-doc">SDI12Sensors</a> parent class.</p>
         <section id="nested-classes">
           <h2>Classes</h2>
           <dl class="m-doc">
             <dt>
-              class <a href="class_yosemitech_y514.html" class="m-doc">YosemitechY514</a>
+              class <a href="class_campbell_clari_v_u_e10.html" class="m-doc">CampbellClariVUE10</a>
             </dt>
-            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__y514.html" class="m-doc">Yosemitech Y514 sensor</a>.</dd>
+            <dd>The <a href="class_sensor.html" class="m-doc">Sensor</a> sub-class for the <a href="group__sensor__clarivue.html" class="m-doc">Campbell ClariVUE10 turbidity sensor</a>.</dd>
             <dt>
-              class <a href="class_yosemitech_y514___chlorophyll.html" class="m-doc">YosemitechY514_Chlorophyll</a>
+              class <a href="class_campbell_clari_v_u_e10___turbidity.html" class="m-doc">CampbellClariVUE10_Turbidity</a>
             </dt>
-            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y514.html#sensor_y514_chloro" class="m-doc">chlorophyll concentration output</a> from a <a href="group__sensor__y514.html" class="m-doc">Yosemitech Y514-A chlorophyll sensor with wiper</a>.</dd>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__clarivue.html#sensor_clarivue_turbidity" class="m-doc">turbidity output</a> from a <a href="group__sensor__clarivue.html" class="m-doc">Campbell ClariVUE10 turbidity sensor</a>.</dd>
             <dt>
-              class <a href="class_yosemitech_y514___temp.html" class="m-doc">YosemitechY514_Temp</a>
+              class <a href="class_campbell_clari_v_u_e10___temp.html" class="m-doc">CampbellClariVUE10_Temp</a>
             </dt>
-            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__y514.html#sensor_y514_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__y514.html" class="m-doc">Yosemitech Y514-A chlorophyll sensor with wiper</a>.</dd>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__clarivue.html#sensor_clarivue_temp" class="m-doc">temperature output</a> from a <a href="group__sensor__clarivue.html" class="m-doc">Campbell ClariVUE10 turbidity sensor</a>.</dd>
+            <dt>
+              class <a href="class_campbell_clari_v_u_e10___error_code.html" class="m-doc">CampbellClariVUE10_ErrorCode</a>
+            </dt>
+            <dd>The <a href="class_variable.html" class="m-doc">Variable</a> sub-class used for the <a href="group__sensor__clarivue.html#sensor_clarivue_error" class="m-doc">error code output</a> from a <a href="group__sensor__clarivue.html" class="m-doc">Campbell ClariVUE10 turbidity sensor</a>.</dd>
           </dl>
         </section>
         <section id="define-members">
           <h2>Defines</h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#ga19ce4400dd7a01e2903b8c9cfcc31cfa" class="m-doc">Y514_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gafda5e1bb4cdd78c6f6b1bdf1fc97f6b1" class="m-doc">CLARIVUE10_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 7</span></span>
             </dt>
-            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Y514 can report 2 values.</dd>
+            <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the ClariVUE10 can report 7 values (although we only keep 3).</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gac6064ef4e20ec2dfa3327a2dc3ed5fdf" class="m-doc">Y514_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gaba10735f28ea8d0826c43793d766d0a0" class="m-doc">CLARIVUE10_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
-            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; The ClariVUE calcualtes averages and other stats on board, but we don&#x27;t calculate any additional values.</dd>
           </dl>
         </section>
         <section id="sensor-timing">
           <h2>Sensor Timing</h2>
-<p><a name="sensor_y514_timing"></a> The sensor timing for a Yosemitch Y514</p>
+<p><a name="sensor_clarivue_timing"></a> The sensor timing for a Campbell ClariVUE10</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gadd5d8b468bac2dca3f064ae857b08ef6" class="m-doc">Y514_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 1300</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga724238b7fdb43e270142287963b18f80" class="m-doc">CLARIVUE10_WARM_UP_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 275</span></span>
             </dt>
-            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; time before sensor responds after power - 1.3 seconds (1300ms).</dd>
+            <dd><a href="class_sensor.html#aaaefd7f306f86382a3dac726531756b4" class="m-doc">Sensor::<wbr />_warmUpTime_ms</a>; the ClariVUE10 warms up in 5500ms.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gac1356e04ae62aed9fbd9677a3f506427" class="m-doc">Y514_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 8000</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gae8f9455fa8131a48f37553ae90851167" class="m-doc">CLARIVUE10_STABILIZATION_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
-            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; time between &quot;StartMeasurement&quot; command and stable reading - 8sec (8000ms).</dd>
+            <dd><a href="class_sensor.html#ad6822ad09fb64658c911ce86820db79c" class="m-doc">Sensor::<wbr />_stabilizationTime_ms</a>; the ClariVUE10 is stable as soon as it warms up (0ms stabilization).</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#ga1024795e613caeec04d9dd867703d51c" class="m-doc">Y514_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 2000</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga5ad6d3d00da115492366607d786ee58b" class="m-doc">CLARIVUE10_MEASUREMENT_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 7200</span></span>
             </dt>
-            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the Y514 takes ~2000ms to complete a measurement.</dd>
+            <dd><a href="class_sensor.html#a0327d79459eaf3065c9e84b8c789c4ba" class="m-doc">Sensor::<wbr />_measurementTime_ms</a>; the ClariVUE10 takes ~7200ms to complete a measurement.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gab0524e068321464f4c0d20ae0f7991f9" class="m-doc">CLARIVUE10_EXTRA_WAKE_TIME_MS</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Extra wake time required for an SDI-12 sensor between the &quot;break&quot; and the time the command is sent. The ClariVUE requires no extra time.</dd>
           </dl>
         </section>
-        <section id="chlorophyll-concentration">
-          <h2>Chlorophyll Concentration</h2>
-<p><a name="sensor_y514_chloro"></a> The chlorophyll concentration variable from a Yosemitch Y514</p><ul><li>Range is 0 to 400 µg/L or 0 to 100 RFU</li><li>Accuracy is ± 1 %</li></ul><p><section class="m-doc-details" id="a60eb63351009fe282d2648575bd09df6"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y514___chlorophyll.html#a60eb63351009fe282d2648575bd09df6">YosemitechY514_Chlorophyll</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y514.html">YosemitechY514</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y514.html#gaaf0530e7d11e2abfe230829fb009da94">Y514_<wbr/>CHLORO_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
-</h3>
-<p>Construct a new <a class="m-doc" href="class_yosemitech_y514___chlorophyll.html">YosemitechY514_<wbr/>Chlorophyll</a> object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
-<td>The parent <a class="m-doc" href="class_yosemitech_y514.html">YosemitechY514</a> providing the result values.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">uuid</span></td>
-<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">varCode</span></td>
-<td>A short code to help identify the variable in files; optional with a default value of "Y514Chloro".</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-</div>
-</section></p>
+        <section id="turbidity">
+          <h2>Turbidity</h2>
+<p><a name="sensor_clarivue_turbidity"></a> The turbidity variable from a Campbell ClariVUE10</p><ul><li>Range is 0 to 4000 FNU.</li><li>Accuracy ±2% or 0.5 FNU (whichever is greater).</li></ul><p>{{ <a href="class_campbell_clari_v_u_e10___turbidity.html#a622262aae6cabdf5ef22997e7b81fe2a" class="m-doc">CampbellClariVUE10_Turbidity::<wbr />CampbellClariVUE10_Turbidity</a> }}</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gab0d11c6084fe815249db1fbcb2d17298" class="m-doc">Y514_CHLORO_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga81cb435c8572bfd8a652b8c62518c20d" class="m-doc">CLARIVUE10_TURBIDITY_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
             </dt>
-            <dd>Decimals places in string representation; chlorophyll concentration should have 1 - resolution is 0.1 µg/L / 0.1 RFU.</dd>
+            <dd>Decimals places in string representation; turbidity should have 1 (resolution is 0.2 FNU).</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gaa1212a9c759954c69b9b33afd0ba885e" class="m-doc">Y514_CHLORO_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gaab75577cb2070604454925c1bf596b58" class="m-doc">CLARIVUE10_TURBIDITY_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
             </dt>
-            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; chlorophyll concentration is stored in sensorValues[0].</dd>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; turbidity is stored in sensorValues[0].</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gaf0704cd4b305a69af4d614e31354beee" class="m-doc">Y514_CHLORO_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "chlorophyllFluorescence"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga0366fd434696ad5f36e094b997072277" class="m-doc">CLARIVUE10_TURBIDITY_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "turbidity"</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;chlorophyllFluorescence&quot;.</dd>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;turbidity&quot;.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gadf56d4868a1e72d82292ed8e8d13f5f7" class="m-doc">Y514_CHLORO_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "microgramPerLiter"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga0074354ada0bfe9fc966c20e9bf7b3f3" class="m-doc">CLARIVUE10_TURBIDITY_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "formazinNephelometricUnit"</span></span>
             </dt>
-            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;microgramPerLiter&quot; (µg/L)</dd>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;formazinNephelometricUnit&quot; (FNU)</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gaaf0530e7d11e2abfe230829fb009da94" class="m-doc">Y514_CHLORO_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Y514Chloro"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga2cb0c21010b4700331b1a470db123694" class="m-doc">CLARIVUE10_TURBIDITY_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "ClariVUETurbidity"</span></span>
             </dt>
-            <dd>Default variable short code; &quot;Y514Chloro&quot;.</dd>
+            <dd>Default variable short code; &quot;ClariVUETurbidity&quot;.</dd>
           </dl>
         </section>
         <section id="temperature">
           <h2>Temperature</h2>
-<p><a name="sensor_y514_temp"></a> The temperature variable from a Yosemitch Y514</p><ul><li>Range is 0°C to + 50°C</li><li>Accuracy is ± 0.2°C</li></ul><p><section class="m-doc-details" id="ad1e76fbac7153a0d209b41fee85e0fb2"><div>
-<h3>
-<span class="m-doc-wrap-bumper"><span class="m-dim"></span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a class="m-doc-self" href="class_yosemitech_y514___temp.html#ad1e76fbac7153a0d209b41fee85e0fb2">YosemitechY514_Temp</a>(</span><span class="m-doc-wrap"><span class="m-dim"><a class="m-doc" href="class_yosemitech_y514.html">YosemitechY514</a>*</span> <span class="m-param">parentSense</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">uuid</span><span class="m-dim"> = ""</span>,
-              <span class="m-dim">const char*</span> <span class="m-param">varCode</span><span class="m-dim"> = <a class="m-doc" href="group__sensor__y514.html#gacaa16ca1d1d48add7d6ebe4a1acc3137">Y514_<wbr/>TEMP_<wbr/>DEFAULT_<wbr/>CODE</a></span>) <span class="m-label m-info">explicit</span> </span></span>
-</h3>
-<p>Construct a new <a class="m-doc" href="class_yosemitech_y514___temp.html">YosemitechY514_<wbr/>Temp</a> object.</p>
-<table class="m-table m-fullwidth m-flat">
-<thead>
-<tr><th colspan="2">Parameters</th></tr>
-</thead>
-<tbody>
-<tr>
-<td class="m-param" style="width: 1%"><span class="m-param">parentSense</span></td>
-<td>The parent <a class="m-doc" href="class_yosemitech_y514.html">YosemitechY514</a> providing the result values.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">uuid</span></td>
-<td>A universally unique identifier (UUID or GUID) for the variable; optional with the default value of an empty string.</td>
-</tr>
-<tr>
-<td class="m-param"><span class="m-param">varCode</span></td>
-<td>A short code to help identify the variable in files; optional with a default value of "Y514Temp".</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-</div>
-</section></p>
+<p><a name="sensor_clarivue_temp"></a> The temperature variable from a Campbell ClariVUE10</p><ul><li>Range is -2° to +40°C</li><li>Accuracy is ± 0.2°C</li></ul><p>{{ <a href="class_campbell_clari_v_u_e10___temp.html#a90a41967c35fd3cab0fc9e3ba84864ce" class="m-doc">CampbellClariVUE10_Temp::<wbr />CampbellClariVUE10_Temp</a> }}</p>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#ga8727e1ce3e4818ea7b439bc46255f131" class="m-doc">Y514_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gaf135b7b4dea6d1bbd373220912ffb28e" class="m-doc">CLARIVUE10_TEMP_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
-            <dd>Decimals places in string representation; temperature should have 1 - resolution is 0.1°C.</dd>
+            <dd>Decimals places in string representation; temperature should have 2 - resolution is 0.01°C.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gad52653a3cf866b61e7508d3778fa3a9f" class="m-doc">Y514_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 1</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga794cc3d3b6a51dfb4028879303df0c0e" class="m-doc">CLARIVUE10_TEMP_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 5</span></span>
             </dt>
-            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; temperature is stored in sensorValues[1].</dd>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; temperature is stored in sensorValues[5].</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#ga76cbe9aec66702c58618a338dc15c165" class="m-doc">Y514_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga4b257e7f1c25c1ac2f73ce95bdc34c4d" class="m-doc">CLARIVUE10_TEMP_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "temperature"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;temperature&quot;.</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gac86c76e0a3e61883149a7cfd3a71d14b" class="m-doc">Y514_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga5ef376a4c756a9ac9512b1b45226c6b0" class="m-doc">CLARIVUE10_TEMP_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "degreeCelsius"</span></span>
             </dt>
             <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;degreeCelsius&quot; (°C)</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y514.html#gacaa16ca1d1d48add7d6ebe4a1acc3137" class="m-doc">Y514_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "Y514Temp"</span></span>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga660ffcf1232ef45c5f6ef31b41485273" class="m-doc">CLARIVUE10_TEMP_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "ClariVUETempC"</span></span>
             </dt>
-            <dd>Default variable short code; &quot;Y514Temp&quot;.</dd>
+            <dd>Default variable short code; &quot;ClariVUETempC&quot;.</dd>
+          </dl>
+        </section>
+        <section id="error-code">
+          <h2>Error Code</h2>
+<p><a name="sensor_clarivue_error"></a> The error code variable from a Campbell ClariVUE10</p><ul><li>Significance of error code values is unknown.</li></ul><p>{{ <a href="class_campbell_clari_v_u_e10___error_code.html#a1293c39a500562529f41e26d46f21126" class="m-doc">CampbellClariVUE10_ErrorCode::<wbr />CampbellClariVUE10_ErrorCode</a> }}</p>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gad9146e2ff6eb41ca7b588a85e4cbc951" class="m-doc">CLARIVUE10_ERRORCODE_RESOLUTION</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd>Decimals places in string representation; the error code has 0.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#gaa2a7f1ab1c8afc384124266266db5550" class="m-doc">CLARIVUE10_ERRORCODE_VAR_NUM</a><span class="m-dim m-right-m m-text-right"> = 6</span></span>
+            </dt>
+            <dd><a href="class_sensor.html" class="m-doc">Sensor</a> variable number; error code is stored in sensorValues[2].</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga872b25d8cc378bbbcbdb291afc5a6418" class="m-doc">CLARIVUE10_ERRORCODE_VAR_NAME</a><span class="m-dim m-right-m m-text-right"> = "instrumentStatusCode"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> name in <a href="http://vocabulary.odm2.org/variablename/">ODM2 controlled vocabulary</a>; &quot;instrumentStatusCode&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga992155163717045caebaf764b278dadd" class="m-doc">CLARIVUE10_ERRORCODE_UNIT_NAME</a><span class="m-dim m-right-m m-text-right"> = "dimensionless"</span></span>
+            </dt>
+            <dd><a href="class_variable.html" class="m-doc">Variable</a> unit name in <a href="http://vocabulary.odm2.org/units/">ODM2 controlled vocabulary</a>; &quot;dimensionless&quot;.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__clarivue.html#ga77ab4f0b227b0facada352a6a8992c66" class="m-doc">CLARIVUE10_ERRORCODE_DEFAULT_CODE</a><span class="m-dim m-right-m m-text-right"> = "ClariVUEError"</span></span>
+            </dt>
+            <dd>Default variable short code; &quot;ClariVUEError&quot;.</dd>
           </dl>
         </section>
 

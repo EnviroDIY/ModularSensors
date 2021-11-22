@@ -1376,14 +1376,14 @@
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
             </dt>
-            <dd></dd>
+            <dd>Construct a new Campbell ClariVUE10 object.</dd>
                           <dt>
               <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a99b0b201fe8c98b80e93e5c1adb97114" class="m-doc">CampbellClariVUE10</a>(</span><span class="m-doc-wrap"><span class="m-dim">int</span> <span class="m-param">SDI12address</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">powerPin</span>,
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span>
             </dt>
-            <dd></dd>
+            <dd>Construct a new Campbell ClariVUE10 object.</dd>
                           <dt id="a2585e6e3e4bb6ac10ad7b76c4bb03d0b">
               <span class="m-doc-wrap-bumper"><span class="m-param"></span><a href="#a2585e6e3e4bb6ac10ad7b76c4bb03d0b" class="m-doc-self">~CampbellClariVUE10</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -1454,7 +1454,31 @@
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
             </h3>
-            <p>@copydocCampbellClariVUE10<a href="class_campbell_clari_v_u_e10.html" class="m-doc">CampbellClariVUE10</a></p>
+            <p>Construct a new Campbell ClariVUE10 object.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">SDI12address</span></td>
+                  <td>The SDI-12 address of the ClariVUE10; can be a char, char*, or int.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">powerPin</span></td>
+                  <td><p>The pin on the mcu controlling power to the ClariVUE10 Use -1 if it is continuously powered.</p><ul><li>The ClariVUE10 requires a 9.6 to 18 Vdc power supply, which can be turned off between measurements</li></ul></td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">dataPin</span></td>
+                  <td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
+                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p>
 
             <hr>
           </div>
@@ -1466,7 +1490,31 @@
               <span class="m-dim">int8_t</span> <span class="m-param">dataPin</span>,
               <span class="m-dim">uint8_t</span> <span class="m-param">measurementsToAverage</span><span class="m-dim"> = 1</span>)</span></span>
             </h3>
-            <p>@copydocCampbellClariVUE10<a href="class_campbell_clari_v_u_e10.html" class="m-doc">CampbellClariVUE10</a></p>
+            <p>Construct a new Campbell ClariVUE10 object.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="m-param"  style="width: 1%"><span class="m-param">SDI12address</span></td>
+                  <td>The SDI-12 address of the ClariVUE10; can be a char, char*, or int.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">powerPin</span></td>
+                  <td><p>The pin on the mcu controlling power to the ClariVUE10 Use -1 if it is continuously powered.</p><ul><li>The ClariVUE10 requires a 9.6 to 18 Vdc power supply, which can be turned off between measurements</li></ul></td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">dataPin</span></td>
+                  <td>The pin on the mcu connected to the data line of the SDI-12 circuit.</td>
+                </tr>
+                <tr>
+                  <td class="m-param" ><span class="m-param">measurementsToAverage</span></td>
+                  <td>The number of measurements to take and average before giving a &quot;final&quot; result from the sensor; optional with a default value of 1.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor. Optionally, you can include a number of distinct readings to average. The data pin must be a pin that supports pin-change interrupts.</p>
 
             <hr>
           </div>

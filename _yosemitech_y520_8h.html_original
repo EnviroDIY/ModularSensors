@@ -1344,6 +1344,10 @@
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y520.html#gadad2696888b6905898484157f181c536" class="m-doc">Y520_NUM_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 2</span></span>
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the Y520 can report 2 values.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__y520.html#ga8c5ac8172eddc2e99bbab4dc3f543289" class="m-doc">Y520_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
           </dl>
         </section>
         <section id="sensor-timing">

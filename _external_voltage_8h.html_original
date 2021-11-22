@@ -1340,6 +1340,10 @@
             </dt>
             <dd><a href="class_sensor.html#af26786329fd01b44cf31410d046fc8f3" class="m-doc">Sensor::<wbr />_numReturnedValues</a>; the ADS1115 can report 1 value.</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="group__sensor__ads1x15.html#ga5b55c3f086a081f7ea8196ca3c33d707" class="m-doc">EXT_VOLTAGE_INC_CALC_VARIABLES</a><span class="m-dim m-right-m m-text-right"> = 0</span></span>
+            </dt>
+            <dd><a href="class_sensor.html#a2f3f93a9205efb134cef1216d65077d2" class="m-doc">Sensor::<wbr />_incCalcValues</a>; we don&#x27;t calculate any additional values.</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">#define <a href="group__sensor__ads1x15.html#gaf5e311c48b7a1778d4ce4b13ea0be68d" class="m-doc">ADS1115_ADDRESS</a><span class="m-dim m-right-m m-text-right"> = 0x48</span></span>
             </dt>
             <dd>The assumed address of the ADS1115, 1001 000 (ADDR = GND)</dd>

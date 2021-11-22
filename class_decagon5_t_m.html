@@ -1398,9 +1398,9 @@
           <h2>Public functions</h2>
           <dl class="m-doc">
                           <dt>
-              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#ad754c9bb4e53b0340e921f0d03f7efc1" class="m-doc">addSingleMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-param"><span class="m-dim">bool</span> </span><a href="#a035f59de8ab5f15cbd29f6bfd19ed3c5" class="m-doc">getResults</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-flat m-warning">override</span></span>
             </dt>
-            <dd>Get the results from a single measurement.</dd>
+            <dd>Gets the results of either a standard or a concurrent measurement.</dd>
           </dl>
         </section>
         <hr>
@@ -1531,20 +1531,19 @@
             <hr>
           </div>
         </section>
-                      <section class="m-doc-details" id="ad754c9bb4e53b0340e921f0d03f7efc1"><div>
+                      <section class="m-doc-details" id="a035f59de8ab5f15cbd29f6bfd19ed3c5"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad754c9bb4e53b0340e921f0d03f7efc1" class="m-doc-self">addSingleMeasurementResult</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span></span>
+              <span class="m-doc-wrap-bumper"><span class="m-dim">bool</span></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a035f59de8ab5f15cbd29f6bfd19ed3c5" class="m-doc-self">getResults</a>(</span><span class="m-doc-wrap"><span class="m-dim">void</span> <span class="m-param"></span>) <span class="m-label m-warning">override</span></span></span>
             </h3>
-            <p>Get the results from a single measurement.</p>
+            <p>Gets the results of either a standard or a concurrent measurement.</p>
             <table class="m-table m-fullwidth m-flat">
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td><strong>bool</strong> True if the function completed successfully.</td>
+                  <td><strong>bool</strong> True if the full number of expected results was returned.</td>
                 </tr>
               </tfoot>
             </table>
-            <p>This asks the sensor for a new result, verifies that it passes sanity range checks, and then adds the value to the result array.</p><p>This also un-sets the <a href="class_sensor.html#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> timestamp (sets <a href="class_sensor.html#a4853c30b71ad2efc09bd6f73530155e3" class="m-doc">_<wbr />millisMeasurementRequested</a> to 0) and updates the <a href="class_sensor.html#a1fde72c3ddd07d892dcbfe4a09bcae49" class="m-doc">_<wbr />sensorStatus</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>This function does NOT include any waiting for the sensor complete a measurement.</p></aside>
 
             <hr>
           </div>
