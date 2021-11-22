@@ -9,20 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+***
+
+## [0.32.2]
+
 ### Changed
 - Restructured SDI-12 slightly to break out the start measurement functionality into a new function.
 - Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurmentResult.
 This will allow both sensors to honor the 'non-concurrent' flag, if that is set.
 Previously, they would not have.
+- **Documentation:** Migrated to latest version of Doxygen (1.9.2).
+  This required some changes with m.css to properly ignore the doxyfile.xml the current version generates.
 
 ### Added
+- **Board:** Adds 1.0 and 1.1 as valid version numbers for the Mayfly. Does not yet support any new features of those boards.
 - Add a new parameter (internal variable) to the sensor base class for the number of internally calculated variables.
 These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor.
 This is separate from any calculated variables that are created on-the-fly and depend on multiple other sensors.
 In many cases, this is 0 and in most of the other cases the value is informational only.
 For the SDI-12 sensors, I'm actually using this to make sure I'm getting the number of values expected.
-- Added support for [v0.2.0](https://github.com/EnviroDIY/TippingBucketRainCounter/releases) of the [EnviroDIY/TippingBucketRainCounter](https://github.com/EnviroDIY/TippingBucketRainCounter) device firmware, which added capability to count rotations on a reed-switch anemometer and fixed a critical bug that failed to count high rainfall rates. For details, see:
-  - https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0
+- **Sensor:** Added support for [v0.2.0](https://github.com/EnviroDIY/TippingBucketRainCounter/releases) of the [EnviroDIY/TippingBucketRainCounter](https://github.com/EnviroDIY/TippingBucketRainCounter) device firmware, which added capability to count rotations on a reed-switch anemometer and fixed a critical bug that failed to count high rainfall rates.
+  - For details, see: https://github.com/EnviroDIY/TippingBucketRainCounter/releases/tag/v0.2.0
 
 ***
 
