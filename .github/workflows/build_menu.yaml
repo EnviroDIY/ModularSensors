@@ -215,7 +215,7 @@ jobs:
         uses: arduino/setup-arduino-cli@v1.1.1
 
       - name: Restore PlatformIO and Arduino platforms and libraries
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         id: cache_libraries
         with:
           path: |
