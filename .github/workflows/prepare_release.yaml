@@ -97,6 +97,7 @@ jobs:
           zip ${{ env.ZIP_NAME }}.zip -r lib
           mv ${{ env.ZIP_NAME }}.zip $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE
+          ls
 
       # Remove some extras from the zip
       - name: Remove git files from the zip
@@ -130,7 +131,7 @@ jobs:
         id: changelog_reader
         uses: mindsers/changelog-reader-action@v2
         with:
-          path: ${{ format('{0}/CHANGELOG.md',github.workspace) }}
+          path: ChangeLog.md
           version: ${{ env.VERSION }}
           # validation_depth: 10
 
