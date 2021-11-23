@@ -215,7 +215,7 @@ jobs:
         uses: arduino/setup-arduino-cli@v1.1.1
 
       - name: Restore PlatformIO and Arduino platforms and libraries
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         id: cache_libraries
         with:
           path: |
@@ -250,7 +250,7 @@ jobs:
       # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          pio lib -g -f install ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio lib -g install -f ${{ env.LIBRARY_INSTALL_SOURCE }}
           pio lib show EnviroDIY_ModularSensors
 
       - name: Modify menu for matrix configuration

@@ -69,7 +69,7 @@ jobs:
       # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          pio lib -g -f install ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio lib -g install -f ${{ env.LIBRARY_INSTALL_SOURCE }}
           pio lib show EnviroDIY_ModularSensors
 
       - name: Run PlatformIO
