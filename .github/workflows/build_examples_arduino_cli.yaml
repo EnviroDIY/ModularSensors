@@ -53,8 +53,8 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1.1.1
 
-      - name: Restore or Cache Arduino Platforms and Libraries
-        uses: actions/cache@v2.1.6
+      - name: Restore Arduino Platforms and Libraries
+        uses: actions/cache@v2.1.7
         id: cache_arduino
         with:
           path: home/arduino

@@ -1,16 +1,12 @@
 name: Build and Publish Documentation
 
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
-  push:
-    branches:
-      - master
-  # Also trigger on page_build, as well as release created events
-  page_build:
+  # Trigger when a release is created
   release:
-    types: # This configuration does not affect the page_build event above
-      - created
+    types:
+      - published
+  # Also give a manual trigger
+  workflow_dispatch:
 
 env:
   DOXYGEN_VERSION: Release_1_9_2
@@ -29,36 +25,25 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2.3.0
 
-      - name: Install PlatformIO
+      - name: Restore Python Dependencies
+        uses: actions/cache@v2.1.7
+        id: cache_python
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}
+
+      - name: Install Pygments and other m.css Python Requirements
+        if: steps.cache_python.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade platformio
-
-      - name: Restore or Cache PlatformIO and Libraries
-        uses: actions/cache@v2.1.6
-        id: cache_pio
-        with:
-          path: ~/.platformio
-          # if nothing in the dependencies.json file has changed, then it will
-          # be a "cache hit" and we can restore libraries from cache and not
-          # download them.  If it has changed we have to re-download.
-          key: ${{ hashFiles('./code_docs/ModularSensors/continuous_integration/dependencies.json') }}
-
-      # Install *all* the dependencies!
-      # We're including the dependencies just so the includes can follow in the doxygen pre-processor
-      - name: Install the dependencies at global level
-        if: steps.cache_pio.outputs.cache-hit != 'true'
-        run: |
-          cd ${{ github.workspace }}/code_docs/ModularSensors/
-          chmod +x continuous_integration/install-deps-platformio.sh
-          sh continuous_integration/install-deps-platformio.sh
+          pip3 install --upgrade --upgrade-strategy jinja2 Pygments beautifulsoup4
 
       - name: Install GraphViz (dot)
         run: sudo apt-get -y install graphviz
 
-      - name: Restore or Cache Doxygen
+      - name: Restore Doxygen
         id: cache_doxygen
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: doxygen-src
           key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}
@@ -71,10 +56,6 @@ jobs:
           cd ${{ github.workspace }}/code_docs/ModularSensors/
           chmod +x continuous_integration/build-install-doxygen.sh
           sh continuous_integration/build-install-doxygen.sh
-
-      # This should be pulled from cache, if there's not a new version
-      - name: Install Pygments and other m.css requirements
-        run: pip3 install jinja2 Pygments beautifulsoup4
 
       # check out my fork of m.css, for processing Doxygen output
       - name: Checkout m.css

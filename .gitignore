@@ -91,3 +91,6 @@ docs/examples.dox_x
 platformio_extra_envs.ini
 src/sensors/table.md
 cache
+docs/copyFunctions.log
+docs/documentExamples.log
+docs/fixXmlExampleSections.log

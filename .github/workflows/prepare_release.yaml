@@ -97,6 +97,7 @@ jobs:
           zip ${{ env.ZIP_NAME }}.zip -r lib
           mv ${{ env.ZIP_NAME }}.zip $GITHUB_WORKSPACE
           cd $GITHUB_WORKSPACE
+          ls
 
       # Remove some extras from the zip
       - name: Remove git files from the zip
@@ -130,9 +131,9 @@ jobs:
         id: changelog_reader
         uses: mindsers/changelog-reader-action@v2
         with:
-          path: ./CHANGELOG.md
+          path: ChangeLog.md
           version: ${{ env.VERSION }}
-          validation_depth: 10
+          # validation_depth: 10
 
       # I use the first line of the change log entry as the name, so read it here
       # - name: Get release name
@@ -154,8 +155,9 @@ jobs:
           draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
           prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
           body: ${{ steps.changelog_reader.outputs.changes }}
-          files: ${{ format('./{0}.zip', env.ZIP_NAME) }}
           generate_release_notes: false
+          files: ${{ format('./{0}.zip', env.ZIP_NAME) }}
+          fail_on_unmatched_files: true
 
       # Publish the new release to the PlatformIO package manager
       - name: Publish release to the PlatformIO package manager
