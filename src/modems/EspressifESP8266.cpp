@@ -200,19 +200,24 @@ bool EspressifESP8266::extraModemSetup(void) {
     gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
-    // And make sure we're staying in station mode so sleep can happen
-    gsmModem.sendAT(GF("+CWMODE_DEF=1"));
-    gsmModem.waitResponse();
-    // Make sure that, at minimum, modem-sleep is on
-    gsmModem.sendAT(GF("+SLEEP=2"));
-    gsmModem.waitResponse();
-    // Set the wifi settings as default
-    // This will speed up connecting after resets
-    gsmModem.sendAT(GF("+CWJAP_DEF=\""), _ssid, GF("\",\""), _pwd, GF("\""));
-    if (gsmModem.waitResponse(30000L, GFP(GSM_OK), GF(GSM_NL "FAIL" GSM_NL)) !=
-        1) {
-        return false;
-    }
+    // // And make sure we're staying in station mode so sleep can happen
+    // gsmModem.sendAT(GF("+CWMODE_DEF=1"));
+    // gsmModem.waitResponse();
+    // // Make sure that, at minimum, modem-sleep is on
+    // gsmModem.sendAT(GF("+SLEEP=2"));
+    // gsmModem.waitResponse();
+    // // Set the wifi settings as default
+    // // This will speed up connecting after resets
+    // gsmModem.sendAT(GF("+CWJAP_DEF=\""), _ssid, GF("\",\""), _pwd, GF("\""));
+    // if (gsmModem.waitResponse(30000L, GFP(GSM_OK), GF(GSM_NL "FAIL" GSM_NL))
+    // !=
+    //     1) {
+    //     gsmModem.sendAT(GF("+CWJAP=\""), _ssid, GF("\",\""), _pwd, GF("\""));
+    //     if (gsmModem.waitResponse(30000L, GFP(GSM_OK),
+    //                               GF(GSM_NL "FAIL" GSM_NL)) != 1) {
+    //         return false;
+    //     }
+    // }
     // Slow down the baud rate for slow processors - and save the change to
     // the ESP's non-volatile memory so we don't have to do it every time
     // #if F_CPU == 8000000L

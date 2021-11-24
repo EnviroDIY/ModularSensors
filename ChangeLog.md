@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Added a longer warm up time and removed some of the set-up to work with the ESP-IDF AT firmware versions >2.0
+
+### Added
+
+### Removed
+
+### Fixed
+
 ***
 
 ## [0.32.2]

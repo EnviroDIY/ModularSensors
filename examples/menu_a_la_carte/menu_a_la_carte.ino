@@ -424,7 +424,7 @@ DigiXBeeWifi modem = modemXBWF;
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_ESP8266
+#elif defined BUILD_MODEM_ESP8266 || defined BUILD_MODEM_ESP32
 /** Start [esp8266] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
@@ -2644,7 +2644,7 @@ void setup() {
     }
     /** End [setup_sesors] */
 
-#if defined BUILD_MODEM_ESP8266 && F_CPU == 8000000L
+#if (defined BUILD_MODEM_ESP8266 || defined BUILD_MODEM_ESP32) && F_CPU == 8000000L
     /** Start [setup_esp] */
     if (modemBaud > 57600) {
         modem.modemWake();  // NOTE:  This will also set up the modem
