@@ -57,7 +57,7 @@
 /**@{*/
 
 /// @brief Sensor::_numReturnedValues; the Y551 can report 2 values.
-#define Y551_NUM_VARIABLES 2
+#define Y551_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define Y551_INC_CALC_VARIABLES 0
 
