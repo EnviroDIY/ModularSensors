@@ -30,7 +30,7 @@
  * - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_UserManual_v1.0.pdf)
  * - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_Modbus_v2020-05-11.pdf)
  *
- * @note The reported resolution (32 bit) gives far more precision than is significant
+ * @note The reported resolution (32 bit) gives more precision than significant
  * based on the specified accuracy of the sensor, so the resolutions kept in the
  * string representation of the variable values is based on the accuracy not the
  * maximum reported resolution of the sensor.
@@ -73,7 +73,7 @@
 #define Y560_WARM_UP_TIME_MS 500
 /// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
 /// command and stable reading 20s in manual but this includes 15s for brushing.
-/// Setting to 20s because brush autostarts on powerUp.
+/// Setting to 20s to allow for 5s after brushing completes, based on testing.
 #define Y560_STABILIZATION_TIME_MS 20000
 /// @brief Sensor::_measurementTime_ms; the Y560 takes 2s to complete a
 /// measurement according to manual, but testing shows ~1.5s for a new number.
@@ -92,7 +92,7 @@
 /**@{*/
 /// @brief Decimals places in string representation; NH4_N should have 1 -
 /// resolution is 0.1 mg/L.
-#define Y560_NH4_N_RESOLUTION
+#define Y560_NH4_N_RESOLUTION 1
 /// @brief Sensor variable number; NH4_N is stored in sensorValues[0].
 #define Y560_NH4_N_VAR_NUM 0
 /// @brief Variable name in
@@ -241,10 +241,11 @@ class YosemitechY560_NH4_N : public Variable {
      */
     explicit YosemitechY560_NH4_N(YosemitechY560* parentSense,
                                const char*     uuid    = "",
-                               const char*     varCode = Y560_NH4_N_DEFAULT_CODE)
+                               const char*     varCode =Y560_NH4_N_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y560_NH4_N_VAR_NUM,
-                   (uint8_t)Y560_NH4_N_RESOLUTION, Y560_NH4_N_VAR_NAME,
-                   Y560_NH4_N_UNIT_NAME, varCode, uuid) {}
+                   (const uint8_t)Y560_NH4_N_RESOLUTION,
+                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY560_NH4_N object.
      *
@@ -252,8 +253,10 @@ class YosemitechY560_NH4_N : public Variable {
      * used.
      */
     YosemitechY560_NH4_N()
-        : Variable((const uint8_t)Y560_NH4_N_VAR_NUM, (uint8_t)Y560_NH4_N_RESOLUTION,
-                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME, Y560_NH4_N_DEFAULT_CODE) {}
+        : Variable((const uint8_t)Y560_NH4_N_VAR_NUM,
+                   (const uint8_t)Y560_NH4_N_RESOLUTION,
+                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME,
+                   Y560_NH4_N_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY560_NH4_N object - no action needed.
      */
