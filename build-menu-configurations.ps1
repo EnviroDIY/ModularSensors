@@ -108,7 +108,7 @@ $sensorFlags = @(`
     'BUILD_SENSOR_Y520', `
     'BUILD_SENSOR_Y532', `
     'BUILD_SENSOR_Y533', `
-    'BUILD_SENSOR_Y550', `
+    'BUILD_SENSOR_Y551', `
     'BUILD_SENSOR_Y4000', `
     'BUILD_SENSOR_DOPTO')
 

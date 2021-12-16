@@ -85,7 +85,7 @@ For some generalized information about attaching sensors to an Arduino style boa
     - [Y520-A: Conductivity and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y520.html)
     - [Y532-A: Digital pH and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y532.html)
     - [Y533: ORP, and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y533.html)
-    - [Y550-B: UV254/COD, Turbidity, and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y550.html)
+    - [Y551-B: UV254/COD, Turbidity, and Temperature](https://envirodiy.github.io/ModularSensors/group__sensor__y551.html)
     - [Y4000 Multiparameter Sonde](https://envirodiy.github.io/ModularSensors/group__sensor__y4000.html)
 - [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__dopto.html)
 
