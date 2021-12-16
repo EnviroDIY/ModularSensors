@@ -68,14 +68,15 @@
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
-/// 1500ms.
-#define Y551_WARM_UP_TIME_MS 1500
+/// <500ms based on testing.
+#define Y551_WARM_UP_TIME_MS 500
 /// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
-/// command and stable reading - 2sec.
+/// command and stable reading - 2sec in manual & confirmed by testing.
 #define Y551_STABILIZATION_TIME_MS 2000
 /// @brief Sensor::_measurementTime_ms; the Y551 takes ~2000ms to complete a
-/// measurement.
-#define Y551_MEASUREMENT_TIME_MS 2000
+/// measurement according to manual, but testing shows ~1s for a new number
+/// but 4-12s to elimniate memory effects, potentially from internal averaging.
+#define Y551_MEASUREMENT_TIME_MS 4000
 /**@}*/
 
 /**
