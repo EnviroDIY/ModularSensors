@@ -2022,7 +2022,7 @@ const int8_t y551AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
 const int8_t  y551SensorPower = A3;               // Sensor power pin
 const int8_t  y551EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y551NumberReadings = 5;
+const uint8_t y551NumberReadings = 3;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
@@ -2038,6 +2038,40 @@ Variable* y551Turbid =
 Variable* y551Temp =
     new YosemitechY551_Temp(&y551, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [y551] */
+#endif
+
+
+#if defined BUILD_SENSOR_Y560
+// ==========================================================================
+//  Yosemitech Y560 Ammonium Probe with Wiper
+// ==========================================================================
+/** Start [y560] */
+#include <sensors/YosemitechY560.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+byte         y560ModbusAddress = 0x60;  // The modbus address of the Y560
+const int8_t y560AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y560SensorPower = A3;   // Sensor power pin
+const int8_t  y560EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t y560NumberReadings = 3;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a Y560 Ammonium Probe object
+YosemitechY560 y560(y560ModbusAddress, modbusSerial, y560AdapterPower,
+                    y560SensorPower, y560EnablePin, y560NumberReadings);
+
+// Create COD, turbidity, and temperature variable pointers for the Y560
+Variable* y560NH4_N =
+    new YosemitechY560_NH4_N(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y560pH =
+    new YosemitechY560_pH(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y560Temp =
+    new YosemitechY560_Temp(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [y560] */
 #endif
 
 
