@@ -65,8 +65,8 @@
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
  *     - [Class Documentation](@ref sensor_y4000)
  *
- * Most of these sensors require a 9-12V power supply, but some require 12V and
- * some can opperate as low as 5V. The power supply can be stopped between measurements for all.
+ * Most of these sensors require a 9-12V power supply, but some can opperate as
+ * low as 5V and sondes (Y560 & Y4000) require 12V. The power supply can be stopped between measurements for all.
  * (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)
  * They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).
  * To interface with them, you will need an RS485-to-TTL adapter.
