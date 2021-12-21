@@ -1,5 +1,5 @@
 /** =========================================================================
- * @file simple_logging_Y560.ino
+ * @file Yosemitech_test_Y551_Y560_simple_logging.ino
  * @brief A data logging example for the Learn EnviroDIY tutorial.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -79,9 +79,9 @@ AltSoftSerial altSoftSerial;
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "simple_logging_Y560.ino";
+const char* sketchName = "Yosemitech_test_Y551_Y560_simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "simple_logging_Y560";
+const char* LoggerID = "Yosemitech_test_Y551_Y560_simple_logging";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 1;
 // Your logger's timezone.
@@ -139,6 +139,38 @@ MaximDS3231 ds3231(1);
 //   or can be copied from the `menu_a_la_carte.ino` example
 
 // ==========================================================================
+//  Yosemitech Y551 COD Sensor with Wiper
+// ==========================================================================
+/** Start [y551] */
+#include <sensors/YosemitechY551.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+byte         y551ModbusAddress = 0x01;  // The modbus address of the Y551
+const int8_t y551AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y551SensorPower = sensorPowerPin;   // Sensor power pin
+const int8_t  y551EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t y551NumberReadings = 5;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a Y551 chemical oxygen demand sensor object
+YosemitechY551 y551(y551ModbusAddress, modbusSerial, y551AdapterPower,
+                    y551SensorPower, y551EnablePin, y551NumberReadings);
+
+// Create COD, turbidity, and temperature variable pointers for the Y551
+Variable* y551COD =
+    new YosemitechY551_COD(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y551Turbid =
+    new YosemitechY551_Turbidity(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y551Temp =
+    new YosemitechY551_Temp(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [y551] */
+
+
+// ==========================================================================
 //  Yosemitech Y560 Ammonium Probe with Wiper
 // ==========================================================================
 /** Start [y560] */
@@ -153,7 +185,7 @@ const int8_t y560AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
 const int8_t  y560SensorPower = sensorPowerPin;   // Sensor power pin
 const int8_t  y560EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y560NumberReadings = 3;
+const uint8_t y560NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
@@ -180,6 +212,9 @@ Variable* variableList[] = {
     new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
+    y551COD,
+    y551Turbid,
+    y551Temp,
     y560NH4_N,
     y560pH,
     y560Temp,

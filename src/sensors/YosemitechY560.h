@@ -69,12 +69,12 @@
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
-/// <200ms based on testing.
-#define Y560_WARM_UP_TIME_MS 500
+/// <200ms for response, but need 2-10s to load capcitors for brush & measure.
+#define Y560_WARM_UP_TIME_MS 7000
 /// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
 /// command and stable reading 20s in manual but this includes 15s for brushing.
 /// Setting to 20s to allow for 5s after brushing completes, based on testing.
-#define Y560_STABILIZATION_TIME_MS 20000
+#define Y560_STABILIZATION_TIME_MS 18000
 /// @brief Sensor::_measurementTime_ms; the Y560 takes 2s to complete a
 /// measurement according to manual, but testing shows ~1.5s for a new number.
 #define Y560_MEASUREMENT_TIME_MS 1500

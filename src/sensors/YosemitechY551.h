@@ -68,8 +68,8 @@
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; time before sensor responds after power -
-/// <500ms based on testing.
-#define Y551_WARM_UP_TIME_MS 500
+/// <500ms for response, but need >1000ms to load capcitors for brush & measure.
+#define Y551_WARM_UP_TIME_MS 1000
 /// @brief Sensor::_stabilizationTime_ms; time between "StartMeasurement"
 /// command and stable reading - 2sec in manual & confirmed by testing.
 #define Y551_STABILIZATION_TIME_MS 2000

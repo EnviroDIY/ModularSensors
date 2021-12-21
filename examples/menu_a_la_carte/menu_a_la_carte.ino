@@ -2051,7 +2051,8 @@ Variable* y551Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y560ModbusAddress = 0x60;  // The modbus address of the Y560
+byte         y560ModbusAddress = 0x60;  // The modbus address of the Y560.
+            // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
 const int8_t y560AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
 const int8_t  y560SensorPower = A3;   // Sensor power pin
