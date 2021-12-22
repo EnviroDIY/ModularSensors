@@ -10,10 +10,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Added a longer warm up time and removed some of the set-up to work with the ESP-IDF AT firmware versions >2.0
+
 
 ### Added
 
+### Removed
+
+### Fixed
+
+***
+
+## [0.33.0]
+
+### Changed
+- Renamed the YosemiTech Y550 COD sensor as Y551. See below.
+- Added a longer warm up time and removed some of the set-up to work with the ESP-IDF AT firmware versions >2.0
+
+### Added
+- Added support for the [YosemiTech Y551 COD Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/94.html), which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.
+  - NOTE that this upgrade removes the earlier Y550 from the library, as it was never tested and is no longer available form YosemiTech. If anyone has a Y550 sensor, the Y551 commands should work. Let us know if they don't.
+- Added support for the [YosemiTech Y560 Ammonium Probe](http://en.yosemitech.com/aspcms/product/2020-4-23/61.html), which is a mini sonde for three Ion Selective Electrode (ISE) sensors (pH, NH4+, K+) that together are used to provide a corrected estimate of total ammonium nitrogen (NH4_N) in mg/L.
+  - NOTE that this release only includes outputs for NH4_N, pH, and temperature. A future release will also include estimates of potassium (K) and raw potential values from each of the electrodes.
 ### Removed
 
 ### Fixed
