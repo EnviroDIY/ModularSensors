@@ -18,12 +18,14 @@ AOSongAM2315::AOSongAM2315(TwoWire* theI2C, int8_t powerPin,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage) {
     _i2c = theI2C;
+    am2315ptr = new Adafruit_AM2315(_i2c);
 }
 AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
     : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES, AM2315_WARM_UP_TIME_MS,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage, AM2315_INC_CALC_VARIABLES) {
     _i2c = &Wire;
+    am2315ptr = new Adafruit_AM2315(_i2c);
 }
 AOSongAM2315::~AOSongAM2315() {}
 
@@ -58,8 +60,7 @@ bool AOSongAM2315::addSingleMeasurementResult(void) {
     if (bitRead(_sensorStatus, 6)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        Adafruit_AM2315 am2315(_i2c);  // create a sensor object
-        ret_val = am2315.readTemperatureAndHumidity(&temp_val, &humid_val);
+        ret_val = am2315ptr->readTemperatureAndHumidity(&temp_val, &humid_val);
 
         if (!ret_val || isnan(temp_val)) temp_val = -9999;
         if (!ret_val || isnan(humid_val)) humid_val = -9999;
