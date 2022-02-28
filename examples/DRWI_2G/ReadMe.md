@@ -106,19 +106,21 @@ Variable* variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+/* clang-format off */
 const char* UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890ab",   // Electrical conductivity (Decagon_CTD-10_Cond)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Temperature (Decagon_CTD-10_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Water depth (Decagon_CTD-10_Depth)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Received signal strength indication (Sodaq_2GBee_RSSI)
-    "12345678-abcd-1234-ef00-1234567890ab"    // Percent full scale (Sodaq_2GBee_SignalPercent)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity (Decagon_CTD-10_Cond)
+    "12345678-abcd-1234-ef00-1234567890ab", // Temperature (Decagon_CTD-10_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Decagon_CTD-10_Depth)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (EnviroDIY_Mayfly_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength indication (Sodaq_2GBee_RSSI)
+    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale (Sodaq_2GBee_SignalPercent)
 };
 const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+/* clang-format on */
 
 ```
 
