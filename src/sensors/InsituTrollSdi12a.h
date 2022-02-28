@@ -9,7 +9,7 @@
  * along with the variable subclasses InsituTrollSdi12a_Pressure,
  * InsituTrollSdi12a_Temp, and InsituTrollSdi12a_Depth
  *
- * These are used for the Insitu Troll.
+ * These are used for the In-Situ Level TROLL® 400, 500 & 700 Data Loggers.
  * The order and units are the default settings for the ITROLL
  *
  * This depends on the EnviroDIY SDI-12 library and the SDI12Sensors super
@@ -18,9 +18,9 @@
  */
 /* clang-format off */
 /**
- * @defgroup sensor_instutroll Insitu LevelTroll 400 500 700
- * Classes for the Insitru LevelTroll feature sensors  pressure, temperature, and depth.
- * 
+ * @defgroup sensor_instutroll In-Situ LevelTROLL 400, 500, and 700 Data Loggers
+ * Classes for the In-Situ LevelTROLL feature sensors  pressure, temperature, and depth.
+ *
  * @ingroup sdi12_group
  *
  * @tableofcontents
@@ -28,36 +28,36 @@
  *
  * @section sensor_instutroll_intro Introduction
  *
- * > A slim 1.8 cm diameter sensor, 
- * > depth measuremente temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range. 
+ * > A slim 1.8 cm diameter sensor,
+ * > depth measuremente temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range.
  * >
  * > Has an internal logger for reliable data collection.
  * >
  * > Reports sensor serial number and model in uSD .csv file
 
  *
- * The Insitu Aqua/Level Troll require 8-36VDC
+ * The In-Situ Aqua/Level TROLL require 8-36VDC
  * This can be achieved a Polo #boost device, instructions are at the end
  *
- * @warning Coming from the factory, Troll sensors are set at SDI-12 address '0'.
+ * @warning Coming from the factory, TROLL sensors are set at SDI-12 address '0'.
  *
- * The Insitu Aqua/Level Trolls are programmed through WinSitu.
- * 
+ * The In-Situ Aqua/Level TROLLs are programmed through WinSitu.
+ *
  * The SDI address needs to be changed to what the class is set to - default is '1'.
  *
  * Parameters are very flexible and need to be aligned used WinSitu with this module.
- * 
- * The depth sensor third paramter may need to be created. The expected
- * paramters and order are Pressure (PSI),  Temperature (C),  Depth (ft). 
  *
- * Tested with Level Troll 500.
- * 
+ * The depth sensor third paramter may need to be created. The expected
+ * paramters and order are Pressure (PSI),  Temperature (C),  Depth (ft).
+ *
+ * Tested with Level TROLL 500.
+ *
  * @section sensor_instutroll_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses
- * The Insitu Level/Aqua Troll can be found at:
- * 
+ * The In-Situ Level/Aqua TROLL can be found at:
+ *
  * https://in-situ.com/en/pub/media/support/documents/SDI-12_Commands_Tech_Note.pdf
- * 
+ *
  * https://in-situ.com/us/support/documents/sdi-12-commands-and-level-troll-400500700-responses
  *
  * @section sensor_instutroll_flags Build flags
@@ -77,20 +77,20 @@
 // Sensor Specific Defines
 /** @ingroup sensor_insitutroll */
 /**@{*/
-/// @brief Sensor::_numReturnedValues; the Troll 500 can report 3 values.
+/// @brief Sensor::_numReturnedValues; the TROLL 500 can report 3 values.
 #define ITROLLA_NUM_VARIABLES 3
 
 /**
  * @anchor sensor_insitutroll_timing
  * @name Sensor Timing
- * The sensor timing for a Insitu Troll
+ * The sensor timing for a In-Situ TROLL
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; maximum warm-up time in SDI-12 mode: 500ms
 #define ITROLLA_WARM_UP_TIME_MS 500
 
 
-/// @brief Sensor::_stabilizationTime_ms; the Troll 500 is stable as soon as it
+/// @brief Sensor::_stabilizationTime_ms; the TROLL 500 is stable as soon as it
 /// warms up (0ms stabilization).
 #define ITROLLA_STABILIZATION_TIME_MS 0
 
@@ -100,7 +100,7 @@
 /**
  * @anchor sensor_insitutroll_pressure
  * @name Pressure
- * The pressue variable from a Insitu Troll
+ * The pressue variable from a In-Situ TROLL
  * - Range is 0 – x (depends on range eg 5psig)
 
  *
@@ -131,7 +131,7 @@
 /**
  * @anchor sensor_insitutroll_temp
  * @name Temperature
- * The temperature variable from a Insitu Troll
+ * The temperature variable from a In-Situ TROLL
  * - Range is -11°C to +49°C
  * - Accuracy is ±1°C
  *
@@ -156,13 +156,13 @@
 /// "degreeCelsius" (°C)
 #define ITROLLA_TEMP_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "ITROLLtemp"
-#define ITROL_TEMP_DEFAULT_CODE "ITROLLtemp"
+#define ITROLLA_TEMP_DEFAULT_CODE "ITROLLtemp"
 /**@}*/
 
 /**
  * @anchor sensor_insitutroll_depth
  * @name Water Depth
- * The water depth variable from a Insitu Troll
+ * The water depth variable from a In-Situ TROLL
  * - Range is 0 to 3.5m to 350m depending on model
  * - Accuracy is ±0.05% of full scale
  *
@@ -194,7 +194,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Insitu Level/Aqua Troll pressure, temperature, and depth sensor](@ref sensor_insitutroll)
+ * [Insitu Level/Aqua TROLL pressure, temperature, and depth sensor](@ref sensor_insitutroll)
  *
  * @ingroup sensor_insitutroll
  */
@@ -256,7 +256,7 @@ class InsituTrollSdi12a : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [pressure output](@ref sensor_insitutroll_pressure) from a
- * [Insitu Troll 3-in-1 water level sensor.](@ref sensor_insitutroll)
+ * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitutroll)
  *
  * @ingroup sensor_insitutroll
  */
@@ -301,7 +301,7 @@ class InsituTrollSdi12a_Pressure : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature Output](@ref sensor_insitutroll_temp) from a
- * [Insitu Troll 3-in-1 water level sensor.](@ref sensor_insitutroll)
+ * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitutroll)
  *
  * @ingroup sensor_insitutroll
  */
@@ -318,7 +318,7 @@ class InsituTrollSdi12a_Temp : public Variable {
      * optional with a default value of "ITROLLtemp".
      */
     InsituTrollSdi12a_Temp(Sensor* parentSense, const char* uuid = "",
-                           const char* varCode = ITROL_TEMP_DEFAULT_CODE)
+                           const char* varCode = ITROLLA_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
                    ITROLLA_TEMP_TEMP_UNIT_NAME, varCode, uuid) {}
@@ -332,7 +332,7 @@ class InsituTrollSdi12a_Temp : public Variable {
     InsituTrollSdi12a_Temp()
         : Variable((const uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
-                   ITROLLA_TEMP_TEMP_UNIT_NAME, ITROL_TEMP_DEFAULT_CODE) {}
+                   ITROLLA_TEMP_TEMP_UNIT_NAME, ITROLLA_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InsituTrollSdi12a_Temp object - no action needed.
      */
@@ -344,7 +344,7 @@ class InsituTrollSdi12a_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [depth output](@ref sensor_insitutroll_depth) from a
- * [Insitu Troll 3-in-1 water level sensor.](@ref sensor_insitutroll)
+ * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitutroll)
  *
  * @ingroup sensor_insitutroll
  */

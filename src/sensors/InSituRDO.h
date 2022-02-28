@@ -58,7 +58,7 @@
  * Win-Situ to change some of the default settings on the sensor.
  *
  * To connect the sensor to Win-Situ, you can use any form of RS485 to USB interface.
- * Insitu sells one that specifially works with their cables, but any
+ * In-Situ sells one that specifially works with their cables, but any
  * inexpensive converter adapter with automatic flow control should work.
  * The sensor must be powered at a minimum of **12V** (12-36V) to use the
  * RS485/modbus interface.  This is different than the 9.6V - 16V required for

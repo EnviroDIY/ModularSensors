@@ -1307,13 +1307,13 @@ Variable* rdoO2pp =
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char* TROLLSDI12address =
-    "1";  // The SDI-12 Address of the Aqua/Level Troll
+    "1";  // The SDI-12 Address of the Aqua/Level TROLL
 const int8_t TROLLPower =
     sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t  TROLLData           = 7;  // The SDI-12 data pin
 const uint8_t TROLLNumberReadings = 2;  // The number of readings to average
 
-// Create an In-Situ Troll sensor object
+// Create an In-Situ TROLL sensor object
 InsituTrollSdi12a insutuTROLL(*TROLLSDI12address, TROLLPower, TROLLData,
                               TROLLNumberReadings);
 
