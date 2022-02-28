@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 6,
+  "action_cache_version": 7,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -290,7 +290,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus.git",
-      "version": "~0.2.5",
+      "version": "~0.3.0",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": [
         "Sara Damiano",

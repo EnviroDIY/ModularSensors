@@ -170,6 +170,9 @@ jobs:
             sensorFlag: BUILD_SENSOR_Y551
             publisherFlag: BUILD_PUB_MMW
           - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_Y560
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
             sensorFlag: BUILD_SENSOR_Y4000
             publisherFlag: BUILD_PUB_MMW
           - modemFlag: BUILD_MODEM_SIM7080
