@@ -2007,37 +2007,72 @@ Variable* y533Temp =
 #endif
 
 
-#if defined BUILD_SENSOR_Y550
+#if defined BUILD_SENSOR_Y551
 // ==========================================================================
-//  Yosemitech Y550 COD Sensor with Wiper
+//  Yosemitech Y551 COD Sensor with Wiper
 // ==========================================================================
-/** Start [y550] */
-#include <sensors/YosemitechY550.h>
+/** Start [y551] */
+#include <sensors/YosemitechY551.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y550ModbusAddress = 0x50;  // The modbus address of the Y550
-const int8_t y550AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+byte         y551ModbusAddress = 0x50;  // The modbus address of the Y551
+const int8_t y551AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
                                                   // (-1 if unconnected)
-const int8_t  y550SensorPower = A3;               // Sensor power pin
-const int8_t  y550EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y550NumberReadings = 5;
+const int8_t  y551SensorPower = A3;               // Sensor power pin
+const int8_t  y551EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t y551NumberReadings = 3;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
-// Create a Y550 chemical oxygen demand sensor object
-YosemitechY550 y550(y550ModbusAddress, modbusSerial, y550AdapterPower,
-                    y550SensorPower, y550EnablePin, y550NumberReadings);
+// Create a Y551 chemical oxygen demand sensor object
+YosemitechY551 y551(y551ModbusAddress, modbusSerial, y551AdapterPower,
+                    y551SensorPower, y551EnablePin, y551NumberReadings);
 
-// Create COD, turbidity, and temperature variable pointers for the Y550
-Variable* y550COD =
-    new YosemitechY550_COD(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* y550Turbid =
-    new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* y550Temp =
-    new YosemitechY550_Temp(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y550] */
+// Create COD, turbidity, and temperature variable pointers for the Y551
+Variable* y551COD =
+    new YosemitechY551_COD(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y551Turbid =
+    new YosemitechY551_Turbidity(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y551Temp =
+    new YosemitechY551_Temp(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [y551] */
+#endif
+
+
+#if defined BUILD_SENSOR_Y560
+// ==========================================================================
+//  Yosemitech Y560 Ammonium Probe with Wiper
+// ==========================================================================
+/** Start [y560] */
+#include <sensors/YosemitechY560.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+byte         y560ModbusAddress = 0x60;  // The modbus address of the Y560.
+            // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
+const int8_t y560AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
+                                                  // (-1 if unconnected)
+const int8_t  y560SensorPower = A3;   // Sensor power pin
+const int8_t  y560EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const uint8_t y560NumberReadings = 3;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a Y560 Ammonium Probe object
+YosemitechY560 y560(y560ModbusAddress, modbusSerial, y560AdapterPower,
+                    y560SensorPower, y560EnablePin, y560NumberReadings);
+
+// Create COD, turbidity, and temperature variable pointers for the Y560
+Variable* y560NH4_N =
+    new YosemitechY560_NH4_N(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y560pH =
+    new YosemitechY560_pH(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y560Temp =
+    new YosemitechY560_Temp(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [y560] */
 #endif
 
 
@@ -2399,10 +2434,10 @@ Variable* variableList[] = {
     y533ORP,
     y533Temp,
 #endif
-#if defined BUILD_SENSOR_Y550
-    y550COD,
-    y550Turbid,
-    y550Temp,
+#if defined BUILD_SENSOR_Y551
+    y551COD,
+    y551Turbid,
+    y551Temp,
 #endif
 #if defined BUILD_SENSOR_Y4000
     y4000DO,

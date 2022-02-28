@@ -93,7 +93,7 @@ ___
       - [Yosemitech Y520 Yosemitech Y520 Conductivity Sensor](#yosemitech-y520-yosemitech-y520-conductivity-sensor)
       - [Yosemitech Y532 Yosemitech Y532 pH Sensor](#yosemitech-y532-yosemitech-y532-ph-sensor)
       - [Yosemitech Y533 Yosemitech Y533 Oxidation Reduction Potential (ORP) Sensor](#yosemitech-y533-yosemitech-y533-oxidation-reduction-potential-orp-sensor)
-      - [Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper](#yosemitech-y550-yosemitech-y550-carbon-oxygen-demand-cod-sensor-with-wiper)
+      - [Yosemitech Y551 Yosemitech Y551 Carbon Oxygen Demand (COD) Sensor with Wiper](#yosemitech-y551-yosemitech-y551-carbon-oxygen-demand-cod-sensor-with-wiper)
       - [Yosemitech Y4000 Yosemitech Y4000 Multi-Parameter Sonde](#yosemitech-y4000-yosemitech-y4000-multi-parameter-sonde)
     - [Zebra Tech D-Opto Dissolved Oxygen Sensor](#zebra-tech-d-opto-dissolved-oxygen-sensor)
   - [Calculated Variables](#calculated-variables)
@@ -1073,12 +1073,12 @@ ___
 ___
 
 
-[//]: # ( @subsubsection menu_y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper )
-#### Yosemitech Y550 Yosemitech Y550 Carbon Oxygen Demand (COD) Sensor with Wiper
+[//]: # ( @subsubsection menu_y551 Yosemitech Y551 Carbon Oxygen Demand (COD) Sensor with Wiper )
+#### Yosemitech Y551 Yosemitech Y551 Carbon Oxygen Demand (COD) Sensor with Wiper
 
-@see @ref sensor_y550
+@see @ref sensor_y551
 
-[//]: # ( @menusnip{y550} )
+[//]: # ( @menusnip{y551} )
 ___
 
 

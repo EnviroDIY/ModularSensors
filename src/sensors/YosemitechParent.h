@@ -20,46 +20,53 @@
  * @ingroup the_sensors
  *
  *
- * This library currently supports the following [Yosemitech](http://www.yosemitech.com/en/) sensors:
- * - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
+ * This library currently supports the following [Yosemitech](http://en.yosemitech.com/) sensors:
+ * - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://en.yosemitech.com/aspcms/product/2021-3-1/161.html)
  *     - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO_UserManual-v1.1.pdf)
- *     - [Y504 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y505-DO_UserManual-v1.2.pdf)
+ *     - [Y505 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y505-DO_UserManual-v1.2.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y504-DO-v6.2_ModbusInstructions.pdf)
  *     - [Class Documentation](@ref sensor_y504)
- * - [Y510-B Optical Turbidity Sensor](http://www.yosemitech.com/en/product-17.html)
+ * - [Y510-B Optical Turbidity Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/76.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_UserManual-v1.1.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y510-Turbidity_1.7-ModbusInstruction-en.pdf)
  *     - [Class Documentation](@ref sensor_y510)
- * - [Y511-A Optical Turbidity Sensor with Wiper](http://www.yosemitech.com/en/product-16.html)
+ * - [Y511-A Optical Turbidity Sensor with Wiper](http://en.yosemitech.com/aspcms/product/2020-5-8/76.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper_UserManual-v1.1.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y511-Turbidity+Wiper-v1.7_ModbusInstructions.pdf)
  *     - [Class Documentation](@ref sensor_y511)
- * - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
+ * - [Y514-A Chlorophyll Sensor with Wiper](http://en.yosemitech.com/aspcms/product/2020-4-23/39.html)
  *     - [Y514 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper_UserManual-v1.0.pdf)
  *     - [Y515 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y515-Chlorophyll_UserManual-v1.0_en.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y514-Chlorophyl+Wiper-v1.6_ModbusInstructions.pdf)
  *     - [Class Documentation](@ref sensor_y514)
- * - [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
- *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity_UserManual-v1.1.pdf)
+ * - [Y520-A or Y521-A 4-Electrode Conductivity Sensor](http://en.yosemitech.com/aspcms/product/2020-4-23/58.html)
+ *     - [Y520 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity_UserManual-v1.1.pdf)
+ *     - [Y521 Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y521-Conductivity_UserManual-v1.1.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y520-Conductivity-v1.8_ModbusInstructions.pdf)
  *     - [Class Documentation](@ref sensor_y520)
- * - Y532-A Digital pH Sensor
+ * - [Y532-A Digital pH Sensor](http://en.yosemitech.com/aspcms/product/2020-6-15/154.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
  *     - [Class Documentation](@ref sensor_y532)
- * - Y533 ORP Sensor
+ * - [Y533 ORP Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/91.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH_UserManual-v1.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y532-pH-ORP-v1.7_ModbusInstructions.pdf)
  *     - [Class Documentation](@ref sensor_y533)
- * - [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
- *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y550-COD-UV254-1.5_ModbusInstruction-en.pdf)
- *     - [Class Documentation](@ref sensor_y550)
- * - [Y4000 Multiparameter Sonde](http://www.yosemitech.com/en/product-20.html)
+ * - [Y551 COD/UV254 Sensor with Wiper](http://en.yosemitech.com/aspcms/product/2020-5-8/94.html)
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y551-UV254-COD_UserManual_v1.0.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y551-UV254-COD_Modbus_v2020-05-11.pdf)
+ *     - [Class Documentation](@ref sensor_y551)
+ * - [Y560 Ammoinum Probe with Wiper](http://en.yosemitech.com/aspcms/product/2020-4-23/61.html)
+ *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_UserManual_v1.0.pdf)
+ *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_Modbus_v2020-05-11.pdf)
+ *     - [Class Documentation](@ref sensor_y560)
+ * - [Y4000 Multiparameter Sonde](http://en.yosemitech.com/aspcms/product/2020-5-8/95.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
  *     - [Class Documentation](@ref sensor_y4000)
  *
- * All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.
+ * Most of these sensors require a 9-12V power supply, but some can opperate as
+ * low as 5V and sondes (Y560 & Y4000) require 12V. The power supply can be stopped between measurements for all.
  * (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)
  * They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).
  * To interface with them, you will need an RS485-to-TTL adapter.
