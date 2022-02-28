@@ -482,7 +482,7 @@ uint32_t Logger::getNowLocalEpoch(void) {
 uint32_t Logger::getNowUTCEpoch(void) {
     return rtc.now().getEpoch();
 }
-void Logger::setNowEpoch(uint32_t ts) {
+void Logger::setNowUTCEpoch(uint32_t ts) {
     rtc.setEpoch(ts);
 }
 
@@ -491,7 +491,7 @@ void Logger::setNowEpoch(uint32_t ts) {
 uint32_t Logger::getNowUTCEpoch(void) {
     return zero_sleep_rtc.getEpoch();
 }
-void Logger::setNowEpoch(uint32_t ts) {
+void Logger::setNowUTCEpoch(uint32_t ts) {
     zero_sleep_rtc.setEpoch(ts);
 }
 
@@ -576,7 +576,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds) {
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     if (abs(set_logTZ - cur_logTZ) > 5) {
-        setNowEpoch(set_rtcTZ);
+        setNowUTCEpoch(set_rtcTZ);
         PRINTOUT(F("Clock set!"));
         return true;
     } else {

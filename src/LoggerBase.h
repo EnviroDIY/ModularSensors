@@ -652,7 +652,7 @@ class Logger {
      *
      * @param ts The number of seconds since 1970.
      */
-    static void setNowEpoch(uint32_t ts);
+    static void setNowUTCEpoch(uint32_t ts);
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
