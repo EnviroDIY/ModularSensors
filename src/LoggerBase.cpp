@@ -337,16 +337,17 @@ bool Logger::syncRTC() {
         } else {
             PRINTOUT(F("Could not wake modem for clock sync."));
         }
+        watchDogTimer.resetWatchDog();
+        // Power down the modem - but only if there will be more than 15 seconds
+        // before the NEXT logging interval - it can take the modem that long to
+        // shut down
+        if (Logger::getNowEpochUTC() % (_loggingIntervalMinutes * 60) > 15) {
+            Serial.println(F("Putting modem to sleep"));
+            _logModem->disconnectInternet();
+            _logModem->modemSleepPowerDown();
+        }
     }
-
-    // Power down the modem - but only if there will be more than 15 seconds
-    // before the NEXT logging interval - it can take the modem that long to
-    // shut down
-    if (Logger::getNowEpoch() % (_loggingIntervalMinutes * 60) > 15) {
-        Serial.println(F("Putting modem to sleep"));
-        _logModem->disconnectInternet();
-        _logModem->modemSleepPowerDown();
-    }
+    watchDogTimer.resetWatchDog();
     return success;
 }
 
