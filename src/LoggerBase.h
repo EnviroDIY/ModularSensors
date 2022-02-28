@@ -619,8 +619,29 @@ class Logger {
      *
      * @return **uint32_t**  The number of seconds from January 1, 1970 in the
      * logging time zone.
+     *
+     * @m_deprecated_since{0,33}
      */
     static uint32_t getNowEpoch(void);
+
+    /**
+     * @brief Get the current epoch time from the RTC (unix time, ie, the
+     * number of seconds from January 1, 1970 00:00:00) and correct it to the
+     * logging time zone.
+     *
+     * @return **uint32_t**  The number of seconds from January 1, 1970 in the
+     * logging time zone.
+     */
+    static uint32_t getNowLocalEpoch(void);
+
+    /**
+     * @brief Get the current Universal Coordinated Time (UTC) epoch time from
+     * the RTC (unix time, ie, the number of seconds from January 1, 1970
+     * 00:00:00 UTC)
+     *
+     * @return **uint32_t**  The number of seconds from 1970-01-01T00:00:00Z0000
+     */
+    static uint32_t getNowUTCEpoch(void);
     /**
      * @brief Set the real time clock to the given number of seconds from
      * January 1, 1970.
@@ -716,7 +737,7 @@ class Logger {
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
-     * That is the value saved in the static variable markedEpochTime.
+     * That is the value saved in the static variable markedLocalEpochTime.
      *
      * This should be used in conjunction with markTime() to ensure that all
      * data outputs from a single data update session (SD, EnviroDIY, serial
@@ -1074,12 +1095,12 @@ class Logger {
     /**
      * @brief The static "marked" epoch time for the local timezone.
      */
-    static uint32_t markedEpochTime;
+    static uint32_t markedLocalEpochTime;
 
     /**
      * @brief The static "marked" epoch time for UTC.
      */
-    static uint32_t markedEpochTimeUTC;
+    static uint32_t markedUTCEpochTime;
 
     // These are flag fariables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle

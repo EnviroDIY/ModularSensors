@@ -146,7 +146,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient) {
 
     emptyTxBuffer();
 
-    _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime)
+    _baseLogger->formatDateTime_ISO8601(Logger::markedLocalEpochTime)
         .toCharArray(tempBuffer, 26);
     strcat(txBuffer, "created_at=");
     strcat(txBuffer, tempBuffer);

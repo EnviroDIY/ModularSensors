@@ -122,7 +122,8 @@ void EnviroDIYPublisher::printSensorDataJSON(Stream* stream) {
     stream->print(samplingFeatureTag);
     stream->print(_baseLogger->getSamplingFeatureUUID());
     stream->print(timestampTag);
-    stream->print(_baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime));
+    stream->print(
+        _baseLogger->formatDateTime_ISO8601(Logger::markedLocalEpochTime));
     stream->print(F("\","));
 
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
@@ -233,7 +234,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
 
         if (bufferFree() < 42) printTxBuffer(outClient);
         strcat(txBuffer, timestampTag);
-        _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime)
+        _baseLogger->formatDateTime_ISO8601(Logger::markedLocalEpochTime)
             .toCharArray(tempBuffer, 37);
         strcat(txBuffer, tempBuffer);
         txBuffer[strlen(txBuffer)] = '"';

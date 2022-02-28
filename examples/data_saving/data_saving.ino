@@ -580,10 +580,10 @@ void loop() {
                     modem.updateModemMetadata();
 
                     loggerAllVars.watchDogTimer.resetWatchDog();
-                    // Sync the clock at midnight
+                    // Sync the clock at noon
                     // NOTE:  All loggers have the same clock, pick one
-                    if (Logger::markedEpochTime != 0 &&
-                        Logger::markedEpochTime % 86400 == 0) {
+                    if (Logger::markedLocalEpochTime != 0 &&
+                        Logger::markedLocalEpochTime % 86400 == 43200) {
                         Serial.println(F("Running a daily clock sync..."));
                         loggerAllVars.setRTClock(modem.getNISTTime());
                     }

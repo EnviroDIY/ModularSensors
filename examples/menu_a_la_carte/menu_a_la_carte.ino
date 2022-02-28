@@ -2960,10 +2960,10 @@ void loop() {
                 Serial.println(F("Modem connected to internet."));
                 dataLogger.publishDataToRemotes();
 
-                // Sync the clock at midnight
+                // Sync the clock at noon
                 dataLogger.watchDogTimer.resetWatchDog();
-                if (Logger::markedEpochTime != 0 &&
-                    Logger::markedEpochTime % 86400 == 0) {
+                if (Logger::markedLocalEpochTime != 0 &&
+                    Logger::markedLocalEpochTime % 86400 == 43200) {
                     Serial.println(F("Running a daily clock sync..."));
                     dataLogger.setRTClock(modem.getNISTTime());
                     dataLogger.watchDogTimer.resetWatchDog();

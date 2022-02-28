@@ -66,7 +66,7 @@ void DreamHostPublisher::printSensorDataDreamHost(Stream* stream) {
     stream->print(loggerTag);
     stream->print(_baseLogger->getLoggerID());
     stream->print(timestampTagDH);
-    stream->print(String(Logger::markedEpochTime -
+    stream->print(String(Logger::markedLocalEpochTime -
                          946684800));  // Correct time from epoch to y2k
 
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
@@ -133,7 +133,8 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
 
         if (bufferFree() < 22) printTxBuffer(outClient);
         strcat(txBuffer, timestampTagDH);
-        ltoa((Logger::markedEpochTime - 946684800), tempBuffer, 10);  // BASE 10
+        ltoa((Logger::markedLocalEpochTime - 946684800), tempBuffer,
+             10);  // BASE 10
         strcat(txBuffer, tempBuffer);
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
