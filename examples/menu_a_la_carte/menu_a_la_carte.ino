@@ -832,7 +832,7 @@ Variable* dhtHumid =
 Variable* dhtTemp = new AOSongDHT_Temp(&dht,
                                        "12345678-abcd-1234-ef00-1234567890ab");
 Variable* dhtHI   = new AOSongDHT_HI(&dht,
-                                   "12345678-abcd-1234-ef00-1234567890ab");
+                                     "12345678-abcd-1234-ef00-1234567890ab");
 /** End [dht] */
 #endif
 
@@ -1298,6 +1298,36 @@ Variable* rdoO2pp =
 #endif
 
 
+#if defined BUILD_SENSOR_INSITUTROOLSDI12A
+// ==========================================================================
+//    In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor
+// ==========================================================================
+/** Start [insitu_troll] */
+#include <sensors/InsituTrollSdi12a.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const char* TROLLSDI12address =
+    "1";  // The SDI-12 Address of the Aqua/Level Troll
+const int8_t TROLLPower =
+    sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t  TROLLData           = 7;  // The SDI-12 data pin
+const uint8_t TROLLNumberReadings = 2;  // The number of readings to average
+
+// Create an In-Situ Troll sensor object
+InsituTrollSdi12a insutuTROLL(*TROLLSDI12address, TROLLPower, TROLLData,
+                              TROLLNumberReadings);
+
+// Create pressure, temperature, and depth variable pointers for the TROLL
+Variable* trollPressure = new InsituTrollSdi12a_Pressure(
+    &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* trollTemp = new InsituTrollSdi12a_Temp(
+    &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* trollDepth = new InsituTrollSdi12a_Depth(
+    &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [insitu_troll] */
+#endif
+
+
 #if defined BUILD_SENSOR_ACCULEVEL
 // ==========================================================================
 //  Keller Acculevel High Accuracy Submersible Level Transmitter
@@ -1648,7 +1678,7 @@ TIINA219 ina219(INA219Power, INA219i2c_addr, INA219ReadingsToAvg);
 Variable* inaCurrent =
     new TIINA219_Current(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* inaVolt  = new TIINA219_Volt(&ina219,
-                                      "12345678-abcd-1234-ef00-1234567890ab");
+                                       "12345678-abcd-1234-ef00-1234567890ab");
 Variable* inaPower = new TIINA219_Power(&ina219,
                                         "12345678-abcd-1234-ef00-1234567890ab");
 /** End [ina219] */
@@ -2051,11 +2081,12 @@ Variable* y551Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y560ModbusAddress = 0x60;  // The modbus address of the Y560.
-            // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
-const int8_t y560AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y560SensorPower = A3;   // Sensor power pin
+byte y560ModbusAddress =
+    0x60;  // The modbus address of the Y560.
+           // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
+const int8_t y560AdapterPower = sensorPowerPin;  // RS485 adapter power pin
+                                                 // (-1 if unconnected)
+const int8_t  y560SensorPower = A3;              // Sensor power pin
 const int8_t  y560EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
 const uint8_t y560NumberReadings = 3;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
@@ -2334,6 +2365,11 @@ Variable* variableList[] = {
     rdoDOmgL,
     rdoO2pp,
 #endif
+#if defined BUILD_SENSOR_INSITUTROOLSDI12A
+    trollPressure,
+    trollTemp,
+    trollDepth,
+#endif
 #if defined BUILD_SENSOR_ACCULEVEL
     acculevPress,
     acculevTemp,
@@ -2438,6 +2474,12 @@ Variable* variableList[] = {
     y551COD,
     y551Turbid,
     y551Temp,
+#endif
+
+#if defined BUILD_SENSOR_Y560
+    y560NH4_N,
+    y560pH,
+    y560Temp,
 #endif
 #if defined BUILD_SENSOR_Y4000
     y4000DO,
@@ -2679,7 +2721,8 @@ void setup() {
     }
     /** End [setup_sesors] */
 
-#if (defined BUILD_MODEM_ESP8266 || defined BUILD_MODEM_ESP32) && F_CPU == 8000000L
+#if (defined BUILD_MODEM_ESP8266 || defined BUILD_MODEM_ESP32) && \
+    F_CPU == 8000000L
     /** Start [setup_esp] */
     if (modemBaud > 57600) {
         modem.modemWake();  // NOTE:  This will also set up the modem

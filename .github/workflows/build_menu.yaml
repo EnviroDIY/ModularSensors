@@ -104,6 +104,9 @@ jobs:
             sensorFlag: BUILD_SENSOR_INSITURDO
             publisherFlag: BUILD_PUB_MMW
           - modemFlag: BUILD_MODEM_SIM7080
+            sensorFlag: BUILD_SENSOR_INSITUTROOLSDI12A
+            publisherFlag: BUILD_PUB_MMW
+          - modemFlag: BUILD_MODEM_SIM7080
             sensorFlag: BUILD_SENSOR_ACCULEVEL
             publisherFlag: BUILD_PUB_MMW
           - modemFlag: BUILD_MODEM_SIM7080
