@@ -1148,9 +1148,10 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 /** Start [clarivue] */
 #include <sensors/CampbellClariVUE10.h>
 
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char* ClariVUESDI12address = "0";  // The SDI-12 Address of the ClariVUE10
-const int8_t ClariVUEPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t ClariVUEData  = 7;               // The SDI12 data pin
+const int8_t ClariVUEPower       = sensorPowerPin;  // Power pin
+const int8_t ClariVUEData        = 7;               // The SDI-12 data pin
 // NOTE:  you should NOT take more than one readings.  THe sensor already takes
 // and averages 8 by default.
 
@@ -1179,7 +1180,7 @@ Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
 const char*   CTDSDI12address   = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDNumberReadings = 6;    // The number of readings to average
 const int8_t  CTDPower          = sensorPowerPin;  // Power pin
-const int8_t  CTDData           = 7;               // The SDI12 data pin
+const int8_t  CTDData           = 7;               // The SDI-12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
@@ -1205,7 +1206,7 @@ Variable* ctdDepth =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   ES2SDI12address   = "3";  // The SDI-12 Address of the ES2
 const int8_t  ES2Power          = sensorPowerPin;  // Power pin
-const int8_t  ES2Data           = 7;               // The SDI12 data pin
+const int8_t  ES2Data           = 7;               // The SDI-12 data pin
 const uint8_t ES2NumberReadings = 5;
 
 // Create a Decagon ES2 sensor object
@@ -1278,7 +1279,7 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   RDOSDI12address   = "5";  // The SDI-12 Address of the RDO PRO-X
 const int8_t  RDOPower          = sensorPowerPin;  // Power pin
-const int8_t  RDOData           = 7;               // The SDI12 data pin
+const int8_t  RDOData           = 7;               // The SDI-12 data pin
 const uint8_t RDONumberReadings = 3;
 
 // Create an In-Situ RDO PRO-X dissolved oxygen sensor object
@@ -1494,7 +1495,7 @@ Variable* ms5803Temp =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
 const int8_t TMPower        = sensorPowerPin;  // Power pin
-const int8_t TMData         = 7;               // The SDI12 data pin
+const int8_t TMData         = 7;               // The SDI-12 data pin
 
 // Create a Decagon 5TM sensor object
 Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
@@ -1522,7 +1523,7 @@ Variable* fivetmTemp =
 const char*   hydros21SDI12address = "1";  // The SDI-12 Address of the Hydros21
 const uint8_t hydros21NumberReadings = 6;  // The number of readings to average
 const int8_t  hydros21Power          = sensorPowerPin;  // Power pin
-const int8_t  hydros21Data           = 7;               // The SDI12 data pin
+const int8_t  hydros21Data           = 7;               // The SDI-12 data pin
 
 // Create a Decagon Hydros21 sensor object
 MeterHydros21 hydros21(*hydros21SDI12address, hydros21Power, hydros21Data,
@@ -1550,7 +1551,7 @@ Variable* hydros21Depth =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
 const int8_t  terosPower          = sensorPowerPin;  // Power pin
-const int8_t  terosData           = 7;               // The SDI12 data pin
+const int8_t  terosData           = 7;               // The SDI-12 data pin
 const uint8_t teros11NumberReadings = 3;  // The number of readings to average
 
 // Create a METER TEROS 11 sensor object
@@ -1576,6 +1577,7 @@ Variable* teros11VWC =
 /** Start [pt_redox] */
 #include <sensors/PaleoTerraRedox.h>
 
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
 int8_t  paleoTerraPower = sensorPowerPin;  // Power pin
 uint8_t paleoI2CAddress = 0x68;  // the I2C address of the redox sensor
 
@@ -1818,11 +1820,11 @@ Variable* analogEc_spcond = new Variable(
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y504ModbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t y504AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y504SensorPower = A3;               // Sensor power pin
-const int8_t  y504EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y504ModbusAddress  = 0x04;  // The modbus address of the Y504
+const int8_t  y504AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y504SensorPower    = A3;              // Sensor power pin
+const int8_t  y504EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y504NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -1853,11 +1855,11 @@ Variable* y504Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y510ModbusAddress = 0x0B;  // The modbus address of the Y510
-const int8_t y510AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y510SensorPower = A3;               // Sensor power pin
-const int8_t  y510EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y510ModbusAddress  = 0x0B;  // The modbus address of the Y510
+const int8_t  y510AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y510SensorPower    = A3;              // Sensor power pin
+const int8_t  y510EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y510NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -1885,11 +1887,11 @@ Variable* y510Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y511ModbusAddress = 0x1A;  // The modbus address of the Y511
-const int8_t y511AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y511SensorPower = A3;               // Sensor power pin
-const int8_t  y511EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y511ModbusAddress  = 0x1A;  // The modbus address of the Y511
+const int8_t  y511AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y511SensorPower    = A3;              // Sensor power pin
+const int8_t  y511EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y511NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -1950,11 +1952,11 @@ Variable* y514Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y520ModbusAddress = 0x20;  // The modbus address of the Y520
-const int8_t y520AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y520SensorPower = A3;               // Sensor power pin
-const int8_t  y520EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y520ModbusAddress  = 0x20;  // The modbus address of the Y520
+const int8_t  y520AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y520SensorPower    = A3;              // Sensor power pin
+const int8_t  y520EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y520NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -2016,11 +2018,11 @@ Variable* y532Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y533ModbusAddress = 0x32;  // The modbus address of the Y533
-const int8_t y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y533SensorPower = A3;               // Sensor power pin
-const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y533ModbusAddress  = 0x32;  // The modbus address of the Y533
+const int8_t  y533AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y533SensorPower    = A3;              // Sensor power pin
+const int8_t  y533EnablePin      = 4;               // Adapter RE/DE pin
 const uint8_t y533NumberReadings = 1;
 // The manufacturer actually doesn't mention averaging for this one
 
@@ -2047,11 +2049,11 @@ Variable* y533Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y551ModbusAddress = 0x50;  // The modbus address of the Y551
-const int8_t y551AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y551SensorPower = A3;               // Sensor power pin
-const int8_t  y551EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y551ModbusAddress  = 0x50;  // The modbus address of the Y551
+const int8_t  y551AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y551SensorPower    = A3;              // Sensor power pin
+const int8_t  y551EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y551NumberReadings = 3;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -2081,13 +2083,13 @@ Variable* y551Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte y560ModbusAddress =
     0x60;  // The modbus address of the Y560.
            // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
-const int8_t y560AdapterPower = sensorPowerPin;  // RS485 adapter power pin
-                                                 // (-1 if unconnected)
-const int8_t  y560SensorPower = A3;              // Sensor power pin
-const int8_t  y560EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+const int8_t  y560AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y560SensorPower    = A3;              // Sensor power pin
+const int8_t  y560EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y560NumberReadings = 3;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -2118,11 +2120,11 @@ Variable* y560Temp =
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
-const int8_t y4000AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                   // (-1 if unconnected)
-const int8_t  y4000SensorPower = A3;               // Sensor power pin
-const int8_t  y4000EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y4000ModbusAddress  = 0x05;  // The modbus address of the Y4000
+const int8_t  y4000AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y4000SensorPower    = A3;              // Sensor power pin
+const int8_t  y4000EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y4000NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -2162,7 +2164,7 @@ Variable* y4000BGA =
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  DOptoSDI12address = "5";  // The SDI-12 Address of the D-Opto
 const int8_t ZTPower           = sensorPowerPin;  // Power pin
-const int8_t ZTData            = 7;               // The SDI12 data pin
+const int8_t ZTData            = 7;               // The SDI-12 data pin
 
 // Create a Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoSDI12address, ZTPower, ZTData);
@@ -2475,7 +2477,6 @@ Variable* variableList[] = {
     y551Turbid,
     y551Temp,
 #endif
-
 #if defined BUILD_SENSOR_Y560
     y560NH4_N,
     y560pH,

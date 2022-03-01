@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 7,
+  "action_cache_version": 8,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -82,7 +82,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO.git",
-      "version": "~1.9.7",
+      "version": "~1.11.1",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": [
         "Adafruit"
@@ -120,7 +120,7 @@
       "owner": "adafruit",
       "library id": "773",
       "url": "https://github.com/adafruit/Adafruit_AM2315.git",
-      "version": "~2.2.0",
+      "version": "~2.2.1",
       "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
       "authors": [
         "Adafruit"
@@ -133,7 +133,7 @@
       "owner": "adafruit",
       "library id": "166",
       "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
-      "version": "~2.2.1",
+      "version": "~2.2.2",
       "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
       "authors": [
         "Adafruit"
@@ -290,7 +290,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus.git",
-      "version": "~0.3.0",
+      "version": "~0.3.2",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": [
         "Sara Damiano",

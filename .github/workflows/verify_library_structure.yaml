@@ -4,7 +4,7 @@ name: Verify JSON structure for library manifest
 on: [push, pull_request]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
@@ -19,5 +19,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade platformio
 
-      - name: Run python script to verify library structure
+      - name: Run python script to verify structure of library.json for PlatformIO
         run: python continuous_integration/validate_manifest.py
+
+      - name: Run Arduino-Lint to verify the library structure and syntax for the Arduino IDE
+        env:
+          ARDUINO_LINT_LIBRARY_MANAGER_INDEXING: true
+        uses: arduino/arduino-lint-action@v1
+        with:
+          project-type: library
+          library-manager: update
+          compliance: strict
+          verbose: true
