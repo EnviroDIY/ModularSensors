@@ -28,7 +28,7 @@ jobs:
         pio_environment: [mayfly, mega, arduino_zero, adafruit_feather_m0, autonomo]
 
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
 
       - name: Set environment variable for library installation source
         run: |
