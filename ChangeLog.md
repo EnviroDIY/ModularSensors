@@ -11,9 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-
 ### Added
-
+- Added support for Sensirion SHT4x sensors.
 ### Removed
 
 ### Fixed

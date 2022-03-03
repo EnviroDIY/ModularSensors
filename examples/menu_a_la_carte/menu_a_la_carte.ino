@@ -1622,7 +1622,29 @@ Variable* tbi2cTips =
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* tbi2cDepth =
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [i2c_rain] */
+#endif
+
+
+#if defined BUILD_SENSOR_SENSIRION_SHT4X
+// ==========================================================================
+//  Sensirion SHT4X Digital Humidity and Temperature Sensor
+// ==========================================================================
+/** Start [sensirion_sht4x] */
+#include <sensors/SensirionSHT4X.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t SHT4xPower     = sensorPowerPin;  // Power pin
+const bool   SHT4xUseHeater = true;
+
+// Create an Sensirion SHT4X sensor object
+SensirionSHT4x sht4x(SHT4xPower, SHT4xUseHeater);
+
+// Create humidity and temperature variable pointers for the SHT4X
+Variable* sht4xHumid =
+    new SensirionSHT4x_Humidity(&sht4x, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* sht4xTemp =
+    new SensirionSHT4x_Temp(&sht4x, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [sensirion_sht4x] */
 #endif
 
 

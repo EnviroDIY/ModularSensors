@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 8,
+  "action_cache_version": 9,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -174,6 +174,18 @@
       "url": "https://github.com/adafruit/Adafruit_MPL115A2.git",
       "version": "~2.0.0",
       "note": "MPL115A2 Barometer Library by Adafruit",
+      "authors": [
+        "Adafruit"
+      ],
+      "frameworks": "arduino"
+    },
+    {
+      "name": "Adafruit SHT4x Library",
+      "owner": "adafruit",
+      "library id": "11710",
+      "url": "https://github.com/adafruit/Adafruit_SHT4X",
+      "version": "~1.0.0",
+      "note": "Sensirion SHT4x Library by Adafruit",
       "authors": [
         "Adafruit"
       ],
