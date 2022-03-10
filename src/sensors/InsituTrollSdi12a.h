@@ -1,13 +1,13 @@
 /*
- * @file InsituTrollSdi12a.h
+ * @file InSituTrollSdi12a.h
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY modular sensors
  * @author Neil Hancock  https://github.com/neilh10/ModularSensors/
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the InsituTrollSdi12a subclass of the SDI12Sensors class
- * along with the variable subclasses InsituTrollSdi12a_Pressure,
- * InsituTrollSdi12a_Temp, and InsituTrollSdi12a_Depth
+ * @brief Contains the InSituTrollSdi12a subclass of the SDI12Sensors class
+ * along with the variable subclasses InSituTrollSdi12a_Pressure,
+ * InSituTrollSdi12a_Temp, and InSituTrollSdi12a_Depth
  *
  * These are used for the In-Situ Level TROLL® 400, 500 & 700 Data Loggers.
  * The order and units are the default settings for the ITROLL
@@ -18,7 +18,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup sensor_instutroll In-Situ LevelTROLL 400, 500, and 700 Data Loggers
+ * @defgroup sensor_insitu_troll In-Situ LevelTROLL 400, 500, and 700 Data Loggers
  * Classes for the In-Situ LevelTROLL feature sensors  pressure, temperature, and depth.
  *
  * @ingroup sdi12_group
@@ -26,7 +26,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section sensor_instutroll_intro Introduction
+ * @section sensor_insitu_troll_intro Introduction
  *
  * > A slim 1.8 cm diameter sensor,
  * > depth measuremente temperature compensated to 0.1% (0.05%) across Full Scale depth range and across temperature range.
@@ -34,10 +34,8 @@
  * > Has an internal logger for reliable data collection.
  * >
  * > Reports sensor serial number and model in uSD .csv file
-
  *
- * The In-Situ Aqua/Level TROLL require 8-36VDC
- * This can be achieved a Polo #boost device, instructions are at the end
+ * The In-Situ Aqua/Level TROLL requires 8-36V DC input.
  *
  * @warning Coming from the factory, TROLL sensors are set at SDI-12 address '0'.
  *
@@ -52,7 +50,7 @@
  *
  * Tested with Level TROLL 500.
  *
- * @section sensor_instutroll_datasheet Sensor Datasheet
+ * @section sensor_insitu_troll_datasheet Sensor Datasheet
  * Documentation for the SDI-12 Protocol commands and responses
  * The In-Situ Level/Aqua TROLL can be found at:
  *
@@ -60,10 +58,17 @@
  *
  * https://in-situ.com/us/support/documents/sdi-12-commands-and-level-troll-400500700-responses
  *
- * @section sensor_instutroll_flags Build flags
+ * @section sensor_insitu_troll_flags Build flags
  * @see @ref sdi12_group_flags
  *
- * @menusnip{instutroll}
+ * @section sensor_insitu_troll_ctor Sensor Constructor
+ * {{ @ref InSituTrollSdi12a::InSituTrollSdi12a }}
+ *
+ * ___
+ * @section sensor_insitu_troll_examples Example Code
+ * The In-Situ TROLL is used in the @menulink{insitu_troll_sdi12a} example.
+ *
+ * @menusnip{insitu_troll_sdi12a}
  */
 /* clang-format on */
 
@@ -75,13 +80,13 @@
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines
-/** @ingroup sensor_insitutroll */
+/** @ingroup sensor_insitu_troll */
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the TROLL 500 can report 3 values.
 #define ITROLLA_NUM_VARIABLES 3
 
 /**
- * @anchor sensor_insitutroll_timing
+ * @anchor sensor_insitu_troll_timing
  * @name Sensor Timing
  * The sensor timing for a In-Situ TROLL
  */
@@ -99,13 +104,13 @@
 /**@}*/
 
 /**
- * @anchor sensor_insitutroll_pressure
+ * @anchor sensor_insitu_troll_pressure
  * @name Pressure
  * The pressue variable from a In-Situ TROLL
  * - Range is 0 – x (depends on range eg 5psig)
 
  *
- * {{ @ref InsituTrollSdi12a_Pressure::InsituTrollSdi12a_Pressure }}
+ * {{ @ref InSituTrollSdi12a_Pressure::InSituTrollSdi12a_Pressure }}
  */
 /**@{*/
 /**
@@ -130,13 +135,13 @@
 /**@}*/
 
 /**
- * @anchor sensor_insitutroll_temp
+ * @anchor sensor_insitu_troll_temp
  * @name Temperature
  * The temperature variable from a In-Situ TROLL
  * - Range is -11°C to +49°C
  * - Accuracy is ±1°C
  *
- * {{ @ref InsituTrollSdi12a_Temp::InsituTrollSdi12a_Temp }}
+ * {{ @ref InSituTrollSdi12a_Temp::InSituTrollSdi12a_Temp }}
  */
 /**@{*/
 /**
@@ -161,13 +166,13 @@
 /**@}*/
 
 /**
- * @anchor sensor_insitutroll_depth
+ * @anchor sensor_insitu_troll_depth
  * @name Water Depth
  * The water depth variable from a In-Situ TROLL
  * - Range is 0 to 3.5m to 350m depending on model
  * - Accuracy is ±0.05% of full scale
  *
- * {{ @ref InsituTrollSdi12a_Depth::InsituTrollSdi12a_Depth }}
+ * {{ @ref InSituTrollSdi12a_Depth::InSituTrollSdi12a_Depth }}
  */
 /**@{*/
 /**
@@ -195,13 +200,13 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Insitu Level/Aqua TROLL pressure, temperature, and depth sensor](@ref sensor_insitutroll)
+ * [Insitu Level/Aqua TROLL pressure, temperature, and depth sensor](@ref sensor_insitu_troll)
  *
- * @ingroup sensor_insitutroll
+ * @ingroup sensor_insitu_troll
  */
 /* clang-format on */
 
-class InsituTrollSdi12a : public SDI12Sensors {
+class InSituTrollSdi12a : public SDI12Sensors {
  public:
     // Constructors with overloads
     /**
@@ -228,52 +233,52 @@ class InsituTrollSdi12a : public SDI12Sensors {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    InsituTrollSdi12a(char SDI12address, int8_t powerPin, int8_t dataPin,
+    InSituTrollSdi12a(char SDI12address, int8_t powerPin, int8_t dataPin,
                       uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InsituTrollSdi12a", ITROLLA_NUM_VARIABLES,
+                       "InSituTrollSdi12a", ITROLLA_NUM_VARIABLES,
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
-    InsituTrollSdi12a(char* SDI12address, int8_t powerPin, int8_t dataPin,
+    InSituTrollSdi12a(char* SDI12address, int8_t powerPin, int8_t dataPin,
                       uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InsituTrollSdi12a", ITROLLA_NUM_VARIABLES,
+                       "InSituTrollSdi12a", ITROLLA_NUM_VARIABLES,
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
-    InsituTrollSdi12a(int SDI12address, int8_t powerPin, int8_t dataPin,
+    InSituTrollSdi12a(int SDI12address, int8_t powerPin, int8_t dataPin,
                       uint8_t measurementsToAverage = 1)
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                       "InsituTrollSdi12a", ITROLLA_NUM_VARIABLES,
+                       "InSituTrollSdi12a", ITROLLA_NUM_VARIABLES,
                        ITROLLA_WARM_UP_TIME_MS, ITROLLA_STABILIZATION_TIME_MS,
                        ITROLLA_MEASUREMENT_TIME_MS) {}
     /**
      * @brief Destroy the ITROL object
      */
-    ~InsituTrollSdi12a() {}
+    ~InSituTrollSdi12a() {}
 };
 
 
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [pressure output](@ref sensor_insitutroll_pressure) from a
- * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitutroll)
+ * [pressure output](@ref sensor_insitu_troll_pressure) from a
+ * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitu_troll)
  *
- * @ingroup sensor_insitutroll
+ * @ingroup sensor_insitu_troll
  */
 /* clang-format on */
-class InsituTrollSdi12a_Pressure : public Variable {
+class InSituTrollSdi12a_Pressure : public Variable {
  public:
     /**
-     * @brief Construct a new InsituTrollSdi12a_Pressure object.
+     * @brief Construct a new InSituTrollSdi12a_Pressure object.
      *
-     * @param parentSense The parent InsituTrollSdi12a providing values.
+     * @param parentSense The parent InSituTrollSdi12a providing values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "ITROLLPressure".
      */
-    InsituTrollSdi12a_Pressure(
+    InSituTrollSdi12a_Pressure(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = ITROLLA_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ITROLLA_PRESSURE_VAR_NUM,
@@ -281,105 +286,105 @@ class InsituTrollSdi12a_Pressure : public Variable {
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new InsituTrollSdi12a_Pressure object.
+     * @brief Construct a new InSituTrollSdi12a_Pressure object.
      *
-     * @note This must be tied with a parent InsituTrollSdi12a before it can be
+     * @note This must be tied with a parent InSituTrollSdi12a before it can be
      * used.
      */
-    InsituTrollSdi12a_Pressure()
+    InSituTrollSdi12a_Pressure()
         : Variable((const uint8_t)ITROLLA_PRESSURE_VAR_NUM,
                    (uint8_t)ITROLLA_PRESSURE_RESOLUTION,
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    ITROLLA_PRESSURE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the InsituTrollSdi12a_Pressure object - no action needed.
+     * @brief Destroy the InSituTrollSdi12a_Pressure object - no action needed.
      */
-    ~InsituTrollSdi12a_Pressure() {}
+    ~InSituTrollSdi12a_Pressure() {}
 };
 
 
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature Output](@ref sensor_insitutroll_temp) from a
- * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitutroll)
+ * [temperature Output](@ref sensor_insitu_troll_temp) from a
+ * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitu_troll)
  *
- * @ingroup sensor_insitutroll
+ * @ingroup sensor_insitu_troll
  */
 /* clang-format on */
-class InsituTrollSdi12a_Temp : public Variable {
+class InSituTrollSdi12a_Temp : public Variable {
  public:
     /**
-     * @brief Construct a new InsituTrollSdi12a_Temp object.
+     * @brief Construct a new InSituTrollSdi12a_Temp object.
      *
-     * @param parentSense The parent InsituTrollSdi12a providing the values.
+     * @param parentSense The parent InSituTrollSdi12a providing the values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "ITROLLtemp".
      */
-    InsituTrollSdi12a_Temp(Sensor* parentSense, const char* uuid = "",
+    InSituTrollSdi12a_Temp(Sensor* parentSense, const char* uuid = "",
                            const char* varCode = ITROLLA_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
                    ITROLLA_TEMP_TEMP_UNIT_NAME, varCode, uuid) {}
 
     /**
-     * @brief Construct a new InsituTrollSdi12a_Temp object.
+     * @brief Construct a new InSituTrollSdi12a_Temp object.
      *
-     * @note This must be tied with a parent InsituTrollSdi12a before it can be
+     * @note This must be tied with a parent InSituTrollSdi12a before it can be
      * used.
      */
-    InsituTrollSdi12a_Temp()
+    InSituTrollSdi12a_Temp()
         : Variable((const uint8_t)ITROLLA_TEMP_VAR_NUM,
                    (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
                    ITROLLA_TEMP_TEMP_UNIT_NAME, ITROLLA_TEMP_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the InsituTrollSdi12a_Temp object - no action needed.
+     * @brief Destroy the InSituTrollSdi12a_Temp object - no action needed.
      */
-    ~InsituTrollSdi12a_Temp() {}
+    ~InSituTrollSdi12a_Temp() {}
 };
 
 
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [depth output](@ref sensor_insitutroll_depth) from a
- * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitutroll)
+ * [depth output](@ref sensor_insitu_troll_depth) from a
+ * [Insitu TROLL 3-in-1 water level sensor.](@ref sensor_insitu_troll)
  *
- * @ingroup sensor_insitutroll
+ * @ingroup sensor_insitu_troll
  */
 /* clang-format on */
-class InsituTrollSdi12a_Depth : public Variable {
+class InSituTrollSdi12a_Depth : public Variable {
  public:
     /**
-     * @brief Construct a new InsituTrollSdi12a_Depth object.
+     * @brief Construct a new InSituTrollSdi12a_Depth object.
      *
-     * @param parentSense The parent InsituTrollSdi12a providing the values.
+     * @param parentSense The parent InSituTrollSdi12a providing the values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "ITROLLdepth".
      */
-    InsituTrollSdi12a_Depth(Sensor* parentSense, const char* uuid = "",
+    InSituTrollSdi12a_Depth(Sensor* parentSense, const char* uuid = "",
                             const char* varCode = ITROLLA_DEPTH_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)ITROLLA_DEPTH_VAR_NUM,
                    (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
                    ITROLLA_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new InsituTrollSdi12a_Depth object.
+     * @brief Construct a new InSituTrollSdi12a_Depth object.
      *
-     * @note This must be tied with a parent InsituTrollSdi12a before it can be
+     * @note This must be tied with a parent InSituTrollSdi12a before it can be
      * used.
      */
-    InsituTrollSdi12a_Depth()
+    InSituTrollSdi12a_Depth()
         : Variable((const uint8_t)ITROLLA_DEPTH_VAR_NUM,
                    (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
                    ITROLLA_DEPTH_UNIT_NAME, ITROLLA_DEPTH_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the InsituTrollSdi12a_Depth object - no action needed.
+     * @brief Destroy the InSituTrollSdi12a_Depth object - no action needed.
      */
-    ~InsituTrollSdi12a_Depth() {}
+    ~InSituTrollSdi12a_Depth() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_INSITUTROLLSDI12_H_
