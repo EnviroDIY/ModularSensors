@@ -52,9 +52,9 @@
  *
  * ___
  * @section sensor_decagon_ctd_examples Example Code
- * The Decagon CTD-10 is used in the @menulink{decagonCTD} example.
+ * The Decagon CTD-10 is used in the @menulink{decagon_ctd} example.
  *
- * @menusnip{decagonCTD}
+ * @menusnip{decagon_ctd}
  */
 /* clang-format on */
 

@@ -466,8 +466,7 @@ class Logger {
     /**
      * @brief Attach a loggerModem to the logger to provide internet access.
      *
-     * See [Modem and Internet
-     * Functions](https://envirodiy.github.io/ModularSensors/group__the__modems.html)
+     * See [Modem and Internet Functions](@ref the_modems)
      * for more information on how the modem must be set up before it is
      * attached to the logger.  You must include an ampersand to tie in the
      * already created modem!  If you do not attach a modem, no action will be

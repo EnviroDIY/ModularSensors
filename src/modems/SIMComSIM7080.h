@@ -32,9 +32,9 @@
  *
  * ___
  * @section modem_sim7080_examples Example Code
- * The SIM7080 is used in the @menulink{sim7080} example.
+ * The SIM7080 is used in the @menulink{sim_com_sim7080} example.
  *
- * @menusnip{sim7080}
+ * @menusnip{sim_com_sim7080}
  */
 /* clang-format on */
 

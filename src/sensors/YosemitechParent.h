@@ -88,7 +88,7 @@
  * The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
  * (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
  * For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.
- * Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)"
+ * Please see the section "[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)"
  * for more information about what streams can be used along with this library.
  * In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
  * AltSoftSerial and HardwareSerial work fine.
@@ -182,7 +182,8 @@ class YosemitechParent : public Sensor {
                      const char*     sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
-                     uint32_t measurementTime_ms   = 2000, uint8_t incCalcValues = 0);
+                     uint32_t measurementTime_ms   = 2000,
+                     uint8_t  incCalcValues        = 0);
     /**
      * @copydoc YosemitechParent::YosemitechParent
      */
@@ -193,7 +194,8 @@ class YosemitechParent : public Sensor {
                      const char*     sensName = "Yosemitech-Sensor",
                      uint8_t numVariables = 2, uint32_t warmUpTime_ms = 1500,
                      uint32_t stabilizationTime_ms = 20000,
-                     uint32_t measurementTime_ms   = 2000, uint8_t incCalcValues = 0);
+                     uint32_t measurementTime_ms   = 2000,
+                     uint8_t  incCalcValues        = 0);
     /**
      * @brief Destroy the Yosemitech Parent object - no action taken
      */

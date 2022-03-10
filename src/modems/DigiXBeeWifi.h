@@ -32,9 +32,9 @@
  *
  * ___
  * @section modem_digi_wifi_examples Example Code
- * The digi_cellular is used in the @menulink{xbee_ltem_by} example.
+ * The digi_cellular is used in the @menulink{digi_xbee_lte_bypass} example.
  *
- * @menusnip{xbee3_ltem_bypass}
+ * @menusnip{digi_xbee_lte_bypass}
  */
 /* clang-format on */
 

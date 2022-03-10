@@ -47,9 +47,9 @@
  *
  * ___
  * @section sensor_es2_examples Example Code
- * The Decagon ES-2 is used in the @menulink{es2} example.
+ * The Decagon ES-2 is used in the @menulink{decagon_es2} example.
  *
- * @menusnip{es2}
+ * @menusnip{decagon_es2}
  */
 /* clang-format on */
 

@@ -45,9 +45,9 @@
  *
  * ___
  * @section modem_monarch_examples Example Code
- * The monarch is used in the @menulink{monarch} example.
+ * The monarch is used in the @menulink{sequans_monarch} example.
  *
- * @menusnip{monarch}
+ * @menusnip{sequans_monarch}
  */
 /* clang-format on */
 

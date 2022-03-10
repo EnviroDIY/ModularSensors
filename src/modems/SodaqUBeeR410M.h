@@ -88,9 +88,9 @@
  * @section modem_ubee_ltem_examples Example Code
  * @subsection modem_ubee_ltem_modem_obj Creating the Modem Object
  *
- * The SARA R410M based UBee is used in the @menulink{ubeer410} example.
+ * The SARA R410M based UBee is used in the @menulink{sodaq_ubee_r410m} example.
  *
- * @menusnip{sara_r410m}
+ * @menusnip{sodaq_ubee_r410m}
  *
  * @section modem_ubee_ltem_network LTE Network Selection
  *

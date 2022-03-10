@@ -1,5 +1,4 @@
-[//]: # ( @page page_for_developers Developer Setup )
-## Developer Setup
+# Developer Setup <!-- {#page_for_developers} -->
 
 If you want to fork this repository and work with it, you'll need to set PlatformIO up a bit differently than you would to merely use this library.
 

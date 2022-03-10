@@ -40,10 +40,10 @@
  *
  * ___
  * @section sensor_y514_examples Example Code
- * The Yosemitech Y514 chlorophyll sensor is used in the @menulink{y514}
+ * The Yosemitech Y514 chlorophyll sensor is used in the @menulink{yosemitech_y514}
  * example.
  *
- * @menusnip{y514}
+ * @menusnip{yosemitech_y514}
  */
 /* clang-format on */
 

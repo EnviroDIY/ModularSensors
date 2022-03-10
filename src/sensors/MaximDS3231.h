@@ -48,9 +48,9 @@
  * ___
  * @section sensor_ds3231_examples Example Code
  * The Maxim DS3231 RTC is used in nearly all of the examples, including the
- * @menulink{ds3231} example.
+ * @menulink{maxim_ds3231} example.
  *
- * @menusnip{ds3231}
+ * @menusnip{maxim_ds3231}
  */
 /* clang-format on */
 

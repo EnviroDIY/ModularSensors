@@ -23,7 +23,7 @@
  * This board is based on the [SIMCom SIM800H](https://simcom.ee/modules/gsm-gprs/sim800/),
  * but adds an extra transistor to the `PWR_KEY` so it is turned on and off in a different way.
  * For earlier Sodaq GPRSBee's, use the standard SIM800
- * [constructor](https://envirodiy.github.io/ModularSensors/group__modem__sim800.html).
+ * [constructor](#modem_sim800).
  *
  * The modem constructor follows the typical modem pattern, except that the
  * Sodaq GPRSBee's do not expose the SIM800's reset pin or its sleep request
@@ -50,9 +50,9 @@
  *
  * ___
  * @section modem_gprsbee_examples Example Code
- * The GPRSBee is used in the @menulink{gprsbee} example.
+ * The GPRSBee is used in the @menulink{sodaq_2g_bee_r6} example.
  *
- * @menusnip{gprsbee}
+ * @menusnip{sodaq_2g_bee_r6}
  */
 /* clang-format on */
 

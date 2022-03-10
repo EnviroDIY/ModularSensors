@@ -51,9 +51,9 @@
  *
  * ___
  * @section sensor_ina219_examples Example Code
- * The TI INA219 is used in the @menulink{ina219} example.
+ * The TI INA219 is used in the @menulink{ti_ina219} example.
  *
- * @menusnip{ina219}
+ * @menusnip{ti_ina219}
  */
 /* clang-format on */
 

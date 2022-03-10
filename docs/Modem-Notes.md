@@ -1,5 +1,4 @@
-[//]: # ( @page page_modem_notes Notes about Modems )
-# Notes about Modems
+# Notes about Modems <!-- {#page_modem_notes} -->
 
 [//]: # ( @tableofcontents )
 
@@ -16,8 +15,7 @@
 If you are having trouble, please see the pages for the specific modems and the TinyGSM [getting started](https://github.com/vshymanskyy/TinyGSM#getting-started) and [troubleshooting](https://github.com/vshymanskyy/TinyGSM#troubleshooting) sections.
 
 
-[//]: # ( @section modem_notes_classes Summary of Classes to use for Various Manufactured Modules )
-## Summary of Classes to use for Various Manufactured Modules
+## Summary of Classes to use for Various Manufactured Modules <!-- {#modem_notes_classes} -->
 
 |                    Module                     |                      Class                       |
 | :-------------------------------------------: | :----------------------------------------------: |
@@ -54,8 +52,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 ² The NB IOT UBee based on the SARA N211 is _not_ supported.
 
 
-[//]: # ( @section modem_notes_bauds Default Baud Rates of Supported Modems )
-## Default baud rates of supported modules
+## Default baud rates of supported modules <!-- {#modem_notes_bauds} -->
 
 |               Module               |                    Default Baud Rate                     |
 | :--------------------------------: | :------------------------------------------------------: |
@@ -69,8 +66,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 |   u-blox 2G, 3G, and 4G modules    |       varies by module, most auto-baud or use 9600       |
 
 
-[//]: # ( @section modem_notes_power Power Requirements of Supported Modems )
-## Power Requirements of Supported Modems
+## Power Requirements of Supported Modems <!-- {#modem_notes_power} -->
 
 @note Standard USB ports and most Arduino boards (including the Mayfly) are only cabable of supplying **500mA** of power.
 Any model that requires a higher level of current (almost all of them) should be given a separate power supply than the main processor.
@@ -102,8 +98,7 @@ Most modules are capable of serial communication and some level of functionality
 
 ¹ This is a firm minimum; the SIM7000 _will not connect to the internet_ if only powered at 500mA.
 
-[//]: # ( @section modem_notes_sleep Sleep and Reset Pin Labels )
-## Sleep and Reset Pin Labels
+## Sleep and Reset Pin Labels <!-- {#modem_notes_sleep} -->
 
 |            Module             |              Status Pin Label               | Reset Label |            Wake / Sleep Request             |
 | :---------------------------: | :-----------------------------------------: | :---------: | :-----------------------------------------: |
@@ -128,8 +123,7 @@ Most modules are capable of serial communication and some level of functionality
 
 
 
-[//]: # ( @section modem_notes_mayfly_pins Pin Numbers to Use when Connecting to the Mayfly )
-## Pin Numbers to Use when Connecting to the Mayfly
+## Pin Numbers to Use when Connecting to the Mayfly <!-- {#modem_notes_mayfly_pins} -->
 
 Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly v0.x using its Bee socket.
 

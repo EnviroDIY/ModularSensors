@@ -39,10 +39,10 @@
  *
  * ___
  * @section sensor_y511_examples Example Code
- * The Yosemitech Y511 wipered turbidity sensor is used in the @menulink{y511}
+ * The Yosemitech Y511 wipered turbidity sensor is used in the @menulink{yosemitech_y511}
  * example.
  *
- * @menusnip{y511}
+ * @menusnip{yosemitech_y511}
  */
 /* clang-format on */
 

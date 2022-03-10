@@ -58,9 +58,9 @@
  *
  * ___
  * @section sensor_obs3_examples Example Code
- * The Campbell OBS3+ is used in the @menulink{obs3} example.
+ * The Campbell OBS3+ is used in the @menulink{campbell_obs3} example.
  *
- * @menusnip{obs3}
+ * @menusnip{campbell_obs3}
  */
 /* clang-format on */
 
@@ -93,7 +93,8 @@
  * two sensor objects!
  */
 #define OBS3_NUM_VARIABLES 2
-/// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage using the input calibration equation.
+/// @brief Sensor::_incCalcValues; turbidity is calculated from raw voltage
+/// using the input calibration equation.
 #define OBS3_INC_CALC_VARIABLES 1
 
 /**

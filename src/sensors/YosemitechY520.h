@@ -39,10 +39,10 @@
  *
  * ___
  * @section sensor_y520_examples Example Code
- * The Yosemitech Y520 conductivity sensor is used in the @menulink{y520}
+ * The Yosemitech Y520 conductivity sensor is used in the @menulink{yosemitech_y520}
  * example.
  *
- * @menusnip{y520}
+ * @menusnip{yosemitech_y520}
  */
 /* clang-format on */
 

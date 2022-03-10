@@ -57,10 +57,10 @@
  *
  * ___
  * @section modem_esp8266_examples Example Code
- * The ESP8266 is used in the @menulink{esp} example and the
+ * The ESP8266 is used in the @menulink{espressif_esp8266} example and the
  * [logging to ThingSpeak](@ref logging_to_ThingSpeak.ino) example.
  *
- * @menusnip{esp8266}
+ * @menusnip{espressif_esp8266}
  */
 /* clang-format on */
 

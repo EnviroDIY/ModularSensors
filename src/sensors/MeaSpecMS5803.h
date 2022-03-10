@@ -67,9 +67,9 @@
  *
  * ___
  * @section sensor_ms5803_examples Example Code
- * The Measurement Specialties MS5803 is used in the @menulink{ms5803} example.
+ * The Measurement Specialties MS5803 is used in the @menulink{mea_spec_ms5803} example.
  *
- * @menusnip{ms5803}
+ * @menusnip{mea_spec_ms5803}
  */
 /* clang-format on */
 

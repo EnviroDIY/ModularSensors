@@ -96,6 +96,7 @@
 
 /// @brief Sensor::_measurementTime_ms; maximum measurement duration: 500ms.
 #define ITROLLA_MEASUREMENT_TIME_MS 500
+/**@}*/
 
 /**
  * @anchor sensor_insitutroll_pressure

@@ -40,9 +40,9 @@
  *
  * ___
  * @section sensor_y560_examples Example Code
- * The Yosemitech Y560 Ammonium sensor is used in the @menulink{y560} example.
+ * The Yosemitech Y560 Ammonium sensor is used in the @menulink{yosemitech_y560} example.
  *
- * @menusnip{y560}
+ * @menusnip{yosemitech_y560}
  */
 /* clang-format on */
 
@@ -240,12 +240,11 @@ class YosemitechY560_NH4_N : public Variable {
      * optional with a default value of "Y560NH4_N".
      */
     explicit YosemitechY560_NH4_N(YosemitechY560* parentSense,
-                               const char*     uuid    = "",
-                               const char*     varCode =Y560_NH4_N_DEFAULT_CODE)
+                                  const char*     uuid = "",
+                                  const char* varCode = Y560_NH4_N_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)Y560_NH4_N_VAR_NUM,
-                   (const uint8_t)Y560_NH4_N_RESOLUTION,
-                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME,
-                   varCode, uuid) {}
+                   (const uint8_t)Y560_NH4_N_RESOLUTION, Y560_NH4_N_VAR_NAME,
+                   Y560_NH4_N_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY560_NH4_N object.
      *
@@ -254,9 +253,8 @@ class YosemitechY560_NH4_N : public Variable {
      */
     YosemitechY560_NH4_N()
         : Variable((const uint8_t)Y560_NH4_N_VAR_NUM,
-                   (const uint8_t)Y560_NH4_N_RESOLUTION,
-                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME,
-                   Y560_NH4_N_DEFAULT_CODE) {}
+                   (const uint8_t)Y560_NH4_N_RESOLUTION, Y560_NH4_N_VAR_NAME,
+                   Y560_NH4_N_UNIT_NAME, Y560_NH4_N_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY560_NH4_N object - no action needed.
      */
@@ -318,36 +316,36 @@ class YosemitechY560_Temp : public Variable {
 */
 /* clang-format on */
 class YosemitechY560_pH : public Variable {
-public:
-   /**
-    * @brief Construct a new YosemitechY560_pH object.
-    *
-    * @param parentSense The parent YosemitechY560 providing the result
-    * values.
-    * @param uuid A universally unique identifier (UUID or GUID) for the
-    * variable; optional with the default value of an empty string.
-    * @param varCode A short code to help identify the variable in files;
-    * optional with a default value of "Y560pH".
-    */
-   explicit YosemitechY560_pH(YosemitechY560* parentSense,
-                              const char*     uuid    = "",
-                              const char*     varCode = Y560_PH_DEFAULT_CODE)
-       : Variable(parentSense, (const uint8_t)Y560_PH_VAR_NUM,
-                  (uint8_t)Y560_PH_RESOLUTION, Y560_PH_VAR_NAME,
-                  Y560_PH_UNIT_NAME, varCode, uuid) {}
-   /**
-    * @brief Construct a new YosemitechY560_pH object.
-    *
-    * @note This must be tied with a parent YosemitechY560 before it can be
-    * used.
-    */
-   YosemitechY560_pH()
-       : Variable((const uint8_t)Y560_PH_VAR_NUM, (uint8_t)Y560_PH_RESOLUTION,
-                  Y560_PH_VAR_NAME, Y560_PH_UNIT_NAME, Y560_PH_DEFAULT_CODE) {}
-   /**
-    * @brief Destroy the YosemitechY560_pH object - no action needed.
-    */
-   ~YosemitechY560_pH() {}
+ public:
+    /**
+     * @brief Construct a new YosemitechY560_pH object.
+     *
+     * @param parentSense The parent YosemitechY560 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "Y560pH".
+     */
+    explicit YosemitechY560_pH(YosemitechY560* parentSense,
+                               const char*     uuid    = "",
+                               const char*     varCode = Y560_PH_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)Y560_PH_VAR_NUM,
+                   (uint8_t)Y560_PH_RESOLUTION, Y560_PH_VAR_NAME,
+                   Y560_PH_UNIT_NAME, varCode, uuid) {}
+    /**
+     * @brief Construct a new YosemitechY560_pH object.
+     *
+     * @note This must be tied with a parent YosemitechY560 before it can be
+     * used.
+     */
+    YosemitechY560_pH()
+        : Variable((const uint8_t)Y560_PH_VAR_NUM, (uint8_t)Y560_PH_RESOLUTION,
+                   Y560_PH_VAR_NAME, Y560_PH_UNIT_NAME, Y560_PH_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the YosemitechY560_pH object - no action needed.
+     */
+    ~YosemitechY560_pH() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY560_H_

@@ -92,7 +92,7 @@
             </tab>
         </tab>
 
-        <tab type="usergroup" url="@ref page_other_reading" title="Other Reading">
+        <tab type="usergroup" url="@ref page_other_notes" title="Other Sensor and Modem Notes">
             <tab type="usergroup" url="@ref page_sensor_notes" title="Sensor Information">
                 <tab type="user" url="@ref sensor_processor" title="Processor Metadata" />
                 <tab type="user" url="@ref sensor_ds3231" title="Maxim DS3231 RTC" />
@@ -135,7 +135,7 @@
             </tab>
         </tab>
 
-        <tab type="pages" visible="yes" title="Other Reading" intro="Here are links to detailed information about the various supported sensors and modems as well as how to deal with some common issues with the ModularSensors library." />
+        <tab type="pages" visible="yes" title="Other Sensor and Modem Notes" intro="Here are links to detailed information about the various supported sensors and modems as well as how to deal with some common issues with the ModularSensors library." />
     </navindex>
 
     <!-- Layout definition for a class page -->

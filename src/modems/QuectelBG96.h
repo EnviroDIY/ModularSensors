@@ -51,9 +51,9 @@
  *
  * ___
  * @section modem_bg96_examples Example Code
- * The Quectel BG96 is used in the @menulink{bg96}.
+ * The Quectel BG96 is used in the @menulink{quectel_bg96}.
  *
- * @menusnip{bg96}
+ * @menusnip{quectel_bg96}
  */
 /* clang-format on */
 

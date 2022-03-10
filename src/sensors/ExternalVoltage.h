@@ -128,10 +128,10 @@
  *
  * ___
  * @section sensor_ads1x15_examples Example Code
- * The TI ADS1X15 external voltage sensor is used in the @menulink{ext_volt}
+ * The TI ADS1X15 external voltage sensor is used in the @menulink{external_voltage}
  * example.
  *
- * @menusnip{ext_volt}
+ * @menusnip{external_voltage}
  */
 /* clang-format on */
 

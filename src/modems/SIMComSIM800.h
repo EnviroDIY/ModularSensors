@@ -44,9 +44,9 @@
  *
  * ___
  * @section modem_sim800_examples Example Code
- * The SIM800 is used in the @menulink{sim800} example.
+ * The SIM800 is used in the @menulink{sim_com_sim800} example.
  *
- * @menusnip{sim800}
+ * @menusnip{sim_com_sim800}
  */
 /* clang-format on */
 

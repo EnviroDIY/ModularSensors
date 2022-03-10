@@ -13,180 +13,180 @@ jobs:
     strategy:
       matrix:
         include:
-          - modemFlag: BUILD_MODEM_SIM7080
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_XBEE_CELLULAR
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_XBEE_LTE_B
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_DIGI_XBEE_LTE_BYPASS
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_XBEE_3G_B
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_DIGI_XBEE_3G_BYPASS
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_XBEE_WIFI
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_DIGI_XBEE_WIFI
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_ESP8266
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_ESPRESSIF_ESP8266
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_BG96
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_QUECTEL_BG96
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_MONARCH
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SEQUANS_MONARCH
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM800
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM800
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7000
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7000
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_S2GB
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SODAQ_2G_BEE_R6
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_UBEE_R410M
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SODAQ_UBEE_R410M
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_UBEE_U201
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SODAQ_UBEE_U201
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_AM2315
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_DHT
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_SQ212
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ATLASCO2
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ATLASDO
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ATLASORP
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ATLASPH
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ATLASRTD
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ATLASEC
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_BME280
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_OBS3
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_CLARIVUE10
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_CTD
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ES2
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_VOLTAGE
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_AO_SONG_AM2315
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_AO_SONG_DHT
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_APOGEE_SQ212
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLAS_SCIENTIFIC_DO
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLAS_SCIENTIFIC_PH
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_BOSCH_BME280
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_CAMPBELL_CLARI_VUE10
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_CAMPBELL_OBS3
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_DECAGON_CTD
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_DECAGON_ES2
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_EXTERNAL_VOLTAGE
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_MPL115A2
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_INSITURDO
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_INSITUTROOLSDI12A
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ACCULEVEL
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_NANOLEVEL
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_MAXBOTIX
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_DS18
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_MS5803
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_5TM
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_HYDROS21
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_TEROS11
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_PALEOTERRA
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_RAINI2C
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_TALLY
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_INA219
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_CYCLOPS
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_ANALOGEC
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y504
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y510
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y511
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y514
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y520
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y532
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y533
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y551
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y560
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_Y4000
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
-            sensorFlag: BUILD_SENSOR_DOPTO
-            publisherFlag: BUILD_PUB_MMW
-          - modemFlag: BUILD_MODEM_SIM7080
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_IN_SITU_RDO
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_INSITU_TROLL_SDI12A
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_KELLER_ACCULEVEL
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_KELLER_NANOLEVEL
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_MAX_BOTIX_SONAR
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_MAXIM_DS18
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_MEA_SPEC_MS5803
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_DECAGON_5TM
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_METER_HYDROS21
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_METER_TEROS11
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_PALEO_TERRA_REDOX
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_RAIN_COUNTER_I2C
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_TALLY_COUNTER_I2C
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_TI_INA219
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_TURNER_CYCLOPS
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y504
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y510
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y511
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y514
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y520
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y532
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y533
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y551
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y560
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_YOSEMITECH_Y4000
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_ZEBRA_TECH_D_OPTO
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_DREAMHOST
-          - modemFlag: BUILD_MODEM_SIM7080
+            publisherFlag: BUILD_PUB_DREAM_HOST_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: NO_SENSORS
-            publisherFlag: BUILD_PUB_THINGSPEAK
+            publisherFlag: BUILD_PUB_THING_SPEAK_PUBLISHER
     steps:
       - uses: actions/checkout@v2.4.0
 

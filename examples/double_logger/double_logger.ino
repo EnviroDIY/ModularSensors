@@ -3,7 +3,7 @@
  * @brief Example logging at two different timing intervals
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -135,14 +135,14 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //  AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
-/** Start [am2315] */
+/** Start [ao_song_am2315] */
 #include <sensors/AOSongAM2315.h>
 
 const int8_t I2CPower = sensorPowerPin;  // Power pin (-1 if unconnected)
 
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
-/** End [am2315] */
+/** End [ao_song_am2315] */
 
 
 // ==========================================================================

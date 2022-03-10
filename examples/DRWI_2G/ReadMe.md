@@ -1,5 +1,4 @@
-[//]: # ( @page example_drwi_2g DRWI CitSci 2G Sites )
-# ModularSensors DRWI 2G Sites
+# DRWI 2G Sites <!-- {#example_drwi_2g} -->
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
 This should be used at all sites with cellular 2G service.
@@ -12,7 +11,7 @@ _______
 [//]: # ( @tableofcontents )
 
 [//]: # ( Start GitHub Only )
-- [ModularSensors DRWI 2G Sites](#modularsensors-drwi-2g-sites)
+- [DRWI 2G Sites](#drwi-2g-sites)
 - [Unique Features of the DRWI 2G Example](#unique-features-of-the-drwi-2g-example)
 - [To Use this Example:](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
@@ -25,16 +24,13 @@ _______
 
 _______
 
-[//]: # ( @section example_drwi_2g_unique Unique Features of the DRWI 2G Example )
-# Unique Features of the DRWI 2G Example
+# Unique Features of the DRWI 2G Example <!-- {#example_drwi_2g_unique} -->
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a Sodaq 2GBee for live data.
 
-[//]: # ( @section example_drwi_2g_use To Use this Example: )
-# To Use this Example:
+# To Use this Example <!-- {#example_drwi_2g_use} -->
 
-[//]: # ( @subsection example_drwi_2g_pio Prepare and set up PlatformIO )
-## Prepare and set up PlatformIO
+## Prepare and set up PlatformIO <!-- {#example_drwi_2g_pio} -->
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_CitSci/platformio.ini) file in the examples/DRWI_CitSci folder on GitHub.
@@ -45,8 +41,7 @@ _______
     - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
-[//]: # ( @subsection example_drwi_2g_logger_id Set the logger ID )
-## Set the logger ID
+## Set the logger ID <!-- {#example_drwi_2g_logger_id} -->
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
@@ -54,8 +49,7 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-[//]: # ( @subsection example_drwi_2g_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
-## Set the calibration coefficients for the Campbell OBS3+
+## Set the calibration coefficients for the Campbell OBS3+ <!-- {#example_drwi_2g_obs3_calibration} -->
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change _**all**_ of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
 Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
@@ -84,8 +78,7 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-[//]: # ( @subsection example_drwi_2g_uuids Set the universally universal identifiers (UUID) for each variable )
-## Set the universally universal identifiers (UUID) for each variable
+## Set the universally universal identifiers (UUID) for each variable <!-- {#example_drwi_2g_uuids} -->
 - Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
 - **VERY CAREFULLY** check that the variables are in exactly the same order as in the variable array:
@@ -124,8 +117,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 
 ```
 
-[//]: # ( @subsection example_drwi_2g_upload Upload! )
-## Upload!
+## Upload! <!-- {#example_drwi_2g_upload} -->
 - Test everything at home **before** deploying out in the wild!
 
 _______
@@ -136,3 +128,5 @@ _______
 [//]: # ( @include{lineno} DRWI_2G/platformio.ini )
 
 [//]: # ( @section example_drwi_2g_code The Complete Code )
+
+[//]: # ( @include{lineno} DRWI_2G/DRWI_2G.ino )

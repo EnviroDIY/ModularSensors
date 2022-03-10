@@ -60,9 +60,9 @@
  * ___
  * @section sensor_i2c_rain_examples Example Code
  * The Arduino-based I2C tipping bucket rain counter is used in the
- * @menulink{i2c_rain} example.
+ * @menulink{rain_counter_i2c} example.
  *
- * @menusnip{i2c_rain}
+ * @menusnip{rain_counter_i2c}
  */
 /* clang-format on */
 
@@ -95,7 +95,8 @@
 /// @brief Sensor::_numReturnedValues; the tipping bucket counter can report 2
 /// values.
 #define BUCKET_NUM_VARIABLES 2
-/// @brief Sensor::_incCalcValues; we calculate rain depth from the number of tips, assuming either English or metric calibration.
+/// @brief Sensor::_incCalcValues; we calculate rain depth from the number of
+/// tips, assuming either English or metric calibration.
 #define BUCKET_INC_CALC_VARIABLES 1
 
 /**

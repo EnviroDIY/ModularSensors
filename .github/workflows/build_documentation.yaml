@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOXYGEN_VERSION: Release_1_9_2
+  DOXYGEN_VERSION: Release_1_9_3
 
 jobs:
   build:

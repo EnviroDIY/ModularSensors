@@ -39,9 +39,9 @@
  *
  * ___
  * @section sensor_y551_examples Example Code
- * The Yosemitech Y551 UV245/COD sensor is used in the @menulink{y551} example.
+ * The Yosemitech Y551 UV245/COD sensor is used in the @menulink{yosemitech_y551} example.
  *
- * @menusnip{y551}
+ * @menusnip{yosemitech_y551}
  */
 /* clang-format on */
 

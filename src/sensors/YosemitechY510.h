@@ -39,9 +39,9 @@
  *
  * ___
  * @section sensor_y510_examples Example Code
- * The Yosemitech Y510 Turbidity is used in the @menulink{y510} example.
+ * The Yosemitech Y510 Turbidity is used in the @menulink{yosemitech_y510} example.
  *
- * @menusnip{y510}
+ * @menusnip{yosemitech_y510}
  */
 /* clang-format on */
 

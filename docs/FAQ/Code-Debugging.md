@@ -1,5 +1,4 @@
-[//]: # ( @page page_code_debugging In-Library Debugging )
-## In-Library Debugging
+# In-Library Debugging <!-- {#page_code_debugging} -->
 
 For intense _code_ debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (\*.h), for that component.
 Find the line `// #define DEBUGGING_SERIAL_OUTPUT xxxxx`, where xxxxx is the name of a serial output (ie, Serial or USBSerial).

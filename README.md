@@ -1,18 +1,17 @@
-[//]: # ( @mainpage ModularSensors )
-# ModularSensors
+# ModularSensors <!-- {#mainpage} -->
+
 ___
 
-[//]: # ( @section mainpage_intro The EnviroDIY ModularSensors Library )
-## The EnviroDIY ModularSensors Library
+## The EnviroDIY ModularSensors Library <!-- {#mainpage_intro} -->
 
 If you're new to EnviroDIY, I suggest you check out the [Just Getting Started](https://envirodiy.github.io/ModularSensors/page_getting_started.html) section of the documentation!
 
 This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly.
 The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
-* Retrieve data from many physical sensors;
-* Save that data to a SD memory card;
-* Transmit that data wirelessly to a web server; and
-* Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
+- Retrieve data from many physical sensors;
+- Save that data to a SD memory card;
+- Transmit that data wirelessly to a web server; and
+- **Put the processor, sensors and all other peripherals to sleep between readings to conserve power.**
 
 The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns.
 These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
@@ -36,10 +35,9 @@ There is extensive documentation available in the [ModularSensors github pages](
 
 [//]: # ( End GitHub Only )
 
-[//]: # ( @section mainpage_supported_sensors Supported Sensors )
-## Supported Sensors
+## Supported Sensors <!-- {#mainpage_supported_sensors} -->
 
-For some generalized information about attaching sensors to an Arduino style board, see the [Sensor Notes page](https://envirodiy.github.io/ModularSensors/page_sensor_notes.html)
+For some generalized information about attaching sensors to an Arduino style board, see the [Sensor Notes page](https://envirodiy.github.io/ModularSensors/page_sensor_notes.html).
 
 - [Processor Metrics: battery voltage, free RAM, sample count](https://envirodiy.github.io/ModularSensors/group__sensor__processor.html)
 - [Maxim DS3231: real time clock](https://envirodiy.github.io/ModularSensors/group__sensor__ds3231.html)
@@ -92,8 +90,7 @@ For some generalized information about attaching sensors to an Arduino style boa
 - [Zebra-Tech D-Opto: dissolved oxygen](https://envirodiy.github.io/ModularSensors/group__sensor__dopto.html)
 
 
-[//]: # ( @section mainpage_data_receivers Data Endpoints )
-## Data Endpoints
+## Data Endpoints <!-- {#mainpage_data_receivers} -->
 
 Within ModularSensors, the "dataPublisher" objects add the functionality to send data to remote web services.
 The currently supported services are the [Monitor My Watershed data portal](http://data.envirodiy.org/), [ThingSpeak](https://thingspeak.com/), and the [Ubidots IoT platform](https://ubidots.com).
@@ -105,8 +102,7 @@ The currently supported services are the [Monitor My Watershed data portal](http
 [//]: # ( @todo Page on Data Endpoints )
 
 
-[//]: # ( @section mainpage_modems Supported Cellular/Wifi Modules )
-## Supported Cellular/Wifi Modules:
+## Supported Cellular/Wifi Modules: <!-- {#mainpage_modems} -->
 
 For information common to all modems and for tables of the proper class, baud rate, and pins to uses, see the [Modem Notes page](https://envirodiy.github.io/ModularSensors/page_modem_notes.html).
 
@@ -126,8 +122,7 @@ For information common to all modems and for tables of the proper class, baud ra
 - u-blox 2G, 3G, and 4G, including the [Sodaq 3GBee](https://envirodiy.github.io/ModularSensors/group__modem__ubee__3g.html)
 
 
-[//]: # ( @section mainpage_contributing Contributing )
-## Contributing
+## Contributing <!-- {#mainpage_contributing} -->
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
 Feel free to open issues about any bugs you find or any sensors you would like to have added.
 
@@ -137,16 +132,14 @@ This library is built to fully take advantage of Objecting Oriented Programing (
 There is _extensive_ documentation on our [github pages](https://envirodiy.github.io/ModularSensors/index.html) and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
 
 
-[//]: # ( @section mainpage_license License )
-## License
+## License <!-- {#mainpage_license} -->
 Software sketches and code are released under the BSD 3-Clause License -- See [LICENSE.md](https://github.com/EnviroDIY/ModularSensors/blob/master/LICENSE.md) file for details.
 
 Documentation is licensed as [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (CC-BY-SA) copyright.
 
 Hardware designs shared are released, unless otherwise indicated, under the [CERN Open Hardware License 1.2](http://www.ohwr.org/licenses/cern-ohl/v1.2) (CERN_OHL).
 
-[//]: # ( @section mainpage_acknowledgments Acknowledgments )
-## Acknowledgments
+## Acknowledgments <!-- {#mainpage_acknowledgments} -->
 [EnviroDIY](http://envirodiy.org/)™ is presented by the Stroud Water Research Center, with contributions from a community of enthusiasts sharing do-it-yourself ideas for environmental science and monitoring.
 
 [Sara Damiano](https://github.com/SRGDamia1) is the primary developer of the EnviroDIY ModularSensors library, with input from many [other contributors](https://github.com/EnviroDIY/ModularSensors/graphs/contributors).
@@ -157,3 +150,20 @@ This project has benefited from the support from the following funders:
 * US Environmental Protection Agency (EPA)
 * National Science Foundation, awards [EAR-0724971](http://www.nsf.gov/awardsearch/showAward?AWD_ID=0724971), [EAR-1331856](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1331856), [ACI-1339834](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1339834)
 * Stroud Water Research Center endowment
+
+
+[//]: # ( @m_innerpage{page_getting_started} )
+
+[//]: # ( @m_innerpage{page_faq} )
+
+[//]: # ( @m_innerpage{page_other_notes} )
+
+[//]: # ( @m_innerpage{page_the_examples} )
+
+[//]: # ( @m_innerpage{license_software-license-agreement-bsd-3-license} )
+
+[//]: # ( @m_innerpage{change_log} )
+
+[//]: # ( @m_innerpage{todo} )
+
+[//]: # ( @m_innerpage{deprecated} )

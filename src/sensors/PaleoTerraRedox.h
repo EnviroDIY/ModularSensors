@@ -50,9 +50,9 @@
  *
  * ___
  * @section sensor_pt_redox_examples Example Code
- * The PaleoTerra Redox is used in the @menulink{pt_redox} example.
+ * The PaleoTerra Redox is used in the @menulink{paleo_terra_redox} example.
  *
- * @menusnip{pt_redox}
+ * @menusnip{paleo_terra_redox}
  */
 /* clang-format on */
 

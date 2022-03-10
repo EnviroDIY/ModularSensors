@@ -43,7 +43,7 @@ bool BoschBME280::setup(void) {
         Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
-    // The bme280's begin() reads required calibration data from the sensor.
+    // The BME280's begin() reads required calibration data from the sensor.
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();
