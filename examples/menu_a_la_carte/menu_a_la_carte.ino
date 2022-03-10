@@ -1306,7 +1306,7 @@ Variable* rdoO2pp =
 //    In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor
 // ==========================================================================
 /** Start [insitu_troll_sdi12a] */
-#include <sensors/InsituTrollSdi12a.h>
+#include <sensors/InSituTrollSdi12a.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char* TROLLSDI12address =
