@@ -47,6 +47,7 @@ ___
     - [Sequans Monarch](#sequans-monarch)
     - [SIMCom SIM800](#simcom-sim800)
     - [SIMCom SIM7000](#simcom-sim7000)
+    - [SIMCom SIM7080G (EnviroDIY LTE Bee])](#simcom-sim7080g-envirodiy-lte-bee)
     - [Sodaq GPRSBee](#sodaq-gprsbee)
     - [u-blox SARA R410M](#u-blox-sara-r410m)
     - [u-blox SARA U201](#u-blox-sara-u201)
@@ -65,13 +66,17 @@ ___
       - [Atlas Scientific EZO-RTD Temperature Sensor](#atlas-scientific-ezo-rtd-temperature-sensor)
       - [Atlas Scientific EZO-EC Conductivity Sensor](#atlas-scientific-ezo-ec-conductivity-sensor)
     - [Bosch BME280 Environmental Sensor](#bosch-bme280-environmental-sensor)
+      - [Campbell ClariVUE SDI-12 Turbidity Sensor](#campbell-clarivue-sdi-12-turbidity-sensor)
     - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
+      - [Decagon CTD-10 Conductivity, Temperature, and Depth Sensor](#decagon-ctd-10-conductivity-temperature-and-depth-sensor)
     - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
+      - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe)
+      - [In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor](#in-situ-aqualevel-troll-pressure-temperature-and-depth-sensor)
     - [Keller RS485/Modbus Water Level Sensors](#keller-rs485modbus-water-level-sensors)
-      - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
       - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
+      - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
@@ -122,6 +127,7 @@ ___
     - [Custom Modem Setup](#custom-modem-setup)
       - [ESP8266 Baud Rate](#esp8266-baud-rate)
       - [Skywire Pin Inversions](#skywire-pin-inversions)
+      - [SimCom SIM7080G Network Mode](#simcom-sim7080g-network-mode)
       - [XBee Cellular Carrier](#xbee-cellular-carrier)
       - [SARA R4 Cellular Carrier](#sara-r4-cellular-carrier)
     - [Sync the Real Time Clock](#sync-the-real-time-clock)
@@ -257,6 +263,9 @@ NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have
 
 This section just assigns all the serial ports from the @ref menu_walk_serial_ports section above to specific functionality.
 For a board with the option of up to 4 hardware serial ports, like the SAMD21 or Arduino Mega, we use the Serial1 to talk to the modem, Serial2 for modbus, and Serial3 for the Maxbotix.
+
+[//]: # ( @menusnip{assign_ports_hw} )
+
 For an AVR board where we're relying on a mix of hardware and software ports, we use hardware Serial 1 for the modem, AltSoftSerial for modbus, and NeoSWSerial for the Maxbotix.
 Depending on how you rank the importance of each component, you can adjust these to your liking.
 
@@ -288,7 +297,7 @@ The baud rate of any of the modules can be changed using AT commands or the `mod
 
 Next, we'll assign all the pin numbers for all the other pins connected between the modem and the MCU.
 Pins that do not apply should be set as -1.
-There is a table of general @ref modem_notes_sleep and @ref modem_notes_mayfly_pins on the @ref page_modem_notes page.
+There is a table of general @ref modem_notes_sleep and @ref modem_notes_mayfly_0_pins on the @ref page_modem_notes page.
 
 All the modems also need some sort of network credentials for internet access.
 For WiFi modems, you need the network name and password (assuming WPA2).
@@ -308,10 +317,14 @@ To create a DigiXBeeCellularTransparent object we need to know
 - the `DTR_N/SLEEP_RQ/DIO8` pin,
 - and the SIM card's cellular access point name (APN).
 
+Pins that do not apply should be set as -1.
+A helpful table detailing the pins to use with the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
+
 @note  The u-blox based Digi XBee's (3G global and LTE-M global) may be more stable used in bypass mode (below).
 The Telit based Digi XBees (LTE Cat1 both Verizon and AT&T) can only use this mode.
 
 [//]: # ( @menusnip{digi_xbee_cellular_transparent} )
+
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
 This is shows in the [XBee Cellular Carrier](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_xbeec_carrier) chunk of the setup function.
@@ -330,8 +343,10 @@ To create a DigiXBeeLTEBypass object we need to know
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
+A helpful table detailing the pins to use with the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
 
 [//]: # ( @menusnip{digi_xbee_lte_bypass} )
+
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
 This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
@@ -350,6 +365,7 @@ To create a DigiXBee3GBypass object we need to know
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
+A helpful table detailing the pins to use with the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
 
 [//]: # ( @menusnip{digi_xbee_3g_bypass} )
 
@@ -367,6 +383,7 @@ To create a DigiXBeeWifi object we need to know
 - and the wifi WPA2 password.
 
 Pins that do not apply should be set as -1.
+A helpful table detailing the pins to use with the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
 
 [//]: # ( @menusnip{digi_xbee_wifi} )
 
@@ -405,6 +422,7 @@ To create a QuectelBG96 object we need to know
 Pins that do not apply should be set as -1.
 
 [//]: # ( @menusnip{quectel_bg96} )
+
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
 Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_skywire) part of the setup function below.
 
@@ -467,6 +485,23 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{sim_com_sim7000} )
 
 
+### SIMCom SIM7080G (EnviroDIY LTE Bee]) <!-- {#menu_walk_sim_com_sim7000} -->
+
+This code is for a SIMCom SIM7080G or one of its variants, including the [EnviroDIY LTE Bee](https://www.envirodiy.org/product/envirodiy-lte-bee-pack-of-5/).
+
+To create a SIMComSIM7080 object we need to know
+- the serial object name,
+- the MCU pin controlling modem power,
+- the MCU pin connected to the `STATUS` pin,
+- the MCU pin connected to the `PWRKEY` pin (for sleep request),
+- and the SIM card's cellular access point name (APN).
+
+Pins that do not apply should be set as -1.
+A helpful table detailing the pins to use with the EnviroDIY LTE Bee and the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
+
+[//]: # ( @menusnip{sim_com_sim7080} )
+
+
 ### Sodaq GPRSBee <!-- {#menu_walk_sodaq_2g_bee_r6} -->
 
 This code is for the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800.
@@ -479,6 +514,7 @@ You should enter this pin as the power pin.)
 Pins that do not apply should be set as -1.
 The GPRSBee R6/R7 does not expose the `RESET` pin of the SIM800.
 The `PWRKEY` is held `LOW` as long as the SIM800 is powered (as mentioned above).
+A helpful table detailing the pins to use with the Sodaq GPRSBee and the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
 
 [//]: # ( @menusnip{sodaq_2g_bee_r6} )
 
@@ -494,8 +530,10 @@ To create a SodaqUBeeR410M object we need to know
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
+A helpful table detailing the pins to use with the UBee R410M and the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
 
 [//]: # ( @menusnip{sodaq_ubee_r410m} )
+
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
 This is shows in the [SARA R4 Cellular Carrier](@ref setup_r4_carrrier) chunk of the setup function.
@@ -512,6 +550,7 @@ To create a SodaqUBeeU201 object we need to know
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
+A helpful table detailing the pins to use with the Sodaq UBee U201 and the EnviroDIY Mayfly is available on the [Modem Notes](@ref page_modem_notes) page.
 
 [//]: # ( @menusnip{sodaq_ubee_u201} )
 
@@ -685,6 +724,15 @@ Keep in mind that the possible I2C addresses of the BME280 match those of the MS
 ___
 
 
+#### Campbell ClariVUE SDI-12 Turbidity Sensor <!-- {#menu_walk_campbell_clari_vue10} -->
+
+@see @ref sensor_clarivue
+
+[//]: # ( @menusnip{campbell_clari_vue10} )
+
+___
+
+
 ### Campbell OBS3+ Analog Turbidity Sensor <!-- {#menu_walk_campbell_obs3} -->
 
 This is the code for the Campbell OBS3+.
@@ -698,6 +746,15 @@ Note that to access both the high and low range returns, two instances must be c
 @see @ref sensor_obs3
 
 [//]: # ( @menusnip{campbell_obs3} )
+
+___
+
+
+#### Decagon CTD-10 Conductivity, Temperature, and Depth Sensor <!-- {#menu_walk_decagon_ctd} -->
+
+@see @ref sensor_decagon_ctd
+
+[//]: # ( @menusnip{decagon_ctd} )
 
 ___
 
@@ -741,6 +798,24 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 ___
 
 
+#### In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe <!-- {#menu_walk_in_situ_rdo} -->
+
+@see @ref sensor_insitu_rdo
+
+[//]: # ( @menusnip{in_situ_rdo} )
+
+___
+
+
+#### In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor <!-- {#menu_walk_insitu_troll_sdi12a} -->
+
+@see @ref sensor_insitu_troll
+
+[//]: # ( @menusnip{insitu_troll_sdi12a} )
+
+___
+
+
 ### Keller RS485/Modbus Water Level Sensors <!-- {#menu_walk_keller_sensors} -->
 
 The next two sections are for Keller RS485/Modbus water level sensors.
@@ -762,20 +837,20 @@ Both pins _cannot_ be shared pins.
 @see @ref keller_group
 
 
-#### Keller Nanolevel Level Transmitter <!-- {#menu_walk_keller_nanolevel} -->
-
-@see @ref sensor_nanolevel
-
-[//]: # ( @menusnip{keller_nanolevel} )
-
-___
-
-
 #### Keller Acculevel High Accuracy Submersible Level Transmitter <!-- {#menu_walk_keller_acculevel} -->
 
 @see @ref sensor_acculevel
 
 [//]: # ( @menusnip{keller_acculevel} )
+
+___
+
+
+#### Keller Nanolevel Level Transmitter <!-- {#menu_walk_keller_nanolevel} -->
+
+@see @ref sensor_nanolevel
+
+[//]: # ( @menusnip{keller_nanolevel} )
 
 ___
 
@@ -1225,6 +1300,8 @@ For SoftwareSerial with External interrupts we use:
                     CHANGE);
 ```
 
+[//]: # ( @menusnip{setup_softserial} )
+
 ### Serial Begin <!-- {#menu_walk_setup_serial_begin} -->
 
 Every serial port setup and used in the program must be "begun" in the setup function.
@@ -1287,6 +1364,12 @@ This is necessary for the Skywire development board and some other breakouts.
 
 [//]: # ( @menusnip{setup_skywire} )
 
+#### SimCom SIM7080G Network Mode <!-- {#setup_sim7080} -->
+
+This chunk of code sets the network mode and preferred mode for the SIM7080G.
+
+[//]: # ( @menusnip{setup_sim7080} )
+
 #### XBee Cellular Carrier <!-- {#menu_walk_setup_xbeec_carrier} -->
 
 This chunk of code sets the carrier profile and network technology for a Digi XBee or XBee3.
@@ -1312,6 +1395,7 @@ To be considered "sane" the clock has to set somewhere between 2020 and 2025.
 It's a broad range, but it will automatically flag values like Jan 1, 2000 - which are the default start value of the clock on power up.
 
 [//]: # ( @menusnip{setup_clock} )
+
 ### Setup File on the SD card <!-- {#menu_walk_setup_file} -->
 
 We're getting close to the end of the setup function!
@@ -1381,8 +1465,6 @@ This allows you to use `checkMarkedInterval()` to check if an action should be p
 All together, this gives:
 
 [//]: # ( @menusnip{complex_loop} )
-
-[//]: # ( @todo fix links )
 
 If you need more help in writing a complex loop, the [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
 The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.

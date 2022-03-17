@@ -1273,7 +1273,7 @@ Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
 
 #if defined BUILD_SENSOR_IN_SITU_RDO
 // ==========================================================================
-//  InSitu RDO PRO-X Rugged Dissolved Oxygen Probe
+//  In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe
 // ==========================================================================
 /** Start [in_situ_rdo] */
 #include <sensors/InSituRDO.h>

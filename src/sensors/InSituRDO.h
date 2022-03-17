@@ -353,7 +353,7 @@ class InSituRDO : public SDI12Sensors {
  public:
     // Constructors with overloads
     /**
-     * @brief Construct a new InSitu RDO object.
+     * @brief Construct a new In-Situ RDO object.
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -404,7 +404,7 @@ class InSituRDO : public SDI12Sensors {
               INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS,
               INSITU_RDO_INC_CALC_VARIABLES) {}
     /**
-     * @brief Destroy the InSitu RDO object
+     * @brief Destroy the In-Situ RDO object
      */
     ~InSituRDO() {}
 };
