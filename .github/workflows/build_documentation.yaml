@@ -36,7 +36,7 @@ jobs:
         if: steps.cache_python.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
-          pip3 install --upgrade --upgrade-strategy jinja2 Pygments beautifulsoup4
+          pip3 install --upgrade --upgrade-strategy only-if-needed jinja2 Pygments beautifulsoup4
 
       - name: Install GraphViz (dot)
         run: sudo apt-get -y install graphviz
