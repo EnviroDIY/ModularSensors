@@ -49,9 +49,9 @@
  *
  * ___
  * @section sensor_dht_examples Example Code
- * The DHT is used in the @menulink{dht} example.
+ * The DHT is used in the @menulink{ao_song_dht} example.
  *
- * @menusnip{dht}
+ * @menusnip{ao_song_dht}
  */
 /* clang-format on */
 

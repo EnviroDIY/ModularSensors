@@ -29,18 +29,18 @@ $pioCommand = "pio run --project-conf=""continuous_integration/platformio.ini"" 
 $pioCommand += ';$?'
 
 $modemFlags = @(`
-    'BUILD_MODEM_XBEE_CELLULAR', `
-    'BUILD_MODEM_XBEE_LTE_B', `
-    'BUILD_MODEM_XBEE_3G_B', `
-    'BUILD_MODEM_XBEE_WIFI', `
-    'BUILD_MODEM_ESP8266', `
-    'BUILD_MODEM_BG96', `
-    'BUILD_MODEM_MONARCH', `
-    'BUILD_MODEM_SIM800', `
-    'BUILD_MODEM_SIM7000', `
-    'BUILD_MODEM_S2GB', `
-    'BUILD_MODEM_UBEE_R410M', `
-    'BUILD_MODEM_UBEE_U201')
+    'BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT', `
+    'BUILD_MODEM_DIGI_XBEE_LTE_BYPASS', `
+    'BUILD_MODEM_DIGI_XBEE_3G_BYPASS', `
+    'BUILD_MODEM_DIGI_XBEE_WIFI', `
+    'BUILD_MODEM_ESPRESSIF_ESP8266', `
+    'BUILD_MODEM_QUECTEL_BG96', `
+    'BUILD_MODEM_SEQUANS_MONARCH', `
+    'BUILD_MODEM_SIM_COM_SIM800', `
+    'BUILD_MODEM_SIM_COM_SIM7000', `
+    'BUILD_MODEM_SODAQ2_G_BEE_R6', `
+    'BUILD_MODEM_SODAQ_UBEE_R410M', `
+    'BUILD_MODEM_SODAQ_UBEE_U201')
 
 Foreach ($modemFlag in $modemFlags)
 {
@@ -72,47 +72,48 @@ Foreach ($modemFlag in $modemFlags)
 }
 
 $sensorFlags = @(`
-    'BUILD_SENSOR_AM2315', `
-    # 'BUILD_SENSOR_DHT', `
-    'BUILD_SENSOR_SQ212', `
-    'BUILD_SENSOR_ATLASCO2', `
-    'BUILD_SENSOR_ATLASDO', `
-    'BUILD_SENSOR_ATLASORP', `
-    'BUILD_SENSOR_ATLASPH', `
-    'BUILD_SENSOR_ATLASRTD', `
-    'BUILD_SENSOR_ATLASEC', `
-    'BUILD_SENSOR_BME280', `
-    'BUILD_SENSOR_OBS3', `
-    'BUILD_SENSOR_ES2', `
-    'BUILD_SENSOR_VOLTAGE', `
+    'BUILD_SENSOR_AO_SONG_AM2315', `
+    'BUILD_SENSOR_AO_SONG_DHT', `
+    'BUILD_SENSOR_APOGEE_SQ212', `
+    'BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2', `
+    'BUILD_SENSOR_ATLAS_SCIENTIFIC_DO', `
+    'BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP', `
+    'BUILD_SENSOR_ATLAS_SCIENTIFIC_PH', `
+    'BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD', `
+    'BUILD_SENSOR_ATLAS_SCIENTIFIC_EC', `
+    'BUILD_SENSOR_BOSCH_BME280', `
+    'BUILD_SENSOR_CAMPBELL_OBS3', `
+    'BUILD_SENSOR_DECAGON_ES2', `
+    'BUILD_SENSOR_EXTERNAL_VOLTAGE', `
     'BUILD_SENSOR_MPL115A2', `
-    'BUILD_SENSOR_INSITURDO', `
-    'BUILD_SENSOR_INSITUTROOLSDI12A', `
-    'BUILD_SENSOR_ACCULEVEL', `
-    'BUILD_SENSOR_NANOLEVEL', `
-    'BUILD_SENSOR_MAXBOTIX', `
-    'BUILD_SENSOR_DS18', `
-    'BUILD_SENSOR_MS5803', `
-    'BUILD_SENSOR_5TM', `
-    'BUILD_SENSOR_CTD', `
-    'BUILD_SENSOR_TEROS11', `
-    'BUILD_SENSOR_PALEOTERRA', `
-    'BUILD_SENSOR_RAINI2C', `
-    'BUILD_SENSOR_TALLY', `
-    'BUILD_SENSOR_INA219', `
-    'BUILD_SENSOR_CYCLOPS', `
-    'BUILD_SENSOR_ANALOGEC', `
-    'BUILD_SENSOR_Y504', `
-    'BUILD_SENSOR_Y510', `
-    'BUILD_SENSOR_Y511', `
-    'BUILD_SENSOR_Y514', `
-    'BUILD_SENSOR_Y520', `
-    'BUILD_SENSOR_Y532', `
-    'BUILD_SENSOR_Y533', `
-    'BUILD_SENSOR_Y551', `
-    'BUILD_SENSOR_Y560', `
-    'BUILD_SENSOR_Y4000', `
-    'BUILD_SENSOR_DOPTO')
+    'BUILD_SENSOR_IN_SITU_RDO', `
+    'BUILD_SENSOR_IN_SITU_TROLL_SDI12A', `
+    'BUILD_SENSOR_KELLER_ACCULEVEL', `
+    'BUILD_SENSOR_KELLER_NANOLEVEL', `
+    'BUILD_SENSOR_MAX_BOTIX_SONAR', `
+    'BUILD_SENSOR_MAXIM_DS18', `
+    'BUILD_SENSOR_MEA_SPEC_MS5803', `
+    'BUILD_SENSOR_DECAGON_5TM', `
+    'BUILD_SENSOR_DECAGON_CTD', `
+    'BUILD_SENSOR_METER_TEROS11', `
+    'BUILD_SENSOR_PALEO_TERRA_REDOX', `
+    'BUILD_SENSOR_RAIN_COUNTER_I2C', `
+    'BUILD_SENSOR_TALLY_COUNTER_I2C', `
+    'BUILD_SENSOR_SENSIRION_SHT4X', `
+    'BUILD_SENSOR_TI_INA219', `
+    'BUILD_SENSOR_TURNER_CYCLOPS', `
+    'BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY', `
+    'BUILD_SENSOR_YOSEMITECH_Y504', `
+    'BUILD_SENSOR_YOSEMITECH_Y510', `
+    'BUILD_SENSOR_YOSEMITECH_Y511', `
+    'BUILD_SENSOR_YOSEMITECH_Y514', `
+    'BUILD_SENSOR_YOSEMITECH_Y520', `
+    'BUILD_SENSOR_YOSEMITECH_Y532', `
+    'BUILD_SENSOR_YOSEMITECH_Y533', `
+    'BUILD_SENSOR_YOSEMITECH_Y551', `
+    'BUILD_SENSOR_YOSEMITECH_Y560', `
+    'BUILD_SENSOR_YOSEMITECH_Y4000', `
+    'BUILD_SENSOR_ZEBRA_TECH_D_OPTO')
 
 Foreach ($sensorFlag in $sensorFlags)
 {
@@ -126,7 +127,7 @@ Foreach ($sensorFlag in $sensorFlags)
     Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Cyan
     Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Cyan
     $originalMenu = Get-Content -Path "examples/menu_a_la_carte/menu_a_la_carte.ino" -Encoding UTF8 -Raw
-    $newHeading =  "#define BUILD_MODEM_XBEE_CELLULAR`n#define BUILD_TEST_PRE_NAMED_VARS`n#define $sensorFlag`n"
+    $newHeading =  "#define BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT`n#define BUILD_TEST_PRE_NAMED_VARS`n#define $sensorFlag`n"
     $newHeading += $originalMenu
     $newHeading | Add-Content -Path $tempFile -Encoding UTF8
 
@@ -144,9 +145,9 @@ Foreach ($sensorFlag in $sensorFlags)
 }
 
 $publisherFlag = @(`
-    'BUILD_PUB_MMW', `
-    'BUILD_PUB_DREAMHOST', `
-    'BUILD_PUB_THINGSPEAK')
+    'BUILD_PUB_ENVIRO_DIY_PUBLISHER', `
+    'BUILD_PUB_DREAM_HOST_PUBLISHER', `
+    'BUILD_PUB_THING_SPEAK_PUBLISHER')
 
 Foreach ($publisherFlag in $publisherFlags)
 {
@@ -160,7 +161,7 @@ Foreach ($publisherFlag in $publisherFlags)
     Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Cyan
     Write-Host  "----------------------------------------------------------------------------" -ForegroundColor Cyan
     $originalMenu = Get-Content -Path "examples/menu_a_la_carte/menu_a_la_carte.ino" -Encoding UTF8 -Raw
-    $newHeading =  "#define BUILD_MODEM_XBEE_CELLULAR`n#define BUILD_TEST_PRE_NAMED_VARS`n#define $publisherFlag`n"
+    $newHeading =  "#define BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT`n#define BUILD_TEST_PRE_NAMED_VARS`n#define $publisherFlag`n"
     $newHeading += $originalMenu
     $newHeading | Add-Content -Path $tempFile -Encoding UTF8
 

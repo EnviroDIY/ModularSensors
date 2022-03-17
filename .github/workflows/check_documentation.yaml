@@ -1,18 +1,28 @@
-name: Build and Publish Documentation
+name: Verify Documentation
 
-on:
-  # Trigger when a release is created
-  release:
-    types:
-      - published
-  # Also give a manual trigger
-  workflow_dispatch:
+# Triggers the workflow on push or pull request events
+on: [push, pull_request]
 
 env:
   DOXYGEN_VERSION: Release_1_9_3
 
 jobs:
-  build:
+  menu_inclusion:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+
+      - name: check for classes in the menu example
+        run: |
+          cd $GITHUB_WORKSPACE/continuous_integration
+          python check_component_inclusion.py
+
+  doc_build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
@@ -72,9 +82,3 @@ jobs:
           cd ${{ github.workspace }}/code_docs/ModularSensors/
           chmod +x continuous_integration/generate-documentation.sh
           sh continuous_integration/generate-documentation.sh
-
-      - name: Deploy to github pages
-        uses: peaceiris/actions-gh-pages@v3.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/code_docs/ModularSensorsDoxygen/m.css

@@ -70,9 +70,9 @@
  *
  * ___
  * @section sensor_ds18_examples Example Code
- * The Maxim DS18 is used in the @menulink{ds18} example.
+ * The Maxim DS18 is used in the @menulink{maxim_ds18} example.
  *
- * @menusnip{ds18}
+ * @menusnip{maxim_ds18}
  */
 /* clang-format on */
 

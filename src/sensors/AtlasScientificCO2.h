@@ -39,9 +39,9 @@
  *
  * ___
  * @section sensor_atlas_co2_examples Example Code
- * The Atlas CO2 sensor is used in the @menulink{atlas_co2} example.
+ * The Atlas CO2 sensor is used in the @menulink{atlas_scientific_co2} example.
  *
- * @menusnip{atlas_co2}
+ * @menusnip{atlas_scientific_co2}
  */
 /* clang-format on */
 

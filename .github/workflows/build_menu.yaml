@@ -43,7 +43,7 @@ jobs:
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7000
             sensorFlag: NO_SENSORS
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
-          - modemFlag: BUILD_MODEM_SODAQ_2GBEE_R6
+          - modemFlag: BUILD_MODEM_SODAQ_2G_BEE_R6
             sensorFlag: NO_SENSORS
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SODAQ_UBEE_R410M
@@ -104,7 +104,7 @@ jobs:
             sensorFlag: BUILD_SENSOR_IN_SITU_RDO
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
-            sensorFlag: BUILD_SENSOR_INSITU_TROLL_SDI12A
+            sensorFlag: BUILD_SENSOR_IN_SITU_TROLL_SDI12A
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_KELLER_ACCULEVEL
@@ -190,6 +190,9 @@ jobs:
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: NO_SENSORS
             publisherFlag: BUILD_PUB_THING_SPEAK_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: NO_SENSORS
+            publisherFlag: BUILD_PUB_UBIDOTS_PUBLISHER
     steps:
       - uses: actions/checkout@v2.4.0
 

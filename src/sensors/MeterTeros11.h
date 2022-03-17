@@ -62,9 +62,9 @@
  *
  * ___
  * @section sensor_teros11_examples Example Code
- * The Meter Teros is used in the @menulink{teros} example.
+ * The Meter Teros is used in the @menulink{meter_teros11} example.
  *
- * @menusnip{teros}
+ * @menusnip{meter_teros11}
  */
 /* clang-format on */
 

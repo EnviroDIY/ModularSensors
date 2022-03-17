@@ -70,9 +70,9 @@
  *
  * ___
  * @section sensor_bme280_examples Example Code
- * The BME280 is used in the @menulink{bme280} example.
+ * The BME280 is used in the @menulink{bosch_bme280} example.
  *
- * @menusnip{bme280}
+ * @menusnip{bosch_bme280}
  */
 /* clang-format on */
 
@@ -100,7 +100,8 @@
 
 /// @brief Sensor::_numReturnedValues; the BME280 can report 4 values.
 #define BME280_NUM_VARIABLES 4
-/// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit library.
+/// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
+/// library.
 #define BME280_INC_CALC_VARIABLES 1
 
 /**

@@ -42,9 +42,9 @@
  * @section modem_digi_lte_bypass_examples Example Code
  * @subsection modem_digi_lte_bypass_modem_obj Creating the Modem Object
  *
- * The digi_cellular is used in the @menulink{xbee_ltem_by} example.
+ * The digi_cellular is used in the @menulink{digi_xbee_lte_bypass} example.
  *
- * @menusnip{xbee3_ltem_bypass}
+ * @menusnip{digi_xbee_lte_bypass}
  *
  * @section modem_digi_lte_bypass_network LTE Network Selection
  *

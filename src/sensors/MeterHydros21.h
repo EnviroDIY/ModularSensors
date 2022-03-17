@@ -59,9 +59,9 @@
  *
  * ___
  * @section sensor_hydros21_examples Example Code
- * The Meter Hydros21 is used in the @menulink{hydros21} example.
+ * The Meter Hydros21 is used in the @menulink{meter_hydros21} example.
  *
- * @menusnip{hydros21}
+ * @menusnip{meter_hydros21}
  */
 /* clang-format on */
 

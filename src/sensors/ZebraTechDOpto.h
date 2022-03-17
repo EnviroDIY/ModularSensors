@@ -42,9 +42,9 @@
  *
  * ___
  * @section sensor_dopto_examples Example Code
- * The Zebra-Tech D-Opto is used in the @menulink{dopto} example.
+ * The Zebra-Tech D-Opto is used in the @menulink{zebra_tech_d_opto} example.
  *
- * @menusnip{dopto}
+ * @menusnip{zebra_tech_d_opto}
  */
 /* clang-format on */
 

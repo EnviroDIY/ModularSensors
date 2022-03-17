@@ -45,9 +45,9 @@
  * ___
  * @section sensor_processor_sensor_examples Example Code
  * The processor is used as a sensor in all of the examples, including the
- * @menulink{processor_sensor} example.
+ * @menulink{processor_stats} example.
  *
- * @menusnip{processor_sensor}
+ * @menusnip{processor_stats}
  */
 /* clang-format on */
 

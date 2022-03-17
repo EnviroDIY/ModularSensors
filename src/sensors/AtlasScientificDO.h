@@ -38,9 +38,9 @@
  *
  * ___
  * @section sensor_atlas_do_examples Example Code
- * The Atlas DO sensor is used in the @menulink{atlas_do} example.
+ * The Atlas DO sensor is used in the @menulink{atlas_scientific_do} example.
  *
- * @menusnip{atlas_do}
+ * @menusnip{atlas_scientific_do}
  */
 /* clang-format on */
 

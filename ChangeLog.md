@@ -1,4 +1,4 @@
-# Changelog
+# ChangeLog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
@@ -6,6 +6,7 @@ and its stricter, better defined, brother [Common Changelog](https://common-chan
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ***
+
 
 ## [Unreleased]
 
@@ -31,6 +32,7 @@ We recommend a logger's real time clock always be set in UTC and then localized 
 - **Breaking:** Renamed the YosemiTech Y550 COD sensor as Y551. See below.
 - Added a longer warm up time and removed some of the set-up to work with the ESP-IDF AT firmware versions >2.0
 - Made sure that all example clock synchronization happens at noon instead of midnight.
+- **Documentation:** Migrated to latest version of Doxygen (1.9.3).
 
 ### Added
 - **Sensor** Added support for the [YosemiTech Y551 COD Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/94.html), which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.
@@ -68,6 +70,7 @@ For the SDI-12 sensors, I'm actually using this to make sure I'm getting the num
 ***
 
 ## [0.32.0] - 2021-11-19
+
 Reinstate support for AOSong DHT
 
 ### Changed
@@ -81,6 +84,7 @@ Reinstate support for AOSong DHT
 ***
 
 ## [0.31.2] - 2021-11-03
+
 Fix build without AOSong DHT
 
 ### Fixed
@@ -89,6 +93,7 @@ Fix build without AOSong DHT
 ***
 
 ## [0.31.0] - 2021-11-02
+
 Remove support for AOSong DHT
 
 ### Added
@@ -101,6 +106,7 @@ Remove support for AOSong DHT
 ***
 
 ## [0.30.0] - 2021-07-06
+
 Remove support for SoftwareWire for Atlas sensors
 
 ### Changed
@@ -121,6 +127,7 @@ As I think this feature was completely unused for the Atlas sensors and I see no
 ***
 
 ## [0.29.1] - 2021-07-01
+
 Fix YosemiTech Y533 ORP sensor outputs
 
 ### Fixed
@@ -129,6 +136,7 @@ Fix YosemiTech Y533 ORP sensor outputs
 ***
 
 ## [0.29.0] - 2021-05-19
+
 Create a ModularSensors.h
 
 ### Changed
@@ -143,6 +151,7 @@ This makes it much easiler to install and use the library from the Arduino CLI.
 ***
 
 ## [0.28.5] - 2021-05-11
+
 Duplicate and Rename Hydros 21
 
 ### Added
@@ -156,6 +165,7 @@ The addition was only made to stop complaints about typing in an older name.
 ***
 
 ## [0.28.4] - 2021-05-05
+
 SDI-12 Timing Sensor Customization
 
 ### Changed
@@ -168,6 +178,7 @@ This was added to support conflicting delay needs; the RDO needed a short delay,
 ***
 
 ## [0.28.3] - 2021-03-24
+
 Valid version number
 
 ### Fixed
@@ -176,6 +187,7 @@ Valid version number
 ***
 
 ## [0.28.01] - 2021-02-10
+
 Gigantic SDI-12 bug
 
 ### Fixed
@@ -187,6 +199,7 @@ Gigantic SDI-12 bug
 ***
 
 ## [0.28.0] - 2021-02-10
+
 Add Support for Turner Cyclops
 
 ### Added
@@ -202,6 +215,7 @@ Add Support for Turner Cyclops
 ***
 
 ## [0.27.8] - 2021-01-19
+
 Fix GitHub Action
 
 ### Fixed
@@ -210,6 +224,7 @@ Fix GitHub Action
 ***
 
 ## [0.27.7] - 2021-01-19
+
 SDI-12 Bug Fix
 
 ### Fixed
@@ -218,6 +233,7 @@ SDI-12 Bug Fix
 ***
 
 ## [0.27.6] - 2021-01-19
+
 Update Documentation
 
 ### Changed
@@ -227,6 +243,7 @@ Update Documentation
 ***
 
 ## [0.27.5] - 2020-12-15
+
 Multiple new Sensors and Workflows
 
 ### Changed
@@ -242,7 +259,7 @@ Multiple new Sensors and Workflows
 - **Sensor:** PaleoTerra Redox sensors
 - **Sensor:** Northern Widget Tally Counters
 - **Sensor:** simple analog electrical conductance sensors
-- **Sensor:** InSitu RDO PRO-X rugged dissolved oxygen sensors
+- **Sensor:** In-Situ RDO PRO-X rugged dissolved oxygen sensors
 - **Publisher:** Add Soracom/Ubidots as a data publisher
 - Migrated from Travis CI to Github Actions for continuous integration
 - Deprecated wiki, moving contents to docs folder where needed
@@ -256,6 +273,7 @@ Multiple new Sensors and Workflows
 ***
 
 ## [0.25.0] - 2020-06-25
+
 Styling & Doxygen Code Documentation
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3908530.svg)](https://doi.org/10.5281/zenodo.3908530)
@@ -283,6 +301,7 @@ For more details, see [Pull Request #309: The style sheet](https://github.com/En
 ***
 
 ## [0.24.1] - 2020-03-02
+
 Modem Restructuring
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3693784.svg)](https://doi.org/10.5281/zenodo.3693784)
@@ -294,6 +313,7 @@ Modem Restructuring
 ***
 
 ## [0.23.13] - 2019-09-19
+
 More agressive attempts to set clock
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3451413.svg)](https://doi.org/10.5281/zenodo.3451413)
@@ -309,6 +329,7 @@ More agressive attempts to set clock
 ***
 
 ## [0.23.11] - 2019-09-11
+
 Watchdogs and More
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3405562.svg)](https://doi.org/10.5281/zenodo.3405562)
@@ -336,6 +357,7 @@ Watchdogs and More
 ***
 
 ## [0.22.5] - 2019-06-24
+
 Modem Simplification
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3255084.svg)](https://doi.org/10.5281/zenodo.3255084)
@@ -379,6 +401,7 @@ Modem Simplification
 ***
 
 ## [0.21.4] - 2019-05-02
+
 Deep debug error
 
 ### Fixed
@@ -387,10 +410,11 @@ Deep debug error
 ***
 
 ## [0.21.3] - 2019-05-02
+
 Minor Bugs and Simplified Debugging
 
 ### Added
- - Gave every header file a unique debugging define statement so each file can be debugged individually by building with the build flag -DMS_xxx_DEBUG where xxx is the file name in upper case.
+- Gave every header file a unique debugging define statement so each file can be debugged individually by building with the build flag -DMS_xxx_DEBUG where xxx is the file name in upper case.
     - Some files also have a "deep" debugging option with -DMS_xxx_DEBUG_DEEP
 - Created examples for LearnEnviroDIYCode
 
@@ -402,6 +426,7 @@ Minor Bugs and Simplified Debugging
 ***
 
 ## [0.21.2] - 2019-03-19
+
 Fix write to SD card
 
 ### Fixed
@@ -410,6 +435,7 @@ Fix write to SD card
 ***
 
 ## [0.21.0] - 2019-03-06
+
 Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2586200.svg)](https://doi.org/10.5281/zenodo.2586200)
@@ -451,6 +477,7 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
 ***
 
 ## [0.19.6] - 2019-02-27
+
 Modem Improvements & ADS1X15 Generalization
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2579301.svg)](https://doi.org/10.5281/zenodo.2579301)
@@ -469,6 +496,7 @@ Modem Improvements & ADS1X15 Generalization
 ***
 
 ## [0.19.3] - 2019-01-15
+
 Bug fix and example re-working
 
 ### Changed
@@ -480,6 +508,7 @@ Bug fix and example re-working
 ***
 
 ## [0.19.2] - 2018-12-22
+
 Decreased Data Consumption
 
 ### Changed
@@ -494,6 +523,7 @@ Decreased Data Consumption
 ***
 
 ## [0.17.2] - 2018-11-27
+
 Major Update!
 
 **NOTE: THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!**
@@ -508,6 +538,7 @@ Major Update!
 ***
 
 ## [0.12.2] - 2018-09-25
+
 Calculated variables and bug fixes
 
 NOTE: This **THIS RELEASE DESTROYS BACKWARDS COMPATIBILITY!!** All `.ino` files will need to be updated to follow the updated examples.
@@ -523,6 +554,7 @@ See PR #160 for a full list of improvements and fixes.
 ***
 
 ## [0.11.6] - 2018-05-11
+
 Fixed Longer Logger Intervals and Improved Documentation
 
 ### Changed
@@ -536,6 +568,7 @@ Fixed Longer Logger Intervals and Improved Documentation
 ***
 
 ## [0.11.3] - 2018-05-03
+
 Added sensors and fixed timing bugs
 
 ### Changed
@@ -563,6 +596,7 @@ Added sensors and fixed timing bugs
 ***
 
 ## [0.9.0] - 2018-04-17
+
 Timing Improvements
 
 ### Changed
@@ -578,6 +612,7 @@ Timing Improvements
 ***
 
 ## [0.6.10] - 2018-02-26
+
 Fixes bugs in description and examples
 
 ### Fixed
@@ -586,6 +621,7 @@ Fixes bugs in description and examples
 ***
 
 ## [0.6.9] - 2018-02-26
+
 Uniformity of missing values, averaging for all sensors
 
 ### Changed
@@ -612,6 +648,7 @@ Uniformity of missing values, averaging for all sensors
 ***
 
 ## [0.3.0]-beta - 2017-06-07
+
 Beta Release
 
 ### Changed
@@ -625,6 +662,7 @@ Beta Release
 ***
 
 ## [0.2.5]-beta - 2017-05-31
+
 Impoved setup functions
 
 ### Changed
@@ -633,6 +671,7 @@ Impoved setup functions
 ***
 
 ## [0.2.4]-beta - 2017-05-17
+
 Another beta release
 
 ### Changed
@@ -649,6 +688,7 @@ Another beta release
 ***
 
 ## [0.2.2]-beta - 2017-05-09
+
 Initial release
 
 Our first release of the modular sensors library to support easily logging data from a variety of environmental sensors and sending that data to the EnviroDIY data portal.
@@ -694,3 +734,5 @@ Our first release of the modular sensors library to support easily logging data 
 [0.2.5-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.5-beta
 [0.2.4-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.4-beta
 [0.2.2-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.2-beta
+
+[//]: # ( @tableofcontents{XML:1} )

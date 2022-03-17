@@ -53,9 +53,9 @@
  * @subsection modem_digi_cellular_modem_obj Creating the Modem Object
  *
  * A transparent-mode Digi cellular module is used in the
- * @menulink{xbee_cell_trans} example.
+ * @menulink{digi_xbee_cellular_transparent} example.
  *
- * @menusnip{xbee_cell_transparent}
+ * @menusnip{digi_xbee_cellular_transparent}
  *
  * @subsection modem_digi_cellular_network LTE Network Selection
  *

@@ -32,9 +32,9 @@
  *
  * ___
  * @section sensor_nanolevel_examples Example Code
- * The Keller Nanolevel is used in the @menulink{nanolevel} example.
+ * The Keller Nanolevel is used in the @menulink{keller_nanolevel} example.
  *
- * @menusnip{nanolevel}
+ * @menusnip{keller_nanolevel}
  */
 /* clang-format on */
 

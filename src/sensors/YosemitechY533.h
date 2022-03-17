@@ -39,9 +39,9 @@
  *
  * ___
  * @section sensor_y533_examples Example Code
- * The Yosemitech Y533 ORP sensor is used in the @menulink{y533} example.
+ * The Yosemitech Y533 ORP sensor is used in the @menulink{yosemitech_y533} example.
  *
- * @menusnip{y533}
+ * @menusnip{yosemitech_y533}
  */
 /* clang-format on */
 

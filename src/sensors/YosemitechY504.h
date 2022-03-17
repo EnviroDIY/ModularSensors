@@ -43,9 +43,9 @@
  *
  * ___
  * @section sensor_y504_examples Example Code
- * The Yosemitech Y504 Dissolved Oxygen is used in the @menulink{y504} example.
+ * The Yosemitech Y504 Dissolved Oxygen is used in the @menulink{yosemitech_y504} example.
  *
- * @menusnip{y504}
+ * @menusnip{yosemitech_y504}
  */
 /* clang-format on */
 

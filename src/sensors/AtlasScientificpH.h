@@ -34,9 +34,9 @@
  *
  * ___
  * @section sensor_atlas_ph_examples Example Code
- * The Atlas pH sensor is used in the @menulink{atlas_ph} example.
+ * The Atlas pH sensor is used in the @menulink{atlas_scientific_ph} example.
  *
- * @menusnip{atlas_ph}
+ * @menusnip{atlas_scientific_ph}
  */
 /* clang-format on */
 

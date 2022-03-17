@@ -123,9 +123,9 @@
  * ___
  * @section sensor_analog_cond_examples Example Code
  * The analog electrical conductivity sensor is used in the
- * @menulink{analog_cond} example.
+ * @menulink{analog_elec_conductivity} example.
  *
- * @menusnip{analog_cond}
+ * @menusnip{analog_elec_conductivity}
  *
  */
 /* clang-format on */
@@ -152,9 +152,12 @@
 /** @ingroup sensor_analog_cond */
 /**@{*/
 
-/// @brief Sensor::_numReturnedValues; we only get one value from the analog conductivity sensor.
+/// @brief Sensor::_numReturnedValues; we only get one value from the analog
+/// conductivity sensor.
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
-/// @brief Sensor::_incCalcValues; we don't calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values -
+/// though we recommend users include a temperature sensor and calculate
+/// specific conductance in their own program.
 #define ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES 0
 
 /**

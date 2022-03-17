@@ -118,9 +118,9 @@
  *
  * ___
  * @section sensor_cyclops_examples Example Code
- * The Turner Cyclops-7F is used in the @menulink{cyclops} example.
+ * The Turner Cyclops-7F is used in the @menulink{turner_cyclops} example.
  *
- * @menusnip{cyclops}
+ * @menusnip{turner_cyclops}
  */
 /* clang-format on */
 
@@ -155,7 +155,8 @@
  * the Cyclops.
  */
 #define CYCLOPS_NUM_VARIABLES 2
-/// @brief Sensor::_incCalcValues; the raw voltage is reported, the other parameter is calculated using the input calibration equation.
+/// @brief Sensor::_incCalcValues; the raw voltage is reported, the other
+/// parameter is calculated using the input calibration equation.
 #define CYCLOPS_INC_CALC_VARIABLES 1
 
 /**

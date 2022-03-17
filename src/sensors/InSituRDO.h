@@ -7,13 +7,13 @@
  * @brief Contains the InSituRDO sensor subclass and the variable subclasses
  * InSituRDO_Temp, InSituRDO_DOpct, and InSituRDO_DOmgL.
  *
- * These are for the InSitu RDO PRO-X digital dissolved oxygen sensor.
+ * These are for the In-Situ RDO PRO-X digital dissolved oxygen sensor.
  *
  * This depends on the SDI12Sensors parent class.
  */
 /* clang-format off */
 /**
- * @defgroup sensor_insitu_rdo InSitu RDO PRO-X
+ * @defgroup sensor_insitu_rdo In-Situ RDO PRO-X
  * Classes for the InSitue Optical RDO PRO-X process optical dissolved oxygen probe
  *
  * @ingroup sdi12_group
@@ -32,7 +32,7 @@
  * The maximum power consumption is 50 mA at 12 VDC.
  * Measurement current is 6 mA typical at 24 VDC and idle current is 160 µA typical at 24 VDC.
  *
- * The [InSitu RDO PRO-X](https://in-situ.com/us/rdo-pro-x-dissolved-oxygen-probe)
+ * The [In-Situ RDO PRO-X](https://in-situ.com/us/rdo-pro-x-dissolved-oxygen-probe)
  * sensor is implemented as a sub-classes of the SDI12Sensors class.
  * While the sensor can also communicate over Modbus/RS485 or a 4-20 mA loop,
  * in this case I've chosen to use SDI-12 to minimize the number of pins
@@ -145,15 +145,15 @@
  *
  * ___
  * @section sensor_insitu_rdo_examples Example Code
- * The InSitu RDO PRO-X is used in the @menulink{insitu_rdo} example.
+ * The In-Situ RDO PRO-X is used in the @menulink{in_situ_rdo} example.
  *
- * @menusnip{insitu_rdo}
+ * @menusnip{in_situ_rdo}
  */
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_SENSORS_InSituRDO_H_
-#define SRC_SENSORS_InSituRDO_H_
+#ifndef SRC_SENSORS_INSITURDO_H_
+#define SRC_SENSORS_INSITURDO_H_
 
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
@@ -176,7 +176,7 @@
 /**
  * @anchor sensor_insitu_rdo_timing
  * @name Sensor Timing
- * The sensor timing for an InSitu RDO PRO-X.
+ * The sensor timing for an In-Situ RDO PRO-X.
  *
  * None of these values are specified in the documentation for the sensor; this
  * is all based on SRGD's testing.
@@ -204,7 +204,7 @@
 /**
  * @anchor sensor_insitu_rdo_domgl
  * @name Dissolved Oxygen Concentration
- * The DO concentration variable from an InSitu RDO PRO-X
+ * The DO concentration variable from an In-Situ RDO PRO-X
  * - Range is 0 to 50 mg/L concentration
  * - Accuracy:
  *   - ± 0.1 mg/L from 0 to 8 mg/L
@@ -244,7 +244,7 @@
 /**
  * @anchor sensor_insitu_rdo_dopercent
  * @name Dissolved Oxygen Percent Saturation
- * The percent saturation variable from an InSitu RDO PRO-X
+ * The percent saturation variable from an In-Situ RDO PRO-X
  * - Range is 0 to 50 mg/L concentration
  * - Accuracy:
  *   - ± 0.1 mg/L from 0 to 8 mg/L
@@ -283,7 +283,7 @@
 /**
  * @anchor sensor_insitu_rdo_temp
  * @name Temperature
- * The temperature variable from an InSitu RDO PRO-X
+ * The temperature variable from an In-Situ RDO PRO-X
  * - Range is 0° to 50°C (32° to 122°F)
  * - Accuracy is ± 0.1°C typical
  *
@@ -317,7 +317,7 @@
 /**
  * @anchor sensor_insitu_rdo_pressure
  * @name Oxygen Partial Pressure
- * The oxygen partial pressure variable from an InSitu RDO PRO-X
+ * The oxygen partial pressure variable from an In-Situ RDO PRO-X
  *
  * @note The oxygen partial pressure output must be manually enabled in SDI-12
  * mode using the Win-Situ software.
@@ -344,7 +344,7 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
+ * [In-Situ RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
  *
  * @ingroup sensor_insitu_rdo
  */
@@ -353,7 +353,7 @@ class InSituRDO : public SDI12Sensors {
  public:
     // Constructors with overloads
     /**
-     * @brief Construct a new InSitu RDO object.
+     * @brief Construct a new In-Situ RDO object.
      *
      * The SDI-12 address of the sensor, the Arduino pin controlling power
      * on/off, and the Arduino pin sending and receiving data are required for
@@ -377,7 +377,7 @@ class InSituRDO : public SDI12Sensors {
               uint8_t measurementsToAverage = 1)
         : SDI12Sensors(
               SDI12address, powerPin, dataPin, measurementsToAverage,
-              "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+              "In-Situ RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
               INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
               INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS,
               INSITU_RDO_INC_CALC_VARIABLES) {}
@@ -388,7 +388,7 @@ class InSituRDO : public SDI12Sensors {
               uint8_t measurementsToAverage = 1)
         : SDI12Sensors(
               SDI12address, powerPin, dataPin, measurementsToAverage,
-              "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+              "In-Situ RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
               INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
               INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS,
               INSITU_RDO_INC_CALC_VARIABLES) {}
@@ -399,12 +399,12 @@ class InSituRDO : public SDI12Sensors {
               uint8_t measurementsToAverage = 1)
         : SDI12Sensors(
               SDI12address, powerPin, dataPin, measurementsToAverage,
-              "InSitu RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
+              "In-Situ RDO PRO-X", INSITU_RDO_NUM_VARIABLES,
               INSITU_RDO_WARM_UP_TIME_MS, INSITU_RDO_STABILIZATION_TIME_MS,
               INSITU_RDO_MEASUREMENT_TIME_MS, INSITU_RDO_EXTRA_WAKE_TIME_MS,
               INSITU_RDO_INC_CALC_VARIABLES) {}
     /**
-     * @brief Destroy the InSitu RDO object
+     * @brief Destroy the In-Situ RDO object
      */
     ~InSituRDO() {}
 };
@@ -414,7 +414,7 @@ class InSituRDO : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen concentration output](@ref sensor_insitu_rdo_domgl) from a
- * [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
+ * [In-Situ RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
  *
  * @ingroup sensor_insitu_rdo
  */
@@ -460,7 +460,7 @@ class InSituRDO_DOmgL : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [dissolved oxygen percent saturation output](@ref sensor_insitu_rdo_dopercent)
- * from a [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
+ * from a [In-Situ RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
  *
  * @ingroup sensor_insitu_rdo
  */
@@ -506,7 +506,7 @@ class InSituRDO_DOpct : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref sensor_insitu_rdo_temp) from a
- * [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
+ * [In-Situ RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
  *
  * @ingroup sensor_insitu_rdo
  */
@@ -551,7 +551,7 @@ class InSituRDO_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [oxygen partial pressure output](@ref sensor_insitu_rdo_pressure) from a
- * [InSitu RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
+ * [In-Situ RDO PRO-X dissolved oxygen sensor](@ref sensor_insitu_rdo).
  *
  * @ingroup sensor_insitu_rdo
  */
@@ -592,4 +592,4 @@ class InSituRDO_Pressure : public Variable {
     ~InSituRDO_Pressure() {}
 };
 /**@}*/
-#endif  // SRC_SENSORS_InSituRDO_H_
+#endif  // SRC_SENSORS_INSITURDO_H_

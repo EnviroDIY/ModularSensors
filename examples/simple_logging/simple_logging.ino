@@ -3,7 +3,7 @@
  * @brief A simple data logging example.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *

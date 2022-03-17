@@ -39,9 +39,9 @@
  *
  * ___
  * @section modem_digi_3g_bypass_examples Example Code
- * The digi_cellular is used in the @menulink{digi_3gby} example.
+ * The digi_cellular is used in the @menulink{digi_xbee_3g_bypass} example.
  *
- * @menusnip{xbee_3g_bypass}
+ * @menusnip{digi_xbee_3g_bypass}
  */
 /* clang-format on */
 

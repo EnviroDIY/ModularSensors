@@ -52,9 +52,9 @@
  *
  * ___
  * @section sensor_clarivue_examples Example Code
- * The Campbell ClariVUE10 is used in the @menulink{clarivue} example.
+ * The Campbell ClariVUE10 is used in the @menulink{campbell_clari_vue10} example.
  *
- * @menusnip{clarivue}
+ * @menusnip{campbell_clari_vue10}
  */
 /* clang-format on */
 

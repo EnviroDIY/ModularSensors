@@ -10,7 +10,7 @@
  * Campbell Scientific OBS3+ Turbidity sensor
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -85,7 +85,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [sim7080] */
+/** Start [sim_com_sim7080] */
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
 
@@ -97,7 +97,8 @@ const int32_t   modemBaud = 9600;  //  SIM7080 does auto-bauding by default, but
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 
-const int8_t modemVccPin =  18;  // MCU pin controlling modem power --- 
+const int8_t modemVccPin =
+    18;  // MCU pin controlling modem power ---
          //  Pin 18 is the power enable pin
          //  for the bee socket on Mayfly v1.0,
          //  use -1 if using Mayfly 0.5b or if the bee socket is constantly
@@ -117,7 +118,7 @@ SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
                         modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SIMComSIM7080 modem = modem7080;
-/** End [sim7080] */
+/** End [sim_com_sim7080] */
 
 
 // ==========================================================================
