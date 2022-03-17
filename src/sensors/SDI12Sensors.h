@@ -35,9 +35,9 @@
  * sensor. If you want to use more than one SDI-12 sensor, you must ensure that
  * each sensor has a different address. To find or change the SDI-12 address of
  * your sensor, load and run the
- * [sdi12_address_change](https://github.com/EnviroDIY/ModularSensors/blob/master/tools/sdi12_address_change/sdi12_address_change.ino)
+ * [sdi12_address_change](https://github.com/EnviroDIY/ModularSensors/blob/master/extras/sdi12_address_change/sdi12_address_change.ino)
  * program from the
- * [tools](https://github.com/EnviroDIY/ModularSensors/tree/master/tools)
+ * [extras](https://github.com/EnviroDIY/ModularSensors/tree/master/extras)
  * directory or the
  * [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change)
  * example within the SDI-12 library.

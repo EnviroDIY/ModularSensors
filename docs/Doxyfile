@@ -280,7 +280,7 @@ ALIASES                = "license=@par License:\n" \
                          "menusnip{1}=@snippet{lineno} menu_a_la_carte.ino \1 ^^ ^^ " \
                          "m_innerpage{1}=@xmlonly<innerpage refid=\"\1\"> </innerpage>@endxmlonly"
 
-                        #  "menulink{1}=[menu a la carte](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_\1)" \
+                        #  "menulink{1}=[menu a la carte](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_\1)" \
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
 # instance, some of the names that are used will be different. The list of all
@@ -996,7 +996,7 @@ EXCLUDE_SYMBOLS        =
 # command).
 
 EXAMPLE_PATH           = ../examples \
-                         ../tools
+                         ../extras
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and

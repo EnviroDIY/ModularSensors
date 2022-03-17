@@ -94,6 +94,9 @@ with fileinput.FileInput(
         massaged_line = line
         # Convert markdown comment tags to c++/dox style comment tags
         massaged_line = re.sub(r"\[//\]: # \( @(\w+?.*) \)", r"@\1", massaged_line)
+        # allow thank you tags
+        massaged_line = massaged_line.replace("thanks to @", "thanks to \@")
+
         # Convert GitHub pages url's to refs
         # I'm putting the long URL in the markdown because I want the links there to
         # work and go to the pages.  But when feeding it to Doxygen, I want them to be
@@ -103,8 +106,8 @@ with fileinput.FileInput(
         # For links to sections, doxygen cuts off the first letter of the section name
         # in the examples (UGH), so some acrobatics to find them
         massaged_line = re.sub(
-            r"https://envirodiy.github.io/ModularSensors/[\w/-]+\.html#enu_(?P<section_name>[\w/-]+)",
-            r"@ref menu_\g<section_name>",
+            r"https://envirodiy.github.io/ModularSensors/[\w/-]+\.html#enu_walk_(?P<section_name>[\w/-]+)",
+            r"@ref menu_walk_\g<section_name>",
             massaged_line,
         )
         # for classes, we need to switch camel and snake cases

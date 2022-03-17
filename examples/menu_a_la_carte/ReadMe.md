@@ -207,7 +207,7 @@ Not all AVR boards are supported by NeoSWSerial.
 
 [//]: # ( @menusnip{neoswserial} )
 
-When using NeoSWSerial we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_serial_interrupts).
+When using NeoSWSerial we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_serial_interrupts).
 
 
 ##### SoftwareSerial with External Interrupts <!-- {#menu_walk_softwareserial} -->
@@ -223,7 +223,7 @@ If you only want to use the serial line for incoming or outgoing data, set the o
 
 [//]: # ( @menusnip{softwareserial} )
 
-When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_serial_interrupts).
+When using SoftwareSerial with External Interrupts we will also have to actually set the data receiving (Rx) pin modes for interrupt in the [setup function](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_serial_interrupts).
 
 
 ##### Software I2C/Wire <!-- {#menu_walk_softwarewire} -->
@@ -246,7 +246,7 @@ These pin selections are based on the Adafruit Feather M0.
 [//]: # ( @menusnip{serial_ports_SAMD} )
 
 In addition to creating the extra SERCOM ports here, the pins must be set up as the proper pin peripherals after the serial ports are begun.
-This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_pin_periph) of the setup function.
+This is shown in the [SAMD Pin Peripherals section](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_pin_periph) of the setup function.
 
 
 NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have any exmple code for using them.
@@ -255,7 +255,7 @@ NOTE:  The SAMD51 board has an amazing _8_ available SERCOM's, but I do not have
 
 ### Assigning Serial Port Functionality <!-- {#menu_walk_assign_ports_sw} -->
 
-This section just assigns all the serial ports from the @ref menu_serial_ports section above to specific functionality.
+This section just assigns all the serial ports from the @ref menu_walk_serial_ports section above to specific functionality.
 For a board with the option of up to 4 hardware serial ports, like the SAMD21 or Arduino Mega, we use the Serial1 to talk to the modem, Serial2 for modbus, and Serial3 for the Maxbotix.
 For an AVR board where we're relying on a mix of hardware and software ports, we use hardware Serial 1 for the modem, AltSoftSerial for modbus, and NeoSWSerial for the Maxbotix.
 Depending on how you rank the importance of each component, you can adjust these to your liking.
@@ -314,7 +314,7 @@ The Telit based Digi XBees (LTE Cat1 both Verizon and AT&T) can only use this mo
 [//]: # ( @menusnip{digi_xbee_cellular_transparent} )
 Depending on your cellular carrier, it is best to select the proper carrier profile and network.
 Setting these helps the modem to connect to network faster.
-This is shows in the [XBee Cellular Carrier](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_xbeec_carrier) chunk of the setup function.
+This is shows in the [XBee Cellular Carrier](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_xbeec_carrier) chunk of the setup function.
 
 
 ### Digi XBee3 LTE-M - Bypass Mode <!-- {#menu_walk_digi_xbee_lte_bypass} -->
@@ -388,7 +388,7 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{espressif_esp8266} )
 
 Because the ESP8266's default baud rate is too fast for an 8MHz board like the Mayfly, to use it you need to drop the baud rate down for sucessful communication.
-You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_esp) part of the setup function below.
+You can set the slower baud rate using some external method, or useing the code from the ESP8266 Baud Rate(https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_esp) part of the setup function below.
 
 
 ### Quectel BG96 <!-- {#menu_walk_quectel_bg96} -->
@@ -406,7 +406,7 @@ Pins that do not apply should be set as -1.
 
 [//]: # ( @menusnip{quectel_bg96} )
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
-Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_skywire) part of the setup function below.
+Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_skywire) part of the setup function below.
 
 
 ### Sequans Monarch <!-- {#menu_walk_sequans_monarch} -->
@@ -425,7 +425,7 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{sequans_monarch} )
 
 If you are interfacing with a Nimbelink Skywire board via the Skywire development board, you also need to handle the fact that the development board reverses the levels of the status, wake, and reset pins.
-Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_setup_skywire) part of the setup function below.
+Code to invert the pin levels is in the [Skywire Pin Inversions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_setup_skywire) part of the setup function below.
 
 The default baud rate of the SVZM20 is much too fast for almost all Arduino boards.
 _Before_ attampting to connect a SVZM20 to an Arduino you should connect it to your computer and use AT commands to decrease the baud rate.
@@ -751,7 +751,7 @@ The Arduino pin controlling the receive and data enable on your RS485-to-TTL ada
 In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.
 AltSoftSerial and HardwareSerial work fine.
 
-The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to modbus functionality in the @ref menu_assign_ports_sw section.
+The serial ports for this example are created in the @ref menu_walk_serial_ports section and then assigned to modbus functionality in the @ref menu_walk_assign_ports_sw section.
 
 Up to two power pins are provided so that the RS485 adapter, the sensor and/or an external power relay can be controlled separately.
 If the power to everything is controlled by the same pin, use -1 for the second power pin or omit the argument.
@@ -786,7 +786,7 @@ The Arduino pin controlling power on/off, a stream instance for received data (i
 (Use -1 for the trigger pin if you do not have it connected.)
 Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 
-The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to the sonar functionality in the @ref menu_assign_ports_sw section.
+The serial ports for this example are created in the @ref menu_walk_serial_ports section and then assigned to the sonar functionality in the @ref menu_walk_assign_ports_sw section.
 
 @see @ref sensor_maxbotix
 
@@ -861,7 +861,7 @@ ___
 Because older versions of these sensors all ship with the same I2C address, and more than one is frequently used at different soil depths in the same profile, this module has an optional dependence on Testato's [SoftwareWire](https://github.com/Testato/SoftwareWire) library for software I2C.
 
 To use software I2C, compile with the build flag `-D MS_PALEOTERRA_SOFTWAREWIRE`.
-See the [software wire](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_softwarewire) section for an example of creating a software I2C instance to share between sensors.
+See the [software wire](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_softwarewire) section for an example of creating a software I2C instance to share between sensors.
 
 The constructors for the software I2C implementation requires either the SCL and SDA pin numbers or a reference to the I2C object as arguments.
 All variants of the constructor require the Arduino power pin.
@@ -971,7 +971,7 @@ In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate 
 AltSoftSerial and HardwareSerial work fine.
 NeoSWSerial is a bit hit or miss, but can be used in a pinch.
 
-The serial ports for this example are created in the @ref menu_serial_ports section and then assigned to modbus functionality in the @ref menu_assign_ports_sw section.
+The serial ports for this example are created in the @ref menu_walk_serial_ports section and then assigned to modbus functionality in the @ref menu_walk_assign_ports_sw section.
 
 @see @ref yosemitech_group
 
@@ -1210,7 +1210,7 @@ This is also just for debugging - it's very helpful when connected to the logger
 
 If we're using either NeoSWSerial or SoftwareSerial_ExtInts we need to assign the data receiver pins to interrupt functionality here in the setup.
 
-The [NeoSWSerial](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_neoswserial) and [SoftwareSerial_ExtInts](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_softwareserial) objects were created way up in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_serial_ports) section.
+The [NeoSWSerial](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_neoswserial) and [SoftwareSerial_ExtInts](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_softwareserial) objects were created way up in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_serial_ports) section.
 
 **NOTE:**  If you create more than one NeoSWSerial or Software serial object, you need to call the enableInterrupt function for each Rx pin!
 
@@ -1228,14 +1228,14 @@ For SoftwareSerial with External interrupts we use:
 ### Serial Begin <!-- {#menu_walk_setup_serial_begin} -->
 
 Every serial port setup and used in the program must be "begun" in the setup function.
-This section calls the begin functions for all of the various ports defined in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_serial_ports) section
+This section calls the begin functions for all of the various ports defined in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_serial_ports) section
 
 [//]: # ( @menusnip{setup_serial_begins} )
 
 ### SAMD Pin Peripherals <!-- {#menu_walk_setup_pin_periph} -->
 
 After beginning all of the serial ports, we need to set the pin peripheral settings for any SERCOM's we assigned to serial functionality on the SAMD boards.
-These were created in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_samd_serial_ports) section above.
+These were created in the [Extra Serial Ports](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_samd_serial_ports) section above.
 This does not need to be done for an AVR board (like the Mayfly).
 
 [//]: # ( @menusnip{setup_samd_pins} )
@@ -1243,7 +1243,7 @@ This does not need to be done for an AVR board (like the Mayfly).
 ### Flash the LEDs <!-- {#menu_walk_setup_flash} -->
 
 Like printing debugging information to the serial port, flashing the board LED's is a very helpful indication that the board just restarted.
-Here we set the pin modes for the LED pins and flash them back and forth using the greenredflash() function we created back in the [working functions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_working) section.
+Here we set the pin modes for the LED pins and flash them back and forth using the greenredflash() function we created back in the [working functions](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_working) section.
 
 [//]: # ( @menusnip{setup_flashing_led} )
 

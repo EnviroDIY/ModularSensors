@@ -2347,10 +2347,10 @@ Variable* variableList[] = {
 #if defined BUILD_SENSOR_CAMPBELL_CLARI_VUE10
     clarivueTurbidity,
     clarivueTemp,
-    clarivueError
+    clarivueError,
 #endif
 #if defined BUILD_SENSOR_CAMPBELL_OBS3
-        obs3TurbLow,
+    obs3TurbLow,
     obs3VoltLow,
     obs3TurbHigh,
     obs3VoltHigh,

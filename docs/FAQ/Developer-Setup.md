@@ -34,7 +34,7 @@ framework = arduino
 check_tool = cppcheck, clangtidy
 check_patterns =
 	src
-	tools
+	extras
 	examples
 check_flags =
 	cppcheck: --enable=all, --inline-suppr
@@ -51,7 +51,7 @@ lib_ignore =
 	doc
 	examples
 	sensor_tests
-    tools
+    extras
 	Adafruit NeoPixel
 	Adafruit GFX Library
 	Adafruit SSD1306

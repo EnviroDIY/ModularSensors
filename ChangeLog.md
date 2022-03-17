@@ -414,7 +414,7 @@ Deep debug error
 Minor Bugs and Simplified Debugging
 
 ### Added
- - Gave every header file a unique debugging define statement so each file can be debugged individually by building with the build flag -DMS_xxx_DEBUG where xxx is the file name in upper case.
+- Gave every header file a unique debugging define statement so each file can be debugged individually by building with the build flag -DMS_xxx_DEBUG where xxx is the file name in upper case.
     - Some files also have a "deep" debugging option with -DMS_xxx_DEBUG_DEEP
 - Created examples for LearnEnviroDIYCode
 

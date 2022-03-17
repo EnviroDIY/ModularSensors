@@ -137,7 +137,7 @@ enableInterrupt(rx_pin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 
 ## SAMD SERCOMs <!-- {#streams_samd_sercom} -->
 
-Example code for creating more serial ports on an Adafruit feather M0 using the SERCOMs is available [in the menu a la carte example](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_samd_serial_ports).
+Example code for creating more serial ports on an Adafruit feather M0 using the SERCOMs is available [in the menu a la carte example](https://envirodiy.github.io/ModularSensors/menu_a_la_carte_8ino-example.html#enu_walk_samd_serial_ports).
 
 Here are some helpful links for more information about the number of serial ports available on some of the different Arduino-style boards:
 
