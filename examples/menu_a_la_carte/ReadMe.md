@@ -486,7 +486,7 @@ Pins that do not apply should be set as -1.
 [//]: # ( @menusnip{sim_com_sim7000} )
 
 
-### SIMCom SIM7080G (EnviroDIY LTE Bee]) <!-- {#menu_walk_sim_com_sim7000} -->
+### SIMCom SIM7080G (EnviroDIY LTE Bee]) <!-- {#menu_walk_sim_com_sim7080} -->
 
 This code is for a SIMCom SIM7080G or one of its variants, including the [EnviroDIY LTE Bee](https://www.envirodiy.org/product/envirodiy-lte-bee-pack-of-5/).
 
