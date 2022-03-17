@@ -8,7 +8,8 @@
   - [Default baud rates of supported modules](#default-baud-rates-of-supported-modules)
   - [Power Requirements of Supported Modems](#power-requirements-of-supported-modems)
   - [Sleep and Reset Pin Labels](#sleep-and-reset-pin-labels)
-  - [Pin Numbers to Use when Connecting to the Mayfly](#pin-numbers-to-use-when-connecting-to-the-mayfly)
+  - [Pin Numbers to Use when Connecting to a Mayfly 0.x](#pin-numbers-to-use-when-connecting-to-a-mayfly-0x)
+  - [Pin Numbers to Use when Connecting to a Mayfly 1.x](#pin-numbers-to-use-when-connecting-to-a-mayfly-1x)
 
 [//]: # ( End GitHub Only )
 
@@ -51,6 +52,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 
 ² The NB IOT UBee based on the SARA N211 is _not_ supported.
 
+***
 
 ## Default baud rates of supported modules <!-- {#modem_notes_bauds} -->
 
@@ -65,6 +67,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 |    u-blox SARA R4 or N4 series     |  115200; _reverts to this speed after every power loss_  |
 |   u-blox 2G, 3G, and 4G modules    |       varies by module, most auto-baud or use 9600       |
 
+***
 
 ## Power Requirements of Supported Modems <!-- {#modem_notes_power} -->
 
@@ -98,6 +101,8 @@ Most modules are capable of serial communication and some level of functionality
 
 ¹ This is a firm minimum; the SIM7000 _will not connect to the internet_ if only powered at 500mA.
 
+***
+
 ## Sleep and Reset Pin Labels <!-- {#modem_notes_sleep} -->
 
 |            Module             |              Status Pin Label               | Reset Label |            Wake / Sleep Request             |
@@ -121,24 +126,24 @@ Most modules are capable of serial communication and some level of functionality
 | u-blox 2G, 3G, and 4G modules |                   `V_INT`                   |  `RESET_N`  |                  `PWR_ON`                   |
 |         Sodaq UBee 3G         |      `STATUS` also mislabeled as `CTS`      |   `RESET`   |                  `PWR_ON`                   |
 
+***
 
+## Pin Numbers to Use when Connecting to a Mayfly 0.x <!-- {#modem_notes_mayfly_0_pins} -->
 
-## Pin Numbers to Use when Connecting to the Mayfly <!-- {#modem_notes_mayfly_pins} -->
+Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly v0.3, 0.4, 0.5, 0.5b, or 0.5c using its Bee socket.
 
-Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly v0.x using its Bee socket.
-
-|                       Module                       |     Power      |     Status     |     Reset      | Sleep Request  |
-| :------------------------------------------------: | :------------: | :------------: | :------------: | :------------: |
-| Digi XBee/XBee3, all variants (direct connection)¹ |       -1       |      19²       |       -1       |       23       |
-|  Digi XBee/XBee3, all variants (with LTE adapter)  | -1<sup>3</sup> | 19<sup>4</sup> |       20       |       23       |
-|          Itead Wee (ESP8266)<sup>8</sup>           |       -1       |       -1       | -1<sup>5</sup> |       -1       |
-|             DFRobot WiFi Bee (ESP8266)             |       -1       |       -1       |       -1       | 19<sup>6</sup> |
-|             Dragino NB IOT Bee (BG96)              |       -1       |       -1       | -1<sup>7</sup> | -1<sup>7</sup> |
-|             Sodaq GPRSBee R4 (SIM900)              |       -1       |       19       |       -1       |       23       |
-|          Sodaq GPRSBee R6 or R7 (SIM800H)          |       23       |       19       |       -1       |       -1       |
-|        Sodaq UBee LTE-M (u-blox SARA R410M)        |       23       |       19       |       -1       |       20       |
-|          Sodaq UBee 3G (u-blox SARA U201)          |       23       |       19       |       -1       |       20       |
-|            EnviroDIY LTE Bee (SIM7080G)            |       -1       |       19       | 23<sup>9</sup> | 23<sup>9</sup> |
+|                            Module                            |     Power      |     Status     |     Reset      | Sleep Request  |
+| :----------------------------------------------------------: | :------------: | :------------: | :------------: | :------------: |
+|      Digi XBee/XBee3, all variants (direct connection)¹      |       -1       |      19²       |       -1       |       23       |
+| Digi XBee/XBee3, all variants (with LTE adapter<sup>8</sup>) | -1<sup>3</sup> | 19<sup>4</sup> |       20       |       23       |
+|               Itead Wee (ESP8266)<sup>8</sup>                |       -1       |       -1       | -1<sup>5</sup> |       -1       |
+|                  DFRobot WiFi Bee (ESP8266)                  |       -1       |       -1       |       -1       | 19<sup>6</sup> |
+|                  Dragino NB IOT Bee (BG96)                   |       -1       |       -1       | -1<sup>7</sup> | -1<sup>7</sup> |
+|                  Sodaq GPRSBee R4 (SIM900)                   |       -1       |       19       |       -1       |       23       |
+|               Sodaq GPRSBee R6 or R7 (SIM800H)               |       23       |       19       |      N/A       |      N/A       |
+|             Sodaq UBee LTE-M (u-blox SARA R410M)             |       23       |       19       |       -1       |       20       |
+|               Sodaq UBee 3G (u-blox SARA U201)               |       23       |       19       |       -1       |       20       |
+|                 EnviroDIY LTE Bee (SIM7080G)                 |       -1       |       19       |      N/A       | 23<sup>9</sup> |
 
 
 ¹ To use the cellular Digi XBee's without the LTE adapter, your Mayfly must be at least v0.5b, you must use SJ13 to connect the Bee directly to the LiPo, and you must always have a battery connected to provide enough power for the XBee to make a cellular connection.
@@ -146,24 +151,58 @@ If you turn off the Mayfly via its switch but leave the XBee connected as above,
 Disconnect the battery if you turn off the Mayfly.
 
 ² The Digi XBee reports ON/SLEEP_N on pin 13, but this is not connected to a Mayfly pin.
-Instead, you must use the XBee's `CTS` pin (pin 12) which is connected to Mayfly pin 19.
+Instead, you must use the XBee's `CTS` pin (pin 12) which is connected to Mayfly pin 19 and set the argument `useCTSforStatus` to `true` in the bee constructor.
 
-<sup>3</sup> If you close solder jumper 1 (SJ1) on the LTE adapter and use connect solder jumper 7 (SJ7) on the Mayfly to te A5 to ASSOC, you can use A5 as the power pin for the XBee.
+<sup>3</sup> If you close solder jumper 1 (SJ1) on the LTE adapter and use connect solder jumper 7 (SJ7) on the Mayfly to connect A5 to ASSOC, you can use A5 as the power pin for the XBee.
 
-<sup>4</sup> The LTE adapter switches pins 12 and 13 so that the true `STATUS` pn of the XBee is connected to Mayfly pin 19.
+<sup>4</sup> The LTE adapter switches pins 12 and 13 so that the true `STATUS` pin of the XBee is connected to Mayfly pin 19.
+You should set the argument `useCTSforStatus` to `false` in the bee constructor
 
 <sup>5</sup> I *strongly* recommend running a new wire along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4.
    This will enable you to use A4 as the reset pin which allows you to use deep sleep.
 
 <sup>6</sup> Use 13 as the `espSleepRqPin` for light sleep.
 
-<sup>7</sup> I *strongly* recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin of the XBee socket to A3.
+<sup>7</sup> I *strongly* recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin 18 of the XBee socket to A3.
 This will enable you to use A4 as the reset pin and A3 as the sleep request pin.
 With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (ie, without a separate battery connection for the modem).
 
 <sup>8</sup> This module is no longer produced or sold.
 
 <sup>9</sup> The EnviroDIY LTE Bee inverts the signal to the sleep request pin (`PWRKEY`) - which is also used for reset.
+To use it, you must add these commands to your setup:
+```cpp
+modem.setModemWakeLevel(HIGH);
+modem.setModemResetLevel(HIGH);
+```
+
+***
+
+## Pin Numbers to Use when Connecting to a Mayfly 1.x <!-- {#modem_notes_mayfly_1_pins} -->
+
+Here are the pin numbers to use for modules that can be attached directly to an EnviroDIY Mayfly v1.0 or 1.1 using its Bee socket.
+
+|                      Module                       | Power | Status |     Reset      | Sleep Request  |
+| :-----------------------------------------------: | :---: | :----: | :------------: | :------------: |
+| Digi XBee/XBee3, all variants (direct connection) |  18¹  |  19²   | A5<sup>3</sup> |       23       |
+|            DFRobot WiFi Bee (ESP8266)             |  18¹  |   -1   |       -1       |       -1       |
+|             Dragino NB IOT Bee (BG96)             |  18¹  |   -1   | A5<sup>3</sup> |       -1       |
+|             Sodaq GPRSBee R4 (SIM900)             |  18¹  |   19   |       -1       |       23       |
+|         Sodaq GPRSBee R6 or R7 (SIM800H)          |  23   |   19   |      N/A       |      N/A       |
+|       Sodaq UBee LTE-M (u-blox SARA R410M)        |  23   |   19   | A5<sup>3</sup> |       20       |
+|         Sodaq UBee 3G (u-blox SARA U201)          |  23   |   19   | A5<sup>3</sup> |       20       |
+|           EnviroDIY LTE Bee (SIM7080G)            |  18¹  |   19   |      N/A       | 23<sup>4</sup> |
+
+
+¹ This assumes you have not changed solder jumper 18.  If you have switched SJ18 to connect bee pin one directly to 3.3V, use -1.
+
+² The Digi XBee reports ON/SLEEP_N on pin 13, but this is not connected to a Mayfly pin by default.
+You can use the XBee's `CTS` pin (pin 12) which is connected to Mayfly pin 19 by default and set the argument `useCTSforStatus` to `true` in the bee constructor.
+Alternately (and preferably) you can change solder jumper 19 (SJ19) to connect bee pin 13 to D19 and set the argument `useCTSforStatus` to `false`.
+
+<sup>3</sup> Solder jumper 20 should be left in the default position, connecting pin A5 to bee pin 5.
+
+<sup>4</sup> The EnviroDIY LTE Bee inverts the signal to the sleep request pin (`PWRKEY`) - which is also used for reset.
 To use it, you must add these commands to your setup:
 ```cpp
 modem.setModemWakeLevel(HIGH);
