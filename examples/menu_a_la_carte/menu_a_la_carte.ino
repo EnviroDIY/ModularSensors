@@ -1301,11 +1301,11 @@ Variable* rdoO2pp =
 #endif
 
 
-#if defined BUILD_SENSOR_INSITU_TROLL_SDI12A
+#if defined BUILD_SENSOR_IN_SITU_TROLL_SDI12A
 // ==========================================================================
 //    In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor
 // ==========================================================================
-/** Start [insitu_troll_sdi12a] */
+/** Start [in_situ_troll_sdi12a] */
 #include <sensors/InSituTrollSdi12a.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1321,13 +1321,13 @@ InsituTrollSdi12a insutuTROLL(*TROLLSDI12address, TROLLPower, TROLLData,
                               TROLLNumberReadings);
 
 // Create pressure, temperature, and depth variable pointers for the TROLL
-Variable* trollPressure = new InsituTrollSdi12a_Pressure(
+Variable* trollPressure = new InSituTrollSdi12a_Pressure(
     &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* trollTemp = new InsituTrollSdi12a_Temp(
+Variable* trollTemp = new InSituTrollSdi12a_Temp(
     &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* trollDepth = new InsituTrollSdi12a_Depth(
+Variable* trollDepth = new InSituTrollSdi12a_Depth(
     &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [insitu_troll_sdi12a] */
+/** End [in_situ_troll_sdi12a] */
 #endif
 
 
@@ -2377,7 +2377,7 @@ Variable* variableList[] = {
     rdoDOmgL,
     rdoO2pp,
 #endif
-#if defined BUILD_SENSOR_INSITU_TROLL_SDI12A
+#if defined BUILD_SENSOR_IN_SITU_TROLL_SDI12A
     trollPressure,
     trollTemp,
     trollDepth,
@@ -2596,6 +2596,27 @@ const char* thingSpeakChannelKey =
 ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
                            thingSpeakChannelID, thingSpeakChannelKey);
 /** End [thing_speak_publisher] */
+#endif
+
+
+#if defined BUILD_PUB_UBIDOTS_PUBLISHER
+// ==========================================================================
+//  Ubidots Data Publisher
+// ==========================================================================
+/** Start [ubidots_publisher] */
+// The authentication token from Ubdots, either the Organization's Integration
+// Token (under Users > Organization menu,visible by Admin only) OR the STEM
+// User's Device Token (under the specific evice's setup panel).
+const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
+// The device API Label from Ubidots, derived from the user-specified device
+// name.
+const char* ubidotsDeviceID = "######";
+
+// Create a data publisher for ThingSpeak
+#include <publishers/UbidotsPublisher.h>
+UbidotsPublisher ubidots(dataLogger, &modem.gsmClient, ubidotsToken,
+                         ubidotsDeviceID);
+/** End [ubidots_publisher] */
 #endif
 
 

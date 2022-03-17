@@ -113,6 +113,7 @@ ___
       - [Monitor My Watershed](#monitor-my-watershed)
       - [DreamHost](#dreamhost)
       - [ThingSpeak](#thingspeak)
+      - [Ubidots](#ubidots)
   - [Extra Working Functions](#extra-working-functions)
   - [Arduino Setup Function](#arduino-setup-function)
     - [Starting the Function](#starting-the-function)
@@ -807,11 +808,11 @@ ___
 ___
 
 
-#### In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor <!-- {#menu_walk_insitu_troll_sdi12a} -->
+#### In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor <!-- {#menu_walk_in_situ_troll_sdi12a} -->
 
 @see @ref sensor_insitu_troll
 
-[//]: # ( @menusnip{insitu_troll_sdi12a} )
+[//]: # ( @menusnip{in_situ_troll_sdi12a} )
 
 ___
 
@@ -1234,6 +1235,14 @@ After you have set up channels on ThingSpeak, you can use this code to publish y
 Keep in mind that the order of variables in the VariableArray is **crucial** when publishing to ThingSpeak.
 
 [//]: # ( @menusnip{thing_speak_publisher} )
+
+___
+
+#### Ubidots <!-- {#menu_walk_ubidots_publisher} -->
+
+Use this to publish data to Ubidots.
+
+[//]: # ( @menusnip{ubidots_publisher} )
 
 ___
 

@@ -66,9 +66,9 @@
  *
  * ___
  * @section sensor_insitu_troll_examples Example Code
- * The In-Situ TROLL is used in the @menulink{insitu_troll_sdi12a} example.
+ * The In-Situ TROLL is used in the @menulink{in_situ_troll_sdi12a} example.
  *
- * @menusnip{insitu_troll_sdi12a}
+ * @menusnip{in_situ_troll_sdi12a}
  */
 /* clang-format on */
 
