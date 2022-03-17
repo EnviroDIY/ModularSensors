@@ -1317,16 +1317,16 @@ const int8_t  TROLLData           = 7;  // The SDI-12 data pin
 const uint8_t TROLLNumberReadings = 2;  // The number of readings to average
 
 // Create an In-Situ TROLL sensor object
-InsituTrollSdi12a insutuTROLL(*TROLLSDI12address, TROLLPower, TROLLData,
+InSituTrollSdi12a insituTROLL(*TROLLSDI12address, TROLLPower, TROLLData,
                               TROLLNumberReadings);
 
 // Create pressure, temperature, and depth variable pointers for the TROLL
 Variable* trollPressure = new InSituTrollSdi12a_Pressure(
-    &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+    &insituTROLL, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* trollTemp = new InSituTrollSdi12a_Temp(
-    &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+    &insituTROLL, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* trollDepth = new InSituTrollSdi12a_Depth(
-    &insutuTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+    &insituTROLL, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [in_situ_troll_sdi12a] */
 #endif
 

@@ -28,6 +28,6 @@ jobs:
         uses: arduino/arduino-lint-action@v1
         with:
           project-type: library
-          library-manager: update
+          library-manager: submit
           compliance: strict
           verbose: true

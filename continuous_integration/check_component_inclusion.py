@@ -1,12 +1,17 @@
+#%%
 import glob
 import re
 import sys
+import os
 
-modemHeaderFiles = glob.glob("../src/modems/*.h")
-sensorHeaderFiles = glob.glob("../src/sensors/*.h")
-publisherHeaderFiles = glob.glob("../src/publishers/*.h")
+script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
+
+modemHeaderFiles = glob.glob(os.path.join(script_dir, "../src/modems/*.h"))
+sensorHeaderFiles = glob.glob(os.path.join(script_dir, "../src/sensors/*.h"))
+publisherHeaderFiles = glob.glob(os.path.join(script_dir, "../src/publishers/*.h"))
 
 header_files = modemHeaderFiles + sensorHeaderFiles + publisherHeaderFiles
+print(header_files)
 
 #%% function to find the lowest level class
 def find_subclasses(class_name):
@@ -110,12 +115,16 @@ for publisher_sub_class in publisher_sub_classes:
 # print(must_doc_classes)
 #%%
 menu_example_file = open(
-    "..\\examples\\menu_a_la_carte\\menu_a_la_carte.ino", mode="r", encoding="utf-8"
+    os.path.join(script_dir, "..\\examples\\menu_a_la_carte\\menu_a_la_carte.ino"),
+    mode="r",
+    encoding="utf-8",
 )
 menu_example_code = menu_example_file.read()
 menu_example_file.close()
 menu_walk_file = open(
-    "..\\examples\\menu_a_la_carte\\ReadMe.md", mode="r", encoding="utf-8"
+    os.path.join(script_dir, "..\\examples\\menu_a_la_carte\\ReadMe.md"),
+    mode="r",
+    encoding="utf-8",
 )
 menu_example_walk = menu_walk_file.read()
 menu_walk_file.close()
