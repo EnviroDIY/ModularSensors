@@ -152,8 +152,8 @@
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_SENSORS_InSituRDO_H_
-#define SRC_SENSORS_InSituRDO_H_
+#ifndef SRC_SENSORS_INSITURDO_H_
+#define SRC_SENSORS_INSITURDO_H_
 
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
@@ -592,4 +592,4 @@ class InSituRDO_Pressure : public Variable {
     ~InSituRDO_Pressure() {}
 };
 /**@}*/
-#endif  // SRC_SENSORS_InSituRDO_H_
+#endif  // SRC_SENSORS_INSITURDO_H_
