@@ -16,8 +16,9 @@ python $TRAVIS_BUILD_DIR/code_docs/m.css/css/postprocess.py "m-EnviroDIY.css" "m
 python $TRAVIS_BUILD_DIR/code_docs/m.css/css/postprocess.py "m-EnviroDIY.css" "m-theme-EnviroDIY.css" "m-documentation.css" --no-import -o "m-EnviroDIY.documentation.compiled.css"
 cp $TRAVIS_BUILD_DIR/code_docs/m.css/css/EnviroDIY/m-EnviroDIY+documentation.compiled.css $TRAVIS_BUILD_DIR/code_docs/ModularSensors/docs/css
 
+cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors/docs
+
 # echo "\n\e[32mCreating dox files from example read-me files\e[0m"
-# cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors/docs
 # python documentExamples.py
 
 echo "\n\e[32mCurrent Doxygen version...\e[0m"
