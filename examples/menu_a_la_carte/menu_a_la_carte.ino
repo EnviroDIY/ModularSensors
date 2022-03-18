@@ -287,7 +287,7 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter
+// The pin numbers here are for a Digi XBee with a Mayfly 0.x and LTE adapter
 // For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md
 const int8_t modemVccPin = -1;     // MCU pin controlling modem power
                                    // Option: modemVccPin = A5, if Mayfly SJ7 is
@@ -327,7 +327,7 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter
+// The pin numbers here are for a Digi XBee with a Mayfly 0.x and LTE adapter
 const int8_t modemVccPin    = A5;  // MCU pin controlling modem power
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
@@ -399,13 +399,13 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// The pin numbers here are for a Digi XBee direcly connected to a Mayfly
-const int8_t modemVccPin    = -1;  // MCU pin controlling modem power
+// The pin numbers here are for a Digi XBee direcly connected to a Mayfly 1.x
+const int8_t modemVccPin    = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
 const bool   useCTSforStatus = true;  // Flag to use the CTS pin for status
-const int8_t modemResetPin   = -1;    // MCU pin connected to modem reset pin
+const int8_t modemResetPin   = A5;    // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;    // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;    // MCU pin connected an LED to show modem
                                       // status
@@ -442,9 +442,9 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  Use -1 for pins that do not apply
 // Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
 // Mayfly 1.1
-const int8_t modemVccPin     = A5;  // MCU pin controlling modem power
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
+const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 19;  // MCU pin for wake from light sleep
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
@@ -485,11 +485,11 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins here are for a modified Mayfly and a Dragino IoT Bee
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+// Example pins here are for a Mayfly 1.x and a Dragino IoT Bee
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = A4;  // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = A3;  // MCU pin for modem sleep/wake request
+const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
+const int8_t modemSleepRqPin = -1;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
@@ -521,7 +521,7 @@ const int32_t modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 // Nimbelink Skywire (NOT directly connectable to a Mayfly!)
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = 20;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
@@ -552,7 +552,7 @@ const int32_t modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq GPRSBee R4 with a Mayfly
+// Example pins are for a Sodaq GPRSBee R4 with a Mayfly 0.x
 const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -583,9 +583,9 @@ const int32_t modemBaud = 9600;  //  SIM7000 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
-const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
+const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
+const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
@@ -615,7 +615,7 @@ const int32_t modemBaud =
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 // and-global breakout bk-7080a
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
@@ -645,7 +645,7 @@ const int32_t modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq GPRSBee R6 or R7 with a Mayfly
+// Example pins are for a Sodaq GPRSBee R6 or R7 with a Mayfly 0.x
 const int8_t modemVccPin     = 23;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -682,7 +682,7 @@ const int32_t modemBaud =
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq uBee R410M with a Mayfly
+// Example pins are for a Sodaq uBee R410M with a Mayfly 0.x
 const int8_t modemVccPin     = 23;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -714,7 +714,7 @@ const int32_t modemBaud =
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq uBee U201 with a Mayfly
+// Example pins are for a Sodaq uBee U201 with a Mayfly 0.x
 const int8_t modemVccPin     = 23;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -1233,7 +1233,7 @@ Variable* es2Temp = new DecagonES2_Temp(&es2,
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  alsPower      = sensorPowerPin;  // Power pin
-const int8_t  alsData       = 7;               // The ALS PT-19 data pin
+const int8_t  alsData       = A4;              // The ALS PT-19 data pin
 const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
 const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
 const uint8_t alsNumberReadings = 10;

@@ -70,6 +70,7 @@ ___
     - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
       - [Decagon CTD-10 Conductivity, Temperature, and Depth Sensor](#decagon-ctd-10-conductivity-temperature-and-depth-sensor)
     - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
+      - [Everlight ALS-PT19 Ambient Light Sensor](#everlight-als-pt19-ambient-light-sensor)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
       - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe)
@@ -86,6 +87,7 @@ ___
       - [Meter Teros 11 Soil Moisture Sensor](#meter-teros-11-soil-moisture-sensor)
     - [PaleoTerra Redox Sensors](#paleoterra-redox-sensors)
     - [Trinket-Based Tipping Bucket Rain Gauge](#trinket-based-tipping-bucket-rain-gauge)
+      - [Sensirion SHT4X Digital Humidity and Temperature Sensor](#sensirion-sht4x-digital-humidity-and-temperature-sensor)
     - [Northern Widget Tally Event Counter](#northern-widget-tally-event-counter)
     - [TI INA219 High Side Current Sensor](#ti-ina219-high-side-current-sensor)
     - [Turner Cyclops-7F Submersible Fluorometer](#turner-cyclops-7f-submersible-fluorometer)
@@ -773,6 +775,16 @@ The data pin must be a pin that supports pin-change interrupts.
 ___
 
 
+#### Everlight ALS-PT19 Ambient Light Sensor <!-- {#menu_walk_everlight_alspt19} -->
+
+@see @ref sensor_alspt19
+
+[//]: # ( @menusnip{everlight_alspt19} )
+
+___
+
+
+
 ### External Voltage via TI ADS1x15 <!-- {#menu_walk_external_voltage} -->
 
 The Arduino pin controlling power on/off and the analog data channel _on the TI ADS1115_ are required for the sensor constructor.
@@ -965,6 +977,15 @@ Note that you cannot input a number of measurements to average because averaging
 @see @ref sensor_i2c_rain
 
 [//]: # ( @menusnip{rain_counter_i2c} )
+
+___
+
+
+#### Sensirion SHT4X Digital Humidity and Temperature Sensor <!-- {#menu_walk_sensirion_sht4x} -->
+
+@see @ref sensor_sht4x
+
+[//]: # ( @menusnip{sensirion_sht4x} )
 
 ___
 

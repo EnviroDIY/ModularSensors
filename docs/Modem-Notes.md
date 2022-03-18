@@ -184,6 +184,8 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 
 |                      Module                       | Power | Status |     Reset      | Sleep Request  |
 | :-----------------------------------------------: | :---: | :----: | :------------: | :------------: |
+|            EnviroDIY WiFi Bee (ESP32)             |  18¹  |  -1   | A5<sup>3</sup> |      -1       |
+|           EnviroDIY LTE Bee (SIM7080G)            |  18¹  |   19   |      N/A       | 23<sup>4</sup> |
 | Digi XBee/XBee3, all variants (direct connection) |  18¹  |  19²   | A5<sup>3</sup> |       23       |
 |            DFRobot WiFi Bee (ESP8266)             |  18¹  |   -1   |       -1       |       -1       |
 |             Dragino NB IOT Bee (BG96)             |  18¹  |   -1   | A5<sup>3</sup> |       -1       |
@@ -191,7 +193,6 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 |         Sodaq GPRSBee R6 or R7 (SIM800H)          |  23   |   19   |      N/A       |      N/A       |
 |       Sodaq UBee LTE-M (u-blox SARA R410M)        |  23   |   19   | A5<sup>3</sup> |       20       |
 |         Sodaq UBee 3G (u-blox SARA U201)          |  23   |   19   | A5<sup>3</sup> |       20       |
-|           EnviroDIY LTE Bee (SIM7080G)            |  18¹  |   19   |      N/A       | 23<sup>4</sup> |
 
 
 ¹ This assumes you have not changed solder jumper 18.  If you have switched SJ18 to connect bee pin one directly to 3.3V, use -1.
