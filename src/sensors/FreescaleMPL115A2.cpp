@@ -5,7 +5,7 @@
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Implements the MPL115A2 class.
+ * @brief Implements the FreescaleMPL115A2 class.
  */
 
 #include "FreescaleMPL115A2.h"
@@ -13,29 +13,32 @@
 
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0x60.
-MPL115A2::MPL115A2(TwoWire* theI2C, int8_t powerPin,
-                   uint8_t measurementsToAverage)
-    : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES, MPL115A2_WARM_UP_TIME_MS,
-             MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage) {
+FreescaleMPL115A2::FreescaleMPL115A2(TwoWire* theI2C, int8_t powerPin,
+                                     uint8_t measurementsToAverage)
+    : Sensor("FreescaleMPL115A2", MPL115A2_NUM_VARIABLES,
+             MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS,
+             MPL115A2_MEASUREMENT_TIME_MS, powerPin, -1,
+             measurementsToAverage) {
     _i2c = theI2C;
 }
-MPL115A2::MPL115A2(int8_t powerPin, uint8_t measurementsToAverage)
-    : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES, MPL115A2_WARM_UP_TIME_MS,
-             MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage, MPL115A2_INC_CALC_VARIABLES) {
+FreescaleMPL115A2::FreescaleMPL115A2(int8_t  powerPin,
+                                     uint8_t measurementsToAverage)
+    : Sensor("FreescaleMPL115A2", MPL115A2_NUM_VARIABLES,
+             MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS,
+             MPL115A2_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage,
+             MPL115A2_INC_CALC_VARIABLES) {
     _i2c = &Wire;
 }
 // Destructor
-MPL115A2::~MPL115A2() {}
+FreescaleMPL115A2::~FreescaleMPL115A2() {}
 
 
-String MPL115A2::getSensorLocation(void) {
+String FreescaleMPL115A2::getSensorLocation(void) {
     return F("I2C_0x60");
 }
 
 
-bool MPL115A2::setup(void) {
+bool FreescaleMPL115A2::setup(void) {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -57,7 +60,7 @@ bool MPL115A2::setup(void) {
 }
 
 
-bool MPL115A2::addSingleMeasurementResult(void) {
+bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
     // Initialize float variables
     float temp  = -9999;
     float press = -9999;

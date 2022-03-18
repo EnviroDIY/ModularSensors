@@ -5,8 +5,8 @@
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the MPL115A2 sensor subclass and the variable subclasses
- * MPL115A2_Temp and MPL115A2_Pressure.
+ * @brief Contains the FreescaleMPL115A2 sensor subclass and the variable
+ * subclasses FreescaleMPL115A2_Temp and FreescaleMPL115A2_Pressure.
  *
  * These are used for the Freescale Semiconductor MPL115A2 Miniature I2C Digital
  * Barometer.
@@ -46,8 +46,8 @@
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Freescale-Semiconductor-MPL115A2.pdf)
  *
  * @section sensor_mpl115a2_ctor Sensor Constructors
- * {{ @ref MPL115A2::MPL115A2(int8_t, uint8_t) }}
- * {{ @ref MPL115A2::MPL115A2(TwoWire*, int8_t, uint8_t) }}
+ * {{ @ref FreescaleMPL115A2::FreescaleMPL115A2(int8_t, uint8_t) }}
+ * {{ @ref FreescaleMPL115A2::FreescaleMPL115A2(TwoWire*, int8_t, uint8_t) }}
  *
  * ___
  * @section sensor_mpl115a2_examples Example Code
@@ -108,7 +108,7 @@
  * - Range is -20°C to 85°C
  * - Accuracy is not specified on the sensor datasheet
  *
- * {{ @ref MPL115A2_Temp::MPL115A2_Temp }}
+ * {{ @ref FreescaleMPL115A2_Temp::FreescaleMPL115A2_Temp }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; temperature should have 2 -
@@ -124,8 +124,8 @@
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
 /// "degreeCelsius" (°C)
 #define MPL115A2_TEMP_UNIT_NAME "degreeCelsius"
-/// @brief Default variable short code; "MPL115A2_Temp"
-#define MPL115A2_TEMP_DEFAULT_CODE "MPL115A2_Temp"
+/// @brief Default variable short code; "FreescaleMPL115A2_Temp"
+#define MPL115A2_TEMP_DEFAULT_CODE "FreescaleMPL115A2_Temp"
 /**@}*/
 
 /**
@@ -135,7 +135,7 @@
  * - Range is 500-1150 hPa
  * - Accuracy ±10 hPa
  *
- * {{ @ref MPL115A2_Pressure::MPL115A2_Pressure }}
+ * {{ @ref FreescaleMPL115A2_Pressure::FreescaleMPL115A2_Pressure }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; pressure should have 2 -
@@ -151,8 +151,8 @@
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
 /// "kilopascal" (kPa)
 #define MPL115A2_PRESSURE_UNIT_NAME "kilopascal"
-/// @brief Default variable short code; "MPL115A2_Pressure"
-#define MPL115A2_PRESSURE_DEFAULT_CODE "MPL115A2_Pressure"
+/// @brief Default variable short code; "FreescaleMPL115A2_Pressure"
+#define MPL115A2_PRESSURE_DEFAULT_CODE "FreescaleMPL115A2_Pressure"
 /**@}*/
 
 
@@ -164,10 +164,10 @@
  * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
-class MPL115A2 : public Sensor {
+class FreescaleMPL115A2 : public Sensor {
  public:
     /**
-     * @brief Construct a new MPL115A2 using a secondary *hardware* I2C
+     * @brief Construct a new FreescaleMPL115A2 using a secondary *hardware* I2C
      * instance.
      *
      * @note It is only possible to connect *one* MPL115A2 at a time on a single
@@ -185,10 +185,11 @@ class MPL115A2 : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    MPL115A2(TwoWire* theI2C, int8_t powerPin,
-             uint8_t measurementsToAverage = 1);
+    FreescaleMPL115A2(TwoWire* theI2C, int8_t powerPin,
+                      uint8_t measurementsToAverage = 1);
     /**
-     * @brief Construct a new MPL115A2 using the primary hardware I2C instance.
+     * @brief Construct a new FreescaleMPL115A2 using the primary hardware I2C
+     * instance.
      *
      * @note It is only possible to connect *one* MPL115A2 at a time on a single
      * I2C bus.  Software I2C is also not supported.
@@ -200,11 +201,12 @@ class MPL115A2 : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    explicit MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
+    explicit FreescaleMPL115A2(int8_t  powerPin,
+                               uint8_t measurementsToAverage = 1);
     /**
-     * @brief Destroy the MPL115A2 object
+     * @brief Destroy the FreescaleMPL115A2 object
      */
-    ~MPL115A2();
+    ~FreescaleMPL115A2();
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -230,7 +232,7 @@ class MPL115A2 : public Sensor {
 
  private:
     /**
-     * @brief Private reference to the internal MPL115A2 object.
+     * @brief Private reference to the internal Adafruit_MPL115A2 object.
      */
     Adafruit_MPL115A2 mpl115a2_internal;
     /**
@@ -249,35 +251,38 @@ class MPL115A2 : public Sensor {
  * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
-class MPL115A2_Temp : public Variable {
+class FreescaleMPL115A2_Temp : public Variable {
  public:
     /**
-     * @brief Construct a new MPL115A2_Temp object.
+     * @brief Construct a new FreescaleMPL115A2_Temp object.
      *
-     * @param parentSense The parent MPL115A2 providing the result values.
+     * @param parentSense The parent FreescaleMPL115A2 providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "MPL115A2_Temp".
+     * optional with a default value of "FreescaleMPL115A2_Temp".
      */
-    explicit MPL115A2_Temp(MPL115A2* parentSense, const char* uuid = "",
-                           const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
+    explicit FreescaleMPL115A2_Temp(
+        FreescaleMPL115A2* parentSense, const char* uuid = "",
+        const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new MPL115A2_Temp object.
+     * @brief Construct a new FreescaleMPL115A2_Temp object.
      *
-     * @note This must be tied with a parent MPL115A2 before it can be used.
+     * @note This must be tied with a parent FreescaleMPL115A2 before it can be
+     * used.
      */
-    MPL115A2_Temp()
+    FreescaleMPL115A2_Temp()
         : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
                    (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
                    MPL115A2_TEMP_UNIT_NAME, MPL115A2_TEMP_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the MPL115A2_Temp object - no action needed.
+     * @brief Destroy the FreescaleMPL115A2_Temp object - no action needed.
      */
-    ~MPL115A2_Temp() {}
+    ~FreescaleMPL115A2_Temp() {}
 };
 
 
@@ -290,38 +295,46 @@ class MPL115A2_Temp : public Variable {
  * @ingroup sensor_mpl115a2
  */
 /* clang-format on */
-class MPL115A2_Pressure : public Variable {
+class FreescaleMPL115A2_Pressure : public Variable {
  public:
     /**
-     * @brief Construct a new MPL115A2_Pressure object.
+     * @brief Construct a new FreescaleMPL115A2_Pressure object.
      *
-     * @param parentSense The parent MPL115A2 providing the result values.
+     * @param parentSense The parent FreescaleMPL115A2 providing the result
+     * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "MPL115A2_Pressure".
+     * optional with a default value of "FreescaleMPL115A2_Pressure".
      */
-    explicit MPL115A2_Pressure(
-        MPL115A2* parentSense, const char* uuid = "",
+    explicit FreescaleMPL115A2_Pressure(
+        FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new MPL115A2_Pressure object.
+     * @brief Construct a new FreescaleMPL115A2_Pressure object.
      *
-     * @note This must be tied with a parent MPL115A2 before it can be used.
+     * @note This must be tied with a parent FreescaleMPL115A2 before it can be
+     * used.
      */
-    MPL115A2_Pressure()
+    FreescaleMPL115A2_Pressure()
         : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
                    (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    MPL115A2_PRESSURE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the MPL115A2_Pressure object - no action needed.
+     * @brief Destroy the FreescaleMPL115A2_Pressure object - no action needed.
      */
-    ~MPL115A2_Pressure() {}
+    ~FreescaleMPL115A2_Pressure() {}
 };
 /**@}*/
+
+// typedefs for backwards compatibility
+typedef FreescaleMPL115A2          MPL115A2;
+typedef FreescaleMPL115A2_Pressure MPL115A2_Pressure;
+typedef FreescaleMPL115A2_Temp     MPL115A2_Temp;
+
 #endif  // SRC_SENSORS_FREESCALEMPL115A2_H_

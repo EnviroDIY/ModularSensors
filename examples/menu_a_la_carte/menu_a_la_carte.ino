@@ -1259,14 +1259,14 @@ Variable* extvoltV =
 const int8_t  MPLPower              = sensorPowerPin;  // Power pin
 const uint8_t MPL115A2ReadingsToAvg = 1;
 
-// Create an MPL115A2 barometer sensor object
-MPL115A2 mpl115a2(MPLPower, MPL115A2ReadingsToAvg);
+// Create a FreescaleMPL115A2 barometer sensor object
+FreescaleMPL115A2 mpl115a2(MPLPower, MPL115A2ReadingsToAvg);
 
 // Create pressure and temperature variable pointers for the MPL
-Variable* mplPress =
-    new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
-                                      "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mplPress = new FreescaleMPL115A2_Pressure(
+    &mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mplTemp = new FreescaleMPL115A2_Temp(
+    &mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [mpl115a2] */
 #endif
 
