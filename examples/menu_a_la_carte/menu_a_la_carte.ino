@@ -298,8 +298,8 @@ const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 const bool   useCTSforStatus = false;  // Flag to use the CTS pin for status
 const int8_t modemResetPin   = 20;     // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;     // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
-                                       // status
+const int8_t modemLEDPin =
+    redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
 const char* apn = "xxxxx";  // APN for GPRS connection
@@ -440,8 +440,9 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins here are for a DFRobot ESP8266 Bee with Mayfly
-const int8_t modemVccPin     = -2;  // MCU pin controlling modem power
+// Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
+// Mayfly 1.1
+const int8_t modemVccPin     = A5;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 19;  // MCU pin for wake from light sleep
@@ -1223,6 +1224,38 @@ Variable* es2Temp = new DecagonES2_Temp(&es2,
 #endif
 
 
+#if defined BUILD_SENSOR_EVERLIGHT_ALSPT19
+// ==========================================================================
+//  Everlight ALS-PT19 Ambient Light Sensor
+// ==========================================================================
+/** Start [everlight_alspt19] */
+#include <sensors/EverlightALSPT19.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  alsPower      = sensorPowerPin;  // Power pin
+const int8_t  alsData       = 7;               // The ALS PT-19 data pin
+const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
+const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
+const uint8_t alsNumberReadings = 10;
+
+// Create a Everlight ALS-PT19 sensor object
+EverlightALSPT19 alsPt19(alsPower, alsData, alsSupply, alsResistance,
+                         alsNumberReadings);
+
+// For an EnviroDIY Mayfly, you can use the abbreviated version
+// EverlightALSPT19 alsPt19(alsNumberReadings);
+
+// Create voltage, current, and illuminance variable pointers for the ALS-PT19
+Variable* alsPt19Volt = new EverlightALSPT19_Voltage(
+    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* alsPt19Current = new EverlightALSPT19_Current(
+    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
+    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [everlight_alspt19] */
+#endif
+
+
 #if defined BUILD_SENSOR_EXTERNAL_VOLTAGE
 // ==========================================================================
 //  External Voltage via TI ADS1115
@@ -1415,7 +1448,7 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t SonarPower    = sensorPowerPin;  // Excite (power) pin
 const int8_t Sonar1Trigger = -1;              // Trigger pin
-                                  // (a *unique* negative number if unconnected)
+// Trigger should be a *unique* negative number if unconnected
 const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
@@ -2082,7 +2115,7 @@ byte          y551ModbusAddress  = 0x50;  // The modbus address of the Y551
 const int8_t  y551AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
 const int8_t  y551SensorPower    = A3;              // Sensor power pin
 const int8_t  y551EnablePin      = -1;              // Adapter RE/DE pin
-const uint8_t y551NumberReadings = 3;
+const uint8_t y551NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
@@ -2386,6 +2419,11 @@ Variable* variableList[] = {
 #if defined BUILD_SENSOR_DECAGON_ES2
     es2Cond,
     es2Temp,
+#endif
+#if defined BUILD_SENSOR_EVERLIGHT_ALSPT19
+    alsPt19Volt,
+    alsPt19Current,
+    alsPt19Lux,
 #endif
 #if defined BUILD_SENSOR_EXTERNAL_VOLTAGE
     extvoltV,

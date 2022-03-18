@@ -43,6 +43,8 @@ This is *not* a breaking change at this time; the old class names are still usab
 - **Sensor** Added support for the [YosemiTech Y560 Ammonium Probe](http://en.yosemitech.com/aspcms/product/2020-4-23/61.html), which is a mini sonde for three Ion Selective Electrode (ISE) sensors (pH, NH4+, K+) that together are used to provide a corrected estimate of total ammonium nitrogen (NH4_N) in mg/L.
   - NOTE that this release only includes outputs for NH4_N, pH, and temperature. A future release will also include estimates of potassium (K) and raw potential values from each of the electrodes.
 - **Sensor** Added support for the SDI-12 In-Situ [Level TROLL 400, 500 & 700 Data Loggers](https://in-situ.com/pub/media/support/documents/LevelTROLL_SS.pdf)
+- **Sensor** Added support for the Sensirion SHT40 relative humidity and temperature sensor
+- **Sensor** Added support for the Everlight ALS-PT19 ambient light sensor
 
 ### Removed
 

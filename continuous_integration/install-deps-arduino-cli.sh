@@ -84,6 +84,9 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 echo "\n\e[32mInstalling Adafruit MPL115A2 library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit MPL115A2"
 
+echo "\n\e[32mInstalling Adafruit SHT4x Library library from Arduino library index\e[0m"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit SHT4x Library"
+
 echo "\n\e[32mInstalling OneWire library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install OneWire
 

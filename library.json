@@ -129,7 +129,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO.git",
-      "version": "~1.11.2",
+      "version": "~1.11.3",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",

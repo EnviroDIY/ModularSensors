@@ -280,7 +280,7 @@
 #if !defined ANALOG_EC_ADC_REFERENCE_MODE
 #error The processor ADC reference type must be defined!
 #endif  // ANALOG_EC_ADC_REFERENCE_MODE
-#endif  // ANALOG_EC_ADC_REFERENCE_MODE
+#endif  // ARDUINO_ARCH_SAMD
 /* clang-format on */
 
 #if !defined RSERIES_OHMS_DEF
