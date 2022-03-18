@@ -33,6 +33,9 @@ We recommend a logger's real time clock always be set in UTC and then localized 
 - Added a longer warm up time and removed some of the set-up to work with the ESP-IDF AT firmware versions >2.0
 - Made sure that all example clock synchronization happens at noon instead of midnight.
 - **Documentation:** Migrated to latest version of Doxygen (1.9.3).
+- Renamed class "MPL115A2" to "FreescaleMPL115A2" and all related variable classes.
+This is for consistency with the file name and other classes with manufacturer in the name.
+This is *not* a breaking change at this time; the old class names are still usable.
 
 ### Added
 - **Sensor** Added support for the [YosemiTech Y551 COD Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/94.html), which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.

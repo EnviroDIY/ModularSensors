@@ -3,6 +3,7 @@ import glob
 import re
 import sys
 import os
+from pathlib import Path
 
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
 
@@ -11,7 +12,7 @@ sensorHeaderFiles = glob.glob(os.path.join(script_dir, "../src/sensors/*.h"))
 publisherHeaderFiles = glob.glob(os.path.join(script_dir, "../src/publishers/*.h"))
 
 header_files = modemHeaderFiles + sensorHeaderFiles + publisherHeaderFiles
-print(header_files)
+# print(header_files)
 
 #%% function to find the lowest level class
 def find_subclasses(class_name):
@@ -21,8 +22,8 @@ def find_subclasses(class_name):
 
     subclass_list = []
     num_subclasses = 0
-    for sensor_header in header_files:
-        textfile = open(sensor_header, mode="r", encoding="utf-8")
+    for header_file in header_files:
+        textfile = open(header_file, mode="r", encoding="utf-8")
         filetext = textfile.read()
         textfile.close()
         matches = re.findall(subclass_pattern, filetext)
@@ -61,6 +62,31 @@ def camel_to_snake(name, lower_case=True):
         return name_lower.upper()
 
 
+#%%
+# make sure class names match file names
+class_pattern = re.compile("^\s*class[\s\n]+(\w+)[\s\n]", re.MULTILINE)
+
+for header_file in header_files:
+    textfile = open(header_file, mode="r", encoding="utf-8")
+    filetext = textfile.read()
+    textfile.close()
+    file_name = Path(os.path.basename(header_file)).stem
+    class_matches = re.findall(class_pattern, filetext)
+    for class_match in class_matches:
+        if not class_match.startswith(file_name):
+            # print(
+            #     "Class {} is defined in file {}.  Class names should match their file names".format(
+            #         class_match, file_name
+            #     )
+            # )
+            sys.exit(
+                "Class {} is defined in file {}.  Class names should match their file names".format(
+                    class_match, file_name
+                )
+            )
+
+#%%
+# make sure there are examples of all classes in the menu example
 must_doc_classes = []
 
 modem_sub_classes = find_subclasses("loggerModem")
@@ -115,14 +141,14 @@ for publisher_sub_class in publisher_sub_classes:
 # print(must_doc_classes)
 #%%
 menu_example_file = open(
-    os.path.join(script_dir, "..\\examples\\menu_a_la_carte\\menu_a_la_carte.ino"),
+    os.path.join(script_dir, "../examples/menu_a_la_carte/menu_a_la_carte.ino"),
     mode="r",
     encoding="utf-8",
 )
 menu_example_code = menu_example_file.read()
 menu_example_file.close()
 menu_walk_file = open(
-    os.path.join(script_dir, "..\\examples\\menu_a_la_carte\\ReadMe.md"),
+    os.path.join(script_dir, "../examples/menu_a_la_carte/ReadMe.md"),
     mode="r",
     encoding="utf-8",
 )
@@ -159,39 +185,26 @@ for must_doc_class in must_doc_classes:
             missing_snips.append(must_doc_class["class_name"])
 
         snip_pattern = r"@menusnip\{(" + re.escape(must_doc_class["menu_snip"]) + r")\}"
-        matches = re.findall(snip_pattern, menu_example_walk)
-        if len(matches) == 0:
+        expl_snip = re.findall(snip_pattern, menu_example_walk)
+        if len(expl_snip) == 0:
             print("\t@menusnip{{{}}}".format(must_doc_class["menu_snip"]))
             missing_walks.append(must_doc_class["class_name"])
 
-print("The following classes are not included at all in the menu example:")
-print(missing_classes)
-print("The following expected build flags are missing from the menu example:")
-print(missing_build_flags)
-print("The following expected snipped flags are missing from the menu example:")
-print(missing_snips)
-print(
-    "The following expected snipped flags are missing from the menu walkthrough/ReadMe:"
-)
-print(missing_walks)
+if len(missing_classes) > 0:
+    print("The following classes are not included at all in the menu example:")
+    print(missing_classes)
+if len(missing_build_flags) > 0:
+    print("The following expected build flags are missing from the menu example:")
+    print(missing_build_flags)
+if len(missing_snips) > 0:
+    print("The following expected snippet markers are missing from the menu example:")
+    print(missing_snips)
+if len(missing_walks) > 0:
+    print(
+        "The following expected snippet inclusions are missing from the menu walkthrough/ReadMe:"
+    )
+    print(missing_walks)
 
-menu_declared_snips = list(
-    dict.fromkeys(re.findall(r"(?:(?:Start)|(?:End)) \[(\w+)\]", menu_example_code))
-)
-
-missing_walks = []
-for snip in menu_declared_snips:
-    snip_pattern = r"@menusnip\{(" + re.escape(snip) + r")\}"
-    expl_snip = re.findall(snip_pattern, menu_example_walk)
-    if len(expl_snip) == 0:
-        print(snip_pattern)
-        missing_walks.append(snip)
-print(
-    "The following expected snipped flags are missing from the menu walkthrough/ReadMe:"
-)
-print(missing_walks)
-
-# %%
 if len(missing_classes + missing_walks) > 0:
     sys.exit(
         "Some classes are not properly documented in the Menu-a-la-carte example and its walkthrough."
