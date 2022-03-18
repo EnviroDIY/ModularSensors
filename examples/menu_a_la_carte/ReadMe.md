@@ -794,7 +794,7 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 
 @see @ref sensor_mpl115a2
 
-[//]: # ( @menusnip{mpl115a2} )
+[//]: # ( @menusnip{freescale_mpl115a2} )
 
 ___
 

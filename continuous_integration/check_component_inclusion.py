@@ -74,16 +74,16 @@ for header_file in header_files:
     class_matches = re.findall(class_pattern, filetext)
     for class_match in class_matches:
         if not class_match.startswith(file_name):
-            print(
-                "Class {} is defined in file {}.  Class names should match their file names".format(
-                    class_match, file_name
-                )
-            )
-            # sys.exit(
+            # print(
             #     "Class {} is defined in file {}.  Class names should match their file names".format(
             #         class_match, file_name
             #     )
             # )
+            sys.exit(
+                "Class {} is defined in file {}.  Class names should match their file names".format(
+                    class_match, file_name
+                )
+            )
 
 #%%
 # make sure there are examples of all classes in the menu example
@@ -185,39 +185,26 @@ for must_doc_class in must_doc_classes:
             missing_snips.append(must_doc_class["class_name"])
 
         snip_pattern = r"@menusnip\{(" + re.escape(must_doc_class["menu_snip"]) + r")\}"
-        matches = re.findall(snip_pattern, menu_example_walk)
-        if len(matches) == 0:
+        expl_snip = re.findall(snip_pattern, menu_example_walk)
+        if len(expl_snip) == 0:
             print("\t@menusnip{{{}}}".format(must_doc_class["menu_snip"]))
             missing_walks.append(must_doc_class["class_name"])
 
-print("The following classes are not included at all in the menu example:")
-print(missing_classes)
-print("The following expected build flags are missing from the menu example:")
-print(missing_build_flags)
-print("The following expected snipped flags are missing from the menu example:")
-print(missing_snips)
-print(
-    "The following expected snipped flags are missing from the menu walkthrough/ReadMe:"
-)
-print(missing_walks)
+if len(missing_classes) > 0:
+    print("The following classes are not included at all in the menu example:")
+    print(missing_classes)
+if len(missing_build_flags) > 0:
+    print("The following expected build flags are missing from the menu example:")
+    print(missing_build_flags)
+if len(missing_snips) > 0:
+    print("The following expected snippet markers are missing from the menu example:")
+    print(missing_snips)
+if len(missing_walks) > 0:
+    print(
+        "The following expected snippet inclusions are missing from the menu walkthrough/ReadMe:"
+    )
+    print(missing_walks)
 
-menu_declared_snips = list(
-    dict.fromkeys(re.findall(r"(?:(?:Start)|(?:End)) \[(\w+)\]", menu_example_code))
-)
-
-missing_walks = []
-for snip in menu_declared_snips:
-    snip_pattern = r"@menusnip\{(" + re.escape(snip) + r")\}"
-    expl_snip = re.findall(snip_pattern, menu_example_walk)
-    if len(expl_snip) == 0:
-        print(snip_pattern)
-        missing_walks.append(snip)
-print(
-    "The following expected snipped flags are missing from the menu walkthrough/ReadMe:"
-)
-print(missing_walks)
-
-# %%
 if len(missing_classes + missing_walks) > 0:
     sys.exit(
         "Some classes are not properly documented in the Menu-a-la-carte example and its walkthrough."

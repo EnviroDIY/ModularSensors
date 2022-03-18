@@ -1248,11 +1248,11 @@ Variable* extvoltV =
 #endif
 
 
-#if defined BUILD_SENSOR_MPL115A2
+#if defined BUILD_SENSOR_FREESCALE_MPL115A2
 // ==========================================================================
 //  Freescale Semiconductor MPL115A2 Barometer
 // ==========================================================================
-/** Start [mpl115a2] */
+/** Start [freescale_mpl115a2] */
 #include <sensors/FreescaleMPL115A2.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1267,7 +1267,7 @@ Variable* mplPress = new FreescaleMPL115A2_Pressure(
     &mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mplTemp = new FreescaleMPL115A2_Temp(
     &mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [mpl115a2] */
+/** End [freescale_mpl115a2] */
 #endif
 
 
@@ -2367,7 +2367,7 @@ Variable* variableList[] = {
 #if defined BUILD_SENSOR_EXTERNAL_VOLTAGE
     extvoltV,
 #endif
-#if defined BUILD_SENSOR_MPL115A2
+#if defined BUILD_SENSOR_FREESCALE_MPL115A2
     mplTemp,
     mplPress,
 #endif

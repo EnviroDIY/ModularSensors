@@ -54,7 +54,7 @@
  * The Freescale Semiconductor MPL115A2 is used in the @menulink{mpl115a2}
  * example.
  *
- * @menusnip{mpl115a2}
+ * @menusnip{freescale_mpl115a2}
  */
 /* clang-format on */
 
