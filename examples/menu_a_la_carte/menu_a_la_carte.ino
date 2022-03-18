@@ -2448,6 +2448,10 @@ Variable* variableList[] = {
     tbi2cTips,
     tbi2cDepth,
 #endif
+#if defined BUILD_SENSOR_SENSIRION_SHT4X
+    sht4xHumid,
+    sht4xTemp,
+#endif
 #if defined BUILD_SENSOR_TALLY_COUNTER_I2C
     tallyEvents,
 #endif

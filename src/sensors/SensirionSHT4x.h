@@ -65,9 +65,9 @@
 #define SRC_SENSORS_SENSIRIONSHT4X_H_
 
 // Debugging Statement
-// #define MS_SENSIRIONSHT4X_DEBUG
+// #define MS_SENSIRION_SHT4X_DEBUG
 
-#ifdef MS_SENSIRIONSHT4X_DEBUG
+#ifdef MS_SENSIRION_SHT4X_DEBUG
 #define MS_DEBUGGING_STD "SensirionSHT4x"
 #endif
 
