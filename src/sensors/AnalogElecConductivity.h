@@ -148,10 +148,10 @@
 #include "VariableBase.h"
 #include "math.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_analog_cond */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; we only get one value from the analog
 /// conductivity sensor.
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1

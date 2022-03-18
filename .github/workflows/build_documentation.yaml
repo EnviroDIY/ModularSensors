@@ -10,6 +10,7 @@ on:
 
 env:
   DOXYGEN_VERSION: Release_1_9_3
+  PYTHON_DEPS_ARCHIVE_NUM: 1
 
 jobs:
   build:
@@ -30,7 +31,7 @@ jobs:
         id: cache_python
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}
+          key: ${{ runner.os }}-python-${{ env.PYTHON_DEPS_ARCHIVE_NUM }}
 
       - name: Install Pygments and other m.css Python Requirements
         if: steps.cache_python.outputs.cache-hit != 'true'

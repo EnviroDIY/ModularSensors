@@ -90,10 +90,10 @@
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_teros11 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Teros 11 can report 2 raw values -
 /// counts and temperature.
 #define TEROS11_NUM_VARIABLES 4

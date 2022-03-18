@@ -91,10 +91,10 @@
 #include "SensorBase.h"
 #include <MS5803.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_ms5803 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the MS5803 can report 2 values.
 #define MS5803_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

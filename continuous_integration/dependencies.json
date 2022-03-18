@@ -68,7 +68,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO.git",
-      "version": "~1.11.2",
+      "version": "~1.11.3",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -156,9 +156,7 @@
       "url": "https://github.com/adafruit/Adafruit_SHT4X",
       "version": "~1.0.0",
       "note": "Sensirion SHT4x Library by Adafruit",
-      "authors": [
-        "Adafruit"
-      ],
+      "authors": ["Adafruit"],
       "frameworks": "arduino"
     },
     {

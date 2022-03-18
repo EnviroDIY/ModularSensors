@@ -95,10 +95,10 @@
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_ds18 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the DS18 can report 1 value.
 #define DS18_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

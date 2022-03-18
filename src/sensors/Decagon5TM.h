@@ -80,10 +80,10 @@
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_fivetm */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the 5TM can report 3 values.
 #define TM_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; volumetric water content is calculated from

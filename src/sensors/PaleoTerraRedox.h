@@ -78,10 +78,10 @@
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
-// Sensor Specific Defines
 /** @ingroup sensor_pt_redox */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the PaleoTerra redox sensor can report 1
 /// value.
 #define PTR_NUM_VARIABLES 1

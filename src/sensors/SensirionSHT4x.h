@@ -78,10 +78,10 @@
 #include "SensorBase.h"
 #include <Adafruit_SHT4x.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_sht4x */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the SHT4x can report 2 values.
 #define SHT4X_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

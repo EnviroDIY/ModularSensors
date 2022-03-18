@@ -76,10 +76,10 @@
 #include "SensorBase.h"
 #include <Adafruit_MPL115A2.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_mpl115a2 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the MPL115A2 can report 2 values.
 #define MPL115A2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
