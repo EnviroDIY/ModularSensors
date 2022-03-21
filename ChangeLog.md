@@ -30,12 +30,21 @@ We recommend a logger's real time clock always be set in UTC and then localized 
 - **Breaking:** Renamed the function `setNowEpoch(uint32_t)` to `setNowUTCEpoch(uint32_t)`.
   - Although public, this was never intended to be used externally.
 - **Breaking:** Renamed the YosemiTech Y550 COD sensor as Y551. See below.
-- Added a longer warm up time and removed some of the set-up to work with the ESP-IDF AT firmware versions >2.0
+- **Potentially Breaking:** Changed the default "button" interrupt pin mode from `INPUT_PULLUP` to `INPUT` and created optional arguments to the `setTestingModePin` and `setLoggerPins` functions to specify the pin mode and pull-up resistor state.
+  - `INPUT` is the proper mode for the Mayfly.
+The Mayfly has an external pull *down* on the button pin with the button being active high.
+This means having the pull-up resistors on negates the button signal.
+The pin mode had been set incorrectly as `INPUT_PULLUP` for the button since way back in [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
+By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorretly activated pull-up resistors and an interrupt was still registered when the button was pressed.
+Despite the identical processor and pull-up resistors on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
+So, for most of our users with Mayflies, this will be a _**fix**_.
+But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
+- Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions >2.0
 - Made sure that all example clock synchronization happens at noon instead of midnight.
-- **Documentation:** Migrated to latest version of Doxygen (1.9.3).
 - Renamed class "MPL115A2" to "FreescaleMPL115A2" and all related variable classes.
 This is for consistency with the file name and other classes with manufacturer in the name.
 This is *not* a breaking change at this time; the old class names are still usable.
+- **Documentation:** Migrated to latest version of Doxygen (1.9.3).
 
 ### Added
 - **Sensor** Added support for the [YosemiTech Y551 COD Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/94.html), which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.

@@ -21,9 +21,14 @@
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
 
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "LoggerBase"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableArray.h"
 #include "LoggerModem.h"
 
@@ -224,7 +229,8 @@ class Logger {
     /**
      * @brief Set a pin for the slave select (chip select) of the SD card.
      *
-     * This over-writes the value (if any) given in the constructor.
+     * This over-writes the value (if any) given in the constructor.  The pin
+     * mode of this pin will be set as `OUTPUT`.
      *
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
      * the SD card.
@@ -234,7 +240,8 @@ class Logger {
     /**
      * @brief Set both pins related to the SD card.
      *
-     * These over-write the values (if any) given in the constructor.
+     * These over-write the values (if any) given in the constructor.  The pin
+     * mode of this pin will be set as `OUTPUT`.
      *
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
      * the SD card.
@@ -252,16 +259,23 @@ class Logger {
      * SAMD board with the internal RTC, the value of the pin is irrelevant as
      * long as it is positive.
      *
+     * @note  This sets the pin mode but does NOT enable the interrupt!
+     *
      * @param mcuWakePin The pin on the mcu to be used to wake the mcu from deep
      * sleep.
+     * @param wakePinMode The pin mode to be used for wake up on the clock alert
+     * pin.  Must be either `INPUT` OR `INPUT_PULLUP`.  Optional with a default
+     * value of `INPUT_PULLUP`.  The DS3231 has an active low interrupt, so the
+     * pull-up resistors should be enabled.
      */
-    void setRTCWakePin(int8_t mcuWakePin);
+    void setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode = INPUT_PULLUP);
 
     /**
      * @brief Set a pin to put out an alert that a measurement is being logged.
      *
-     * This is intended to be a pin with a LED on it so you can see the light
-     * come on when a measurement is being taken.
+     * The pin mode of this pin will be set as `OUTPUT`.  This is intended to be
+     * a pin with a LED on it so you can see the light come on when a
+     * measurement is being taken.
      *
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.
@@ -277,7 +291,8 @@ class Logger {
     void alertOff();
 
     /**
-     * @brief Set up a pin for an interrupt to enter testing mode.
+     * @brief Set up a pin for an interrupt to enter testing mode **and** attach
+     * the testing interrupt to it.
      *
      * Intended to be attached to a button or other manual interrupt source.
      *
@@ -289,25 +304,50 @@ class Logger {
      *
      * @param buttonPin The pin on the mcu to listen to for a value-change
      * interrupt.
+     * @param buttonPinMode The pin mode to be used for the button pin.  Must be
+     * either `INPUT` OR `INPUT_PULLUP`.  Optional with a default value of
+     * `INPUT`.  Using `INPUT_PULLUP` will enable processor input resistors,
+     * while using `INPUT` will explicitly disable them.  If your pin is
+     * externally pulled down or the button is a normally open (NO) switch with
+     * common (COM) connected to Vcc, like the EnviroDIY Mayfly), you should use
+     * the `INPUT` pin mode.  Coversely, if your button connect to ground when
+     * activated, you should enable the processor pull-up resistors using
+     * `INPUT_PULLUP`.
      */
-    void setTestingModePin(int8_t buttonPin);
+    void setTestingModePin(int8_t buttonPin, uint8_t buttonPinMode = INPUT);
 
     /**
      * @brief Set the five pins of interest for the logger
      *
      * @param mcuWakePin The pin on the mcu to listen to for a value-change
-     * interrupt to wake from deep sleep.
+     * interrupt to wake from deep sleep.  This pin will be set to
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
-     * the SD card.
+     * the SD card.  The pin mode of this pin will be set as `OUTPUT`.
      * @param SDCardPowerPin A digital pin number on the mcu controlling power
-     * to the SD card.
+     * to the SD card.  The pin mode of this pin will be set as `OUTPUT`.
      * @param buttonPin The pin on the mcu to listen to for a value-change
      * interrupt to enter testing mode.
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
-     * being collected and logged.
+     * being collected and logged.  The pin mode of this pin will be set as
+     * `OUTPUT`.
+     * @param wakePinMode The pin mode to be used for wake up on the clock alert
+     * pin.  Must be either `INPUT` OR `INPUT_PULLUP`.  Optional with a default
+     * value of `INPUT_PULLUP`.  The DS3231 has an active low interrupt, so the
+     * pull-up resistors should be enabled.
+     * @param buttonPinMode The pin mode to be used for the button pin.  Must be
+     * either `INPUT` OR `INPUT_PULLUP`.  Optional with a default value of
+     * `INPUT`.  Using `INPUT_PULLUP` will enable processor input resistors,
+     * while using `INPUT` will explicitly disable them.  If your pin is
+     * externally pulled down or the button is a normally open (NO) switch with
+     * common (COM) connected to Vcc, like the EnviroDIY Mayfly), you should use
+     * the `INPUT` pin mode.  Coversely, if your button is active when connected
+     * to ground, you should enable the processor pull-up resistors using
+     * `INPUT_PULLUP`.
      */
     void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
-                       int8_t SDCardPowerPin, int8_t buttonPin, int8_t ledPin);
+                       int8_t SDCardPowerPin, int8_t buttonPin, int8_t ledPin,
+                       uint8_t wakePinMode   = INPUT_PULLUP,
+                       uint8_t buttonPinMode = INPUT);
 
  protected:
     // Initialization variables

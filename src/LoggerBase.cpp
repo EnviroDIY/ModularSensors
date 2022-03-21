@@ -55,11 +55,13 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     startTesting = false;
 
     // Set the initial pin values
+    // NOTE: Only setting values here, not the pin mode.
+    // The pin mode can only be set at run time, not here at compile time.
     _SDCardPowerPin = -1;
-    setSDCardSS(SDCardSSPin);
-    setRTCWakePin(mcuWakePin);
-    _ledPin    = -1;
-    _buttonPin = -1;
+    _SDCardSSPin    = SDCardSSPin;
+    _mcuWakePin     = mcuWakePin;
+    _ledPin         = -1;
+    _buttonPin      = -1;
 
     // Initialize with no file name
     _fileName = "";
@@ -171,6 +173,7 @@ void Logger::setSDCardPwr(int8_t SDCardPowerPin) {
     if (_SDCardPowerPin >= 0) {
         pinMode(_SDCardPowerPin, OUTPUT);
         digitalWrite(_SDCardPowerPin, LOW);
+        MS_DBG(F("Pin"), _SDCardPowerPin, F("set as SD Card Power Pin"));
     }
 }
 // NOTE:  Structure of power switching on SD card taken from:
@@ -185,7 +188,7 @@ void Logger::turnOnSDcard(bool waitToSettle) {
 void Logger::turnOffSDcard(bool waitForHousekeeping) {
     if (_SDCardPowerPin >= 0) {
         // TODO(SRGDamia1): set All SPI pins to INPUT?
-        // TODO(SRGDamia1): set ALL SPI pins HIGH (~30k pullup)
+        // TODO(SRGDamia1): set ALL SPI pins HIGH (~30k pull-up)
         pinMode(_SDCardPowerPin, OUTPUT);
         digitalWrite(_SDCardPowerPin, LOW);
         // TODO(SRGDamia1):  wait in lower power mode
@@ -200,7 +203,10 @@ void Logger::turnOffSDcard(bool waitForHousekeeping) {
 // Sets up a pin for the slave select (chip select) of the SD card
 void Logger::setSDCardSS(int8_t SDCardSSPin) {
     _SDCardSSPin = SDCardSSPin;
-    if (_SDCardSSPin >= 0) { pinMode(_SDCardSSPin, OUTPUT); }
+    if (_SDCardSSPin >= 0) {
+        pinMode(_SDCardSSPin, OUTPUT);
+        MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
+    }
 }
 
 
@@ -212,16 +218,25 @@ void Logger::setSDCardPins(int8_t SDCardSSPin, int8_t SDCardPowerPin) {
 
 
 // Sets up the wake up pin for an RTC interrupt
-void Logger::setRTCWakePin(int8_t mcuWakePin) {
+// NOTE:  This sets the pin mode but does NOT enable the interrupt!
+void Logger::setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode) {
     _mcuWakePin = mcuWakePin;
-    if (_mcuWakePin >= 0) { pinMode(_mcuWakePin, INPUT_PULLUP); }
+    if (_mcuWakePin >= 0) {
+        pinMode(_mcuWakePin, wakePinMode);
+        MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
+    } else {
+        MS_DBG(F("Logger mcu will not sleep between readings!"));
+    }
 }
 
 
 // Sets up a pin for an LED or other way of alerting that data is being logged
 void Logger::setAlertPin(int8_t ledPin) {
     _ledPin = ledPin;
-    if (_ledPin >= 0) { pinMode(_ledPin, OUTPUT); }
+    if (_ledPin >= 0) {
+        pinMode(_ledPin, OUTPUT);
+        MS_DBG(F("Pin"), _ledPin, F("set as LED alert pin"));
+    }
 }
 void Logger::alertOn() {
     if (_ledPin >= 0) { digitalWrite(_ledPin, HIGH); }
@@ -232,15 +247,17 @@ void Logger::alertOff() {
 
 
 // Sets up a pin for an interrupt to enter testing mode
-void Logger::setTestingModePin(int8_t buttonPin) {
+void Logger::setTestingModePin(int8_t buttonPin, uint8_t buttonPinMode) {
     _buttonPin = buttonPin;
 
     // Set up the interrupt to be able to enter sensor testing mode
     // NOTE:  Entering testing mode before the sensors have been set-up may
     // give unexpected results.
     if (_buttonPin >= 0) {
-        pinMode(_buttonPin, INPUT_PULLUP);
+        pinMode(_buttonPin, buttonPinMode);
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        MS_DBG(F("Button on pin"), _buttonPin,
+               F("can be used to enter sensor testing mode."));
     }
 }
 
@@ -248,11 +265,12 @@ void Logger::setTestingModePin(int8_t buttonPin) {
 // Sets up the five pins of interest for the logger
 void Logger::setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
                            int8_t SDCardPowerPin, int8_t buttonPin,
-                           int8_t ledPin) {
-    setRTCWakePin(mcuWakePin);
+                           int8_t ledPin, uint8_t wakePinMode,
+                           uint8_t buttonPinMode) {
+    setRTCWakePin(mcuWakePin, wakePinMode);
     setSDCardSS(SDCardSSPin);
     setSDCardPwr(SDCardPowerPin);
-    setTestingModePin(buttonPin);
+    setTestingModePin(buttonPin, buttonPinMode);
     setAlertPin(ledPin);
 }
 
@@ -715,7 +733,7 @@ bool Logger::checkMarkedInterval(void) {
 // This must be a static function (which means it can only call other static
 // funcions.)
 void Logger::wakeISR(void) {
-    // MS_DBG(F("\nClock interrupt!"));
+    MS_DEEP_DBG(F("\nClock interrupt!"));
 }
 
 
@@ -1279,10 +1297,10 @@ void Logger::checkForTestingMode(int8_t buttonPin)
 
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR() {
-    // MS_DBG(F("Testing interrupt!"));
+    MS_DEEP_DBG(F("Testing interrupt!"));
     if (!Logger::isTestingNow && !Logger::isLoggingNow) {
         Logger::startTesting = true;
-        // MS_DBG(F("Testing flag has been set."));
+        MS_DEEP_DBG(F("Testing flag has been set."));
     }
 }
 
@@ -1326,7 +1344,7 @@ void Logger::testingMode() {
         // getSignalQuality() function, but for the WiFi XBee it will not
         // actually measure anything except by explicitly making a connection,
         // which getModemSignalQuality() does.  For all of the other modules,
-        // getModemSignalQuality() is just a straigh pass-through to
+        // getModemSignalQuality() is just a straight pass-through to
         // getSignalQuality().
         _logModem->updateModemMetadata();
 
@@ -1401,29 +1419,6 @@ void Logger::begin() {
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
-    // Set pin modes for sd card power
-    if (_SDCardPowerPin >= 0) {
-        pinMode(_SDCardPowerPin, OUTPUT);
-        digitalWrite(_SDCardPowerPin, LOW);
-        MS_DBG(F("Pin"), _SDCardPowerPin, F("set as SD Card Power Pin"));
-    }
-    // Set pin modes for sd card slave select (aka chip select)
-    if (_SDCardSSPin >= 0) {
-        pinMode(_SDCardSSPin, OUTPUT);
-        MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
-    }
-    // Set pin mode for LED pin
-    if (_ledPin >= 0) {
-        pinMode(_ledPin, OUTPUT);
-        MS_DBG(F("Pin"), _ledPin, F("set as LED alert pin"));
-    }
-    if (_buttonPin >= 0) {
-        pinMode(_buttonPin, INPUT_PULLUP);
-        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        MS_DBG(F("Button on pin"), _buttonPin,
-               F("can be used to enter sensor testing mode."));
-    }
-
 #if defined ARDUINO_ARCH_SAMD
     MS_DBG(F("Beginning internal real time clock"));
     zero_sleep_rtc.begin();
@@ -1451,13 +1446,12 @@ void Logger::begin() {
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
+    // Set all of the pin modes
+    // NOTE:  This must be done here at run time not at compile time
+    setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
+                  _ledPin);
+
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
-    if (_mcuWakePin < 0) {
-        MS_DBG(F("Logger mcu will not sleep between readings!"));
-    } else {
-        pinMode(_mcuWakePin, INPUT_PULLUP);
-        MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
-    }
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();
 #endif
