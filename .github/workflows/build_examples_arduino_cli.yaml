@@ -54,7 +54,7 @@ jobs:
         uses: arduino/setup-arduino-cli@v1.1.1
 
       - name: Restore Arduino Platforms and Libraries
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         id: cache_arduino
         with:
           path: home/arduino
