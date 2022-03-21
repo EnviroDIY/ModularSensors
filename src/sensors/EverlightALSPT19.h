@@ -55,6 +55,7 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -62,12 +63,12 @@
 /**@{*/
 
 // Sensor Specific Defines
-/// @brief Sensor::_numReturnedValues; the ALS-PT19 can report 1 value
-/// (voltage).
-#define ALSPT19_NUM_VARIABLES 1
+/// @brief Sensor::_numReturnedValues; the ALS-PT19 can report 1 "raw" value
+/// (voltage) and we calculate current and illuminance from it.
+#define ALSPT19_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we calculate photocurrent from the supply
 /// voltage and loading resistance and illuminance from the photocurrent.
-#define ALSPT19_INC_CALC_VARIABLES 1
+#define ALSPT19_INC_CALC_VARIABLES 2
 /// @brief The power pin for the ALS on the EnviroDIY Mayfly v1.x
 #define MAYFLY_ALS_POWER_PIN -1
 /// @brief The data pin for the ALS on the EnviroDIY Mayfly v1.x
