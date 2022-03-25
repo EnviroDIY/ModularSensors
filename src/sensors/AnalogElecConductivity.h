@@ -301,8 +301,9 @@
  * Mine was around 2.9 with plugs being a standard size they should all be
  * around the same. If you get bad readings you can use the calibration script
  * and fluid to get a better estimate for K.
+ * Default to 1.0, and can be set at startup.
  */
-#define SENSOREC_KONST_DEF 2.88
+#define SENSOREC_KONST_DEF 1.0
 #endif  // SENSOREC_KONST_DEF
 
 /**
