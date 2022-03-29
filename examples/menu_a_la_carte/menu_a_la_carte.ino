@@ -1094,6 +1094,39 @@ Variable* bme280Alt =
 #endif
 
 
+#if defined BUILD_SENSOR_BOSCH_BMP3XX
+// ==========================================================================
+//  Bosch BMP 3xx Barometric Pressure Sensor
+// ==========================================================================
+/** Start [bosch_bmp3xx] */
+#include <sensors/BoschBMP3xx.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t bmp3xxPower = -1;  // Power pin
+Mode bmpMode = FORCED_MODE;  // The operating mode of the BMP; normal or forced
+Oversampling bmpPressureOversample = OVERSAMPLING_X32;
+Oversampling bmpTempOversample     = OVERSAMPLING_X2;
+IIRFilter    bmpFilterCoeff        = IIR_FILTER_OFF;
+TimeStandby  bmpTimeStandby        = TIME_STANDBY_5MS;
+uint8_t      bmpI2C_addr           = 0x77;
+// The BMP3xx can be addressed either as 0x77 or 0x76
+
+// Create a Bosch BMP3xx sensor object
+BoschBMP3xx bmp3xx(bmp3xxPower, bmpMode, bmpPressureOversample,
+                   bmpTempOversample, bmpFilterCoeff, bmpTimeStandby,
+                   bmpI2C_addr);
+
+// Create the variable pointers for the BMP3xx
+Variable* bmp3xxTemp =
+    new BoschBMP3xx_Temp(&bmp3xx, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bmp3xxPress =
+    new BoschBMP3xx_Pressure(&bmp3xx, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bmp3xxAlt =
+    new BoschBMP3xx_Altitude(&bmp3xx, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [bosch_bmp3xx] */
+#endif
+
+
 #if defined BUILD_SENSOR_CAMPBELL_CLARI_VUE10
 // ==========================================================================
 //  Campbell ClariVUE Turbidity Sensor
@@ -2399,6 +2432,11 @@ Variable* variableList[] = {
     bme280Humid,
     bme280Press,
     bme280Alt,
+#endif
+#if defined BUILD_SENSOR_BOSCH_BMP3XX
+    bmp3xxTemp,
+    bmp3xxPress,
+    bmp3xxAlt,
 #endif
 #if defined BUILD_SENSOR_CAMPBELL_CLARI_VUE10
     clarivueTurbidity,

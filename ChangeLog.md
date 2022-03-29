@@ -34,9 +34,9 @@ We recommend a logger's real time clock always be set in UTC and then localized 
   - `INPUT` is the proper mode for the Mayfly.
 The Mayfly has an external pull *down* on the button pin with the button being active high.
 This means having the pull-up resistors on negates the button signal.
-The pin mode had been set incorrectly as `INPUT_PULLUP` for the button since way back in [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
+The pin mode had been set as `INPUT_PULLUP` for the button, backwards for the Mayfly, since  [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
 By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorretly activated pull-up resistors and an interrupt was still registered when the button was pressed.
-Despite the identical processor and pull-up resistors on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
+With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
 So, for most of our users with Mayflies, this will be a _**fix**_.
 But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
 - Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions >2.0
@@ -54,6 +54,7 @@ This is *not* a breaking change at this time; the old class names are still usab
 - **Sensor** Added support for the SDI-12 In-Situ [Level TROLL 400, 500 & 700 Data Loggers](https://in-situ.com/pub/media/support/documents/LevelTROLL_SS.pdf)
 - **Sensor** Added support for the Sensirion SHT40 relative humidity and temperature sensor
 - **Sensor** Added support for the Everlight ALS-PT19 ambient light sensor
+- **Sensor** Added support for the Bosch SensorTec BMP388 and BMP390 pressure sensors
 
 ### Removed
 

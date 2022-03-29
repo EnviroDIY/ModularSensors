@@ -66,6 +66,7 @@ ___
       - [Atlas Scientific EZO-RTD Temperature Sensor](#atlas-scientific-ezo-rtd-temperature-sensor)
       - [Atlas Scientific EZO-EC Conductivity Sensor](#atlas-scientific-ezo-ec-conductivity-sensor)
     - [Bosch BME280 Environmental Sensor](#bosch-bme280-environmental-sensor)
+    - [Bosch BMP388 and BMP398 Pressure Sensors](#bosch-bmp388-and-bmp398-pressure-sensors)
       - [Campbell ClariVUE SDI-12 Turbidity Sensor](#campbell-clarivue-sdi-12-turbidity-sensor)
     - [Campbell OBS3+ Analog Turbidity Sensor](#campbell-obs3-analog-turbidity-sensor)
       - [Decagon CTD-10 Conductivity, Temperature, and Depth Sensor](#decagon-ctd-10-conductivity-temperature-and-depth-sensor)
@@ -73,8 +74,8 @@ ___
       - [Everlight ALS-PT19 Ambient Light Sensor](#everlight-als-pt19-ambient-light-sensor)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
-      - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe)
       - [In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor](#in-situ-aqualevel-troll-pressure-temperature-and-depth-sensor)
+      - [In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe](#in-situ-rdo-pro-x-rugged-dissolved-oxygen-probe)
     - [Keller RS485/Modbus Water Level Sensors](#keller-rs485modbus-water-level-sensors)
       - [Keller Acculevel High Accuracy Submersible Level Transmitter](#keller-acculevel-high-accuracy-submersible-level-transmitter)
       - [Keller Nanolevel Level Transmitter](#keller-nanolevel-level-transmitter)
@@ -727,6 +728,15 @@ Keep in mind that the possible I2C addresses of the BME280 match those of the MS
 ___
 
 
+### Bosch BMP388 and BMP398 Pressure Sensors <!-- {#menu_walk_bosch_bmp3xx} -->
+
+@see @ref sensor_bmp3xx
+
+[//]: # ( @menusnip{bosch_bmp3xx} )
+
+___
+
+
 #### Campbell ClariVUE SDI-12 Turbidity Sensor <!-- {#menu_walk_campbell_clari_vue10} -->
 
 @see @ref sensor_clarivue
@@ -811,20 +821,20 @@ Because this sensor can have only one I2C address (0x60), it is only possible to
 ___
 
 
-#### In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe <!-- {#menu_walk_in_situ_rdo} -->
-
-@see @ref sensor_insitu_rdo
-
-[//]: # ( @menusnip{in_situ_rdo} )
-
-___
-
-
 #### In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor <!-- {#menu_walk_in_situ_troll_sdi12a} -->
 
 @see @ref sensor_insitu_troll
 
 [//]: # ( @menusnip{in_situ_troll_sdi12a} )
+
+___
+
+
+#### In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe <!-- {#menu_walk_in_situ_rdo} -->
+
+@see @ref sensor_insitu_rdo
+
+[//]: # ( @menusnip{in_situ_rdo} )
 
 ___
 

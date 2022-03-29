@@ -49,12 +49,12 @@
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf)
  *
  * @section sensor_sht4x_ctor Sensor Constructors
- * {{ @ref SensirionSHT4x::SensirionSHT4x(int8_t, uint8_t) }}
- * {{ @ref SensirionSHT4x::SensirionSHT4x(TwoWire*, int8_t, uint8_t) }}
+ * {{ @ref SensirionSHT4x::SensirionSHT4x(int8_t, bool, uint8_t) }}
+ * {{ @ref SensirionSHT4x::SensirionSHT4x(TwoWire*, int8_t, bool, uint8_t) }}
  *
  * @section sensor_sht4x_examples Example Code
  *
- * The SHT40 is used in the @menulink{sht4x} example
+ * The SHT40 is used in the @menulink{sensirion_sht4x} example
  *
  * @menusnip{sensirion_sht4x}
  */

@@ -75,6 +75,9 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 echo "\n\e[32mInstalling Adafruit BME280 Library library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit BME280 Library"
 
+echo "\n\e[32mInstalling Adafruit BMP3XX Library library from Arduino library index\e[0m"
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit BMP3XX Library"
+
 echo "\n\e[32mInstalling DHT sensor library library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "DHT sensor library"
 

@@ -27,14 +27,14 @@
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Everlight-ALS-PT19.pdf)
  *
  * @section sensor_alspt19_ctor Sensor Constructors
- * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, uint8_t) }}
- * {{ @ref EverlightALSPT19::EverlightALSPT19(TwoWire*, int8_t, uint8_t) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(uint8_t) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, int8_t, float, float, uint8_t) }}
  *
  * @section sensor_alspt19_examples Example Code
  *
- * The ALS-PT19 is used in the @menulink{ao_song_alspt19} example
+ * The ALS-PT19 is used in the @menulink{everlight_alspt19} example
  *
- * @menusnip{ao_song_alspt19}
+ * @menusnip{everlight_alspt19}
  */
 /* clang-format on */
 
