@@ -161,7 +161,7 @@ EverlightALSPT19 alsPt19(alsNumberReadings);
 //  Built in on Mayfly 1.x
 // ==========================================================================
 /** Start [sensirion_sht4x] */
-#include <sensors/SensirionSHT4X.h>
+#include <sensors/SensirionSHT4x.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t SHT4xPower     = sensorPowerPin;  // Power pin
