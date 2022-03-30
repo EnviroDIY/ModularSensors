@@ -36,9 +36,6 @@ pio lib -g install adafruit/'Adafruit AM2315'
 echo "\e[32mInstalling adafruit/'Adafruit BME280 Library'\e[0m"
 pio lib -g install adafruit/'Adafruit BME280 Library'
 
-echo "\e[32mInstalling adafruit/'Adafruit BMP3XX Library'\e[0m"
-pio lib -g install adafruit/'Adafruit BMP3XX Library'
-
 echo "\e[32mInstalling adafruit/'DHT sensor library'\e[0m"
 pio lib -g install adafruit/'DHT sensor library'
 
@@ -47,6 +44,9 @@ pio lib -g install adafruit/'Adafruit INA219'
 
 echo "\e[32mInstalling adafruit/'Adafruit MPL115A2'\e[0m"
 pio lib -g install adafruit/'Adafruit MPL115A2'
+
+echo "\e[32mInstalling Martin Lindupp's BMP388 Library\e[0m"
+pio lib -g install https://github.com/MartinL1/BMP388_DEV.git
 
 echo "\e[32mInstalling paulstoffregen/OneWire\e[0m"
 pio lib -g install paulstoffregen/OneWire
