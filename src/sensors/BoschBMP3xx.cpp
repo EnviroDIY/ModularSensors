@@ -66,8 +66,11 @@ bool BoschBMP3xx::setup(void) {
     // table 23 of the datasheet
     // The enum values for oversampling match with the values of osr_p and osr_t
     uint32_t typ_measurementTime_us =
-        (234 + 1 * (392 + (pow(2, _pressureOversampleEnum)) * 2020) +
-         1 * (163 + (pow(2, _tempOversampleEnum)) * 2020));
+        (234 +
+         1 *
+             (392 +
+              (pow(2, static_cast<int>(_pressureOversampleEnum))) * 2020) +
+         1 * (163 + (pow(2, static_cast<int>(_tempOversampleEnum))) * 2020));
     float max_measurementTime_us = static_cast<float>(typ_measurementTime_us) *
         1.18;
     // Set the sensor measurement time to the safety-factored max time
@@ -109,7 +112,7 @@ bool BoschBMP3xx::setup(void) {
     // ADC NOTE:  The ADC will return repeated values if the ADC's ODR (output
     // data rate) is set faster than the actual measurement time, given
     // oversampling.
-    float _timeStandby_ms = 5 * pow(2, _standbyEnum);
+    float _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
     // warn if an impossible sampling rate is selected
     if ((_timeStandby_ms < max_measurementTime_us / 1000) &&
         _mode == NORMAL_MODE) {
@@ -118,10 +121,11 @@ bool BoschBMP3xx::setup(void) {
                _measurementTime_ms,
                F("ms needed for temperature and pressure oversampling."));
         // bump up the standby time to a possible value
-        while (5 * pow(2, _standbyEnum) < max_measurementTime_us / 1000) {
+        while (5.0f * pow(2, static_cast<int>(_standbyEnum)) <
+               max_measurementTime_us / 1000) {
             _standbyEnum =
                 static_cast<TimeStandby>(static_cast<int>(_standbyEnum) + 1);
-            _timeStandby_ms = 5 * pow(2, _standbyEnum);
+            _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
             MS_DBG(_standbyEnum, _timeStandby_ms,
                    static_cast<int>(max_measurementTime_us / 1000));
         }
@@ -135,13 +139,13 @@ bool BoschBMP3xx::setup(void) {
         // float time_to_initialize_filter =
         //     ((pow(2,_filterCoeff)) * (5 * pow(2,_timeStandby))) / 1E6;
         MS_DBG(F("BMP388/390's IIR filter will only be fully initialized"),
-               pow(2, _filterCoeffEnum) * _timeStandby_ms,
+               pow(2, static_cast<int>(_filterCoeffEnum)) * _timeStandby_ms,
                F("ms after power on"));
     }
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == FORCED_MODE) {
         MS_DBG(
             F("BMP388/390's IIR filter will only be fully initialized after"),
-            pow(2, _filterCoeffEnum), F("samples"));
+            pow(2, static_cast<int>(_filterCoeffEnum)), F("samples"));
     }
 
     if (_mode == FORCED_MODE) {
