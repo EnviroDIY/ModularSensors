@@ -61,14 +61,14 @@
  *
  * Recommended settings pressure oversampling (adapted from table 6 of the [datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf))
  *
- * | Oversampling setting  | Pressure oversampling | Typical pressure resolution | Recommended temperature oversampling |
- * | :-------------------: | :-------------------: | :-------------------------: | :----------------------------------: |
- * |    Ultra low power    |          ×1           |      16 bit / 2.64 Pa       |                  ×1                  |
- * |       Low power       |          ×2           |      17 bit / 1.32 Pa       |                  ×1                  |
- * |  Standard resolution  |          ×4           |      18 bit / 0.66 Pa       |                  ×1                  |
- * |    High resolution    |          ×8           |      19 bit / 0.33 Pa       |                  ×1                  |
- * | Ultra high resolution |          ×16          |      20 bit / 0.17 Pa       |                  ×2                  |
- * |  Highest resolution   |          ×32          |      21 bit / 0.085 Pa      |                  ×2                  |
+ * | Oversampling setting  | Pressure oversampling | Typical pressure resolution | Recommended temperature oversampling | Measurement Time (typ., µsec) |
+ * | :-------------------: | :-------------------: | :-------------------------: | :----------------------------------: | :---------------------------: |
+ * |    Ultra low power    |          ×1           |      16 bit / 2.64 Pa       |                  ×1                  |             6849              |
+ * |       Low power       |          ×2           |      17 bit / 1.32 Pa       |                  ×1                  |             8869              |
+ * |  Standard resolution  |          ×4           |      18 bit / 0.66 Pa       |                  ×1                  |             12909             |
+ * |    High resolution    |          ×8           |      19 bit / 0.33 Pa       |                  ×1                  |             20989             |
+ * | Ultra high resolution |          ×16          |      20 bit / 0.17 Pa       |                  ×2                  |             41189             |
+ * |  Highest resolution   |          ×32          |      21 bit / 0.085 Pa      |                  ×2                  |             73509             |
  *
  * @subsection sensor_bmp3xx_temp_osr Recommended Temperature Oversampling
  *
@@ -84,22 +84,22 @@
  *
  * @subsection sensor_bmp3xx_filts_uses Settings by Use Case
  *
- * This is a copy of Bosch's recommendations for pressure and temperature oversampling,
+ * This is a modified version of Bosch's recommendations for pressure and temperature oversampling,
  * IIR filter coeficients, and output data rates for various applications.
  * This appears as table 10 in the
  * [datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf).
  *
  * Table 10: Recommended filter settings based on use cases
  *
- * |                 Use case                 |  Mode  | Over-sampling setting | Pressure over-sampling | Temperature over-sampling | IIR filter coefficient | Current Consumption (I<sub>DD</sub>) [μA] | Standby Time (ms) | Output Data Rate (ODR) [Hz] | RMS Noise [cm] |
- * | :--------------------------------------: | :----: | :-------------------: | :--------------------: | :-----------------------: | :--------------------: | :---------------------------------------: | :---------------: | :-------------------------: | :------------: |
- * | handheld device low-power (e.g. Android) | Normal |    High resolution    |           x8           |            x1             |           2            |                    145                    |        80         |            12.5             |       11       |
- * |  handheld device dynamic (e.g. Android)  | Normal |  Standard resolution  |           x4           |            x1             |           4            |                    310                    |        20         |             50              |       10       |
- * |    Weather monitoring (lowest power)     | Forced |    Ultra low power    |           x1           |            x1             |          Off           |                     4                     |       N/A¹        |            1/60             |       55       |
- * |              Drop detection              | Normal |       Low power       |           x2           |            x1             |          Off           |                    358                    |        10         |             100             |       36       |
- * |            Indoor navigation             | Normal | Ultra high resolution |          x16           |            x2             |           4            |                    560                    |        40         |             25              |       5        |
- * |                  Drone                   | Normal |  Standard resolution  |           x8           |            x1             |           2            |                    570                    |        20         |             50              |       11       |
- * |           Indoor localization            | Normal |    Ultra low power    |           x1           |            x1             |           4            |                     -                     |        640        |              1              |       -        |
+ * |                 Use case                 |  Mode  | Over-sampling setting | Pressure over-sampling | Temperature over-sampling | IIR filter coefficient | Standby Time (ms) | Output Data Rate (ODR) [Hz] | Current Consumption (I<sub>DD</sub>) [μA] | RMS Noise [cm] |
+ * | :--------------------------------------: | :----: | :-------------------: | :--------------------: | :-----------------------: | :--------------------: | :---------------: | :-------------------------: | :---------------------------------------: | :------------: |
+ * | handheld device low-power (e.g. Android) | Normal |    High resolution    |           x8           |            x1             |           2            |        80         |            12.5             |                    145                    |       11       |
+ * |  handheld device dynamic (e.g. Android)  | Normal |  Standard resolution  |           x4           |            x1             |           4            |        20         |             50              |                    310                    |       10       |
+ * |    Weather monitoring (lowest power)     | Forced |    Ultra low power    |           x1           |            x1             |          Off           |       N/A¹        |            1/60             |                     4                     |       55       |
+ * |              Drop detection              | Normal |       Low power       |           x2           |            x1             |          Off           |        10         |             100             |                    358                    |       36       |
+ * |            Indoor navigation             | Normal | Ultra high resolution |          x16           |            x2             |           4            |        40         |             25              |                    560                    |       5        |
+ * |                  Drone                   | Normal |  Standard resolution  |           x8           |            x1             |           2            |        20         |             50              |                    570                    |       11       |
+ * |           Indoor localization            | Normal |    Ultra low power    |           x1           |            x1             |           4            |        640        |              1              |                     -                     |       -        |
  * ¹ Standby time does not apply in forced mode
  *
  * @section sensor_bmp3xx_datasheet Sensor Datasheet
@@ -194,21 +194,22 @@
  * > In both forced mode and normal mode the pressure and temperature
  * > measurement duration follow the equation:
  * >
- * > <em>T<sub>conv</sub></em> = 234μs + *pres_en* x (392μs + 2<sup>osr_p</sup>
- * > * 2020 μs) + *temp_en* x (163 μs + 2<sup>osr_t</sup> * 2020μs)
+ * > \f[T_{conv} = 234 \mu s + pres\_en \times (392 \mu s + 2^{osr\_p} \times
+ * 2020 \mu s) + temp\_en \times (163 \mu s + 2^{osr\_t} \times 2020 \mu s)\f]
  * >
  * > With:
- * > - <em>T<sub>conv</sub></em> = total conversion time in μs
- * > - *pres_en* = "0" or "1", depending of the status of the press_en bit
- * > - *temp_en* = "0" or "1", depending of the status of the temp_en bit
- * > - osr_p = amount of pressure oversampling repetitions
- * > - osr_t = amount of temperature oversampling repetitions
+ * > - \f$T_{conv}\f$ = total conversion time in μs
+ * > - \f$pres\_en\f$ = "0" or "1", depending of the status of the press_en bit
+ * > - \f$temp\_en\f$ = "0" or "1", depending of the status of the temp_en bit
+ * > - \f$osr\_p\f$ = amount of pressure oversampling repetitions
+ * > - \f$osr\_t\f$ = amount of temperature oversampling repetitions
  *
  * Further, based on table 23 in the datasheet, there is up to a 18% difference
  * between the "typical" measurement time (as given by the equation) and the
  * maximum measurement time.
  *
- * ModularSensors will always enable both pressure and temperature measurement.
+ * ModularSensors will always enable both pressure and temperature measurement
+ * and add an extra 18% wait to the calculated measurement time.
  */
 #define BMP3XX_MEASUREMENT_TIME_MS 80
 /**@}*/
@@ -347,13 +348,16 @@ class BoschBMP3xx : public Sensor {
      * - `OVERSAMPLING_X32`
      *
      * @param tempOversample Temperature oversampling setting
-     * <br>Possible values are the same as those for pressureOversample.
+     * <br>Possible values are the same as those for pressureOversample.  Using
+     * temperature oversampling above X2 is not recommended as it does not
+     * further improve pressure data quality.
      *
      * @param filterCoeff Coefficient of the infinite impulse response (IIR)
      * filter (in samples).
      * <br>This is number of past samples considered in calculating the current
-     * filtered value.  This only should be used when the sensor is in normal
-     * sampling mode and continuously powered.
+     * filtered value.  This setting is **ignored** if the sensor will not be
+     * continuously powered.  This only recommended when operating in "normal"
+     * sampling mode.
      * <br>Possible values are:
      * - `IIR_FILTER_OFF` (no filtering)
      * - `IIR_FILTER_1`,

@@ -27,15 +27,15 @@ _______
 
 _______
 
-# Unique Features of the DRWI EnviroDIY LTE Example <!-- {#example_drwi_ediylte_unique} -->
+# Unique Features of the DRWI EnviroDIY LTE Example <!-- {#example_drwi_mayfly1_unique} -->
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY LTE Bee based on the SIMCom SIM7080G
 
 
-[//]: # ( @section example_drwi_ediylte_pio_config PlatformIO Configuration )
+[//]: # ( @section example_drwi_mayfly1_pio_config PlatformIO Configuration )
 
-[//]: # ( @include{lineno} DRWI_SIM7080LTE/platformio.ini )
+[//]: # ( @include{lineno} DRWI_Mayfly1/platformio.ini )
 
-[//]: # ( @section example_drwi_ediylte_code The Complete Code )
+[//]: # ( @section example_drwi_mayfly1_code The Complete Code )
 
-[//]: # ( @include{lineno} DRWI_SIM7080LTE/DRWI_SIM7080LTE.ino )
+[//]: # ( @include{lineno} DRWI_Mayfly1/DRWI_Mayfly1.ino )
