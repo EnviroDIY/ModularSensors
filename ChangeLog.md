@@ -711,7 +711,9 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.31.2...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.32.2...HEAD
+[0.32.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.2
+[0.32.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.0
 [0.31.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.2
 [0.31.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.0
 [0.30.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.30.0
