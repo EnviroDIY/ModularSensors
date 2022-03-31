@@ -75,10 +75,16 @@
  * @m_innerpage{page_examples_drwi}
  * @page page_examples_drwi DRWI Citizen Science
  * [DRWI Citizen Science](@ref examples_drwi)
+ * @m_innerpage{example_drwi_mayfly1}
  * @m_innerpage{example_drwi_ediylte}
  * @m_innerpage{example_drwi_digilte}
  * @m_innerpage{example_drwi_2g}
  * @m_innerpage{example_drwi_no_cell}
+ */
+/**
+ * @example{lineno} DRWI_Mayfly1.ino @m_examplenavigation{example_drwi_mayfly1,} @m_footernavigation
+ * @brief Example for DRWI CitSci LTE sites with a Mayfly 1.x utilizing on-board sensors.
+ * See [the walkthrough page](@ref example_drwi_mayfly1) for detailed instructions.
  */
 /**
  * @example{lineno} DRWI_SIM7080LTE.ino @m_examplenavigation{example_drwi_ediylte,} @m_footernavigation

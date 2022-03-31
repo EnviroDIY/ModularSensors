@@ -19,6 +19,7 @@ ___
     - [Multiple Logging Intervals](#multiple-logging-intervals)
     - [Minimizing Cell Data Usage](#minimizing-cell-data-usage)
   - [DRWI Citizen Science](#drwi-citizen-science)
+    - [DRWI Mayfly 1.x LTE](#drwi-mayfly-1x-lte)
     - [DRWI EnviroDIY Bee LTE](#drwi-envirodiy-bee-lte)
     - [DRWI Digi LTE](#drwi-digi-lte)
     - [DRWI CitSci (2G)](#drwi-citsci-2g)
@@ -115,6 +116,16 @@ ___
 
 ## DRWI Citizen Science <!-- {#examples_drwi} -->
 
+### DRWI Mayfly 1.x LTE <!-- {#examples_drwi_mayfly1} -->
+
+The DRWI Mayfly 1.x LTE example uses the sensors and equipment standard groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
+It includes a Meter Hydros 21 and a SIM7080G-based EnviroDIY Bee for communication.
+This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
+The results are saved to the SD card and posted to the Monitor My Watershed data portal.
+
+- [Instructions for the Mayfly 1.x LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_mayfly1.html)
+- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_Mayfly1)
+
 ### DRWI EnviroDIY Bee LTE <!-- {#examples_drwi_ediylte} -->
 
 The DRWI EnviroDIY Bee LTE example uses the sensors and equipment standard groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
@@ -123,7 +134,7 @@ The results are saved to the SD card and posted to the Monitor My Watershed data
 The only difference between this and the other cellular DRWI examples is the type of modem used.
 
 - [Instructions for the EnviroDIY LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_ediylte.html)
-- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
+- [The EnviroDIY LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
 
 ### DRWI Digi LTE <!-- {#examples_drwi_digilte} -->
 
@@ -133,7 +144,7 @@ The results are saved to the SD card and posted to the Monitor My Watershed data
 The only difference between this and the other cellular DRWI examples is the type of modem used.
 
 - [Instructions for the Digi LTE DRWI Citizen Science example](https://envirodiy.github.io/ModularSensors/example_drwi_digilte.html)
-- [The LTEG DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
+- [The Digi LTE DRWI Citizen Science example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DRWI_DigiLTE)
 
 
 ### DRWI CitSci (2G) <!-- {#examples_drwi_2g} -->

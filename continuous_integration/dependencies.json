@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 11,
+  "action_cache_version": 12,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",

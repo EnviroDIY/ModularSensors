@@ -101,6 +101,7 @@ LINKS_NAVBAR1 = [
         #         "DRWI Citizen Science",
         #         "examples_drwi",
         #         [
+        #             ("DRWI Mayfly 1.x", "example_drwi_mayfly1"),
         #             ("DRWI EnviroDIY LTE", "example_drwi_ediylte"),
         #             ("DRWI Digi LTE", "example_drwi_digilte"),
         #             ("DRWI CitSci (2G", "example_drwi_2g"),
