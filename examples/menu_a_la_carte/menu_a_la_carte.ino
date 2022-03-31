@@ -1289,11 +1289,11 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 #endif
 
 
-#if defined BUILD_SENSOR_EXTERNAL_VOLTAGE
+#if defined BUILD_SENSOR_TIADS1X15
 // ==========================================================================
 //  External Voltage via TI ADS1115
 // ==========================================================================
-/** Start [external_voltage] */
+/** Start [tiads1x15] */
 #include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1310,7 +1310,7 @@ TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
 // Create a voltage variable pointer
 Variable* ads1x15Volt =
     new TIADS1x15_Voltage(&ads1x15, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [external_voltage] */
+/** End [tiads1x15] */
 #endif
 
 
@@ -2463,7 +2463,7 @@ Variable* variableList[] = {
     alsPt19Current,
     alsPt19Lux,
 #endif
-#if defined BUILD_SENSOR_EXTERNAL_VOLTAGE
+#if defined BUILD_SENSOR_TIADS1X15
     ads1x15Volt,
 #endif
 #if defined BUILD_SENSOR_FREESCALE_MPL115A2

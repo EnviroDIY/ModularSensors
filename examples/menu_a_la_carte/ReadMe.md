@@ -806,7 +806,7 @@ The number of measurements to average, if more than one is desired, goes as the 
 
 @see @ref sensor_ads1x15
 
-[//]: # ( @menusnip{external_voltage} )
+[//]: # ( @menusnip{tiads1x15} )
 
 ___
 
