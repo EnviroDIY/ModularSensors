@@ -23,6 +23,8 @@ There is extensive documentation available in the [ModularSensors github pages](
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [ModularSensors](#modularsensors)
   - [The EnviroDIY ModularSensors Library](#the-envirodiy-modularsensors-library)

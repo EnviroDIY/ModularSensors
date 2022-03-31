@@ -31,6 +31,8 @@ ___
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 ## Basic Functionality <!-- {#examples_basic} -->
 
 ### Single Sensor <!-- {#examples_single_sensor} -->

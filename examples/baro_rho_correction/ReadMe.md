@@ -10,10 +10,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Calculating Results based on Measured Values](#calculating-results-based-on-measured-values)
 - [Unique Features of the Barometric Correction Example](#unique-features-of-the-barometric-correction-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Set the logger ID](#set-the-logger-id)
   - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)

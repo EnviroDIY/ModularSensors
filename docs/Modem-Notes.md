@@ -2,6 +2,8 @@
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Notes about Modems](#notes-about-modems)
   - [Summary of Classes to use for Various Manufactured Modules](#summary-of-classes-to-use-for-various-manufactured-modules)
@@ -184,7 +186,7 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 
 |                      Module                       | Power | Status |     Reset      | Sleep Request  |
 | :-----------------------------------------------: | :---: | :----: | :------------: | :------------: |
-|            EnviroDIY WiFi Bee (ESP32)             |  18¹  |  -1   | A5<sup>3</sup> |      -1       |
+|            EnviroDIY WiFi Bee (ESP32)             |  18¹  |   -1   | A5<sup>3</sup> |       -1       |
 |           EnviroDIY LTE Bee (SIM7080G)            |  18¹  |   19   |      N/A       | 23<sup>4</sup> |
 | Digi XBee/XBee3, all variants (direct connection) |  18¹  |  19²   | A5<sup>3</sup> |       23       |
 |            DFRobot WiFi Bee (ESP8266)             |  18¹  |   -1   |       -1       |       -1       |

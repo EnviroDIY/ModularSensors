@@ -10,10 +10,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [DRWI Digi LTE Sites](#drwi-digi-lte-sites)
 - [Unique Features of the DRWI Digi LTE Example](#unique-features-of-the-drwi-digi-lte-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Set the logger ID](#set-the-logger-id)
   - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)

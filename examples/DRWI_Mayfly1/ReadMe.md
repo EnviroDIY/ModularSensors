@@ -19,6 +19,8 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [DRWI Sites with a Mayfly 1.x and EnviroDIY LTE Bees](#drwi-sites-with-a-mayfly-1x-and-envirodiy-lte-bees)
 - [Unique Features of the DRWI Mayfly 1.x LTE Example](#unique-features-of-the-drwi-mayfly-1x-lte-example)

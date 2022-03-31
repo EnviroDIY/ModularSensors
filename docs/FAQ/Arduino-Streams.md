@@ -2,6 +2,8 @@
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Notes on Arduino Streams and Software Serial](#notes-on-arduino-streams-and-software-serial)
   - [Hardware Serial](#hardware-serial)

@@ -7,10 +7,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Using a Single Sensor](#using-a-single-sensor)
 - [Unique Features of the Single Sensor Example](#unique-features-of-the-single-sensor-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Upload!](#upload)
 

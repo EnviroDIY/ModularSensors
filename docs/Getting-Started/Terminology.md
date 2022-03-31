@@ -6,6 +6,8 @@ Within this library, a Sensor, a Variable, and a Logger mean very specific thing
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Library Terminology](#library-terminology)
   - [Terms](#terms)

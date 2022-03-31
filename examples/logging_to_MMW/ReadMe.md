@@ -12,10 +12,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Sending Data to Monitor My Watershed/EnviroDIY](#sending-data-to-monitor-my-watershedenvirodiy)
 - [Unique Features of the Monitor My Watershed Example](#unique-features-of-the-monitor-my-watershed-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Set the logger ID](#set-the-logger-id)
   - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)

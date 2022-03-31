@@ -20,6 +20,8 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [DRWI Sites with EnviroDIY LTE Bees](#drwi-sites-with-envirodiy-lte-bees)
 - [Unique Features of the DRWI EnviroDIY LTE Example](#unique-features-of-the-drwi-envirodiy-lte-example)

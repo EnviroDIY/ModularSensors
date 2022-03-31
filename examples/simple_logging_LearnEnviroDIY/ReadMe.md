@@ -12,10 +12,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Learn EnviroDIY Course](#learn-envirodiy-course)
 - [Unique Features of the Learn EnviroDIY Example](#unique-features-of-the-learn-envirodiy-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Set the logger ID](#set-the-logger-id)
   - [Upload!](#upload)

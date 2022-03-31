@@ -2,6 +2,8 @@
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Getting Started](#getting-started)
   - [IDE and Driver Installation](#ide-and-driver-installation)

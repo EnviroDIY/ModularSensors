@@ -10,6 +10,8 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Simple Logging](#simple-logging)
 - [Unique Features of the Simple Logging Example](#unique-features-of-the-simple-logging-example)

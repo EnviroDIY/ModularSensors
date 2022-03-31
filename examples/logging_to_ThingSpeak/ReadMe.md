@@ -7,10 +7,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Sending data to ThingSpeak](#sending-data-to-thingspeak)
 - [Unique Features of the ThingSpeak Example](#unique-features-of-the-thingspeak-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Modify the Example](#modify-the-example)
   - [Upload!](#upload)

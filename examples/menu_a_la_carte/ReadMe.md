@@ -21,6 +21,8 @@ ___
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
 - [Example showing all possible functionality](#example-showing-all-possible-functionality)
 - [Walking Through the Code](#walking-through-the-code)
