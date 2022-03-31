@@ -196,9 +196,13 @@ class Logger {
     }
 
     /**
-     * @brief Set the pin (on the mcu) to use to control power to the SD card.
+     * @brief Set a digital pin number (on the mcu) to use to control power to
+     * the SD card and activate it as an output pin.
      *
-     * @note This functionality is not tested!
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
+     *
+     * @warning This functionality is not tested!
      *
      * @param SDCardPowerPin A digital pin number on the mcu controlling power
      * to the SD card.
@@ -227,10 +231,14 @@ class Logger {
     void turnOffSDcard(bool waitForHousekeeping = true);
 
     /**
-     * @brief Set a pin for the slave select (chip select) of the SD card.
+     * @brief Set a digital pin number for the slave select (chip select) of the
+     * SD card and activate it as an output pin.
      *
      * This over-writes the value (if any) given in the constructor.  The pin
      * mode of this pin will be set as `OUTPUT`.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
      * the SD card.
@@ -238,10 +246,14 @@ class Logger {
     void setSDCardSS(int8_t SDCardSSPin);
 
     /**
-     * @brief Set both pins related to the SD card.
+     * @brief Set both pin numbers related to the SD card and activate them as
+     * output pins.
      *
      * These over-write the values (if any) given in the constructor.  The pin
-     * mode of this pin will be set as `OUTPUT`.
+     * mode of these pins will be set as `OUTPUT`.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
      * the SD card.
@@ -252,12 +264,16 @@ class Logger {
 
     //
     /**
-     * @brief Set up the wake up pin for an RTC interrupt.
+     * @brief Set digital pin number for the wake up pin used as an RTC
+     * interrupt and activate it in the given pin mode.
      *
      * This over-writes the value (if any) given in the constructor.  Use a
      * value of -1 to prevent the board from attempting to sleep.  If using a
      * SAMD board with the internal RTC, the value of the pin is irrelevant as
      * long as it is positive.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @note  This sets the pin mode but does NOT enable the interrupt!
      *
@@ -271,11 +287,15 @@ class Logger {
     void setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode = INPUT_PULLUP);
 
     /**
-     * @brief Set a pin to put out an alert that a measurement is being logged.
+     * @brief Set the digital pin number to put out an alert that a measurement
+     * is being logged and activate it as an output pin.
      *
      * The pin mode of this pin will be set as `OUTPUT`.  This is intended to be
      * a pin with a LED on it so you can see the light come on when a
      * measurement is being taken.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.
@@ -291,10 +311,15 @@ class Logger {
     void alertOff();
 
     /**
-     * @brief Set up a pin for an interrupt to enter testing mode **and** attach
+     * @brief Set the digital pin number for an interrupt pin used to enter
+     * testing mode, activate that pin as the given input type, **and** attach
      * the testing interrupt to it.
      *
-     * Intended to be attached to a button or other manual interrupt source.
+     * Intended to be used for a pin attached to a button or other manual
+     * interrupt source.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * Once in testing mode, the logger will attempt to connect the the internet
      * and take 25 measurements spaced at 5 second intervals writing the results
@@ -317,23 +342,30 @@ class Logger {
     void setTestingModePin(int8_t buttonPin, uint8_t buttonPinMode = INPUT);
 
     /**
-     * @brief Set the five pins of interest for the logger
+     * @brief Set the digital pin numbers and activate pin modes for the five
+     * pins of interest for the logger
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param mcuWakePin The pin on the mcu to listen to for a value-change
-     * interrupt to wake from deep sleep.  This pin will be set to
+     * interrupt to wake from deep sleep.  The mode of this pin will be set to
+     * `wakePinMode`.
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
      * the SD card.  The pin mode of this pin will be set as `OUTPUT`.
      * @param SDCardPowerPin A digital pin number on the mcu controlling power
      * to the SD card.  The pin mode of this pin will be set as `OUTPUT`.
      * @param buttonPin The pin on the mcu to listen to for a value-change
-     * interrupt to enter testing mode.
+     * interrupt to enter testing mode.  The mode of this pin will be set to
+     * `buttonPinMode`.
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.  The pin mode of this pin will be set as
      * `OUTPUT`.
-     * @param wakePinMode The pin mode to be used for wake up on the clock alert
-     * pin.  Must be either `INPUT` OR `INPUT_PULLUP`.  Optional with a default
-     * value of `INPUT_PULLUP`.  The DS3231 has an active low interrupt, so the
-     * pull-up resistors should be enabled.
+     * @param wakePinMode The pin mode to be used for wake up on the
+     * `mcuWakePin` (clock alert) pin.  Must be either `INPUT` OR
+     * `INPUT_PULLUP`. Optional with a default value of `INPUT_PULLUP`.  The
+     * DS3231 has an active low interrupt, so the pull-up resistors should be
+     * enabled.
      * @param buttonPinMode The pin mode to be used for the button pin.  Must be
      * either `INPUT` OR `INPUT_PULLUP`.  Optional with a default value of
      * `INPUT`.  Using `INPUT_PULLUP` will enable processor input resistors,
