@@ -43,7 +43,7 @@
  * the sensor can be stopped between measurements.
  *
  * @warning These I2C addresses are the same as those available for the Bosch
- * BME280 Barometric Pressure Sensor!  If you are also using one of those
+ * BME280, BMP388, and BMP390 sensors!  If you are also using one of those
  * sensors, make sure that the address for that sensor does not conflict with
  * the address of this sensor.
  *
@@ -91,10 +91,10 @@
 #include "SensorBase.h"
 #include <MS5803.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_ms5803 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the MS5803 can report 2 values.
 #define MS5803_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

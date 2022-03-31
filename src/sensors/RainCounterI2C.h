@@ -88,10 +88,10 @@
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
-// Sensor Specific Defines
 /** @ingroup sensor_i2c_rain */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the tipping bucket counter can report 2
 /// values.
 #define BUCKET_NUM_VARIABLES 2

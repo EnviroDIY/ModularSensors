@@ -51,8 +51,8 @@
  * The [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library)
  * is used internally for communication with the BME280.
  *
- * @warning The I2C addresses used by the BME280 are the same as those of the
- * MS5803!  If you are also using one of those sensors, make sure that the
+ * @warning The I2C addresses used by the BME280 are the same as those of the BMP388,
+ * BMP390, and MS5803!  If you are also using one of those sensors, make sure that the
  * address for that sensor does not conflict with the address of this sensor.
  *
  * @note Software I2C is *not* supported for the BME280.
@@ -63,6 +63,13 @@
  * https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/
  *
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf)
+ *
+ * @section sensor_bme280_flags Build flags
+ * - ```-D SEALEVELPRESSURE_HPA```
+ *      - use to adjust the sea level pressure used to calculate altitude from measured barometric pressure
+ *      - if not defined, 1013.25 is used
+ *      - The same sea level pressure flag is used for both the BMP3xx and the BME280.
+ * Whatever you select will be used for both sensors.
  *
  * @section sensor_bme280_ctor Sensor Constructors
  * {{ @ref BoschBME280::BoschBME280(int8_t, uint8_t, uint8_t) }}
@@ -94,10 +101,10 @@
 #include "SensorBase.h"
 #include <Adafruit_BME280.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_bme280 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the BME280 can report 4 values.
 #define BME280_NUM_VARIABLES 4
 /// @brief Sensor::_incCalcValues; altitude is calculted within the Adafruit
@@ -236,7 +243,9 @@
 /**@}*/
 
 /// The atmospheric pressure at sea level
+#ifndef SEALEVELPRESSURE_HPA
 #define SEALEVELPRESSURE_HPA (1013.25)
+#endif
 
 /* clang-format off */
 /**

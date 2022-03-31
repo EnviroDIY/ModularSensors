@@ -148,10 +148,10 @@
 #include "VariableBase.h"
 #include "math.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_analog_cond */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; we only get one value from the analog
 /// conductivity sensor.
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
@@ -280,7 +280,7 @@
 #if !defined ANALOG_EC_ADC_REFERENCE_MODE
 #error The processor ADC reference type must be defined!
 #endif  // ANALOG_EC_ADC_REFERENCE_MODE
-#endif  // ANALOG_EC_ADC_REFERENCE_MODE
+#endif  // ARDUINO_ARCH_SAMD
 /* clang-format on */
 
 #if !defined RSERIES_OHMS_DEF

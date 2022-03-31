@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
-
+- Added support for Sensirion SHT4x sensors.
 ### Removed
 
 ### Fixed
@@ -30,12 +30,21 @@ We recommend a logger's real time clock always be set in UTC and then localized 
 - **Breaking:** Renamed the function `setNowEpoch(uint32_t)` to `setNowUTCEpoch(uint32_t)`.
   - Although public, this was never intended to be used externally.
 - **Breaking:** Renamed the YosemiTech Y550 COD sensor as Y551. See below.
-- Added a longer warm up time and removed some of the set-up to work with the ESP-IDF AT firmware versions >2.0
+- **Potentially Breaking:** Changed the default "button" interrupt pin mode from `INPUT_PULLUP` to `INPUT` and created optional arguments to the `setTestingModePin` and `setLoggerPins` functions to specify the pin mode and pull-up resistor state.
+  - `INPUT` is the proper mode for the Mayfly.
+The Mayfly has an external pull *down* on the button pin with the button being active high.
+This means having the pull-up resistors on negates the button signal.
+The pin mode had been set as `INPUT_PULLUP` for the button, backwards for the Mayfly, since  [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
+By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorretly activated pull-up resistors and an interrupt was still registered when the button was pressed.
+With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
+So, for most of our users with Mayflies, this will be a _**fix**_.
+But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
+- Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions >2.0
 - Made sure that all example clock synchronization happens at noon instead of midnight.
-- **Documentation:** Migrated to latest version of Doxygen (1.9.3).
 - Renamed class "MPL115A2" to "FreescaleMPL115A2" and all related variable classes.
 This is for consistency with the file name and other classes with manufacturer in the name.
 This is *not* a breaking change at this time; the old class names are still usable.
+- **Documentation:** Migrated to latest version of Doxygen (1.9.3).
 
 ### Added
 - **Sensor** Added support for the [YosemiTech Y551 COD Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/94.html), which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.
@@ -43,6 +52,9 @@ This is *not* a breaking change at this time; the old class names are still usab
 - **Sensor** Added support for the [YosemiTech Y560 Ammonium Probe](http://en.yosemitech.com/aspcms/product/2020-4-23/61.html), which is a mini sonde for three Ion Selective Electrode (ISE) sensors (pH, NH4+, K+) that together are used to provide a corrected estimate of total ammonium nitrogen (NH4_N) in mg/L.
   - NOTE that this release only includes outputs for NH4_N, pH, and temperature. A future release will also include estimates of potassium (K) and raw potential values from each of the electrodes.
 - **Sensor** Added support for the SDI-12 In-Situ [Level TROLL 400, 500 & 700 Data Loggers](https://in-situ.com/pub/media/support/documents/LevelTROLL_SS.pdf)
+- **Sensor** Added support for the Sensirion SHT40 relative humidity and temperature sensor
+- **Sensor** Added support for the Everlight ALS-PT19 ambient light sensor
+- **Sensor** Added support for the Bosch SensorTec BMP388 and BMP390 pressure sensors
 
 ### Removed
 

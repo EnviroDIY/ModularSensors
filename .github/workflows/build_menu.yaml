@@ -83,6 +83,9 @@ jobs:
             sensorFlag: BUILD_SENSOR_BOSCH_BME280
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_BOSCH_BMP3XX
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_CAMPBELL_CLARI_VUE10
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
@@ -93,6 +96,9 @@ jobs:
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_DECAGON_ES2
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_EVERLIGHT_ALSPT19
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_EXTERNAL_VOLTAGE
@@ -135,6 +141,9 @@ jobs:
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_RAIN_COUNTER_I2C
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_SENSIRION_SHT4X
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_TALLY_COUNTER_I2C

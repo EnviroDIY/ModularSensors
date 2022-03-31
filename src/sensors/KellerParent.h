@@ -98,10 +98,10 @@
 #include "SensorBase.h"
 #include <KellerModbus.h>
 
-// Sensor Specific Defines
 /** @ingroup keller_group */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Keller level sensors can report 3
 /// values.
 #define KELLER_NUM_VARIABLES 3

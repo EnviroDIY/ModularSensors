@@ -700,7 +700,7 @@ class loggerModem {
     void modemLEDOff(void);
     /**
      * @brief Set the processor pin modes (input vs output, with and without
-     * pullup) for all pins connected between the modem module and the mcu.
+     * pull-up) for all pins connected between the modem module and the mcu.
      */
     virtual void setModemPinModes(void);
     /**@}*/

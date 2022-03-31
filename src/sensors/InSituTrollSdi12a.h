@@ -387,4 +387,11 @@ class InSituTrollSdi12a_Depth : public Variable {
     ~InSituTrollSdi12a_Depth() {}
 };
 /**@}*/
+
+// typedefs for compatibility with Neil's original case
+typedef InSituTrollSdi12a          InsituTrollSdi12a;
+typedef InSituTrollSdi12a_Pressure InsituTrollSdi12a_Pressure;
+typedef InSituTrollSdi12a_Temp     InsituTrollSdi12a_Temp;
+typedef InSituTrollSdi12a_Depth    InsituTrollSdi12a_Depth;
+
 #endif  // SRC_SENSORS_INSITUTROLLSDI12_H_

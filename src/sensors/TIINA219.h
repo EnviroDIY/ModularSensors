@@ -75,10 +75,10 @@
 #include "SensorBase.h"
 #include <Adafruit_INA219.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_ina219 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the INA219 can report 3 values.
 #define INA219_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

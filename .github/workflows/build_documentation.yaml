@@ -10,6 +10,7 @@ on:
 
 env:
   DOXYGEN_VERSION: Release_1_9_3
+  PYTHON_DEPS_ARCHIVE_NUM: 2
 
 jobs:
   build:
@@ -30,7 +31,7 @@ jobs:
         id: cache_python
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}
+          key: ${{ runner.os }}-python-${{ env.PYTHON_DEPS_ARCHIVE_NUM }}
 
       - name: Install Pygments and other m.css Python Requirements
         if: steps.cache_python.outputs.cache-hit != 'true'
@@ -38,8 +39,18 @@ jobs:
           python -m pip install --upgrade pip
           pip3 install --upgrade --upgrade-strategy only-if-needed jinja2 Pygments beautifulsoup4
 
-      - name: Install GraphViz (dot)
-        run: sudo apt-get -y install graphviz
+      - name: Install all the dependencies needed to build and run Doxygen and m.css
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install graphviz
+          sudo apt-get -y install build-essential
+          sudo apt-get -y install flex
+          sudo apt-get -y install bison
+          sudo apt-get -y install graphviz
+          sudo apt-get -y install texlive-base
+          sudo apt-get -y install texlive-latex-extra
+          sudo apt-get -y install texlive-fonts-extra
+          sudo apt-get -y install texlive-fonts-recommended
 
       - name: Restore Doxygen
         id: cache_doxygen

@@ -88,10 +88,10 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_sq212 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values, raw
 /// voltage and calculated PAR.
 #define SQ212_NUM_VARIABLES 2

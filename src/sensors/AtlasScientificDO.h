@@ -66,10 +66,10 @@
  */
 #define ATLAS_DO_I2C_ADDR 0x61
 
-// Sensor Specific Defines
 /** @ingroup sensor_atlas_do */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Atlas DO sensor can report 2 values.
 #define ATLAS_DO_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
