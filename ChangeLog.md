@@ -59,6 +59,7 @@ This is *not* a breaking change at this time; the old class names are still usab
 ### Removed
 
 ### Fixed
+- Fixed memory leak for AOSong AM2315 thanks to @neilh10
 
 ***
 
