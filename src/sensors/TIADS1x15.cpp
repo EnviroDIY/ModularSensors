@@ -1,5 +1,5 @@
 /**
- * @file ExternalVoltage.cpp *
+ * @file TIADS1x15.cpp *
  * @copyright 2020 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
@@ -7,31 +7,30 @@
  * Adapted from CampbellOBS3.h by Sara Geleskie Damiano
  * <sdamiano@stroudcenter.org>
  *
- * @brief Implements the ExternalVoltage class.
+ * @brief Implements the TIADS1x15 class.
  */
 
 
-#include "ExternalVoltage.h"
+#include "TIADS1x15.h"
 #include <Adafruit_ADS1015.h>
 
 
 // The constructor - need the power pin the data pin, and gain if non standard
-ExternalVoltage::ExternalVoltage(int8_t powerPin, uint8_t adsChannel,
-                                 float gain, uint8_t i2cAddress,
-                                 uint8_t measurementsToAverage)
-    : Sensor("ExternalVoltage", EXT_VOLTAGE_NUM_VARIABLES,
-             EXT_VOLTAGE_WARM_UP_TIME_MS, EXT_VOLTAGE_STABILIZATION_TIME_MS,
-             EXT_VOLTAGE_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage, EXT_VOLTAGE_INC_CALC_VARIABLES) {
+TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel, float gain,
+                     uint8_t i2cAddress, uint8_t measurementsToAverage)
+    : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
+             TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage,
+             TIADS1X15_INC_CALC_VARIABLES) {
     _adsChannel = adsChannel;
     _gain       = gain;
     _i2cAddress = i2cAddress;
 }
 // Destructor
-ExternalVoltage::~ExternalVoltage() {}
+TIADS1x15::~TIADS1x15() {}
 
 
-String ExternalVoltage::getSensorLocation(void) {
+String TIADS1x15::getSensorLocation(void) {
 #ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
 #else
@@ -44,7 +43,7 @@ String ExternalVoltage::getSensorLocation(void) {
 }
 
 
-bool ExternalVoltage::addSingleMeasurementResult(void) {
+bool TIADS1x15::addSingleMeasurementResult(void) {
     // Variables to store the results in
     float adcVoltage  = -9999;
     float calibResult = -9999;
@@ -98,7 +97,7 @@ bool ExternalVoltage::addSingleMeasurementResult(void) {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    verifyAndAddMeasurementResult(EXT_VOLTAGE_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(TIADS1X15_VAR_NUM, calibResult);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

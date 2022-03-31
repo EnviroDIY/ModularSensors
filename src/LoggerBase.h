@@ -566,9 +566,10 @@ class Logger {
      */
     void publishDataToRemotes(void);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility, use publishDataToRemotes()
+     * in new code.
      *
-     * @deprecated use publishDataToRemotes()
+     * @m_deprecated_since{0,22,5}
      */
     void sendDataToRemotes(void);
 
@@ -616,18 +617,20 @@ class Logger {
      */
     static int8_t getLoggerTimeZone(void);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use setLoggerTimeZone(int8_t
+     * timeZone) in new code.
      *
-     * @deprecated use setLoggerTimeZone(int8_t timeZone)
+     * @m_deprecated_since{0,22,4}
      *
      * @param timeZone The timezone data shold be saved to the SD card in.  This
      * need not be the same as the timezone of the real time clock.
      */
     static void setTimeZone(int8_t timeZone);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use getLoggerTimeZone() in
+     * new code.
      *
-     * @deprecated use getLoggerTimeZone()
+     * @m_deprecated_since{0,22,4}
      *
      * @return **int8_t** The timezone data is be saved to the SD card in.  This
      * is not be the same as the timezone of the real time clock.
@@ -691,7 +694,7 @@ class Logger {
      * @return **uint32_t**  The number of seconds from January 1, 1970 in the
      * logging time zone.
      *
-     * @m_deprecated_since{0,33}
+     * @m_deprecated_since{0,33,0}
      */
     static uint32_t getNowEpoch(void);
 

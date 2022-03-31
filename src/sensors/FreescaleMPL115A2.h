@@ -241,6 +241,14 @@ class FreescaleMPL115A2 : public Sensor {
     TwoWire* _i2c;
 };
 
+/**
+ * @brief typedef for backwards compatibility; use the FreescaleMPL115A2 class
+ * in new code
+ *
+ * @m_deprecated_since{0,33,0}
+ */
+typedef FreescaleMPL115A2 MPL115A2;
+
 
 /* clang-format off */
 /**
@@ -284,6 +292,14 @@ class FreescaleMPL115A2_Temp : public Variable {
      */
     ~FreescaleMPL115A2_Temp() {}
 };
+
+/**
+ * @brief typedef for backwards compatibility; use the FreescaleMPL115A2_Temp
+ * class in new code
+ *
+ * @m_deprecated_since{0,33,0}
+ */
+typedef FreescaleMPL115A2_Temp MPL115A2_Temp;
 
 
 /* clang-format off */
@@ -330,11 +346,14 @@ class FreescaleMPL115A2_Pressure : public Variable {
      */
     ~FreescaleMPL115A2_Pressure() {}
 };
-/**@}*/
 
-// typedefs for backwards compatibility
-typedef FreescaleMPL115A2          MPL115A2;
+/**
+ * @brief typedef for backwards compatibility; use the
+ * FreescaleMPL115A2_Pressure class in new code
+ *
+ * @m_deprecated_since{0,33,0}
+ */
 typedef FreescaleMPL115A2_Pressure MPL115A2_Pressure;
-typedef FreescaleMPL115A2_Temp     MPL115A2_Temp;
 
+/**@}*/
 #endif  // SRC_SENSORS_FREESCALEMPL115A2_H_

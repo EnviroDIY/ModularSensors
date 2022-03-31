@@ -1294,7 +1294,7 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 //  External Voltage via TI ADS1115
 // ==========================================================================
 /** Start [external_voltage] */
-#include <sensors/ExternalVoltage.h>
+#include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  ADSPower       = sensorPowerPin;  // Power pin
@@ -1304,12 +1304,12 @@ const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1;     // Only read one sample
 
 // Create an External Voltage sensor object
-ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
-                        VoltReadsToAvg);
+TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
+                  VoltReadsToAvg);
 
 // Create a voltage variable pointer
-Variable* extvoltV =
-    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ads1x15Volt =
+    new TIADS1x15_Voltage(&ads1x15, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [external_voltage] */
 #endif
 
@@ -1662,8 +1662,8 @@ PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
 #endif
 
 // Create the voltage variable for the redox sensor
-Variable* ptVolt =
-    new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* ptVolt = new PaleoTerraRedox_Voltage(
+    &ptRedox, "12345678-abcd-1234-ef00-1234567890ab");
 /** End [paleo_terra_redox] */
 #endif
 
@@ -1773,8 +1773,8 @@ TIINA219 ina219(INA219Power, INA219i2c_addr, INA219ReadingsToAvg);
 // Create current, voltage, and power variable pointers for the INA219
 Variable* inaCurrent =
     new TIINA219_Current(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* inaVolt  = new TIINA219_Volt(&ina219,
-                                       "12345678-abcd-1234-ef00-1234567890ab");
+Variable* inaVolt =
+    new TIINA219_Voltage(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* inaPower = new TIINA219_Power(&ina219,
                                         "12345678-abcd-1234-ef00-1234567890ab");
 /** End [ti_ina219] */
@@ -2464,7 +2464,7 @@ Variable* variableList[] = {
     alsPt19Lux,
 #endif
 #if defined BUILD_SENSOR_EXTERNAL_VOLTAGE
-    extvoltV,
+    ads1x15Volt,
 #endif
 #if defined BUILD_SENSOR_FREESCALE_MPL115A2
     mplTemp,

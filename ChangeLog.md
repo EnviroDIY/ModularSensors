@@ -41,9 +41,15 @@ So, for most of our users with Mayflies, this will be a _**fix**_.
 But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
 - Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions >2.0
 - Made sure that all example clock synchronization happens at noon instead of midnight.
-- Renamed class "MPL115A2" to "FreescaleMPL115A2" and all related variable classes.
-This is for consistency with the file name and other classes with manufacturer in the name.
-This is *not* a breaking change at this time; the old class names are still usable.
+- **Renamed Classes:** Renamed several classes for internal consistency.
+These are *not* breaking changes at this time; the old class names are still usable.
+  - Rename class `MPL115A2` to `FreescaleMPL115A2`
+  - Rename class `MPL115A2_Pressure` to `FreescaleMPL115A2_Pressure`
+  - Rename class `MPL115A2_Temp` to `FreescaleMPL115A2_Temp`
+  - Rename class `TIINA219_Volt` to `TIINA219_Voltage`
+  - Rename class `PaleoTerraRedox_Volt` to `PaleoTerraRedox_Voltage`
+  - Rename class `ExternalVoltage` to `TIADS1x15`
+  - Rename class `ExternalVoltage_Volt` to `TIADS1x15_Voltage`
 - **Documentation:** Migrated to latest version of Doxygen (1.9.3).
 
 ### Added
@@ -754,3 +760,5 @@ Our first release of the modular sensors library to support easily logging data 
 [0.2.2-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.2-beta
 
 [//]: # ( @tableofcontents{XML:1} )
+
+[//]: # ( @m_footernavigation )

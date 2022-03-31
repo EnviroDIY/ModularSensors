@@ -350,9 +350,10 @@ class loggerModem {
      */
     virtual bool modemSetup(void);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use modemSetup() in new
+     * code.
      *
-     * @deprecated use modemSetup()
+     * @m_deprecated_since{0,24,1}
      *
      * @return **bool** True if setup was successful
      */
@@ -381,9 +382,9 @@ class loggerModem {
      */
     virtual bool modemWake(void) = 0;
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use modemWake() in new code.
      *
-     * @deprecated use modemWake()
+     * @m_deprecated_since{0,24,1}
      *
      * @return **bool** True if wake was sucessful, modem should be ready to
      * communicate

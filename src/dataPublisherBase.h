@@ -236,9 +236,10 @@ class dataPublisher {
     virtual int16_t publishData();
 
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use publishData(Client*
+     * outClient) in new code.
      *
-     * @deprecated use publishData(Client* outClient)
+     * @m_deprecated_since{0,22,5}
      *
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
@@ -248,9 +249,10 @@ class dataPublisher {
      */
     virtual int16_t sendData(Client* outClient);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use publishData() in new
+     * code.
      *
-     * @deprecated use publishData()
+     * @m_deprecated_since{0,22,5}
      *
      * @return **int16_t** The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.

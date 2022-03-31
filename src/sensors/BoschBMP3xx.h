@@ -179,23 +179,22 @@
  * bmp3xxtimingTest.ino
  */
 #define BMP3XX_STABILIZATION_TIME_MS 4000
+/* clang-format off */
 /**
- * @brief Sensor::_measurementTime_ms; BMP390 takes 135-138 ms 78.09ms (max) to
- * complete a measurement at 32x pressure oversampling and 2x temperature
- * oversampling.  A measurement may take up to 138ms at 32x pressure and
- * temperature oversampling, but oversampling rates above 2x for temperature are
- * not recommended.
+ * @brief Sensor::_measurementTime_ms; The number given in this define will be
+ * recalculated and over-written in the set-up.
  *
- * The number given in this define will be recalculated and over-written in the
- * set-up.
+ * The BMP390 takes 78.09ms (max) to complete a measurement at 32x pressure
+ * oversampling and 2x temperature oversampling.  A measurement may take up to
+ * 138ms at 32x pressure and temperature oversampling, but oversampling rates
+ * above 2x for temperature are not recommended.
  *
  * Following 3.9.2 of the datasheet:
  *
  * > In both forced mode and normal mode the pressure and temperature
  * > measurement duration follow the equation:
  * >
- * > \f[T_{conv} = 234 \mu s + pres\_en \times (392 \mu s + 2^{osr\_p} \times
- * 2020 \mu s) + temp\_en \times (163 \mu s + 2^{osr\_t} \times 2020 \mu s)\f]
+ * > \f[T_{conv} = 234 \mu s + pres\_en \times (392 \mu s + 2^{osr\_p} \times 2020 \mu s) + temp\_en \times (163 \mu s + 2^{osr\_t} \times 2020 \mu s)\f]
  * >
  * > With:
  * > - \f$T_{conv}\f$ = total conversion time in μs
@@ -203,6 +202,7 @@
  * > - \f$temp\_en\f$ = "0" or "1", depending of the status of the temp_en bit
  * > - \f$osr\_p\f$ = amount of pressure oversampling repetitions
  * > - \f$osr\_t\f$ = amount of temperature oversampling repetitions
+ *
  *
  * Further, based on table 23 in the datasheet, there is up to a 18% difference
  * between the "typical" measurement time (as given by the equation) and the
@@ -212,6 +212,7 @@
  * and add an extra 18% wait to the calculated measurement time.
  */
 #define BMP3XX_MEASUREMENT_TIME_MS 80
+/* clang-format on */
 /**@}*/
 
 /**

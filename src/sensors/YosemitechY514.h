@@ -281,4 +281,4 @@ class YosemitechY514_Temp : public Variable {
     ~YosemitechY514_Temp() {}
 };
 /**@}*/
-#endif  // SRC_SENSORS__YOSEMITECHY514_H_
+#endif  // SRC_SENSORS_YOSEMITECHY514_H_
