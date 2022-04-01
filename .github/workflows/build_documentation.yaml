@@ -17,19 +17,22 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
-  DOXYGEN_VERSION: Release_1_9_3
+  REBUILD_CACHE_NUMBER: 2
   PYTHON_DEPS_ARCHIVE_NUM: 2
-  TEX_VERSION: 2021
-  GRAPHVIZ_VERSION: 2.38.0
+  DOXYGEN_VERSION: Release_1_9_3
+  TEX_VERSION: 2019
+  # ^^ 2019 is the latest TeX live available on apt-get and that's good enough
+  GRAPHVIZ_VERSION: 2.43.0
 
 jobs:
   check_menu_inclusion:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v2.4.0
@@ -45,9 +48,6 @@ jobs:
   doc_build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
 
     steps:
       # check out the ModularSensors repo
@@ -63,7 +63,7 @@ jobs:
         id: cache_python
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ env.PYTHON_DEPS_ARCHIVE_NUM }}
+          key: ${{ runner.os }}-python-${{ env.REBUILD_CACHE_NUMBER }}-${{ env.PYTHON_DEPS_ARCHIVE_NUM }}
 
       - name: Install Pygments and other m.css Python Requirements
         run: |
@@ -75,10 +75,10 @@ jobs:
         uses: actions/cache@v2.1.7
         with:
           path: |
-            /usr/local/texlive
-            /usr/local/bin/dot
+            /usr/lib/x86_64-linux-gnu/texlive
+            /usr/lib/x86_64-linux-gnu/graphviz
             doxygen-src
-          key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}-${{ env.TEX_VERSION }}-${{ env.GRAPHVIZ_VERSION }}
+          key: ${{ runner.os }}-doxygen-${{ env.REBUILD_CACHE_NUMBER }}-${{ env.DOXYGEN_VERSION }}-${{ env.TEX_VERSION }}-${{ env.GRAPHVIZ_VERSION }}
 
       - name: Build and install doxygen and its dependencies
         if: steps.cache_doxygen.outputs.cache-hit != 'true'
