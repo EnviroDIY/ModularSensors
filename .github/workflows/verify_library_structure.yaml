@@ -1,4 +1,4 @@
-name: Verify JSON structure for library manifest
+name: Verify library manifest and structure
 
 # Triggers the workflow on push or pull request events
 on: [push, pull_request]
@@ -7,6 +7,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v2.4.0

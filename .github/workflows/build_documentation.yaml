@@ -1,21 +1,53 @@
-name: Build and Publish Documentation
+name: Check and Publish Documentation
 
 on:
+  # Triggers the workflow on push or pull request events
+  push:
+  pull_request:
   # Trigger when a release is created
   release:
     types:
       - published
   # Also give a manual trigger
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish Documentation to GitHub Pages'
+        required: false
+        type: boolean
+        default: false
 
 env:
   DOXYGEN_VERSION: Release_1_9_3
   PYTHON_DEPS_ARCHIVE_NUM: 2
+  TEX_VERSION: 2021
+  GRAPHVIZ_VERSION: 2.38.0
 
 jobs:
-  build:
+  check_menu_inclusion:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+
+      - name: check for classes in the menu example
+        run: |
+          cd $GITHUB_WORKSPACE/continuous_integration
+          python check_component_inclusion.py
+
+  doc_build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       # check out the ModularSensors repo
@@ -38,27 +70,17 @@ jobs:
           python -m pip install --upgrade pip
           pip3 install --upgrade --upgrade-strategy only-if-needed jinja2 Pygments beautifulsoup4
 
-      - name: Install all the dependencies needed to build and run Doxygen and m.css
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install graphviz
-          sudo apt-get -y install build-essential
-          sudo apt-get -y install flex
-          sudo apt-get -y install bison
-          sudo apt-get -y install graphviz
-          sudo apt-get -y install texlive-base
-          sudo apt-get -y install texlive-latex-extra
-          sudo apt-get -y install texlive-fonts-extra
-          sudo apt-get -y install texlive-fonts-recommended
-
-      - name: Restore Doxygen
+      - name: Restore Doxygen, Graphviz, and TeX Live
         id: cache_doxygen
         uses: actions/cache@v2.1.7
         with:
-          path: doxygen-src
-          key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}
+          path: |
+            /usr/local/texlive
+            /usr/local/bin/dot
+            doxygen-src
+          key: ${{ runner.os }}-doxygen-${{ env.DOXYGEN_VERSION }}-${{ env.TEX_VERSION }}-${{ env.GRAPHVIZ_VERSION }}
 
-      - name: Clone and build doxygen
+      - name: Build and install doxygen and its dependencies
         if: steps.cache_doxygen.outputs.cache-hit != 'true'
         env:
           TRAVIS_BUILD_DIR: ${{ github.workspace }}
@@ -84,6 +106,7 @@ jobs:
           sh continuous_integration/generate-documentation.sh
 
       - name: Deploy to github pages
+        if: "(github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')"
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
