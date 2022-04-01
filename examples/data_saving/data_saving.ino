@@ -3,7 +3,7 @@
  * @brief Example publishing only a portion of the logged variables.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -125,7 +125,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [gprsbee] */
+/** Start [sodaq_2g_bee_r6] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
 #include <modems/Sodaq2GBeeR6.h>
@@ -152,7 +152,7 @@ Variable* modemRSSI = new Modem_RSSI(&modem,
                                      "12345678-abcd-1234-ef00-1234567890ab");
 Variable* modemSignalPct =
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [gprsbee] */
+/** End [sodaq_2g_bee_r6] */
 
 
 // ==========================================================================
@@ -580,10 +580,10 @@ void loop() {
                     modem.updateModemMetadata();
 
                     loggerAllVars.watchDogTimer.resetWatchDog();
-                    // Sync the clock at midnight
+                    // Sync the clock at noon
                     // NOTE:  All loggers have the same clock, pick one
-                    if (Logger::markedEpochTime != 0 &&
-                        Logger::markedEpochTime % 86400 == 0) {
+                    if (Logger::markedLocalEpochTime != 0 &&
+                        Logger::markedLocalEpochTime % 86400 == 43200) {
                         Serial.println(F("Running a daily clock sync..."));
                         loggerAllVars.setRTClock(modem.getNISTTime());
                     }

@@ -6,7 +6,7 @@
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the TIINA219 sensor subclass and the variale subclasses
- * TIINA219_Current, TIINA219_Volt, and TIINA219_Power.
+ * TIINA219_Current, TIINA219_Voltage, and TIINA219_Power.
  *
  * These are for the Texas Instruments INA219 current/voltage sensor.
  *
@@ -51,9 +51,9 @@
  *
  * ___
  * @section sensor_ina219_examples Example Code
- * The TI INA219 is used in the @menulink{ina219} example.
+ * The TI INA219 is used in the @menulink{ti_ina219} example.
  *
- * @menusnip{ina219}
+ * @menusnip{ti_ina219}
  */
 /* clang-format on */
 
@@ -75,10 +75,10 @@
 #include "SensorBase.h"
 #include <Adafruit_INA219.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_ina219 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the INA219 can report 3 values.
 #define INA219_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
@@ -148,7 +148,7 @@
  * - Range is 0 to 26V
  * - Accuracy is ±4mV (1 LSB step size)
  *
- * {{ @ref TIINA219_Volt::TIINA219_Volt }}
+ * {{ @ref TIINA219_Voltage::TIINA219_Voltage }}
  */
 /**@{*/
 /// @brief Decimals places in string representation; bus voltage should have 4 -
@@ -347,10 +347,10 @@ class TIINA219_Current : public Variable {
  * @ingroup sensor_ina219
  */
 /* clang-format on */
-class TIINA219_Volt : public Variable {
+class TIINA219_Voltage : public Variable {
  public:
     /**
-     * @brief Construct a new TIINA219_Volt object.
+     * @brief Construct a new TIINA219_Voltage object.
      *
      * @param parentSense The parent TIINA219 providing the result values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
@@ -358,7 +358,7 @@ class TIINA219_Volt : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "TIINA219Volt".
      */
-    explicit TIINA219_Volt(
+    explicit TIINA219_Voltage(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_BUS_VOLTAGE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
@@ -366,20 +366,28 @@ class TIINA219_Volt : public Variable {
                    INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new TIINA219_Volt object.
+     * @brief Construct a new TIINA219_Voltage object.
      *
      * @note This must be tied with a parent TIINA219 before it can be used.
      */
-    TIINA219_Volt()
+    TIINA219_Voltage()
         : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
                    (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
                    INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
                    INA219_BUS_VOLTAGE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the TIINA219_Volt object - no action needed.
+     * @brief Destroy the TIINA219_Voltage object - no action needed.
      */
-    ~TIINA219_Volt() {}
+    ~TIINA219_Voltage() {}
 };
+
+/**
+ * @brief typedef for backwards compatibility; use the TIINA219_Voltage class in
+ * new code
+ *
+ * @m_deprecated_since{0,33,0}
+ */
+typedef TIINA219_Voltage TIINA219_Volt;
 
 
 /* clang-format off */

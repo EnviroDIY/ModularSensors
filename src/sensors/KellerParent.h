@@ -55,7 +55,7 @@
  * adapter and the number of readings to average are optional.  (Use -1 for the
  * second power pin and -1 for the enable pin if these don't apply and you want
  * to average more than one reading.) Please see the section
- * "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)"
+ * "[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)"
  * for more information about what streams can be used along with this library.
  * In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to
  * communicate with these sensors, because it isn't stable enough. AltSoftSerial
@@ -98,10 +98,10 @@
 #include "SensorBase.h"
 #include <KellerModbus.h>
 
-// Sensor Specific Defines
 /** @ingroup keller_group */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Keller level sensors can report 3
 /// values.
 #define KELLER_NUM_VARIABLES 3

@@ -47,9 +47,9 @@
  *
  * ___
  * @section sensor_es2_examples Example Code
- * The Decagon ES-2 is used in the @menulink{es2} example.
+ * The Decagon ES-2 is used in the @menulink{decagon_es2} example.
  *
- * @menusnip{es2}
+ * @menusnip{decagon_es2}
  */
 /* clang-format on */
 
@@ -60,10 +60,10 @@
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_es2 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the ES2 can report 2 values.
 #define ES2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

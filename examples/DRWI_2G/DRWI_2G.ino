@@ -3,7 +3,7 @@
  * @brief Example for DRWI CitSci 2G sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -78,7 +78,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [gprsbee] */
+/** Start [sodaq_2g_bee_r6] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
 #include <modems/Sodaq2GBeeR6.h>
@@ -100,7 +100,7 @@ const char* apn = "hologram";  // The APN for the gprs connection
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
-/** End [gprsbee] */
+/** End [sodaq_2g_bee_r6] */
 
 
 // ==========================================================================
@@ -199,28 +199,21 @@ Variable* variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+/* clang-format off */
 const char* UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity
-                                             // (Decagon_CTD-10_Cond)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                             // (Decagon_CTD-10_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
-                                             // (Decagon_CTD-10_Depth)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity (Decagon_CTD-10_Cond)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Decagon_CTD-10_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Decagon_CTD-10_Depth)
     "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
     "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
-                                             // (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                             // (EnviroDIY_Mayfly_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength
-                                             // indication (Sodaq_2GBee_RSSI)
-    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale
-                                             // (Sodaq_2GBee_SignalPercent)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (EnviroDIY_Mayfly_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength indication (Sodaq_2GBee_RSSI)
+    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale (Sodaq_2GBee_SignalPercent)
 };
-const char* registrationToken =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+/* clang-format on */
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

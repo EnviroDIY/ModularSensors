@@ -1,0 +1,37 @@
+name: Verify library manifest and structure
+
+# Triggers the workflow on push or pull request events
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+      - uses: actions/checkout@v2.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade platformio
+
+      - name: Run python script to verify structure of library.json for PlatformIO
+        run: python continuous_integration/validate_manifest.py
+
+      - name: Run Arduino-Lint to verify the library structure and syntax for the Arduino IDE
+        env:
+          ARDUINO_LINT_LIBRARY_MANAGER_INDEXING: true
+        uses: arduino/arduino-lint-action@v1
+        with:
+          project-type: library
+          library-manager: submit
+          compliance: strict
+          verbose: true

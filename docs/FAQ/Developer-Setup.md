@@ -1,5 +1,4 @@
-[//]: # ( @page page_for_developers Developer Setup )
-## Developer Setup
+# Developer Setup <!-- {#page_for_developers} -->
 
 If you want to fork this repository and work with it, you'll need to set PlatformIO up a bit differently than you would to merely use this library.
 
@@ -35,7 +34,7 @@ framework = arduino
 check_tool = cppcheck, clangtidy
 check_patterns =
 	src
-	tools
+	extras
 	examples
 check_flags =
 	cppcheck: --enable=all, --inline-suppr
@@ -52,7 +51,7 @@ lib_ignore =
 	doc
 	examples
 	sensor_tests
-    tools
+    extras
 	Adafruit NeoPixel
 	Adafruit GFX Library
 	Adafruit SSD1306

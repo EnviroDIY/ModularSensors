@@ -3,7 +3,7 @@
  * @brief Example with all possible functionality.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -273,8 +273,8 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 //           Delete the sections you are not using!
 // ==========================================================================
 
-#if defined BUILD_MODEM_XBEE_CELLULAR
-/** Start [xbee_cell_transparent] */
+#if defined BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT
+/** Start [digi_xbee_cellular_transparent] */
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
 // in either bypass or transparent mode, each with pros and cons
@@ -287,7 +287,7 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter
+// The pin numbers here are for a Digi XBee with a Mayfly 0.x and LTE adapter
 // For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md
 const int8_t modemVccPin = -1;     // MCU pin controlling modem power
                                    // Option: modemVccPin = A5, if Mayfly SJ7 is
@@ -298,8 +298,8 @@ const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 const bool   useCTSforStatus = false;  // Flag to use the CTS pin for status
 const int8_t modemResetPin   = 20;     // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;     // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
-                                       // status
+const int8_t modemLEDPin =
+    redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
 const char* apn = "xxxxx";  // APN for GPRS connection
@@ -310,12 +310,12 @@ DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
-/** End [xbee_cell_transparent] */
+/** End [digi_xbee_cellular_transparent] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_XBEE_LTE_B
-/** Start [xbee3_ltem_bypass] */
+#elif defined BUILD_MODEM_DIGI_XBEE_LTE_BYPASS
+/** Start [digi_xbee_lte_bypass] */
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
@@ -327,7 +327,7 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// The pin numbers here are for a Digi XBee with a Mayfly and LTE adapter
+// The pin numbers here are for a Digi XBee with a Mayfly 0.x and LTE adapter
 const int8_t modemVccPin    = A5;  // MCU pin controlling modem power
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
@@ -347,12 +347,12 @@ DigiXBeeLTEBypass modemXBLTEB(&modemSerial, modemVccPin, modemStatusPin,
                               apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeLTEBypass modem = modemXBLTEB;
-/** End [xbee3_ltem_bypass] */
+/** End [digi_xbee_lte_bypass] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_XBEE_3G_B
-/** Start [xbee_3g_bypass] */
+#elif defined BUILD_MODEM_DIGI_XBEE_3G_BYPASS
+/** Start [digi_xbee_3g_bypass] */
 // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
@@ -384,12 +384,12 @@ DigiXBee3GBypass modemXB3GB(&modemSerial, modemVccPin, modemStatusPin,
                             apn);
 // Create an extra reference to the modem by a generic name
 DigiXBee3GBypass modem = modemXB3GB;
-/** End [xbee_3g_bypass] */
+/** End [digi_xbee_3g_bypass] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_XBEE_WIFI
-/** Start [xbee_wifi] */
+#elif defined BUILD_MODEM_DIGI_XBEE_WIFI
+/** Start [digi_xbee_wifi] */
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
 
@@ -399,13 +399,13 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// The pin numbers here are for a Digi XBee direcly connected to a Mayfly
-const int8_t modemVccPin    = -1;  // MCU pin controlling modem power
+// The pin numbers here are for a Digi XBee direcly connected to a Mayfly 1.x
+const int8_t modemVccPin    = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
 // NOTE:  If possible, use the `STATUS/SLEEP_not` (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
 const bool   useCTSforStatus = true;  // Flag to use the CTS pin for status
-const int8_t modemResetPin   = -1;    // MCU pin connected to modem reset pin
+const int8_t modemResetPin   = A5;    // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;    // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;    // MCU pin connected an LED to show modem
                                       // status
@@ -420,12 +420,13 @@ DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
                        wifiPwd);
 // Create an extra reference to the modem by a generic name
 DigiXBeeWifi modem = modemXBWF;
-/** End [xbee_wifi] */
+/** End [digi_xbee_wifi] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_ESP8266
-/** Start [esp8266] */
+#elif defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
+    defined   BUILD_MODEM_ESPRESSIF_ESP32
+/** Start [espressif_esp8266] */
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
 #include <modems/EspressifESP8266.h>
@@ -439,10 +440,11 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins here are for a DFRobot ESP8266 Bee with Mayfly
-const int8_t modemVccPin     = -2;  // MCU pin controlling modem power
+// Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
+// Mayfly 1.1
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
+const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 19;  // MCU pin for wake from light sleep
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
@@ -465,12 +467,12 @@ EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
 );
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
-/** End [esp8266] */
+/** End [espressif_esp8266] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_BG96
-/** Start [bg96] */
+#elif defined BUILD_MODEM_QUECTEL_BG96
+/** Start [quectel_bg96] */
 // For the Dragino, Nimbelink or other boards based on the Quectel BG96
 #include <modems/QuectelBG96.h>
 
@@ -483,11 +485,11 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins here are for a modified Mayfly and a Dragino IoT Bee
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+// Example pins here are for a Mayfly 1.x and a Dragino IoT Bee
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = A4;  // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = A3;  // MCU pin for modem sleep/wake request
+const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
+const int8_t modemSleepRqPin = -1;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
@@ -499,12 +501,12 @@ QuectelBG96 modemBG96(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
                       modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 QuectelBG96 modem = modemBG96;
-/** End [bg96] */
+/** End [quectel_bg96] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_MONARCH
-/** Start [monarch] */
+#elif defined BUILD_MODEM_SEQUANS_MONARCH
+/** Start [sequans_monarch] */
 // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans
 // Monarch series
 #include <modems/SequansMonarch.h>
@@ -519,7 +521,7 @@ const int32_t modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 // Nimbelink Skywire (NOT directly connectable to a Mayfly!)
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = 20;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
@@ -534,12 +536,12 @@ SequansMonarch modemSVZM(&modemSerial, modemVccPin, modemStatusPin,
                          modemResetPin, modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SequansMonarch modem = modemSVZM;
-/** End [monarch] */
+/** End [sequans_monarch] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SIM800
-/** Start [sim800] */
+#elif defined BUILD_MODEM_SIM_COM_SIM800
+/** Start [sim_com_sim800] */
 // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and
 // higher
 #include <modems/SIMComSIM800.h>
@@ -550,7 +552,7 @@ const int32_t modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq GPRSBee R4 with a Mayfly
+// Example pins are for a Sodaq GPRSBee R4 with a Mayfly 0.x
 const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -566,12 +568,12 @@ SIMComSIM800 modemS800(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
                        modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SIMComSIM800 modem = modemS800;
-/** End [sim800] */
+/** End [sim_com_sim800] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SIM7000
-/** Start [sim7000] */
+#elif defined BUILD_MODEM_SIM_COM_SIM7000
+/** Start [sim_com_sim7000] */
 // For almost anything based on the SIMCom SIM7000
 #include <modems/SIMComSIM7000.h>
 
@@ -581,9 +583,9 @@ const int32_t modemBaud = 9600;  //  SIM7000 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
-const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
+const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
+const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
@@ -596,12 +598,12 @@ SIMComSIM7000 modem7000(&modemSerial, modemVccPin, modemStatusPin,
                         modemResetPin, modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SIMComSIM7000 modem = modem7000;
-/** End [sim7000] */
+/** End [sim_com_sim7000] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_SIM7080
-/** Start [sim7080] */
+#elif defined BUILD_MODEM_SIM_COM_SIM7080
+/** Start [sim_com_sim7080] */
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
 
@@ -613,7 +615,7 @@ const int32_t modemBaud =
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 // and-global breakout bk-7080a
-const int8_t modemVccPin     = -1;  // MCU pin controlling modem power
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
@@ -627,12 +629,12 @@ SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
                         modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SIMComSIM7080 modem = modem7080;
-/** End [sim7080] */
+/** End [sim_com_sim7080] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_S2GB
-/** Start [gprsbee] */
+#elif defined BUILD_MODEM_SODAQ_2G_BEE_R6
+/** Start [sodaq_2g_bee_r6] */
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
 #include <modems/Sodaq2GBeeR6.h>
@@ -643,7 +645,7 @@ const int32_t modemBaud = 9600;  //  SIM800 does auto-bauding by default
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq GPRSBee R6 or R7 with a Mayfly
+// Example pins are for a Sodaq GPRSBee R6 or R7 with a Mayfly 0.x
 const int8_t modemVccPin     = 23;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -658,12 +660,12 @@ const char* apn = "xxxxx";  // APN for GPRS connection
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name
 Sodaq2GBeeR6 modem = modem2GB;
-/** End [gprsbee] */
+/** End [sodaq_2g_bee_r6] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_UBEE_R410M
-/** Start [sara_r410m] */
+#elif defined BUILD_MODEM_SODAQ_UBEE_R410M
+/** Start [sodaq_ubee_r410m] */
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
 #include <modems/SodaqUBeeR410M.h>
 
@@ -680,7 +682,7 @@ const int32_t modemBaud =
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq uBee R410M with a Mayfly
+// Example pins are for a Sodaq uBee R410M with a Mayfly 0.x
 const int8_t modemVccPin     = 23;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -696,12 +698,12 @@ SodaqUBeeR410M modemR410(&modemSerial, modemVccPin, modemStatusPin,
                          modemResetPin, modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SodaqUBeeR410M modem = modemR410;
-/** End [sara_r410m] */
+/** End [sodaq_ubee_r410m] */
 // ==========================================================================
 
 
-#elif defined BUILD_MODEM_UBEE_U201
-/** Start [sara_u201] */
+#elif defined BUILD_MODEM_SODAQ_UBEE_U201
+/** Start [sodaq_ubee_u201] */
 // For the Sodaq UBee based on the 3G u-blox SARA U201
 #include <modems/SodaqUBeeU201.h>
 
@@ -712,7 +714,7 @@ const int32_t modemBaud =
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-// Example pins are for a Sodaq uBee U201 with a Mayfly
+// Example pins are for a Sodaq uBee U201 with a Mayfly 0.x
 const int8_t modemVccPin     = 23;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemResetPin   = -1;  // MCU pin connected to modem reset pin
@@ -728,7 +730,7 @@ SodaqUBeeU201 modemU201(&modemSerial, modemVccPin, modemStatusPin,
                         modemResetPin, modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SodaqUBeeU201 modem = modemU201;
-/** End [sara_u201] */
+/** End [sodaq_ubee_u201] */
 // ==========================================================================
 #endif
 
@@ -753,7 +755,7 @@ Variable* modemTemperature =
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -768,14 +770,14 @@ Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 #if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-/** Start [ds3231] */
+/** Start [maxim_ds3231] */
 #include <sensors/MaximDS3231.h>
 
 // Create a DS3231 sensor object
@@ -784,15 +786,15 @@ MaximDS3231 ds3231(1);
 // Create a temperature variable pointer for the DS3231
 Variable* ds3231Temp =
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ds3231] */
+/** End [maxim_ds3231] */
 #endif
 
 
-#if defined BUILD_SENSOR_AM2315
+#if defined BUILD_SENSOR_AO_SONG_AM2315
 // ==========================================================================
 //  AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
-/** Start [am2315] */
+/** Start [ao_song_am2315] */
 #include <sensors/AOSongAM2315.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -806,15 +808,15 @@ Variable* am2315Humid =
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* am2315Temp =
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [am2315] */
+/** End [ao_song_am2315] */
 #endif
 
 
-#if defined BUILD_SENSOR_DHT
+#if defined BUILD_SENSOR_AO_SONG_DHT
 // ==========================================================================
 //  AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
-/** Start [dht] */
+/** Start [ao_song_dht] */
 #include <sensors/AOSongDHT.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -832,16 +834,16 @@ Variable* dhtHumid =
 Variable* dhtTemp = new AOSongDHT_Temp(&dht,
                                        "12345678-abcd-1234-ef00-1234567890ab");
 Variable* dhtHI   = new AOSongDHT_HI(&dht,
-                                   "12345678-abcd-1234-ef00-1234567890ab");
-/** End [dht] */
+                                     "12345678-abcd-1234-ef00-1234567890ab");
+/** End [ao_song_dht] */
 #endif
 
 
-#if defined BUILD_SENSOR_SQ212
+#if defined BUILD_SENSOR_APOGEE_SQ212
 // ==========================================================================
 //  Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
-/** Start [sq212] */
+/** Start [apogee_sq212] */
 #include <sensors/ApogeeSQ212.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -857,15 +859,15 @@ Variable* sq212PAR =
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* sq212voltage =
     new ApogeeSQ212_Voltage(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [sq212] */
+/** End [apogee_sq212] */
 #endif
 
 
-#if defined BUILD_SENSOR_ATLASCO2
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2
 // ==========================================================================
 //  Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 // ==========================================================================
-/** Start [atlas_co2] */
+/** Start [atlas_scientific_co2] */
 #include <sensors/AtlasScientificCO2.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -884,15 +886,15 @@ Variable* atlasCO2CO2 = new AtlasScientificCO2_CO2(
     &atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* atlasCO2Temp = new AtlasScientificCO2_Temp(
     &atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas_co2] */
+/** End [atlas_scientific_co2] */
 #endif
 
 
-#if defined BUILD_SENSOR_ATLASDO
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_DO
 // ==========================================================================
 //  Atlas Scientific EZO-DO Dissolved Oxygen Sensor
 // ==========================================================================
-/** Start [atlas_do] */
+/** Start [atlas_scientific_do] */
 #include <sensors/AtlasScientificDO.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -911,15 +913,15 @@ Variable* atlasDOconc = new AtlasScientificDO_DOmgL(
     &atlasDO, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* atlasDOpct = new AtlasScientificDO_DOpct(
     &atlasDO, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas_do] */
+/** End [atlas_scientific_do] */
 #endif
 
 
-#if defined BUILD_SENSOR_ATLASORP
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP
 // ==========================================================================
 //  Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
 // ==========================================================================
-/** Start [atlas_orp] */
+/** Start [atlas_scientific_orp] */
 #include <sensors/AtlasScientificORP.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -936,15 +938,15 @@ AtlasScientificORP atlasORP(AtlasORPPower);
 // Create a potential variable pointer for the ORP
 Variable* atlasORPot = new AtlasScientificORP_Potential(
     &atlasORP, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas_orp] */
+/** End [atlas_scientific_orp] */
 #endif
 
 
-#if defined BUILD_SENSOR_ATLASPH
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_PH
 // ==========================================================================
 //  Atlas Scientific EZO-pH Sensor
 // ==========================================================================
-/** Start [atlas_ph] */
+/** Start [atlas_scientific_ph] */
 #include <sensors/AtlasScientificpH.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -961,15 +963,16 @@ AtlasScientificpH atlaspH(AtlaspHPower);
 // Create a pH variable pointer for the pH sensor
 Variable* atlaspHpH =
     new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas_ph] */
+/** End [atlas_scientific_ph] */
 #endif
 
 
-#if defined BUILD_SENSOR_ATLASRTD || defined BUILD_SENSOR_ATLASEC
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD || \
+    defined BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
 // ==========================================================================
 //  Atlas Scientific EZO-RTD Temperature Sensor
 // ==========================================================================
-/** Start [atlas_rtd] */
+/** Start [atlas_scientific_rtd] */
 #include <sensors/AtlasScientificRTD.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -986,15 +989,15 @@ AtlasScientificRTD atlasRTD(AtlasRTDPower);
 // Create a temperature variable pointer for the RTD
 Variable* atlasTemp = new AtlasScientificRTD_Temp(
     &atlasRTD, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [atlas_rtd] */
+/** End [atlas_scientific_rtd] */
 #endif
 
 
-#if defined BUILD_SENSOR_ATLASEC
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
 // ==========================================================================
 //  Atlas Scientific EZO-EC Conductivity Sensor
 // ==========================================================================
-/** Start [atlas_ec] */
+/** Start [atlas_scientific_ec] */
 #include <sensors/AtlasScientificEC.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1058,15 +1061,15 @@ const char* atlasSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
 Variable* atlasSpCond =
     new Variable(calculateAtlasSpCond, atlasSpCondResolution, atlasSpCondName,
                  atlasSpCondUnit, atlasSpCondCode, atlasSpCondUUID);
-/** End [atlas_ec] */
+/** End [atlas_scientific_ec] */
 #endif
 
 
-#if defined BUILD_SENSOR_BME280
+#if defined BUILD_SENSOR_BOSCH_BME280
 // ==========================================================================
 //  Bosch BME280 Environmental Sensor
 // ==========================================================================
-/** Start [bme280] */
+/** Start [bosch_bme280] */
 #include <sensors/BoschBME280.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1087,15 +1090,76 @@ Variable* bme280Press =
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* bme280Alt =
     new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [bme280] */
+/** End [bosch_bme280] */
 #endif
 
 
-#if defined BUILD_SENSOR_OBS3
+#if defined BUILD_SENSOR_BOSCH_BMP3XX
+// ==========================================================================
+//  Bosch BMP 3xx Barometric Pressure Sensor
+// ==========================================================================
+/** Start [bosch_bmp3xx] */
+#include <sensors/BoschBMP3xx.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t bmp3xxPower = -1;  // Power pin
+Mode bmpMode = FORCED_MODE;  // The operating mode of the BMP; normal or forced
+Oversampling bmpPressureOversample = OVERSAMPLING_X32;
+Oversampling bmpTempOversample     = OVERSAMPLING_X2;
+IIRFilter    bmpFilterCoeff        = IIR_FILTER_OFF;
+TimeStandby  bmpTimeStandby        = TIME_STANDBY_5MS;
+uint8_t      bmpI2C_addr           = 0x77;
+// The BMP3xx can be addressed either as 0x77 or 0x76
+
+// Create a Bosch BMP3xx sensor object
+BoschBMP3xx bmp3xx(bmp3xxPower, bmpMode, bmpPressureOversample,
+                   bmpTempOversample, bmpFilterCoeff, bmpTimeStandby,
+                   bmpI2C_addr);
+
+// Create the variable pointers for the BMP3xx
+Variable* bmp3xxTemp =
+    new BoschBMP3xx_Temp(&bmp3xx, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bmp3xxPress =
+    new BoschBMP3xx_Pressure(&bmp3xx, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* bmp3xxAlt =
+    new BoschBMP3xx_Altitude(&bmp3xx, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [bosch_bmp3xx] */
+#endif
+
+
+#if defined BUILD_SENSOR_CAMPBELL_CLARI_VUE10
+// ==========================================================================
+//  Campbell ClariVUE Turbidity Sensor
+// ==========================================================================
+/** Start [campbell_clari_vue10] */
+#include <sensors/CampbellClariVUE10.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const char* ClariVUESDI12address = "0";  // The SDI-12 Address of the ClariVUE10
+const int8_t ClariVUEPower       = sensorPowerPin;  // Power pin
+const int8_t ClariVUEData        = 7;               // The SDI-12 data pin
+// NOTE:  you should NOT take more than one readings.  THe sensor already takes
+// and averages 8 by default.
+
+// Create a Campbell ClariVUE10 sensor object
+CampbellClariVUE10 clarivue(*ClariVUESDI12address, ClariVUEPower, ClariVUEData);
+
+// Create turbidity, temperature, and error variable pointers for the ClariVUE10
+Variable* clarivueTurbidity = new CampbellClariVUE10_Turbidity(
+    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* clarivueTemp = new CampbellClariVUE10_Temp(
+    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
+    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [campbell_clari_vue10] */
+#endif
+
+
+#if defined BUILD_SENSOR_CAMPBELL_OBS3
 // ==========================================================================
 //  Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
-/** Start [obs3] */
+/** Start [campbell_obs3] */
 #include <sensors/CampbellOBS3.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1137,49 +1201,22 @@ Variable* obs3TurbHigh = new CampbellOBS3_Turbidity(
     &osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh");
 Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
     &osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHighV");
-/** End [obs3] */
+/** End [campbell_obs3] */
 #endif
 
 
-#if defined BUILD_SENSOR_CLARIVUE10
-// ==========================================================================
-//  Campbell ClariVUE Turbidity Sensor
-// ==========================================================================
-/** Start [clarivue] */
-#include <sensors/CampbellClariVUE10.h>
-
-const char* ClariVUESDI12address = "0";  // The SDI-12 Address of the ClariVUE10
-const int8_t ClariVUEPower = sensorPowerPin;  // Power pin (-1 if unconnected)
-const int8_t ClariVUEData  = 7;               // The SDI12 data pin
-// NOTE:  you should NOT take more than one readings.  THe sensor already takes
-// and averages 8 by default.
-
-// Create a Campbell ClariVUE10 sensor object
-CampbellClariVUE10 clarivue(*ClariVUESDI12address, ClariVUEPower, ClariVUEData);
-
-// Create turbidity, temperature, and error variable pointers for the ClariVUE10
-Variable* clarivueTurbidity = new CampbellClariVUE10_Turbidity(
-    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* clarivueTemp = new CampbellClariVUE10_Temp(
-    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* clarivueError = new CampbellClariVUE10_ErrorCode(
-    &clarivue, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [clarivue] */
-#endif
-
-
-#if defined BUILD_SENSOR_CTD
+#if defined BUILD_SENSOR_DECAGON_CTD
 // ==========================================================================
 //  Decagon CTD-10 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-/** Start [decagonCTD] */
+/** Start [decagon_ctd] */
 #include <sensors/DecagonCTD.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   CTDSDI12address   = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDNumberReadings = 6;    // The number of readings to average
 const int8_t  CTDPower          = sensorPowerPin;  // Power pin
-const int8_t  CTDData           = 7;               // The SDI12 data pin
+const int8_t  CTDData           = 7;               // The SDI-12 data pin
 
 // Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, CTDPower, CTDData, CTDNumberReadings);
@@ -1191,21 +1228,21 @@ Variable* ctdTemp = new DecagonCTD_Temp(&ctd,
                                         "12345678-abcd-1234-ef00-1234567890ab");
 Variable* ctdDepth =
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [decagonCTD] */
+/** End [decagon_ctd] */
 #endif
 
 
-#if defined BUILD_SENSOR_ES2
+#if defined BUILD_SENSOR_DECAGON_ES2
 // ==========================================================================
 //  Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
-/** Start [es2] */
+/** Start [decagon_es2] */
 #include <sensors/DecagonES2.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   ES2SDI12address   = "3";  // The SDI-12 Address of the ES2
 const int8_t  ES2Power          = sensorPowerPin;  // Power pin
-const int8_t  ES2Data           = 7;               // The SDI12 data pin
+const int8_t  ES2Data           = 7;               // The SDI-12 data pin
 const uint8_t ES2NumberReadings = 5;
 
 // Create a Decagon ES2 sensor object
@@ -1216,16 +1253,48 @@ Variable* es2Cond = new DecagonES2_Cond(&es2,
                                         "12345678-abcd-1234-ef00-1234567890ab");
 Variable* es2Temp = new DecagonES2_Temp(&es2,
                                         "12345678-abcd-1234-ef00-1234567890ab");
-/** End [es2] */
+/** End [decagon_es2] */
 #endif
 
 
-#if defined BUILD_SENSOR_VOLTAGE
+#if defined BUILD_SENSOR_EVERLIGHT_ALSPT19
+// ==========================================================================
+//  Everlight ALS-PT19 Ambient Light Sensor
+// ==========================================================================
+/** Start [everlight_alspt19] */
+#include <sensors/EverlightALSPT19.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t  alsPower      = sensorPowerPin;  // Power pin
+const int8_t  alsData       = A4;              // The ALS PT-19 data pin
+const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
+const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
+const uint8_t alsNumberReadings = 10;
+
+// Create a Everlight ALS-PT19 sensor object
+EverlightALSPT19 alsPt19(alsPower, alsData, alsSupply, alsResistance,
+                         alsNumberReadings);
+
+// For an EnviroDIY Mayfly, you can use the abbreviated version
+// EverlightALSPT19 alsPt19(alsNumberReadings);
+
+// Create voltage, current, and illuminance variable pointers for the ALS-PT19
+Variable* alsPt19Volt = new EverlightALSPT19_Voltage(
+    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* alsPt19Current = new EverlightALSPT19_Current(
+    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
+    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [everlight_alspt19] */
+#endif
+
+
+#if defined BUILD_SENSOR_TIADS1X15
 // ==========================================================================
 //  External Voltage via TI ADS1115
 // ==========================================================================
-/** Start [ext_volt] */
-#include <sensors/ExternalVoltage.h>
+/** Start [tiads1x15] */
+#include <sensors/TIADS1x15.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  ADSPower       = sensorPowerPin;  // Power pin
@@ -1235,50 +1304,50 @@ const uint8_t evADSi2c_addr  = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1;     // Only read one sample
 
 // Create an External Voltage sensor object
-ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
-                        VoltReadsToAvg);
+TIADS1x15 ads1x15(ADSPower, ADSChannel, dividerGain, evADSi2c_addr,
+                  VoltReadsToAvg);
 
 // Create a voltage variable pointer
-Variable* extvoltV =
-    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ext_volt] */
+Variable* ads1x15Volt =
+    new TIADS1x15_Voltage(&ads1x15, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [tiads1x15] */
 #endif
 
 
-#if defined BUILD_SENSOR_MPL115A2
+#if defined BUILD_SENSOR_FREESCALE_MPL115A2
 // ==========================================================================
 //  Freescale Semiconductor MPL115A2 Barometer
 // ==========================================================================
-/** Start [mpl115a2] */
+/** Start [freescale_mpl115a2] */
 #include <sensors/FreescaleMPL115A2.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t  MPLPower              = sensorPowerPin;  // Power pin
 const uint8_t MPL115A2ReadingsToAvg = 1;
 
-// Create an MPL115A2 barometer sensor object
-MPL115A2 mpl115a2(MPLPower, MPL115A2ReadingsToAvg);
+// Create a FreescaleMPL115A2 barometer sensor object
+FreescaleMPL115A2 mpl115a2(MPLPower, MPL115A2ReadingsToAvg);
 
 // Create pressure and temperature variable pointers for the MPL
-Variable* mplPress =
-    new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* mplTemp = new MPL115A2_Temp(&mpl115a2,
-                                      "12345678-abcd-1234-ef00-1234567890ab");
-/** End [mpl115a2] */
+Variable* mplPress = new FreescaleMPL115A2_Pressure(
+    &mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* mplTemp = new FreescaleMPL115A2_Temp(
+    &mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [freescale_mpl115a2] */
 #endif
 
 
-#if defined BUILD_SENSOR_INSITURDO
+#if defined BUILD_SENSOR_IN_SITU_RDO
 // ==========================================================================
-//  InSitu RDO PRO-X Rugged Dissolved Oxygen Probe
+//  In-Situ RDO PRO-X Rugged Dissolved Oxygen Probe
 // ==========================================================================
-/** Start [insitu_rdo] */
+/** Start [in_situ_rdo] */
 #include <sensors/InSituRDO.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   RDOSDI12address   = "5";  // The SDI-12 Address of the RDO PRO-X
 const int8_t  RDOPower          = sensorPowerPin;  // Power pin
-const int8_t  RDOData           = 7;               // The SDI12 data pin
+const int8_t  RDOData           = 7;               // The SDI-12 data pin
 const uint8_t RDONumberReadings = 3;
 
 // Create an In-Situ RDO PRO-X dissolved oxygen sensor object
@@ -1294,15 +1363,45 @@ Variable* rdoTemp = new InSituRDO_Temp(&insituRDO,
                                        "12345678-abcd-1234-ef00-1234567890ab");
 Variable* rdoO2pp =
     new InSituRDO_Pressure(&insituRDO, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [insitu_rdo] */
+/** End [in_situ_rdo] */
 #endif
 
 
-#if defined BUILD_SENSOR_ACCULEVEL
+#if defined BUILD_SENSOR_IN_SITU_TROLL_SDI12A
+// ==========================================================================
+//    In-Situ Aqua/Level TROLL Pressure, Temperature, and Depth Sensor
+// ==========================================================================
+/** Start [in_situ_troll_sdi12a] */
+#include <sensors/InSituTrollSdi12a.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const char* TROLLSDI12address =
+    "1";  // The SDI-12 Address of the Aqua/Level TROLL
+const int8_t TROLLPower =
+    sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t  TROLLData           = 7;  // The SDI-12 data pin
+const uint8_t TROLLNumberReadings = 2;  // The number of readings to average
+
+// Create an In-Situ TROLL sensor object
+InSituTrollSdi12a insituTROLL(*TROLLSDI12address, TROLLPower, TROLLData,
+                              TROLLNumberReadings);
+
+// Create pressure, temperature, and depth variable pointers for the TROLL
+Variable* trollPressure = new InSituTrollSdi12a_Pressure(
+    &insituTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* trollTemp = new InSituTrollSdi12a_Temp(
+    &insituTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* trollDepth = new InSituTrollSdi12a_Depth(
+    &insituTROLL, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [in_situ_troll_sdi12a] */
+#endif
+
+
+#if defined BUILD_SENSOR_KELLER_ACCULEVEL
 // ==========================================================================
 //  Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-/** Start [acculevel] */
+/** Start [keller_acculevel] */
 #include <sensors/KellerAcculevel.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
@@ -1328,15 +1427,15 @@ Variable* acculevTemp = new KellerAcculevel_Temp(
     &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* acculevHeight = new KellerAcculevel_Height(
     &acculevel, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [acculevel] */
+/** End [keller_acculevel] */
 #endif
 
 
-#if defined BUILD_SENSOR_NANOLEVEL
+#if defined BUILD_SENSOR_KELLER_NANOLEVEL
 // ==========================================================================
 //  Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-/** Start [nanolevel] */
+/** Start [keller_nanolevel] */
 #include <sensors/KellerNanolevel.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
@@ -1362,15 +1461,15 @@ Variable* nanolevTemp = new KellerNanolevel_Temp(
     &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* nanolevHeight = new KellerNanolevel_Height(
     &nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [nanolevel] */
+/** End [keller_nanolevel] */
 #endif
 
 
-#if defined BUILD_SENSOR_MAXBOTIX
+#if defined BUILD_SENSOR_MAX_BOTIX_SONAR
 // ==========================================================================
 //  Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
-/** Start [maxbotics] */
+/** Start [max_botix_sonar] */
 #include <sensors/MaxBotixSonar.h>
 
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
@@ -1382,7 +1481,7 @@ Variable* nanolevHeight = new KellerNanolevel_Height(
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t SonarPower    = sensorPowerPin;  // Excite (power) pin
 const int8_t Sonar1Trigger = -1;              // Trigger pin
-                                  // (a *unique* negative number if unconnected)
+// Trigger should be a *unique* negative number if unconnected
 const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
@@ -1392,15 +1491,16 @@ MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger,
 // Create an ultrasonic range variable pointer
 Variable* sonar1Range =
     new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [maxbotics] */
+/** End [max_botix_sonar] */
 #endif
 
 
-#if defined BUILD_SENSOR_DS18 || defined BUILD_SENSOR_ANALOGEC
+#if defined BUILD_SENSOR_MAXIM_DS18 || \
+    defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
 // ==========================================================================
 //  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
-/** Start [ds18] */
+/** Start [maxim_ds18] */
 #include <sensors/MaximDS18.h>
 
 // OneWire Address [array of 8 hex characters]
@@ -1422,15 +1522,15 @@ MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus, ds18NumberReadings);
 // Create a temperature variable pointer for the DS18
 Variable* ds18Temp = new MaximDS18_Temp(&ds18,
                                         "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ds18] */
+/** End [maxim_ds18] */
 #endif
 
 
-#if defined BUILD_SENSOR_MS5803
+#if defined BUILD_SENSOR_MEA_SPEC_MS5803
 // ==========================================================================
 //  Measurement Specialties MS5803-14BA pressure sensor
 // ==========================================================================
-/** Start [ms5803] */
+/** Start [mea_spec_ms5803] */
 #include <sensors/MeaSpecMS5803.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1450,21 +1550,21 @@ Variable* ms5803Press =
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* ms5803Temp =
     new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ms5803] */
+/** End [mea_spec_ms5803] */
 #endif
 
 
-#if defined BUILD_SENSOR_5TM
+#if defined BUILD_SENSOR_DECAGON_5TM
 // ==========================================================================
 //  Meter ECH2O Soil Moisture Sensor
 // ==========================================================================
-/** Start [fivetm] */
+/** Start [decagon_5tm] */
 #include <sensors/Decagon5TM.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  TMSDI12address = "2";             // The SDI-12 Address of the 5-TM
 const int8_t TMPower        = sensorPowerPin;  // Power pin
-const int8_t TMData         = 7;               // The SDI12 data pin
+const int8_t TMData         = 7;               // The SDI-12 data pin
 
 // Create a Decagon 5TM sensor object
 Decagon5TM fivetm(*TMSDI12address, TMPower, TMData);
@@ -1477,22 +1577,22 @@ Variable* fivetmVWC =
     new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* fivetmTemp =
     new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [fivetm] */
+/** End [decagon_5tm] */
 #endif
 
 
-#if defined BUILD_SENSOR_HYDROS21
+#if defined BUILD_SENSOR_METER_HYDROS21
 // ==========================================================================
 //  Meter Hydros 21 Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-/** Start [hydros21] */
+/** Start [meter_hydros21] */
 #include <sensors/MeterHydros21.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   hydros21SDI12address = "1";  // The SDI-12 Address of the Hydros21
 const uint8_t hydros21NumberReadings = 6;  // The number of readings to average
 const int8_t  hydros21Power          = sensorPowerPin;  // Power pin
-const int8_t  hydros21Data           = 7;               // The SDI12 data pin
+const int8_t  hydros21Data           = 7;               // The SDI-12 data pin
 
 // Create a Decagon Hydros21 sensor object
 MeterHydros21 hydros21(*hydros21SDI12address, hydros21Power, hydros21Data,
@@ -1506,21 +1606,21 @@ Variable* hydros21Temp =
     new MeterHydros21_Temp(&hydros21, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* hydros21Depth =
     new MeterHydros21_Depth(&hydros21, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [hydros21] */
+/** End [meter_hydros21] */
 #endif
 
 
-#if defined BUILD_SENSOR_TEROS11
+#if defined BUILD_SENSOR_METER_TEROS11
 // ==========================================================================
 //  Meter Teros 11 Soil Moisture Sensor
 // ==========================================================================
-/** Start [teros] */
+/** Start [meter_teros11] */
 #include <sensors/MeterTeros11.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*   teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
 const int8_t  terosPower          = sensorPowerPin;  // Power pin
-const int8_t  terosData           = 7;               // The SDI12 data pin
+const int8_t  terosData           = 7;               // The SDI-12 data pin
 const uint8_t teros11NumberReadings = 3;  // The number of readings to average
 
 // Create a METER TEROS 11 sensor object
@@ -1535,17 +1635,20 @@ Variable* teros11Temp =
     new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* teros11VWC =
     new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [teros] */
+Variable* teros11Count =
+    new MeterTeros11_Count(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [meter_teros11] */
 #endif
 
 
-#if defined BUILD_SENSOR_PALEOTERRA
+#if defined BUILD_SENSOR_PALEO_TERRA_REDOX
 // ==========================================================================
 //  PaleoTerra Redox Sensors
 // ==========================================================================
-/** Start [pt_redox] */
+/** Start [paleo_terra_redox] */
 #include <sensors/PaleoTerraRedox.h>
 
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
 int8_t  paleoTerraPower = sensorPowerPin;  // Power pin
 uint8_t paleoI2CAddress = 0x68;  // the I2C address of the redox sensor
 
@@ -1559,17 +1662,17 @@ PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
 #endif
 
 // Create the voltage variable for the redox sensor
-Variable* ptVolt =
-    new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [pt_redox] */
+Variable* ptVolt = new PaleoTerraRedox_Voltage(
+    &ptRedox, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [paleo_terra_redox] */
 #endif
 
 
-#if defined BUILD_SENSOR_RAINI2C
+#if defined BUILD_SENSOR_RAIN_COUNTER_I2C
 // ==========================================================================
 //  External I2C Rain Tipping Bucket Counter
 // ==========================================================================
-/** Start [i2c_rain] */
+/** Start [rain_counter_i2c] */
 #include <sensors/RainCounterI2C.h>
 
 const uint8_t RainCounterI2CAddress = 0x08;
@@ -1590,15 +1693,38 @@ Variable* tbi2cTips =
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* tbi2cDepth =
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [i2c_rain] */
+/** End [rain_counter_i2c] */
 #endif
 
 
-#if defined BUILD_SENSOR_TALLY
+#if defined BUILD_SENSOR_SENSIRION_SHT4X
+// ==========================================================================
+//  Sensirion SHT4X Digital Humidity and Temperature Sensor
+// ==========================================================================
+/** Start [sensirion_sht4x] */
+#include <sensors/SensirionSHT4x.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const int8_t SHT4xPower     = sensorPowerPin;  // Power pin
+const bool   SHT4xUseHeater = true;
+
+// Create an Sensirion SHT4X sensor object
+SensirionSHT4x sht4x(SHT4xPower, SHT4xUseHeater);
+
+// Create humidity and temperature variable pointers for the SHT4X
+Variable* sht4xHumid =
+    new SensirionSHT4x_Humidity(&sht4x, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* sht4xTemp =
+    new SensirionSHT4x_Temp(&sht4x, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [sensirion_sht4x] */
+#endif
+
+
+#if defined BUILD_SENSOR_TALLY_COUNTER_I2C
 // ==========================================================================
 //    Tally I2C Event Counter for rain or wind reed-switch sensors
 // ==========================================================================
-/** Start [i2c_wind_tally] */
+/** Start [tally_counter_i2c] */
 #include <sensors/TallyCounterI2C.h>
 
 const int8_t TallyPower = -1;  // Power pin (-1 if continuously powered)
@@ -1623,15 +1749,15 @@ Variable* tallyEvents = new TallyCounterI2C_Events(
 // tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h
 // 2.5 mph/Hz & 1.60934 kmph/mph and 2.5 mph/Hz conversion factor from
 // web: Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R
-/** End [i2c_wind_tally] */
+/** End [tally_counter_i2c] */
 #endif
 
 
-#if defined BUILD_SENSOR_INA219
+#if defined BUILD_SENSOR_TI_INA219
 // ==========================================================================
 //  TI INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
 // ==========================================================================
-/** Start [ina219] */
+/** Start [ti_ina219] */
 #include <sensors/TIINA219.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1647,19 +1773,19 @@ TIINA219 ina219(INA219Power, INA219i2c_addr, INA219ReadingsToAvg);
 // Create current, voltage, and power variable pointers for the INA219
 Variable* inaCurrent =
     new TIINA219_Current(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* inaVolt  = new TIINA219_Volt(&ina219,
-                                      "12345678-abcd-1234-ef00-1234567890ab");
+Variable* inaVolt =
+    new TIINA219_Voltage(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* inaPower = new TIINA219_Power(&ina219,
                                         "12345678-abcd-1234-ef00-1234567890ab");
-/** End [ina219] */
+/** End [ti_ina219] */
 #endif
 
 
-#if defined BUILD_SENSOR_CYCLOPS
+#if defined BUILD_SENSOR_TURNER_CYCLOPS
 // ==========================================================================
 //  Turner Cyclops-7F Submersible Fluorometer
 // ==========================================================================
-/** Start [cyclops] */
+/** Start [turner_cyclops] */
 #include <sensors/TurnerCyclops.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1713,15 +1839,15 @@ Variable* cyclopsTryptophan = new TurnerCyclops_Tryptophan(
     &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* cyclopsRedChloro = new TurnerCyclops_RedChlorophyll(
     &cyclops, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [cyclops] */
+/** End [turner_cyclops] */
 #endif
 
 
-#if defined BUILD_SENSOR_ANALOGEC
+#if defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
 // ==========================================================================
 //   Analog Electrical Conductivity using the Processor's Analog Pins
 // ==========================================================================
-/** Start [analog_cond] */
+/** Start [analog_elec_conductivity] */
 #include <sensors/AnalogElecConductivity.h>
 
 const int8_t ECpwrPin   = A4;  // Power pin (-1 if continuously powered)
@@ -1774,25 +1900,25 @@ const char* analogSpCondUUID = "12345678-abcd-1234-ef00-1234567890ab";
 Variable* analogEc_spcond = new Variable(
     calculateAnalogSpCond, analogSpCondResolution, analogSpCondName,
     analogSpCondUnit, analogSpCondCode, analogSpCondUUID);
-/** End [analog_cond] */
+/** End [analog_elec_conductivity] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y504
+#if defined BUILD_SENSOR_YOSEMITECH_Y504
 // ==========================================================================
 //  Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
-/** Start [y504] */
+/** Start [yosemitech_y504] */
 #include <sensors/YosemitechY504.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y504ModbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t y504AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y504SensorPower = A3;               // Sensor power pin
-const int8_t  y504EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y504ModbusAddress  = 0x04;  // The modbus address of the Y504
+const int8_t  y504AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y504SensorPower    = A3;              // Sensor power pin
+const int8_t  y504EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y504NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -1809,25 +1935,25 @@ Variable* y504DOmgL =
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y504Temp =
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y504] */
+/** End [yosemitech_y504] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y510
+#if defined BUILD_SENSOR_YOSEMITECH_Y510
 // ==========================================================================
 //  Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
-/** Start [y510] */
+/** Start [yosemitech_y510] */
 #include <sensors/YosemitechY510.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y510ModbusAddress = 0x0B;  // The modbus address of the Y510
-const int8_t y510AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y510SensorPower = A3;               // Sensor power pin
-const int8_t  y510EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y510ModbusAddress  = 0x0B;  // The modbus address of the Y510
+const int8_t  y510AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y510SensorPower    = A3;              // Sensor power pin
+const int8_t  y510EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y510NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -1841,25 +1967,25 @@ Variable* y510Turb =
     new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y510Temp =
     new YosemitechY510_Temp(&y510, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y510] */
+/** End [yosemitech_y510] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y511
+#if defined BUILD_SENSOR_YOSEMITECH_Y511
 // ==========================================================================
 //  Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
-/** Start [y511] */
+/** Start [yosemitech_y511] */
 #include <sensors/YosemitechY511.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y511ModbusAddress = 0x1A;  // The modbus address of the Y511
-const int8_t y511AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y511SensorPower = A3;               // Sensor power pin
-const int8_t  y511EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y511ModbusAddress  = 0x1A;  // The modbus address of the Y511
+const int8_t  y511AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y511SensorPower    = A3;              // Sensor power pin
+const int8_t  y511EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y511NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -1873,15 +1999,15 @@ Variable* y511Turb =
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y511Temp =
     new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y511] */
+/** End [yosemitech_y511] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y514
+#if defined BUILD_SENSOR_YOSEMITECH_Y514
 // ==========================================================================
 //  Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
-/** Start [y514] */
+/** Start [yosemitech_y514] */
 #include <sensors/YosemitechY514.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
@@ -1906,25 +2032,25 @@ Variable* y514Chloro = new YosemitechY514_Chlorophyll(
     &y514, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y514Temp =
     new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y514] */
+/** End [yosemitech_y514] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y520
+#if defined BUILD_SENSOR_YOSEMITECH_Y520
 // ==========================================================================
 //  Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
-/** Start [y520] */
+/** Start [yosemitech_y520] */
 #include <sensors/YosemitechY520.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y520ModbusAddress = 0x20;  // The modbus address of the Y520
-const int8_t y520AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y520SensorPower = A3;               // Sensor power pin
-const int8_t  y520EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y520ModbusAddress  = 0x20;  // The modbus address of the Y520
+const int8_t  y520AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y520SensorPower    = A3;              // Sensor power pin
+const int8_t  y520EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y520NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -1938,15 +2064,15 @@ Variable* y520Cond =
     new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y520Temp =
     new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y520] */
+/** End [yosemitech_y520] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y532
+#if defined BUILD_SENSOR_YOSEMITECH_Y532
 // ==========================================================================
 //  Yosemitech Y532 pH
 // ==========================================================================
-/** Start [y532] */
+/** Start [yosemitech_y532] */
 #include <sensors/YosemitechY532.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
@@ -1972,25 +2098,25 @@ Variable* y532pH =
     new YosemitechY532_pH(&y532, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y532Temp =
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y532] */
+/** End [yosemitech_y532] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y533
+#if defined BUILD_SENSOR_YOSEMITECH_Y533
 // ==========================================================================
 //  Yosemitech Y533 Oxidation Reduction Potential (ORP)
 // ==========================================================================
-/** Start [y533] */
+/** Start [yosemitech_y533] */
 #include <sensors/YosemitechY533.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y533ModbusAddress = 0x32;  // The modbus address of the Y533
-const int8_t y533AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y533SensorPower = A3;               // Sensor power pin
-const int8_t  y533EnablePin   = 4;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y533ModbusAddress  = 0x32;  // The modbus address of the Y533
+const int8_t  y533AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y533SensorPower    = A3;              // Sensor power pin
+const int8_t  y533EnablePin      = 4;               // Adapter RE/DE pin
 const uint8_t y533NumberReadings = 1;
 // The manufacturer actually doesn't mention averaging for this one
 
@@ -2003,60 +2129,96 @@ Variable* y533ORP =
     new YosemitechY533_ORP(&y533, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y533Temp =
     new YosemitechY533_Temp(&y533, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y533] */
+/** End [yosemitech_y533] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y550
+#if defined BUILD_SENSOR_YOSEMITECH_Y551
 // ==========================================================================
-//  Yosemitech Y550 COD Sensor with Wiper
+//  Yosemitech Y551 COD Sensor with Wiper
 // ==========================================================================
-/** Start [y550] */
-#include <sensors/YosemitechY550.h>
+/** Start [yosemitech_y551] */
+#include <sensors/YosemitechY551.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y550ModbusAddress = 0x50;  // The modbus address of the Y550
-const int8_t y550AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                  // (-1 if unconnected)
-const int8_t  y550SensorPower = A3;               // Sensor power pin
-const int8_t  y550EnablePin   = -1;  // Adapter RE/DE pin (-1 if not applicable)
-const uint8_t y550NumberReadings = 5;
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y551ModbusAddress  = 0x50;  // The modbus address of the Y551
+const int8_t  y551AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y551SensorPower    = A3;              // Sensor power pin
+const int8_t  y551EnablePin      = -1;              // Adapter RE/DE pin
+const uint8_t y551NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
 
-// Create a Y550 chemical oxygen demand sensor object
-YosemitechY550 y550(y550ModbusAddress, modbusSerial, y550AdapterPower,
-                    y550SensorPower, y550EnablePin, y550NumberReadings);
+// Create a Y551 chemical oxygen demand sensor object
+YosemitechY551 y551(y551ModbusAddress, modbusSerial, y551AdapterPower,
+                    y551SensorPower, y551EnablePin, y551NumberReadings);
 
-// Create COD, turbidity, and temperature variable pointers for the Y550
-Variable* y550COD =
-    new YosemitechY550_COD(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* y550Turbid =
-    new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-Variable* y550Temp =
-    new YosemitechY550_Temp(&y550, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y550] */
+// Create COD, turbidity, and temperature variable pointers for the Y551
+Variable* y551COD =
+    new YosemitechY551_COD(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y551Turbid =
+    new YosemitechY551_Turbidity(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y551Temp =
+    new YosemitechY551_Temp(&y551, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [yosemitech_y551] */
 #endif
 
 
-#if defined BUILD_SENSOR_Y4000
+#if defined BUILD_SENSOR_YOSEMITECH_Y560
+// ==========================================================================
+//  Yosemitech Y560 Ammonium Probe with Wiper
+// ==========================================================================
+/** Start [yosemitech_y560] */
+#include <sensors/YosemitechY560.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte y560ModbusAddress =
+    0x60;  // The modbus address of the Y560.
+           // NOTE: Hexidecimal 0x60 = 96 decimal used by Yosemitech SmartPC
+const int8_t  y560AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y560SensorPower    = A3;              // Sensor power pin
+const int8_t  y560EnablePin      = -1;              // Adapter RE/DE pin
+const uint8_t y560NumberReadings = 3;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a Y560 Ammonium Probe object
+YosemitechY560 y560(y560ModbusAddress, modbusSerial, y560AdapterPower,
+                    y560SensorPower, y560EnablePin, y560NumberReadings);
+
+// Create COD, turbidity, and temperature variable pointers for the Y560
+Variable* y560NH4_N =
+    new YosemitechY560_NH4_N(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y560pH =
+    new YosemitechY560_pH(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y560Temp =
+    new YosemitechY560_Temp(&y560, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [yosemitech_y560] */
+#endif
+
+
+#if defined BUILD_SENSOR_YOSEMITECH_Y4000
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
 //    ORP, Chlorophyll, BGA)
 // ==========================================================================
-/** Start [y4000] */
+/** Start [yosemitech_y4000] */
 #include <sensors/YosemitechY4000.h>
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 
-byte         y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
-const int8_t y4000AdapterPower  = sensorPowerPin;  // RS485 adapter power pin
-                                                   // (-1 if unconnected)
-const int8_t  y4000SensorPower = A3;               // Sensor power pin
-const int8_t  y4000EnablePin = -1;  // Adapter RE/DE pin (-1 if not applicable)
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y4000ModbusAddress  = 0x05;  // The modbus address of the Y4000
+const int8_t  y4000AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y4000SensorPower    = A3;              // Sensor power pin
+const int8_t  y4000EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y4000NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize
 // power consumption
@@ -2082,21 +2244,21 @@ Variable* y4000Chloro = new YosemitechY4000_Chlorophyll(
     &y4000, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* y4000BGA =
     new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [y4000] */
+/** End [yosemitech_y4000] */
 #endif
 
 
-#if defined BUILD_SENSOR_DOPTO
+#if defined BUILD_SENSOR_ZEBRA_TECH_D_OPTO
 // ==========================================================================
 //  Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
-/** Start [dopto] */
+/** Start [zebra_tech_d_opto] */
 #include <sensors/ZebraTechDOpto.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const char*  DOptoSDI12address = "5";  // The SDI-12 Address of the D-Opto
 const int8_t ZTPower           = sensorPowerPin;  // Power pin
-const int8_t ZTData            = 7;               // The SDI12 data pin
+const int8_t ZTData            = 7;               // The SDI-12 data pin
 
 // Create a Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoSDI12address, ZTPower, ZTData);
@@ -2109,7 +2271,7 @@ Variable* dOptoDOmgL =
     new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* dOptoTemp =
     new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [dopto] */
+/** End [zebra_tech_d_opto] */
 #endif
 
 
@@ -2228,128 +2390,153 @@ Variable* variableList[] = {
 #if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
     ds3231Temp,
 #endif
-#if defined BUILD_SENSOR_AM2315
+#if defined BUILD_SENSOR_AO_SONG_AM2315
     am2315Humid,
     am2315Temp,
 #endif
-#if defined BUILD_SENSOR_DHT
+#if defined BUILD_SENSOR_AO_SONG_DHT
     dhtHumid,
     dhtTemp,
     dhtHI,
 #endif
-#if defined BUILD_SENSOR_SQ212
+#if defined BUILD_SENSOR_APOGEE_SQ212
     sq212PAR,
     sq212voltage,
 #endif
-#if defined BUILD_SENSOR_ATLASCO2
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_CO2
     atlasCO2CO2,
     atlasCO2Temp,
 #endif
-#if defined BUILD_SENSOR_ATLASDO
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_DO
     atlasDOconc,
     atlasDOpct,
 #endif
-#if defined BUILD_SENSOR_ATLASORP
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_ORP
     atlasORPot,
 #endif
-#if defined BUILD_SENSOR_ATLASPH
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_PH
     atlaspHpH,
 #endif
-#if defined BUILD_SENSOR_ATLASRTD
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD
     atlasTemp,
 #endif
-#if defined BUILD_SENSOR_ATLASEC
+#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
     atlasCond,
     atlasTDS,
     atlasSal,
     atlasGrav,
     atlasSpCond,
 #endif
-#if defined BUILD_SENSOR_BME280
+#if defined BUILD_SENSOR_BOSCH_BME280
     bme280Temp,
     bme280Humid,
     bme280Press,
     bme280Alt,
 #endif
-#if defined BUILD_SENSOR_OBS3
+#if defined BUILD_SENSOR_BOSCH_BMP3XX
+    bmp3xxTemp,
+    bmp3xxPress,
+    bmp3xxAlt,
+#endif
+#if defined BUILD_SENSOR_CAMPBELL_CLARI_VUE10
+    clarivueTurbidity,
+    clarivueTemp,
+    clarivueError,
+#endif
+#if defined BUILD_SENSOR_CAMPBELL_OBS3
     obs3TurbLow,
     obs3VoltLow,
     obs3TurbHigh,
     obs3VoltHigh,
 #endif
-#if defined BUILD_SENSOR_CTD
+#if defined BUILD_SENSOR_DECAGON_CTD
     ctdCond,
     ctdTemp,
     ctdDepth,
 #endif
-#if defined BUILD_SENSOR_ES2
+#if defined BUILD_SENSOR_DECAGON_ES2
     es2Cond,
     es2Temp,
 #endif
-#if defined BUILD_SENSOR_VOLTAGE
-    extvoltV,
+#if defined BUILD_SENSOR_EVERLIGHT_ALSPT19
+    alsPt19Volt,
+    alsPt19Current,
+    alsPt19Lux,
 #endif
-#if defined BUILD_SENSOR_MPL115A2
+#if defined BUILD_SENSOR_TIADS1X15
+    ads1x15Volt,
+#endif
+#if defined BUILD_SENSOR_FREESCALE_MPL115A2
     mplTemp,
     mplPress,
 #endif
-#if defined BUILD_SENSOR_INSITURDO
+#if defined BUILD_SENSOR_IN_SITU_RDO
     rdoTemp,
     rdoDOpct,
     rdoDOmgL,
     rdoO2pp,
 #endif
-#if defined BUILD_SENSOR_ACCULEVEL
+#if defined BUILD_SENSOR_IN_SITU_TROLL_SDI12A
+    trollPressure,
+    trollTemp,
+    trollDepth,
+#endif
+#if defined BUILD_SENSOR_KELLER_ACCULEVEL
     acculevPress,
     acculevTemp,
     acculevHeight,
 #endif
-#if defined BUILD_SENSOR_NANOLEVEL
+#if defined BUILD_SENSOR_KELLER_NANOLEVEL
     nanolevPress,
     nanolevTemp,
     nanolevHeight,
 #endif
-#if defined BUILD_SENSOR_MAXBOTIX
+#if defined BUILD_SENSOR_MAX_BOTIX_SONAR
     sonar1Range,
 #endif
-#if defined BUILD_SENSOR_DS18
+#if defined BUILD_SENSOR_MAXIM_DS18
     ds18Temp,
 #endif
-#if defined BUILD_SENSOR_MS5803
+#if defined BUILD_SENSOR_MEA_SPEC_MS5803
     ms5803Temp,
     ms5803Press,
 #endif
-#if defined BUILD_SENSOR_5TM
+#if defined BUILD_SENSOR_DECAGON_5TM
     fivetmEa,
     fivetmVWC,
     fivetmTemp,
 #endif
-#if defined BUILD_SENSOR_HYDROS21
+#if defined BUILD_SENSOR_METER_HYDROS21
     hydros21Cond,
     hydros21Temp,
     hydros21Depth,
 #endif
-#if defined BUILD_SENSOR_TEROS11
+#if defined BUILD_SENSOR_METER_TEROS11
     teros11Ea,
     teros11Temp,
     teros11VWC,
+    teros11Count,
 #endif
-#if defined BUILD_SENSOR_PALEOTERRA
+#if defined BUILD_SENSOR_PALEO_TERRA_REDOX
     ptVolt,
 #endif
-#if defined BUILD_SENSOR_RAINI2C
+#if defined BUILD_SENSOR_RAIN_COUNTER_I2C
     tbi2cTips,
     tbi2cDepth,
 #endif
-#if defined BUILD_SENSOR_TALLY
+#if defined BUILD_SENSOR_SENSIRION_SHT4X
+    sht4xHumid,
+    sht4xTemp,
+#endif
+#if defined BUILD_SENSOR_TALLY_COUNTER_I2C
     tallyEvents,
 #endif
-#if defined BUILD_SENSOR_INA219
+#if defined BUILD_SENSOR_TI_INA219
     inaVolt,
     inaCurrent,
     inaPower,
 #endif
-#if defined BUILD_SENSOR_CYCLOPS
+#if defined BUILD_SENSOR_TURNER_CYCLOPS
     cyclopsVoltage,
     cyclopsChloro,
     cyclopsRWT,
@@ -2365,46 +2552,51 @@ Variable* variableList[] = {
     cyclopsTryptophan,
     cyclopsRedChloro,
 #endif
-#if defined BUILD_SENSOR_ANALOGEC
+#if defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
     analogEc_cond,
     analogEc_spcond,
 #endif
-#if defined BUILD_SENSOR_Y504
+#if defined BUILD_SENSOR_YOSEMITECH_Y504
     y504DOpct,
     y504DOmgL,
     y504Temp,
 #endif
-#if defined BUILD_SENSOR_Y510
+#if defined BUILD_SENSOR_YOSEMITECH_Y510
     y510Turb,
     y510Temp,
 #endif
-#if defined BUILD_SENSOR_Y511
+#if defined BUILD_SENSOR_YOSEMITECH_Y511
     y511Turb,
     y511Temp,
 #endif
-#if defined BUILD_SENSOR_Y514
+#if defined BUILD_SENSOR_YOSEMITECH_Y514
     y514Chloro,
     y514Temp,
 #endif
-#if defined BUILD_SENSOR_Y520
+#if defined BUILD_SENSOR_YOSEMITECH_Y520
     y520Cond,
     y520Temp,
 #endif
-#if defined BUILD_SENSOR_Y532
+#if defined BUILD_SENSOR_YOSEMITECH_Y532
     y532Voltage,
     y532pH,
     y532Temp,
 #endif
-#if defined BUILD_SENSOR_Y533
+#if defined BUILD_SENSOR_YOSEMITECH_Y533
     y533ORP,
     y533Temp,
 #endif
-#if defined BUILD_SENSOR_Y550
-    y550COD,
-    y550Turbid,
-    y550Temp,
+#if defined BUILD_SENSOR_YOSEMITECH_Y551
+    y551COD,
+    y551Turbid,
+    y551Temp,
 #endif
-#if defined BUILD_SENSOR_Y4000
+#if defined BUILD_SENSOR_YOSEMITECH_Y560
+    y560NH4_N,
+    y560pH,
+    y560Temp,
+#endif
+#if defined BUILD_SENSOR_YOSEMITECH_Y4000
     y4000DO,
     y4000Turb,
     y4000Cond,
@@ -2414,7 +2606,7 @@ Variable* variableList[] = {
     y4000Chloro,
     y4000BGA,
 #endif
-#if defined BUILD_SENSOR_DOPTO
+#if defined BUILD_SENSOR_ZEBRA_TECH_D_OPTO
     dOptoDOpct,
     dOptoDOmgL,
     dOptoTemp,
@@ -2447,11 +2639,11 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** End [loggers] */
 
 
-#if defined BUILD_PUB_MMW
+#if defined BUILD_PUB_ENVIRO_DIY_PUBLISHER
 // ==========================================================================
 //  A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
-/** Start [monitormw] */
+/** Start [enviro_diy_publisher] */
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char* registrationToken =
@@ -2463,15 +2655,15 @@ const char* samplingFeature =
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);
-/** End [monitormw] */
+/** End [enviro_diy_publisher] */
 #endif
 
 
-#if defined BUILD_PUB_DREAMHOST
+#if defined BUILD_PUB_DREAM_HOST_PUBLISHER
 // ==========================================================================
 //  A Publisher to DreamHost
 // ==========================================================================
-/** Start [dreamhost] */
+/** Start [dream_host_publisher] */
 // NOTE:  This is an outdated data collection tool used by the Stroud Center.
 // It very, very unlikely that you will use this.
 
@@ -2481,15 +2673,15 @@ const char* DreamHostPortalRX = "xxxx";
 #include <publishers/DreamHostPublisher.h>
 DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient,
                                 DreamHostPortalRX);
-/** End [dreamhost] */
+/** End [dream_host_publisher] */
 #endif
 
 
-#if defined BUILD_PUB_THINGSPEAK
+#if defined BUILD_PUB_THING_SPEAK_PUBLISHER
 // ==========================================================================
 //  ThingSpeak Data Publisher
 // ==========================================================================
-/** Start [thingspeak] */
+/** Start [thing_speak_publisher] */
 // Create a channel with fields on ThingSpeak in advance.
 // The fields will be sent in exactly the order they are in the variable array.
 // Any custom name or identifier given to the field on ThingSpeak is irrelevant.
@@ -2506,7 +2698,28 @@ const char* thingSpeakChannelKey =
 #include <publishers/ThingSpeakPublisher.h>
 ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakMQTTKey,
                            thingSpeakChannelID, thingSpeakChannelKey);
-/** End [thingspeak] */
+/** End [thing_speak_publisher] */
+#endif
+
+
+#if defined BUILD_PUB_UBIDOTS_PUBLISHER
+// ==========================================================================
+//  Ubidots Data Publisher
+// ==========================================================================
+/** Start [ubidots_publisher] */
+// The authentication token from Ubdots, either the Organization's Integration
+// Token (under Users > Organization menu,visible by Admin only) OR the STEM
+// User's Device Token (under the specific evice's setup panel).
+const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
+// The device API Label from Ubidots, derived from the user-specified device
+// name.
+const char* ubidotsDeviceID = "######";
+
+// Create a data publisher for ThingSpeak
+#include <publishers/UbidotsPublisher.h>
+UbidotsPublisher ubidots(dataLogger, &modem.gsmClient, ubidotsToken,
+                         ubidotsDeviceID);
+/** End [ubidots_publisher] */
 #endif
 
 
@@ -2586,7 +2799,7 @@ void setup() {
     // all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 
-#if defined BUILD_SENSOR_MAXBOTIX
+#if defined BUILD_SENSOR_MAX_BOTIX_SONAR
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600
     // baud
     sonarSerial.begin(9600);
@@ -2635,16 +2848,18 @@ void setup() {
     dataLogger.begin();
     /** End [setup_logger] */
 
-    /** Start [setup_sesors] */
+    /** Start [setup_sensors] */
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up sensors..."));
         varArray.setupSensors();
     }
-    /** End [setup_sesors] */
+    /** End [setup_sensors] */
 
-#if defined BUILD_MODEM_ESP8266 && F_CPU == 8000000L
+#if (defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
+     defined BUILD_MODEM_ESPRESSIF_ESP32) &&  \
+    F_CPU == 8000000L
     /** Start [setup_esp] */
     if (modemBaud > 57600) {
         modem.modemWake();  // NOTE:  This will also set up the modem
@@ -2665,7 +2880,7 @@ void setup() {
     /** End [setup_skywire] */
 #endif
 
-#if defined BUILD_MODEM_SIM7080
+#if defined BUILD_MODEM_SIM_COM_SIM7080
     /** Start [setup_sim7080] */
     modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
@@ -2684,7 +2899,7 @@ void setup() {
     /** End [setup_sim7080] */
 #endif
 
-#if defined BUILD_MODEM_XBEE_CELLULAR
+#if defined BUILD_MODEM_DIGI_XBEE_CELLULAR_TRANSPARENT
     /** Start [setup_xbeec_carrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
@@ -2721,7 +2936,7 @@ void setup() {
 #endif
 
 
-#if defined BUILD_MODEM_XBEE_LTE_B
+#if defined BUILD_MODEM_DIGI_XBEE_LTE_BYPASS
     /** Start [setup_r4_carrrier] */
     // Extra modem set-up
     Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
@@ -2882,10 +3097,10 @@ void loop() {
                 Serial.println(F("Modem connected to internet."));
                 dataLogger.publishDataToRemotes();
 
-                // Sync the clock at midnight
+                // Sync the clock at noon
                 dataLogger.watchDogTimer.resetWatchDog();
-                if (Logger::markedEpochTime != 0 &&
-                    Logger::markedEpochTime % 86400 == 0) {
+                if (Logger::markedLocalEpochTime != 0 &&
+                    Logger::markedLocalEpochTime % 86400 == 43200) {
                     Serial.println(F("Running a daily clock sync..."));
                     dataLogger.setRTClock(modem.getNISTTime());
                     dataLogger.watchDogTimer.resetWatchDog();

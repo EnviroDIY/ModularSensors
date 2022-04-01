@@ -19,13 +19,13 @@ with open(build_file, "r") as in_file:
 
 # set flags
 all_modem_flags = [
-    "BUILD_MODEM_SIM7080",
+    "BUILD_MODEM_SIM_COM_SIM7080",
 ]
 all_sensor_flags = [
     "NO_SENSORS",
 ]
 all_publisher_flags = [
-    "BUILD_PUB_MMW",
+    "BUILD_PUB_ENVIRO_DIY_PUBLISHER",
 ]
 
 #%% Read flags out of the menu example

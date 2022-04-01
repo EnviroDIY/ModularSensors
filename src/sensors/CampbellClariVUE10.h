@@ -52,9 +52,9 @@
  *
  * ___
  * @section sensor_clarivue_examples Example Code
- * The Campbell ClariVUE10 is used in the @menulink{clarivue} example.
+ * The Campbell ClariVUE10 is used in the @menulink{campbell_clari_vue10} example.
  *
- * @menusnip{clarivue}
+ * @menusnip{campbell_clari_vue10}
  */
 /* clang-format on */
 
@@ -65,10 +65,10 @@
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_clarivue */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the ClariVUE10 can report 7 values
 /// (although we only keep 3).
 #define CLARIVUE10_NUM_VARIABLES 7

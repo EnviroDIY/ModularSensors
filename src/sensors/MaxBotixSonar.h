@@ -56,7 +56,7 @@
  * setting up a trigger pin and manually trigger individual readings.
  *
  * Please see the section
- * "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)"
+ * "[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)"
  * for more information about what streams can be used along with this library.
  *
  * This library supports using multiple MaxBotix sensors on the same logger,
@@ -89,9 +89,9 @@
  *
  * ___
  * @section sensor_maxbotix_examples Example Code
- * The MaxBotix MaxSonar is used in the @menulink{maxbotics} example.
+ * The MaxBotix MaxSonar is used in the @menulink{max_botix_sonar} example.
  *
- * @menusnip{maxbotics}
+ * @menusnip{max_botix_sonar}
  */
 /* clang-format on */
 
@@ -112,10 +112,10 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_maxbotix */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the HRXL can report 1 value.
 #define HRXL_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

@@ -41,9 +41,9 @@
  * ___
  * @section modem_ubee_3g_examples Example Code
  *
- * The SARA U201 based UBee is used in the @menulink{ubeeu201} example.
+ * The SARA U201 based UBee is used in the @menulink{sodaq_ubee_u201} example.
  *
- * @menusnip{sara_u201}
+ * @menusnip{sodaq_ubee_u201}
  */
 /* clang-format on */
 

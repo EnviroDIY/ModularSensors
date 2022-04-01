@@ -7,7 +7,7 @@
  * Heavliy edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the PaleoTerraRedox semsor subclass and the variable subclass
- * PaleoTerraRedox_Volt.
+ * PaleoTerraRedox_Voltage.
  *
  * These are for the PaleoTerra redox sensors.
  *
@@ -50,9 +50,9 @@
  *
  * ___
  * @section sensor_pt_redox_examples Example Code
- * The PaleoTerra Redox is used in the @menulink{pt_redox} example.
+ * The PaleoTerra Redox is used in the @menulink{paleo_terra_redox} example.
  *
- * @menusnip{pt_redox}
+ * @menusnip{paleo_terra_redox}
  */
 /* clang-format on */
 
@@ -78,10 +78,10 @@
 #include <SoftwareWire.h>  // Testato's SoftwareWire
 #endif
 
-// Sensor Specific Defines
 /** @ingroup sensor_pt_redox */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the PaleoTerra redox sensor can report 1
 /// value.
 #define PTR_NUM_VARIABLES 1
@@ -111,7 +111,7 @@
  * The voltage variable from a PaleoTerra redox probe
  * - Accuracy is ±5mV
  *
- * {{ @ref PaleoTerraRedox_Volt::PaleoTerraRedox_Volt }}
+ * {{ @ref PaleoTerraRedox_Voltage::PaleoTerraRedox_Voltage }}
  */
 /**@{*/
 /** @brief Decimals places in string representation; voltage should have 2.
@@ -285,10 +285,10 @@ class PaleoTerraRedox : public Sensor {
  *
  * @ingroup sensor_pt_redox
  */
-class PaleoTerraRedox_Volt : public Variable {
+class PaleoTerraRedox_Voltage : public Variable {
  public:
     /**
-     * @brief Construct a new PaleoTerraRedox_Volt object.
+     * @brief Construct a new PaleoTerraRedox_Voltage object.
      *
      * @param parentSense The parent PaleoTerraRedox providing the result
      * values.
@@ -297,26 +297,35 @@ class PaleoTerraRedox_Volt : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "PTRVoltage".
      */
-    explicit PaleoTerraRedox_Volt(
+    explicit PaleoTerraRedox_Voltage(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = PTR_VOLTAGE_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)PTR_VOLTAGE_VAR_NUM,
                    (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
                    PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new PaleoTerraRedox_Volt object.
+     * @brief Construct a new PaleoTerraRedox_Voltage object.
      *
      * @note This must be tied with a parent PaleoTerraRedox before it can be
      * used.
      */
-    PaleoTerraRedox_Volt()
+    PaleoTerraRedox_Voltage()
         : Variable((const uint8_t)PTR_VOLTAGE_VAR_NUM,
                    (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
                    PTR_VOLTAGE_UNIT_NAME, PTR_VOLTAGE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the PaleoTerraRedox_Volt object - no action needed.
+     * @brief Destroy the PaleoTerraRedox_Voltage object - no action needed.
      */
-    ~PaleoTerraRedox_Volt() {}
+    ~PaleoTerraRedox_Voltage() {}
 };
+
+/**
+ * @brief typedef for backwards compatibility; use the PaleoTerraRedox_Voltage
+ * class in new code
+ *
+ * @m_deprecated_since{0,33,0}
+ */
+typedef PaleoTerraRedox_Voltage PaleoTerraRedox_Volt;
+
 /**@}*/
-#endif  // SRC_SENSORS__PALEOTERRAREDOX_H_
+#endif  // SRC_SENSORS_PALEOTERRAREDOX_H_

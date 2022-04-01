@@ -31,7 +31,7 @@
  *
  * @section modem_digi_mayfly-and-digi-xbee-connections Mayfly and Digi XBee Connections
  *
- * @subsection modem_digi_raw_pins Pin Numbers for connecting Digi XBee's Directly to a Mayfly
+ * @subsection modem_digi_raw_pins Pin Numbers for connecting Digi XBee's Directly to a Mayfly v0.3-v0.5c
  *
  * This applies to _all_ Digi XBees and XBee3's when attached directly to the Mayfly's bee slot.
  * @code{cpp}
@@ -53,7 +53,7 @@
  * - XBee pin 9 is SLEEP_RQ which is connected to Mayfly pin 23.
  * - I like to use the red LED to show the bee wake/sleep since the Digi XBee's have no LEDs of their own.
  *
- * @subsection modem_digi_adapter_pins Pin Numbers for connecting Digi LTE XBee3's to a Mayfly via the LTE adapter board
+ * @subsection modem_digi_adapter_pins Pin Numbers for connecting Digi LTE XBee3's to a Mayfly v0.3-v0.5c via the LTE adapter board
  *
  * @code{cpp}
  * const int8_t modemVccPin = -1;       // MCU pin controlling modem power

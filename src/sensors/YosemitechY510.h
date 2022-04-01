@@ -39,9 +39,9 @@
  *
  * ___
  * @section sensor_y510_examples Example Code
- * The Yosemitech Y510 Turbidity is used in the @menulink{y510} example.
+ * The Yosemitech Y510 Turbidity is used in the @menulink{yosemitech_y510} example.
  *
- * @menusnip{y510}
+ * @menusnip{yosemitech_y510}
  */
 /* clang-format on */
 
@@ -52,10 +52,10 @@
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_y510 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Y510 can report 2 values.
 #define Y510_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

@@ -3,7 +3,7 @@
  * @brief Example for DRWI CitSci without cellular service.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -13,7 +13,6 @@
  * DISCLAIMER:
  * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
  * ======================================================================= */
-
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -53,8 +52,6 @@ const int8_t  redLED     = 9;       // Pin for the red LED
 const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
-// Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -158,24 +155,19 @@ Variable* variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+/* clang-format off */
 const char* UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity
-                                             // (Decagon_CTD-10_Cond)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                             // (Decagon_CTD-10_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
-                                             // (Decagon_CTD-10_Depth)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity (Decagon_CTD-10_Cond)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Decagon_CTD-10_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Decagon_CTD-10_Depth)
     "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
     "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
-                                             // (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab"   // Temperature
-                                             // (EnviroDIY_Mayfly_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+    "12345678-abcd-1234-ef00-1234567890ab"   // Temperature (EnviroDIY_Mayfly_Temp)
 };
-const char* registrationToken =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+/* clang-format on */
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

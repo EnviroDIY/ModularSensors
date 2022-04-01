@@ -48,9 +48,9 @@
  * ___
  * @section sensor_ds3231_examples Example Code
  * The Maxim DS3231 RTC is used in nearly all of the examples, including the
- * @menulink{ds3231} example.
+ * @menulink{maxim_ds3231} example.
  *
- * @menusnip{ds3231}
+ * @menusnip{maxim_ds3231}
  */
 /* clang-format on */
 
@@ -71,10 +71,10 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_ds3231 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the DS3231 can report 1 value.
 #define DS3231_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

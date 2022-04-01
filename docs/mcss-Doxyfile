@@ -18,4 +18,4 @@ ALIASES += \
     "m_keyword{3}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keyword=\"\1\" mcss:title=\"\2\" mcss:suffix-length=\"\3\" />@endxmlonly" \
     "m_enum_values_as_keywords=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:enum-values-as-keywords=\"true\" />@endxmlonly" \
     "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since v\1.\2\"" \
-    "m_deprecated_since{2}=@since deprecated in v\1.\2 @deprecated"
+    "m_deprecated_since{3}=@since deprecated in v\1.\2.\3 @deprecated"

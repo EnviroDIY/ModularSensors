@@ -52,9 +52,9 @@
  *
  * ___
  * @section sensor_fivetm_examples Example Code
- * The Meter ECH2O (5TM) is used in the @menulink{fivetm} example.
+ * The Meter ECH2O (5TM) is used in the @menulink{decagon_5tm} example.
  *
- * @menusnip{fivetm}
+ * @menusnip{decagon_5tm}
  */
 /* clang-format on */
 
@@ -80,10 +80,10 @@
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_fivetm */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the 5TM can report 3 values.
 #define TM_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; volumetric water content is calculated from

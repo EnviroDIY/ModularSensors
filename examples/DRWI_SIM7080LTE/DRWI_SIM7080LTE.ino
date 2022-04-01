@@ -10,7 +10,7 @@
  * Campbell Scientific OBS3+ Turbidity sensor
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -74,8 +74,6 @@ const int8_t  redLED     = 9;      // Pin for the red LED
 const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
 const int8_t  wakePin    = 31;     // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
-// Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -85,7 +83,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [sim7080] */
+/** Start [sim_com_sim7080] */
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
 
@@ -97,11 +95,12 @@ const int32_t   modemBaud = 9600;  //  SIM7080 does auto-bauding by default, but
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 
-const int8_t modemVccPin =  18;  // MCU pin controlling modem power --- 
+const int8_t modemVccPin =
+    18;  // MCU pin controlling modem power ---
          //  Pin 18 is the power enable pin
          //  for the bee socket on Mayfly v1.0,
          //  use -1 if using Mayfly 0.5b or if the bee socket is constantly
-         //  powered (ie you changed SJ18 on Mayfly1.0 to 3.3v)
+         //  powered (ie you changed SJ18 on Mayfly 1.x to 3.3v)
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
@@ -117,7 +116,7 @@ SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
                         modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 SIMComSIM7080 modem = modem7080;
-/** End [sim7080] */
+/** End [sim_com_sim7080] */
 
 
 // ==========================================================================
@@ -222,37 +221,27 @@ Variable* variableList[] = {
 // Replace all of the text in the following section with the UUID array from
 // MonitorMyWatershed
 
-// ---------------------   Beginning of Token UUID List
-// ---------------------------------------
+/* clang-format off */
+// ---------------------   Beginning of Token UUID List   ---------------------
 
 
 const char* UUIDs[] =  // UUID array for device sensors
     {
-        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance
-                                                 // (Meter_Hydros21_Cond)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
-                                                 // (Meter_Hydros21_Depth)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                                 // (Meter_Hydros21_Temp)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
-                                                 // (Campbell_OBS3_Turb) (Low)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
-                                                 // (Campbell_OBS3_Turb) (High)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
-                                                 // (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                                 // (Maxim_DS3231_Temp)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale
-                                                 // (EnviroDIY_LTEB_SignalPercent)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (Low)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (High)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
-const char* registrationToken =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
 
-// -----------------------   End of Token UUID List
-// ------------------------------------------
+// -----------------------   End of Token UUID List  -----------------------
+/* clang-format on */
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

@@ -40,9 +40,9 @@
  *
  * ___
  * @section modem_sim7000_examples Example Code
- * The SIM7000 is used in the @menulink{sim7000} example.
+ * The SIM7000 is used in the @menulink{sim_com_sim7000} example.
  *
- * @menusnip{sim7000}
+ * @menusnip{sim_com_sim7000}
  */
 /* clang-format on */
 

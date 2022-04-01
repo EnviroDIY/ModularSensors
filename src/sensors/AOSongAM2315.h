@@ -45,9 +45,9 @@
  * @section sensor_am2315_examples Example Code
  *
  * The AM2315 is used in the [double logger](@ref double_logger.ino)
- * and @menulink{am2315} example
+ * and @menulink{ao_song_am2315} example
  *
- * @menusnip{am2315}
+ * @menusnip{ao_song_am2315}
  */
 /* clang-format on */
 
@@ -69,10 +69,10 @@
 #include "SensorBase.h"
 #include <Adafruit_AM2315.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_am2315 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the AM2315 can report 2 values.
 #define AM2315_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
@@ -84,13 +84,13 @@
  * The sensor timing for an AOSong AM2315
  */
 /**@{*/
-/// @brief Sensor::_warmUpTime_ms; AM2315 warms up in 500ms (estimated).
+/// @brief Sensor::_warmUpTime_ms; the AM2315 warms up in 500ms (estimated).
 #define AM2315_WARM_UP_TIME_MS 500
-/// @brief Sensor::_stabilizationTime_ms; AM2315 is stable after 500ms
+/// @brief Sensor::_stabilizationTime_ms; the AM2315 is stable after 500ms
 /// (estimated).
 #define AM2315_STABILIZATION_TIME_MS 500
-/// @brief Sensor::_measurementTime_ms; AM2315 takes 2000ms (2s) to complete a
-/// measurement.
+/// @brief Sensor::_measurementTime_ms; the AM2315 takes 2000ms (2s) to complete
+/// a measurement.
 #define AM2315_MEASUREMENT_TIME_MS 2000
 /**@}*/
 
@@ -233,6 +233,7 @@ class AOSongAM2315 : public Sensor {
      * @brief An internal reference to the hardware Wire instance.
      */
     TwoWire* _i2c;
+    Adafruit_AM2315 *am2315ptr;  // create a sensor object
 };
 
 

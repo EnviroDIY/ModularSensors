@@ -1,0 +1,122 @@
+/**
+ * @page page_the_examples
+ * @m_innerpage{page_examples_basic}
+ * @page page_examples_basic Basic Functionality
+ * [Basic Functionality](@ref examples_basic)
+ * @m_innerpage{example_single_sensor}
+ * @m_innerpage{example_simple_logging}
+ * @m_innerpage{example_learn_envirodiy}
+ */
+/**
+ * @example{lineno} single_sensor.ino @m_examplenavigation{example_single_sensor,} @m_footernavigation
+ * @brief An example using only sensor functions and no logging.
+ * See [the walkthrough page](@ref example_single_sensor) for detailed instructions.
+ */
+/**
+ * @example{lineno} simple_logging.ino @m_examplenavigation{example_simple_logging,} @m_footernavigation
+ * @brief A simple data logging example.
+ * See [the walkthrough page](@ref example_simple_logging) for detailed instructions.
+ */
+/**
+ * @example{lineno} simple_logging_LearnEnviroDIY.ino @m_examplenavigation{example_learn_envirodiy,} @m_footernavigation
+ * @brief A data logging example for the Learn EnviroDIY tutorial.
+ * See [the walkthrough page](@ref example_learn_envirodiy) for detailed instructions.
+ */
+
+
+/**
+ * @page page_the_examples
+ * @m_innerpage{page_examples_outgoing_data}
+ * @page page_examples_outgoing_data Publishing Data
+ * [Publishing Data](@ref examples_publishing)
+ * @m_innerpage{example_mmw}
+ * @m_innerpage{example_thingspeak}
+ */
+/**
+ * @example{lineno} logging_to_MMW.ino @m_examplenavigation{example_mmw,} @m_footernavigation
+ * @brief Example logging data and publishing to Monitor My Watershed.
+ * See [the walkthrough page](@ref example_mmw) for detailed instructions.
+ */
+/**
+ * @example{lineno} logging_to_ThingSpeak.ino @m_examplenavigation{example_thingspeak,} @m_footernavigation
+ * @brief Example logging data and publishing to ThingSpeak.
+ * See [the walkthrough page](@ref example_thingspeak) for detailed instructions.
+ */
+
+
+/**
+ * @page page_the_examples
+ * @m_innerpage{page_examples_complex}
+ * @page page_examples_complex Calculations and Complex Logging
+ * [Calculations and Complex Logging](@ref examples_complex)
+ * @m_innerpage{example_baro_rho}
+ * @m_innerpage{example_double_log}
+ * @m_innerpage{example_data_saving}
+ */
+/**
+ * @example{lineno} baro_rho_correction.ino @m_examplenavigation{example_baro_rho,} @m_footernavigation
+ * @brief Example demonstrating calculated variables.
+ * See [the walkthrough page](@ref example_baro_rho) for detailed instructions.
+ */
+/**
+ * @example{lineno} double_logger.ino @m_examplenavigation{example_double_log,} @m_footernavigation
+ * @brief Example logging at two different timing intervals
+ * See [the walkthrough page](@ref example_double_log) for detailed instructions.
+ */
+/**
+ * @example{lineno} data_saving.ino @m_examplenavigation{example_data_saving,} @m_footernavigation
+ * @brief Example publishing only a portion of the logged variables.
+ * See [the walkthrough page](@ref example_data_saving) for detailed instructions.
+ */
+
+
+/**
+ * @page page_the_examples
+ * @m_innerpage{page_examples_drwi}
+ * @page page_examples_drwi DRWI Citizen Science
+ * [DRWI Citizen Science](@ref examples_drwi)
+ * @m_innerpage{example_drwi_mayfly1}
+ * @m_innerpage{example_drwi_ediylte}
+ * @m_innerpage{example_drwi_digilte}
+ * @m_innerpage{example_drwi_2g}
+ * @m_innerpage{example_drwi_no_cell}
+ */
+/**
+ * @example{lineno} DRWI_Mayfly1.ino @m_examplenavigation{example_drwi_mayfly1,} @m_footernavigation
+ * @brief Example for DRWI CitSci LTE sites with a Mayfly 1.x utilizing on-board sensors.
+ * See [the walkthrough page](@ref example_drwi_mayfly1) for detailed instructions.
+ */
+/**
+ * @example{lineno} DRWI_SIM7080LTE.ino @m_examplenavigation{example_drwi_ediylte,} @m_footernavigation
+ * @brief Example for DRWI CitSci LTE sites.
+ * See [the walkthrough page](@ref example_drwi_ediylte) for detailed instructions.
+ */
+/**
+ * @example{lineno} DRWI_DigiLTE.ino @m_examplenavigation{example_drwi_digilte,} @m_footernavigation
+ * @brief Example for DRWI CitSci LTE sites.
+ * See [the walkthrough page](@ref example_drwi_digilte) for detailed instructions.
+ */
+/**
+ * @example{lineno} DRWI_2G.ino @m_examplenavigation{example_drwi_2g,} @m_footernavigation
+ * @brief Example for DRWI CitSci 2G sites.
+ * See [the walkthrough page](@ref example_drwi_2g) for detailed instructions.
+ */
+/**
+ * @example{lineno} DRWI_NoCellular.ino @m_examplenavigation{example_drwi_no_cell,} @m_footernavigation
+ * @brief Example for DRWI CitSci without cellular service.
+ * See [the walkthrough page](@ref example_drwi_no_cell) for detailed instructions.
+ */
+
+
+/**
+ * @page page_the_examples
+ * @m_innerpage{page_examples_menu}
+ * @page page_examples_menu Everything at Once - a la carte
+ * [Everything at Once - a la carte](@ref examples_everything)
+ * @m_innerpage{example_menu}
+ */
+/**
+ * @example{lineno} menu_a_la_carte.ino @m_examplenavigation{example_menu,} @m_footernavigation
+ * @brief Example with all possible functionality.
+ * See [the walkthrough page](@ref example_menu) for detailed instructions.
+ */

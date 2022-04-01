@@ -3,7 +3,7 @@
  * @brief Example logging at two different timing intervals
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -135,14 +135,14 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //  AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
-/** Start [am2315] */
+/** Start [ao_song_am2315] */
 #include <sensors/AOSongAM2315.h>
 
 const int8_t I2CPower = sensorPowerPin;  // Power pin (-1 if unconnected)
 
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
-/** End [am2315] */
+/** End [ao_song_am2315] */
 
 
 // ==========================================================================
@@ -258,7 +258,9 @@ void setup() {
 
     // Print out the current time
     Serial.print(F("Current RTC time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowUTCEpoch()));
+    Serial.print(F("Current localized logger time is: "));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowLocalEpoch()));
     // Connect to the network
     if (modem.connectInternet()) {
         // Synchronize the RTC
@@ -395,8 +397,8 @@ void loop() {
         // Print a line to show reading ended
         Serial.println(F("--------------------<555>---------------------\n"));
     }
-    // Once a day, at midnight, sync the clock
-    if (Logger::markedEpochTime % 86400 == 0) {
+    // Once a day, at noon, sync the clock
+    if (Logger::markedLocalEpochTime % 86400 == 43200) {
         // Turn on the modem
         modem.modemWake();
         // Connect to the network

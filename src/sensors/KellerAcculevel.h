@@ -40,9 +40,9 @@
  *
  * ___
  * @section sensor_acculevel_examples Example Code
- * The Keller Acculevel is used in the @menulink{acculevel} example.
+ * The Keller Acculevel is used in the @menulink{keller_acculevel} example.
  *
- * @menusnip{acculevel}
+ * @menusnip{keller_acculevel}
  */
 /* clang-format on */
 

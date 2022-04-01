@@ -13,6 +13,7 @@ LINKS_NAVBAR1 = [
             ('<a href="index.html#contributing">Contributing</a>',),
             ('<a href="index.html#license">License</a>',),
             ('<a href="index.html#acknowledgments">Acknowledgments</a>',),
+            ('<a href="change_log.html">ChangeLog</a>',),
         ],
     ),
     (
@@ -47,6 +48,7 @@ LINKS_NAVBAR1 = [
             ("Library Dependencies", "page_library_dependencies",),
             ("Physical Dependencies", "page_physical_dependencies",),
             ("Terminology", "page_library_terminology",),
+            ("Other Sensor and Modem Notes", "page_other_notes",),
         ],
     ),
     (
@@ -99,6 +101,7 @@ LINKS_NAVBAR1 = [
         #         "DRWI Citizen Science",
         #         "examples_drwi",
         #         [
+        #             ("DRWI Mayfly 1.x", "example_drwi_mayfly1"),
         #             ("DRWI EnviroDIY LTE", "example_drwi_ediylte"),
         #             ("DRWI Digi LTE", "example_drwi_digilte"),
         #             ("DRWI CitSci (2G", "example_drwi_2g"),

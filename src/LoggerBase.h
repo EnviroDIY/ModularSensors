@@ -21,9 +21,14 @@
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
 
+#ifdef MS_LOGGERBASE_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "LoggerBase"
+#endif
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableArray.h"
 #include "LoggerModem.h"
 
@@ -191,9 +196,13 @@ class Logger {
     }
 
     /**
-     * @brief Set the pin (on the mcu) to use to control power to the SD card.
+     * @brief Set a digital pin number (on the mcu) to use to control power to
+     * the SD card and activate it as an output pin.
      *
-     * @note This functionality is not tested!
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
+     *
+     * @warning This functionality is not tested!
      *
      * @param SDCardPowerPin A digital pin number on the mcu controlling power
      * to the SD card.
@@ -222,9 +231,14 @@ class Logger {
     void turnOffSDcard(bool waitForHousekeeping = true);
 
     /**
-     * @brief Set a pin for the slave select (chip select) of the SD card.
+     * @brief Set a digital pin number for the slave select (chip select) of the
+     * SD card and activate it as an output pin.
      *
-     * This over-writes the value (if any) given in the constructor.
+     * This over-writes the value (if any) given in the constructor.  The pin
+     * mode of this pin will be set as `OUTPUT`.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
      * the SD card.
@@ -232,9 +246,14 @@ class Logger {
     void setSDCardSS(int8_t SDCardSSPin);
 
     /**
-     * @brief Set both pins related to the SD card.
+     * @brief Set both pin numbers related to the SD card and activate them as
+     * output pins.
      *
-     * These over-write the values (if any) given in the constructor.
+     * These over-write the values (if any) given in the constructor.  The pin
+     * mode of these pins will be set as `OUTPUT`.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
      * the SD card.
@@ -245,23 +264,38 @@ class Logger {
 
     //
     /**
-     * @brief Set up the wake up pin for an RTC interrupt.
+     * @brief Set digital pin number for the wake up pin used as an RTC
+     * interrupt and activate it in the given pin mode.
      *
      * This over-writes the value (if any) given in the constructor.  Use a
      * value of -1 to prevent the board from attempting to sleep.  If using a
      * SAMD board with the internal RTC, the value of the pin is irrelevant as
      * long as it is positive.
      *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
+     *
+     * @note  This sets the pin mode but does NOT enable the interrupt!
+     *
      * @param mcuWakePin The pin on the mcu to be used to wake the mcu from deep
      * sleep.
+     * @param wakePinMode The pin mode to be used for wake up on the clock alert
+     * pin.  Must be either `INPUT` OR `INPUT_PULLUP`.  Optional with a default
+     * value of `INPUT_PULLUP`.  The DS3231 has an active low interrupt, so the
+     * pull-up resistors should be enabled.
      */
-    void setRTCWakePin(int8_t mcuWakePin);
+    void setRTCWakePin(int8_t mcuWakePin, uint8_t wakePinMode = INPUT_PULLUP);
 
     /**
-     * @brief Set a pin to put out an alert that a measurement is being logged.
+     * @brief Set the digital pin number to put out an alert that a measurement
+     * is being logged and activate it as an output pin.
      *
-     * This is intended to be a pin with a LED on it so you can see the light
-     * come on when a measurement is being taken.
+     * The pin mode of this pin will be set as `OUTPUT`.  This is intended to be
+     * a pin with a LED on it so you can see the light come on when a
+     * measurement is being taken.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
      * being collected and logged.
@@ -277,9 +311,15 @@ class Logger {
     void alertOff();
 
     /**
-     * @brief Set up a pin for an interrupt to enter testing mode.
+     * @brief Set the digital pin number for an interrupt pin used to enter
+     * testing mode, activate that pin as the given input type, **and** attach
+     * the testing interrupt to it.
      *
-     * Intended to be attached to a button or other manual interrupt source.
+     * Intended to be used for a pin attached to a button or other manual
+     * interrupt source.
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * Once in testing mode, the logger will attempt to connect the the internet
      * and take 25 measurements spaced at 5 second intervals writing the results
@@ -289,25 +329,57 @@ class Logger {
      *
      * @param buttonPin The pin on the mcu to listen to for a value-change
      * interrupt.
+     * @param buttonPinMode The pin mode to be used for the button pin.  Must be
+     * either `INPUT` OR `INPUT_PULLUP`.  Optional with a default value of
+     * `INPUT`.  Using `INPUT_PULLUP` will enable processor input resistors,
+     * while using `INPUT` will explicitly disable them.  If your pin is
+     * externally pulled down or the button is a normally open (NO) switch with
+     * common (COM) connected to Vcc, like the EnviroDIY Mayfly), you should use
+     * the `INPUT` pin mode.  Coversely, if your button connect to ground when
+     * activated, you should enable the processor pull-up resistors using
+     * `INPUT_PULLUP`.
      */
-    void setTestingModePin(int8_t buttonPin);
+    void setTestingModePin(int8_t buttonPin, uint8_t buttonPinMode = INPUT);
 
     /**
-     * @brief Set the five pins of interest for the logger
+     * @brief Set the digital pin numbers and activate pin modes for the five
+     * pins of interest for the logger
+     *
+     * Because this sets the pin mode, this function should only be called
+     * during the `setup()` or `loop()` portion of an Arduino program.
      *
      * @param mcuWakePin The pin on the mcu to listen to for a value-change
-     * interrupt to wake from deep sleep.
+     * interrupt to wake from deep sleep.  The mode of this pin will be set to
+     * `wakePinMode`.
      * @param SDCardSSPin The pin on the mcu connected to the slave select of
-     * the SD card.
+     * the SD card.  The pin mode of this pin will be set as `OUTPUT`.
      * @param SDCardPowerPin A digital pin number on the mcu controlling power
-     * to the SD card.
+     * to the SD card.  The pin mode of this pin will be set as `OUTPUT`.
      * @param buttonPin The pin on the mcu to listen to for a value-change
-     * interrupt to enter testing mode.
+     * interrupt to enter testing mode.  The mode of this pin will be set to
+     * `buttonPinMode`.
      * @param ledPin The pin on the mcu to be held `HIGH` while sensor data is
-     * being collected and logged.
+     * being collected and logged.  The pin mode of this pin will be set as
+     * `OUTPUT`.
+     * @param wakePinMode The pin mode to be used for wake up on the
+     * `mcuWakePin` (clock alert) pin.  Must be either `INPUT` OR
+     * `INPUT_PULLUP`. Optional with a default value of `INPUT_PULLUP`.  The
+     * DS3231 has an active low interrupt, so the pull-up resistors should be
+     * enabled.
+     * @param buttonPinMode The pin mode to be used for the button pin.  Must be
+     * either `INPUT` OR `INPUT_PULLUP`.  Optional with a default value of
+     * `INPUT`.  Using `INPUT_PULLUP` will enable processor input resistors,
+     * while using `INPUT` will explicitly disable them.  If your pin is
+     * externally pulled down or the button is a normally open (NO) switch with
+     * common (COM) connected to Vcc, like the EnviroDIY Mayfly), you should use
+     * the `INPUT` pin mode.  Coversely, if your button is active when connected
+     * to ground, you should enable the processor pull-up resistors using
+     * `INPUT_PULLUP`.
      */
     void setLoggerPins(int8_t mcuWakePin, int8_t SDCardSSPin,
-                       int8_t SDCardPowerPin, int8_t buttonPin, int8_t ledPin);
+                       int8_t SDCardPowerPin, int8_t buttonPin, int8_t ledPin,
+                       uint8_t wakePinMode   = INPUT_PULLUP,
+                       uint8_t buttonPinMode = INPUT);
 
  protected:
     // Initialization variables
@@ -466,8 +538,7 @@ class Logger {
     /**
      * @brief Attach a loggerModem to the logger to provide internet access.
      *
-     * See [Modem and Internet
-     * Functions](https://envirodiy.github.io/ModularSensors/group__the__modems.html)
+     * See [Modem and Internet Functions](@ref the_modems)
      * for more information on how the modem must be set up before it is
      * attached to the logger.  You must include an ampersand to tie in the
      * already created modem!  If you do not attach a modem, no action will be
@@ -495,9 +566,10 @@ class Logger {
      */
     void publishDataToRemotes(void);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility, use publishDataToRemotes()
+     * in new code.
      *
-     * @deprecated use publishDataToRemotes()
+     * @m_deprecated_since{0,22,5}
      */
     void sendDataToRemotes(void);
 
@@ -545,18 +617,20 @@ class Logger {
      */
     static int8_t getLoggerTimeZone(void);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use setLoggerTimeZone(int8_t
+     * timeZone) in new code.
      *
-     * @deprecated use setLoggerTimeZone(int8_t timeZone)
+     * @m_deprecated_since{0,22,4}
      *
      * @param timeZone The timezone data shold be saved to the SD card in.  This
      * need not be the same as the timezone of the real time clock.
      */
     static void setTimeZone(int8_t timeZone);
     /**
-     * @brief Retained for backwards compatibility.
+     * @brief Retained for backwards compatibility; use getLoggerTimeZone() in
+     * new code.
      *
-     * @deprecated use getLoggerTimeZone()
+     * @m_deprecated_since{0,22,4}
      *
      * @return **int8_t** The timezone data is be saved to the SD card in.  This
      * is not be the same as the timezone of the real time clock.
@@ -619,8 +693,29 @@ class Logger {
      *
      * @return **uint32_t**  The number of seconds from January 1, 1970 in the
      * logging time zone.
+     *
+     * @m_deprecated_since{0,33,0}
      */
     static uint32_t getNowEpoch(void);
+
+    /**
+     * @brief Get the current epoch time from the RTC (unix time, ie, the
+     * number of seconds from January 1, 1970 00:00:00) and correct it to the
+     * logging time zone.
+     *
+     * @return **uint32_t**  The number of seconds from January 1, 1970 in the
+     * logging time zone.
+     */
+    static uint32_t getNowLocalEpoch(void);
+
+    /**
+     * @brief Get the current Universal Coordinated Time (UTC) epoch time from
+     * the RTC (unix time, ie, the number of seconds from January 1, 1970
+     * 00:00:00 UTC)
+     *
+     * @return **uint32_t**  The number of seconds from 1970-01-01T00:00:00Z0000
+     */
+    static uint32_t getNowUTCEpoch(void);
     /**
      * @brief Set the real time clock to the given number of seconds from
      * January 1, 1970.
@@ -631,7 +726,7 @@ class Logger {
      *
      * @param ts The number of seconds since 1970.
      */
-    static void setNowEpoch(uint32_t ts);
+    static void setNowUTCEpoch(uint32_t ts);
 
     /**
      * @brief Convert the number of seconds from January 1, 1970 to a DateTime
@@ -716,7 +811,7 @@ class Logger {
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
-     * That is the value saved in the static variable markedEpochTime.
+     * That is the value saved in the static variable markedLocalEpochTime.
      *
      * This should be used in conjunction with markTime() to ensure that all
      * data outputs from a single data update session (SD, EnviroDIY, serial
@@ -1074,12 +1169,12 @@ class Logger {
     /**
      * @brief The static "marked" epoch time for the local timezone.
      */
-    static uint32_t markedEpochTime;
+    static uint32_t markedLocalEpochTime;
 
     /**
      * @brief The static "marked" epoch time for UTC.
      */
-    static uint32_t markedEpochTimeUTC;
+    static uint32_t markedUTCEpochTime;
 
     // These are flag fariables noting the current state (logging/testing)
     // NOTE:  if the logger isn't currently logging or testing or in the middle

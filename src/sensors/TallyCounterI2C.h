@@ -85,10 +85,10 @@
 #include <Tally_I2C.h>
 
 
-// Sensor Specific Defines
 /** @ingroup sensor_tally */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Tally can report 1 value.
 #define TALLY_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

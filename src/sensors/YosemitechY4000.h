@@ -45,9 +45,9 @@
  *
  * ___
  * @section sensor_y4000_examples Example Code
- * The Y4000 Sonde is used in the @menulink{y4000} example.
+ * The Y4000 Sonde is used in the @menulink{yosemitech_y4000} example.
  *
- * @menusnip{y4000}
+ * @menusnip{yosemitech_y4000}
  */
 /* clang-format on */
 
@@ -58,10 +58,10 @@
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_y4000 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Y4000 can report 8 values.
 #define Y4000_NUM_VARIABLES 8
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

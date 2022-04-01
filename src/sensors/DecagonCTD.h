@@ -17,7 +17,7 @@
  */
 /* clang-format off */
 /**
- * @defgroup sensor_decagonCTD Decagon CTD-10
+ * @defgroup sensor_decagon_ctd Decagon CTD-10
  * Classes for the Decagon CTD-10 conductivity, temperature, and depth sensor.
  *
  * @ingroup sdi12_group
@@ -52,9 +52,9 @@
  *
  * ___
  * @section sensor_decagon_ctd_examples Example Code
- * The Decagon CTD-10 is used in the @menulink{decagonCTD} example.
+ * The Decagon CTD-10 is used in the @menulink{decagon_ctd} example.
  *
- * @menusnip{decagonCTD}
+ * @menusnip{decagon_ctd}
  */
 /* clang-format on */
 
@@ -65,10 +65,10 @@
 // Included Dependencies
 #include "sensors/SDI12Sensors.h"
 
-// Sensor Specific Defines
-/** @ingroup sensor_decagonCTD */
+/** @ingroup sensor_decagon_ctd */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the CTD can report 3 values.
 #define CTD_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
@@ -189,9 +189,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Decagon CTD-10 conductivity, temperature, and depth sensor](@ref sensor_decagonCTD)
+ * [Decagon CTD-10 conductivity, temperature, and depth sensor](@ref sensor_decagon_ctd)
  *
- * @ingroup sensor_decagonCTD
+ * @ingroup sensor_decagon_ctd
  */
 /* clang-format on */
 class DecagonCTD : public SDI12Sensors {
@@ -257,9 +257,9 @@ class DecagonCTD : public SDI12Sensors {
 /**
  * @brief The Variable sub-class used for the
  * [conductivity output](@ref sensor_decagon_ctd_cond) from a
- * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagonCTD)
+ * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagon_ctd)
  *
- * @ingroup sensor_decagonCTD
+ * @ingroup sensor_decagon_ctd
  */
 /* clang-format on */
 class DecagonCTD_Cond : public Variable {
@@ -298,9 +298,9 @@ class DecagonCTD_Cond : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref sensor_decagon_ctd_temp) from a
- * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagonCTD)
+ * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagon_ctd)
  *
- * @ingroup sensor_decagonCTD
+ * @ingroup sensor_decagon_ctd
  */
 /* clang-format on */
 class DecagonCTD_Temp : public Variable {
@@ -339,9 +339,9 @@ class DecagonCTD_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [depth output](@ref sensor_decagon_ctd_depth) from a
- * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagonCTD)
+ * [Decagon CTD-10 3-in-1 water level sensor.](@ref sensor_decagon_ctd)
  *
- * @ingroup sensor_decagonCTD
+ * @ingroup sensor_decagon_ctd
  */
 /* clang-format on */
 class DecagonCTD_Depth : public Variable {

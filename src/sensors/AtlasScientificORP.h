@@ -32,9 +32,9 @@
  *
  * ___
  * @section sensor_atlas_orp_examples Example Code
- * The Atlas ORP sensor is used in the @menulink{atlas_orp} example.
+ * The Atlas ORP sensor is used in the @menulink{atlas_scientific_orp} example.
  *
- * @menusnip{atlas_orp}
+ * @menusnip{atlas_scientific_orp}
  */
 /* clang-format on */
 

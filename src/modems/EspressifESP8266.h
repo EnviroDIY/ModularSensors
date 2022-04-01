@@ -57,10 +57,10 @@
  *
  * ___
  * @section modem_esp8266_examples Example Code
- * The ESP8266 is used in the @menulink{esp} example and the
+ * The ESP8266 is used in the @menulink{espressif_esp8266} example and the
  * [logging to ThingSpeak](@ref logging_to_ThingSpeak.ino) example.
  *
- * @menusnip{esp8266}
+ * @menusnip{espressif_esp8266}
  */
 /* clang-format on */
 
@@ -158,9 +158,12 @@
  * The serial response time after boot (via power on or reset) is undocumented
  * for the ESP8266.  Other users online estimate about 350ms.
  *
+ * In my fiddling, the ESP32 running AT firmware takes a bit longer; 700ms may
+ * be safe.
+ *
  * The serial response time on waking from light sleep is 5ms.
  */
-#define ESP8266_ATRESPONSE_TIME_MS 350
+#define ESP8266_ATRESPONSE_TIME_MS 700
 
 /**
  * @brief The loggerModem::_disconnetTime_ms.

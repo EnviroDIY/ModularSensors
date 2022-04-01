@@ -40,10 +40,10 @@
  *
  * ___
  * @section sensor_y514_examples Example Code
- * The Yosemitech Y514 chlorophyll sensor is used in the @menulink{y514}
+ * The Yosemitech Y514 chlorophyll sensor is used in the @menulink{yosemitech_y514}
  * example.
  *
- * @menusnip{y514}
+ * @menusnip{yosemitech_y514}
  */
 /* clang-format on */
 
@@ -54,10 +54,10 @@
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_y514 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Y514 can report 2 values.
 #define Y514_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
@@ -281,4 +281,4 @@ class YosemitechY514_Temp : public Variable {
     ~YosemitechY514_Temp() {}
 };
 /**@}*/
-#endif  // SRC_SENSORS__YOSEMITECHY514_H_
+#endif  // SRC_SENSORS_YOSEMITECHY514_H_

@@ -40,9 +40,9 @@
  *
  * ___
  * @section sensor_y532_examples Example Code
- * The Yosemitech Y532 pH sensor is used in the @menulink{y532} example.
+ * The Yosemitech Y532 pH sensor is used in the @menulink{yosemitech_y532} example.
  *
- * @menusnip{y532}
+ * @menusnip{yosemitech_y532}
  */
 /* clang-format on */
 
@@ -53,10 +53,10 @@
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_y532 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Y532 can report 3 values.
 #define Y532_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

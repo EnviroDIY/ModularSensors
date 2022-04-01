@@ -162,4 +162,4 @@ jobs:
       # Publish the new release to the PlatformIO package manager
       - name: Publish release to the PlatformIO package manager
         id: publish-pio
-        run: pio package publish --owner EnviroDIY --non-interactive
+        run: pio package publish --owner envirodiy --non-interactive

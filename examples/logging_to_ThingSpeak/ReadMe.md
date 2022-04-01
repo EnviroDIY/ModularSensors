@@ -1,5 +1,4 @@
-[//]: # ( @page example_thingspeak ThingSpeak Example )
-# Using ModularSensors to save data to an SD card and send data to ThingSpeak
+# Sending data to ThingSpeak <!-- {#example_thingspeak} -->
 
 This shows the use of a "ThingSpeak logger" object.
 Data is sent to [ThingSpeak](https://thingspeak.com) using MQTT.
@@ -8,10 +7,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
-- [Using ModularSensors to save data to an SD card and send data to ThingSpeak](#using-modularsensors-to-save-data-to-an-sd-card-and-send-data-to-thingspeak)
+- [Sending data to ThingSpeak](#sending-data-to-thingspeak)
 - [Unique Features of the ThingSpeak Example](#unique-features-of-the-thingspeak-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Modify the Example](#modify-the-example)
   - [Upload!](#upload)
@@ -20,16 +21,13 @@ _______
 
 _______
 
-[//]: # ( @section example_thingspeak_unique Unique Features of the ThingSpeak Example )
-# Unique Features of the ThingSpeak Example
+# Unique Features of the ThingSpeak Example <!-- {#example_thingspeak_unique} -->
 - A single logger publishes data to ThingSpeak.
 - Uses an Espressif ESP8266 to publish data.
 
-[//]: # ( @section example_thingspeak_using To Use this Example: )
-# To Use this Example:
+# To Use this Example <!-- {#example_thingspeak_using} -->
 
-[//]: # ( @subsection example_thingspeak_pio Prepare and set up PlatformIO )
-## Prepare and set up PlatformIO
+## Prepare and set up PlatformIO <!-- {#example_thingspeak_pio} -->
 - Create a channel on ThingSpeak with fields to receive your data.
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/logging_to_ThingSpeak/platformio.ini) file in the examples/logging_to_ThingSpeak folder on GitHub.
@@ -40,8 +38,7 @@ _______
     - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
-[//]: # ( @subsection example_thingspeak_modify Modify the Example )
-## Modify the Example
+## Modify the Example <!-- {#example_thingspeak_modify} -->
 - Modify logging_to_ThingSpeak.ino to have the modem, sensor, and variable objects that you are interested in.
     - This example is written for an _ESP8266 (wifi)_ modem.
 Change this to whatever modem you are using.
@@ -66,8 +63,7 @@ const char *thingSpeakChannelID = "######";  // The numeric channel id for your 
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 ```
 
-[//]: # ( @subsection example_thingspeak_upload Upload! )
-## Upload!
+## Upload! <!-- {#example_thingspeak_upload} -->
 - Test everything at home **before** deploying out in the wild!
 
 _______
@@ -78,3 +74,5 @@ _______
 [//]: # ( @include{lineno} logging_to_ThingSpeak/platformio.ini )
 
 [//]: # ( @section example_thingspeak_code The Complete Code )
+
+[//]: # ( @include{lineno} logging_to_ThingSpeak/logging_to_ThingSpeak.ino )

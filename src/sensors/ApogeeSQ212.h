@@ -65,9 +65,9 @@
  *
  * ___
  * @section sensor_sq212_examples Example Code
- * The SQ-212 is used in the @menulink{sq212} example.
+ * The SQ-212 is used in the @menulink{apogee_sq212} example.
  *
- * @menusnip{sq212}
+ * @menusnip{apogee_sq212}
  */
 /* clang-format on */
 
@@ -88,10 +88,10 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_sq212 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values, raw
 /// voltage and calculated PAR.
 #define SQ212_NUM_VARIABLES 2
@@ -142,11 +142,13 @@
 /**@{*/
 /// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
-/// @brief Variable name in [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "radiationIncomingPAR"
+/// @brief Variable name in [ODM2 controlled
+/// vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "radiationIncomingPAR"
 #define SQ212_PAR_VAR_NAME "radiationIncomingPAR"
 /// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "microeinsteinPerSquareMeterPerSecond" (µE m-2
-/// s-1 or µmol * m-2 s-1)
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "microeinsteinPerSquareMeterPerSecond" (µE m-2 s-1 or µmol * m-2 s-1)
 #define SQ212_PAR_UNIT_NAME "microeinsteinPerSquareMeterPerSecond"
 /// @brief Default variable short code; "photosyntheticallyActiveRadiation"
 #define SQ212_PAR_DEFAULT_CODE "photosyntheticallyActiveRadiation"
@@ -181,7 +183,8 @@
 /**@{*/
 /// Variable number; voltage is stored in sensorValues[1].
 #define SQ212_VOLTAGE_VAR_NUM 1
-/// @brief Variable name in [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/); "voltage"
+/// @brief Variable name in [ODM2 controlled
+/// vocabulary](http://vocabulary.odm2.org/variablename/); "voltage"
 #define SQ212_VOLTAGE_VAR_NAME "voltage"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "volt" (V)

@@ -1,12 +1,12 @@
-[//]: # ( @page page_library_terminology Library Terminology )
-# Library Terminology
+# Library Terminology <!-- {#page_library_terminology} -->
 
-[//]: # ( @section library_terminology_terms The Terms )
-## Terms
+## Terms <!-- {#library_terminology_terms} -->
 
 Within this library, a Sensor, a Variable, and a Logger mean very specific things:
 
 [//]: # ( @tableofcontents )
+
+[//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
 - [Library Terminology](#library-terminology)
@@ -20,8 +20,7 @@ Within this library, a Sensor, a Variable, and a Logger mean very specific thing
 
 [//]: # ( End GitHub Only )
 
-[//]: # ( @subsection library_terminology_sensor Sensor )
-### Sensor
+### Sensor <!-- {#library_terminology_sensor} -->
 
 A Sensor is some sort of device that is capable of taking one or more measurements using some sort of method.
 Most often we can think of these as probes or other instruments that can give back information about the world around them.
@@ -32,8 +31,7 @@ They _**must**_ be capable of returning the value of their readings to a logger 
 
 The detailed Sensor class documentation is here:  https://envirodiy.github.io/ModularSensors/class_sensor.html
 
-[//]: # ( @subsection library_terminology_variable Variable )
-### Variable
+### Variable <!-- {#library_terminology_variable} -->
 
 A Variable is a result value taken by a Sensor _or_ calculated from the results of one or more sensors.
 It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution.
@@ -52,16 +50,14 @@ The Variable class documentation is here:  https://envirodiy.github.io/ModularSe
 Variables are grouped together into VariableArrays.
 The VariableArray class documentation is here:  https://envirodiy.github.io/ModularSensors/class_variable_array.html
 
-[//]: # ( @subsection library_terminology_logger Logger )
-### Logger
+### Logger <!-- {#library_terminology_logger} -->
 
 A logger is a circuit board with a processor or microcontroller unit (MCU) that can control all functions of the modem and sensors that are attached to it and save the values of all variables measured by those sensors to an attached SD card.
 In this library, all loggers are Arduino-style small processor circuit boards.
 
 The Logger class documentation is here:  https://envirodiy.github.io/ModularSensors/class_logger.html
 
-[//]: # ( @subsection library_terminology_modem Modem )
-### Modem
+### Modem <!-- {#library_terminology_modem} -->
 
 ![](https://en.wikipedia.org/wiki/Modem#/media/File:Analogue_modem_-_acoustic_coupler.jpg)
 
@@ -76,8 +72,7 @@ All loggerModem functions are heavily dependent on the [TinyGSM](https://github.
 The loggerModem class documentation is available here:  https://envirodiy.github.io/ModularSensors/classlogger_modem.html
 
 
-[//]: # ( @subsection library_terminology_publiser DataPublisher )
-### DataPublisher
+### DataPublisher <!-- {#library_terminology_publiser} -->
 
 Unlike the other components, a dataPublisher object doesn't represent any physical device.
 It's an object only in the sense of object oriented programming - not something you could hold.
@@ -86,8 +81,7 @@ Within the functioning of the library, the dataPublisher "watches" the logger fo
 The dataPublisher class documentation is available here:  https://envirodiy.github.io/ModularSensors/classdata_publisher.html
 
 
-[//]: # ( @section library_terminology_structure Library Structure )
-## Library Structure
+## Library Structure <!-- {#library_terminology_structure} -->
 
 This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches.
 This means there are a number of base abstract classes with virtual functions and then many more daughter classes which inherit the functions of their parents and implement others themselves.

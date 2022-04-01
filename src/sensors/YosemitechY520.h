@@ -39,10 +39,10 @@
  *
  * ___
  * @section sensor_y520_examples Example Code
- * The Yosemitech Y520 conductivity sensor is used in the @menulink{y520}
+ * The Yosemitech Y520 conductivity sensor is used in the @menulink{yosemitech_y520}
  * example.
  *
- * @menusnip{y520}
+ * @menusnip{yosemitech_y520}
  */
 /* clang-format on */
 
@@ -53,10 +53,10 @@
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_y520 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Y520 can report 2 values.
 #define Y520_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

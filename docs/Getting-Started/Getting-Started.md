@@ -1,7 +1,8 @@
-[//]: # ( @page page_getting_started Getting Started )
-# Getting Started
+# Getting Started <!-- {#page_getting_started} -->
 
 [//]: # ( @tableofcontents )
+
+[//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
 - [Getting Started](#getting-started)
@@ -17,8 +18,7 @@
 Note: These instructions pertain almost entirely to using this specific library.
 There is an [extensive manual](https://www.envirodiy.org/mayfly-sensor-station-manual/) , set of [appendices](https://www.envirodiy.org/mayfly-sensor-station-manual/appendices/), and [video tutorials](https://www.envirodiy.org/videos/) for planning, installing, and maintaining a stream-side sensor station on the EnviroDIY website.
 
-[//]: # ( @section page_getting_started_ide IDE and Driver Installation )
-## IDE and Driver Installation
+## IDE and Driver Installation <!-- {#page_getting_started_ide} -->
 
 To interface with your board and send it programs, you'll need to install drivers and an [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) or editor with a compiler on your computer.
 
@@ -44,8 +44,7 @@ To access the menu, click the button that looks like a bug face on the left in V
 You create new "projects" in PlatformIO from the PlatformIO home page.
 That home page can be accessed from the PlatformIO menu.
 
-[//]: # ( @section page_getting_started_libraries Library Installation )
-## Library Installation
+## Library Installation <!-- {#page_getting_started_libraries} -->
 
 Before you can use this library, you'll need to install it and all of its [dependencies](https://github.com/EnviroDIY/ModularSensors/wiki/Library-Dependencies) so your compiler in the IDE can find them.
 Because this library has a large number of dependencies, I, again, _very, **very** strongly_ suggest using [PlatformIO](https://platformio.org/).
@@ -53,8 +52,7 @@ If you use PlatformIO, the library will automatically be installed when you list
 If you really must use the Arduino IDE, this library and all is dependencies can be downloaded in one large zip file [here](https://github.com/EnviroDIY/Libraries/blob/master/libraries.zip?raw=true).
 
 
-[//]: # ( @section page_getting_started_clock Setting the Clock )
-## Setting the Clock
+## Setting the Clock <!-- {#page_getting_started_clock} -->
 
 Most of this library's functionality depends on having a working DS3231 real time clock attached to your Arduino, so the first thing you need to do is get the time right.
 For the rank beginners out there; I feel your pain.
@@ -87,8 +85,7 @@ You shouldn't have to open or modify the program at all.
 - Your clock should be set!
 
 
-[//]: # ( @section page_getting_started_program Writing Your Logger Program )
-## Writing Your Logger Program
+## Writing Your Logger Program <!-- {#page_getting_started_program} -->
 
 The set-up in for your logger program PlatformIO is pretty simple:
 
@@ -120,8 +117,7 @@ The download only happens once.
 - If the build succeeds, you're ready to move on.
 
 
-[//]: # ( @section page_getting_started_examples Modifying the Examples )
-## Modifying the Examples
+## Modifying the Examples <!-- {#page_getting_started_examples} -->
 
 There are a number of examples in the [examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder for different logger functionalities.
 If you are unsure which to use, the "menu_a_la_carte" example has code in it for every possible sensor and modem.
@@ -159,8 +155,7 @@ Because each sensor outputs temperature and we don't want to waste cellular data
 This example also shows how to stop power draw from an RS485 adapter with automatic flow detection.
 
 
-[//]: # ( @section page_getting_started_deploying Deploying your Station )
-## Deploying your Station
+## Deploying your Station <!-- {#page_getting_started_deploying} -->
 
 To start getting data from the wild, you'll need some [stuff](https://github.com/EnviroDIY/ModularSensors/wiki/Physical-Dependencies) to power your logger and keep it safe from the elements.
 There are [video instructions](https://www.envirodiy.org/videos/) on the EnviroDIY website showing how to prepare and install a typical steam-side logger box and seniors.

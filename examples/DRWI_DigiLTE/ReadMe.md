@@ -1,5 +1,4 @@
-[//]: # ( @page example_drwi_digilte DRWI CitSci Digi LTE Sites )
-# Example using the Modular Sensors Library for DRWI Digi LTE Sites
+# DRWI Digi LTE Sites <!-- {#example_drwi_digilte} -->
 
 This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.
 This should be used at all sites with cellular LTE service.
@@ -11,10 +10,12 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
-- [Example using the Modular Sensors Library for DRWI Digi LTE Sites](#example-using-the-modular-sensors-library-for-drwi-digi-lte-sites)
+- [DRWI Digi LTE Sites](#drwi-digi-lte-sites)
 - [Unique Features of the DRWI Digi LTE Example](#unique-features-of-the-drwi-digi-lte-example)
-- [To Use this Example:](#to-use-this-example)
+- [To Use this Example](#to-use-this-example)
   - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
   - [Set the logger ID](#set-the-logger-id)
   - [Set the calibration coefficients for the Campbell OBS3+](#set-the-calibration-coefficients-for-the-campbell-obs3)
@@ -25,16 +26,13 @@ _______
 
 _______
 
-[//]: # ( @section example_drwi_digilte_unique Unique Features of the DRWI Digi LTE Example )
-# Unique Features of the DRWI Digi LTE Example
+# Unique Features of the DRWI Digi LTE Example <!-- {#example_drwi_digilte_unique} -->
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a Digi XBee3 LTE-M for live data.
 
-[//]: # ( @section example_drwi_digilte_using To Use this Example: )
-# To Use this Example:
+# To Use this Example <!-- {#example_drwi_digilte_using} -->
 
-[//]: # ( @subsection example_drwi_digilte_pio Prepare and set up PlatformIO )
-## Prepare and set up PlatformIO
+## Prepare and set up PlatformIO <!-- {#example_drwi_digilte_pio} -->
 - Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/DRWI_DigiLTE/platformio.ini) file in the examples/DRWI_DigiLTE folder on GitHub.
@@ -45,8 +43,7 @@ _______
     - Move it into the src directory of your project.
     - Delete main.cpp in that folder.
 
-[//]: # ( @subsection example_drwi_digilte_logger_id Set the logger ID )
-## Set the logger ID
+## Set the logger ID <!-- {#example_drwi_digilte_logger_id} -->
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
@@ -54,8 +51,7 @@ _______
 const char *LoggerID = "XXXX";
 ```
 
-[//]: # ( @subsection example_drwi_digilte_obs3_calibration Set the calibration coefficients for the Campbell OBS3+ )
-## Set the calibration coefficients for the Campbell OBS3+
+## Set the calibration coefficients for the Campbell OBS3+ <!-- {#example_drwi_digilte_obs3_calibration} -->
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change _**all**_ of the the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
 Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
@@ -84,8 +80,7 @@ const float OBSHigh_C = 0.000E+00;  // "C" value [*high* range]
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
-[//]: # ( @subsection example_drwi_digilte_uuids Set the universally universal identifiers (UUID) for each variable )
-## Set the universally universal identifiers (UUID) for each variable
+## Set the universally universal identifiers (UUID) for each variable <!-- {#example_drwi_digilte_uuids} -->
 - Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page
 - **VERY CAREFULLY** check that the variables are in exactly the same order as in the variable array:
@@ -106,24 +101,25 @@ Variable* variableList[] = {
 // Be VERY certain that they match the order of your UUID's!
 // Rearrange the variables in the variable list if necessary to match!
 // *** CAUTION --- CAUTION --- CAUTION --- CAUTION --- CAUTION ***
+/* clang-format off */
 const char* UUIDs[] = {
-    "12345678-abcd-1234-ef00-1234567890ab",   // Electrical conductivity (Decagon_CTD-10_Cond)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Temperature (Decagon_CTD-10_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Water depth (Decagon_CTD-10_Depth)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Turbidity (Campbell_OBS3_Turb)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Batt)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
-    "12345678-abcd-1234-ef00-1234567890ab",   // Received signal strength indication (Digi_Cellular_RSSI)
-    "12345678-abcd-1234-ef00-1234567890ab"    // Percent full scale (Digi_Cellular_SignalPercent)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Electrical conductivity (Decagon_CTD-10_Cond)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Decagon_CTD-10_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Decagon_CTD-10_Depth)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (EnviroDIY_Mayfly_Temp)
+    "12345678-abcd-1234-ef00-1234567890ab",  // Received signal strength indication (Digi_Cellular_RSSI)
+    "12345678-abcd-1234-ef00-1234567890ab"   // Percent full scale (Digi_Cellular_SignalPercent)
 };
 const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+/* clang-format on */
 
 ```
 
-[//]: # ( @subsection example_drwi_digilte_upload Upload! )
-## Upload!
+## Upload! <!-- {#example_drwi_digilte_upload} -->
 - Test everything at home **before** deploying out in the wild!
 
 _______
@@ -134,3 +130,5 @@ _______
 [//]: # ( @include{lineno} DRWI_DigiLTE/platformio.ini )
 
 [//]: # ( @section example_drwi_digilte_code The Complete Code )
+
+[//]: # ( @include{lineno} DRWI_DigiLTE/DRWI_DigiLTE.ino )

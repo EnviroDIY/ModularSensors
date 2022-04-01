@@ -3,7 +3,7 @@
  * @brief Example for DRWI CitSci LTE sites.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -78,7 +78,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [xbee_cell_transparent] */
+/** Start [digi_xbee_cellular_transparent] */
 // For any Digi Cellular XBee's
 // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
 // are more stable used in bypass mode (below)
@@ -107,7 +107,7 @@ DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       modemSleepRqPin, apn);
 // Create an extra reference to the modem by a generic name
 DigiXBeeCellularTransparent modem = modemXBCT;
-/** End [xbee_cell_transparent] */
+/** End [digi_xbee_cellular_transparent] */
 
 
 // ==========================================================================
@@ -212,37 +212,27 @@ Variable* variableList[] = {
 // Replace all of the text in the following section with the UUID array from
 // MonitorMyWatershed
 
-// ---------------------   Beginning of Token UUID List
-// ---------------------------------------
+/* clang-format off */
+// ---------------------   Beginning of Token UUID List   ---------------------
 
 
 const char* UUIDs[] =  // UUID array for device sensors
     {
-        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance
-                                                 // (Meter_Hydros21_Cond)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth
-                                                 // (Meter_Hydros21_Depth)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                                 // (Meter_Hydros21_Temp)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
-                                                 // (Campbell_OBS3_Turb) (Low)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity
-                                                 // (Campbell_OBS3_Turb) (High)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage
-                                                 // (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature
-                                                 // (Maxim_DS3231_Temp)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale
-                                                 // (Digi_Cellular_SignalPercent)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Specific conductance (Meter_Hydros21_Cond)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Water depth (Meter_Hydros21_Depth)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (Low)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Turbidity (Campbell_OBS3_Turb) (High)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (Digi_Cellular_SignalPercent)
 };
-const char* registrationToken =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature =
-    "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
+const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
 
-// -----------------------   End of Token UUID List
-// ------------------------------------------
+// -----------------------   End of Token UUID List  -----------------------
+/* clang-format on */
 
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

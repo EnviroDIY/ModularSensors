@@ -46,9 +46,9 @@
  *
  * ___
  * @section sensor_atlas_cond_examples Example Code
- * The Atlas conductivity sensor is used in the @menulink{atlas_ec} example.
+ * The Atlas conductivity sensor is used in the @menulink{atlas_scientific_ec} example.
  *
- * @menusnip{atlas_ec}
+ * @menusnip{atlas_scientific_ec}
  */
 /* clang-format on */
 

@@ -37,9 +37,9 @@
  *
  * ___
  * @section sensor_atlas_rtd_examples Example Code
- * The Atlas RTD sensor is used in the @menulink{atlas_rtd} example.
+ * The Atlas RTD sensor is used in the @menulink{atlas_scientific_rtd} example.
  *
- * @menusnip{atlas_rtd}
+ * @menusnip{atlas_scientific_rtd}
  */
 /* clang-format on */
 

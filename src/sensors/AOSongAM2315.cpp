@@ -18,12 +18,14 @@ AOSongAM2315::AOSongAM2315(TwoWire* theI2C, int8_t powerPin,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage) {
     _i2c = theI2C;
+    am2315ptr = new Adafruit_AM2315(_i2c);
 }
 AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
     : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES, AM2315_WARM_UP_TIME_MS,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage, AM2315_INC_CALC_VARIABLES) {
     _i2c = &Wire;
+    am2315ptr = new Adafruit_AM2315(_i2c);
 }
 AOSongAM2315::~AOSongAM2315() {}
 
@@ -34,7 +36,7 @@ String AOSongAM2315::getSensorLocation(void) {
 
 
 bool AOSongAM2315::setup(void) {
-    Wire.begin();  // Start the wire library (sensor power not required)
+    _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
     // on wire after the Wire buffer has emptied.  The default stream
@@ -42,7 +44,7 @@ bool AOSongAM2315::setup(void) {
     // end of the buffer to see if an interrupt puts something into the
     // buffer.  In the case of the Wire library, that will never happen and
     // the timeout period is a useless delay.
-    Wire.setTimeout(0);
+    _i2c->setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
@@ -58,8 +60,7 @@ bool AOSongAM2315::addSingleMeasurementResult(void) {
     if (bitRead(_sensorStatus, 6)) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        Adafruit_AM2315 am2315(_i2c);  // create a sensor object
-        ret_val = am2315.readTemperatureAndHumidity(&temp_val, &humid_val);
+        ret_val = am2315ptr->readTemperatureAndHumidity(&temp_val, &humid_val);
 
         if (!ret_val || isnan(temp_val)) temp_val = -9999;
         if (!ret_val || isnan(humid_val)) humid_val = -9999;

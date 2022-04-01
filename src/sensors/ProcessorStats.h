@@ -45,9 +45,9 @@
  * ___
  * @section sensor_processor_sensor_examples Example Code
  * The processor is used as a sensor in all of the examples, including the
- * @menulink{processor_sensor} example.
+ * @menulink{processor_stats} example.
  *
- * @menusnip{processor_sensor}
+ * @menusnip{processor_stats}
  */
 /* clang-format on */
 
@@ -68,10 +68,10 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_processor */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the processor can report 3 values.
 #define PROCESSOR_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; sample number is (sort-of) calculated.

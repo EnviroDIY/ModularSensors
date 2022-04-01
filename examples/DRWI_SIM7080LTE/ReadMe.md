@@ -1,5 +1,4 @@
-[//]: # ( @page example_drwi_ediylte DRWI CitSci Sites with EnviroDIY LTE Bees )
-# Example using the Modular Sensors Library for DRWI Sites with EnviroDIY LTE Bees
+# DRWI Sites with EnviroDIY LTE Bees <!-- {#example_drwi_ediylte} -->
 Example sketch for using the EnviroDIY SIM7080G LTE cellular module with an EnviroDIY Mayfly Data Logger.
 
 The exact hardware configuration used in this example:
@@ -21,16 +20,17 @@ _______
 
 [//]: # ( @tableofcontents )
 
+[//]: # ( @m_footernavigation )
+
 [//]: # ( Start GitHub Only )
-- [Example using the Modular Sensors Library for DRWI Sites with EnviroDIY LTE Bees](#example-using-the-modular-sensors-library-for-drwi-sites-with-envirodiy-lte-bees)
+- [DRWI Sites with EnviroDIY LTE Bees](#drwi-sites-with-envirodiy-lte-bees)
 - [Unique Features of the DRWI EnviroDIY LTE Example](#unique-features-of-the-drwi-envirodiy-lte-example)
 
 [//]: # ( End GitHub Only )
 
 _______
 
-[//]: # ( @section example_drwi_ediylte_unique Unique Features of the DRWI EnviroDIY LTE Example )
-# Unique Features of the DRWI EnviroDIY LTE Example
+# Unique Features of the DRWI EnviroDIY LTE Example <!-- {#example_drwi_ediylte_unique} -->
 - Specifically for sites within the Delaware River Watershed Initiative.
 - Uses a EnviroDIY LTE Bee based on the SIMCom SIM7080G
 
@@ -40,3 +40,5 @@ _______
 [//]: # ( @include{lineno} DRWI_SIM7080LTE/platformio.ini )
 
 [//]: # ( @section example_drwi_ediylte_code The Complete Code )
+
+[//]: # ( @include{lineno} DRWI_SIM7080LTE/DRWI_SIM7080LTE.ino )

@@ -70,9 +70,9 @@
  *
  * ___
  * @section sensor_ds18_examples Example Code
- * The Maxim DS18 is used in the @menulink{ds18} example.
+ * The Maxim DS18 is used in the @menulink{maxim_ds18} example.
  *
- * @menusnip{ds18}
+ * @menusnip{maxim_ds18}
  */
 /* clang-format on */
 
@@ -95,10 +95,10 @@
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
-// Sensor Specific Defines
 /** @ingroup sensor_ds18 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the DS18 can report 1 value.
 #define DS18_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

@@ -3,7 +3,7 @@
  * @brief Example logging data and publishing to ThingSpeak.
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
- * @copyright (c) 2017-2021 Stroud Water Research Center (SWRC)
+ * @copyright (c) 2017-2022 Stroud Water Research Center (SWRC)
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
@@ -81,7 +81,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [esp8266] */
+/** Start [espressif_esp8266] */
 // For almost anything based on the Espressif ESP8266 using the AT command
 // firmware
 #include <modems/EspressifESP8266.h>
@@ -118,7 +118,7 @@ EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
                           espSleepRqPin, espStatusPin);
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
-/** End [esp8266] */
+/** End [espressif_esp8266] */
 
 
 // ==========================================================================

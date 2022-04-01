@@ -2,6 +2,9 @@ name: Build Examples with PlatformIO
 
 # Triggers the workflow on push or pull request events
 on: [push, pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -19,6 +22,7 @@ jobs:
             examples/DRWI_2G/,
             examples/DRWI_DigiLTE/,
             examples/DRWI_SIM7080LTE/,
+            examples/DRWI_Mayfly1/,
             examples/double_logger/,
             examples/baro_rho_correction/,
             examples/data_saving/,

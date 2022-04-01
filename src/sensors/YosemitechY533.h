@@ -39,9 +39,9 @@
  *
  * ___
  * @section sensor_y533_examples Example Code
- * The Yosemitech Y533 ORP sensor is used in the @menulink{y533} example.
+ * The Yosemitech Y533 ORP sensor is used in the @menulink{yosemitech_y533} example.
  *
- * @menusnip{y533}
+ * @menusnip{yosemitech_y533}
  */
 /* clang-format on */
 
@@ -52,10 +52,10 @@
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_y533 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Y533 can report 2 values.
 #define Y533_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.

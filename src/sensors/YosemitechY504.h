@@ -43,9 +43,9 @@
  *
  * ___
  * @section sensor_y504_examples Example Code
- * The Yosemitech Y504 Dissolved Oxygen is used in the @menulink{y504} example.
+ * The Yosemitech Y504 Dissolved Oxygen is used in the @menulink{yosemitech_y504} example.
  *
- * @menusnip{y504}
+ * @menusnip{yosemitech_y504}
  */
 /* clang-format on */
 
@@ -56,10 +56,10 @@
 // Included Dependencies
 #include "sensors/YosemitechParent.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_y504 */
 /**@{*/
 
+// Sensor Specific Defines
 /// @brief Sensor::_numReturnedValues; the Y504 can report 3 values.
 #define Y504_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we calculated DO concentration from the

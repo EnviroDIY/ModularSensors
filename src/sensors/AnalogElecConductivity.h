@@ -123,9 +123,9 @@
  * ___
  * @section sensor_analog_cond_examples Example Code
  * The analog electrical conductivity sensor is used in the
- * @menulink{analog_cond} example.
+ * @menulink{analog_elec_conductivity} example.
  *
- * @menusnip{analog_cond}
+ * @menusnip{analog_elec_conductivity}
  *
  */
 /* clang-format on */
@@ -148,13 +148,16 @@
 #include "VariableBase.h"
 #include "math.h"
 
-// Sensor Specific Defines
 /** @ingroup sensor_analog_cond */
 /**@{*/
 
-/// @brief Sensor::_numReturnedValues; we only get one value from the analog conductivity sensor.
+// Sensor Specific Defines
+/// @brief Sensor::_numReturnedValues; we only get one value from the analog
+/// conductivity sensor.
 #define ANALOGELECCONDUCTIVITY_NUM_VARIABLES 1
-/// @brief Sensor::_incCalcValues; we don't calculate any additional values - though we recommend users include a temperature sensor and calculate specific conductance in their own program.
+/// @brief Sensor::_incCalcValues; we don't calculate any additional values -
+/// though we recommend users include a temperature sensor and calculate
+/// specific conductance in their own program.
 #define ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES 0
 
 /**
@@ -277,7 +280,7 @@
 #if !defined ANALOG_EC_ADC_REFERENCE_MODE
 #error The processor ADC reference type must be defined!
 #endif  // ANALOG_EC_ADC_REFERENCE_MODE
-#endif  // ANALOG_EC_ADC_REFERENCE_MODE
+#endif  // ARDUINO_ARCH_SAMD
 /* clang-format on */
 
 #if !defined RSERIES_OHMS_DEF
@@ -298,8 +301,9 @@
  * Mine was around 2.9 with plugs being a standard size they should all be
  * around the same. If you get bad readings you can use the calibration script
  * and fluid to get a better estimate for K.
+ * Default to 1.0, and can be set at startup.
  */
-#define SENSOREC_KONST_DEF 2.88
+#define SENSOREC_KONST_DEF 1.0
 #endif  // SENSOREC_KONST_DEF
 
 /**
