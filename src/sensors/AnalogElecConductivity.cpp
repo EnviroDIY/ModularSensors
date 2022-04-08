@@ -1,6 +1,6 @@
 /**
  * @file AnalogElecConductivity.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library
  * @copyright 2020 Neil Hancock
  *

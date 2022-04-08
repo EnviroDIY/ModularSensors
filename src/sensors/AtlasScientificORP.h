@@ -1,6 +1,6 @@
 /**
  * @file AtlasScientificORP.h
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Initial developement for Atlas Sensors was done by Adam Gold
  * Files were edited by Sara Damiano <sdamiano@stroudcenter.org>

@@ -1,6 +1,6 @@
 /**
  * @file AOSongAM2315.h
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
@@ -232,8 +232,8 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief An internal reference to the hardware Wire instance.
      */
-    TwoWire* _i2c;
-    Adafruit_AM2315 *am2315ptr;  // create a sensor object
+    TwoWire*         _i2c;
+    Adafruit_AM2315* am2315ptr;  // create a sensor object
 };
 
 

@@ -1,6 +1,6 @@
 /**
  * @file TallyCounterI2C.h
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>

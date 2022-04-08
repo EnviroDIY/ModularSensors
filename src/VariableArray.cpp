@@ -1,6 +1,6 @@
 /**
  * @file VariableArray.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
@@ -772,8 +772,8 @@ bool VariableArray::completeUpdate(void) {
                         success &= sensorSuccess_start;
 
                         if (sensorSuccess_start) {
-                            MS_DBG(F("   ... start reading succeeded. <<---"), i, '.',
-                                   nMeasurementsCompleted[i] + 1);
+                            MS_DBG(F("   ... start reading succeeded. <<---"),
+                                   i, '.', nMeasurementsCompleted[i] + 1);
                         } else {
                             MS_DBG(F("   ... start reading failed! <<---"), i,
                                    '.', nMeasurementsCompleted[i] + 1);

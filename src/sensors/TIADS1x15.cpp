@@ -1,6 +1,6 @@
 /**
  * @file TIADS1x15.cpp *
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>

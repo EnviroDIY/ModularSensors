@@ -1,6 +1,6 @@
 /**
  * @file MeterTeros11.h
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>

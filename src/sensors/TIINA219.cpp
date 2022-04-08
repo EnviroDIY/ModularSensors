@@ -1,6 +1,6 @@
 /**
  * @file TIINA219.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Neil Hancock
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>

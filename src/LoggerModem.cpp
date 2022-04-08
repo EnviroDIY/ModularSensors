@@ -1,6 +1,6 @@
 /**
  * @file LoggerModem.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
@@ -499,7 +499,7 @@ recommend allowing a graceful shut-down rather than a sudden power-off.
 void        loggerModem::setModemTiming(void) {
     if (_modemName.indexOf(F("SARA-G3")) >= 0) {
         MS_DBG(
-            F("Resetting warm-up and disconnect timing for a u-blox SARA-G3"));
+                   F("Resetting warm-up and disconnect timing for a u-blox SARA-G3"));
         _wakeDelayTime_ms = 0;  // Module turns on when power is applied - level
                                 // of `PWR_ON` then irrelevant
         _statusTime_ms =
@@ -518,7 +518,7 @@ void        loggerModem::setModemTiming(void) {
     }
     if (_modemName.indexOf(F("LISA-U2")) >= 0) {
         MS_DBG(
-            F("Resetting warm-up and disconnect timing for a u-blox LISA-U2"));
+                   F("Resetting warm-up and disconnect timing for a u-blox LISA-U2"));
         _wakeDelayTime_ms = 0;  // Module turns on when power is applied - level
                                 // of `PWR_ON` then irrelevant
         _statusTime_ms =

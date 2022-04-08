@@ -1,6 +1,6 @@
 /**
  * @file SensorBase.h
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
@@ -353,10 +353,10 @@ class Sensor {
      */
     void verifyAndAddMeasurementResult(uint8_t resultNumber,
                                        int32_t resultValue);
-     /**
-      * @brief Average the results of all measurements by dividing the sum of
-      * all measurements by the number of measurements taken.
-      */
+    /**
+     * @brief Average the results of all measurements by dividing the sum of
+     * all measurements by the number of measurements taken.
+     */
     void averageMeasurements(void);
 
     /**

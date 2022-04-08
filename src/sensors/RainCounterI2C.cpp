@@ -1,6 +1,6 @@
 /**
  * @file RainCounterI2C.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -104,26 +104,25 @@ bool RainCounterI2C::addSingleMeasurementResult(void) {
                           static_cast<uint8_t>(4))) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        uint8_t SerialBuffer[4];  // Create a byte array of 4 bytes
-        uint8_t byte_in = 0; // Start iterator for reading Bytes
-        while (Wire.available()) { // slave may send less than requested
+        uint8_t SerialBuffer[4];    // Create a byte array of 4 bytes
+        uint8_t byte_in = 0;        // Start iterator for reading Bytes
+        while (Wire.available()) {  // slave may send less than requested
             SerialBuffer[byte_in] = Wire.read();
             MS_DBG(F("  SerialBuffer["), byte_in, F("] = "),
-                     SerialBuffer[byte_in]);
+                   SerialBuffer[byte_in]);
             byte_in++;  // increment by 1
         }
 
         // Concatenate bytes into uint32_t by bit-shifting
         // https://thewanderingengineer.com/2015/05/06/sending-16-bit-and-32-bit-numbers-with-arduino-i2c/#
-        if ( (SerialBuffer[0] > 0)
-        ) {
+        if ((SerialBuffer[0] > 0)) {
             // for Slave with libVersion = v0.1.0, which only sends 1-byte
             // NOTE: this can not be falsely selected because it would require
-            // > 16,777,216 counts from a v0.2.0 slave, which is not possible in 24 hours
+            // > 16,777,216 counts from a v0.2.0 slave, which is not possible in
+            // 24 hours
             MS_DBG(F("  Counted with slave libVersion = v0.1.0"));
             tips = SerialBuffer[0];
-        } else if ( (SerialBuffer[1] == 0) &&
-                    (SerialBuffer[2] == 255) ) {
+        } else if ((SerialBuffer[1] == 0) && (SerialBuffer[2] == 255)) {
             // for Slave with libVersion = v0.1.0, in which no counts are made
             // NOTE: this will be falsely selected if exactly 65535 counts
             // were made by a v0.2.0 slave

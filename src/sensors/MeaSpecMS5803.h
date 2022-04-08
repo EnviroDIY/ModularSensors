@@ -1,6 +1,6 @@
 /**
  * @file MeaSpecMS5803.h
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com> with help from Beth
  * Fisher, Evan Host and Bobby Schulz.

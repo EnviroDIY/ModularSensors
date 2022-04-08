@@ -1,6 +1,6 @@
 /**
  * @file ExternalVoltage.h *
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Written By: Bobby Schulz <schu3119@umn.edu>
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -10,8 +10,6 @@
  * @brief This file only serves to support backwards compatibility for the
  * renamed TIADS1x15.
  */
-/* clang-format off */
-
 // Header Guards
 #ifndef SRC_SENSORS_EXTERNALVOLTAGE_H_
 #define SRC_SENSORS_EXTERNALVOLTAGE_H_

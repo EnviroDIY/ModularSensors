@@ -1,6 +1,6 @@
 /**
  * @file SDI12Sensors.cpp
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
@@ -470,15 +470,15 @@ bool SDI12Sensors::getResults(void) {
                 // to try and parse it, but we do want to print it out to the
                 // debugging port
             } else {
-                // if we're debugging print out the non-numeric character
-                #ifdef MS_SDI12SENSORS_DEBUG_DEEP
+// if we're debugging print out the non-numeric character
+#ifdef MS_SDI12SENSORS_DEBUG_DEEP
                 MS_DEEP_DBG(F("    <<<"),
                             static_cast<char>(_SDI12Internal.read()));
-                #else
+#else
                 // if we're not debugging, just read the character to make sure
                 // it's removed from the buffer
                 _SDI12Internal.read();
-                #endif
+#endif
             }
             delay(10);  // 1 character ~ 7.5ms
         }

@@ -1,6 +1,6 @@
 /*
  * @file InSituTrollSdi12a.h
- * @copyright 2020 Stroud Water Research Center
+ * @copyright 2017-2022 Stroud Water Research Center
  * Part of the EnviroDIY modular sensors
  * @author Neil Hancock  https://github.com/neilh10/ModularSensors/
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
