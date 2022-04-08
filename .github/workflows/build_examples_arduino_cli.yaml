@@ -24,6 +24,7 @@ jobs:
             examples/DRWI_DigiLTE/,
             examples/DRWI_SIM7080LTE/,
             examples/DRWI_Mayfly1/,
+            examples/DRWI_Mayfly1_WiFi/,
             examples/double_logger/,
             examples/baro_rho_correction/,
             examples/data_saving/,

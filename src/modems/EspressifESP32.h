@@ -8,12 +8,12 @@
  * typedef for the EspressifESP8266 class.
  */
 /* clang-format off */
-#endif  // SRC_MODEMS_ESPRESSIFESP8266_H_
+
 // Header Guards
-#ifndef SRC_MODEMS_ESPRESSIFESP8266_H_
-#define SRC_MODEMS_ESPRESSIFESP8266_H_
+#ifndef SRC_MODEMS_ESPRESSIFESP32_H_
+#define SRC_MODEMS_ESPRESSIFESP32_H_
 
 // Included the ESP8266
 #include "EspressifESP8266.h"
 
-#endif  // SRC_MODEMS_ESPRESSIFESP8266_H_
+#endif  // SRC_MODEMS_ESPRESSIFESP32_H_

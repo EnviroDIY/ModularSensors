@@ -1,5 +1,5 @@
 /** =========================================================================
- * @file DRWI_Mayfly1.ino
+ * @file DRWI_Mayfly1_WiFi.ino
  * @brief Example for DRWI CitSci LTE sites.
  *
  * This example shows proper settings for the following configuration:
@@ -56,7 +56,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "DRWI_Mayfly1.ino";
+const char* sketchName = "DRWI_Mayfly1_WiFi.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -82,38 +82,35 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 //  Wifi/Cellular Modem Options
 // ==========================================================================
-/** Start [sim_com_sim7080] */
-// For almost anything based on the SIMCom SIM7080G
-#include <modems/SIMComSIM7080.h>
+/** Start [espressif_esp32] */
+#include <modems/EspressifESP32.h>
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
-const int32_t   modemBaud = 9600;  //  SIM7080 does auto-bauding by default, but
-                                   //  for simplicity we set to 9600
+const int32_t   modemBaud   = 115200;   // Communication speed of the modem
+// NOTE:  This baud rate too fast for the Mayfly.  We'll slow it down in the
+// setup.
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-
-const int8_t modemVccPin = 18;
-// MCU pin controlling modem power --- Pin 18 is the power enable pin for the
-// bee socket on Mayfly v1.0, use -1 if using Mayfly 0.5b or if the bee socket
-// is constantly powered (ie you changed SJ18 on Mayfly 1.x to 3.3v)
-const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
-const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
-                                    // status
+// Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
+// Mayfly 1.1
+const int8_t modemVccPin    = 18;      // MCU pin controlling modem power
+const int8_t modemStatusPin = -1;      // MCU pin used to read modem status
+const int8_t modemResetPin  = A5;      // MCU pin connected to modem reset pin
+const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
+                                       // status
 
 // Network connection information
-const char* apn =
-    "hologram";  // APN connection name, typically Hologram unless you have a
-                 // different provider's SIM card. Change as needed
+const char* wifiId  = "xxxxx";  // WiFi access point name
+const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
 
 // Create the modem object
-SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
-                        modemSleepRqPin, apn);
+EspressifESP32 modemESP(&modemSerial, modemVccPin, modemStatusPin,
+                        modemResetPin, wifiId, wifiPwd);
 // Create an extra reference to the modem by a generic name
-SIMComSIM7080 modem = modem7080;
-/** End [sim_com_sim7080] */
+EspressifESP32 modem = modemESP;
+/** End [espressif_esp32] */
 
 
 // ==========================================================================
@@ -350,22 +347,14 @@ void setup() {
         varArray.setupSensors();
     }
 
-    /** Start [setup_sim7080] */
-    modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
-    modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
-    Serial.println(F("Waking modem and setting Cellular Carrier Options..."));
+    /** Start [setup_esp] */
     modem.modemWake();  // NOTE:  This will also set up the modem
-    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
-    modem.gsmModem.setNetworkMode(38);   // set to LTE only
-                                         // 2 Automatic
-                                         // 13 GSM only
-                                         // 38 LTE only
-                                         // 51 GSM and LTE only
-    modem.gsmModem.setPreferredMode(1);  // set to CAT-M
-                                         // 1 CAT-M
-                                         // 2 NB-IoT
-                                         // 3 CAT-M and NB-IoT
-    /** End [setup_sim7080] */
+    modemSerial.begin(115200);
+    modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
+    modem.gsmModem.waitResponse();
+    modemSerial.end();
+    modemSerial.begin(9600);
+    /** End [setup_esp] */
 
 
     // Sync the clock if it isn't valid or we have battery to spare
