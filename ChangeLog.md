@@ -13,7 +13,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
-- Added support for Sensirion SHT4x sensors.
+
+### Removed
+
+### Fixed
+
+***
+
+
+## [0.33.1]
+
+### Changed
+
+### Added
+- Added a typedef and header for the ESP32
+  - This is just another name to the ESP8266 class to help any who don't know they're identical for our purposes.
+- **Example:**  Created a new DRWI wifi example for workshop.
+
 ### Removed
 
 ### Fixed
@@ -717,7 +733,9 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.32.2...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.33.1...HEAD
+[0.33.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.1
+[0.33.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.0
 [0.32.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.2
 [0.32.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.0
 [0.31.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.31.2
