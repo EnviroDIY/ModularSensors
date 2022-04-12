@@ -21,7 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ***
 
 
-## [0.33.1]
+## [0.33.2]
+
+### Fixed
+- Fixed script to install and zip libraries for a release
+***
+
+
+## [0.33.1] - 2022-04-11
 
 ### Changed
 
@@ -36,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ***
 
-## [0.33.0]
+## [0.33.0] - 2022-04-01
 
 ### Changed
 - **Breaking:** Renamed the static `markedEpochTime` variable to `markedLocalEpochTime`.
@@ -85,7 +92,7 @@ These are *not* breaking changes at this time; the old class names are still usa
 
 ***
 
-## [0.32.2]
+## [0.32.2] - 2021-11-23
 
 ### Changed
 - Restructured SDI-12 slightly to break out the start measurement functionality into a new function.
@@ -733,7 +740,8 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.33.1...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.33.2...HEAD
+[0.33.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.2
 [0.33.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.1
 [0.33.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.0
 [0.32.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.32.2

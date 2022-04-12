@@ -43,6 +43,11 @@ jobs:
           chmod +x continuous_integration/install-deps-platformio.sh
           sh continuous_integration/install-deps-platformio.sh
 
+      - name: Install ModularSensors from the master branch
+        run: |
+          pio lib -g install -f https://github.com/EnviroDIY/ModularSensors
+          pio lib show EnviroDIY_ModularSensors
+
       # Uninstall graphics libraries from Adafruit
       - name: Uninstall Adafruit GFX Library library
         continue-on-error: true
