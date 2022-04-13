@@ -106,6 +106,7 @@ build_flags =
     -D TINY_GSM_RX_BUFFER=64
     -D TINY_GSM_YIELD_MS=2
 extra_scripts = pre:pioScripts/generate_compile_commands.py
+targets = compiledb
 
 [env:mayfly]
 ; Find your COM port, enter it here, and remove the semicolon at the start of the line

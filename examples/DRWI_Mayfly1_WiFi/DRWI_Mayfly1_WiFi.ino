@@ -348,12 +348,16 @@ void setup() {
     }
 
     /** Start [setup_esp] */
-    modem.modemWake();  // NOTE:  This will also set up the modem
-    modemSerial.begin(115200);
-    modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
-    modem.gsmModem.waitResponse();
-    modemSerial.end();
-    modemSerial.begin(9600);
+    for (int8_t ntries = 5; ntries; ntries--) {
+        // This will also verify communication and set up the modem
+        if (modem.modemWake()) break;
+        // if that didn't work, try changing baud rate
+        modemSerial.begin(115200);
+        modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
+        modem.gsmModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(9600);
+    }
     /** End [setup_esp] */
 
 
@@ -365,10 +369,9 @@ void setup() {
     }
 
     // Create the log file, adding the default header to it
-    // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // Do this last so we have the best chance of getting the time correct
+    // and all sensor names correct Writing to the SD card can be power
+    // intensive, so if we're skipping the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
         Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(
