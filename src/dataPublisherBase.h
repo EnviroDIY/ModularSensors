@@ -52,6 +52,7 @@
 #undef MS_DEBUGGING_STD
 #include "LoggerBase.h"
 #include "Client.h"
+#include "sha256.h"  // `cryptosuite2` library's SHA256 functions
 
 /**
  * @brief The dataPublisher class is a virtual class used by other publishers to
@@ -267,6 +268,19 @@ class dataPublisher {
      * @return **String** The meaning of the code
      */
     String parseMQTTState(int state);
+
+    /**
+     * @brief Write an HMAC-SHA256 signature -- which is a keyed-hash message 
+     * authentication code (HMAC) created using the SHA-256 cryptographic 
+     * hash algorithm -- for generating tokens for authenticating requests
+     * using the authorization header.
+     *
+     * @param key The shared secret key used to "salt" the hash
+     * @param string_to_sign The string that gets hashed into a signature token.
+     * @return **String** The signed HMAC-SHA256 authorization token, or 
+     * signature.
+     */
+    String writeHMACsignature(char* key, char* string_to_sign);
 
 
  protected:

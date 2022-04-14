@@ -155,3 +155,11 @@ String dataPublisher::parseMQTTState(int state) {
         default: return String(state) + ": UNKNOWN";
     }
 }
+
+
+String dataPublisher::writeHMACsignature(char* key, char* string_to_sign) {
+    // Create a HexMap to save 16 bytes of SRAM
+    const char hexMap[] PROGMEM = "0123456789abcdef";  // This is from the cryptosuite2 example, but there must be a better way.
+    // Anthony to add more code here
+    return signature;
+}

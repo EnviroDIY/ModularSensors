@@ -329,6 +329,16 @@
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
       "frameworks": "arduino",
       "platforms": "atmelavr, atmelsam"
-    }
+    },
+    {
+        "name": "cryptosuite2",
+        "owner": "envirodiy",
+        "url": "https://github.com/EnviroDIY/cryptosuite2",
+        "version": "~0.2.7",
+        "note": "Arduino/Generic C library for SHA256, SHA1 hashing and SHA256-HMAC, SHA1-HMAC",
+        "authors": [],
+        "frameworks": "arduino",
+        "platforms": "*"
+      }  
   ]
 }
