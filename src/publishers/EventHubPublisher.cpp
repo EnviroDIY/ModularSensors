@@ -12,16 +12,16 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for the Azure Event Hub REST API.
 // ============================================================================
 
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
-const char* EventHubPublisher::postEndpoint  = "/api/data-stream/";
-const char* EventHubPublisher::enviroDIYHost = "data.envirodiy.org";
-const int   EventHubPublisher::enviroDIYPort = 80;
-const char* EventHubPublisher::tokenHeader   = "\r\nTOKEN: ";
+const char* EventHubPublisher::postEndpoint  = "/devices/messages";
+const char* EventHubPublisher::eventHubHost = "event-hub-data-logger.servicebus.windows.net";
+const int   EventHubPublisher::eventHubPort = 80;
+const char* EventHubPublisher::tokenHeader   = "\r\nAuthorization: ";
 // const unsigned char *EventHubPublisher::cacheHeader = "\r\nCache-Control:
 // no-cache"; const unsigned char *EventHubPublisher::connectionHeader =
 // "\r\nConnection: close";
@@ -29,7 +29,7 @@ const char* EventHubPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* EventHubPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";
 
-const char* EventHubPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
+const char* EventHubPublisher::samplingFeatureTag = "{\"id\":\"";
 const char* EventHubPublisher::timestampTag       = "\",\"timestamp\":\"";
 
 
@@ -79,14 +79,14 @@ void EventHubPublisher::setToken(const char* registrationToken) {
 
 // Calculates how long the JSON will be
 uint16_t EventHubPublisher::calculateJsonSize() {
-    uint16_t jsonLength = 21;  // {"sampling_feature":"
+    uint16_t jsonLength = 7;  // {"id":"
     jsonLength += 36;          // sampling feature UUID
     jsonLength += 15;          // ","timestamp":"
     jsonLength += 25;          // markedISO8601Time
     jsonLength += 2;           //  ",
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         jsonLength += 1;   //  "
-        jsonLength += 36;  // variable UUID
+        jsonLength += 11;  // variable code (i.e. "Mayfly_Temp")
         jsonLength += 2;   //  ":
         jsonLength += _baseLogger->getValueStringAtI(i).length();
         if (i + 1 != _baseLogger->getArrayVarCount()) {
@@ -118,7 +118,7 @@ uint16_t EventHubPublisher::calculatePostSize()
 */
 
 
-// This prints a properly formatted JSON for EnviroDIY to an Arduino stream
+// This prints a properly formatted JSON for EventHub to an Arduino stream
 void EventHubPublisher::printSensorDataJSON(Stream* stream) {
     stream->print(samplingFeatureTag);
     stream->print(_baseLogger->getSamplingFeatureUUID());
@@ -139,15 +139,15 @@ void EventHubPublisher::printSensorDataJSON(Stream* stream) {
 }
 
 
-// This prints a fully structured post request for EnviroDIY to the
+// This prints a fully structured post request for EventHub to the
 // specified stream.
-void EventHubPublisher::printEnviroDIYRequest(Stream* stream) {
+void EventHubPublisher::printEventHubRequest(Stream* stream) {
     // Stream the HTTP headers for the post request
     stream->print(postHeader);
     stream->print(postEndpoint);
     stream->print(HTTPtag);
     stream->print(hostHeader);
-    stream->print(enviroDIYHost);
+    stream->print(eventHubHost);
     stream->print(tokenHeader);
     stream->print(_registrationToken);
     // stream->print(cacheHeader);
@@ -179,10 +179,10 @@ void EventHubPublisher::begin(Logger&     baseLogger,
 
 
 // This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
+// Azure EventHub and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-// int16_t EventHubPublisher::postDataEnviroDIY(void)
+// int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
 int16_t EventHubPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
@@ -193,7 +193,7 @@ int16_t EventHubPublisher::publishData(Client* outClient) {
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
-    if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
+    if (outClient->connect(eventHubHost, eventHubPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
@@ -206,7 +206,7 @@ int16_t EventHubPublisher::publishData(Client* outClient) {
         // there is space for that line, sending out buffer if not
         if (bufferFree() < 28) printTxBuffer(outClient);
         strcat(txBuffer, hostHeader);
-        strcat(txBuffer, enviroDIYHost);
+        strcat(txBuffer, eventHubHost);
 
         if (bufferFree() < 47) printTxBuffer(outClient);
         strcat(txBuffer, tokenHeader);
@@ -279,7 +279,7 @@ int16_t EventHubPublisher::publishData(Client* outClient) {
         outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
-        PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
+        PRINTOUT(F("\n -- Unable to Establish Connection to EventHub REST API "
                    "Portal --"));
     }
 

@@ -57,7 +57,7 @@
 // The name of this program file
 const char* sketchName = "HMACEventHubTest.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "HMACEventHubTest";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 1;
 // Your logger's timezone.
@@ -144,9 +144,9 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 /** Start [variable_arrays] */
 Variable* variableList[] = {
-    new ProcessorStats_Battery(&mcuBoard),
+    // new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
-    new Modem_SignalPercent(&modem),
+    // new Modem_SignalPercent(&modem),
 };
 
 // All UUID's, device registration, and sampling feature information can be
@@ -170,12 +170,13 @@ Variable* variableList[] = {
 
 const char* UUIDs[] =  // UUID array for device sensors
     {
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
+        // formatted below to all have 11 characters
+        // "Mayfly_Batt",  // Battery voltage (EnviroDIY_Mayfly_Batt)
+        "Mayfly_Temp",  // Board Temperature (EnviroDIY_Mayfly_Temp)
+        // "LTEB_Signal",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
-const char* registrationToken = "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
-const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
+const char* registrationToken = "SharedAccessSignature sr=https%3A%2F%2Fevent-hub-data-logger.servicebus.windows.net%2Fdevices%2Fmessages&sig=fHhAkb/uw/8W2DcVMYJePm0K4QVabKAv2CRE9j3Al1A%3D&se=1650074784&skn=mayfly-device";  // Device registration token
+const char* samplingFeature = "7d37e135-0e26-4bc7-aa81-f9443283582d";  // Sampling feature UUID
 
 
 // -----------------------   End of Token UUID List  -----------------------
@@ -203,8 +204,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 /** Start [publishers] */
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
+#include <publishers/EventHubPublisher.h>
+EventHubPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);
 /** End [publishers] */
 

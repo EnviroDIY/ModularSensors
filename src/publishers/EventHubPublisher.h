@@ -6,8 +6,8 @@
  * @author Anthony Aufdenkampe <aaufdenkampe@limno.com>
  *
  * @brief Contains the EventHubPublisher subclass of dataPublisher for
- * publishing data to the Monitor My Watershed/EnviroDIY data portal at
- * http://data.enviroDIY.org
+ * publishing data to Azure Event Hub REST API
+ * https://docs.microsoft.com/en-us/rest/api/eventhub/event-hubs-runtime-rest
  */
 
 // Header Guards
@@ -28,12 +28,12 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for the Azure Event Hub REST API.
 // ============================================================================
 /**
  * @brief The EventHubPublisher subclass of dataPublisher for publishing data
- * to the Monitor My Watershed/EnviroDIY data portal at
- * http://data.enviroDIY.org
+ * publishing data to Azure Event Hub REST API
+ * https://docs.microsoft.com/en-us/rest/api/eventhub/event-hubs-runtime-rest
  *
  * @ingroup the_publishers
  */
@@ -132,7 +132,7 @@ class EventHubPublisher : public dataPublisher {
 
     // Returns the data destination
     String getEndpoint(void) override {
-        return String(enviroDIYHost);
+        return String(eventHubHost);
     }
 
     // Adds the site registration token
@@ -173,7 +173,7 @@ class EventHubPublisher : public dataPublisher {
      *
      * @param stream The Arduino stream to write out the request to.
      */
-    void printEnviroDIYRequest(Stream* stream);
+    void printEventHubRequest(Stream* stream);
 
     // A way to begin with everything already set
     /**
@@ -219,8 +219,8 @@ class EventHubPublisher : public dataPublisher {
      * @{
      */
     static const char* postEndpoint;   ///< The endpoint
-    static const char* enviroDIYHost;  ///< The host name
-    static const int   enviroDIYPort;  ///< The host port
+    static const char* eventHubHost;  ///< The host name
+    static const int   eventHubPort;  ///< The host port
     static const char* tokenHeader;    ///< The token header text
     // static const char *cacheHeader;  ///< The cache header text
     // static const char *connectionHeader;  ///< The keep alive header text
@@ -243,4 +243,4 @@ class EventHubPublisher : public dataPublisher {
     const char* _registrationToken;
 };
 
-#endif  // SRC_PUBLISHERS_EventHubPublisher_H_
+#endif  // SRC_PUBLISHERS_EVENTHUBPUBLISHER_H_
