@@ -172,7 +172,7 @@ const char* UUIDs[] =  // UUID array for device sensors
     {
         // formatted below to all have 11 characters
         // "Mayfly_Batt",  // Battery voltage (EnviroDIY_Mayfly_Batt)
-        "Mayfly_Temp",  // Board Temperature (EnviroDIY_Mayfly_Temp)
+        "measurement",  // Board Temperature (EnviroDIY_Mayfly_Temp)
         // "LTEB_Signal",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
 const char* registrationToken = "SharedAccessSignature sr=https%3A%2F%2Fevent-hub-data-logger.servicebus.windows.net%2Fdevices%2Fmessages&sig=fHhAkb/uw/8W2DcVMYJePm0K4QVabKAv2CRE9j3Al1A%3D&se=1650074784&skn=mayfly-device";  // Device registration token

@@ -18,18 +18,21 @@
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
-const char* EventHubPublisher::postEndpoint  = "/devices/messages";
+const char* EventHubPublisher::postEndpoint  = "https://event-hub-data-logger.servicebus.windows.net/devices/messages";
 const char* EventHubPublisher::eventHubHost = "event-hub-data-logger.servicebus.windows.net";
-const int   EventHubPublisher::eventHubPort = 80;
+const int   EventHubPublisher::eventHubPort = 443;  // 443 for HTTPS; 80 for HTTP
 const char* EventHubPublisher::tokenHeader   = "\r\nAuthorization: ";
-// const unsigned char *EventHubPublisher::cacheHeader = "\r\nCache-Control:
-// no-cache"; const unsigned char *EventHubPublisher::connectionHeader =
-// "\r\nConnection: close";
+// const unsigned char *EventHubPublisher::cacheHeader = 
+//     "\r\nCache-Control: no-cache"; 
+// const unsigned char *EventHubPublisher::connectionHeader = 
+//     "\r\nConnection: close";
+const char* EventHubPublisher::transferEncodingHeader =
+    "\r\nTransfer-Encoding: chunked";
 const char* EventHubPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* EventHubPublisher::contentTypeHeader =
-    "\r\nContent-Type: application/json\r\n\r\n";
+    "\r\nContent-Type: application/json; charset=utf-8\r\n\r\n";
 
-const char* EventHubPublisher::samplingFeatureTag = "{\"id\":\"";
+const char* EventHubPublisher::samplingFeatureTag = "[{\"id\":\"";
 const char* EventHubPublisher::timestampTag       = "\",\"timestamp\":\"";
 
 
@@ -86,7 +89,7 @@ uint16_t EventHubPublisher::calculateJsonSize() {
     jsonLength += 2;           //  ",
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         jsonLength += 1;   //  "
-        jsonLength += 11;  // variable code (i.e. "Mayfly_Temp")
+        jsonLength += 11;  // variable code (i.e. "measurement")
         jsonLength += 2;   //  ":
         jsonLength += _baseLogger->getValueStringAtI(i).length();
         if (i + 1 != _baseLogger->getArrayVarCount()) {
@@ -136,6 +139,7 @@ void EventHubPublisher::printSensorDataJSON(Stream* stream) {
     }
 
     stream->print('}');
+    stream->print(']');
 }
 
 
@@ -152,8 +156,9 @@ void EventHubPublisher::printEventHubRequest(Stream* stream) {
     stream->print(_registrationToken);
     // stream->print(cacheHeader);
     // stream->print(connectionHeader);
-    stream->print(contentLengthHeader);
-    stream->print(calculateJsonSize());
+    stream->print(transferEncodingHeader);
+    // stream->print(contentLengthHeader);
+    // stream->print(calculateJsonSize());
     stream->print(contentTypeHeader);
 
     // Stream the JSON itself
@@ -219,9 +224,12 @@ int16_t EventHubPublisher::publishData(Client* outClient) {
         // strcat(txBuffer, connectionHeader);
 
         if (bufferFree() < 26) printTxBuffer(outClient);
-        strcat(txBuffer, contentLengthHeader);
-        itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
-        strcat(txBuffer, tempBuffer);
+        strcat(txBuffer, transferEncodingHeader);
+
+        // if (bufferFree() < 26) printTxBuffer(outClient);
+        // strcat(txBuffer, contentLengthHeader);
+        // itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
+        // strcat(txBuffer, tempBuffer);
 
         if (bufferFree() < 42) printTxBuffer(outClient);
         strcat(txBuffer, contentTypeHeader);
@@ -256,6 +264,7 @@ int16_t EventHubPublisher::publishData(Client* outClient) {
                 txBuffer[strlen(txBuffer)] = ',';
             } else {
                 txBuffer[strlen(txBuffer)] = '}';
+                txBuffer[strlen(txBuffer)] = ']';
             }
         }
 

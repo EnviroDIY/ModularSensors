@@ -224,6 +224,7 @@ class EventHubPublisher : public dataPublisher {
     static const char* tokenHeader;    ///< The token header text
     // static const char *cacheHeader;  ///< The cache header text
     // static const char *connectionHeader;  ///< The keep alive header text
+    static const char* transferEncodingHeader; ///< chunked?
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
     /**@}*/
