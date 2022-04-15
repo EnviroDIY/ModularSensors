@@ -270,7 +270,7 @@ class dataPublisher {
     String parseMQTTState(int state);
 
     /**
-     * @brief Write an HMAC-SHA256 signature -- which is a keyed-hash message 
+     * @brief Write an HMAC-SHA256 token -- which is a keyed-hash message 
      * authentication code (HMAC) created using the SHA-256 cryptographic 
      * hash algorithm -- for generating tokens for authenticating requests
      * using the authorization header.
@@ -280,7 +280,7 @@ class dataPublisher {
      * @return **String** The signed HMAC-SHA256 authorization token, or 
      * signature.
      */
-    String writeHMACsignature(char* key, char* string_to_sign);
+    String writeHMACtoken(const char* key, const char* string_to_sign);
 
 
  protected:

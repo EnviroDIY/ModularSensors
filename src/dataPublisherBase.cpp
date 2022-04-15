@@ -157,9 +157,22 @@ String dataPublisher::parseMQTTState(int state) {
 }
 
 
-String dataPublisher::writeHMACsignature(char* key, char* string_to_sign) {
-    // Create a HexMap to save 16 bytes of SRAM
-    const char hexMap[] PROGMEM = "0123456789abcdef";  // This is from the cryptosuite2 example, but there must be a better way.
-    // Anthony to add more code here
-    return signature;
+String dataPublisher::writeHMACtoken(const char* key, const char* string_to_sign) {
+    MS_DBG(F("Writing an HMAC-SHA256 token"));
+   // Anthony to add more code here
+    // Initialize the Sha256Wrapper for HMAC hashing, "salting" with the secret key
+    // Must be invoked before hashing.
+    Sha256.initHmac((uint8_t*)key, strlen(key));  // Recasting char* key to uint8_t*
+    // Write data into the hasher.
+    Sha256.write(string_to_sign);  // equivalent to `Sha256.print()`
+    // Returns a reference to the hash. Once this method has been called init must be invoked again.
+    uint8_t* result = Sha256.resultHmac();
+    // Print 32-byte hash as hexidecimal string (64 characters)
+    Serial.print(F("Token as Hex: "));
+    for (int i = 0; i < 32; i++) {
+        if (result[i] < 16) Serial.print("0"); // Otherwise leading zeros will be dropped
+        Serial.print(result[i],HEX);
+    }
+    Serial.print(F("\n\n"));
+    return "token"; // eventually return token
 }
