@@ -175,7 +175,7 @@ const char* UUIDs[] =  // UUID array for device sensors
         "measurement",  // Board Temperature (EnviroDIY_Mayfly_Temp)
         // "LTEB_Signal",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
-const char* registrationToken = "SharedAccessSignature sr=https%3A%2F%2Fevent-hub-data-logger.servicebus.windows.net%2Fdevices%2Fmessages&sig=fHhAkb/uw/8W2DcVMYJePm0K4QVabKAv2CRE9j3Al1A%3D&se=1650074784&skn=mayfly-device";  // Device registration token
+const char* registrationToken = "SharedAccessSignature sr=https%3A%2F%2Fevent-hub-data-logger.servicebus.windows.net%2Fdevices%2Fmessages&sig=pDocq7bRcZpKgt%2BWmNQHsJjz36mcssxF0EQ6jnVjd/g%3D&se=1650317059&skn=mayfly-device";  // Device registration token
 const char* samplingFeature = "7d37e135-0e26-4bc7-aa81-f9443283582d";  // Sampling feature UUID
 
 

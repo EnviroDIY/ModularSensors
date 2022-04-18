@@ -21,9 +21,10 @@ const char* EnviroDIYPublisher::postEndpoint  = "/api/data-stream/";
 const char* EnviroDIYPublisher::enviroDIYHost = "data.envirodiy.org";
 const int   EnviroDIYPublisher::enviroDIYPort = 80;
 const char* EnviroDIYPublisher::tokenHeader   = "\r\nTOKEN: ";
-// const unsigned char *EnviroDIYPublisher::cacheHeader = "\r\nCache-Control:
-// no-cache"; const unsigned char *EnviroDIYPublisher::connectionHeader =
-// "\r\nConnection: close";
+// const char* EnviroDIYPublisher::cacheHeader =
+//     "\r\nCache-Control: no-cache"; 
+// const char* EnviroDIYPublisher::connectionHeader =
+//     "\r\nConnection: close";
 const char* EnviroDIYPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* EnviroDIYPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";

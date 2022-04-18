@@ -41,11 +41,11 @@ class EventHubPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new EnviroDIY Publisher object with no members set.
+     * @brief Construct a new Event Hub REST API Publisher object with no members set.
      */
     EventHubPublisher();
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Event Hub REST API Publisher object
      *
      * @note If a client is never specified, the publisher will attempt to
      * create and use a client on a LoggerModem instance tied to the attached
@@ -67,7 +67,7 @@ class EventHubPublisher : public dataPublisher {
     explicit EventHubPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
                                 uint8_t sendOffset = 0);
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Event Hub REST API Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -88,7 +88,7 @@ class EventHubPublisher : public dataPublisher {
     EventHubPublisher(Logger& baseLogger, Client* inClient,
                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Event Hub REST API Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param registrationToken The registration token for the site on the
@@ -105,7 +105,7 @@ class EventHubPublisher : public dataPublisher {
                        const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
                        uint8_t sendOffset = 0);
     /**
-     * @brief Construct a new EnviroDIY Publisher object
+     * @brief Construct a new Event Hub REST API Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -126,7 +126,7 @@ class EventHubPublisher : public dataPublisher {
                        const char* samplingFeatureUUID, uint8_t sendEveryX = 1,
                        uint8_t sendOffset = 0);
     /**
-     * @brief Destroy the EnviroDIY Publisher object
+     * @brief Destroy the Event Hub REST API Publisher object
      */
     virtual ~EventHubPublisher();
 
@@ -160,7 +160,7 @@ class EventHubPublisher : public dataPublisher {
     // uint16_t calculatePostSize();
 
     /**
-     * @brief This generates a properly formatted JSON for EnviroDIY and prints
+     * @brief This generates a properly formatted JSON for Event Hub and prints
      * it to the input Arduino stream object.
      *
      * @param stream The Arduino stream to write out the JSON to.
@@ -168,8 +168,8 @@ class EventHubPublisher : public dataPublisher {
     void printSensorDataJSON(Stream* stream);
 
     /**
-     * @brief This prints a fully structured post request for Monitor My
-     * Watershed/EnviroDIY to the specified stream.
+     * @brief This prints a fully structured post request for Azure Event Hub
+     * to the specified stream.
      *
      * @param stream The Arduino stream to write out the request to.
      */
@@ -195,10 +195,9 @@ class EventHubPublisher : public dataPublisher {
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
 
-    // int16_t postDataEnviroDIY(void);
     /**
      * @brief Utilize an attached modem to open a a TCP connection to the
-     * EnviroDIY/ODM2DataSharingPortal and then stream out a post request over
+     * Azure Event Hub and then stream out a post request over
      * that connection.
      *
      * This depends on an internet connection already having been made and a
@@ -213,8 +212,8 @@ class EventHubPublisher : public dataPublisher {
 
  protected:
     /**
-     * @anchor envirodiy_post_vars
-     * @name Portions of the POST request to EnviroDIY
+     * @anchor eventhub_post_vars
+     * @name Portions of the POST request to Event Hub
      *
      * @{
      */
@@ -222,7 +221,7 @@ class EventHubPublisher : public dataPublisher {
     static const char* eventHubHost;  ///< The host name
     static const int   eventHubPort;  ///< The host port
     static const char* tokenHeader;    ///< The token header text
-    // static const char *cacheHeader;  ///< The cache header text
+    static const char* cacheHeader;  ///< The cache header text
     // static const char *connectionHeader;  ///< The keep alive header text
     static const char* transferEncodingHeader; ///< chunked?
     static const char* contentLengthHeader;  ///< The content length header text
@@ -230,8 +229,8 @@ class EventHubPublisher : public dataPublisher {
     /**@}*/
 
     /**
-     * @anchor envirodiy_json_vars
-     * @name Portions of the JSON object for EnviroDIY
+     * @anchor eventhub_json_vars
+     * @name Portions of the JSON object for Event Hub
      *
      * @{
      */
@@ -240,7 +239,7 @@ class EventHubPublisher : public dataPublisher {
                                             /**@}*/
 
  private:
-    // Tokens and UUID's for EnviroDIY
+    // Tokens and UUID's for Event Hub
     const char* _registrationToken;
 };
 
