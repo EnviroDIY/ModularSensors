@@ -18,7 +18,7 @@
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
-const char* EventHubPublisher::postEndpoint  = "https://event-hub-data-logger.servicebus.windows.net/devices/messages?timeout=60";
+const char* EventHubPublisher::postEndpoint  = "https://event-hub-data-logger.servicebus.windows.net/devices/messages";
 const char* EventHubPublisher::eventHubHost = "event-hub-data-logger.servicebus.windows.net";
 const int   EventHubPublisher::eventHubPort = 443;  // 443 for HTTPS; 80 for HTTP
 const char* EventHubPublisher::tokenHeader   = "\r\nAuthorization: ";
@@ -265,6 +265,7 @@ int16_t EventHubPublisher::publishData(Client* outClient) {
                 txBuffer[strlen(txBuffer)] = '}';
             }
         }
+        Serial.print(F("\n"));       
 
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(outClient, true);
