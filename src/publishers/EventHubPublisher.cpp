@@ -199,6 +199,9 @@ int16_t EventHubPublisher::publishData(Client* outClient) {
     MS_START_DEBUG_TIMER;
     if (outClient->connect(eventHubHost, eventHubPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        #ifdef MS_HTTPS
+        MS_DBG(F("Performing HTTPS POST request... "));
+        #endif
 
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);

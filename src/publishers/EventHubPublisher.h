@@ -21,6 +21,9 @@
 #define MS_DEBUGGING_STD "EventHubPublisher"
 #endif
 
+// Specify HTTPS Secure Client for this Publisher
+#define MS_HTTPS
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD

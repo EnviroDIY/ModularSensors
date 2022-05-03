@@ -206,7 +206,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** Start [publishers] */
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EventHubPublisher.h>
-EventHubPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
+EventHubPublisher EventHubPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);
 /** End [publishers] */
 
@@ -292,7 +292,7 @@ void setup() {
     const char*   text_to_hash = "what do ya want for nothing?";
 
     // Call method of dataPublisher object
-    EnviroDIYPOST.writeHMACtoken(key, text_to_hash);
+    EventHubPOST.writeHMACtoken(key, text_to_hash);
 
 
     // Note:  Please change these battery voltages to match your battery

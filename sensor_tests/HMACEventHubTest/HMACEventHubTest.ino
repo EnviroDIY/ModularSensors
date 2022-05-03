@@ -175,7 +175,7 @@ const char* UUIDs[] =  // UUID array for device sensors
         "measurement",  // Board Temperature (EnviroDIY_Mayfly_Temp)
         // "LTEB_Signal",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
-const char* registrationToken = "SharedAccessSignature sr=https%3A%2F%2Fevent-hub-data-logger.servicebus.windows.net%2Fdevices%2Fmessages&sig=pDocq7bRcZpKgt%2BWmNQHsJjz36mcssxF0EQ6jnVjd/g%3D&se=1650317059&skn=mayfly-device";  // Device registration token
+const char* registrationToken = "SharedAccessSignature sr=https%3A%2F%2Fevent-hub-data-logger.servicebus.windows.net%2Fdevices%2Fmessages&sig=KCT4Hdnh2iL2prxOsKO03RFHqhho5VTokIZHrGPYpaQ%3D&se=1650474173&skn=mayfly-device";  // Device registration token
 const char* samplingFeature = "7d37e135-0e26-4bc7-aa81-f9443283582d";  // Sampling feature UUID
 
 
@@ -205,7 +205,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 /** Start [publishers] */
 // Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
 #include <publishers/EventHubPublisher.h>
-EventHubPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient,
+EventHubPublisher EventHubPOST(dataLogger, &modem.gsmClient,
                                  registrationToken, samplingFeature);
 /** End [publishers] */
 
@@ -291,7 +291,7 @@ void setup() {
     const char*   text_to_hash = "what do ya want for nothing?";
 
     // Call method of dataPublisher object
-    EnviroDIYPOST.writeHMACtoken(key, text_to_hash);
+    EventHubPOST.writeHMACtoken(key, text_to_hash);
 
 
     // Note:  Please change these battery voltages to match your battery

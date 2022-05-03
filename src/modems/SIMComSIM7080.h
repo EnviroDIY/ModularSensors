@@ -199,9 +199,16 @@ class SIMComSIM7080 : public loggerModem {
      */
     TinyGsm gsmModem;
     /**
-     * @brief Public reference to the TinyGSM Client.
+     * @brief Public reference to the TinyGSM Client (HTTP).
      */
-    TinyGsmClient gsmClient;
+    TinyGsmClientSecure gsmClient;
+    // /**
+    //  * @brief Public reference to a secure TinyGSM Client (HTTPS).
+    //  */
+    // #ifdef MS_HTTPS
+    //     TinyGsmClientSecure gsmClient;
+    // #endif
+
 
  protected:
     bool isInternetAvailable(void) override;
