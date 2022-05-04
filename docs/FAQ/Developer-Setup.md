@@ -21,9 +21,9 @@ Set your platformio.ini configuration file up like this:
 
 [platformio]
 description = ModularSensors Library
-; Pick your default environment, if you don't want to build all of them every time
+; Pick your default environment, if you have more than one and don't want to build all of them every time
 default_envs = mayfly
-; Whatever code you personally want to test from
+; Set the director for the code you want to test from
 src_dir = your_directory/your_source_code
 
 [env]
@@ -33,107 +33,132 @@ framework = arduino
 ; To run code checks; cppcheck and clangtidy must be installed
 check_tool = cppcheck, clangtidy
 check_patterns =
-	src
-	extras
-	examples
+    src
+    extras
+    examples
 check_flags =
-	cppcheck: --enable=all, --inline-suppr
-	clangtidy: --checks=-*
+    cppcheck: --enable=all, --inline-suppr
+    clangtidy: --checks=-*
 ; deep search for dependencies, evalulating preprocessor conditionals
 lib_ldf_mode = deep+
 ; look for the library director
 lib_extra_dirs = .
 ; We have to ignore these folders or PlatformIO will double count all the dependencies
 lib_ignore =
-	.git
-	.pio
-	.vscode
-	doc
-	examples
-	sensor_tests
+    .git
+    .pio
+    .vscode
+    doc
+    examples
+    sensor_tests
     extras
-	Adafruit NeoPixel
-	Adafruit GFX Library
-	Adafruit SSD1306
-	Adafruit ADXL343
-	Adafruit STMPE610
-	Adafruit TouchScreen
-	Adafruit ILI9341
+    Adafruit NeoPixel
+    Adafruit GFX Library
+    Adafruit SSD1306
+    Adafruit ADXL343
+    Adafruit STMPE610
+    Adafruit TouchScreen
+    Adafruit ILI9341
 ; All these library dependencies must be listed out since we're in the library
 ; source code and won't read the dependencies from the library.json like a
 ; typical user would
 lib_deps =
-	envirodiy/EnviroDIY_DS3231
-	arduino-libraries/RTCZero
-	greygnome/EnableInterrupt
-	greiman/SdFat
-	vshymanskyy/TinyGSM
-	knolleary/PubSubClient
-	adafruit/Adafruit BusIO
-	adafruit/Adafruit Unified Sensor
-	https://github.com/soligen2010/Adafruit_ADS1X15.git
-	adafruit/Adafruit AM2315
-	adafruit/Adafruit BME280 Library
-	adafruit/DHT sensor library
-	adafruit/Adafruit INA219
-	adafruit/Adafruit MPL115A2
-	paulstoffregen/OneWire
-	milesburton/DallasTemperature
-	envirodiy/SDI-12
-	northernwidget/MS5803
-	https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
-	envirodiy/SensorModbusMaster
-	envirodiy/KellerModbus
-	envirodiy/YosemitechModbus
-	vshymanskyy/StreamDebugger
-; The directories for the source code
+    envirodiy/EnviroDIY_DS3231
+    arduino-libraries/RTCZero
+    greygnome/EnableInterrupt
+    greiman/SdFat
+    vshymanskyy/TinyGSM
+    knolleary/PubSubClient
+    adafruit/Adafruit BusIO
+    adafruit/Adafruit Unified Sensor
+    https://github.com/soligen2010/Adafruit_ADS1X15.git
+    adafruit/Adafruit AM2315
+    adafruit/Adafruit BME280 Library
+    adafruit/DHT sensor library
+    adafruit/Adafruit INA219
+    adafruit/Adafruit MPL115A2
+    adafruit/Adafruit SHT4x Library
+    https://github.com/MartinL1/BMP388_DEV
+    paulstoffregen/OneWire
+    milesburton/DallasTemperature
+    envirodiy/SDI-12
+    northernwidget/MS5803
+    https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
+    envirodiy/SensorModbusMaster
+    envirodiy/KellerModbus
+    envirodiy/YosemitechModbus
+    vshymanskyy/StreamDebugger
+; The directories for the ModularSensors library source code
 src_filter =
-	+<*>
-	+<../../src>
-	+<../../src/sensors>
-	+<../../src/publishers>
-	+<../../src/modems>
-	+<../../src/WatchDogs>
-	+<../../src/clocks>
-	+<../../src/utils>
+    +<*>
+    +<../../src>
+    +<../../src/sensors>
+    +<../../src/publishers>
+    +<../../src/modems>
+    +<../../src/WatchDogs>
+    +<../../src/clocks>
+    +<../../src/utils>
 ; Some common build flags
 build_flags =
-	-D SDI12_EXTERNAL_PCINT
-	-D NEOSWSERIAL_EXTERNAL_PCINT
-	-D MQTT_MAX_PACKET_SIZE=240
-	-D TINY_GSM_RX_BUFFER=64
-	-D TINY_GSM_YIELD_MS=2
+    -D SDI12_EXTERNAL_PCINT
+    -D NEOSWSERIAL_EXTERNAL_PCINT
+    -D MQTT_MAX_PACKET_SIZE=240
+    -D TINY_GSM_RX_BUFFER=64
+    -D TINY_GSM_YIELD_MS=2
+extra_scripts = pre:pioScripts/generate_compile_commands.py
+targets = compiledb
 
 [env:mayfly]
-upload_port = COM##
-monitor_port = COM##
+; Find your COM port, enter it here, and remove the semicolon at the start of the line
+; upload_port = COM##
+; monitor_port = COM##
 board = mayfly
 platform = atmelavr
 framework = arduino
 ; You probably need some software serial libraries
-lib_deps = ${env.lib_deps}
-           https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git
-           https://github.com/PaulStoffregen/AltSoftSerial.git
-           https://github.com/SRGDamia1/NeoSWSerial.git
+lib_deps =
+    ${env.lib_deps}
+    https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git
+    https://github.com/PaulStoffregen/AltSoftSerial.git
+    https://github.com/SRGDamia1/NeoSWSerial.git
 ; AVR boards need to ignore RTCZero, it's for SAMD only and will not compile for AVR
-lib_ignore = ${env.lib_ignore}, RTCZero
+lib_ignore =
+    ${env.lib_ignore}
+    RTCZero
+    Adafruit Zero DMA Library
+; Any extra build flags you want
+build_flags =
+    ${env.build_flags}
+    -D STANDARD_SERIAL_OUTPUT=Serial
+    -D DEBUGGING_SERIAL_OUTPUT=Serial
+    -D DEEP_DEBUGGING_SERIAL_OUTPUT=Serial
+; when I'm uploading frequently, I disable verification of the write
+upload_flags =
+    -V
 
 
 [env:adafruit_feather_m0]
-upload_port = COM##
-monitor_port = COM##
+; Find your COM port, enter it here, and remove the semicolon at the start of the line
+; upload_port = COM##
+; monitor_port = COM##
 platform = atmelsam
 board = adafruit_feather_m0
 framework = arduino
 ; SAMD boards need RTCZero for the real time clock and sleeping
-lib_deps = ${env.lib_deps}
-           RTCZero
+lib_deps =
+    ${env.lib_deps}
+    RTCZero
 ; Most of the software serial libraries won't compile.
 ; Use the SERCOM's; they're better anyway
-lib_ignore = ${env.lib_ignore}
-            SoftwareSerial_ExtInts
-            AltSoftSerial
-            NeoSWSerial
+lib_ignore =
+    ${env.lib_ignore}
+    SoftwareSerial_ExtInts
+    AltSoftSerial
+    NeoSWSerial
+    SoftwareWire
+build_flags =
+    ${env.build_flags}
+build_unflags = -D USE_TINYUSB
 ```
 
 While you're working on development, there is *extensive* debugging text built into this library.

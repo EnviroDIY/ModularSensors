@@ -92,8 +92,19 @@
 /// @brief Sensor::_stabilizationTime_ms; the Hydros 21 is stable as soon as it
 /// warms up (0ms stabilization).
 #define HYDROS21_STABILIZATION_TIME_MS 0
-/// @brief Sensor::_measurementTime_ms; maximum measurement duration: 500ms.
-#define HYDROS21_MEASUREMENT_TIME_MS 500
+/**
+ * @brief Sensor::_measurementTime_ms; maximum measurement duration: 1000ms.
+ *
+ * @note Older versions of the Hydro took less time (~500ms) to take a
+ * measurement, but the current version, as of 5/2/2022, takes a full second
+ * (1000ms) to consistently give results in concurrent measurement mode.
+ * Somewhat strangely, it does give results in ~450ms when operated
+ * non-concurrently. Depending on how many sensors you have, you may have faster
+ * results by forcing non-concurrent operation with the newest versions of the
+ * Hydros21. To do this compile with the [build flag](@ref sdi12_group_flags)
+ * `-D MS_SDI12_NON_CONCURRENT`.
+ */
+#define HYDROS21_MEASUREMENT_TIME_MS 1000
 /// @brief Extra wake time required for an SDI-12 sensor between the "break"
 /// and the time the command is sent.  The Hydros 21 requires no extra time.
 #define HYDROS21_EXTRA_WAKE_TIME_MS 0

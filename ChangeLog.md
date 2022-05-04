@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ***
 
 
+## [0.33.3]
+
+### Fixed
+- Increased measurement time for Hydros21 to work with the latest version of the sensor.
+***
+
+
 ## [0.33.2]
 
 ### Fixed
@@ -740,7 +747,8 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.33.2...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.33.3...HEAD
+[0.33.3]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.3
 [0.33.2]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.2
 [0.33.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.1
 [0.33.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.0
