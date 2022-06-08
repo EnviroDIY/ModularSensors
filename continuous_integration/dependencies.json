@@ -68,7 +68,7 @@
       "owner": "adafruit",
       "library id": "6214",
       "url": "https://github.com/adafruit/Adafruit_BusIO",
-      "version": "~1.11.3",
+      "version": "~1.11.6",
       "note": "Adafruit BusIO, a dependency of other Adafruit libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -174,7 +174,7 @@
       "owner": "paulstoffregen",
       "library id": "1",
       "url": "https://github.com/PaulStoffregen/OneWire",
-      "version": "~2.3.6",
+      "version": "~2.3.7",
       "note": "OneWire - Control 1-Wire protocol (DS18S20, DS18B20, DS2408 and etc)",
       "authors": [
         "Paul Stoffregen",
