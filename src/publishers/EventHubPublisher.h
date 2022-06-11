@@ -28,6 +28,8 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
+// Pull in Secret Key value from a file that is not tracked by Git
+#include "/Users/aaufdenkampe/Documents/Arduino/EnviroDIY_ModularSensors/sensor_tests/HMACEventHubTest/HMAC_secret_key.h"
 
 
 // ============================================================================

@@ -277,10 +277,10 @@ class dataPublisher {
      *
      * @param key The shared secret key used to "salt" the hash
      * @param string_to_sign The string that gets hashed into a signature token.
-     * @return **String** The signed HMAC-SHA256 authorization token, or 
-     * signature.
+     * @return **uint8_t*** The signed 32-byte HMAC-SHA256 authorization token, 
+     * or signature.
      */
-    String writeHMACtoken(const char* key, const char* string_to_sign);
+    uint8_t* writeHMACtoken(const char* key, const char* string_to_sign);
 
 
  protected:

@@ -12,7 +12,7 @@
  *                          and the EnviroDIY Development Team
  *            This example is published under the BSD-3 license.
  *
-
+ * Software: ModularSensors, `hmac_auth` branch (based on v0.33.3 or later)
  * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
  *
  * DISCLAIMER:
@@ -284,6 +284,13 @@ void setup() {
 
     // Begin the logger
     dataLogger.begin();
+ 
+    // Test SAS token (signature) generation
+    // Print shared secret key
+    Serial.println(F("Testing SAS token/signature generation"));
+    Serial.print(F("HMAC Secret Key: "));
+    Serial.println(SECRET_KEY);
+    Serial.println();
 
     // Test HMAC token
     // Secret key and Plain Text to Compute Hash
