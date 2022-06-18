@@ -8,7 +8,7 @@
  * subclasses CampbellClariVUE10_Temp, CampbellClariVUE10_Turbidity, and
  * CampbellClariVUE10_ErrorCode.
  *
- * These are for theCampbell ClariVUE10 digital dissolved oxygen sensor.
+ * These are for the Campbell ClariVUE10 digital SDI-12 turbidity sensor.
  *
  * This depends on the SDI12Sensors parent class.
  */
