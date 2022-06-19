@@ -5,8 +5,8 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the CampbellRainVUE10 sensor subclass and the variable
- * subclasses CampbellRainVUE10_Temp, CampbellRainVUE10_Turbidity, and
- * CampbellRainVUE10_ErrorCode.
+ * subclasses CampbellRainVUE10_Precipitation, CampbellRainVUE10_Tips, 
+ * CampbellRainVUE10_RainRateAve, and CampbellRainVUE10_RainRateMax.
  *
  * These are for the Campbell RainVUE10 digital SDI-12 Precipitation sensor.
  *
@@ -15,7 +15,7 @@
 /* clang-format off */
 /**
  * @defgroup sensor_rainvue Campbell RainVUE10
- * Classes for the [Campbell RainVUE10](https://www.campbellsci.com/rainvue10) turbidity sensor.
+ * Classes for the [Campbell RainVUE10](https://www.campbellsci.com/rainvue10) precipitation sensor.
  *
  * @ingroup sdi12_group
  *
@@ -24,10 +24,10 @@
  *
  * @section sensor_rainvue_intro Introduction
  *
- * > The RainVUETM10 is an SDI-12 tipping bucket rain gage in the RainVUE™ 
- * > family of products. Advanced algorithms and digital processing within the
- * > sensor compensate for errors caused by high-intensity rain and provide
- * > accurate precipitation and intensity measurements.
+ * The RainVUETM10 is an SDI-12 tipping bucket rain gage in the RainVUE™ 
+ * family of products. Advanced algorithms and digital processing within the
+ * sensor compensate for errors caused by high-intensity rain and provide
+ * accurate precipitation and intensity measurements.
  *
  * The sensor is implemented as a sub-classes of the SDI12Sensors class.
  * It requires a continuous 6 to 18 Vdc power supply. As backup, ann internal
@@ -67,10 +67,10 @@
 /**@{*/
 
 // Sensor Specific Defines
-/// @brief Sensor::_numReturnedValues; the RainVUE10 can report 7 values
-/// (although we only keep 3).
-#define RAINVUE10_NUM_VARIABLES 7
-/// @brief Sensor::_incCalcValues; The RainVUE calcualtes averages and other
+/// @brief Sensor::_numReturnedValues; the RainVUE10 can report 5 values
+/// (although we only keep 4).
+#define RAINVUE10_NUM_VARIABLES 5
+/// @brief Sensor::_incCalcValues; The RainVUE calculates averages and other
 /// stats on board, but we don't calculate any additional values.
 #define RAINVUE10_INC_CALC_VARIABLES 0
 
@@ -78,114 +78,149 @@
  * @anchor sensor_rainvue_timing
  * @name Sensor Timing
  * The sensor timing for a Campbell RainVUE10
+ * - Readings transferred from the tipping bucket to the logger are from past
+ * tips, so there is no need to wait for stability or measuring.
+
  */
 /**@{*/
 /** @brief Sensor::_warmUpTime_ms; the RainVUE10 warms up in 5500ms.
- *
- * This is longer than the expected 250ms for a SDI-12 sensor, but I couldn't
- * get a response from the sensor faster than that.
  */
-#define RAINVUE10_WARM_UP_TIME_MS 5500
+#define RAINVUE10_WARM_UP_TIME_MS 250
 /// @brief Sensor::_stabilizationTime_ms; the RainVUE10 is stable as soon as it
 /// warms up (0ms stabilization).
 #define RAINVUE10_STABILIZATION_TIME_MS 0
-/**
- * @brief Sensor::_measurementTime_ms; the RainVUE10 takes ~9500ms to
+/** @brief Sensor::_measurementTime_ms; the RainVUE10 takes ~9500ms to
  * complete a measurement.
- *
- * Spec sheet says the measurement time is 9s.  When taking a standard
- * measurement I was not getting a result until after about 9335ms.
  */
-#define RAINVUE10_MEASUREMENT_TIME_MS 9500
+#define RAINVUE10_MEASUREMENT_TIME_MS 250
 /// @brief Extra wake time required for an SDI-12 sensor between the "break"
 /// and the time the command is sent.  The RainVUE requires no extra time.
-#define RAINIVUE10_EXTRA_WAKE_TIME_MS 0
+#define RAINVUE10_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
- * @anchor sensor_rainvue_turbidity
- * @name Turbidity
- * The turbidity variable from a Campbell RainVUE10
- * - Range is 0 to 4000 FNU.
- * - Accuracy ±2% or 0.5 FNU (whichever is greater).
+ * @anchor sensor_rainvue_precipitation
+ * @name Precipitation Accumulated Depth
+ * The intensity-corrected accumulation variable from a Campbell RainVUE10
+ * For the "-IN" Option (English units)
+ * - Range is 0 to 1000 mm/h (0 to 40 in./h).
+ * - Resolution is 0.254 mm (0.01 in.)
+ * - Accuracy is ±1% at 0 to 500 mm/h intensity (0 to 19.7 in./h intensity)
+ * For the "-MM" Option (Metric units)
+ * - Range is 0 to 500 mm/h (0 to 19.7 in./h)
+ * - Resolution is 0.1 mm (0.004 in.)
+ * - Accuracy is ±3% at 0 to 300 mm/h intensity (0 to 11.8 in./h intensity)
+ *               ±5% at 300 to 500 mm/h intensity (11.8 to 19.7 in./h intensity)
  *
- * {{ @ref CampbellRainVUE10_Turbidity::CampbellRainVUE10_Turbidity }}
+ * {{ @ref CampbellRainVUE10_Preciptation::CampbellRainVUE10_Precipitation }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 1
-/// (resolution is 0.2 FNU).
-#define RAINVUE10_TURBIDITY_RESOLUTION 1
-/// @brief Sensor variable number; turbidity is stored in sensorValues[0]
-#define RAINVUE10_TURBIDITY_VAR_NUM 0
+/// @brief Decimals places in string representation; depth should have 2
+/// (resolution is 0.01 inches).
+#define RAINVUE10_PRECIPITATION_RESOLUTION 2
+/// @brief Sensor variable number; precipitation is stored in sensorValues[0]
+#define RAINVUE10_PRECIPITATION_VAR_NUM 0
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "turbidity"
-#define RAINVUE10_TURBIDITY_VAR_NAME "turbidity"
+/// "precipitation"
+#define RAINVUE10_PRECIPITATION_VAR_NAME "precipitation"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "formazinNephelometricUnit" (FNU)
-#define RAINVUE10_TURBIDITY_UNIT_NAME "formazinNephelometricUnit"
-/// @brief Default variable short code; "RainVUETurbidity"
-#define RAINVUE10_TURBIDITY_DEFAULT_CODE "RainVUETurbidity"
+/// "inch" (in_i)
+#define RAINVUE10_PRECIPITATION_UNIT_NAME "inch"
+/// @brief Default variable short code; "RainVUEPrecipitation"
+#define RAINVUE10_PRECIPITATION_DEFAULT_CODE "RainVUEPrecipitation"
 /**@}*/
 
 /**
- * @anchor sensor_rainvue_temp
- * @name Temperature
- * The temperature variable from a Campbell RainVUE10
- * - Range is -2° to +40°C
- * - Accuracy is ± 0.2°C
+ * @anchor sensor_rainvue_tips
+ * @name Tip Count
+ * Defines for tip count variable from a tipping bucket counter
+ * - Range and accuracy depend on the tipping bucket used.
  *
- * {{ @ref CampbellRainVUE10_Temp::CampbellRainVUE10_Temp }}
+ * {{ @ref CampbellRainVUE10_Tips::CampbellRainVUE10_Tips }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
-/// resolution is 0.01°C.
-#define RAINVUE10_TEMP_RESOLUTION 2
-/// @brief Sensor variable number; temperature is stored in sensorValues[5].
-#define RAINVUE10_TEMP_VAR_NUM 5
+/// @brief Decimals places in string representation; the number of tips should
+/// have 0 - resolution is 1 tip.
+#define RAINVUE10_TIPS_RESOLUTION 0
+/// @brief Sensor variable number; tips is stored in sensorValues[1].
+#define RAINVUE10_TIPS_VAR_NUM 1
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "temperature"
-#define RAINVUE10_TEMP_VAR_NAME "temperature"
+/// "precipitation"
+#define RAINVUE10_TIPS_VAR_NAME "precipitation"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "degreeCelsius" (°C)
-#define RAINVUE10_TEMP_UNIT_NAME "degreeCelsius"
-/// @brief Default variable short code; "RainVUETempC"
-#define RAINVUE10_TEMP_DEFAULT_CODE "RainVUETempC"
+/// "event"
+#define RAINVUE10_TIPS_UNIT_NAME "event"
+/// @brief Default variable short code; "RainVUETips"
+#define RAINVUE10_TIPS_DEFAULT_CODE "RainVUETips"
 /**@}*/
 
 /**
- * @anchor sensor_rainvue_error
- * @name Error Code
- * The error code variable from a Campbell RainVUE10
- * - Significance of error code values is unknown.
+ * @anchor sensor_rainvue_rainrateave
+ * @name Rainfall Rate Average
+ * The average rainfall rate variable from a Campbell RainVUE10,
+ * defined as average precipitation intensity since last measurement.
+ * For the "-IN" Option (English units)
+ * - Range is 0.01 to 1000 mm/h (0.0004 to 39.4 in./h)
+ * - Resolution is 0.254 mm (0.01 in.)
+ * - Accuracy is ±1%
+ * For the "-MM" Option (Metric units)
+ * - Range is 0.01 to 500 mm/h (0.0004 to 19.7 in./h)
+ * - Resolution is 0.1 mm (0.004 in.)
+ * - Accuracy is ±3.5% at 0 to 300 mm/h (0 to 11.8 in./h)
+ *               ±5% at 300 to 500 mm/h (11.8 to 19.7 in./h)
  *
- * {{ @ref CampbellRainVUE10_ErrorCode::CampbellRainVUE10_ErrorCode }}
+ * {{ @ref CampbellRainVUE10_RainRateAve::CampbellRainVUE10_RainRateAve }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the error code has 0.
-#define RAINVUE10_ERRORCODE_RESOLUTION 0
-/// @brief Sensor variable number; error code is stored in sensorValues[2]
-#define RAINVUE10_ERRORCODE_VAR_NUM 6
+/// @brief Decimals places in string representation; the rainfall intensity has 2.
+#define RAINVUE10_RAINRATEAVE_RESOLUTION 2
+/// @brief Sensor variable number; average intensity is stored in sensorValues[3]
+#define RAINVUE10_RAINRATEAVE_VAR_NUM 3
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
 /// "instrumentStatusCode"
-#define RAINVUE10_ERRORCODE_VAR_NAME "instrumentStatusCode"
+#define RAINVUE10_RAINRATEAVE_VAR_NAME "rainfallRate"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "dimensionless"
-#define RAINVUE10_ERRORCODE_UNIT_NAME "dimensionless"
-/// @brief Default variable short code; "RainVUEError"
-#define RAINVUE10_ERRORCODE_DEFAULT_CODE "RainVUEError"
+/// "inchPerHour"
+#define RAINVUE10_RAINRATEAVE_UNIT_NAME "inchPerHour"
+/// @brief Default variable short code; "RainVUERateAve"
+#define RAINVUE10_RAINRATEAVE_DEFAULT_CODE "RainVUERateAve"
 /**@}*/
 
+/**
+ * @anchor sensor_rainvue_rainratemax
+ * @name Rainfall Rate Maximum
+ * The maximum rainfall rate variable from a Campbell RainVUE10,
+ * defined as maximum precipitation intensity since last measurement.
+ * - Range & Accuracy same as for sensor_rainvue_rainratemax
+ * {{ @ref CampbellRainVUE10_RainRateMax::CampbellRainVUE10_RainRateMax }}
+ */
+/**@{*/
+/// @brief Decimals places in string representation; the rainfall intensity has 2.
+#define RAINVUE10_RAINRATEMAX_RESOLUTION 2
+/// @brief Sensor variable number; average intensity is stored in sensorValues[4]
+#define RAINVUE10_RAINRATEMAX_VAR_NUM 4
+/// @brief Variable name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
+/// "instrumentStatusCode"
+#define RAINVUE10_RAINRATEMAX_VAR_NAME "rainfallRate"
+/// @brief Variable unit name in
+/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
+/// "inchPerHour"
+#define RAINVUE10_RAINRATEMAX_UNIT_NAME "inchPerHour"
+/// @brief Default variable short code; "RainVUERateAve"
+#define RAINVUE10_RAINRATEMAX_DEFAULT_CODE "RainVUERateMax"
+/**@}*/
 
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [Campbell RainVUE10 turbidity sensor](@ref sensor_rainvue).
+ * [Campbell RainVUE10 precipitation sensor](@ref sensor_rainvue).
  *
  * @ingroup sensor_rainvue
  */
@@ -255,110 +290,110 @@ class CampbellRainVUE10 : public SDI12Sensors {
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [turbidity output](@ref sensor_rainvue_turbidity)
- * from a [Campbell RainVUE10 turbidity sensor](@ref sensor_rainvue).
+ * [precipitation output](@ref sensor_rainvue_precipitation)
+ * from a [Campbell RainVUE10 precipitation sensor](@ref sensor_rainvue).
  *
  * @ingroup sensor_rainvue
  */
 /* clang-format on */
-class CampbellRainVUE10_Turbidity : public Variable {
+class CampbellRainVUE10_Precipitation : public Variable {
  public:
     /**
-     * @brief Construct a new CampbellRainVUE10_Turbidity object.
+     * @brief Construct a new CampbellRainVUE10_Precipitation object.
      *
      * @param parentSense The parent CampbellRainVUE10 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "RainVUETurbidity".
+     * optional with a default value of "RainVUEPrecipitation".
      */
-    explicit CampbellRainVUE10_Turbidity(
+    explicit CampbellRainVUE10_Precipitation(
         CampbellRainVUE10* parentSense, const char* uuid = "",
-        const char* varCode = RAINVUE10_TURBIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)RAINVUE10_TURBIDITY_VAR_NUM,
-                   (uint8_t)RAINVUE10_TURBIDITY_RESOLUTION,
-                   RAINVUE10_TURBIDITY_VAR_NAME,
-                   RAINVUE10_TURBIDITY_UNIT_NAME, varCode, uuid) {}
+        const char* varCode = RAINVUE10_PRECIPITATION_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
+                   (uint8_t)RAINVUE10_PRECIPITATION_RESOLUTION,
+                   RAINVUE10_PRECIPITATION_VAR_NAME,
+                   RAINVUE10_PRECIPITATION_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new CampbellRainVUE10_Turbidity object.
+     * @brief Construct a new CampbellRainVUE10_Precipitation object.
      *
      * @note This must be tied with a parent CampbellRainVUE10 before it can be
      * used.
      */
-    CampbellRainVUE10_Turbidity()
-        : Variable((const uint8_t)RAINVUE10_TURBIDITY_VAR_NUM,
-                   (uint8_t)RAINVUE10_TURBIDITY_RESOLUTION,
-                   RAINVUE10_TURBIDITY_VAR_NAME,
-                   RAINVUE10_TURBIDITY_UNIT_NAME,
-                   RAINVUE10_TURBIDITY_DEFAULT_CODE) {}
+    CampbellRainVUE10_Precipitation()
+        : Variable((const uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
+                   (uint8_t)RAINVUE10_PRECIPITATION_RESOLUTION,
+                   RAINVUE10_PRECIPITATION_VAR_NAME,
+                   RAINVUE10_PRECIPITATION_UNIT_NAME,
+                   RAINVUE10_PRECIPITATION_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the CampbellRainVUE10_Turbidity object - no action
+     * @brief Destroy the CampbellRainVUE10_Precipitation object - no action
      * needed.
      */
-    ~CampbellRainVUE10_Turbidity() {}
+    ~CampbellRainVUE10_Precipitation() {}
 };
 
 
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [temperature output](@ref sensor_rainvue_temp) from a
- * [Campbell RainVUE10 turbidity sensor](@ref sensor_rainvue).
+ * [tip count output](@ref sensor_rainvue_tips) from a
+ * [Campbell RainVUE10 precipitation sensor](@ref sensor_rainvue).
  *
  * @ingroup sensor_rainvue
  */
 /* clang-format on */
-class CampbellRainVUE10_Temp : public Variable {
+class CampbellRainVUE10_Tips : public Variable {
  public:
     /**
-     * @brief Construct a new CampbellRainVUE10_Temp object.
+     * @brief Construct a new CampbellRainVUE10_Tips object.
      *
      * @param parentSense The parent CampbellRainVUE10 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "RainVUETempC".
+     * optional with a default value of "RainVUETips".
      */
-    explicit CampbellRainVUE10_Temp(
+    explicit CampbellRainVUE10_Tips(
         CampbellRainVUE10* parentSense, const char* uuid = "",
-        const char* varCode = RAINVUE10_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)RAINVUE10_TEMP_VAR_NUM,
-                   (uint8_t)RAINVUE10_TEMP_RESOLUTION,
-                   RAINVUE10_TEMP_VAR_NAME, RAINVUE10_TEMP_UNIT_NAME, varCode,
+        const char* varCode = RAINVUE10_TIPS_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)RAINVUE10_TIPS_VAR_NUM,
+                   (uint8_t)RAINVUE10_TIPS_RESOLUTION,
+                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new CampbellRainVUE10_Temp object.
+     * @brief Construct a new CampbellRainVUE10_Tips object.
      *
      * @note This must be tied with a parent CampbellRainVUE10 before it can be
      * used.
      */
-    CampbellRainVUE10_Temp()
-        : Variable((const uint8_t)RAINVUE10_TEMP_VAR_NUM,
-                   (uint8_t)RAINVUE10_TEMP_RESOLUTION,
-                   RAINVUE10_TEMP_VAR_NAME, RAINVUE10_TEMP_UNIT_NAME,
-                   RAINVUE10_TEMP_DEFAULT_CODE) {}
+    CampbellRainVUE10_Tips()
+        : Variable((const uint8_t)RAINVUE10_TIPS_VAR_NUM,
+                   (uint8_t)RAINVUE10_TIPS_RESOLUTION,
+                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME,
+                   RAINVUE10_TIPS_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the CampbellRainVUE10_Temp object - no action needed.
+     * @brief Destroy the CampbellRainVUE10_Tips object - no action needed.
      */
-    ~CampbellRainVUE10_Temp() {}
+    ~CampbellRainVUE10_Tips() {}
 };
 
 
 /* clang-format off */
 /**
  * @brief The Variable sub-class used for the
- * [error code output](@ref sensor_rainvue_error) from a
- * [Campbell RainVUE10 turbidity sensor](@ref sensor_rainvue).
+ * [average rainfall rate output](@ref sensor_rainvue_rainrateave) from a
+ * [Campbell RainVUE10 precipitation sensor](@ref sensor_rainvue).
  *
  * @ingroup sensor_rainvue
  */
 /* clang-format on */
-class CampbellRainVUE10_ErrorCode : public Variable {
+class CampbellRainVUE10_RainRateAve : public Variable {
  public:
     /**
-     * @brief Construct a new CampbellRainVUE10_ErrorCode object.
+     * @brief Construct a new CampbellRainVUE10_RainRateAve object.
      *
      * @param parentSense The parent CampbellRainVUE10 providing the result
      * values.
@@ -367,30 +402,79 @@ class CampbellRainVUE10_ErrorCode : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "RainVUEError".
      */
-    explicit CampbellRainVUE10_ErrorCode(
+    explicit CampbellRainVUE10_RainRateAve(
         CampbellRainVUE10* parentSense, const char* uuid = "",
-        const char* varCode = RAINVUE10_ERRORCODE_DEFAULT_CODE)
-        : Variable(parentSense, (const uint8_t)RAINVUE10_ERRORCODE_VAR_NUM,
-                   (uint8_t)RAINVUE10_ERRORCODE_RESOLUTION,
-                   RAINVUE10_ERRORCODE_VAR_NAME,
-                   RAINVUE10_ERRORCODE_UNIT_NAME, varCode, uuid) {}
+        const char* varCode = RAINVUE10_RAINRATEAVE_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
+                   (uint8_t)RAINVUE10_RAINRATEAVE_RESOLUTION,
+                   RAINVUE10_RAINRATEAVE_VAR_NAME,
+                   RAINVUE10_RAINRATEAVE_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new CampbellRainVUE10_ErrorCode object.
+     * @brief Construct a new CampbellRainVUE10_RainRateAve object.
      *
      * @note This must be tied with a parent CampbellRainVUE10 before it can be
      * used.
      */
-    CampbellRainVUE10_ErrorCode()
-        : Variable((const uint8_t)RAINVUE10_ERRORCODE_VAR_NUM,
-                   (uint8_t)RAINVUE10_ERRORCODE_RESOLUTION,
-                   RAINVUE10_ERRORCODE_VAR_NAME,
-                   RAINVUE10_ERRORCODE_UNIT_NAME,
-                   RAINVUE10_ERRORCODE_DEFAULT_CODE) {}
+    CampbellRainVUE10_RainRateAve()
+        : Variable((const uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
+                   (uint8_t)RAINVUE10_RAINRATEAVE_RESOLUTION,
+                   RAINVUE10_RAINRATEAVE_VAR_NAME,
+                   RAINVUE10_RAINRATEAVE_UNIT_NAME,
+                   RAINVUE10_RAINRATEAVE_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the CampbellRainVUE10_ErrorCode object - no action
+     * @brief Destroy the CampbellRainVUE10_RainRateAve object - no action
      * needed.
      */
-    ~CampbellRainVUE10_ErrorCode() {}
+    ~CampbellRainVUE10_RainRateAve() {}
+};
+
+/* clang-format off */
+/**
+ * @brief The Variable sub-class used for the
+ * [maximum rainfall rate output](@ref sensor_rainvue_rainratemax) from a
+ * [Campbell RainVUE10 precipitation sensor](@ref sensor_rainvue).
+ *
+ * @ingroup sensor_rainvue
+ */
+
+
+/* clang-format on */
+class CampbellRainVUE10_RainRateMax : public Variable {
+ public:
+    /**
+     * @brief Construct a new CampbellRainVUE10_RainRateMax object.
+     *
+     * @param parentSense The parent CampbellRainVUE10 providing the result
+     * values.
+     * @param uuid A universally unique identifier (UUID or GUID) for the
+     * variable; optional with the default value of an empty string.
+     * @param varCode A short code to help identify the variable in files;
+     * optional with a default value of "RainVUERateAve".
+     */
+    explicit CampbellRainVUE10_RainRateMax(
+        CampbellRainVUE10* parentSense, const char* uuid = "",
+        const char* varCode = RAINVUE10_RAINRATEMAX_DEFAULT_CODE)
+        : Variable(parentSense, (const uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
+                   (uint8_t)RAINVUE10_RAINRATEMAX_RESOLUTION,
+                   RAINVUE10_RAINRATEMAX_VAR_NAME,
+                   RAINVUE10_RAINRATEMAX_UNIT_NAME, varCode, uuid) {}
+    /**
+     * @brief Construct a new CampbellRainVUE10_RainRateMax object.
+     *
+     * @note This must be tied with a parent CampbellRainVUE10 before it can be
+     * used.
+     */
+    CampbellRainVUE10_RainRateMax()
+        : Variable((const uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
+                   (uint8_t)RAINVUE10_RAINRATEMAX_RESOLUTION,
+                   RAINVUE10_RAINRATEMAX_VAR_NAME,
+                   RAINVUE10_RAINRATEMAX_UNIT_NAME,
+                   RAINVUE10_RAINRATEMAX_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the CampbellRainVUE10_RainRateMax object - no action
+     * needed.
+     */
+    ~CampbellRainVUE10_RainRateMax() {}
 };
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLRAINVUE10_H_

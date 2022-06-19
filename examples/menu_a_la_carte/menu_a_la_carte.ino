@@ -1204,6 +1204,35 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 /** End [campbell_obs3] */
 #endif
 
+#if defined BUILD_SENSOR_CAMPBELL_RAINVUE10
+// ==========================================================================
+//  Campbell RainVUE Precipitation Sensor
+// ==========================================================================
+/** Start [campbell_rainvue10] */
+#include <sensors/CampbellRainVUE10.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const char* RainVUESDI12address = "0"; // The SDI-12 Address of the RainVUE10
+const int8_t RainVUEPower       = -1;  // Power pin, for continous power
+const int8_t RainVUEData        = 5;   // The SDI-12 data pin, for continuous power
+// NOTE:  you should NOT take more than one readings.  THe sensor counts
+// cummulative tips and rain accumulation since the last measurement.
+
+// Create a Campbell RainVUE10 sensor object
+CampbellRainVUE10 rainvue(*RainVUESDI12address, RainVUEPower, RainVUEData);
+
+// Create turbidity, temperature, and error variable pointers for the RainVUE10
+Variable* rainvuePrecipitation = new CampbellRainVUE10_Precipitation(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rainvueTips = new CampbellRainVUE10_Tips(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rainvueRainRateAve = new CampbellRainVUE10_RainRateAve(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rainvueRainRateMax = new CampbellRainVUE10_RainRateMax(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [campbell_rainvue10] */
+#endif
+
 
 #if defined BUILD_SENSOR_DECAGON_CTD
 // ==========================================================================
