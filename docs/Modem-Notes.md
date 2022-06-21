@@ -29,7 +29,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 | Digi XBee3 LTE Cat 1 AT&T (Telit LE866A1-NA)  |           DigiXBeeCellularTransparent            |
 |              Digi XBee S6B WiFi               |                   DigiXBeeWifi                   |
 |               Espressif ESP8266               |                 EspressifESP8266                 |
-|                Espressif ESP32                |                 EspressifESP8266                 |
+|                Espressif ESP32                |                 EspressifESP32                 |
 |                 Quectel BG96                  |                   QuectelBG96                    |
 |       Mikroe LTE IOT 2 Click (_BG96_)¹        |                   QuectelBG96                    |
 |         Dragino NB IOT Bee (_BG96_)¹          |                   QuectelBG96                    |
@@ -139,7 +139,7 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 |      Digi XBee/XBee3, all variants (direct connection)¹      |       -1       |      19²       |       -1       |       23       |
 | Digi XBee/XBee3, all variants (with LTE adapter<sup>8</sup>) | -1<sup>3</sup> | 19<sup>4</sup> |       20       |       23       |
 |               Itead Wee (ESP8266)<sup>8</sup>                |       -1       |       -1       | -1<sup>5</sup> |       -1       |
-|                  DFRobot WiFi Bee (ESP8266)                  |       -1       |       -1       |       -1       | 19<sup>6</sup> |
+|                  DFRobot WiFi Bee (ESP8266)                  |       -1       |       -1       |       -1       |      N/A       |
 |                  Dragino NB IOT Bee (BG96)                   |       -1       |       -1       | -1<sup>7</sup> | -1<sup>7</sup> |
 |                  Sodaq GPRSBee R4 (SIM900)                   |       -1       |       19       |       -1       |       23       |
 |               Sodaq GPRSBee R6 or R7 (SIM800H)               |       23       |       19       |      N/A       |      N/A       |
@@ -162,8 +162,6 @@ You should set the argument `useCTSforStatus` to `false` in the bee constructor
 
 <sup>5</sup> I *strongly* recommend running a new wire along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4.
    This will enable you to use A4 as the reset pin which allows you to use deep sleep.
-
-<sup>6</sup> Use 13 as the `espSleepRqPin` for light sleep.
 
 <sup>7</sup> I *strongly* recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin 18 of the XBee socket to A3.
 This will enable you to use A4 as the reset pin and A3 as the sleep request pin.
