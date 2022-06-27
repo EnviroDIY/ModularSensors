@@ -902,7 +902,9 @@ void Logger::systemSleep(void) {
         USBDevice.attach();
 #endif
         uint32_t startTimer = millis();
-        while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {}
+        while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {
+            // wait
+        }
     }
 #endif
 

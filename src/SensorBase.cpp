@@ -504,7 +504,9 @@ bool Sensor::isWarmedUp(bool debug) {
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
 void Sensor::waitForWarmUp(void) {
-    while (!isWarmedUp()) {}
+    while (!isWarmedUp()) {
+        // wait
+    }
 }
 
 
@@ -540,7 +542,9 @@ bool Sensor::isStable(bool debug) {
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
 void Sensor::waitForStability(void) {
-    while (!isStable()) {}
+    while (!isStable()) {
+        // wait
+    }
 }
 
 
@@ -577,5 +581,7 @@ bool Sensor::isMeasurementComplete(bool debug) {
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
 void Sensor::waitForMeasurementCompletion(void) {
-    while (!isMeasurementComplete()) {}
+    while (!isMeasurementComplete()) {
+        // wait
+    }
 }

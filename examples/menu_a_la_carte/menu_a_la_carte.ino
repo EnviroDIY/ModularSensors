@@ -2747,7 +2747,9 @@ void setup() {
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
 #if defined SERIAL_PORT_USBVIRTUAL
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {}
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
+        // wait
+    }
 #endif
     /** End [setup_wait] */
 
@@ -3011,6 +3013,7 @@ void loop() {
         dataLogger.logDataAndPublish();
     }
 }
+
 /** End [simple_loop] */
 
 #else

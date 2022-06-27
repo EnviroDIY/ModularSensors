@@ -60,7 +60,8 @@ bool EspressifESP8266::ESPwaitForBoot(void) {
     delay(200);  // It will take at least this long
     uint32_t start   = millis();
     bool     success = false;
-    while (!_modemStream->available() && millis() - start < 1000) { /* wait */
+    while (!_modemStream->available() && millis() - start < 1000) {
+        // wait
     }
     if (_modemStream->available()) {
         success = true;

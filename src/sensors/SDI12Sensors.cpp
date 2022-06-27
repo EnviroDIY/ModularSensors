@@ -428,7 +428,9 @@ bool SDI12Sensors::getResults(void) {
         // Wait for the first few charaters to arrive.  The response from a data
         // request should always have more than three characters
         uint32_t start = millis();
-        while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
+        while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {
+            // wait
+        }
         // read the returned address to remove it from the buffer
         char returnedAddress = _SDI12Internal.read();
         // print out a warning if the address doesn't match up

@@ -186,6 +186,7 @@ void loop() {
     gsmModem.poweroff();
     DBG("Powering down.");
 
-    // And do nothing forever more.
-    while (1) {}
+    while (1) {
+        // And do nothing forever more.
+    }
 }

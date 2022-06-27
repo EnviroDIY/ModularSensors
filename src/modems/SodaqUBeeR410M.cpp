@@ -92,7 +92,9 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
             }
 
             // But at least 0.15s
-            while (millis() - startTimer < 150) {}
+            while (millis() - startTimer < 150) {
+                // wait
+            }
             // Say how long we pulsed for
             MS_DBG(F("Pulsed for"), millis() - startTimer, F("ms"));
 

@@ -94,3 +94,5 @@ cache
 docs/output_copyFunctions.log
 docs/output_documentExamples.log
 docs/output_fixSectionsInXml.log
+examples/DRWI_Mayfly1_Wifi_5tm_ds18b20_1/DRWI_Mayfly1_Wifi_5tm_ds18b20_1.ino
+clang_format_all.bat

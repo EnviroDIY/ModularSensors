@@ -149,7 +149,9 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         // seconds.  NIST clearly specifies here that this is a requirement for
         // all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
-        while (millis() < _lastNISTrequest + 4000) {}
+        while (millis() < _lastNISTrequest + 4000) {
+            // wait
+        }
 
         // Make TCP connection
         MS_DBG(F("\nConnecting to NIST daytime Server"));
@@ -170,7 +172,9 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         if (connectionMade) {
             uint32_t start = millis();
             while (gsmClient && gsmClient.available() < 4 &&
-                   millis() - start < 5000L) {}
+                   millis() - start < 5000L) {
+                // wait
+            }
 
             if (gsmClient.available() >= 4) {
                 MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
@@ -207,12 +211,15 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t& rssi, int16_t& percent) {
     IPAddress ip(132, 163, 97, 6);
     gsmClient.connect(ip, 37);
     // Wait so NIST doesn't refuse us!
-    while (millis() < _lastNISTrequest + 4000) {}
+    while (millis() < _lastNISTrequest + 4000) {
+        // wait
+    }
     // Need to send something before connection is made
     gsmClient.println('!');
     uint32_t start = millis();
     delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
     while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L) {
+        // wait
     }
 
     // Get signal quality

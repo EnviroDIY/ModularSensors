@@ -210,7 +210,9 @@ bool loggerModem::modemSleepPowerDown(void) {
                    _statusPin, F("going"), !_statusLevel ? F("HIGH") : F("LOW"),
                    F("..."));
             while (millis() - start < _disconnetTime_ms &&
-                   digitalRead(_statusPin) == static_cast<int>(_statusLevel)) {}
+                   digitalRead(_statusPin) ==
+                       static_cast<int>(_statusLevel)) {  // wait
+            }
             if (digitalRead(_statusPin) == static_cast<int>(_statusLevel)) {
                 MS_DBG(F("... "), getModemName(),
                        F("did not successfully shut down!"));
@@ -221,13 +223,10 @@ bool loggerModem::modemSleepPowerDown(void) {
         } else if (_disconnetTime_ms > 0) {
             MS_DBG(F("Waiting"), _disconnetTime_ms,
                    F("ms for graceful shutdown."));
-            while (millis() - start < _disconnetTime_ms) {}
+            while (millis() - start < _disconnetTime_ms) {
+                // wait
+            }
         }
-
-        // loggerModem::_priorPoweredDuration =
-        //     (static_cast<float>(millis() - _millisPowerOn)) / 1000;
-        // MS_DBG(F("Total modem power-on time (s):"),
-        //        String(loggerModem::_priorPoweredDuration, 3));
 
         MS_DBG(F("Turning off power to"), getModemName(), F("with pin"),
                _powerPin);
