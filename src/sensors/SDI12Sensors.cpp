@@ -209,7 +209,7 @@ bool SDI12Sensors::getSensorInfo(void) {
         MS_DBG(F("   Sensor Model:"), _sensorModel);
         _sensorVersion = sdiResponse.substring(17, 20);
         _sensorVersion.trim();
-        MS_DBG(F("    Sensor Version:"), _sensorVersion);
+        MS_DBG(F("   Sensor Version:"), _sensorVersion);
         _sensorSerialNumber = sdiResponse.substring(20);
         _sensorSerialNumber.trim();
         MS_DBG(F("   Sensor Serial Number:"), _sensorSerialNumber);
