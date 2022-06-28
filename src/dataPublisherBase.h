@@ -266,7 +266,7 @@ class dataPublisher {
      * @param state A result code returned by a PubSubClient action
      * @return **String** The meaning of the code
      */
-    String parseMQTTState(int state) const;
+    String parseMQTTState(int state);
 
 
  protected:
