@@ -95,19 +95,18 @@ const int32_t   modemBaud   = 115200;   // Communication speed of the modem
 // NOTE:  Use -1 for pins that do not apply
 // Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
 // Mayfly 1.1
-const int8_t modemVccPin    = 18;      // MCU pin controlling modem power
-const int8_t modemStatusPin = -1;      // MCU pin used to read modem status
-const int8_t modemResetPin  = A5;      // MCU pin connected to modem reset pin
-const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
-                                       // status
+const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
+const int8_t modemResetPin = A5;      // MCU pin connected to modem reset pin
+const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
+                                      // status
 
 // Network connection information
 const char* wifiId  = "xxxxx";  // WiFi access point name
 const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
 
 // Create the modem object
-EspressifESP32 modemESP(&modemSerial, modemVccPin, modemStatusPin,
-                        modemResetPin, wifiId, wifiPwd);
+EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
+                        wifiPwd);
 // Create an extra reference to the modem by a generic name
 EspressifESP32 modem = modemESP;
 /** End [espressif_esp32] */

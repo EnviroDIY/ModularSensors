@@ -45,21 +45,11 @@
  */
 #define MS_IS_MODEM_AWAKE(specificModem)                                       \
     bool specificModem::isModemAwake(void) {                                   \
-        if (_wakePulse_ms > 0 && _statusPin >= 0) {                            \
-            /** If there's a pulse wake up (ie, non-zero wake time) and        \
-               there's a status pin, use that to determine if the modem was    \
-               awake before setup began. */                                    \
-            bool levelNow = digitalRead(_statusPin);                           \
-            MS_DBG(getModemName(), F("status pin"), _statusPin, F("level = "), \
-                   levelNow ? F("HIGH") : F("LOW"), F("meaning"),              \
-                   getModemName(), F("should be"),                             \
-                   levelNow == _statusLevel ? F("on") : F("off"));             \
-            return levelNow == _statusLevel;                                   \
-        } else if (_wakePulse_ms == 0) {                                       \
-            /** If the wake up is one where a pin is held (0 wake time) then   \
-               we're going to check the level of the held pin as the           \
-               indication of whether attempts were made to wake the modem      \
-               before entering the setup function. */                          \
+        if (_wakePulse_ms == 0 && _modemSleepRqPin >= 0) {                     \
+            /** If the wake up is one where a pin is held (0 wake time) and    \
+             * that pin is defined, then we're going to check the level of the \
+             * held pin as the indication of whether attempts were made to     \
+             * wake the modem before entering the setup function. */           \
             int8_t sleepRqBitNumber =                                          \
                 log(digitalPinToBitMask(_modemSleepRqPin)) / log(2);           \
             bool currentRqPinState = bitRead(                                  \
@@ -70,9 +60,18 @@
                    F("meaning"), getModemName(), F("should be"),               \
                    currentRqPinState == _wakeLevel ? F("on") : F("off"));      \
             return (currentRqPinState == _wakeLevel);                          \
-        } else if (_statusPin < 0) {                                           \
-            /** If there's no status pin, but still a pulsed wake up, try      \
-               checking if the modem responds to AT commands. */               \
+        } else if (_statusPin >= 0) {                                          \
+            /** If there's a status pin, use that to determine if the modem is \
+             * awake. */                                                       \
+            bool levelNow = digitalRead(_statusPin);                           \
+            MS_DBG(getModemName(), F("status pin"), _statusPin, F("level = "), \
+                   levelNow ? F("HIGH") : F("LOW"), F("meaning"),              \
+                   getModemName(), F("should be"),                             \
+                   levelNow == _statusLevel ? F("on") : F("off"));             \
+            return levelNow == _statusLevel;                                   \
+        } else {                                                               \
+            /** If we can't determine status by pin level, try checking if the \
+             * modem responds to AT commands. */                               \
             int8_t i   = 5;                                                    \
             bool   res = false;                                                \
             while (i && !res) {                                                \
@@ -87,8 +86,6 @@
                    getModemName(),                                             \
                    res ? F("must be awake") : F("is probably asleep"));        \
             return res;                                                        \
-        } else { /*shouldn't get here*/                                        \
-            return true;                                                       \
         }                                                                      \
     }
 
@@ -110,10 +107,13 @@
           Because the modem calls wake BEFORE the first setup, we must set     \
           the pin modes in the wake function. */                               \
         setModemPinModes();                                                    \
-                                                                               \
-        MS_DBG(F("Wait"), _wakeDelayTime_ms - (millis() - _millisPowerOn),     \
-               F("ms longer for warm-up"));                                    \
-        while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}               \
+        if (millis() - _millisPowerOn < _wakeDelayTime_ms) {                   \
+            MS_DBG(F("Wait"), _wakeDelayTime_ms - (millis() - _millisPowerOn), \
+                   F("ms longer for warm-up"));                                \
+            while (millis() - _millisPowerOn < _wakeDelayTime_ms) {            \
+                /* wait*/                                                      \
+            }                                                                  \
+        }                                                                      \
                                                                                \
         if (isModemAwake()) {                                                  \
             MS_DBG(getModemName(),                                             \
@@ -263,7 +263,10 @@
         /** Check if the modem was awake, wake it if not */                  \
         bool wasAwake = isModemAwake();                                      \
         if (!wasAwake) {                                                     \
-            while (millis() - _millisPowerOn < _wakeDelayTime_ms) {}         \
+            MS_DBG(F("Waiting for modem to boot after power on ..."));       \
+            while (millis() - _millisPowerOn < _wakeDelayTime_ms) {          \
+                /** wait */                                                  \
+            }                                                                \
             MS_DBG(F("Waking up the modem to connect to the internet ...")); \
             success &= modemWake();                                          \
         } else {                                                             \
@@ -360,23 +363,56 @@
  * @return The text of a connectInternet(uint32_t maxConnectionTime) function
  * specific to a single modem subclass.
  */
-#define MS_MODEM_CONNECT_INTERNET(specificModem)                      \
-    bool specificModem::connectInternet(uint32_t maxConnectionTime) { \
-        MS_START_DEBUG_TIMER                                          \
-        MS_DBG(F("\nAttempting to connect to WiFi network..."));      \
-        if (!(gsmModem.isNetworkConnected())) {                       \
-            MS_DBG(F("Sending credentials..."));                      \
-            while (!gsmModem.networkConnect(_ssid, _pwd)) {}          \
-            MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,      \
-                   F("seconds for connection"));                      \
-            if (!gsmModem.waitForNetwork(maxConnectionTime)) {        \
-                MS_DBG(F("... WiFi connection failed"));              \
-                return false;                                         \
-            }                                                         \
-        }                                                             \
-        MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,   \
-               F("milliseconds!"));                                   \
-        return true;                                                  \
+#define MS_MODEM_CONNECT_INTERNET(specificModem)                             \
+    bool specificModem::connectInternet(uint32_t maxConnectionTime) {        \
+        bool success = true;                                                 \
+                                                                             \
+        /** Power up, if necessary */                                        \
+        bool wasPowered = true;                                              \
+        if (_millisPowerOn == 0) {                                           \
+            modemPowerUp();                                                  \
+            wasPowered = false;                                              \
+        }                                                                    \
+                                                                             \
+        /** Check if the modem was awake, wake it if not */                  \
+        bool wasAwake = isModemAwake();                                      \
+        if (!wasAwake) {                                                     \
+            MS_DBG(F("Waiting for modem to boot after power on ..."));       \
+            while (millis() - _millisPowerOn <                               \
+                   _wakeDelayTime_ms) { /** wait */                          \
+            }                                                                \
+            MS_DBG(F("Waking up the modem to connect to the internet ...")); \
+            success &= modemWake();                                          \
+        } else {                                                             \
+            MS_DBG(F("Modem was already awake and should be ready."));       \
+        }                                                                    \
+                                                                             \
+        if (success) {                                                       \
+            MS_START_DEBUG_TIMER                                             \
+            MS_DBG(F("\nAttempting to connect to WiFi network..."));         \
+            if (!(gsmModem.isNetworkConnected())) {                          \
+                MS_DBG(F("Sending credentials..."));                         \
+                for (uint8_t i = 0; i < 5; i++) {                            \
+                    if (gsmModem.networkConnect(_ssid, _pwd)) { break; }     \
+                }                                                            \
+                MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,         \
+                       F("seconds for connection"));                         \
+                if (!gsmModem.waitForNetwork(maxConnectionTime)) {           \
+                    MS_DBG(F("... WiFi connection failed"));                 \
+                    return false;                                            \
+                }                                                            \
+            }                                                                \
+            MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,      \
+                   F("milliseconds!"));                                      \
+        }                                                                    \
+        if (!wasPowered) {                                                   \
+            MS_DBG(F("Modem was powered to connect to the internet!  "       \
+                     "Remember to turn it off when you're done."));          \
+        } else if (!wasAwake) {                                              \
+            MS_DBG(F("Modem was woken up to connect to the internet!   "     \
+                     "Remember to put it to sleep when you're done."));      \
+        }                                                                    \
+        return success;                                                      \
     }
 
 /**
@@ -432,7 +468,7 @@
                                                                               \
         /** Try up to 12 times to get a timestamp from NIST. */               \
         for (uint8_t i = 0; i < 12; i++) {                                    \
-            while (millis() < _lastNISTrequest + 4000) {}                     \
+            while (millis() < _lastNISTrequest + 4000) { /* wait */ }         \
                                                                               \
             /** Make TCP connection. */                                       \
             MS_DBG(F("\nConnecting to NIST daytime Server"));                 \

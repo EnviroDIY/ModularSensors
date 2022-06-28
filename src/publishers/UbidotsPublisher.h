@@ -246,7 +246,7 @@ class UbidotsPublisher : public dataPublisher {
 
  private:
     // Tokens for Ubidots
-    const char* _authentificationToken;
+    const char* _authentificationToken = nullptr;
 };
 
 #endif  // SRC_PUBLISHERS_UBIDOTSPUBLISHER_H_

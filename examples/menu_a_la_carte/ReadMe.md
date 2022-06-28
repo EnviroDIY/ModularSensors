@@ -400,9 +400,7 @@ This code is for the Espressif ESP8266 or ESP32 operating with "AT" firmware.
 To create a EspressifESP8266 object we need to know
 - the serial object name,
 - the MCU pin controlling modem power,
-- the light sleep status pin (on both ESP and MCU),
 - the reset pin (MCU pin connected to the ESP's `RSTB/DIO16`),
-- the light sleep wake pin (on both the ESP and the MCU),
 - the wifi access point name,
 - and the wifi WPA2 password.
 

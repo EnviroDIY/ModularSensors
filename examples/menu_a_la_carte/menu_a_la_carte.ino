@@ -442,29 +442,18 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  Use -1 for pins that do not apply
 // Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
 // Mayfly 1.1
-const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
-const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = 19;  // MCU pin for wake from light sleep
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
-                                    // status
-// Pins for light sleep on the ESP8266. For power savings, I recommend
-// NOT using these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = 13;  // GPIO# ON THE ESP8266 to assign for light
-                                  // sleep request
-const int8_t espStatusPin = -1;   // GPIO# ON THE ESP8266 to assign for light
-                                  // sleep status
+const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
+const int8_t modemResetPin = A5;      // MCU pin connected to modem reset pin
+const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
+                                      // status
 
 // Network connection information
 const char* wifiId  = "xxxxx";  // WiFi access point name
 const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
 
 // Create the modem object
-EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
-                          modemResetPin, modemSleepRqPin, wifiId, wifiPwd,
-                          espSleepRqPin,
-                          espStatusPin  // Optional arguments
-);
+EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
+                          wifiPwd);
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
 /** End [espressif_esp8266] */
@@ -2787,7 +2776,9 @@ void setup() {
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
 #if defined SERIAL_PORT_USBVIRTUAL
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {}
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
+        // wait
+    }
 #endif
     /** End [setup_wait] */
 
@@ -3051,6 +3042,7 @@ void loop() {
         dataLogger.logDataAndPublish();
     }
 }
+
 /** End [simple_loop] */
 
 #else

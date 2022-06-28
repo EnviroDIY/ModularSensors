@@ -19,7 +19,8 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
              ALSPT19_MEASUREMENT_TIME_MS, powerPin, dataPin,
              measurementsToAverage),
-      _supplyVoltage(supplyVoltage), _loadResistor(loadResistor) {}
+      _supplyVoltage(supplyVoltage),
+      _loadResistor(loadResistor) {}
 EverlightALSPT19::EverlightALSPT19(uint8_t measurementsToAverage)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
@@ -65,7 +66,8 @@ bool EverlightALSPT19::addSingleMeasurementResult(void) {
             sensor_adc = 1;
         }
         // convert bits to volts
-        volt_val = (_supplyVoltage / ALSPT19_ADC_MAX) * sensor_adc;
+        volt_val = (_supplyVoltage / static_cast<float>(ALSPT19_ADC_MAX)) *
+            static_cast<float>(sensor_adc);
         // convert volts to current
         // resistance is entered in kΩ and we want µA
         current_val = (volt_val / (_loadResistor * 1000)) * 1e6;

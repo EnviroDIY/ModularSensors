@@ -46,30 +46,32 @@ bool AtlasScientificEC::setup() {
     MS_DBG(F("Asking"), getSensorNameAndLocation(),
            F("to report conductivity"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t*)"O,EC,1", 6);  // Enable conductivity
-    success &= !_i2c->endTransmission();
+    // Enable conductivity
+    success &= static_cast<bool>(_i2c->write((const uint8_t*)"O,EC,1", 6));
+    success &= !static_cast<bool>(_i2c->endTransmission());
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(),
            F("to report total dissolved solids"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t*)"O,TDS,1",
-                           7);  // Enable total dissolved solids
-    success &= !_i2c->endTransmission();
+    // Enable total dissolved solids
+    success &= static_cast<bool>(_i2c->write((const uint8_t*)"O,TDS,1", 7));
+    success &= !static_cast<bool>(_i2c->endTransmission());
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report salinity"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t*)"O,S,1", 5);  // Enable salinity
-    success &= !_i2c->endTransmission();
+    // Enable salinity
+    success &= static_cast<bool>(_i2c->write((const uint8_t*)"O,S,1", 5));
+    success &= !static_cast<bool>(_i2c->endTransmission());
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(),
            F("to report specific gravity"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t*)"O,SG,1",
-                           6);  // Enable specific gravity
-    success &= !_i2c->endTransmission();
+    // Enable specific gravity
+    success &= static_cast<bool>(_i2c->write((const uint8_t*)"O,SG,1", 6));
+    success &= !static_cast<bool>(_i2c->endTransmission());
     success &= waitForProcessing();
 
     if (!success) {

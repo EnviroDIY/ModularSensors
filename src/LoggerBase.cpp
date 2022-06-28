@@ -42,8 +42,9 @@ RTCZero Logger::zero_sleep_rtc;
 
 // Constructors
 Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
-               int8_t SDCardSSPin, int8_t mcuWakePin,
-               VariableArray* inputArray) {
+               int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray)
+    : _SDCardSSPin(SDCardSSPin),
+      _mcuWakePin(mcuWakePin) {
     // Set parameters from constructor
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);
@@ -57,27 +58,11 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     // Set the initial pin values
     // NOTE: Only setting values here, not the pin mode.
     // The pin mode can only be set at run time, not here at compile time.
-    _SDCardPowerPin = -1;
-    _SDCardSSPin    = SDCardSSPin;
-    _mcuWakePin     = mcuWakePin;
-    _ledPin         = -1;
-    _buttonPin      = -1;
-
-    // Initialize with no file name
-    _fileName = "";
-
-    // Start with no feature UUID
-    _samplingFeatureUUID = NULL;
-
-    // Start with no modem attached
-    _logModem = NULL;
 
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = NULL;
+        dataPublishers[i] = nullptr;
     }
-
-    // MS_DBG(F("Logger object created"));
 }
 Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
                VariableArray* inputArray) {
@@ -91,28 +76,10 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
     isTestingNow = false;
     startTesting = false;
 
-    // Set the initial pin values
-    _SDCardPowerPin = -1;
-    _SDCardSSPin    = -1;
-    _mcuWakePin     = -1;
-    _ledPin         = -1;
-    _buttonPin      = -1;
-
-    // Initialize with no file name
-    _fileName = "";
-
-    // Start with no feature UUID
-    _samplingFeatureUUID = NULL;
-
-    // Start with no modem attached
-    _logModem = NULL;
-
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = NULL;
+        dataPublishers[i] = nullptr;
     }
-
-    // MS_DBG(F("Logger object created"));
 }
 Logger::Logger() {
     // Set the testing/logging flags to false
@@ -120,28 +87,10 @@ Logger::Logger() {
     isTestingNow = false;
     startTesting = false;
 
-    // Set the initial pin values
-    _SDCardPowerPin = -1;
-    _SDCardSSPin    = -1;
-    _mcuWakePin     = -1;
-    _ledPin         = -1;
-    _buttonPin      = -1;
-
-    // Initialize with no file name
-    _fileName = "";
-
-    // Start with no feature UUID
-    _samplingFeatureUUID = NULL;
-
-    // Start with no modem attached
-    _logModem = NULL;
-
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = NULL;
+        dataPublishers[i] = nullptr;
     }
-
-    // MS_DBG(F("Logger object created"));
 }
 // Destructor
 Logger::~Logger() {}
@@ -339,7 +288,7 @@ void Logger::attachModem(loggerModem& modem) {
 // Takes advantage of the modem to synchronize the clock
 bool Logger::syncRTC() {
     bool success = false;
-    if (_logModem != NULL) {
+    if (_logModem != nullptr) {
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to connect to the internet and synchronize RTC "
                    "with NIST"));
@@ -359,10 +308,21 @@ bool Logger::syncRTC() {
         // Power down the modem - but only if there will be more than 15 seconds
         // before the NEXT logging interval - it can take the modem that long to
         // shut down
-        if (Logger::getNowLocalEpoch() % (_loggingIntervalMinutes * 60) > 15) {
-            Serial.println(F("Putting modem to sleep"));
+
+        uint32_t setupFinishTime = getNowLocalEpoch();
+        if (setupFinishTime % (_loggingIntervalMinutes * 60) > 15) {
+            MS_DBG(F("At"), formatDateTime_ISO8601(setupFinishTime), F("with"),
+                   setupFinishTime % (_loggingIntervalMinutes * 60),
+                   F("seconds until next logging interval, putting modem to "
+                     "sleep"));
             _logModem->disconnectInternet();
             _logModem->modemSleepPowerDown();
+        } else {
+            MS_DBG(F("At"), formatDateTime_ISO8601(setupFinishTime),
+                   F("there are only"),
+                   setupFinishTime % (_loggingIntervalMinutes * 60),
+                   F("seconds until next logging interval; leaving modem on "
+                     "and connected to the internet."));
         }
     }
     watchDogTimer.resetWatchDog();
@@ -378,7 +338,7 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
             MS_DBG(F("dataPublisher already registered."));
             return;
         }
-        if (dataPublishers[i] == NULL) break;
+        if (dataPublishers[i] == nullptr) break;
     }
 
     // register the publisher there
@@ -390,10 +350,9 @@ void Logger::publishDataToRemotes(void) {
     MS_DBG(F("Sending out remote data."));
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        if (dataPublishers[i] != NULL) {
+        if (dataPublishers[i] != nullptr) {
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
-            // dataPublishers[i]->publishData(_logModem->getClient());
             dataPublishers[i]->publishData();
             watchDogTimer.resetWatchDog();
         }
@@ -533,7 +492,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
     // Convert the DateTime object to a String
     dt.addToString(dateTimeStr);
     dateTimeStr.replace(" ", "T");
-    String tzString = String(_loggerTimeZone);
+    auto tzString = String(_loggerTimeZone);
     if (-24 <= _loggerTimeZone && _loggerTimeZone <= -10) {
         tzString += F(":00");
     } else if (-10 < _loggerTimeZone && _loggerTimeZone < 0) {
@@ -550,10 +509,9 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
     return dateTimeStr;
 }
 
-
-// This converts an epoch time (unix time) into a ISO8601 formatted string
-// It assumes the supplied date/time is in the LOGGER's timezone and adds
-// the LOGGER's offset as the time zone offset in the string.
+// This converts an epoch time (unix time) into a ISO8601 formatted string.
+// It assumes the supplied date/time is in the LOGGER's timezone and adds the
+// LOGGER's offset as the time zone offset in the string.
 String Logger::formatDateTime_ISO8601(uint32_t epochTime) {
     // Create a DateTime object from the epochTime
     DateTime dt = dtFromEpoch(epochTime);
@@ -902,7 +860,9 @@ void Logger::systemSleep(void) {
         USBDevice.attach();
 #endif
         uint32_t startTimer = millis();
-        while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {}
+        while (!SERIAL_PORT_USBVIRTUAL && ((millis() - startTimer) < 1000L)) {
+            // wait
+        }
     }
 #endif
 
@@ -978,7 +938,7 @@ void Logger::setFileName(String& fileName) {
 }
 // Same as above, with a character array (overload function)
 void Logger::setFileName(const char* fileName) {
-    String StrName = String(fileName);
+    auto StrName = String(fileName);
     setFileName(StrName);
 }
 
@@ -988,7 +948,7 @@ void Logger::setFileName(const char* fileName) {
 // the begin() function is called.
 void Logger::generateAutoFileName(void) {
     // Generate the file name from logger ID and date
-    String fileName = String(_loggerID);
+    auto fileName = String(_loggerID);
     fileName += "_";
     fileName += formatDateTime_ISO8601(getNowLocalEpoch()).substring(0, 10);
     fileName += ".csv";
@@ -1027,7 +987,6 @@ void Logger::printFileHeader(Stream* stream) {
     // Adding the sampling feature UUID (only applies to EnviroDIY logger)
     if (strlen(_samplingFeatureUUID) > 1) {
         stream->print(F("Sampling Feature UUID: "));
-        // stream->println(_samplingFeatureUUID);
         stream->print(_samplingFeatureUUID);
         stream->println(',');
     }
@@ -1051,7 +1010,7 @@ void Logger::printFileHeader(Stream* stream) {
     } else if (_loggerTimeZone < 0) {
         dtRowHeader += _loggerTimeZone;
     }
-    STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i));
+    STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i))
 }
 
 
@@ -1083,7 +1042,7 @@ bool Logger::initializeSDCard(void) {
         PRINTOUT(F("Data will not be saved!"));
         return false;
     } else {
-        // skip everything else if there's no SD card, otherwise it might hang
+        // skip everything else if there's no SD card, otherwise it mighthang
         MS_DBG(F("Successfully connected to SD Card with card/slave select on "
                  "pin"),
                _SDCardSSPin);
@@ -1112,8 +1071,8 @@ bool Logger::openFile(String& filename, bool createFile,
     if (!initializeSDCard()) return false;
 
     // Convert the string filename to a character file name for SdFat
-    uint8_t fileNameLength = filename.length() + 1;
-    char    charFileName[fileNameLength];
+    unsigned int fileNameLength = filename.length() + 1;
+    char         charFileName[fileNameLength];
     filename.toCharArray(charFileName, fileNameLength);
 
     // First attempt to open an already existing file (in write mode), so we
@@ -1172,7 +1131,6 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader) {
     // Attempt to create and open a file
     if (openFile(filename, true, writeDefaultHeader)) {
         // Close the file to save it (only do this if we'd opened it)
-        // logFile.sync();
         logFile.close();
         PRINTOUT(F("Data will be saved as"), _fileName);
         return true;
@@ -1196,6 +1154,8 @@ bool Logger::createLogFile(bool writeDefaultHeader) {
 bool Logger::logToSD(String& filename, String& rec) {
     // First attempt to open the file without creating a new one
     if (!openFile(filename, false, false)) {
+        PRINTOUT(F("Could not write to existing file on SD card, attempting to "
+                   "create a file!"));
         // Next try to create the file, bail if we couldn't create it
         // This will not attempt to generate a new file name or add a header!
         if (!openFile(filename, true, false)) {
@@ -1215,7 +1175,6 @@ bool Logger::logToSD(String& filename, String& rec) {
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    // logFile.sync();
     logFile.close();
     return true;
 }
@@ -1256,7 +1215,6 @@ bool Logger::logToSD(void) {
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    // logFile.sync();
     logFile.close();
     return true;
 }
@@ -1265,36 +1223,6 @@ bool Logger::logToSD(void) {
 // ===================================================================== //
 // Public functions for a "sensor testing" mode
 // ===================================================================== //
-
-// This checks to see if you want to enter the sensor mode
-// This should be run as the very last step within the setup function
-/***
-void Logger::checkForTestingMode(int8_t buttonPin)
-{
-    // Set the pin attached to some button to enter debug mode
-    if (buttonPin >= 0) pinMode(buttonPin, INPUT_PULLUP);
-
-    // Flash the LED to let user know it is now possible to enter debug mode
-    for (uint8_t i = 0; i < 15; i++)
-    {
-        digitalWrite(_ledPin, HIGH);
-        delay(50);
-        digitalWrite(_ledPin, LOW);
-        delay(50);
-    }
-
-    // Look for up to 5 seconds for a button press
-    PRINTOUT(F("Push button NOW to enter sensor testing mode."));
-    for (uint32_t start = millis(); millis() - start < 5000; )
-    {
-        if (digitalRead(buttonPin) == HIGH) testingMode();
-    }
-    PRINTOUT(F("------------------------------------------\n"));
-    PRINTOUT(F("End of sensor testing mode."));
-}
-***/
-
-
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR() {
     MS_DEEP_DBG(F("Testing interrupt!"));
@@ -1317,14 +1245,20 @@ void Logger::testingMode() {
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Get the modem ready
-    if (_logModem != NULL) {
-        _logModem->modemPowerUp();
-        _logModem->modemWake();
-        // Connect to the network
-        watchDogTimer.resetWatchDog();
-        MS_DBG(F("Connecting to the Internet..."));
-        _logModem->connectInternet();
-        watchDogTimer.resetWatchDog();
+
+    bool gotInternetConnection = false;
+    if (_logModem != nullptr) {
+        MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+        if (_logModem->modemWake()) {
+            // Connect to the network
+            watchDogTimer.resetWatchDog();
+            MS_DBG(F("Connecting to the Internet..."));
+            if (_logModem->connectInternet()) {
+                gotInternetConnection = true;
+                // Publish data to remotes
+                watchDogTimer.resetWatchDog();
+            }
+        }
     }
 
     // Power up all of the sensors
@@ -1346,12 +1280,12 @@ void Logger::testingMode() {
         // which getModemSignalQuality() does.  For all of the other modules,
         // getModemSignalQuality() is just a straight pass-through to
         // getSignalQuality().
-        _logModem->updateModemMetadata();
+        if (gotInternetConnection) { _logModem->updateModemMetadata(); }
 
         watchDogTimer.resetWatchDog();
         // Update the values from all attached sensors
-        // NOTE:  NOT using complete update because we want everything left
-        // on between iterations in testing mode.
+        // NOTE:  NOT using complete update because we want the sensors to be
+        // left on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is"),
@@ -1373,8 +1307,8 @@ void Logger::testingMode() {
     _internalArray->sensorsPowerDown();
 
     // Turn the modem off
-    if (_logModem != NULL) {
-        _logModem->disconnectInternet();
+    if (_logModem != nullptr) {
+        if (gotInternetConnection) { _logModem->disconnectInternet(); }
         _logModem->modemSleepPowerDown();
     }
 
@@ -1414,7 +1348,6 @@ void Logger::begin() {
 
     MS_DBG(F(
         "Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
-    // watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
     watchDogTimer.setupWatchDog((uint32_t)(5 * 60 * 3));
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
@@ -1475,7 +1408,7 @@ void Logger::begin() {
              _internalArray->getCalculatedVariableCount(),
              F("are calculated."));
 
-    if (_samplingFeatureUUID != NULL) {
+    if (_samplingFeatureUUID != nullptr) {
         PRINTOUT(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
@@ -1556,17 +1489,24 @@ void Logger::logDataAndPublish(void) {
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
         // values, and turing them back off.
-        // NOTE:  The wake function for each sensor should force sensor setup
-        // to run if the sensor was not previously set up.
+        // NOTE:  The wake function for each sensor should force sensor setup to
+        // run if the sensor was not previously set up.
         MS_DBG(F("Running a complete sensor update..."));
         watchDogTimer.resetWatchDog();
         _internalArray->completeUpdate();
         watchDogTimer.resetWatchDog();
 
+// Print out the sensor data
+#if defined(STANDARD_SERIAL_OUTPUT)
+        MS_DBG('\n');
+        _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
+        MS_DBG('\n');
+#endif
+
         // Create a csv data record and save it to the log file
         logToSD();
 
-        if (_logModem != NULL) {
+        if (_logModem != nullptr) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
             if (_logModem->modemWake()) {
                 // Connect to the network
@@ -1604,11 +1544,11 @@ void Logger::logDataAndPublish(void) {
         }
 
 
-        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
-        // passed for internal SD card housekeeping before cutting power It
-        // seems very unlikely based on my testing that less than one second
-        // would be taken up in publishing data to remotes
         // Cut power from the SD card - without additional housekeeping wait
+        // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
+        // passed for internal SD card housekeeping before cutting power -
+        // although it seems very unlikely based on my testing that less than
+        // one second would be taken up in publishing data to remotes.
         turnOffSDcard(false);
 
         // Turn off the LED

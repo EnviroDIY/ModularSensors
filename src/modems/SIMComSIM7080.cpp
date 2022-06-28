@@ -26,8 +26,8 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem) {
-    _apn = apn;
+      gsmClient(gsmModem),
+      _apn(apn) {
 }
 
 // Destructor

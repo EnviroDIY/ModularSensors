@@ -16,9 +16,9 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
     : Sensor("AOSongDHT", DHT_NUM_VARIABLES, DHT_WARM_UP_TIME_MS,
              DHT_STABILIZATION_TIME_MS, DHT_MEASUREMENT_TIME_MS, powerPin,
              dataPin, measurementsToAverage, DHT_INC_CALC_VARIABLES),
-      dht_internal(dataPin, type) {
-    _dhtType = type;
-}
+      dht_internal(dataPin, type),
+      _dhtType(type) {}
+
 // Destructor - does nothing.
 AOSongDHT::~AOSongDHT() {}
 

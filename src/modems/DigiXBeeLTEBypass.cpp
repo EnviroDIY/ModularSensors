@@ -24,8 +24,8 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem) {
-    _apn = apn;
+      gsmClient(gsmModem),
+      _apn(apn) {
 }
 
 // Destructor
@@ -107,13 +107,6 @@ bool DigiXBeeLTEBypass::extraModemSetup(void) {
         /* Make sure USB direct is NOT enabled on the XBee3 units. */
         gsmModem.sendAT(GF("P1"), 0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // MS_DBG(F("Setting Cellular Carrier Options..."));
-        // // Carrier Profile - 1 = No profile/SIM ICCID selected
-        // gsmModem.sendAT(GF("CP"),1);
-        // success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // // Cellular network technology - LTE-M/NB IoT
-        // gsmModem.sendAT(GF("N#"),0);
-        // success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         /** Make sure airplane mode is off - bypass and airplane mode are
          * incompatible. */
         MS_DBG(F("Making sure airplane mode is off..."));
