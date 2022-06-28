@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed non-concurrent data fetch for SDI-12 when *NOT* using debugging.
 - Fixed internet connection when in "testing mode"
+- Allow a non-zero wait time for SDI-12 sensors
 
 ***
 

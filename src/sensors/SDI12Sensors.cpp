@@ -268,7 +268,7 @@ int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
     // Try up to 3 times to start a measurement
     uint8_t numVariables = 0;
     uint8_t ntries       = 0;
-    int8_t  wait         = 0;
+    int8_t  wait         = -1;  // NOTE: The wait time can be 0!
     while (numVariables != (_numReturnedValues - _incCalcValues) &&
            ntries < 5) {
         if (isConcurrent) {
@@ -358,7 +358,7 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     if (!wasActive) _SDI12Internal.end();
 
     // Set the times we've activated the sensor and asked for a measurement
-    if (wait > 0) {
+    if (wait >= 0) {
         MS_DBG(F("    Concurrent measurement started."));
         // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
@@ -537,7 +537,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         int8_t wait = startSDI12Measurement(false);
 
         // Set the times we've activated the sensor and asked for a measurement
-        if (wait > 0) {
+        if (wait >= 0) {
             MS_DBG(F("    NON-concurrent measurement started."));
             // Update the time that a measurement was requested
             _millisMeasurementRequested = millis();
