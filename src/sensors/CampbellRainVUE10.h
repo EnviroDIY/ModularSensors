@@ -83,13 +83,13 @@
 
  */
 /**@{*/
-/** @brief Sensor::_warmUpTime_ms; the RainVUE10 warms up in 5500ms.
+/** @brief Sensor::_warmUpTime_ms; the RainVUE10 warms up in >100ms.
  */
 #define RAINVUE10_WARM_UP_TIME_MS 100
 /// @brief Sensor::_stabilizationTime_ms; the RainVUE10 is stable as soon as it
 /// warms up (0ms stabilization).
 #define RAINVUE10_STABILIZATION_TIME_MS 0
-/** @brief Sensor::_measurementTime_ms; the RainVUE10 takes ~9500ms to
+/** @brief Sensor::_measurementTime_ms; the RainVUE10 takes >100ms to
  * complete a measurement.
  */
 #define RAINVUE10_MEASUREMENT_TIME_MS 100
