@@ -17,10 +17,10 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin,
     : Sensor("MaximDS18", DS18_NUM_VARIABLES, DS18_WARM_UP_TIME_MS,
              DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS, powerPin,
              dataPin, measurementsToAverage, DS18_INC_CALC_VARIABLES),
-      _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire) {
+      _addressKnown(true),
+      _internalOneWire(dataPin),
+      _internalDallasTemp(&_internalOneWire) {
     for (uint8_t i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
-    // _OneWireAddress = OneWireAddress;
-    _addressKnown = true;
 }
 // The constructor - if the hex address is NOT known - only need the power pin
 // and the data pin Can only use this if there is only a single sensor on the
@@ -30,9 +30,9 @@ MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin,
     : Sensor("MaximDS18", DS18_NUM_VARIABLES, DS18_WARM_UP_TIME_MS,
              DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS, powerPin,
              dataPin, measurementsToAverage, DS18_INC_CALC_VARIABLES),
-      _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire) {
-    _addressKnown = false;
-}
+      _addressKnown(false),
+      _internalOneWire(dataPin),
+      _internalDallasTemp(&_internalOneWire) {}
 // Destructor
 MaximDS18::~MaximDS18() {}
 
@@ -41,14 +41,14 @@ MaximDS18::~MaximDS18() {}
 String MaximDS18::makeAddressString(DeviceAddress owAddr) {
     String addrStr = F("Pin");
     addrStr += (_dataPin);
-    addrStr += ('{');
+    addrStr += '{';
     for (uint8_t i = 0; i < 8; i++) {
-        addrStr += ("0x");
-        if (owAddr[i] < 0x10) addrStr += ("0");
+        addrStr += "0x";
+        if (owAddr[i] < 0x10) addrStr += "0";
         addrStr += String(owAddr[i], HEX);
-        if (i < 7) addrStr += (",");
+        if (i < 7) addrStr += ",";
     }
-    addrStr += ('}');
+    addrStr += '}';
 
     return addrStr;
 }
@@ -194,7 +194,7 @@ bool MaximDS18::addSingleMeasurementResult(void) {
         } else {
             success = true;
         }
-        // MS_DBG(F("  Temperature:"), result, F("°C"));
+        MS_DBG(F("  Temperature:"), result, F("°C"));
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }

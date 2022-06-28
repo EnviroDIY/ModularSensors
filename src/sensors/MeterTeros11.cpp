@@ -16,14 +16,8 @@ bool MeterTeros11::getResults(void) {
     float raw  = -9999;
     float temp = -9999;
 
-    // MS_DEEP_DBG(F("   Activating SDI-12 instance for"),
-    //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
-    // if (wasActive) {
-    //     MS_DEEP_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-    //                 F("was already active!"));
-    // }
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set
     // correctly.
@@ -43,18 +37,20 @@ bool MeterTeros11::getResults(void) {
     // Wait for the first few charaters to arrive.  The response from a data
     // request should always have more than three characters
     uint32_t start = millis();
-    while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
+    while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {
+        // wait
+    }
     // read the returned address to remove it from the buffer
-    char returnedAddress = _SDI12Internal.read();
+    auto returnedAddress = static_cast<char>(_SDI12Internal.read());
     // print out a warning if the address doesn't match up
     if (returnedAddress != _SDI12address) {
         MS_DBG(F("Warning, expecting data from"), _SDI12address,
                F("but got data from"), returnedAddress);
     }
     // Start printing out the returned data
-    MS_DEEP_DBG(F("    <<<"), static_cast<char>(returnedAddress));
+    MS_DEEP_DBG(F("    <<<"), returnedAddress);
 
-    // read the '+' out of the buffer
+    // read the '+' out of the buffer, and print it if we're debugging
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
     MS_DEEP_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
 #else
@@ -63,7 +59,7 @@ bool MeterTeros11::getResults(void) {
 
     // Read the raw VWC counts
     raw = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DBG(F("    <<<"), String(raw, 10));
+    MS_DEEP_DBG(F("    <<<"), String(raw, 10));
 
     // read the next '+' out of the buffer
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
@@ -74,7 +70,7 @@ bool MeterTeros11::getResults(void) {
 
     // Now read the temperature
     temp = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DBG(F("    <<<"), String(temp, 10));
+    MS_DEEP_DBG(F("    <<<"), String(temp, 10));
 
     // read and dump anything else
     while (_SDI12Internal.available()) {
@@ -84,11 +80,6 @@ bool MeterTeros11::getResults(void) {
         _SDI12Internal.read();
 #endif
     }
-
-    // String sdiResponse = _SDI12Internal.readStringUntil('\n');
-    // sdiResponse.trim();
-    // _SDI12Internal.clearBuffer();
-    // MS_DEEP_DBG(F("    <<<"), sdiResponse);
 
     // Empty the buffer again
     _SDI12Internal.clearBuffer();

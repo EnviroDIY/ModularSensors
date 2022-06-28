@@ -44,17 +44,17 @@ bool AtlasScientificDO::setup() {
     MS_DBG(F("Asking"), getSensorNameAndLocation(),
            F("to report O2 concentration"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t*)"O,mg,1",
-                           6);  // Enable concentration in mg/L
-    success &= !_i2c->endTransmission();
+    // Enable concentration in mg/L
+    success &= static_cast<bool>(_i2c->write((const uint8_t*)"O,mg,1", 6));
+    success &= !static_cast<bool>(_i2c->endTransmission());
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(),
            F("to report O2 % saturation"));
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t*)"O,%,1",
-                           5);  // Enable percent saturation
-    success &= !_i2c->endTransmission();
+    // Enable percent saturation
+    success &= static_cast<bool>(_i2c->write((const uint8_t*)"O,%,1", 5));
+    success &= !static_cast<bool>(_i2c->endTransmission());
     success &= waitForProcessing();
 
     if (!success) {

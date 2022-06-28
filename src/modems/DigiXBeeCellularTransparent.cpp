@@ -25,10 +25,10 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
 #else
       gsmModem(*modemStream, modemResetPin),
 #endif
-      gsmClient(gsmModem) {
-    _apn  = apn;
-    _user = user;
-    _pwd  = pwd;
+      gsmClient(gsmModem),
+      _apn(apn),
+      _user(user),
+      _pwd(pwd) {
 }
 
 // Destructor
@@ -162,15 +162,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
         /** Set the socket timeout to 10s (this is default). */
         gsmModem.sendAT(GF("TM"), 64);
         success &= gsmModem.waitResponse() == 1;
-        // MS_DBG(F("Setting Cellular Carrier Options..."));
-        // // Carrier Profile - 1 = No profile/SIM ICCID selected
-        // gsmModem.sendAT(GF("CP"),0);
-        // gsmModem.waitResponse();  // Don't check for success - only works on
-        // LTE
-        // // Cellular network technology - LTE-M/NB IoT
-        // gsmModem.sendAT(GF("N#"),0);
-        // gsmModem.waitResponse();  // Don't check for success - only works on
-        // LTE
         MS_DBG(F("Setting the APN..."));
         /** Save the network connection parameters. */
         success &= gsmModem.gprsConnect(_apn, _user, _pwd);
@@ -198,49 +189,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void) {
     return success;
 }
 
-
-// Get the time from NIST via TIME protocol (rfc868)
-// This would be much more efficient if done over UDP, but I'm doing it
-// over TCP because I don't have a UDP library for all the modems.
-/*uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
-{
-    // bail if not connected to the internet
-    gsmModem.commandMode();
-    if (!gsmModem.isNetworkConnected())
-    {
-        MS_DBG(F("No internet connection, cannot connect to NIST."));
-        gsmModem.exitCommand();
-        return 0;
-    }
-
-    // We can get the NIST timestamp directly from the XBee
-    gsmModem.sendAT(GF("DT0"));
-    String res = gsmModem.readResponseString();
-    gsmModem.exitCommand();
-    MS_DBG(F("Raw hex response from XBee:"), res);
-    char buf[9] = {0,};
-    res.toCharArray(buf, 9);
-    uint32_t secFrom2000 = strtol(buf, 0, 16);
-    MS_DBG(F("Seconds from Jan 1, 2000 from XBee (UTC):"), secFrom2000);
-
-    // Convert from seconds since Jan 1, 2000 to 1970
-    uint32_t unixTimeStamp = secFrom2000 + 946684800 ;
-    MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
-
-    // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-    if (unixTimeStamp < 1546300800)
-    {
-        return 0;
-    }
-    else if (unixTimeStamp > 1893456000)
-    {
-        return 0;
-    }
-    else
-    {
-        return unixTimeStamp;
-    }
-}*/
 uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
     /* bail if not connected to the internet */
     if (!isInternetAvailable()) {
@@ -254,7 +202,9 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
         // seconds.  NIST clearly specifies here that this is a requirement for
         // all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
-        while (millis() < _lastNISTrequest + 4000) {}
+        while (millis() < _lastNISTrequest + 4000) {
+            // wait
+        }
 
         /* Make TCP connection */
         MS_DBG(F("\nConnecting to NIST daytime Server"));
@@ -273,7 +223,9 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void) {
         if (connectionMade) {
             uint32_t start = millis();
             while (gsmClient && gsmClient.available() < 4 &&
-                   millis() - start < 5000L) {}
+                   millis() - start < 5000L) {
+                // wait
+            }
 
             if (gsmClient.available() >= 4) {
                 MS_DBG(F("NIST responded after"), millis() - start, F("ms"));

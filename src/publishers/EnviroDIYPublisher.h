@@ -239,7 +239,7 @@ class EnviroDIYPublisher : public dataPublisher {
 
  private:
     // Tokens and UUID's for EnviroDIY
-    const char* _registrationToken;
+    const char* _registrationToken = nullptr;
 };
 
 #endif  // SRC_PUBLISHERS_ENVIRODIYPUBLISHER_H_

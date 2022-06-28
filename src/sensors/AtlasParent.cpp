@@ -21,10 +21,9 @@ AtlasParent::AtlasParent(TwoWire* theI2C, int8_t powerPin,
                          uint32_t measurementTime_ms, uint8_t incCalcValues)
     : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
              stabilizationTime_ms, measurementTime_ms, powerPin, -1,
-             measurementsToAverage, incCalcValues) {
-    _i2cAddressHex = i2cAddressHex;
-    _i2c           = theI2C;
-}
+             measurementsToAverage, incCalcValues),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(theI2C) {}
 AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                          uint8_t measurementsToAverage, const char* sensorName,
                          const uint8_t totalReturnedValues,
@@ -32,12 +31,9 @@ AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                          uint32_t measurementTime_ms, uint8_t incCalcValues)
     : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
              stabilizationTime_ms, measurementTime_ms, powerPin, -1,
-             measurementsToAverage, incCalcValues) {
-    _i2cAddressHex = i2cAddressHex;
-    _i2c           = &Wire;
-}
-
-
+             measurementsToAverage, incCalcValues),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(&Wire) {}
 // Destructors
 AtlasParent::~AtlasParent() {}
 
@@ -76,9 +72,10 @@ bool AtlasParent::sleep(void) {
     MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
 
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write((const uint8_t*)"Sleep",
-                           5);  // Write "Sleep" to put it in low power mode
-    success &= !_i2c->endTransmission();
+    success &= static_cast<bool>(
+        _i2c->write((const uint8_t*)"Sleep",
+                    5));  // Write "Sleep" to put it in low power mode
+    success &= !static_cast<bool>(_i2c->endTransmission());
     // NOTE: The return of 0 from endTransmission indicates success
 
     if (success) {
@@ -111,7 +108,8 @@ bool AtlasParent::startSingleMeasurement(void) {
     MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
 
     _i2c->beginTransmission(_i2cAddressHex);
-    success &= _i2c->write('r');  // Write "R" to start a reading
+    // Write "R" to start a reading
+    success &= static_cast<bool>(_i2c->write('r'));
     int I2Cstatus = _i2c->endTransmission();
     MS_DBG(F("I2Cstatus:"), I2Cstatus);
     success &= !I2Cstatus;
@@ -142,7 +140,7 @@ bool AtlasParent::addSingleMeasurementResult(void) {
         // call the circuit and request 40 bytes (this may be more than we need)
         _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40, 1);
         // the first byte is the response code, we read this separately.
-        uint8_t code = _i2c->read();
+        int code = _i2c->read();
 
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         // Parse the response code
@@ -163,13 +161,15 @@ bool AtlasParent::addSingleMeasurementResult(void) {
             case 255:  // there is no further data to send.
                 MS_DBG(F("  No Data"));
                 break;
+
+            default: break;
         }
         // If the response code is successful, parse the remaining results
         if (success) {
             for (uint8_t i = 0; i < _numReturnedValues; i++) {
                 float result = _i2c->parseFloat();
-                if (isnan(result)) result = -9999;
-                if (result < -1020) result = -9999;
+                if (isnan(result)) { result = -9999; }
+                if (result < -1020) { result = -9999; }
                 MS_DBG(F("  Result #"), i, ':', result);
                 verifyAndAddMeasurementResult(i, result);
             }
@@ -202,7 +202,7 @@ bool AtlasParent::waitForProcessing(uint32_t timeout) {
     uint32_t start     = millis();
     while (!processed && millis() - start < timeout) {
         _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 1, 1);
-        uint8_t code = _i2c->read();
+        auto code = static_cast<uint8_t>(_i2c->read());
         if (code == 1) processed = true;
     }
     return processed;

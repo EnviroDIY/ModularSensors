@@ -20,10 +20,10 @@ ApogeeSQ212::ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
                          uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES, SQ212_WARM_UP_TIME_MS,
              SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage, SQ212_INC_CALC_VARIABLES) {
-    _adsChannel = adsChannel;
-    _i2cAddress = i2cAddress;
-}
+             -1, measurementsToAverage, SQ212_INC_CALC_VARIABLES),
+      _adsChannel(adsChannel),
+      _i2cAddress(i2cAddress) {}
+
 // Destructor
 ApogeeSQ212::~ApogeeSQ212() {}
 
@@ -87,7 +87,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void) {
 
         if (adcVoltage < 3.6 && adcVoltage > -0.3) {
             // Skip results out of range
-            // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
+            // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV
             calibResult = 1000 * adcVoltage * SQ212_CALIBRATION_FACTOR;
             MS_DBG(F("  calibResult:"), calibResult);
         } else {

@@ -16,15 +16,15 @@ AOSongAM2315::AOSongAM2315(TwoWire* theI2C, int8_t powerPin,
                            uint8_t measurementsToAverage)
     : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES, AM2315_WARM_UP_TIME_MS,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage) {
-    _i2c      = theI2C;
+             -1, measurementsToAverage),
+      _i2c(theI2C) {
     am2315ptr = new Adafruit_AM2315(_i2c);
 }
 AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
     : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES, AM2315_WARM_UP_TIME_MS,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage, AM2315_INC_CALC_VARIABLES) {
-    _i2c      = &Wire;
+             -1, measurementsToAverage, AM2315_INC_CALC_VARIABLES),
+      _i2c(&Wire) {
     am2315ptr = new Adafruit_AM2315(_i2c);
 }
 AOSongAM2315::~AOSongAM2315() {}

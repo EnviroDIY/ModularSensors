@@ -17,14 +17,13 @@ BoschBMP3xx::BoschBMP3xx(int8_t powerPin, Mode mode,
                          TimeStandby timeStandby, uint8_t i2cAddressHex)
     : Sensor("BoschBMP3xx", BMP3XX_NUM_VARIABLES, BMP3XX_WARM_UP_TIME_MS,
              BMP3XX_STABILIZATION_TIME_MS, BMP3XX_MEASUREMENT_TIME_MS, powerPin,
-             -1, 1, BMP3XX_INC_CALC_VARIABLES) {
-    _mode                   = mode;
-    _pressureOversampleEnum = pressureOversample;
-    _tempOversampleEnum     = tempOversample;
-    _filterCoeffEnum        = filterCoeff;
-    _standbyEnum            = timeStandby;
-    _i2cAddressHex          = i2cAddressHex;
-}
+             -1, 1, BMP3XX_INC_CALC_VARIABLES),
+      _mode(mode),
+      _pressureOversampleEnum(pressureOversample),
+      _tempOversampleEnum(tempOversample),
+      _filterCoeffEnum(filterCoeff),
+      _standbyEnum(timeStandby),
+      _i2cAddressHex(i2cAddressHex) {}
 // Destructor
 BoschBMP3xx::~BoschBMP3xx() {}
 
@@ -65,12 +64,10 @@ bool BoschBMP3xx::setup(void) {
     // difference between "typical" and "maximum" measurement times given in
     // table 23 of the datasheet
     // The enum values for oversampling match with the values of osr_p and osr_t
-    uint32_t typ_measurementTime_us =
-        (234 +
-         1 *
-             (392 +
-              (pow(2, static_cast<int>(_pressureOversampleEnum))) * 2020) +
-         1 * (163 + (pow(2, static_cast<int>(_tempOversampleEnum))) * 2020));
+    auto typ_measurementTime_us = static_cast<uint32_t>(
+        234 +
+        1 * (392 + (pow(2, static_cast<int>(_pressureOversampleEnum))) * 2020) +
+        1 * (163 + (pow(2, static_cast<int>(_tempOversampleEnum))) * 2020));
     float max_measurementTime_us = static_cast<float>(typ_measurementTime_us) *
         1.18;
     // Set the sensor measurement time to the safety-factored max time
@@ -125,7 +122,9 @@ bool BoschBMP3xx::setup(void) {
                max_measurementTime_us / 1000) {
             _standbyEnum =
                 static_cast<TimeStandby>(static_cast<int>(_standbyEnum) + 1);
+#if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_STD
             _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
+#endif
             MS_DBG(_standbyEnum, _timeStandby_ms,
                    static_cast<int>(max_measurementTime_us / 1000));
         }
@@ -136,8 +135,6 @@ bool BoschBMP3xx::setup(void) {
     // print some notes about the filter initialization time
     // the value of the enum is the power of the number of samples
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == NORMAL_MODE) {
-        // float time_to_initialize_filter =
-        //     ((pow(2,_filterCoeff)) * (5 * pow(2,_timeStandby))) / 1E6;
         MS_DBG(F("BMP388/390's IIR filter will only be fully initialized"),
                pow(2, static_cast<int>(_filterCoeffEnum)) * _timeStandby_ms,
                F("ms after power on"));

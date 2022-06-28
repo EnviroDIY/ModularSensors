@@ -96,6 +96,9 @@ jobs:
             sensorFlag: BUILD_SENSOR_CAMPBELL_OBS3
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
+            sensorFlag: BUILD_SENSOR_CAMPBELL_RAINVUE10
+            publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
+          - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
             sensorFlag: BUILD_SENSOR_DECAGON_CTD
             publisherFlag: BUILD_PUB_ENVIRO_DIY_PUBLISHER
           - modemFlag: BUILD_MODEM_SIM_COM_SIM7080
@@ -224,7 +227,9 @@ jobs:
           fi
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
       - name: Install PlatformIO
         run: |

@@ -14,14 +14,8 @@ bool Decagon5TM::getResults(void) {
     float ea   = -9999;
     float temp = -9999;
 
-    // MS_DEEP_DBG(F("   Activating SDI-12 instance for"),
-    //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
-    // if (wasActive) {
-    //     MS_DEEP_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-    //                 F("was already active!"));
-    // }
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set
     // correctly.
@@ -41,27 +35,31 @@ bool Decagon5TM::getResults(void) {
     // Wait for the first few charaters to arrive.  The response from a data
     // request should always have more than three characters
     uint32_t start = millis();
-    while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
+    while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {
+        // wait
+    }
     // read the returned address to remove it from the buffer
-    char returnedAddress = _SDI12Internal.read();
+    auto returnedAddress = static_cast<char>(_SDI12Internal.read());
     // print out a warning if the address doesn't match up
     if (returnedAddress != _SDI12address) {
         MS_DBG(F("Warning, expecting data from"), _SDI12address,
                F("but got data from"), returnedAddress);
     }
     // Start printing out the returned data
-    MS_DEEP_DBG(F("    <<<"), static_cast<char>(returnedAddress));
+    MS_DEEP_DBG(F("    <<<"), returnedAddress);
 
-    // read the '+' out of the buffer
+    // read the '+' out of the buffer, and print it if we're debugging
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
     MS_DEEP_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
 #else
+    // if we're not debugging, just read the character to make sure
+    // it's removed from the buffer
     _SDI12Internal.read();
 #endif
 
     // First variable returned is the Dialectric E
     ea = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DBG(F("    <<<"), String(ea, 10));
+    MS_DEEP_DBG(F("    <<<"), String(ea, 10));
 
     // read the next '+' out of the buffer
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
@@ -72,7 +70,7 @@ bool Decagon5TM::getResults(void) {
 
     // Now read the temperature
     temp = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DBG(F("    <<<"), String(temp, 10));
+    MS_DEEP_DBG(F("    <<<"), String(temp, 10));
 
     // read and dump anything else
     while (_SDI12Internal.available()) {
@@ -82,11 +80,6 @@ bool Decagon5TM::getResults(void) {
         _SDI12Internal.read();
 #endif
     }
-
-    // String sdiResponse = _SDI12Internal.readStringUntil('\n');
-    // sdiResponse.trim();
-    // _SDI12Internal.clearBuffer();
-    // MS_DEEP_DBG(F("    <<<"), sdiResponse);
 
     // Empty the buffer again
     _SDI12Internal.clearBuffer();
@@ -115,7 +108,7 @@ bool Decagon5TM::getResults(void) {
         VWC = (4.3e-6 * (ea * ea * ea)) - (5.5e-4 * (ea * ea)) +
             (2.92e-2 * ea) - 5.3e-2;
         VWC *= 100;  // Convert to actual percent
-        MS_DBG(F("Calculated VWC:"), ea)
+        MS_DBG(F("Calculated VWC:"), ea);
         if (VWC < 0) {
             VWC = 0;
             MS_DBG(F("Setting negative VWC to 0"));

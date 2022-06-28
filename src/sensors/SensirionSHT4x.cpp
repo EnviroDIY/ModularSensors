@@ -15,18 +15,16 @@ SensirionSHT4x::SensirionSHT4x(TwoWire* theI2C, int8_t powerPin, bool useHeater,
                                uint8_t measurementsToAverage)
     : Sensor("SensirionSHT4x", SHT4X_NUM_VARIABLES, SHT4X_WARM_UP_TIME_MS,
              SHT4X_STABILIZATION_TIME_MS, SHT4X_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage) {
-    _useHeater = useHeater;
-    _i2c       = theI2C;
-}
+             -1, measurementsToAverage),
+      _useHeater(useHeater),
+      _i2c(theI2C) {}
 SensirionSHT4x::SensirionSHT4x(int8_t powerPin, bool useHeater,
                                uint8_t measurementsToAverage)
     : Sensor("SensirionSHT4x", SHT4X_NUM_VARIABLES, SHT4X_WARM_UP_TIME_MS,
              SHT4X_STABILIZATION_TIME_MS, SHT4X_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage, SHT4X_INC_CALC_VARIABLES) {
-    _useHeater = useHeater;
-    _i2c       = &Wire;
-}
+             -1, measurementsToAverage, SHT4X_INC_CALC_VARIABLES),
+      _useHeater(useHeater),
+      _i2c(&Wire) {}
 // Destructor
 SensirionSHT4x::~SensirionSHT4x() {}
 
@@ -103,7 +101,8 @@ bool SensirionSHT4x::addSingleMeasurementResult(void) {
         sht4x_internal.setHeater(SHT4X_NO_HEATER);
 
         // we need to create Adafruit "sensor events" to use the library
-        sensors_event_t temp_event, humidity_event;
+        sensors_event_t temp_event;
+        sensors_event_t humidity_event;
         ret_val = sht4x_internal.getEvent(&humidity_event, &temp_event);
 
         // get the values from the sensor events
@@ -160,7 +159,8 @@ bool SensirionSHT4x::sleep(void) {
     // case 1 second. Usually blocking steps are a problem, but in this case we
     // need the block because ModularSensors does not currently support a sleep
     // time like it supports a wake time.
-    sensors_event_t temp_event, humidity_event;
+    sensors_event_t temp_event;
+    sensors_event_t humidity_event;
     success = sht4x_internal.getEvent(&humidity_event, &temp_event);
 
     // Set the command back to no heat for the next measurement.

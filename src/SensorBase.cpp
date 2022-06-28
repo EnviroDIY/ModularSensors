@@ -19,49 +19,21 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                uint32_t measurementTime_ms, int8_t powerPin, int8_t dataPin,
                uint8_t measurementsToAverage, uint8_t incCalcValues)
-    : _sensorName(sensorName), _numReturnedValues(totalReturnedValues) {
-    _powerPin              = powerPin;
-    _dataPin               = dataPin;
-    _measurementsToAverage = measurementsToAverage;
-    _incCalcValues         = incCalcValues;
-
-    // This is the time needed from the when a sensor has power until it's ready
-    // to talk The _millisPowerOn value is set in the powerUp() function.  It is
-    // un-set in the powerDown() function.
-    // The "waitForWarmUp()" function verifies that enough time has passed.
-    _warmUpTime_ms = warmUpTime_ms;
-    _millisPowerOn = 0;
-
-    // This is the time needed from the when a sensor is activated until the
-    // readings are stable.  The _millisSensorActivated value is *usually* set
-    // in the wake() function, but may also be set in the
-    // startSingleMeasurement() function.  It is generally un-set in the sleep()
-    // function. The "waitForStability()" function verifies that enough time has
-    // passed.
-    _stabilizationTime_ms  = stabilizationTime_ms;
-    _millisSensorActivated = 0;
-
-    // This is the time needed from the when a sensor is told to take a single
-    // reading until that reading should be complete
-    // The _millisMeasurementRequested value is set in the
-    // startSingleMeasurement() function. It *may* be unset in the
-    // addSingleMeasurementResult() function. The
-    // "waitForMeasurementCompletion()" function verifies that enough time has
-    // passed.
-    _measurementTime_ms         = measurementTime_ms;
-    _millisMeasurementRequested = 0;
-
+    : _dataPin(dataPin),
+      _powerPin(powerPin),
+      _sensorName(sensorName),
+      _numReturnedValues(totalReturnedValues),
+      _measurementsToAverage(measurementsToAverage),
+      _incCalcValues(incCalcValues),
+      _warmUpTime_ms(warmUpTime_ms),
+      _stabilizationTime_ms(stabilizationTime_ms),
+      _measurementTime_ms(measurementTime_ms) {
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++) {
-        variables[i]                  = NULL;
+        variables[i]                  = nullptr;
         sensorValues[i]               = -9999;
         numberGoodMeasurementsMade[i] = 0;
     }
-
-    // Reset the sensor status
-    _sensorStatus = 0;
-
-    // MS_DBG(F("Sensor object created"));
 }
 // Destructor
 Sensor::~Sensor() {}
@@ -95,7 +67,7 @@ int8_t Sensor::getPowerPin(void) {
 
 // These functions get and set the number of readings to average for a sensor
 // Generally these values should be set in the constructor
-void Sensor::setNumberMeasurementsToAverage(int nReadings) {
+void Sensor::setNumberMeasurementsToAverage(uint8_t nReadings) {
     _measurementsToAverage = nReadings;
 }
 uint8_t Sensor::getNumberMeasurementsToAverage(void) {
@@ -113,7 +85,6 @@ uint8_t Sensor::getNumberMeasurementsToAverage(void) {
 // bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
 // Bit 7 - 0=No known errors, 1=Some sort of error has occured
 uint8_t Sensor::getStatus(void) {
-    // updateStatusBits();
     return _sensorStatus;
 }
 
@@ -219,16 +190,6 @@ bool Sensor::wake(void) {
 // The function to put a sensor to sleep
 // Does NOT power down the sensor!
 bool Sensor::sleep(void) {
-    /***
-    MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
-    // Unset the activation time
-    _millisSensorActivated = 0;
-    // Unset the measurement request time
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for sensor activation (bits 3 & 4) and measurement
-    // request (bits 5 & 6)
-    _sensorStatus &= 0b10000111;
-    ***/
     // If nothing needs to be done to make the sensor go to sleep, we'll leave
     // the bits and time stamps set because running the sleep function doesn't
     // do anything.  If the sensor has a power pin and it is powered down, then
@@ -278,24 +239,7 @@ bool Sensor::startSingleMeasurement(void) {
 
 void Sensor::registerVariable(int sensorVarNum, Variable* var) {
     variables[sensorVarNum] = var;
-    /*MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),
-           var->getVarName(), F("accepted."));*/
 }
-
-
-/*String Sensor::getStringValueArray(void)
-{
-    String retVal = "[";
-    for (uint8_t i = 0; i < _numReturnedValues; i++)
-    {
-        retVal += String(sensorValues[i]);
-        if (i < _numReturnedValues-1)
-            retVal += ", ";
-    }
-    retVal += ']';
-    return retVal;
-}*/
-
 
 void Sensor::notifyVariables(void) {
     MS_DBG(F("Notifying variables registered to"), getSensorNameAndLocation(),
@@ -303,7 +247,7 @@ void Sensor::notifyVariables(void) {
 
     // Notify variables of update
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
-        if (variables[i] != NULL) {
+        if (variables[i] != nullptr) {
             // Bad things happen if try to update nullptr
             MS_DBG(F("Sending value update from"), getSensorNameAndLocation(),
                    F("to variable"), i, F("which is"),
@@ -366,7 +310,8 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
 }
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                                            int32_t resultValue) {
-    float float_val = resultValue;  // cast the int32_t to a float
+    auto float_val =
+        static_cast<float>(resultValue);  // cast the int32_t to a float
     verifyAndAddMeasurementResult(resultNumber, float_val);
 }
 
@@ -411,11 +356,11 @@ bool Sensor::update(void) {
     // loop through as many measurements as requested
     for (uint8_t j = 0; j < _measurementsToAverage; j++) {
         // start a measurement
-        ret_val += startSingleMeasurement();
+        ret_val &= startSingleMeasurement();
         // wait for the measurement to finish
         waitForMeasurementCompletion();
         // get the measurement result
-        ret_val += addSingleMeasurementResult();
+        ret_val &= addSingleMeasurementResult();
     }
 
     averageMeasurements();
@@ -440,7 +385,8 @@ bool Sensor::checkPowerOn(bool debug) {
                getSensorNameAndLocation());
     }
     if (_powerPin >= 0) {
-        int8_t powerBitNumber = log(digitalPinToBitMask(_powerPin)) / log(2);
+        auto powerBitNumber =
+            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
                     powerBitNumber) == LOW) {
@@ -452,7 +398,7 @@ bool Sensor::checkPowerOn(bool debug) {
             _sensorStatus &= 0b10000001;
             return false;
         } else {
-            if (debug) { MS_DBG((" was on.")); }
+            if (debug) { MS_DBG(" was on."); }
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             // Set the status bit for sensor power attempt (bit 1) and success
@@ -488,7 +434,7 @@ bool Sensor::isWarmedUp(bool debug) {
     // If the sensor has power and enough time has elapsed, it's warmed up
     if (elapsed_since_power_on > _warmUpTime_ms) {
         if (debug) {
-            MS_DBG(F("It's been"), (elapsed_since_power_on), F("ms, and"),
+            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
                    getSensorNameAndLocation(), F("should be warmed up!"));
         }
         return true;
@@ -504,7 +450,9 @@ bool Sensor::isWarmedUp(bool debug) {
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
 void Sensor::waitForWarmUp(void) {
-    while (!isWarmedUp()) {}
+    while (!isWarmedUp()) {
+        // wait
+    }
 }
 
 
@@ -524,7 +472,7 @@ bool Sensor::isStable(bool debug) {
     // If the sensor has been activated and enough time has elapsed, it's stable
     if (elapsed_since_wake_up > _stabilizationTime_ms) {
         if (debug) {
-            MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
+            MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                    getSensorNameAndLocation(), F("should be stable!"));
         }
         return true;
@@ -540,7 +488,9 @@ bool Sensor::isStable(bool debug) {
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
 void Sensor::waitForStability(void) {
-    while (!isStable()) {}
+    while (!isStable()) {
+        // wait
+    }
 }
 
 
@@ -561,7 +511,7 @@ bool Sensor::isMeasurementComplete(bool debug) {
     // finished
     if (elapsed_since_meas_start > _measurementTime_ms) {
         if (debug) {
-            MS_DBG(F("It's been"), (elapsed_since_meas_start),
+            MS_DBG(F("It's been"), elapsed_since_meas_start,
                    F("ms, and measurement by"), getSensorNameAndLocation(),
                    F("should be complete!"));
         }
@@ -577,5 +527,7 @@ bool Sensor::isMeasurementComplete(bool debug) {
 // NOTE:  This is "blocking" - that is, nothing else can happen during this
 // wait.
 void Sensor::waitForMeasurementCompletion(void) {
-    while (!isMeasurementComplete()) {}
+    while (!isMeasurementComplete()) {
+        // wait
+    }
 }

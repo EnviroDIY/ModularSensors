@@ -197,8 +197,8 @@ class DreamHostPublisher : public dataPublisher {
 
 
  private:
-    const char* _DreamHostPortalRX;
-    bool        _dualPost = true;
+    const char* _DreamHostPortalRX = nullptr;
+    bool        _dualPost          = true;
 };
 
 #endif  // SRC_PUBLISHERS_DREAMHOSTPUBLISHER_H_

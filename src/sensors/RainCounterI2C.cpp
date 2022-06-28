@@ -38,19 +38,17 @@ RainCounterI2C::RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex,
                                float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
-             1) {
-    _i2cAddressHex = i2cAddressHex;
-    _i2c           = theI2C;
-    _rainPerTip    = rainPerTip;
-}
+             1),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(theI2C),
+      _rainPerTip(rainPerTip) {}
 RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
-             1) {
-    _i2cAddressHex = i2cAddressHex;
-    _i2c           = &Wire;
-    _rainPerTip    = rainPerTip;
-}
+             1),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(&Wire),
+      _rainPerTip(rainPerTip) {}
 #endif
 
 

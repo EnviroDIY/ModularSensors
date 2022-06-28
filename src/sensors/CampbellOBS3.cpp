@@ -18,13 +18,12 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
                            uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES, OBS3_WARM_UP_TIME_MS,
              OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage, OBS3_INC_CALC_VARIABLES) {
-    _adsChannel = adsChannel;
-    _x2_coeff_A = x2_coeff_A;
-    _x1_coeff_B = x1_coeff_B;
-    _x0_coeff_C = x0_coeff_C;
-    _i2cAddress = i2cAddress;
-}
+             measurementsToAverage, OBS3_INC_CALC_VARIABLES),
+      _adsChannel(adsChannel),
+      _x2_coeff_A(x2_coeff_A),
+      _x1_coeff_B(x1_coeff_B),
+      _x0_coeff_C(x0_coeff_C),
+      _i2cAddress(i2cAddress) {}
 // Destructor
 CampbellOBS3::~CampbellOBS3() {}
 
