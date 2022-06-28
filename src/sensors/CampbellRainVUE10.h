@@ -5,7 +5,7 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the CampbellRainVUE10 sensor subclass and the variable
- * subclasses CampbellRainVUE10_Precipitation, CampbellRainVUE10_Tips, 
+ * subclasses CampbellRainVUE10_Precipitation, CampbellRainVUE10_Tips,
  * CampbellRainVUE10_RainRateAve, and CampbellRainVUE10_RainRateMax.
  *
  * These are for the Campbell RainVUE10 digital SDI-12 Precipitation sensor.
@@ -24,14 +24,14 @@
  *
  * @section sensor_rainvue_intro Introduction
  *
- * The RainVUETM10 is an SDI-12 tipping bucket rain gage in the RainVUE™ 
+ * The RainVUETM10 is an SDI-12 tipping bucket rain gage in the RainVUE™
  * family of products. Advanced algorithms and digital processing within the
  * sensor compensate for errors caused by high-intensity rain and provide
  * accurate precipitation and intensity measurements.
  *
  * The sensor is implemented as a sub-classes of the SDI12Sensors class.
  * It requires a continuous 6 to 18 Vdc power supply. As backup, ann internal
- * 240 mAh lithium battery (3V Coin Cell CR2032) provides up to 15 days of 
+ * 240 mAh lithium battery (3V Coin Cell CR2032) provides up to 15 days of
  * continual operation after power loss.
  * It draws < 80 µA when inactive and 1 mA while measuring.
  *
@@ -176,9 +176,11 @@
  * {{ @ref CampbellRainVUE10_RainRateAve::CampbellRainVUE10_RainRateAve }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the rainfall intensity has 2.
+/// @brief Decimals places in string representation; the rainfall intensity
+/// has 2.
 #define RAINVUE10_RAINRATEAVE_RESOLUTION 2
-/// @brief Sensor variable number; average intensity is stored in sensorValues[3]
+/// @brief Sensor variable number; average intensity is stored in
+/// sensorValues[3]
 #define RAINVUE10_RAINRATEAVE_VAR_NUM 3
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -201,9 +203,11 @@
  * {{ @ref CampbellRainVUE10_RainRateMax::CampbellRainVUE10_RainRateMax }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the rainfall intensity has 2.
+/// @brief Decimals places in string representation; the rainfall intensity
+/// has 2.
 #define RAINVUE10_RAINRATEMAX_RESOLUTION 2
-/// @brief Sensor variable number; average intensity is stored in sensorValues[4]
+/// @brief Sensor variable number; average intensity is stored in
+/// sensorValues[4]
 #define RAINVUE10_RAINRATEMAX_VAR_NUM 4
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -250,7 +254,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
      * a default value of 1.
      */
     CampbellRainVUE10(char SDI12address, int8_t powerPin, int8_t dataPin,
-                       uint8_t measurementsToAverage = 1)
+                      uint8_t measurementsToAverage = 1)
         : SDI12Sensors(
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell RainVUE10", RAINVUE10_NUM_VARIABLES,
@@ -261,7 +265,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
      * @copydoc CampbellRainVUE10::CampbellRainVUE10
      */
     CampbellRainVUE10(char* SDI12address, int8_t powerPin, int8_t dataPin,
-                       uint8_t measurementsToAverage = 1)
+                      uint8_t measurementsToAverage = 1)
         : SDI12Sensors(
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell RainVUE10", RAINVUE10_NUM_VARIABLES,
@@ -272,7 +276,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
      * @copydoc CampbellRainVUE10::CampbellRainVUE10
      */
     CampbellRainVUE10(int SDI12address, int8_t powerPin, int8_t dataPin,
-                       uint8_t measurementsToAverage = 1)
+                      uint8_t measurementsToAverage = 1)
         : SDI12Sensors(
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell RainVUE10", RAINVUE10_NUM_VARIABLES,
@@ -360,9 +364,8 @@ class CampbellRainVUE10_Tips : public Variable {
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_TIPS_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)RAINVUE10_TIPS_VAR_NUM,
-                   (uint8_t)RAINVUE10_TIPS_RESOLUTION,
-                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME, varCode,
-                   uuid) {}
+                   (uint8_t)RAINVUE10_TIPS_RESOLUTION, RAINVUE10_TIPS_VAR_NAME,
+                   RAINVUE10_TIPS_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new CampbellRainVUE10_Tips object.
      *
@@ -371,9 +374,8 @@ class CampbellRainVUE10_Tips : public Variable {
      */
     CampbellRainVUE10_Tips()
         : Variable((const uint8_t)RAINVUE10_TIPS_VAR_NUM,
-                   (uint8_t)RAINVUE10_TIPS_RESOLUTION,
-                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME,
-                   RAINVUE10_TIPS_DEFAULT_CODE) {}
+                   (uint8_t)RAINVUE10_TIPS_RESOLUTION, RAINVUE10_TIPS_VAR_NAME,
+                   RAINVUE10_TIPS_UNIT_NAME, RAINVUE10_TIPS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the CampbellRainVUE10_Tips object - no action needed.
      */
