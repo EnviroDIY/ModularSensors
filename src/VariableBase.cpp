@@ -225,19 +225,11 @@ bool Variable::checkUUIDFormat(void) {
                  "24."));
         return false;
     }
-    for (uint8_t i = 0; i < 36; i++) {
-        bool isAcceptable = false;
-        for (uint8_t j = 0; !isAcceptable && j < 23; j++) {
-            if (_uuid[i] == acceptableChars[j]) {
-                isAcceptable = true;
-                j            = 23;  // Stop the inner loop
-            }
-        }
-        if (!isAcceptable) {
-            MS_DBG(F("UUID for"), getVarCode(), '(', _uuid, ')',
-                   F("has a bad character"), _uuid[i], F("at"), i + 1);
-            return false;
-        }
+    int first_invalid = strspn(_uuid, acceptableChars);
+    if (first_invalid != 36) {
+        MS_DBG(F("UUID for"), getVarCode(), '(', _uuid, ')',
+               F("has a bad character"), _uuid[i], F("at"), first_invalid);
+        return false;
     }
     return true;
 }
