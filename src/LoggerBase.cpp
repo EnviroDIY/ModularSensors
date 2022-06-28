@@ -1245,14 +1245,20 @@ void Logger::testingMode() {
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Get the modem ready
-    if (_logModem != NULL) {
-        _logModem->modemPowerUp();
-        _logModem->modemWake();
-        // Connect to the network
-        watchDogTimer.resetWatchDog();
-        MS_DBG(F("Connecting to the Internet..."));
-        _logModem->connectInternet();
-        watchDogTimer.resetWatchDog();
+
+    bool gotInternetConnection = false;
+    if (_logModem != nullptr) {
+        MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+        if (_logModem->modemWake()) {
+            // Connect to the network
+            watchDogTimer.resetWatchDog();
+            MS_DBG(F("Connecting to the Internet..."));
+            if (_logModem->connectInternet()) {
+                gotInternetConnection = true;
+                // Publish data to remotes
+                watchDogTimer.resetWatchDog();
+            }
+        }
     }
 
     // Power up all of the sensors
@@ -1274,12 +1280,12 @@ void Logger::testingMode() {
         // which getModemSignalQuality() does.  For all of the other modules,
         // getModemSignalQuality() is just a straight pass-through to
         // getSignalQuality().
-        _logModem->updateModemMetadata();
+        if (gotInternetConnection) { _logModem->updateModemMetadata(); }
 
         watchDogTimer.resetWatchDog();
         // Update the values from all attached sensors
-        // NOTE:  NOT using complete update because we want everything left
-        // on between iterations in testing mode.
+        // NOTE:  NOT using complete update because we want the sensors to be
+        // left on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is"),
@@ -1301,8 +1307,8 @@ void Logger::testingMode() {
     _internalArray->sensorsPowerDown();
 
     // Turn the modem off
-    if (_logModem != NULL) {
-        _logModem->disconnectInternet();
+    if (_logModem != nullptr) {
+        if (gotInternetConnection) { _logModem->disconnectInternet(); }
         _logModem->modemSleepPowerDown();
     }
 
@@ -1483,12 +1489,19 @@ void Logger::logDataAndPublish(void) {
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
         // values, and turing them back off.
-        // NOTE:  The wake function for each sensor should force sensor setup
-        // to run if the sensor was not previously set up.
+        // NOTE:  The wake function for each sensor should force sensor setup to
+        // run if the sensor was not previously set up.
         MS_DBG(F("Running a complete sensor update..."));
         watchDogTimer.resetWatchDog();
         _internalArray->completeUpdate();
         watchDogTimer.resetWatchDog();
+
+// Print out the sensor data
+#if defined(STANDARD_SERIAL_OUTPUT)
+        MS_DBG('\n');
+        _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
+        MS_DBG('\n');
+#endif
 
         // Create a csv data record and save it to the log file
         logToSD();
