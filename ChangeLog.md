@@ -21,6 +21,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ***
 
 
+## [0.34.0]
+
+### Changed
+- **BREAKING** - Removed support for light sleep on Espressif modules.
+**This changes the order of the constructor for the ESP32 and ESP8266!**
+  - The light sleep mode is non-functional anyway, and confusion over the sleep request pin was putting the board in a position not to sleep at all.
+- Minor tweek to clang-format
+- Moved all variable initialization to default header values and initializer lists
+- Converted all "c-style" casts to static casts
+- Switched cases of strcat and strcpy to snprintf
+
+### Added
+
+### Removed
+
+### Fixed
+- Fixed non-concurrent data fetch for SDI-12 when *NOT* using debugging.
+- Fixed internet connection when in "testing mode"
+
+***
+
+
 ## [0.33.4]
 
 ### Fixed

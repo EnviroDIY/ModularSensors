@@ -65,7 +65,7 @@ IncludeCategories:
     Priority: 1
 IncludeIsMainRegex: '([-_](test|unittest))?$'
 IndentAccessModifiers: false
-IndentCaseBlocks: true
+IndentCaseBlocks: false
 IndentCaseLabels: true
 IndentExternBlock: Indent
 IndentGotoLabels: true
