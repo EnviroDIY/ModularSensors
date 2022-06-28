@@ -77,7 +77,7 @@ uint8_t VariableArray::getSensorCount(void) {
 }
 
 // This matches UUID's from an array of pointers to the variable array
-void VariableArray::matchUUIDs(const char* uuids[]) const {
+void VariableArray::matchUUIDs(const char* uuids[]) {
     for (uint8_t i = 0; i < _variableCount; i++) {
         arrayOfVars[i]->setVarUUID(uuids[i]);
     }
@@ -106,15 +106,14 @@ bool VariableArray::setupSensors(void) {
     // modem)
     uint8_t nSensorsSetup = 0;
     for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-            if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
-                1) {  // already set up
-                MS_DBG(F("   "),
-                       arrayOfVars[i]->getParentSensorNameAndLocation(),
-                       F("was already set up!"));
+        if (isLastVarFromSensor(i)  // Skip non-unique sensors
+            && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
+                1  // already set up
+        ) {
+            MS_DBG(F("   "), arrayOfVars[i]->getParentSensorNameAndLocation(),
+                   F("was already set up!"));
 
-                nSensorsSetup++;
-            }
+            nSensorsSetup++;
         }
     }
 
@@ -124,37 +123,27 @@ bool VariableArray::setupSensors(void) {
     // We keep looping until they've all been done.
     while (nSensorsSetup < _sensorCount) {
         for (uint8_t i = 0; i < _variableCount; i++) {
-            bool sensorSuccess = false;
-            if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-                // only set up if it has not yet been set up
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
-                    0) {
-                    // and if it is already warmed up
-                    // if
-                    // (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
-                    // {
-                    MS_DBG(F("    Set up of"),
-                           arrayOfVars[i]->getParentSensorNameAndLocation(),
-                           F("..."));
+            if (isLastVarFromSensor(i)  // Skip non-unique sensors
+                && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) ==
+                    0  // only set up if it has not yet been set up
+            ) {
+                MS_DBG(F("    Set up of"),
+                       arrayOfVars[i]->getParentSensorNameAndLocation(),
+                       F("..."));
 
-                    sensorSuccess =
-                        arrayOfVars[i]->parentSensor->setup();  // set it up
-                    success &= sensorSuccess;
-                    nSensorsSetup++;
+                bool sensorSuccess =
+                    arrayOfVars[i]->parentSensor->setup();  // set it up
+                success &= sensorSuccess;
+                nSensorsSetup++;
 
-                    if (!sensorSuccess) {
-                        MS_DBG(F("        ... setup failed!"));
-                    } else {
-                        MS_DBG(F("        ... setup succeeded."));
-                    }
-                    // }
+                if (!sensorSuccess) {
+                    MS_DBG(F("        ... setup failed!"));
+                } else {
+                    MS_DBG(F("        ... setup succeeded."));
                 }
             }
         }
     }
-
-    // Power down all sensor;
-    // sensorsPowerDown();
 
     if (success) { MS_DBG(F("... Success!")); }
 
@@ -199,14 +188,14 @@ bool VariableArray::sensorsWake(void) {
     // Check for any sensors that are awake outside of being sent a "wake"
     // command
     for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-            if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
-                1) {  // already attempted to wake
-                MS_DBG(F("    Wake up of"),
-                       arrayOfVars[i]->getParentSensorNameAndLocation(),
-                       F("has already been attempted."));
-                nSensorsAwake++;
-            }
+        if (isLastVarFromSensor(i)  // Skip non-unique sensors
+            && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+                1  // already attempted to wake
+        ) {
+            MS_DBG(F("    Wake up of"),
+                   arrayOfVars[i]->getParentSensorNameAndLocation(),
+                   F("has already been attempted."));
+            nSensorsAwake++;
         }
     }
 
@@ -216,32 +205,28 @@ bool VariableArray::sensorsWake(void) {
     // We keep looping until they've all been done.
     while (nSensorsAwake < _sensorCount) {
         for (uint8_t i = 0; i < _variableCount; i++) {
-            if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-                // If no attempts yet made to wake the sensor up
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
-                    0) {
-                    // and if it is already warmed up
-                    if (arrayOfVars[i]->parentSensor->isWarmedUp(
-                            deepDebugTiming)) {
-                        MS_DBG(F("    Wake up of"),
-                               arrayOfVars[i]->getParentSensorNameAndLocation(),
-                               F("..."));
+            if (isLastVarFromSensor(i)  // Skip non-unique sensors
+                && bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+                    0  // If no attempts yet made to wake the sensor up
+                && arrayOfVars[i]->parentSensor->isWarmedUp(
+                       deepDebugTiming)  // and if it is already warmed up
+            ) {
+                MS_DBG(F("    Wake up of"),
+                       arrayOfVars[i]->getParentSensorNameAndLocation(),
+                       F("..."));
 
-                        // Make a single attempt to wake the sensor after it is
-                        // warmed up
-                        bool sensorSuccess =
-                            arrayOfVars[i]->parentSensor->wake();
-                        success &= sensorSuccess;
-                        // We increment up the number of sensors awake/active,
-                        // even if the wake up command failed!
-                        nSensorsAwake++;
+                // Make a single attempt to wake the sensor after it is
+                // warmed up
+                bool sensorSuccess = arrayOfVars[i]->parentSensor->wake();
+                success &= sensorSuccess;
+                // We increment up the number of sensors awake/active,
+                // even if the wake up command failed!
+                nSensorsAwake++;
 
-                        if (sensorSuccess) {
-                            MS_DBG(F("        ... wake up succeeded."));
-                        } else {
-                            MS_DBG(F("        ... wake up failed!"));
-                        }
-                    }
+                if (sensorSuccess) {
+                    MS_DBG(F("        ... wake up succeeded."));
+                } else {
+                    MS_DBG(F("        ... wake up failed!"));
                 }
             }
         }
@@ -355,24 +340,24 @@ bool VariableArray::updateAllSensors(void) {
     // Check for any sensors that didn't wake up and mark them as "complete" so
     // they will be skipped in further looping.
     for (uint8_t i = 0; i < _variableCount; i++) {
-        if (lastSensorVariable[i]) {  // Skip non-unique sensors
-            if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
-                    0 ||  // No attempt made to wake the sensor up
-                bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
-                    0) {  // OR Wake up failed
-                MS_DBG(i, F("--->>"),
-                       arrayOfVars[i]->getParentSensorNameAndLocation(),
-                       F("isn't awake/active!  No measurements will be taken! "
-                         "<<---"),
-                       i);
+        if (lastSensorVariable[i]  // Skip non-unique sensors
+            && (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
+                    0  // No attempt made to wake the sensor up
+                || bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) ==
+                    0  // OR Wake up failed
+                )) {
+            MS_DBG(i, F("--->>"),
+                   arrayOfVars[i]->getParentSensorNameAndLocation(),
+                   F("isn't awake/active!  No measurements will be taken! "
+                     "<<---"),
+                   i);
 
-                // Set the number of measurements already equal to whatever
-                // total number requested to ensure the sensor is skipped in
-                // further loops.
-                nMeasurementsCompleted[i] = nMeasurementsToAverage[i];
-                // Bump up the finished count.
-                nSensorsCompleted++;
-            }
+            // Set the number of measurements already equal to whatever
+            // total number requested to ensure the sensor is skipped in
+            // further loops.
+            nMeasurementsCompleted[i] = nMeasurementsToAverage[i];
+            // Bump up the finished count.
+            nSensorsCompleted++;
         }
     }
 
@@ -680,27 +665,25 @@ bool VariableArray::completeUpdate(void) {
             // Only do checks on sensors that still have measurements to finish
             if (lastSensorVariable[i] &&
                 nMeasurementsToAverage[i] > nMeasurementsCompleted[i]) {
-                // If no attempts yet made to wake the sensor up
                 if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) ==
-                    0) {
-                    // and if it is already warmed up
-                    if (arrayOfVars[i]->parentSensor->isWarmedUp(
-                            deepDebugTiming)) {
-                        MS_DBG(i, F("--->> Waking"),
-                               arrayOfVars[i]->getParentSensorNameAndLocation(),
-                               F("..."));
+                        0  // If no attempts yet made to wake the sensor up
+                    && arrayOfVars[i]->parentSensor->isWarmedUp(
+                           deepDebugTiming)  // and if it is already warmed up
+                ) {
+                    MS_DBG(i, F("--->> Waking"),
+                           arrayOfVars[i]->getParentSensorNameAndLocation(),
+                           F("..."));
 
-                        // Make a single attempt to wake the sensor after it is
-                        // warmed up
-                        bool sensorSuccess_wake =
-                            arrayOfVars[i]->parentSensor->wake();
-                        success &= sensorSuccess_wake;
+                    // Make a single attempt to wake the sensor after it is
+                    // warmed up
+                    bool sensorSuccess_wake =
+                        arrayOfVars[i]->parentSensor->wake();
+                    success &= sensorSuccess_wake;
 
-                        if (sensorSuccess_wake) {
-                            MS_DBG(F("   ... wake up success. <<---"), i);
-                        } else {
-                            MS_DBG(F("   ... wake up failed! <<---"), i);
-                        }
+                    if (sensorSuccess_wake) {
+                        MS_DBG(F("   ... wake up success. <<---"), i);
+                    } else {
+                        MS_DBG(F("   ... wake up failed! <<---"), i);
                     }
                 }
 
