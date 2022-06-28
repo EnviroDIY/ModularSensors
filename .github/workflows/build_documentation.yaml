@@ -39,6 +39,8 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
       - name: check for classes in the menu example
         run: |
@@ -57,6 +59,8 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
       - name: Restore Python Dependencies
         uses: actions/cache@v3

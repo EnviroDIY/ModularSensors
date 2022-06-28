@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved all variable initialization to default header values and initializer lists
 - Converted all "c-style" casts to static casts
 - Switched cases of strcat and strcpy to snprintf
+- Specify python version 3.x for actions (used by PlatformIO)
 
 ### Added
 
