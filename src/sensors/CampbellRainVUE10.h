@@ -85,14 +85,14 @@
 /**@{*/
 /** @brief Sensor::_warmUpTime_ms; the RainVUE10 warms up in 5500ms.
  */
-#define RAINVUE10_WARM_UP_TIME_MS 250
+#define RAINVUE10_WARM_UP_TIME_MS 100
 /// @brief Sensor::_stabilizationTime_ms; the RainVUE10 is stable as soon as it
 /// warms up (0ms stabilization).
 #define RAINVUE10_STABILIZATION_TIME_MS 0
 /** @brief Sensor::_measurementTime_ms; the RainVUE10 takes ~9500ms to
  * complete a measurement.
  */
-#define RAINVUE10_MEASUREMENT_TIME_MS 250
+#define RAINVUE10_MEASUREMENT_TIME_MS 100
 /// @brief Extra wake time required for an SDI-12 sensor between the "break"
 /// and the time the command is sent.  The RainVUE requires no extra time.
 #define RAINVUE10_EXTRA_WAKE_TIME_MS 0

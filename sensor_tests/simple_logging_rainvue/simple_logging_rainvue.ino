@@ -37,7 +37,7 @@
 // The name of this program file
 const char* sketchName = "simple_logging_rainvue.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "RainVUE";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 1;
 // Your logger's timezone.

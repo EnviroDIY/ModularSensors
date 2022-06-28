@@ -367,6 +367,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     if (!wasActive) _SDI12Internal.end();
 
     // Set the times we've activated the sensor and asked for a measurement
+    //It is possible for wait time to equal 0. To allow program to continue set wait time to 1
+    if (wait ==0) wait = 1;
     if (wait > 0) {
         MS_DBG(F("    Concurrent measurement started."));
         // Update the time that a measurement was requested
@@ -560,6 +562,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
         int8_t wait = startSDI12Measurement(false);
 
         // Set the times we've activated the sensor and asked for a measurement
+        //It is possible for wait time to equal 0. To allow program to continue set wait time to 1
+        if (wait ==0) wait = 1;
         if (wait > 0) {
             MS_DBG(F("    NON-concurrent measurement started."));
             // Update the time that a measurement was requested
