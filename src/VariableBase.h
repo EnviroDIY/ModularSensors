@@ -359,7 +359,7 @@ class Variable {
     /**
      * @brief Pointer to the parent sensor
      */
-    const Sensor* parentSensor = nullptr;
+    Sensor* parentSensor = nullptr;
     /**
      * @brief Internal note as to whether the value is calculated.
      */
