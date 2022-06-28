@@ -30,7 +30,7 @@ jobs:
           echo "ZIP_NAME=$ZIP_FILE" >> $GITHUB_ENV
 
       - name: Set up python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
 
       - name: Install PlatformIO
         run: |
