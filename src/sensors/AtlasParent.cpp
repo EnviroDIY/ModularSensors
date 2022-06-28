@@ -21,10 +21,9 @@ AtlasParent::AtlasParent(TwoWire* theI2C, int8_t powerPin,
                          uint32_t measurementTime_ms, uint8_t incCalcValues)
     : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
              stabilizationTime_ms, measurementTime_ms, powerPin, -1,
-             measurementsToAverage, incCalcValues) {
-    _i2cAddressHex = i2cAddressHex;
-    _i2c           = theI2C;
-}
+             measurementsToAverage, incCalcValues),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(theI2C) {}
 AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                          uint8_t measurementsToAverage, const char* sensorName,
                          const uint8_t totalReturnedValues,
@@ -32,12 +31,9 @@ AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                          uint32_t measurementTime_ms, uint8_t incCalcValues)
     : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
              stabilizationTime_ms, measurementTime_ms, powerPin, -1,
-             measurementsToAverage, incCalcValues) {
-    _i2cAddressHex = i2cAddressHex;
-    _i2c           = &Wire;
-}
-
-
+             measurementsToAverage, incCalcValues),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(&Wire) {}
 // Destructors
 AtlasParent::~AtlasParent() {}
 

@@ -46,8 +46,8 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem) {
-    _apn = apn;
+      gsmClient(gsmModem),
+      _apn(apn) {
 }
 #endif
 

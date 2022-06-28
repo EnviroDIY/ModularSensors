@@ -273,11 +273,11 @@ class dataPublisher {
     /**
      * @brief The internal pointer to the logger instance to be used.
      */
-    Logger* _baseLogger;
+    Logger* _baseLogger = nullptr;
     /**
      * @brief The internal pointer to the client instance to be used.
      */
-    Client* _inClient;
+    Client* _inClient = nullptr;
 
     /**
      * @brief A buffer for outgoing data.
@@ -308,12 +308,12 @@ class dataPublisher {
      * @brief Unimplemented; intended for future use to enable caching and bulk
      * publishing.
      */
-    uint8_t _sendEveryX;
+    uint8_t _sendEveryX = 1;
     /**
      * @brief Unimplemented; intended for future use to enable publishing data
      * at a time slightly delayed from when it is collected.
      */
-    uint8_t _sendOffset;
+    uint8_t _sendOffset = 0;
 
     // Basic chunks of HTTP
     /**

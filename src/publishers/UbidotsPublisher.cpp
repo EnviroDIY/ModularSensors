@@ -33,21 +33,13 @@ const char* UbidotsPublisher::payload = "{";
 
 
 // Constructors
-UbidotsPublisher::UbidotsPublisher() : dataPublisher() {
-    // MS_DBG(F("dataPublisher object created"));
-    _authentificationToken = NULL;
-}
+UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                    uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
-    // MS_DBG(F("dataPublisher object created"));
-    _authentificationToken = NULL;
-}
+    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
-    // MS_DBG(F("dataPublisher object created"));
-}
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authentificationToken,
                                    const char* deviceID, uint8_t sendEveryX,
@@ -132,8 +124,6 @@ void UbidotsPublisher::printUbidotsRequest(Stream* stream) {
     stream->print(ubidotsHost);
     stream->print(tokenHeader);
     stream->print(_authentificationToken);
-    // stream->print(cacheHeader);
-    // stream->print(connectionHeader);
     stream->print(contentLengthHeader);
     stream->print(calculateJsonSize());
     stream->print(contentTypeHeader);

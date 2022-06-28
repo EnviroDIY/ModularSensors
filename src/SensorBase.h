@@ -323,9 +323,6 @@ class Sensor {
      */
     float sensorValues[MAX_NUMBER_VARS];
 
-    // This is a string with a pretty-print of the values array
-    // String getStringValueArray(void);
-
     /**
      * @brief Clear the values array - that is, sets all values to -9999.
      */
@@ -503,7 +500,7 @@ class Sensor {
      * The #_millisPowerOn value is set in the powerUp() function.  It is un-set
      * in the powerDown() function.
      */
-    uint32_t _millisPowerOn;
+    uint32_t _millisPowerOn = 0;
 
     /**
      * @brief The time needed from the when a sensor is activated until the
@@ -518,7 +515,7 @@ class Sensor {
      * function, but may also be set in the startSingleMeasurement() function.
      * It is generally un-set in the sleep() function.
      */
-    uint32_t _millisSensorActivated;
+    uint32_t _millisSensorActivated = 0;
 
     /**
      * @brief The time needed from the when a sensor is told to take a single
@@ -533,12 +530,12 @@ class Sensor {
      * startSingleMeasurement() function.  It *may* be unset in the
      * addSingleMeasurementResult() function.
      */
-    uint32_t _millisMeasurementRequested;
+    uint32_t _millisMeasurementRequested = 0;
 
     /**
      * @brief An 8-bit code for the sensor status
      */
-    uint8_t _sensorStatus;
+    uint8_t _sensorStatus = 0;
 
     /**
      * @brief An array for each sensor containing the variable objects tied to

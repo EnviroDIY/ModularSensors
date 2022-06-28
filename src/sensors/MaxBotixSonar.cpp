@@ -14,18 +14,16 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
                              uint8_t measurementsToAverage)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
              HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage) {
-    _triggerPin = triggerPin;
-    _stream     = stream;
-}
+             measurementsToAverage),
+      _triggerPin(triggerPin),
+      _stream(stream) {}
 MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
                              uint8_t measurementsToAverage)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
              HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage, HRXL_INC_CALC_VARIABLES) {
-    _triggerPin = triggerPin;
-    _stream     = &stream;
-}
+             measurementsToAverage, HRXL_INC_CALC_VARIABLES),
+      _triggerPin(triggerPin),
+      _stream(&stream) {}
 // Destructor
 MaxBotixSonar::~MaxBotixSonar() {}
 
@@ -45,7 +43,7 @@ bool MaxBotixSonar::setup(void) {
         digitalWrite(_triggerPin, LOW);
     }
 
-    // Set the stream timeout;
+    // Set the stream timeout
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
     _stream->setTimeout(180);
 

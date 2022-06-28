@@ -26,9 +26,9 @@ SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin,
     : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
              stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
              measurementsToAverage, incCalcValues),
-      _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
-    _SDI12address = SDI12address;
-}
+      _SDI12Internal(dataPin),
+      _SDI12address(SDI12address),
+      _extraWakeTime(extraWakeTime) {}
 SDI12Sensors::SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
                            uint8_t       measurementsToAverage,
                            const char*   sensorName,
@@ -40,9 +40,9 @@ SDI12Sensors::SDI12Sensors(char* SDI12address, int8_t powerPin, int8_t dataPin,
     : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
              stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
              measurementsToAverage, incCalcValues),
-      _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
-    _SDI12address = *SDI12address;
-}
+      _SDI12Internal(dataPin),
+      _SDI12address(*SDI12address),
+      _extraWakeTime(extraWakeTime) {}
 SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
                            uint8_t       measurementsToAverage,
                            const char*   sensorName,
@@ -54,9 +54,9 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin,
     : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
              stabilizationTime_ms, measurementTime_ms, powerPin, dataPin,
              measurementsToAverage, incCalcValues),
-      _SDI12Internal(dataPin), _extraWakeTime(extraWakeTime) {
-    _SDI12address = SDI12address + '0';
-}
+      _SDI12Internal(dataPin),
+      _SDI12address(static_cast<char>(SDI12address + '0')),
+      _extraWakeTime(extraWakeTime) {}
 // Destructor
 SDI12Sensors::~SDI12Sensors() {}
 
@@ -156,16 +156,10 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
 
 // A helper function to run the "sensor info" SDI12 command
 bool SDI12Sensors::getSensorInfo(void) {
-    // MS_DBG(F("   Activating SDI-12 instance for"),
-    //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
-    // if (wasActive) {
-    //     MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-    //            F("was already active!"));
-    // }
     if (!wasActive) _SDI12Internal.begin();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
@@ -337,14 +331,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
     // reason to go on.
     if (!Sensor::startSingleMeasurement()) return false;
 
-    // MS_DEEP_DBG(F("   Activating SDI-12 instance for"),
-    //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
-    // if (wasActive) {
-    //     MS_DEEP_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-    //                 F("was already active!"));
-    // }
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
     if (!wasActive) _SDI12Internal.begin();
@@ -385,14 +373,8 @@ bool SDI12Sensors::startSingleMeasurement(void) {
 #endif
 
 bool SDI12Sensors::getResults(void) {
-    // MS_DEEP_DBG(F("   Activating SDI-12 instance for"),
-    //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
-    // if (wasActive) {
-    //     MS_DEEP_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-    //                 F("was already active!"));
-    // }
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set
     // correctly.
@@ -439,7 +421,7 @@ bool SDI12Sensors::getResults(void) {
                    F("but got data from"), returnedAddress);
         }
         // Start printing out the returned data
-        MS_DEEP_DBG(F("    <<<"), static_cast<char>(returnedAddress));
+        MS_DEEP_DBG(F("    <<<"), returnedAddress);
 
         // While there is any data left in the buffer
         while (_SDI12Internal.available() && (millis() - start) < 3000) {
@@ -493,10 +475,6 @@ bool SDI12Sensors::getResults(void) {
                (_numReturnedValues - _incCalcValues) - resultsReceived);
         cmd_number++;
     }
-    // String sdiResponse = _SDI12Internal.readStringUntil('\n');
-    // sdiResponse.trim();
-    // _SDI12Internal.clearBuffer();
-    // MS_DEEP_DBG(F("    <<<"), sdiResponse);
 
     // Empty the buffer again
     _SDI12Internal.clearBuffer();
@@ -540,14 +518,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
     String startCommand;
     String sdiResponse;
 
-    // MS_DBG(F("   Activating SDI-12 instance for"),
-    //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
-    // if (wasActive) {
-    //     MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-    //            F("was already active!"));
-    // }
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set
     // correctly.

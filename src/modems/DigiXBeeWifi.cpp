@@ -24,9 +24,9 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
 #else
       gsmModem(*modemStream, modemResetPin),
 #endif
-      gsmClient(gsmModem) {
-    _ssid = ssid;
-    _pwd  = pwd;
+      gsmClient(gsmModem),
+      _ssid(ssid),
+      _pwd(pwd) {
 }
 
 // Destructor
@@ -165,8 +165,6 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
         connectionMade = gsmClient.connect(ip, 37);
         // Need to send something before connection is made
         gsmClient.println('!');
-        // Need this delay!  Can get away with 50, but 100 is safer.
-        // delay(100);
 
         // Wait up to 5 seconds for a response
         if (connectionMade) {

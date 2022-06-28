@@ -19,12 +19,11 @@ AnalogElecConductivity::AnalogElecConductivity(int8_t powerPin, int8_t dataPin,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
              ANALOGELECCONDUCTIVITY_MEASUREMENT_TIME_MS, powerPin, dataPin,
-             measurementsToAverage, ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES) {
-    _EcPowerPin     = powerPin;
-    _EcAdcPin       = dataPin;
-    _Rseries_ohms   = Rseries_ohms;
-    _sensorEC_Konst = sensorEC_Konst;
-}
+             measurementsToAverage, ANALOGELECCONDUCTIVITY_INC_CALC_VARIABLES),
+      _EcPowerPin(powerPin),
+      _EcAdcPin(dataPin),
+      _Rseries_ohms(Rseries_ohms),
+      _sensorEC_Konst(sensorEC_Konst) {}
 // Destructor
 AnalogElecConductivity::~AnalogElecConductivity() {}
 

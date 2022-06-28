@@ -14,14 +14,8 @@ bool Decagon5TM::getResults(void) {
     float ea   = -9999;
     float temp = -9999;
 
-    // MS_DEEP_DBG(F("   Activating SDI-12 instance for"),
-    //        getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     bool wasActive = _SDI12Internal.isActive();
-    // if (wasActive) {
-    //     MS_DEEP_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
-    //                 F("was already active!"));
-    // }
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set
     // correctly.
@@ -84,11 +78,6 @@ bool Decagon5TM::getResults(void) {
         _SDI12Internal.read();
 #endif
     }
-
-    // String sdiResponse = _SDI12Internal.readStringUntil('\n');
-    // sdiResponse.trim();
-    // _SDI12Internal.clearBuffer();
-    // MS_DEEP_DBG(F("    <<<"), sdiResponse);
 
     // Empty the buffer again
     _SDI12Internal.clearBuffer();
