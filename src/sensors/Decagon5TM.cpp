@@ -39,25 +39,27 @@ bool Decagon5TM::getResults(void) {
         // wait
     }
     // read the returned address to remove it from the buffer
-    char returnedAddress = _SDI12Internal.read();
+    auto returnedAddress = static_cast<char>(_SDI12Internal.read());
     // print out a warning if the address doesn't match up
     if (returnedAddress != _SDI12address) {
         MS_DBG(F("Warning, expecting data from"), _SDI12address,
                F("but got data from"), returnedAddress);
     }
     // Start printing out the returned data
-    MS_DEEP_DBG(F("    <<<"), static_cast<char>(returnedAddress));
+    MS_DEEP_DBG(F("    <<<"), returnedAddress);
 
-    // read the '+' out of the buffer
+    // read the '+' out of the buffer, and print it if we're debugging
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
     MS_DEEP_DBG(F("    <<<"), static_cast<char>(_SDI12Internal.read()));
 #else
+    // if we're not debugging, just read the character to make sure
+    // it's removed from the buffer
     _SDI12Internal.read();
 #endif
 
     // First variable returned is the Dialectric E
     ea = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DBG(F("    <<<"), String(ea, 10));
+    MS_DEEP_DBG(F("    <<<"), String(ea, 10));
 
     // read the next '+' out of the buffer
 #ifdef MS_SDI12SENSORS_DEBUG_DEEP
@@ -68,7 +70,7 @@ bool Decagon5TM::getResults(void) {
 
     // Now read the temperature
     temp = _SDI12Internal.parseFloat(SKIP_NONE);
-    MS_DBG(F("    <<<"), String(temp, 10));
+    MS_DEEP_DBG(F("    <<<"), String(temp, 10));
 
     // read and dump anything else
     while (_SDI12Internal.available()) {

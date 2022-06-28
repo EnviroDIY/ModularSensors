@@ -64,12 +64,10 @@ bool BoschBMP3xx::setup(void) {
     // difference between "typical" and "maximum" measurement times given in
     // table 23 of the datasheet
     // The enum values for oversampling match with the values of osr_p and osr_t
-    uint32_t typ_measurementTime_us =
-        (234 +
-         1 *
-             (392 +
-              (pow(2, static_cast<int>(_pressureOversampleEnum))) * 2020) +
-         1 * (163 + (pow(2, static_cast<int>(_tempOversampleEnum))) * 2020));
+    auto typ_measurementTime_us = static_cast<uint32_t>(
+        234 +
+        1 * (392 + (pow(2, static_cast<int>(_pressureOversampleEnum))) * 2020) +
+        1 * (163 + (pow(2, static_cast<int>(_tempOversampleEnum))) * 2020));
     float max_measurementTime_us = static_cast<float>(typ_measurementTime_us) *
         1.18;
     // Set the sensor measurement time to the safety-factored max time

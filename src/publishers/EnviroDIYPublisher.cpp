@@ -159,47 +159,56 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
-        strcpy(txBuffer, postHeader);
-        strcat(txBuffer, postEndpoint);
-        strcat(txBuffer, HTTPtag);
+        snprintf(txBuffer, sizeof(txBuffer), "%s", postHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", postEndpoint);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer
         // before adding each line/chunk to the outgoing buffer, we make sure
         // there is space for that line, sending out buffer if not
         if (bufferFree() < 28) printTxBuffer(outClient);
-        strcat(txBuffer, hostHeader);
-        strcat(txBuffer, enviroDIYHost);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", hostHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", enviroDIYHost);
 
         if (bufferFree() < 47) printTxBuffer(outClient);
-        strcat(txBuffer, tokenHeader);
-        strcat(txBuffer, _registrationToken);
-
-        // if (bufferFree() < 27) printTxBuffer(outClient);
-        // strcat(txBuffer, cacheHeader);
-
-        // if (bufferFree() < 21) printTxBuffer(outClient);
-        // strcat(txBuffer, connectionHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tokenHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", _registrationToken);
 
         if (bufferFree() < 26) printTxBuffer(outClient);
-        strcat(txBuffer, contentLengthHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s",
+                 contentLengthHeader);
         itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
-        strcat(txBuffer, tempBuffer);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
 
         if (bufferFree() < 42) printTxBuffer(outClient);
-        strcat(txBuffer, contentTypeHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", contentTypeHeader);
 
         // put the start of the JSON into the outgoing response_buffer
         if (bufferFree() < 21) printTxBuffer(outClient);
-        strcat(txBuffer, samplingFeatureTag);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", samplingFeatureTag);
 
         if (bufferFree() < 36) printTxBuffer(outClient);
-        strcat(txBuffer, _baseLogger->getSamplingFeatureUUID());
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s",
+                 _baseLogger->getSamplingFeatureUUID());
 
         if (bufferFree() < 42) printTxBuffer(outClient);
-        strcat(txBuffer, timestampTag);
-        _baseLogger->formatDateTime_ISO8601(Logger::markedLocalEpochTime)
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", timestampTag);
+        Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
             .toCharArray(tempBuffer, 37);
-        strcat(txBuffer, tempBuffer);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
         txBuffer[strlen(txBuffer)] = '"';
         txBuffer[strlen(txBuffer)] = ',';
 
@@ -209,11 +218,13 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
 
             txBuffer[strlen(txBuffer)] = '"';
             _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
-            strcat(txBuffer, tempBuffer);
+            snprintf(txBuffer + strlen(txBuffer),
+                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
             txBuffer[strlen(txBuffer)] = '"';
             txBuffer[strlen(txBuffer)] = ':';
             _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
-            strcat(txBuffer, tempBuffer);
+            snprintf(txBuffer + strlen(txBuffer),
+                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
             if (i + 1 != _baseLogger->getArrayVarCount()) {
                 txBuffer[strlen(txBuffer)] = ',';
             } else {

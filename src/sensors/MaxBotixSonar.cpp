@@ -73,7 +73,7 @@ bool MaxBotixSonar::wake(void) {
         MS_DBG(i, '-', headerLine);
     }
     // Clear anything else out of the stream buffer
-    uint8_t junkChars = _stream->available();
+    auto junkChars = static_cast<uint8_t>(_stream->available());
     if (junkChars) {
         MS_DBG(F("Dumping"), junkChars,
                F("characters from MaxBotix stream buffer"));
@@ -99,7 +99,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
     int16_t result  = -9999;
 
     // Clear anything out of the stream buffer
-    uint8_t junkChars = _stream->available();
+    auto junkChars = static_cast<uint8_t>(_stream->available());
     if (junkChars) {
         MS_DBG(F("Dumping"), junkChars,
                F("characters from MaxBotix stream buffer:"));
@@ -137,7 +137,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
 
             // Immediately ask for a result and let the stream timeout be our
             // "wait" for the measurement.
-            result = _stream->parseInt();
+            result = static_cast<uint16_t>(_stream->parseInt());
             _stream->read();  // To throw away the carriage return
             MS_DBG(F("  Sonar Range:"), result);
             rangeAttempts++;

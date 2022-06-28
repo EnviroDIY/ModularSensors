@@ -154,7 +154,7 @@ class Sensor {
      * @param nReadings The number of readings to take and average to create a
      * result from the sensor.  Overrides any value given in the constructor.
      */
-    void setNumberMeasurementsToAverage(int nReadings);
+    void setNumberMeasurementsToAverage(uint8_t nReadings);
     /**
      * @brief Get the number of measurements to average.
      *

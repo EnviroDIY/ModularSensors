@@ -115,7 +115,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void) {
 
     MS_DBG(F("  Asking for sensor acknowlegement"));
     String myCommand = "";
-    myCommand += static_cast<char>(_SDI12address);
+    myCommand += _SDI12address;
     myCommand += "!";  // sends 'acknowledge active' command [address][!]
 
     bool    didAcknowledge = false;
@@ -169,7 +169,7 @@ bool SDI12Sensors::getSensorInfo(void) {
 
     MS_DBG(F("  Getting sensor info"));
     String myCommand = "";
-    myCommand += static_cast<char>(_SDI12address);
+    myCommand += _SDI12address;
     myCommand += "I!";  // sends 'info' command [address][I][!]
     _SDI12Internal.sendCommand(myCommand, _extraWakeTime);
     MS_DEEP_DBG(F("    >>>"), myCommand);
@@ -212,8 +212,8 @@ bool SDI12Sensors::getSensorInfo(void) {
         // explicitly suppress it just in case.
         if (_sensorVendor == "METER" && _SDI12address == 0) {
             MS_DBG(F("  Suppressing DDI string on Meter sensor"));
-            String myCommand = "";
-            myCommand += static_cast<char>(_SDI12address);
+            myCommand = "";
+            myCommand += _SDI12address;
             myCommand += "XO1!";  // sends extended command
                                   // [address][XO][suppressionState][!]
                                   // 0: DDI unsuppressed
@@ -301,8 +301,11 @@ int8_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
         MS_DEEP_DBG(F("    <<<"), sdiResponse);
 
         // find out how long we have to wait (in seconds).
-        wait         = sdiResponse.substring(1, 4).toInt();
-        numVariables = sdiResponse.substring(4).toInt();
+        if (sdiResponse.length() > 3) {
+            wait = static_cast<uint8_t>(sdiResponse.substring(1, 4).toInt());
+            numVariables =
+                static_cast<uint8_t>(sdiResponse.substring(4).toInt());
+        }
 
         // Empty the buffer again
         _SDI12Internal.clearBuffer();
@@ -414,7 +417,7 @@ bool SDI12Sensors::getResults(void) {
             // wait
         }
         // read the returned address to remove it from the buffer
-        char returnedAddress = _SDI12Internal.read();
+        auto returnedAddress = static_cast<char>(_SDI12Internal.read());
         // print out a warning if the address doesn't match up
         if (returnedAddress != _SDI12address) {
             MS_DBG(F("Warning, expecting data from"), _SDI12address,

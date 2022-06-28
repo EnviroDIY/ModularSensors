@@ -71,7 +71,9 @@ float AnalogElecConductivity::readEC(uint8_t analogPinNum) {
 
     // see the header for an explanation of this calculation
     Rwater_ohms = _Rseries_ohms /
-        (((float)ANALOG_EC_ADC_RANGE / (float)sensorEC_adc) - 1);
+        ((static_cast<float>(ANALOG_EC_ADC_RANGE) /
+          static_cast<float>(sensorEC_adc)) -
+         1);
     MS_DEEP_DBG("ohms=", Rwater_ohms);
 
     // Convert to EC

@@ -119,26 +119,36 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient) {
     char tempBuffer[26] = "";
 
     char topicBuffer[42] = "channels/";
-    strcat(topicBuffer, _thingSpeakChannelID);
-    strcat(topicBuffer, "/publish/");
-    strcat(topicBuffer, _thingSpeakChannelKey);
+    snprintf(topicBuffer + strlen(topicBuffer),
+             sizeof(topicBuffer) - strlen(topicBuffer), "%s",
+             _thingSpeakChannelID);
+    snprintf(topicBuffer + strlen(topicBuffer),
+             sizeof(topicBuffer) - strlen(topicBuffer), "%s", "/publish/");
+    snprintf(topicBuffer + strlen(topicBuffer),
+             sizeof(topicBuffer) - strlen(topicBuffer), "%s",
+             _thingSpeakChannelKey);
     MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
 
     emptyTxBuffer();
 
     Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
         .toCharArray(tempBuffer, 26);
-    strcat(txBuffer, "created_at=");
-    strcat(txBuffer, tempBuffer);
+    snprintf(txBuffer + strlen(txBuffer), sizeof(txBuffer) - strlen(txBuffer),
+             "%s", "created_at=");
+    snprintf(txBuffer + strlen(txBuffer), sizeof(txBuffer) - strlen(txBuffer),
+             "%s", tempBuffer);
     txBuffer[strlen(txBuffer)] = '&';
 
     for (uint8_t i = 0; i < numChannels; i++) {
-        strcat(txBuffer, "field");
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", "field");
         itoa(i + 1, tempBuffer, 10);  // BASE 10
-        strcat(txBuffer, tempBuffer);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
         txBuffer[strlen(txBuffer)] = '=';
         _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 26);
-        strcat(txBuffer, tempBuffer);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
         if (i + 1 != numChannels) { txBuffer[strlen(txBuffer)] = '&'; }
     }
     MS_DBG(F("Message ["), strlen(txBuffer), F("]:"), String(txBuffer));

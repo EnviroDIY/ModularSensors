@@ -41,7 +41,7 @@ bool MeterTeros11::getResults(void) {
         // wait
     }
     // read the returned address to remove it from the buffer
-    char returnedAddress = _SDI12Internal.read();
+    auto returnedAddress = static_cast<char>(_SDI12Internal.read());
     // print out a warning if the address doesn't match up
     if (returnedAddress != _SDI12address) {
         MS_DBG(F("Warning, expecting data from"), _SDI12address,

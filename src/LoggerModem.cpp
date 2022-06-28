@@ -423,7 +423,7 @@ int16_t loggerModem::getPctFromCSQ(int16_t csq) {
 
 // Helper to get signal percent from RSSI
 int16_t loggerModem::getPctFromRSSI(int16_t rssi) {
-    int16_t pct = 1.6163 * rssi + 182.61;
+    auto pct = static_cast<int16_t>(1.6163 * static_cast<float>(rssi) + 182.61);
     if (rssi == 0) pct = 0;
     if (rssi == (255 - 93)) pct = 0;  // This is a no-data-yet value from XBee
     return pct;

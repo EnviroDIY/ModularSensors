@@ -70,7 +70,7 @@ class dataPublisher {
      * client.
      *
      * @note Using the default empty constructor requires you to use a the
-     * begin(const Logger& baseLogger, Client* inClient) function to initialize
+     * begin(Logger& baseLogger, Client* inClient) function to initialize
      * the logger and client values.  If a client is never specified, the
      * publisher will attempt to create and use a client on a LoggerModem
      * instance tied to the attached logger.  If a logger is never specified the
@@ -266,7 +266,7 @@ class dataPublisher {
      * @param state A result code returned by a PubSubClient action
      * @return **String** The meaning of the code
      */
-    String parseMQTTState(int state);
+    String parseMQTTState(int state) const;
 
 
  protected:

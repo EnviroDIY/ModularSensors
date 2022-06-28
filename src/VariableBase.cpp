@@ -207,12 +207,8 @@ void Variable::setVarUUID(const char* uuid) {
 // This checks that the UUID is properly formatted
 bool Variable::checkUUIDFormat(void) {
     // If no UUID, move on
-    if (strlen(_uuid) == 0) {
-        // MS_DBG(F("No UUID assigned to"), getVarCode());
-        return true;
-    }
+    if (strlen(_uuid) == 0) { return true; }
 
-    // MS_DBG(F("Variable UUID for"), getVarCode(), F("is"), _uuid);
     // Should be 36 characters long with dashes
     if (strlen(_uuid) != 36) {
         MS_DBG(F("UUID length for"), getVarCode(), '(', _uuid, ')',
@@ -267,7 +263,7 @@ float Variable::getValue(bool updateValue) {
 String Variable::getValueString(bool updateValue) {
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0) {
-        int16_t val = static_cast<int16_t>(getValue(updateValue));
+        auto val = static_cast<int16_t>(getValue(updateValue));
         return String(val);
     } else {
         return String(getValue(updateValue), _decimalResolution);

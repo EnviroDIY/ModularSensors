@@ -119,7 +119,7 @@ bool SequansMonarch::extraModemSetup(void) {
     _modemName = gsmModem.getModemName();
     // Turn on the LED
     gsmModem.sendAT(GF("+SQNLED=1"));
-    success &= gsmModem.waitResponse();
+    success &= static_cast<bool>(gsmModem.waitResponse());
     // Enable power save mode if we're not going to cut power or use reset
     if (!(_powerPin >= 0) && !(_modemResetPin >= 0) && _modemSleepRqPin >= 0) {
         MS_DBG(
@@ -128,7 +128,7 @@ bool SequansMonarch::extraModemSetup(void) {
         // 00001 = 5min increments * 1 Requested Active Time (Time connected
         // before entering Power Save Mode) = 000 00101 = 2s increments * 5
         gsmModem.sendAT(GF("+CPSMS=1,,,\"10100001\",\"00000101\""));
-        success &= gsmModem.waitResponse();
+        success &= static_cast<bool>(gsmModem.waitResponse());
     }
     // If we are going to turn power it on and off or use the reset, turn on
     // auto-connect and auto-internet so the module will immediately start
@@ -139,11 +139,11 @@ bool SequansMonarch::extraModemSetup(void) {
         // Enable and force auto-connect - boot with CFUN=1 and attempt to
         // register on network
         gsmModem.sendAT(GF("+SQNAUTOCONNECT=1,1"));
-        success &= gsmModem.waitResponse();
+        success &= static_cast<bool>(gsmModem.waitResponse());
         // Enable auto internet -automatically try to connect internet PDN
         // provisioned into /etc/config/sqnmm after each attach to the network
         gsmModem.sendAT(GF("+SQNAUTOINTERNET=1"));
-        success &= gsmModem.waitResponse();
+        success &= static_cast<bool>(gsmModem.waitResponse());
     }
 
     return success;

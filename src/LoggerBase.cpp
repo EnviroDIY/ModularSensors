@@ -492,7 +492,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt) {
     // Convert the DateTime object to a String
     dt.addToString(dateTimeStr);
     dateTimeStr.replace(" ", "T");
-    String tzString = String(_loggerTimeZone);
+    auto tzString = String(_loggerTimeZone);
     if (-24 <= _loggerTimeZone && _loggerTimeZone <= -10) {
         tzString += F(":00");
     } else if (-10 < _loggerTimeZone && _loggerTimeZone < 0) {
@@ -938,7 +938,7 @@ void Logger::setFileName(String& fileName) {
 }
 // Same as above, with a character array (overload function)
 void Logger::setFileName(const char* fileName) {
-    String StrName = String(fileName);
+    auto StrName = String(fileName);
     setFileName(StrName);
 }
 
@@ -948,7 +948,7 @@ void Logger::setFileName(const char* fileName) {
 // the begin() function is called.
 void Logger::generateAutoFileName(void) {
     // Generate the file name from logger ID and date
-    String fileName = String(_loggerID);
+    auto fileName = String(_loggerID);
     fileName += "_";
     fileName += formatDateTime_ISO8601(getNowLocalEpoch()).substring(0, 10);
     fileName += ".csv";
@@ -1071,8 +1071,8 @@ bool Logger::openFile(String& filename, bool createFile,
     if (!initializeSDCard()) return false;
 
     // Convert the string filename to a character file name for SdFat
-    uint8_t fileNameLength = filename.length() + 1;
-    char    charFileName[fileNameLength];
+    unsigned int fileNameLength = filename.length() + 1;
+    char         charFileName[fileNameLength];
     filename.toCharArray(charFileName, fileNameLength);
 
     // First attempt to open an already existing file (in write mode), so we

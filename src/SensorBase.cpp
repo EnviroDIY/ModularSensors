@@ -67,7 +67,7 @@ int8_t Sensor::getPowerPin(void) {
 
 // These functions get and set the number of readings to average for a sensor
 // Generally these values should be set in the constructor
-void Sensor::setNumberMeasurementsToAverage(int nReadings) {
+void Sensor::setNumberMeasurementsToAverage(uint8_t nReadings) {
     _measurementsToAverage = nReadings;
 }
 uint8_t Sensor::getNumberMeasurementsToAverage(void) {
@@ -310,7 +310,8 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
 }
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
                                            int32_t resultValue) {
-    float float_val = resultValue;  // cast the int32_t to a float
+    auto float_val =
+        static_cast<float>(resultValue);  // cast the int32_t to a float
     verifyAndAddMeasurementResult(resultNumber, float_val);
 }
 
@@ -355,11 +356,11 @@ bool Sensor::update(void) {
     // loop through as many measurements as requested
     for (uint8_t j = 0; j < _measurementsToAverage; j++) {
         // start a measurement
-        ret_val += startSingleMeasurement();
+        ret_val &= startSingleMeasurement();
         // wait for the measurement to finish
         waitForMeasurementCompletion();
         // get the measurement result
-        ret_val += addSingleMeasurementResult();
+        ret_val &= addSingleMeasurementResult();
     }
 
     averageMeasurements();
@@ -384,7 +385,8 @@ bool Sensor::checkPowerOn(bool debug) {
                getSensorNameAndLocation());
     }
     if (_powerPin >= 0) {
-        int8_t powerBitNumber = log(digitalPinToBitMask(_powerPin)) / log(2);
+        auto powerBitNumber =
+            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
                     powerBitNumber) == LOW) {
@@ -396,7 +398,7 @@ bool Sensor::checkPowerOn(bool debug) {
             _sensorStatus &= 0b10000001;
             return false;
         } else {
-            if (debug) { MS_DBG((" was on.")); }
+            if (debug) { MS_DBG(" was on."); }
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             // Set the status bit for sensor power attempt (bit 1) and success
@@ -432,7 +434,7 @@ bool Sensor::isWarmedUp(bool debug) {
     // If the sensor has power and enough time has elapsed, it's warmed up
     if (elapsed_since_power_on > _warmUpTime_ms) {
         if (debug) {
-            MS_DBG(F("It's been"), (elapsed_since_power_on), F("ms, and"),
+            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
                    getSensorNameAndLocation(), F("should be warmed up!"));
         }
         return true;
@@ -470,7 +472,7 @@ bool Sensor::isStable(bool debug) {
     // If the sensor has been activated and enough time has elapsed, it's stable
     if (elapsed_since_wake_up > _stabilizationTime_ms) {
         if (debug) {
-            MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
+            MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
                    getSensorNameAndLocation(), F("should be stable!"));
         }
         return true;
@@ -509,7 +511,7 @@ bool Sensor::isMeasurementComplete(bool debug) {
     // finished
     if (elapsed_since_meas_start > _measurementTime_ms) {
         if (debug) {
-            MS_DBG(F("It's been"), (elapsed_since_meas_start),
+            MS_DBG(F("It's been"), elapsed_since_meas_start,
                    F("ms, and measurement by"), getSensorNameAndLocation(),
                    F("should be complete!"));
         }
