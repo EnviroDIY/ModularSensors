@@ -42,7 +42,7 @@ jobs:
             'SODAQ:samd:sodaq_autonomo',
           ]
 
-    name: ${{ matrix.example }} on ${{ matrix.fqbn }}
+    name: ${{ matrix.example }} - ${{ matrix.fqbn }}
 
     steps:
       - uses: actions/checkout@v3

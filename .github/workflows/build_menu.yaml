@@ -15,6 +15,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - modemFlag: SIM_COM_SIM7080
@@ -433,8 +434,8 @@ jobs:
       # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          pio lib -g install -f ${{ env.LIBRARY_INSTALL_SOURCE }}
-          pio lib show EnviroDIY_ModularSensors
+          pio pkg install -g --library -f ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio pkg show EnviroDIY_ModularSensors
 
       - name: Modify menu for matrix configuration
         env:
@@ -448,6 +449,8 @@ jobs:
           sh continuous_integration/modify-menu-configuration.sh
 
       - name: Test with PlatformIO
+        env:
+          PLATFORMIO_LIB_EXTRA_DIRS: /home/runner/.platformio/lib
         run: |
           echo "::group::Build for Mayfly"
           platformio run --environment mayfly --project-conf="continuous_integration/platformio.ini"
@@ -485,7 +488,7 @@ jobs:
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
       # dependencies leaving nothing for the cache
-      # pio lib -g uninstall EnviroDIY_ModularSensors
+      # pio pkg uninstall --library -g EnviroDIY_ModularSensors
       - name: Uninstall testing version of Modular Sensors before caching
         run: |
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors

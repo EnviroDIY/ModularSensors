@@ -50,8 +50,16 @@ jobs:
           cd $GITHUB_WORKSPACE/continuous_integration
           python check_component_inclusion.py 2>&1 | tee check_component.log
           result_code=${PIPESTATUS[0]}
-          echo "::set-output name=missing_menu_docs::$(cat check_component.log)"
-          echo "$(cat check_component.log)" >> $GITHUB_STEP_SUMMARY
+          missing_menu_docs=$(cat comment-missing_menu_docs.txt)
+          missing_menu_docs="${missing_menu_docs//'%'/'%25'}"
+          missing_menu_docs="${missing_menu_docs//$'\n'/'%0A'}"
+          missing_menu_docs="${missing_menu_docs//$'\r'/'%0D'}"
+          echo ::set-output name=missing_menu_docs::$missing_menu_docs
+          if [[ $result_code ]]; then
+            echo "$(cat check_component.log)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Valid library.json =)" >> $GITHUB_STEP_SUMMARY
+          fi
           exit $result_code
 
       - name: Create commit comment
@@ -59,6 +67,11 @@ jobs:
         if: steps.check_component.outcome=='failure'
         with:
           body: ${{ steps.check_component.outputs.missing_menu_docs }}
+
+      - name: Fail if cannot verify json
+        id: verification_failure
+        if: steps.check_component.outcome=='failure'
+        run: exit 1
 
   doc_build:
     runs-on: ubuntu-latest
@@ -116,7 +129,8 @@ jobs:
         run: |
           cd ${{ github.workspace }}/code_docs/ModularSensors/
           chmod +x continuous_integration/generate-documentation.sh
-          sh continuous_integration/generate-documentation.sh
+          sh continuous_integration/generate-documentation.sh 2>&1
+          result_code=${PIPESTATUS[0]}
           echo "::set-output name=doxygen_warnings::$(cat output_doxygen.log)"
           echo "::set-output name=mcss_warnings::$(cat output_mcss.log)"
           echo "\nDoxygen completed with the following warnings:" >> $GITHUB_STEP_SUMMARY

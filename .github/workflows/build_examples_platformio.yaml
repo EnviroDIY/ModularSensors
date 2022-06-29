@@ -34,7 +34,7 @@ jobs:
           ]
         pio_environment: [mayfly, mega, arduino_zero, adafruit_feather_m0, autonomo]
 
-    name: ${{ matrix.example }} on ${{ matrix.pio_environment }}
+    name: ${{ matrix.example }} - ${{ matrix.pio_environment }}
 
     steps:
       - uses: actions/checkout@v3
@@ -80,13 +80,14 @@ jobs:
       # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          pio lib -g install -f ${{ env.LIBRARY_INSTALL_SOURCE }}
-          pio lib show EnviroDIY_ModularSensors
+          pio pkg install -g --library -f ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio pkg show EnviroDIY_ModularSensors
 
       - name: Run PlatformIO
         env:
           PLATFORMIO_CI_SRC: ${{ format('examples/{0}/', matrix.example) }}
           PLATFORMIO_DEFAULT_ENVS: ${{ matrix.pio_environment}}
+          PLATFORMIO_LIB_EXTRA_DIRS: /home/runner/.platformio/lib
         run: |
           echo "::debug::Running PlatformIO for ${{ format('examples/{0}/', matrix.example) }}"
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
@@ -95,4 +96,4 @@ jobs:
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
       # dependencies leaving nothing for the cache
       # - name: Uninstall testing version of Modular Sensors before caching
-      #   run: pio lib -g uninstall EnviroDIY_ModularSensors
+      #   run: pio pkg uninstall --library -g EnviroDIY_ModularSensors

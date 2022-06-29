@@ -32,7 +32,7 @@ jobs:
         run: |
           python continuous_integration/validate_manifest.py 2>&1 | tee validate_manifest.log
           result_code=${PIPESTATUS[0]}
-          echo "::set-output name=missing_menu_docs::$(cat validate_manifest.log)"
+          echo "::set-output name=manifest_errors::$(cat validate_manifest.log)"
           echo "$(cat validate_manifest.log)" >> $GITHUB_STEP_SUMMARY
           exit $result_code
 
@@ -40,7 +40,9 @@ jobs:
         uses: peter-evans/commit-comment@v2
         if: steps.validate_manifest.outcome=='failure'
         with:
-          body: Please correct errors in the library.json file!
+          body: |
+            Please correct errors in the library.json file!
+            ${{ steps.validate_manifest.outputs.manifest_errors }}
 
   acli_lint:
     name: Validate library structure
@@ -67,7 +69,5 @@ jobs:
         if: steps.validate_library.outcome=='failure'
         with:
           body: |
-            There is a problem with the library folder structure or names.
-            Please correct it.
-            *HINT*: Please *don't* include any programs you made only to test a new sensor!
-            Those testing programs should be ignored by git.
+            There is a problem with the library folder structure or names.  Please correct it.
+            Please *don't* include any programs you made only to test a new sensor.  Those testing programs should be ignored by git.
