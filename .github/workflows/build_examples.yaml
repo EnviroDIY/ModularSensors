@@ -1,4 +1,4 @@
-name: Build Examples with PlatformIO
+name: Build Examples
 
 # Triggers the workflow on push or pull request events
 on: [push, pull_request]
@@ -9,33 +9,11 @@ concurrency:
 
 jobs:
   build:
+    name: Build Examples
     runs-on: ubuntu-latest
+    env:
+      PLATFORMIO_SRC_DIR: temp/menu_a_la_carte
     if: "!contains(github.event.head_commit.message, 'ci skip')"
-
-    strategy:
-      fail-fast: false
-      matrix:
-        example:
-          [
-            single_sensor,
-            simple_logging,
-            simple_logging_LearnEnviroDIY,
-            DRWI_NoCellular,
-            DRWI_2G,
-            DRWI_DigiLTE,
-            DRWI_SIM7080LTE,
-            DRWI_Mayfly1,
-            DRWI_Mayfly1_WiFi,
-            double_logger,
-            baro_rho_correction,
-            data_saving,
-            logging_to_MMW,
-            logging_to_ThingSpeak,
-          ]
-        pio_environment: [mayfly, mega, arduino_zero, adafruit_feather_m0, autonomo]
-
-    name: ${{ matrix.example }} - ${{ matrix.pio_environment }}
-
     steps:
       - uses: actions/checkout@v3
 
@@ -48,6 +26,13 @@ jobs:
             echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
             echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
           fi
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            echo "::debug::Push to commit ${GITHUB_SHA}"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
+          else
+            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -59,15 +44,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade platformio
 
-      - name: Restore PlatformIO Platforms and Libraries
+      # We use the `arduino/setup-arduino-cli` action to install and
+      # configure the Arduino CLI on the system.
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1.1.1
+
+      - name: Restore PlatformIO and Arduino platforms and libraries
         uses: actions/cache@v3
         id: cache_libraries
         with:
-          path: ~/.platformio
+          path: |
+            ~/.platformio
+            home/arduino
           # if nothing in the dependencies.json file has changed, then it will
           # be a "cache hit" and we can restore libraries from cache and not
           # download them.  If it has changed we have to re-download.
           key: ${{ hashFiles('./continuous_integration/dependencies.json') }}
+
+      # Install cores and library dependencies for the Arduino CLI, iff no cache
+      - name: Install the Arduino libraries
+        if: steps.cache_libraries.outputs.cache-hit != 'true'
+        run: |
+          chmod +x continuous_integration/install-deps-arduino-cli.sh
+          sh continuous_integration/install-deps-arduino-cli.sh
 
       # Install the dependencies for PlatformIO
       - name: Install the PlatformIO dependencies at global level
@@ -76,25 +75,28 @@ jobs:
           chmod +x continuous_integration/install-deps-platformio.sh
           sh continuous_integration/install-deps-platformio.sh
 
+      # Install ModularSensors for the Arduino CLI
+      - name: Install the testing version of Modular Sensors for the Arduino CLI
+        run: |
+          chmod +x continuous_integration/install-test-version-arduino-cli.sh
+          sh continuous_integration/install-test-version-arduino-cli.sh
+
       # Install ModularSensors at the Global level for PlatformIO
       # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          pio pkg install -g --library -f ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio pkg install -g --library ${{ env.LIBRARY_INSTALL_SOURCE }}
           pio pkg show EnviroDIY_ModularSensors
 
-      - name: Run PlatformIO
-        env:
-          PLATFORMIO_CI_SRC: ${{ format('examples/{0}/', matrix.example) }}
-          PLATFORMIO_DEFAULT_ENVS: ${{ matrix.pio_environment}}
-          PLATFORMIO_LIB_EXTRA_DIRS: /home/runner/.platformio/lib
+      # Run the script to compile the examples
+      - name: Compile
         run: |
-          echo "::debug::Running PlatformIO for ${{ format('examples/{0}/', matrix.example) }}"
-          echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
-          pio ci --project-conf="continuous_integration/platformio.ini"
-          echo "${{ matrix.example }} - ${{ matrix.pio_environment }} SUCCESSFULLY COMPILED" >> $GITHUB_STEP_SUMMARY
+          chmod +x continuous_integration/build_examples.sh
+          sh continuous_integration/build_examples.sh
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
       # dependencies leaving nothing for the cache
-      # - name: Uninstall testing version of Modular Sensors before caching
-      #   run: pio pkg uninstall --library -g EnviroDIY_ModularSensors
+      # pio pkg uninstall --library -g EnviroDIY_ModularSensors
+      - name: Uninstall testing version of Modular Sensors before caching
+        run: |
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors

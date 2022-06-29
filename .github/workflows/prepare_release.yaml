@@ -47,7 +47,7 @@ jobs:
 
       - name: Install ModularSensors from the master branch
         run: |
-          pio pkg install -g --library -f https://github.com/EnviroDIY/ModularSensors
+          pio pkg install -g --library https://github.com/EnviroDIY/ModularSensors
           pio pkg show EnviroDIY_ModularSensors
 
       # Uninstall graphics libraries from Adafruit

@@ -33,6 +33,7 @@ jobs:
   check_menu_inclusion:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+    name: Check that all classes are documented in the menu-a-la-carte example
 
     steps:
       - uses: actions/checkout@v3
@@ -67,7 +68,9 @@ jobs:
         uses: peter-evans/commit-comment@v2
         if: steps.check_component.outcome=='failure'
         with:
-          body: ${{ steps.check_component.outputs.missing_menu_docs }}
+          body: |
+            All sensor and variable subclasses must be included in the Menu a la Carte example
+            ${{ steps.check_component.outputs.missing_menu_docs }}
 
       - name: Fail if cannot find all menu flags
         id: verification_failure
@@ -77,6 +80,7 @@ jobs:
   doc_build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+    name: Build documentation
 
     steps:
       # check out the ModularSensors repo
@@ -132,12 +136,12 @@ jobs:
           chmod +x continuous_integration/generate-documentation.sh
           sh continuous_integration/generate-documentation.sh 2>&1 | tee doxygen_run_output.log
           result_code=${PIPESTATUS[0]}
-          echo "::set-output name=doxygen_warnings::$(cat output_doxygen.log)"
-          echo "::set-output name=mcss_warnings::$(cat output_mcss.log)"
+          echo "::set-output name=doxygen_warnings::$(cat docs/output_doxygen.log)"
+          echo "::set-output name=mcss_warnings::$(cat docs/output_mcss.log)"
           echo "\nDoxygen completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
-          echo "$(cat output_doxygen.log)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat docs/output_doxygen.log)" >> $GITHUB_STEP_SUMMARY
           echo "\nmcss Doxygen post-processing completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
-          echo "$(cat output_mcss.log)" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat docs/output_mcss.log)" >> $GITHUB_STEP_SUMMARY
           echo "Finished generating documentation"
           exit $result_code
 

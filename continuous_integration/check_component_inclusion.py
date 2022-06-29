@@ -192,10 +192,6 @@ def print_missing(missing_things):
         print("  - `{}`".format(missing_thing))
 
 
-if len(missing_classes + missing_build_flags + missing_snips + missing_walks) > 0:
-    print(
-        "All sensor and variable subclasses must be included in the Menu a la Carte example"
-    )
 if len(missing_classes) > 0:
     print("- The following classes are not included at all in the menu example code:")
     print_missing(missing_classes)
@@ -215,7 +211,7 @@ if len(missing_walks) > 0:
     )
     print_missing(missing_walks)
 
-if len(missing_classes + missing_walks) > 0:
+if len(missing_classes + missing_build_flags + missing_snips + missing_walks) > 0:
     out_message = {
         "passed": False,
         "missing documentation": {
