@@ -435,7 +435,6 @@ jobs:
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
           pio pkg install -g --library ${{ env.LIBRARY_INSTALL_SOURCE }}
-          pio pkg show EnviroDIY_ModularSensors
 
       - name: Modify menu for matrix configuration
         env:

@@ -14,6 +14,7 @@ jobs:
     env:
       PLATFORMIO_SRC_DIR: temp/menu_a_la_carte
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+
     steps:
       - uses: actions/checkout@v3
 
@@ -86,7 +87,6 @@ jobs:
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
           pio pkg install -g --library ${{ env.LIBRARY_INSTALL_SOURCE }}
-          pio pkg show EnviroDIY_ModularSensors
 
       # Run the script to compile the examples
       - name: Compile
