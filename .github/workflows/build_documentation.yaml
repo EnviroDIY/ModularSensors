@@ -138,9 +138,10 @@ jobs:
           result_code=${PIPESTATUS[0]}
           echo "::set-output name=doxygen_warnings::$(cat docs/output_doxygen.log)"
           echo "::set-output name=mcss_warnings::$(cat docs/output_mcss.log)"
-          echo "\nDoxygen completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
+          echo "## Doxygen completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
           echo "$(cat docs/output_doxygen.log)" >> $GITHUB_STEP_SUMMARY
-          echo "\nmcss Doxygen post-processing completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## mcss Doxygen post-processing completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
           echo "$(cat docs/output_mcss.log)" >> $GITHUB_STEP_SUMMARY
           echo "Finished generating documentation"
           exit $result_code

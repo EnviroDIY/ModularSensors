@@ -3,6 +3,18 @@
 # Exit with nonzero exit code if anything fails
 set -e
 
+echo "\e[32mInstalling Atmel AVR platform \e[0m"
+pio pkg install -g --platform atmelavr
+
+echo "\e[32mInstalling Atmel AVR framework \e[0m"
+pio pkg install -g --tool framework-arduino-avr
+
+echo "\e[32mInstalling Atmel SAM platform \e[0m"
+pio pkg install -g --platform atmelsam
+
+echo "\e[32mInstalling Atmel SAM framework \e[0m"
+pio pkg install -g --tool framework-arduino-samd-adafruit
+
 echo "\e[32mInstalling envirodiy/EnviroDIY_DS3231\e[0m"
 pio pkg install -g --library envirodiy/EnviroDIY_DS3231
 
