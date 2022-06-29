@@ -350,16 +350,16 @@ jobs:
           - sensorFlag: MAX_BOTIX_SONAR
             modemFlag: SIM_COM_SIM7080
             publisherFlag: ENVIRO_DIY_PUBLISHER
-          - publisherFlag: ENVIRO_DIY_PUBLISHER
+          - publisherFlag: ENVIRO_DIY
             sensorFlag: NO_SENSORS
             modemFlag: SIM_COM_SIM7080
-          - publisherFlag: DREAM_HOST_PUBLISHER
+          - publisherFlag: DREAM_HOST
             sensorFlag: NO_SENSORS
             modemFlag: SIM_COM_SIM7080
-          - publisherFlag: THING_SPEAK_PUBLISHER
+          - publisherFlag: THING_SPEAK
             sensorFlag: NO_SENSORS
             modemFlag: SIM_COM_SIM7080
-          - publisherFlag: UBIDOTS_PUBLISHER
+          - publisherFlag: UBIDOTS
             sensorFlag: NO_SENSORS
             modemFlag: SIM_COM_SIM7080
     steps:
@@ -440,7 +440,8 @@ jobs:
         env:
           modemFlag: ${{ format('BUILD_MODEM_{0}', matrix.modemFlag) }}
           sensorFlag: ${{ format('BUILD_SENSOR_{0}', matrix.sensorFlag) }}
-          publisherFlag: ${{ format('BUILD_PUB_{0}', matrix.publisherFlag) }}
+          publisherFlag: ${{ format('BUILD_PUB_{0}_PUBLISHER', matrix.publisherFlag)
+            }}
         run: |
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           chmod +x continuous_integration/modify-menu-configuration.sh

@@ -50,7 +50,7 @@ for match in re.finditer(pattern, filetext):
         "PUB" in match.group("flag1")
         and match.group("flag1") not in all_publisher_flags
     ):
-        all_publisher_flags.append(match.group("flag1").replace("BUILD_PUB_", ""))
+        all_publisher_flags.append(match.group("flag1").replace("BUILD_PUB_", "").replace("_PUBLISHER", ""))
 
 #%% Create the matrix
 matrix_includes = []
