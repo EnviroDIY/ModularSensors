@@ -15,5 +15,5 @@
 from platformio.package.manifest.parser import ManifestParserFactory
 from platformio.package.manifest.schema import ManifestSchema
 
-mp = ManifestParserFactory.new_from_file('C:\\Users\\sdamiano\\Documents\\GitHub\\EnviroDIY\\ModularSensors\\library.json')
+mp = ManifestParserFactory.new_from_file("library.json")
 parsed = ManifestSchema().load_manifest(mp.as_dict())

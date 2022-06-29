@@ -92,4 +92,3 @@ pio pkg install -g --library https://github.com/Testato/SoftwareWire.git#v1.5.1
 
 echo "\e[32m\nCurrently installed libraries:\e[0m"
 pio pkg list -g -v
-pio pkg list -v

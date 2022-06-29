@@ -112,6 +112,7 @@ jobs:
         run: |
           echo "::debug::Running Arduino CLI for ${{ format('examples/{0}/', matrix.example) }}"
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn ${{ matrix.fqbn }} $BUILD_EXAMPLE
+          echo "${{ matrix.example }} - ${{ matrix.fqbn }} SUCCESSFULLY COMPILED" >> $GITHUB_STEP_SUMMARY
 
       - name: Uninstall testing version of Modular Sensors before caching
         run: arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors

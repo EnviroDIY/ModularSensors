@@ -91,7 +91,8 @@ jobs:
         run: |
           echo "::debug::Running PlatformIO for ${{ format('examples/{0}/', matrix.example) }}"
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
-          platformio ci --project-conf="continuous_integration/platformio.ini"
+          pio ci --project-conf="continuous_integration/platformio.ini"
+          echo "${{ matrix.example }} - ${{ matrix.pio_environment }} SUCCESSFULLY COMPILED" >> $GITHUB_STEP_SUMMARY
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
       # dependencies leaving nothing for the cache

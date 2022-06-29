@@ -453,19 +453,19 @@ jobs:
           PLATFORMIO_LIB_EXTRA_DIRS: /home/runner/.platformio/lib
         run: |
           echo "::group::Build for Mayfly"
-          platformio run --environment mayfly --project-conf="continuous_integration/platformio.ini"
+          pio run --environment mayfly --project-conf="continuous_integration/platformio.ini"
           echo "::endgroup::"
           echo "::group::Build for Arduino Mega"
-          platformio run --environment mega --project-conf="continuous_integration/platformio.ini"
+          pio run --environment mega --project-conf="continuous_integration/platformio.ini"
           echo "::endgroup::"
           echo "::group::Build for Arduino Zero"
-          platformio run --environment arduino_zero --project-conf="continuous_integration/platformio.ini"
+          pio run --environment arduino_zero --project-conf="continuous_integration/platformio.ini"
           echo "::endgroup::"
           echo "::group::Build for Adafruit Feather M0"
-          platformio run --environment adafruit_feather_m0 --project-conf="continuous_integration/platformio.ini"
+          pio run --environment adafruit_feather_m0 --project-conf="continuous_integration/platformio.ini"
           echo "::endgroup::"
           echo "::group::Build for Sodaq Autonomo"
-          platformio run --environment autonomo --project-conf="continuous_integration/platformio.ini"
+          pio run --environment autonomo --project-conf="continuous_integration/platformio.ini"
           echo "::endgroup::"
 
       - name: Test with Arduino CLI

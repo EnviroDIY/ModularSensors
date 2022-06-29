@@ -24,7 +24,7 @@ concurrency:
 env:
   REBUILD_CACHE_NUMBER: 2
   PYTHON_DEPS_ARCHIVE_NUM: 2
-  DOXYGEN_VERSION: Release_1_9_3
+  DOXYGEN_VERSION: Release_1_9_4
   TEX_VERSION: 2019
   # ^^ 2019 is the latest TeX live available on apt-get and that's good enough
   GRAPHVIZ_VERSION: 2.43.0
@@ -50,7 +50,7 @@ jobs:
           cd $GITHUB_WORKSPACE/continuous_integration
           python check_component_inclusion.py 2>&1 | tee check_component.log
           result_code=${PIPESTATUS[0]}
-          missing_menu_docs=$(cat comment-missing_menu_docs.txt)
+          missing_menu_docs=$(cat check_component.log)
           missing_menu_docs="${missing_menu_docs//'%'/'%25'}"
           missing_menu_docs="${missing_menu_docs//$'\n'/'%0A'}"
           missing_menu_docs="${missing_menu_docs//$'\r'/'%0D'}"
@@ -60,6 +60,7 @@ jobs:
           else
             echo "Valid library.json =)" >> $GITHUB_STEP_SUMMARY
           fi
+          echo "Finished menu inclusion verification"
           exit $result_code
 
       - name: Create commit comment
@@ -68,7 +69,7 @@ jobs:
         with:
           body: ${{ steps.check_component.outputs.missing_menu_docs }}
 
-      - name: Fail if cannot verify json
+      - name: Fail if cannot find all menu flags
         id: verification_failure
         if: steps.check_component.outcome=='failure'
         run: exit 1
@@ -129,7 +130,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/code_docs/ModularSensors/
           chmod +x continuous_integration/generate-documentation.sh
-          sh continuous_integration/generate-documentation.sh 2>&1
+          sh continuous_integration/generate-documentation.sh 2>&1 | tee doxygen_run_output.log
           result_code=${PIPESTATUS[0]}
           echo "::set-output name=doxygen_warnings::$(cat output_doxygen.log)"
           echo "::set-output name=mcss_warnings::$(cat output_mcss.log)"
@@ -137,6 +138,7 @@ jobs:
           echo "$(cat output_doxygen.log)" >> $GITHUB_STEP_SUMMARY
           echo "\nmcss Doxygen post-processing completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
           echo "$(cat output_mcss.log)" >> $GITHUB_STEP_SUMMARY
+          echo "Finished generating documentation"
           exit $result_code
 
       - name: Deploy to github pages
