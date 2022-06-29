@@ -1,4 +1,4 @@
-name: Check and Publish Documentation
+name: Check for Complete Documentation
 
 on:
   # Triggers the workflow on push or pull request events
@@ -42,10 +42,23 @@ jobs:
         with:
           python-version: '3.x'
 
+      # Using anwer from here to get the exit code and pass the output:  https://stackoverflow.com/questions/59191913/how-do-i-get-the-output-of-a-specific-step-in-github-actions
       - name: check for classes in the menu example
+        id: check_component
+        continue-on-error: true
         run: |
           cd $GITHUB_WORKSPACE/continuous_integration
-          python check_component_inclusion.py
+          python check_component_inclusion.py 2>&1 | tee check_component.log
+          result_code=${PIPESTATUS[0]}
+          echo "::set-output name=missing_menu_docs::$(cat check_component.log)"
+          echo "$(cat check_component.log)" >> $GITHUB_STEP_SUMMARY
+          exit $result_code
+
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v2
+        if: steps.check_component.outcome=='failure'
+        with:
+          body: ${{ steps.check_component.outputs.missing_menu_docs }}
 
   doc_build:
     runs-on: ubuntu-latest
@@ -86,8 +99,6 @@ jobs:
 
       - name: Build and install doxygen and its dependencies
         if: steps.cache_doxygen.outputs.cache-hit != 'true'
-        env:
-          TRAVIS_BUILD_DIR: ${{ github.workspace }}
         run: |
           cd ${{ github.workspace }}/code_docs/ModularSensors/
           chmod +x continuous_integration/build-install-doxygen.sh
@@ -102,12 +113,17 @@ jobs:
           path: code_docs/m.css
 
       - name: Generate all the documentation
-        env:
-          TRAVIS_BUILD_DIR: ${{ github.workspace }}
         run: |
           cd ${{ github.workspace }}/code_docs/ModularSensors/
           chmod +x continuous_integration/generate-documentation.sh
           sh continuous_integration/generate-documentation.sh
+          echo "::set-output name=doxygen_warnings::$(cat output_doxygen.log)"
+          echo "::set-output name=mcss_warnings::$(cat output_mcss.log)"
+          echo "\nDoxygen completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat output_doxygen.log)" >> $GITHUB_STEP_SUMMARY
+          echo "\nmcss Doxygen post-processing completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat output_mcss.log)" >> $GITHUB_STEP_SUMMARY
+          exit $result_code
 
       - name: Deploy to github pages
         if: "(github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')"

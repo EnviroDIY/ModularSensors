@@ -19,13 +19,13 @@ with open(build_file, "r") as in_file:
 
 # set flags
 all_modem_flags = [
-    "BUILD_MODEM_SIM_COM_SIM7080",
+    "SIM_COM_SIM7080",
 ]
 all_sensor_flags = [
     "NO_SENSORS",
 ]
 all_publisher_flags = [
-    "BUILD_PUB_ENVIRO_DIY_PUBLISHER",
+    "ENVIRO_DIY_PUBLISHER",
 ]
 
 #%% Read flags out of the menu example
@@ -43,14 +43,14 @@ for match in re.finditer(pattern, filetext):
         "SENSOR" in match.group("flag1")
         and match.group("flag1") not in all_sensor_flags
     ):
-        all_sensor_flags.append(match.group("flag1"))
+        all_sensor_flags.append(match.group("flag1").replace("BUILD_SENSOR_", ""))
     if "MODEM" in match.group("flag1") and match.group("flag1") not in all_modem_flags:
-        all_modem_flags.append(match.group("flag1"))
+        all_modem_flags.append(match.group("flag1").replace("BUILD_MODEM_", ""))
     if (
         "PUB" in match.group("flag1")
         and match.group("flag1") not in all_publisher_flags
     ):
-        all_publisher_flags.append(match.group("flag1"))
+        all_publisher_flags.append(match.group("flag1").replace("BUILD_PUB_", ""))
 
 #%% Create the matrix
 matrix_includes = []
@@ -65,17 +65,17 @@ for flag in all_modem_flags:
 for flag in all_sensor_flags[1:]:
     matrix_includes.append(
         {
-            "modemFlag": all_modem_flags[0],
             "sensorFlag": flag,
+            "modemFlag": all_modem_flags[0],
             "publisherFlag": all_publisher_flags[0],
         }
     )
 for flag in all_publisher_flags[1:]:
     matrix_includes.append(
         {
-            "modemFlag": all_modem_flags[0],
-            "sensorFlag": all_sensor_flags[0],
             "publisherFlag": flag,
+            "sensorFlag": all_sensor_flags[0],
+            "modemFlag": all_modem_flags[0],
         }
     )
 

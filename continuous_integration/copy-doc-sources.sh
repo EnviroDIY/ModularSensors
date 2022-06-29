@@ -9,8 +9,8 @@
 set -e
 
 # Create a clean working directory for this script.
-mkdir $TRAVIS_BUILD_DIR/code_docs
-cd $TRAVIS_BUILD_DIR/code_docs
+mkdir $GITHUB_WORKSPACE/code_docs
+cd $GITHUB_WORKSPACE/code_docs
 
 # Re-clone the main repo, not sparsely
 git clone -b master --depth 1 https://github.com/EnviroDIY/ModularSensors ModularSensors

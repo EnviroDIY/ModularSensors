@@ -8,7 +8,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
+  pio_lint:
+    name: Verify library.json
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
@@ -26,9 +27,32 @@ jobs:
           pip install --upgrade platformio
 
       - name: Run python script to verify structure of library.json for PlatformIO
-        run: python continuous_integration/validate_manifest.py
+        id: validate_manifest
+        continue-on-error: true
+        run: |
+          python continuous_integration/validate_manifest.py 2>&1 | tee validate_manifest.log
+          result_code=${PIPESTATUS[0]}
+          echo "::set-output name=missing_menu_docs::$(cat validate_manifest.log)"
+          echo "$(cat validate_manifest.log)" >> $GITHUB_STEP_SUMMARY
+          exit $result_code
+
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v2
+        if: steps.validate_manifest.outcome=='failure'
+        with:
+          body: Please correct errors in the library.json file!
+
+  acli_lint:
+    name: Validate library structure
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Run Arduino-Lint to verify the library structure and syntax for the Arduino IDE
+        id: validate_library
+        continue-on-error: true
         env:
           ARDUINO_LINT_LIBRARY_MANAGER_INDEXING: true
         uses: arduino/arduino-lint-action@v1
@@ -37,3 +61,13 @@ jobs:
           library-manager: submit
           compliance: strict
           verbose: true
+
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v2
+        if: steps.validate_library.outcome=='failure'
+        with:
+          body: |
+            There is a problem with the library folder structure or names.
+            Please correct it.
+            *HINT*: Please *don't* include any programs you made only to test a new sensor!
+            Those testing programs should be ignored by git.

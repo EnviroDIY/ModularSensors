@@ -26,9 +26,9 @@ echo "\e[32m\n\n\nCurrent graphviz version...\e[0m"
 dot -v
 echo "\n\n\n"
 
-cd $TRAVIS_BUILD_DIR
+cd $GITHUB_WORKSPACE
 
-if [ ! -f $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen ]; then
+if [ ! -f $GITHUB_WORKSPACE/doxygen-src/build/bin/doxygen ]; then
 
     # Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
     echo "\e[32mCloning doxygen repository...\e[0m"
@@ -48,11 +48,11 @@ if [ ! -f $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen ]; then
 fi
 
 echo "\e[32m\n\n\nCurrent Doxygen version...\e[0m"
-$TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen -v
+$GITHUB_WORKSPACE/doxygen-src/build/bin/doxygen -v
 echo "\n\n\n"
 
 # echo "\e[32mMove Doxygen to working directory"
-# cp $TRAVIS_BUILD_DIR/doxygen-src/build/bin/* $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+# cp $GITHUB_WORKSPACE/doxygen-src/build/bin/* $GITHUB_WORKSPACE/code_docs/ModularSensors
 # #make install
 
-cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+cd $GITHUB_WORKSPACE/code_docs/ModularSensors

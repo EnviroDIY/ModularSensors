@@ -13,23 +13,24 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
     strategy:
+      fail-fast: false
       matrix:
         example:
           [
-            examples/single_sensor/,
-            examples/simple_logging/,
-            examples/simple_logging_LearnEnviroDIY/,
-            examples/DRWI_NoCellular/,
-            examples/DRWI_2G/,
-            examples/DRWI_DigiLTE/,
-            examples/DRWI_SIM7080LTE/,
-            examples/DRWI_Mayfly1/,
-            examples/DRWI_Mayfly1_WiFi/,
-            examples/double_logger/,
-            examples/baro_rho_correction/,
-            examples/data_saving/,
-            examples/logging_to_MMW/,
-            examples/logging_to_ThingSpeak/,
+            single_sensor,
+            simple_logging,
+            simple_logging_LearnEnviroDIY,
+            DRWI_NoCellular,
+            DRWI_2G,
+            DRWI_DigiLTE,
+            DRWI_SIM7080LTE,
+            DRWI_Mayfly1,
+            DRWI_Mayfly1_WiFi,
+            double_logger,
+            baro_rho_correction,
+            data_saving,
+            logging_to_MMW,
+            logging_to_ThingSpeak,
           ]
         # arduino-platform: ['EnviroDIY:avr', 'arduino:avr', 'arduino:samd', 'adafruit:samd']
         fqbn:
@@ -40,6 +41,8 @@ jobs:
             'adafruit:samd:adafruit_feather_m0',
             'SODAQ:samd:sodaq_autonomo',
           ]
+
+    name: ${{ matrix.example }} on ${{ matrix.fqbn }}
 
     steps:
       - uses: actions/checkout@v3
@@ -105,9 +108,9 @@ jobs:
 
       - name: Compile examples using the Arduino CLI
         env:
-          BUILD_EXAMPLE: ${{ matrix.example }}
+          BUILD_EXAMPLE: ${{ format('examples/{0}/', matrix.example) }}
         run: |
-          echo "::debug::Running Arduino CLI for ${{ matrix.example }}"
+          echo "::debug::Running Arduino CLI for ${{ format('examples/{0}/', matrix.example) }}"
           arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn ${{ matrix.fqbn }} $BUILD_EXAMPLE
 
       - name: Uninstall testing version of Modular Sensors before caching

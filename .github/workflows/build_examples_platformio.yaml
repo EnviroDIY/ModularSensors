@@ -2,6 +2,7 @@ name: Build Examples with PlatformIO
 
 # Triggers the workflow on push or pull request events
 on: [push, pull_request]
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -12,25 +13,28 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
     strategy:
+      fail-fast: false
       matrix:
         example:
           [
-            examples/single_sensor/,
-            examples/simple_logging/,
-            examples/simple_logging_LearnEnviroDIY/,
-            examples/DRWI_NoCellular/,
-            examples/DRWI_2G/,
-            examples/DRWI_DigiLTE/,
-            examples/DRWI_SIM7080LTE/,
-            examples/DRWI_Mayfly1/,
-            examples/DRWI_Mayfly1_WiFi/,
-            examples/double_logger/,
-            examples/baro_rho_correction/,
-            examples/data_saving/,
-            examples/logging_to_MMW/,
-            examples/logging_to_ThingSpeak/,
+            single_sensor,
+            simple_logging,
+            simple_logging_LearnEnviroDIY,
+            DRWI_NoCellular,
+            DRWI_2G,
+            DRWI_DigiLTE,
+            DRWI_SIM7080LTE,
+            DRWI_Mayfly1,
+            DRWI_Mayfly1_WiFi,
+            double_logger,
+            baro_rho_correction,
+            data_saving,
+            logging_to_MMW,
+            logging_to_ThingSpeak,
           ]
         pio_environment: [mayfly, mega, arduino_zero, adafruit_feather_m0, autonomo]
+
+    name: ${{ matrix.example }} on ${{ matrix.pio_environment }}
 
     steps:
       - uses: actions/checkout@v3
@@ -81,9 +85,10 @@ jobs:
 
       - name: Run PlatformIO
         env:
-          PLATFORMIO_CI_SRC: ${{ matrix.example }}
+          PLATFORMIO_CI_SRC: ${{ format('examples/{0}/', matrix.example) }}
           PLATFORMIO_DEFAULT_ENVS: ${{ matrix.pio_environment}}
         run: |
+          echo "::debug::Running PlatformIO for ${{ format('examples/{0}/', matrix.example) }}"
           echo "${{ env.LIBRARY_INSTALL_SOURCE }}"
           platformio ci --project-conf="continuous_integration/platformio.ini"
 
