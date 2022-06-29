@@ -34,6 +34,8 @@ do
         fi
         echo "::endgroup::"
         
+        BUILD_EXAMPLE="examples/$example/"
+        
         echo "::debug::Running Arduino CLI for examples/$example/"
         arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn $fqbn $BUILD_EXAMPLE 2>&1
         result_code=${PIPESTATUS[0]}
