@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   pio_lint:
-    name: Verify library.json
+    name: Verify library.json for PlatformIO
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
@@ -54,8 +54,8 @@ jobs:
         if: steps.validate_manifest.outcome=='failure'
         run: exit 1
 
-  acli_lint:
-    name: Validate library structure
+  arduino_lint:
+    name: Validate library structure for Arduino Library Manager inclusion
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
@@ -73,14 +73,24 @@ jobs:
           library-manager: submit
           compliance: strict
           verbose: true
+          report-file: arduino_lint.json
+
+      - name: beautify_lint_output
+        id: beautify_output
+        run: |
+          python continuous_integration/beautify_arduino_lint_log.py
+          lint_errors=$(cat arduino_lint.md)
+          lint_errors="${lint_errors//'%'/'%25'}"
+          lint_errors="${lint_errors//$'\n'/'%0A'}"
+          lint_errors="${lint_errors//$'\r'/'%0D'}"
+          echo ::set-output name=lint_errors::$lint_errors
+          echo "$(cat arduino_lint.md)" >> $GITHUB_STEP_SUMMARY
 
       - name: Create commit comment
         uses: peter-evans/commit-comment@v2
         if: steps.validate_library.outcome=='failure'
         with:
-          body: |
-            There is a problem with the library folder structure or names.  Please correct it.
-            Please *don't* include any programs you made only to test a new sensor.  Those testing programs should be ignored by git.
+          body: ${{ steps.beautify_output.outputs.lint_errors }}
 
       - name: Fail if cannot verify library structure
         id: verification_failure
