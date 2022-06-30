@@ -13,9 +13,20 @@ out_md.write(" | --- | --- | --- | --- | \n")
 for project in arduino_lint_results["projects"]:
     fail_list = "<ul>"
     for failed_rule in project["rules"]:
-        fail_list += "<li> **{}** - {}</li>".format(
-            failed_rule["level"], failed_rule["message"]
-        )
+        if failed_rule["result"] != "skipped":
+            fail_list += "<li>{}{}<ul>".format(
+                failed_rule["ID"],
+                " - {}".format(failed_rule["brief"])
+                if failed_rule["brief"] != ""
+                else "",
+            )
+            fail_list += "<li> **{}**{}</li>".format(
+                failed_rule["level"],
+                " - {}".format(failed_rule["message"].replace("\n", "<br/><br/>"))
+                if failed_rule["message"] != ""
+                else "",
+            )
+            fail_list += "</ul></li>"
     fail_list += "</ul>"
     out_md.write(
         " | {} | {} | {} | {} | \n".format(

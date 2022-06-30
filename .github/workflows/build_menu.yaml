@@ -451,6 +451,8 @@ jobs:
         env:
           PLATFORMIO_LIB_EXTRA_DIRS: /home/runner/.platformio/lib
         run: |
+          pio pkg list -g -v
+          cp -a /home/runner/.platformio/lib/. $GITHUB_WORKSPACE/lib/
           echo "::group::Build for Mayfly"
           pio run --environment mayfly --project-conf="continuous_integration/platformio.ini"
           echo "::endgroup::"
