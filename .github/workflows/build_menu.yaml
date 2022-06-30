@@ -90,9 +90,6 @@ jobs:
           - sensorFlag: ATLAS_SCIENTIFIC_PH
             modemFlag: SIM_COM_SIM7080
             publisherFlag: ENVIRO_DIY_PUBLISHER
-          - sensorFlag: ATLAS_SCIENTIFIC_RTD
-            modemFlag: SIM_COM_SIM7080
-            publisherFlag: ENVIRO_DIY_PUBLISHER
           - sensorFlag: ATLAS_SCIENTIFIC_EC
             modemFlag: SIM_COM_SIM7080
             publisherFlag: ENVIRO_DIY_PUBLISHER
@@ -139,9 +136,6 @@ jobs:
             modemFlag: SIM_COM_SIM7080
             publisherFlag: ENVIRO_DIY_PUBLISHER
           - sensorFlag: MAX_BOTIX_SONAR
-            modemFlag: SIM_COM_SIM7080
-            publisherFlag: ENVIRO_DIY_PUBLISHER
-          - sensorFlag: MAXIM_DS18
             modemFlag: SIM_COM_SIM7080
             publisherFlag: ENVIRO_DIY_PUBLISHER
           - sensorFlag: MEA_SPEC_MS5803

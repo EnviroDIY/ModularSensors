@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Ignore errors until the end
 set +e
