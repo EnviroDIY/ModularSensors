@@ -110,7 +110,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // #ifdef BUILD_TEST_SOFTSERIAL
 
 
-#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_RAIN_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(MS_RAIN_SOFTWAREWIRE)
 /** Start [softwarewire] */
 // A software I2C (Wire) instance using Testato's SoftwareWire
 // To use SoftwareWire, you must also set a define for the sensor you want to
@@ -189,8 +189,8 @@ void SERCOM2_Handler() {
 // ==========================================================================
 //  Assigning Serial Port Functionality
 // ==========================================================================
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560 || \
-    defined                              ARDUINO_AVR_MEGA2560
+#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560) || \
+    defined(ARDUINO_AVR_MEGA2560)
 /** Start [assign_ports_hw] */
 // If there are additional hardware Serial ports possible - use them!
 
@@ -762,7 +762,7 @@ Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
 /** End [processor_stats] */
 
 
-#if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
+#if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -956,8 +956,8 @@ Variable* atlaspHpH =
 #endif
 
 
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD || \
-    defined BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD) || \
+    defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_EC)
 // ==========================================================================
 //  Atlas Scientific EZO-RTD Temperature Sensor
 // ==========================================================================
@@ -1201,9 +1201,9 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 #include <sensors/CampbellRainVUE10.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const char* RainVUESDI12address = "0"; // The SDI-12 Address of the RainVUE10
-const int8_t RainVUEPower       = -1;  // Power pin, for continous power
-const int8_t RainVUEData        = 5;   // The SDI-12 data pin, for continuous power
+const char*  RainVUESDI12address = "0";  // The SDI-12 Address of the RainVUE10
+const int8_t RainVUEPower        = -1;   // Power pin, for continous power
+const int8_t RainVUEData = 5;  // The SDI-12 data pin, for continuous power
 // NOTE:  you should NOT take more than one readings.  THe sensor counts
 // cummulative tips and rain accumulation since the last measurement.
 
@@ -1513,8 +1513,8 @@ Variable* sonar1Range =
 #endif
 
 
-#if defined BUILD_SENSOR_MAXIM_DS18 || \
-    defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
+#if defined(BUILD_SENSOR_MAXIM_DS18) || \
+    defined(BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY)
 // ==========================================================================
 //  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
@@ -2405,7 +2405,7 @@ Variable* variableList[] = {
     mcuBoardAvailableRAM,
     mcuBoardBatt,
     calculatedVar,
-#if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
+#if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
     ds3231Temp,
 #endif
 #if defined BUILD_SENSOR_AO_SONG_AM2315

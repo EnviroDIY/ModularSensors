@@ -108,7 +108,7 @@
  */
 /**@{*/
 /** @brief Sensor::_warmUpTime_ms; the tipping bucket counter warms up in 0ms.
-*/
+ */
 #define BUCKET_WARM_UP_TIME_MS 0
 /// @brief Sensor::_stabilizationTime_ms; the tipping bucket counter is stable
 /// after 0ms.
@@ -186,7 +186,7 @@
 /* clang-format on */
 class RainCounterI2C : public Sensor {
  public:
-#if defined MS_RAIN_SOFTWAREWIRE | defined DOXYGEN
+#if defined(MS_RAIN_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief Construct a new Rain Counter I2C object using a *software* I2C
      * instance.
@@ -288,7 +288,7 @@ class RainCounterI2C : public Sensor {
      * @brief The I2C address of the Trinket counter.
      */
     uint8_t _i2cAddressHex;
-#if defined MS_RAIN_SOFTWAREWIRE | defined DOXYGEN
+#if defined(MS_RAIN_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief An internal reference to the SoftwareWire instance.
      */
@@ -300,7 +300,7 @@ class RainCounterI2C : public Sensor {
      */
     bool createdSoftwareWire;
 #endif
-#if !defined(MS_RAIN_SOFTWAREWIRE) | defined DOXYGEN
+#if !defined(MS_RAIN_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief An internal reference to the hardware Wire instance.
      */
