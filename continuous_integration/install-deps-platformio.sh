@@ -14,6 +14,9 @@ pio pkg install -g --platform atmelsam
 
 echo "\e[32mInstalling Atmel SAM framework \e[0m"
 pio pkg install -g --tool framework-arduino-samd-adafruit
+pio pkg install -g --tool framework-cmsis
+pio pkg install -g --tool framework-cmsis-atmel
+pio pkg install -g --tool toolchain-gccarmnoneeabi
 
 echo "\e[32mInstalling envirodiy/EnviroDIY_DS3231\e[0m"
 pio pkg install -g --library envirodiy/EnviroDIY_DS3231

@@ -5,6 +5,8 @@ set +e
 
 compile_failures = 0
 
+arduino-cli version
+
 echo " | Compiler | Example | Board | Compilation | " >> $GITHUB_STEP_SUMMARY
 echo " | -------- | ------- | ----- | ----------- | " >> $GITHUB_STEP_SUMMARY
 
@@ -17,27 +19,27 @@ do
     do
         echo "::group::Setting build flags for $fqbn"
         echo "::debug::Setting build flags for $fqbn"
-        if [ $fqbn == 'EnviroDIY:avr:envirodiy_mayfly' ]; then
+        if [ $fqbn = 'EnviroDIY:avr:envirodiy_mayfly' ]; then
             EXTRA_BUILD_FLAGS="-DNEOSWSERIAL_EXTERNAL_PCINT"
         fi
-        if [ $fqbn == 'arduino:avr:mega' ]; then
+        if [ $fqbn = 'arduino:avr:mega' ]; then
             EXTRA_BUILD_FLAGS="-DNEOSWSERIAL_EXTERNAL_PCINT"
         fi
-        if [ $fqbn == 'arduino:samd:mzero_bl' ]; then
+        if [ $fqbn = 'arduino:samd:mzero_bl' ]; then
             EXTRA_BUILD_FLAGS="-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -D__SAMD21G18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON"
         fi
-        if [ $fqbn == 'adafruit:samd:adafruit_feather_m0' ]; then
+        if [ $fqbn = 'adafruit:samd:adafruit_feather_m0' ]; then
             EXTRA_BUILD_FLAGS="-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -DARM_MATH_CM0PLUS -DADAFRUIT_FEATHER_M0 -D__SAMD21G18A__ -DUSB_VID=0x239A -DUSB_PID=0x800B -DUSBCON -DUSB_CONFIG_POWER=100"
         fi
-        if [ $fqbn == 'SODAQ:samd:sodaq_autonomo' ]; then
+        if [ $fqbn = 'SODAQ:samd:sodaq_autonomo' ]; then
             EXTRA_BUILD_FLAGS="-DNEOSWSERIAL_EXTERNAL_PCINT -DVERY_LOW_POWER -D__SAMD21J18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON"
         fi
         echo "::endgroup::"
         
-        BUILD_EXAMPLE="examples/$example/"
+        BUILD_EXAMPLE="examples/${example}/"
         
-        echo "::group::Running Arduino CLI for examples/$example/"
-        echo "::debug::Running Arduino CLI for examples/$example/"
+        echo "::group::Running Arduino CLI for examples/${example}/"
+        echo "::debug::Running Arduino CLI for examples/${example}/"
         arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn $fqbn $BUILD_EXAMPLE 2>&1
         result_code=${PIPESTATUS[0]}
         
@@ -54,7 +56,7 @@ do
     
     do
         
-        PLATFORMIO_CI_SRC="examples/$example/"
+        PLATFORMIO_CI_SRC="examples/${example}/"
         PLATFORMIO_DEFAULT_ENVS=$pio_environment
         PLATFORMIO_LIB_EXTRA_DIRS=/home/runner/.platformio/lib
         
