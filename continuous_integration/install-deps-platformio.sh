@@ -3,6 +3,7 @@
 # Exit with nonzero exit code if anything fails
 set -e
 
+echo "::group::Installing Platforms and Frameworks"
 echo "\e[32mInstalling Atmel AVR platform \e[0m"
 pio pkg install -g --platform atmelavr
 
@@ -17,7 +18,10 @@ pio pkg install -g --tool framework-arduino-samd-adafruit
 pio pkg install -g --tool framework-cmsis
 pio pkg install -g --tool framework-cmsis-atmel
 pio pkg install -g --tool toolchain-gccarmnoneeabi
+echo "::endgroup::"
 
+
+echo "::group::Installing Libraries"
 echo "\e[32mInstalling envirodiy/EnviroDIY_DS3231\e[0m"
 pio pkg install -g --library envirodiy/EnviroDIY_DS3231
 
@@ -104,6 +108,10 @@ pio pkg install -g --library https://github.com/SRGDamia1/NeoSWSerial.git
 
 echo "\e[32mInstalling https://github.com/Testato/SoftwareWire.git#v1.5.1\e[0m"
 pio pkg install -g --library https://github.com/Testato/SoftwareWire.git#v1.5.1
+echo "::endgroup::"
 
-echo "\e[32m\nCurrently installed libraries:\e[0m"
+
+echo "::group::Current globally installed packages"
+echo "\e[32m\nCurrently installed packages:\e[0m"
 pio pkg list -g -v
+echo "::endgroup::"

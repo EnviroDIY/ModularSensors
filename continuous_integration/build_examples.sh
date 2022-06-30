@@ -40,7 +40,7 @@ do
         
         echo "::group::Running Arduino CLI for examples/${example}/"
         echo "::debug::Running Arduino CLI for examples/${example}/"
-        arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn $fqbn $BUILD_EXAMPLE 2>&1
+        arduino-cli --config-file continuous_integration/arduino_cli.yaml compile --clean --build-property "build.extra_flags=$EXTRA_BUILD_FLAGS" --fqbn $fqbn $BUILD_EXAMPLE 2>&1 | tee arduino_cli_run.log
         result_code=${PIPESTATUS[0]}
         
         echo " | Arduino CLI | $example | $fqbn | $result_code |" >> $GITHUB_STEP_SUMMARY
@@ -63,8 +63,11 @@ do
         echo "::group::Running PlatformIO for $PLATFORMIO_CI_SRC"
         echo "::debug::Running PlatformIO for $PLATFORMIO_CI_SRC"
         echo "$LIBRARY_INSTALL_SOURCE"
-        pio run --environment $pio_environment --project-conf="continuous_integration/platformio.ini" 2>&1
+        pio pkg list -g -v
+        cp -a /home/runner/.platformio/lib/. $GITHUB_WORKSPACE/lib/
+        pio run --environment $pio_environment --project-conf="continuous_integration/platformio.ini" 2>&1 | tee pio_run.log
         result_code=${PIPESTATUS[0]}
+        pio pkg list -v
         
         echo " | PlatformIO | $example | $pio_environment | $result_code |" >> $GITHUB_STEP_SUMMARY
         if [ $result_code ]; then

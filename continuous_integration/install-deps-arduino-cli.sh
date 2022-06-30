@@ -6,6 +6,7 @@ set -e
 echo "\n\e[32mCurrent Arduino CLI version:\e[0m"
 arduino-cli version
 
+echo "::group::Installing Platforms and Frameworks"
 echo "\n\e[32mUpdating the core index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
 
@@ -32,7 +33,10 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml core upgrade
 
 echo "\n\e[32mCurrently installed cores:\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core list
+echo "::endgroup::"
 
+
+echo "::group::Installing Libraries"
 echo "\n\e[32mUpdating the library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
 
@@ -152,6 +156,8 @@ echo "\e[32mMoving SoftwareSerial_ExternalInts to the libraries folder\e[0m"
 mkdir -p home/arduino/user/libraries/SoftwareSerial_ExternalInts
 mv home/arduino/downloads/SoftwareSerial_ExtInts-master/* home/arduino/user/libraries/SoftwareSerial_ExternalInts
 
+echo "::group::Current globally installed packages"
 echo "\n\e[32mCurrently installed libraries:\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list
+echo "::endgroup::"
