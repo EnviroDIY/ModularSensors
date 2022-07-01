@@ -24,8 +24,12 @@ else:
 examples_dir = "./examples/"
 examples_path = os.path.join(workspace_dir, examples_dir)
 examples_path = os.path.abspath(os.path.realpath(examples_path))
-test_code_path = examples_path + "\\test_code"
-file_to_compile = test_code_path + "\\test_code.ino"
+ci_dir = "./continuous_integration/"
+ci_path = os.path.join(workspace_dir, ci_dir)
+ci_path = os.path.abspath(os.path.realpath(ci_path))
+
+test_code_path = os.path.join(examples_path, "test_code")
+file_to_compile = os.path.join(test_code_path, "test_code.ino")
 
 
 # print("XML Directory: {}".format(fileDir))
@@ -36,8 +40,10 @@ all_examples = [
     if os.path.isdir(os.path.join(examples_path, f))
     and f not in ["menu_a_la_carte", ".history", "logger_test", "YosemitechDO"]
 ]
-pio_config_file = workspace_dir + "\\continuous_integration\\platformio.ini"
-menu_file = examples_path + "\\menu_a_la_carte\\menu_a_la_carte.ino"
+pio_config_file = os.path.join(ci_path, "platformio.ini")
+menu_file = os.path.join(
+    os.path.join(examples_path, "menu_a_la_carte"), "menu_a_la_carte.ino"
+)
 pio_config = ProjectConfig(pio_config_file)
 pio_to_acli = {
     "mayfly": {
@@ -115,7 +121,9 @@ for example in all_examples:
     ]:
         env_key = "env:{}".format(pio_env)
         prepare_example(
-            example=os.path.join(examples_path, example) + "\\{}.ino".format(example),
+            example=os.path.join(
+                os.path.join(examples_path, example), "{}.ino".format(example)
+            ),
             build_flags=[
                 flag.replace("-D", "").strip()
                 for flag in pio_config.get(env_key, "build_flags")
@@ -330,7 +338,7 @@ frame_results["Run"] = 1
 frame_results["Failure Cause"] = frame_results["cause"].str.replace("\n", "<br/><br/>")
 frame_results.groupby("Compiler")["Failed"].sum()
 #%%
-markdown_results = open(workspace_dir + "\\compile_results.md", "w+")
+markdown_results = open(os.path.join(workspace_dir, "compile_results.md"), "w+")
 markdown_results.write("## Result of compiling all examples and configurations\n\n")
 markdown_results.write("{} total failures\n".format(total_failures))
 markdown_results.write("### Failures by Compiler\n\n")
@@ -367,6 +375,6 @@ markdown_results.close()
 
 # %%
 if total_failures > 0:
-    fail_message="::error::{} Total compilation failures".format(total_failures)
+    fail_message = "::error::{} Total compilation failures".format(total_failures)
     print(fail_message)
     sys.exit(fail_message)
