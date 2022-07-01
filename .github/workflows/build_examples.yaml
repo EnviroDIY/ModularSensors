@@ -44,6 +44,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade platformio
+          pip install --upgrade pandas
 
       # We use the `arduino/setup-arduino-cli` action to install and
       # configure the Arduino CLI on the system.
@@ -75,6 +76,7 @@ jobs:
         run: |
           chmod +x continuous_integration/install-deps-platformio.sh
           sh continuous_integration/install-deps-platformio.sh
+          cp -a /home/runner/.platformio/lib/. $GITHUB_WORKSPACE/lib/
 
       # Install ModularSensors for the Arduino CLI
       - name: Install the testing version of Modular Sensors for the Arduino CLI
@@ -90,9 +92,14 @@ jobs:
 
       # Run the script to compile the examples
       - name: Compile
+        id: compile
+        continue-on-error: true
         run: |
-          chmod +x continuous_integration/build_examples.bash
-          bash continuous_integration/build_examples.bash
+          python continuous_integration/build_everything.py
+
+      - name: Output Summary
+        run: |
+          echo "$(cat compile_results.md)" >> $GITHUB_STEP_SUMMARY
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
       # dependencies leaving nothing for the cache
@@ -100,3 +107,8 @@ jobs:
       - name: Uninstall testing version of Modular Sensors before caching
         run: |
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors
+
+      - name: Fail if failed
+        id: compile_failure
+        if: steps.compile.outcome=='failure'
+        run: exit 1

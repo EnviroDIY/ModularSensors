@@ -298,7 +298,7 @@ class RainCounterI2C : public Sensor {
      * If it was created, it must be destroyed in the destructor to avoid a
      * memory leak.
      */
-    bool createdSoftwareWire;
+    bool createdSoftwareWire = false;
 #endif
 #if !defined(MS_RAIN_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
