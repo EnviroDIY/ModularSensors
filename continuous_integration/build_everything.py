@@ -135,12 +135,17 @@ for example in all_examples:
             )
         )
         cli_result = subprocess.run(
-            'arduino-cli --config-file "{workspace_dir}/continuous_integration/arduino_cli.yaml" compile --clean --format text --log-file "{workspace_dir}/arduino_cli_log.log" --log-level warn --log-format json --build-property "build.extra_flags={extra_flags}" --fqbn {fqbn} "{file_to_compile}"'.format(
+            'arduino-cli --config-file "{workspace_dir}/continuous_integration/arduino_cli.yaml" compile --clean --format text --log-file "{workspace_dir}/arduino_cli_log.log" --log-level warn --log-format json {build_properties} --fqbn {fqbn} "{file_to_compile}"'.format(
                 workspace_dir=workspace_dir,
                 file_to_compile=file_to_compile,
                 fqbn=pio_to_acli[pio_config.get(env_key, "board")]["fqbn"],
-                extra_flags=" ".join(
-                    pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
+                build_properties=' --build-property "build.extra_flags={extra_flags}"'.format(
+                    extra_flags=" ".join(
+                        pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
+                    )
+                    if len(pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"])
+                    > 0
+                    else ""
                 ),
             ),
             text=True,
@@ -261,12 +266,17 @@ for flag_set in flag_matrix:
             )
         )
         cli_result = subprocess.run(
-            'arduino-cli --config-file "{workspace_dir}/continuous_integration/arduino_cli.yaml" compile --clean --format text --log-file "{workspace_dir}/arduino_cli_log.log" --log-level warn --log-format json --build-property "build.extra_flags={extra_flags}" --fqbn {fqbn} "{file_to_compile}"'.format(
+            'arduino-cli --config-file "{workspace_dir}/continuous_integration/arduino_cli.yaml" compile --clean --format text --log-file "{workspace_dir}/arduino_cli_log.log" --log-level warn --log-format json {build_properties} --fqbn {fqbn} "{file_to_compile}"'.format(
                 workspace_dir=workspace_dir,
                 file_to_compile=file_to_compile,
                 fqbn=pio_to_acli[pio_config.get(env_key, "board")]["fqbn"],
-                extra_flags=" ".join(
-                    pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
+                build_properties=' --build-property "build.extra_flags={extra_flags}"'.format(
+                    extra_flags=" ".join(
+                        pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
+                    )
+                    if len(pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"])
+                    > 0
+                    else ""
                 ),
             ),
             text=True,
