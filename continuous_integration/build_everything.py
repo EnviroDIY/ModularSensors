@@ -135,24 +135,12 @@ for publisher_flag in all_publisher_flags[1:]:
 full_build_matrix = []
 for pio_env in pio_config.envs():
     matrix_item = {}
-    env_key = "env:{}".format(pio_env)
     matrix_item["pio_env_name"] = pio_env
-    matrix_item["fqbn"] = pio_to_acli[pio_config.get(env_key, "board")]["fqbn"]
+    env_key = "env:{}".format(pio_env)
     in_file_defines = [
         flag.replace("-D", "").strip()
         for flag in pio_config.get(env_key, "build_flags")
     ]
-
-    if len(pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]) > 0:
-        matrix_item[
-            "arduino_build_properties"
-        ] = ' --build-property "build.extra_flags={extra_flags}"'.format(
-            extra_flags=" ".join(
-                pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
-            )
-        )
-    else:
-        matrix_item["arduino_build_properties"] = ""
 
     for example in all_examples:
         matrix_item["example"] = example
@@ -215,22 +203,40 @@ for matrix_item in full_build_matrix:
         ),
         in_file_defines=matrix_item["in_file_defines"],
     )
+    env_key = "env:{}".format(matrix_item["pio_env_name"])
+    arduino_command_arguments = [
+        "arduino-cli",
+        "compile",
+        "--clean",
+        "--config-file",
+        os.path.join(ci_dir, "arduino_cli.yaml"),
+        "--format",
+        "text",
+        "--log-file",
+        os.path.join(workspace_dir, "arduino_cli_log.log"),
+        "--log-level",
+        "warn",
+        "--log-format",
+        "json",
+        matrix_item["arduino_build_properties"],
+        "--fqbn",
+        pio_to_acli[pio_config.get(env_key, "board")]["fqbn"],
+    ]
+
+    if len(pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]) > 0:
+        arduino_command_arguments.append("--build-property")
+        arduino_command_arguments.append(
+            "build.extra_flags={extra_flags}".format(
+                extra_flags=" ".join(
+                    pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
+                )
+            )
+        )
+
+    arduino_command_arguments.append(file_to_compile)
+
     cli_result = subprocess.run(
-        [
-            "arduino-cli",
-            "compile",
-            "--clean",
-            '--config-file "{}"'.format(os.path.join(ci_dir, "arduino_cli.yaml")),
-            "--format text",
-            '--log-file "{}"'.format(
-                os.path.join(workspace_dir, "arduino_cli_log.log")
-            ),
-            "--log-level warn",
-            "--log-format json",
-            "{}".format(matrix_item["arduino_build_properties"]),
-            "--fqbn {}".format(matrix_item["fqbn"]),
-            '"{file_to_compile}"'.format(file_to_compile=file_to_compile),
-        ],
+        arduino_command_arguments,
         text=True,
         capture_output=True,
         cwd=workspace_dir,
@@ -258,8 +264,10 @@ for matrix_item in full_build_matrix:
         [
             "pio",
             "run",
-            "--environment {}".format(matrix_item["pio_env_name"]),
-            '--project-conf="{}"'.format(pio_config_file),
+            "--environment",
+            matrix_item["pio_env_name"],
+            "--project-conf",
+            pio_config_file,
         ],
         env=my_env,
         text=True,
