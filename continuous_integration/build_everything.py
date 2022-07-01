@@ -9,6 +9,7 @@ import subprocess
 from platformio.project.config import ProjectConfig
 import re
 import os
+import copy
 import numpy as np
 import pandas as pd
 
@@ -38,7 +39,7 @@ all_examples = [
     f
     for f in os.listdir(examples_path)
     if os.path.isdir(os.path.join(examples_path, f))
-    and f not in ["menu_a_la_carte", ".history", "logger_test", "YosemitechDO"]
+    and f not in [".history", "logger_test", "YosemitechDO", "test_code"]
 ]
 pio_config_file = os.path.join(ci_path, "platformio.ini")
 menu_file = os.path.join(
@@ -86,121 +87,6 @@ pio_to_acli = {
     },
 }
 
-
-def prepare_example(example, build_flags):
-    textfile = open(example, "r")
-    as_written = textfile.read()
-    textfile.close()
-
-    if not os.path.exists(test_code_path):
-        os.makedirs(test_code_path)
-
-    prepared_example = open(file_to_compile, "w+")
-    for flag in build_flags:
-        prepared_example.write("#ifndef {}\n".format(flag.split("=")[0]))
-        prepared_example.write(
-            "#define {} {}\n".format(
-                flag.split("=")[0],
-                flag.split("=")[1] if "=" in flag else "",
-            )
-        )
-        prepared_example.write("#endif\n")
-
-    prepared_example.write(as_written)
-    prepared_example.close()
-
-
-results = []
-
-#%%
-for example in all_examples:
-    for pio_env in [
-        use_env
-        for use_env in pio_config.envs()
-        if use_env not in ["software_wire", "complex_loop", "non_concurrent"]
-    ]:
-        env_key = "env:{}".format(pio_env)
-        prepare_example(
-            example=os.path.join(
-                os.path.join(examples_path, example), "{}.ino".format(example)
-            ),
-            build_flags=[
-                flag.replace("-D", "").strip()
-                for flag in pio_config.get(env_key, "build_flags")
-            ],
-        )
-        print(
-            "\n\nNow building {example} for {board} using the Arduino CLI".format(
-                example=example, board=pio_env
-            )
-        )
-        cli_result = subprocess.run(
-            'arduino-cli --config-file "{workspace_dir}/continuous_integration/arduino_cli.yaml" compile --clean --format text --log-file "{workspace_dir}/arduino_cli_log.log" --log-level warn --log-format json {build_properties} --fqbn {fqbn} "{file_to_compile}"'.format(
-                workspace_dir=workspace_dir,
-                file_to_compile=file_to_compile,
-                fqbn=pio_to_acli[pio_config.get(env_key, "board")]["fqbn"],
-                build_properties=' --build-property "build.extra_flags={extra_flags}"'.format(
-                    extra_flags=" ".join(
-                        pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
-                    )
-                    if len(pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"])
-                    > 0
-                    else ""
-                ),
-            ),
-            text=True,
-            capture_output=True,
-            cwd=workspace_dir,
-        )
-        results.append(
-            {
-                "Compiler": "Arduino CLI",
-                "Example": example,
-                "Board": pio_config.get(env_key, "board"),
-                "build_flags": pio_config.get(env_key, "build_flags"),
-                "compile_result": cli_result.returncode,
-                "cause": cli_result.stderr if cli_result.returncode else "",
-                "Modem": "",
-                "Sensor": "",
-                "Publisher": "",
-            }
-        )
-        print(cli_result.stdout)
-        print(cli_result.stderr)
-
-        print(
-            "\n\nNow building {example} for {board} using PlatformIO".format(
-                example=example, board=pio_env
-            )
-        )
-        my_env = os.environ.copy()
-        my_env["PLATFORMIO_SRC_DIR"] = test_code_path
-        my_env["PLATFORMIO_DEFAULT_ENVS"] = pio_env
-        pio_result = subprocess.run(
-            'pio run --environment {pio_env} --project-conf="{pio_config_file}"'.format(
-                pio_env=pio_env, pio_config_file=pio_config_file
-            ),
-            env=my_env,
-            text=True,
-            capture_output=True,
-            cwd=workspace_dir,
-        )
-        results.append(
-            {
-                "Compiler": "PlatformIO",
-                "Example": example,
-                "Board": pio_config.get(env_key, "board"),
-                "build_flags": pio_config.get(env_key, "build_flags"),
-                "compile_result": pio_result.returncode,
-                "cause": pio_result.stderr if pio_result.returncode else "",
-                "Modem": "",
-                "Sensor": "",
-                "Publisher": "",
-            }
-        )
-        print(pio_result.stdout)
-        print(pio_result.stderr)
-
 #%% set flags
 all_modem_flags = [
     "BUILD_MODEM_SIM_COM_SIM7080",
@@ -237,100 +123,164 @@ for match in re.finditer(pattern, filetext):
         all_publisher_flags.append(match.group("flag1"))
 
 #%% Create the matrix
-flag_matrix = []
+menu_flag_matrix = []
 for modem_flag in all_modem_flags:
-    flag_matrix.append([modem_flag, all_sensor_flags[0], all_publisher_flags[0]])
+    menu_flag_matrix.append([modem_flag, all_sensor_flags[0], all_publisher_flags[0]])
 for sensor_flags in all_sensor_flags[1:]:
-    flag_matrix.append([all_modem_flags[0], sensor_flags, all_publisher_flags[0]])
+    menu_flag_matrix.append([all_modem_flags[0], sensor_flags, all_publisher_flags[0]])
 for publisher_flag in all_publisher_flags[1:]:
-    flag_matrix.append([all_modem_flags[0], all_sensor_flags[0], publisher_flag])
+    menu_flag_matrix.append([all_modem_flags[0], all_sensor_flags[0], publisher_flag])
 
 #%%
-# print(yaml.dump(matrix_includes, sort_keys=False))
-for flag_set in flag_matrix:
-    for pio_env in pio_config.envs():
-        env_key = "env:{}".format(pio_env)
-        modem = flag_set[0].replace("BUILD_MODEM_", "")
-        sensor = flag_set[1].replace("BUILD_SENSOR_", "")
-        publisher = flag_set[2].replace("BUILD_PUB_", "").replace("_PUBLISHER", "")
-        prepare_example(
-            example=menu_file,
-            build_flags=pio_config.get(env_key, "build_flags"),
-        )
-        print(
-            "\n\nNow building menu_a_la_carte for {board} with {modem}, {sensor}, and {publisher} using the Arduino CLI".format(
-                board=env_key,
-                modem=modem,
-                sensor=sensor,
-                publisher=publisher,
-            )
-        )
-        cli_result = subprocess.run(
-            'arduino-cli --config-file "{workspace_dir}/continuous_integration/arduino_cli.yaml" compile --clean --format text --log-file "{workspace_dir}/arduino_cli_log.log" --log-level warn --log-format json {build_properties} --fqbn {fqbn} "{file_to_compile}"'.format(
-                workspace_dir=workspace_dir,
-                file_to_compile=file_to_compile,
-                fqbn=pio_to_acli[pio_config.get(env_key, "board")]["fqbn"],
-                build_properties=' --build-property "build.extra_flags={extra_flags}"'.format(
-                    extra_flags=" ".join(
-                        pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
-                    )
-                    if len(pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"])
-                    > 0
-                    else ""
-                ),
-            ),
-            text=True,
-            capture_output=True,
-            cwd=workspace_dir,
-        )
-        results.append(
-            {
-                "Compiler": "Arduino CLI",
-                "Example": "menu_a_la_carte",
-                "Board": pio_config.get(env_key, "board"),
-                "build_flags": pio_config.get(env_key, "build_flags"),
-                "compile_result": cli_result.returncode,
-                "cause": cli_result.stderr if cli_result.returncode else "",
-                "Modem": modem,
-                "Sensor": sensor,
-                "Publisher": publisher,
-            }
-        )
-        print(cli_result.stdout)
-        print(cli_result.stderr)
+full_build_matrix = []
+for pio_env in pio_config.envs():
+    matrix_item = {}
+    env_key = "env:{}".format(pio_env)
+    matrix_item["pio_env_name"] = pio_env
+    matrix_item["fqbn"] = pio_to_acli[pio_config.get(env_key, "board")]["fqbn"]
+    in_file_defines = [
+        flag.replace("-D", "").strip()
+        for flag in pio_config.get(env_key, "build_flags")
+    ]
 
-        print(
-            "\n\nNow building {example} for {board} using PlatformIO".format(
-                example=example, board=pio_env
+    if len(pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]) > 0:
+        matrix_item[
+            "arduino_build_properties"
+        ] = ' --build-property "build.extra_flags={extra_flags}"'.format(
+            extra_flags=" ".join(
+                pio_to_acli[pio_config.get(env_key, "board")]["extra_flags"]
             )
         )
-        my_env = os.environ.copy()
-        my_env["PLATFORMIO_SRC_DIR"] = test_code_path
-        my_env["PLATFORMIO_DEFAULT_ENVS"] = pio_env
-        pio_result = subprocess.run(
-            'pio run --environment {pio_env} --project-conf="{pio_config_file}"'.format(
-                pio_env=pio_env, pio_config_file=pio_config_file
+    else:
+        matrix_item["arduino_build_properties"] = ""
+
+    for example in all_examples:
+        matrix_item["example"] = example
+        if example == "menu_a_la_carte":
+            for flag_set in menu_flag_matrix:
+                matrix_item["in_file_defines"] = in_file_defines + flag_set
+
+                matrix_item["modem"] = flag_set[0].replace("BUILD_MODEM_", "")
+                matrix_item["sensor"] = flag_set[1].replace("BUILD_SENSOR_", "")
+                matrix_item["publisher"] = (
+                    flag_set[2].replace("BUILD_PUB_", "").replace("_PUBLISHER", "")
+                )
+                full_build_matrix.append(matrix_item)
+        else:
+            if pio_env not in ["software_wire", "complex_loop", "non_concurrent"]:
+                matrix_item["in_file_defines"] = in_file_defines
+                matrix_item["modem"] = ""
+                matrix_item["sensor"] = ""
+                matrix_item["publisher"] = ""
+                full_build_matrix.append(copy.deepcopy(matrix_item))
+
+#%%
+def prepare_example(example, in_file_defines):
+    textfile = open(example, "r")
+    as_written = textfile.read()
+    textfile.close()
+
+    if not os.path.exists(test_code_path):
+        os.makedirs(test_code_path)
+
+    prepared_example = open(file_to_compile, "w+")
+    for flag in in_file_defines:
+        prepared_example.write("#ifndef {}\n".format(flag.split("=")[0]))
+        prepared_example.write(
+            "#define {} {}\n".format(
+                flag.split("=")[0],
+                flag.split("=")[1] if "=" in flag else "",
+            )
+        )
+        prepared_example.write("#endif\n")
+
+    prepared_example.write(as_written)
+    prepared_example.close()
+
+
+results = []
+
+#%%
+for matrix_item in full_build_matrix:
+    print(
+        "\n\nNow building {example} for {env} with these in-file defines: {defines}".format(
+            example=matrix_item["example"],
+            env=matrix_item["pio_env_name"],
+            defines=matrix_item["in_file_defines"],
+        )
+    )
+    prepare_example(
+        example=os.path.join(
+            os.path.join(examples_path, example), "{}.ino".format(example)
+        ),
+        in_file_defines=matrix_item["in_file_defines"],
+    )
+    cli_result = subprocess.run(
+        [
+            "arduino-cli",
+            "compile",
+            "--clean",
+            '--config-file "{}"'.format(os.path.join(ci_dir, "arduino_cli.yaml")),
+            "--format text",
+            '--log-file "{}"'.format(
+                os.path.join(workspace_dir, "arduino_cli_log.log")
             ),
-            env=my_env,
-            text=True,
-            capture_output=True,
-            cwd=workspace_dir,
-        )
-        results.append(
-            {
-                "Compiler": "PlatformIO",
-                "Example": "menu_a_la_carte",
-                "Board": pio_config.get(env_key, "board"),
-                "build_flags": pio_config.get(env_key, "build_flags"),
-                "compile_result": pio_result.returncode,
-                "cause": pio_result.stderr if pio_result.returncode else "",
-                "Modem": modem,
-                "Sensor": sensor,
-                "Publisher": publisher,
-            }
-        )
-        print(pio_result.stdout)
-        print(pio_result.stderr)
+            "--log-level warn",
+            "--log-format json",
+            "{}".format(matrix_item["arduino_build_properties"]),
+            "--fqbn {}".format(matrix_item["fqbn"]),
+            '"{file_to_compile}"'.format(file_to_compile=file_to_compile),
+        ],
+        text=True,
+        capture_output=True,
+        cwd=workspace_dir,
+    )
+    results.append(
+        {
+            "Compiler": "Arduino CLI",
+            "Example": "menu_a_la_carte",
+            "Board": pio_config.get(env_key, "board"),
+            "build_flags": pio_config.get(env_key, "build_flags"),
+            "compile_result": cli_result.returncode,
+            "cause": cli_result.stderr if cli_result.returncode else "",
+            "Modem": matrix_item["modem"],
+            "Sensor": matrix_item["sensor"],
+            "Publisher": matrix_item["publisher"],
+        }
+    )
+    print(cli_result.stdout)
+    print(cli_result.stderr)
+
+    my_env = os.environ.copy()
+    my_env["PLATFORMIO_SRC_DIR"] = test_code_path
+    my_env["PLATFORMIO_DEFAULT_ENVS"] = matrix_item["pio_env_name"]
+    pio_result = subprocess.run(
+        [
+            "pio",
+            "run",
+            "--environment {}".format(matrix_item["pio_env_name"]),
+            '--project-conf="{}"'.format(pio_config_file),
+        ],
+        env=my_env,
+        text=True,
+        capture_output=True,
+        cwd=workspace_dir,
+    )
+    results.append(
+        {
+            "Compiler": "PlatformIO",
+            "Example": "menu_a_la_carte",
+            "Board": pio_config.get(env_key, "board"),
+            "build_flags": pio_config.get(env_key, "build_flags"),
+            "compile_result": pio_result.returncode,
+            "cause": pio_result.stderr if pio_result.returncode else "",
+            "Modem": matrix_item["modem"],
+            "Sensor": matrix_item["sensor"],
+            "Publisher": matrix_item["publisher"],
+        }
+    )
+    print(pio_result.stdout)
+    print(pio_result.stderr)
 
 #%%
 frame_results = pd.DataFrame(results)
