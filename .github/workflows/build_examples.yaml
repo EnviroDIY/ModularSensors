@@ -44,8 +44,7 @@ jobs:
       - name: Install PlatformIO
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade platformio
-          pip install --upgrade pandas
+          pip install -r continuous_integration\requirements.txt
 
       # We use the `arduino/setup-arduino-cli` action to install and
       # configure the Arduino CLI on the system.

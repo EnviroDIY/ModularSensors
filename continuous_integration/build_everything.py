@@ -218,7 +218,6 @@ for matrix_item in full_build_matrix:
         "warn",
         "--log-format",
         "json",
-        matrix_item["arduino_build_properties"],
         "--fqbn",
         pio_to_acli[pio_config.get(env_key, "board")]["fqbn"],
     ]
