@@ -108,7 +108,7 @@ filetext = textfile.read()
 textfile.close()
 
 for match in re.finditer(pattern, filetext):
-    print(match.group("flag1"))
+    # print(match.group("flag1"))
     if (
         "SENSOR" in match.group("flag1")
         and match.group("flag1") not in all_sensor_flags
@@ -207,7 +207,10 @@ for matrix_item in full_build_matrix:
     arduino_command_arguments = [
         "arduino-cli",
         "compile",
-        "--clean",
+        "--verbose",
+        "--warnings",
+        "all"
+        # "--clean",
         "--config-file",
         os.path.join(ci_dir, "arduino_cli.yaml"),
         "--format",
@@ -255,6 +258,9 @@ for matrix_item in full_build_matrix:
     )
     print(cli_result.stdout)
     print(cli_result.stderr)
+    print(
+        "\n--------------------------------------------------------------------------------------------------------------------\n"
+    )
 
     my_env = os.environ.copy()
     my_env["PLATFORMIO_SRC_DIR"] = test_code_path
@@ -288,6 +294,15 @@ for matrix_item in full_build_matrix:
     )
     print(pio_result.stdout)
     print(pio_result.stderr)
+    print(
+        "--------------------------------------------------------------------------------------------------------------------"
+    )
+    print(
+        "--------------------------------------------------------------------------------------------------------------------"
+    )
+    print(
+        "--------------------------------------------------------------------------------------------------------------------\n"
+    )
 
 #%%
 frame_results = pd.DataFrame(results)

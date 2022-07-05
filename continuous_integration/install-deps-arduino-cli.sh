@@ -106,8 +106,10 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install On
 echo "\n\e[32mInstalling DallasTemperature library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install DallasTemperature
 
-# echo "\n\e[32mInstalling SDI-12 library from Arduino library index\e[0m"
-# arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install SDI-12
+echo "\n\e[32mInstalling SDI-12 library from Arduino library index\e[0m"
+# NOTE:  This needs to be installed for the Arduino CLI because it does NOT take preprocessor defines into account during dependency resolution.
+# If it cannot find every h file mentioned with an include, even those excluded via preprocessor, the build will fail.
+arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install SDI-12
 
 echo "\n\e[32mDownloading External Interrupt version of the SDI-12 library as a zip\e[0m"
 # The "external interrupt" version needs to be installed from a zip because the Arduino CLI cannot pull from a branch
