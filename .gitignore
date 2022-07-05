@@ -102,3 +102,4 @@ arduino_lint.json
 **/home/arduino/*
 examples/test_code/*
 compile_results.md
+arduino_cli_log.log

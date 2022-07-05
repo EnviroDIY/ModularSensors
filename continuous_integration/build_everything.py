@@ -197,6 +197,9 @@ for matrix_item in full_build_matrix:
             defines=matrix_item["in_file_defines"],
         )
     )
+    print(
+        "::group::Arduino CLI-"
+    )
     prepare_example(
         example=os.path.join(
             os.path.join(examples_path, example), "{}.ino".format(example)
@@ -209,7 +212,7 @@ for matrix_item in full_build_matrix:
         "compile",
         "--verbose",
         "--warnings",
-        "all"
+        "all",
         # "--clean",
         "--config-file",
         os.path.join(ci_dir, "arduino_cli.yaml"),
@@ -257,11 +260,13 @@ for matrix_item in full_build_matrix:
         }
     )
     print(cli_result.stdout)
+    print("::endgroup::")
     print(cli_result.stderr)
     print(
         "\n--------------------------------------------------------------------------------------------------------------------\n"
     )
 
+    print("::group::PlatformIO")
     my_env = os.environ.copy()
     my_env["PLATFORMIO_SRC_DIR"] = test_code_path
     my_env["PLATFORMIO_DEFAULT_ENVS"] = matrix_item["pio_env_name"]
@@ -293,6 +298,7 @@ for matrix_item in full_build_matrix:
         }
     )
     print(pio_result.stdout)
+    print("::endgroup::")
     print(pio_result.stderr)
     print(
         "--------------------------------------------------------------------------------------------------------------------"
