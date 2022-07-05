@@ -29,6 +29,12 @@ ci_dir = "./continuous_integration/"
 ci_path = os.path.join(workspace_dir, ci_dir)
 ci_path = os.path.abspath(os.path.realpath(ci_path))
 
+
+if "GITHUB_WORKSPACE" in os.environ.keys():
+    arduino_cli_config = os.path.join(ci_dir, "arduino_cli.yaml")
+else:
+    arduino_cli_config = os.path.join(ci_dir, "arduino_cli_local.yaml")
+
 test_code_path = os.path.join(examples_path, "test_code")
 file_to_compile = os.path.join(test_code_path, "test_code.ino")
 
@@ -197,9 +203,6 @@ for matrix_item in full_build_matrix:
             defines=matrix_item["in_file_defines"],
         )
     )
-    print(
-        "::group::Arduino CLI-"
-    )
     prepare_example(
         example=os.path.join(
             os.path.join(examples_path, example), "{}.ino".format(example)
@@ -215,7 +218,7 @@ for matrix_item in full_build_matrix:
         "all",
         # "--clean",
         "--config-file",
-        os.path.join(ci_dir, "arduino_cli.yaml"),
+        arduino_cli_config,
         "--format",
         "text",
         "--log-file",
@@ -259,6 +262,8 @@ for matrix_item in full_build_matrix:
             "Publisher": matrix_item["publisher"],
         }
     )
+    print("Build command:  {}".format(cli_result.args))
+    print("::group::Arduino CLI-")
     print(cli_result.stdout)
     print("::endgroup::")
     print(cli_result.stderr)
@@ -266,7 +271,6 @@ for matrix_item in full_build_matrix:
         "\n--------------------------------------------------------------------------------------------------------------------\n"
     )
 
-    print("::group::PlatformIO")
     my_env = os.environ.copy()
     my_env["PLATFORMIO_SRC_DIR"] = test_code_path
     my_env["PLATFORMIO_DEFAULT_ENVS"] = matrix_item["pio_env_name"]
@@ -297,6 +301,8 @@ for matrix_item in full_build_matrix:
             "Publisher": matrix_item["publisher"],
         }
     )
+    print("Build command:  {}".format(pio_result.args))
+    print("::group::PlatformIO")
     print(pio_result.stdout)
     print("::endgroup::")
     print(pio_result.stderr)
