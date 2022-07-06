@@ -270,7 +270,7 @@ def prepare_example(example, in_file_defines):
 
 #%%
 compile_commands = []
-for matrix_item in full_build_matrix[0:2]:
+for matrix_item in full_build_matrix:
     compile_command = copy.deepcopy(matrix_item)
     ex_num = prepare_example(
         example=os.path.join(
@@ -461,7 +461,7 @@ markdown_results.write(
             "Publisher",
             "Build Flags",
             "Compiler Result",
-            "Failure Cause",
+            # "Failure Cause",
         ]
     ].to_markdown(index=False)
 )
