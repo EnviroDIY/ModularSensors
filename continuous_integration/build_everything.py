@@ -234,7 +234,7 @@ def prepare_example(example, in_file_defines):
     as_written = textfile.read()
     textfile.close()
 
-    rnum = random.randint(0, 10000)
+    rnum = random.randint(0, 100000)
 
     if not os.path.exists(os.path.join(examples_path, "test_code_{}".format(rnum))):
         os.makedirs(os.path.join(examples_path, "test_code_{}".format(rnum)))
@@ -294,15 +294,15 @@ for matrix_item in full_build_matrix:
         arduino_cli_config,
         "--format",
         "text",
-        "--log-file",
-        os.path.join(
-            os.path.join(examples_path, "test_code_{}".format(ex_num)),
-            "test_code_{}.log".format(ex_num),
-        ),
-        "--log-level",
-        "warn",
-        "--log-format",
-        "json",
+        # "--log-file",
+        # os.path.join(
+        #     os.path.join(examples_path, "test_code_{}".format(ex_num)),
+        #     "test_code_{}.log".format(ex_num),
+        # ),
+        # "--log-level",
+        # "warn",
+        # "--log-format",
+        # "json",
         "--fqbn",
         pio_to_acli[pio_config.get(env_key, "board")]["fqbn"],
     ]
@@ -342,73 +342,111 @@ for matrix_item in full_build_matrix:
         compile_commands.append(copy.deepcopy(compile_command))
 
 #%%
+# this starts all of the compile jobs at once
 # https://stackoverflow.com/questions/16450788/python-running-subprocess-in-parallel
-logfile = open(os.path.join(workspace_dir, "compile_results.log"), "wb+")
-processes = []
-for compile_command in compile_commands:
-    stdout_temp = tempfile.TemporaryFile()
-    stderr_temp = tempfile.TemporaryFile()
-    compile_process = subprocess.Popen(
-        compile_command["args"],
-        env=compile_command["env"],
-        # text=True,
-        # capture_output=True,
-        cwd=workspace_dir,
-        stdout=stdout_temp,
-        stderr=stderr_temp,
+
+# processes = []
+# for compile_command in compile_commands:
+#     stdout_temp = tempfile.TemporaryFile()
+#     stderr_temp = tempfile.TemporaryFile()
+#     compile_process = subprocess.Popen(
+#         compile_command["args"],
+#         env=compile_command["env"],
+#         # text=True,
+#         # capture_output=True,
+#         cwd=workspace_dir,
+#         # stdout=stdout_temp,
+#         # stderr=stderr_temp,
+#         stdout=subprocess.PIPE,
+#         stderr=subprocess.PIPE,
+#     )
+#     # processes.append(
+#     #     (compile_process, stdout_temp, stderr_temp, copy.deepcopy(compile_command))
+#     # )
+#     processes.append((compile_process, copy.deepcopy(compile_command)))
+
+limit = 4
+groups = [
+    (
+        (
+            subprocess.Popen(
+                compile_command["args"],
+                env=compile_command["env"],
+                # text=True,
+                # capture_output=True,
+                cwd=workspace_dir,
+                # stdout=stdout_temp,
+                # stderr=stderr_temp,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            ),
+            copy.deepcopy(compile_command),
+        )
+        for compile_command in compile_commands
     )
-    processes.append(
-        (compile_process, stdout_temp, stderr_temp, copy.deepcopy(compile_command))
-    )
+] * limit  # itertools' grouper recipe
 
 #%%
 results = []
-for compile_process, stdout_temp, stderr_temp, compile_command in processes:
-    compile_process.wait()
-    print(
-        "::group::{}-{}-{}-{}-{}-{}".format(
-            compile_command["Compiler"],
-            compile_command["pio_env_name"],
-            compile_command["example"],
-            compile_command["modem"],
-            compile_command["sensor"],
-            compile_command["publisher"],
-        )
-    )
-    stdout_temp.seek(0)
-    print(stdout_temp.read().decode("utf-8"))
-    stdout_temp.close()
-    print("::endgroup::")
-    stderr_temp.seek(0)
-    compile_errors = stderr_temp.read().decode("utf-8")
-    print(compile_errors)
-    stderr_temp.close()
-    print(
-        "\n--------------------------------------------------------------------------------------------------------------------\n"
-    )
-    results.append(
-        {
-            "Compiler": compile_command["Compiler"],
-            "Example": compile_command["example"],
-            "Board": pio_config.get(
-                "env:{}".format(compile_command["pio_env_name"]), "board"
-            ),
-            "build_flags": pio_config.get(
-                "env:{}".format(compile_command["pio_env_name"]), "build_flags"
+# for compile_process, stdout_temp, stderr_temp, compile_command in processes:
+for processes in zip_longest(*groups):  # run len(processes) == limit at a time
+    for compile_process, compile_command in filter(None, processes):
+        print(
+            "::group::{}-{}-{}-{}-{}-{}".format(
+                compile_command["Compiler"],
+                compile_command["pio_env_name"],
+                compile_command["example"],
+                compile_command["modem"],
+                compile_command["sensor"],
+                compile_command["publisher"],
             )
-            if compile_command["Compiler"] == "PlatformIO"
-            else [],
-            "compile_result": compile_process.returncode,
-            "cause": compile_errors if compile_process.returncode else "",
-            "Modem": compile_command["modem"],
-            "Sensor": compile_command["sensor"],
-            "Publisher": compile_command["publisher"],
-        }
-    )
+        )
+        for c in iter(lambda: compile_process.stdout.read(1), b""):
+            # sys.stdout.buffer.write(c)
+            print(c.decode("utf-8"), end="")
+        # while compile_process.poll() is None:
+        #     stdout_temp.seek(0, os.SEEK_END)
+        #     # read last line of file
+        #     line = stdout_temp.readline()
+        #     if line != "":
+        #         print(line)
+        #     # print(stdout_temp.read().decode("utf-8"))
+        # stdout_temp.close()
+        print("::endgroup::")
+        # stderr_temp.seek(0)
+        # compile_errors = stderr_temp.read().decode("utf-8")
+        compile_errors = compile_process.stderr.read().decode("utf-8")
+        print(compile_errors)
+        # stderr_temp.close()
+        print(
+            "\n--------------------------------------------------------------------------------------------------------------------\n"
+        )
+        results.append(
+            {
+                "Compiler": compile_command["Compiler"],
+                "Example": compile_command["example"],
+                "Board": pio_config.get(
+                    "env:{}".format(compile_command["pio_env_name"]), "board"
+                ),
+                "build_flags": pio_config.get(
+                    "env:{}".format(compile_command["pio_env_name"]), "build_flags"
+                )
+                if compile_command["Compiler"] == "PlatformIO"
+                else [],
+                "compile_result": compile_process.returncode,
+                "cause": compile_errors if compile_process.returncode else "",
+                "Modem": compile_command["modem"],
+                "Sensor": compile_command["sensor"],
+                "Publisher": compile_command["publisher"],
+            }
+        )
 #%%
 temp_dirs = glob.glob(examples_path + "\\*test_code*", recursive=True)
 for temp_dir in temp_dirs:
-    shutil.rmtree(temp_dir)
+    try:
+        shutil.rmtree(temp_dir)
+    except:
+        pass
 
 
 #%%
