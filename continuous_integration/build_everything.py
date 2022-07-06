@@ -289,7 +289,7 @@ for matrix_item in full_build_matrix:
         "compile",
         # "--verbose",
         "--warnings",
-        "all",
+        "more",
         # "--clean",
         "--config-file",
         arduino_cli_config,
@@ -379,7 +379,8 @@ groups = [
                 # stdout=stdout_temp,
                 # stderr=stderr_temp,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                # stderr=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
             ),
             copy.deepcopy(compile_command),
         )
@@ -416,8 +417,8 @@ for processes in zip_longest(*groups):  # run len(processes) == limit at a time
         print("::endgroup::")
         # stderr_temp.seek(0)
         # compile_errors = stderr_temp.read().decode("utf-8")
-        compile_errors = compile_process.stderr.read().decode("utf-8")
-        print(compile_errors)
+        # compile_errors = compile_process.stderr.read().decode("utf-8")
+        # print(compile_errors)
         # stderr_temp.close()
         print(
             "\n--------------------------------------------------------------------------------------------------------------------\n"
@@ -435,7 +436,7 @@ for processes in zip_longest(*groups):  # run len(processes) == limit at a time
                 if compile_command["Compiler"] == "PlatformIO"
                 else [],
                 "compile_result": compile_process.returncode,
-                "cause": compile_errors if compile_process.returncode else "",
+                # "cause": compile_errors if compile_process.returncode else "",
                 "Modem": compile_command["modem"],
                 "Sensor": compile_command["sensor"],
                 "Publisher": compile_command["publisher"],
@@ -462,9 +463,9 @@ frame_results["Compiler Result"] = np.where(
 )
 frame_results["Failed"] = frame_results["compile_result"].astype(bool)
 frame_results["Run"] = 1
-frame_results["Failure Cause"] = (
-    frame_results["cause"].str.replace("\r", "").str.replace("\n", "<br/><br/>")
-)
+# frame_results["Failure Cause"] = (
+#     frame_results["cause"].str.replace("\r", "").str.replace("\n", "<br/><br/>")
+# )
 total_failures = len(frame_results.loc[frame_results["Failed"]].index)
 
 
