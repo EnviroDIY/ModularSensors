@@ -151,10 +151,6 @@ for pio_env in pio_config.envs():
     matrix_item = {}
     matrix_item["pio_env_name"] = pio_env
     env_key = "env:{}".format(pio_env)
-    in_file_defines = [
-        flag.replace("-D", "").strip()
-        for flag in pio_config.get(env_key, "build_flags")
-    ]
     matrix_item["use_pio"] = True
 
     if pio_env in ["mayfly", "mega", "arduino_zero", "adafruit_feather_m0"]:
@@ -166,7 +162,7 @@ for pio_env in pio_config.envs():
         matrix_item["example"] = example
         if example == "menu_a_la_carte":
             for flag_set in menu_flag_matrix:
-                matrix_item["in_file_defines"] = in_file_defines + flag_set
+                matrix_item["in_file_defines"] = flag_set
 
                 matrix_item["modem"] = flag_set[0].replace("BUILD_MODEM_", "")
                 matrix_item["sensor"] = flag_set[1].replace("BUILD_SENSOR_", "")
@@ -226,7 +222,7 @@ for pio_env in pio_config.envs():
                     full_build_matrix.append(matrix_item)
         else:
             if matrix_item["use_acli"]:
-                matrix_item["in_file_defines"] = in_file_defines
+                matrix_item["in_file_defines"] = []
                 matrix_item["modem"] = ""
                 matrix_item["sensor"] = ""
                 matrix_item["publisher"] = ""
@@ -399,7 +395,9 @@ for compile_process, stdout_temp, stderr_temp, compile_command in processes:
             ),
             "build_flags": pio_config.get(
                 "env:{}".format(compile_command["pio_env_name"]), "build_flags"
-            ),
+            )
+            if compile_command["Compiler"] == "PlatformIO"
+            else [],
             "compile_result": compile_process.returncode,
             "cause": compile_errors if compile_process.returncode else "",
             "Modem": compile_command["modem"],
