@@ -218,17 +218,29 @@ void SERCOM2_Handler() {
 // Since AltSoftSerial is the best software option, we use it for modbus
 // If AltSoftSerial (or its pins) aren't avaiable, use NeoSWSerial
 // SoftwareSerial **WILL NOT** work for modbus!
+#ifdef BUILD_TEST_ALTSOFTSERIAL
 #define modbusSerial altSoftSerial  // For AltSoftSerial
-// #define modbusSerial neoSSerial1  // For Neo software serial
-// #define modbusSerial softSerial1  // For software serial
+#elif defined BUILD_TEST_NEOSWSERIAL
+#define modbusSerial neoSSerial1  // For Neo software serial
+#elif defined BUILD_TEST_SOFTSERIAL
+#define modbusSerial softSerial1  // For software serial
+#else
+#define modbusSerial Serial1  // Hardware serial
+#endif
 
 // The Maxbotix sonar is the only sensor that communicates over a serial port
 // but does not use modbus
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
-// #define sonarSerial altSoftSerial  // For AltSoftSerial
-#define sonarSerial neoSSerial1     // For Neo software serial
-// #define sonarSerial softSerial1  // For software serial
+#ifdef BUILD_TEST_ALTSOFTSERIAL
+#define sonarSerial altSoftSerial  // For AltSoftSerial
+#elif defined BUILD_TEST_NEOSWSERIAL
+#define sonarSerial neoSSerial1  // For Neo software serial
+#elif defined BUILD_TEST_SOFTSERIAL
+#define sonarSerial softSerial1  // For software serial
+#else
+#define sonarSerial Serial1  // Hardware serial
+#endif
 
 /** End [assign_ports_sw] */
 #endif
