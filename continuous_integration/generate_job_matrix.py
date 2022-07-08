@@ -300,7 +300,7 @@ for flag_set in menu_flag_matrix:
 
 for pio_env in pio_config.envs():
     arduino_commands = []
-    job_name = "all modems"
+    job_name = "all modems on {}".format(pio_env)
     job_id = "Modems Arduino CLI"
     for modem_flag in all_modem_flags:
         used_modem = snake_to_camel(modem_flag)
@@ -320,7 +320,7 @@ for pio_env in pio_config.envs():
     )
 
     arduino_commands = []
-    job_name = "all sensor"
+    job_name = "all sensors on {}".format(pio_env)
     job_id = "Modems Arduino CLI"
     for sensor_flag in all_sensor_flags[1:]:
         used_sensor = snake_to_camel(sensor_flag)
@@ -340,7 +340,7 @@ for pio_env in pio_config.envs():
     )
 
     arduino_commands = []
-    job_name = "all publishers"
+    job_name = "all publishers on {}".format(pio_env)
     job_id = "Modems Arduino CLI"
     for publisher_flag in all_publisher_flags[1:]:
         used_pub = snake_to_camel(publisher_flag)
@@ -355,7 +355,7 @@ for pio_env in pio_config.envs():
         {"job_name": job_name, "job_id": job_id, "command": "\n".join(arduino_commands)}
     )
 
-for flag_set in menu_flag_matrix:
+for idx, flag_set in enumerate(menu_flag_matrix):
     used_modem = snake_to_camel(flag_set[0])
     used_sensor = snake_to_camel(flag_set[1])
     used_pub = snake_to_camel(flag_set[2])
@@ -386,6 +386,9 @@ for flag_set in menu_flag_matrix:
         pio_build_config = extend_pio_config(
             ["AltSoftSerial", "NeoSWSerial", "software_serial"]
         )
+
+    if idx == 0:
+        extend_pio_config(["complex_loop", "in_array", "separate_uuid"])
 
     pio_command = create_platformio_command(pio_build_config, prepped_ex_folder)
     pio_job_matrix.append(

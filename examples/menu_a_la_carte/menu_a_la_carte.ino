@@ -2371,11 +2371,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 /** End [variables_create_in_array] */
-#endif
 // ==========================================================================
 
 
-#if defined BUILD_TEST_SEPARATE_UUIDS
+#elif defined BUILD_TEST_SEPARATE_UUIDS
 /** Start [variables_separate_uuids] */
 // Version 2: Create two separate arrays, on for the variables and a separate
 // one for the UUID's, then give both as input to the variable array
@@ -2394,7 +2393,13 @@ Variable* variableList[] = {
 };
 const char* UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
     //  ... The number of UUID's must match the number of variables!
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
 };
 // Count up the number of pointers in the array
@@ -2402,11 +2407,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object and attach the UUID's
 VariableArray varArray(variableCount, variableList, UUIDs);
 /** End [variables_separate_uuids] */
-#endif
 // ==========================================================================
 
 
-#if defined BUILD_TEST_PRE_NAMED_VARS
+#else // BUILD_TEST_PRE_NAMED_VARS
 /** Start [variables_pre_named] */
 // Version 3: Fill array with already created and named variable pointers
 Variable* variableList[] = {
