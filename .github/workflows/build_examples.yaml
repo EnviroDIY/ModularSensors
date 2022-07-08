@@ -41,7 +41,7 @@ jobs:
             continuous_integration_artifacts/
 
   build_ex_arduino:
-    name: Arduino
+    name: ${{ matrix.job_info.job_name }}
     runs-on: ubuntu-latest
     needs: generate_matrix
     strategy:
@@ -98,7 +98,7 @@ jobs:
             continuous_integration_artifacts/
 
       # Run the script to compile the examples
-      - name: ${{ matrix.job_info.job_name }}
+      - name: Compile
         run: ${{ matrix.job_info.command }}
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
@@ -109,7 +109,7 @@ jobs:
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors
 
   build_pio:
-    name: PlatformIO
+    name: ${{ matrix.job_info.job_name }}
     runs-on: ubuntu-latest
     needs: generate_matrix
     strategy:
@@ -171,5 +171,5 @@ jobs:
             continuous_integration_artifacts/
 
       # Run the script to compile the examples
-      - name: ${{ matrix.job_info.job_name }}
+      - name: Compile
         run: ${{ matrix.job_info.command }}
