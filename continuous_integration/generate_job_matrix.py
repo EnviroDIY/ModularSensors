@@ -148,7 +148,7 @@ for example in non_menu_examples:
     pio_command = create_platformio_command(pio_config_file, example)
     job_name = "{} on all boards".format(snake_to_camel(example))
     job_id = "{}_pio".format(example)
-    arduino_job_matrix.append(
+    pio_job_matrix.append(
         {"job_name": job_name, "job_id": job_id, "command": pio_command}
     )
 
@@ -160,8 +160,12 @@ for pio_env in pio_config.envs():
     for example in non_menu_examples:
         arduino_command = create_arduino_cli_command(pio_env, example)
         arduino_commands.append(arduino_command)
-    pio_job_matrix.append(
-        {"job_name": job_name, "job_id": job_id, "command": "\n".join(arduino_commands)}
+    arduino_job_matrix.append(
+        {
+            "job_name": job_name,
+            "job_id": job_id,
+            "command": " && ".join(arduino_commands),
+        }
     )
 
 
@@ -308,7 +312,11 @@ for pio_env in pio_config.envs():
         arduino_commands.append(arduino_command)
         arduino_commands.append("echo ::endgroup::")
     arduino_job_matrix.append(
-        {"job_name": job_name, "job_id": job_id, "command": "\n".join(arduino_commands)}
+        {
+            "job_name": job_name,
+            "job_id": job_id,
+            "command": " && ".join(arduino_commands),
+        }
     )
 
     arduino_commands = []
@@ -324,7 +332,11 @@ for pio_env in pio_config.envs():
         arduino_commands.append(arduino_command)
         arduino_commands.append("echo ::endgroup::")
     arduino_job_matrix.append(
-        {"job_name": job_name, "job_id": job_id, "command": "\n".join(arduino_commands)}
+        {
+            "job_name": job_name,
+            "job_id": job_id,
+            "command": " && ".join(arduino_commands),
+        }
     )
 
     arduino_commands = []
