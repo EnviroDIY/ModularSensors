@@ -25,6 +25,9 @@ jobs:
           python-version: '3.x'
           cache: 'pip'
 
+      - name: Install python dependencies, including PlatformIO
+        run: pip install -r continuous_integration/requirements.txt
+
       - name: Generate Matrices
         id: py_matrix
         run: |
@@ -122,11 +125,14 @@ jobs:
             echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
           fi
 
-      - name: Set up Python, including installing PlatformIO
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
           cache: 'pip'
+
+      - name: Install python dependencies, including PlatformIO
+        run: pip install -r continuous_integration/requirements.txt
 
       - name: Restore PlatformIO and Arduino platforms and libraries
         uses: actions/cache@v3
