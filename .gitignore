@@ -105,3 +105,5 @@ compile_results.md
 arduino_cli_log.log
 continuous_integration/arduino_cli_local.yaml
 compile_results.log
+continuous_integration_artifacts/*
+arduino_cli.log
