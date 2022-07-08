@@ -94,7 +94,6 @@ jobs:
 
       # Run the script to compile the examples
       - name: ${{ matrix.job_info.job_name }}
-        id: ${{ matrix.job_info.job_id }}
         continue-on-error: true
         run: ${{ matrix.job_info.command }}
 
@@ -161,6 +160,5 @@ jobs:
 
       # Run the script to compile the examples
       - name: ${{ matrix.job_info.job_name }}
-        id: ${{ matrix.job_info.job_id }}
         continue-on-error: true
         run: ${{ matrix.job_info.command }}
