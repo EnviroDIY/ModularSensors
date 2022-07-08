@@ -146,7 +146,7 @@ pio_job_matrix = []
 # for PlatformIO, use one job per example
 for example in non_menu_examples:
     pio_command = create_platformio_command(pio_config_file, example)
-    job_name = "Build {} on all boards with PlatformIO".format(snake_to_camel(example))
+    job_name = "{} on all boards".format(snake_to_camel(example))
     job_id = "{}_pio".format(example)
     arduino_job_matrix.append(
         {"job_name": job_name, "job_id": job_id, "command": pio_command}
@@ -154,9 +154,7 @@ for example in non_menu_examples:
 
 # for the Ardunio CLI, use one job per board
 for pio_env in pio_config.envs():
-    job_name = "Build all examples on {} with Arduino CLI".format(
-        snake_to_camel(pio_env)
-    )
+    job_name = "all examples on {}".format(snake_to_camel(pio_env))
     job_id = "{}_arduino".format(pio_env)
     arduino_commands = []
     for example in non_menu_examples:
@@ -298,7 +296,7 @@ for flag_set in menu_flag_matrix:
 
 for pio_env in pio_config.envs():
     arduino_commands = []
-    job_name = "Build menu for all modem configurations with Arduino CLI"
+    job_name = "all modems"
     job_id = "Modems Arduino CLI"
     for modem_flag in all_modem_flags:
         used_modem = snake_to_camel(modem_flag)
@@ -314,7 +312,7 @@ for pio_env in pio_config.envs():
     )
 
     arduino_commands = []
-    job_name = "Build menu for all sensor configurations with Arduino CLI"
+    job_name = "all sensor"
     job_id = "Modems Arduino CLI"
     for sensor_flag in all_sensor_flags[1:]:
         used_sensor = snake_to_camel(sensor_flag)
@@ -330,7 +328,7 @@ for pio_env in pio_config.envs():
     )
 
     arduino_commands = []
-    job_name = "Build menu for all publisher configurations with Arduino CLI"
+    job_name = "all publishers"
     job_id = "Modems Arduino CLI"
     for publisher_flag in all_publisher_flags[1:]:
         used_pub = snake_to_camel(publisher_flag)
@@ -350,9 +348,7 @@ for flag_set in menu_flag_matrix:
     used_sensor = snake_to_camel(flag_set[1])
     used_pub = snake_to_camel(flag_set[2])
 
-    job_name = "Build menu with {}, {}, and {} with PlatformIO".format(
-        used_sensor, used_modem, used_pub
-    )
+    job_name = "{}, {}, and {}".format(used_sensor, used_modem, used_pub)
     job_id = "{}-{}-{} PlatformIO".format(used_sensor, used_modem, used_pub)
     prepped_ex_folder, _ = modify_example_filename(menu_example_name, flag_set)
 

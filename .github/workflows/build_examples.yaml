@@ -41,7 +41,7 @@ jobs:
             continuous_integration_artifacts/
 
   build_ex_arduino:
-    name: Build with the Arduino CLI
+    name: Arduino
     runs-on: ubuntu-latest
     needs: generate_matrix
     strategy:
@@ -55,10 +55,10 @@ jobs:
         run: |
           if [[ -z "${GITHUB_HEAD_REF}" ]]; then
             echo "::debug::Push to commit ${GITHUB_SHA}"
-            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}" >> $GITHUB_ENV
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
           else
             echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
-            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
           fi
 
       # We use the `arduino/setup-arduino-cli` action to install and
@@ -97,7 +97,6 @@ jobs:
 
       # Run the script to compile the examples
       - name: ${{ matrix.job_info.job_name }}
-        continue-on-error: true
         run: ${{ matrix.job_info.command }}
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
@@ -107,10 +106,13 @@ jobs:
         run: |
           arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors
 
-  build:
-    name: Build with PlatformIO
+  build_pio:
+    name: PlatformIO
     runs-on: ubuntu-latest
     needs: generate_matrix
+    strategy:
+      matrix:
+        job_info: ${{ fromJSON(needs.generate_matrix.outputs.arduino_job_matrix) }}
 
     steps:
       - uses: actions/checkout@v3
@@ -166,5 +168,4 @@ jobs:
 
       # Run the script to compile the examples
       - name: ${{ matrix.job_info.job_name }}
-        continue-on-error: true
         run: ${{ matrix.job_info.command }}
