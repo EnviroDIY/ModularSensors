@@ -112,7 +112,7 @@ jobs:
     needs: generate_matrix
     strategy:
       matrix:
-        job_info: ${{ fromJSON(needs.generate_matrix.outputs.arduino_job_matrix) }}
+        job_info: ${{ fromJSON(needs.generate_matrix.outputs.pio_job_matrix) }}
 
     steps:
       - uses: actions/checkout@v3
