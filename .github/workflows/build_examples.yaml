@@ -94,6 +94,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: generated_examples
+          path: |
+            continuous_integration_artifacts/
 
       # Run the script to compile the examples
       - name: ${{ matrix.job_info.job_name }}
@@ -165,6 +167,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: generated_examples
+          path: |
+            continuous_integration_artifacts/
 
       # Run the script to compile the examples
       - name: ${{ matrix.job_info.job_name }}
