@@ -28,7 +28,7 @@ jobs:
       - name: Generate Matrices
         id: py_matrix
         run: |
-          python continuous_integration/build_everything.py
+          python continuous_integration/generate_job_matrix.py
 
       - name: Store generated examples
         uses: actions/upload-artifact@v3
