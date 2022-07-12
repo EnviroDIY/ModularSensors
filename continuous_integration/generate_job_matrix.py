@@ -594,7 +594,7 @@ for pio_env in pio_config.envs():
 
 #%%
 # Tack on a few more extra build configurations for the software serial libraries
-for pio_env in pio_config.envs():
+for pio_env in ["Mayfly"]:
     arduino_serial_commands = [
         start_job_commands,
         # 'echo "## [Extra Serials on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
