@@ -489,7 +489,7 @@ for pio_env in pio_config.envs():
             pio_sensor_commands.extend(
                 create_logged_command(
                     compiler="PlatformIO",
-                    group_title=used_sensor + "(non-concurrent)",
+                    group_title=used_sensor + " non-concurrent",
                     code_subfolder=prepped_ex_folder,
                     pio_env="sdi12_non_concurrent",
                     pio_env_file=pio_build_config,
@@ -500,7 +500,7 @@ for pio_env in pio_config.envs():
             pio_sensor_commands.extend(
                 create_logged_command(
                     compiler="PlatformIO",
-                    group_title=used_sensor + "(software wire)",
+                    group_title=used_sensor + " software wire",
                     code_subfolder=prepped_ex_folder,
                     pio_env="software_wire",
                     pio_env_file=pio_build_config,
@@ -516,7 +516,7 @@ for pio_env in pio_config.envs():
             pio_sensor_commands.extend(
                 create_logged_command(
                     compiler="PlatformIO",
-                    group_title=used_sensor + "(ADS1015)",
+                    group_title=used_sensor + " ADS1015",
                     code_subfolder=prepped_ex_folder,
                     pio_env="ads1015",
                     pio_env_file=pio_build_config,
@@ -528,7 +528,7 @@ for pio_env in pio_config.envs():
                 pio_sensor_commands.extend(
                     create_logged_command(
                         compiler="PlatformIO",
-                        group_title=used_sensor + "(serial_lib)",
+                        group_title=used_sensor + " " + serial_lib,
                         code_subfolder=prepped_ex_folder,
                         pio_env="serial_lib",
                         pio_env_file=pio_build_config,
