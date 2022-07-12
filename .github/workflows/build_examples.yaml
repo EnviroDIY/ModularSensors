@@ -102,6 +102,8 @@ jobs:
 
       # Run the script to compile the examples
       - name: Compile
+        env:
+          ACTION_RUN_ID: ${{ github.run_id }}
         run: ${{ matrix.job_info.command }}
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
@@ -175,4 +177,6 @@ jobs:
 
       # Run the script to compile the examples
       - name: Compile
+        env:
+          ACTION_RUN_ID: ${{ github.run_id }}
         run: ${{ matrix.job_info.command }}
