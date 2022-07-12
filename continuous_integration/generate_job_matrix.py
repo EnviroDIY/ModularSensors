@@ -308,7 +308,7 @@ def extend_pio_config(added_envs):
 #%% read build flags out of the menu-a-la-cart example
 # Pattern for flags in the menu-a-la-cart example
 pattern = re.compile(
-    "^(?:#if|#elif) defined (?P<flag1>BUILD_\w+)((?:[\\s\\n\\\\]*?\|\|[\\s\\n\\\\]*defined[\\s\\n\\\\]*?)(?P<flag_last>BUILD_\w+))*",
+    "^(?:#if|#elif) defined[\s\(](?P<flag1>BUILD_\w+)((?:[\s\n\\\)]*?\|\|[\s\n\\]*defined[\s\n\\\(]*?)(?P<flag_last>BUILD_\w+))*",
     re.MULTILINE,
 )
 
@@ -522,18 +522,6 @@ for pio_env in pio_config.envs():
                     pio_env_file=pio_build_config,
                 )
             )
-        if used_sensor in ["MaxBotixSonar", "YosemitechY504"]:
-            for serial_lib in ["AltSoftSerial", "NeoSWSerial", "SoftwareSerial"]:
-                pio_build_config = extend_pio_config([serial_lib])
-                pio_sensor_commands.extend(
-                    create_logged_command(
-                        compiler="PlatformIO",
-                        group_title=used_sensor + " " + serial_lib,
-                        code_subfolder=prepped_ex_folder,
-                        pio_env="serial_lib",
-                        pio_env_file=pio_build_config,
-                    )
-                )
 
     arduino_job_matrix.append(
         {
@@ -604,19 +592,76 @@ for pio_env in pio_config.envs():
         }
     )
 
+#%%
+# Tack on a few more extra build configurations for the software serial libraries
+for pio_env in pio_config.envs():
+    arduino_serial_commands = [
+        start_job_commands,
+        # 'echo "## [Extra Serials on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
+    ]
+    pio_serial_commands = [
+        start_job_commands,
+        # 'echo "## [Extra Serials on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
+    ]
+
+    for serial_flag in [
+        "BUILD_TEST_ALTSOFTSERIAL",
+        "BUILD_TEST_NEOSWSERIAL",
+        "BUILD_TEST_SOFTSERIAL",
+    ]:
+        used_serial = snake_to_camel(serial_flag)
+        prepped_ex_folder, _ = prepare_example(
+            menu_example_name,
+            [
+                serial_flag,
+                all_modem_flags[0],
+                "BUILD_SENSOR_MAX_BOTIX_SONAR",
+                "BUILD_SENSOR_YOSEMITECH_Y504",
+                all_publisher_flags[0],
+            ],
+        )
+        for compiler, command_list in zip(
+            compilers, [arduino_serial_commands, pio_serial_commands]
+        ):
+            command_list.extend(
+                create_logged_command(
+                    compiler=compiler,
+                    group_title=used_serial,
+                    code_subfolder=prepped_ex_folder,
+                    pio_env=pio_env,
+                )
+            )
+
+    arduino_job_matrix.append(
+        {
+            "job_name": "{} - Arduino - Serials".format(pio_env),
+            "command": " \n ".join(arduino_serial_commands + [end_job_commands]),
+        }
+    )
+    pio_job_matrix.append(
+        {
+            "job_name": "{} - PlatformIO - Serials".format(pio_env),
+            "command": " \n ".join(pio_serial_commands + [end_job_commands]),
+        }
+    )
+
 
 #%%
 # Write out output
 print("::set-output name=arduino_job_matrix::{}".format(json.dumps(arduino_job_matrix)))
-if "GITHUB_WORKSPACE" not in os.environ.keys():
-    json_out = open(os.path.join(artifact_dir, "arduino_job_matrix.json"), "w+")
-    json.dump(arduino_job_matrix, json_out, indent=2)
-    json_out.close()
+json_out = open(os.path.join(artifact_dir, "arduino_job_matrix.json"), "w+")
+json.dump(arduino_job_matrix, json_out, indent=2)
+json_out.close()
+
+
 print("::set-output name=pio_job_matrix::{}".format(json.dumps(pio_job_matrix)))
-if "GITHUB_WORKSPACE" not in os.environ.keys():
-    json_out = open(os.path.join(artifact_dir, "pio_job_matrix.json"), "w+")
-    json.dump(pio_job_matrix, json_out, indent=2)
-    json_out.close()
+json_out = open(os.path.join(artifact_dir, "pio_job_matrix.json"), "w+")
+json.dump(pio_job_matrix, json_out, indent=2)
+json_out.close()
 
 
 #%%

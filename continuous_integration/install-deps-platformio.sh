@@ -4,24 +4,34 @@
 set -e
 
 echo "::group::Installing Platforms and Frameworks"
-echo "\e[32mInstalling Atmel AVR platform \e[0m"
+echo "\e[32mInstalling Atmel AVR platforms \e[0m"
 pio pkg install -g --platform atmelavr
+pio pkg install -g --tool framework-arduino-avr
+pio pkg install -g --tool tool-avrdude
+pio pkg install -g --tool toolchain-atmelavr
 
 echo "\e[32mInstalling Atmel AVR framework \e[0m"
-pio pkg install -g --tool framework-arduino-avr
+pio pkg install -g --platform atmelmegaavr
+pio pkg install -g --tool framework-arduino-megaavr
 
 echo "\e[32mInstalling Atmel SAM platform \e[0m"
 pio pkg install -g --platform atmelsam
 
 echo "\e[32mInstalling Atmel SAM framework \e[0m"
+pio pkg install -g --tool framework-arduino-samd
 pio pkg install -g --tool framework-arduino-samd-adafruit
+pio pkg install -g --tool framework-arduino-samd-sodaq
 pio pkg install -g --tool framework-cmsis
 pio pkg install -g --tool framework-cmsis-atmel
+pio pkg install -g --tool tool-bossac
 pio pkg install -g --tool toolchain-gccarmnoneeabi
 echo "::endgroup::"
 
 
 echo "::group::Installing Libraries"
+echo "\e[32m\nCurrently installed packages:\e[0m"
+pio pkg list -g -v
+
 echo "\e[32mInstalling envirodiy/EnviroDIY_DS3231\e[0m"
 pio pkg install -g --library envirodiy/EnviroDIY_DS3231
 
@@ -97,17 +107,17 @@ pio pkg install -g --library envirodiy/YosemitechModbus
 echo "\e[32mInstalling vshymanskyy/StreamDebugger\e[0m"
 pio pkg install -g --library vshymanskyy/StreamDebugger
 
-echo "\e[32mInstalling https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git\e[0m"
-pio pkg install -g --library https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git
-
 echo "\e[32mInstalling https://github.com/PaulStoffregen/AltSoftSerial.git\e[0m"
 pio pkg install -g --library https://github.com/PaulStoffregen/AltSoftSerial.git
+
+echo "\e[32mInstalling https://github.com/Testato/SoftwareWire.git#v1.5.1\e[0m"
+pio pkg install -g --library https://github.com/Testato/SoftwareWire.git#v1.5.1
 
 echo "\e[32mInstalling https://github.com/SRGDamia1/NeoSWSerial.git\e[0m"
 pio pkg install -g --library https://github.com/SRGDamia1/NeoSWSerial.git
 
-echo "\e[32mInstalling https://github.com/Testato/SoftwareWire.git#v1.5.1\e[0m"
-pio pkg install -g --library https://github.com/Testato/SoftwareWire.git#v1.5.1
+echo "\e[32mInstalling https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git\e[0m"
+pio pkg install -g --library https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git
 echo "::endgroup::"
 
 
