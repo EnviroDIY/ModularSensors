@@ -61,6 +61,9 @@ jobs:
             echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
           fi
 
+      - name: Unused Step
+        run: echo "This is needed to make the step number match with the PlatformIO jobs. =)"
+
       # We use the `arduino/setup-arduino-cli` action to install and
       # configure the Arduino CLI on the system.
       - name: Setup Arduino CLI

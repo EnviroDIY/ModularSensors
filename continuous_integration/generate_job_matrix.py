@@ -3,6 +3,7 @@
 import json
 import shutil
 import re
+from typing import List
 from platformio.project.config import ProjectConfig
 import re
 import os
@@ -116,7 +117,7 @@ def create_pio_ci_command(pio_env_file: str, pio_env: str, code_subfolder: str) 
     return " ".join(pio_command_args)
 
 
-def add_log_to_command(command: str, group_title: str):
+def add_log_to_command(command: str, group_title: str) -> List:
     command_list = []
     command_list.append("echo ::group::{}".format(group_title))
     command_list.append(command + " 2>&1 | tee output.log")
@@ -125,6 +126,9 @@ def add_log_to_command(command: str, group_title: str):
         'if [ "$result_code" -eq "0" ]; then echo " - {title} :white_check_mark:" >> $GITHUB_STEP_SUMMARY; else echo " - {title} :x:" >> $GITHUB_STEP_SUMMARY; fi'.format(
             title=group_title
         )
+    )
+    command_list.append(
+        'if [ "$result_code" -eq "0" ]; then status=0; else status=1; fi'
     )
     command_list.append("echo ::endgroup::")
     return command_list
@@ -176,17 +180,26 @@ def snake_to_camel(snake_str):
 # set up outputs
 arduino_job_matrix = []
 pio_job_matrix = []
+start_job_commands = "status = 0"
+end_job_commands = "exit $status"
 
 #%%
 # Create job info for the basic examples
 # Use one job per board with one command per example
 for pio_env in pio_config.envs():
     arduino_ex_commands = [
-        'echo "## All Examples Compiled with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'
+        start_job_commands,
+        'echo "## [All Examples on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        ),
     ]
     pio_ex_commands = [
-        'echo "## All Examples Compiled with PlatformIO" >> $GITHUB_STEP_SUMMARY'
+        start_job_commands,
+        'echo "## [All Examples on {} with PlatformIO](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        ),
     ]
+
     for example in non_menu_examples:
         for compiler, command_list in zip(
             ["Arduino CLI", "PlatformIO"], [arduino_ex_commands, pio_ex_commands]
@@ -203,13 +216,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Other Examples".format(pio_env),
-            "command": " \n ".join(arduino_ex_commands),
+            "command": " \n ".join(arduino_ex_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - Platformio - Other Examples".format(pio_env),
-            "command": " \n ".join(pio_ex_commands),
+            "command": " \n ".join(pio_ex_commands + [end_job_commands]),
         }
     )
 
@@ -334,14 +347,16 @@ for match in re.finditer(pattern, filetext):
 # Create jobs for all of the modems together
 for pio_env in pio_config.envs():
     arduino_modem_commands = [
-        'echo "## All Modems on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [All Modems on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
     pio_modem_commands = [
-        'echo "## All Modems on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [All Modems on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
 
     for modem_flag in all_modem_flags:
@@ -364,13 +379,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Modems".format(pio_env),
-            "command": " \n ".join(arduino_modem_commands),
+            "command": " \n ".join(arduino_modem_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Modems".format(pio_env),
-            "command": " \n ".join(arduino_modem_commands),
+            "command": " \n ".join(pio_modem_commands + [end_job_commands]),
         }
     )
 
@@ -378,14 +393,16 @@ for pio_env in pio_config.envs():
 # Create jobs for all of the publishers together
 for pio_env in pio_config.envs():
     arduino_pub_commands = [
-        'echo "## All Publishers on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [All Publishers on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
     pio_pub_commands = [
-        'echo "## All Publishers on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [All Publishers on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
 
     for publisher_flag in all_publisher_flags[1:]:
@@ -408,13 +425,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Publishers".format(pio_env),
-            "command": " \n ".join(arduino_pub_commands),
+            "command": " \n ".join(arduino_pub_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Publishers".format(pio_env),
-            "command": " \n ".join(arduino_pub_commands),
+            "command": " \n ".join(pio_pub_commands + [end_job_commands]),
         }
     )
 
@@ -423,14 +440,16 @@ for pio_env in pio_config.envs():
 # The sensors are a bit different because we run extra PlatformIO enviroments for some of the sensors
 for pio_env in pio_config.envs():
     arduino_sensor_commands = [
-        'echo "## All Sensors on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [All Sensors on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
     pio_sensor_commands = [
-        'echo "## All Modems on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [All Sensors on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
 
     for sensor_flag in all_sensor_flags[1:]:
@@ -516,13 +535,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Sensors".format(pio_env),
-            "command": " \n ".join(arduino_sensor_commands),
+            "command": " \n ".join(arduino_sensor_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Sensors".format(pio_env),
-            "command": " \n ".join(arduino_sensor_commands),
+            "command": " \n ".join(pio_sensor_commands + [end_job_commands]),
         }
     )
 
@@ -530,14 +549,16 @@ for pio_env in pio_config.envs():
 # Tack on a few extra build configurations for the menu example
 for pio_env in pio_config.envs():
     arduino_loop_commands = [
-        'echo "## Extra Loops on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [Extra Loops on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
     pio_loop_commands = [
-        'echo "## Extra Loops on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+        start_job_commands,
+        'echo "## [Extra Loops on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/${{{{ github.run_id }}}}?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
             pio_env
-        )
+        ),
     ]
 
     for loop_flag in [
@@ -546,7 +567,15 @@ for pio_env in pio_config.envs():
         "BUILD_TEST_SEPARATE_UUIDS",
     ]:
         used_loop = snake_to_camel(loop_flag)
-        prepped_ex_folder, _ = prepare_example(menu_example_name, [loop_flag])
+        prepped_ex_folder, _ = prepare_example(
+            menu_example_name,
+            [
+                loop_flag,
+                all_modem_flags[0],
+                all_sensor_flags[0],
+                all_publisher_flags[0],
+            ],
+        )
         for compiler, command_list in zip(
             ["Arduino CLI", "PlatformIO"], [arduino_loop_commands, pio_loop_commands]
         ):
@@ -562,13 +591,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Loops".format(pio_env),
-            "command": " \n ".join(arduino_loop_commands),
+            "command": " \n ".join(arduino_loop_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Loops".format(pio_env),
-            "command": " \n ".join(arduino_loop_commands),
+            "command": " \n ".join(pio_loop_commands + [end_job_commands]),
         }
     )
 
