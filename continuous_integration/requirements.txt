@@ -3,37 +3,3 @@ wheel
 
 # use platformio for all of the compiler testing
 platformio
-
-# use pandas because I'm too lazy to come up with another way of summarizing the tables
-numpy
-pandas
-
-# dependencies of the above
-pytz
-pyserial
-pyelftools
-ifaddr
-bottle
-zeroconf
-urllib3
-tabulate
-sniffio
-six
-semantic_version
-pyparsing
-idna
-h11
-colorama
-click
-charset-normalizer
-certifi
-ajsonrpc
-aiofiles
-wsproto
-uvicorn
-requests
-python-dateutil
-packaging
-anyio
-starlette
-marshmallow

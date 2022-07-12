@@ -1,22 +1,12 @@
 #!/usr/bin/env python
 #%%
-# import json
-# import yaml
-import glob
-from pathlib import Path
 import json
 import shutil
-import sys
 import re
-import subprocess
-import tempfile
 from platformio.project.config import ProjectConfig
 import re
 import os
 import copy
-import numpy as np
-import pandas as pd
-from itertools import zip_longest
 
 #%%
 # Some working directories
@@ -82,7 +72,17 @@ pio_to_acli = {
 }
 
 
-def create_arduino_cli_command(pio_env_name, code_file):
+def get_example_folder(subfolder_name):
+    return os.path.join(examples_path, subfolder_name)
+
+
+def get_example_filepath(subfolder_name):
+    ex_folder = get_example_folder(subfolder_name)
+    ex_file = os.path.join(ex_folder, subfolder_name + ".ino")
+    return ex_file
+
+
+def create_arduino_cli_command(pio_env_name: str, code_subfolder: str) -> str:
     arduino_command_arguments = [
         "arduino-cli",
         "compile",
@@ -95,25 +95,71 @@ def create_arduino_cli_command(pio_env_name, code_file):
         "text",
         "--fqbn",
         pio_to_acli[pio_config.get("env:{}".format(pio_env_name), "board")]["fqbn"],
-        os.path.join(examples_path, code_file),
+        os.path.join(examples_path, code_subfolder),
     ]
     return " ".join(arduino_command_arguments)
 
 
-def create_platformio_command(pio_env_file, code_file):
+def create_pio_ci_command(pio_env_file: str, pio_env: str, code_subfolder: str) -> str:
     pio_command_args = [
         "pio",
         "ci",
         # "--verbose",
         "--project-conf",
         pio_env_file,
-        os.path.join(examples_path, code_file),
+        "--project-conf",
+        pio_env_file,
+        "--environment",
+        pio_env,
+        os.path.join(examples_path, code_subfolder),
     ]
     return " ".join(pio_command_args)
 
 
+def add_log_to_command(command: str, group_title: str):
+    command_list = []
+    command_list.append("echo ::group::{}".format(group_title))
+    command_list.append(command + " 2>&1 | tee output.log")
+    command_list.append("result_code=${PIPESTATUS[0]}")
+    command_list.append(
+        'if [ "$result_code" -eq "0" ]; then echo " - {title} :white_check_mark:" >> $GITHUB_STEP_SUMMARY; else echo " - {title} :x:" >> $GITHUB_STEP_SUMMARY; fi'.format(
+            title=group_title
+        )
+    )
+    command_list.append("echo ::endgroup::")
+    return command_list
+
+
+def create_logged_command(
+    compiler: str,
+    group_title: str,
+    code_subfolder: str,
+    pio_env: str,
+    pio_env_file: str = pio_config_file,
+):
+    output_commands = []
+    lower_compiler = compiler.lower().replace(" ", "").strip()
+    if lower_compiler == "platformio":
+        build_command = create_pio_ci_command(pio_env_file, pio_env, code_subfolder)
+    elif lower_compiler == "arduinocli":
+        build_command = create_arduino_cli_command(pio_env, code_subfolder)
+    else:
+        build_command = ""
+
+    command_with_log = add_log_to_command(build_command, group_title)
+    output_commands.extend(command_with_log)
+
+    return copy.deepcopy(output_commands)
+
+
 def snake_to_camel(snake_str):
-    crop_strings = ["BUILD_MODEM_", "BUILD_SENSOR_", "BUILD_PUB_", "_PUBLISHER"]
+    crop_strings = [
+        "BUILD_MODEM_",
+        "BUILD_SENSOR_",
+        "BUILD_PUB_",
+        "_PUBLISHER",
+        "BUILD_TEST_",
+    ]
     for crop_string in crop_strings:
         snake_str = snake_str.replace(crop_string, "")
     components = snake_str.strip().split("_")
@@ -126,16 +172,6 @@ def snake_to_camel(snake_str):
         return camel_str
 
 
-def get_example_folder(subfolder_name):
-    return os.path.join(examples_path, subfolder_name)
-
-
-def get_example_filepath(subfolder_name):
-    ex_folder = get_example_folder(subfolder_name)
-    ex_file = os.path.join(ex_folder, subfolder_name + ".ino")
-    return ex_file
-
-
 #%%
 # set up outputs
 arduino_job_matrix = []
@@ -143,28 +179,37 @@ pio_job_matrix = []
 
 #%%
 # Create job info for the basic examples
-# for PlatformIO, use one job per example
-for example in non_menu_examples:
-    pio_command = create_platformio_command(pio_config_file, example)
-    job_name = "{} on all boards".format(snake_to_camel(example))
-    job_id = "{}_pio".format(example)
-    pio_job_matrix.append(
-        {"job_name": job_name, "job_id": job_id, "command": pio_command}
-    )
-
-# for the Ardunio CLI, use one job per board
+# Use one job per board with one command per example
 for pio_env in pio_config.envs():
-    job_name = "all examples on {}".format(snake_to_camel(pio_env))
-    job_id = "{}_arduino".format(pio_env)
-    arduino_commands = []
+    arduino_ex_commands = [
+        'echo "## All Examples Compiled with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'
+    ]
+    pio_ex_commands = [
+        'echo "## All Examples Compiled with PlatformIO" >> $GITHUB_STEP_SUMMARY'
+    ]
     for example in non_menu_examples:
-        arduino_command = create_arduino_cli_command(pio_env, example)
-        arduino_commands.append(arduino_command)
+        for compiler, command_list in zip(
+            ["Arduino CLI", "PlatformIO"], [arduino_ex_commands, pio_ex_commands]
+        ):
+            command_list.extend(
+                create_logged_command(
+                    compiler=compiler,
+                    group_title=example,
+                    code_subfolder=example,
+                    pio_env=pio_env,
+                )
+            )
+
     arduino_job_matrix.append(
         {
-            "job_name": job_name,
-            "job_id": job_id,
-            "command": " && ".join(arduino_commands),
+            "job_name": "{} - Arduino - Other Examples".format(pio_env),
+            "command": " \n ".join(arduino_ex_commands),
+        }
+    )
+    pio_job_matrix.append(
+        {
+            "job_name": "{} - Platformio - Other Examples".format(pio_env),
+            "command": " \n ".join(pio_ex_commands),
         }
     )
 
@@ -284,116 +329,249 @@ for match in re.finditer(pattern, filetext):
     ):
         all_publisher_flags.append(match.group("flag1"))
 
-#%% Create a matrix of build flags for that example
-menu_flag_matrix = []
-for modem_flag in all_modem_flags:
-    menu_flag_matrix.append([modem_flag, all_sensor_flags[0], all_publisher_flags[0]])
-for sensor_flag in all_sensor_flags[1:]:
-    menu_flag_matrix.append([all_modem_flags[0], sensor_flag, all_publisher_flags[0]])
-for publisher_flag in all_publisher_flags[1:]:
-    menu_flag_matrix.append([all_modem_flags[0], all_sensor_flags[0], publisher_flag])
 
 #%%
-# Prepare all of the examples by adding flags to the code
-for flag_set in menu_flag_matrix:
-    prepped_ex_folder, prepped_ex_file = prepare_example(menu_example_name, flag_set)
-
+# Create jobs for all of the modems together
 for pio_env in pio_config.envs():
-    arduino_commands = []
-    job_name = "all modems on {}".format(pio_env)
-    job_id = "Modems Arduino CLI"
+    arduino_modem_commands = [
+        'echo "## All Modems on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        )
+    ]
+    pio_modem_commands = [
+        'echo "## All Modems on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        )
+    ]
+
     for modem_flag in all_modem_flags:
         used_modem = snake_to_camel(modem_flag)
-        prepped_ex_folder, _ = modify_example_filename(
+        prepped_ex_folder, _ = prepare_example(
             menu_example_name, [modem_flag, all_sensor_flags[0], all_publisher_flags[0]]
         )
-        arduino_commands.append("echo ::group::{}".format(used_modem))
-        arduino_command = create_arduino_cli_command(pio_env, prepped_ex_folder)
-        arduino_commands.append(arduino_command)
-        arduino_commands.append("echo ::endgroup::")
+        for compiler, command_list in zip(
+            ["Arduino CLI", "PlatformIO"], [arduino_modem_commands, pio_modem_commands]
+        ):
+            command_list.extend(
+                create_logged_command(
+                    compiler=compiler,
+                    group_title=used_modem,
+                    code_subfolder=prepped_ex_folder,
+                    pio_env=pio_env,
+                )
+            )
+
     arduino_job_matrix.append(
         {
-            "job_name": job_name,
-            "job_id": job_id,
-            "command": " && ".join(arduino_commands),
+            "job_name": "{} - Arduino - Modems".format(pio_env),
+            "command": " \n ".join(arduino_modem_commands),
+        }
+    )
+    pio_job_matrix.append(
+        {
+            "job_name": "{} - PlatformIO - Modems".format(pio_env),
+            "command": " \n ".join(arduino_modem_commands),
         }
     )
 
-    arduino_commands = []
-    job_name = "all sensors on {}".format(pio_env)
-    job_id = "Modems Arduino CLI"
-    for sensor_flag in all_sensor_flags[1:]:
-        used_sensor = snake_to_camel(sensor_flag)
-        prepped_ex_folder, _ = modify_example_filename(
-            menu_example_name, [all_modem_flags[0], sensor_flag, all_publisher_flags[0]]
+#%%
+# Create jobs for all of the publishers together
+for pio_env in pio_config.envs():
+    arduino_pub_commands = [
+        'echo "## All Publishers on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
         )
-        arduino_commands.append("echo ::group::{}".format(used_sensor))
-        arduino_command = create_arduino_cli_command(pio_env, prepped_ex_folder)
-        arduino_commands.append(arduino_command)
-        arduino_commands.append("echo ::endgroup::")
-    arduino_job_matrix.append(
-        {
-            "job_name": job_name,
-            "job_id": job_id,
-            "command": " && ".join(arduino_commands),
-        }
-    )
+    ]
+    pio_pub_commands = [
+        'echo "## All Publishers on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        )
+    ]
 
-    arduino_commands = []
-    job_name = "all publishers on {}".format(pio_env)
-    job_id = "Modems Arduino CLI"
     for publisher_flag in all_publisher_flags[1:]:
-        used_pub = snake_to_camel(publisher_flag)
-        prepped_ex_folder, _ = modify_example_filename(
+        used_publisher = snake_to_camel(publisher_flag)
+        prepped_ex_folder, _ = prepare_example(
             menu_example_name, [all_modem_flags[0], all_sensor_flags[0], publisher_flag]
         )
-        arduino_commands.append("echo ::group::{}".format(used_pub))
-        arduino_command = create_arduino_cli_command(pio_env, prepped_ex_folder)
-        arduino_commands.append(arduino_command)
-        arduino_commands.append("echo ::endgroup::")
+        for compiler, command_list in zip(
+            ["Arduino CLI", "PlatformIO"], [arduino_pub_commands, pio_pub_commands]
+        ):
+            command_list.extend(
+                create_logged_command(
+                    compiler=compiler,
+                    group_title=used_publisher,
+                    code_subfolder=prepped_ex_folder,
+                    pio_env=pio_env,
+                )
+            )
+
     arduino_job_matrix.append(
-        {"job_name": job_name, "job_id": job_id, "command": "\n".join(arduino_commands)}
+        {
+            "job_name": "{} - Arduino - Publishers".format(pio_env),
+            "command": " \n ".join(arduino_pub_commands),
+        }
     )
-
-for idx, flag_set in enumerate(menu_flag_matrix):
-    used_modem = snake_to_camel(flag_set[0])
-    used_sensor = snake_to_camel(flag_set[1])
-    used_pub = snake_to_camel(flag_set[2])
-
-    job_name = "{}, {}, and {}".format(used_sensor, used_modem, used_pub)
-    job_id = "{}-{}-{} PlatformIO".format(used_sensor, used_modem, used_pub)
-    prepped_ex_folder, _ = modify_example_filename(menu_example_name, flag_set)
-
-    pio_build_config = pio_config_file
-    if (
-        used_sensor.startswith("Decagon")
-        or used_sensor.startswith("Meter")
-        or used_sensor
-        in [
-            "CampbellClariVue10",
-            "CampbellRainvue10",
-            "InSituRdo",
-            "InSituTrollSdi12A",
-            "ZebraTechDOpto",
-        ]
-    ):
-        pio_build_config = extend_pio_config(["sdi12_non_concurrent"])
-    if used_sensor in ["PaleoTerraRedox", "RainCounterI2C"]:
-        pio_build_config = extend_pio_config(["software_wire"])
-    if used_sensor in ["ApogeeSq212", "CampbellObs3", "Tiads1X15", "TurnerCyclops"]:
-        pio_build_config = extend_pio_config(["ads1015"])
-    if used_sensor in ["MaxBotixSonar", "YosemitechY504"]:
-        pio_build_config = extend_pio_config(
-            ["AltSoftSerial", "NeoSWSerial", "software_serial"]
-        )
-
-    if idx == 0:
-        extend_pio_config(["complex_loop", "in_array", "separate_uuid"])
-
-    pio_command = create_platformio_command(pio_build_config, prepped_ex_folder)
     pio_job_matrix.append(
-        {"job_name": job_name, "job_id": job_id, "command": pio_command}
+        {
+            "job_name": "{} - PlatformIO - Publishers".format(pio_env),
+            "command": " \n ".join(arduino_pub_commands),
+        }
     )
+
+#%%
+# Create jobs for all of the sensors together
+# The sensors are a bit different because we run extra PlatformIO enviroments for some of the sensors
+for pio_env in pio_config.envs():
+    arduino_sensor_commands = [
+        'echo "## All Sensors on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        )
+    ]
+    pio_sensor_commands = [
+        'echo "## All Modems on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        )
+    ]
+
+    for sensor_flag in all_sensor_flags[1:]:
+        used_sensor = snake_to_camel(sensor_flag)
+        prepped_ex_folder, _ = prepare_example(
+            menu_example_name, [all_modem_flags[0], sensor_flag, all_publisher_flags[0]]
+        )
+        for compiler, command_list in zip(
+            ["Arduino CLI", "PlatformIO"],
+            [arduino_sensor_commands, pio_sensor_commands],
+        ):
+            command_list.extend(
+                create_logged_command(
+                    compiler=compiler,
+                    group_title=used_sensor,
+                    code_subfolder=prepped_ex_folder,
+                    pio_env=pio_env,
+                )
+            )
+        pio_build_config = pio_config_file
+        if (
+            used_sensor.startswith("Decagon")
+            or used_sensor.startswith("Meter")
+            or used_sensor
+            in [
+                "CampbellClariVue10",
+                "CampbellRainvue10",
+                "InSituRdo",
+                "InSituTrollSdi12A",
+                "ZebraTechDOpto",
+            ]
+        ):
+            pio_build_config = extend_pio_config(["sdi12_non_concurrent"])
+            pio_sensor_commands.extend(
+                create_logged_command(
+                    compiler="PlatformIO",
+                    group_title=used_sensor + "(non-concurrent)",
+                    code_subfolder=prepped_ex_folder,
+                    pio_env="sdi12_non_concurrent",
+                    pio_env_file=pio_build_config,
+                )
+            )
+        if used_sensor in ["PaleoTerraRedox", "RainCounterI2C"]:
+            pio_build_config = extend_pio_config(["software_wire"])
+            pio_sensor_commands.extend(
+                create_logged_command(
+                    compiler="PlatformIO",
+                    group_title=used_sensor + "(software wire)",
+                    code_subfolder=prepped_ex_folder,
+                    pio_env="software_wire",
+                    pio_env_file=pio_build_config,
+                )
+            )
+        if used_sensor in [
+            "ApogeeSq212",
+            "CampbellObs3",
+            "Tiads1X15",
+            "TurnerCyclops",
+        ]:
+            pio_build_config = extend_pio_config(["ads1015"])
+            pio_sensor_commands.extend(
+                create_logged_command(
+                    compiler="PlatformIO",
+                    group_title=used_sensor + "(ADS1015)",
+                    code_subfolder=prepped_ex_folder,
+                    pio_env="ads1015",
+                    pio_env_file=pio_build_config,
+                )
+            )
+        if used_sensor in ["MaxBotixSonar", "YosemitechY504"]:
+            for serial_lib in ["AltSoftSerial", "NeoSWSerial", "SoftwareSerial"]:
+                pio_build_config = extend_pio_config([serial_lib])
+                pio_sensor_commands.extend(
+                    create_logged_command(
+                        compiler="PlatformIO",
+                        group_title=used_sensor + "(serial_lib)",
+                        code_subfolder=prepped_ex_folder,
+                        pio_env="serial_lib",
+                        pio_env_file=pio_build_config,
+                    )
+                )
+
+    arduino_job_matrix.append(
+        {
+            "job_name": "{} - Arduino - Sensors".format(pio_env),
+            "command": " \n ".join(arduino_sensor_commands),
+        }
+    )
+    pio_job_matrix.append(
+        {
+            "job_name": "{} - PlatformIO - Sensors".format(pio_env),
+            "command": " \n ".join(arduino_sensor_commands),
+        }
+    )
+
+#%%
+# Tack on a few extra build configurations for the menu example
+for pio_env in pio_config.envs():
+    arduino_loop_commands = [
+        'echo "## Extra Loops on {} with the Arduino CLI" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        )
+    ]
+    pio_loop_commands = [
+        'echo "## Extra Loops on {} with Platformio" >> $GITHUB_STEP_SUMMARY'.format(
+            pio_env
+        )
+    ]
+
+    for loop_flag in [
+        "BUILD_TEST_COMPLEX_LOOP",
+        "BUILD_TEST_CREATE_IN_ARRAY",
+        "BUILD_TEST_SEPARATE_UUIDS",
+    ]:
+        used_loop = snake_to_camel(loop_flag)
+        prepped_ex_folder, _ = prepare_example(menu_example_name, [loop_flag])
+        for compiler, command_list in zip(
+            ["Arduino CLI", "PlatformIO"], [arduino_loop_commands, pio_loop_commands]
+        ):
+            command_list.extend(
+                create_logged_command(
+                    compiler=compiler,
+                    group_title=used_loop,
+                    code_subfolder=prepped_ex_folder,
+                    pio_env=pio_env,
+                )
+            )
+
+    arduino_job_matrix.append(
+        {
+            "job_name": "{} - Arduino - Loops".format(pio_env),
+            "command": " \n ".join(arduino_loop_commands),
+        }
+    )
+    pio_job_matrix.append(
+        {
+            "job_name": "{} - PlatformIO - Loops".format(pio_env),
+            "command": " \n ".join(arduino_loop_commands),
+        }
+    )
+
 
 #%%
 # Write out output
@@ -415,3 +593,5 @@ if "GITHUB_WORKSPACE" not in os.environ.keys():
         shutil.rmtree(artifact_dir)
     except:
         pass
+
+# %%
