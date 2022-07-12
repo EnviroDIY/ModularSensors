@@ -192,15 +192,15 @@ end_job_commands = "exit $status"
 for pio_env in pio_config.envs():
     arduino_ex_commands = [
         start_job_commands,
-        'echo "## [All Examples on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Examples on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
     pio_ex_commands = [
         start_job_commands,
-        'echo "## [All Examples on {} with PlatformIO](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Examples on {} with PlatformIO](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
 
     for example in non_menu_examples:
@@ -351,15 +351,15 @@ for match in re.finditer(pattern, filetext):
 for pio_env in pio_config.envs():
     arduino_modem_commands = [
         start_job_commands,
-        'echo "## [All Modems on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Modems on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
     pio_modem_commands = [
         start_job_commands,
-        'echo "## [All Modems on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Modems on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
 
     for modem_flag in all_modem_flags:
@@ -397,15 +397,15 @@ for pio_env in pio_config.envs():
 for pio_env in pio_config.envs():
     arduino_pub_commands = [
         start_job_commands,
-        'echo "## [All Publishers on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Publishers on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
     pio_pub_commands = [
         start_job_commands,
-        'echo "## [All Publishers on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Publishers on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
 
     for publisher_flag in all_publisher_flags[1:]:
@@ -444,15 +444,15 @@ for pio_env in pio_config.envs():
 for pio_env in pio_config.envs():
     arduino_sensor_commands = [
         start_job_commands,
-        'echo "## [All Sensors on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Sensors on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
     pio_sensor_commands = [
         start_job_commands,
-        'echo "## [All Sensors on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [All Sensors on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
 
     for sensor_flag in all_sensor_flags[1:]:
@@ -553,15 +553,15 @@ for pio_env in pio_config.envs():
 for pio_env in pio_config.envs():
     arduino_loop_commands = [
         start_job_commands,
-        'echo "## [Extra Loops on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [Extra Loops on {} with the Arduino CLI](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
     pio_loop_commands = [
         start_job_commands,
-        'echo "## [Extra Loops on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
-            pio_env
-        ),
+        # 'echo "## [Extra Loops on {} with Platformio](https://github.com/EnviroDIY/ModularSensors/runs/$ACTION_RUN_ID?check_suite_focus=true#step:10:1)" >> $GITHUB_STEP_SUMMARY'.format(
+        #     pio_env
+        # ),
     ]
 
     for loop_flag in [
