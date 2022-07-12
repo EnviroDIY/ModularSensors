@@ -2357,7 +2357,7 @@ Variable* variableList[] = {
                                "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard,
                                "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
     //  ... Add more variables as needed!
     new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -2383,7 +2383,7 @@ Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard),
-    new MaximDS3231_Temp(&ds3231),
+    // new MaximDS3231_Temp(&ds3231),
     //  ... Add all of your variables!
     new Modem_RSSI(&modem),
     new Modem_SignalPercent(&modem),
@@ -3096,11 +3096,13 @@ void loop() {
         // return a signal strength reading.
         if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
 
+#ifdef BUILD_TEST_ALTSOFTSERIAL
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
+#endif
 
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
@@ -3111,11 +3113,13 @@ void loop() {
 
         dataLogger.watchDogTimer.resetWatchDog();
 
+#ifdef BUILD_TEST_ALTSOFTSERIAL
         // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
         // on sleep, because Modbus Stop bit leaves these pins HIGH.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
         digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
+#endif
 
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
@@ -3165,20 +3169,24 @@ void loop() {
 
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) {
+#ifdef BUILD_TEST_ALTSOFTSERIAL
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
+#endif
 
         dataLogger.testingMode();
     }
 
+#ifdef BUILD_TEST_ALTSOFTSERIAL
     // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
     // on sleep, because Modbus Stop bit leaves these pins HIGH.
     // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
     digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
     digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
+#endif
 
     // Call the processor sleep
     dataLogger.systemSleep();
