@@ -131,7 +131,7 @@ def add_log_to_command(command: str, group_title: str) -> List:
         )
     )
     command_list.append(
-        'if [ "$result_code" -eq "0" ]; then status=0; else status=1; fi'
+        'if [ "$result_code" -eq "0" ] && [ "$status" -eq "0" ]; then status=0; else status=1; fi'
     )
     command_list.append("echo ::endgroup::")
     return command_list
