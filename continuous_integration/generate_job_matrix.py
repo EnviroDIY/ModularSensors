@@ -180,7 +180,7 @@ def snake_to_camel(snake_str):
 # set up outputs
 arduino_job_matrix = []
 pio_job_matrix = []
-start_job_commands = "status = 0"
+start_job_commands = "status=0"
 end_job_commands = "exit $status"
 
 #%%
