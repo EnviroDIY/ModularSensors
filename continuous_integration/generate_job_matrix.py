@@ -135,7 +135,7 @@ def add_log_to_command(command: str, group_title: str) -> List:
     )
     command_list.append("echo ::endgroup::")
     command_list.append(
-        'if [ "$result_code" -eq "0" ]; then echo "\e[32m{title} successfully compiled\e[0m"; else echo "\e[31m{title} failed to compile\e[0m"; fi'.format(
+        'if [ "$result_code" -eq "0" ]; then echo -e "\e[32m{title} successfully compiled\e[0m"; else echo -e "\e[31m{title} failed to compile\e[0m"; fi'.format(
             title=group_title
         )
     )
@@ -661,7 +661,12 @@ for matrix_job in arduino_job_matrix + pio_job_matrix:
     bash_file_name = matrix_job["job_name"].replace(" ", "") + ".sh"
     bash_out = open(os.path.join(artifact_dir, bash_file_name), "w+")
     bash_out.write("#!/bin/bash\n\n")
-    bash_out.write("set -x\n\n")
+    bash_out.write(
+        "# Makes the bash script print out every command before it is executed, except echo\n"
+    )
+    bash_out.write(
+        "trap '[[ $BASH_COMMAND != echo* ]] && echo $BASH_COMMAND' DEBUG\n\n"
+    )
     bash_out.write(matrix_job["command"])
     bash_out.close()
     matrix_job["script"] = os.path.join(artifact_dir, bash_file_name)

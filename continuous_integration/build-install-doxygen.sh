@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-# Print commands and their arguments as they are executed
-set -x
+# Makes the bash script print out every command before it is executed, except echo
+trap '[[ $BASH_COMMAND != echo* ]] && echo $BASH_COMMAND' DEBUG
 
 # Exit with nonzero exit code if anything fails
 set -e
@@ -32,17 +32,17 @@ echo "\n\n\n"
 cd $GITHUB_WORKSPACE
 
 if [ ! -f $GITHUB_WORKSPACE/doxygen-src/build/bin/doxygen ]; then
-
+    
     # Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
     echo "\e[32mCloning doxygen repository...\e[0m"
     git clone https://github.com/doxygen/doxygen.git doxygen-src --branch $DOXYGEN_VERSION --depth 1
-
+    
     cd doxygen-src
-
+    
     echo "\e[32mCreate build folder...\e[0m"
     mkdir build
     cd build
-
+    
     echo "\e[32mMake...\e[0m"
     cmake -G "Unix Makefiles" ..
     make

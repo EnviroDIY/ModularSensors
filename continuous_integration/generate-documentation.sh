@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-# Print commands and their arguments as they are executed
-set -x
+# Makes the bash script print out every command before it is executed, except echo
+trap '[[ $BASH_COMMAND != echo* ]] && echo $BASH_COMMAND' DEBUG
 
 # Script modified from scripts by Jeroen de Bruijn, thephez, and Adafruit
 # https://gist.github.com/vidavidorra/548ffbcdae99d752da02
