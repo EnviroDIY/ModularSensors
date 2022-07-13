@@ -100,6 +100,9 @@ jobs:
           path: |
             continuous_integration_artifacts/
 
+      - name: Include problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+
       # Run the script to compile the examples
       - name: Compile
         env:
@@ -174,6 +177,9 @@ jobs:
           name: generated_examples
           path: |
             continuous_integration_artifacts/
+
+      - name: Include problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
 
       # Run the script to compile the examples
       - name: Compile

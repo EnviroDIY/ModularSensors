@@ -134,6 +134,11 @@ def add_log_to_command(command: str, group_title: str) -> List:
         'if [ "$result_code" -eq "0" ] && [ "$status" -eq "0" ]; then status=0; else status=1; fi'
     )
     command_list.append("echo ::endgroup::")
+    command_list.append(
+        'if [ "$result_code" -eq "0" ]; then echo "\e[32m{title} successfully compiled\e[0m"; else echo "\e[31m{title} failed to compile\e[0m"; fi'.format(
+            title=group_title
+        )
+    )
     return command_list
 
 
