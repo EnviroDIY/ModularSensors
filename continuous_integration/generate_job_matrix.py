@@ -122,7 +122,7 @@ def create_pio_ci_command(pio_env_file: str, pio_env: str, code_subfolder: str) 
 
 def add_log_to_command(command: str, group_title: str) -> List:
     command_list = []
-    command_list.append("echo ::group::{}".format(group_title))
+    command_list.append("\necho ::group::{}".format(group_title))
     command_list.append(command + " 2>&1 | tee output.log")
     command_list.append("result_code=${PIPESTATUS[0]}")
     command_list.append(
@@ -189,7 +189,7 @@ def snake_to_camel(snake_str):
 arduino_job_matrix = []
 pio_job_matrix = []
 start_job_commands = "status=0"
-end_job_commands = "exit $status"
+end_job_commands = "\n\nexit $status"
 
 #%%
 # Create job info for the basic examples
@@ -224,13 +224,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Other Examples".format(pio_env),
-            "command": " \n ".join(arduino_ex_commands + [end_job_commands]),
+            "command": "\n".join(arduino_ex_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - Platformio - Other Examples".format(pio_env),
-            "command": " \n ".join(pio_ex_commands + [end_job_commands]),
+            "command": "\n".join(pio_ex_commands + [end_job_commands]),
         }
     )
 
@@ -387,13 +387,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Modems".format(pio_env),
-            "command": " \n ".join(arduino_modem_commands + [end_job_commands]),
+            "command": "\n".join(arduino_modem_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Modems".format(pio_env),
-            "command": " \n ".join(pio_modem_commands + [end_job_commands]),
+            "command": "\n".join(pio_modem_commands + [end_job_commands]),
         }
     )
 
@@ -433,13 +433,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Publishers".format(pio_env),
-            "command": " \n ".join(arduino_pub_commands + [end_job_commands]),
+            "command": "\n".join(arduino_pub_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Publishers".format(pio_env),
-            "command": " \n ".join(pio_pub_commands + [end_job_commands]),
+            "command": "\n".join(pio_pub_commands + [end_job_commands]),
         }
     )
 
@@ -531,13 +531,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Sensors".format(pio_env),
-            "command": " \n ".join(arduino_sensor_commands + [end_job_commands]),
+            "command": "\n".join(arduino_sensor_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Sensors".format(pio_env),
-            "command": " \n ".join(pio_sensor_commands + [end_job_commands]),
+            "command": "\n".join(pio_sensor_commands + [end_job_commands]),
         }
     )
 
@@ -587,13 +587,13 @@ for pio_env in pio_config.envs():
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Loops".format(pio_env),
-            "command": " \n ".join(arduino_loop_commands + [end_job_commands]),
+            "command": "\n".join(arduino_loop_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Loops".format(pio_env),
-            "command": " \n ".join(pio_loop_commands + [end_job_commands]),
+            "command": "\n".join(pio_loop_commands + [end_job_commands]),
         }
     )
 
@@ -644,15 +644,32 @@ for pio_env in ["Mayfly"]:
     arduino_job_matrix.append(
         {
             "job_name": "{} - Arduino - Serials".format(pio_env),
-            "command": " \n ".join(arduino_serial_commands + [end_job_commands]),
+            "command": "\n".join(arduino_serial_commands + [end_job_commands]),
         }
     )
     pio_job_matrix.append(
         {
             "job_name": "{} - PlatformIO - Serials".format(pio_env),
-            "command": " \n ".join(pio_serial_commands + [end_job_commands]),
+            "command": "\n".join(pio_serial_commands + [end_job_commands]),
         }
     )
+
+
+#%%
+# Convert commands in the matrix into bash scripts
+for matrix_job in arduino_job_matrix + pio_job_matrix:
+    bash_file_name = matrix_job["job_name"].replace(" ", "") + ".sh"
+    bash_out = open(os.path.join(artifact_dir, bash_file_name), "w+")
+    bash_out.write("#!/bin/bash\n\n")
+    bash_out.write("set -x\n\n")
+    bash_out.write(matrix_job["command"])
+    bash_out.close()
+    matrix_job["script"] = os.path.join(artifact_dir, bash_file_name)
+
+# Remove the command from the dictionaries before outputting them
+for items in arduino_job_matrix + pio_job_matrix:
+    if "command" in items:
+        del items["command"]
 
 
 #%%

@@ -107,7 +107,9 @@ jobs:
       - name: Compile
         env:
           ACTION_RUN_ID: ${{ github.run_id }}
-        run: ${{ matrix.job_info.command }}
+        run: |
+          chmod +x ${{ matrix.job_info.script }}
+          bash ${{ matrix.job_info.script }}
 
       # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
       # dependencies leaving nothing for the cache
@@ -185,4 +187,6 @@ jobs:
       - name: Compile
         env:
           ACTION_RUN_ID: ${{ github.run_id }}
-        run: ${{ matrix.job_info.command }}
+        run: |
+          chmod +x ${{ matrix.job_info.script }}
+          bash ${{ matrix.job_info.script }}

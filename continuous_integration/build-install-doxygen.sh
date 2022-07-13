@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Print commands and their arguments as they are executed
+set -x
+
 # Exit with nonzero exit code if anything fails
 set -e
 
