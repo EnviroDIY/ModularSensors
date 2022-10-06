@@ -107,13 +107,15 @@
  * tips, so there is no need to wait for stability or measuring.
  */
 /**@{*/
-/// @brief Sensor::_warmUpTime_ms; the tipping bucket counter warms up in 0ms.
+/** @brief Sensor::_warmUpTime_ms; the tipping bucket counter warms up in 0ms.
+*/
 #define BUCKET_WARM_UP_TIME_MS 0
 /// @brief Sensor::_stabilizationTime_ms; the tipping bucket counter is stable
 /// after 0ms.
 #define BUCKET_STABILIZATION_TIME_MS 0
-/// @brief Sensor::_measurementTime_ms; the tipping bucket counter takes 0ms to
-/// complete a measurement.
+/** @brief Sensor::_measurementTime_ms; the tipping bucket counter takes 0ms to
+ * complete a measurement.
+ */
 #define BUCKET_MEASUREMENT_TIME_MS 0
 /**@}*/
 
