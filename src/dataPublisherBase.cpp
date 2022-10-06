@@ -147,3 +147,16 @@ String dataPublisher::parseMQTTState(int state) {
         default: return String(state) + ": UNKNOWN";
     }
 }
+
+
+uint8_t* dataPublisher::writeHMACtoken(const char* key, const char* string_to_sign) {
+    MS_DBG(F("Writing an HMAC-SHA256 token"));
+    // Initialize the Sha256Wrapper for HMAC hashing, "salting" with the secret key
+    // Must be invoked before hashing.
+    Sha256.initHmac((uint8_t*)key, strlen(key));  // Recasting char* key to uint8_t*
+    // Write data into the hasher.
+    Sha256.write(string_to_sign);  // equivalent to `Sha256.print()`
+    // Returns a reference to the hash. Once this method has been called init must be invoked again.
+    uint8_t* token = Sha256.resultHmac();
+    return token; //  return 32-byte token
+}
