@@ -647,9 +647,6 @@ class loggerModem {
      * @return **float** The stored temperature in degrees Celsius
      */
     static float getModemTemperature();
-
-    // static float getModemActivationDuration();
-    // static float getModemPoweredDuration();
     /**@}*/
 
  protected:
@@ -906,7 +903,7 @@ class loggerModem {
      * The #_millisPowerOn value is set in the modemPowerUp()
      * function.  It is un-set in the modemSleepPowerDown() function.
      */
-    uint32_t _millisPowerOn;
+    uint32_t _millisPowerOn = 0;
 
     /**
      * @brief The processor elapsed time when the a connection to the NIST time
@@ -915,17 +912,17 @@ class loggerModem {
      * NIST documentation is very clear that it must not be contacted more than
      * once every 4 seconds.
      */
-    uint32_t _lastNISTrequest;
+    uint32_t _lastNISTrequest = 0;
     /**
      * @brief Flag.  True indicates that the modem has already successfully
      * completed setup.
      */
-    bool _hasBeenSetup;
+    bool _hasBeenSetup = false;
     /**
      * @brief Flag.  True indicates that the pins on the mcu attached to the
      * modem are set to the correct mode (ie, input vs output).
      */
-    bool _pinModesSet;
+    bool _pinModesSet = false;
     /**@}*/
 
     // NOTE:  These must be static so that the modem variables can call the
@@ -988,7 +985,7 @@ class loggerModem {
      * Set in the init() portion of the #modemSetup().
      * Returned by #getModemName().
      */
-    String _modemName;
+    String _modemName = "unspecified modem";
 
     // modemType gsmModem;
     // modemClientType gsmClient;
@@ -1202,35 +1199,6 @@ class Modem_Temp : public Variable {
      */
     ~Modem_Temp() {}
 };
-
-
-#ifdef MS_CHECK_MODEM_TIMING
-// Defines a diagnostic variable for how long the modem was last active
-class Modem_ActivationDuration : public Variable {
- public:
-    explicit Modem_ActivationDuration(
-        loggerModem* parentModem, const char* uuid = "",
-        const char* varCode = MODEM_ACTIVATION_DEFAULT_CODE)
-        : Variable(&parentModem->getModemActivationDuration,
-                   (uint8_t)MODEM_ACTIVATION_RESOLUTION,
-                   &*MODEM_ACTIVATION_VAR_NAME, &*MODEM_ACTIVATION_UNIT_NAME,
-                   varCode, uuid) {}
-    ~Modem_ActivationDuration() {}
-};
-
-
-// Defines a diagnostic variable for how long the modem was last active
-class Modem_PoweredDuration : public Variable {
- public:
-    explicit Modem_PoweredDuration(
-        loggerModem* parentModem, const char* uuid = "",
-        const char* varCode = MODEM_POWERED_DEFAULT_CODE)
-        : Variable(&parentModem->getModemPoweredDuration,
-                   (uint8_t)MODEM_POWERED_RESOLUTION, &*MODEM_POWERED_VAR_NAME,
-                   &*MODEM_POWERED_UNIT_NAME, varCode, uuid) {}
-    ~Modem_PoweredDuration() {}
-};
-#endif
 
 // #include <LoggerModem.tpp>
 #endif  // SRC_LOGGERMODEM_H_

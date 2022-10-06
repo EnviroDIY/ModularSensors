@@ -204,54 +204,15 @@ class EspressifESP8266 : public loggerModem {
      *
      * @param modemStream The Arduino stream instance for serial communication.
      * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
-     * This can be any DIO pin on the esp.  It is only used in light sleep.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This is the ESP's `RSTB/DIO16` pin.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This can be any DIO pin on the esp.  It is only used in light sleep.
-     * @param ssid The wifi network ID.
-     * @param pwd The wifi network password, **assuming WPA2**.
-     * @param espSleepRqPin The DIO pin on the ESP8266 assigned to light sleep
-     * wake.  This can be any DIO pin on the esp.
-     * @param espStatusPin The DIO pin on the ESP8566 assigned to status
-     * indication.  This can be any DIO pin on the esp.
-     *
-     * @see loggerModem::loggerModem
-     */
-    EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                     int8_t modemResetPin, int8_t modemSleepRqPin,
-                     const char* ssid, const char* pwd,
-                     int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
-    /**
-     * @brief Construct a new Espressif ESP8266 object.
-     *
-     * The constuctor initializes all of the provided member variables,
-     * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
-     *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
-     * This can be any DIO pin on the esp.  It is only used in light sleep.
      * @param modemResetPin @copydoc loggerModem::_modemResetPin
      * This is the ESP's `RSTB/DIO16` pin.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, **assuming WPA2**.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This can be any DIO pin on the esp.  It is only used in light sleep.
-     * @param espSleepRqPin The DIO pin on the ESP8266 assigned to light sleep
-     * wake.  This can be any DIO pin on the esp.
-     * @param espStatusPin The DIO pin on the ESP8566 assigned to status
-     * indication.  This can be any DIO pin on the esp.
      *
      * @see loggerModem::loggerModem
      */
-    EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                     int8_t modemResetPin, const char* ssid, const char* pwd,
-                     int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1,
-                     int8_t espStatusPin = -1);
+    EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
+                     const char* ssid, const char* pwd);
     /**
      * @brief Destroy the Espressif ESP8266 object - no action taken
      */
@@ -301,9 +262,6 @@ class EspressifESP8266 : public loggerModem {
     bool        ESPwaitForBoot(void);
     const char* _ssid;
     const char* _pwd;
-
-    int8_t _espSleepRqPin;
-    int8_t _espStatusPin;
 };
 
 /**

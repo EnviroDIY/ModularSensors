@@ -442,29 +442,18 @@ const int32_t modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  Use -1 for pins that do not apply
 // Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
 // Mayfly 1.1
-const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
-const int8_t modemStatusPin  = -1;  // MCU pin used to read modem status
-const int8_t modemResetPin   = A5;  // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = 19;  // MCU pin for wake from light sleep
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
-                                    // status
-// Pins for light sleep on the ESP8266. For power savings, I recommend
-// NOT using these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = 13;  // GPIO# ON THE ESP8266 to assign for light
-                                  // sleep request
-const int8_t espStatusPin = -1;   // GPIO# ON THE ESP8266 to assign for light
-                                  // sleep status
+const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
+const int8_t modemResetPin = A5;      // MCU pin connected to modem reset pin
+const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
+                                      // status
 
 // Network connection information
 const char* wifiId  = "xxxxx";  // WiFi access point name
 const char* wifiPwd = "xxxxx";  // WiFi password (WPA2)
 
 // Create the modem object
-EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
-                          modemResetPin, modemSleepRqPin, wifiId, wifiPwd,
-                          espSleepRqPin,
-                          espStatusPin  // Optional arguments
-);
+EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
+                          wifiPwd);
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
 /** End [espressif_esp8266] */
@@ -1202,6 +1191,35 @@ Variable* obs3TurbHigh = new CampbellOBS3_Turbidity(
 Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
     &osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHighV");
 /** End [campbell_obs3] */
+#endif
+
+#if defined BUILD_SENSOR_CAMPBELL_RAINVUE10
+// ==========================================================================
+//  Campbell RainVUE Precipitation Sensor
+// ==========================================================================
+/** Start [campbell_rainvue10] */
+#include <sensors/CampbellRainVUE10.h>
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+const char* RainVUESDI12address = "0"; // The SDI-12 Address of the RainVUE10
+const int8_t RainVUEPower       = -1;  // Power pin, for continous power
+const int8_t RainVUEData        = 5;   // The SDI-12 data pin, for continuous power
+// NOTE:  you should NOT take more than one readings.  THe sensor counts
+// cummulative tips and rain accumulation since the last measurement.
+
+// Create a Campbell RainVUE10 sensor object
+CampbellRainVUE10 rainvue(*RainVUESDI12address, RainVUEPower, RainVUEData);
+
+// Create turbidity, temperature, and error variable pointers for the RainVUE10
+Variable* rainvuePrecipitation = new CampbellRainVUE10_Precipitation(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rainvueTips = new CampbellRainVUE10_Tips(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rainvueRainRateAve = new CampbellRainVUE10_RainRateAve(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* rainvueRainRateMax = new CampbellRainVUE10_RainRateMax(
+    &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [campbell_rainvue10] */
 #endif
 
 
@@ -2758,7 +2776,9 @@ void setup() {
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
 #if defined SERIAL_PORT_USBVIRTUAL
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {}
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) {
+        // wait
+    }
 #endif
     /** End [setup_wait] */
 
@@ -3022,6 +3042,7 @@ void loop() {
         dataLogger.logDataAndPublish();
     }
 }
+
 /** End [simple_loop] */
 
 #else

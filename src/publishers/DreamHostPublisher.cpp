@@ -21,33 +21,26 @@ const char* DreamHostPublisher::loggerTag      = "?LoggerID=";
 const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
 // Constructors
-DreamHostPublisher::DreamHostPublisher() : dataPublisher() {
-    // MS_DBG(F("DreamHostPublisher object created"));
-    _DreamHostPortalRX = NULL;
-}
+DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
+
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                        uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
-    // MS_DBG(F("DreamHostPublisher object created"));
-    _DreamHostPortalRX = NULL;
-}
+    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
+
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
                                        uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
-    // MS_DBG(F("DreamHostPublisher object created"));
-}
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
                                        uint8_t sendEveryX, uint8_t sendOffset)
     : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     setDreamHostPortalRX(dhUrl);
-    // MS_DBG(F("DreamHostPublisher object created"));
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
                                        const char* dhUrl, uint8_t sendEveryX,
                                        uint8_t sendOffset)
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
     setDreamHostPortalRX(dhUrl);
-    // MS_DBG(F("DreamHostPublisher object created"));
 }
 // Destructor
 DreamHostPublisher::~DreamHostPublisher() {}
@@ -56,7 +49,6 @@ DreamHostPublisher::~DreamHostPublisher() {}
 // Functions for private SWRC server
 void DreamHostPublisher::setDreamHostPortalRX(const char* dhUrl) {
     _DreamHostPortalRX = dhUrl;
-    // MS_DBG(F("Dreamhost portal URL set!"));
 }
 
 
@@ -121,21 +113,27 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
-        strcpy(txBuffer, getHeader);
+        snprintf(txBuffer, sizeof(txBuffer), "%s", getHeader);
 
         // add in the dreamhost receiver URL
-        strcat(txBuffer, _DreamHostPortalRX);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", _DreamHostPortalRX);
 
         // start the URL parameters
         if (bufferFree() < 16) printTxBuffer(outClient);
-        strcat(txBuffer, loggerTag);
-        strcat(txBuffer, _baseLogger->getLoggerID());
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", loggerTag);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s",
+                 _baseLogger->getLoggerID());
 
         if (bufferFree() < 22) printTxBuffer(outClient);
-        strcat(txBuffer, timestampTagDH);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", timestampTagDH);
         ltoa((Logger::markedLocalEpochTime - 946684800), tempBuffer,
              10);  // BASE 10
-        strcat(txBuffer, tempBuffer);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
             // Once the buffer fills, send it out
@@ -143,17 +141,22 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
 
             txBuffer[strlen(txBuffer)] = '&';
             _baseLogger->getVarCodeAtI(i).toCharArray(tempBuffer, 37);
-            strcat(txBuffer, tempBuffer);
+            snprintf(txBuffer + strlen(txBuffer),
+                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
             txBuffer[strlen(txBuffer)] = '=';
             _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
-            strcat(txBuffer, tempBuffer);
+            snprintf(txBuffer + strlen(txBuffer),
+                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
         }
 
         // add the rest of the HTTP GET headers to the outgoing buffer
         if (bufferFree() < 52) printTxBuffer(outClient);
-        strcat(txBuffer, HTTPtag);
-        strcat(txBuffer, hostHeader);
-        strcat(txBuffer, dreamhostHost);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", HTTPtag);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", hostHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", dreamhostHost);
         txBuffer[strlen(txBuffer)] = '\r';
         txBuffer[strlen(txBuffer)] = '\n';
         txBuffer[strlen(txBuffer)] = '\r';

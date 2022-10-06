@@ -26,8 +26,8 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
 #else
       gsmModem(*modemStream),
 #endif
-      gsmClient(gsmModem) {
-    _apn = apn;
+      gsmClient(gsmModem),
+      _apn(apn) {
 }
 
 // Destructor

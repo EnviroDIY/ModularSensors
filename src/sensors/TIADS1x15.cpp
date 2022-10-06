@@ -20,12 +20,10 @@ TIADS1x15::TIADS1x15(int8_t powerPin, uint8_t adsChannel, float gain,
                      uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage,
-             TIADS1X15_INC_CALC_VARIABLES) {
-    _adsChannel = adsChannel;
-    _gain       = gain;
-    _i2cAddress = i2cAddress;
-}
+             powerPin, -1, measurementsToAverage, TIADS1X15_INC_CALC_VARIABLES),
+      _adsChannel(adsChannel),
+      _gain(gain),
+      _i2cAddress(i2cAddress) {}
 // Destructor
 TIADS1x15::~TIADS1x15() {}
 

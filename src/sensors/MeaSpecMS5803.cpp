@@ -17,10 +17,9 @@ MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex,
                              int16_t maxPressure, uint8_t measurementsToAverage)
     : Sensor("MeaSpecMS5803", MS5803_NUM_VARIABLES, MS5803_WARM_UP_TIME_MS,
              MS5803_STABILIZATION_TIME_MS, MS5803_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage, MS5803_INC_CALC_VARIABLES) {
-    _i2cAddressHex = i2cAddressHex;
-    _maxPressure   = maxPressure;
-}
+             -1, measurementsToAverage, MS5803_INC_CALC_VARIABLES),
+      _i2cAddressHex(i2cAddressHex),
+      _maxPressure(maxPressure) {}
 // Destructor
 MeaSpecMS5803::~MeaSpecMS5803() {}
 

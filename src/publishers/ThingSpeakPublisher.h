@@ -228,9 +228,9 @@ class ThingSpeakPublisher : public dataPublisher {
 
  private:
     // Keys for ThingSpeak
-    const char*  _thingSpeakMQTTKey;
-    const char*  _thingSpeakChannelID;
-    const char*  _thingSpeakChannelKey;
+    const char*  _thingSpeakMQTTKey    = nullptr;
+    const char*  _thingSpeakChannelID  = nullptr;
+    const char*  _thingSpeakChannelKey = nullptr;
     PubSubClient _mqttClient;
 };
 

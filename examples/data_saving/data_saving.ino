@@ -404,7 +404,9 @@ void setup() {
 // NOTE:  Only use this when debugging - if not connected to a PC, this
 // could prevent the script from starting
 #if defined SERIAL_PORT_USBVIRTUAL
-    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {}
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)) {
+        // wait
+    }
 #endif
 
     // Start the primary serial connection
@@ -622,4 +624,5 @@ void loop() {
     // Only need to do this for one of the loggers
     loggerAllVars.systemSleep();
 }
+
 /** End [loop] */

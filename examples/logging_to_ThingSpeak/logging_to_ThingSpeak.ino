@@ -94,28 +94,18 @@ const int32_t   modemBaud   = 115200;   // Communication speed of the modem
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin     = -2;  // MCU pin controlling modem power
-const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
-const int8_t modemResetPin   = 20;  // MCU pin connected to modem reset pin
-const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
+const int8_t modemVccPin   = -2;  // MCU pin controlling modem power
+const int8_t modemResetPin = 20;  // MCU pin connected to modem reset pin
 const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
-
-// Pins for light sleep on the ESP8266. For power savings, I recommend NOT using
-// these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = -1;  // GPIO# ON THE ESP8266 to assign for light
-                                  // sleep request
-const int8_t espStatusPin = -1;   // GPIO# ON THE ESP8266 to assign for light
-                                  // sleep status
 
 // Network connection information
 const char* wifiId  = "xxxxx";  // The WiFi access point
 const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
 
 // Create the loggerModem object
-EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemStatusPin,
-                          modemResetPin, modemSleepRqPin, wifiId, wifiPwd,
-                          espSleepRqPin, espStatusPin);
+EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
+                          wifiPwd);
 // Create an extra reference to the modem by a generic name
 EspressifESP8266 modem = modemESP;
 /** End [espressif_esp8266] */

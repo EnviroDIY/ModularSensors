@@ -17,10 +17,10 @@
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
-const char* EnviroDIYPublisher::postEndpoint  = "/api/data-stream/";
-const char* EnviroDIYPublisher::enviroDIYHost = "data.envirodiy.org";
-const int   EnviroDIYPublisher::enviroDIYPort = 80;
-const char* EnviroDIYPublisher::tokenHeader   = "\r\nTOKEN: ";
+const char* EnviroDIYPublisher::postEndpoint        = "/api/data-stream/";
+const char* EnviroDIYPublisher::enviroDIYHost       = "data.envirodiy.org";
+const int   EnviroDIYPublisher::enviroDIYPort       = 80;
+const char* EnviroDIYPublisher::tokenHeader         = "\r\nTOKEN: ";
 // const char* EnviroDIYPublisher::cacheHeader =
 //     "\r\nCache-Control: no-cache"; 
 // const char* EnviroDIYPublisher::connectionHeader =
@@ -34,21 +34,13 @@ const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":\"";
 
 
 // Constructors
-EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
-    // MS_DBG(F("dataPublisher object created"));
-    _registrationToken = NULL;
-}
+EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX,
                                        uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
-    // MS_DBG(F("dataPublisher object created"));
-    _registrationToken = NULL;
-}
+    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
-    // MS_DBG(F("dataPublisher object created"));
-}
+    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
@@ -56,7 +48,6 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
     : dataPublisher(baseLogger, sendEveryX, sendOffset) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    // MS_DBG(F("dataPublisher object created"));
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
@@ -65,7 +56,6 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
     : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    // MS_DBG(F("dataPublisher object created"));
 }
 // Destructor
 EnviroDIYPublisher::~EnviroDIYPublisher() {}
@@ -73,7 +63,6 @@ EnviroDIYPublisher::~EnviroDIYPublisher() {}
 
 void EnviroDIYPublisher::setToken(const char* registrationToken) {
     _registrationToken = registrationToken;
-    // MS_DBG(F("Registration token set!"));
 }
 
 
@@ -98,33 +87,12 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
     return jsonLength;
 }
 
-
-/*
-// Calculates how long the full post request will be, including headers
-uint16_t EnviroDIYPublisher::calculatePostSize()
-{
-    uint16_t postLength = 31;  // "POST /api/data-stream/ HTTP/1.1"
-    postLength += 28;  // "\r\nHost: data.envirodiy.org"
-    postLength += 11;  // "\r\nTOKEN: "
-    postLength += 36;  // registrationToken
-    // postLength += 27;  // "\r\nCache-Control: no-cache"
-    // postLength += 21;  // "\r\nConnection: close"
-    postLength += 20;  // "\r\nContent-Length: "
-    postLength += String(calculateJsonSize()).length();
-    postLength += 42;  // "\r\nContent-Type: application/json\r\n\r\n"
-    postLength += calculateJsonSize();
-    return postLength;
-}
-*/
-
-
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
 void EnviroDIYPublisher::printSensorDataJSON(Stream* stream) {
     stream->print(samplingFeatureTag);
     stream->print(_baseLogger->getSamplingFeatureUUID());
     stream->print(timestampTag);
-    stream->print(
-        _baseLogger->formatDateTime_ISO8601(Logger::markedLocalEpochTime));
+    stream->print(Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime));
     stream->print(F("\","));
 
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
@@ -150,8 +118,6 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream* stream) {
     stream->print(enviroDIYHost);
     stream->print(tokenHeader);
     stream->print(_registrationToken);
-    // stream->print(cacheHeader);
-    // stream->print(connectionHeader);
     stream->print(contentLengthHeader);
     stream->print(calculateJsonSize());
     stream->print(contentTypeHeader);
@@ -197,47 +163,56 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
-        strcpy(txBuffer, postHeader);
-        strcat(txBuffer, postEndpoint);
-        strcat(txBuffer, HTTPtag);
+        snprintf(txBuffer, sizeof(txBuffer), "%s", postHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", postEndpoint);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer
         // before adding each line/chunk to the outgoing buffer, we make sure
         // there is space for that line, sending out buffer if not
         if (bufferFree() < 28) printTxBuffer(outClient);
-        strcat(txBuffer, hostHeader);
-        strcat(txBuffer, enviroDIYHost);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", hostHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", enviroDIYHost);
 
         if (bufferFree() < 47) printTxBuffer(outClient);
-        strcat(txBuffer, tokenHeader);
-        strcat(txBuffer, _registrationToken);
-
-        // if (bufferFree() < 27) printTxBuffer(outClient);
-        // strcat(txBuffer, cacheHeader);
-
-        // if (bufferFree() < 21) printTxBuffer(outClient);
-        // strcat(txBuffer, connectionHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tokenHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", _registrationToken);
 
         if (bufferFree() < 26) printTxBuffer(outClient);
-        strcat(txBuffer, contentLengthHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s",
+                 contentLengthHeader);
         itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
-        strcat(txBuffer, tempBuffer);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
 
         if (bufferFree() < 42) printTxBuffer(outClient);
-        strcat(txBuffer, contentTypeHeader);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", contentTypeHeader);
 
         // put the start of the JSON into the outgoing response_buffer
         if (bufferFree() < 21) printTxBuffer(outClient);
-        strcat(txBuffer, samplingFeatureTag);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", samplingFeatureTag);
 
         if (bufferFree() < 36) printTxBuffer(outClient);
-        strcat(txBuffer, _baseLogger->getSamplingFeatureUUID());
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s",
+                 _baseLogger->getSamplingFeatureUUID());
 
         if (bufferFree() < 42) printTxBuffer(outClient);
-        strcat(txBuffer, timestampTag);
-        _baseLogger->formatDateTime_ISO8601(Logger::markedLocalEpochTime)
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", timestampTag);
+        Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
             .toCharArray(tempBuffer, 37);
-        strcat(txBuffer, tempBuffer);
+        snprintf(txBuffer + strlen(txBuffer),
+                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
         txBuffer[strlen(txBuffer)] = '"';
         txBuffer[strlen(txBuffer)] = ',';
 
@@ -247,11 +222,13 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
 
             txBuffer[strlen(txBuffer)] = '"';
             _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
-            strcat(txBuffer, tempBuffer);
+            snprintf(txBuffer + strlen(txBuffer),
+                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
             txBuffer[strlen(txBuffer)] = '"';
             txBuffer[strlen(txBuffer)] = ':';
             _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
-            strcat(txBuffer, tempBuffer);
+            snprintf(txBuffer + strlen(txBuffer),
+                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
             if (i + 1 != _baseLogger->getArrayVarCount()) {
                 txBuffer[strlen(txBuffer)] = ',';
             } else {
