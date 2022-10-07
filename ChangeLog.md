@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Specify python version 3.x for actions (used by PlatformIO)
 
 ### Added
+- Support Campbell RainVUE10 SDI-12 Precipitation Sensor (#416)
 
 ### Removed
 
