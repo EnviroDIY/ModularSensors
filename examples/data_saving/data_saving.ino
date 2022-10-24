@@ -193,7 +193,8 @@ Variable* ds3231Temp =
 // ==========================================================================
 /** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
-#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO) || \
+    defined(ATMEGA2560)
 HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
