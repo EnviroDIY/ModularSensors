@@ -4,8 +4,8 @@
  *
  * This example shows proper settings for the following configuration:
  *
- * Mayfly v1.0 board
- * EnviroDIY SIM7080 LTE module (with Hologram SIM card)
+ * Mayfly v1.x board
+ * EnviroDIY ESP32 Wifi Bee module
  * Hydros21 CTD sensor
  *
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
@@ -96,7 +96,7 @@ const int32_t   modemBaud   = 115200;   // Communication speed of the modem
 // Example pins here are for a EnviroDIY ESP32 Bluetooth/Wifi Bee with
 // Mayfly 1.1
 const int8_t modemVccPin   = 18;      // MCU pin controlling modem power
-const int8_t modemResetPin = A5;      // MCU pin connected to modem reset pin
+const int8_t modemResetPin = -1;      // MCU pin connected to modem reset pin
 const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
                                       // status
 
@@ -134,20 +134,6 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 /** End [ds3231] */
-
-
-// ==========================================================================
-//  Everlight ALS-PT19 Ambient Light Sensor
-//  Built in on Mayfly 1.x
-// ==========================================================================
-/** Start [everlight_alspt19] */
-#include <sensors/EverlightALSPT19.h>
-
-// Create a Everlight ALS-PT19 sensor object
-// For an EnviroDIY Mayfly, you can use the abbreviated version
-const uint8_t    alsNumberReadings = 10;
-EverlightALSPT19 alsPt19(alsNumberReadings);
-/** End [everlight_alspt19] */
 
 
 // ==========================================================================
@@ -194,8 +180,6 @@ Variable* variableList[] = {
     new MeterHydros21_Temp(&hydros),             // Temperature (Meter_Hydros21_Temp)
     new SensirionSHT4x_Humidity(&sht4x),         // Relative humidity (Sensirion_SHT40_Humidity)
     new SensirionSHT4x_Temp(&sht4x),             // Temperature (Sensirion_SHT40_Temperature)
-    new EverlightALSPT19_Illuminance(&alsPt19),  // Illuminance (Everlight_AnalogALS_Illuminance)
-    new MaximDS3231_Temp(&ds3231),               // Temperature (Maxim_DS3231_Temp)
     new ProcessorStats_Battery(&mcuBoard),       // Battery voltage (EnviroDIY_Mayfly_Batt)
     new Modem_SignalPercent(&modem),             // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
@@ -224,8 +208,6 @@ const char* UUIDs[] =  // UUID array for device sensors
         "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Meter_Hydros21_Temp)
         "12345678-abcd-1234-ef00-1234567890ab",  // Relative humidity (Sensirion_SHT40_Humidity)
         "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Sensirion_SHT40_Temperature)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Illuminance (Everlight_AnalogALS_Illuminance)
-        "12345678-abcd-1234-ef00-1234567890ab",  // Temperature (Maxim_DS3231_Temp)
         "12345678-abcd-1234-ef00-1234567890ab",  // Battery voltage (EnviroDIY_Mayfly_Batt)
         "12345678-abcd-1234-ef00-1234567890ab",  // Percent full scale (EnviroDIY_LTEB_SignalPercent)
 };
