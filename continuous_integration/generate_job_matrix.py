@@ -679,13 +679,17 @@ for items in arduino_job_matrix + pio_job_matrix:
 
 #%%
 # Write out output
-print("::set-output name=arduino_job_matrix::{}".format(json.dumps(arduino_job_matrix)))
+print(
+    'echo "arduino_job_matrix={}" >> $GITHUB_OUTPUT'.format(
+        json.dumps(arduino_job_matrix)
+    )
+)
 json_out = open(os.path.join(artifact_dir, "arduino_job_matrix.json"), "w+")
 json.dump(arduino_job_matrix, json_out, indent=2)
 json_out.close()
 
 
-print("::set-output name=pio_job_matrix::{}".format(json.dumps(pio_job_matrix)))
+print('echo "pio_job_matrix={}" >> $GITHUB_OUTPUT'.format(json.dumps(pio_job_matrix)))
 json_out = open(os.path.join(artifact_dir, "pio_job_matrix.json"), "w+")
 json.dump(pio_job_matrix, json_out, indent=2)
 json_out.close()

@@ -55,7 +55,7 @@ jobs:
           missing_menu_docs="${missing_menu_docs//'%'/'%25'}"
           missing_menu_docs="${missing_menu_docs//$'\n'/'%0A'}"
           missing_menu_docs="${missing_menu_docs//$'\r'/'%0D'}"
-          echo ::set-output name=missing_menu_docs::$missing_menu_docs
+          echo "missing_menu_docs=missing_menu_docs" >> $GITHUB_OUTPUT
           if [[ $result_code ]]; then
             echo "$(cat check_component.log)" >> $GITHUB_STEP_SUMMARY
           else
@@ -137,8 +137,8 @@ jobs:
           chmod +x continuous_integration/generate-documentation.sh
           sh continuous_integration/generate-documentation.sh 2>&1 | tee doxygen_run_output.log
           result_code=${PIPESTATUS[0]}
-          echo "::set-output name=doxygen_warnings::$(cat docs/output_doxygen.log)"
-          echo "::set-output name=mcss_warnings::$(cat docs/output_mcss.log)"
+          echo "doxygen_warnings=$(cat docs/output_doxygen.log)" >> $GITHUB_OUTPUT
+          echo "mcss_warnings=$(cat docs/output_mcss.log)" >> $GITHUB_OUTPUT
           echo "## Doxygen completed with the following warnings:" >> $GITHUB_STEP_SUMMARY
           echo "$(cat docs/output_doxygen.log)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
