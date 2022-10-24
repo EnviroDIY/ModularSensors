@@ -8,7 +8,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
+  pio_lint:
+    name: Verify library.json for PlatformIO
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
 
@@ -26,9 +27,44 @@ jobs:
           pip install --upgrade platformio
 
       - name: Run python script to verify structure of library.json for PlatformIO
-        run: python continuous_integration/validate_manifest.py
+        id: validate_manifest
+        continue-on-error: true
+        run: |
+          python continuous_integration/validate_manifest.py 2>&1 | tee validate_manifest.log
+          result_code=${PIPESTATUS[0]}
+          manifest_errors=$(cat validate_manifest.log)
+          manifest_errors="${manifest_errors//'%'/'%25'}"
+          manifest_errors="${manifest_errors//$'\n'/'%0A'}"
+          manifest_errors="${manifest_errors//$'\r'/'%0D'}"
+          echo ::set-output name=manifest_errors::$manifest_errors
+          echo "$(cat validate_manifest.log)" >> $GITHUB_STEP_SUMMARY
+          echo "Finished library.json manifest verification"
+          exit $result_code
+
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v2
+        if: steps.validate_manifest.outcome=='failure'
+        with:
+          body: |
+            Please correct errors in the library.json file!
+            ${{ steps.validate_manifest.outputs.manifest_errors }}
+
+      - name: Fail if cannot verify json
+        id: verification_failure
+        if: steps.validate_manifest.outcome=='failure'
+        run: exit 1
+
+  arduino_lint:
+    name: Validate library structure for Arduino Library Manager inclusion
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Run Arduino-Lint to verify the library structure and syntax for the Arduino IDE
+        id: validate_library
+        continue-on-error: true
         env:
           ARDUINO_LINT_LIBRARY_MANAGER_INDEXING: true
         uses: arduino/arduino-lint-action@v1
@@ -37,3 +73,26 @@ jobs:
           library-manager: submit
           compliance: strict
           verbose: true
+          report-file: arduino_lint.json
+
+      - name: beautify_lint_output
+        id: beautify_output
+        run: |
+          python continuous_integration/beautify_arduino_lint_log.py
+          lint_errors=$(cat arduino_lint.md)
+          lint_errors="${lint_errors//'%'/'%25'}"
+          lint_errors="${lint_errors//$'\n'/'%0A'}"
+          lint_errors="${lint_errors//$'\r'/'%0D'}"
+          echo ::set-output name=lint_errors::$lint_errors
+          echo "$(cat arduino_lint.md)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v2
+        if: steps.validate_library.outcome=='failure'
+        with:
+          body: ${{ steps.beautify_output.outputs.lint_errors }}
+
+      - name: Fail if cannot verify library structure
+        id: verification_failure
+        if: steps.validate_library.outcome=='failure'
+        run: exit 1

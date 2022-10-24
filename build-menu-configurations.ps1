@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 mkdir temp -Force
 mkdir temp/menu_a_la_carte -Force
 
-$pioCommand = "pio lib install"
+$pioCommand = "pio pkg install --library"
 $pioCommand += ';$?'
 
 $pioResult = Invoke-Expression $pioCommand
@@ -14,7 +14,7 @@ if (("$pioResult".EndsWith('False')) -or  (-not $pioResult)){
     Exit 1
 }
 
-$pioCommand = "pio lib update"
+$pioCommand = "pio pkg update"
 $pioCommand += ';$?'
 
 $pioResult = Invoke-Expression $pioCommand

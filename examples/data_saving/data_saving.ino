@@ -15,10 +15,7 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for the Arduino IDE
-//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
-//         If you use PlatformIO, you should set these build flags in your
-//         platformio.ini
+//  Defines for TinyGSM
 // ==========================================================================
 /** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
@@ -196,7 +193,7 @@ Variable* ds3231Temp =
 // ==========================================================================
 /** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
 HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial

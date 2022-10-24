@@ -3,6 +3,7 @@ import glob
 import re
 import sys
 import os
+import json
 from pathlib import Path
 
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
@@ -160,19 +161,16 @@ missing_build_flags = []
 missing_snips = []
 missing_walks = []
 for must_doc_class in must_doc_classes:
-    # print(must_doc_class["class_name"])
     matches = re.findall(must_doc_class["class_name"], menu_example_code)
     if len(matches) == 0:
-        print("\t{} MISSING".format(must_doc_class["class_name"]))
-        missing_classes.append(must_doc_class["class_name"])
+        missing_classes.append("{} MISSING".format(must_doc_class["class_name"]))
     if "build_flag" in must_doc_class.keys():
         matches = re.findall(must_doc_class["build_flag"], menu_example_code)
         if (
             len(matches) == 0
             or (must_doc_class["super_class"] == "Sensor" and len(matches) < 2)
         ) and (must_doc_class["class_name"] not in ["MaximDS3231", "ProcessorStats"]):
-            print("\t{}".format(must_doc_class["build_flag"]))
-            missing_build_flags.append(must_doc_class["class_name"])
+            missing_build_flags.append("{}".format(must_doc_class["build_flag"]))
     if "menu_snip" in must_doc_class.keys():
         start_pattern = (
             r"((?:Start)|(?:End))\s+\[("
@@ -181,31 +179,46 @@ for must_doc_class in must_doc_classes:
         )
         matches = re.findall(start_pattern, menu_example_code)
         if len(matches) < 2:
-            print("\t{}".format(must_doc_class["menu_snip"]))
-            missing_snips.append(must_doc_class["class_name"])
+            missing_snips.append("{}".format(must_doc_class["menu_snip"]))
 
         snip_pattern = r"@menusnip\{(" + re.escape(must_doc_class["menu_snip"]) + r")\}"
         expl_snip = re.findall(snip_pattern, menu_example_walk)
         if len(expl_snip) == 0:
-            print("\t@menusnip{{{}}}".format(must_doc_class["menu_snip"]))
-            missing_walks.append(must_doc_class["class_name"])
+            missing_walks.append("@menusnip{{{}}}".format(must_doc_class["menu_snip"]))
+
+
+def print_missing(missing_things):
+    for missing_thing in missing_things:
+        print("  - `{}`".format(missing_thing))
+
 
 if len(missing_classes) > 0:
-    print("The following classes are not included at all in the menu example:")
-    print(missing_classes)
+    print("- The following classes are not included at all in the menu example code:")
+    print_missing(missing_classes)
 if len(missing_build_flags) > 0:
-    print("The following expected build flags are missing from the menu example:")
-    print(missing_build_flags)
+    print(
+        "- The following expected build flags are missing from the menu example code:"
+    )
+    print_missing(missing_build_flags)
 if len(missing_snips) > 0:
-    print("The following expected snippet markers are missing from the menu example:")
-    print(missing_snips)
+    print(
+        "- The following expected snippet markers are missing from the menu example code:"
+    )
+    print_missing(missing_snips)
 if len(missing_walks) > 0:
     print(
-        "The following expected snippet inclusions are missing from the menu walkthrough/ReadMe:"
+        "- The following expected snippet markers are missing from the menu walkthrough/ReadMe:"
     )
-    print(missing_walks)
+    print_missing(missing_walks)
 
-if len(missing_classes + missing_walks) > 0:
-    sys.exit(
-        "Some classes are not properly documented in the Menu-a-la-carte example and its walkthrough."
-    )
+if len(missing_classes + missing_build_flags + missing_snips + missing_walks) > 0:
+    out_message = {
+        "passed": False,
+        "missing documentation": {
+            "missing classes": missing_classes,
+            "missing build flags": missing_build_flags,
+            "missing snippets": missing_snips,
+            "missing walkthrough": missing_walks,
+        },
+    }
+    sys.exit(1)

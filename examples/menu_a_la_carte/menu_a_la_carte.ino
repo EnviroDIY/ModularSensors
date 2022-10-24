@@ -15,10 +15,7 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for the Arduino IDE
-//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
-//         If you use PlatformIO, you should set these build flags in your
-//         platformio.ini
+//  Defines for TinyGSM
 // ==========================================================================
 /** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
@@ -110,7 +107,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // #ifdef BUILD_TEST_SOFTSERIAL
 
 
-#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_RAIN_SOFTWAREWIRE
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(MS_RAIN_SOFTWAREWIRE)
 /** Start [softwarewire] */
 // A software I2C (Wire) instance using Testato's SoftwareWire
 // To use SoftwareWire, you must also set a define for the sensor you want to
@@ -189,8 +186,8 @@ void SERCOM2_Handler() {
 // ==========================================================================
 //  Assigning Serial Port Functionality
 // ==========================================================================
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560 || \
-    defined                              ARDUINO_AVR_MEGA2560
+#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560) || \
+    defined(ARDUINO_AVR_MEGA2560)
 /** Start [assign_ports_hw] */
 // If there are additional hardware Serial ports possible - use them!
 
@@ -221,17 +218,29 @@ void SERCOM2_Handler() {
 // Since AltSoftSerial is the best software option, we use it for modbus
 // If AltSoftSerial (or its pins) aren't avaiable, use NeoSWSerial
 // SoftwareSerial **WILL NOT** work for modbus!
+#ifdef BUILD_TEST_ALTSOFTSERIAL
 #define modbusSerial altSoftSerial  // For AltSoftSerial
-// #define modbusSerial neoSSerial1  // For Neo software serial
-// #define modbusSerial softSerial1  // For software serial
+#elif defined BUILD_TEST_NEOSWSERIAL
+#define modbusSerial neoSSerial1  // For Neo software serial
+#elif defined BUILD_TEST_SOFTSERIAL
+#define modbusSerial softSerial1  // For software serial
+#else
+#define modbusSerial Serial1  // Hardware serial
+#endif
 
 // The Maxbotix sonar is the only sensor that communicates over a serial port
 // but does not use modbus
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
-// #define sonarSerial altSoftSerial  // For AltSoftSerial
-#define sonarSerial neoSSerial1     // For Neo software serial
-// #define sonarSerial softSerial1  // For software serial
+#ifdef BUILD_TEST_ALTSOFTSERIAL
+#define sonarSerial altSoftSerial  // For AltSoftSerial
+#elif defined BUILD_TEST_NEOSWSERIAL
+#define sonarSerial neoSSerial1  // For Neo software serial
+#elif defined BUILD_TEST_SOFTSERIAL
+#define sonarSerial softSerial1  // For software serial
+#else
+#define sonarSerial Serial1  // Hardware serial
+#endif
 
 /** End [assign_ports_sw] */
 #endif
@@ -762,7 +771,7 @@ Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
 /** End [processor_stats] */
 
 
-#if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
+#if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
 // ==========================================================================
 //  Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
@@ -956,8 +965,8 @@ Variable* atlaspHpH =
 #endif
 
 
-#if defined BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD || \
-    defined BUILD_SENSOR_ATLAS_SCIENTIFIC_EC
+#if defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_RTD) || \
+    defined(BUILD_SENSOR_ATLAS_SCIENTIFIC_EC)
 // ==========================================================================
 //  Atlas Scientific EZO-RTD Temperature Sensor
 // ==========================================================================
@@ -1201,9 +1210,9 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 #include <sensors/CampbellRainVUE10.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
-const char* RainVUESDI12address = "0"; // The SDI-12 Address of the RainVUE10
-const int8_t RainVUEPower       = -1;  // Power pin, for continous power
-const int8_t RainVUEData        = 5;   // The SDI-12 data pin, for continuous power
+const char*  RainVUESDI12address = "0";  // The SDI-12 Address of the RainVUE10
+const int8_t RainVUEPower        = -1;   // Power pin, for continous power
+const int8_t RainVUEData = 5;  // The SDI-12 data pin, for continuous power
 // NOTE:  you should NOT take more than one readings.  THe sensor counts
 // cummulative tips and rain accumulation since the last measurement.
 
@@ -1513,8 +1522,8 @@ Variable* sonar1Range =
 #endif
 
 
-#if defined BUILD_SENSOR_MAXIM_DS18 || \
-    defined BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY
+#if defined(BUILD_SENSOR_MAXIM_DS18) || \
+    defined(BUILD_SENSOR_ANALOG_ELEC_CONDUCTIVITY)
 // ==========================================================================
 //  Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
@@ -2348,7 +2357,7 @@ Variable* variableList[] = {
                                "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard,
                                "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
     //  ... Add more variables as needed!
     new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -2362,11 +2371,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 /** End [variables_create_in_array] */
-#endif
 // ==========================================================================
 
 
-#if defined BUILD_TEST_SEPARATE_UUIDS
+#elif defined BUILD_TEST_SEPARATE_UUIDS
 /** Start [variables_separate_uuids] */
 // Version 2: Create two separate arrays, on for the variables and a separate
 // one for the UUID's, then give both as input to the variable array
@@ -2375,7 +2383,7 @@ Variable* variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Battery(&mcuBoard),
-    new MaximDS3231_Temp(&ds3231),
+    // new MaximDS3231_Temp(&ds3231),
     //  ... Add all of your variables!
     new Modem_RSSI(&modem),
     new Modem_SignalPercent(&modem),
@@ -2385,7 +2393,13 @@ Variable* variableList[] = {
 };
 const char* UUIDs[] = {
     "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
     //  ... The number of UUID's must match the number of variables!
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
+    "12345678-abcd-1234-ef00-1234567890ab",
     "12345678-abcd-1234-ef00-1234567890ab",
 };
 // Count up the number of pointers in the array
@@ -2393,11 +2407,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object and attach the UUID's
 VariableArray varArray(variableCount, variableList, UUIDs);
 /** End [variables_separate_uuids] */
-#endif
 // ==========================================================================
 
 
-#if defined BUILD_TEST_PRE_NAMED_VARS
+#else // BUILD_TEST_PRE_NAMED_VARS
 /** Start [variables_pre_named] */
 // Version 3: Fill array with already created and named variable pointers
 Variable* variableList[] = {
@@ -2405,7 +2418,7 @@ Variable* variableList[] = {
     mcuBoardAvailableRAM,
     mcuBoardBatt,
     calculatedVar,
-#if defined ARDUINO_ARCH_AVR || defined MS_SAMD_DS3231
+#if defined(ARDUINO_ARCH_AVR) || defined(MS_SAMD_DS3231)
     ds3231Temp,
 #endif
 #if defined BUILD_SENSOR_AO_SONG_AM2315
@@ -3083,11 +3096,13 @@ void loop() {
         // return a signal strength reading.
         if (getBatteryVoltage() > 3.6) modem.modemPowerUp();
 
+#ifdef BUILD_TEST_ALTSOFTSERIAL
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
+#endif
 
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
@@ -3098,11 +3113,13 @@ void loop() {
 
         dataLogger.watchDogTimer.resetWatchDog();
 
+#ifdef BUILD_TEST_ALTSOFTSERIAL
         // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
         // on sleep, because Modbus Stop bit leaves these pins HIGH.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
         digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
+#endif
 
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
@@ -3152,20 +3169,24 @@ void loop() {
 
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) {
+#ifdef BUILD_TEST_ALTSOFTSERIAL
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
         altSoftSerial.begin(9600);
+#endif
 
         dataLogger.testingMode();
     }
 
+#ifdef BUILD_TEST_ALTSOFTSERIAL
     // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
     // on sleep, because Modbus Stop bit leaves these pins HIGH.
     // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
     digitalWrite(5, LOW);  // Reset AltSoftSerial Tx pin to LOW
     digitalWrite(6, LOW);  // Reset AltSoftSerial Rx pin to LOW
+#endif
 
     // Call the processor sleep
     dataLogger.systemSleep();
