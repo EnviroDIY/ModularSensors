@@ -79,16 +79,16 @@
  *
  * This is the time for communication to begin.
  */
-#define Y4000_WARM_UP_TIME_MS 1600
+#define Y4000_WARM_UP_TIME_MS 1000
 /**
  * @brief Sensor::_stabilizationTime_ms; the Y4000 is stable after 60000ms.
  *
- * Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
+ * Y4000 Modbus manual says 60s; we find Cond takes about 40s to respond.
  */
-#define Y4000_STABILIZATION_TIME_MS 60000
-/// @brief Sensor::_measurementTime_ms; the Y4000 takes ~3000ms to complete a
+#define Y4000_STABILIZATION_TIME_MS 50000
+/// @brief Sensor::_measurementTime_ms; the Y4000 takes ~4000ms to complete a
 /// measurement.
-#define Y4000_MEASUREMENT_TIME_MS 3000
+#define Y4000_MEASUREMENT_TIME_MS 4000
 /**@}*/
 
 /**
