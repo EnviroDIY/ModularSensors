@@ -273,8 +273,8 @@
 #define Y4000_CHLORO_VAR_NUM 6
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "chlorophyllFluorescence"
-#define Y4000_CHLORO_VAR_NAME "chlorophyllFluorescence"
+/// "chlorophyll_a_b_c"
+#define Y4000_CHLORO_VAR_NAME "chlorophyll_a_b_c"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
 /// "microgramPerLiter" (µg/L)
