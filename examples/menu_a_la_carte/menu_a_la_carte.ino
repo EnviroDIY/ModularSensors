@@ -2230,6 +2230,38 @@ Variable* y560Temp =
 #endif
 
 
+#if defined BUILD_SENSOR_YOSEMITECH_Y700
+// ==========================================================================
+//  Yosemitech Y700 Pressure Sensor
+// ==========================================================================
+/** Start [yosemitech_y700] */
+#include <sensors/YosemitechY700.h>
+
+// NOTE: Extra hardware and software serial ports are created in the "Settings
+// for Additional Serial Ports" section
+
+// NOTE: Use -1 for any pins that don't apply or aren't being used.
+byte          y700ModbusAddress  = 0x70;  // The modbus address of the Y700
+const int8_t  y700AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
+const int8_t  y700SensorPower    = A3;              // Sensor power pin
+const int8_t  y700EnablePin      = -1;              // Adapter RE/DE pin
+const uint8_t y700NumberReadings = 5;
+// The manufacturer recommends averaging 10 readings, but we take 5 to minimize
+// power consumption
+
+// Create a Y700 pressure sensor object
+YosemitechY700 y700(y700ModbusAddress, modbusSerial, y700AdapterPower,
+                    y700SensorPower, y700EnablePin, y700NumberReadings);
+
+// Create pressure and temperature variable pointers for the Y700
+Variable* y700Pres =
+    new YosemitechY700_Pressure(&y700, "12345678-abcd-1234-ef00-1234567890ab");
+Variable* y700Temp =
+    new YosemitechY700_Temp(&y700, "12345678-abcd-1234-ef00-1234567890ab");
+/** End [yosemitech_y700] */
+#endif
+
+
 #if defined BUILD_SENSOR_YOSEMITECH_Y4000
 // ==========================================================================
 //  Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp,
