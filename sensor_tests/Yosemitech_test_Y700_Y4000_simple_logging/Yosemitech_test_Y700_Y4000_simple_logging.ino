@@ -165,7 +165,7 @@ MaximDS3231 ds3231(1);
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 byte          y700ModbusAddress  = 0x01;  // The modbus address of the Y700
 const int8_t  y700AdapterPower   = sensorPowerPin;  // RS485 adapter power pin
-const int8_t  y700SensorPower    = A3;              // Sensor power pin
+const int8_t  y700SensorPower    = modbusSensorPowerPin;              // Sensor power pin
 const int8_t  y700EnablePin      = -1;              // Adapter RE/DE pin
 const uint8_t y700NumberReadings = 5;
 // The manufacturer recommends averaging 10 readings, but we take 5 to minimize

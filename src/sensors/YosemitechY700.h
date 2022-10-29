@@ -99,8 +99,8 @@
 #define Y700_PRES_VAR_NAME "pressureGauge"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
-/// "millimeterofWater" (mm H2O)
-#define Y700_PRES_UNIT_NAME "millimeterofWater"
+/// "millimeterOfWater" (mmH2O)
+#define Y700_PRES_UNIT_NAME "millimeterOfWater"
 /// @brief Default variable short code; "Y700Pres"
 #define Y700_PRES_DEFAULT_CODE "Y700Pres"
 /**@}*/
