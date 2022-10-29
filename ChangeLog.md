@@ -35,10 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Support Campbell RainVUE10 SDI-12 Precipitation Sensor (#416)
+- Support YosemiTech Y700 Pressor Sensor ([#421](https://github.com/EnviroDIY/ModularSensors/issues/421))
 
 ### Removed
 
 ### Fixed
+- Fixed bug in YosemiTech Y4000 Sonde ([#420](https://github.com/EnviroDIY/ModularSensors/issues/420))
 - Fixed non-concurrent data fetch for SDI-12 when *NOT* using debugging.
 - Fixed internet connection when in "testing mode"
 - Allow a non-zero wait time for SDI-12 sensors

@@ -10,7 +10,7 @@
  *
  * Build Environment: Visual Studios Code with PlatformIO
  * Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
- * Created with ModularSensors v0.33.4
+ * Created with ModularSensors v0.34.0
  *
  * DISCLAIMER:
  * THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
