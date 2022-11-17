@@ -798,6 +798,20 @@ void Logger::systemSleep(void) {
 
 #elif defined ARDUINO_ARCH_AVR
 
+    // force bee reset pullup high (not used by SIM7080LTE)
+    pinMode(A5, OUTPUT);
+    digitalWrite(A5, HIGH);
+
+    // force UART 1 TX low
+    pinMode(11, OUTPUT);
+    digitalWrite(11, LOW);
+
+    // back up old UART configuration
+    uint8_t uart1_old = UCSR1B;
+
+    // disable UART so they stop setting TX pins high
+    UCSR1B = 0;
+
     // Set the sleep mode
     // In the avr/sleep.h file, the call names of these 5 sleep modes are:
     // SLEEP_MODE_IDLE         -the least power savings
@@ -882,6 +896,9 @@ void Logger::systemSleep(void) {
 
     // Re-enable the processor ADC
     ADCSRA |= _BV(ADEN);
+
+    // restore UART settings
+    UCSR1B = uart1_old;
 
     // Re-enables interrupts
     interrupts();
