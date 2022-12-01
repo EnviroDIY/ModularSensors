@@ -131,7 +131,7 @@
 #undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include <YosemitechModbus.h>
+#include "YosemitechModbus.h"
 
 /* clang-format off */
 /**
