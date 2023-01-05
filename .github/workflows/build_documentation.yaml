@@ -111,7 +111,7 @@ jobs:
 
       - name: Deploy to github pages
         if: "(github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')"
-        uses: peaceiris/actions-gh-pages@v3.9.0
+        uses: peaceiris/actions-gh-pages@v3.9.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/code_docs/ModularSensorsDoxygen/m.css
