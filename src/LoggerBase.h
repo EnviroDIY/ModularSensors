@@ -1103,7 +1103,7 @@ class Logger {
      * measurements, the sensors are put to sleep, the modem is disconnected
      * from the internet, and the logger goes back to sleep.
      */
-    virtual void testingMode();
+    virtual void testingMode(bool sleepBeforeReturning = true);
     /**@}*/
 
     // ===================================================================== //
@@ -1160,13 +1160,13 @@ class Logger {
     /**
      * @brief This is a one-and-done to log data
      */
-    virtual void logData(void);
+    virtual void logData(bool sleepBeforeReturning = true);
 
     /**
      * @brief This is a one-and-done to log data and publish the results to any
      * associated publishers.
      */
-    void logDataAndPublish(void);
+    void logDataAndPublish(bool sleepBeforeReturning = true);
 
     /**
      * @brief The static "marked" epoch time for the local timezone.
