@@ -1272,7 +1272,7 @@ void Logger::testingISR() {
 
 
 // This defines what to do in the testing mode
-void Logger::testingMode() {
+void Logger::testingMode(bool sleepBeforeReturning) {
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
@@ -1349,8 +1349,10 @@ void Logger::testingMode() {
     // Unset testing mode flag
     Logger::isTestingNow = false;
 
-    // Sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Sleep
+        systemSleep();
+    }
 }
 
 
@@ -1458,7 +1460,7 @@ void Logger::begin() {
 
 
 // This is a one-and-done to log data
-void Logger::logData(void) {
+void Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -1502,11 +1504,13 @@ void Logger::logData(void) {
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Sleep
+        systemSleep();
+    }
 }
 // This is a one-and-done to log data
-void Logger::logDataAndPublish(void) {
+void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
@@ -1602,8 +1606,10 @@ void Logger::logDataAndPublish(void) {
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
+    if (Logger::startTesting) testingMode(sleepBeforeReturning);
 
-    // Call the processor sleep
-    systemSleep();
+    if (sleepBeforeReturning) {
+        // Sleep
+        systemSleep();
+    }
 }

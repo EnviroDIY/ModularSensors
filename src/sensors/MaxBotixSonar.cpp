@@ -144,20 +144,19 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
             rangeAttempts++;
 
             // If it cannot obtain a result , the sonar is supposed to send a
-            // value just above it's max range.  For 10m models, this is 9999,
-            // for 5m models it's 4999.  The sonar might also send readings of
-            // 300 or 500 (the blanking distance) if there are too many acoustic
-            // echos. If the result becomes garbled or the sonar is
+            // value just above it's max range.  For our 7m model, this is 765.
+            // If the result becomes garbled or the sonar is
             // disconnected, the parseInt function returns 0.  Luckily, these
             // sensors are not capable of reading 0, so we also know the 0 value
             // is bad.
-            if (result <= 300 || result == 500 || result == 4999 ||
-                result == 9999 || result == 0) {
+            if (result <= 0 || result >= 765) {
                 MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"),
                        rangeAttempts);
                 result = -9999;
             } else {
                 MS_DBG(F("  Good result found"));
+                // convert result from cm to mm
+                result *= 10;
                 success = true;
             }
         }
