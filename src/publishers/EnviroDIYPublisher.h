@@ -1,8 +1,10 @@
 /**
  * @file EnviroDIYPublisher.h
  * @copyright 2017-2022 Stroud Water Research Center
+ * @copyright 2023 Thomas Watson
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Thomas Watson <twatson52@icloud.com>
  *
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
  * publishing data to the Monitor My Watershed/EnviroDIY data portal at
@@ -24,6 +26,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
+#include "LogBuffer.h"
 
 
 // ============================================================================
@@ -52,7 +55,7 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     explicit EnviroDIYPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
@@ -63,7 +66,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        int sendEveryX = 1);
@@ -76,7 +79,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, const char* registrationToken,
                        const char* samplingFeatureUUID, int sendEveryX = 1);
@@ -92,7 +95,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID for the site on the
      * Monitor My Watershed data portal.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        const char* registrationToken,
@@ -183,6 +186,11 @@ class EnviroDIYPublisher : public dataPublisher {
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
                                             /**@}*/
+
+    LogBuffer _logBuffer;
+
+    // actually transmit rather than just buffer data
+    int16_t flushDataBuffer(Client* outClient);
 
  private:
     // Tokens and UUID's for EnviroDIY
