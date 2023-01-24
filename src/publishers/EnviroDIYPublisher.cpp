@@ -1,8 +1,10 @@
 /**
  * @file EnviroDIYPublisher.cpp
  * @copyright 2017-2022 Stroud Water Research Center
+ * @copyright 2023 Thomas Watson
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Thomas Watson <twatson52@icloud.com>
  *
  * @brief Implements the EnviroDIYPublisher class.
  */
@@ -18,7 +20,7 @@
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
 const char* EnviroDIYPublisher::postEndpoint        = "/api/data-stream/";
-const char* EnviroDIYPublisher::enviroDIYHost       = "data.envirodiy.org";
+const char* EnviroDIYPublisher::enviroDIYHost       = "<private>";
 const int   EnviroDIYPublisher::enviroDIYPort       = 80;
 const char* EnviroDIYPublisher::tokenHeader         = "\r\nTOKEN: ";
 const char* EnviroDIYPublisher::contentLengthHeader = "\r\nContent-Length: ";

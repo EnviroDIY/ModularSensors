@@ -1,8 +1,10 @@
 /**
  * @file EnviroDIYPublisher.h
  * @copyright 2017-2022 Stroud Water Research Center
+ * @copyright 2023 Thomas Watson
  * Part of the EnviroDIY ModularSensors library for Arduino
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
+ * @author Thomas Watson <twatson52@icloud.com>
  *
  * @brief Contains the EnviroDIYPublisher subclass of dataPublisher for
  * publishing data to the Monitor My Watershed/EnviroDIY data portal at
