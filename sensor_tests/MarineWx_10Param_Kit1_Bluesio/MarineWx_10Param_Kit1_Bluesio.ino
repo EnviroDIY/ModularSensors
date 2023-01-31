@@ -2,6 +2,7 @@
 MarineWx_10Param_Kit1_Bluesio.ino
 Written By:  Greg Cutrell (gcutrell@limno.com) barrowed from Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
+Testing Modular Sensors >v0.34 `meter_atmos` feature branch
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
@@ -16,15 +17,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Defines for the Arduino IDE
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
+/** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 64
 #endif
 #ifndef TINY_GSM_YIELD_MS
 #define TINY_GSM_YIELD_MS 2
 #endif
-#ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 240
-#endif
+/** End [defines] */
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -37,13 +37,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // interrupts and must be explicitly included in the main program.
 #include <EnableInterrupt.h>
 
-// To get all of the base classes for ModularSensors, include LoggerBase.
-// NOTE:  Individual sensor definitions must be included separately.
-#include <LoggerBase.h>
-/** End [includes] */
-
 // Include the main header for ModularSensors
 #include <ModularSensors.h>
+/** End [includes] */
 
 
 // ==========================================================================
@@ -51,38 +47,49 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 /** Start [logging_options] */
 // The library version this example was written for
-const char *libraryVersion = "0.33.2";
+const char *libraryVersion = "0.34.0"
 // The name of this program file
-const char *sketchName = "MarineWx_10Param_Kit1_Bluesio.ino";
+const char* sketchName = "MarineWx_10Param_Kit1_Bluesio.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "mwx10kit4"; //
+const char* LoggerID = "mwx10kit4"; //
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 10;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // GMT
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-
-// ==========================================================================
-//    Primary Arduino-Based Board and Processor
-// ==========================================================================
-#include <sensors/ProcessorStats.h>
-
-const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
-const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
-const int8_t wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+// Set the input and output pins for the logger
+// NOTE:  Use -1 for pins that do not apply
+const int32_t serialBaud = 115200;  // Baud rate for debugging
+const int8_t  greenLED   = 8;       // Pin for the green LED
+const int8_t  redLED     = 9;       // Pin for the red LED
+const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
+// Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
+const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
+/** End [logging_options] */
 
+
+
+
+// Modem Pins - Describe the physical pin connection of your modem to your board
+// NOTE:  Use -1 for pins that do not apply
 const int8_t modemVccPin =  18;  // MCU pin controlling VCC power ---
 //AltSoftSerial &modbusSerial = Serial1;  // For software serial if needed
 HardwareSerial& loraSerial = Serial1;  // Use hardware serial if possible
 const long loraBaud = 9600;    // Baud rate for RS232 serial out to RF module
+
+
+
+// ==========================================================================
+//  Using the Processor as a Sensor
+// ==========================================================================
+/** Start [processor_sensor] */
+#include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
@@ -298,8 +305,9 @@ Variable *seaLvlPress = new Variable(calcSeaLevelPressure,seaLvlPressResolution,
 
 
 // ==========================================================================
-//     Creating the Variable Array[s] and Filling with Variable Objects
+//  Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
+/** Start [variable_arrays] */
 
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
@@ -322,11 +330,13 @@ Variable *variableList[] = {
   precipInt
 };
 
+
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+/** End [variable_arrays] */
 
 
 // ==========================================================================
@@ -339,12 +349,11 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 
 // ==========================================================================
-//    Working Functions
+//  Working Functions
 // ==========================================================================
-
+/** Start [working_functions] */
 // Flashes the LED's on the primary board
-void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
-{
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75) {
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -409,17 +418,18 @@ uint32_t bluesio_getepochtime(void) {
 
 // Read's the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
-float getBatteryVoltage()
-{
+float getBatteryVoltage() {
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
+/** End [working_functions] */
+
 
 // ==========================================================================
-// Main setup function
+//  Arduino Setup Function
 // ==========================================================================
-void setup()
-{
+/** Start [setup] */
+void setup() {
   // Start the primary serial connection
   Serial.begin(serialBaud);
 
