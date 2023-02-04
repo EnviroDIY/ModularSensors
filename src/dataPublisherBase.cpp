@@ -10,7 +10,7 @@
  */
 #include "dataPublisherBase.h"
 
-char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
+char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
 
 // Basic chunks of HTTP
 const char* dataPublisher::getHeader  = "GET ";
