@@ -33,7 +33,20 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
 // Destructor
 SIMComSIM7080::~SIMComSIM7080() {}
 
-MS_MODEM_EXTRA_SETUP(SIMComSIM7080);
+bool SIMComSIM7080::extraModemSetup(void) {
+    bool success = gsmModem.init();
+    gsmClient.init(&gsmModem);
+    _modemName = gsmModem.getModemName();
+
+    // The modem is liable to crash if the send buffer overflows and TinyGSM
+    // offers no way to know when that might happen. Reduce the chance of
+    // problems by maxing out the send buffer size. This size should accommodate
+    // a completely full 8K LogBuffer and a crappy connection.
+    gsmModem.sendAT(F("+CACFG=\"SNDBUF\",29200"));
+
+    return success;
+}
+
 MS_IS_MODEM_AWAKE(SIMComSIM7080);
 MS_MODEM_WAKE(SIMComSIM7080);
 
