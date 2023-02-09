@@ -31,7 +31,6 @@ uint32_t Logger::markedLocalEpochTime = 0;
 uint32_t Logger::markedUTCEpochTime   = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
-volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards
@@ -52,7 +51,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
-    isTestingNow = false;
     startTesting = false;
 
     // Set the initial pin values
@@ -73,7 +71,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
-    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -84,7 +81,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 Logger::Logger() {
     // Set the testing/logging flags to false
     isLoggingNow = false;
-    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -616,7 +612,7 @@ bool Logger::checkInterval(void) {
     MS_DBG(F("Mod of Logging Interval:"),
            checkTime % (interval * 60));
 
-    if (checkTime % (interval * 60) == 0) {
+    if ((checkTime % (interval * 60) == 0) || Logger::startTesting) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalEpochTime);
@@ -1256,102 +1252,9 @@ bool Logger::logToSD(void) {
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR() {
     MS_DEEP_DBG(F("Testing interrupt!"));
-    if (!Logger::isTestingNow && !Logger::isLoggingNow) {
+    if (!Logger::isLoggingNow) {
         Logger::startTesting = true;
         MS_DEEP_DBG(F("Testing flag has been set."));
-    }
-}
-
-
-// This defines what to do in the testing mode
-void Logger::testingMode(bool sleepBeforeReturning) {
-    // Flag to notify that we're in testing mode
-    Logger::isTestingNow = true;
-    // Unset the startTesting flag
-    Logger::startTesting = false;
-
-    PRINTOUT(F("------------------------------------------"));
-    PRINTOUT(F("Entering sensor testing mode"));
-    delay(100);  // This seems to prevent crashes, no clue why ....
-
-    // Get the modem ready
-
-    bool gotInternetConnection = false;
-    if (_logModem != nullptr) {
-        MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
-        if (_logModem->modemWake()) {
-            // Connect to the network
-            watchDogTimer.resetWatchDog();
-            MS_DBG(F("Connecting to the Internet..."));
-            if (_logModem->connectInternet()) {
-                gotInternetConnection = true;
-                // Publish data to remotes
-                watchDogTimer.resetWatchDog();
-            }
-        }
-    }
-
-    // Power up all of the sensors
-    _internalArray->sensorsPowerUp();
-
-    // Wake up all of the sensors
-    _internalArray->sensorsWake();
-
-    // Update the sensors and print out data 25 times
-    for (uint8_t i = 0; i < 25; i++) {
-        PRINTOUT(F("------------------------------------------"));
-
-        // Update the modem metadata
-        // NOTE:  the extra get signal quality is an annoying redundancy
-        // needed only for the wifi XBee.  Update metadata will also ask the
-        // module for current signal quality using the underlying TinyGSM
-        // getSignalQuality() function, but for the WiFi XBee it will not
-        // actually measure anything except by explicitly making a connection,
-        // which getModemSignalQuality() does.  For all of the other modules,
-        // getModemSignalQuality() is just a straight pass-through to
-        // getSignalQuality().
-        if (gotInternetConnection) { _logModem->updateModemMetadata(); }
-
-        watchDogTimer.resetWatchDog();
-        // Update the values from all attached sensors
-        // NOTE:  NOT using complete update because we want the sensors to be
-        // left on between iterations in testing mode.
-        _internalArray->updateAllSensors();
-        // Print out the current logger time
-        PRINTOUT(F("Current logger time is"),
-                 formatDateTime_ISO8601(getNowLocalEpoch()));
-        PRINTOUT(F("-----------------------"));
-// Print out the sensor data
-#if defined(STANDARD_SERIAL_OUTPUT)
-        _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
-#endif
-        PRINTOUT(F("-----------------------"));
-        watchDogTimer.resetWatchDog();
-
-        delay(5000);
-        watchDogTimer.resetWatchDog();
-    }
-
-    // Put sensors to sleep
-    _internalArray->sensorsSleep();
-    _internalArray->sensorsPowerDown();
-
-    // Turn the modem off
-    if (_logModem != nullptr) {
-        if (gotInternetConnection) { _logModem->disconnectInternet(); }
-        _logModem->modemSleepPowerDown();
-    }
-
-    PRINTOUT(F("Exiting testing mode"));
-    PRINTOUT(F("------------------------------------------"));
-    watchDogTimer.resetWatchDog();
-
-    // Unset testing mode flag
-    Logger::isTestingNow = false;
-
-    if (sleepBeforeReturning) {
-        // Sleep
-        systemSleep();
     }
 }
 
@@ -1454,10 +1357,12 @@ void Logger::logData(bool sleepBeforeReturning) {
     watchDogTimer.resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+    // even interval of the logging interval or that we have been specifically
+    // requested to log by pushbutton
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
+
         // Reset the watchdog
         watchDogTimer.resetWatchDog();
 
@@ -1488,10 +1393,9 @@ void Logger::logData(bool sleepBeforeReturning) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
 
     if (sleepBeforeReturning) {
         // Sleep
@@ -1504,7 +1408,8 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     watchDogTimer.resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+    // even interval of the logging interval or that we have been specifically
+    // requested to log by pushbutton
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -1603,10 +1508,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode(sleepBeforeReturning);
 
     if (sleepBeforeReturning) {
         // Sleep
