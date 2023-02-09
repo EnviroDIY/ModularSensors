@@ -17,6 +17,18 @@
 // Debugging Statement
 // #define MS_LOGGERBASE_DEBUG
 
+#ifndef MS_LOGGERBASE_BUTTON_BENCH_TEST
+/**
+ * @brief Enable bench testing mode for the testing button.
+ *
+ * When enabled, the testing button uses the benchTestingMode() function to
+ * repeatedly read and print out sensor data. When disabled (default), the
+ * testing button causes a reading to be taken and transmitted immediately
+ * using the normal procedure.
+ */
+#define MS_LOGGERBASE_BUTTON_BENCH_TEST false
+#endif
+
 #ifdef MS_LOGGERBASE_DEBUG
 #define MS_DEBUGGING_STD "LoggerBase"
 #endif
@@ -1132,7 +1144,7 @@ class Logger {
     static void testingISR(void);
 
     /**
-     * @brief Execute testing mode.
+     * @brief Execute bench testing mode if enabled.
      *
      * In testing mode, the logger uses the loggerModem, if attached, to connect
      * to the internet.  It then powers up all sensors tied to variable in the
@@ -1140,9 +1152,10 @@ class Logger {
      * sensors 25 times with a 5 second wait in between.  All results are output
      * to the "main" output - ie Serial - and NOT to the SD card.  After 25
      * measurements, the sensors are put to sleep, the modem is disconnected
-     * from the internet, and the logger goes back to sleep.
+     * from the internet, and the logger goes back to sleep. Does nothing unless
+     * MS_LOGGERBASE_BUTTON_BENCH_TEST is defined true.
      */
-    virtual void testingMode();
+    virtual void benchTestingMode(void);
     /**@}*/
 
     // ===================================================================== //

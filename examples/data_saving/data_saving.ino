@@ -616,7 +616,7 @@ void loop() {
     // NOTE:  The testingISR attached to the button at the end of the "setup()"
     // function turns on the startTesting flag.  So we know if that flag is set
     // then we want to run the testing mode function.
-    if (Logger::startTesting) loggerAllVars.testingMode();
+    if (Logger::startTesting) loggerAllVars.benchTestingMode();
 
     // Call the processor sleep
     // Only need to do this for one of the loggers

@@ -3314,7 +3314,7 @@ void loop() {
         altSoftSerial.begin(9600);
 #endif
 
-        dataLogger.testingMode();
+        dataLogger.benchTestingMode();
     }
 
 #ifdef BUILD_TEST_ALTSOFTSERIAL

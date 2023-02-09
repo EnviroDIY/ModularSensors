@@ -615,12 +615,15 @@ bool Logger::checkInterval(void) {
     MS_DBG(F("Logging interval in seconds:"), (interval * 60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
-    if (checkTime % (interval * 60) == 0) {
+    bool testing = Logger::startTesting;
+    if ((checkTime % (interval * 60) == 0) || testing) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalEpochTime);
         MS_DBG(F("Time to log!"));
-        if (_remainingShortIntervals > 0) { _remainingShortIntervals -= 1; }
+        if ((_remainingShortIntervals > 0) && (!testing)) {
+            _remainingShortIntervals -= 1;
+        }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));
@@ -1250,15 +1253,19 @@ void Logger::testingISR() {
 }
 
 
-// This defines what to do in the testing mode
-void Logger::testingMode() {
+// This defines what to do in the bench testing mode
+void Logger::benchTestingMode(void) {
+    // If bench testing is not enabled, return now. Allows the function body to
+    // be compiled out if this functionality is disabled.
+    if (!(MS_LOGGERBASE_BUTTON_BENCH_TEST)) return;
+
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
     Logger::startTesting = false;
 
     PRINTOUT(F("------------------------------------------"));
-    PRINTOUT(F("Entering sensor testing mode"));
+    PRINTOUT(F("Entering bench testing mode"));
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Get the modem ready
@@ -1430,9 +1437,13 @@ void Logger::logData(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
-    if (checkInterval()) {
+    // If bench testing is enabled and button was pressed, do the bench test
+    if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
+        benchTestingMode();
+    } else if (checkInterval()) {
+        // We've checked that the current time is an even interval of the
+        // logging interval or we were requested to log by the button
+
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1465,22 +1476,26 @@ void Logger::logData(void) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
 
     // Sleep
     systemSleep();
 }
+
 // This is a one-and-done to log data
 void Logger::logDataAndPublish(void) {
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
-    if (checkInterval()) {
+    // If bench testing is enabled and button was pressed, do the bench test
+    if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
+        benchTestingMode();
+    } else if (checkInterval()) {
+        // We've checked that the current time is an even interval of the
+        // logging interval or we were requested to log by the button
+
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         // Reset the watchdog
@@ -1578,11 +1593,10 @@ void Logger::logDataAndPublish(void) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
 
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
-
-    // Call the processor sleep
+    // Sleep
     systemSleep();
 }
