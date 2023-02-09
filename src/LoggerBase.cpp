@@ -110,6 +110,11 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes) {
     _loggingIntervalMinutes = loggingIntervalMinutes;
 }
 
+// Sets the number of short intervals
+void Logger::setNumShortIntervals(uint8_t numShortIntervals) {
+    _remainingShortIntervals = numShortIntervals;
+}
+
 
 // Adds the sampling feature UUID
 void Logger::setSamplingFeatureUUID(const char* samplingFeatureUUID) {
@@ -602,17 +607,20 @@ void Logger::markTime(void) {
 bool Logger::checkInterval(void) {
     bool     retval;
     uint32_t checkTime = getNowLocalEpoch();
+    uint16_t interval  = _loggingIntervalMinutes;
+    if (_remainingShortIntervals > 0) { interval = 1; }
+
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
-    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
-    MS_DBG(F("Mod of Logging Interval:"),
-           checkTime % (_loggingIntervalMinutes * 60));
+    MS_DBG(F("Logging interval in seconds:"), (interval * 60));
+    MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
-    if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
+    if (checkTime % (interval * 60) == 0) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalEpochTime);
         MS_DBG(F("Time to log!"));
+        if (_remainingShortIntervals > 0) { _remainingShortIntervals -= 1; }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));
@@ -671,15 +679,19 @@ bool Logger::checkInterval(void) {
 
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval(void) {
+    uint16_t interval = _loggingIntervalMinutes;
+    if (_remainingShortIntervals > 0) { interval = 1; }
+
     bool retval;
     MS_DBG(F("Marked Time:"), Logger::markedLocalEpochTime,
-           F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60),
+           F("Logging interval in seconds:"), (interval * 60),
            F("Mod of Logging Interval:"),
-           Logger::markedLocalEpochTime % (_loggingIntervalMinutes * 60));
+           Logger::markedLocalEpochTime % (interval * 60));
 
     if (Logger::markedLocalEpochTime != 0 &&
-        (Logger::markedLocalEpochTime % (_loggingIntervalMinutes * 60) == 0)) {
+        (Logger::markedLocalEpochTime % (interval * 60) == 0)) {
         MS_DBG(F("Time to log!"));
+        if (_remainingShortIntervals > 0) { _remainingShortIntervals -= 1; }
         retval = true;
     } else {
         MS_DBG(F("Not time yet."));

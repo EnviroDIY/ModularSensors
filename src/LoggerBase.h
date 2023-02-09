@@ -180,6 +180,15 @@ class Logger {
     }
 
     /**
+     * @brief Set the number of short transmission intervals to be performed.
+     *
+     * @param numShortIntervals Number of short intervals. This number of
+     * transmissions will be performed with an interval of 1 minute regardless
+     * of the programmed interval. Useful for fast field verification.
+     */
+    void setNumShortIntervals(uint8_t numShortIntervals);
+
+    /**
      * @brief Set the universally unique identifier (UUID or GUID) of the
      * sampling feature.
      *
@@ -391,6 +400,11 @@ class Logger {
      * @brief The logging interval in minutes
      */
     uint16_t _loggingIntervalMinutes = 5;
+    /**
+     * @brief The number of remaining samples to log at an interval of 1 minute
+     * for fast field verification.
+     */
+    uint8_t _remainingShortIntervals = 0;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
