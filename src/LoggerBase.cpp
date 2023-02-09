@@ -32,7 +32,6 @@ uint32_t Logger::markedLocalEpochTime = 0;
 uint32_t Logger::markedUTCEpochTime   = 0;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
-volatile bool Logger::isTestingNow = false;
 volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards using build in RTC
@@ -54,7 +53,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
-    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -71,7 +69,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
-    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -82,7 +79,6 @@ Logger::Logger(const char* loggerID, uint16_t loggingIntervalMinutes,
 Logger::Logger() {
     // Set the testing/logging flags to false
     isLoggingNow = false;
-    isTestingNow = false;
     startTesting = false;
 
     // Clear arrays
@@ -606,7 +602,7 @@ bool Logger::checkInterval(void) {
     MS_DBG(F("Mod of Logging Interval:"),
            checkTime % (_loggingIntervalMinutes * 60));
 
-    if (checkTime % (_loggingIntervalMinutes * 60) == 0) {
+    if ((checkTime % (interval * 60) == 0)) {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix):"), Logger::markedLocalEpochTime);
@@ -1285,7 +1281,7 @@ bool Logger::logToSD(void) {
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR() {
     MS_DEEP_DBG(F("Testing interrupt!"));
-    if (!Logger::isTestingNow && !Logger::isLoggingNow) {
+    if (!Logger::isLoggingNow) {
         Logger::startTesting = true;
         MS_DEEP_DBG(F("Testing flag has been set."));
     }
@@ -1486,10 +1482,12 @@ void Logger::logData(bool sleepBeforeReturning) {
     watchDogTimer.resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+    // even interval of the logging interval or that we have been specifically
+    // requested to log by pushbutton
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
+
         // Reset the watchdog
         watchDogTimer.resetWatchDog();
 
@@ -1520,10 +1518,9 @@ void Logger::logData(bool sleepBeforeReturning) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode();
 
     if (sleepBeforeReturning) {
         // Sleep
@@ -1536,7 +1533,8 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
     watchDogTimer.resetWatchDog();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
+    // even interval of the logging interval or that we have been specifically
+    // requested to log by pushbutton
     if (checkInterval()) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -1635,10 +1633,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 
         // Unset flag
         Logger::isLoggingNow = false;
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) testingMode(sleepBeforeReturning);
 
     if (sleepBeforeReturning) {
         // Sleep
