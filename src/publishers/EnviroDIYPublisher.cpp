@@ -263,6 +263,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     int16_t responseCode = 0;
     if (did_respond > 0) {
         char responseCode_char[4];
+        responseCode_char[3] = 0;
         for (uint8_t i = 0; i < 3; i++) {
             responseCode_char[i] = tempBuffer[i + 9];
         }
