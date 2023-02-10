@@ -358,14 +358,14 @@ bool Logger::checkRemotesConnectionNeeded(void) {
     return needed;
 }
 
-void Logger::publishDataToRemotes(void) {
+void Logger::publishDataToRemotes(bool forceFlush) {
     MS_DBG(F("Sending out remote data."));
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] != nullptr) {
             PRINTOUT(F("\nSending data to ["), i, F("]"),
                      dataPublishers[i]->getEndpoint());
-            dataPublishers[i]->publishData();
+            dataPublishers[i]->publishData(forceFlush);
             watchDogTimer.resetWatchDog();
         }
     }
@@ -1530,13 +1530,17 @@ void Logger::logDataAndPublish(void) {
         // Create a csv data record and save it to the log file
         logToSD();
 
+        // flush the publisher buffers (if any) if we have been invoked by the
+        // testing button
+        bool forceFlush = Logger::startTesting;
+
         // Sync the clock at noon
         bool clockSyncNeeded =
             (Logger::markedLocalEpochTime != 0 &&
              Logger::markedLocalEpochTime % 86400 == 43200) ||
             !isRTCSane(Logger::markedLocalEpochTime);
         bool connectionNeeded = checkRemotesConnectionNeeded() ||
-            clockSyncNeeded;
+            clockSyncNeeded || forceFlush;
 
         if (_logModem != nullptr && connectionNeeded) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
@@ -1547,7 +1551,7 @@ void Logger::logDataAndPublish(void) {
                 if (_logModem->connectInternet()) {
                     // Publish data to remotes
                     watchDogTimer.resetWatchDog();
-                    publishDataToRemotes();
+                    publishDataToRemotes(forceFlush);
                     watchDogTimer.resetWatchDog();
 
                     if (clockSyncNeeded) {
@@ -1574,7 +1578,7 @@ void Logger::logDataAndPublish(void) {
             MS_DBG(F("Nobody needs it so publishing without connecting..."));
             // Call publish function without connection
             watchDogTimer.resetWatchDog();
-            publishDataToRemotes();
+            publishDataToRemotes(false);  // can't flush without a connection
             watchDogTimer.resetWatchDog();
         }
 

@@ -615,8 +615,10 @@ class Logger {
     bool checkRemotesConnectionNeeded(void);
     /**
      * @brief Publish data to all registered data publishers.
+     *
+     * @param forceFlush Ask the publishers to flush buffered data immediately.
      */
-    void publishDataToRemotes(void);
+    void publishDataToRemotes(bool forceFlush = false);
     /**
      * @brief Retained for backwards compatibility, use publishDataToRemotes()
      * in new code.
