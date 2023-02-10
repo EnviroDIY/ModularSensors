@@ -76,59 +76,41 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
     MS_START_DEBUG_TIMER;
     if (outClient->connect(dreamhostHost, dreamhostPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer
-        snprintf(txBuffer, sizeof(txBuffer), "%s", getHeader);
+        txBufferAppend(getHeader);
 
         // add in the dreamhost receiver URL
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", _DreamHostPortalRX);
+        txBufferAppend(_DreamHostPortalRX);
 
         // start the URL parameters
-        if (bufferFree() < 16) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", loggerTag);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 _baseLogger->getLoggerID());
+        txBufferAppend(loggerTag);
+        txBufferAppend(_baseLogger->getLoggerID());
 
-        if (bufferFree() < 22) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", timestampTagDH);
+        txBufferAppend(timestampTagDH);
         ltoa((Logger::markedLocalEpochTime - 946684800), tempBuffer,
              10);  // BASE 10
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
+        txBufferAppend(tempBuffer);
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-            // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(outClient);
-
-            txBuffer[strlen(txBuffer)] = '&';
-            _baseLogger->getVarCodeAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-            txBuffer[strlen(txBuffer)] = '=';
-            _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
+            txBufferAppend('&');
+            txBufferAppend(_baseLogger->getVarCodeAtI(i).c_str());
+            txBufferAppend('=');
+            txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
         }
 
         // add the rest of the HTTP GET headers to the outgoing buffer
-        if (bufferFree() < 52) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", HTTPtag);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", hostHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", dreamhostHost);
-        txBuffer[strlen(txBuffer)] = '\r';
-        txBuffer[strlen(txBuffer)] = '\n';
-        txBuffer[strlen(txBuffer)] = '\r';
-        txBuffer[strlen(txBuffer)] = '\n';
+        txBufferAppend(HTTPtag);
+        txBufferAppend(hostHeader);
+        txBufferAppend(dreamhostHost);
+        txBufferAppend('\r');
+        txBufferAppend('\n');
+        txBufferAppend('\r');
+        txBufferAppend('\n');
 
-        // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(outClient);
+        // Flush the complete request
+        txBufferFlush();
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
@@ -163,7 +145,7 @@ int16_t DreamHostPublisher::publishData(Client* outClient) {
         responseCode = 504;
     }
 
-    PRINTOUT(F("-- Response Code --"));
+    PRINTOUT(F("\n-- Response Code --"));
     PRINTOUT(responseCode);
 
     return responseCode;

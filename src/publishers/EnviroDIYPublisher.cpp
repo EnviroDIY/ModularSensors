@@ -120,83 +120,50 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     MS_START_DEBUG_TIMER;
     if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
+        txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer
-        snprintf(txBuffer, sizeof(txBuffer), "%s", postHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", postEndpoint);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", HTTPtag);
+        txBufferAppend(postHeader);
+        txBufferAppend(postEndpoint);
+        txBufferAppend(HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer
-        // before adding each line/chunk to the outgoing buffer, we make sure
-        // there is space for that line, sending out buffer if not
-        if (bufferFree() < 28) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", hostHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", enviroDIYHost);
+        txBufferAppend(hostHeader);
+        txBufferAppend(enviroDIYHost);
+        txBufferAppend(tokenHeader);
+        txBufferAppend(_registrationToken);
 
-        if (bufferFree() < 47) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tokenHeader);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", _registrationToken);
-
-        if (bufferFree() < 26) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 contentLengthHeader);
+        txBufferAppend(contentLengthHeader);
         itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
+        txBufferAppend(tempBuffer);
 
-        if (bufferFree() < 42) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", contentTypeHeader);
+        txBufferAppend(contentTypeHeader);
 
         // put the start of the JSON into the outgoing response_buffer
-        if (bufferFree() < 21) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", samplingFeatureTag);
+        txBufferAppend(samplingFeatureTag);
+        txBufferAppend(_baseLogger->getSamplingFeatureUUID());
 
-        if (bufferFree() < 36) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s",
-                 _baseLogger->getSamplingFeatureUUID());
-
-        if (bufferFree() < 42) printTxBuffer(outClient);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", timestampTag);
-        Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
-            .toCharArray(tempBuffer, 37);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-        txBuffer[strlen(txBuffer)] = '"';
-        txBuffer[strlen(txBuffer)] = ',';
+        txBufferAppend(timestampTag);
+        txBufferAppend(Logger::formatDateTime_ISO8601(
+            Logger::markedLocalEpochTime).c_str());
+        txBufferAppend('"');
+        txBufferAppend(',');
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-            // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(outClient);
-
-            txBuffer[strlen(txBuffer)] = '"';
-            _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-            txBuffer[strlen(txBuffer)] = '"';
-            txBuffer[strlen(txBuffer)] = ':';
-            _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 37);
-            snprintf(txBuffer + strlen(txBuffer),
-                     sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
+            txBufferAppend('"');
+            txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
+            txBufferAppend('"');
+            txBufferAppend(':');
+            txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
             if (i + 1 != _baseLogger->getArrayVarCount()) {
-                txBuffer[strlen(txBuffer)] = ',';
+                txBufferAppend(',');
             } else {
-                txBuffer[strlen(txBuffer)] = '}';
+                txBufferAppend('}');
             }
         }
 
-        // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(outClient, true);
+        // Flush the complete request
+        txBufferFlush();
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
@@ -232,7 +199,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         responseCode = 504;
     }
 
-    PRINTOUT(F("-- Response Code --"));
+    PRINTOUT(F("\n-- Response Code --"));
     PRINTOUT(responseCode);
 
     return responseCode;

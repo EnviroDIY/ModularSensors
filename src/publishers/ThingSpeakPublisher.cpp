@@ -129,27 +129,20 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient) {
              _thingSpeakChannelKey);
     MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
 
-    emptyTxBuffer();
+    // buffer is used only locally, it does not transmit
+    txBufferInit(nullptr);
 
-    Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
-        .toCharArray(tempBuffer, 26);
-    snprintf(txBuffer + strlen(txBuffer), sizeof(txBuffer) - strlen(txBuffer),
-             "%s", "created_at=");
-    snprintf(txBuffer + strlen(txBuffer), sizeof(txBuffer) - strlen(txBuffer),
-             "%s", tempBuffer);
-    txBuffer[strlen(txBuffer)] = '&';
+    txBufferAppend(Logger::formatDateTime_ISO8601(
+        Logger::markedLocalEpochTime).c_str());
+    txBufferAppend("created_at=");
 
     for (uint8_t i = 0; i < numChannels; i++) {
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", "field");
+        txBufferAppend('&');
+        txBufferAppend("field");
         itoa(i + 1, tempBuffer, 10);  // BASE 10
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-        txBuffer[strlen(txBuffer)] = '=';
-        _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 26);
-        snprintf(txBuffer + strlen(txBuffer),
-                 sizeof(txBuffer) - strlen(txBuffer), "%s", tempBuffer);
-        if (i + 1 != numChannels) { txBuffer[strlen(txBuffer)] = '&'; }
+        txBufferAppend(tempBuffer);
+        txBufferAppend('=');
+        txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
     }
     MS_DBG(F("Message ["), strlen(txBuffer), F("]:"), String(txBuffer));
 
