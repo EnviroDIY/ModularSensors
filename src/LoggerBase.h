@@ -581,6 +581,13 @@ class Logger {
      */
     void registerDataPublisher(dataPublisher* publisher);
     /**
+     * @brief Check if any data publishers need an Internet connection for the
+     * next publish call.
+     *
+     * @return True if any remotes need a connection.
+     */
+    bool checkRemotesConnectionNeeded(void);
+    /**
      * @brief Publish data to all registered data publishers.
      */
     void publishDataToRemotes(void);

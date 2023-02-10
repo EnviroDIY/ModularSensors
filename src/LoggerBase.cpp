@@ -340,6 +340,18 @@ void Logger::registerDataPublisher(dataPublisher* publisher) {
     dataPublishers[i] = publisher;
 }
 
+bool Logger::checkRemotesConnectionNeeded(void) {
+    MS_DBG(F("Asking publishers if they need a connection."));
+
+    bool needed = false;
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
+        if (dataPublishers[i] != nullptr) {
+            needed = needed || dataPublishers[i]->connectionNeeded();
+        }
+    }
+
+    return needed;
+}
 
 void Logger::publishDataToRemotes(void) {
     MS_DBG(F("Sending out remote data."));
@@ -1491,7 +1503,15 @@ void Logger::logDataAndPublish(void) {
         // Create a csv data record and save it to the log file
         logToSD();
 
-        if (_logModem != nullptr) {
+        // Sync the clock at noon
+        bool clockSyncNeeded =
+            (Logger::markedLocalEpochTime != 0 &&
+             Logger::markedLocalEpochTime % 86400 == 43200) ||
+            !isRTCSane(Logger::markedLocalEpochTime);
+        bool connectionNeeded = checkRemotesConnectionNeeded() ||
+            clockSyncNeeded;
+
+        if (_logModem != nullptr && connectionNeeded) {
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
             if (_logModem->modemWake()) {
                 // Connect to the network
@@ -1503,10 +1523,7 @@ void Logger::logDataAndPublish(void) {
                     publishDataToRemotes();
                     watchDogTimer.resetWatchDog();
 
-                    if ((Logger::markedLocalEpochTime != 0 &&
-                         Logger::markedLocalEpochTime % 86400 == 43200) ||
-                        !isRTCSane(Logger::markedLocalEpochTime)) {
-                        // Sync the clock at noon
+                    if (clockSyncNeeded) {
                         MS_DBG(F("Running a daily clock sync..."));
                         setRTClock(_logModem->getNISTTime());
                         watchDogTimer.resetWatchDog();
@@ -1526,6 +1543,12 @@ void Logger::logDataAndPublish(void) {
             }
             // Turn the modem off
             _logModem->modemSleepPowerDown();
+        } else if (_logModem != nullptr) {
+            MS_DBG(F("Nobody needs it so publishing without connecting..."));
+            // Call publish function without connection
+            watchDogTimer.resetWatchDog();
+            publishDataToRemotes();
+            watchDogTimer.resetWatchDog();
         }
 
 

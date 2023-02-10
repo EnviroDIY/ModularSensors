@@ -116,6 +116,10 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
 
+bool EnviroDIYPublisher::connectionNeeded(void) {
+    // the programmed interval is about to be reached by the next record
+    return _logBuffer.getNumRecords() >= (_sendEveryX - 1);
+}
 
 // This utilizes an attached modem to make a TCP connection to the
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request

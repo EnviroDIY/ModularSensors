@@ -142,6 +142,10 @@ void dataPublisher::txBufferFlush() {
     }
 }
 
+bool dataPublisher::connectionNeeded(void) {
+    // connection is always needed unless publisher has special logic
+    return true;
+}
 
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData() {
