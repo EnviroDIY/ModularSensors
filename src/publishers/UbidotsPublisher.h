@@ -52,12 +52,6 @@ class UbidotsPublisher : public dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
     explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
@@ -69,12 +63,6 @@ class UbidotsPublisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. NOTE: not implemented by this publisher!
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
     UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
     /**

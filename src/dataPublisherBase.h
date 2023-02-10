@@ -87,12 +87,6 @@ class dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
     explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
@@ -104,12 +98,6 @@ class dataPublisher {
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
     dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
     /**
@@ -148,13 +136,7 @@ class dataPublisher {
      * @brief Begin the publisher - linking it to the client and logger.
      *
      * This can be used as an alternative to adding the logger and client in the
-     * constructor.  This is slightly "safer" because we expect the publishers
-     * to be created in the "global scope" and we cannot control the order in
-     * which objects in that global scope will be created.  That is, we cannot
-     * guarantee that the logger will actually be created before the publisher
-     * that wants to attach to it unless we wait to attach the publisher until
-     * in the setup or loop function of the main program.  In reality, it is
-     * very unlikely that this is necessary.
+     * constructor.
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -172,13 +154,7 @@ class dataPublisher {
      * logger.
      *
      * This can be used as an alternative to adding the logger and client in the
-     * constructor.  This is slightly "safer" because we expect the publishers
-     * to be created in the "global scope" and we cannot control the order in
-     * which objects in that global scope will be created.  That is, we cannot
-     * guarantee that the logger will actually be created before the publisher
-     * that wants to attach to it unless we wait to attach the publisher until
-     * in the setup or loop function of the main program.  In reality, it is
-     * very unlikely that this is necessary.
+     * constructor.
      *
      * @param baseLogger The logger supplying the data to be published
      */

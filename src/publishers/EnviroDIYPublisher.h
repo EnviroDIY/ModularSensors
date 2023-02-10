@@ -56,12 +56,6 @@ class EnviroDIYPublisher : public dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
     explicit EnviroDIYPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
@@ -73,12 +67,6 @@ class EnviroDIYPublisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
-     *
-     * @note It is possible (though very unlikey) that using this constructor
-     * could cause errors if the compiler attempts to initialize the publisher
-     * instance before the logger instance.  If you suspect you are seeing that
-     * issue, use the null constructor and a populated begin(...) within your
-     * set-up function.
      */
     EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                        int sendEveryX = 1);
