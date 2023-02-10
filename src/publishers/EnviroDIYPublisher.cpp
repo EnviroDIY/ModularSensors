@@ -271,9 +271,9 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
         // Flush the complete request
         txBufferFlush();
 
-        // Wait 10 seconds for a response from the server
+        // Wait 30 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->available() < 12) {
+        while ((millis() - start) < 30000L && outClient->available() < 12) {
             delay(10);
         }
 
