@@ -1463,7 +1463,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                 // Connect to the network
                 watchDogTimer.resetWatchDog();
                 MS_DBG(F("Connecting to the Internet..."));
-                if (_logModem->connectInternet()) {
+                if (_logModem->connectInternet(240000L)) {
                     // Publish data to remotes
                     watchDogTimer.resetWatchDog();
                     publishDataToRemotes(forceFlush);
