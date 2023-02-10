@@ -29,7 +29,7 @@ const char* EnviroDIYPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";
 
 const char* EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":\"";
+const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":[\"";
 
 
 // Constructors
@@ -68,13 +68,13 @@ void EnviroDIYPublisher::setToken(const char* registrationToken) {
 uint16_t EnviroDIYPublisher::calculateJsonSize() {
     uint16_t jsonLength = 21;  // {"sampling_feature":"
     jsonLength += 36;          // sampling feature UUID
-    jsonLength += 15;          // ","timestamp":"
+    jsonLength += 17;          // ","timestamp":["]
     jsonLength += 25;          // markedISO8601Time
     jsonLength += 2;           //  ",
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
-        jsonLength += 2;   //  ":
+        jsonLength += 4;   //  ":[]
         jsonLength += _baseLogger->getValueStringAtI(i).length();
         if (i + 1 != _baseLogger->getArrayVarCount()) {
             jsonLength += 1;  // ,
@@ -147,6 +147,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
             Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
                 .c_str());
         txBufferAppend('"');
+        txBufferAppend(']');
         txBufferAppend(',');
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
@@ -154,7 +155,9 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
             txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
             txBufferAppend('"');
             txBufferAppend(':');
+            txBufferAppend('[');
             txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
+            txBufferAppend(']');
             if (i + 1 != _baseLogger->getArrayVarCount()) {
                 txBufferAppend(',');
             } else {
