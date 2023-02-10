@@ -11,7 +11,9 @@
  */
 #include "dataPublisherBase.h"
 
-char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
+char    dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
+Client* dataPublisher::txBufferOutClient = nullptr;
+size_t  dataPublisher::txBufferLen;
 
 // Basic chunks of HTTP
 const char* dataPublisher::getHeader  = "GET ";
