@@ -165,11 +165,12 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-int16_t EnviroDIYPublisher::publishData(Client* outClient) {
-    // do we intend to send this call? if so, we have just returned true from
+int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
+    // do we intend to flush this call? if so, we have just returned true from
     // connectionNeeded() and the internet is connected and waiting. check what
     // that function said so we know to do it after we record this data point.
-    bool willFlush = connectionNeeded();
+    // we also flush if requested (in which case the internet is connected too)
+    bool willFlush = connectionNeeded() || forceFlush;
 
     // create record to hold timestamp and variable values in the log buffer
     int record = _logBuffer.addRecord(Logger::markedLocalEpochTime);

@@ -148,12 +148,12 @@ bool dataPublisher::connectionNeeded(void) {
 }
 
 // This sends data on the "default" client of the modem
-int16_t dataPublisher::publishData() {
+int16_t dataPublisher::publishData(bool forceFlush) {
     if (_inClient == nullptr) {
         PRINTOUT(F("ERROR! No web client assigned to publish data!"));
         return 0;
     } else {
-        return publishData(_inClient);
+        return publishData(_inClient, forceFlush);
     }
 }
 // Duplicates for backwards compatibility
