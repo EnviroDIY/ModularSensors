@@ -11,6 +11,7 @@
 
 #include "EnviroDIYPublisher.h"
 
+char EnviroDIYPublisher::dataBuffer[MS_DATA_BUFFER_SIZE];
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.

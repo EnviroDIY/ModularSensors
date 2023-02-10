@@ -18,6 +18,10 @@
 // Debugging Statement
 // #define MS_ENVIRODIYPUBLISHER_DEBUG
 
+#ifndef MS_DATA_BUFFER_SIZE
+#define MS_DATA_BUFFER_SIZE 8192
+#endif
+
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
@@ -185,6 +189,9 @@ class EnviroDIYPublisher : public dataPublisher {
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
                                             /**@}*/
+
+    // queued sensor data buffer
+    static char dataBuffer[MS_DATA_BUFFER_SIZE];
 
  private:
     // Tokens and UUID's for EnviroDIY
