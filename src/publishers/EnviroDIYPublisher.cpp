@@ -12,6 +12,7 @@
 #include "EnviroDIYPublisher.h"
 
 char EnviroDIYPublisher::dataBuffer[MS_DATA_BUFFER_SIZE];
+int  EnviroDIYPublisher::dataBufferNumRecords;
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
@@ -29,7 +30,7 @@ const char* EnviroDIYPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";
 
 const char* EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":[\"";
+const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":[";
 
 
 // Constructors
@@ -66,16 +67,34 @@ void EnviroDIYPublisher::setToken(const char* registrationToken) {
 
 // Calculates how long the JSON will be
 uint16_t EnviroDIYPublisher::calculateJsonSize() {
-    uint16_t jsonLength = 21;  // {"sampling_feature":"
-    jsonLength += 36;          // sampling feature UUID
-    jsonLength += 17;          // ","timestamp":["]
-    jsonLength += 25;          // markedISO8601Time
-    jsonLength += 2;           //  ",
+    char*  ptr        = (char*)&dataBuffer;
+    size_t recordSize = sizeof(uint32_t) +
+        sizeof(float) * _baseLogger->getArrayVarCount();
+
+    uint16_t jsonLength = strlen(samplingFeatureTag);
+    jsonLength += 36;  // sampling feature UUID
+    jsonLength += strlen(timestampTag);
+    // markedISO8601Time + quotes and commas
+    jsonLength += dataBufferNumRecords * (25 + 2) + dataBufferNumRecords - 1;
+    jsonLength += 2;  // ],
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
         jsonLength += 1;   //  "
         jsonLength += 36;  // variable UUID
         jsonLength += 4;   //  ":[]
-        jsonLength += _baseLogger->getValueStringAtI(i).length();
+
+        ptr = (char*)&dataBuffer;
+        ptr += sizeof(uint32_t);   // skip timestamp
+        ptr += i * sizeof(float);  // and previous variables
+        for (int j = 0; j < dataBufferNumRecords; j++) {
+            float value;
+            memcpy((void*)&value, ptr, sizeof(float));
+            ptr += recordSize;
+
+            jsonLength += _baseLogger->formatValueStringAtI(i, value).length();
+            if (j + 1 != dataBufferNumRecords) {
+                jsonLength += 1;  // ,
+            }
+        }
         if (i + 1 != _baseLogger->getArrayVarCount()) {
             jsonLength += 1;  // ,
         }
@@ -108,6 +127,30 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 // over that connection.
 // The return is the http status code of the response.
 int16_t EnviroDIYPublisher::publishData(Client* outClient) {
+    // record timestamp and variable values into the data buffer
+
+    // compute where we will record to
+    size_t recordSize = sizeof(uint32_t) +
+        sizeof(float) * _baseLogger->getArrayVarCount();
+    char* ptr = &dataBuffer[recordSize * dataBufferNumRecords];
+
+    memcpy(ptr, (void*)&Logger::markedLocalEpochTime, sizeof(uint32_t));
+    ptr += sizeof(uint32_t);
+
+    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
+        float value = _baseLogger->getValueAtI(i);
+        memcpy(ptr, (void*)&value, sizeof(float));
+        ptr += sizeof(float);
+    }
+
+    dataBufferNumRecords += 1;
+
+    if (dataBufferNumRecords == 2) { return flushDataBuffer(outClient); }
+
+    return 201;  // pretend everything went okay?
+}
+
+int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
@@ -143,21 +186,46 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         txBufferAppend(_baseLogger->getSamplingFeatureUUID());
 
         txBufferAppend(timestampTag);
-        txBufferAppend(
-            Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime)
-                .c_str());
-        txBufferAppend('"');
+
+        // write out list of timestamps
+        char*  ptr        = (char*)&dataBuffer;
+        size_t recordSize = sizeof(uint32_t) +
+            sizeof(float) * _baseLogger->getArrayVarCount();
+        for (int i = 0; i < dataBufferNumRecords; i++) {
+            uint32_t value;
+            memcpy((void*)&value, ptr, sizeof(uint32_t));
+            ptr += recordSize;
+
+            txBufferAppend('"');
+            txBufferAppend(Logger::formatDateTime_ISO8601(value).c_str());
+            txBufferAppend('"');
+            if (i + 1 != dataBufferNumRecords) { txBufferAppend(','); }
+        }
         txBufferAppend(']');
         txBufferAppend(',');
 
+        // write out a list of the values of each variable
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
             txBufferAppend('"');
             txBufferAppend(_baseLogger->getVarUUIDAtI(i).c_str());
             txBufferAppend('"');
             txBufferAppend(':');
             txBufferAppend('[');
-            txBufferAppend(_baseLogger->getValueStringAtI(i).c_str());
+
+            ptr = (char*)&dataBuffer;
+            ptr += sizeof(uint32_t);   // skip timestamp
+            ptr += i * sizeof(float);  // and previous variables
+            for (int j = 0; j < dataBufferNumRecords; j++) {
+                float value;
+                memcpy((void*)&value, ptr, sizeof(float));
+                ptr += recordSize;
+
+                txBufferAppend(
+                    _baseLogger->formatValueStringAtI(i, value).c_str());
+                if (j + 1 != dataBufferNumRecords) { txBufferAppend(','); }
+            }
             txBufferAppend(']');
+
             if (i + 1 != _baseLogger->getArrayVarCount()) {
                 txBufferAppend(',');
             } else {
@@ -204,6 +272,11 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
 
     PRINTOUT(F("\n-- Response Code --"));
     PRINTOUT(responseCode);
+
+    if (responseCode == 201) {
+        // data was successfully transmitted, we can discard it from the buffer
+        dataBufferNumRecords = 0;
+    }
 
     return responseCode;
 }

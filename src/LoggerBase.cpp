@@ -265,10 +265,19 @@ String Logger::getVarCodeAtI(uint8_t position_i) {
 String Logger::getVarUUIDAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
+// This returns the current value of the variable as a float
+float Logger::getValueAtI(uint8_t position_i) {
+    return _internalArray->arrayOfVars[position_i]->getValue();
+}
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
     return _internalArray->arrayOfVars[position_i]->getValueString();
+}
+// This returns a particular value of the variable as a string with the
+// correct number of significant figures
+String Logger::formatValueStringAtI(uint8_t position_i, float value) {
+    return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
 

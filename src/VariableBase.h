@@ -356,6 +356,14 @@ class Variable {
      * @return **String** The current value of the variable
      */
     String getValueString(bool updateValue = false);
+    /**
+     * @brief Get a particular value of the variable as a string with the
+     * correct decimal resolution
+     *
+     * @param value value to format
+     * @return **String** The formatted value of the variable
+     */
+    String formatValueString(float value);
 
     /**
      * @brief Pointer to the parent sensor

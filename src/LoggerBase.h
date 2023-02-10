@@ -531,10 +531,28 @@ class Logger {
      * the internal variable array object.
      *
      * @param position_i The position of the variable in the array.
+     * @return **float** The value of the variable as a float.
+     */
+    float getValueAtI(uint8_t position_i);
+    /**
+     * @brief Get the most recent value of the variable at the given position in
+     * the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
      * @return **String** The value of the variable as a string with the correct
      * number of significant figures.
      */
     String getValueStringAtI(uint8_t position_i);
+    /**
+     * @brief Get the string representing a particular value of the variable at
+     * the given position in the internal variable array object.
+     *
+     * @param position_i The position of the variable in the array.
+     * @param value The value to format.
+     * @return **String** The given value as a string with the correct number of
+     *  significant figures.
+     */
+    String formatValueStringAtI(uint8_t position_i, float value);
 
  protected:
     /**
