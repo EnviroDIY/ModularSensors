@@ -50,11 +50,8 @@ class UbidotsPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      *
      * @note It is possible (though very unlikey) that using this constructor
      * could cause errors if the compiler attempts to initialize the publisher
@@ -62,8 +59,7 @@ class UbidotsPublisher : public dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    explicit UbidotsPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                              uint8_t sendOffset = 0);
+    explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -71,11 +67,8 @@ class UbidotsPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      *
      * @note It is possible (though very unlikey) that using this constructor
      * could cause errors if the compiler attempts to initialize the publisher
@@ -83,8 +76,7 @@ class UbidotsPublisher : public dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -95,15 +87,11 @@ class UbidotsPublisher : public dataPublisher {
      * specific device's setup panel).
      * @param deviceID The device API Label from Ubidots, derived from the
      * user-specified device name.
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     UbidotsPublisher(Logger& baseLogger, const char* authentificationToken,
-                     const char* deviceID, uint8_t sendEveryX = 1,
-                     uint8_t sendOffset = 0);
+                     const char* deviceID, int sendEveryX = 1);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -117,15 +105,12 @@ class UbidotsPublisher : public dataPublisher {
      * specific device's setup panel).
      * @param deviceID The device API Label from Ubidots, derived from the
      * user-specified device name.
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     UbidotsPublisher(Logger& baseLogger, Client* inClient,
                      const char* authentificationToken, const char* deviceID,
-                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                     int sendEveryX = 1);
     /**
      * @brief Destroy the EnviroDIY Publisher object
      */

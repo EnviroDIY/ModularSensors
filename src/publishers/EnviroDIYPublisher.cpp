@@ -34,17 +34,16 @@ const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":[";
 
 // Constructors
 EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                       uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+                                       int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                       int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
@@ -52,8 +51,8 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
-                                       uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                       int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
@@ -120,7 +119,7 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 }
 
 bool EnviroDIYPublisher::connectionNeeded(void) {
-    return _logBuffer.getNumRecords() >= 1;
+    return _logBuffer.getNumRecords() >= (_sendEveryX - 1);
 }
 
 // This utilizes an attached modem to make a TCP connection to the
@@ -139,7 +138,7 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     }
 
     // flush data if log buffer is full or we've hit the requested interval
-    if ((record >= 1) || (record < 0)) {
+    if ((record >= (_sendEveryX - 1)) || (record < 0)) {
         return flushDataBuffer(outClient);
     }
 

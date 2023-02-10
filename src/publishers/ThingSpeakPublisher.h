@@ -76,11 +76,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      *
      * @note It is possible (though very unlikey) that using this constructor
      * could cause errors if the compiler attempts to initialize the publisher
@@ -88,8 +85,7 @@ class ThingSpeakPublisher : public dataPublisher {
      * issue, use the null constructor and a populated begin(...) within your
      * set-up function.
      */
-    explicit ThingSpeakPublisher(Logger& baseLogger, uint8_t sendEveryX = 1,
-                                 uint8_t sendOffset = 0);
+    explicit ThingSpeakPublisher(Logger& baseLogger, int sendEveryX = 1);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -97,11 +93,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      *
      * @note It is possible (though very unlikey) that using this constructor
      * could cause errors if the compiler attempts to initialize the publisher
@@ -110,7 +103,7 @@ class ThingSpeakPublisher : public dataPublisher {
      * set-up function.
      */
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                        int sendEveryX = 1);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -118,15 +111,12 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param thingSpeakMQTTKey Your MQTT API Key from Account > MyProfile.
      * @param thingSpeakChannelID The numeric channel id for your channel
      * @param thingSpeakChannelKey The write API key for your channel
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     ThingSpeakPublisher(Logger& baseLogger, const char* thingSpeakMQTTKey,
                         const char* thingSpeakChannelID,
-                        const char* thingSpeakChannelKey,
-                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                        const char* thingSpeakChannelKey, int sendEveryX = 1);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -137,17 +127,13 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param thingSpeakMQTTKey Your MQTT API Key from Account > MyProfile.
      * @param thingSpeakChannelID The numeric channel id for your channel
      * @param thingSpeakChannelKey The write API key for your channel
-     * @param sendEveryX Currently unimplemented, intended for future use to
-     * enable caching and bulk publishing
-     * @param sendOffset Currently unimplemented, intended for future use to
-     * enable publishing data at a time slightly delayed from when it is
-     * collected
+     * @param sendEveryX Interval (in units of the logging interval) between
+     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                         const char* thingSpeakMQTTKey,
                         const char* thingSpeakChannelID,
-                        const char* thingSpeakChannelKey,
-                        uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                        const char* thingSpeakChannelKey, int sendEveryX = 1);
     /**
      * @brief Destroy the ThingSpeak Publisher object
      */

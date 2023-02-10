@@ -34,26 +34,23 @@ const char* UbidotsPublisher::payload = "{";
 
 // Constructors
 UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                   uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                                   uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+                                   int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {}
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authentificationToken,
-                                   const char* deviceID, uint8_t sendEveryX,
-                                   uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                   const char* deviceID, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
     setToken(authentificationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));
 }
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
                                    const char* authentificationToken,
-                                   const char* deviceID, uint8_t sendEveryX,
-                                   uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                   const char* deviceID, int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(authentificationToken);
     _baseLogger->setSamplingFeatureUUID(deviceID);
     MS_DBG(F("dataPublisher object created"));

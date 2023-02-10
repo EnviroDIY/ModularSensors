@@ -25,18 +25,17 @@ const char* ThingSpeakPublisher::mqttUser       = THING_SPEAK_USER_NAME;
 
 // Constructors
 ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, uint8_t sendEveryX,
-                                         uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {}
+                                         int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakMQTTKey,
                                          const char* thingSpeakChannelID,
                                          const char* thingSpeakChannelKey,
-                                         uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, sendEveryX, sendOffset) {
+                                         int sendEveryX)
+    : dataPublisher(baseLogger, sendEveryX) {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
     setChannelKey(thingSpeakChannelKey);
@@ -45,8 +44,8 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          const char* thingSpeakMQTTKey,
                                          const char* thingSpeakChannelID,
                                          const char* thingSpeakChannelKey,
-                                         uint8_t sendEveryX, uint8_t sendOffset)
-    : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset) {
+                                         int sendEveryX)
+    : dataPublisher(baseLogger, inClient, sendEveryX) {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
     setChannelKey(thingSpeakChannelKey);
