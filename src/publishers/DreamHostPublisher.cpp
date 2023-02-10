@@ -52,41 +52,6 @@ void DreamHostPublisher::setDreamHostPortalRX(const char* dhUrl) {
 }
 
 
-// This prints the URL out to an Arduino stream
-void DreamHostPublisher::printSensorDataDreamHost(Stream* stream) {
-    stream->print(_DreamHostPortalRX);
-    stream->print(loggerTag);
-    stream->print(_baseLogger->getLoggerID());
-    stream->print(timestampTagDH);
-    stream->print(String(Logger::markedLocalEpochTime -
-                         946684800));  // Correct time from epoch to y2k
-
-    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-        stream->print('&');
-        stream->print(_baseLogger->getVarCodeAtI(i));
-        stream->print('=');
-        stream->print(_baseLogger->getValueStringAtI(i));
-    }
-}
-
-
-// This prints a fully structured GET request for DreamHost to the
-// specified stream
-void DreamHostPublisher::printDreamHostRequest(Stream* stream) {
-    // Start the request
-    stream->print(getHeader);
-
-    // Stream the full URL with parameters
-    printSensorDataDreamHost(stream);
-
-    // Send the rest of the HTTP header
-    stream->print(HTTPtag);
-    stream->print(hostHeader);
-    stream->print(dreamhostHost);
-    stream->print(F("\r\n\r\n"));
-}
-
-
 // A way to begin with everything already set
 void DreamHostPublisher::begin(Logger& baseLogger, Client* inClient,
                                const char* dhUrl) {

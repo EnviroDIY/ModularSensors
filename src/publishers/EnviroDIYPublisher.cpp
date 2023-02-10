@@ -86,45 +86,6 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
     return jsonLength;
 }
 
-// This prints a properly formatted JSON for EnviroDIY to an Arduino stream
-void EnviroDIYPublisher::printSensorDataJSON(Stream* stream) {
-    stream->print(samplingFeatureTag);
-    stream->print(_baseLogger->getSamplingFeatureUUID());
-    stream->print(timestampTag);
-    stream->print(Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime));
-    stream->print(F("\","));
-
-    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-        stream->print('"');
-        stream->print(_baseLogger->getVarUUIDAtI(i));
-        stream->print(F("\":"));
-        stream->print(_baseLogger->getValueStringAtI(i));
-        if (i + 1 != _baseLogger->getArrayVarCount()) { stream->print(','); }
-    }
-
-    stream->print('}');
-}
-
-
-// This prints a fully structured post request for EnviroDIY to the
-// specified stream.
-void EnviroDIYPublisher::printEnviroDIYRequest(Stream* stream) {
-    // Stream the HTTP headers for the post request
-    stream->print(postHeader);
-    stream->print(postEndpoint);
-    stream->print(HTTPtag);
-    stream->print(hostHeader);
-    stream->print(enviroDIYHost);
-    stream->print(tokenHeader);
-    stream->print(_registrationToken);
-    stream->print(contentLengthHeader);
-    stream->print(calculateJsonSize());
-    stream->print(contentTypeHeader);
-
-    // Stream the JSON itself
-    printSensorDataJSON(stream);
-}
-
 
 // A way to begin with everything already set
 void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
@@ -147,7 +108,6 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-// int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
 int16_t EnviroDIYPublisher::publishData(Client* outClient) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";

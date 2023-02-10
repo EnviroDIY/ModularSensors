@@ -133,26 +133,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     void setDreamHostPortalRX(const char* dhUrl);
 
-    /**
-     * @brief This creates all of the URL parameter tags and values and writes
-     * the result to an Arduino stream.
-     *
-     * HTML headers are not included.
-     *
-     * @param stream The Arduino stream to write out the URL and parameters to.
-     */
-    void printSensorDataDreamHost(Stream* stream);
-
-    /**
-     * @brief This prints a fully structured GET request for DreamHost to the
-     * specified stream.
-     *
-     * This includes the HTML headers.
-     *
-     * @param stream The Arduino stream to write out the URL and parameters to.
-     */
-    void printDreamHostRequest(Stream* stream);
-
     // A way to begin with everything already set
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
@@ -165,7 +145,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, const char* dhUrl);
 
-    // int16_t postDataDreamHost(void);
     /**
      * @brief Utilizes an attached modem to make a TCP connection to the
      * DreamHost URL and then stream out a get request over that connection.

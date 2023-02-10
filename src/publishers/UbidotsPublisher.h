@@ -153,30 +153,6 @@ class UbidotsPublisher : public dataPublisher {
      * @return uint16_t The number of characters in the JSON object.
      */
     uint16_t calculateJsonSize();
-    // /**
-    //  * @brief Calculates how long the full post request will be, including
-    //  * headers
-    //  *
-    //  * @return uint16_t The length of the full request including HTTP
-    //  headers.
-    //  */
-    // uint16_t calculatePostSize();
-
-    /**
-     * @brief This generates a properly formatted JSON for Ubidots and prints
-     * it to the input Arduino stream object.
-     *
-     * @param stream The Arduino stream to write out the JSON to.
-     */
-    void printSensorDataJSON(Stream* stream);
-
-    /**
-     * @brief This prints a fully structured post request for the Ubidots API
-     * to the specified stream.
-     *
-     * @param stream The Arduino stream to write out the request to.
-     */
-    void printUbidotsRequest(Stream* stream);
 
     // A way to begin with everything already set
     /**
@@ -225,12 +201,10 @@ class UbidotsPublisher : public dataPublisher {
      *
      * @{
      */
-    static const char* postEndpoint;  ///< The endpoint
-    static const char* ubidotsHost;   ///< The host name
-    static const int   ubidotsPort;   ///< The host port
-    static const char* tokenHeader;   ///< The token header text
-    // static const char *cacheHeader;  ///< The cache header text
-    // static const char *connectionHeader;  ///< The keep alive header text
+    static const char* postEndpoint;         ///< The endpoint
+    static const char* ubidotsHost;          ///< The host name
+    static const int   ubidotsPort;          ///< The host port
+    static const char* tokenHeader;          ///< The token header text
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
     /**@}*/
