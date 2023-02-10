@@ -40,6 +40,13 @@ int LogBuffer::getNumRecords(void) {
     return numRecords;
 }
 
+uint8_t LogBuffer::getPercentFull(void) {
+    uint32_t bytesFull = (uint32_t)numRecords * (uint32_t)recordSize;
+    uint32_t bytesTotal = MS_LOG_DATA_BUFFER_SIZE;
+
+    return (uint8_t)((bytesFull*(uint32_t)100)/bytesTotal);
+}
+
 int LogBuffer::addRecord(uint32_t timestamp) {
     int record = numRecords;
     // compute position of the new record's timestamp in the buffer
