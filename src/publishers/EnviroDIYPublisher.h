@@ -175,6 +175,14 @@ class EnviroDIYPublisher : public dataPublisher {
                const char* samplingFeatureUUID);
 
     /**
+     * @brief Checks if the publisher needs an Internet connection for the next
+     * publishData call (as opposed to just buffering data internally).
+     *
+     * @return True if an internet connection is needed for the next publish.
+     */
+    bool connectionNeeded(void) override;
+
+    /**
      * @brief Utilize an attached modem to open a a TCP connection to the
      * EnviroDIY/ODM2DataSharingPortal and then stream out a post request over
      * that connection.

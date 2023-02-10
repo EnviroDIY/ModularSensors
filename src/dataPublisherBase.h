@@ -208,6 +208,14 @@ class dataPublisher {
 
 
     /**
+     * @brief Checks if the publisher needs an Internet connection for the next
+     * publishData call (as opposed to just buffering data internally).
+     *
+     * @return True if an internet connection is needed for the next publish.
+     */
+    virtual bool connectionNeeded(void);
+
+    /**
      * @brief Open a socket to the correct receiver and sends out the formatted
      * data.
      *

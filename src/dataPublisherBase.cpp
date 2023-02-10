@@ -10,9 +10,9 @@
  */
 #include "dataPublisherBase.h"
 
-char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
+char    dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE];
 Client* dataPublisher::txBufferOutClient = nullptr;
-size_t dataPublisher::txBufferLen;
+size_t  dataPublisher::txBufferLen;
 
 // Basic chunks of HTTP
 const char* dataPublisher::getHeader  = "GET ";
@@ -84,16 +84,14 @@ void dataPublisher::txBufferInit(Client* outClient) {
 void dataPublisher::txBufferAppend(const char* data, size_t length) {
     while (length > 0) {
         size_t remaining = MS_SEND_BUFFER_SIZE - txBufferLen;
-        size_t amount = remaining < length ? remaining : length;
+        size_t amount    = remaining < length ? remaining : length;
 
         memcpy(&txBuffer[txBufferLen], data, amount);
         length -= amount;
         data += amount;
         txBufferLen += amount;
 
-        if (txBufferLen == MS_SEND_BUFFER_SIZE) {
-            txBufferFlush();
-        }
+        if (txBufferLen == MS_SEND_BUFFER_SIZE) { txBufferFlush(); }
     }
 }
 
@@ -117,6 +115,10 @@ void dataPublisher::txBufferFlush() {
     txBufferLen = 0;
 }
 
+bool dataPublisher::connectionNeeded(void) {
+    // connection is always needed unless publisher has special logic
+    return true;
+}
 
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData() {
