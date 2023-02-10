@@ -200,6 +200,10 @@ class EnviroDIYPublisher : public dataPublisher {
     // actually transmit rather than just buffer data
     int16_t flushDataBuffer(Client* outClient);
 
+    // we send every one of the first five data points immediately for field
+    // validation
+    uint8_t _initialTransmissionsRemaining = 5;
+
  private:
     // Tokens and UUID's for EnviroDIY
     const char* _registrationToken = nullptr;

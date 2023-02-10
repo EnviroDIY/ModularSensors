@@ -120,7 +120,14 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 }
 
 bool EnviroDIYPublisher::connectionNeeded(void) {
-    return _logBuffer.getNumRecords() >= 1;
+    // the programmed interval is about to be reached by the next record
+    bool atSendInterval = _logBuffer.getNumRecords() >= (_sendEveryX - 1);
+
+    // the initial log transmissions have not completed (we send every one
+    // of the first five data points immediately for field validation)
+    bool initialTransmission = _initialTransmissionsRemaining > 0;
+
+    return atSendInterval || initialTransmission;
 }
 
 // This utilizes an attached modem to make a TCP connection to the
@@ -128,6 +135,11 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
 // over that connection.
 // The return is the http status code of the response.
 int16_t EnviroDIYPublisher::publishData(Client* outClient) {
+    // do we intend to send this call? if so, we have just returned true from
+    // connectionNeeded() and the internet is connected and waiting. check what
+    // that function said so we know to do it after we record this data point.
+    bool willFlush = connectionNeeded();
+
     // create record to hold timestamp and variable values in the log buffer
     int record = _logBuffer.addRecord(Logger::markedLocalEpochTime);
 
@@ -138,11 +150,16 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient) {
         }
     }
 
-    // flush data if log buffer is full or we've hit the requested interval
-    if ((record >= 1) || (record < 0)) { return flushDataBuffer(outClient); }
+    if (_initialTransmissionsRemaining > 0) {
+        _initialTransmissionsRemaining -= 1;
+    }
 
-    return 201;  // pretend everything went okay?
-    return 201;  // pretend everything went okay?
+    // do the data buffer flushing if we previously planned to
+    if (willFlush) {
+        return flushDataBuffer(outClient);
+    } else {
+        return 201;  // pretend everything went okay?
+    }
 }
 
 int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
