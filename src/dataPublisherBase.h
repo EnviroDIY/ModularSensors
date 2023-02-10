@@ -189,10 +189,11 @@ class dataPublisher {
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return **int16_t** The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
-    virtual int16_t publishData(Client* outClient) = 0;
+    virtual int16_t publishData(Client* outClient, bool forceFlush = false) = 0;
     /**
      * @brief Open a socket to the correct receiver and send out the formatted
      * data.
@@ -201,10 +202,12 @@ class dataPublisher {
      * either a client having been linked to the publisher or a logger modem
      * having been linked to the logger linked to the publisher.
      *
+     * @param forceFlush Ask the publisher to flush buffered data immediately.
+     *
      * @return **int16_t** The result of publishing data.  May be an http
      * response code or a result code from PubSubClient.
      */
-    virtual int16_t publishData();
+    virtual int16_t publishData(bool forceFlush = false);
 
     /**
      * @brief Retained for backwards compatibility; use publishData(Client*

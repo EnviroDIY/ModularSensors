@@ -186,7 +186,7 @@ class ThingSpeakPublisher : public dataPublisher {
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);
-    int16_t publishData(Client* outClient) override;
+    int16_t publishData(Client* outClient, bool forceFlush = false) override;
 
  protected:
     /**
