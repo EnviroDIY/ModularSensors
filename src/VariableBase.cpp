@@ -253,11 +253,18 @@ float Variable::getValue(bool updateValue) {
 // This returns the current value of the variable as a string
 // with the correct number of significant figures
 String Variable::getValueString(bool updateValue) {
+    return formatValueString(getValue(updateValue));
+}
+
+
+// This returns a particular value of the variable as a string
+// with the correct number of significant figures
+String Variable::formatValueString(float value) {
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0) {
-        auto val = static_cast<int16_t>(getValue(updateValue));
+        auto val = static_cast<int16_t>(value);
         return String(val);
     } else {
-        return String(getValue(updateValue), _decimalResolution);
+        return String(value, _decimalResolution);
     }
 }

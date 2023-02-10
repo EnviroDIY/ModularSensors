@@ -219,6 +219,11 @@ class EnviroDIYPublisher : public dataPublisher {
 
     // queued sensor data buffer
     static char dataBuffer[MS_DATA_BUFFER_SIZE];
+    // number of records currently in the buffer
+    static int dataBufferNumRecords;
+
+    // actually transmit rather than just buffer data
+    int16_t flushDataBuffer(Client* outClient);
 
  private:
     // Tokens and UUID's for EnviroDIY
