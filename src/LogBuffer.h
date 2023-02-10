@@ -77,6 +77,13 @@ class LogBuffer {
     int getNumRecords(void);
 
     /**
+     * @brief      Computes the percentage full of the buffer.
+     *
+     * @return     The current percent full.
+     */
+    uint8_t getPercentFull(void);
+
+    /**
      * @brief Adds a new record with the given timestamp.
      *
      * @param[in]  timestamp  The timestamp

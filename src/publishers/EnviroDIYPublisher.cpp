@@ -120,8 +120,40 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 }
 
 bool EnviroDIYPublisher::connectionNeeded(void) {
-    // the programmed interval is about to be reached by the next record
-    bool atSendInterval = _logBuffer.getNumRecords() >= (_sendEveryX - 1);
+    // compute the send interval, reducing it as the buffer gets more full so we
+    // have less of a chance of losing data
+    int interval = _sendEveryX;
+    uint8_t percent = _logBuffer.getPercentFull();
+    if (percent >= 50) {
+        interval /= 2;
+    } else if (percent >= 75) {
+        interval /= 4;
+    } else if (percent >= 90) {
+        interval = 1;
+    }
+
+    // the programmed interval is about to be reached by the next record, or it
+    // was just reached and we are trying again
+    bool atSendInterval = false;
+    if (interval <= 1) {
+        atSendInterval = true;
+    } else {
+        int numRecords = _logBuffer.getNumRecords();
+        // where we are relative to the interval
+        int relative = (numRecords % interval);
+        if (relative == (interval - 1)) {
+            // the next sample will put us right at the interval
+            atSendInterval = true;
+        } else if (numRecords >= interval) { // don't send the first sample
+            if (relative == 0) {
+                // the last sample was the interval, this is the first retry
+                atSendInterval = true;
+            } else if (relative == 1) {
+                // two samples ago was the interval, this is the second retry
+                atSendInterval = true;
+            }
+        }
+    }
 
     // the initial log transmissions have not completed (we send every one
     // of the first five data points immediately for field validation)
