@@ -85,7 +85,7 @@
  * This is longer than the expected 250ms for a SDI-12 sensor, but I couldn't
  * get a response from the sensor faster than that.
  */
-#define CLARIVUE10_WARM_UP_TIME_MS 5500
+#define CLARIVUE10_WARM_UP_TIME_MS 8000
 /// @brief Sensor::_stabilizationTime_ms; the ClariVUE10 is stable as soon as it
 /// warms up (0ms stabilization).
 #define CLARIVUE10_STABILIZATION_TIME_MS 0
@@ -96,7 +96,7 @@
  * Spec sheet says the measurement time is 9s.  When taking a standard
  * measurement I was not getting a result until after about 9335ms.
  */
-#define CLARIVUE10_MEASUREMENT_TIME_MS 9500
+#define CLARIVUE10_MEASUREMENT_TIME_MS 11000
 /// @brief Extra wake time required for an SDI-12 sensor between the "break"
 /// and the time the command is sent.  The ClariVUE requires no extra time.
 #define CLARIVUE10_EXTRA_WAKE_TIME_MS 0
