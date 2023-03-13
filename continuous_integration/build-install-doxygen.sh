@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+# Makes the bash script print out every command before it is executed, except echo
+trap '[[ $BASH_COMMAND != echo* ]] && echo $BASH_COMMAND' DEBUG
 
 # Exit with nonzero exit code if anything fails
 set -e
@@ -26,20 +29,20 @@ echo "\e[32m\n\n\nCurrent graphviz version...\e[0m"
 dot -v
 echo "\n\n\n"
 
-cd $TRAVIS_BUILD_DIR
+cd $GITHUB_WORKSPACE
 
-if [ ! -f $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen ]; then
-
+if [ ! -f $GITHUB_WORKSPACE/doxygen-src/build/bin/doxygen ]; then
+    
     # Build instructions from: https://www.stack.nl/~dimitri/doxygen/download.html
     echo "\e[32mCloning doxygen repository...\e[0m"
     git clone https://github.com/doxygen/doxygen.git doxygen-src --branch $DOXYGEN_VERSION --depth 1
-
+    
     cd doxygen-src
-
+    
     echo "\e[32mCreate build folder...\e[0m"
     mkdir build
     cd build
-
+    
     echo "\e[32mMake...\e[0m"
     cmake -G "Unix Makefiles" ..
     make
@@ -48,11 +51,11 @@ if [ ! -f $TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen ]; then
 fi
 
 echo "\e[32m\n\n\nCurrent Doxygen version...\e[0m"
-$TRAVIS_BUILD_DIR/doxygen-src/build/bin/doxygen -v
+$GITHUB_WORKSPACE/doxygen-src/build/bin/doxygen -v
 echo "\n\n\n"
 
 # echo "\e[32mMove Doxygen to working directory"
-# cp $TRAVIS_BUILD_DIR/doxygen-src/build/bin/* $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+# cp $GITHUB_WORKSPACE/doxygen-src/build/bin/* $GITHUB_WORKSPACE/code_docs/ModularSensors
 # #make install
 
-cd $TRAVIS_BUILD_DIR/code_docs/ModularSensors
+cd $GITHUB_WORKSPACE/code_docs/ModularSensors

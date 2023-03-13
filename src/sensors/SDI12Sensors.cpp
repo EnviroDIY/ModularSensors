@@ -80,7 +80,7 @@ bool SDI12Sensors::setup(void) {
     // Force the timeout value to be -9999 (This should be library default.)
     _SDI12Internal.setTimeoutValue(-9999);
 
-#if defined __AVR__ || defined ARDUINO_ARCH_AVR
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
     // Allow the SDI-12 library access to interrupts
     MS_DBG(F("Enabling interrupts for SDI12 on pin"), _dataPin);
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
@@ -552,10 +552,19 @@ bool SDI12Sensors::addSingleMeasurementResult(void) {
             while ((millis() - timerStart) < (1000 * (wait))) {
                 // sensor can interrupt us to let us know it is done early
                 if (_SDI12Internal.available()) {
+#ifdef MS_SDI12SENSORS_DEBUG_DEEP
+                    // if we're debugging print out early response
                     MS_DEEP_DBG(F("    <<<"),
                                 _SDI12Internal.readStringUntil('\n'));
                     _SDI12Internal.clearBuffer();
                     break;
+#else
+                    // if we're not debugging, just read the response to make
+                    // sure it's removed from the buffer
+                    _SDI12Internal.readStringUntil('\n');
+                    _SDI12Internal.clearBuffer();
+                    break;
+#endif
                 }
             }
             // Wait for anything else and clear it out

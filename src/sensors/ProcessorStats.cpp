@@ -124,7 +124,7 @@ String ProcessorStats::getSensorLocation(void) {
 }
 
 
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
 extern "C" char* sbrk(int i);
 
 int16_t FreeRam() {
@@ -196,13 +196,13 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     // Used only for debugging - can be removed
     MS_DBG(F("Getting Free RAM"));
 
-#if defined __AVR__ || defined ARDUINO_ARCH_AVR
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
     extern int16_t __heap_start, *__brkval;
     int16_t        v;
     float          sensorValue_freeRam = (int)&v -
         (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
 
-#elif defined(ARDUINO_ARCH_SAMD)
+#elif defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
     float sensorValue_freeRam = FreeRam();
 
 #else

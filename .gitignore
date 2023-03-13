@@ -61,8 +61,8 @@ Temporary Items
 .clang_complete
 .gcc-flags.json
 .atomrc.cson
-lib/readme.txt
-include/readme.txt
+lib/*
+include/*
 /platformio.ini
 .sconsign.dblite
 
@@ -97,3 +97,13 @@ docs/output_documentExamples.log
 docs/output_fixSectionsInXml.log
 examples/DRWI_Mayfly1_Wifi_5tm_ds18b20_1/DRWI_Mayfly1_Wifi_5tm_ds18b20_1.ino
 clang_format_all.bat
+arduino_lint.md
+arduino_lint.json
+**/home/arduino/*
+examples/test_code/*
+compile_results.md
+arduino_cli_log.log
+continuous_integration/arduino_cli_local.yaml
+compile_results.log
+continuous_integration_artifacts/*
+arduino_cli.log

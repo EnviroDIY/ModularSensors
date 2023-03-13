@@ -106,8 +106,8 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void) {
     byte i2c_status = -1;
     if (_millisMeasurementRequested > 0) {
         _i2c->beginTransmission(_i2cAddressHex);
-        _i2c->write(B10001100);  // initiate conversion, One-Shot mode, 18
-                                 // bits, PGA x1
+        _i2c->write(0b10001100);  // initiate conversion, One-Shot mode, 18
+                                  // bits, PGA x1
         i2c_status = _i2c->endTransmission();
 
         delay(300);

@@ -1,0 +1,192 @@
+name: Build Examples
+
+# Triggers the workflow on push or pull request events
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate_matrix:
+    name: Generate build matrices
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    outputs:
+      arduino_job_matrix: ${{ steps.py_matrix.outputs.arduino_job_matrix }}
+      pio_job_matrix: ${{ steps.py_matrix.outputs.pio_job_matrix }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
+      - name: Install python dependencies, including PlatformIO
+        run: pip install -r continuous_integration/requirements.txt
+
+      - name: Generate Matrices
+        id: py_matrix
+        run: |
+          python continuous_integration/generate_job_matrix.py
+
+      - name: Store generated examples
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated_examples
+          path: |
+            continuous_integration_artifacts/
+
+  build_ex_arduino:
+    name: ${{ matrix.job_info.job_name }}
+    runs-on: ubuntu-latest
+    needs: generate_matrix
+    strategy:
+      matrix:
+        job_info: ${{ fromJSON(needs.generate_matrix.outputs.arduino_job_matrix) }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set environment variable for library installation source
+        run: |
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            echo "::debug::Push to commit ${GITHUB_SHA}"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.zip" >> $GITHUB_ENV
+          else
+            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
+            echo "LIBRARY_INSTALL_ZIP=https://github.com/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF}.zip" >> $GITHUB_ENV
+          fi
+
+      - name: Unused Step
+        run: echo "This is needed to make the step number match with the PlatformIO jobs. =)"
+
+      # We use the `arduino/setup-arduino-cli` action to install and
+      # configure the Arduino CLI on the system.
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1.1.1
+
+      - name: Restore Arduino platforms and libraries
+        uses: actions/cache@v3
+        id: cache_libraries
+        with:
+          path: |
+            home/arduino
+          # if nothing in the dependencies.json file has changed, then it will
+          # be a "cache hit" and we can restore libraries from cache and not
+          # download them.  If it has changed we have to re-download.
+          key: ${{ hashFiles('./continuous_integration/dependencies.json','continuous_integration/install-deps-arduino-cli.sh') }}
+
+      # Install cores and library dependencies for the Arduino CLI, iff no cache
+      - name: Install the Arduino libraries
+        if: steps.cache_libraries.outputs.cache-hit != 'true'
+        run: |
+          chmod +x continuous_integration/install-deps-arduino-cli.sh
+          sh continuous_integration/install-deps-arduino-cli.sh
+
+      # Install ModularSensors for the Arduino CLI
+      - name: Install the testing version of Modular Sensors for the Arduino CLI
+        run: |
+          chmod +x continuous_integration/install-test-version-arduino-cli.sh
+          sh continuous_integration/install-test-version-arduino-cli.sh
+
+      - name: Download the prepared examples
+        uses: actions/download-artifact@v3
+        with:
+          name: generated_examples
+          path: |
+            continuous_integration_artifacts/
+
+      - name: Include problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      # Run the script to compile the examples
+      - name: Compile
+        env:
+          ACTION_RUN_ID: ${{ github.run_id }}
+        run: |
+          chmod +x ${{ matrix.job_info.script }}
+          bash ${{ matrix.job_info.script }}
+
+      # NOTE:  Don't uninstall for PlatformIO because the library manager will clean up the
+      # dependencies leaving nothing for the cache
+      # pio pkg uninstall --library -g EnviroDIY_ModularSensors
+      - name: Uninstall testing version of Modular Sensors before caching
+        run: |
+          arduino-cli --config-file continuous_integration/arduino_cli.yaml lib uninstall ModularSensors
+
+  build_pio:
+    name: ${{ matrix.job_info.job_name }}
+    runs-on: ubuntu-latest
+    needs: generate_matrix
+    strategy:
+      matrix:
+        job_info: ${{ fromJSON(needs.generate_matrix.outputs.pio_job_matrix) }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set environment variable for library installation source
+        run: |
+          if [[ -z "${GITHUB_HEAD_REF}" ]]; then
+            echo "::debug::Push to commit ${GITHUB_SHA}"
+            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_SHA}" >> $GITHUB_ENV
+          else
+            echo "::debug::Pull Request from the ${GITHUB_HEAD_REF} branch"
+            echo "LIBRARY_INSTALL_SOURCE=https://github.com/${GITHUB_REPOSITORY}.git#${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
+      - name: Install python dependencies, including PlatformIO
+        run: pip install -r continuous_integration/requirements.txt
+
+      - name: Restore PlatformIO and Arduino platforms and libraries
+        uses: actions/cache@v3
+        id: cache_libraries
+        with:
+          path: |
+            ~/.platformio
+          # if nothing in the dependencies.json file has changed, then it will
+          # be a "cache hit" and we can restore libraries from cache and not
+          # download them.  If it has changed we have to re-download.
+          key: ${{ hashFiles('./continuous_integration/dependencies.json','continuous_integration/install-deps-platformio.sh') }}
+
+      # Install the dependencies for PlatformIO
+      - name: Install the PlatformIO dependencies at global level
+        if: steps.cache_libraries.outputs.cache-hit != 'true'
+        run: |
+          chmod +x continuous_integration/install-deps-platformio.sh
+          sh continuous_integration/install-deps-platformio.sh
+          cp -a /home/runner/.platformio/lib/. $GITHUB_WORKSPACE/lib/
+
+      # Install ModularSensors at the Global level for PlatformIO
+      # Force install to get the right version
+      - name: Install the testing version of Modular Sensors for PlatformIO
+        run: |
+          pio pkg install -g --library ${{ env.LIBRARY_INSTALL_SOURCE }}
+
+      - name: Download the prepared examples
+        uses: actions/download-artifact@v3
+        with:
+          name: generated_examples
+          path: |
+            continuous_integration_artifacts/
+
+      - name: Include problem matcher
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      # Run the script to compile the examples
+      - name: Compile
+        env:
+          ACTION_RUN_ID: ${{ github.run_id }}
+        run: |
+          chmod +x ${{ matrix.job_info.script }}
+          bash ${{ matrix.job_info.script }}

@@ -15,10 +15,7 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for the Arduino IDE
-//  NOTE:  These are ONLY needed to compile with the Arduino IDE.
-//         If you use PlatformIO, you should set these build flags in your
-//         platformio.ini
+//  Defines for TinyGSM
 // ==========================================================================
 /** Start [defines] */
 #ifndef TINY_GSM_RX_BUFFER
@@ -101,7 +98,7 @@ const char* sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 15;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
@@ -196,7 +193,8 @@ Variable* ds3231Temp =
 // ==========================================================================
 /** Start [modbus_shared] */
 // Create a reference to the serial port for modbus
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO) || \
+    defined(ATMEGA2560)
 HardwareSerial& modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial& modbusSerial = altSoftSerial;  // For software serial
