@@ -50,9 +50,9 @@
  *
  * ___
  * @section sensor_rainvue_examples Example Code
- * The Campbell RainVUE10 is used in the @menulink{campbell_rain_vue10} example.
+ * The Campbell RainVUE10 is used in the @menulink{campbell_rainvue10} example.
  *
- * @menusnip{campbell_rain_vue10}
+ * @menusnip{campbell_rainvue10}
  */
 /* clang-format on */
 
