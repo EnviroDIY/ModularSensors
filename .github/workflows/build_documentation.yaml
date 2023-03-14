@@ -24,7 +24,7 @@ concurrency:
 env:
   REBUILD_CACHE_NUMBER: 2
   PYTHON_DEPS_ARCHIVE_NUM: 2
-  DOXYGEN_VERSION: Release_1_9_3
+  DOXYGEN_VERSION: Release_1_9_6
   TEX_VERSION: 2019
   # ^^ 2019 is the latest TeX live available on apt-get and that's good enough
   GRAPHVIZ_VERSION: 2.43.0
