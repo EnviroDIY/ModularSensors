@@ -38,7 +38,6 @@ jobs:
             'arduino:avr:mega',
             'arduino:samd:mzero_bl',
             'adafruit:samd:adafruit_feather_m0',
-            'SODAQ:samd:sodaq_autonomo',
           ]
 
     steps:
@@ -97,9 +96,6 @@ jobs:
           fi
           if [ ${{ matrix.fqbn }} = 'adafruit:samd:adafruit_feather_m0' ]; then
             echo "EXTRA_BUILD_FLAGS=-DNEOSWSERIAL_EXTERNAL_PCINT -DARDUINO_SAMD_ZERO -DARM_MATH_CM0PLUS -DADAFRUIT_FEATHER_M0 -D__SAMD21G18A__ -DUSB_VID=0x239A -DUSB_PID=0x800B -DUSBCON -DUSB_CONFIG_POWER=100" >> $GITHUB_ENV
-          fi
-          if [ ${{ matrix.fqbn }} = 'SODAQ:samd:sodaq_autonomo' ]; then
-            echo "EXTRA_BUILD_FLAGS=-DNEOSWSERIAL_EXTERNAL_PCINT -DVERY_LOW_POWER -D__SAMD21J18A__ -DUSB_VID=0x2341 -DUSB_PID=0x804d -DUSBCON" >> $GITHUB_ENV
           fi
           echo "::endgroup::"
 
