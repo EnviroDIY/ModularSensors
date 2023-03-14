@@ -72,7 +72,6 @@ pio_to_acli = {
     "megaatmega2560": {"fqbn": "arduino:avr:mega"},
     "zeroUSB": {"fqbn": "arduino:samd:mzero_bl"},
     "adafruit_feather_m0": {"fqbn": "adafruit:samd:adafruit_feather_m0"},
-    "sodaq_autonomo": {"fqbn": "SODAQ:samd:sodaq_autonomo"},
 }
 
 
