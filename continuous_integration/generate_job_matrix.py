@@ -695,6 +695,13 @@ json_out.close()
 
 
 #%%
+# different attempt to save output
+with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+    print("arduino_job_matrix={}".format(json.dumps(arduino_job_matrix)), file=fh)
+    print("pio_job_matrix={}".format(json.dumps(pio_job_matrix)), file=fh)
+
+
+#%%
 if "GITHUB_WORKSPACE" not in os.environ.keys():
     try:
         shutil.rmtree(artifact_dir)
