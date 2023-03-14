@@ -274,7 +274,7 @@ jobs:
       # Force install to get the right version
       - name: Install the testing version of Modular Sensors for PlatformIO
         run: |
-          pio pkg install -g -l -f ${{ env.LIBRARY_INSTALL_SOURCE }}
+          pio pkg install -g -l -f "${{ env.LIBRARY_INSTALL_SOURCE }}"
           pio pkg show envirodiy/EnviroDIY_ModularSensors
 
       - name: Modify menu for matrix configuration
