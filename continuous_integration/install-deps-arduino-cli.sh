@@ -25,9 +25,6 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml core install a
 echo "\n\e[32mInstalling the Adafruit SAMD Core\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core install adafruit:samd
 
-echo "\n\e[32mInstalling the Sodaq SAMD Core\e[0m"
-arduino-cli --config-file continuous_integration/arduino_cli.yaml core install SODAQ:samd
-
 echo "\n\e[32mUpdating the core index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
 
