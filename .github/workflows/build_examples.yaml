@@ -40,6 +40,19 @@ jobs:
           path: |
             continuous_integration_artifacts/
 
+  print_job_matrix:
+    name: print_job_matrix
+    runs-on: ubuntu-latest
+    needs: generate_matrix
+    steps:
+      - name: Check the generated matrix output
+        run: |
+          echo "Arduino job matrix:"
+          echo "${{ needs.generate_matrix.outputs.arduino_job_matrix }}"
+          echo
+          echo "PlatformIO job matrix"
+          echo "${{ needs.generate_matrix.outputs.pio_job_matrix }}"
+
   build_ex_arduino:
     name: ${{ matrix.job_info.job_name }}
     runs-on: ubuntu-latest
