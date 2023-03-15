@@ -765,11 +765,11 @@ Note that to access both the high and low range returns, two instances must be c
 ___
 
 
-#### Campbell RainVUE SDI-12 Precipitation Sensor <!-- {#menu_walk_campbell_rainvue10} -->
+#### Campbell RainVUE SDI-12 Precipitation Sensor <!-- {#menu_walk_campbell_rain_vue10} -->
 
 @see @ref sensor_rainvue
 
-[//]: # ( @menusnip{campbell_rainvue10} )
+[//]: # ( @menusnip{campbell_rain_vue10} )
 
 ___
 
