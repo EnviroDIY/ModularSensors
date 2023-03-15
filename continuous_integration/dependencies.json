@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 14,
+  "action_cache_version": 15,
   "dependencies": [
     {
       "name": "EnviroDIY_DS3231",
@@ -79,7 +79,7 @@
       "owner": "adafruit",
       "library id": "31",
       "url": "https://github.com/adafruit/Adafruit_Sensor",
-      "version": "~1.1.5",
+      "version": "~1.1.9",
       "note": "Adafruit's unified sensor library is used by their other libraries",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -143,7 +143,7 @@
       "owner": "adafruit",
       "library id": "160",
       "url": "https://github.com/adafruit/Adafruit_INA219",
-      "version": "~1.2.0",
+      "version": "~1.2.1",
       "note": "This is a library for the Adafruit INA219 high side DC current sensor boards",
       "authors": ["Adafruit"],
       "frameworks": "arduino",
@@ -164,7 +164,7 @@
       "owner": "adafruit",
       "library id": "11710",
       "url": "https://github.com/adafruit/Adafruit_SHT4X",
-      "version": "~1.0.0",
+      "version": "~1.0.2",
       "note": "Sensirion SHT4x Library by Adafruit",
       "authors": ["Adafruit"],
       "frameworks": "arduino"
@@ -263,7 +263,7 @@
       "owner": "envirodiy",
       "library id": "2078",
       "url": "https://github.com/EnviroDIY/YosemitechModbus",
-      "version": "~0.3.2",
+      "version": "~0.4.0",
       "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
       "authors": ["Sara Damiano", "Anthony Aufdenkampe"],
       "frameworks": "arduino",

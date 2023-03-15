@@ -1202,11 +1202,11 @@ Variable* obs3VoltHigh = new CampbellOBS3_Voltage(
 /** End [campbell_obs3] */
 #endif
 
-#if defined BUILD_SENSOR_CAMPBELL_RAINVUE10
+#if defined BUILD_SENSOR_CAMPBELL_RAIN_VUE10
 // ==========================================================================
 //  Campbell RainVUE Precipitation Sensor
 // ==========================================================================
-/** Start [campbell_rainvue10] */
+/** Start [campbell_rain_vue10] */
 #include <sensors/CampbellRainVUE10.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
@@ -1228,7 +1228,7 @@ Variable* rainvueRainRateAve = new CampbellRainVUE10_RainRateAve(
     &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* rainvueRainRateMax = new CampbellRainVUE10_RainRateMax(
     &rainvue, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [campbell_rainvue10] */
+/** End [campbell_rain_vue10] */
 #endif
 
 
@@ -2512,6 +2512,12 @@ Variable* variableList[] = {
     obs3TurbHigh,
     obs3VoltHigh,
 #endif
+#if defined BUILD_SENSOR_CAMPBELL_RAIN_VUE10
+    rainvuePrecipitation,
+    rainvueTips,
+    rainvueRainRateAve,
+    rainvueRainRateMax,
+#endif
 #if defined BUILD_SENSOR_DECAGON_CTD
     ctdCond,
     ctdTemp,
@@ -2658,6 +2664,10 @@ Variable* variableList[] = {
     y560NH4_N,
     y560pH,
     y560Temp,
+#endif
+#if defined BUILD_SENSOR_YOSEMITECH_Y700
+    y700Pres,
+    y700Temp,
 #endif
 #if defined BUILD_SENSOR_YOSEMITECH_Y4000
     y4000DO,

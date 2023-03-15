@@ -71,7 +71,7 @@
 #undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include <DHT.h>
+#include "DHT.h"
 
 #ifdef DHT11
 // In older versions of the DHT library, defines were used

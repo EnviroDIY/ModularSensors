@@ -72,7 +72,6 @@ pio_to_acli = {
     "megaatmega2560": {"fqbn": "arduino:avr:mega"},
     "zeroUSB": {"fqbn": "arduino:samd:mzero_bl"},
     "adafruit_feather_m0": {"fqbn": "adafruit:samd:adafruit_feather_m0"},
-    "sodaq_autonomo": {"fqbn": "SODAQ:samd:sodaq_autonomo"},
 }
 
 
@@ -693,6 +692,13 @@ print('echo "pio_job_matrix={}" >> $GITHUB_OUTPUT'.format(json.dumps(pio_job_mat
 json_out = open(os.path.join(artifact_dir, "pio_job_matrix.json"), "w+")
 json.dump(pio_job_matrix, json_out, indent=2)
 json_out.close()
+
+
+#%%
+# different attempt to save output
+with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+    print("arduino_job_matrix={}".format(json.dumps(arduino_job_matrix)), file=fh)
+    print("pio_job_matrix={}".format(json.dumps(pio_job_matrix)), file=fh)
 
 
 #%%
