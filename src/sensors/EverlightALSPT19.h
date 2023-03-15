@@ -96,7 +96,7 @@
 
 /* clang-format off */
 #if !defined ALSPT19_ADC_REFERENCE_MODE
-#if defined ARDUINO_ARCH_AVR | defined DOXYGEN
+#if defined (ARDUINO_ARCH_AVR) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
@@ -118,7 +118,7 @@
  */
 #define ALSPT19_ADC_REFERENCE_MODE DEFAULT
 #endif
-#if defined ARDUINO_ARCH_SAMD | defined DOXYGEN
+#if defined (ARDUINO_ARCH_SAMD) || defined (DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *

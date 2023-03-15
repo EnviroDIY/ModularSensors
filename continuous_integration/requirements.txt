@@ -1,0 +1,5 @@
+# Wheel for installs
+wheel
+
+# use platformio for all of the compiler testing
+platformio

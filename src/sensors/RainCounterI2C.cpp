@@ -17,38 +17,36 @@ RainCounterI2C::RainCounterI2C(SoftwareWire* theI2C, uint8_t i2cAddressHex,
                                float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
-             1) {
-    _i2cAddressHex      = i2cAddressHex;
-    _i2c                = theI2C;
-    createdSoftwareWire = false;
-    _rainPerTip         = rainPerTip;
-}
+             1),
+      _rainPerTip(rainPerTip),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(theI2C),
+      createdSoftwareWire(false) {}
 RainCounterI2C::RainCounterI2C(int8_t dataPin, int8_t clockPin,
                                uint8_t i2cAddressHex, float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1,
-             dataPin, 1, BUCKET_INC_CALC_VARIABLES) {
-    _i2cAddressHex      = i2cAddressHex;
-    _i2c                = new SoftwareWire(dataPin, clockPin);
-    createdSoftwareWire = true;
-    _rainPerTip         = rainPerTip;
-}
+             dataPin, 1, BUCKET_INC_CALC_VARIABLES),
+      _rainPerTip(rainPerTip),
+      _i2cAddressHex(i2cAddressHex),
+      _i2c(new SoftwareWire(dataPin, clockPin)),
+      createdSoftwareWire(true) {}
 #else
 RainCounterI2C::RainCounterI2C(TwoWire* theI2C, uint8_t i2cAddressHex,
                                float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
              1),
+      _rainPerTip(rainPerTip),
       _i2cAddressHex(i2cAddressHex),
-      _i2c(theI2C),
-      _rainPerTip(rainPerTip) {}
+      _i2c(theI2C) {}
 RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES, BUCKET_WARM_UP_TIME_MS,
              BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS, -1, -1,
              1),
+      _rainPerTip(rainPerTip),
       _i2cAddressHex(i2cAddressHex),
-      _i2c(&Wire),
-      _rainPerTip(rainPerTip) {}
+      _i2c(&Wire) {}
 #endif
 
 

@@ -468,7 +468,8 @@
                                                                               \
         /** Try up to 12 times to get a timestamp from NIST. */               \
         for (uint8_t i = 0; i < 12; i++) {                                    \
-            while (millis() < _lastNISTrequest + 4000) { /* wait */ }         \
+            while (millis() < _lastNISTrequest + 4000) { /* wait */           \
+            }                                                                 \
                                                                               \
             /** Make TCP connection. */                                       \
             MS_DBG(F("\nConnecting to NIST daytime Server"));                 \
@@ -498,7 +499,7 @@
         return 0;                                                             \
     }
 
-#if defined TINY_GSM_MODEM_XBEE || defined TINY_GSM_MODEM_ESP8266
+#if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
 /**
  * @brief Creates a text string of the functions to convert the signal quality
  * returned by a specific modem to RSSI and percent signal strength.
