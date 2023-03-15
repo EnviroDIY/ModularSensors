@@ -37,7 +37,7 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
-#include <PubSubClient.h>
+#include "PubSubClient.h"
 
 
 // ============================================================================
