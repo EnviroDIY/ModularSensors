@@ -13,11 +13,12 @@
 
 
 // The constructor - need the power pin, the data pin, and the calibration info
-DwyerSBLT2::DwyerSBLT2(int8_t powerPin, uint8_t adsChannel, float conversion_coefficient, float conversion_constant,
-                           uint8_t i2cAddress, uint8_t measurementsToAverage)
+DwyerSBLT2::DwyerSBLT2(int8_t powerPin, uint8_t adsChannel,
+                       float conversion_coefficient, float conversion_constant,
+                       uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("DwyerSBLT2", SBLT2_NUM_VARIABLES, SBLT2_WARM_UP_TIME_MS,
-             SBLT2_STABILIZATION_TIME_MS, SBLT2_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage, SBLT2_INC_CALC_VARIABLES),
+             SBLT2_STABILIZATION_TIME_MS, SBLT2_MEASUREMENT_TIME_MS, powerPin,
+             -1, measurementsToAverage, SBLT2_INC_CALC_VARIABLES),
       _adsChannel(adsChannel),
       _conversion_coefficient(conversion_coefficient),
       _conversion_constant(conversion_constant),
@@ -74,7 +75,8 @@ bool DwyerSBLT2::addSingleMeasurementResult(void) {
         ads.begin();
 
         // Print out the calibration curve
-        MS_DBG(F("  Input calibration Curve:"), _conversion_coefficient, F("x +"), _conversion_constant);
+        MS_DBG(F("  Input calibration Curve:"), _conversion_coefficient,
+               F("x +"), _conversion_constant);
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
@@ -88,11 +90,12 @@ bool DwyerSBLT2::addSingleMeasurementResult(void) {
         if (adcVoltage < 5.0 && adcVoltage > -0.3) {
             // Skip results out of range
             // Apply the unique calibration curve for the given sensor
-            calibResult = ((_conversion_coefficient * adcVoltage) - _conversion_constant)/1000;
+            calibResult = ((_conversion_coefficient * adcVoltage) -
+                           _conversion_constant) /
+                1000;
             MS_DBG(F("  calibResult:"), calibResult);
         } else {  // set invalid voltages back to -9999
             adcVoltage = -9999;
-
         }
     } else {
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));

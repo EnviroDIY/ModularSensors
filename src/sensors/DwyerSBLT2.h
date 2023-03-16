@@ -85,7 +85,8 @@
 /** @ingroup sensor_obs3 */
 /**@{*/
 /**
- * @brief Sensor::_numReturnedValues; the SBLT2 will return raw voltage which will be converted into depth(m).
+ * @brief Sensor::_numReturnedValues; the SBLT2 will return raw voltage which
+ * will be converted into depth(m).
  */
 #define SBLT2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; depth is calculated from raw voltage
@@ -104,7 +105,7 @@
 /// OBS3 is 2s (2000ms).
 #define SBLT2_STABILIZATION_TIME_MS 2000
 /// @brief Sensor::_measurementTime_ms; OBS3 takes 100ms to complete a
-/// measurement - Maximum data rate = 10Hz (100ms/sample). 
+/// measurement - Maximum data rate = 10Hz (100ms/sample).
 ///#FIXME look to update to 50ms which is SLTB2 reported response time
 #define SBLT2_MEASUREMENT_TIME_MS 100
 /**@}*/
@@ -245,10 +246,10 @@ class DwyerSBLT2 : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      */
-    DwyerSBLT2(int8_t powerPin, uint8_t adsChannel, float conversion_coefficient,
-                 float conversion_constant,
-                 uint8_t i2cAddress            = ADS1115_ADDRESS,
-                 uint8_t measurementsToAverage = 1);
+    DwyerSBLT2(int8_t powerPin, uint8_t adsChannel,
+               float conversion_coefficient, float conversion_constant,
+               uint8_t i2cAddress            = ADS1115_ADDRESS,
+               uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the Dwyer SBLT2 object
      */
@@ -295,9 +296,8 @@ class DwyerSBLT2_Depth : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "OBS3Turbidity".
      */
-    explicit DwyerSBLT2_Depth(
-        DwyerSBLT2* parentSense, const char* uuid = "",
-        const char* varCode = SBLT2_DEPTH_DEFAULT_CODE)
+    explicit DwyerSBLT2_Depth(DwyerSBLT2* parentSense, const char* uuid = "",
+                              const char* varCode = SBLT2_DEPTH_DEFAULT_CODE)
         : Variable(parentSense, (const uint8_t)SBLT2_DEPTH_VAR_NUM,
                    (uint8_t)SBLT2_RESOLUTION, SBLT2_DEPTH_VAR_NAME,
                    SBLT2_DEPTH_UNIT_NAME, varCode, uuid) {}
@@ -307,9 +307,9 @@ class DwyerSBLT2_Depth : public Variable {
      * @note This must be tied with a parent CampbellOBS3 before it can be used.
      */
     DwyerSBLT2_Depth()
-        : Variable((const uint8_t)SBLT2_DEPTH_VAR_NUM, (uint8_t)SBLT2_RESOLUTION,
-                   SBLT2_DEPTH_VAR_NAME, SBLT2_DEPTH_UNIT_NAME,
-                   SBLT2_DEPTH_DEFAULT_CODE) {}
+        : Variable((const uint8_t)SBLT2_DEPTH_VAR_NUM,
+                   (uint8_t)SBLT2_RESOLUTION, SBLT2_DEPTH_VAR_NAME,
+                   SBLT2_DEPTH_UNIT_NAME, SBLT2_DEPTH_DEFAULT_CODE) {}
     ~DwyerSBLT2_Depth() {}
 };
 

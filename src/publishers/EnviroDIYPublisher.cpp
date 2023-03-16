@@ -42,7 +42,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
 EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
-                                       int sendEveryX)
+                                       int         sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
@@ -51,7 +51,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
                                        const char* registrationToken,
                                        const char* samplingFeatureUUID,
-                                       int sendEveryX)
+                                       int         sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
@@ -121,8 +121,8 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 bool EnviroDIYPublisher::connectionNeeded(void) {
     // compute the send interval, reducing it as the buffer gets more full so we
     // have less of a chance of losing data
-    int interval = _sendEveryX;
-    uint8_t percent = _logBuffer.getPercentFull();
+    int     interval = _sendEveryX;
+    uint8_t percent  = _logBuffer.getPercentFull();
     if (percent >= 50) {
         interval /= 2;
     } else if (percent >= 75) {
@@ -143,7 +143,7 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
         if (relative == (interval - 1)) {
             // the next sample will put us right at the interval
             atSendInterval = true;
-        } else if (numRecords >= interval) { // don't send the first sample
+        } else if (numRecords >= interval) {  // don't send the first sample
             if (relative == 0) {
                 // the last sample was the interval, this is the first retry
                 atSendInterval = true;

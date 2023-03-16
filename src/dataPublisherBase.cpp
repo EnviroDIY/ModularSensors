@@ -112,8 +112,8 @@ void dataPublisher::txBufferFlush() {
     STANDARD_SERIAL_OUTPUT.flush();
 #endif
 
-    uint8_t tries = 10;
-    const uint8_t* ptr = (const uint8_t*)txBuffer;
+    uint8_t        tries = 10;
+    const uint8_t* ptr   = (const uint8_t*)txBuffer;
     while (true) {
         size_t sent = txBufferOutClient->write(ptr, txBufferLen);
         txBufferLen -= sent;
@@ -133,7 +133,7 @@ void dataPublisher::txBufferFlush() {
             // the connection now so it will get reset and we can try to
             // transmit the data again later
             txBufferOutClient = nullptr;
-            txBufferLen = 0;
+            txBufferLen       = 0;
             return;
         }
 

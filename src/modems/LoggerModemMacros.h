@@ -468,7 +468,8 @@
                                                                               \
         /** Try up to 12 times to get a timestamp from NIST. */               \
         for (uint8_t i = 0; i < 12; i++) {                                    \
-            while (millis() < _lastNISTrequest + 4000) { /* wait */ }         \
+            while (millis() < _lastNISTrequest + 4000) { /* wait */           \
+            }                                                                 \
                                                                               \
             /** Make TCP connection. */                                       \
             MS_DBG(F("\nConnecting to NIST daytime Server"));                 \

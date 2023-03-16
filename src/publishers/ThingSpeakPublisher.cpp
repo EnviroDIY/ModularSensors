@@ -34,7 +34,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakMQTTKey,
                                          const char* thingSpeakChannelID,
                                          const char* thingSpeakChannelKey,
-                                         int sendEveryX)
+                                         int         sendEveryX)
     : dataPublisher(baseLogger, sendEveryX) {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
@@ -44,7 +44,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          const char* thingSpeakMQTTKey,
                                          const char* thingSpeakChannelID,
                                          const char* thingSpeakChannelKey,
-                                         int sendEveryX)
+                                         int         sendEveryX)
     : dataPublisher(baseLogger, inClient, sendEveryX) {
     setMQTTKey(thingSpeakMQTTKey);
     setChannelID(thingSpeakChannelID);
@@ -132,8 +132,8 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool forceFlush) {
     txBufferInit(nullptr);
 
     txBufferAppend("created_at=");
-    txBufferAppend(Logger::formatDateTime_ISO8601(
-        Logger::markedLocalEpochTime).c_str());
+    txBufferAppend(
+        Logger::formatDateTime_ISO8601(Logger::markedLocalEpochTime).c_str());
 
     for (uint8_t i = 0; i < numChannels; i++) {
         txBufferAppend("&field");
