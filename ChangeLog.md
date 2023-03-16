@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Specify python version 3.x for actions (used by PlatformIO)
 
 ### Added
-- Support Campbell RainVUE10 SDI-12 Precipitation Sensor (#416)
+- Support Campbell RainVUE10 SDI-12 Precipitation Sensor [#416](https://github.com/EnviroDIY/ModularSensors/issues/416)
 - Support YosemiTech Y700 Pressor Sensor ([#421](https://github.com/EnviroDIY/ModularSensors/issues/421))
 
 ### Removed
@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed non-concurrent data fetch for SDI-12 when *NOT* using debugging.
 - Fixed internet connection when in "testing mode"
 - Allow a non-zero wait time for SDI-12 sensors
+- Fixed outdated GitHub actions
 
 ***
 
