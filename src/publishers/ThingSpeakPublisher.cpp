@@ -131,13 +131,12 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool forceFlush) {
     // buffer is used only locally, it does not transmit
     txBufferInit(nullptr);
 
+    txBufferAppend("created_at=");
     txBufferAppend(Logger::formatDateTime_ISO8601(
         Logger::markedLocalEpochTime).c_str());
-    txBufferAppend("created_at=");
 
     for (uint8_t i = 0; i < numChannels; i++) {
-        txBufferAppend('&');
-        txBufferAppend("field");
+        txBufferAppend("&field");
         itoa(i + 1, tempBuffer, 10);  // BASE 10
         txBufferAppend(tempBuffer);
         txBufferAppend('=');
