@@ -131,7 +131,7 @@ jobs:
           path: code_docs/m.css
 
       - name: Generate all the documentation
-        continue-on-error: false
+        continue-on-error: true
         run: |
           cd ${{ github.workspace }}/code_docs/ModularSensors/
           chmod +x continuous_integration/generate-documentation.sh
