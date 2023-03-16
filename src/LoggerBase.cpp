@@ -596,11 +596,18 @@ void Logger::markTime(void) {
 bool Logger::checkInterval(void) {
     bool     retval;
     uint32_t checkTime = getNowLocalEpoch();
+    uint16_t interval  = _loggingIntervalMinutes;
+    if (_initialShortIntervals > 0) {
+        // log the first few samples at an interval of 1 minute so that
+        // operation can be quickly verified in the field
+        _initialShortIntervals -= 1;
+        interval = 1;
+    }
+
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
-    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes * 60));
-    MS_DBG(F("Mod of Logging Interval:"),
-           checkTime % (_loggingIntervalMinutes * 60));
+    MS_DBG(F("Logging interval in seconds:"), (interval * 60));
+    MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
     if ((checkTime % (interval * 60) == 0)) {
         // Update the time variables with the current time
@@ -1618,7 +1625,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
             MS_DBG(F("Nobody needs it so publishing without connecting..."));
             // Call publish function without connection
             watchDogTimer.resetWatchDog();
-            publishDataToRemotes(false); // can't flush without a connection
+            publishDataToRemotes(false);  // can't flush without a connection
             watchDogTimer.resetWatchDog();
         }
 

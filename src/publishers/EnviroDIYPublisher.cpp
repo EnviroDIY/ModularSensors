@@ -122,8 +122,8 @@ void EnviroDIYPublisher::begin(Logger&     baseLogger,
 bool EnviroDIYPublisher::connectionNeeded(void) {
     // compute the send interval, reducing it as the buffer gets more full so we
     // have less of a chance of losing data
-    int interval = _sendEveryX;
-    uint8_t percent = _logBuffer.getPercentFull();
+    int     interval = _sendEveryX;
+    uint8_t percent  = _logBuffer.getPercentFull();
     if (percent >= 50) {
         interval /= 2;
     } else if (percent >= 75) {
@@ -144,7 +144,7 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
         if (relative == (interval - 1)) {
             // the next sample will put us right at the interval
             atSendInterval = true;
-        } else if (numRecords >= interval) { // don't send the first sample
+        } else if (numRecords >= interval) {  // don't send the first sample
             if (relative == 0) {
                 // the last sample was the interval, this is the first retry
                 atSendInterval = true;
