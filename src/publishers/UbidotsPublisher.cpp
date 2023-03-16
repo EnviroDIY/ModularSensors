@@ -93,46 +93,6 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
 }
 
 
-// This prints a properly formatted JSON for EnviroDIY to an Arduino stream
-void UbidotsPublisher::printSensorDataJSON(Stream* stream) {
-    stream->print(payload);
-
-    for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++) {
-        stream->print('"');
-        stream->print(_baseLogger->getVarUUIDAtI(i));
-        stream->print(F("\":{'value':"));
-        stream->print(_baseLogger->getValueStringAtI(i));
-        stream->print(",'timestamp':");
-        stream->print(Logger::markedUTCEpochTime);
-        stream->print(
-            F("000}"));  // Convert microseconds to milliseconds for ubidots
-        if (i + 1 != _baseLogger->getArrayVarCount()) { stream->print(','); }
-    }
-
-    stream->print(F("}}"));
-}
-
-
-// This prints a fully structured post request for Ubidots to the
-// specified stream.
-void UbidotsPublisher::printUbidotsRequest(Stream* stream) {
-    // Stream the HTTP headers for the post request
-    stream->print(postHeader);
-    stream->print(postEndpoint);
-    stream->print(HTTPtag);
-    stream->print(hostHeader);
-    stream->print(ubidotsHost);
-    stream->print(tokenHeader);
-    stream->print(_authentificationToken);
-    stream->print(contentLengthHeader);
-    stream->print(calculateJsonSize());
-    stream->print(contentTypeHeader);
-
-    // Stream the JSON itself
-    printSensorDataJSON(stream);
-}
-
-
 // A way to begin with everything already set
 void UbidotsPublisher::begin(Logger& baseLogger, Client* inClient,
                              const char* authentificationToken,

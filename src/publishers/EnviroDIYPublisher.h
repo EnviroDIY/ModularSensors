@@ -149,30 +149,7 @@ class EnviroDIYPublisher : public dataPublisher {
      * @return uint16_t The number of characters in the JSON object.
      */
     uint16_t calculateJsonSize();
-    // /**
-    //  * @brief Calculates how long the full post request will be, including
-    //  * headers
-    //  *
-    //  * @return uint16_t The length of the full request including HTTP
-    //  headers.
-    //  */
-    // uint16_t calculatePostSize();
 
-    /**
-     * @brief This generates a properly formatted JSON for EnviroDIY and prints
-     * it to the input Arduino stream object.
-     *
-     * @param stream The Arduino stream to write out the JSON to.
-     */
-    void printSensorDataJSON(Stream* stream);
-
-    /**
-     * @brief This prints a fully structured post request for Monitor My
-     * Watershed/EnviroDIY to the specified stream.
-     *
-     * @param stream The Arduino stream to write out the request to.
-     */
-    void printEnviroDIYRequest(Stream* stream);
 
     // A way to begin with everything already set
     /**
@@ -194,7 +171,6 @@ class EnviroDIYPublisher : public dataPublisher {
     void begin(Logger& baseLogger, const char* registrationToken,
                const char* samplingFeatureUUID);
 
-    // int16_t postDataEnviroDIY(void);
     /**
      * @brief Utilize an attached modem to open a a TCP connection to the
      * EnviroDIY/ODM2DataSharingPortal and then stream out a post request over
@@ -217,12 +193,10 @@ class EnviroDIYPublisher : public dataPublisher {
      *
      * @{
      */
-    static const char* postEndpoint;   ///< The endpoint
-    static const char* enviroDIYHost;  ///< The host name
-    static const int   enviroDIYPort;  ///< The host port
-    static const char* tokenHeader;    ///< The token header text
-    // static const char *cacheHeader;  ///< The cache header text
-    // static const char *connectionHeader;  ///< The keep alive header text
+    static const char* postEndpoint;         ///< The endpoint
+    static const char* enviroDIYHost;        ///< The host name
+    static const int   enviroDIYPort;        ///< The host port
+    static const char* tokenHeader;          ///< The token header text
     static const char* contentLengthHeader;  ///< The content length header text
     static const char* contentTypeHeader;    ///< The content type header text
     /**@}*/
