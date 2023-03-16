@@ -499,7 +499,7 @@
         return 0;                                                             \
     }
 
-#if defined TINY_GSM_MODEM_XBEE || defined TINY_GSM_MODEM_ESP8266
+#if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
 /**
  * @brief Creates a text string of the functions to convert the signal quality
  * returned by a specific modem to RSSI and percent signal strength.

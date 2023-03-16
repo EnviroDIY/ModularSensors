@@ -1,8 +1,10 @@
 board_manager:
-  additional_urls: [https://raw.githubusercontent.com/EnviroDIY/Arduino_boards/master/package_EnviroDIY_index.json,
-https://adafruit.github.io/arduino-board-index/package_adafruit_index.json,http://downloads.sodaq.net/package_sodaq_samd_index.json]
+  additional_urls:
+    - https://raw.githubusercontent.com/EnviroDIY/Arduino_boards/master/package_EnviroDIY_index.json
+    - https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
+    - http://downloads.sodaq.net/package_sodaq_samd_index.json
 daemon:
-  port: "50051"
+  port: '50051'
 directories:
   data: home/arduino/data
   downloads: home/arduino/downloads
@@ -10,7 +12,7 @@ directories:
 library:
   enable_unsafe_install: true
 logging:
-  file: "arduino_cli_log"
+  file: arduino_cli.log
   format: text
   level: debug
 metrics:

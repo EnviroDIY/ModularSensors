@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+# Makes the bash script print out every command before it is executed, except echo
+trap '[[ $BASH_COMMAND != echo* ]] && echo $BASH_COMMAND' DEBUG
 
 # Exit with nonzero exit code if anything fails
 set -e
@@ -6,6 +9,7 @@ set -e
 echo "\n\e[32mCurrent Arduino CLI version:\e[0m"
 arduino-cli version
 
+echo "::group::Installing Platforms and Frameworks"
 echo "\n\e[32mUpdating the core index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
 
@@ -21,9 +25,6 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml core install a
 echo "\n\e[32mInstalling the Adafruit SAMD Core\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core install adafruit:samd
 
-echo "\n\e[32mInstalling the Sodaq SAMD Core\e[0m"
-arduino-cli --config-file continuous_integration/arduino_cli.yaml core install SODAQ:samd
-
 echo "\n\e[32mUpdating the core index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core update-index
 
@@ -32,7 +33,10 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml core upgrade
 
 echo "\n\e[32mCurrently installed cores:\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml core list
+echo "::endgroup::"
 
+
+echo "::group::Installing Libraries"
 echo "\n\e[32mUpdating the library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
 
@@ -72,10 +76,10 @@ mv home/arduino/downloads/Adafruit_ADS1X15-master/* home/arduino/user/libraries/
 echo "\n\e[32mInstalling Adafruit AM2315 library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit AM2315"
 
-echo "\n\e[32mInstalling Adafruit BME280 Library library from Arduino library index\e[0m"
+echo "\n\e[32mInstalling Adafruit BME280 Library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit BME280 Library"
 
-echo "\n\e[32mInstalling DHT sensor library library from Arduino library index\e[0m"
+echo "\n\e[32mInstalling DHT sensor library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "DHT sensor library"
 
 echo "\n\e[32mInstalling Adafruit INA219 library from Arduino library index - excluding dependencies\e[0m"
@@ -84,7 +88,7 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "A
 echo "\n\e[32mInstalling Adafruit MPL115A2 library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit MPL115A2"
 
-echo "\n\e[32mInstalling Adafruit SHT4x Library library from Arduino library index\e[0m"
+echo "\n\e[32mInstalling Adafruit SHT4x Library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install "Adafruit SHT4x Library"
 
 echo "\n\e[32mDownloading Martin Lindupp's BMP388 Library as a zip"
@@ -102,9 +106,6 @@ arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install On
 echo "\n\e[32mInstalling DallasTemperature library from Arduino library index\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install DallasTemperature
 
-echo "\n\e[32mInstalling SDI-12 library from Arduino library index\e[0m"
-arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install SDI-12
-
 echo "\n\e[32mDownloading External Interrupt version of the SDI-12 library as a zip\e[0m"
 # The "external interrupt" version needs to be installed from a zip because the Arduino CLI cannot pull from a branch
 curl -L  --retry 15 --retry-delay 0 https://github.com/EnviroDIY/Arduino-SDI-12/archive/refs/heads/ExtInts.zip --create-dirs -o home/arduino/downloads/EnviroDIY_SDI12_ExtInts.zip
@@ -117,7 +118,7 @@ mv home/arduino/downloads/Arduino-SDI-12-ExtInts/* home/arduino/user/libraries/E
 echo "\n\e[32mInstalling NorthernWidget MS5803 library from GitHub\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/NorthernWidget/MS5803.git
 
-echo "\n\e[32mInstalling EnviroDIY Tally_Library library from GitHub"
+echo "\n\e[32mInstalling EnviroDIY Tally_Library from GitHub"
 # NOTE:  This only works because the DEV_I2C branch is the main branch of the EnviroDIY fork
 # The Arduino CLI can only install from whatever is assigned as the default branch on GitHub
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib install --git-url https://github.com/EnviroDIY/Tally_Library.git
@@ -151,7 +152,11 @@ unzip -q -o home/arduino/downloads/SoftwareSerial_ExternalInts.zip -d home/ardui
 echo "\e[32mMoving SoftwareSerial_ExternalInts to the libraries folder\e[0m"
 mkdir -p home/arduino/user/libraries/SoftwareSerial_ExternalInts
 mv home/arduino/downloads/SoftwareSerial_ExtInts-master/* home/arduino/user/libraries/SoftwareSerial_ExternalInts
+echo "::endgroup::"
 
+
+echo "::group::Current globally installed packages"
 echo "\n\e[32mCurrently installed libraries:\e[0m"
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib update-index
 arduino-cli --config-file continuous_integration/arduino_cli.yaml lib list
+echo "::endgroup::"

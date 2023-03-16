@@ -148,7 +148,7 @@
 /* clang-format on */
 class PaleoTerraRedox : public Sensor {
  public:
-#if defined MS_PALEOTERRA_SOFTWAREWIRE | defined DOXYGEN
+#if defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief Construct a new PaleoTerra Redox object using a *software* I2C
      * instance.

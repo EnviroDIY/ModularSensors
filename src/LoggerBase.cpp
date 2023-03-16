@@ -34,7 +34,7 @@ volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_SAMD_ZERO)
 RTCZero Logger::zero_sleep_rtc;
 #endif
 
@@ -457,7 +457,7 @@ uint32_t Logger::getNowLocalEpoch(void) {
     return currentEpochTime;
 }
 
-#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
 
 uint32_t Logger::getNowUTCEpoch(void) {
     return rtc.now().getEpoch();
@@ -714,7 +714,7 @@ void Logger::systemSleep(void) {
         return;
     }
 
-#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
 
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
     // cannot interrupt on any frequencies other than every second, minute,
@@ -935,7 +935,7 @@ void Logger::systemSleep(void) {
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste thought on the clock interrupt if it
     // happens while the processor is awake and doing other things.
@@ -1120,7 +1120,7 @@ bool Logger::openFile(String& filename, bool createFile,
                 // Add header information
                 printFileHeader(&logFile);
 // Print out the header for debugging
-#if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_STD
+#if defined(DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
                 MS_DBG(F("\n \\/---- File Header ----\\/"));
                 printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                 MS_DBG('\n');
@@ -1318,7 +1318,7 @@ void Logger::begin() {
     setLoggerPins(_mcuWakePin, _SDCardSSPin, _SDCardPowerPin, _buttonPin,
                   _ledPin);
 
-#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+#if defined(MS_SAMD_DS3231) || not defined(ARDUINO_ARCH_SAMD)
     MS_DBG(F("Beginning DS3231 real time clock"));
     rtc.begin();
 #endif

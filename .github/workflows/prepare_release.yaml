@@ -47,58 +47,57 @@ jobs:
 
       - name: Install ModularSensors from the master branch
         run: |
-          pio lib -g install -f https://github.com/EnviroDIY/ModularSensors
-          pio lib show EnviroDIY_ModularSensors
+          pio pkg install -g -l https://github.com/EnviroDIY/ModularSensors
 
       # Uninstall graphics libraries from Adafruit
       - name: Uninstall Adafruit GFX Library library
         continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit GFX Library"
-          pio lib -g uninstall adafruit/Adafruit GFX Library
+          pio pkg uninstall -g -l "adafruit/Adafruit GFX Library"
 
       - name: Uninstall Adafruit NeoPixel library
         continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit NeoPixel"
-          pio lib -g uninstall adafruit/Adafruit NeoPixel
+          pio pkg uninstall -g -l "adafruit/Adafruit NeoPixel"
 
       - name: Uninstall Adafruit SSD1306 library
         continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit SSD1306"
-          pio lib -g uninstall adafruit/Adafruit SSD1306
+          pio pkg uninstall -g -l "adafruit/Adafruit SSD1306"
 
       - name: Uninstall Adafruit ADXL343 library
         continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit ADXL343"
-          pio lib -g uninstall adafruit/Adafruit ADXL343
+          pio pkg uninstall -g -l "adafruit/Adafruit ADXL343"
 
       - name: Uninstall Adafruit STMPE610 library
         continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit STMPE610"
-          pio lib -g uninstall adafruit/Adafruit STMPE610
+          pio pkg uninstall -g -l "adafruit/Adafruit STMPE610"
 
       - name: Uninstall Adafruit TouchScreen library
         continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit TouchScreen"
-          pio lib -g uninstall adafruit/Adafruit TouchScreen
+          pio pkg uninstall -g -l "adafruit/Adafruit TouchScreen"
 
       - name: Uninstall Adafruit ILI9341 library
         continue-on-error: true
         run: |
           echo "::debug::Removing Adafruit ILI9341"
-          pio lib -g uninstall adafruit/Adafruit ILI9341
+          pio pkg uninstall -g -l "adafruit/Adafruit ILI9341"
 
       # zip up all the installed libraries
       # need to cd into the pio directory so we don't get extra junk directories
       - name: Zip libraries
         run: |
           echo "::debug::Listing global libraries"
-          pio lib -g list
+          pio pkg list -g -v --only-libraries
           echo "::debug::Zipping global libraries"
           cd /home/runner/.platformio/
           zip ${{ env.ZIP_NAME }}.zip -r lib
@@ -147,12 +146,12 @@ jobs:
       #   id: get_release_name
       #   run: |
       #     release_name=$(echo ${{steps.changelog_reader.outputs.changes}} | cut -d '\n' -f 1)
-      #      echo "::set-output name=release_name::$release_name"
+      #      echo "release_name=release_name" >> $GITHUB_OUTPUT
 
       # Create a new release
       - name: Create release
         id: create_release
-        uses: softprops/action-gh-release@v0.1.14
+        uses: softprops/action-gh-release@v0.1.15
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

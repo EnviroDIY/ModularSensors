@@ -60,6 +60,8 @@
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_UserManual_v1.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y560-NH4_Modbus_v2020-05-11.pdf)
  *     - [Class Documentation](@ref sensor_y560)
+ * - Y700 Pressure Sensor
+ *     - [Class Documentation](@ref sensor_y700)
  * - [Y4000 Multiparameter Sonde](http://en.yosemitech.com/aspcms/product/2020-5-8/95.html)
  *     - [Manual](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde_UserManual_v2.0.pdf)
  *     - [Modbus Instructions](https://github.com/EnviroDIY/YosemitechModbus/tree/master/doc/Y4000-Sonde-1.6-ModbusInstruction-en.pdf)
@@ -129,7 +131,7 @@
 #undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include <YosemitechModbus.h>
+#include "YosemitechModbus.h"
 
 /* clang-format off */
 /**

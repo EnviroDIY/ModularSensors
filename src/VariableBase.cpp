@@ -228,7 +228,7 @@ bool Variable::checkUUIDFormat(void) {
     int first_invalid = strspn(_uuid, acceptableChars);
     if (first_invalid != 36) {
         MS_DBG(F("UUID for"), getVarCode(), '(', _uuid, ')',
-               F("has a bad character"), _uuid[i], F("at"), first_invalid);
+               F("has a bad character"), _uuid[first_invalid], F("at"), first_invalid);
         return false;
     }
     return true;

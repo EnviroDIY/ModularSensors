@@ -122,7 +122,7 @@ bool BoschBMP3xx::setup(void) {
                max_measurementTime_us / 1000) {
             _standbyEnum =
                 static_cast<TimeStandby>(static_cast<int>(_standbyEnum) + 1);
-#if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_STD
+#if defined(DEBUGGING_SERIAL_OUTPUT) && defined(MS_DEBUGGING_STD)
             _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
 #endif
             MS_DBG(_standbyEnum, _timeStandby_ms,
