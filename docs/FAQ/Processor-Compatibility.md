@@ -5,18 +5,18 @@
 [//]: # ( @m_footernavigation )
 
 [//]: # ( Start GitHub Only )
-- [Processor Compatibility](#processor-compatibility)
-  - [AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284)](#atmega1284p-envirodiy-mayfly-sodaq-mbili-mighty-1284)
-  - [AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)](#atsamd21-arduino-zero-adafruit-feather-m0-sodaq-autonomo)
-  - [AtMega2560 (Arduino Mega)](#atmega2560-arduino-mega)
-  - [AtMega644p (Sanguino)](#atmega644p-sanguino)
-  - [AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)](#atmega328p-arduino-uno-duemilanove-lilypad-mini-seeeduino-stalker-etc)
-  - [AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)](#atmega32u4-arduino-leonardomicro-adafruit-florafeather-etc)
-  - [Unsupported Processors](#unsupported-processors)
+- [Processor Compatibility ](#processor-compatibility-)
+  - [AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284) ](#atmega1284p-envirodiy-mayfly-sodaq-mbili-mighty-1284-)
+  - [AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo) ](#atsamd21-arduino-zero-adafruit-feather-m0-sodaq-autonomo-)
+  - [AtMega2560 (Arduino Mega) ](#atmega2560-arduino-mega-)
+  - [AtMega644p (Sanguino) ](#atmega644p-sanguino-)
+  - [AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc) ](#atmega328p-arduino-uno-duemilanove-lilypad-mini-seeeduino-stalker-etc-)
+  - [AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc) ](#atmega32u4-arduino-leonardomicro-adafruit-florafeather-etc-)
+  - [Unsupported Processors ](#unsupported-processors-)
 
 [//]: # ( End GitHub Only )
 
-## AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mighty 1284) <!-- {#processor_1284p} -->
+## AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284) <!-- {#processor_1284p} -->
 
 The [EnviroDIY Mayfly](https://envirodiy.org/mayfly/) _is_ the test board for this library.
 _Everything_ is designed to work with this processor.
